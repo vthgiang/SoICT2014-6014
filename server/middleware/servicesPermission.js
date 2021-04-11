@@ -701,16 +701,18 @@ exports.links = [
     }, {
         url: '/hr-list-education',
         apis: ['@all']
-    }, {
-        url: '/hr-list-major',
-        apis: ['@all']
-    }, {
-        url: '/hr-list-career-position',
-        apis: ['@all']
-    }, {
-        url: '/hr-search-for-package',
-        apis: ['@all']
-    }, {
+    },
+    // {
+    //     url: '/hr-list-major',
+    //     apis: ['@all']
+    // }, {
+    //     url: '/hr-list-career-position',
+    //     apis: ['@all']
+    // }, {
+    //     url: '/hr-search-for-package',
+    //     apis: ['@all']
+    // },
+    {
         url: '/kpi-units/create-for-admin',
         apis: ['@all']
     }, {

@@ -1,17 +1,17 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DatePicker, DialogModal, ErrorLabel, SelectBox } from '../../../../../common-components';
 import { AssetCreateValidator } from './combinedContent';
 import ValidationHelper from '../../../../../helpers/validationHelper';
-class UsageLogEditModal extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {};
-    }
+function UsageLogEditModal(props) {
+    const [state, setState] =useState({})
+    const [prevProps, setPrevProps] = useState({
+        id: null,
+    })
 
     // Function format dữ liệu Date thành string
-    formatDate(date, monthYear = false) {
+    const formatDate = (date, monthYear = false) => {
         if (!date) return null;
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
@@ -36,68 +36,80 @@ class UsageLogEditModal extends Component {
     /**
      * Bắt sự kiện thay đổi người sử dụng
      */
-    handleUsedByUserChange = (value) => {
-        const { translate } = this.props;
+    const handleUsedByUserChange = (value) => {
+        const { translate } = props;
         let usedByUser = value[0] !== 'null' ? value[0] : null;
         let { message } = ValidationHelper.validateEmpty(translate, usedByUser);
 
-        this.setState({
-            usedByUser: usedByUser,
-            errorOnUser: message,
+        setState(state =>{
+            return {
+                ...state,
+                usedByUser: usedByUser,
+                errorOnUser: message,
+            }
         });
     }
 
     /**
      * Bắt sự kiện thay đổi đơn vị sử dụng
      */
-    handleUsedByOrganizationalUnitChange = (value) => {
+    const handleUsedByOrganizationalUnitChange = (value) => {
         let usedByOrganizationalUnit = value[0] !== 'null' ? value[0] : null;
-        this.setState({
-            ...this.state,
+        setState({
+            ...state,
             usedByOrganizationalUnit: usedByOrganizationalUnit
         });
     }
 
     // Bắt sự kiện thay đổi "Thời gian bắt đầu sử dụng"
-    handleStartDateChange = (value) => {
-        const { translate } = this.props;
+    const handleStartDateChange = (value) => {
+        const { translate } = props;
         let { message } = ValidationHelper.validateEmpty(translate, value);
 
         let partStart = value.split("-");
         let startDate = new Date(partStart[2], partStart[1] - 1, partStart[0]);
 
-        this.setState({
-            startDate: startDate,
-            errorOnStartDate: message,
+        setState(state =>{
+            return {
+                ...state,
+                startDate: startDate,
+                errorOnStartDate: message,
+            }
         })
     }
 
     // Bắt sự kiện thay đổi "Thời gian kết thúc sử dụng"
-    handleEndDateChange = (value) => {
-        const { translate } = this.props;
+    const handleEndDateChange = (value) => {
+        const { translate } = props;
         let { message } = ValidationHelper.validateEmpty(translate, value);
 
         let partEnd = value.split("-");
         let endDate = new Date(partEnd[2], partEnd[1] - 1, partEnd[0]);
 
-        this.setState({
-            endDate: endDate,
-            errorOnEndDate: message,
+        setState(state =>{
+            return {
+                ...state,
+                endDate: endDate,
+                errorOnEndDate: message,
+            }
         })
     }
 
     // Bắt sự kiện thay đổi "Nội dung"
-    handleDescriptionChange = (e) => {
+    const handleDescriptionChange = (e) => {
         const { value } = e.target;
-        this.setState({
-            description: value,
+        setState(state =>{
+            return{
+                ...state,
+                description: value,
+            }
         })
     }
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
-    isFormValidated = () => {
-        const { usedByUser, startDate, endDate } = this.state;
-        const { translate } = this.props;
+    const isFormValidated = () => {
+        const { usedByUser, startDate, endDate } = state;
+        const { translate } = props;
 
         if (!ValidationHelper.validateName(translate, usedByUser).status
             || !ValidationHelper.validateName(translate, startDate).status
@@ -107,17 +119,17 @@ class UsageLogEditModal extends Component {
     }
 
     // Bắt sự kiện submit form
-    save = async () => {
-        var partStart = this.formatDate(this.state.startDate).split('-');
+    const save = async () => {
+        var partStart = formatDate(state.startDate).split('-');
         var startDate = [partStart[2], partStart[1], partStart[0]].join('-');
-        var partEnd = this.formatDate(this.state.endDate).split('-');
+        var partEnd = formatDate(state.endDate).split('-');
         var endDate = [partEnd[2], partEnd[1], partEnd[0]].join('-');
-        let usedByUser = this.state.usedByUser;
-        let usedByOrganizationalUnit = this.state.usedByOrganizationalUnit;
+        let usedByUser = state.usedByUser;
+        let usedByOrganizationalUnit = state.usedByOrganizationalUnit;
 
-        if (this.isFormValidated()) {
-            return this.props.handleChange({
-                ...this.state,
+        if (isFormValidated()) {
+            return props.handleChange({
+                ...state,
                 assignedToUser: usedByUser,
                 assignedToOrganizationalUnit: usedByOrganizationalUnit,
                 startDate: startDate,
@@ -126,32 +138,31 @@ class UsageLogEditModal extends Component {
         }
     }
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id) {
+    if(prevProps.id !== props.id){
+        setState(state => {
             return {
-                ...prevState,
-                id: nextProps.id,
-                _id: nextProps._id,
-                index: nextProps.index,
-                usedByUser: nextProps.usedByUser,
-                usedByOrganizationalUnit: nextProps.usedByOrganizationalUnit,
-                startDate: nextProps.startDate,
-                endDate: nextProps.endDate,
-                description: nextProps.description,
+                ...state,
+                id: props.id,
+                _id: props._id,
+                index: props.index,
+                usedByUser: props.usedByUser,
+                usedByOrganizationalUnit: props.usedByOrganizationalUnit,
+                startDate: props.startDate,
+                endDate: props.endDate,
+                description: props.description,
                 errorOnDescription: undefined,
             }
-        } else {
-            return null;
-        }
+        })
+        setPrevProps(props)
     }
+    
 
-    render() {
-        const { id } = this.props;
-        const { translate, user, department } = this.props;
-        const { usedByUser, usedByOrganizationalUnit, startDate, endDate, description, errorOnUser, errorOnStartDate, errorOnEndDate } = this.state;
+        const { id } = props;
+        const { translate, user, department } = props;
+        const { usedByUser, usedByOrganizationalUnit, startDate, endDate, description, errorOnUser, errorOnStartDate, errorOnEndDate } = state;
 
         var userlist = user.list, departmentlist = department.list;
-        console.log('ashdsdkjasjdh', this.state)
+        console.log('ashdsdkjasjdh', state)
 
         return (
             <React.Fragment>
@@ -159,8 +170,8 @@ class UsageLogEditModal extends Component {
                     size='50' modalID={`modal-edit-usage-${id}`} isLoading={false}
                     formID={`form-edit-usage-${id}`}
                     title={translate('asset.asset_info.edit_usage_info')}
-                    func={this.save}
-                    disableSubmit={!this.isFormValidated()}
+                    func={save}
+                    disableSubmit={!isFormValidated()}
                 >
                     {/* Form chỉnh sửa thông tin sử dụng */}
                     <form className="form-group" id={`form-edit-usage-${id}`}>
@@ -176,7 +187,7 @@ class UsageLogEditModal extends Component {
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             items={[{ value: 'null', text: 'Chọn người sử dụng' }, ...userlist.map(x => { return { value: x._id, text: x.name + " - " + x.email } })]}
-                                            onChange={this.handleUsedByUserChange}
+                                            onChange={handleUsedByUserChange}
                                             value={usedByUser}
                                             multiple={false}
                                         />
@@ -195,7 +206,7 @@ class UsageLogEditModal extends Component {
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             items={[{ value: 'null', text: 'Chọn đơn vị sử dụng' }, ...departmentlist.map(x => { return { value: x._id, text: x.name } })]}
-                                            onChange={this.handleUsedByOrganizationalUnitChange}
+                                            onChange={handleUsedByOrganizationalUnitChange}
                                             value={usedByOrganizationalUnit}
                                             multiple={false}
                                         />
@@ -208,8 +219,8 @@ class UsageLogEditModal extends Component {
                                 <label>{translate('asset.general_information.handover_from_date')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`edit-start-date-${id}`}
-                                    value={this.formatDate(startDate)}
-                                    onChange={this.handleStartDateChange}
+                                    value={formatDate(startDate)}
+                                    onChange={handleStartDateChange}
                                 />
                                 <ErrorLabel content={errorOnStartDate} />
                             </div>
@@ -219,8 +230,8 @@ class UsageLogEditModal extends Component {
                                 <label>{translate('asset.general_information.handover_to_date')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`edit-end-date-${id}`}
-                                    value={this.formatDate(endDate)}
-                                    onChange={this.handleEndDateChange}
+                                    value={formatDate(endDate)}
+                                    onChange={handleEndDateChange}
                                 />
                                 <ErrorLabel content={errorOnEndDate} />
                             </div>
@@ -228,7 +239,7 @@ class UsageLogEditModal extends Component {
                             {/* Nội dung */}
                             <div className={`form-group `}>
                                 <label>{translate('asset.general_information.content')}</label>
-                                <textarea className="form-control" rows="3" name="description" value={description ? description : ''} onChange={this.handleDescriptionChange} autoComplete="off"
+                                <textarea className="form-control" rows="3" name="description" value={description ? description : ''} onChange={handleDescriptionChange} autoComplete="off"
                                     placeholder="Nội dung"></textarea>
                             </div>
                         </div>
@@ -236,7 +247,6 @@ class UsageLogEditModal extends Component {
                 </DialogModal>
             </React.Fragment>
         );
-    }
 };
 
 function mapState(state) {

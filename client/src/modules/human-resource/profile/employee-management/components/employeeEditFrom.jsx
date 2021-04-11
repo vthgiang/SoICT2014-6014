@@ -7,7 +7,7 @@ import { DialogModal } from '../../../../../common-components';
 
 import {
     GeneralTab, ContactTab, TaxTab, InsurranceTab, DisciplineTab,
-    ExperienceTab, CertificateTab, ContractTab, SalaryTab, FileTab, CareerMajorTab,
+    ExperienceTab, CertificateTab, ContractTab, SalaryTab, FileTab,
 } from '../../employee-create/components/combinedContent';
 
 import { EmployeeManagerActions } from '../redux/actions';
@@ -1087,7 +1087,6 @@ const EmployeeEditFrom = (props) => {
                             <li><a title={translate('human_resource.profile.tab_name.menu_contract_training_title')} data-toggle="tab" href={`#edit_contract${_id}`}>{translate('human_resource.profile.tab_name.menu_contract_training')}</a></li>
                             <li><a title={translate('human_resource.profile.tab_name.menu_reward_discipline_title')} data-toggle="tab" href={`#edit_reward${_id}`}>{translate('human_resource.profile.tab_name.menu_reward_discipline')}</a></li>
                             <li><a title={translate('menu.annual_leave_personal')} data-toggle="tab" href={`#edit_salary${_id}`}>{translate('menu.annual_leave_personal')}</a></li>
-                            <li><a title={"Công việc - chuyên ngành tương đương"} data-toggle="tab" href={`#edit_major_career${_id}`}>Công việc - chuyên ngành tương đương</a></li>
                             <li><a title={"Thành viên hộ gia đình"} data-toggle="tab" href={`#edit_family_member${_id}`}>Thành viên hộ gia đình</a></li>
                             <li><a title={translate('human_resource.profile.tab_name.menu_attachments_title')} data-toggle="tab" href={`#edit_attachments${_id}`}>{translate('human_resource.profile.tab_name.menu_attachments')}</a></li>
                         </ul>
@@ -1197,23 +1196,6 @@ const EmployeeEditFrom = (props) => {
                                 handleAddFile={handleCreateFile}
                                 handleEditFile={handleEditFile}
                                 handleDeleteFile={handleDeleteFile}
-                            />
-                            {/* Tab công việc - chuyên ngành tương đương */}
-                            <CareerMajorTab
-                                id={`edit_major_career${_id}`}
-                                files={files}
-                                major={major}
-                                career={career}
-                                handleChange={handleChange}
-
-                                handleAddMajor={handleAddMajor}
-                                handleEditMajor={handleEditMajor}
-                                handleDeleteMajor={handleDeleteMajor}
-
-                                handleAddCareer={handleAddCareer}
-                                handleEditCareer={handleEditCareer}
-                                handleDeleteCareer={handleDeleteCareer}
-                                type={"edit"}
                             />
                             {/* Tab thành viên hộ gia đình */}
                             <FamilyMemberTab

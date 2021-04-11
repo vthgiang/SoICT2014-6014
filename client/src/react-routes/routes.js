@@ -56,9 +56,6 @@ import { DashboardUnit } from "../modules/dashboard-unit/components";
 import { ListEducation } from "../modules/training/education-program/components/educationProgramList";
 import { TrainingPlan } from "../modules/training/course/components/course";
 
-import { SearchEmployeeForPackage } from "../modules/human-resource/profile/employee-management/components/searchEmployeeForPackage";
-import CareerManagement from "../modules/human-resource/career/component";
-import Major from "../modules/human-resource/major/component";
 
 import { OrganizationalUnitKpiCreateForAdmin } from "../modules/kpi/organizational-unit/creation/component/organizationalUnitKpiCreateForAdmin";
 import { OrganizationalUnitKpiCreate } from "../modules/kpi/organizational-unit/creation/component/organizationalUnitKpiCreate";
@@ -913,68 +910,6 @@ class Routes extends Component {
                         pageName={"training_plan"}
                         layout={Layout}
                         component={TrainingPlan}
-                    />
-
-                    {/* Nhân sự gói thầu */}
-                    <PrivateRoute
-                        isLoading={this.props.course.isLoading}
-                        key={"list_search_for_package"}
-                        arrPage={[
-                            { link: "/", name: "home", icon: "fa fa-home" },
-                            {
-                                link: "/hr-search-for-package",
-                                name: "list_search_for_package",
-                                icon: "fa fa-list-alt",
-                            },
-                        ]}
-                        auth={auth}
-                        exact={true}
-                        link={"/hr-search-for-package"}
-                        path={"/hr-search-for-package"}
-                        pageName={"list_search_for_package"}
-                        layout={Layout}
-                        component={SearchEmployeeForPackage}
-                    />
-
-                    {/* Nhân sự gói thầu */}
-                    <PrivateRoute
-                        isLoading={this.props.course.isLoading}
-                        key={"list_major"}
-                        arrPage={[
-                            { link: "/", name: "home", icon: "fa fa-home" },
-                            {
-                                link: "/hr-list-major",
-                                name: "list_major",
-                                icon: "fa fa-list-alt",
-                            },
-                        ]}
-                        auth={auth}
-                        exact={true}
-                        link={"/hr-list-major"}
-                        path={"/hr-list-major"}
-                        pageName={"list_major"}
-                        layout={Layout}
-                        component={Major}
-                    />
-
-                    <PrivateRoute
-                        isLoading={this.props.course.isLoading}
-                        key={"list_career_position"}
-                        arrPage={[
-                            { link: "/", name: "home", icon: "fa fa-home" },
-                            {
-                                link: "/hr-list-career-position",
-                                name: "list_career_position",
-                                icon: "fa fa-list-alt",
-                            },
-                        ]}
-                        auth={auth}
-                        exact={true}
-                        link={"/hr-list-career-position"}
-                        path={"/hr-list-career-position"}
-                        pageName={"list_career_position"}
-                        layout={Layout}
-                        component={CareerManagement}
                     />
 
                     {/* kpi - routes */}

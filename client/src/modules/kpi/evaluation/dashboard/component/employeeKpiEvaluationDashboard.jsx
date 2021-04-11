@@ -229,7 +229,7 @@ function EmployeeKpiEvaluationDashboard(props) {
                     ...state.infosearch,
                     userId: null
                 },
-                organizationalUnitIds: null,
+                organizationalUnitIds: IDS,
                 ids: IDS
             });
 
