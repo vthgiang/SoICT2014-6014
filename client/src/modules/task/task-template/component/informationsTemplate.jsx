@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -7,60 +7,57 @@ import Sortable from 'sortablejs';
 import parse from 'html-react-parser';
 import ValidationHelper from '../../../../helpers/validationHelper';
 
-class InformationForm extends Component {
-    constructor(props) {
-        super(props);
-        this.INFO_TYPE = {
-            TEXT: "text",
-            NUMBER: "number",
-            DATE: "date",
-            BOOLEAN: "boolean",
-            SET: "set_of_values",
-        };
-        this.EMPTY_INFORMATION = {
-            name: '',
-            description: '',
-            type: this.INFO_TYPE.TEXT,
-            extra: '',
-            filledByAccountableEmployeesOnly: false
-        };
+function InformationForm(props) {
 
-        this.state = {
-            information: { ...this.EMPTY_INFORMATION },
-            editInfo: false,
-            quillValueDefault: null
-        }
-    }
+    let INFO_TYPE = {
+        TEXT: "text",
+        NUMBER: "number",
+        DATE: "date",
+        BOOLEAN: "boolean",
+        SET: "set_of_values",
+    };
 
-    static getDerivedStateFromProps(props, state) {
+    let EMPTY_INFORMATION = {
+        name: '',
+        description: '',
+        type: INFO_TYPE.TEXT,
+        extra: '',
+        filledByAccountableEmployeesOnly: false
+    };
+
+    const [state, setState] = useState({
+        EMPTY_INFORMATION: Object.assign({},EMPTY_INFORMATION),
+        information: Object.assign({},EMPTY_INFORMATION),
+        editInfo: false,
+        quillValueDefault: null
+    })
+
+    useEffect(() => {
+        // Load library for sort action table
+        handleSortable();
+    }, [])
+
+    useEffect(() => {
         //Trường hợp tạo ở form mẫu công việc
         if (props.type !== state.type) {
-            return {
+            setState({
                 ...state,
                 taskInformations: props.initialData,
                 type: props.type
-            }
+            })
         }
         //trường hợp lưu thành mẫu chạy vào đây
         if (props.savedTaskAsTemplate && props.initialData && props.initialData.length > 0 && !state.taskInformations) {
-            return {
+            setState({
                 ...state,
                 taskInformations: props.initialData,
-            }
-        } else {
-            return null;
+            })
         }
-    }
+    }, [props.type, props.initialData])
 
-
-    componentDidMount() {
-        // Load library for sort action table
-        this.handleSortable();
-    }
 
     /**Sắp xếp các item trong bảng */
-    handleSortable = () => {
-
+    const handleSortable = () => {
         var el2 = document.getElementById('informations');
         Sortable.create(el2, {
             chosenClass: 'chosen',
@@ -71,7 +68,7 @@ class InformationForm extends Component {
                 });
             },
             onEnd: async (evt) => {
-                let taskInformations = this.state.taskInformations;
+                let taskInformations = state.taskInformations;
                 const item = taskInformations[evt.oldIndex];
                 taskInformations.splice(evt.oldIndex, 1);
                 taskInformations.splice(evt.newIndex, 0, item);
@@ -83,7 +80,8 @@ class InformationForm extends Component {
                  * Kết quả: thứ tự trong State lưu một đằng, giao diện hiển thị thể hiện một nẻo
                  **/
                 set: (sortable) => {
-                    this.setState({
+                    setState({
+                        ...state,
                         keyPrefix: Math.random(), // force react to destroy children
                         order: sortable.toArray()
                     })
@@ -93,76 +91,82 @@ class InformationForm extends Component {
     }
 
     /**Sửa thông tin trong bảng danh sách các thông tin */
-    handleEditInformation = (information, indexInfo) => {
-        this.setState({
+    const handleEditInformation = (information, indexInfo) => {
+        setState({
+            ...state,
             editInfo: true,
             warning: false,
             indexInfo,
-            information,
+            information: {...information},
             quillValueDefault: information && information.description,
             oldType: information.type
         });
     }
 
     /**Lưu chỉnh sửa */
-    handleSaveEditedInformation = (event) => {
+    const handleSaveEditedInformation = (event) => {
         event.preventDefault(); // Ngăn không submit
-        let { indexInfo, taskInformations, information } = this.state;
+        let { indexInfo, taskInformations, information } = state;
 
         taskInformations[indexInfo] = information;
 
-        this.setState({
+        setState({
+            ...state,
             taskInformations,
             editInfo: false,
-            information: { ...this.EMPTY_INFORMATION },
-            quillValueDefault: this.EMPTY_INFORMATION.description
-        }, () => this.props.onDataChange(taskInformations))
+            information: { ...state.EMPTY_INFORMATION },
+            quillValueDefault: state.EMPTY_INFORMATION.description
+        }) 
+        props.onDataChange(taskInformations)
     }
 
-    handleCancelEditInformation = (event) => {
+    const handleCancelEditInformation = (event) => {
         event.preventDefault(); // Ngăn không submit
-        this.setState({
+        setState({
+            ...state,
             editInfo: false,
             warning: false,
-            information: { ...this.EMPTY_INFORMATION },
-            quillValueDefault: this.EMPTY_INFORMATION.description
+            information: { ...state.EMPTY_INFORMATION },
+            quillValueDefault: state.EMPTY_INFORMATION.description
         });
     }
 
     /**Xóa trắng các ô input */
-    handleClearInformation = (event) => {
+    const handleClearInformation = (event) => {
         event.preventDefault(); // Ngăn không submit
 
         let warning = false;
-        if (this.state.oldType && this.state.editInfo === true) {
-            if (this.INFO_TYPE.TEXT !== this.state.oldType) {
+        if (state.oldType && state.editInfo === true) {
+            if (INFO_TYPE.TEXT !== state.oldType) {
                 warning = true;
             }
         }
-        this.setState({
+        setState({
+            ...state,
             warning: warning,
-            information: { ...this.EMPTY_INFORMATION },
-            quillValueDefault: this.EMPTY_INFORMATION.description
+            information: { ...state.EMPTY_INFORMATION },
+            quillValueDefault: state.EMPTY_INFORMATION.description
         })
     }
 
     /**Xóa 1 trường thông tin trong danh sách */
-    handleDeleteInformation = async (index) => {
-        let taskInformations = this.state.taskInformations;
+    const handleDeleteInformation = async (index) => {
+        let taskInformations = state.taskInformations;
         var newTaskInformations;
         if (taskInformations) {
             newTaskInformations = taskInformations.filter((item, x) => index !== x);
         }
-        await this.setState({
+        await setState({
+            ...state,
             taskInformations: newTaskInformations
         })
-        this.props.onDataChange(this.state.taskInformations);
+        props.onDataChange(state.taskInformations);
     }
 
     /**Thêm 1 trường thông tin */
-    handleAddInformation = (event) => {
+    const handleAddInformation = (event) => {
         event.preventDefault(); // Ngăn không submit
-        let { taskInformations, information } = this.state;
+        let { taskInformations, information } = state;
 
         if (!taskInformations)
             taskInformations = [];
@@ -172,37 +176,40 @@ class InformationForm extends Component {
             information,
         ]
 
-        this.setState({
+        setState({
+            ...state,
             taskInformations: newTaskInformations,
-            information: Object.assign({}, this.EMPTY_INFORMATION),
-            quillValueDefault: this.EMPTY_INFORMATION.description
-        }, () => this.props.onDataChange(newTaskInformations))
+            information: {...state.EMPTY_INFORMATION},
+            quillValueDefault: state.EMPTY_INFORMATION.description
+        })
+        props.onDataChange(newTaskInformations)
     }
 
     /**
      * Bộ xử lý cho Information Form 
     **/
-    isInfoFormValidated = () => {
+    const isInfoFormValidated = () => {
         let result =
-            this.validateInfoName(this.state.information.name, false) &&
-            (this.state.information.type !== this.INFO_TYPE.SET ||
-                (this.state.information.type === this.INFO_TYPE.SET &&
-                    this.validateInfoSetOfValues(this.state.information.extra, false))
+            validateInfoName(state.information.name, false) &&
+            (state.information.type !== INFO_TYPE.SET ||
+                (state.information.type === INFO_TYPE.SET &&
+                    validateInfoSetOfValues(state.information.extra, false))
             );
         return result;
     }
 
-    handleChangeInfoName = (event) => {
+    const handleChangeInfoName = (event) => {
         let value = event.target.value;
-        this.validateInfoName(value, true);
+        validateInfoName(value, true);
     }
-    validateInfoName = (value, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+
+    const validateInfoName = (value, willUpdateState = true) => {
+        let { message } = ValidationHelper.validateEmpty(props.translate, value);
 
         if (willUpdateState) {
-            this.state.information.name = value;
-            this.state.information.errorOnName = message;
-            this.setState(state => {
+            state.information.name = value;
+            state.information.errorOnName = message;
+            setState(state => {
                 return {
                     ...state,
                 };
@@ -211,9 +218,10 @@ class InformationForm extends Component {
         return message == undefined;
     }
 
-    handleChangeInfoDesc = (value, imgs) => {
-        const { information } = this.state;
-        this.setState({
+    const handleChangeInfoDesc = (value, imgs) => {
+        const { information } = state;
+        setState({
+            ...state,
             information: {
                 ...information,
                 description: value
@@ -223,17 +231,17 @@ class InformationForm extends Component {
     }
 
     //function: show selection input
-    handleChangeInfoType = (event) => {
+    const handleChangeInfoType = (event) => {
         let value = event.target.value;
-        this.state.information.type = value;
+        state.information.type = value;
         let warning = false;
-        if (this.state.oldType && this.state.editInfo === true) {
-            if (value !== this.state.oldType) {
+        if (state.oldType && state.editInfo === true) {
+            if (value !== state.oldType) {
                 warning = true;
             }
         }
 
-        this.setState(state => {
+        setState(state => {
             return {
                 ...state,
                 warning: warning,
@@ -241,17 +249,18 @@ class InformationForm extends Component {
         });
     }
 
-    handleChangeInfoSetOfValues = (event) => {
+    const handleChangeInfoSetOfValues = (event) => {
         let value = event.target.value;
-        this.validateInfoSetOfValues(value);
+        validateInfoSetOfValues(value);
     }
-    validateInfoSetOfValues = (value, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+
+    const validateInfoSetOfValues = (value, willUpdateState = true) => {
+        let { message } = ValidationHelper.validateEmpty(props.translate, value);
 
         if (willUpdateState) {
-            this.state.information.extra = value;
-            this.state.information.errorOnSetOfValues = message;
-            this.setState(state => {
+            state.information.extra = value;
+            state.information.errorOnSetOfValues = message;
+            setState(state => {
                 return {
                     ...state,
                 };
@@ -260,18 +269,18 @@ class InformationForm extends Component {
         return message == undefined;
     }
 
-    handleChangeInfoFilledByAccountableEmployeesOnly = (event) => {
+    const handleChangeInfoFilledByAccountableEmployeesOnly = (event) => {
         let value = event.target.checked;
-        this.state.information.filledByAccountableEmployeesOnly = value;
-        this.setState(state => {
+        state.information.filledByAccountableEmployeesOnly = value;
+        setState(state => {
             return {
                 ...state
             };
         });
     }
 
-    formatTypeInfo = (type) => {
-        let { translate } = this.props;
+    const formatTypeInfo = (type) => {
+        let { translate } = props;
 
         if (type === "text") return translate('task_template.text');
         else if (type === "number") return translate('task_template.number');
@@ -280,120 +289,120 @@ class InformationForm extends Component {
         else if (type === "set_of_values") return translate('task_template.value_set');
     }
 
-    render() {
-        const { translate } = this.props;
-        let { taskInformations, information, quillValueDefault } = this.state;
-        const { type } = this.props;
 
-        return (
+    const { translate } = props;
+    let { taskInformations, information, quillValueDefault } = state;
+    const { type } = props;
 
-            /**Form chứa các danh sách thông tin của mẫu công việc */
-            <fieldset className="scheduler-border">
-                <legend className="scheduler-border">{translate('task_template.information_list')}</legend>
+    return (
 
-                {/**Tên trường thông tin*/}
-                <div className={`form-group ${this.state.information.errorOnName === undefined ? "" : "has-error"}`} >
-                    <label className="control-label">{translate('task_template.infor_name')}</label>
-                    <div>
-                        <input type="text" className="form-control" placeholder={translate('task_template.infor_name')} value={information.name} onChange={this.handleChangeInfoName} />
-                        <ErrorLabel content={this.state.information.errorOnName} />
-                    </div>
+        /**Form chứa các danh sách thông tin của mẫu công việc */
+        <fieldset className="scheduler-border">
+            <legend className="scheduler-border">{translate('task_template.information_list')}</legend>
+
+            {/**Tên trường thông tin*/}
+            <div className={`form-group ${state.information.errorOnName === undefined ? "" : "has-error"}`} >
+                <label className="control-label">{translate('task_template.infor_name')}</label>
+                <div>
+                    <input type="text" className="form-control" placeholder={translate('task_template.infor_name')} value={information.name} onChange={handleChangeInfoName} />
+                    <ErrorLabel content={state.information.errorOnName} />
                 </div>
+            </div>
 
-                {/**Mô tả của trường thông tin */}
-                <div className={`form-group ${this.state.information.errorOnDescription === undefined ? "" : "has-error"}`} >
-                    <label className="control-label" htmlFor="inputDescriptionInfo">{translate('task_template.description')}</label>
-                    <QuillEditor
-                        id={`informationsTemplate${type}`}
-                        getTextData={this.handleChangeInfoDesc}
-                        quillValueDefault={quillValueDefault}
-                        embeds={false}
-                    />
-                </div>
-                <div className="form-group" >
+            {/**Mô tả của trường thông tin */}
+            <div className={`form-group ${state.information.errorOnDescription === undefined ? "" : "has-error"}`} >
+                <label className="control-label" htmlFor="inputDescriptionInfo">{translate('task_template.description')}</label>
+                <QuillEditor
+                    id={`informationsTemplate${type}`}
+                    getTextData={handleChangeInfoDesc}
+                    quillValueDefault={quillValueDefault}
+                    embeds={false}
+                />
+            </div>
+            <div className="form-group" >
 
-                    {/**Kiểu dữ liệu trường thông tin */}
-                    <label className=" control-label">{translate('task_template.datatypes')}</label>
-                    {
-                        this.props.isEdit === true && this.state.warning && <p style={{ color: "#FF6A00" }}>Đổi kiểu dữ liệu sẽ xóa dữ liệu ở tháng hiện tại và đánh giá tháng hiện tại</p>
-                    }
-                    <div style={{ width: '100%' }}>
-                        <select onChange={this.handleChangeInfoType} className="form-control" id="seltype" value={information.type} name="type" >
-                            <option value={this.INFO_TYPE.TEXT}>{translate('task_template.text')}</option>
-                            <option value={this.INFO_TYPE.NUMBER}>{translate('task_template.number')}</option>
-                            <option value={this.INFO_TYPE.DATE}>{translate('task_template.date')}</option>
-                            <option value={this.INFO_TYPE.BOOLEAN}>Boolean</option>
-                            <option value={this.INFO_TYPE.SET}>{translate('task_template.value_set')}</option>
-                        </select>
-                    </div>
-                </div>
-
-                { this.state.information.type === this.INFO_TYPE.SET ?
-                    <div className={`form-group ${this.state.information.errorOnSetOfValues === undefined ? "" : "has-error"}`} >
-                        <label className="control-label">{translate('task_template.value_set')}</label>
-
-                        <textarea rows={5} type="text" className="form-control" value={information.extra} onChange={this.handleChangeInfoSetOfValues} placeholder={`Nhập tập giá trị, mỗi giá trị một dòng`} ref={input => this.setOfValues = input} />
-                        <ErrorLabel content={this.state.information.errorOnSetOfValues} />
-                    </div>
-                    : null
+                {/**Kiểu dữ liệu trường thông tin */}
+                <label className=" control-label">{translate('task_template.datatypes')}</label>
+                {
+                    props.isEdit === true && state.warning && <p style={{ color: "#FF6A00" }}>Đổi kiểu dữ liệu sẽ xóa dữ liệu ở tháng hiện tại và đánh giá tháng hiện tại</p>
                 }
-
-                <div className="form-group" >
-
-                    {/**Chỉ quản lí được điền? */}
-                    <label className="control-label">
-                        {translate('task_template.manager_fill')} &nbsp;
-                        <input type="checkbox" className="" checked={information.filledByAccountableEmployeesOnly} onChange={this.handleChangeInfoFilledByAccountableEmployeesOnly} />
-                    </label>
+                <div style={{ width: '100%' }}>
+                    <select onChange={handleChangeInfoType} className="form-control" id="seltype" value={information.type} name="type" >
+                        <option value={INFO_TYPE.TEXT}>{translate('task_template.text')}</option>
+                        <option value={INFO_TYPE.NUMBER}>{translate('task_template.number')}</option>
+                        <option value={INFO_TYPE.DATE}>{translate('task_template.date')}</option>
+                        <option value={INFO_TYPE.BOOLEAN}>Boolean</option>
+                        <option value={INFO_TYPE.SET}>{translate('task_template.value_set')}</option>
+                    </select>
                 </div>
+            </div>
 
-                {/**Các button lưu chỉnh sửa khi chỉnh sửa 1 trường thông tin, thêm một trường thông tin, xóa trắng các ô input  */}
-                <div className="pull-right" style={{ marginBottom: "10px" }}>
-                    {this.state.editInfo ?
-                        <React.Fragment>
-                            <button className="btn btn-success" onClick={this.handleCancelEditInformation} style={{ marginLeft: "10px" }}>{translate('task_template.cancel_editing')}</button>
-                            <button className="btn btn-success" disabled={!this.isInfoFormValidated()} onClick={this.handleSaveEditedInformation} style={{ marginLeft: "10px" }}>{translate('task_template.save')}</button>
-                        </React.Fragment> :
-                        <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!this.isInfoFormValidated()} onClick={this.handleAddInformation}>{translate('task_template.add')}</button>
+            { state.information.type === INFO_TYPE.SET ?
+                <div className={`form-group ${state.information.errorOnSetOfValues === undefined ? "" : "has-error"}`} >
+                    <label className="control-label">{translate('task_template.value_set')}</label>
+
+                    <textarea rows={5} type="text" className="form-control" value={information.extra} onChange={handleChangeInfoSetOfValues} placeholder={`Nhập tập giá trị, mỗi giá trị một dòng`} />
+                    <ErrorLabel content={state.information.errorOnSetOfValues} />
+                </div>
+                : null
+            }
+
+            <div className="form-group" >
+
+                {/**Chỉ quản lí được điền? */}
+                <label className="control-label">
+                    {translate('task_template.manager_fill')} &nbsp;
+                        <input type="checkbox" className="" checked={information.filledByAccountableEmployeesOnly} onChange={handleChangeInfoFilledByAccountableEmployeesOnly} />
+                </label>
+            </div>
+
+            {/**Các button lưu chỉnh sửa khi chỉnh sửa 1 trường thông tin, thêm một trường thông tin, xóa trắng các ô input  */}
+            <div className="pull-right" style={{ marginBottom: "10px" }}>
+                {state.editInfo ?
+                    <React.Fragment>
+                        <button className="btn btn-success" onClick={handleCancelEditInformation} style={{ marginLeft: "10px" }}>{translate('task_template.cancel_editing')}</button>
+                        <button className="btn btn-success" disabled={!isInfoFormValidated()} onClick={handleSaveEditedInformation} style={{ marginLeft: "10px" }}>{translate('task_template.save')}</button>
+                    </React.Fragment> :
+                    <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!isInfoFormValidated()} onClick={handleAddInformation}>{translate('task_template.add')}</button>
+                }
+                <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={handleClearInformation}>{translate('task_template.delete')}</button>
+            </div>
+
+            {/**table chứa danh sách các thông tin của mẫu công việc */}
+            <table className="table table-bordered">
+                <thead>
+                    <tr>
+                        <th style={{ width: '50px' }} className="col-fixed">{translate('task_template.code')}</th>
+                        <th title="Tên trường thông tin">{translate('task_template.infor_name')}</th>
+                        <th title="Mô tả">{translate('task_template.description')}</th>
+                        <th title="Kiểu dữ liệu">{translate('task_template.datatypes')}</th>
+                        <th title="Chỉ quản lý được điền?">{translate('task_template.manager_fill')}?</th>
+                        <th>{translate('task_template.action')}</th>
+                    </tr>
+                </thead>
+                <tbody id="informations">
+                    {
+                        (typeof taskInformations === 'undefined' || taskInformations.length === 0) ? <tr><td colSpan={6}><center>{translate('task_template.no_data')}</center></td></tr> :
+                            taskInformations.map((item, index) =>
+                                <tr key={`${state.keyPrefix}_${index}`}>
+                                    <td>p{index + 1}</td>
+                                    <td>{item.name}</td>
+                                    <td><div>{parse(item.description)}</div></td>
+                                    <td>{formatTypeInfo(item.type)}</td>
+                                    <td>{item.filledByAccountableEmployeesOnly ? translate('general.yes') : translate('general.no')}</td>
+                                    <td>
+                                        <a href="#abc" className="edit" title={translate('general.edit')} onClick={() => handleEditInformation(item, index)}><i className="material-icons"></i></a>
+                                        <a href="#abc" className="delete" title={translate('general.delete')} onClick={() => handleDeleteInformation(index)}><i className="material-icons"></i></a>
+                                    </td>
+                                </tr>
+                            )
                     }
-                    <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={this.handleClearInformation}>{translate('task_template.delete')}</button>
-                </div>
-
-                {/**table chứa danh sách các thông tin của mẫu công việc */}
-                <table className="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th style={{ width: '50px' }} className="col-fixed">{translate('task_template.code')}</th>
-                            <th title="Tên trường thông tin">{translate('task_template.infor_name')}</th>
-                            <th title="Mô tả">{translate('task_template.description')}</th>
-                            <th title="Kiểu dữ liệu">{translate('task_template.datatypes')}</th>
-                            <th title="Chỉ quản lý được điền?">{translate('task_template.manager_fill')}?</th>
-                            <th>{translate('task_template.action')}</th>
-                        </tr>
-                    </thead>
-                    <tbody id="informations">
-                        {
-                            (typeof taskInformations === 'undefined' || taskInformations.length === 0) ? <tr><td colSpan={6}><center>{translate('task_template.no_data')}</center></td></tr> :
-                                taskInformations.map((item, index) =>
-                                    <tr key={`${this.state.keyPrefix}_${index}`}>
-                                        <td>p{index + 1}</td>
-                                        <td>{item.name}</td>
-                                        <td><div>{parse(item.description)}</div></td>
-                                        <td>{this.formatTypeInfo(item.type)}</td>
-                                        <td>{item.filledByAccountableEmployeesOnly ? translate('general.yes') : translate('general.no')}</td>
-                                        <td>
-                                            <a href="#abc" className="edit" title={translate('general.edit')} onClick={() => this.handleEditInformation(item, index)}><i className="material-icons"></i></a>
-                                            <a href="#abc" className="delete" title={translate('general.delete')} onClick={() => this.handleDeleteInformation(index)}><i className="material-icons"></i></a>
-                                        </td>
-                                    </tr>
-                                )
-                        }
-                    </tbody>
-                </table>
-            </fieldset>
-        )
-    }
+                </tbody>
+            </table>
+        </fieldset>
+    )
 }
+
 
 const informationForm = connect()(withTranslate(InformationForm));
 export { informationForm as InformationForm }

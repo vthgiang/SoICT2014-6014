@@ -269,9 +269,9 @@ function AverageResultsOfTask(props) {
             data = filterTasksByMonth(monthIndex, nextMonthIndex);
 
             month.push(data.month);
-            averageAutomatic.push(data.automaticPoint);
-            averageEmployee.push(data.employeePoint)
-            averageApproved.push(data.approvedPoint)
+            averageAutomatic.push(data.automaticPoint || 0);
+            averageEmployee.push(data.employeePoint || 0)
+            averageApproved.push(data.approvedPoint || 0)
 
             monthIndex = nextMonthIndex;
         }
