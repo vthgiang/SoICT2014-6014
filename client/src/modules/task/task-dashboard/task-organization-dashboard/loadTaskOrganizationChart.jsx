@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { CustomLegendC3js } from '../../../../common-components';
-
+import dayjs from 'dayjs';
 import c3 from 'c3';
 import 'c3/c3.css';
 
@@ -26,33 +26,23 @@ const LoadTaskOrganizationChart = (props) => {
             let improcessTask = taskList;
             let startTime = new Date(startMonth.split("-")[0], startMonth.split('-')[1] - 1, 1);
             let endTime = new Date(endMonth.split("-")[0], endMonth.split('-')[1] ? endMonth.split('-')[1] : 1, 1);
-            let listMonth = [], category = [];
+            let category = [];
             let m = startMonth.slice(5, 7);
             let y = startMonth.slice(0, 4);
             let period = Math.round((endTime - startTime) / 2592000000);
-
             let data = [], array = [];
             for (let i = 0; i < period; i++) {
-                if (m > 12) {
-                    m = 1;
-                    y++;
-                }
-                if (m < 10) {
-                    m = '0' + m;
-                }
-                category.push([m, y].join('-'));
-                listMonth.push([y, m].join(','));
+                category.push(dayjs([y, m].join('-')).format("M-YYYY"));
                 m++;
                 array[i] = 0;
             }
 
             for (let i in selectedUnit) {
-
                 data[i] = [];
                 array.fill(0, 0);
                 let findUnit = units.find(elem => elem.id === selectedUnit[i])
                 if (findUnit) {
-                    data[i].push(findUnit.name);
+                    data[i].push(`tải công việc - ${findUnit.name}`);
                 }
 
                 for (let k in improcessTask) {
@@ -63,7 +53,6 @@ const LoadTaskOrganizationChart = (props) => {
 
                         if (startTime < endDate) {
                             for (let j = 0; j < period; j++) {
-
                                 let tmpStartMonth = new Date(parseInt(category[j].split('-')[1]), parseInt(category[j].split('-')[0]) - 1, 1);
                                 let tmpEndMonth = new Date(parseInt(category[j].split('-')[1]), parseInt(category[j].split('-')[0]), 0);
 
@@ -88,6 +77,7 @@ const LoadTaskOrganizationChart = (props) => {
                     }
 
                 }
+
                 data[i] = [...data[i], ...array];
             }
 
@@ -117,12 +107,13 @@ const LoadTaskOrganizationChart = (props) => {
                 ref.current.dataChart = data;
                 setDataChart(data)
             }
+
+            console.log('data', data)
             barChart(data, category);
         }
     })
 
     const barChart = (data, category) => {
-        console.log(data)
         ref.current.chart = c3.generate({
             bindto: document.getElementById("weightTaskOrganization"),
 
