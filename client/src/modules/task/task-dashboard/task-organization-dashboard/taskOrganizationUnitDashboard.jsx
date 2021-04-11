@@ -657,7 +657,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                             }
                                         </div>
                                         <a className="text-red" title={translate('task.task_management.explain')} onClick={() => this.showLoadTaskDoc()}>
-                                            <i className="fa fa-question-circle" style={{ color: '#dd4b39', marginLeft: '5px' }} />
+                                            <i className="fa fa-question-circle" style={{ cursor: 'pointer', color: '#dd4b39', marginLeft: '5px' }} />
                                         </a>
                                     </div>
                                     <div className="box-body">
