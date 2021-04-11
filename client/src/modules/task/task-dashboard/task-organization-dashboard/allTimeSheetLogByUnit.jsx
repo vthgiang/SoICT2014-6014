@@ -7,7 +7,12 @@ import { InforTimeSheetLog } from './inforTimeSheetLog'
 import { UserActions } from '../../../super-admin/user/redux/actions';
 
 import { PaginateBar, DataTableSetting } from '../../../../common-components/index';
-import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
+import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
+import dayjs from 'dayjs';
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
+dayjs.extend(isSameOrAfter)
+dayjs.extend(isSameOrBefore)
 class AllTimeSheetLogsByUnit extends Component {
     constructor(props) {
         super(props);
@@ -67,32 +72,14 @@ class AllTimeSheetLogsByUnit extends Component {
         return true;
     }
 
-    handleInforTimeSheet = async (value) => {
-        const { organizationUnitTasks } = this.props;
-        let inforTimeSheetLog = []
-        if (organizationUnitTasks && organizationUnitTasks.tasks) {
-            for (let i in organizationUnitTasks.tasks) {
-                if (organizationUnitTasks.tasks[i].timesheetLogs && organizationUnitTasks.tasks[i].timesheetLogs.length) {
-                    for (let j in organizationUnitTasks.tasks[i].timesheetLogs) {
-                        let creator = organizationUnitTasks.tasks[i].timesheetLogs[j].creator;
-                        if (creator == value.userId) {
-                            let timesheet = {
-                                ...organizationUnitTasks.tasks[i].timesheetLogs[j],
-                                taskName: organizationUnitTasks.tasks[i].name,
-                                taskId: organizationUnitTasks.tasks[i]._id,
-                            }
-                            inforTimeSheetLog.push(timesheet)
-                        }
-                    }
-                }
-            }
-        }
+    handleInforTimeSheet = async (value, filterTimeSheetLogs) => {
+        filterTimeSheetLogs = filterTimeSheetLogs.filter(o => o.creator === value?.userId)
         await this.setState(state => {
             return {
                 ...state,
                 currentRowTimeSheetLog: {
-                    timesheetlogs: inforTimeSheetLog,
-                    data: value
+                    timesheetlogs: value,
+                    filterTimeSheetLogs
                 }
             }
         });
@@ -144,7 +131,7 @@ class AllTimeSheetLogsByUnit extends Component {
 
     render() {
         const { translate, user } = this.props;
-        const { organizationUnitTasks, startMonthTitle, endMonthTitle, unitIds, selectBoxUnit } = this.props;
+        const { organizationUnitTasks, startMonthTitle, endMonthTitle, unitIds, selectBoxUnit, startMonth, endMonth } = this.props;
         const { currentRowTimeSheetLog, page } = this.state;
         let allTimeSheet = [], timesheetlogs = [];
         let listEmployee;
@@ -155,7 +142,7 @@ class AllTimeSheetLogsByUnit extends Component {
 
         if (listEmployee) {
             for (let i in listEmployee) {
-                allTimeSheet[listEmployee[i].userId._id] = {
+                allTimeSheet[listEmployee[i]?.userId._id] = {
                     totalhours: 0,
                     autotimer: 0,
                     manualtimer: 0,
@@ -171,12 +158,12 @@ class AllTimeSheetLogsByUnit extends Component {
             if (o.timesheetLogs && o.timesheetLogs.length > 0) {
                 filterTimeSheetLogs = [
                     ...filterTimeSheetLogs,
-                    ...o.timesheetLogs
+                    ...o.timesheetLogs.map(x => ({ ...x, taskName: o.name, taskId: o._id })),
                 ]
             }
         });
 
-        filterTimeSheetLogs = filterTimeSheetLogs.filter(o => o.creator && o.duration && o.startedAt && o.stoppedAt && o.acceptLog);
+        filterTimeSheetLogs = filterTimeSheetLogs.filter(o => o.creator && o.duration && o.startedAt && o.stoppedAt && o.acceptLog && dayjs(o.startedAt).isSameOrAfter(startMonth, 'month') && dayjs(o.stoppedAt).isSameOrBefore(endMonth, 'month'));
 
         for (let i in filterTimeSheetLogs) {
             let autoStopped = filterTimeSheetLogs[i].autoStopped;
@@ -208,7 +195,7 @@ class AllTimeSheetLogsByUnit extends Component {
                         {
                             unitIds && unitIds.length < 2 ?
                                 <>
-                                    <spn>{` ${translate('task.task_dashboard.of')}`}</spn>
+                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
                                     <span>{` ${this.props.getUnitName(selectBoxUnit, unitIds).map(o => o).join(", ")}`}</span>
                                 </>
                                 :
@@ -242,7 +229,7 @@ class AllTimeSheetLogsByUnit extends Component {
                                     return (
                                         <tr key={index}>
                                             <td>{index + 1}</td>
-                                            <td><a onClick={() => this.handleInforTimeSheet(tsl)}>{tsl.name}</a></td>
+                                            <td><a onClick={() => this.handleInforTimeSheet(tsl, filterTimeSheetLogs)}>{tsl.name}</a></td>
                                             <td>{convertTime(tsl.totalhours)}</td>
                                             <td>{convertTime(tsl.manualtimer)}</td>
                                             <td>{convertTime(tsl.autotimer)}</td>
@@ -256,7 +243,7 @@ class AllTimeSheetLogsByUnit extends Component {
                     {currentRowTimeSheetLog &&
                         <InforTimeSheetLog
                             timesheetlogs={currentRowTimeSheetLog.timesheetlogs}
-                            data={currentRowTimeSheetLog.data}
+                            filterTimeSheetLogs={currentRowTimeSheetLog.filterTimeSheetLogs}
                         />
                     }
                     <PaginateBar
