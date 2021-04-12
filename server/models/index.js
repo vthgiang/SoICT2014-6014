@@ -113,7 +113,11 @@ module.exports = {
     WorkSchedule: require('./production/manufacturing/workSchedule.model'),
 
     // transport
-    TransportRequirement: require('./production/transport/transportRequirements.model'),
+    TransportRequirement: require('./production/transport/transportRequirement.model'),
+    TransportPlan: require('./production/transport/transportPlan.model'),
+    TransportVehicle: require('./production/transport/transportVehicle.model'),
+    TransportSchedule: require('./production/transport/transportSchedule.model'),
+    
     // project
     Project: require('./project/project.model'),
 

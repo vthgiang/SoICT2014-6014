@@ -1,8 +1,10 @@
 import React, { Component } from "react";
 
-import { TransportVehicalManagementTable } from './transportVehicalManagementTable';
-
-class TransportVehical extends Component {
+import { TransportVehicleManagementTable } from './transportVehicleManagementTable';
+/**
+ * chua khai bao redux 5.3.1.4 redux
+ */
+class TransportVehicle extends Component {
     constructor(props) {
         super(props);
         this.state = {};
@@ -11,11 +13,11 @@ class TransportVehical extends Component {
         return (
             <div className="box" style={{ minHeight: "450px" }}>
                 <div className="box-body">
-                    <TransportVehicalManagementTable />
+                    <TransportVehicleManagementTable />
                 </div>
             </div>
         );
     }
 }
 
-export default TransportVehical;
+export default TransportVehicle;

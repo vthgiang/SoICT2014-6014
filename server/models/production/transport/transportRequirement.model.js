@@ -1,70 +1,76 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const TransportRequirementsSchema = new Schema({
+const TransportRequirementSchema = new Schema({
     status: { // Trạng thái chờ phê duyệt, đã phê duyệt...
         type: Number,
-        required: true
+        // required: true
     },
     type: { // Loại yêu cầu: giao hàng, trả hàng ....
         type: Number,
-        required: true
+        // required: true
     },
     creator: {  // Người tạo yêu cầu
         type: Schema.Types.ObjectId,
         ref: 'User',
-        required: true
+        // required: true
     },
     customer: { // Khách hàng
         type: Schema.Types.ObjectId,
         ref: 'Customer',
-        required: true
+        // required: true
     },
     customerPhone: {
         type: String,
-        required: true
+        // required: true
     },
     customerAddress: {
         type: String,
-        required: true
+        // required: true
     },
     customerEmail: {
         type: String
     },
     fromAddress: { // Địa điểm xuất phát
         type: String,
-        required: true
+        // required: true
     },
     toAddress: { // Địa điểm đích
         type: String,
-        required: true
+        // required: true
     },
     goods: [{   
         good: {
             type: Schema.Types.ObjectId,
             ref: 'Good',
-            required: true
+            // required: true
         },
         quantity: { // số lượng hàng hóa
             type: Number,
-            required: true
+            // required: true
         },
-        volumn: { // khối lượng vận tải tương ứng
+        volume: { // thể tích khi vận tải 
             type: Number,
-            required: true
+            // required: true
+        },
+        payload: { // khối lượng hàng hóa
+            type: Number
         }
     }],
     timeRequests: [{ // Thoi gian khach hang yeu cau
         timeRequest: {
-            type: Date,
+            type: String,
+        },
+        description: {
+            type: String,
         }
     }],
     timeTransport: { // Thoi gian van chuyen
         type: Date,
     },
-    transportSchedule: { // Lich van chuyen
+    transportPlan: { // Lich van chuyen
         type: Schema.Types.ObjectId,
-        ref: 'TransportSchedule',
+        ref: 'TransportPlan',
     },
     transportVehicle: { // Phuong tien van chuyen
         type: Schema.Types.ObjectId,
@@ -73,11 +79,37 @@ const TransportRequirementsSchema = new Schema({
     bill: { // tuong ung phieu xuat kho
         type: Schema.Types.ObjectId,
         ref: 'Bill',
+    },
+    payload: { // Khối lượng hàng hóa của cả yêu cầu vận chuyển
+        type: Number,
+        required: true,
+    },
+    volume: { // Thể tích yêu cầu của cả yêu cầu vận chuyển
+        type: Number,
+        required: true,
+    },
+    geocode: { // Tọa độ địa chỉ (phục vụ show bản đồ) kinh độ vĩ độ
+        fromAddress: {
+            lat: {
+                type: Number,
+            },
+            lng: {
+                type: Number,
+            },
+        },
+        toAddress: {
+            lat: {
+                type: Number,
+            },
+            lng: {
+                type: Number,
+            },
+        },
     }
 });
 
 module.exports = (db) => {
-    if (!db.models.TransportRequirements)
-        return db.model('TransportRequirements', TransportRequirementsSchema);
-    return db.models.TransportRequirements;
+    if (!db.models.TransportRequirement)
+        return db.model('TransportRequirement', TransportRequirementSchema);
+    return db.models.TransportRequirement;
 } 

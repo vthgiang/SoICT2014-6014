@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { ButtonModal, DialogModal, ErrorLabel, DatePicker, SelectBox } from '../../../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
+
+import { formatToTimeZoneDate } from '../../../../../../helpers/formatDate'
 import ValidationHelper from '../../../../../../helpers/validationHelper';
 
 import { TransportGeneralInfo } from '../create-transport-requirements/transportGeneralInfo';
@@ -12,6 +14,7 @@ import { TransportImportGoods } from '../create-transport-requirements/transport
 import { TransportMaterial } from '../create-transport-requirements/transportMaterial';
 import { TransportNewOne} from '../create-transport-requirements/transportNewOne';
 import { TransportGoods } from '../create-transport-requirements/transportGoods';
+import { TransportTime } from '../create-transport-requirements/transportTime';
 
 import { exampleActions } from '../../redux/actions';
 
@@ -19,6 +22,7 @@ import { BillActions } from '../../../../warehouse/bill-management/redux/actions
 import { CrmCustomerActions } from "../../../../../crm/customer/redux/actions";
 import { GoodActions} from '../../../../common-production/good-management/redux/actions';
 import { transportRequirementsActions } from '../../redux/actions'
+import { getGeocode } from '../../../transportHelper/getGeocodeGoong'
 
 function TransportRequirementsCreateForm(props) {
 
@@ -118,6 +122,7 @@ function TransportRequirementsCreateForm(props) {
      */
     const [requirementsForm, setRequirementsForm] = useState({
         goods: [],
+        timeRequests: [],
     });
 
 
@@ -148,10 +153,10 @@ function TransportRequirementsCreateForm(props) {
         }
         return true;
     }
-    // /**
-    //  * Hàm dùng để lưu thông tin của form và gọi service tạo mới ví dụ
-    //  */
-    const save = () => {
+    /**
+     * Hàm dùng để lưu thông tin của form và gọi service tạo mới ví dụ
+     */
+    const save = async () => {
         //     if (isFormValidated() && exampleName) {
         //         props.createExample([{ exampleName, description }]);
         //         props.getExamples({
@@ -160,30 +165,83 @@ function TransportRequirementsCreateForm(props) {
         //             perPage: perPage
         //         });
         //     }
+        const {payload, volume} = getTotalPayloadVolume(requirementsForm.goods);
+
+        let fromLat, fromLng;
+        let toLat, toLng;
+        if (requirementsForm.info.customer1AddressTransport){
+            await getGeocode(requirementsForm.info.customer1AddressTransport).then(
+                (value) => {
+                    fromLat = value.lat;
+                    fromLng = value.lng;
+                }
+            );
+        }
+        if (requirementsForm.info.customer2AddressTransport){
+            await getGeocode(requirementsForm.info.customer2AddressTransport).then(
+                (value) => {
+                    toLat = value.lat;
+                    toLng = value.lng;
+                }
+            );
+        }
+
         let data = {
             status: 1,
             type: 5, 
-            fromAddress: requirementsForm.info.customer1Address,
-            toAddress: requirementsForm.info.customer2Address,
+            fromAddress: requirementsForm.info.customer1AddressTransport ? requirementsForm.info.customer1AddressTransport : "",
+            toAddress: requirementsForm.info.customer2AddressTransport ? requirementsForm.info.customer2AddressTransport : [],
             goods : formatGoodsForSubmit(requirementsForm.goods),
+            payload: payload,
+            volume: volume,
+            timeRequests: formatTimeForSubmit(requirementsForm.timeRequests),
+            fromLat: fromLat,
+            fromLng: fromLng,
+            toLat: toLat,
+            toLng: toLng,
         }
         props.createTransportRequirement(data)
     }
 
 
     /**
-     * chuẩn hóa dữ liệu goods
+     * chuẩn hóa dữ liệu goods để lưu vào db
      */
     const formatGoodsForSubmit = (goods) => {
-        console.log(goods);
         let goodMap = goods.map((item) => {
             return {
                 good: item._id,
                 quantity: item.quantity,
-                volumn: item.volumn,
+                volume: item.volume,
+                payload: item.payload,
             };
         });
         return goodMap;
+    }
+
+    const getTotalPayloadVolume = (goods) => {
+        let payload = 0;
+        let volume = 0;
+        if (goods && goods.length !==0) {
+            goods.map((good) => {
+                payload+=Number(good.payload);
+                volume+=Number(good.volume)
+            })
+        }
+        return {payload, volume};
+    }
+
+    /**
+     * chuẩn hóa dữ liệu time request để lưu vào db
+     */
+    const formatTimeForSubmit = (time) => {
+        let timeMap = time.map((item) => {
+            return {
+                timeRequest: formatToTimeZoneDate(item.time),
+                description: item.detail,
+            }
+        })
+        return timeMap;
     }
 
     const handleTypeRequirementChange = (value) => {        
@@ -272,6 +330,9 @@ function TransportRequirementsCreateForm(props) {
 
     }, [billDetail]);
 
+    /**
+     * Hàm lấy dữ liệu hàng hóa từ component con
+     */
     const callBackGoodsInfo = (value) => {
         setRequirementsForm({
             ...requirementsForm,
@@ -279,6 +340,9 @@ function TransportRequirementsCreateForm(props) {
         })
     }
 
+    /**
+     * Hàm lấy dữ liệu thông tin khách hàng từ component con
+     */
     const callBackGeneralInfo = (value) => {
         setRequirementsForm({
             ...requirementsForm,
@@ -286,9 +350,15 @@ function TransportRequirementsCreateForm(props) {
         })
     }
 
-    useEffect(() => {
-        console.log(requirementsForm, "okkkkk")
-    }, [requirementsForm])
+    /**
+     * Hàm lấy dữ liệu thông tin thời gian mong muốn của khách hàng từ component con
+     */
+    const callBackTimeInfo = (value) => {
+        setRequirementsForm({
+            ...requirementsForm,
+            timeRequests: value,
+        })
+    }
 
     return (
         <React.Fragment>
@@ -435,6 +505,9 @@ function TransportRequirementsCreateForm(props) {
                     < TransportGoods 
                         goods = {goodsTransport}
                         callBackState = {callBackGoodsInfo}
+                    />
+                    < TransportTime 
+                        callBackState = {callBackTimeInfo}
                     />
                 </form>
             </DialogModal>

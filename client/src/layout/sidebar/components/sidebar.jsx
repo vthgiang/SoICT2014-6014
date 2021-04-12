@@ -733,20 +733,25 @@ class SideBar extends Component {
                                             path: "/manage-transport-requirements",
                                         },
                                         {
+                                            name: "menu.manage_transport_plan",
+                                            icon: "fa fa-calendar-o",
+                                            path: "/manage-transport-plan",
+                                        },
+                                        {
                                             name: "menu.manage_transport_schedule",
                                             icon: "fa fa-calendar-o",
                                             path: "/manage-transport-schedule",
                                         },
                                         {
-                                            name: "menu.manage_transport_vehical",
+                                            name: "menu.manage_transport_vehicle",
                                             icon: "fa fa-calendar-o",
-                                            path: "/manage-transport-vehical",
+                                            path: "/manage-transport-vehicle",
                                         },
-                                        {
-                                            name: "menu.manage_transport_human",
-                                            icon: "fa fa-calendar-o",
-                                            path: "/manage-transport-human",
-                                        },
+                                        // {
+                                        //     name: "menu.manage_transport_human",
+                                        //     icon: "fa fa-calendar-o",
+                                        //     path: "/manage-transport-human",
+                                        // },
                                         {
                                             name: "menu.manage_transport_route",
                                             icon: "fa fa-calendar-o",
