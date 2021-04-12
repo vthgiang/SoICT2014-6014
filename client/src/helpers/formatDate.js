@@ -1,8 +1,12 @@
 import dayjs from 'dayjs';
-export const formatDate = (date) => {
+export const formatDate = (date, monthYear = false) => {
    if (date) {
-        let d = new Date(date);
-        return dayjs(d).format("DD-MM-YYYY");
+       let d = new Date(date);
+       if (monthYear) {
+           return dayjs(d).format("MM-YYYY");
+       } else {
+            return dayjs(d).format("DD-MM-YYYY");
+       }
     }
     return date;
 }
