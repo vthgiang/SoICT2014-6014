@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import parse from 'html-react-parser';
-import moment from 'moment';
-import 'moment/locale/en-nz';
-import 'moment/locale/vi';
+import dayjs from 'dayjs';
+import 'dayjs/locale/en-nz';
+import 'dayjs/locale/vi';
+import relativeTime from 'dayjs/plugin/relativeTime'
 
 import { ToolTip, SlimScroll, Comment } from '../../../common-components';
 import { getStorage } from '../../../config';
@@ -33,7 +34,9 @@ function NewsFeed(props) {
     }
 
     useEffect(() => {
-        setLang(getStorage('lang'));
+        dayjs.extend(relativeTime)
+        dayjs.locale(lang === 'en' ? 'en-nz' : 'vi')
+        
 
         const list = document.getElementById('newsfeed-body')
 
@@ -71,16 +74,6 @@ function NewsFeed(props) {
             loadMore: false
         });
     }, [loadMore]);
-  
-    
-  
-    // useEffect(() => {
-    //   const list = document.getElementById('list');
-  
-    //   if(list.clientHeight <= window.innerHeight && list.clientHeight) {
-    //     setLoadMore(true);
-    //   }
-    // }, [props.state]);
 
     const handleShowDetail = (id) => {
         let showDescriptionTemp = showDescription;
@@ -115,13 +108,13 @@ function NewsFeed(props) {
                                 <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + newsfeed?.content?.[0]?.creator?.avatar)} alt="User Image" />
                                 <div className="newsfeed-content-level1">
                                     <a style={{ cursor: "pointer" }}>{newsfeed?.content?.[0]?.creator?.name} </a>
-                                    <div style={{ fontSize: '13px' }}>{moment(newsfeed?.createdAt).locale(lang === 'en' ? 'en-nz' : 'vi').fromNow()}</div>
+                                    <div style={{ fontSize: '13px' }}>{dayjs(newsfeed?.updatedAt).fromNow()}</div>
                                 </div>
 
                                 {/* Nội dung */}
                                 <div>
                                     <div><strong>{newsfeed?.content?.[0]?.title && parse(newsfeed?.content?.[0]?.title)}</strong></div>
-                                    { newsfeed?.associatedDataObject?.dataType === 1 && <div><strong>{translate('task.task_management.detail_link')}:</strong> <a href={`/task?taskId=${newsfeed?.associatedDataObject?.value}`} target="_blank">{newsfeed?.associatedDataObject?.description}</a></div>}
+                                    { newsfeed?.associatedDataObject?.dataType === 1 && <div><strong>{translate('task.task_management.detail_link')}:</strong> <a href={`/task?taskId=${newsfeed?.associatedDataObject?.value?._id}`} target="_blank">{newsfeed?.associatedDataObject?.value?.name}</a></div>}
                                     {showDescription[newsfeed?._id] 
                                         && <ToolTip dataTooltip={[newsfeed?.content?.[0]?.description && parse(newsfeed?.content?.[0]?.description)]} type={'latest_history'} title={false}/>
                                     }
