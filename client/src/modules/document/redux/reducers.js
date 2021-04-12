@@ -449,9 +449,26 @@ export function documents(state = initState, action) {
             };
 
         case DocumentConstants.CREATE_DOCUMENT_CATEGORY_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                administration: {
+                    ...state.administration,
+                    categories: {
+                        ...state.administration.categories,
+                        list: [
+                            action.payload,
+                            ...state.administration.categories.list
+                        ],
+                        paginate: [
+                            action.payload,
+                            ...state.administration.categories.paginate
+                        ]
+                    }
+                }
+            }
+        
         case DocumentConstants.IMPORT_DOCUMENT_CATEGORY_SUCCESS:
-
-
             return {
                 ...state,
                 isLoading: false,
