@@ -2,7 +2,12 @@ import React, {useState, useEffect} from 'react';
 import {SortableContainer, SortableElement, arrayMove} from 'react-sortable-hoc';
 import './styleDragDrop.css';
 const SortableItem = SortableElement(({value}) =>
-    <div style={{margin: "10px", cursor: "pointer"}}>{value}</div>
+    <div class="address-element" style={{margin: "10px", cursor: "pointer"}}>
+		{value}
+		<div>
+			{"Địa chỉ: Đại học bách khoa hà nội"}
+		</div>
+	</div>
 
 );
 

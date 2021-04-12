@@ -88,28 +88,21 @@ function ArrangeVehiclesAndGoods(props) {
         if (distributionList && distributionList.length!==0){
             other = await distributionList.filter(r => !(String(transportRequirement._id) in r.transportRequirements?r.transportRequirements:[]))
             current = await distributionList.filter(r => String(transportRequirement._id) in r.transportRequirements?r.transportRequirements:[]);
-            console.log(other, " other");
-            let newCurrent={};
-            if (current && current.length!==0){
-                let a = current[0].transportRequirements.filter(r=>String(r)!==String(transportRequirement._id));
-                console.log(a, " day la a");
-                let k = current[0].vehicle;
-                newCurrent = {
-                    // transportRequirements: [],
-                    // vehicle: k,
-                }
-                console.log(newCurrent, " newcurrent");
-            }
-            distributionList = other.concat(newCurrent);
 
-            console.log(distributionList, " distributionList");
+            if (current && current.length!==0){
+                let deletedElement = current[0].transportRequirements.filter(r=>String(r)!==String(transportRequirement._id));
+                current[0] = {
+                    ...current[0],
+                    transportRequirements: deletedElement,
+                }
+            }
+            distributionList = other.concat(current);
 
             other = distributionList.filter(r=>String(r?.vehicle)!==String(transportVehicle._id))
             current = distributionList.filter(r=>String(r?.vehicle)===String(transportVehicle._id))
             if (current && current.length !==0) {
                 if (!(String(transportRequirement._id) in current[0].transportRequirements )){
-                    current[0].transportRequirements.push(transportRequirement._id);
-                    console.log(2);
+                    if (current[0].transportRequirements.indexOf(transportRequirement._id) === -1) current[0].transportRequirements.push(transportRequirement._id);
                 }
             }
             else {
