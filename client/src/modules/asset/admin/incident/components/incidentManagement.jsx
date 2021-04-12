@@ -54,7 +54,7 @@ function IncidentManagement(props) {
         props.searchAssetTypes({ typeNumber: "", typeName: "", limit: state.limit });
         props.getUser();
         props.getIncidents(state);
-
+        props.getListBuildingAsTree();
         if (!props.isActive || props.isActive === "tab-pane active") {
             props.getAllAsset(state);
         }
@@ -535,6 +535,7 @@ const actionCreators = {
     searchAssetTypes: AssetTypeActions.searchAssetTypes,
     getUser: UserActions.get,
     getAllAsset: AssetManagerActions.getAllAsset,
+    getListBuildingAsTree: AssetManagerActions.getListBuildingAsTree,
 };
 
 const connectedListUsage = connect(mapState, actionCreators)(withTranslate(IncidentManagement));

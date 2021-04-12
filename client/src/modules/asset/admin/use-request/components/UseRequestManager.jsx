@@ -35,7 +35,7 @@ function UseRequestManager(props) {
         let { managedBy } = state;
         props.searchRecommendDistributes(state);
         props.getUser();
-
+        props.getListBuildingAsTree();
         if (!props.isActive || props.isActive === "tab-pane active") {
             props.getAllAsset({
                 code: "",
@@ -555,7 +555,7 @@ const actionCreators = {
     getAllAsset: AssetManagerActions.getAllAsset,
     searchRecommendDistributes: RecommendDistributeActions.searchRecommendDistributes,
     deleteRecommendDistribute: RecommendDistributeActions.deleteRecommendDistribute,
-
+    getListBuildingAsTree: AssetManagerActions.getListBuildingAsTree,
 };
 
 const connectedUseRequestManager = connect(mapState, actionCreators)(withTranslate(UseRequestManager));

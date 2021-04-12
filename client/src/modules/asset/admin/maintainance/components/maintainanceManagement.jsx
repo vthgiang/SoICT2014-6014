@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { DataTableSetting, DatePicker, DeleteNotification, PaginateBar, SelectMulti, ExportExcel } from '../../../../../common-components';
-
+import { AssetManagerActions } from '../../asset-information/redux/actions';
 import { MaintainanceCreateForm } from './maintainanceCreateForm';
 import { MaintainanceEditForm } from './maintainanceEditForm';
 
@@ -36,6 +36,7 @@ function MaintainanceManagement(props) {
 
     useEffect(() => {
         props.getMaintainances(state);
+        props.getListBuildingAsTree();
     }, [])
     
 
@@ -530,6 +531,7 @@ function mapState(state) {
 const actionCreators = {
     getMaintainances: MaintainanceActions.getMaintainances,
     deleteMaintainance: MaintainanceActions.deleteMaintainance,
+    getListBuildingAsTree: AssetManagerActions.getListBuildingAsTree,
 };
 
 const connectedListMaintainance = connect(mapState, actionCreators)(withTranslate(MaintainanceManagement));
