@@ -48,104 +48,105 @@ exports.createTransportRequirement = async (req, res) => {
 //     }
 // }
 
-// //  Lấy ra Ví dụ theo id
-// exports.getExampleById = async (req, res) => {
-//     try {
-//         let { id } = req.params;
-//         let example = await ExampleService.getExampleById(req.portal, id);
-//         if (example !== -1) {
-//             await Log.info(req.user.email, "GET_EXAMPLE_BY_ID", req.portal);
-//             res.status(200).json({
-//                 success: true,
-//                 messages: ["get_example_by_id_success"],
-//                 content: example
-//             });
-//         } else {
-//             throw Error("example is invalid")
-//         }
-//     } catch (error) {
-//         await Log.error(req.user.email, "GET_EXAMPLE_BY_ID", req.portal);
+//  Lấy ra Ví dụ theo id
+exports.getTransportRequirementById = async (req, res) => {
+    try {
+        let { id } = req.params;
+        console.log("dasdsad");
+        let transportRequirement = await TransportRequirementService.getTransportRequirementById(req.portal, id);
+        if (transportRequirement !== -1) {
+            await Log.info(req.user.email, "GET_TRANPORT_REQUIREMENT_BY_ID", req.portal);
+            res.status(200).json({
+                success: true,
+                messages: ["get_transport_requirement_by_id_success"],
+                content: transportRequirement
+            });
+        } else {
+            throw Error("transport requirement is invalid")
+        }
+    } catch (error) {
+        await Log.error(req.user.email, "GET_TRANPORT_REQUIREMENT_BY_ID", req.portal);
 
-//         res.status(400).json({
-//             success: false,
-//             messages: ["get_example_by_id_fail"],
-//             content: error.message
-//         });
-//     }
-// }
+        res.status(400).json({
+            success: false,
+            messages: ["get_transport_requirement_by_id_fail"],
+            content: error.message
+        });
+    }
+}
 
-// // Sửa Ví dụ
-// exports.editExample = async (req, res) => {
-//     try {
-//         let { id } = req.params;
-//         let data = req.body;
-//         let updatedExample = await ExampleService.editExample(req.portal, id, data);
-//         if (updatedExample !== -1) {
-//             await Log.info(req.user.email, "UPDATED_EXAMPLE", req.portal);
-//             res.status(200).json({
-//                 success: true,
-//                 messages: ["edit_example_success"],
-//                 content: updatedExample
-//             });
-//         } else {
-//             throw Error("Example is invalid");
-//         }
+// Sửa Ví dụ
+exports.editTransportRequirement = async (req, res) => {
+    try {
+        let { id } = req.params;
+        let data = req.body;
+        let updatedTransportRequirement = await TransportRequirementService.editTransportRequirement(req.portal, id, data);
+        if (updatedTransportRequirement !== -1) {
+            await Log.info(req.user.email, "UPDATED_TRANSPORT_REQUIREMENT", req.portal);
+            res.status(200).json({
+                success: true,
+                messages: ["edit_transport_requirement_success"],
+                content: updatedTransportRequirement
+            });
+        } else {
+            throw Error("TransportRequirement is invalid");
+        }
 
-//     } catch (error) {
-//         await Log.error(req.user.email, "UPDATED_EXAMPLE", req.portal);
+    } catch (error) {
+        await Log.error(req.user.email, "UPDATED_TRANSPORT_REQUIREMENT", req.portal);
 
-//         res.status(400).json({
-//             success: false,
-//             messages: ["edit_example_fail"],
-//             content: error.message
-//         });
-//     }
-// }
+        res.status(400).json({
+            success: false,
+            messages: ["edit_transport_requirement_fail"],
+            content: error.message
+        });
+    }
+}
 
-// // Xóa Ví dụ
-// exports.deleteExample = async (req, res) => {
-//     try {
-//         let { id } = req.params;
-//         let deletedExample = await ExampleService.deleteExample(req.portal, id);
-//         if (deletedExample) {
-//             await Log.info(req.user.email, "DELETED_EXAMPLE", req.portal);
-//             res.status(200).json({
-//                 success: true,
-//                 messages: ["delete_success"],
-//                 content: deletedExample
-//             });
-//         } else {
-//             throw Error("Example is invalid");
-//         }
-//     } catch (error) {
-//         await Log.error(req.user.email, "DELETED_EXAMPLE", req.portal);
-//         res.status(400).json({
-//             success: false,
-//             messages: ["delete_fail"],
-//             content: error.message
-//         });
-//     }
-// }
+// Xóa Ví dụ
+exports.deleteTransportRequirement = async (req, res) => {
+    try {
+        let { id } = req.params;
+        let deleteTransportRequirement = await TransportRequirementService.deleteTransportRequirement(req.portal, id);
+        if (deleteTransportRequirement) {
+            await Log.info(req.user.email, "DELETED_TRANSPORT_REQUIREMENT", req.portal);
+            res.status(200).json({
+                success: true,
+                messages: ["delete_success"],
+                content: deleteTransportRequirement
+            });
+        } else {
+            throw Error("TransportRequirement is invalid");
+        }
+    } catch (error) {
+        await Log.error(req.user.email, "DELETED_TRANSPORT_REQUIREMENT", req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ["delete_fail"],
+            content: error.message
+        });
+    }
+}
 
-// // Lấy ra tên của tất cả các Ví dụ
-// exports.getOnlyExampleName = async (req, res) => {
-//     try {
-//         let data;
-//         data = await ExampleService.getOnlyExampleName(req.portal, req.query);
+// Lấy ra tên của tất cả các Ví dụ
+exports.getAllTransportRequirements = async (req, res) => {
+    try {
+        let data;
+        data = await TransportRequirementService.getAllTransportRequirements(req.portal, req.query);
 
-//         await Log.info(req.user.email, "GET_ONLY_NAME_ALL_EXAMPLES", req.portal);
-//         res.status(200).json({
-//             success: true,
-//             messages: ["get_only_name_all_examples_success"],
-//             content: data
-//         });
-//     } catch (error) {
-//         await Log.error(req.user.email, "GET_ONLY_NAME_ALL_EXAMPLES", req.portal);
+        await Log.info(req.user.email, "GET_ALL_TRANSPORT_REQUIREMENTS", req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ["success"],
+            content: data
+        });
+    } catch (error) {
+        await Log.error(req.user.email, "GET_ALL_TRANSPORT_REQUIREMENTS", req.portal);
 
-//         res.status(400).json({
-//             success: false,
-//             messages: ["get_only_name_all_examples_fail"],
-//             content: error.message
-//         });
-//     }
-// }
+        res.status(400).json({
+            success: false,
+            messages: ["fail"],
+            content: error.message
+        });
+    }
+}

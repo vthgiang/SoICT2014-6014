@@ -108,7 +108,7 @@ const LINK_CATEGORY = {
         description: "Quản lý sản xuất"
     },
     TRANSPORT: {
-        name: "transport-managerment",
+        name: "transport-management",
         description: "Quản lý vận chuyển"
     },
     PROJECT: {
@@ -1393,8 +1393,8 @@ const LINKS = [{
     ]
 },
 {
-    url: "/manage-transport-schedule",
-    description: "Xếp lịch vận chuyển",
+    url: "/manage-transport-plan",
+    description: "Quản lý kế hoạch vận chuyển",
     category: LINK_CATEGORY.TRANSPORT.name,
     roles: [
         ROOT_ROLES.SUPER_ADMIN.name,
@@ -1402,7 +1402,16 @@ const LINKS = [{
     ]
 },
 {
-    url: "/manage-transport-vehical",
+    url: "/manage-transport-schedule",
+    description: "Quản lý lịch vận chuyển",
+    category: LINK_CATEGORY.TRANSPORT.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name
+    ]
+},
+{
+    url: "/manage-transport-vehicle",
     description: "Phương tiện vận chuyển",
     category: LINK_CATEGORY.TRANSPORT.name,
     roles: [

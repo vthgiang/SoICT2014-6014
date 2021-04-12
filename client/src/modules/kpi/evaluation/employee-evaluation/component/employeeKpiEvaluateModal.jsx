@@ -84,6 +84,7 @@ function EmployeeKpiEvaluateModal(props) {
 
         return [day, month, year].join('-');
     }
+
     function formatMonth(date) {
         let d = new Date(date),
             month = '' + (d.getMonth() + 1),
@@ -97,6 +98,7 @@ function EmployeeKpiEvaluateModal(props) {
 
         return [month, year].join('-');
     }
+
     const handleChangeContent = (id, employeeId, kpiType, name) => {
         let date = props.employeeKpiSet.date;
         props.getTaskById(id, employeeId, date, kpiType);
@@ -110,10 +112,12 @@ function EmployeeKpiEvaluateModal(props) {
     }
 
     const handleSetPointKPI = () => {
+        
         let date = props.employeeKpiSet.date;
         let employeeId = props.employeeKpiSet.creator._id;
         let { tasks, points, type, content } = state;
         if (tasks && tasks.length > 0) {
+            console.log(state.points);
             let data = [];
             tasks.forEach(element => {
                 data.push({
@@ -125,7 +129,6 @@ function EmployeeKpiEvaluateModal(props) {
                     employeeId: employeeId
                 })
             });
-
             props.setPointKPI(content, type, data);
         }
         else {
@@ -134,6 +137,7 @@ function EmployeeKpiEvaluateModal(props) {
                 type: type,
                 employeeId: employeeId
             }]);
+
         }
     }
 
@@ -153,31 +157,25 @@ function EmployeeKpiEvaluateModal(props) {
         let value = e.target.value;
         let points = state.points;
         points[id] = value;
-
-        setState(state => {
-            setState({
-                ...state,
-                points: points,
-            })
+        setState({
+            ...state,
+            points: points,
         })
     }
+
     const showDetailTaskImportanceCal = async (item) => {
-        await setState(state => {
-            setState({
-                ...state,
-                taskImportanceDetail: item
-            })
+        await setState( {
+            ...state,
+            taskImportanceDetail: item
         })
 
         window.$(`#modal-taskimportance-auto`).modal('show')
     }
 
     const handleClickTaskName = async (id) => {
-        setState(state => {
-            setState({
-                ...state,
-                taskId: id,
-            })
+        setState( {
+            ...state,
+            taskId: id,
         });
         window.$(`#modal-detail-task-kpi-evaluation`).modal('show');
     }
@@ -413,13 +411,13 @@ function EmployeeKpiEvaluateModal(props) {
                                                             <td>{itemTask.results.contribution ? itemTask.results.contribution : 0}%</td>
                                                             <td>{itemTask.results.automaticPoint + '-' + itemTask.results.employeePoint + '-' + itemTask.results.approvedPoint}</td>
                                                             <td>
-                                                                {points && tasks &&
+                                                                {points && tasks && 
                                                                     <React.Fragment>
                                                                         <input type="range"
                                                                             min='0'
                                                                             max='10'
                                                                             name={`taskImportanceLevel${itemTask.taskId}`}
-                                                                            value={points[itemTask.taskId]}
+                                                                            value={points[itemTask.taskId] || ''}
                                                                             onChange={(e) => setValueSlider(e, itemTask.taskId)}
                                                                         />
                                                                         <div>

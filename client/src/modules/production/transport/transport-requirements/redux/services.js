@@ -2,18 +2,21 @@ import { sendRequest } from '../../../../../helpers/requestHelper';
 export const transportRequirementsServices = {
     getAllTransportRequirements,
     createTransportRequirement,
+    getDetailTransportRequirement,
+    editTransportRequirement,
+    deleteTransportRequirement,
 }
 
 function getAllTransportRequirements(queryData) {
     return sendRequest(
         {
-            url: `${process.env.REACT_APP_SERVER}/transport-requirements`,
+            url: `${process.env.REACT_APP_SERVER}/transport-requirement`,
             method: "GET",
             params: {
-                exampleName: queryData !== undefined ?
-                                       queryData.exampleName : "",
-                page: queryData !== undefined ? queryData.page : null,
-                limit: queryData !== undefined ? queryData.limit : null
+                // page: queryData !== undefined ? queryData.page : null,
+                // limit: queryData !== undefined ? queryData.limit : null
+                page: 1,
+                limit: 100
             }
         },
          false, // Nếu có truy vấn thành công thì không hiện thông báo
@@ -28,6 +31,43 @@ function createTransportRequirement(data) {
             url: `${process.env.REACT_APP_SERVER}/transport-requirement`,
             method: "POST",
             data: data
+        },
+        true,
+        true,
+        "manage_transport"
+    )
+}
+
+function getDetailTransportRequirement(id) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/transport-requirement/${id}`,
+            method: "GET"
+        },
+        false,
+        true,
+        'manage_transport'
+    )
+}
+
+function editTransportRequirement(id, data) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/transport-requirement/${id}`,
+            method: "PATCH",
+            data: data
+        },
+        true,
+        true,
+        "manage_transport"
+    )
+}
+
+function deleteTransportRequirement(id) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/transport-requirement/${id}`,
+            method: "DELETE"
         },
         true,
         true,

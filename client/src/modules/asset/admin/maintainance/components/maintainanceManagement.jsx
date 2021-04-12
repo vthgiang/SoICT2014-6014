@@ -3,10 +3,10 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { DataTableSetting, DatePicker, DeleteNotification, PaginateBar, SelectMulti, ExportExcel } from '../../../../../common-components';
-
+import { AssetManagerActions } from '../../asset-information/redux/actions';
 import { MaintainanceCreateForm } from './maintainanceCreateForm';
 import { MaintainanceEditForm } from './maintainanceEditForm';
-
+import { AssetTypeActions } from "../../asset-type/redux/actions";
 import { MaintainanceActions } from '../redux/actions';
 import { AssetEditForm } from '../../asset-information/components/assetEditForm';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
@@ -35,7 +35,9 @@ function MaintainanceManagement(props) {
     
 
     useEffect(() => {
+        props.searchAssetTypes({ typeNumber: "", typeName: "", limit: state.limit });
         props.getMaintainances(state);
+        props.getListBuildingAsTree();
     }, [])
     
 
@@ -529,7 +531,9 @@ function mapState(state) {
 
 const actionCreators = {
     getMaintainances: MaintainanceActions.getMaintainances,
+    searchAssetTypes: AssetTypeActions.searchAssetTypes,
     deleteMaintainance: MaintainanceActions.deleteMaintainance,
+    getListBuildingAsTree: AssetManagerActions.getListBuildingAsTree,
 };
 
 const connectedListMaintainance = connect(mapState, actionCreators)(withTranslate(MaintainanceManagement));

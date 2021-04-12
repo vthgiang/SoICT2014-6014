@@ -165,7 +165,7 @@ class CrmCustomerInformation extends Component {
                                         <li ><a href={`#careHistories-${customerId}`} data-toggle="tab">Lịch sử chăm sóc khách hàng</a></li>
                                         <li><a href={`#historyOfStateTransitions-${customerId}`} data-toggle="tab">Lịch sử thay đổi trạng thái</a></li>
                                         <li><a href={`#fileAttachment-${customerId}`} data-toggle="tab">File đính kèm</a></li>
-                                      
+
                                     </ul>
                                     <div className="tab-content">
                                         {/* Tab thông tin chi tiết */}
@@ -185,12 +185,14 @@ class CrmCustomerInformation extends Component {
                                         />
 
                                         {/* Tab lịch sử chăm sóc khách hàng */}
-                                        <CareHistoriesInfoForm 
-                                        id={`careHistories-${customerId}`}
-                                        
+                                        <CareHistoriesInfoForm
+                                            id={`careHistories-${customerId}`}
+                                            customerInfomation={customerInfomation}
+                                            customerId={customerId}
+
                                         />
-                                       {/* Tab lịch sử thay đổi trạng thái */}
-                                       {
+                                        {/* Tab lịch sử thay đổi trạng thái */}
+                                        {
                                             customerInfomation && dataStatus === 3 &&
                                             <HistoryOfStateTransitionsTabInfoForm
                                                 id={`historyOfStateTransitions-${customerId}`}
@@ -208,7 +210,7 @@ class CrmCustomerInformation extends Component {
                                             />
                                         }
 
-                                        
+
                                     </div>
                                 </div>
                             </div>
