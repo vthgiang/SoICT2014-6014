@@ -563,7 +563,21 @@ function UserDocumentsData(props) {
 
                 </div>
 
-                <table className="table table-hover table-striped table-bordered" id={tableId}>
+                <DataTableSetting
+                    columnArr={[
+                        translate('document.name'),
+                        translate('document.description'),
+                        translate('document.issuing_date'),
+                        translate('document.effective_date'),
+                        translate('document.expired_date'),
+                        translate('document.upload_file'),
+                        translate('document.upload_file_scan'),
+
+                    ]}
+                    setLimit={setLimit}
+                    tableId={tableId}
+                />
+                <table className="table table-hover table-striped table-bordered" id={tableId} style={{ marginBottom: "0px" }}>
                     <thead>
                         <tr>
                             <th>{translate('document.doc_version.issuing_body')}</th>
@@ -577,20 +591,6 @@ function UserDocumentsData(props) {
 
                             <th style={{ width: '120px', textAlign: 'center' }}>
                                 {translate('general.action')}
-                                <DataTableSetting
-                                    columnArr={[
-                                        translate('document.name'),
-                                        translate('document.description'),
-                                        translate('document.issuing_date'),
-                                        translate('document.effective_date'),
-                                        translate('document.expired_date'),
-                                        translate('document.upload_file'),
-                                        translate('document.upload_file_scan'),
-
-                                    ]}
-                                    setLimit={setLimit}
-                                    tableId={tableId}
-                                />
                             </th>
                         </tr>
                     </thead>
@@ -629,7 +629,7 @@ function UserDocumentsData(props) {
                 {
                     isLoading ?
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                        paginate.length === 0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                        paginate?.length === 0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                 }
 
                 <PaginateBar pageTotal={docs.totalPages} currentPage={docs.page} func={setPage} />
