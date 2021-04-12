@@ -32,7 +32,7 @@ class TreeSelect extends Component {
     }
 
     static getDerivedStateFromProps(props, state) {
-        if (props.id !== state.id || !TreeSelect.isEqual(props.data, state.data) || (props.value && !TreeSelect.isEqual(props.value !== state.value))) {
+        if (props.id !== state.id || !TreeSelect.isEqual(props.data, state.data) || (props.value && !TreeSelect.isEqual(props.value, state.value))) {
             return {
                 id: props.id,
                 value: props.value, // Lưu value ban đầu vào state
@@ -45,8 +45,11 @@ class TreeSelect extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
+        if (nextState.innerChange) {
+            return false;
+        }
 
-        if (!TreeSelect.isEqual(nextProps.data, this.state.data) || nextProps.id !== this.state.id || (nextProps.value && !nextState.innerChange && !TreeSelect.isEqual(nextProps.value, this.state.value))) // Chỉ render 1 lần, trừ khi id, value, data thay đổi
+        if (!TreeSelect.isEqual(nextProps.data, this.state.data) || nextProps.id !== this.state.id || (nextProps.value && !TreeSelect.isEqual(nextProps.value, this.state.value))) // Chỉ render 1 lần, trừ khi id, value, data thay đổi
             return true;
         return false;  // Tự chủ động update (do đã lưu value vào state)
     }
