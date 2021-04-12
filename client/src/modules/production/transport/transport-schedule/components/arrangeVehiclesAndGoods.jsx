@@ -23,8 +23,7 @@ function ArrangeVehiclesAndGoods(props) {
     const [transportArrangeRequirements, setAransportArrangeRequirements] = useState([]);
     const [allTransportVehicle, setAllTransportVehicle] = useState([]);
     
-    const [distributionState, setDistributionState] = useState([])
-
+    const [distributionState, setDistributionState] = useState([]);
     const getListTransportPlans = () => {
         let listTransportPlans = [
             {
@@ -81,46 +80,86 @@ function ArrangeVehiclesAndGoods(props) {
     }, [distributionState])
 
     const handleSelectVehicle = async (transportRequirement, transportVehicle, indexRequirement, indexVehicle) => {
+        /**
+         * 
+         * distributionList = 
+         * [{vehicle: id
+         * transportRequirements: [
+         *      transportRequirement: id1,
+         *      transportRequirement: id2
+         * ]}]
+         * 
+         * thực hiện xóa bỏ transportRequirement ở element cũ và thêm vào element mới
+         */
         let distributionList = [...distributionState];
-        let current;
-        let other = [];
 
+        const requirementId = String(transportRequirement._id);
+        const vehicleId = String(transportVehicle._id);
+        let newDistribution = [];
+        
         if (distributionList && distributionList.length!==0){
-            other = await distributionList.filter(r => !(String(transportRequirement._id) in r.transportRequirements?r.transportRequirements:[]))
-            current = await distributionList.filter(r => String(transportRequirement._id) in r.transportRequirements?r.transportRequirements:[]);
-
-            if (current && current.length!==0){
-                let deletedElement = current[0].transportRequirements.filter(r=>String(r)!==String(transportRequirement._id));
-                current[0] = {
-                    ...current[0],
-                    transportRequirements: deletedElement,
+            /**
+             * Lọc bỏ requirement đc xếp ở xe cũ
+             */
+            for ( let i=0; i< distributionList.length; i++){
+                let distribution = distributionList[i];
+                if (distribution.transportRequirements && distribution.transportRequirements.length !== 0){
+                    distribution.transportRequirements = distribution.transportRequirements.filter(r => String(r) !== requirementId);
                 }
             }
-            distributionList = other.concat(current);
-
-            other = distributionList.filter(r=>String(r?.vehicle)!==String(transportVehicle._id))
-            current = distributionList.filter(r=>String(r?.vehicle)===String(transportVehicle._id))
-            if (current && current.length !==0) {
-                if (!(String(transportRequirement._id) in current[0].transportRequirements )){
-                    if (current[0].transportRequirements.indexOf(transportRequirement._id) === -1) current[0].transportRequirements.push(transportRequirement._id);
-                }
+            /**
+             * Thêm requirement vào xe
+             */
+            let check = distributionList.filter(r => String(r.vehicle) === vehicleId);
+            if (check && check.length !== 0){
+                check[0].transportRequirements.push(requirementId);
             }
             else {
-                current = [{
-                    vehicle: transportVehicle._id,
-                    transportRequirements: [transportRequirement._id],
-                }]
+                // chưa có xe => tạo mới
+                newDistribution = {
+                    vehicle: vehicleId,
+                    transportRequirements: [requirementId],
+                }
+                distributionList.push(newDistribution);
             }
         }
-        else {
-            current = [{
-                vehicle: transportVehicle._id,
-                transportRequirements: [transportRequirement._id],
-            }]
+        else{
+            distributionList = [{
+                vehicle: vehicleId,
+                transportRequirements: [requirementId],
+            }];
+
         }
-        setDistributionState(other.concat(current));
+        setDistributionState(distributionList);
     }
 
+    /**
+     * trả về trạng thái hàng được xếp lên xe này hay ko, trả về tên class iconactive
+     * @param {*} vehicleId 
+     * @param {*} requirementId 
+     * @returns 
+     */
+    const getStatusTickBox = (vehicleId, requirementId) => {
+        if (distributionState && distributionState.length !== 0){
+            let distribution = distributionState.filter(r => String(r._id) === String(vehicleId));
+            if (distribution && distribution.length !== 0 ){
+                let check = distribution[0].requirements.filter(r => String(r) === String(requirementId))
+                if (check && check !== 0) {
+                    return "iconactive";
+                }
+                else{
+                    return "iconunactive";
+                }
+            }
+            else{
+                return "iconunactive";
+            }
+        }
+        else{
+            return "iconunactive";
+        }
+    }
+    
     return (
         <React.Fragment>
         <div className="box-body qlcv">
@@ -257,9 +296,8 @@ function ArrangeVehiclesAndGoods(props) {
                                     allTransportVehicle.map((item1, index1) => (
                                         item1 &&
                                         <td key={"vehicle "+index1} className="tooltip-checkbox">
-                                            <span className="icon" 
+                                            <span className={"icon " + getStatusTickBox(item1._id, item._id)}
                                             title={"alo"} 
-                                            style={{ backgroundColor: "white"}}
                                             onClick={() => handleSelectVehicle(item, item1, index, index1)}
                                             >
 

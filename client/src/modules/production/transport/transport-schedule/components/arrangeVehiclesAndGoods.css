@@ -57,7 +57,9 @@
 .iconactive {
     background-color: green;
 }
-
+.iconunactive {
+    background-color: white;
+}
 .tooltiptext:hover a {
     text-decoration: underline;
 }
