@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -9,24 +9,33 @@ import { UserActions } from '../../../../super-admin/user/redux/actions';
 import { convertJsonObjectToFormData } from '../../../../../helpers/jsonObjectToFormDataObjectConverter';
 import ValidationHelper from '../../../../../helpers/validationHelper';
 
-class PurchaseRequestEditForm extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            status: "waiting_approval"
-        };
-    }
+function PurchaseRequestEditForm(props) {
+    const [state, setState] = useState({
+        status: "waiting_approval"
+    })
+    const [prevProps, setPrevProps] = useState({
+        _id:null,
+    })
+    const { _id, department } = props;
+    const { translate, recommendProcure, user } = props;
+    const { recommendNumber, dateCreate, proponent, equipmentName, equipmentDescription, supplier, total, unit, estimatePrice, recommendUnits, files, approver,
+        errorOnEquipment, errorOnEquipmentDescription, errorOnTotal, errorOnUnit, errorOnRecommendNumber } = state;
+    var userlist = user.list;
+    const departmentlist = department.list && department.list.map(obj => ({ value: obj._id, text: obj.name }));
+
+    
+        
 
     // Bắt sự kiện thay đổi mã phiếu
-    handleRecommendNumberChange = (e) => {
+    const handleRecommendNumberChange = (e) => {
         let value = e.target.value;
-        this.validateRecommendNumber(value, true);
+        validateRecommendNumber(value, true);
     }
-    validateRecommendNumber = (value, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateCode(this.props.translate, value);
+    const validateRecommendNumber = (value, willUpdateState = true) => {
+        let { message } = ValidationHelper.validateCode(props.translate, value);
 
         if (willUpdateState) {
-            this.setState(state => {
+            setState(state => {
                 return {
                     ...state,
                     errorOnRecommendNumber: message,
@@ -38,33 +47,37 @@ class PurchaseRequestEditForm extends Component {
     }
 
     // Bắt sự kiện thay đổi "Ngày lập"
-    handleDateCreateChange = (value) => {
-        this.setState({
-            ...this.state,
-            dateCreate: value
+    const handleDateCreateChange = (value) => {
+        setState(state =>{
+            return{
+                ...state,
+                dateCreate: value
+            }
         })
     }
 
     /**
      * Bắt sự kiện thay đổi người đề nghị
      */
-    handleProponentChange = (value) => {
-        this.setState({
-            ...this.state,
-            proponent: value[0]
+    const handleProponentChange = (value) => {
+        setState(state =>{
+            return{
+                ...state,
+                proponent: value[0]
+            }
         });
     }
 
     // Bắt sự kiện thay đổi "Thiết bị đề nghị mua"
-    handleEquipmentChange = (e) => {
+    const handleEquipmentChange = (e) => {
         let value = e.target.value;
-        this.validateEquipment(value, true);
+        validateEquipment(value, true);
     }
-    validateEquipment = (value, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+    const validateEquipment = (value, willUpdateState = true) => {
+        let { message } = ValidationHelper.validateEmpty(props.translate, value);
 
         if (willUpdateState) {
-            this.setState(state => {
+            setState(state => {
                 return {
                     ...state,
                     errorOnEquipment: message,
@@ -76,15 +89,15 @@ class PurchaseRequestEditForm extends Component {
     }
 
     // Bắt sự kiện thay đổi "Mô tảThiết bị đề nghị mua"
-    handleEquipmentDescriptionChange = (e) => {
+    const handleEquipmentDescriptionChange = (e) => {
         let value = e.target.value;
-        this.validateEquipmentDescription(value, true);
+        validateEquipmentDescription(value, true);
     }
-    validateEquipmentDescription = (value, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+    const validateEquipmentDescription = (value, willUpdateState = true) => {
+        let { message } = ValidationHelper.validateEmpty(props.translate, value);
 
         if (willUpdateState) {
-            this.setState(state => {
+            setState(state => {
                 return {
                     ...state,
                     errorOnEquipmentDescription: message,
@@ -96,24 +109,26 @@ class PurchaseRequestEditForm extends Component {
     }
 
     // Bắt sự kiện thay đổi "Nhà cung cấp"
-    handleSupplierChange = (e) => {
+    const handleSupplierChange = (e) => {
         let value = e.target.value;
-        this.setState({
-            ...this.state,
-            supplier: value
+        setState(state =>{
+            return{
+                ...state,
+                upplier: value
+            }
         })
     }
 
     // Bắt sự kiện thay đổi "Số lượng"
-    handleTotalChange = (e) => {
+    const handleTotalChange = (e) => {
         let value = e.target.value;
-        this.validateTotal(value, true);
+        validateTotal(value, true);
     }
-    validateTotal = (value, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+    const validateTotal = (value, willUpdateState = true) => {
+        let { message } = ValidationHelper.validateEmpty(props.translate, value);
 
         if (willUpdateState) {
-            this.setState(state => {
+            setState(state => {
                 return {
                     ...state,
                     errorOnTotal: message,
@@ -125,15 +140,15 @@ class PurchaseRequestEditForm extends Component {
     }
 
     // Bắt sự kiện thay đổi "Đơn vị tính"
-    handleUnitChange = (e) => {
+    const handleUnitChange = (e) => {
         let value = e.target.value;
-        this.validateUnit(value, true);
+        validateUnit(value, true);
     }
-    validateUnit = (value, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+    const validateUnit = (value, willUpdateState = true) => {
+        let { message } = ValidationHelper.validateEmpty(props.translate, value);
 
         if (willUpdateState) {
-            this.setState(state => {
+            setState(state => {
                 return {
                     ...state,
                     errorOnUnit: message,
@@ -145,22 +160,26 @@ class PurchaseRequestEditForm extends Component {
     }
 
     // Bắt sự kiện thay đổi "Giá trị dự tính"
-    handleEstimatePriceChange = (e) => {
+    const handleEstimatePriceChange = (e) => {
         let value = e.target.value;
-        this.setState({
-            ...this.state,
-            estimatePrice: value
+        setState(state =>{
+            return{
+                ...state,
+                estimatePrice: value
+            }
         })
     }
 
-    handleRecommendUnits = (value) => {
-        this.setState({
-            ...this.state,
-            recommendUnits: value
+    const handleRecommendUnits = (value) => {
+        setState(state =>{
+            return{
+                ...state,
+                recommendUnits: value
+            }
         })
     }
 
-    handleChangeFile = (file) => {
+    const handleChangeFile = (file) => {
         let newFiles = [], oldFiles = [], recommendFiles;
         if (file) {
             file.forEach(obj => {
@@ -179,21 +198,24 @@ class PurchaseRequestEditForm extends Component {
             }))
         }
 
-        this.setState({
-            recommendFiles,
-            oldFiles,
+        setState(state =>{
+            return{
+                ...state,
+                recommendFiles,
+                oldFiles,
+            }
         });
     }
 
-    handleApproverChange = (value) => {
-        this.validateApprover(value, true);
+    const handleApproverChange = (value) => {
+        validateApprover(value, true);
     }
 
-    validateApprover = (value, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+    const validateApprover = (value, willUpdateState = true) => {
+        let { message } = ValidationHelper.validateEmpty(props.translate, value);
 
         if (willUpdateState) {
-            this.setState(state => {
+            setState(state => {
                 return {
                     ...state,
                     errorOnApprover: message,
@@ -204,22 +226,22 @@ class PurchaseRequestEditForm extends Component {
         return message === undefined;
     }
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
-    isFormValidated = () => {
-        const { equipmentName, total, unit, recommendNumber, approver } = this.state;
+    const isFormValidated = () => {
+        const { equipmentName, total, unit, recommendNumber, approver } = state;
         let result =
-            this.validateEquipment(equipmentName, false) &&
-            this.validateTotal(total, false) &&
-            this.validateUnit(unit, false) &&
-            this.validateApprover(approver, false)
-        // &&this.validateRecommendNumber(recommendNumber, false);
+            validateEquipment(equipmentName, false) &&
+            validateTotal(total, false) &&
+            validateUnit(unit, false) &&
+            validateApprover(approver, false)
+        // &&validateRecommendNumber(recommendNumber, false);
 
         return result;
     }
 
-    save = () => {
-        if (this.isFormValidated()) {
-            let { recommendFiles, oldFiles, files } = this.state;
-            let data = this.state;
+    const save = () => {
+        if (isFormValidated()) {
+            let { recommendFiles, oldFiles, files } = state;
+            let data = state;
             if (data.dateCreate) {
                 let dateData = data.dateCreate.split("-");
                 data = {
@@ -238,45 +260,44 @@ class PurchaseRequestEditForm extends Component {
                     formData.append('recommendFiles', obj.fileUpload)
                 })
             }
-            return this.props.updateRecommendProcure(this.state._id, formData);
+            return props.updateRecommendProcure(state._id, formData);
         }
     }
-
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps._id !== prevState._id) {
-            let approver = []
-            if (nextProps.approver) {
-                for (let i in nextProps.approver) {
-                    approver.push(nextProps.approver[i]._id)
-                }
+    if(props._id !== prevProps._id){
+        let approver = []
+        if(props.approver){
+            for(let i in props.approver){
+                approver.push(props.approver[i]._id)
             }
-            return {
-                ...prevState,
-                _id: nextProps._id,
-                recommendNumber: nextProps.recommendNumber,
-                dateCreate: PurchaseRequestEditForm.formatDate(nextProps.dateCreate),
-                proponent: nextProps.proponent,
-                equipmentName: nextProps.equipmentName,
-                equipmentDescription: nextProps.equipmentDescription,
-                supplier: nextProps.supplier,
-                total: nextProps.total,
-                unit: nextProps.unit,
-                estimatePrice: nextProps.estimatePrice,
+        }
+        setState(state => {
+            return{
+                ...state,
+                _id: props._id,
+                recommendNumber: props.recommendNumber,
+                dateCreate: formatDate(props.dateCreate),
+                proponent: props.proponent,
+                equipmentName: props.equipmentName,
+                equipmentDescription: props.equipmentDescription,
+                supplier: props.supplier,
+                total: props.total,
+                unit: props.unit,
+                estimatePrice: props.estimatePrice,
                 approver: approver,
-                status: nextProps.status,
-                note: nextProps.note,
-                files: nextProps.files,
-                recommendUnits: nextProps.recommendUnits ? nextProps.recommendUnits.map(obj => obj._id) : [],
+                status: props.status,
+                note: props.note,
+                files: props.files,
+                recommendUnits: props.recommendUnits ? props.recommendUnits.map(obj => obj._id) : [],
                 errorOnEquipment: undefined,
                 errorOnTotal: undefined,
                 errorOnUnit: undefined,
-            }
-        } else {
-            return null;
-        }
+                }
+            })
+        setPrevProps(props)
     }
 
-    static formatDate = (date) => {
+        
+    const  formatDate = (date) => {
         if (!date) return null;
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
@@ -294,163 +315,154 @@ class PurchaseRequestEditForm extends Component {
         return [day, month, year].join('-');
     }
 
-    render() {
-        const { _id, department } = this.props;
-        const { translate, recommendProcure, user } = this.props;
-        const { recommendNumber, dateCreate, proponent, equipmentName, equipmentDescription, supplier, total, unit, estimatePrice, recommendUnits, files, approver,
-            errorOnEquipment, errorOnEquipmentDescription, errorOnTotal, errorOnUnit, errorOnRecommendNumber } = this.state;
-        console.log("aaa", approver)
-        var userlist = user.list;
-        const departmentlist = department.list && department.list.map(obj => ({ value: obj._id, text: obj.name }));
 
-        return (
-            <React.Fragment>
-                <DialogModal
-                    size='50' modalID="modal-edit-recommendprocure" isLoading={recommendProcure.isLoading}
-                    formID="form-edit-recommendprocure"
-                    title={translate('asset.manage_recommend_procure.edit_recommend_card')}
-                    func={this.save}
-                    disableSubmit={!this.isFormValidated()}
-                >
-                    {/* Form chỉnh sửa phiếu đề nghị mua sắm thiết bị */}
-                    <form className="form-group" id="form-edit-recommendprocure">
-                        <div className="col-md-12">
+    return (
+        <React.Fragment>
+            <DialogModal
+                size='50' modalID="modal-edit-recommendprocure" isLoading={recommendProcure.isLoading}
+                formID="form-edit-recommendprocure"
+                title={translate('asset.manage_recommend_procure.edit_recommend_card')}
+                func={save}
+                disableSubmit={!isFormValidated()}
+            >
+                {/* Form chỉnh sửa phiếu đề nghị mua sắm thiết bị */}
+                <form className="form-group" id="form-edit-recommendprocure">
+                    <div className="col-md-12">
 
-                            <div className="col-sm-6">
-                                {/* Mã phiếu */}
-                                <div className={`form-group `}>
-                                    <label>{translate('asset.general_information.form_code')}</label>
-                                    <input type="text" className="form-control" name="recommendNumber" value={recommendNumber} onChange={this.handleRecommendNumberChange} />
-                                    {/* <ErrorLabel content={errorOnRecommendNumber} /> */}
-                                </div>
-
-                                {/* Ngày lập */}
-                                <div className="form-group">
-                                    <label>{translate('asset.general_information.create_date')}<span className="text-red">*</span></label>
-                                    <DatePicker
-                                        id={`edit_start_date${_id}`}
-                                        value={dateCreate}
-                                        onChange={this.handleDateCreateChange}
-                                    />
-                                </div>
-
-                                {/* Người đề nghị */}
-                                <div className={`form-group`}>
-                                    <label>{translate('asset.usage.proponent')}</label>
-                                    <div>
-                                        <div id="proponentBox">
-                                            <SelectBox
-                                                id={`proponent${_id}`}
-                                                className="form-control select2"
-                                                style={{ width: "100%" }}
-                                                items={userlist.map(x => {
-                                                    return { value: x._id, text: x.name + " - " + x.email }
-                                                })}
-                                                onChange={this.handleProponentChange}
-                                                value={proponent ? proponent._id : null}
-                                                multiple={false}
-                                                disabled
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Đơn vị đề nghị */}
-                                <div className={`form-group`}>
-                                    <label>{translate('asset.usage.recommend_units')}</label>
-                                    <div>
-                                        <div id="recommend_units">
-                                            {recommendUnits &&
-                                                <SelectBox
-                                                    id={`add-recommend_units${_id}`}
-                                                    className="form-control select2"
-                                                    style={{ width: "100%" }}
-                                                    items={departmentlist}
-                                                    onChange={this.handleRecommendUnits}
-                                                    value={recommendUnits}
-                                                    multiple={true}
-                                                />
-                                            }
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Thiết bị đề nghị mua */}
-                                <div className={`form-group ${!errorOnEquipment ? "" : "has-error"}`}>
-                                    <label>{translate('asset.manage_recommend_procure.asset_recommend')}<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" name="equipmentName" value={equipmentName ? equipmentName : ""} onChange={this.handleEquipmentChange} autoComplete="off" placeholder="Thiết bị đề nghị mua" />
-                                    <ErrorLabel content={errorOnEquipment} />
-                                </div>
-
-                                {/* Mô tả thiết bị đề nghị mua */}
-                                <div className={`form-group ${errorOnEquipmentDescription === undefined ? "" : "has-error"}`}>
-                                    <label>{translate('asset.manage_recommend_procure.equipment_description')}</label>
-                                    <textarea className="form-control" rows="3" name="equipmentDescription" value={equipmentDescription ? equipmentDescription : ""} onChange={this.handleEquipmentDescriptionChange} autoComplete="off"
-                                        placeholder="Thiết bị đề nghị mua"></textarea>
-                                    <ErrorLabel content={errorOnEquipmentDescription} />
-                                </div>
-
+                        <div className="col-sm-6">
+                            {/* Mã phiếu */}
+                            <div className={`form-group `}>
+                                <label>{translate('asset.general_information.form_code')}</label>
+                                <input type="text" className="form-control" name="recommendNumber" value={recommendNumber} onChange={handleRecommendNumberChange} />
+                                {/* <ErrorLabel content={errorOnRecommendNumber} /> */}
                             </div>
 
-                            <div className="col-sm-6">
-                                {/* Nhà cung cấp */}
-                                <div className="form-group">
-                                    <label>{translate('asset.manage_recommend_procure.supplier')}</label>
-                                    <input type="text" className="form-control" name="supplier" value={supplier ? supplier : ""} onChange={this.handleSupplierChange} />
-                                </div>
+                            {/* Ngày lập */}
+                            <div className="form-group">
+                                <label>{translate('asset.general_information.create_date')}<span className="text-red">*</span></label>
+                                <DatePicker
+                                    id={`edit_start_date${_id}`}
+                                    value={dateCreate}
+                                    onChange={handleDateCreateChange}
+                                />
+                            </div>
 
-                                {/* Số lượng */}
-                                <div className={`form-group ${!errorOnTotal ? "" : "has-error"}`}>
-                                    <label>{translate('asset.general_information.number')}<span className="text-red">*</span></label>
-                                    <input type="number" className="form-control" name="total" value={total ? total : ""} onChange={this.handleTotalChange} />
-                                    <ErrorLabel content={errorOnTotal} />
+                            {/* Người đề nghị */}
+                            <div className={`form-group`}>
+                                <label>{translate('asset.usage.proponent')}</label>
+                                <div>
+                                    <div id="proponentBox">
+                                        <SelectBox
+                                            id={`proponent${_id}`}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            items={userlist.map(x => {
+                                                return { value: x._id, text: x.name + " - " + x.email }
+                                            })}
+                                            onChange={handleProponentChange}
+                                            value={proponent ? proponent._id : null}
+                                            multiple={false}
+                                            disabled
+                                        />
+                                    </div>
                                 </div>
+                            </div>
 
-                                {/* Đơn vị tính */}
-                                <div className={`form-group ${!errorOnUnit ? "" : "has-error"}`}>
-                                    <label>{translate('asset.manage_recommend_procure.unit')}<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" name="unit" value={unit ? unit : ""} onChange={this.handleUnitChange} autoComplete="off" placeholder="Đơn vị tính" />
-                                    <ErrorLabel content={errorOnUnit} />
-                                </div>
-
-                                {/* Giá trị dự tính */}
-                                <div className="form-group">
-                                    <label>{translate('asset.manage_recommend_procure.expected_value')} (VNĐ)</label>
-                                    <input type="number" className="form-control" name="estimatePrice" value={estimatePrice ? estimatePrice : ""} onChange={this.handleEstimatePriceChange} />
-                                </div>
-
-                                <div className="form-group">
-                                    <label>{translate('human_resource.profile.attached_files')}</label>
-                                    < UploadFile multiple={true} onChange={this.handleChangeFile} files={files} sendDataAfterDelete={true} />
-                                </div>
-
-                                {/* Người phê duyệt */}
-                                <div className={`form-group`}>
-                                    <label>Người phê duyệt<span className="text-red">*</span></label>
-                                    <div>
-                                        {userlist &&
+                            {/* Đơn vị đề nghị */}
+                            <div className={`form-group`}>
+                                <label>{translate('asset.usage.recommend_units')}</label>
+                                <div>
+                                    <div id="recommend_units">
+                                        {recommendUnits &&
                                             <SelectBox
-                                                id={`add-approver${_id}`}
+                                                id={`add-recommend_units${_id}`}
                                                 className="form-control select2"
                                                 style={{ width: "100%" }}
-                                                items={userlist && userlist.map(x => {
-                                                    return { value: x._id, text: x.name + " - " + x.email }
-                                                })}
-                                                onChange={this.handleApproverChange}
-                                                value={approver}
+                                                items={departmentlist}
+                                                onChange={handleRecommendUnits}
+                                                value={recommendUnits}
                                                 multiple={true}
-                                                options={{ placeholder: "Chọn người phê duyệt" }}
                                             />
                                         }
                                     </div>
                                 </div>
                             </div>
+
+                            {/* Thiết bị đề nghị mua */}
+                            <div className={`form-group ${!errorOnEquipment ? "" : "has-error"}`}>
+                                <label>{translate('asset.manage_recommend_procure.asset_recommend')}<span className="text-red">*</span></label>
+                                <input type="text" className="form-control" name="equipmentName" value={equipmentName ? equipmentName : ""} onChange={handleEquipmentChange} autoComplete="off" placeholder="Thiết bị đề nghị mua" />
+                                <ErrorLabel content={errorOnEquipment} />
+                            </div>
+
+                            {/* Mô tả thiết bị đề nghị mua */}
+                            <div className={`form-group ${errorOnEquipmentDescription === undefined ? "" : "has-error"}`}>
+                                <label>{translate('asset.manage_recommend_procure.equipment_description')}</label>
+                                <textarea className="form-control" rows="3" name="equipmentDescription" value={equipmentDescription ? equipmentDescription : ""} onChange={handleEquipmentDescriptionChange} autoComplete="off"
+                                    placeholder="Thiết bị đề nghị mua"></textarea>
+                                <ErrorLabel content={errorOnEquipmentDescription} />
+                            </div>
+
                         </div>
-                    </form>
-                </DialogModal>
-            </React.Fragment>
-        );
-    }
+
+                        <div className="col-sm-6">
+                            {/* Nhà cung cấp */}
+                            <div className="form-group">
+                                <label>{translate('asset.manage_recommend_procure.supplier')}</label>
+                                <input type="text" className="form-control" name="supplier" value={supplier ? supplier : ""} onChange={handleSupplierChange} />
+                            </div>
+
+                            {/* Số lượng */}
+                            <div className={`form-group ${!errorOnTotal ? "" : "has-error"}`}>
+                                <label>{translate('asset.general_information.number')}<span className="text-red">*</span></label>
+                                <input type="number" className="form-control" name="total" value={total ? total : ""} onChange={handleTotalChange} />
+                                <ErrorLabel content={errorOnTotal} />
+                            </div>
+
+                            {/* Đơn vị tính */}
+                            <div className={`form-group ${!errorOnUnit ? "" : "has-error"}`}>
+                                <label>{translate('asset.manage_recommend_procure.unit')}<span className="text-red">*</span></label>
+                                <input type="text" className="form-control" name="unit" value={unit ? unit : ""} onChange={handleUnitChange} autoComplete="off" placeholder="Đơn vị tính" />
+                                <ErrorLabel content={errorOnUnit} />
+                            </div>
+
+                            {/* Giá trị dự tính */}
+                            <div className="form-group">
+                                <label>{translate('asset.manage_recommend_procure.expected_value')} (VNĐ)</label>
+                                <input type="number" className="form-control" name="estimatePrice" value={estimatePrice ? estimatePrice : ""} onChange={handleEstimatePriceChange} />
+                            </div>
+
+                            <div className="form-group">
+                                <label>{translate('human_resource.profile.attached_files')}</label>
+                                < UploadFile multiple={true} onChange={handleChangeFile} files={files} sendDataAfterDelete={true} />
+                            </div>
+
+                            {/* Người phê duyệt */}
+                            <div className={`form-group`}>
+                                <label>Người phê duyệt<span className="text-red">*</span></label>
+                                <div>
+                                    {userlist &&
+                                        <SelectBox
+                                            id={`add-approver${_id}`}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            items={userlist && userlist.map(x => {
+                                                return { value: x._id, text: x.name + " - " + x.email }
+                                            })}
+                                            onChange={handleApproverChange}
+                                            value={approver}
+                                            multiple={true}
+                                            options={{ placeholder: "Chọn người phê duyệt" }}
+                                        />
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </DialogModal>
+        </React.Fragment>
+    );
 };
 
 function mapState(state) {

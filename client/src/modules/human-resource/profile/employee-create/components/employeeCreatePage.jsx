@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { convertJsonObjectToFormData } from '../../../../../helpers/jsonObjectToFormDataObjectConverter';
-import { GeneralTab, ContactTab, TaxTab, InsurranceTab, DisciplineTab, ExperienceTab, CertificateTab, ContractTab, SalaryTab, FileTab, CareerMajorTab } from './combinedContent';
+import { GeneralTab, ContactTab, TaxTab, InsurranceTab, DisciplineTab, ExperienceTab, CertificateTab, ContractTab, SalaryTab, FileTab } from './combinedContent';
 import FamilyMemberTab from './familyMemberTab';
 
 import { EmployeeManagerActions } from '../../employee-management/redux/actions';
@@ -581,22 +581,6 @@ class EmployeeCreatePage extends Component {
                             handleEditFile={this.handleChangeFile}
                             handleDeleteFile={this.handleChangeFile}
                             handleSubmit={this.handleSubmit}
-                        />
-                        {/* Tab công việc - chuyên ngành tương đương */}
-                        <CareerMajorTab
-                            id={`major_career`}
-                            files={files}
-                            major={major}
-                            career={career}
-                            handleChange={this.handleChange}
-
-                            handleAddMajor={this.handleChangeMajor}
-                            handleEditMajor={this.handleChangeMajor}
-                            handleDeleteMajor={this.handleChangeMajor}
-
-                            handleAddCareer={this.handleChangeCareer}
-                            handleEditCareer={this.handleChangeCareer}
-                            handleDeleteCareer={this.handleChangeCareer}
                         />
 
 

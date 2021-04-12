@@ -8,7 +8,7 @@ export const customAxisC3js = (chartId, data, index) => {
         width = width && parseInt(width);
         elementWidth = width / data?.length;
 
-        console.log(width, elementWidth)
+        // console.log(width, elementWidth)
 
         if (elementWidth < 45) {
             numberOfCharacters = 5;

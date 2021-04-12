@@ -44,11 +44,11 @@ function TaskStatusChart(props) {
     const { role } = state;
 
     useEffect(() => {
-        if (tasks.responsibleTasks
+        if ((tasks.responsibleTasks
             && tasks.accountableTasks
             && tasks.consultedTasks
             && tasks.informedTasks
-            && tasks.creatorTasks
+            && tasks.creatorTasks) || (tasks.organizationUnitTasks)
         ) {
             pieChart();
         }

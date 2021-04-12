@@ -36,7 +36,7 @@ function ResultsOfEmployeeKpiChart(props) {
         dataStatus: DATA_STATUS.QUERYING,
 
         userId: localStorage.getItem("userId"),
-
+        roleId: localStorage.getItem("currentRole"),
         startMonth: INFO_SEARCH.startMonth,
         endMonth: INFO_SEARCH.endMonth,
         defaultendMonth: [endMonth, year].join('-'),
@@ -53,20 +53,14 @@ function ResultsOfEmployeeKpiChart(props) {
     let listEmployeeKpiSetEachYear;
 
     useEffect(() => {
-        props.getAllEmployeeKpiSetByMonth(undefined, state.userId, state.startMonth, state.endMonth);
+        props.getAllEmployeeKpiSetByMonth([state.roleId], state.userId, state.startMonth, state.endMonth);
+        props.createEmployeeKpiSet.employeeKpiSetByMonth = null
 
         setState( {
             ...state,
             dataStatus: DATA_STATUS.QUERYING,
         });
     }, [])
-
-    useEffect(() => { 
-            setState( {
-                ...state,
-                dataStatus: DATA_STATUS.QUERYING,
-            });
-    }, [state.infosearch.startMonth, state.infosearch.endMonth]);
 
     useEffect(()=>{
         if(state.dataStatus === DATA_STATUS.QUERYING) {
@@ -123,10 +117,12 @@ function ResultsOfEmployeeKpiChart(props) {
             await setState( {
                     ...state,
                     startMonth: state.startMonth,
-                    endMonth: state.endMonth
+                    endMonth: state.endMonth,
+                    dataStatus: DATA_STATUS.QUERYING
             })
-
-            props.getAllEmployeeKpiSetByMonth(undefined, state.userId, state.startMonth, state.endMonth);
+            
+            props.createEmployeeKpiSet.employeeKpiSetByMonth = null
+            props.getAllEmployeeKpiSetByMonth([state.roleId], state.userId, state.startMonth, state.endMonth);
         }
     };
 
@@ -178,9 +174,9 @@ function ResultsOfEmployeeKpiChart(props) {
         }
 
         if (listEmployeeKpiSet) {
-            automaticPoint = [translate('kpi.evaluation.dashboard.auto_eva')].concat(listEmployeeKpiSet.map(x => x.automaticPoint));
-            employeePoint = [translate('kpi.evaluation.dashboard.employee_eva')].concat(listEmployeeKpiSet.map(x => x.employeePoint));
-            approvedPoint = [translate('kpi.evaluation.dashboard.approver_eva')].concat(listEmployeeKpiSet.map(x => x.approvedPoint));
+            automaticPoint = [translate('kpi.evaluation.dashboard.auto_eva')].concat(listEmployeeKpiSet.map(x => x.automaticPoint ? x.automaticPoint : 0));
+            employeePoint = [translate('kpi.evaluation.dashboard.employee_eva')].concat(listEmployeeKpiSet.map(x => x.employeePoint ? x.employeePoint : 0));
+            approvedPoint = [translate('kpi.evaluation.dashboard.approver_eva')].concat(listEmployeeKpiSet.map(x => x.approvedPoint ? x.approvedPoint : 0));
             date = listEmployeeKpiSet.map(x => {
                 date = new Date(x.date);
                 return date.getFullYear() + "-" + (date.getMonth() + 1) + "-01";
@@ -196,7 +192,7 @@ function ResultsOfEmployeeKpiChart(props) {
 
     /**Xóa các chart đã render trước khi đủ dữ liệu */
     const removePreviosMultiLineChart = () => {
-        const chart = document.getElementById("refMultiLineChart");
+        const chart = document.getElementById("chart");
         if (chart) {
             while (chart.hasChildNodes()) {
                 chart.removeChild(chart.lastChild)
@@ -214,7 +210,7 @@ function ResultsOfEmployeeKpiChart(props) {
             dataMultiLineChart.map(data => {
                 let div = document.createElement('div');
                 div.id = data.title;
-                let section = document.getElementById("refMultiLineChart");
+                let section = document.getElementById("chart");
                 section.appendChild(div);
 
                 let chart = c3.generate({
@@ -381,7 +377,7 @@ function ResultsOfEmployeeKpiChart(props) {
                 </div>
             </section>
 
-            <section id={"refMultiLineChart"}> </section>
+            <section id={"chart"}> </section>
         </React.Fragment>
     )
 

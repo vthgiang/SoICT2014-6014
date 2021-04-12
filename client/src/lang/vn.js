@@ -111,7 +111,7 @@ export default {
                 group: "Nhóm khách hàng",
                 statistic: "Thống kê",
                 generalConfiguration: "Cấu hình chung",
-                evaluation:"Đánh giá hoạt động CSKH"
+                evaluation: "Đánh giá hoạt động CSKH"
             },
 
             task_template: "Mẫu Công Việc",
@@ -168,7 +168,7 @@ export default {
             kpi_unit_evaluate: "Dữ liệu KPI đơn vị",
             kpi_unit_overview: "Tổng quan KPI đơn vị",
             kpi_unit_dashboard: "Dashboard KPI đơn vị",
-            kpi_unit_statistic: "Thống kê KPI đơn vị",
+            kpi_unit_statistic: "Phân tích tính hợp lý trong thiết lập KPI đơn vị",
             kpi_unit_manager: "Quản lý KPI đơn vị",
             kpi_member_manager: "Đánh giá KPI nhân viên",
             kpi_member_dashboard: "DashBoard KPI nhân viên",
@@ -178,7 +178,7 @@ export default {
             kpi_personal_dashboard: "Dashboard KPI cá nhân",
             kpi_personal_manager: "Quản lí KPI cá nhân",
             kpi_member_detail: "Chi tiết KPI cá nhân",
-            
+
             notifications: "Thông báo",
 
             tasks: "Công việc cá nhân",
@@ -264,7 +264,7 @@ export default {
             manage_manufacturing_mill: "Quản lý xưởng sản xuất",
             manage_manufacturing_lot: "Quản lý lô sản xuất",
             manage_project: "Quản lý dự án",
-            
+
             // Quản lý vận chuyển
             manage_transport: "Quản lý vận chuyển",
             manage_transport_requirements: "Yêu cầu vận chuyển",
@@ -280,7 +280,7 @@ export default {
         news_feed: {
             news_feed: 'Tin tức'
         },
-        
+
         intro: {
             title: "Giải pháp không gian làm việc số cho doanh nghiệp",
             contents: [
@@ -1682,6 +1682,12 @@ export default {
                     delete_discipline_faile: "Xoá kỷ luật thất bại",
                     edit_discipline_success: "Chỉnh sửa kỷ luật thành công",
                     edit_discipline_faile: "Chỉnh sửa kỷ luật thất bại",
+
+                    update_major_success: "Chỉnh sửa chuyên ngành thành công",
+                    update_major_failure: "Chỉnh sửa chuyên ngành thất bại",
+
+                    delete_major_success: "Xóa chuyên ngành thành công",
+                    delete_major_failure: "Xóa chuyên ngành thất bại"
                 },
             },
 
@@ -3035,7 +3041,7 @@ export default {
 
                 col_name: "Tên công việc",
                 col_organization: "Đơn vị",
-                col_project:"Dự án",
+                col_project: "Dự án",
                 col_priority: "Độ ưu tiên",
                 col_start_date: "Ngày bắt đầu",
                 col_end_date: "Ngày kết thúc",
@@ -3319,8 +3325,8 @@ export default {
                 project: 'Thuộc dự án (nếu có)',
                 load_task: "Tải công việc",
                 time: "Thời gian",
-                load_task_chart: "Dashboard tải công việc",
-                load_task_chart_unit: "Dashboard tải công việc của đơn vị",
+                load_task_chart: "Tải công việc cá nhân",
+                load_task_chart_unit: "Tải công việc đơn vị",
                 explain: "Giải thích",
                 select_responsible: "Chọn người thực hiện",
             },
@@ -3655,7 +3661,7 @@ export default {
                 general_unit_task: "Tổng quan công việc",
                 general_unit_task_title_file_export: "Tổng quan công việc đơn vị",
                 unit: "Đơn vị",
-                unit_lowercase : "đơn vị",
+                unit_lowercase: "đơn vị",
                 of_unit: "của đơn vị",
                 of: "của",
                 all_tasks: "Tổng số công việc",
@@ -3789,7 +3795,7 @@ export default {
                                 "KPI đang được phê duyệt, Bạn không thể chỉnh sửa!",
                             activated:
                                 "KPI đã được kích hoạt, Bạn không thể chỉnh sửa!",
-                            evaluated: 
+                            evaluated:
                                 "KPI đã được đánh giá, Bạn không thể chỉnh sửa!",
                         },
                         delete_kpi: {
@@ -5715,7 +5721,7 @@ export default {
         manage_transport: {
             add_requirements: "Thêm yêu cầu vận chuyển",
         },
-        
+
         project: {
             code: "Mã dự án",
             name: "Tên dự án",

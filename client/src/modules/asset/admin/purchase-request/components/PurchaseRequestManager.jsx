@@ -11,22 +11,23 @@ import { PurchaseRequestDetailForm } from "../../../user/purchase-request/compon
 import { PurchaseRequestEditForm } from './PurchaseRequestManagerEditForm';
 import { getFormatDateFromTime } from '../../../../../helpers/stringMethod';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
-
+import { formatDate } from '../../../../../helpers/assetHelper.js';
 function PurchaseRequestManager(props) {
 
     const tableId_constructor = "table-purchase-request-manager";
+    const currentMonth = formatDate(Date.now())
     const defaultConfig = { limit: 5 }
     const limit_constructor = getTableConfiguration(tableId_constructor, defaultConfig).limit;
     const [state, setState] = useState({
         tableId: tableId_constructor,
         recommendNumber: "",
-        month: "",
-        status: null,
+        proposalDate: currentMonth,
+        status: ["approved", "waiting_for_approval", "disapproved"],
         page: 0,
         limit: limit_constructor,
     })
     const { translate, recommendProcure } = props;
-    const { page, limit, currentRowView, currentRow, tableId } = state;
+    const { page, limit, currentRowView, currentRow, tableId, status, proposalDate  } = state;
 
 
     useEffect(() => {
@@ -235,12 +236,9 @@ function PurchaseRequestManager(props) {
             case 'approved': return translate('asset.usage.approved');
             case 'waiting_for_approval': return translate('asset.usage.waiting_approval');
             case 'disapproved': return translate('asset.usage.not_approved');
-            default: return '';
         }
     }
 
-   
-        
 
         var listRecommendProcures = "", exportData;
         if (recommendProcure.isLoading === false) {
@@ -271,6 +269,7 @@ function PurchaseRequestManager(props) {
                         <div className="form-group">
                             <label className="form-control-static">Ngày lập phiếu</label>
                             <DatePicker
+                                value={proposalDate}
                                 id="month"
                                 dateFormat="month-year"
                                 onChange={handleMonthChange}
@@ -297,6 +296,7 @@ function PurchaseRequestManager(props) {
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.status')}</label>
                             <SelectMulti id={`multiSelectStatus`} multiple="multiple"
+                                value={status}
                                 options={{ nonSelectedText: translate('page.non_status'), allSelectedText: translate('page.all_status') }}
                                 onChange={handleStatusChange}
                                 items={[

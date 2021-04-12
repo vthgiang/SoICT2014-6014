@@ -121,7 +121,7 @@ const EditTaskTemplate = (props) => {
 
     useEffect(() => {
         // là dạng mẫu công việc
-        if (props.isTaskTemplate && props.taskTemplateId !== props.taskTemplateId) {
+        if (props.isTaskTemplate && props.taskTemplateId !== state.taskTemplateId) {
             setState({
                 ...state,
                 taskTemplateId: props.taskTemplateId,
@@ -170,7 +170,7 @@ const EditTaskTemplate = (props) => {
                  // Sẽ cập nhật lại state nên không cần render
             }
         }
-    },[props.id, props.taskTemplateId])
+    },[props.taskTemplateId])
 
     /**
      * Xử lý form lớn tasktemplate
@@ -403,6 +403,9 @@ const EditTaskTemplate = (props) => {
 
     const handleTaskActionsChange = (data) => {
         let { editingTemplate } = state;
+        const change = {...state.editingTemplate, taskActions:data}
+        // console.log(change);
+        // console.log(data);
         setState(state => {
             return {
                 ...state,
@@ -411,11 +414,15 @@ const EditTaskTemplate = (props) => {
                     taskActions: data
                 },
             }
-        }, () => props.onChangeTemplateData(state.editingTemplate));
+        });
+        props.onChangeTemplateData(change)
     }
 
     const handleTaskInformationsChange = (data) => {
         let { editingTemplate } = state;
+        const change = {...state.editingTemplate, taskInformations:data}
+        console.log(change);
+        console.log(data);
         setState(state => {
             return {
                 ...state,
@@ -424,7 +431,8 @@ const EditTaskTemplate = (props) => {
                     taskInformations: data
                 },
             }
-        }, () => props.onChangeTemplateData(state.editingTemplate))
+        })
+        props.onChangeTemplateData(change)
     }
 
     const clickShowMore = () => {
@@ -482,7 +490,7 @@ const EditTaskTemplate = (props) => {
         var allUnitsMember = getEmployeeSelectBoxItems(usersInUnitsOfCompany);
         // let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
 
-        console.log("editingTemplate", editingTemplate)
+        // console.log("editingTemplate", editingTemplate)
         return (
             <React.Fragment>
                 {/**Form chứa thông tin của mẫu công việc đang sửa */}

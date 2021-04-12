@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from 'react';
+import React, { Component, useEffect, useState, useLayoutEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -8,13 +8,11 @@ import { EmployeeCreateForm, EmployeeDetailForm, EmployeeEditFrom, EmployeeImpor
 
 import { EmployeeManagerActions } from '../redux/actions';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
-import { CareerReduxAction } from "../../../career/redux/actions";
-import { MajorActions } from "../../../major/redux/actions";
 import { FieldsActions } from '../../../field/redux/actions';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 
 const EmployeeManagement = (props) => {
-    
+
     let search = window.location.search.split('?')
     let keySearch = 'organizationalUnits';
     let _organizationalUnits = null;
@@ -51,10 +49,6 @@ const EmployeeManagement = (props) => {
         props.getListFields({ page: 0, limit: 10000 })
         props.getAllEmployee(state);
         props.getDepartment();
-        props.getListMajor({ name: '', page: 1, limit: 1000 });
-        props.getListCareerAction({ name: '', page: 1, limit: 1000 });
-        props.getListCareerField({ name: '', page: 1, limit: 1000 });
-        props.getListCareerPosition({ name: '', page: 1, limit: 1000 });
     }, [])
 
     /**
@@ -261,7 +255,7 @@ const EmployeeManagement = (props) => {
             ...state,
             limit: parseInt(number),
         }))
-        
+
     }
 
     /**
@@ -279,7 +273,7 @@ const EmployeeManagement = (props) => {
     useEffect(() => {
         props.getAllEmployee(state);
     }, [state.limit, state.page]);
-    
+
     const handleExportExcel = async () => {
         const { employeesManager } = props;
         let arrEmail = employeesManager.listEmployees.map(x => x.emailInCompany);
@@ -874,55 +868,19 @@ const EmployeeManagement = (props) => {
         return exportData
     }
 
-    if (state.exportDataStatus === 0 && props.employeesManager.isLoading) {
-        setState(state => ({
-            ...state,
-            exportDataStatus: 1
-        }))
-    }
-
-    if (state.exportDataStatus === 1 && !props.employeesManager.isLoading) {
-        setState(state => ({
-            ...state,
-            exportDataStatus: 2
-        }))
-    }
-
-    // shouldComponentUpdate = async (nextProps, nextState) => {
-    //     if (this.state.exportDataStatus === 0 && nextProps.employeesManager.isLoading) {
-    //         await this.setState({
-    //             exportDataStatus: 1
-    //         })
-    //     };
-    //     if (this.state.exportDataStatus === 1 && !nextProps.employeesManager.isLoading) {
-    //         await this.setState({
-    //             exportDataStatus: 2
-    //         })
-    //     };
-    //     return true;
-    // };
-
-    // componentDidUpdate() {
-    //     const { exportDataStatus } = this.state;
-    //     const { employeesManager } = this.props;
-    //     if (exportDataStatus === 1 && !employeesManager.isLoading && employeesManager.exportData.length !== 0) {
-    //         let exportData = this.convertDataToExportData(employeesManager.exportData);
-    //         ExportExcel.export(exportData);
-    //     };
-    // }
-
-    useEffect(() => {
+    useLayoutEffect(() => {
         const { exportDataStatus } = state;
         const { employeesManager } = props;
-        if (exportDataStatus === 1 && !employeesManager.isLoading && employeesManager.exportData.length !== 0) {
-            let exportData = this.convertDataToExportData(employeesManager.exportData);
+        if (exportDataStatus === 0 && !employeesManager.isLoading && employeesManager.exportData.length !== 0) {
+            let exportData = convertDataToExportData(employeesManager.exportData);
             ExportExcel.export(exportData);
         };
-    }, [state.exportDataStatus, props.employeesManager.isLoading, props.employeesManager.exportData.length]);
+
+    }, [props.employeesManager.exportData]);
 
     const { employeesManager, translate, department, field } = props;
 
-    const { importEmployee, limit, page, organizationalUnits, currentRow, currentRowView, status} = state;
+    const { importEmployee, limit, page, organizationalUnits, currentRow, currentRowView, status } = state;
 
     let listEmployees = [];
     if (employeesManager.listEmployees) {
@@ -1181,10 +1139,6 @@ const actionCreators = {
     getDepartment: DepartmentActions.get,
     getAllEmployee: EmployeeManagerActions.getAllEmployee,
     deleteEmployee: EmployeeManagerActions.deleteEmployee,
-    getListMajor: MajorActions.getListMajor,
-    getListCareerAction: CareerReduxAction.getListCareerAction,
-    getListCareerField: CareerReduxAction.getListCareerField,
-    getListCareerPosition: CareerReduxAction.getListCareerPosition,
 };
 
 const employeeManagement = connect(mapState, actionCreators)(withTranslate(EmployeeManagement));

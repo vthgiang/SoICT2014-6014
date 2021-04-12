@@ -1,16 +1,17 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import moment from 'moment';
 
-class DepreciationTab extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {};
-    }
+function DepreciationTab(props) {
+   
+    const [state, setState] = useState({})
+    const [prevProps, setPrevProps] = useState({
+        id: null
+    })
 
     // Function format dữ liệu Date thành string
-    formatDate(date, monthYear = false) {
+    const formatDate = (date, monthYear = false) =>{
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -31,30 +32,28 @@ class DepreciationTab extends Component {
         }
     }
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id || nextProps.depreciationType !== prevState.depreciationType) {
-            return {
-                ...prevState,
-                id: nextProps.id,
-                cost: nextProps.cost,
-                residualValue: nextProps.residualValue,
-                usefulLife: nextProps.usefulLife,
-                startDepreciation: nextProps.startDepreciation,
-                endDepreciation: nextProps.endDepreciation,
-                depreciationType: nextProps.depreciationType,
-                estimatedTotalProduction: nextProps.estimatedTotalProduction,
-                unitsProducedDuringTheYears: nextProps.unitsProducedDuringTheYears,
-                annualDepreciationValue: nextProps.annualDepreciationValue,
-                monthlyDepreciationValue: nextProps.monthlyDepreciationValue,
-            }
-        } else {
-            return null;
-        }
+    if(prevProps.id !== props.id){
+        setState({
+                ...state,
+                id: props.id,
+                cost: props.cost,
+                residualValue: props.residualValue,
+                usefulLife: props.usefulLife,
+                startDepreciation: props.startDepreciation,
+                endDepreciation: props.endDepreciation,
+                depreciationType: props.depreciationType,
+                estimatedTotalProduction: props.estimatedTotalProduction,
+                unitsProducedDuringTheYears: props.unitsProducedDuringTheYears,
+                annualDepreciationValue: props.annualDepreciationValue,
+                monthlyDepreciationValue: props.monthlyDepreciationValue,
+        })
+        setPrevProps(props)
     }
+   
 
-    addMonthToEndDepreciation = (day) => {
+    const addMonthToEndDepreciation = (day) => {
         if (day) {
-            let { usefulLife } = this.state,
+            let { usefulLife } = state,
                 splitDay = day.toString().split('-'),
                 currentDate = moment(`${splitDay[2]}-${splitDay[1]}-${splitDay[0]}`),
                 futureMonth = moment(currentDate).add(usefulLife, 'M'),
@@ -77,7 +76,7 @@ class DepreciationTab extends Component {
      * @param {*} estimatedTotalProduction Sản lượng theo công suất thiết kế (trong 1 năm)
      * @param {*} unitsProducedDuringTheYears Sản lượng sản phẩm trong các tháng
      */
-    calculateDepreciation = (depreciationType, cost, usefulLife, estimatedTotalProduction, unitsProducedDuringTheYears, startDepreciation) => {
+    const calculateDepreciation = (depreciationType, cost, usefulLife, estimatedTotalProduction, unitsProducedDuringTheYears, startDepreciation) => {
         let annualDepreciation, monthlyDepreciation, remainingValue = cost;
 
         if (depreciationType === "straight_line") { // Phương pháp khấu hao theo đường thẳng
@@ -144,8 +143,8 @@ class DepreciationTab extends Component {
         return [parseInt(annualDepreciation), parseInt(annualDepreciation / 12), parseInt(remainingValue)];
     }
 
-    formatDepreciationType = (type) => {
-        const { translate } = this.props;
+    const formatDepreciationType = (type) => {
+        const { translate } = props;
         if (type === 'straight_line') {
             return translate('asset.depreciation.line');
         }
@@ -160,16 +159,16 @@ class DepreciationTab extends Component {
         }
     }
 
-    render() {
-        const { id } = this.props;
-        const { translate } = this.props;
+    
+        const { id } = props;
+        const { translate } = props;
         const { cost, residualValue, startDepreciation, usefulLife, depreciationType, endDepreciation, annualDepreciationValue, monthlyDepreciationValue,
-            estimatedTotalProduction, unitsProducedDuringTheYears } = this.state;
+            estimatedTotalProduction, unitsProducedDuringTheYears } = state;
 
         var formater = new Intl.NumberFormat();
 
         let annualDepreciation, monthlyDepreciation, remainingValue = cost;
-        let result = this.calculateDepreciation(depreciationType, cost, usefulLife, estimatedTotalProduction, unitsProducedDuringTheYears, startDepreciation);
+        let result = calculateDepreciation(depreciationType, cost, usefulLife, estimatedTotalProduction, unitsProducedDuringTheYears, startDepreciation);
         annualDepreciation = result[0];
         monthlyDepreciation = result[1];
         remainingValue = result[2];
@@ -190,7 +189,7 @@ class DepreciationTab extends Component {
                         </div>
                         <div className={`form-group`}>
                             <strong>{translate('asset.general_information.start_depreciation')}&emsp; </strong>
-                            {startDepreciation ? this.formatDate(startDepreciation) : translate('asset.general_information.no_data')}
+                            {startDepreciation ? formatDate(startDepreciation) : translate('asset.general_information.no_data')}
                         </div>
                         <div className={`form-group`}>
                             <strong>{translate('asset.asset_info.usage_time')}&emsp; </strong>
@@ -199,11 +198,11 @@ class DepreciationTab extends Component {
                         </div>
                         <div className="form-group">
                             <strong>{translate('asset.general_information.end_depreciation')}&emsp; </strong>
-                            {startDepreciation ? this.addMonthToEndDepreciation(this.formatDate(startDepreciation)) : translate('asset.general_information.no_data')}
+                            {startDepreciation ? addMonthToEndDepreciation(formatDate(startDepreciation)) : translate('asset.general_information.no_data')}
                         </div>
                         <div className="form-group">
                             <strong>{translate('asset.general_information.depreciation_type')}&emsp; </strong>
-                            {depreciationType ? this.formatDepreciationType(depreciationType) : translate('asset.general_information.no_data')}
+                            {depreciationType ? formatDepreciationType(depreciationType) : translate('asset.general_information.no_data')}
                         </div>
                         <div className="form-group">
                             <strong>{translate('asset.asset_info.annual_depreciation')}&emsp; </strong>
@@ -225,7 +224,6 @@ class DepreciationTab extends Component {
                 </div>
             </div>
         );
-    }
 };
 const depreciationTab = connect(null, null)(withTranslate(DepreciationTab));
 export { depreciationTab as DepreciationTab };

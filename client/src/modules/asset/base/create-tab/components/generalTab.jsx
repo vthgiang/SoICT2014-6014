@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -9,36 +9,39 @@ import { AssetTypeActions } from '../../../admin/asset-type/redux/actions';
 import { string2literal } from '../../../../../helpers/handleResponse';
 import { generateCode } from "../../../../../helpers/generateCode";
 import ValidationHelper from '../../../../../helpers/validationHelper';
-class GeneralTab extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
+function GeneralTab(props) {
+    const [state, setState] = useState({
             detailInfo: [],
             isObj: true,
             defaultAvatar: "image/asset_blank.jpg"
-        };
-    }
+    })
 
-    regenerateCode = () => {
+    const [prevProps, setPrevProps] = useState({
+        id: null,
+        assignedToUser: null,
+        assignedToOrganizationalUnit: null,
+    })
+    
+
+    const regenerateCode = () => {
         let code = generateCode("VVTM");
-        this.setState((state) => ({
+        setState((state) => ({
             ...state,
             code: code,
         }));
-        this.validateCode(code);
+        validateCode(code);
     }
-    componentDidMount = () => {
-        // Mỗi khi modal mở, cần sinh lại code
-        window.$('#modal-add-asset').on('shown.bs.modal', this.regenerateCode);
-    }
-    componentWillUnmount = () => {
-        // Unsuscribe event
-        window.$('#modal-add-asset').unbind('shown.bs.modal', this.regenerateCode)
-    }
+
+    useEffect(() => {
+        window.$('#modal-add-asset').on('shown.bs.modal', regenerateCode);
+        return () =>{
+            window.$('#modal-add-asset').unbind('shown.bs.modal', regenerateCode)
+        }
+    }, [])
 
 
     // Function format dữ liệu Date thành string
-    formatDate(date, monthYear = false) {
+    const formatDate = (date, monthYear = false) => {
         if (!date) return null;
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
@@ -61,46 +64,55 @@ class GeneralTab extends Component {
     }
 
     // Function upload avatar
-    handleUpload = (e) => {
+    const handleUpload = (e) => {
         var file = e.target.files[0];
 
         if (file) {
             var fileLoad = new FileReader();
             fileLoad.readAsDataURL(file);
             fileLoad.onload = () => {
-                this.setState({
-                    img: fileLoad.result
+                setState(state =>{
+                    return{
+                        ...state,
+                        img: fileLoad.result
+                    }
                 });
-                this.props.handleUpload(fileLoad.result, file)
+                props.handleUpload(fileLoad.result, file)
             };
         }
     }
 
     // Function lưu các trường thông tin vào state
-    handleChange = (e) => {
+    const handleChange = (e) => {
         const { name, value } = e.target;
-        this.setState({
-            [name]: value,
+        setState(state =>{
+            return{
+                ...state,
+                [name]: value,
+            }
         })
-        this.props.handleChange(name, value);
+        props.handleChange(name, value);
     }
 
     /**
      * Bắt sự kiện thay đổi mã tài sản
      */
-    handleCodeChange = (e) => {
+    const handleCodeChange = (e) => {
         const { value } = e.target;
-        this.validateCode(value, true);
+        validateCode(value, true);
     }
-    validateCode = (value, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateCode(this.props.translate, value);
+    const validateCode = (value, willUpdateState = true) => {
+        let { message } = ValidationHelper.validateCode(props.translate, value);
 
         if (willUpdateState) {
-            this.setState({
-                errorOnCode: message,
-                code: value,
+            setState(state =>{
+                return{
+                    ...state,
+                    errorOnCode: message,
+                    code: value,
+                }
             });
-            this.props.handleChange("code", value);
+            props.handleChange("code", value);
         }
         return message === undefined;
     }
@@ -108,22 +120,22 @@ class GeneralTab extends Component {
     /**
      * Bắt sự kiện thay đổi tên tài sản
      */
-    handleAssetNameChange = (e) => {
+    const handleAssetNameChange = (e) => {
         const { value } = e.target;
-        this.validateAssetName(value, true);
+        validateAssetName(value, true);
     }
-    validateAssetName = (value, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+    const validateAssetName = (value, willUpdateState = true) => {
+        let { message } = ValidationHelper.validateEmpty(props.translate, value);
 
         if (willUpdateState) {
-            this.setState(state => {
+            setState(state => {
                 return {
                     ...state,
                     errorOnAssetName: message,
                     assetName: value,
                 }
             });
-            this.props.handleChange("assetName", value);
+            props.handleChange("assetName", value);
         }
         return message === undefined;
     };
@@ -131,22 +143,22 @@ class GeneralTab extends Component {
     /**
      * Bắt sự kiện thay đổi số serial
      */
-    handleSerialChange = (e) => {
+    const handleSerialChange = (e) => {
         const { value } = e.target;
-        this.validateSerial(value, true);
+        validateSerial(value, true);
     }
-    validateSerial = (value, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+    const validateSerial = (value, willUpdateState = true) => {
+        let { message } = ValidationHelper.validateEmpty(props.translate, value);
 
         if (willUpdateState) {
-            this.setState(state => {
+            setState(state => {
                 return {
                     ...state,
                     errorOnSerial: message,
                     serial: value,
                 }
             });
-            this.props.handleChange("serial", value);
+            props.handleChange("serial", value);
         }
         return message === undefined;
     };
@@ -154,22 +166,25 @@ class GeneralTab extends Component {
     /**
      * Bắt sự kiện thay đổi nhóm tài sản
      */
-    handleGroupChange = (value) => {
-        this.setState({
-            group: value[0]
+    const handleGroupChange = (value) => {
+        setState(state =>{
+            return{
+                ...state,
+                group: value[0]
+            }
         })
-        this.props.handleChange('group', value[0]);
+        props.handleChange('group', value[0]);
     }
 
     /**
      * Bắt sự kiện thay đổi loại tài sản
      */
 
-    handleAssetTypeChange = async (value) => {
-        const { translate } = this.props;
+    const handleAssetTypeChange = async (value) => {
+        const { translate } = props;
         let { message } = ValidationHelper.validateEmpty(translate, value[0]);
 
-        await this.setState(state => {
+        await setState(state => {
             return {
                 ...state,
                 assetType: JSON.stringify(value),
@@ -177,27 +192,27 @@ class GeneralTab extends Component {
                 errorOnAssetType: message,
             }
         });
-        this.props.handleChange("assetType", value);
+        props.handleChange("assetType", value);
     }
 
     /**
      * Bắt sự kiện thay đổi ngày nhập
      */
-    handlePurchaseDateChange = (value) => {
-        this.validatePurchaseDate(value, true)
+    const handlePurchaseDateChange = (value) => {
+        validatePurchaseDate(value, true)
     }
-    validatePurchaseDate = (value, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+    const validatePurchaseDate = (value, willUpdateState = true) => {
+        let { message } = ValidationHelper.validateEmpty(props.translate, value);
 
         if (willUpdateState) {
-            this.setState(state => {
+            setState(state => {
                 return {
                     ...state,
                     errorOnPurchaseDate: message,
                     purchaseDate: value,
                 }
             });
-            this.props.handleChange("purchaseDate", value);
+            props.handleChange("purchaseDate", value);
         }
         return message === undefined;
     }
@@ -205,21 +220,21 @@ class GeneralTab extends Component {
     /**
      * Bắt sự kiện thay đổi ngày bảo hành
      */
-    handleWarrantyExpirationDateChange = (value) => {
-        this.validateWarrantyExpirationDate(value, true)
+    const handleWarrantyExpirationDateChange = (value) => {
+        validateWarrantyExpirationDate(value, true)
     }
-    validateWarrantyExpirationDate = (value, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+    const validateWarrantyExpirationDate = (value, willUpdateState = true) => {
+        let { message } = ValidationHelper.validateEmpty(props.translate, value);
 
         if (willUpdateState) {
-            this.setState(state => {
+            setState(state => {
                 return {
                     ...state,
                     errorOnWarrantyExpirationDate: message,
                     warrantyExpirationDate: value,
                 }
             });
-            this.props.handleChange("warrantyExpirationDate", value);
+            props.handleChange("warrantyExpirationDate", value);
         }
         return message === undefined;
     }
@@ -227,11 +242,14 @@ class GeneralTab extends Component {
     /**
      * Bắt sự kiện thay đổi người quản lý
      */
-    handleManagedByChange = (value) => {
-        this.setState({
-            managedBy: value[0]
+    const handleManagedByChange = (value) => {
+        setState(state =>{
+            return{
+                ...state,
+                managedBy: value[0]
+            }
         });
-        this.props.handleChange("managedBy", value[0]);
+        props.handleChange("managedBy", value[0]);
     }
 
 
@@ -239,38 +257,44 @@ class GeneralTab extends Component {
     /**
      * Bắt sự kiện thay đổi người sử dụng
      */
-    handleAssignedToUserChange = (value) => {
-        this.setState({
-            assignedToUser: string2literal(value[0])
+    const handleAssignedToUserChange = (value) => {
+        setState(state =>{
+            return{
+                ...state,
+                assignedToUser: string2literal(value[0])
+            }
         });
-        this.props.handleChange("assignedToUser", string2literal(value[0]));
+        props.handleChange("assignedToUser", string2literal(value[0]));
     }
 
-    handleAssignedToOrganizationalUnitChange = (value) => {
-        this.setState({
-            assignedToOrganizationalUnit: string2literal(value[0])
+    const handleAssignedToOrganizationalUnitChange = (value) => {
+        setState(state => {
+            return{
+                ...state,
+                assignedToOrganizationalUnit: string2literal(value[0])
+            }
         });
-        this.props.handleChange("assignedToOrganizationalUnit", string2literal(value[0]));
+        props.handleChange("assignedToOrganizationalUnit", string2literal(value[0]));
     }
 
     /**
      * Bắt sự kiện thay đổi ngày bắt đầu sử dụng
      */
-    handleHandoverFromDateChange = (value) => {
-        this.validateHandoverFromDate(value, true)
+    const handleHandoverFromDateChange = (value) => {
+        validateHandoverFromDate(value, true)
     }
-    validateHandoverFromDate = (value, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+    const validateHandoverFromDate = (value, willUpdateState = true) => {
+        let { message } = ValidationHelper.validateEmpty(props.translate, value);
 
         if (willUpdateState) {
-            this.setState(state => {
+            setState(state => {
                 return {
                     ...state,
                     errorOnHandoverFromDate: message,
                     handoverFromDate: value,
                 }
             });
-            this.props.handleChange("handoverFromDate", value);
+            props.handleChange("handoverFromDate", value);
         }
         return message === undefined;
     }
@@ -278,21 +302,21 @@ class GeneralTab extends Component {
     /**
      * Function bắt sự kiện thay đổi ngày kết thúc sử dụng
      */
-    handleHandoverToDateChange = (value) => {
-        this.validateHandoverToDate(value, true)
+    const handleHandoverToDateChange = (value) => {
+        validateHandoverToDate(value, true)
     }
-    validateHandoverToDate = (value, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+    const validateHandoverToDate = (value, willUpdateState = true) => {
+        let { message } = ValidationHelper.validateEmpty(props.translate, value);
 
         if (willUpdateState) {
-            this.setState(state => {
+            setState(state => {
                 return {
                     ...state,
                     errorOnHandoverToDate: message,
                     handoverToDate: value,
                 }
             });
-            this.props.handleChange("handoverToDate", value);
+            props.handleChange("handoverToDate", value);
         }
         return message === undefined;
     }
@@ -300,86 +324,98 @@ class GeneralTab extends Component {
     /**
      * Bắt sự kiện thay đổi vị trí tài sản
      */
-    handleLocationChange = async (value) => {
-        await this.setState(state => {
+    const handleLocationChange = async (value) => {
+        await setState(state => {
             return {
                 ...state,
                 location: value[0],
             }
         });
 
-        this.props.handleChange("location", value[0]);
+        props.handleChange("location", value[0]);
     }
 
     /**
      * Bắt sự kiện thay đổi mô tả
      */
-    handleDescriptionChange = (e) => {
+    const handleDescriptionChange = (e) => {
         let value = e.target.value;
-        this.setState(state => {
+        setState(state => {
             return {
                 ...state,
                 description: value
             }
         });
-        this.props.handleChange("description", value);
+        props.handleChange("description", value);
     }
 
     /**
      * Bắt sự kiện thay đổi trạng thái tài sản
      */
-    handleStatusChange = (value) => {
-        this.setState({
-            status: value[0]
+    const handleStatusChange = (value) => {
+        setState(state =>{
+            return{
+                ...state,
+                status: value[0]   
+            }
         })
-        this.props.handleChange('status', value[0]);
+        props.handleChange('status', value[0]);
     }
 
-    handleRoles = (value) => {
-        this.setState(state => {
+    const handleRoles = (value) => {
+        setState(state => {
             return {
                 ...state,
                 readByRoles: value
             }
         });
-        this.props.handleChange("readByRoles", value);
+        props.handleChange("readByRoles", value);
     }
     /**
      * Bắt sự kiện thay đổi quyền đăng ký sử dụng
      */
-    handleTypeRegisterForUseChange = (value) => {
-        this.setState({
-            typeRegisterForUse: value[0]
+    const handleTypeRegisterForUseChange = (value) => {
+        setState(state =>{
+            return{
+                ...state,
+                 typeRegisterForUse: value[0]
+            }
         })
-        this.props.handleChange('typeRegisterForUse', value[0]);
+        props.handleChange('typeRegisterForUse', value[0]);
     }
 
     /**
      * Bắt sự kiện click thêm Thông tin chi tiết
      */
-    handleAddDetailInfo = () => {
-        var detailInfo = this.state.detailInfo;
+    const handleAddDetailInfo = () => {
+        var detailInfo = state.detailInfo;
 
         if (detailInfo.length !== 0) {
             let result;
 
             for (let n in detailInfo) {
-                result = this.validateNameField(detailInfo[n].nameField, n) && this.validateValue(detailInfo[n].value, n);
+                result = validateNameField(detailInfo[n].nameField, n) && validateValue(detailInfo[n].value, n);
                 if (!result) {
-                    this.validateNameField(detailInfo[n].nameField, n);
-                    this.validateValue(detailInfo[n].value, n)
+                    validateNameField(detailInfo[n].nameField, n);
+                    validateValue(detailInfo[n].value, n)
                     break;
                 }
             }
 
             if (result) {
-                this.setState({
-                    detailInfo: [...detailInfo, { nameField: "", value: "" }]
+                setState(state => {
+                    return{
+                        ...state,
+                        detailInfo: [...detailInfo, { nameField: "", value: "" }]
+                    }
                 })
             }
         } else {
-            this.setState({
-                detailInfo: [...detailInfo, { nameField: "", value: "" }]
+            setState(state =>{
+                return{
+                    ...state,
+                    detailInfo: [...detailInfo, { nameField: "", value: "" }]
+                }
             })
         }
 
@@ -388,17 +424,17 @@ class GeneralTab extends Component {
     /**
      * Bắt sự kiện chỉnh sửa tên trường dữ liệu thông tin chi tiết
      */
-    handleChangeNameField = (e, index) => {
+    const handleChangeNameField = (e, index) => {
         var { value } = e.target;
-        this.validateNameField(value, index);
+        validateNameField(value, index);
     }
-    validateNameField = (value, className, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+    const validateNameField = (value, className, willUpdateState = true) => {
+        let { message } = ValidationHelper.validateEmpty(props.translate, value);
 
         if (willUpdateState) {
-            var { detailInfo } = this.state;
+            var { detailInfo } = state;
             detailInfo[className] = { ...detailInfo[className], nameField: value }
-            this.setState(state => {
+            setState(state => {
                 return {
                     ...state,
                     errorOnNameField: message,
@@ -406,7 +442,7 @@ class GeneralTab extends Component {
                     detailInfo: detailInfo
                 }
             });
-            this.props.handleChange("detailInfo", detailInfo);
+            props.handleChange("detailInfo", detailInfo);
         }
         return message === undefined;
     }
@@ -414,17 +450,17 @@ class GeneralTab extends Component {
     /**
      * Bắt sự kiện chỉnh sửa giá trị trường dữ liệu thông tin chi tiết
      */
-    handleChangeValue = (e, index) => {
+    const handleChangeValue = (e, index) => {
         var { value } = e.target;
-        this.validateValue(value, index);
+        validateValue(value, index);
     }
-    validateValue = (value, className, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+    const validateValue = (value, className, willUpdateState = true) => {
+        let { message } = ValidationHelper.validateEmpty(props.translate, value);
 
         if (willUpdateState) {
-            var { detailInfo } = this.state;
+            var { detailInfo } = state;
             detailInfo[className] = { ...detailInfo[className], value: value }
-            this.setState(state => {
+            setState(state => {
                 return {
                     ...state,
                     errorOnValue: message,
@@ -432,7 +468,7 @@ class GeneralTab extends Component {
                     detailInfo: detailInfo
                 }
             });
-            this.props.handleChange("detailInfo", detailInfo);
+            props.handleChange("detailInfo", detailInfo);
         }
         return message === undefined;
     }
@@ -440,81 +476,82 @@ class GeneralTab extends Component {
     /**
      * Bắt sự kiện xóa thông tin chi tiết
      */
-    delete = (index) => {
-        var { detailInfo } = this.state;
+    const delete_function = (index) => {
+        var { detailInfo } = state;
         detailInfo.splice(index, 1);
         if (detailInfo.length !== 0) {
             for (let n in detailInfo) {
-                this.validateNameField(detailInfo[n].nameField, n);
-                this.validateValue(detailInfo[n].value, n)
+                validateNameField(detailInfo[n].nameField, n);
+                validateValue(detailInfo[n].value, n)
             }
         } else {
-            this.setState({
-                detailInfo: detailInfo,
-                errorOnValue: undefined,
-                errorOnNameField: undefined
+            setState(state =>{
+                return{
+                    ...state,
+                    detailInfo: detailInfo,
+                    errorOnValue: undefined,
+                    errorOnNameField: undefined
+                }
             })
         }
     };
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id
-            || nextProps.assignedToUser !== prevState.assignedToUser
-            || nextProps.assignedToOrganizationalUnit !== prevState.assignedToOrganizationalUnit) {
-            return {
-                ...prevState,
-                id: nextProps.id,
-                img: nextProps.img,
-                avatar: nextProps.avatar,
+    if (prevProps.id !== props.id
+        || prevProps.assignedToUser !== props.assignedToUser
+        || prevProps.assignedToOrganizationalUnit !== props.assignedToOrganizationalUnit){
+            setState(state => {
+                return{
+                    ...state,
+                    id: props.id,
+                    img: props.img,
+                    avatar: props.avatar,
 
-                code: nextProps.code,
-                assetName: nextProps.assetName,
-                serial: nextProps.serial,
-                assetType: nextProps.assetTypeEdit,
-                group: nextProps.group,
-                location: nextProps.location,
-                purchaseDate: nextProps.purchaseDate,
-                warrantyExpirationDate: nextProps.warrantyExpirationDate,
-                managedBy: nextProps.managedBy,
-                assignedToUser: nextProps.assignedToUser,
-                assignedToOrganizationalUnit: nextProps.assignedToOrganizationalUnit,
-                handoverFromDate: nextProps.handoverFromDate,
-                handoverToDate: nextProps.handoverToDate,
-                description: nextProps.description,
-                status: nextProps.status,
-                typeRegisterForUse: nextProps.typeRegisterForUse,
-                detailInfo: nextProps.detailInfo,
-                usageLogs: nextProps.usageLogs,
-                readByRoles: nextProps.readByRoles,
+                    code: props.code,
+                    assetName: props.assetName,
+                    serial: props.serial,
+                    assetType: props.assetTypeEdit,
+                    group: props.group,
+                    location: props.location,
+                    purchaseDate: props.purchaseDate,
+                    warrantyExpirationDate: props.warrantyExpirationDate,
+                    managedBy: props.managedBy,
+                    assignedToUser: props.assignedToUser,
+                    assignedToOrganizationalUnit: props.assignedToOrganizationalUnit,
+                    handoverFromDate: props.handoverFromDate,
+                    handoverToDate: props.handoverToDate,
+                    description: props.description,
+                    status: props.status,
+                    typeRegisterForUse: props.typeRegisterForUse,
+                    detailInfo: props.detailInfo,
+                    usageLogs: props.usageLogs,
+                    readByRoles: props.readByRoles,
 
-                errorOnCode: undefined,
-                errorOnAssetName: undefined,
-                errorOnSerial: undefined,
-                errorOnAssetType: undefined,
-                errorOnLocation: undefined,
-                errorOnPurchaseDate: undefined,
-                errorOnWarrantyExpirationDate: undefined,
-                errorOnManagedBy: undefined,
-                errorOnNameField: undefined,
-                errorOnValue: undefined,
-            }
-        } else {
-            return null;
+                    errorOnCode: undefined,
+                    errorOnAssetName: undefined,
+                    errorOnSerial: undefined,
+                    errorOnAssetType: undefined,
+                    errorOnLocation: undefined,
+                    errorOnPurchaseDate: undefined,
+                    errorOnWarrantyExpirationDate: undefined,
+                    errorOnManagedBy: undefined,
+                    errorOnNameField: undefined,
+                    errorOnValue: undefined,
+                }
+            })
+            setPrevProps(props)
         }
-    }
-
-    render() {
-        const { id, translate, user, assetsManager, role, department, assetType } = this.props;
+    
+        const { id, translate, user, assetsManager, role, department, assetType } = props;
         const {
             img, defaultAvatar, code, assetName, assetTypes, group, serial, purchaseDate, warrantyExpirationDate, managedBy, isObj,
             assignedToUser, assignedToOrganizationalUnit, location, description, status, typeRegisterForUse, detailInfo,
             errorOnCode, errorOnAssetName, errorOnSerial, errorOnAssetType, errorOnLocation, errorOnPurchaseDate,
             errorOnWarrantyExpirationDate, errorOnManagedBy, errorOnNameField, errorOnValue, usageLogs, readByRoles, errorOnNameFieldPosition, errorOnValuePosition
-        } = this.state;
+        } = state;
 
         var userlist = user.list, departmentlist = department.list;
-        let startDate = status == "in_use" && usageLogs && usageLogs.length ? this.formatDate(usageLogs[usageLogs.length - 1].startDate) : '';
-        let endDate = status == "in_use" && usageLogs && usageLogs.length ? this.formatDate(usageLogs[usageLogs.length - 1].endDate) : '';
+        let startDate = status == "in_use" && usageLogs && usageLogs.length ? formatDate(usageLogs[usageLogs.length - 1].startDate) : '';
+        let endDate = status == "in_use" && usageLogs && usageLogs.length ? formatDate(usageLogs[usageLogs.length - 1].endDate) : '';
 
         let assetbuilding = assetsManager && assetsManager.buildingAssets;
         let assetbuildinglist = assetbuilding && assetbuilding.list;
@@ -551,7 +588,7 @@ class GeneralTab extends Component {
                         </div>
                         <div className="upload btn btn-default ">
                             {translate('manage_asset.upload')}
-                            <input className="upload" type="file" name="file" onChange={this.handleUpload} />
+                            <input className="upload" type="file" name="file" onChange={handleUpload} />
                         </div>
                     </div>
 
@@ -563,7 +600,7 @@ class GeneralTab extends Component {
                                 {/* Mã tài sản */}
                                 <div className={`form-group ${!errorOnCode ? "" : "has-error"} `}>
                                     <label htmlFor="code">{translate('asset.general_information.asset_code')}<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" name="code" value={code} onChange={this.handleCodeChange} placeholder={translate('asset.general_information.asset_code')}
+                                    <input type="text" className="form-control" name="code" value={code} onChange={handleCodeChange} placeholder={translate('asset.general_information.asset_code')}
                                         autoComplete="off" />
                                     <ErrorLabel content={errorOnCode} />
                                 </div>
@@ -571,7 +608,7 @@ class GeneralTab extends Component {
                                 {/* Tên tài sản */}
                                 <div className={`form-group ${!errorOnAssetName ? "" : "has-error"} `}>
                                     <label htmlFor="assetName">{translate('asset.general_information.asset_name')}<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" name="assetName" value={assetName} onChange={this.handleAssetNameChange} placeholder={translate('asset.general_information.asset_name')}
+                                    <input type="text" className="form-control" name="assetName" value={assetName} onChange={handleAssetNameChange} placeholder={translate('asset.general_information.asset_name')}
                                         autoComplete="off" />
                                     <ErrorLabel content={errorOnAssetName} />
                                 </div>
@@ -579,7 +616,7 @@ class GeneralTab extends Component {
                                 {/* Số serial */}
                                 <div className={`form-group ${!errorOnSerial ? "" : "has-error"} `}>
                                     <label htmlFor="serial">{translate('asset.general_information.serial_number')}</label>
-                                    <input type="text" className="form-control" name="serial" value={serial} onChange={this.handleSerialChange} placeholder={translate('asset.general_information.serial_number')}
+                                    <input type="text" className="form-control" name="serial" value={serial} onChange={handleSerialChange} placeholder={translate('asset.general_information.serial_number')}
                                         autoComplete="off" />
                                     <ErrorLabel content={errorOnSerial} />
                                 </div>
@@ -599,7 +636,7 @@ class GeneralTab extends Component {
                                             { value: 'machine', text: translate('asset.asset_info.machine') },
                                             { value: 'other', text: translate('asset.asset_info.other') },
                                         ]}
-                                        onChange={this.handleGroupChange}
+                                        onChange={handleGroupChange}
                                     />
                                 </div>
 
@@ -608,8 +645,8 @@ class GeneralTab extends Component {
                                     <label>{translate('asset.general_information.asset_type')}<span className="text-red">*</span></label>
                                     <TreeSelect
                                         data={typeArr}
-                                        value={this.state.assetType}
-                                        handleChange={this.handleAssetTypeChange}
+                                        value={state.assetType}
+                                        handleChange={handleAssetTypeChange}
                                         mode="hierarchical"
                                     />
                                     <ErrorLabel content={errorOnAssetType} />
@@ -620,8 +657,8 @@ class GeneralTab extends Component {
                                     <label htmlFor="purchaseDate">{translate('asset.general_information.purchase_date')}</label>
                                     <DatePicker
                                         id={`purchaseDate${id}`}
-                                        value={purchaseDate ? this.formatDate(purchaseDate) : ''}
-                                        onChange={this.handlePurchaseDateChange}
+                                        value={purchaseDate ? formatDate(purchaseDate) : ''}
+                                        onChange={handlePurchaseDateChange}
                                     />
                                     <ErrorLabel content={errorOnPurchaseDate} />
                                 </div>
@@ -631,8 +668,8 @@ class GeneralTab extends Component {
                                     <label htmlFor="warrantyExpirationDate">{translate('asset.general_information.warranty_expiration_date')}</label>
                                     <DatePicker
                                         id={`warrantyExpirationDate${id}`}
-                                        value={warrantyExpirationDate ? this.formatDate(warrantyExpirationDate) : ''}
-                                        onChange={this.handleWarrantyExpirationDateChange}
+                                        value={warrantyExpirationDate ? formatDate(warrantyExpirationDate) : ''}
+                                        onChange={handleWarrantyExpirationDateChange}
                                     />
                                     <ErrorLabel content={errorOnPurchaseDate} />
                                 </div>
@@ -646,7 +683,7 @@ class GeneralTab extends Component {
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             items={userlist.map(x => { return { value: x.id, text: x.name + " - " + x.email } })}
-                                            onChange={this.handleManagedByChange}
+                                            onChange={handleManagedByChange}
                                             value={managedBy}
                                             options={{ placeholder: "" }}
                                             multiple={false}
@@ -664,7 +701,7 @@ class GeneralTab extends Component {
                                             style={{ width: "100%" }}
                                             items={role.list.map(role => { return { value: role ? role._id : null, text: role ? role.name : "" } })}
                                             value={readByRoles}
-                                            onChange={this.handleRoles}
+                                            onChange={handleRoles}
                                             multiple={true}
                                         />
                                     </div>
@@ -676,7 +713,7 @@ class GeneralTab extends Component {
                                 {/* Vị trí tài sản */}
                                 <div className={`form-group ${!errorOnLocation ? "" : "has-error"}`}>
                                     <label htmlFor="location">{translate('asset.general_information.asset_location')}</label>
-                                    <TreeSelect data={buildingList} value={[location]} handleChange={this.handleLocationChange} mode="radioSelect" />
+                                    <TreeSelect data={buildingList} value={[location]} handleChange={handleLocationChange} mode="radioSelect" />
                                     <ErrorLabel content={errorOnLocation} />
                                 </div>
 
@@ -696,7 +733,7 @@ class GeneralTab extends Component {
                                             { value: 'lost', text: translate('asset.general_information.lost') },
                                             { value: 'disposed', text: translate('asset.general_information.disposal') },
                                         ]}
-                                        onChange={this.handleStatusChange}
+                                        onChange={handleStatusChange}
                                     />
                                 </div>
 
@@ -714,7 +751,7 @@ class GeneralTab extends Component {
                                             { value: 2, text: translate('asset.general_information.register_by_hour') },
                                             { value: 3, text: translate('asset.general_information.register_for_long_term') },
                                         ]}
-                                        onChange={this.handleTypeRegisterForUseChange}
+                                        onChange={handleTypeRegisterForUseChange}
                                     />
                                 </div>
 
@@ -773,7 +810,7 @@ class GeneralTab extends Component {
                                 {/* Mô tả */}
                                 <div className="form-group">
                                     <label htmlFor="description">{translate('asset.general_information.description')}</label>
-                                    <textarea className="form-control" rows="3" name="description" value={description} onChange={this.handleDescriptionChange} placeholder="Enter ..." autoComplete="off" ></textarea>
+                                    <textarea className="form-control" rows="3" name="description" value={description} onChange={handleDescriptionChange} placeholder="Enter ..." autoComplete="off" ></textarea>
                                 </div>
 
                             </div>
@@ -782,7 +819,7 @@ class GeneralTab extends Component {
                         {/* Thông tin chi tiết */}
                         <div className="col-md-12">
                             <label>{translate('asset.general_information.asset_properties')}:<a style={{ cursor: "pointer" }} title={translate('asset.general_information.asset_properties')}><i className="fa fa-plus-square" style={{ color: "#28A745", marginLeft: 5 }}
-                                onClick={this.handleAddDetailInfo} /></a></label>
+                                onClick={handleAddDetailInfo} /></a></label>
 
                             {/* Bảng thông tin chi tiết */}
                             <table className="table">
@@ -803,20 +840,20 @@ class GeneralTab extends Component {
                                             return <tr key={index}>
                                                 <td style={{ paddingLeft: '0px' }}>
                                                     <div className={`form-group ${(parseInt(errorOnNameFieldPosition) === index && errorOnNameField) ? "has-error" : ""}`}>
-                                                        <input className="form-control" type="text" value={x.nameField} name="nameField" style={{ width: "100%" }} onChange={(e) => this.handleChangeNameField(e, index)} />
+                                                        <input className="form-control" type="text" value={x.nameField} name="nameField" style={{ width: "100%" }} onChange={(e) => handleChangeNameField(e, index)} />
                                                         {(parseInt(errorOnNameFieldPosition) === index && errorOnNameField) && <ErrorLabel content={errorOnNameField} />}
                                                     </div>
                                                 </td>
 
                                                 <td style={{ paddingLeft: '0px' }}>
                                                     <div className={`form-group ${(parseInt(errorOnValuePosition) === index && errorOnValue) ? "has-error" : ""}`}>
-                                                        <input className="form-control" type="text" value={x.value} name="value" style={{ width: "100%" }} onChange={(e) => this.handleChangeValue(e, index)} />
+                                                        <input className="form-control" type="text" value={x.value} name="value" style={{ width: "100%" }} onChange={(e) => handleChangeValue(e, index)} />
                                                         {(parseInt(errorOnValuePosition) === index && errorOnValue) && <ErrorLabel content={errorOnValue} />}
                                                     </div>
                                                 </td>
 
                                                 <td style={{ textAlign: "center" }}>
-                                                    <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete(index)}><i className="material-icons"></i></a>
+                                                    <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => delete_function(index)}><i className="material-icons"></i></a>
                                                 </td>
                                             </tr>
                                         })}
@@ -827,7 +864,6 @@ class GeneralTab extends Component {
                 </div>
             </div>
         );
-    }
 };
 
 function mapState(state) {

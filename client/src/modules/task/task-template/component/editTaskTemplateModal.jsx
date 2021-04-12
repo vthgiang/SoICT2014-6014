@@ -54,10 +54,11 @@ function ModalEditTaskTemplate (props) {
                     showActionForm: true,
             }})
         }
-    },[props.taskTemplateId])
+    },[props.taskTemplateId, props.taskTemplate])
 
     const handleSubmit = () => {
         const { editingTemplate } = state;
+        console.log(editingTemplate);
         props.editTaskTemplate(editingTemplate._id, editingTemplate);
     }
 
@@ -81,6 +82,7 @@ function ModalEditTaskTemplate (props) {
             editingTemplate.name = value;
             editingTemplate.errorOnName = message;
             setState({
+                ...state,
                 editingTemplate
             })
         }
@@ -95,6 +97,7 @@ function ModalEditTaskTemplate (props) {
             editingTemplate.description = value;
             editingTemplate.errorOnDescription = message;
             setState({
+                ...state,
                 editingTemplate
             })
         }
@@ -109,6 +112,7 @@ function ModalEditTaskTemplate (props) {
             editingTemplate.formula = value;
             editingTemplate.errorOnFormula = msg;
             setState({
+                ...state,
                 editingTemplate
             })
         }
@@ -146,6 +150,7 @@ function ModalEditTaskTemplate (props) {
             editingTemplate.readByEmployees = value;
             editingTemplate.errorOnRead = message;
             setState({
+                ...state,
                 editingTemplate
             })
         }
@@ -157,6 +162,7 @@ function ModalEditTaskTemplate (props) {
             ...state,
             editingTemplate: value
         })
+        console.log(state.editingTemplate);
     }
 
     const { department, user, translate, tasktemplates } = props;

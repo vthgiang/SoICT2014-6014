@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { SelectMulti } from '../../../../common-components';
 import c3 from 'c3';
 import 'c3/c3.css';
-
+import dayjs from 'dayjs';
 const CHART_INFO = {
     currentRoles: []
 }
@@ -34,21 +34,13 @@ const LoadTaskChart = (props) => {
                 let improcessTask = taskList;
                 let startTime = new Date(startMonth.split("-")[0], startMonth.split('-')[1] - 1, 1);
                 let endTime = new Date(endMonth.split("-")[0], endMonth.split('-')[1] ? endMonth.split('-')[1] : 1, 1);
-                let listMonth = [], category = [];
+                let category = [];
                 let m = startMonth.slice(5, 7);
                 let y = startMonth.slice(0, 4);
                 let period = Math.round((endTime - startTime) / 2592000000);
                 let data = [];
                 for (let i = 0; i < period; i++) {
-                    if (m > 12) {
-                        m = 1;
-                        y++;
-                    }
-                    if (m < 10) {
-                        m = '0' + m;
-                    }
-                    category.push([m, y].join('-'));
-                    listMonth.push([y, m].join(','));
+                    category.push(dayjs([y, m].join('-')).format("M-YYYY"));
                     m++;
                     data[i] = 0;
                 }
@@ -83,7 +75,7 @@ const LoadTaskChart = (props) => {
 
 
                 }
-                data.unshift('data');
+                data.unshift('tải công viêc');
                 barChart(data, category);
             }
         }
