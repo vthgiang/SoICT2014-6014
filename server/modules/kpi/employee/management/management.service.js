@@ -495,7 +495,7 @@ exports.createEmployeeKpiSetLogs = async (portal, data) => {
 } 
 
 exports.getEmployeeKpiSetLogs = async (portal, employeeKpiSetId) => {
-    let kpiLogs = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+    let kpiLogs = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
         .findById(employeeKpiSetId)
         .populate({ path: "logs.creator", select: "_id name emmail avatar" });
 

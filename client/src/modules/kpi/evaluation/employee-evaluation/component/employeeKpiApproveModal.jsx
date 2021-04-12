@@ -15,6 +15,7 @@ import { getStorage } from '../../../../../config';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 
 import { ModalEditEmployeeKpi } from '../../../employee/creation/component/employeeKpiEditTargetModal';
+import { EmployeeKpiSetLogsModal } from './employeeKpiSetLogsModal'
 
 function EmployeeKpiApproveModal(props) {
     let idUser = getStorage("userId");
@@ -25,14 +26,16 @@ function EmployeeKpiApproveModal(props) {
 
     const [state, setState] = useState({
         currentUser: idUser,
-        date: formatDateBack(Date.now()),
+        date: formatDate(Date.now()),
+        defaultDate: formatDateBack(Date.now()),
         editing: false,
         edit: "",
         compare: false,
         checkInput: false,
         tableId,
+        employeeKpiSetId: null
     });
-    const { errorOnDate, date, compare, edit } = state;
+    const { errorOnDate, date, compare, edit, defaultDate, employeeKpiSetId } = state;
     let kpimember, kpimembercmp, month, totalWeight;
 
     useEffect(()=>{
@@ -74,10 +77,12 @@ function EmployeeKpiApproveModal(props) {
     }
 
     const handleDateChange = (value) => {
+        let month = value.slice(3, 7) + '-' + value.slice(0, 2);
+        
         setState( {
             ...state,
             errorOnDate: validateDate(value),
-            date: value,
+            date: month,
         });
 
     };
@@ -96,8 +101,35 @@ function EmployeeKpiApproveModal(props) {
             compare: !state.compare
         })
         if (id) {
-            props.getKpisByMonth(id, formatDateBack(Date.now()));
+            props.getKpisByMonth(id, formatDate(Date.now()));
         }
+    }
+
+    const showEmployeeKPISetLogs = (id) => {
+        setState({
+            ...state,
+            employeeKpiSetId: id
+        })
+        window.$('#modal-employee-kpi-set-log').modal('show')
+    }
+
+    function formatDate(date) {
+        let d = new Date(date), month, day, year;
+        if (d.getMonth() === 0) {
+            month = '' + 12;
+            day = '' + d.getDate();
+            year = d.getFullYear() - 1;
+        } else {
+            month = '' + (d.getMonth() + 1);
+            day = '' + d.getDate();
+            year = d.getFullYear();
+        }
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        return [year, month].join('-');
     }
 
     function formatDateBack(date) {
@@ -120,8 +152,8 @@ function EmployeeKpiApproveModal(props) {
     }
 
     const searchKPIMemberByMonth = async (id) => {
-        if (date === undefined || date === formatDateBack(Date.now())) {
-            props.getKpisByMonth(id, formatDateBack(Date.now()));
+        if (!date || date === formatDate(Date.now())) {
+            props.getKpisByMonth(id, formatDate(Date.now()));
         }
         else {
             props.getKpisByMonth(id, date);
@@ -211,7 +243,7 @@ function EmployeeKpiApproveModal(props) {
         <React.Fragment>
             <DialogModal
                 modalID={`modal-approve-KPI-member`}
-                title={`${translate('kpi.evaluation.employee_evaluation.approve_KPI_employee')} - ${translate('kpi.evaluation.employee_evaluation.month')} ${kpimember && month[1]}/${kpimember && month[0]}`}
+                title={`${translate('kpi.evaluation.employee_evaluation.approve_KPI_employee')} ${kpimember?.creator?.name} - ${translate('kpi.evaluation.employee_evaluation.month')} ${kpimember && month[1]}/${kpimember && month[0]}`}
                 hasSaveButton={false}
                 size={100}
             >
@@ -219,12 +251,16 @@ function EmployeeKpiApproveModal(props) {
                     id={edit?._id}
                     employeeKpi={edit}
                 />
+                <EmployeeKpiSetLogsModal
+                    employeeKpiSetId={employeeKpiSetId}
+                />
                 <div className="qlcv">
                     <div className="form-inline pull-right">
                         {compare ?
                             <button className=" btn btn-primary" onClick={() => handleCompare()}>{translate('kpi.evaluation.employee_evaluation.end_compare')}</button> :
                             <button className=" btn btn-primary" onClick={() => kpimember && kpimember.creator && handleCompare(kpimember.creator._id)}>{translate('kpi.evaluation.employee_evaluation.compare')}</button>
                         }
+                        <button className=" btn btn-primary" onClick={() => kpimember && showEmployeeKPISetLogs(kpimember._id)}>{translate('kpi.evaluation.employee_evaluation.show_logs')}</button>
                         <button className=" btn btn-success" onClick={() => kpimember && handleApproveKPI(kpimember._id, kpimember.kpis)}>{translate('kpi.evaluation.employee_evaluation.approve_all')}</button>
                     </div>
                     <br />
@@ -238,7 +274,7 @@ function EmployeeKpiApproveModal(props) {
                                 <DatePicker
                                     id="create_date"
                                     dateFormat="month-year"
-                                    value={date}
+                                    value={defaultDate}
                                     onChange={handleDateChange}
                                 />
                                 <ErrorLabel content={errorOnDate} />
@@ -362,8 +398,8 @@ function EmployeeKpiApproveModal(props) {
 }
 
 function mapState(state) {
-    const { kpimembers, auth } = state;
-    return { kpimembers, auth };
+    const { kpimembers, auth, KPIPersonalManager } = state;
+    return { kpimembers, auth, KPIPersonalManager };
 }
 
 const actionCreators = {
@@ -371,7 +407,6 @@ const actionCreators = {
     getKpisByMonth: kpiMemberActions.getKpisByMonth,
     editStatusKpi: kpiMemberActions.editStatusKpi,
     approveAllKpis: kpiMemberActions.approveAllKpis,
-    editTarget: kpiMemberActions.editKpi,
     createComment: createKpiSetActions.createComment,
     editComment: createKpiSetActions.editComment,
     deleteComment: createKpiSetActions.deleteComment,
