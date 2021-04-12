@@ -53,7 +53,6 @@ function DistributionOfOrganizationalUnitKpiChart(props) {
     }, [props.organizationalUnitId, props.month]);
 
     useEffect(() => {
-        console.log("props.createKpiUnit.currentKPI", props.createKpiUnit.currentKPI)
         if (state.dataStatus === DATA_STATUS.QUERYING) {
             if (props.createKpiUnit.currentKPI) {
                 setState({
@@ -63,7 +62,6 @@ function DistributionOfOrganizationalUnitKpiChart(props) {
             }
 
         } else if (state.dataStatus === DATA_STATUS.AVAILABLE) {
-            console.log("555555")
             let data = pieChart(state.kindOfChart);
 
             setState({
