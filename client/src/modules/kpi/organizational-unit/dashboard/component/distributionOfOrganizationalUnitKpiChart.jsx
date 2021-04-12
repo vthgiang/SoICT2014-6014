@@ -19,8 +19,6 @@ function DistributionOfOrganizationalUnitKpiChart(props) {
         currentRole: null,
         dataStatus: DATA_STATUS.QUERYING,
         kindOfChart: KIND_OF_CHART.LINE,
-
-        willUpdate: false
     });
 
     const {createKpiUnit, translate} = props;
@@ -36,7 +34,6 @@ function DistributionOfOrganizationalUnitKpiChart(props) {
                 ...state,
                 currentRole: localStorage.getItem("currentRole"),
                 dataStatus: DATA_STATUS.QUERYING,
-                willUpdate: true,
                 chart: data?.chart,
                 dataPieChart: data?.dataPieChart
             })
@@ -51,34 +48,42 @@ function DistributionOfOrganizationalUnitKpiChart(props) {
         setState({
             ...state,
             dataStatus: DATA_STATUS.QUERYING,
-            willUpdate: true
         });
 
     }, [props.organizationalUnitId, props.month]);
 
     useEffect(() => {
+        console.log("props.createKpiUnit.currentKPI", props.createKpiUnit.currentKPI)
         if (state.dataStatus === DATA_STATUS.QUERYING) {
             if (props.createKpiUnit.currentKPI) {
                 setState({
                     ...state,
                     dataStatus: DATA_STATUS.AVAILABLE,
-                    willUpdate:true
                 });
             }
 
-        } else if (state.dataStatus === DATA_STATUS.AVAILABLE && state.willUpdate) {
+        } else if (state.dataStatus === DATA_STATUS.AVAILABLE) {
+            console.log("555555")
             let data = pieChart(state.kindOfChart);
 
             setState({
                 ...state,
                 dataStatus: DATA_STATUS.FINISHED,
-                willUpdate: false,
                 chart: data?.chart,
                 dataPieChart: data?.dataPieChart
             });
         }
     });
 
+    useEffect(() => {
+        if (!props.createKpiUnit.currentKPI) {
+            setState({
+                ...state,
+                dataStatus: DATA_STATUS.QUERYING,
+            });
+        }
+    }, [props.createKpiUnit.currentKPI])
+    
     if (props.organizationalUnitId !== state.organizationalUnitId || props.month !== state.month) {
         setState({
             ...state,
