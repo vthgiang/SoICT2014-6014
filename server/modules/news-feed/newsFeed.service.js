@@ -30,9 +30,13 @@ exports.getNewsFeed = async (portal, data) => {
             { path: 'comments.creator', select: 'name email avatar' }
         ])
 
-    newsFeeds.map(item => {
+    newsFeeds.map(async (item) => {
+        if (item?.associatedDataObject?.dataType === 1) {
+            item = item && await Task(connect(DB_CONNECTION, portal)).populate(item, { path: "associatedDataObject.value", select: "_id name description" })
+        }
         item.content = item?.content?.reverse();
     })
+
     return newsFeeds
 }
 
@@ -75,6 +79,11 @@ exports.createNewsFeed = async (portal, data) => {
             { path: "content.creator", select:"name email avatar" },
             { path: 'comments.creator', select: 'name email avatar' }
         ])
+
+    if (newsFeed?.associatedDataObject?.dataType === 1) {
+        newsFeed = newsFeed && await Task(connect(DB_CONNECTION, portal))
+            .populate(newsFeed, { path: "associatedDataObject.value", select: "_id name description" })
+    }
     newsFeed?.content?.reverse();
 
     if (relatedUsers?.length > 0) {

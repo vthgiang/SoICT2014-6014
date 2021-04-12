@@ -21,9 +21,9 @@ class TreeSelect extends Component {
         for (let i = 0; i < items1.length; ++i) {
             if (!items1[i] || !items2[i]) return false;
             else {
-                if (!(items1[i].value instanceof Array) && items1[i].value !== items2[i].value) { // Kiểu bình thường
+                if (!(items1[i] instanceof Array) && items1[i] !== items2[i]) { // Kiểu bình thường
                     return false;
-                } else if (items1[i].value instanceof Array && JSON.stringify(items1[i].value) !== JSON.stringify(items2[i].value)) { // Kiểu group
+                } else if (items1[i] instanceof Array && JSON.stringify(items1[i]) !== JSON.stringify(items2[i])) { // Kiểu group
                     return false;
                 }
             }
@@ -32,7 +32,7 @@ class TreeSelect extends Component {
     }
 
     static getDerivedStateFromProps(props, state) {
-        if (props.id !== state.id || !TreeSelect.isEqual(props.data, state.data) || (props.value && props.value !== state.value)) {
+        if (props.id !== state.id || !TreeSelect.isEqual(props.data, state.data) || (props.value && !TreeSelect.isEqual(props.value, state.value))) {
             return {
                 id: props.id,
                 value: props.value, // Lưu value ban đầu vào state
@@ -45,8 +45,11 @@ class TreeSelect extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
+        if (nextState.innerChange) {
+            return false;
+        }
 
-        if (!TreeSelect.isEqual(nextProps.data, this.state.data) || nextProps.id !== this.state.id || (nextProps.value && !nextState.innerChange && !TreeSelect.isEqual(nextProps.value, this.state.value))) // Chỉ render 1 lần, trừ khi id, value, data thay đổi
+        if (!TreeSelect.isEqual(nextProps.data, this.state.data) || nextProps.id !== this.state.id || (nextProps.value && !TreeSelect.isEqual(nextProps.value, this.state.value))) // Chỉ render 1 lần, trừ khi id, value, data thay đổi
             return true;
         return false;  // Tự chủ động update (do đã lưu value vào state)
     }
@@ -141,6 +144,6 @@ class TreeSelect extends Component {
 }
 
 const mapState = state => state;
-const TreeSelectExport = connect(mapState, null)(withTranslate(TreeSelect));
+const TreeSelectExport = connect(null)(withTranslate(TreeSelect));
 
 export { TreeSelectExport as TreeSelect }

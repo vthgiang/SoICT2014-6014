@@ -782,7 +782,7 @@ function CreateForm(props) {
                                                 className="form-control select2"
                                                 style={{ width: "100%" }}
                                                 items={
-                                                    user.list.map(user => { return { value: user ? user._id : null, text: user ? `${user.name} - ${user.email}` : "" } })
+                                                    user?.list?.length > 0 && user.list.map(user => { return { value: user ? user._id : null, text: user ? `${user.name} - ${user.email}` : "" } })
                                                 }
                                                 onChange={handleUserCanView}
                                                 value={documentUserCanView}

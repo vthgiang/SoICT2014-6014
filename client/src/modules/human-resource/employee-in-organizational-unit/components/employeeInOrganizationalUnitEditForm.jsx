@@ -171,7 +171,7 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
     render() {
         let { translate, user } = this.props;
         const { _id, roleEmployees, roleManagers, roleDeputyManagers, textSearch } = this.state;
-        let userlist = user.list;
+        let userlist = user?.list;
 
         // Lấy các role chức danh
         const getRolePosition = this.props.role.filter(obj => obj.type?.name === "Position");
@@ -194,7 +194,7 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                                     roleManagers.map((obj, index) => {
                                         let infoManager = [], users = obj.users;
                                         for (let n in users) {
-                                            infoManager = userlist.filter(y => y._id === users[n]).concat(infoManager)
+                                            infoManager = userlist?.length > 0 && userlist.filter(y => y?._id === users?.[n]).concat(infoManager)
                                         }
 
                                         // lấy thông tin các role nhân viên có.
@@ -267,7 +267,7 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                                     roleDeputyManagers.map((obj, index) => {
                                         let infoDeputyManagers = [], users = obj.users;
                                         for (let n in users) {
-                                            infoDeputyManagers = userlist.filter(y => y._id === users[n]).concat(infoDeputyManagers)
+                                            infoDeputyManagers = userlist?.length > 0 && userlist.filter(y => y?._id === users?.[n]).concat(infoDeputyManagers)
                                         }
 
                                         // lấy thông tin các role nhân viên có.
@@ -339,7 +339,7 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                                 {roleEmployees && roleEmployees.map((x, index) => {
                                     let infoEmployee = [], users = x.users;
                                     for (let n in users) {
-                                        infoEmployee = userlist.filter(y => y._id === users[n]).concat(infoEmployee)
+                                        infoEmployee = userlist?.length > 0 && userlist.filter(y => y?._id === users?.[n]).concat(infoEmployee)
                                     }
 
                                     // lấy thông tin các role nhân viên có.

@@ -115,8 +115,8 @@ function UserGuide(props) {
 
 
     if (roleAdmin && roleManager) {
-        if (currentRoleInfo.id === roleAdmin.id || currentRoleInfo.parents.includes(roleAdmin.id) ||
-            currentRoleInfo.id === roleSuperAdmin.id || currentRoleInfo.parents.includes(roleSuperAdmin.id)) {
+        if (currentRoleInfo?.id === roleAdmin?.id || currentRoleInfo?.parents?.includes(roleAdmin?.id) ||
+            currentRoleInfo?.id === roleSuperAdmin?.id || currentRoleInfo?.parents?.includes(roleSuperAdmin?.id)) {
             TaskGuide = UserGuideTask;
             DocumentGuide = UserGuideDocument;
             HrGuide = UserGuideHr;
@@ -125,7 +125,7 @@ function UserGuide(props) {
             AssetGuide = UserGuideAsset;
             SystemGuide = UserGuideSystem;
         }
-        else if (currentRoleInfo.id === roleManager.id || currentRoleInfo.parents.includes(roleManager.id)) {
+        else if (currentRoleInfo?.id === roleManager?.id || currentRoleInfo?.parents?.includes(roleManager?.id)) {
             TaskGuide = UserGuideTask;
             DocumentGuide = {
                 manager: [...UserGuideDocument.manager],
@@ -151,9 +151,7 @@ function UserGuide(props) {
             AssetGuide.manager = [];
             SystemGuide = [];
         }
-
     }
-
 
     return (
         <React.Fragment>
@@ -162,7 +160,6 @@ function UserGuide(props) {
                 <DetailGuide
                     link={currentLink}
                 />
-
             }
             <div className="box">
                 <div className="box-body qlcv">
