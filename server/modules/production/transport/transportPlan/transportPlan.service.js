@@ -1,57 +1,26 @@
 const {
-    TransportVehicle
+    TransportPlan
 } = require('../../../../models');
 
 const {
     connect
 } = require(`../../../../helpers/dbHelper`);
 
-exports.createTransportVehicle = async (portal, data) => {
-    let newTransportVehicle;
-    console.log(data);
+const TransportScheduleServices = require('../transportSchedule/transportSchedule.service');
+
+exports.createTransportPlan = async (portal, data) => {
+    let newTransportPlan;
     if (data && data.length !== 0) {
-            newTransportVehicle = await TransportVehicle(connect(DB_CONNECTION, portal)).create({
-                asset: data.id,
-                code: data.code,
-                name: data.name,
-                payload: data.payload,
-                volume: data.volume,
+            newTransportPlan = await TransportPlan(connect(DB_CONNECTION, portal)).create({
+            code: data.code,
+            startTime: data.startDate,
+            endTime: data.endDate,
         });
         
     }
-
-    // let example = await Example(connect(DB_CONNECTION, portal)).findById({ _id: newExample._id });;
-    // return example;
-}
-
-/**
- * 
- * @param {*} portal 
- * @param {*} vehicleId id phương tiện (assetid)
- * @param {*} data {asset: id tương ứng tài sản cố định, code: mã phương tiện,
- *                  name: tên phương tiện, payload, volume, transportPlan: id plan } 
- * @returns 
- */
-exports.editTransportVehicleToSetPlan = async (portal, vehicleId, data) => {
-    let newTransportVehicle;
-    let oldTransportVehicle = await TransportVehicle(connect(DB_CONNECTION, portal)).findOne({asset: vehicleId});
-    
-    if (!oldTransportVehicle) {
-        newTransportVehicle = await TransportVehicle(connect(DB_CONNECTION, portal)).create({
-            asset: data.id,
-            code: data.code,
-            name: data.name,
-            payload: data.payload,
-            volume: data.volume,
-            transportPlan: data.transportPlan,
-        });
-    }
-    else {
-        const transportVehicleId = oldTransportVehicle._id; 
-        await TransportVehicle(connect(DB_CONNECTION, portal)).update({ _id: transportVehicleId }, { $set: data });
-        newTransportVehicle = await TransportVehicle(connect(DB_CONNECTION, portal)).findById({ _id: transportVehicleId });
-    }
-    return newTransportVehicle;
+    TransportScheduleServices.planCreateTransportRoute(portal, {transportPlan: newTransportPlan._id,})
+    let transportPlan = await TransportPlan(connect(DB_CONNECTION, portal)).findById({ _id: newTransportPlan._id });;
+    return transportPlan;
 }
 
 // Lấy ra tất cả các thông tin Ví dụ theo mô hình lấy dữ liệu số  1
@@ -93,7 +62,7 @@ exports.editTransportVehicleToSetPlan = async (portal, vehicleId, data) => {
 //         }
 //     }
 
-exports.getAllTransportVehicles = async (portal, data) => {
+exports.getAllTransportPlans = async (portal, data) => {
     let keySearch = {};
     // if (data?.exampleName?.length > 0) {
     //     keySearch = {
@@ -108,12 +77,12 @@ exports.getAllTransportVehicles = async (portal, data) => {
     page = data?.page ? Number(data.page) : 1;
     limit = data?.limit ? Number(data.limit) : 200;
 
-    let totalList = await TransportVehicle(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
-    let vehicles = await TransportVehicle(connect(DB_CONNECTION, portal)).find(keySearch)
+    let totalList = await TransportPlan(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
+    let plans = await TransportPlan(connect(DB_CONNECTION, portal)).find(keySearch)
         .skip((page - 1) * limit)
         .limit(limit);
     return { 
-        data: vehicles, 
+        data: plans, 
         totalList 
     }
 }
@@ -133,14 +102,19 @@ exports.getAllTransportVehicles = async (portal, data) => {
 //     }
 // }
 
-// // Lấy ra Ví dụ theo id
-// exports.getExampleById = async (portal, id) => {
-//     let example = await Example(connect(DB_CONNECTION, portal)).findById({ _id: id });
-//     if (example) {
-//         return example;
-//     }
-//     return -1;
-// }
+// Lấy ra Ví dụ theo id
+exports.getPlanById = async (portal, id) => {
+    console.log(id);
+    let plan = await TransportPlan(connect(DB_CONNECTION, portal)).findById({ _id: id })
+    .populate({
+        path: 'transportRequirements',
+        select: 'geocode'
+    });
+    if (plan) {
+        return plan;
+    }
+    return -1;
+}
 
 // // Chỉnh sửa một Ví dụ
 // exports.editExample = async (portal, id, data) => {
@@ -161,3 +135,48 @@ exports.getAllTransportVehicles = async (portal, data) => {
 //     let example = Example(connect(DB_CONNECTION, portal)).findByIdAndDelete({ _id: id });
 //     return example;
 // }
+
+exports.editTransportPlan = async (portal, id, data) => {
+
+    let oldTransportPlan = await TransportPlan(connect(DB_CONNECTION, portal)).findById(id);
+
+    if (!oldTransportPlan) {
+        return -1;
+    }
+
+    // Cach 2 de update
+    await TransportPlan(connect(DB_CONNECTION, portal)).update({ _id: id }, { $set: data });
+    let transportPlan = await TransportPlan(connect(DB_CONNECTION, portal)).findById({ _id: oldTransportPlan._id });
+    return transportPlan;
+}
+/**
+ * push requirement vào plan
+ * @param {*} portal 
+ * @param {*} id 
+ * @param {*} data {requirement: ....} 
+ * @returns 
+ */
+exports.addTransportRequirementToPlan = async (portal, id, data) => {
+    let transportRequirement = data.requirement; // String id
+    let oldTransportPlan = await TransportPlan(connect(DB_CONNECTION, portal)).findById(id);
+
+    if (!oldTransportPlan) {
+        return -1;
+    }
+
+    await TransportPlan(connect(DB_CONNECTION, portal)).update({ _id: id }, {$push: {transportRequirements: transportRequirement}});
+    let transportPlan = await TransportPlan(connect(DB_CONNECTION, portal)).findById({ _id: oldTransportPlan._id });
+    return transportPlan;
+}
+
+exports.addTransportVehicleToPlan = async (portal, id, data) => {
+    let oldTransportPlan = await TransportPlan(connect(DB_CONNECTION, portal)).findById(id);
+
+    if (!oldTransportPlan) {
+        return -1;
+    }
+    await TransportPlan(connect(DB_CONNECTION, portal)).update({ _id: id }, {$pull: {transportVehicles: data}});
+    await TransportPlan(connect(DB_CONNECTION, portal)).update({ _id: id }, {$push: {transportVehicles: data}});
+    let transportPlan = await TransportPlan(connect(DB_CONNECTION, portal)).findById({ _id: oldTransportPlan._id });
+    return transportPlan;    
+}

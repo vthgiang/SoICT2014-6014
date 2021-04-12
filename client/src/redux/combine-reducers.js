@@ -111,6 +111,7 @@ import { manufacturingCommand } from "../modules/production/manufacturing/manufa
 import { transportRequirements } from '../modules/production/transport/transport-requirements/redux/reducers'
 import { transportPlan } from '../modules/production/transport/transport-plan/redux/reducers';
 import { transportVehicle } from '../modules/production/transport/transport-vehicle/redux/reducers';
+import { transportSchedule } from '../modules/production/transport/transport-schedule/redux/reducers';
 
 import { project } from "../modules/project/redux/reducers";
 import { newsFeeds } from "../modules/home/redux/reducers";
@@ -237,6 +238,7 @@ const appReducer = combineReducers({
 
     transportRequirements,
     transportPlan,
+    transportSchedule,
     transportVehicle,
     
     // project

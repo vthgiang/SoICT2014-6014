@@ -2,8 +2,9 @@ import React, { Component } from "react";
 import { forceCheckOrVisible, formatDate, LazyLoadComponent } from '../../../../../common-components';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { ArrangeVehiclesAndGoods } from './arrangeVehiclesAndGoods'
-import { SortableComponent } from './testDragDrop/sortableComponent'
+import { ArrangeVehiclesAndGoods } from './arrangeVehiclesAndGoods';
+import { SortableComponent } from './testDragDrop/sortableComponent';
+import { ArrangeOrdinalTransport } from './arrangeOrdinalTransport';
 
 class TransportSchedule extends Component {
     constructor(props) {
@@ -27,7 +28,7 @@ class TransportSchedule extends Component {
                     <div className="tab-pane" id="arrange-ordinal-transport">
                         <LazyLoadComponent
                         >
-                            <SortableComponent />
+                            <ArrangeOrdinalTransport />
                         </LazyLoadComponent>
                     </div>
                 </div>

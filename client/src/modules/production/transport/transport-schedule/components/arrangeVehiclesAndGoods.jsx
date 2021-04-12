@@ -6,44 +6,99 @@ import { DataTableSetting, DeleteNotification, PaginateBar, SlimScroll, SelectBo
 import { formatToTimeZoneDate } from "../../../../../helpers/formatDate";
 import "./arrangeVehiclesAndGoods.css";
 import { transportRequirementsActions } from "../../transport-requirements/redux/actions";
-import { transportVehicleActions } from "../../transport-vehicle/redux/actions"
-
+import { transportVehicleActions } from "../../transport-vehicle/redux/actions";
+import { transportScheduleActions } from "../redux/actions";
+import { transportPlanActions } from "../../transport-plan/redux/actions";
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 
 function ArrangeVehiclesAndGoods(props) {
 
-    let { allTransportVehicle, transportArrangeRequirements } = props;
+    let { allTransportPlans, currentTransportSchedule} = props;
 
+    const [currentTransportPlan, setCurrentTransportPlan] = useState({
+        _id: "0",
+        code: "",
+    });    
+
+    const [transportArrangeRequirements, setAransportArrangeRequirements] = useState([]);
+    const [allTransportVehicle, setAllTransportVehicle] = useState([]);
+    
+    const getListTransportPlans = () => {
+        let listTransportPlans = [
+            {
+                value: "0",
+                text: "Lịch trình",
+            },
+        ];        
+        if (allTransportPlans) {
+            allTransportPlans.map((item) => {
+                listTransportPlans.push({
+                    value: item._id,
+                    text: item.code,
+                });
+            });
+        }
+        return listTransportPlans;
+    }
+
+    const handleTransportPlanChange = (value) => {
+        if (value[0] !== "0" && allTransportPlans){
+            let filterPlan = allTransportPlans.filter((r) => r._id === value[0]);
+            if (filterPlan.length > 0){
+                setCurrentTransportPlan(filterPlan[0]);
+            }
+        }
+        else{
+            setCurrentTransportPlan({_id: value[0], code: ""});
+        }
+    }
     useEffect(() => {
         props.getAllTransportVehicles({page: 1, limit : 100});
         props.getAllTransportRequirements({page: 1, limit: 100});
+        props.getAllTransportPlans({page: 1, limit: 100});
     }, []);
+
+    useEffect(() => {
+        if (currentTransportPlan && currentTransportPlan._id !==0){
+            props.getTransportScheduleByPlanId(currentTransportPlan._id);
+        }
+    }, [currentTransportPlan])
+
+    useEffect(() => {
+        console.log(currentTransportSchedule, " currentTransportSchedule")
+        if (currentTransportSchedule){
+            if (currentTransportSchedule.transportPlan){
+                setAransportArrangeRequirements(currentTransportSchedule.transportPlan.transportRequirements);
+                setAllTransportVehicle(currentTransportSchedule.transportPlan.transportVehicles);
+            }
+        }
+    }, [currentTransportSchedule])
+
     return (
         <React.Fragment>
         <div className="box-body qlcv">
             <div className="form-inline">
-                            <div className="form-group">
-                                <label className="form-control-static">Chọn lịch trình</label>
-                                <SelectBox
-                                    id={`select-filter-status-discounts`}
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    items={[
-                                        { value: "all", text: "Tất cả lịch trình" },
-                                        { value: "1", text: "Lịch trình 1" },
-                                    ]}
-                                    // onChange={this.handleQueryDateChange}
-                                />
-                            </div>
+                <div className="form-group">
+                    <label className="form-control-static">Chọn lịch trình</label>
+                    <SelectBox
+                        id={`select-filter-status-discounts`}
+                        className="form-control select2"
+                        style={{ width: "100%" }}
+                        value={currentTransportPlan._id}
+                        items={getListTransportPlans()}
+                        onChange={handleTransportPlanChange}
+                        // onChange={this.handleQueryDateChange}
+                    />
+                </div>
 
-                            <div className="form-group">
-                                <button type="button" className="btn btn-success" title="Lọc" 
-                                    // onClick={this.handleSubmitSearch}
-                                >
-                                    Tìm kiếm
-                                </button>
-                            </div>
-                        </div>
+                <div className="form-group">
+                    <button type="button" className="btn btn-success" title="Lọc" 
+                        // onClick={this.handleSubmitSearch}
+                    >
+                        Tìm kiếm
+                    </button>
+                </div>
+            </div>
                         
 
             <div className={"divTest"}>
@@ -493,15 +548,20 @@ function ArrangeVehiclesAndGoods(props) {
 }
 
 function mapState(state) {
+    console.log(state, " 113213123");
     const transportArrangeRequirements = state.transportRequirements.lists;
     const allTransportVehicle = state.transportVehicle.lists;
-    return { transportArrangeRequirements, allTransportVehicle };
+    const allTransportPlans = state.transportPlan.lists;
+    const { currentTransportSchedule } = state.transportSchedule;
+    return { transportArrangeRequirements, allTransportVehicle, allTransportPlans, currentTransportSchedule };
 }
 
 const actions = {
     getAllTransportRequirements: transportRequirementsActions.getAllTransportRequirements,
     editTransportRequirement: transportRequirementsActions.editTransportRequirement,
     getAllTransportVehicles: transportVehicleActions.getAllTransportVehicles,
+    getTransportScheduleByPlanId: transportScheduleActions.getTransportScheduleByPlanId,
+    getAllTransportPlans: transportPlanActions.getAllTransportPlans,
 }
 
 const connectedArrangeVehiclesAndGoods = connect(mapState, actions)(withTranslate(ArrangeVehiclesAndGoods));

@@ -6,7 +6,7 @@ const {
     connect
 } = require(`../../../../helpers/dbHelper`);
 
-const TransportPlanServices = require("../transportSchedule/transportPlan.service")
+const TransportPlanServices = require("../transportPlan/transportPlan.service")
 
 // Tạo mới mảng Ví dụ
 exports.createTransportRequirement = async (portal, data) => {
