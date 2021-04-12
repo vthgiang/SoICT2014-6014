@@ -153,12 +153,9 @@ function EmployeeKpiEvaluateModal(props) {
         let value = e.target.value;
         let points = state.points;
         points[id] = value;
-
-        setState(state => {
-            setState({
-                ...state,
-                points: points,
-            })
+        setState({
+            ...state,
+            points: points,
         })
     }
     const showDetailTaskImportanceCal = async (item) => {
@@ -413,7 +410,7 @@ function EmployeeKpiEvaluateModal(props) {
                                                             <td>{itemTask.results.contribution ? itemTask.results.contribution : 0}%</td>
                                                             <td>{itemTask.results.automaticPoint + '-' + itemTask.results.employeePoint + '-' + itemTask.results.approvedPoint}</td>
                                                             <td>
-                                                                {points && tasks &&
+                                                                {points && tasks && itemTask.taskId &&
                                                                     <React.Fragment>
                                                                         <input type="range"
                                                                             min='0'
