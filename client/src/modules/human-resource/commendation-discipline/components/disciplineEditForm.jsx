@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -8,30 +8,33 @@ import { DisciplineFromValidator } from './disciplineFormValidator';
 
 import { DisciplineActions } from '../redux/actions';
 
-class DisciplineEditForm extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {};
-    }
+const DisciplineEditForm = (props) => {
+    const [state, setState] = useState({
+        employee: "",
+        decisionNumber: "",
+        organizationalUnit: "",
+        startDate: "",
+        endDate: "",
+        type: "",
+        reason: ""
+    });
 
     /**
      * Bắt sự kiện thay đổi cấp ra quyết định
      * @param {*} value : Cấp ra quyết định
      */
-    handleOrganizationalUnitChange = (value) => {
-        this.validateOrganizationalUnit(value[0], true);
+    const handleOrganizationalUnitChange = (value) => {
+        validateOrganizationalUnit(value[0], true);
     }
-    validateOrganizationalUnit = (value, willUpdateState = true) => {
-        const { translate } = this.props;
+    const validateOrganizationalUnit = (value, willUpdateState = true) => {
+        const { translate } = props;
         let msg = DisciplineFromValidator.validateOrganizationalUnit(value, translate)
         if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnOrganizationalUnit: msg,
-                    organizationalUnit: value,
-                }
-            });
+            setState(state => ({
+                ...state,
+                errorOnOrganizationalUnit: msg,
+                organizationalUnit: value
+            }))
         }
         return msg === undefined;
     }
@@ -40,9 +43,9 @@ class DisciplineEditForm extends Component {
      * Bắt sự kiện thay đổi ngày có hiệu lực
      * @param {*} value : Ngày có hiệu lực
      */
-    handleStartDateChange = (value) => {
-        const { translate } = this.props;
-        let { errorOnEndDate, endDate } = this.state;
+    const handleStartDateChange = (value) => {
+        const { translate } = props;
+        let { errorOnEndDate, endDate } = state;
 
         let errorOnStartDate;
         let partValue = value.split('-');
@@ -57,19 +60,20 @@ class DisciplineEditForm extends Component {
             errorOnEndDate = undefined;
         }
 
-        this.setState({
+        setState(state => ({
+            ...state,
             startDate: value,
             errorOnStartDate: errorOnStartDate,
             errorOnEndDate: errorOnEndDate
-        })
+        }))
     }
     /**
      * Bắt sự kiện thay đổi ngày hết hiệu lực
      * @param {*} value : Ngày có hiệu lực
      */
-    handleEndDateChange = (value) => {
-        const { translate } = this.props;
-        let { startDate, errorOnStartDate } = this.state;
+    const handleEndDateChange = (value) => {
+        const { translate } = props;
+        let { startDate, errorOnStartDate } = state;
 
         let errorOnEndDate;
         let partValue = value.split('-');
@@ -83,59 +87,56 @@ class DisciplineEditForm extends Component {
         } else {
             errorOnStartDate = undefined;
         }
-        this.setState({
+        setState(state => ({
+            ...state,
             endDate: value,
             errorOnStartDate: errorOnStartDate,
             errorOnEndDate: errorOnEndDate
-        })
+        }))
     }
 
     /** Bắt sự kiện thay đổi hình thức khen thưởng */
-    handleTypeChange = (e) => {
+    const handleTypeChange = (e) => {
         let { value } = e.target;
-        this.validateType(value, true);
+        validateType(value, true);
     }
-    validateType = (value, willUpdateState = true) => {
-        const { translate } = this.props;
+    const validateType = (value, willUpdateState = true) => {
+        const { translate } = props;
         let msg = DisciplineFromValidator.validateType(value, translate);
         if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnType: msg,
-                    type: value,
-                }
-            });
+            setState(state => ({
+                ...state,
+                errorOnType: msg,
+                type: value
+            }));
         }
         return msg === undefined;
     }
 
     /** Bắt sự kiện thay đổi thành tich(lý do) khen thưởng */
-    handleReasonChange = (e) => {
+    const handleReasonChange = (e) => {
         let { value } = e.target;
-        this.validateReason(value, true);
+        validateReason(value, true);
     }
-    validateReason = (value, willUpdateState = true) => {
-        const { translate } = this.props;
+    const validateReason = (value, willUpdateState = true) => {
+        const { translate } = props;
         let msg = DisciplineFromValidator.validateReason(value, translate);
         if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnReason: msg,
-                    reason: value,
-                }
-            });
+            setState(state => ({
+                ...state,
+                errorOnReason: msg,
+                reason: value,
+            }))
         }
         return msg === undefined;
     }
 
     /** Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form */
-    isFormValidated = () => {
-        const { organizationalUnit, reason, type, startDate, endDate } = this.state;
+    const isFormValidated = () => {
+        const { organizationalUnit, reason, type, startDate, endDate } = state;
         let result =
-            this.validateOrganizationalUnit(organizationalUnit, false) && this.validateType(type, false) &&
-            this.validateReason(reason, false);
+            validateOrganizationalUnit(organizationalUnit, false) && validateType(type, false) &&
+            validateReason(reason, false);
         let partStart = startDate.split('-');
         let startDateNew = [partStart[2], partStart[1], partStart[0]].join('-');
         if (endDate) {
@@ -149,8 +150,8 @@ class DisciplineEditForm extends Component {
         }
     }
     /** Bắt sự kiện submit form */
-    save = () => {
-        const { _id, endDate, startDate } = this.state;
+    const save = () => {
+        const { _id, endDate, startDate } = state;
         let partStart = startDate.split('-');
         let startDateNew = [partStart[2], partStart[1], partStart[0]].join('-');
         let endDateNew = null;
@@ -158,119 +159,110 @@ class DisciplineEditForm extends Component {
             let partEnd = endDate.split('-');
             endDateNew = [partEnd[2], partEnd[1], partEnd[0]].join('-');
         }
-        if (this.isFormValidated()) {
-            return this.props.updateDiscipline(_id, { ...this.state, startDate: startDateNew, endDate: endDateNew });
+        if (isFormValidated()) {
+            return props.updateDiscipline(_id, { ...state, startDate: startDateNew, endDate: endDateNew });
         }
     }
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps._id !== prevState._id) {
-            return {
-                ...prevState,
-                _id: nextProps._id,
-                employeeNumber: nextProps.employeeNumber,
-                decisionNumber: nextProps.decisionNumber,
-                organizationalUnit: nextProps.organizationalUnit,
-                startDate: nextProps.startDate,
-                endDate: nextProps.endDate,
-                type: nextProps.type,
-                reason: nextProps.reason,
-
-                errorOnOrganizationalUnit: undefined,
-                errorOnType: undefined,
-                errorOnReason: undefined,
-                errorOnStartDate: undefined,
-                errorOnEndDate: undefined,
-
-            }
-        } else {
-            return null;
-        }
+    if (state._id != props._id) {
+        setState(state => ({
+            ...state,
+            _id: props._id,
+            employeeNumber: props.employeeNumber,
+            decisionNumber: props.decisionNumber,
+            organizationalUnit: props.organizationalUnit,
+            startDate: props.startDate,
+            endDate: props.endDate,
+            type: props.type,
+            reason: props.reason,
+            errorOnOrganizationalUnit: undefined,
+            errorOnType: undefined,
+            errorOnReason: undefined,
+            errorOnStartDate: undefined,
+            errorOnEndDate: undefined,
+        }))
     }
+    const { translate, discipline, department, handleMSNVChange, handleNumberChange } = props;
 
-    render() {
-        const { translate, discipline, department } = this.props;
+    const { _id, employeeNumber, startDate, endDate, reason, decisionNumber, organizationalUnit, type,
+        errorOnEndDate, errorOnStartDate, errorOnOrganizationalUnit, errorOnType, errorOnReason } = state;
 
-        const { _id, employeeNumber, startDate, endDate, reason, decisionNumber, organizationalUnit, type,
-            errorOnEndDate, errorOnStartDate, errorOnOrganizationalUnit, errorOnType, errorOnReason } = this.state;
-
-        return (
-            <React.Fragment>
-                <DialogModal
-                    size='50' modalID="modal-edit-discipline" isLoading={discipline.isLoading}
-                    formID="form-edit-discipline"
-                    title={translate('human_resource.commendation_discipline.discipline.edit_discipline')}
-                    func={this.save}
-                    disableSubmit={!this.isFormValidated()}
-                >
-                    <form className="form-group" id="form-edit-discipline">
-                        {/* Mã số nhân viên */}
-                        <div className="form-group">
-                            <label>{translate('human_resource.staff_number')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="employeeNumber" value={employeeNumber} onChange={this.handleMSNVChange} autoComplete="off" disabled />
+    return (
+        <React.Fragment>
+            <DialogModal
+                size='50' modalID="modal-edit-discipline" isLoading={discipline.isLoading}
+                formID="form-edit-discipline"
+                title={translate('human_resource.commendation_discipline.discipline.edit_discipline')}
+                func={save}
+                disableSubmit={!isFormValidated()}
+            >
+                <form className="form-group" id="form-edit-discipline">
+                    {/* Mã số nhân viên */}
+                    <div className="form-group">
+                        <label>{translate('human_resource.staff_number')}<span className="text-red">*</span></label>
+                        <input type="text" className="form-control" name="employeeNumber" value={employeeNumber} onChange={handleMSNVChange} autoComplete="off" disabled />
+                    </div>
+                    <div className="row qlcv-from">
+                        {/* Số ra quyết định*/}
+                        <div className="left col-sm-6 col-xs-12 form-group">
+                            <label>{translate('human_resource.commendation_discipline.commendation.table.decision_number')}<span className="text-red">*</span></label>
+                            <input type="text" className="form-control" name="number" value={decisionNumber} onChange={handleNumberChange} autoComplete="off" disabled />
                         </div>
-                        <div className="row qlcv-from">
-                            {/* Số ra quyết định*/}
-                            <div className="left col-sm-6 col-xs-12 form-group">
-                                <label>{translate('human_resource.commendation_discipline.commendation.table.decision_number')}<span className="text-red">*</span></label>
-                                <input type="text" className="form-control" name="number" value={decisionNumber} onChange={this.handleNumberChange} autoComplete="off" disabled />
-                            </div>
-                            {/* Cấp ra quyế định */}
-                            <div className={`right col-sm-6 col-xs-12 form-group ${errorOnOrganizationalUnit && "has-error"}`}>
-                                <label>{translate('human_resource.commendation_discipline.commendation.table.decision_unit')}<span className="text-red">*</span></label>
-                                <SelectBox
-                                    id={`edit_discipline${_id}`}
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    value={organizationalUnit}
-                                    items={[...department.list.map((u, i) => { return { value: u._id, text: u.name } }), { value: '', text: translate('human_resource.choose_decision_unit') }]}
-                                    onChange={this.handleOrganizationalUnitChange}
-                                />
-                                <ErrorLabel content={errorOnOrganizationalUnit} />
-                            </div>
+                        {/* Cấp ra quyế định */}
+                        <div className={`right col-sm-6 col-xs-12 form-group ${errorOnOrganizationalUnit && "has-error"}`}>
+                            <label>{translate('human_resource.commendation_discipline.commendation.table.decision_unit')}<span className="text-red">*</span></label>
+                            <SelectBox
+                                id={`edit_discipline${_id}`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                value={organizationalUnit}
+                                items={[...department.list.map((u, i) => { return { value: u._id, text: u.name } }), { value: '', text: translate('human_resource.choose_decision_unit') }]}
+                                onChange={handleOrganizationalUnitChange}
+                            />
+                            <ErrorLabel content={errorOnOrganizationalUnit} />
                         </div>
-                        <div className="row qlcv-from">
-                            {/* Ngày có hiệu lực*/}
-                            <div className={`col-sm-6 col-xs-12 form-group ${errorOnStartDate && "has-error"}`}>
-                                <label>{translate('human_resource.commendation_discipline.discipline.table.start_date')}<span className="text-red">*</span></label>
-                                <DatePicker
-                                    id={`edit_discipline_start_date${_id}`}
-                                    deleteValue={false}
-                                    value={startDate}
-                                    onChange={this.handleStartDateChange}
-                                />
-                                <ErrorLabel content={errorOnStartDate} />
-                            </div>
-                            {/* Ngày hết hiệu lực*/}
-                            <div className={`col-sm-6 col-xs-12 form-group ${errorOnEndDate && "has-error"}`}>
-                                <label>{translate('human_resource.commendation_discipline.discipline.table.end_date')}</label>
-                                <DatePicker
-                                    id={`edit_discipline_end_date${_id}`}
-                                    deleteValue={true}
-                                    value={endDate}
-                                    onChange={this.handleEndDateChange}
-                                />
-                                <ErrorLabel content={errorOnEndDate} />
-                            </div>
+                    </div>
+                    <div className="row qlcv-from">
+                        {/* Ngày có hiệu lực*/}
+                        <div className={`col-sm-6 col-xs-12 form-group ${errorOnStartDate && "has-error"}`}>
+                            <label>{translate('human_resource.commendation_discipline.discipline.table.start_date')}<span className="text-red">*</span></label>
+                            <DatePicker
+                                id={`edit_discipline_start_date${_id}`}
+                                deleteValue={false}
+                                value={startDate}
+                                onChange={handleStartDateChange}
+                            />
+                            <ErrorLabel content={errorOnStartDate} />
                         </div>
-                        {/* Hình thức kỷ luật */}
-                        <div className={`form-group ${errorOnType && "has-error"}`}>
-                            <label>{translate('human_resource.commendation_discipline.discipline.table.discipline_forms')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="type" value={type} onChange={this.handleTypeChange}
-                                autoComplete="off" placeholder={translate('human_resource.commendation_discipline.discipline.table.discipline_forms')} />
-                            <ErrorLabel content={errorOnType} />
+                        {/* Ngày hết hiệu lực*/}
+                        <div className={`col-sm-6 col-xs-12 form-group ${errorOnEndDate && "has-error"}`}>
+                            <label>{translate('human_resource.commendation_discipline.discipline.table.end_date')}</label>
+                            <DatePicker
+                                id={`edit_discipline_end_date${_id}`}
+                                deleteValue={true}
+                                value={endDate}
+                                onChange={handleEndDateChange}
+                            />
+                            <ErrorLabel content={errorOnEndDate} />
                         </div>
-                        {/* Lý do lỷ luật */}
-                        <div className={`form-group ${errorOnReason === undefined ? "" : "has-error"}`}>
-                            <label>{translate('human_resource.commendation_discipline.discipline.table.reason_discipline')}<span className="text-red">*</span></label>
-                            <textarea className="form-control" rows="3" name="reason" value={reason} onChange={this.handleReasonChange} placeholder="Enter ..." autoComplete="off" ></textarea>
-                            <ErrorLabel content={errorOnReason} />
-                        </div>
-                    </form>
-                </DialogModal>
-            </React.Fragment>
-        );
-    }
+                    </div>
+                    {/* Hình thức kỷ luật */}
+                    <div className={`form-group ${errorOnType && "has-error"}`}>
+                        <label>{translate('human_resource.commendation_discipline.discipline.table.discipline_forms')}<span className="text-red">*</span></label>
+                        <input type="text" className="form-control" name="type" value={type} onChange={handleTypeChange}
+                            autoComplete="off" placeholder={translate('human_resource.commendation_discipline.discipline.table.discipline_forms')} />
+                        <ErrorLabel content={errorOnType} />
+                    </div>
+                    {/* Lý do lỷ luật */}
+                    <div className={`form-group ${errorOnReason === undefined ? "" : "has-error"}`}>
+                        <label>{translate('human_resource.commendation_discipline.discipline.table.reason_discipline')}<span className="text-red">*</span></label>
+                        <textarea className="form-control" rows="3" name="reason" value={reason} onChange={handleReasonChange} placeholder="Enter ..." autoComplete="off" ></textarea>
+                        <ErrorLabel content={errorOnReason} />
+                    </div>
+                </form>
+            </DialogModal>
+        </React.Fragment>
+    );
 };
 
 function mapState(state) {

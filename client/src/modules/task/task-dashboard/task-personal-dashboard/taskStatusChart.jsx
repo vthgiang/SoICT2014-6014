@@ -44,11 +44,11 @@ function TaskStatusChart(props) {
     const { role } = state;
 
     useEffect(() => {
-        if (tasks.responsibleTasks
+        if ((tasks.responsibleTasks
             && tasks.accountableTasks
             && tasks.consultedTasks
             && tasks.informedTasks
-            && tasks.creatorTasks
+            && tasks.creatorTasks) || (tasks.organizationUnitTasks)
         ) {
             pieChart();
         }
@@ -84,7 +84,7 @@ function TaskStatusChart(props) {
 
     // Thiết lập dữ liệu biểu đồ
     const setDataPieChart = () => {
-        let dataPieChart, numberOfInprocess = 0, numberOfWaitForApproval = 0, numberOfFinished = 0, numberOfDelayed = 0, numberOfCanceled = 0, numberOfRequestedToClose = 0;
+        let dataPieChart, numberOfInprocess = 0, numberOfWaitForApproval = 0, numberOfFinished = 0, numberOfDelayed = 0, numberOfCanceled = 0;
         let listTask = [], listTaskByRole = [];
         if (TaskOrganizationUnitDashboard) {
             listTask = tasks && tasks.organizationUnitTasks;
@@ -125,9 +125,6 @@ function TaskStatusChart(props) {
                     case "canceled":
                         numberOfCanceled++;
                         break;
-                    case "requested_to_close":
-                        numberOfRequestedToClose++;
-                        break;
                 }
             });
         }
@@ -138,7 +135,6 @@ function TaskStatusChart(props) {
             [translate('task.task_management.finished'), numberOfFinished],
             [translate('task.task_management.delayed'), numberOfDelayed],
             [translate('task.task_management.canceled'), numberOfCanceled],
-            [translate('task.task_management.requested_to_close'), numberOfRequestedToClose],
         ];
         return dataPieChart;
     }

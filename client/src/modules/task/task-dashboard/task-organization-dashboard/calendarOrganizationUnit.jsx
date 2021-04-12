@@ -90,7 +90,6 @@ class CalendarOrganizationUnit extends Component {
             case "finished": return translate('task.task_management.finished');
             case "delayed": return translate('task.task_management.delayed');
             case "canceled": return translate('task.task_management.canceled');
-            case "requested_to_close": return translate('task.task_management.requested_to_close')
         }
     }
 
@@ -431,7 +430,6 @@ class CalendarOrganizationUnit extends Component {
                                     { value: "finished", text: translate('task.task_management.finished') },
                                     { value: "delayed", text: translate('task.task_management.delayed') },
                                     { value: "canceled", text: translate('task.task_management.canceled') },
-                                    { value: "requested_to_close", text: translate('task.task_management.requested_to_close') },
                                 ]}
                                 onChange={this.handleSelectStatus}
                                 options={{ nonSelectedText: translate('task.task_management.inprocess'), allSelectedText: translate('task.task_management.select_all_status') }}

@@ -428,7 +428,7 @@ const GeneralTaskChart = (props) => {
     return (
         <React.Fragment>
             <ViewAllGeneralTask showDetailTask={showDetailTask} />
-            <DataTableSetting className="pull-right" tableId='generalTaskUnit' tableContainerId="tree-table-container" tableWidth="1300px"
+            <DataTableSetting className="pull-right" tableId='general-list-task' tableContainerId="tree-table-container" tableWidth="1300px"
                 columnArr={[
                     translate('task.task_dashboard.unit'),
                     translate('task.task_dashboard.all_tasks'),
@@ -459,7 +459,7 @@ const GeneralTaskChart = (props) => {
                     </thead>
                     <tbody>
                         {
-                            state.map((x, index) => {
+                            state.filter(o => o.name).map((x, index) => {
                                 return (
                                     <tr key={index} style={{ fontWeight: x.organization ? 600 : 500, display: x.show ? "table-row" : "none", }} >
                                         <td style={{ display: x.parent === true ? 'flex' : 'table-cell', cursor: 'pointer', paddingLeft: x.parent === true ? '8px' : '30px' }} onClick={() => toggleCollapse(x?._id, x.parent)}>

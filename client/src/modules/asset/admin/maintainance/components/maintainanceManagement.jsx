@@ -3,38 +3,40 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { DataTableSetting, DatePicker, DeleteNotification, PaginateBar, SelectMulti, ExportExcel } from '../../../../../common-components';
-
+import { AssetManagerActions } from '../../asset-information/redux/actions';
 import { MaintainanceCreateForm } from './maintainanceCreateForm';
 import { MaintainanceEditForm } from './maintainanceEditForm';
 
 import { MaintainanceActions } from '../redux/actions';
 import { AssetEditForm } from '../../asset-information/components/assetEditForm';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
+import { formatDate } from '../../../../../helpers/assetHelper.js';
 function MaintainanceManagement(props) {
     
     const tableId_constructor = "table-maintainance-manager";
     const defaultConfig = { limit: 5 }
     const limit_constructor = getTableConfiguration(tableId_constructor, defaultConfig).limit;
-
+    const currentDate = formatDate(Date.now())
     const [state, setState] = useState({
         tableId: tableId_constructor,
         code: "",
         maintainanceCode: "",
-        maintainCreateDate: "",
-        type: '',
-        status: '',
+        maintainCreateDate: currentDate,
+        type: [1, 2, 3],
+        status: [1, 2, 3], 
         page: 1,
         limit: limit_constructor,
         managedBy: props.managedBy ? props.managedBy : ''
     })
 
     const { translate, mintainanceManager } = props;
-    const { page, limit, currentRow, currentRowEditAsset, managedBy, tableId } = state;
+    const { page, limit, currentRow, currentRowEditAsset, managedBy, tableId, type, status, maintainCreateDate } = state;
 
     
 
     useEffect(() => {
         props.getMaintainances(state);
+        props.getListBuildingAsTree();
     }, [])
     
 
@@ -70,24 +72,6 @@ function MaintainanceManagement(props) {
         } else {
             return [day, month, year].join('-');
         }
-    }
-
-    // Function format ngày hiện tại thành dạnh mm-yyyy
-    const formatDate = (date) => {
-        var d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
-
-        if (month.length < 2) {
-            month = '0' + month;
-        }
-
-        if (day.length < 2) {
-            day = '0' + day;
-        }
-
-        return [month, year].join('-');
     }
 
     // Function lưu giá trị mã phiếu vào state khi thay đổi
@@ -197,6 +181,7 @@ function MaintainanceManagement(props) {
         let fileName = "Bảng quản lý thông tin bảo trì tài sản ";
         let convertedData = [];
         if (data) {
+            console.log(data)
             data = data.forEach((x, index) => {
                 let code = x.maintainanceCode;
                 let assetName = x.asset.assetName;
@@ -272,7 +257,9 @@ function MaintainanceManagement(props) {
         window.$('#modal-edit-asset').modal('show');
 
         // Mở tab thứ 5
-        window.$('.nav-tabs li:eq(4) a').tab('show');
+        window.$('#modal-edit-asset').on('shown.bs.modal', function (){
+            window.$('#nav-tabs li:eq(4) a').tab('show');
+        });
 
     }
 
@@ -288,9 +275,6 @@ function MaintainanceManagement(props) {
         else if (status === "3") {
             return translate('asset.asset_info.made')
         }
-        else {
-            return ''
-        }
     }
 
     const convertMaintainType = (type) => {
@@ -304,9 +288,6 @@ function MaintainanceManagement(props) {
         }
         else if (type === "3") {
             return translate('asset.asset_info.upgrade')
-        }
-        else {
-            return ''
         }
     }
 
@@ -322,6 +303,7 @@ function MaintainanceManagement(props) {
         parseInt((mintainanceManager.mintainanceLength / limit) + 1);
 
         console.log(state)
+        console.log(lists)
         return (
             <div className="box">
                 <div className="box-body qlcv">
@@ -348,6 +330,7 @@ function MaintainanceManagement(props) {
                         <div className="form-group">
                             <label className="form-control-static">{translate('asset.general_information.type')}</label>
                             <SelectMulti id={`multiSelectType`} multiple="multiple"
+                                value = {type}
                                 options={{ nonSelectedText: translate('asset.general_information.select_reception_type'), allSelectedText: translate('asset.general_information.select_all_reception_type') }}
                                 onChange={handleTypeChange}
                                 items={[
@@ -365,7 +348,7 @@ function MaintainanceManagement(props) {
                             <DatePicker
                                 id="maintain-month"
                                 dateFormat="month-year"
-                                // value={formatDate(Date.now())}
+                                value={maintainCreateDate}
                                 onChange={handleMaintainCreateDateChange}
                             />
                         </div>
@@ -375,6 +358,7 @@ function MaintainanceManagement(props) {
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.status')}</label>
                             <SelectMulti id={`multiSelectStatus`} multiple="multiple"
+                                value= {status}
                                 options={{ nonSelectedText: translate('page.non_status'), allSelectedText: translate('page.all_status') }}
                                 onChange={handleStatusChange}
                                 items={[
@@ -494,7 +478,7 @@ function MaintainanceManagement(props) {
                         code={currentRowEditAsset.code}
                         assetName={currentRowEditAsset.assetName}
                         serial={currentRowEditAsset.serial}
-                        assetType={currentRowEditAsset.assetType}
+                        assetType={JSON.stringify(currentRowEditAsset.assetType)}
                         group={currentRowEditAsset.group}
                         purchaseDate={currentRowEditAsset.purchaseDate}
                         warrantyExpirationDate={currentRowEditAsset.warrantyExpirationDate}
@@ -506,7 +490,7 @@ function MaintainanceManagement(props) {
                         location={currentRowEditAsset.location}
                         description={currentRowEditAsset.description}
                         status={currentRowEditAsset.status}
-                        canRegisterForUse={currentRowEditAsset.canRegisterForUse}
+                        typeRegisterForUse={currentRowEditAsset.typeRegisterForUse}
                         detailInfo={currentRowEditAsset.detailInfo}
                         readByRoles={currentRowEditAsset.readByRoles}
                         cost={currentRowEditAsset.cost}
@@ -531,6 +515,8 @@ function MaintainanceManagement(props) {
                         incidentLogs={currentRowEditAsset.incidentLogs}
                         archivedRecordNumber={currentRowEditAsset.archivedRecordNumber}
                         files={currentRowEditAsset.documents}
+                        linkPage={"management"}
+                        page={page}
                     />
                 }
             </div>
@@ -545,6 +531,7 @@ function mapState(state) {
 const actionCreators = {
     getMaintainances: MaintainanceActions.getMaintainances,
     deleteMaintainance: MaintainanceActions.deleteMaintainance,
+    getListBuildingAsTree: AssetManagerActions.getListBuildingAsTree,
 };
 
 const connectedListMaintainance = connect(mapState, actionCreators)(withTranslate(MaintainanceManagement));

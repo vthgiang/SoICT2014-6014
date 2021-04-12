@@ -525,16 +525,16 @@ function Table(props) {
                     documentId={currentRow._id}
                     documentName={currentRow.name}
                     documentDescription={currentRow.description}
-                    documentCategory={currentRow.category ? currentRow.category._id : ""}
-                    documentDomains={currentRow.domains ? currentRow.domains.map(domain => domain._id) : []}
-                    documentArchives={currentRow.archives ? currentRow.archives.map(archive => archive._id) : []}
+                    documentCategory={currentRow.category ? currentRow.category._id || currentRow.category: ""}
+                    documentDomains={currentRow.domains ? currentRow.domains.map(domain => domain._id ||domain) : []}
+                    documentArchives={currentRow.archives ? currentRow.archives.map(archive => archive._id||archive) : []}
                     documentIssuingBody={currentRow.issuingBody}
                     documentOfficialNumber={currentRow.officialNumber}
                     documentSigner={currentRow.signer}
                     documentVersions={currentRow.versions}
 
                     documentRelationshipDescription={currentRow.relationshipDescription}
-                    documentRelationshipDocuments={currentRow.relationshipDocuments ? currentRow.relationshipDocuments : []}
+                    documentRelationshipDocuments={currentRow.relationshipDocuments ? currentRow.relationshipDocuments.map(relationshipDocument=>relationshipDocument._id||relationshipDocument) : []}
 
                     documentRoles={currentRow.roles}
                     documentUserCanView={currentRow.userCanView}
@@ -683,38 +683,37 @@ function Table(props) {
                     {
                         paginate && paginate.length > 0 &&
                         paginate.map(doc =>
-
-                            <tr key={doc._id}>
-                                <td>{doc.issuingBody}</td>
-                                <td>{doc.name}</td>
-                                <td>{doc.description ? doc.description : ""}</td>
-                                <td>{doc.versions.length ? formatDate(doc.versions[doc.versions.length - 1].issuingDate) : null}</td>
-                                <td>{doc.versions.length ? formatDate(doc.versions[doc.versions.length - 1].effectiveDate) : null}</td>
-                                <td>{doc.versions.length ? formatDate(doc.versions[doc.versions.length - 1].expiredDate) : null}</td>
+                            <tr key={doc?._id}>
+                                <td>{doc?.issuingBody}</td>
+                                <td>{doc?.name}</td>
+                                <td>{doc?.description ? doc.description : ""}</td>
+                                <td>{doc?.versions?.length ? formatDate(doc?.versions?.[doc?.versions?.length - 1]?.issuingDate) : null}</td>
+                                <td>{doc?.versions?.length ? formatDate(doc?.versions?.[doc?.versions?.length - 1]?.effectiveDate) : null}</td>
+                                <td>{doc?.versions?.length ? formatDate(doc?.versions?.[doc?.versions?.length - 1]?.expiredDate) : null}</td>
                                 <td>
                                     <a href="#" onClick={() => requestDownloadDocumentFile(doc._id, doc.name, doc.versions.length - 1)}>
-                                        <u>{doc.versions.length && doc.versions[doc.versions.length - 1].file ? <i className="fa fa-download"></i> : ""}</u>
+                                        <u>{doc?.versions?.length && doc?.versions?.[doc?.versions?.length - 1]?.file ? <i className="fa fa-download"></i> : ""}</u>
                                     </a>
 
                                     <a href="#" onClick={() => showFilePreview(doc.versions.length && doc.versions[doc.versions.length - 1].file)}>
-                                        <u>{doc.versions.length && doc.versions[doc.versions.length - 1].file && checkTypeFile(doc.versions[doc.versions.length - 1].file) ?
+                                        <u>{doc?.versions?.length && doc?.versions?.[doc?.versions?.length - 1]?.file && checkTypeFile(doc?.versions?.[doc?.versions?.length - 1]?.file) ?
                                             <i className="fa fa-eye"></i> : ""}</u>
                                     </a>
                                 </td>
                                 <td>
                                     <a href="#" onClick={() => requestDownloadDocumentFileScan(doc._id, "SCAN_" + doc.name, doc.versions.length - 1)}>
-                                        <u>{doc.versions.length && doc.versions[doc.versions.length - 1].scannedFileOfSignedDocument ? <i className="fa fa-download"></i> : ""}</u>
+                                        <u>{doc?.versions?.length && doc?.versions?.[doc?.versions?.length - 1]?.scannedFileOfSignedDocument ? <i className="fa fa-download"></i> : ""}</u>
                                     </a>
-                                    <a href="#" onClick={() => showFilePreview(doc.versions.length && doc.versions[doc.versions.length - 1].scannedFileOfSignedDocument)}>
-                                        <u>{doc.versions.length && doc.versions[doc.versions.length - 1].scannedFileOfSignedDocument && checkTypeFile(doc.versions[doc.versions.length - 1].scannedFileOfSignedDocument) ?
+                                    <a href="#" onClick={() => showFilePreview(doc?.versions?.length && doc?.versions?.[doc?.versions?.length - 1]?.scannedFileOfSignedDocument)}>
+                                        <u>{doc?.versions?.length && doc?.versions?.[doc?.versions?.length - 1]?.scannedFileOfSignedDocument && checkTypeFile(doc?.versions?.[doc?.versions?.length - 1]?.scannedFileOfSignedDocument) ?
                                             <i className="fa fa-eye"></i> : ""}</u>
                                     </a>
                                 </td>
                                 <td>
-                                    <a href="#modal-file-preview`" onClick={() => showDetailListView(doc)}>{doc.numberOfView}</a>
+                                    <a href="#modal-file-preview`" onClick={() => showDetailListView(doc)}>{doc?.numberOfView}</a>
                                 </td>
                                 <td>
-                                    <a href="#modal-list-download" onClick={() => showDetailListDownload(doc)}>{doc.numberOfDownload}</a>
+                                    <a href="#modal-list-download" onClick={() => showDetailListDownload(doc)}>{doc?.numberOfDownload}</a>
                                 </td>
                                 <td>
                                     <a className="text-green" title={translate('document.view')} onClick={() => toggleDocumentInformation(doc)}>
@@ -723,7 +722,7 @@ function Table(props) {
                                     <a className="text-yellow" title={translate('document.edit')} onClick={() => toggleEditDocument(doc)}>
                                         <i className="material-icons">edit</i>
                                     </a>
-                                    <a className="text-red" title={translate('document.delete')} onClick={() => deleteDocument(doc._id, doc.name)}>
+                                    <a className="text-red" title={translate('document.delete')} onClick={() => deleteDocument(doc?._id, doc?.name)}>
                                         <i className="material-icons">delete</i>
                                     </a>
                                 </td>
@@ -737,7 +736,7 @@ function Table(props) {
                     <div className="table-info-panel">{translate('confirm.loading')}</div> :
                     paginate && paginate.length === 0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>
             }
-            <PaginateBar pageTotal={docs.totalPages} currentPage={docs.page} func={setPage} />
+            <PaginateBar pageTotal={docs?.totalPages} currentPage={docs?.page} func={setPage} />
         </div>
     );
 }

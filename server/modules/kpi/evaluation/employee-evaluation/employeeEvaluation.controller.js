@@ -1,5 +1,9 @@
 const KPIMemberService = require('./employeeEvaluation.service');
+const overviewService = require('../../employee/management/management.service')
+
 const Logger = require(`../../../../logs`);
+
+const { getDataEmployeeKpiSetLog } = require('../../../../helpers/descriptionLogKpi')
 
 /**
  * lấy tất cả kpi nhân viên
@@ -104,12 +108,26 @@ exports.editKpi = async (req, res) => {
     if (Object.keys(req.body).length === 0) this.approveAllKpis(req, res);
     else {
         try {
-            const kpimembers = await KPIMemberService.editKpi(req.portal, req.params.id, req.body);
+            const data = await KPIMemberService.editKpi(req.portal, req.params.id, req.body);
+           
+            let log = getDataEmployeeKpiSetLog({
+                type: "edit_kpi",
+                creator: req.user._id,
+                organizationalUnit: data?.employeeKpiSet?.organizationalUnit, 
+                employee: data?.employeeKpiSet?.creator,
+                month: data?.employeeKpiSet?.date,
+                newData: data?.target
+            })
+            await overviewService.createEmployeeKpiSetLogs(req.portal, {
+                ...log,
+                employeeKpiSetId: data?.employeeKpiSet?._id
+            })
+           
             await Logger.info(req.user.email, `Edit target member`, req.portal);
             res.status(200).json({
                 success: true,
                 messages: ['edit_kpi_target_member_success'],
-                content: kpimembers
+                content: data?.target
             });
         } catch (error) {
             await Logger.error(req.user.email, `Edit target member`, req.portal);

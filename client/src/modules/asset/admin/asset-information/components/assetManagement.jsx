@@ -25,18 +25,18 @@ function AssetManagement(props) {
         assetName: "",
         purchaseDate: null,
         disposalDate: null,
-        status: window.location.search ? [qs.parse(window.location.search, { ignoreQueryPrefix: true }).status] : '',
-        group: "",
+        status: window.location.search ? [qs.parse(window.location.search, { ignoreQueryPrefix: true }).status] : ["ready_to_use", "in_use", "broken", "lost", "disposed"],
+        group: ["building", "vehicle", "machine", "other"],
         handoverUnit: "",
         handoverUser: "",
-        typeRegisterForUse: "",
+        typeRegisterForUse: ["1", "2", "3"],
         page: 0,
         limit: limit_constructor,
         managedBy: props.managedBy ? props.managedBy : ''
     })
 
     const { assetsManager, assetType, translate, user, isActive, department } = props;
-    const { page, limit, currentRowView, status, currentRow, purchaseDate, disposalDate, managedBy, location, tableId } = state;
+    const { page, limit, currentRowView, status, currentRow, purchaseDate, disposalDate, managedBy, location, tableId, group, typeRegisterForUse } = state;
 
     useEffect(() => {
         props.getAllAsset(state);
@@ -195,7 +195,7 @@ function AssetManagement(props) {
         });
     }
 
-    // Function lưu giá trị status vào state khi thay đổi
+    // Function lưu giá trị quyền đăng kí vào state khi thay đổi
     const handleTypeRegisterForUseChange = (value) => {
         if (value.length === 0) {
             value = null
@@ -801,6 +801,7 @@ function AssetManagement(props) {
                     <div className="form-group">
                         <label className="form-control-static">{translate('asset.general_information.asset_group')}</label>
                         <SelectMulti id={`multiSelectGroupInManagement`} multiple="multiple"
+                            value={group}
                             options={{ nonSelectedText: translate('asset.asset_info.select_group'), allSelectedText: translate('asset.general_information.select_all_group') }}
                             onChange={handleGroupChange}
                             items={[
@@ -831,6 +832,7 @@ function AssetManagement(props) {
                     <div className="form-group">
                         <label className="form-control-static">{translate('page.status')}</label>
                         <SelectMulti id={`multiSelectStatus1`} multiple="multiple"
+                            value= {status}
                             options={{ nonSelectedText: translate('page.non_status'), allSelectedText: translate('asset.general_information.select_all_status') }}
                             onChange={handleStatusChange}
                             value={status ? status : []}
@@ -907,6 +909,7 @@ function AssetManagement(props) {
                             id={`typeRegisterForUseInManagement`}
                             className="form-control select2"
                             multiple="multiple"
+                            value={typeRegisterForUse}
                             options={{ nonSelectedText: translate('asset.general_information.select_register'), allSelectedText: translate('asset.general_information.select_all_register') }}
                             style={{ width: "100%" }}
                             items={[

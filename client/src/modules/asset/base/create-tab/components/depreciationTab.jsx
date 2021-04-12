@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import moment from 'moment';
@@ -7,14 +7,14 @@ import { DatePicker, ErrorLabel, SelectBox } from '../../../../../common-compone
 
 import ValidationHelper from '../../../../../helpers/validationHelper';
 
-class DepreciationTab extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {};
-    }
+function DepreciationTab (props){
+    const [state, setState] = useState({})
+    const [prevProps, setPrevProps] = useState({
+        id: null
+    })
 
     // Function format dữ liệu Date thành string
-    formatDate(date, monthYear = false) {
+    const formatDate = (date, monthYear = false) => {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -36,47 +36,50 @@ class DepreciationTab extends Component {
     }
 
     // Function lưu các trường thông tin vào state
-    handleChange = (e) => {
+    const handleChange = (e) => {
         const { name, value } = e.target;
-        this.setState({
-            [name]: value
+        setState(state =>{
+            return{
+                ...state,
+                [name]: value
+            }
         })
-        this.props.handleChange(name, value);
+        props.handleChange(name, value);
     }
 
     /**
      * Bắt sự kiện thay đổi nguyên giá
      */
-    handleCostChange = (e) => {
+    const handleCostChange = (e) => {
         const { value } = e.target;
-        this.setState(state => {
+        setState(state => {
             return {
                 ...state,
                 cost: value
             }
         });
-        this.props.handleChange("cost", value);
+        props.handleChange("cost", value);
     }
 
     /**
      * Bắt sự kiện thay đổi Giá trị thu hồi dự tính
      */
-    handleResidualValueChange = (e) => {
+    const handleResidualValueChange = (e) => {
         const { value } = e.target;
-        this.validateResidualValue(value, true);
+        validateResidualValue(value, true);
     }
-    validateResidualValue = (value, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+    const validateResidualValue = (value, willUpdateState = true) => {
+        let { message } = ValidationHelper.validateEmpty(props.translate, value);
 
         if (willUpdateState) {
-            this.setState(state => {
+            setState(state => {
                 return {
                     ...state,
                     errorOnResidualValue: message,
                     residualValue: value
                 }
             });
-            this.props.handleChange("residualValue", value);
+            props.handleChange("residualValue", value);
         }
         return message === undefined;
     }
@@ -84,36 +87,36 @@ class DepreciationTab extends Component {
     /**
      * Bắt sự kiện thay đổi Thời gian trích khấu hao
      */
-    handleUsefulLifeChange = (e) => {
+    const handleUsefulLifeChange = (e) => {
         const { value } = e.target;
-        this.setState(state => {
+        setState(state => {
             return {
                 ...state,
                 usefulLife: value
             }
         });
-        this.props.handleChange("usefulLife", value);
+        props.handleChange("usefulLife", value);
     }
 
     /**
      * Bắt sự kiện thay đổi Thời gian bắt đầu trích khấu hao
      */
-    handleStartDepreciationChange = (value) => {
-        this.validateStartDepreciation(value, true);
+    const handleStartDepreciationChange = (value) => {
+        validateStartDepreciation(value, true);
     }
-    validateStartDepreciation = (value, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+    const validateStartDepreciation = (value, willUpdateState = true) => {
+        let { message } = ValidationHelper.validateEmpty(props.translate, value);
 
         if (willUpdateState) {
 
-            this.setState(state => {
+            setState(state => {
                 return {
                     ...state,
                     errorOnStartDepreciation: message,
                     startDepreciation: value,
                 }
             });
-            this.props.handleChange("startDepreciation", value);
+            props.handleChange("startDepreciation", value);
         }
         return message === undefined;
     }
@@ -121,37 +124,38 @@ class DepreciationTab extends Component {
     /**
      * Bắt sự kiện thay đổi phương pháp khấu hao
      */
-    handleDepreciationTypeChange = (value) => {
-        this.setState({
-            depreciationType: value[0]
-        })
-        this.props.handleChange('depreciationType', value[0]);
-    }
-
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id) {
-            return {
-                ...prevState,
-                id: nextProps.id,
-                cost: nextProps.cost,
-                residualValue: nextProps.residualValue,
-                usefulLife: nextProps.usefulLife,
-                startDepreciation: nextProps.startDepreciation,
-                endDepreciation: nextProps.endDepreciation,
-                depreciationType: nextProps.depreciationType,
-                estimatedTotalProduction: nextProps.estimatedTotalProduction,
-                unitsProducedDuringTheYears: nextProps.unitsProducedDuringTheYears,
-                errorOnStartDepreciation: undefined,
-                errorOnDepreciationType: undefined,
+    const handleDepreciationTypeChange = (value) => {
+        setState(state =>{
+            return{
+                ...state,
+                depreciationType: value[0]
             }
-        } else {
-            return null;
-        }
+        })
+        props.handleChange('depreciationType', value[0]);
     }
 
-    addMonthToEndDepreciation = (day) => {
+    if(prevProps.id !== props.id) {
+        setState({
+            ...state,
+            id: props.id,
+            cost: props.cost,
+            residualValue: props.residualValue,
+            usefulLife: props.usefulLife,
+            startDepreciation: props.startDepreciation,
+            endDepreciation: props.endDepreciation,
+            depreciationType: props.depreciationType,
+            estimatedTotalProduction: props.estimatedTotalProduction,
+            unitsProducedDuringTheYears: props.unitsProducedDuringTheYears,
+            errorOnStartDepreciation: undefined,
+            errorOnDepreciationType: undefined,
+        })
+        setPrevProps(props)
+    }
+    
+
+    const addMonthToEndDepreciation = (day) => {
         if (day) {
-            let { usefulLife } = this.state,
+            let { usefulLife } = state,
                 splitDay = day.toString().split('-'),
                 currentDate = moment(`${splitDay[2]}-${splitDay[1]}-${splitDay[0]}`),
                 futureMonth = moment(currentDate).add(usefulLife, 'M'),
@@ -168,15 +172,15 @@ class DepreciationTab extends Component {
     /**
      * Bắt sự kiện thay đổi ản lượng theo công suất thiết kế (trong 1 năm)
      */
-    handleEstimatedTotalProductionChange = (e) => {
+    const handleEstimatedTotalProductionChange = (e) => {
         const { value } = e.target;
-        this.validateEstimatedTotalProduction(value, true);
+        validateEstimatedTotalProduction(value, true);
     }
-    validateEstimatedTotalProduction = (value, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+    const validateEstimatedTotalProduction = (value, willUpdateState = true) => {
+        let { message } = ValidationHelper.validateEmpty(props.translate, value);
 
         if (willUpdateState) {
-            this.setState(state => {
+            setState(state => {
                 return {
                     ...state,
                     errorOnEstimatedTotalProduction: message,
@@ -184,7 +188,7 @@ class DepreciationTab extends Component {
                 }
             });
 
-            this.props.handleChange("estimatedTotalProduction", value);
+            props.handleChange("estimatedTotalProduction", value);
         }
         return message === undefined;
     }
@@ -192,29 +196,35 @@ class DepreciationTab extends Component {
     /**
      * Bắt sự kiện click thêm thông tin sản lượng sản phẩm
      */
-    handleAddUnitsProduced = () => {
-        var unitsProducedDuringTheYears = this.state.unitsProducedDuringTheYears;
+    const handleAddUnitsProduced = () => {
+        var unitsProducedDuringTheYears = state.unitsProducedDuringTheYears;
 
         if (unitsProducedDuringTheYears && unitsProducedDuringTheYears.length !== 0) {
             let result;
 
             for (let n in unitsProducedDuringTheYears) {
-                result = this.validateYear(unitsProducedDuringTheYears[n].month, n) && this.validateValue(unitsProducedDuringTheYears[n].unitsProducedDuringTheYear, n);
+                result = validateYear(unitsProducedDuringTheYears[n].month, n) && validateValue(unitsProducedDuringTheYears[n].unitsProducedDuringTheYear, n);
                 if (!result) {
-                    this.validateYear(unitsProducedDuringTheYears[n].month, n);
-                    this.validateValue(unitsProducedDuringTheYears[n].unitsProducedDuringTheYear, n)
+                    validateYear(unitsProducedDuringTheYears[n].month, n);
+                    validateValue(unitsProducedDuringTheYears[n].unitsProducedDuringTheYear, n)
                     break;
                 }
             }
 
             if (result) {
-                this.setState({
-                    unitsProducedDuringTheYears: [...unitsProducedDuringTheYears, { month: "", unitsProducedDuringTheYear: "" }]
+                setState(state =>{
+                    return{
+                        ...state,
+                        unitsProducedDuringTheYears: [...unitsProducedDuringTheYears, { month: "", unitsProducedDuringTheYear: "" }]
+                    }
                 })
             }
         } else {
-            this.setState({
-                unitsProducedDuringTheYears: [{ month: "", unitsProducedDuringTheYear: "" }]
+            setState(state =>{
+                return{
+                    ...state,
+                    unitsProducedDuringTheYears: [{ month: "", unitsProducedDuringTheYear: "" }]
+                }
             })
         }
 
@@ -223,21 +233,21 @@ class DepreciationTab extends Component {
     /**
      * Bắt sự kiện chỉnh sửa tên trường tháng sản lượng sản phẩm
      */
-    handleMonthChange = (value, index) => {
-        this.validateYear(value, index);
+    const handleMonthChange = (value, index) => {
+        validateYear(value, index);
     }
-    validateYear = (value, index, willUpdateState = true) => {
+    const validateYear = (value, index, willUpdateState = true) => {
         let time = value.split("-");
         let date = new Date(time[1], time[0], 0)
 
         let startDepreciation = undefined, endDepreciation = undefined;
-        if (this.state.startDepreciation) {
-            let partDepreciation = this.state.startDepreciation.split('-');
+        if (state.startDepreciation) {
+            let partDepreciation = state.startDepreciation.split('-');
             startDepreciation = [partDepreciation[2], partDepreciation[1], partDepreciation[0]].join('-');
         }
 
-        if (this.state.endDepreciation) {
-            let partEndDepreciation = this.state.endDepreciation.split('-');
+        if (state.endDepreciation) {
+            let partEndDepreciation = state.endDepreciation.split('-');
             endDepreciation = [partEndDepreciation[2], partEndDepreciation[1], partEndDepreciation[0]].join('-');
         }
 
@@ -252,9 +262,9 @@ class DepreciationTab extends Component {
         }
 
         if (willUpdateState) {
-            var { unitsProducedDuringTheYears } = this.state;
+            var { unitsProducedDuringTheYears } = state;
             unitsProducedDuringTheYears[index] = { ...unitsProducedDuringTheYears[index], month: value }
-            this.setState(state => {
+            setState(state => {
                 return {
                     ...state,
                     errorOnMonth: msg,
@@ -263,7 +273,7 @@ class DepreciationTab extends Component {
                 }
             });
 
-            this.props.handleChange("unitsProducedDuringTheYears", unitsProducedDuringTheYears);
+            props.handleChange("unitsProducedDuringTheYears", unitsProducedDuringTheYears);
         }
 
         return msg === undefined;
@@ -272,17 +282,17 @@ class DepreciationTab extends Component {
     /**
      * Bắt sự kiện chỉnh sửa giá trị trường giá trị sản lượng sản phẩm
      */
-    handleChangeValue = (e, index) => {
+    const handleChangeValue = (e, index) => {
         var { value } = e.target;
-        this.validateValue(value, index);
+        validateValue(value, index);
     }
-    validateValue = (value, className, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+    const validateValue = (value, className, willUpdateState = true) => {
+        let { message } = ValidationHelper.validateEmpty(props.translate, value);
 
         if (willUpdateState) {
-            var { unitsProducedDuringTheYears } = this.state;
+            var { unitsProducedDuringTheYears } = state;
             unitsProducedDuringTheYears[className] = { ...unitsProducedDuringTheYears[className], unitsProducedDuringTheYear: value }
-            this.setState(state => {
+            setState(state => {
                 return {
                     ...state,
                     errorOnValue: message,
@@ -291,7 +301,7 @@ class DepreciationTab extends Component {
                 }
             });
 
-            this.props.handleChange("unitsProducedDuringTheYears", unitsProducedDuringTheYears);
+            props.handleChange("unitsProducedDuringTheYears", unitsProducedDuringTheYears);
         }
         return message === undefined;
     }
@@ -299,33 +309,39 @@ class DepreciationTab extends Component {
     /**
      * Bắt sự kiện xóa thông tin sản lượng sản phẩm
      */
-    delete = (index) => {
-        var { unitsProducedDuringTheYears } = this.state;
+    const delete_function = (index) => {
+        var { unitsProducedDuringTheYears } = state;
         unitsProducedDuringTheYears.splice(index, 1);
-        this.setState({
-            unitsProducedDuringTheYears: unitsProducedDuringTheYears
+        setState(state =>{
+            return{
+                ...state,
+                unitsProducedDuringTheYears: unitsProducedDuringTheYears
+            }
         })
         if (unitsProducedDuringTheYears.length !== 0) {
             for (let n in unitsProducedDuringTheYears) {
-                this.validateYear(unitsProducedDuringTheYears[n].month, n);
-                this.validateValue(unitsProducedDuringTheYears[n].unitsProducedDuringTheYear, n)
+                validateYear(unitsProducedDuringTheYears[n].month, n);
+                validateValue(unitsProducedDuringTheYears[n].unitsProducedDuringTheYear, n)
             }
         } else {
-            this.setState({
-                errorOnValue: undefined,
-                errorOnMonth: undefined
+            setState(state =>{
+                return{
+                    ...state,
+                    errorOnValue: undefined,
+                    errorOnMonth: undefined
+                }
             })
         }
     };
 
-    render() {
-        const { id } = this.props;
-        const { translate } = this.props;
+    
+        const { id } = props;
+        const { translate } = props;
 
         const {
             cost, residualValue, usefulLife, startDepreciation, depreciationType, errorOnStartDepreciation,
             errorOnDepreciationType, errorOnMonth, errorOnValue, unitsProducedDuringTheYears, errorOnEstimatedTotalProduction,
-            estimatedTotalProduction, errorOnMonthPosition, errorOnValuePosition } = this.state;
+            estimatedTotalProduction, errorOnMonthPosition, errorOnValuePosition } = state;
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body">
@@ -336,21 +352,21 @@ class DepreciationTab extends Component {
                         {/* Nguyên giá */}
                         <div className="form-group">
                             <label htmlFor="cost">{translate('asset.general_information.original_price')} (VNĐ)</label><br />
-                            <input type="number" className="form-control" name="cost" value={cost ? cost : ''} onChange={this.handleCostChange}
+                            <input type="number" className="form-control" name="cost" value={cost ? cost : ''} onChange={handleCostChange}
                                 placeholder={translate('asset.general_information.original_price')} autoComplete="off" />
                         </div>
 
                         {/* Giá trị thu hồi ước tính */}
                         <div className={`form-group`}>
                             <label htmlFor="residualValue">{translate('asset.general_information.residual_price')} (VNĐ)</label><br />
-                            <input type="number" className="form-control" name="residualValue" value={residualValue ? residualValue : ''} onChange={this.handleResidualValueChange}
+                            <input type="number" className="form-control" name="residualValue" value={residualValue ? residualValue : ''} onChange={handleResidualValueChange}
                                 placeholder="Giá trị thu hồi ước tính" autoComplete="off" />
                         </div>
 
                         {/* Thời gian sử dụng */}
                         <div className="form-group">
                             <label htmlFor="usefulLife">{translate('asset.asset_info.usage_time')} (Tháng)</label>
-                            <input type="number" className="form-control" name="usefulLife" value={usefulLife ? usefulLife : ''} onChange={this.handleUsefulLifeChange}
+                            <input type="number" className="form-control" name="usefulLife" value={usefulLife ? usefulLife : ''} onChange={handleUsefulLifeChange}
                                 placeholder="Thời gian trích khấu hao" autoComplete="off" />
                         </div>
 
@@ -360,7 +376,7 @@ class DepreciationTab extends Component {
                             <DatePicker
                                 id={`startDepreciation${id}`}
                                 value={startDepreciation}
-                                onChange={this.handleStartDepreciationChange}
+                                onChange={handleStartDepreciationChange}
                             />
                             <ErrorLabel content={errorOnStartDepreciation} />
                         </div>
@@ -379,7 +395,7 @@ class DepreciationTab extends Component {
                                     { value: 'declining_balance', text: translate('asset.depreciation.declining_balance') },
                                     { value: 'units_of_production', text: translate('asset.depreciation.units_production') },
                                 ]}
-                                onChange={this.handleDepreciationTypeChange}
+                                onChange={handleDepreciationTypeChange}
                             />
                             <ErrorLabel content={errorOnDepreciationType} />
                         </div>
@@ -389,7 +405,7 @@ class DepreciationTab extends Component {
                             depreciationType == 'units_of_production' &&
                             <div className={`form-group ${!errorOnEstimatedTotalProduction ? "" : "has-error"} `}>
                                 <label htmlFor="estimatedTotalProduction">{translate('asset.depreciation.estimated_production')}</label>
-                                <input type="number" className="form-control" name="estimatedTotalProduction" value={estimatedTotalProduction ? estimatedTotalProduction : ''} onChange={this.handleEstimatedTotalProductionChange}
+                                <input type="number" className="form-control" name="estimatedTotalProduction" value={estimatedTotalProduction ? estimatedTotalProduction : ''} onChange={handleEstimatedTotalProductionChange}
                                     placeholder='Sản lượng theo công suất thiết kế' autoComplete="off" />
                                 <ErrorLabel content={errorOnEstimatedTotalProduction} />
                             </div>
@@ -401,7 +417,7 @@ class DepreciationTab extends Component {
                             <div className="col-md-12" style={{ paddingLeft: '0px' }}>
                                 <label>{translate('asset.depreciation.months_production')}:
                                     <a style={{ cursor: "pointer" }} title={translate('asset.general_information.asset_properties')}><i className="fa fa-plus-square" style={{ color: "#28A745", marginLeft: 5 }}
-                                        onClick={this.handleAddUnitsProduced} /></a>
+                                        onClick={handleAddUnitsProduced} /></a>
                                 </label>
 
                                 {/* Bảng thông tin chi tiết */}
@@ -427,19 +443,19 @@ class DepreciationTab extends Component {
                                                                 id={index}
                                                                 dateFormat="month-year"
                                                                 value={x.month}
-                                                                onChange={(e) => this.handleMonthChange(e, index)}
+                                                                onChange={(e) => handleMonthChange(e, index)}
                                                             />
                                                             {(parseInt(errorOnMonthPosition) === index && errorOnMonth) && <ErrorLabel content={errorOnMonth} />}
                                                         </div>
                                                     </td>
                                                     <td style={{ paddingLeft: '0px' }}>
                                                         <div className={`form-group ${(parseInt(errorOnValuePosition) === index && errorOnValue) ? "has-error" : ""}`}>
-                                                            <input className="form-control" type="number" value={x.unitsProducedDuringTheYear} name="unitsProducedDuringTheYears" style={{ width: "100%" }} onChange={(e) => this.handleChangeValue(e, index)} />
+                                                            <input className="form-control" type="number" value={x.unitsProducedDuringTheYear} name="unitsProducedDuringTheYears" style={{ width: "100%" }} onChange={(e) => handleChangeValue(e, index)} />
                                                             {(parseInt(errorOnValuePosition) === index && errorOnValue) && <ErrorLabel content={errorOnValue} />}
                                                         </div>
                                                     </td>
                                                     <td style={{ textAlign: "center" }}>
-                                                        <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete(index)}><i className="material-icons"></i></a>
+                                                        <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => delete_function(index)}><i className="material-icons"></i></a>
                                                     </td>
                                                 </tr>
                                             })}
@@ -451,7 +467,6 @@ class DepreciationTab extends Component {
                 </div>
             </div>
         );
-    }
 };
 
 const depreciationTab = connect(null, null)(withTranslate(DepreciationTab));

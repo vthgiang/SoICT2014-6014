@@ -142,11 +142,11 @@ function ModalCreateEmployeeKpi(props) {
    const isFormValidated = () => {
         const { name, criteria, weight } = state;
 
-        let validatateName, validateCriteria, result;
+        let validatateName, validateCriteria, result, validation;
 
         validatateName = ValidationHelper.validateName(translate, name);
         validateCriteria = ValidationHelper.validateDescription(translate, criteria);
-       let validation = validateWeight(translate, weight)
+        validation = validateWeight(translate, weight)
 
         result = validatateName.status && validateCriteria.status && validation.status;
 
@@ -186,21 +186,21 @@ function ModalCreateEmployeeKpi(props) {
                     </div>
 
                     {/**Mục tiêu cha của mục tiêu này */}
-                    {(createKpiUnit.currentKPI !== null) &&//unit.parent === null này!!! kiểm tra xem đây là đơn vị gốc hay không!
-                    (items.length !== 0) &&
-                    <div className="form-group">
-                        <label>{ translate('kpi.employee.employee_kpi_set.create_employee_kpi_modal.parents')}<span className="text-red">*</span></label>
-                        <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                            id={`parent-target-add`}
-                            className="form-control select2"
-                            style={{width: "100%"}}
-                            items = {items}
-                            onChange={handleParentChange}
-                            multiple={false}
-                            value={parent ? parent : ""}
-                        />
-
-                    </div>}
+                    {(createKpiUnit?.currentKPI) &&//unit.parent === null này!!! kiểm tra xem đây là đơn vị gốc hay không!
+                        (items?.length > 0) &&
+                        <div className="form-group">
+                            <label>{ translate('kpi.employee.employee_kpi_set.create_employee_kpi_modal.parents')}<span className="text-red">*</span></label>
+                            <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                                id={`parent-target-add`}
+                                className="form-control select2"
+                                style={{width: "100%"}}
+                                items = {items}
+                                onChange={handleParentChange}
+                                multiple={false}
+                                value={parent ? parent : ""}
+                            />
+                        </div>
+                    }
 
                     {/**Mô tả của mục tiêu này */}
                     <div className={`form-group ${errorOnCriteria===undefined?"":"has-error"}`}>

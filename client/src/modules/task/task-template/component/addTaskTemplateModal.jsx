@@ -43,8 +43,9 @@ function ModalAddTaskTemplate (props) {
     /**Submit new template in data */
     const handleSubmit = async (event) => {
         let { newTemplate } = state;
+        console.log(newTemplate);
         props.addNewTemplate(newTemplate);
-        window.$("#addTaskTemplate").modal("hide");
+        // window.$("#addTaskTemplate").modal("hide");
     }
 
 

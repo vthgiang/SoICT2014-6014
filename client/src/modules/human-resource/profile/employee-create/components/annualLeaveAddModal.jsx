@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -6,27 +6,13 @@ import { DialogModal, ErrorLabel, DatePicker, TimePicker, ButtonModal, SelectBox
 
 import { AnnualLeaveFormValidator } from '../../../annual-leave/components/combinedContent';
 
-class AnnualLeaveAddModal extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            organizationalUnit: "",
-            totalHours: "",
-            startDate: this.formatDate(Date.now()),
-            endDate: this.formatDate(Date.now()),
-            type: false,
-            startTime: '',
-            endTime: '',
-            status: "approved",
-            reason: "",
-        };
-    }
+function AnnualLeaveAddModal(props) {
 
     /**
      * Function format ngày hiện tại thành dạnh dd-mm-yyyy
      * @param {*} date : Ngày cần format
      */
-    formatDate = (date) => {
+    const formatDate = (date) => {
         if (date) {
             let d = new Date(date),
                 month = '' + (d.getMonth() + 1),
@@ -44,33 +30,57 @@ class AnnualLeaveAddModal extends Component {
 
     }
 
+    const [state, setState] = useState({
+        organizationalUnit: "",
+        totalHours: "",
+        startDate: formatDate(Date.now()),
+        endDate: formatDate(Date.now()),
+        type: false,
+        startTime: '',
+        endTime: '',
+        status: "approved",
+        reason: "",
+    });
+
+    const createEndTime = useRef('');
+    const createStartTime = useRef('');
+
+    const { translate, employeesInfo } = props;
+
+    const { id } = props;
+
+    const { startDate, endDate, reason, status, organizationalUnit, errorOnOrganizationalUnit,
+        errorOnReason, errorOnStartDate, errorOnEndDate, totalHours, errorOnTotalHours, type } = state;
+
+    let organizationalUnits = employeesInfo.organizationalUnits;
+
+
     /** Function bắt sự kiện thay đổi đơn vị */
-    handleOrganizationalUnitChange = (value) => {
-        this.validateOrganizationalUnit(value[0], true);
+    const handleOrganizationalUnitChange = (value) => {
+        validateOrganizationalUnit(value[0], true);
     }
-    validateOrganizationalUnit = (value, willUpdateState = true) => {
-        let { translate } = this.props;
+
+    const validateOrganizationalUnit = (value, willUpdateState = true) => {
+        let { translate } = props;
         let msg = AnnualLeaveFormValidator.validateEmployeeNumber(value, translate);
         if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnOrganizationalUnit: msg,
-                    organizationalUnit: value,
-                }
-            });
+            setState({
+                ...state,
+                errorOnOrganizationalUnit: msg,
+                organizationalUnit: value,
+            })
         }
         return msg === undefined;
     }
 
     /** Bắt sự kiện chọn xin nghi theo giờ */
-    handleChecked = () => {
-        this.setState({
-            type: !this.state.type,
+    const handleChecked = () => {
+        setState({
+            ...state,
+            type: !state.type,
             endTime: "",
             startTime: "",
             totalHours: ""
-
         })
     }
 
@@ -78,12 +88,10 @@ class AnnualLeaveAddModal extends Component {
      * Bắt sự kiện thay đổi giờ bắt đầu
      * @param {*} value : Giá trị giờ bắt đầu
      */
-    handleStartTimeChange = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                startTime: value
-            }
+    const handleStartTimeChange = (value) => {
+        setState({
+            ...state,
+            startTime: value
         });
     }
 
@@ -91,12 +99,10 @@ class AnnualLeaveAddModal extends Component {
      * Bắt sự kiện thay đổi giờ kết thúc
      * @param {*} value : Giá trị giờ kết thúc
      */
-    handleEndTimeChange = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                endTime: value
-            }
+    const handleEndTimeChange = (value) => {
+        setState({
+            ...state,
+            endTime: value
         });
     }
 
@@ -105,9 +111,9 @@ class AnnualLeaveAddModal extends Component {
      * Bắt sự kiện thay đổi ngày bắt đầu
      * @param {*} value : Giá trị ngày bắt đầu
      */
-    handleStartDateChange = (value) => {
-        const { translate } = this.props;
-        let { errorOnEndDate, endDate } = this.state;
+    const handleStartDateChange = (value) => {
+        const { translate } = props;
+        let { errorOnEndDate, endDate } = state;
 
         let errorOnStartDate;
         let partValue = value.split('-');
@@ -122,7 +128,8 @@ class AnnualLeaveAddModal extends Component {
             errorOnEndDate = undefined;
         }
 
-        this.setState({
+        setState({
+            ...state,
             startDate: value,
             errorOnStartDate: errorOnStartDate,
             errorOnEndDate: errorOnEndDate
@@ -133,9 +140,9 @@ class AnnualLeaveAddModal extends Component {
      * Bắt sự kiện thay đổi ngày kết thúc
      * @param {*} value : Giá trị ngày kết thúc
      */
-    handleEndDateChange = (value) => {
-        const { translate } = this.props;
-        let { startDate, errorOnStartDate } = this.state;
+    const handleEndDateChange = (value) => {
+        const { translate } = props;
+        let { startDate, errorOnStartDate } = state;
 
         let errorOnEndDate;
         let partValue = value.split('-');
@@ -150,7 +157,8 @@ class AnnualLeaveAddModal extends Component {
             errorOnStartDate = undefined;
         }
 
-        this.setState({
+        setState({
+            ...state,
             endDate: value,
             errorOnStartDate: errorOnStartDate,
             errorOnEndDate: errorOnEndDate
@@ -158,59 +166,57 @@ class AnnualLeaveAddModal extends Component {
     }
 
     /** Bắt sự kiện thay đổi tổng số giờ nghỉ phép */
-    handleTotalHoursChange = (e) => {
+    const handleTotalHoursChange = (e) => {
         let { value } = e.target;
-        this.validateTotalHours(value, true);
+        validateTotalHours(value, true);
     }
-    validateTotalHours = (value, willUpdateState = true) => {
-        const { translate } = this.props;
+
+    const validateTotalHours = (value, willUpdateState = true) => {
+        const { translate } = props;
 
         let msg = AnnualLeaveFormValidator.validateTotalHour(value, translate)
         if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnTotalHours: msg,
-                    totalHours: value,
-                }
-            });
-        }
+            setState({
+                ...state,
+                errorOnTotalHours: msg,
+                totalHours: value,
+            })
+        };
         return msg === undefined;
     }
 
     /** Bắt sự kiện thay đổi lý do xin nghỉ phép */
-    handleReasonChange = (e) => {
+    const handleReasonChange = (e) => {
         let { value } = e.target;
-        this.validateReason(value, true);
+        validateReason(value, true);
     }
-    validateReason = (value, willUpdateState = true) => {
-        const { translate } = this.props;
+
+    const validateReason = (value, willUpdateState = true) => {
+        const { translate } = props;
         let msg = AnnualLeaveFormValidator.validateReason(value, translate)
         if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnReason: msg,
-                    reason: value,
-                }
-            });
-        }
+            setState({
+                ...state,
+                errorOnReason: msg,
+                reason: value,
+            })
+        };
         return msg === undefined;
     }
 
     /** Bắt sự kiện thay đổi trạng thái đơn xin nghỉ phép */
-    handleStatusChange = (e) => {
+    const handleStatusChange = (e) => {
         let { value } = e.target;
-        this.setState({
-            ...this.state,
+        setState({
+            ...state,
             status: value
         })
     }
 
     /** Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form */
-    isFormValidated = () => {
-        const { organizationalUnit, reason, startDate, endDate, type, totalHours } = this.state;
-        let result = this.validateReason(reason, false) && (type ? this.validateTotalHours(totalHours, false) : true);
+    const isFormValidated = () => {
+        const { organizationalUnit, reason, startDate, endDate, type, totalHours } = state;
+        let result = validateReason(reason, false) && (type ? validateTotalHours(totalHours, false) : true);
         let partStart = startDate.split('-');
         let startDateNew = [partStart[2], partStart[1], partStart[0]].join('-');
         let partEnd = endDate.split('-');
@@ -221,9 +227,9 @@ class AnnualLeaveAddModal extends Component {
     }
 
     /** Bắt sự kiện submit form */
-    save = async () => {
-        const { id } = this.props;
-        let { startDate, endDate, type, startTime, endTime } = this.state;
+    const save = async () => {
+        const { id } = props;
+        let { startDate, endDate, type, startTime, endTime } = state;
         let partStart = startDate.split('-');
         let startDateNew = [partStart[2], partStart[1], partStart[0]].join('-');
         let partEnd = endDate.split('-');
@@ -231,124 +237,115 @@ class AnnualLeaveAddModal extends Component {
 
         if (type) {
             if (startTime === "") {
-                startTime = this.refs[`create_start_time${id}`].getValue()
+                startTime = createEndTime.current.getValue()
             };
             if (endTime === "") {
-                endTime = this.refs[`create_end_time${id}`].getValue()
+                endTime = createStartTime.current.getValue()
             }
         }
 
-        if (this.isFormValidated()) {
-            return this.props.handleChange({ ...this.state, startTime: startTime, endTime: endTime, startDate: startDateNew, endDate: endDateNew });
+        if (isFormValidated()) {
+            return props.handleChange({ ...state, startTime: startTime, endTime: endTime, startDate: startDateNew, endDate: endDateNew });
         }
     }
-    render() {
-        const { translate, employeesInfo } = this.props;
 
-        const { id } = this.props;
-
-        const { startDate, endDate, reason, status, organizationalUnit, errorOnOrganizationalUnit,
-            errorOnReason, errorOnStartDate, errorOnEndDate, totalHours, errorOnTotalHours, type } = this.state;
-
-        let organizationalUnits = employeesInfo.organizationalUnits;
-
-        return (
-            <React.Fragment>
-                <ButtonModal modalID={`modal-create-sabbatical-${id}`} button_name={translate('modal.create')} title={translate('human_resource.annual_leave.add_annual_leave_title')} />
-                <DialogModal
-                    size='50' modalID={`modal-create-sabbatical-${id}`} isLoading={false}
-                    formID={`form-create-sabbatical-${id}`}
-                    title={translate('human_resource.annual_leave.add_annual_leave_title')}
-                    func={this.save}
-                    disableSubmit={!this.isFormValidated()}
-                >
-                    <form className="form-group" id={`form-create-sabbatical-${id}`}>
-                        {/* Đơn vị */}
-                        <div className={`form-group ${errorOnOrganizationalUnit && "has-error"}`}>
-                            <label>{translate('human_resource.unit')}<span className="text-red">*</span></label>
-                            <SelectBox
-                                id={`create-annual-leave-unit${id}`}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                value={organizationalUnit}
-                                items={organizationalUnits.map(y => { return { value: y._id, text: y.name } }).concat([{ value: "", text: translate('human_resource.non_unit') }])}
-                                onChange={this.handleOrganizationalUnitChange}
+    return (
+        <React.Fragment>
+            <ButtonModal modalID={`modal-create-sabbatical-${id}`} button_name={translate('modal.create')} title={translate('human_resource.annual_leave.add_annual_leave_title')} />
+            <DialogModal
+                size='50' modalID={`modal-create-sabbatical-${id}`} isLoading={false}
+                formID={`form-create-sabbatical-${id}`}
+                title={translate('human_resource.annual_leave.add_annual_leave_title')}
+                func={save}
+                disableSubmit={!isFormValidated()}
+            >
+                <form className="form-group" id={`form-create-sabbatical-${id}`}>
+                    {/* Đơn vị */}
+                    <div className={`form-group ${errorOnOrganizationalUnit && "has-error"}`}>
+                        <label>{translate('human_resource.unit')}<span className="text-red">*</span></label>
+                        <SelectBox
+                            id={`create-annual-leave-unit${id}`}
+                            className="form-control select2"
+                            style={{ width: "100%" }}
+                            value={organizationalUnit}
+                            items={organizationalUnits.map(y => { return { value: y._id, text: y.name } }).concat([{ value: "", text: translate('human_resource.non_unit') }])}
+                            onChange={handleOrganizationalUnitChange}
+                        />
+                        <ErrorLabel content={errorOnOrganizationalUnit} />
+                    </div>
+                    <div className="form-group">
+                        <input type="checkbox" onChange={() => handleChecked()} />
+                        <label>{translate('human_resource.annual_leave.type')}</label>
+                    </div>
+                    <div className="row">
+                        {/* Ngày bắt đầu*/}
+                        <div className={`form-group col-sm-6 col-xs-12 ${errorOnStartDate && "has-error"}`}>
+                            <label>{translate('human_resource.annual_leave.table.start_date')}<span className="text-red">*</span></label>
+                            <DatePicker
+                                id={`create_start_date${id}`}
+                                deleteValue={false}
+                                value={startDate}
+                                onChange={handleStartDateChange}
                             />
-                            <ErrorLabel content={errorOnOrganizationalUnit} />
-                        </div>
-                        <div className="form-group">
-                            <input type="checkbox" onChange={() => this.handleChecked()} />
-                            <label>{translate('human_resource.annual_leave.type')}</label>
-                        </div>
-                        <div className="row">
-                            {/* Ngày bắt đầu*/}
-                            <div className={`form-group col-sm-6 col-xs-12 ${errorOnStartDate && "has-error"}`}>
-                                <label>{translate('human_resource.annual_leave.table.start_date')}<span className="text-red">*</span></label>
-                                <DatePicker
-                                    id={`create_start_date${id}`}
-                                    deleteValue={false}
-                                    value={startDate}
-                                    onChange={this.handleStartDateChange}
+                            {type &&
+                                < TimePicker
+                                    id={`create_start_time${id}`}
+                                    ref={createStartTime}
+                                    // getDefaultValue={getDefaultStartTime}
+                                    onChange={handleStartTimeChange}
                                 />
-                                {type &&
-                                    < TimePicker
-                                        id={`create_start_time${id}`}
-                                        ref={`create_start_time${id}`}
-                                        getDefaultValue={this.getDefaultStartTime}
-                                        onChange={this.handleStartTimeChange}
-                                    />
-                                }
-                                <ErrorLabel content={errorOnStartDate} />
-                            </div>
-                            {/* Ngày kết thúc*/}
-                            <div className={`form-group col-sm-6 col-xs-12 ${errorOnEndDate && "has-error"}`}>
-                                <label>{translate('human_resource.annual_leave.table.end_date')}<span className="text-red">*</span></label>
-                                <DatePicker
-                                    id={`create_end_date${id}`}
-                                    deleteValue={false}
-                                    value={endDate}
-                                    onChange={this.handleEndDateChange}
+                            }
+                            <ErrorLabel content={errorOnStartDate} />
+                        </div>
+                        {/* Ngày kết thúc*/}
+                        <div className={`form-group col-sm-6 col-xs-12 ${errorOnEndDate && "has-error"}`}>
+                            <label>{translate('human_resource.annual_leave.table.end_date')}<span className="text-red">*</span></label>
+                            <DatePicker
+                                id={`create_end_date${id}`}
+                                deleteValue={false}
+                                value={endDate}
+                                onChange={handleEndDateChange}
+                            />
+                            {type &&
+                                < TimePicker
+                                    id={`create_end_time${id}`}
+                                    ref={createEndTime}
+                                    // getDefaultValue={getDefaultEndTime}
+                                    onChange={handleEndTimeChange}
                                 />
-                                {type &&
-                                    < TimePicker
-                                        id={`create_end_time${id}`}
-                                        ref={`create_end_time${id}`}
-                                        getDefaultValue={this.getDefaultEndTime}
-                                        onChange={this.handleEndTimeChange}
-                                    />
-                                }
-                                <ErrorLabel content={errorOnEndDate} />
-                            </div>
+                            }
+                            <ErrorLabel content={errorOnEndDate} />
                         </div>
-                        {/* Tổng giờ nghỉ */}
-                        {type &&
-                            <div className={`form-group ${errorOnTotalHours && "has-error"}`}>
-                                <label>{translate('human_resource.annual_leave.totalHours')} <span className="text-red">*</span></label>
-                                <input type="number" className="form-control" value={totalHours} onChange={this.handleTotalHoursChange} />
-                                <ErrorLabel content={errorOnTotalHours} />
-                            </div>
-                        }
-                        {/* Lý do */}
-                        <div className={`form-group ${errorOnReason && "has-error"}`}>
-                            <label>{translate('human_resource.annual_leave.table.reason')}<span className="text-red">*</span></label>
-                            <textarea className="form-control" rows="3" style={{ height: 72 }} name="reason" value={reason} onChange={this.handleReasonChange} placeholder="Enter ..." autoComplete="off"></textarea>
-                            <ErrorLabel content={errorOnReason} />
+                    </div>
+                    {/* Tổng giờ nghỉ */}
+                    {type &&
+                        <div className={`form-group ${errorOnTotalHours && "has-error"}`}>
+                            <label>{translate('human_resource.annual_leave.totalHours')} <span className="text-red">*</span></label>
+                            <input type="number" className="form-control" value={totalHours} onChange={handleTotalHoursChange} />
+                            <ErrorLabel content={errorOnTotalHours} />
                         </div>
-                        {/* Trạng thái */}
-                        <div className="form-group">
-                            <label>{translate('human_resource.status')}<span className="text-red">*</span></label>
-                            <select className="form-control" value={status} name="status" onChange={this.handleStatusChange}>
-                                <option value="approved">{translate('human_resource.annual_leave.status.approved')}</option>
-                                <option value="waiting_for_approval">{translate('human_resource.annual_leave.status.waiting_for_approval')}</option>
-                                <option value="disapproved">{translate('human_resource.annual_leave.status.disapproved')}</option>
-                            </select>
-                        </div>
-                    </form>
-                </DialogModal>
-            </React.Fragment>
-        );
-    }
+                    }
+                    {/* Lý do */}
+                    <div className={`form-group ${errorOnReason && "has-error"}`}>
+                        <label>{translate('human_resource.annual_leave.table.reason')}<span className="text-red">*</span></label>
+                        <textarea className="form-control" rows="3" style={{ height: 72 }} name="reason" value={reason} onChange={handleReasonChange} placeholder="Enter ..." autoComplete="off"></textarea>
+                        <ErrorLabel content={errorOnReason} />
+                    </div>
+                    {/* Trạng thái */}
+                    <div className="form-group">
+                        <label>{translate('human_resource.status')}<span className="text-red">*</span></label>
+                        <select className="form-control" value={status} name="status" onChange={handleStatusChange}>
+                            <option value="approved">{translate('human_resource.annual_leave.status.approved')}</option>
+                            <option value="waiting_for_approval">{translate('human_resource.annual_leave.status.waiting_for_approval')}</option>
+                            <option value="disapproved">{translate('human_resource.annual_leave.status.disapproved')}</option>
+                        </select>
+                    </div>
+                </form>
+            </DialogModal>
+        </React.Fragment>
+    );
 };
+
 function mapState(state) {
     const { employeesInfo } = state;
     return { employeesInfo };

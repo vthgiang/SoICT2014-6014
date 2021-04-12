@@ -40,7 +40,7 @@ function ActionForm (props) {
                 }
             })
         } 
-    },[props.type])
+    },[props.type, props.initialData])
 
     /**Gửi truy vấn tạo 1 template mới */
     const handleSubmit = async (event) => {
@@ -114,9 +114,7 @@ function ActionForm (props) {
         let { action } = state;
         state.action.mandatory = value;
         setState(
-            
-            {
-                ...state}
+            {...state}
         );
     }
 
@@ -147,7 +145,7 @@ function ActionForm (props) {
 
     /**Thêm 1 hoạt động */
     const handleAddAction = (event) => {
-        event.preventDefault(); // Ngăn không submit
+        // event.preventDefault(); // Ngăn không submit
         let { taskActions, action } = state;
 
         if (!taskActions)
@@ -156,7 +154,7 @@ function ActionForm (props) {
             ...taskActions,
             action,
         ]
-
+        
         setState({
             ...state,
             taskActions: newTaskActions,
@@ -166,7 +164,8 @@ function ActionForm (props) {
                 mandatory: true,
             },
             quillValueDefault: ''
-        }, () => props.onDataChange(newTaskActions));
+        });
+        props.onDataChange(newTaskActions)
     }
 
     /** Sửa các thông tin của hành động */

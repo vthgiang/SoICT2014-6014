@@ -471,3 +471,33 @@ exports.getChildTargetByParentId = async (portal, data) => {
     }
     return childTarget;
 }
+
+exports.createEmployeeKpiSetLogs = async (portal, data) => {
+    const { creator, title, description, employeeKpiSetId } = data;
+
+    let log = {
+        creator: creator,
+        title: title,
+        description: description,
+    };
+
+    await EmployeeKpiSet(connect(DB_CONNECTION, portal))
+        .updateOne(
+            { '_id': employeeKpiSetId },
+            { $push: { logs: log } },
+            { new: true }
+        )
+        .populate({ path: "logs.creator", select: "_id name emmail avatar" });
+
+    let kpiLogs = await this.getEmployeeKpiSetLogs(portal, employeeKpiSetId);
+
+    return kpiLogs;
+} 
+
+exports.getEmployeeKpiSetLogs = async (portal, employeeKpiSetId) => {
+    let kpiLogs = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
+        .findById(employeeKpiSetId)
+        .populate({ path: "logs.creator", select: "_id name emmail avatar" });
+
+    return kpiLogs?.logs?.reverse();
+}

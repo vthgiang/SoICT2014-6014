@@ -62,9 +62,11 @@ class SuperHome extends Component {
 
     static getDerivedStateFromProps(props, state) {
         const { tasks } = props;
+        const { loadingInformed, loadingCreator, loadingConsulted, loadingAccountable
+        } = tasks;
         const { userId } = state;
 
-        if (tasks && (tasks.tasks || tasks.accountableTasks || tasks.responsibleTasks || tasks.consultedTasks)) {
+        if (tasks && !loadingInformed && !loadingCreator && !loadingConsulted && !loadingAccountable) {
             let currentMonth = new Date().getMonth() + 1;
             let currentYear = new Date().getFullYear();
 
@@ -109,22 +111,19 @@ class SuperHome extends Component {
                 let resTasks = tasks.responsibleTasks;
                 let conTasks = tasks.consultedTasks;
 
-                // Láy công việc chưa phê duyệt yêu cầu kết thúc
-                const taskRequestToClose = accTasks && accTasks.filter(o => o.status === "requested_to_close");
-                if (taskRequestToClose) {
-                    taskRequestToClose.forEach(o => {
-                        if (o.requestToCloseTask && o.requestToCloseTask.requestStatus === 1) {
-                            taskHasNotApproveResquestToClose = [...taskHasNotApproveResquestToClose, o]
-                        }
-                    })
-                }
-
                 if (accTasks && accTasks.length > 0)
                     accTasks = accTasks.filter(task => task.status === "inprocess");
                 if (resTasks && resTasks.length > 0)
                     resTasks = resTasks.filter(task => task.status === "inprocess");
                 if (conTasks && conTasks.length > 0)
                     conTasks = conTasks.filter(task => task.status === "inprocess");
+
+                // Láy công việc chưa phê duyệt yêu cầu kết thúc
+                accTasks && accTasks.forEach(o => {
+                    if (o.requestToCloseTask && o.requestToCloseTask.requestStatus === 1) {
+                        taskHasNotApproveResquestToClose = [...taskHasNotApproveResquestToClose, o]
+                    }
+                })
 
                 // tính toán lấy số công việc chưa được đánh giá kpi
                 if (accTasks && resTasks && conTasks) {
@@ -362,8 +361,9 @@ class SuperHome extends Component {
 
     render() {
         const { tasks, translate } = this.props;
+        const { loadingInformed, loadingCreator, loadingConsulted, loadingAccountable } = tasks;
+
         const { listAlarmTask } = this.state;
-        console.log('this.state', this.state)
 
         // Config ngày mặc định cho datePiker
         let d = new Date(),
@@ -392,7 +392,8 @@ class SuperHome extends Component {
         let { startMonthTitle, endMonthTitle } = this.INFO_SEARCH;
 
         let listTasksGeneral = [], responsibleTasks = [], accountableTasks = [], consultedTasks = [];
-        if (tasks) {
+
+        if (tasks && !loadingInformed && !loadingCreator && !loadingConsulted && !loadingAccountable) {
             if (tasks.responsibleTasks && tasks.responsibleTasks.length > 0) {
                 responsibleTasks = tasks.responsibleTasks.filter(o => o.status === "inprocess")
             }
@@ -456,13 +457,16 @@ class SuperHome extends Component {
                                 <div className="box-title">{`Tổng quan công việc (${listTasksGeneral ? listTasksGeneral.length : 0})`}</div>
                             </div>
                             {
-                                listTasksGeneral && listTasksGeneral.length > 0 &&
-                                <LazyLoadComponent once={true}>
-                                    <GeneralTaskPersonalChart
-                                        tasks={listTasksGeneral}
-                                        tasksbyuser={tasks && tasks.tasksbyuser}
-                                    />
-                                </LazyLoadComponent>
+                                listTasksGeneral && listTasksGeneral.length > 0 ?
+                                    <LazyLoadComponent once={true}>
+                                        <GeneralTaskPersonalChart
+                                            tasks={listTasksGeneral}
+                                            tasksbyuser={tasks && tasks.tasksbyuser}
+                                        />
+                                    </LazyLoadComponent>
+                                    : (loadingInformed && loadingCreator && loadingConsulted && loadingAccountable) ?
+                                        <div className="table-info-panel">{translate('confirm.loading')}</div> :
+                                        <div className="table-info-panel">{translate('confirm.no_data')}</div>
                             }
                         </div>
 

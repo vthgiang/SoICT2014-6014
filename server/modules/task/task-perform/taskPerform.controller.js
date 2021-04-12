@@ -886,8 +886,7 @@ editTaskByResponsibleEmployees = async (req, res) => {
             creator: req.user._id,
             associatedDataObject: { 
                 dataType: 1,
-                value: tasks?._id,
-                description: tasks?.name
+                value: tasks?._id
             },
             relatedUsers: data?.users
         });
@@ -991,8 +990,7 @@ editTaskByAccountableEmployees = async (req, res) => {
             creator: req.user._id,
             associatedDataObject: { 
                 dataType: 1,
-                value: tasks?._id,
-                description: tasks?.name
+                value: tasks?._id
             },
             relatedUsers: data?.users
         });
@@ -1003,8 +1001,7 @@ editTaskByAccountableEmployees = async (req, res) => {
                 creator: req.user._id,
                 associatedDataObject: { 
                     dataType: 1,
-                    value: tasks?._id,
-                    description: tasks?.name
+                    value: tasks?._id
                 },
                 relatedUsers: deletedCollabData?.users
             });
@@ -1015,8 +1012,7 @@ editTaskByAccountableEmployees = async (req, res) => {
                 creator: req.user._id,
                 associatedDataObject: { 
                     dataType: 1,
-                    value: tasks?._id,
-                    description: tasks?.name
+                    value: tasks?._id
                 },
                 relatedUsers: additionalCollabData?.users
             });
@@ -1078,8 +1074,7 @@ editEmployeeCollaboratedWithOrganizationalUnits = async (req, res) => {
             creator: req.user._id,
             associatedDataObject: { 
                 dataType: 1,
-                value: data?.lengthtask?._id,
-                description: data?.task?.name
+                value: data?.lengthtask?._id
             },
             relatedUsers: notification?.users?.map(item => item?._id)
         });
@@ -1148,8 +1143,7 @@ evaluateTaskByConsultedEmployees = async (req, res) => {
             creator: req.user._id,
             associatedDataObject: { 
                 dataType: 1,
-                value: task?._id,
-                description: task?.name
+                value: task?._id
             },
             relatedUsers: task?.accountableEmployees?.map(item => item?._id)
         });
@@ -1198,8 +1192,7 @@ evaluateTaskByResponsibleEmployees = async (req, res) => {
             creator: req.user._id,
             associatedDataObject: { 
                 dataType: 1,
-                value: task?._id,
-                description: task?.name
+                value: task?._id
             },
             relatedUsers: task?.accountableEmployees?.map(item => item?._id)
         });
@@ -1249,8 +1242,7 @@ evaluateTaskByAccountableEmployees = async (req, res) => {
             creator: req.user._id,
             associatedDataObject: { 
                 dataType: 1,
-                value: task?._id,
-                description: task?.name
+                value: task?._id
             },
             relatedUsers: task?.accountableEmployees?.map(item => item?._id).filter(item => item !== req.user._id)
         });
@@ -1489,8 +1481,7 @@ requestAndApprovalCloseTask = async (req, res) => {
             creator: req.user._id,
             associatedDataObject: { 
                 dataType: 1,
-                value: task?._id,
-                description: task?.name
+                value: task?._id
             },
             relatedUsers: dataNotification?.users
         });

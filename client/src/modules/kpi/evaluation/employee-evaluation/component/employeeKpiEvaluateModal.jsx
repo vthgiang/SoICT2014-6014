@@ -84,6 +84,7 @@ function EmployeeKpiEvaluateModal(props) {
 
         return [day, month, year].join('-');
     }
+
     function formatMonth(date) {
         let d = new Date(date),
             month = '' + (d.getMonth() + 1),
@@ -97,6 +98,7 @@ function EmployeeKpiEvaluateModal(props) {
 
         return [month, year].join('-');
     }
+
     const handleChangeContent = (id, employeeId, kpiType, name) => {
         let date = props.employeeKpiSet.date;
         props.getTaskById(id, employeeId, date, kpiType);
@@ -110,10 +112,12 @@ function EmployeeKpiEvaluateModal(props) {
     }
 
     const handleSetPointKPI = () => {
+        
         let date = props.employeeKpiSet.date;
         let employeeId = props.employeeKpiSet.creator._id;
         let { tasks, points, type, content } = state;
         if (tasks && tasks.length > 0) {
+            console.log(state.points);
             let data = [];
             tasks.forEach(element => {
                 data.push({
@@ -125,7 +129,6 @@ function EmployeeKpiEvaluateModal(props) {
                     employeeId: employeeId
                 })
             });
-
             props.setPointKPI(content, type, data);
         }
         else {
@@ -134,6 +137,7 @@ function EmployeeKpiEvaluateModal(props) {
                 type: type,
                 employeeId: employeeId
             }]);
+
         }
     }
 
@@ -153,31 +157,25 @@ function EmployeeKpiEvaluateModal(props) {
         let value = e.target.value;
         let points = state.points;
         points[id] = value;
-
-        setState(state => {
-            setState({
-                ...state,
-                points: points,
-            })
+        setState({
+            ...state,
+            points: points,
         })
     }
+
     const showDetailTaskImportanceCal = async (item) => {
-        await setState(state => {
-            setState({
-                ...state,
-                taskImportanceDetail: item
-            })
+        await setState( {
+            ...state,
+            taskImportanceDetail: item
         })
 
         window.$(`#modal-taskimportance-auto`).modal('show')
     }
 
     const handleClickTaskName = async (id) => {
-        setState(state => {
-            setState({
-                ...state,
-                taskId: id,
-            })
+        setState( {
+            ...state,
+            taskId: id,
         });
         window.$(`#modal-detail-task-kpi-evaluation`).modal('show');
     }
@@ -267,8 +265,6 @@ function EmployeeKpiEvaluateModal(props) {
                 return translate('task.task_management.delayed');
             case "canceled":
                 return translate('task.task_management.canceled');
-            case "requested_to_close":
-                return translate('task.task_management.requested_to_close');
         }
     }
     if (kpimembers.tasks) {
@@ -405,40 +401,40 @@ function EmployeeKpiEvaluateModal(props) {
                                             <tbody >
                                                 {
                                                     (kpimembers.tasks && Array.isArray(kpimembers.tasks)) && kpimembers.tasks?.length > 0 &&
-                                                        (kpimembers.tasks.map((itemTask, index) =>
-                                                            <tr key={index}>
-                                                                <td>{index + 1}</td>
-                                                                <td><a style={{ cursor: 'pointer' }} onClick={() => handleClickTaskName(itemTask.taskId)}>{itemTask.name}</a></td>
-                                                                <td>{formatDate(itemTask.startDateTask)}<br /> <i className="fa fa-angle-double-down"></i><br /> {formatDate(itemTask.endDateTask)}</td>
-                                                                <td>{itemTask.startDate ? formatDate(itemTask.startDate) : ""}<br /> <i className="fa fa-angle-double-down"></i><br /> {itemTask.endDate ? formatDate(itemTask.endDate) : ""}</td>
-                                                                <td>{formatTaskStatus(translate, itemTask.status)}</td>
-                                                                <td>{itemTask.results.contribution ? itemTask.results.contribution : 0}%</td>
-                                                                <td>{itemTask.results.automaticPoint + '-' + itemTask.results.employeePoint + '-' + itemTask.results.approvedPoint}</td>
-                                                                <td>
-                                                                    {points && tasks &&
-                                                                        <React.Fragment>
-                                                                            <input type="range"
-                                                                                min='0'
-                                                                                max='10'
-                                                                                name={`taskImportanceLevel${itemTask.taskId}`}
-                                                                                value={points[itemTask.taskId]}
-                                                                                onChange={(e) => setValueSlider(e, itemTask.taskId)}
-                                                                            />
-                                                                            <div>
-                                                                                {translate('kpi.evaluation.employee_evaluation.new_value')}: {points[itemTask.taskId]}
-                                                                            </div>
-                                                                            <div>
-                                                                                {translate('kpi.evaluation.employee_evaluation.old_value')}: {itemTask.results.taskImportanceLevel}
-                                                                            </div>
-                                                                            <div>
-                                                                                <a href="#modal-taskimportance-auto" onClick={() => showDetailTaskImportanceCal(itemTask)}>
-                                                                                    {translate('kpi.evaluation.employee_evaluation.auto_value')}: {itemTask.taskImportanceLevelCal}
-                                                                                </a>
-                                                                            </div>
-                                                                        </React.Fragment>
-                                                                    }
-                                                                </td>
-                                                            </tr>))
+                                                    (kpimembers.tasks.map((itemTask, index) =>
+                                                        <tr key={index}>
+                                                            <td>{index + 1}</td>
+                                                            <td><a style={{ cursor: 'pointer' }} onClick={() => handleClickTaskName(itemTask.taskId)}>{itemTask.name}</a></td>
+                                                            <td>{formatDate(itemTask.startDateTask)}<br /> <i className="fa fa-angle-double-down"></i><br /> {formatDate(itemTask.endDateTask)}</td>
+                                                            <td>{itemTask.startDate ? formatDate(itemTask.startDate) : ""}<br /> <i className="fa fa-angle-double-down"></i><br /> {itemTask.endDate ? formatDate(itemTask.endDate) : ""}</td>
+                                                            <td>{formatTaskStatus(translate, itemTask.status)}</td>
+                                                            <td>{itemTask.results.contribution ? itemTask.results.contribution : 0}%</td>
+                                                            <td>{itemTask.results.automaticPoint + '-' + itemTask.results.employeePoint + '-' + itemTask.results.approvedPoint}</td>
+                                                            <td>
+                                                                {points && tasks && 
+                                                                    <React.Fragment>
+                                                                        <input type="range"
+                                                                            min='0'
+                                                                            max='10'
+                                                                            name={`taskImportanceLevel${itemTask.taskId}`}
+                                                                            value={points[itemTask.taskId] || ''}
+                                                                            onChange={(e) => setValueSlider(e, itemTask.taskId)}
+                                                                        />
+                                                                        <div>
+                                                                            {translate('kpi.evaluation.employee_evaluation.new_value')}: {points[itemTask.taskId]}
+                                                                        </div>
+                                                                        <div>
+                                                                            {translate('kpi.evaluation.employee_evaluation.old_value')}: {itemTask.results.taskImportanceLevel}
+                                                                        </div>
+                                                                        <div>
+                                                                            <a href="#modal-taskimportance-auto" onClick={() => showDetailTaskImportanceCal(itemTask)}>
+                                                                                {translate('kpi.evaluation.employee_evaluation.auto_value')}: {itemTask.taskImportanceLevelCal}
+                                                                            </a>
+                                                                        </div>
+                                                                    </React.Fragment>
+                                                                }
+                                                            </td>
+                                                        </tr>))
                                                 }
                                             </tbody>
                                         </table>

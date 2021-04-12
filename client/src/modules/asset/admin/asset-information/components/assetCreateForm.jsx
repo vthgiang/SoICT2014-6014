@@ -98,35 +98,36 @@ function AssetCreateForm(props) {
                 value = null
             }
         }
-
+        asset[name] = value
         setState({
             ...state,
-            asset: {
-                ...asset,
-                [name]: value
-            }
+            asset: asset
         });
     }
 
     // Function thêm, chỉnh sửa thông tin bảo trì
     const handleChangeMaintainanceLog = (data, addData) => {
+        const {maintainanceLogs} = state
+        maintainanceLogs.push(addData)
         setState({
             ...state,
-            maintainanceLogs: data
+            maintainanceLogs: maintainanceLogs
         })
     }
 
     // Function thêm, chỉnh sửa thông tin cấp phát, điều chuyển, thu hồi
     const handleChangeUsageLog = (data, addData) => {
-        const { asset } = state;
+        const { asset, usageLogs } = state;
+        usageLogs.push(addData)
+        
         let status = addData ? addData.status : asset.status;
         setState({
             ...state,
-            usageLogs: data,
+            usageLogs: usageLogs,
             asset: {
                 ...asset,
-                assignedToUser: data ? data[data.length - 1].usedByUser : null,
-                assignedToOrganizationalUnit: data ? data[data.length - 1].usedByOrganizationalUnit : null,
+                assignedToUser: addData ? addData.usedByUser : null,
+                assignedToOrganizationalUnit: addData ? addData.usedByOrganizationalUnit : null,
                 status: status,
             },
         })
@@ -146,17 +147,21 @@ function AssetCreateForm(props) {
     }
     // Function thêm, chỉnh sửa thông tin sự cố thiết bị
     const handleChangeIncidentLog = (data, addData) => {
+        const { incidentLogs } = state
+        incidentLogs.push(addData)
         setState({
             ...state,
-            incidentLogs: data
+            incidentLogs: incidentLogs
         })
     }
 
     // Function thêm thông tin tài liệu đính kèm
     const handleChangeFile = (data, addData) => {
+        const {files} = state
+        files.push(addData)
         setState({
             ...state,
-            files: data
+            files: files
         })
     }
 
@@ -212,8 +217,12 @@ function AssetCreateForm(props) {
         })
 
         let formData = convertJsonObjectToFormData(assetUpdate);
+        
+        console.log(files)
         files.forEach(x => {
-            formData.append("file", x.fileUpload);
+            if(x.hasOwnProperty('fileUpload')){
+                formData.append("file", x.fileUpload);
+            }
         })
         formData.append("fileAvatar", avatar);
         props.addNewAsset(formData);

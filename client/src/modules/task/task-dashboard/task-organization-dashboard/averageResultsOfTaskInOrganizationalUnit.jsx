@@ -330,7 +330,7 @@ function AverageResultsOfTaskInOrganizationalUnit(props) {
             month.push(data.month);
             if (units && units.length !== 0) {
                 units.map(item => {
-                    dataChart[item] && dataChart[item].push(data[item])
+                    dataChart[item] && dataChart[item].push(data[item] || 0)
                 })
             }
 

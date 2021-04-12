@@ -16,8 +16,7 @@ export const AuthActions = {
     changeInformation,
     changePassword,
     downloadFile,
-    answerAuthQuestion,
-    checkExistsPassword2,
+    createPassword2,
 }
 
 function login(user) {
@@ -108,10 +107,10 @@ function changeInformation(data) {
     }
 }
 
-function changePassword(data) {
+function changePassword(data, type) {
     return dispatch => {
         dispatch({ type: AuthConstants.CHANGE_USER_PASSWORD_REQUEST });
-        AuthService.changePassword(data)
+        AuthService.changePassword(data, type)
             .then(res => {
                 dispatch({
                     type: AuthConstants.CHANGE_USER_PASSWORD_SUCCESS,
@@ -240,40 +239,18 @@ function downloadFile(path, fileName, save = true) {
     }
 }
 
-function answerAuthQuestion(data) {
+function createPassword2(data) {
     return dispatch => {
-        dispatch({ type: AuthConstants.ANSWER_AUTH_QUESTIONS_REQUEST });
-        return new Promise((resolve, reject) => {
-            AuthService.answerAuthQuestion(data)
-                .then(res => {
-                    dispatch({
-                        type: AuthConstants.ANSWER_AUTH_QUESTIONS_SUCCESS,
-                        payload: res.data.content
-                    });
-                    resolve(res);
-                })
-                .catch(err => {
-                    dispatch({ type: AuthConstants.ANSWER_AUTH_QUESTIONS_FAILE });
-                    reject(err);
-                })
-        })
-
-    }
-}
-
-function checkExistsPassword2() {
-    return dispatch => {
-        dispatch({ type: AuthConstants.CHECK_PASSWORD2_EXITS_REQUEST });
-        AuthService.checkExistsPassword2()
+        dispatch({ type: AuthConstants.CREATE_PASSWORD2_REQUEST });
+        AuthService.createPassword2(data)
             .then(res => {
                 dispatch({
-                    type: AuthConstants.CHECK_PASSWORD2_EXITS_SUCCESS,
+                    type: AuthConstants.CREATE_PASSWORD2_SUCCESS,
                     payload: res.data.content
-                });
+                })
             })
             .catch(err => {
-                dispatch({ type: AuthConstants.CHECK_PASSWORD2_EXITS_FAILE });
+                dispatch({ type: AuthConstants.CREATE_PASSWORD2_FAILE });
             })
-
     }
 }

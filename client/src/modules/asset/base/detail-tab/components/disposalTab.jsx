@@ -1,15 +1,15 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-class DisposalTab extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {};
-    }
+function DisposalTab(props) {
+    const [state, setState] = useState({})
+    const [prevProps, setPrevProps] = useState({
+        id:null
+    })
 
     // Function format dữ liệu Date thành string
-    formatDate(date, monthYear = false) {
+    const formatDate = (date, monthYear = false) => {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -30,23 +30,21 @@ class DisposalTab extends Component {
         }
     }
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id) {
-            return {
-                ...prevState,
-                id: nextProps.id,
-                disposalDate: nextProps.disposalDate,
-                disposalType: nextProps.disposalType,
-                disposalCost: nextProps.disposalCost,
-                disposalDesc: nextProps.disposalDesc,
-            }
-        } else {
-            return null;
-        }
+    if(prevProps.id !== props.id){
+        setState({
+            ...state,
+            id: props.id,
+            disposalDate: props.disposalDate,
+            disposalType: props.disposalType,
+            disposalCost: props.disposalCost,
+            disposalDesc: props.disposalDesc,
+        })
+        setPrevProps(props)
     }
 
-    convertDisposalType = (type) => {
-        const { translate } = this.props;
+
+    const convertDisposalType = (type) => {
+        const { translate } = props;
 
         if (type === '1') {
             return translate('asset.asset_info.destruction');
@@ -62,10 +60,10 @@ class DisposalTab extends Component {
         }
     }
 
-    render() {
-        const { id } = this.props;
-        const { translate } = this.props;
-        const { disposalDate, disposalType, disposalCost, disposalDesc } = this.state;
+    
+        const { id } = props;
+        const { translate } = props;
+        const { disposalDate, disposalType, disposalCost, disposalDesc } = state;
 
         var formater = new Intl.NumberFormat();
 
@@ -78,11 +76,11 @@ class DisposalTab extends Component {
 
                         <div className="form-group" style={{ marginTop: "10px" }}>
                             <strong>{translate('asset.general_information.disposal_date')}&emsp; </strong>
-                            {disposalDate ? this.formatDate(disposalDate) : ''}
+                            {disposalDate ? formatDate(disposalDate) : ''}
                         </div>
                         <div className="form-group">
                             <strong>{translate('asset.general_information.disposal_type')}&emsp; </strong>
-                            {disposalType ? this.convertDisposalType(disposalType) : ''}
+                            {disposalType ? convertDisposalType(disposalType) : ''}
                         </div>
                         <div className="form-group">
                             <strong>{translate('asset.general_information.disposal_price')}&emsp; </strong>
@@ -96,7 +94,6 @@ class DisposalTab extends Component {
                 </div>
             </div>
         );
-    }
 };
 
 const disposalTab = connect(null, null)(withTranslate(DisposalTab));

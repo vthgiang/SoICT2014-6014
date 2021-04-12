@@ -1,21 +1,16 @@
-export const formatDate = (date) => {
-    if (date) {
-        let d = new Date(date);
-        let day = d.getDate();
-        let month = d.getMonth() + 1;
-        let year = d.getFullYear();
-
-        if (month < 10)
-            month = '0' + month;
-
-        if (day.length < 2 || day < 10)
-            day = '0' + day;
-
-        return [day, month, year].join('-');
-    } else {
-        return date;
+import dayjs from 'dayjs';
+export const formatDate = (date, monthYear = false) => {
+   if (date) {
+       let d = new Date(date);
+       if (monthYear) {
+           return dayjs(d).format("MM-YYYY");
+       } else {
+            return dayjs(d).format("DD-MM-YYYY");
+       }
     }
+    return date;
 }
+
 
 export const formatFullDate = (date) => {
     let d = new Date(date);

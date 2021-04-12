@@ -54,7 +54,7 @@ function IncidentManagement(props) {
         props.searchAssetTypes({ typeNumber: "", typeName: "", limit: state.limit });
         props.getUser();
         props.getIncidents(state);
-
+        props.getListBuildingAsTree();
         if (!props.isActive || props.isActive === "tab-pane active") {
             props.getAllAsset(state);
         }
@@ -287,7 +287,9 @@ function IncidentManagement(props) {
         window.$('#modal-edit-asset').modal('show');
 
         // Mở tab thứ 4
-        window.$('.nav-tabs li:eq(3) a').tab('show');
+        window.$('#modal-edit-asset').on('shown.bs.modal', function (){
+            window.$('#nav-tabs li:eq(3) a').tab('show');
+        });
 
     }
 
@@ -477,7 +479,7 @@ function IncidentManagement(props) {
                     code={currentRowEditAsset.code}
                     assetName={currentRowEditAsset.assetName}
                     serial={currentRowEditAsset.serial}
-                    assetType={currentRowEditAsset.assetType}
+                    assetType={JSON.stringify(currentRowEditAsset.assetType)}
                     group={currentRowEditAsset.group}
                     purchaseDate={currentRowEditAsset.purchaseDate}
                     warrantyExpirationDate={currentRowEditAsset.warrantyExpirationDate}
@@ -489,7 +491,7 @@ function IncidentManagement(props) {
                     location={currentRowEditAsset.location}
                     description={currentRowEditAsset.description}
                     status={currentRowEditAsset.status}
-                    canRegisterForUse={currentRowEditAsset.canRegisterForUse}
+                    typeRegisterForUse={currentRowEditAsset.typeRegisterForUse}
                     detailInfo={currentRowEditAsset.detailInfo}
                     readByRoles={currentRowEditAsset.readByRoles}
                     cost={currentRowEditAsset.cost}
@@ -514,6 +516,8 @@ function IncidentManagement(props) {
                     incidentLogs={currentRowEditAsset.incidentLogs}
                     archivedRecordNumber={currentRowEditAsset.archivedRecordNumber}
                     files={currentRowEditAsset.documents}
+                    linkPage={"management"}
+                    page={page}
                 />
             }
         </div>
@@ -531,6 +535,7 @@ const actionCreators = {
     searchAssetTypes: AssetTypeActions.searchAssetTypes,
     getUser: UserActions.get,
     getAllAsset: AssetManagerActions.getAllAsset,
+    getListBuildingAsTree: AssetManagerActions.getListBuildingAsTree,
 };
 
 const connectedListUsage = connect(mapState, actionCreators)(withTranslate(IncidentManagement));

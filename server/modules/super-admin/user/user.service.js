@@ -195,6 +195,23 @@ exports.getAllEmployeeOfUnitByIds = async (portal, query) => {
         { $group: { 
             '_id': '$userId',
             'user': { $push: "$$ROOT" }
+        }},
+
+        { $lookup: {
+            "from": "organizationalunits",
+            "let": { "roleId": "$user.roleId" },
+            "pipeline": [
+                { $match: {
+                    $expr: {
+                        $or: [
+                            { $eq: [ "$managers",  "$$roleId" ] },
+                            { $eq: [ "$deputyManagers",  "$$roleId" ] },
+                            { $eq: [ "$employees",  "$$roleId" ] }
+                        ]
+                    }
+                }},
+            ],
+            "as": "organizationalUnit"
         }}
     ]
     let keyCountDocument = [
@@ -221,9 +238,14 @@ exports.getAllEmployeeOfUnitByIds = async (portal, query) => {
         }
     }
 
-   
     employees = await UserRole(connect(DB_CONNECTION, portal)).aggregate(keyQuery)
-    employees = employees.map(item => item?.user?.[0]);
+
+    employees = employees.map(item => {
+        if (item?.user?.[0]) {
+            item.user[0].idUnit = item?.organizationalUnit?.[0]?._id
+            return item.user[0]
+        }
+    });
     await User(connect(DB_CONNECTION, portal)).populate(employees, { path: "userId" });
     await Role(connect(DB_CONNECTION, portal)).populate(employees, { path: 'roleId' });
     countDocument = await UserRole(connect(DB_CONNECTION, portal)).aggregate(keyCountDocument);
@@ -874,7 +896,15 @@ exports.sendEmailResetPasswordUser = async(portal, email) => {
     let user = await User(connect(DB_CONNECTION, portal)).findOne({ email });
     let code = await generator.generate({ length: 6, numbers: true });
     user.resetPasswordToken = code;
-    await user.save();
+    if (user.password2) {
+        user.password2 = ""
+        
+        await User(connect(DB_CONNECTION, portal)).updateOne({
+            _id: user._id,
+        }, { $set: user })
+    } else {
+        await user.save();
+    }
     
     let subject = `${process.env.WEB_NAME} : Thay đổi mật khẩu - Change password`;
     let html = `

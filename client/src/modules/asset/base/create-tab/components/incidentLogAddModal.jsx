@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component , useState, useEffect  } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -9,42 +9,9 @@ import { generateCode } from "../../../../../helpers/generateCode";
 
 import ValidationHelper from '../../../../../helpers/validationHelper';
 
-class IncidentLogAddModal extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            incidentCode: "",
-            // type: "broken",
-            dateOfIncident: this.formatDate(Date.now()),
-            description: "",
-            statusIncident: "1",
-            reportedBy: localStorage.getItem('userId'),
-        };
-    }
-
-    regenerateCode = () => {
-        let code = generateCode("IC");
-        this.setState((state) => ({
-            ...state,
-            incidentCode: code,
-        }));
-        this.validateIncidentCode(code);
-    }
-
-    componentDidMount = () => {
-        // Mỗi khi modal mở, cần sinh lại code
-        let { id } = this.props;
-        id && window.$(`#modal-create-incident-${id}`).on('shown.bs.modal', this.regenerateCode);
-    }
-
-    componentWillUnmount = () => {
-        // Unsuscribe event
-        let { id } = this.props;
-        id && window.$(`#modal-create-incident-${id}`).unbind('shown.bs.modal', this.regenerateCode)
-    }
-
+function IncidentLogAddModal (props){
     // Function format ngày hiện tại thành dạnh mm-yyyy
-    formatDate = (date) => {
+    const formatDate = (date) => {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -61,16 +28,46 @@ class IncidentLogAddModal extends Component {
         return [day, month, year].join('-');
     }
 
-    // Bắt sự kiện thay đổi mã sự cố
-    handleIncidentCodeChange = (e) => {
-        let { value } = e.target;
-        this.validateIncidentCode(value, true);
+    const [state, setState] = useState({
+             incidentCode: "",
+            // type: "broken",
+            dateOfIncident: formatDate(Date.now()),
+            description: "",
+            statusIncident: "1",
+            reportedBy: localStorage.getItem('userId'),
+    })
+    
+    const regenerateCode = () => {
+        let code = generateCode("IC");
+        setState((state) => ({
+            ...state,
+            incidentCode: code,
+        }));
+        validateIncidentCode(code);
     }
-    validateIncidentCode = (value, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+
+    useEffect(() => {
+        let { id } = props;
+        id && window.$(`#modal-create-incident-${id}`).on('shown.bs.modal', regenerateCode);
+
+        return () =>{
+            let { id } = props;
+            id && window.$(`#modal-create-incident-${id}`).unbind('shown.bs.modal', regenerateCode)
+        }
+    }, [])
+    
+
+    
+    // Bắt sự kiện thay đổi mã sự cố
+    const handleIncidentCodeChange = (e) => {
+        let { value } = e.target;
+        validateIncidentCode(value, true);
+    }
+    const validateIncidentCode = (value, willUpdateState = true) => {
+        let { message } = ValidationHelper.validateEmpty(props.translate, value);
 
         if (willUpdateState) {
-            this.setState(state => {
+            setState(state => {
                 return {
                     ...state,
                     errorOnIncidentCode: message,
@@ -82,10 +79,10 @@ class IncidentLogAddModal extends Component {
     }
 
     // Bắt sự kiện thay đổi loại sự cố
-    handleTypeChange = (e) => {
+    const handleTypeChange = (e) => {
         let { value } = e.target;
-        this.setState({
-            ...this.state,
+        setState({
+            ...state,
             type: value
         })
     }
@@ -93,22 +90,22 @@ class IncidentLogAddModal extends Component {
     /**
      * Bắt sự kiện thay đổi người báo cáo
      */
-    handleReportedByChange = (value) => {
-        this.setState({
-            ...this.state,
+    const handleReportedByChange = (value) => {
+        setState({
+            ...state,
             reportedBy: value[0]
         });
     }
 
     //Bắt sự kiện thay đổi "Thời gian phát hiện"
-    handleDateOfIncidentChange = (value) => {
-        this.validateDateOfIncident(value, true);
+    const handleDateOfIncidentChange = (value) => {
+        validateDateOfIncident(value, true);
     }
-    validateDateOfIncident = (value, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+    const validateDateOfIncident = (value, willUpdateState = true) => {
+        let { message } = ValidationHelper.validateEmpty(props.translate, value);
 
         if (willUpdateState) {
-            this.setState(state => {
+            setState(state => {
                 return {
                     ...state,
                     errorOnDateOfIncident: message,
@@ -121,15 +118,15 @@ class IncidentLogAddModal extends Component {
 
 
     // Bắt sự kiện thay đổi "Nội dung sự cố"
-    handleDescriptionChange = (e) => {
+    const handleDescriptionChange = (e) => {
         let value = e.target.value;
-        this.validateIncidentDescription(value, true);
+        validateIncidentDescription(value, true);
     }
-    validateIncidentDescription = (value, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+    const validateIncidentDescription = (value, willUpdateState = true) => {
+        let { message } = ValidationHelper.validateEmpty(props.translate, value);
 
         if (willUpdateState) {
-            this.setState(state => {
+            setState(state => {
                 return {
                     ...state,
                     errorOnDescription: message,
@@ -141,121 +138,120 @@ class IncidentLogAddModal extends Component {
     }
 
     // Bắt sự kiện thay đổi trạng thái sự cố
-    handleStatusIncidentChange = (e) => {
+    const handleStatusIncidentChange = (e) => {
         let { value } = e.target;
-        this.setState({
-            ...this.state,
+        setState({
+            ...state,
             statusIncident: value
         })
     }
 
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
-    isFormValidated = () => {
-        let result = this.validateDateOfIncident(this.state.dateOfIncident, false) &&
-            this.validateIncidentDescription(this.state.description, false) &&
-            this.validateDateOfIncident(this.state.dateOfIncident, false)
+    const isFormValidated = () => {
+        let result = validateDateOfIncident(state.dateOfIncident, false) &&
+            validateIncidentDescription(state.description, false) &&
+            validateDateOfIncident(state.dateOfIncident, false)
 
         return result;
     }
 
     // Bắt sự kiện submit form
-    save = async () => {
-        var partDateOfIncident = this.state.dateOfIncident.split('-');
+   const save = async () => {
+        var partDateOfIncident = state.dateOfIncident.split('-');
         var dateOfIncident = [partDateOfIncident[2], partDateOfIncident[1], partDateOfIncident[0]].join('-');
-        if (this.isFormValidated()) {
-            return this.props.handleChange({ ...this.state, dateOfIncident: dateOfIncident });
+        if (isFormValidated()) {
+            return props.handleChange({ ...state, dateOfIncident: dateOfIncident });
         }
     }
 
-    render() {
-        const { translate, id, user } = this.props;
-        const { incidentCode, type, reportedBy, dateOfIncident, description, statusIncident, errorOnIncidentCode, errorOnDescription } = this.state;
+  
+    const { translate, id, user } = props;
+    const { incidentCode, type, reportedBy, dateOfIncident, description, statusIncident, errorOnIncidentCode, errorOnDescription } = state;
 
-        var userlist = user.list;
+    var userlist = user.list;
 
-        return (
-            <React.Fragment>
-                {/* Button thêm thông tin sự cố */}
-                <ButtonModal modalID={`modal-create-incident-${id}`} button_name={translate('asset.general_information.add')} title={translate('asset.asset_info.add_incident_info')} />
+    return (
+        <React.Fragment>
+            {/* Button thêm thông tin sự cố */}
+            <ButtonModal modalID={`modal-create-incident-${id}`} button_name={translate('asset.general_information.add')} title={translate('asset.asset_info.add_incident_info')} />
 
-                <DialogModal
-                    size='50' modalID={`modal-create-incident-${id}`} isLoading={false}
-                    formID={`form-create-incident-${id}`}
-                    title={translate('asset.asset_info.add_incident_info')}
-                    func={this.save}
-                    disableSubmit={!this.isFormValidated()}
-                >
-                    {/* Form thêm thông tin sự cố */}
-                    <form className="form-group" id={`form-create-incident-${id}`}>
-                        <div className="col-md-12">
-                            {/* Mã sự cố */}
-                            <div className={`form-group ${!errorOnIncidentCode ? "" : "has-error"}`}>
-                                <label>{translate('asset.general_information.incident_code')}</label>
-                                <input type="text" className="form-control" name="incidentCode" value={incidentCode} onChange={this.handleIncidentCodeChange} autoComplete="off" placeholder={translate('asset.general_information.incident_code')} />
-                                <ErrorLabel content={errorOnIncidentCode} />
-                            </div>
+            <DialogModal
+                size='50' modalID={`modal-create-incident-${id}`} isLoading={false}
+                formID={`form-create-incident-${id}`}
+                title={translate('asset.asset_info.add_incident_info')}
+                func={save}
+                disableSubmit={!isFormValidated()}
+            >
+                {/* Form thêm thông tin sự cố */}
+                <form className="form-group" id={`form-create-incident-${id}`}>
+                    <div className="col-md-12">
+                        {/* Mã sự cố */}
+                        <div className={`form-group ${!errorOnIncidentCode ? "" : "has-error"}`}>
+                            <label>{translate('asset.general_information.incident_code')}</label>
+                            <input type="text" className="form-control" name="incidentCode" value={incidentCode} onChange={handleIncidentCodeChange} autoComplete="off" placeholder={translate('asset.general_information.incident_code')} />
+                            <ErrorLabel content={errorOnIncidentCode} />
+                        </div>
 
-                            {/* Phân loại */}
-                            <div className="form-group">
-                                <label>{translate('asset.general_information.incident_type')}</label>
-                                <select className="form-control" value={type} name="type" onChange={this.handleTypeChange}>
-                                    <option value="">{`---${translate('asset.general_information.select_incident_type')}---`} </option>
-                                    <option value="1">{translate('asset.general_information.damaged')}</option>
-                                    <option value="2">{translate('asset.general_information.lost')}</option>
-                                </select>
-                            </div>
+                        {/* Phân loại */}
+                        <div className="form-group">
+                            <label>{translate('asset.general_information.incident_type')}</label>
+                            <select className="form-control" value={type} name="type" onChange={handleTypeChange}>
+                                <option value="">{`---${translate('asset.general_information.select_incident_type')}---`} </option>
+                                <option value="1">{translate('asset.general_information.damaged')}</option>
+                                <option value="2">{translate('asset.general_information.lost')}</option>
+                            </select>
+                        </div>
 
-                            {/* Người báo cáo */}
-                            <div className={`form-group`}>
-                                <label>{translate('asset.general_information.reported_by')}</label>
-                                <div>
-                                    <div id="reportedByBox">
-                                        <SelectBox
-                                            id={`reportedBy${id}`}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            items={userlist.map(x => { return { value: x._id, text: x.name + " - " + x.email } })}
-                                            onChange={this.handleReportedByChange}
-                                            value={reportedBy}
-                                            multiple={false}
-                                        />
-                                    </div>
+                        {/* Người báo cáo */}
+                        <div className={`form-group`}>
+                            <label>{translate('asset.general_information.reported_by')}</label>
+                            <div>
+                                <div id="reportedByBox">
+                                    <SelectBox
+                                        id={`reportedBy${id}`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={userlist.map(x => { return { value: x._id, text: x.name + " - " + x.email } })}
+                                        onChange={handleReportedByChange}
+                                        value={reportedBy}
+                                        multiple={false}
+                                    />
                                 </div>
                             </div>
-
-                            {/* Thời gian phát hiện sự cố */}
-                            <div className="form-group">
-                                <label>{translate('asset.general_information.date_incident')}<span className="text-red">*</span></label>
-                                <DatePicker
-                                    id={`add-dateOfIncident-${id}`}
-                                    value={dateOfIncident}
-                                    onChange={this.handleDateOfIncidentChange}
-                                />
-                            </div>
-
-                            {/* Nội dung */}
-                            <div className={`form-group ${!errorOnDescription ? "" : "has-error"}`}>
-                                <label>{translate('asset.general_information.content')}<span className="text-red">*</span></label>
-                                <textarea className="form-control" rows="3" name="description" value={description} onChange={this.handleDescriptionChange} autoComplete="off"
-                                    placeholder={translate('asset.general_information.content')}></textarea>
-                                <ErrorLabel content={errorOnDescription} />
-                            </div>
-
-                            {/* Trạng thái */}
-                            <div className="form-group">
-                                <label>{translate('asset.general_information.status')}</label>
-                                <select className="form-control" value={statusIncident} name="statusIncident" onChange={this.handleStatusIncidentChange}>
-                                    <option value="1">{translate('asset.general_information.waiting')}</option>
-                                    <option value="2">{translate('asset.general_information.processed')}</option>
-                                </select>
-                            </div>
                         </div>
-                    </form>
-                </DialogModal>
-            </React.Fragment>
-        );
-    }
+
+                        {/* Thời gian phát hiện sự cố */}
+                        <div className="form-group">
+                            <label>{translate('asset.general_information.date_incident')}<span className="text-red">*</span></label>
+                            <DatePicker
+                                id={`add-dateOfIncident-${id}`}
+                                value={dateOfIncident}
+                                onChange={handleDateOfIncidentChange}
+                            />
+                        </div>
+
+                        {/* Nội dung */}
+                        <div className={`form-group ${!errorOnDescription ? "" : "has-error"}`}>
+                            <label>{translate('asset.general_information.content')}<span className="text-red">*</span></label>
+                            <textarea className="form-control" rows="3" name="description" value={description} onChange={handleDescriptionChange} autoComplete="off"
+                                placeholder={translate('asset.general_information.content')}></textarea>
+                            <ErrorLabel content={errorOnDescription} />
+                        </div>
+
+                        {/* Trạng thái */}
+                        <div className="form-group">
+                            <label>{translate('asset.general_information.status')}</label>
+                            <select className="form-control" value={statusIncident} name="statusIncident" onChange={handleStatusIncidentChange}>
+                                <option value="1">{translate('asset.general_information.waiting')}</option>
+                                <option value="2">{translate('asset.general_information.processed')}</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </DialogModal>
+        </React.Fragment>
+    );
 };
 
 function mapState(state) {

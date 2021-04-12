@@ -60,11 +60,11 @@ router.use(
     require("./modules/human-resource/timesheets/timesheets.route")
 );
 
-router.use("/majors", require("./modules/human-resource/major/major.route"));
-router.use(
-    "/career-positions",
-    require("./modules/human-resource/career-position/careerPosition.route")
-);
+// router.use("/majors", require("./modules/human-resource/major/major.route"));
+// router.use(
+//     "/career-positions",
+//     require("./modules/human-resource/career-position/careerPosition.route")
+// );
 
 router.use(
     "/kpi/employee/creation",

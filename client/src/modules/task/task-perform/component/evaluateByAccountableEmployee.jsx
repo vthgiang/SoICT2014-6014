@@ -273,7 +273,7 @@ class EvaluateByAccountableEmployee extends Component {
                     let startedAt = item?.startedAt && new Date(item?.startedAt)
                     let stoppedAt = item?.stoppedAt && new Date(item?.stoppedAt)
 
-                    if (item?.acceptLog 
+                    if (item?.acceptLog
                         && (
                             (startedAt?.getTime() >= startDateEval?.getTime() && startedAt?.getTime() <= endDateEval?.getTime())
                             || (stoppedAt?.getTime() >= startDateEval?.getTime() && stoppedAt?.getTime() <= endDateEval?.getTime())
@@ -293,7 +293,7 @@ class EvaluateByAccountableEmployee extends Component {
                 if (inactiveEmp.indexOf(task.responsibleEmployees[i]._id) === -1) {
                     let durationResponsible = 0
                     timesheetLogs.filter(item => {
-                        if (item?.acceptLog 
+                        if (item?.acceptLog
                             && item?.creator?._id === task.responsibleEmployees[i]._id
                         ) {
                             return true
@@ -311,7 +311,7 @@ class EvaluateByAccountableEmployee extends Component {
                         target: "Point"
                     }
                     results[`contributeResponsible${task.responsibleEmployees[i]._id}`] = {
-                        value: duration ? Number((durationResponsible/duration*100).toFixed(0)) : 0,
+                        value: duration ? Number((durationResponsible / duration * 100).toFixed(0)) : 0,
                         employee: task.responsibleEmployees[i]._id,
                         role: "responsible",
                         target: "Contribution"
@@ -322,7 +322,7 @@ class EvaluateByAccountableEmployee extends Component {
                 if (inactiveEmp.indexOf(task.accountableEmployees[i]._id) === -1) {
                     let durationAccountable = 0
                     timesheetLogs.filter(item => {
-                        if (item?.acceptLog 
+                        if (item?.acceptLog
                             && item?.creator?._id === task.accountableEmployees[i]._id
                         ) {
                             return true
@@ -341,8 +341,8 @@ class EvaluateByAccountableEmployee extends Component {
                     }
 
                     let valueContribute = results[`contributeResponsible${task.accountableEmployees[i]._id}`]
-                        ? 0 
-                        : (duration ? Number((durationAccountable/duration*100).toFixed(0)) : 0)
+                        ? 0
+                        : (duration ? Number((durationAccountable / duration * 100).toFixed(0)) : 0)
                     results[`contributeAccountable${task.accountableEmployees[i]._id}`] = {
                         value: valueContribute,
                         employee: task.accountableEmployees[i]._id,
@@ -355,7 +355,7 @@ class EvaluateByAccountableEmployee extends Component {
                 if (inactiveEmp.indexOf(task.consultedEmployees[i]._id) === -1) {
                     let durationConsulted = 0
                     timesheetLogs.filter(item => {
-                        if (item?.acceptLog 
+                        if (item?.acceptLog
                             && item?.creator?._id === task.consultedEmployees[i]._id
                         ) {
                             return true
@@ -374,8 +374,8 @@ class EvaluateByAccountableEmployee extends Component {
                     }
 
                     let valueContribute = results[`contributeResponsible${task.consultedEmployees[i]._id}`] || results[`contributeAccountable${task.consultedEmployees[i]._id}`]
-                        ? 0 
-                        : (duration ? Number((durationConsulted/duration*100).toFixed(0)) : 0)
+                        ? 0
+                        : (duration ? Number((durationConsulted / duration * 100).toFixed(0)) : 0)
                     results[`contributeConsulted${task.consultedEmployees[i]._id}`] = {
                         value: valueContribute,
                         employee: task.consultedEmployees[i]._id,
@@ -384,7 +384,7 @@ class EvaluateByAccountableEmployee extends Component {
                     }
                 }
             }
-            
+
 
             if (evaluations) {
                 if (evaluations.results.length !== 0) {
@@ -1689,7 +1689,6 @@ class EvaluateByAccountableEmployee extends Component {
             { value: "finished", text: translate('task.task_management.finished') },
             { value: "delayed", text: translate('task.task_management.delayed') },
             { value: "canceled", text: translate('task.task_management.canceled') },
-            { value: "requested_to_close", text: translate('task.task_management.requested_to_close') },
         ];
 
         let checkNoteMonth;
@@ -1923,7 +1922,7 @@ class EvaluateByAccountableEmployee extends Component {
                                 {/* Phần chấm điểm phê duyệt */}
                                 <fieldset className="scheduler-border">
                                     <legend className="scheduler-border">{translate('task.task_management.evaluate_member')}</legend>
-                                    
+
                                     {
                                         <table className="table table-striped table-hover">
                                             <tr style={{ verticalAlign: "top" }}>
@@ -2032,11 +2031,11 @@ class EvaluateByAccountableEmployee extends Component {
                                                         </td>
                                                         <td style={{ padding: 5 }}>
                                                             <div className={errorApprovedPoint[`accountable${item._id}`] === undefined ? "form-group" : "form-group has-error"}>
-                                                                <input 
-                                                                    className="form-control" 
+                                                                <input
+                                                                    className="form-control"
                                                                     type="number"
                                                                     value={this.checkNullUndefined(results[`approvedPoint${item._id}`]?.value) ? results[`approvedPoint${item._id}`].value : ''}
-                                                                    name={`approvedPoint${item._id}`} 
+                                                                    name={`approvedPoint${item._id}`}
                                                                     placeholder={translate('task.task_management.detail_acc_point')}
                                                                     onChange={(e) => this.handleChangeAccountablePoint(e, item._id)}
                                                                     disabled={disabled}
