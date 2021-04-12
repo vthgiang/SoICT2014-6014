@@ -24,6 +24,8 @@ function ArrangeVehiclesAndGoods(props) {
     const [allTransportVehicle, setAllTransportVehicle] = useState([]);
     
     const [distributionState, setDistributionState] = useState([]);
+    const [tickBoxStatus, setTickBoxStatus] = useState([]);
+
     const getListTransportPlans = () => {
         let listTransportPlans = [
             {
@@ -63,6 +65,10 @@ function ArrangeVehiclesAndGoods(props) {
             }
         }
     }, [currentTransportSchedule])
+    
+    useEffect(() => {
+        console.log(distributionState, "sad");
+    }, [distributionState])
 
     const handleTransportPlanChange = (value) => {
         if (value[0] !== "0" && allTransportPlans){
@@ -75,9 +81,6 @@ function ArrangeVehiclesAndGoods(props) {
             setCurrentTransportPlan({_id: value[0], code: ""});
         }
     }
-    useEffect(() => {
-        console.log(distributionState, "sad");
-    }, [distributionState])
 
     const handleSelectVehicle = async (transportRequirement, transportVehicle, indexRequirement, indexVehicle) => {
         /**
@@ -94,7 +97,7 @@ function ArrangeVehiclesAndGoods(props) {
         let distributionList = [...distributionState];
 
         const requirementId = String(transportRequirement._id);
-        const vehicleId = String(transportVehicle._id);
+        const vehicleId = String(transportVehicle.transportVehicle._id);
         let newDistribution = [];
         
         if (distributionList && distributionList.length!==0){
@@ -130,21 +133,52 @@ function ArrangeVehiclesAndGoods(props) {
             }];
 
         }
+        // console.log(distributionList);
+        // let tickBoxStatusList = new Array();
+        // if (transportArrangeRequirements && transportArrangeRequirements.length !==0 && allTransportVehicle && allTransportVehicle.length!==0) {
+            // allTransportVehicle.map((vehicle, i) => {
+            //     let tmpArr = [];
+            //     transportArrangeRequirements.map((requirement, j) => {
+            //         console.log(distributionList, " sadasd");
+            //         tmpArr.push(getStatusTickBox(vehicle._id, requirement._id, distributionList));
+            //     })                
+            //     tickBoxStatusList[i] = tmpArr;
+            // })
+
+            // console.log(distributionList, " distributionList");
+            // for (let i = 0; i<allTransportVehicle.length; i++){
+            //     let tmpArr = [];
+            //     for (let j = 0;j<transportArrangeRequirements.length; j++){
+            //         tmpArr.push(
+            //             getStatusTickBox(allTransportVehicle[i].transportVehicle._id, 
+            //                 transportArrangeRequirements[j]._id, 
+            //                 distributionList));
+            //     }
+            //     tickBoxStatusList[i] = tmpArr;
+            // }
+            // setTickBoxStatus(tickBoxStatusList);
+        // }
         setDistributionState(distributionList);
     }
 
+    // useEffect(() => {
+    //     console.log(tickBoxStatus, " tickBoxStataus");
+    // }, [tickBoxStatus])
     /**
      * trả về trạng thái hàng được xếp lên xe này hay ko, trả về tên class iconactive
      * @param {*} vehicleId 
      * @param {*} requirementId 
      * @returns 
      */
-    const getStatusTickBox = (vehicleId, requirementId) => {
-        if (distributionState && distributionState.length !== 0){
-            let distribution = distributionState.filter(r => String(r._id) === String(vehicleId));
+    const getStatusTickBox = (vehicleId, requirementId, distributionList) => {
+        console.log(vehicleId, requirementId, distributionList);
+        if (distributionList && distributionList.length !== 0){
+            let distribution = distributionList.filter(r => String(r.vehicle) === String(vehicleId));
+            console.log(distribution, " b1");
             if (distribution && distribution.length !== 0 ){
-                let check = distribution[0].requirements.filter(r => String(r) === String(requirementId))
-                if (check && check !== 0) {
+                let check = distribution[0].transportRequirements.filter(r => String(r) === String(requirementId))
+                console.log(check, " b2")
+                if (check && check.length !== 0) {
                     return "iconactive";
                 }
                 else{
@@ -296,7 +330,7 @@ function ArrangeVehiclesAndGoods(props) {
                                     allTransportVehicle.map((item1, index1) => (
                                         item1 &&
                                         <td key={"vehicle "+index1} className="tooltip-checkbox">
-                                            <span className={"icon " + getStatusTickBox(item1._id, item._id)}
+                                            <span className={"icon "+getStatusTickBox(item1.transportVehicle._id, item._id, distributionState)}
                                             title={"alo"} 
                                             onClick={() => handleSelectVehicle(item, item1, index, index1)}
                                             >
@@ -558,12 +592,12 @@ function ArrangeVehiclesAndGoods(props) {
 }
 
 function mapState(state) {
-    console.log(state, " 113213123");
+    // console.log(state, " 113213123");
     const transportArrangeRequirements = state.transportRequirements.lists;
     const allTransportVehicle = state.transportVehicle.lists;
     const allTransportPlans = state.transportPlan.lists;
     const { currentTransportSchedule } = state.transportSchedule;
-    return { transportArrangeRequirements, allTransportVehicle, allTransportPlans, currentTransportSchedule };
+    return { allTransportPlans, currentTransportSchedule };
 }
 
 const actions = {
