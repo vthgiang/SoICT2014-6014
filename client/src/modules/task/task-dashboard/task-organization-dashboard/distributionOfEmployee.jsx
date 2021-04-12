@@ -13,7 +13,7 @@ class DistributionOfEmployee extends Component {
     constructor(props) {
         super(props);
         this.infoSearch = {
-            status: ["inprocess", "wait_for_approval", "finished", "delayed", "canceled", "requested_to_close"],
+            status: ["inprocess", "wait_for_approval", "finished", "delayed", "canceled"],
         }
 
         const defaultConfig = { limit: 10 }
@@ -75,7 +75,7 @@ class DistributionOfEmployee extends Component {
 
     handleSelectStatus = async (value) => {
         if (value.length === 0) {
-            value = ["inprocess", "wait_for_approval", "finished", "delayed", "canceled", "requested_to_close"];
+            value = ["inprocess", "wait_for_approval", "finished", "delayed", "canceled"];
         }
         this.infoSearch.status = value;
 
@@ -284,7 +284,7 @@ class DistributionOfEmployee extends Component {
             <React.Fragment>
                 <div className="box-header with-border">
                     <div className="box-title">
-                        {translate('task.task_management.distribution_Of_Employee')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}
+                        {translate('task.task_management.distribution_Of_Employee')} {startMonthTitle}<i className="fa fa-fw fa-caret-right"></i>{endMonthTitle}
                         {
                             unitIds && unitIds.length < 2 ?
                                 <>
@@ -316,7 +316,6 @@ class DistributionOfEmployee extends Component {
                                     { value: "finished", text: translate('task.task_management.finished') },
                                     { value: "delayed", text: translate('task.task_management.delayed') },
                                     { value: "canceled", text: translate('task.task_management.canceled') },
-                                    { value: "requested_to_close", text: translate('task.task_management.requested_to_close') }
                                 ]}
                                 onChange={this.handleSelectStatus}
                                 options={{ nonSelectedText: translate('task.task_management.select_all_status'), allSelectedText: translate('task.task_management.select_all_status') }}>

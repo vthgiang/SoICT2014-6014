@@ -30,12 +30,13 @@ function DepreciationManager(props) {
     })
 
     const { translate, assetsManager, assetType } = props;
-    let { page, limit, currentRowView, currentRowEditAsset, managedBy, tableId } = state;
+    let { page, limit, currentRowView, currentRow, managedBy, tableId } = state;
 
 
     useEffect(() => {
         props.searchAssetTypes({ typeNumber: "", typeName: "", limit: 0 });
         props.getAllAsset(state);
+        props.getListBuildingAsTree();
     },[])
 
     // Bắt sự kiện click xem thông tin tài sản
@@ -351,13 +352,16 @@ function DepreciationManager(props) {
         await setState(state => {
             return {
                 ...state,
-                currentRowEditAsset: value
+                currentRow: value
             }
         });
         window.$('#modal-edit-asset').modal('show');
 
         // Mở tab thứ 2
-        window.$('.nav-tabs li:eq(1) a').tab('show');
+        window.$('#modal-edit-asset').on('shown.bs.modal', function (){
+            window.$('#nav-tabs li:eq(1) a').tab('show');
+        });
+      
 
     }
     // Lấy danh sách loại tài sản cho tree select
@@ -611,51 +615,53 @@ function DepreciationManager(props) {
 
             {/* Form chỉnh sửa thông tin tài sản */}
             {
-                currentRowEditAsset &&
+                currentRow &&
                 <AssetEditForm
-                    _id={currentRowEditAsset._id}
+                    _id={currentRow._id}
                     employeeId={managedBy}
-                    avatar={currentRowEditAsset.avatar}
-                    code={currentRowEditAsset.code}
-                    assetName={currentRowEditAsset.assetName}
-                    serial={currentRowEditAsset.serial}
-                    assetType={currentRowEditAsset.assetType}
-                    group={currentRowEditAsset.group}
-                    purchaseDate={currentRowEditAsset.purchaseDate}
-                    warrantyExpirationDate={currentRowEditAsset.warrantyExpirationDate}
-                    managedBy={currentRowEditAsset.managedBy}
-                    assignedToUser={currentRowEditAsset.assignedToUser}
-                    assignedToOrganizationalUnit={currentRowEditAsset.assignedToOrganizationalUnit}
-                    handoverFromDate={currentRowEditAsset.handoverFromDate}
-                    handoverToDate={currentRowEditAsset.handoverToDate}
-                    location={currentRowEditAsset.location}
-                    description={currentRowEditAsset.description}
-                    status={currentRowEditAsset.status}
-                    canRegisterForUse={currentRowEditAsset.canRegisterForUse}
-                    detailInfo={currentRowEditAsset.detailInfo}
-                    readByRoles={currentRowEditAsset.readByRoles}
-                    cost={currentRowEditAsset.cost}
-                    residualValue={currentRowEditAsset.residualValue}
-                    startDepreciation={currentRowEditAsset.startDepreciation}
-                    usefulLife={currentRowEditAsset.usefulLife}
-                    depreciationType={currentRowEditAsset.depreciationType}
-                    estimatedTotalProduction={currentRowEditAsset.estimatedTotalProduction}
-                    unitsProducedDuringTheYears={currentRowEditAsset.unitsProducedDuringTheYears && currentRowEditAsset.unitsProducedDuringTheYears.map((x) => ({
+                    avatar={currentRow.avatar}
+                    code={currentRow.code}
+                    assetName={currentRow.assetName}
+                    serial={currentRow.serial}
+                    assetType={JSON.stringify(currentRow.assetType)}
+                    group={currentRow.group}
+                    purchaseDate={currentRow.purchaseDate}
+                    warrantyExpirationDate={currentRow.warrantyExpirationDate}
+                    managedBy={currentRow.managedBy}
+                    assignedToUser={currentRow.assignedToUser}
+                    assignedToOrganizationalUnit={currentRow.assignedToOrganizationalUnit}
+                    handoverFromDate={currentRow.handoverFromDate}
+                    handoverToDate={currentRow.handoverToDate}
+                    location={currentRow.location}
+                    description={currentRow.description}
+                    status={currentRow.status}
+                    typeRegisterForUse={currentRow.typeRegisterForUse}
+                    detailInfo={currentRow.detailInfo}
+                    readByRoles={currentRow.readByRoles}
+                    cost={currentRow.cost}
+                    residualValue={currentRow.residualValue}
+                    startDepreciation={currentRow.startDepreciation}
+                    usefulLife={currentRow.usefulLife}
+                    depreciationType={currentRow.depreciationType}
+                    estimatedTotalProduction={currentRow.estimatedTotalProduction}
+                    unitsProducedDuringTheYears={currentRow.unitsProducedDuringTheYears && currentRow.unitsProducedDuringTheYears.map((x) => ({
                         month: formatDate2(x.month),
                         unitsProducedDuringTheYear: x.unitsProducedDuringTheYear
                     })
                     )}
 
-                    disposalDate={currentRowEditAsset.disposalDate}
-                    disposalType={currentRowEditAsset.disposalType}
-                    disposalCost={currentRowEditAsset.disposalCost}
-                    disposalDesc={currentRowEditAsset.disposalDesc}
+                    disposalDate={currentRow.disposalDate}
+                    disposalType={currentRow.disposalType}
+                    disposalCost={currentRow.disposalCost}
+                    disposalDesc={currentRow.disposalDesc}
 
-                    maintainanceLogs={currentRowEditAsset.maintainanceLogs}
-                    usageLogs={currentRowEditAsset.usageLogs}
-                    incidentLogs={currentRowEditAsset.incidentLogs}
-                    archivedRecordNumber={currentRowEditAsset.archivedRecordNumber}
-                    files={currentRowEditAsset.documents}
+                    maintainanceLogs={currentRow.maintainanceLogs}
+                    usageLogs={currentRow.usageLogs}
+                    incidentLogs={currentRow.incidentLogs}
+                    archivedRecordNumber={currentRow.archivedRecordNumber}
+                    files={currentRow.documents}
+                    linkPage={"management"}
+                    page={page}
                 />
             }
         </div>
@@ -670,6 +676,7 @@ function mapState(state) {
 const actionCreators = {
     searchAssetTypes: AssetTypeActions.searchAssetTypes,
     getAllAsset: AssetManagerActions.getAllAsset,
+    getListBuildingAsTree: AssetManagerActions.getListBuildingAsTree,
     getUser: UserActions.get,
 };
 

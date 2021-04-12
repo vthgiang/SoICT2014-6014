@@ -129,7 +129,6 @@ export const formatStatus = (translate, data) => {
     else if (data === "finished") return translate('task.task_management.finished');
     else if (data === "delayed") return translate('task.task_management.delayed');
     else if (data === "canceled") return translate('task.task_management.canceled');
-    else if (data === "requested_to_close") return translate('task.task_management.requested_to_close');
 }
 
 export const formatStatusCode = (translate, data) => {
@@ -138,5 +137,4 @@ export const formatStatusCode = (translate, data) => {
     else if (data === "finished") return "FINISHED";
     else if (data === "delayed") return "DELAYED";
     else if (data === "canceled") return "CANCELED";
-    else if (data === "requested_to_close") return "REQUESTED_TO_CLOSE";
 }

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -8,14 +8,14 @@ import { AssetCreateValidator } from './combinedContent';
 
 import { UserActions } from '../../../../super-admin/user/redux/actions';
 
-class UsageLogDetailModal extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {};
-    }
+function UsageLogDetailModal(props) {
+    const [state, setState] =useState({})
+    const [prevProps, setPrevProps] = useState({
+        id: null
+    })
 
     // Function format dữ liệu Date thành string
-    formatDate(date, monthYear = false) {
+    const formatDate = (date, monthYear = false) => {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -35,31 +35,32 @@ class UsageLogDetailModal extends Component {
             return [day, month, year].join('-');
         }
     }
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id) {
-            return {
-                ...prevState,
-                id: nextProps.id,
-                _id: nextProps._id,
-                index: nextProps.index,
-                usedByUser: nextProps.usedByUser,
-                usedByOrganizationalUnit: nextProps.usedByOrganizationalUnit,
-                startDate: nextProps.startDate,
-                startTime: nextProps.startTime,
-                stopTime: nextProps.stopTime,
-                endDate: nextProps.endDate,
-                description: nextProps.description,
+
+    if(prevProps.id !== props.id){
+        setState(state => {
+            return{ 
+                ...state,
+                id: props.id,
+                _id: props._id,
+                index: props.index,
+                usedByUser: props.usedByUser,
+                usedByOrganizationalUnit: props.usedByOrganizationalUnit,
+                startDate: props.startDate,
+                startTime: props.startTime,
+                stopTime: props.stopTime,
+                endDate: props.endDate,
+                description: props.description,
                 errorOnDescription: undefined,
             }
-        } else {
-            return null;
-        }
+        })
+        setPrevProps(props)
     }
+    
 
-    render() {
-        const { id } = this.props;
-        const { translate, user, department } = this.props;
-        const { usedByUser, usedByOrganizationalUnit, startDate, endDate, description, startTime, stopTime, errorOnDescription } = this.state;
+    
+        const { id } = props;
+        const { translate, user, department } = props;
+        const { usedByUser, usedByOrganizationalUnit, startDate, endDate, description, startTime, stopTime, errorOnDescription } = state;
         var userlist = user.list, departmentlist = department.list;
         return (
             <React.Fragment>
@@ -114,7 +115,7 @@ class UsageLogDetailModal extends Component {
                                 <label>{translate('asset.general_information.handover_from_date')}</label>
                                 <DatePicker
                                     id={`edit-start-date-${id}`}
-                                    value={this.formatDate(startDate)}
+                                    value={formatDate(startDate)}
                                     disabled
                                 />
                                 <TimePicker
@@ -129,7 +130,7 @@ class UsageLogDetailModal extends Component {
                                 <label>{translate('asset.general_information.handover_to_date')}</label>
                                 <DatePicker
                                     id={`edit-end-date-${id}`}
-                                    value={this.formatDate(endDate)}
+                                    value={formatDate(endDate)}
                                     disabled
                                 />
                                 <TimePicker
@@ -151,7 +152,6 @@ class UsageLogDetailModal extends Component {
                 </DialogModal>
             </React.Fragment>
         );
-    }
 };
 
 function mapState(state) {

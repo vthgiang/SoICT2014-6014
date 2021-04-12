@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component,useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -6,19 +6,17 @@ import { DialogModal, ButtonModal, ErrorLabel, UploadFile } from '../../../../..
 
 import ValidationHelper from '../../../../../helpers/validationHelper';
 
-class FileAddModal extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            name: "",
-            description: "",
-            number: "",
-            files: [],
-        }
-    }
+function FileAddModal(props){
+    const [state, setState] =useState({
+        name: "",
+        description: "",
+        number: "",
+        files: [],
+    })
+    
 
     // Bắt sự kiện thay đổi file đính kèm
-    handleChangeFile = (file) => {
+    const handleChangeFile = (file) => {
         file = file.map(x => {
             return {
                 fileName: x.fileName,
@@ -26,21 +24,24 @@ class FileAddModal extends Component {
                 fileUpload: x.fileUpload
             }
         })
-        this.setState({
-            files: file
+        setState(state =>{
+            return{
+                ...state,
+                files: file
+            }
         });
     }
 
     // Bắt sự kiên thay đổi tên tài liệu
-    handleNameFileChange = (e) => {
+    const handleNameFileChange = (e) => {
         let { value } = e.target;
-        this.validateNameFile(value, true);
+        validateNameFile(value, true);
     }
-    validateNameFile = (value, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+    const validateNameFile = (value, willUpdateState = true) => {
+        let { message } = ValidationHelper.validateEmpty(props.translate, value);
 
         if (willUpdateState) {
-            this.setState(state => {
+            setState(state => {
                 return {
                     ...state,
                     errorOnNameFile: message,
@@ -52,15 +53,15 @@ class FileAddModal extends Component {
     }
 
     // Bắt sự kiên thay đổi mô tả
-    handleDiscFileChange = (e) => {
+    const handleDiscFileChange = (e) => {
         let { value } = e.target;
-        this.validateDiscFile(value, true);
+        validateDiscFile(value, true);
     }
-    validateDiscFile = (value, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+    const validateDiscFile = (value, willUpdateState = true) => {
+        let { message } = ValidationHelper.validateEmpty(props.translate, value);
 
         if (willUpdateState) {
-            this.setState(state => {
+            setState(state => {
                 return {
                     ...state,
                     errorOnDiscFile: message,
@@ -72,23 +73,23 @@ class FileAddModal extends Component {
     }
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
-    isFormValidated = () => {
-        let result = this.validateNameFile(this.state.name, false) && this.validateDiscFile(this.state.description, false);
+    const isFormValidated = () => {
+        let result = validateNameFile(state.name, false) && validateDiscFile(state.description, false);
 
         return result;
     }
 
     // Bắt sự kiện submit form
-    save = () => {
-        if (this.isFormValidated()) {
-            return this.props.handleChange(this.state);
+    const save = () => {
+        if (isFormValidated()) {
+            return props.handleChange(state);
         }
     }
 
-    render() {
-        const { id } = this.props;
-        const { translate } = this.props;
-        const { name, description, number, status, errorOnNameFile, errorOnDiscFile, errorOnNumberFile, files } = this.state;
+    
+        const { id } = props;
+        const { translate } = props;
+        const { name, description, number, status, errorOnNameFile, errorOnDiscFile, errorOnNumberFile, files } = state;
 
         return (
             <React.Fragment>
@@ -98,39 +99,39 @@ class FileAddModal extends Component {
                     size='50' modalID={`modal-create-file-${id}`} isLoading={false}
                     formID={`form-create-file-${id}`}
                     title={translate('manage_asset.add_file')}
-                    func={this.save}
-                    disableSubmit={!this.isFormValidated()}
+                    func={save}
+                    disableSubmit={!isFormValidated()}
                 >
                     {/* Form thêm tài liệu đính kèm */}
                     <form className="form-group" id={`form-create-file-${id}`}>
                         {/* Tên tài liệu */}
                         <div className={`form-group ${!errorOnNameFile ? "" : "has-error"}`}>
                             <label>{translate('asset.general_information.file_name')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="name" value={name} onChange={this.handleNameFileChange} autoComplete="off" />
+                            <input type="text" className="form-control" name="name" value={name} onChange={handleNameFileChange} autoComplete="off" />
                             <ErrorLabel content={errorOnNameFile} />
                         </div>
 
                         {/* Mô tả */}
                         <div className={`form-group ${!errorOnDiscFile ? "" : "has-error"}`}>
                             <label>{translate('asset.general_information.description')}<span className="text-red">*</span></label>
-                            <textarea className="form-control" rows="3" name="description" value={description} onChange={this.handleDiscFileChange} autoComplete="off"></textarea>
+                            <textarea className="form-control" rows="3" name="description" value={description} onChange={handleDiscFileChange} autoComplete="off"></textarea>
                             <ErrorLabel content={errorOnDiscFile} />
                         </div>
 
                         {/* File đính kèm */}
                         <div className="form-group">
                             <label htmlFor="">Chọn tài liệu</label>
-                            <UploadFile multiple={true} onChange={this.handleChangeFile} />
+                            <UploadFile multiple={true} onChange={handleChangeFile} />
                         </div>
 
                         {/* <div className="form-group">
                             <label htmlFor="file">{translate('asset.general_information.attached_file')}</label>
-                            <input type="file" style={{ height: 34, paddingTop: 2 }} className="form-control" name="file" onChange={this.handleChangeFile} />
+                            <input type="file" style={{ height: 34, paddingTop: 2 }} className="form-control" name="file" onChange={handleChangeFile} />
                             <br />
                             <div className="upload btn btn-primary">
                                 <i className="fa fa-folder"></i>
                                 {" " + translate('document.choose_file')}
-                                <input className="upload" type="file" name="file" onChange={this.handleChangeFile} />
+                                <input className="upload" type="file" name="file" onChange={handleChangeFile} />
                             </div>
                         </div> */}
                         {/* <ul style={{ listStyle: 'none' }}>
@@ -139,7 +140,7 @@ class FileAddModal extends Component {
                                     <React.Fragment>
                                         <li key={index}>
                                             <label><a style={{ cursor: "pointer" }} title='Xóa file này'><i className="fa fa-times" style={{ color: "black", marginRight: 5 }}
-                                                onClick={(e) => this.handleDeleteFile(child.fileName)} /></a></label>
+                                                onClick={(e) => handleDeleteFile(child.fileName)} /></a></label>
                                             <a>{child.fileName}</a>
                                         </li>
                                     </React.Fragment>
@@ -150,7 +151,6 @@ class FileAddModal extends Component {
                 </DialogModal>
             </React.Fragment>
         );
-    }
 };
 
 const addModal = connect(null, null)(withTranslate(FileAddModal));

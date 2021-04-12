@@ -160,7 +160,6 @@ const TaskSchema = new Schema(
                 "finished",
                 "delayed",
                 "canceled",
-                "requested_to_close"
             ],
         },
         taskTemplate: {

@@ -111,7 +111,7 @@ export default {
                 group: "Nhóm khách hàng",
                 statistic: "Thống kê",
                 generalConfiguration: "Cấu hình chung",
-                evaluation:"Đánh giá hoạt động CSKH"
+                evaluation: "Đánh giá hoạt động CSKH"
             },
 
             task_template: "Mẫu Công Việc",
@@ -168,7 +168,7 @@ export default {
             kpi_unit_evaluate: "Dữ liệu KPI đơn vị",
             kpi_unit_overview: "Tổng quan KPI đơn vị",
             kpi_unit_dashboard: "Dashboard KPI đơn vị",
-            kpi_unit_statistic: "Thống kê KPI đơn vị",
+            kpi_unit_statistic: "Phân tích tính hợp lý trong thiết lập KPI đơn vị",
             kpi_unit_manager: "Quản lý KPI đơn vị",
             kpi_member_manager: "Đánh giá KPI nhân viên",
             kpi_member_dashboard: "DashBoard KPI nhân viên",
@@ -178,7 +178,7 @@ export default {
             kpi_personal_dashboard: "Dashboard KPI cá nhân",
             kpi_personal_manager: "Quản lí KPI cá nhân",
             kpi_member_detail: "Chi tiết KPI cá nhân",
-            
+
             notifications: "Thông báo",
 
             tasks: "Công việc cá nhân",
@@ -264,7 +264,7 @@ export default {
             manage_manufacturing_mill: "Quản lý xưởng sản xuất",
             manage_manufacturing_lot: "Quản lý lô sản xuất",
             manage_project: "Quản lý dự án",
-            
+
             // Quản lý vận chuyển
             manage_transport: "Quản lý vận chuyển",
             manage_transport_requirements: "Yêu cầu vận chuyển",
@@ -280,7 +280,7 @@ export default {
         news_feed: {
             news_feed: 'Tin tức'
         },
-        
+
         intro: {
             title: "Giải pháp không gian làm việc số cho doanh nghiệp",
             contents: [
@@ -397,6 +397,8 @@ export default {
             validator: {
                 confirm_password_invalid:
                     "Mật khẩu không trùng khớp. Vui lòng kiểm tra lại",
+                confirm_password2_invalid:
+                    "Mật khẩu cấp 2 không trùng khớp. Vui lòng kiểm tra lại",
                 password_length_error:
                     "Mật khẩu phải có độ dài tối thiểu 6 và không quá 30 ký tự",
                 confirm_password_error: "Mật khẩu xác thực không khớp",
@@ -405,8 +407,12 @@ export default {
                 label: "Bảo mật",
                 title: "Thay đổi mật khẩu người dùng",
                 old_password: "Mật khẩu cũ",
+                old_password2: "Mật khẩu cấp 2 cũ",
                 new_password: "Mật khẩu mới",
+                new_password2: "Mật khẩu cấp 2 mới",
                 confirm_password: "Xác thực mật khẩu",
+                re_enter_new_password: "Nhập lại mật khẩu mới",
+                re_enter_new_password2: "Nhập lại mật khẩu cấp 2 mới"
             },
             login: "Đăng nhập",
             logout: "Đăng xuất",
@@ -429,9 +435,14 @@ export default {
             change_user_password_success: "Thay đổi mật khẩu thành công",
             change_user_password_faile: "Thay đổi mật khẩu thất bại",
             user_not_found: "Không tìm thấy thông tin người dùng",
+            username_invalid_length: "Tên người dùng có độ dài không hợp lê",
+            username_empty: "Tên người dùng không được để trống",
+            email_empty: "Email không được để trống",
             email_invalid: "Email không hợp lệ",
             email_not_found: "Email này chưa được đăng kí trên hệ thống",
             password_invalid: "Mật khẩu không chính xác",
+            password2_empty: "Mật khẩu cấp 2 không được để trống",
+            password2_invalid: "Mật khẩu cấp 2 không chính xác",
             email_password_invalid: "Email hoặc mật khẩu không chính xác",
             acc_blocked: "Tài khoản này đã bị tạm khóa",
             acc_have_not_role: "Tài khoản chưa được phân quyền trên hệ thống",
@@ -442,8 +453,16 @@ export default {
             reset_password_success: "Thiết lập mật khẩu thành công",
             otp_invalid: "Yêu cầu thiết lập lại mật khẩu không hợp lệ",
             portal_invalid: "Portal không hợp lệ",
-            answer_auth_question_success: 'Thêm mật khẩu cấp 2 thành công',
-            answer_auth_question_faile: 'Thêm mật khẩu cấp 2 thất bại',
+            create_password2_success: 'Thêm mật khẩu cấp 2 thành công',
+            create_password2_faile: 'Thêm mật khẩu cấp 2 thất bại',
+            change_user_password2_success: "Chỉnh sửa mật khảu cấp 2 thành công",
+            change_user_password2_faile: "Chỉnh sửa mật khảu cấp 2 thất bại",
+            old_password_empty: "Mật khẩu cũ không được để trống",
+            old_password2_empty: "Mật khẩu cấp 2 cũ không được để trống",
+            new_password2_empty: "Mật khẩu cấp 2 mới không được để trống",
+            confirm_password2_invalid: "Xác nhận mật khẩu cấp 2 không hợp lệ",
+            old_password_invalid: "Mật khẩu cũ không hợp lệ",
+            old_password2_invalid: "Mật khẩu cấp 2 cũ không hợp lệ",
         },
 
         system_admin: {
@@ -1663,6 +1682,12 @@ export default {
                     delete_discipline_faile: "Xoá kỷ luật thất bại",
                     edit_discipline_success: "Chỉnh sửa kỷ luật thành công",
                     edit_discipline_faile: "Chỉnh sửa kỷ luật thất bại",
+
+                    update_major_success: "Chỉnh sửa chuyên ngành thành công",
+                    update_major_failure: "Chỉnh sửa chuyên ngành thất bại",
+
+                    delete_major_success: "Xóa chuyên ngành thành công",
+                    delete_major_failure: "Xóa chuyên ngành thất bại"
                 },
             },
 
@@ -3016,7 +3041,7 @@ export default {
 
                 col_name: "Tên công việc",
                 col_organization: "Đơn vị",
-                col_project:"Dự án",
+                col_project: "Dự án",
                 col_priority: "Độ ưu tiên",
                 col_start_date: "Ngày bắt đầu",
                 col_end_date: "Ngày kết thúc",
@@ -3204,10 +3229,10 @@ export default {
                 get_outside_info:
                     "Nhập tự động từ thông tin công việc hiện tại",
 
-                dashboard_created: "Số CV bạn đã tạo",
-                dashboard_need_perform: "Số CV bạn thực hiện",
-                dashboard_need_approve: "Số CV bạn phê duyệt",
-                dashboard_need_consult: "Số CV bạn tư vấn",
+                dashboard_created: "Bạn đã tạo",
+                dashboard_need_perform: "Bạn thực hiện",
+                dashboard_need_approve: "Bạn phê duyệt",
+                dashboard_need_consult: "Bạn tư vấn",
                 dashboard_area_result: "Miền kết quả công việc",
                 dashboard_overdue: "Công việc quá hạn",
                 dashboard_about_to_overdue: "Công việc sắp hết hạn",
@@ -3300,8 +3325,8 @@ export default {
                 project: 'Thuộc dự án (nếu có)',
                 load_task: "Tải công việc",
                 time: "Thời gian",
-                load_task_chart: "Dashboard tải công việc",
-                load_task_chart_unit: "Dashboard tải công việc của đơn vị",
+                load_task_chart: "Tải công việc cá nhân",
+                load_task_chart_unit: "Tải công việc đơn vị",
                 explain: "Giải thích",
                 select_responsible: "Chọn người thực hiện",
             },
@@ -3636,7 +3661,7 @@ export default {
                 general_unit_task: "Tổng quan công việc",
                 general_unit_task_title_file_export: "Tổng quan công việc đơn vị",
                 unit: "Đơn vị",
-                unit_lowercase : "đơn vị",
+                unit_lowercase: "đơn vị",
                 of_unit: "của đơn vị",
                 of: "của",
                 all_tasks: "Tổng số công việc",
@@ -3770,7 +3795,7 @@ export default {
                                 "KPI đang được phê duyệt, Bạn không thể chỉnh sửa!",
                             activated:
                                 "KPI đã được kích hoạt, Bạn không thể chỉnh sửa!",
-                            evaluated: 
+                            evaluated:
                                 "KPI đã được đánh giá, Bạn không thể chỉnh sửa!",
                         },
                         delete_kpi: {
@@ -3917,7 +3942,8 @@ export default {
                     /**
                      * Approve
                      */
-                    approve_KPI_employee: "Phê duyệt KPI nhân viên",
+                    approve_KPI_employee: "Phê duyệt KPI",
+                    show_logs: "Lịch sử  chỉnh sửa KPI",
                     month: "Tháng",
                     end_compare: "Tắt so sánh",
                     compare: "So sánh",
@@ -5696,7 +5722,7 @@ export default {
         manage_transport: {
             add_requirements: "Thêm yêu cầu vận chuyển",
         },
-        
+
         project: {
             code: "Mã dự án",
             name: "Tên dự án",

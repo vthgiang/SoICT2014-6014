@@ -1,16 +1,16 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DatePicker, ErrorLabel, SelectBox } from '../../../../../common-components';
 
-class DisposalTab extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {};
-    }
+function DisposalTab(props) {
+    const [state, setState] =useState({})
+    const [prevProps, setPrevProps] = useState({
+        id: null
+    })
 
     // Function format dữ liệu Date thành string
-    formatDate(date, monthYear = false) {
+    const formatDate = (date, monthYear = false) =>{
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -32,84 +32,90 @@ class DisposalTab extends Component {
     }
 
     // Function lưu các trường thông tin vào state
-    handleChange = (e) => {
+    const handleChange = (e) => {
         const { name, value } = e.target;
-        this.setState({
-            [name]: value
+        setState(state =>{
+            return{
+                ...state,
+                [name]: value
+            }
         })
-        this.props.handleChange(name, value);
+        props.handleChange(name, value);
     }
 
     /**
      * Bắt sự kiện thay đổi Ngày thanh lý
      */
-    handleDisposalDateChange = (value) => {
-        this.setState(state => {
+    const handleDisposalDateChange = (value) => {
+        setState(state => {
             return {
                 ...state,
                 disposalDate: value,
             }
         });
-        this.props.handleChange("disposalDate", value);
+        props.handleChange("disposalDate", value);
     }
 
     /**
      * Bắt sự kiện thay đổi hình thức thanh lý
      */
-    handleDisposalTypeChange = (value) => {
-        this.setState({
-            disposalType: value[0]
+    const handleDisposalTypeChange = (value) => {
+        setState(state =>{
+            return{
+                ...state,
+                disposalType: value[0]
+            }
         })
-        this.props.handleChange('disposalType', value[0]);
+        props.handleChange('disposalType', value[0]);
     }
 
     /**
      * Bắt sự kiện thay đổi giá trị thanh lý
      */
-    handleDisposalCostChange = (e) => {
+    const handleDisposalCostChange = (e) => {
         let value = e.target.value;
-        this.setState(state => {
+        setState(state => {
             return {
                 ...state,
                 disposalCost: value
             }
         });
-        this.props.handleChange("disposalCost", value);
+        props.handleChange("disposalCost", value);
     }
 
     /**
      * Bắt sự kiện thay đổi nội dung thanh lý
      */
-    handleDisposalDescriptionChange = (e) => {
+    const handleDisposalDescriptionChange = (e) => {
         let value = e.target.value;
-        this.setState(state => {
+        setState(state => {
             return {
                 ...state,
                 disposalDesc: value
             }
         });
-        this.props.handleChange("disposalDesc", value);
+        props.handleChange("disposalDesc", value);
     }
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id) {
+    if(prevProps.id !== props.id) {
+        setState(state => {
             return {
-                ...prevState,
-                id: nextProps.id,
-                disposalDate: nextProps.disposalDate,
-                disposalType: nextProps.disposalType,
-                disposalCost: nextProps.disposalCost,
-                disposalDesc: nextProps.disposalDesc,
+                ...state,
+                id: props.id,
+                disposalDate: props.disposalDate,
+                disposalType: props.disposalType,
+                disposalCost: props.disposalCost,
+                disposalDesc: props.disposalDesc,
             }
-        } else {
-            return null;
-        }
+        })
+        setPrevProps(props)
     }
+  
 
-    render() {
-        const { id } = this.props;
-        const { translate } = this.props;
-        const { disposalDate, disposalType, disposalCost, disposalDesc } = this.state;
+    
+        const { id } = props;
+        const { translate } = props;
+        const { disposalDate, disposalType, disposalCost, disposalDesc } = state;
 
         return (
             <div id={id} className="tab-pane">
@@ -123,8 +129,8 @@ class DisposalTab extends Component {
                             <label htmlFor="disposalDate">{translate('asset.general_information.disposal_date')}</label>
                             <DatePicker
                                 id={`disposalDate${id}`}
-                                value={disposalDate ? this.formatDate(disposalDate) : ''}
-                                onChange={this.handleDisposalDateChange}
+                                value={disposalDate ? formatDate(disposalDate) : ''}
+                                onChange={handleDisposalDateChange}
                             />
                         </div>
 
@@ -142,28 +148,27 @@ class DisposalTab extends Component {
                                     { value: '2', text: translate('asset.asset_info.sale') },
                                     { value: '3', text: translate('asset.asset_info.give') },
                                 ]}
-                                onChange={this.handleDisposalTypeChange}
+                                onChange={handleDisposalTypeChange}
                             />
                         </div>
 
                         {/* Giá trị thanh lý */}
                         <div className={`form-group`}>
                             <label htmlFor="disposalCost">{translate('asset.general_information.disposal_price')} (VNĐ)</label><br />
-                            <input type="number" className="form-control" name="disposalCost" value={disposalCost ? disposalCost : ''} onChange={this.handleDisposalCostChange}
+                            <input type="number" className="form-control" name="disposalCost" value={disposalCost ? disposalCost : ''} onChange={handleDisposalCostChange}
                                 placeholder={translate('asset.general_information.disposal_price')} autoComplete="off" />
                         </div>
 
                         {/* Nội dung thanh */}
                         <div className={`form-group`}>
                             <label htmlFor="disposalDesc">{translate('asset.general_information.disposal_content')}</label><br />
-                            <input type="text" className="form-control" name="disposalDesc" value={disposalDesc ? disposalDesc : ''} onChange={this.handleDisposalDescriptionChange}
+                            <input type="text" className="form-control" name="disposalDesc" value={disposalDesc ? disposalDesc : ''} onChange={handleDisposalDescriptionChange}
                                 placeholder={translate('asset.general_information.disposal_content')} autoComplete="off" />
                         </div>
                     </fieldset>
                 </div>
             </div>
         );
-    }
 };
 
 const disposalTab = connect(null, null)(withTranslate(DisposalTab));

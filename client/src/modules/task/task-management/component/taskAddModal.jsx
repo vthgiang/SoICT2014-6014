@@ -5,6 +5,8 @@ import { DialogModal } from '../../../../common-components';
 import { getStorage } from '../../../../config';
 import { taskManagementActions } from '../redux/actions';
 import { AddTaskForm } from './addTaskForm';
+import ValidationHelper from '../../../../helpers/validationHelper';
+
 class TaskAddModal extends Component {
 
     constructor(props) {
@@ -60,6 +62,19 @@ class TaskAddModal extends Component {
         });
     }
 
+    isFormValidated = () => {
+        const { name, startDate, endDate, responsibleEmployees, accountableEmployees } = this.state.newTask;
+        const { translate } = this.props;
+
+        if (!ValidationHelper.validateEmpty(translate, name).status
+            || !ValidationHelper.validateEmpty(translate, startDate).status
+            || !ValidationHelper.validateEmpty(translate, endDate).status
+            || !ValidationHelper.validateArrayLength(translate, responsibleEmployees).status
+            || !ValidationHelper.validateArrayLength(translate, accountableEmployees).status)
+            return false;
+        return true;
+    }
+
     render() {
         const { translate } = this.props;
         const { task, id, parentTask, currentTasks } = this.props;
@@ -70,6 +85,7 @@ class TaskAddModal extends Component {
                     formID={`form-add-new-task-${id}`}
                     func={this.handleSubmit}
                     title={translate('task.task_management.add_new_task')}
+                    disableSubmit={!this.isFormValidated()}
                 >
                     <AddTaskForm
                         quillId={this.props.id}

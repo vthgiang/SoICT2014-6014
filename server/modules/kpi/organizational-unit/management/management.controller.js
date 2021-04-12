@@ -91,3 +91,24 @@ exports.calculateKpiUnit = async (req, res) => {
         })
     }
 }
+
+/** Lấy logs kpi đơn vị */
+exports.getOrganizationalUnitKpiSetLogs = async (req, res) => {
+    try {
+        let logs = await managerService.getOrganizationalUnitKpiSetLogs(req.portal, req.params.id);
+        
+        await Logger.info(req.user.email, ` delete file child comment `, req.portal)
+        res.status(200).json({
+            success: true,
+            messages: ['delete_file_comment_success'],
+            content: logs
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, ` get logs unit kpi set  `, req.portal)
+        res.status(400).json({
+            success: true,
+            messages: ['get_logs_unit_kpi_set'],
+            content: error
+        })
+    }
+}

@@ -33,19 +33,16 @@ function OrganizationalUnitKpiCreate(props) {
 
 
     const [state, setState] = useState({
-        organizationalUnitKpiSet: {
-            organizationalUnitId: null,
-            month: [year, currentMonth].join('-'),
-        },
-
         defaultDate: [currentMonth, year].join('-'),
 
+        organizationalUnit: null,
         organizationalUnitId: null,
         month: [year, currentMonth].join('-'),
 
         infoSearch: {
+            organizationalUnit: null,
             organizationalUnitId: null,
-            month: [year, currentMonth].join('-'),
+            month: [year, currentMonth].join('-')
         },
 
         adding: false,
@@ -71,7 +68,7 @@ function OrganizationalUnitKpiCreate(props) {
                 roleId: localStorage.getItem('currentRole')
             })
         }
-    },[])
+    }, [])
 
     // Trường hợp trưởng đơn vị truy cập
     useEffect(()=>{
@@ -97,17 +94,18 @@ function OrganizationalUnitKpiCreate(props) {
             setState((state) => {
                 return {
                     ...state,
-                    organizationalUnitId: selectBoxAllUnit[0].id,
+                    organizationalUnit: selectBoxAllUnit?.[0],
+                    organizationalUnitId: selectBoxAllUnit?.[0]?.id,
                     selectBoxUnit: selectBoxAllUnit,
-                    organizationalUnitKpiSet: {
-                        ...state.organizationalUnitKpiSet,
-                        organizationalUnitId: selectBoxAllUnit[0].id,
+                    infoSearch: {
+                        ...state.infoSearch,
+                        organizationalUnitId: selectBoxAllUnit?.[0]?.id,
+                        organizationalUnit: selectBoxAllUnit?.[0]
                     },
-                    organizationalUnit: selectBoxAllUnit[0]
                 }
             });
 
-            props.getCurrentKPIUnit(null, selectBoxAllUnit[0].id);
+            props.getCurrentKPIUnit(null, selectBoxAllUnit?.[0]?.id);
         }
     })
 
@@ -137,13 +135,14 @@ function OrganizationalUnitKpiCreate(props) {
         setState((state) => {
             return {
                 ...state,
-                organizationalUnitId: childrenOrganizationalUnit[0].id,
+                organizationalUnit: childrenOrganizationalUnit?.[0],
+                organizationalUnitId: childrenOrganizationalUnit?.[0]?.id,
                 selectBoxUnit: childrenOrganizationalUnit,
-                organizationalUnitKpiSet: {
-                    ...state.organizationalUnitKpiSet,
-                    organizationalUnitId: childrenOrganizationalUnit[0].id,
-                },
-                organizationalUnit: childrenOrganizationalUnit[0]
+                infoSearch: {
+                    ...state.infoSearch,
+                    organizationalUnitId: childrenOrganizationalUnit?.[0]?.id,
+                    organizationalUnit: childrenOrganizationalUnit?.[0]
+                }
             }
         });
     }
@@ -276,7 +275,7 @@ function OrganizationalUnitKpiCreate(props) {
             infoSearch: {
                 ...state.infoSearch,
                 organizationalUnitId: value[0],
-                organizationalUnit: organizationalUnit && organizationalUnit[0],
+                organizationalUnit: organizationalUnit?.[0],
             }
         })
     };
@@ -299,16 +298,13 @@ function OrganizationalUnitKpiCreate(props) {
     const handleSearchData = () => {
         setState(  {
             ...state,
-            organizationalUnitKpiSet: {
-                organizationalUnitId: organizationalUnitId,
-                month: month
-            },
             month: infoSearch?.month,
             organizationalUnitId: infoSearch?.organizationalUnitId,
             organizationalUnit: infoSearch?.organizationalUnit
         })
 
         if (infoSearch?.organizationalUnitId && infoSearch?.month && infoSearch?.month !== '') {
+            console.log(infoSearch?.organizationalUnitId ,infoSearch?.month, infoSearch?.organizationalUnit)
             props.getCurrentKPIUnit(currentRole, infoSearch?.organizationalUnitId, infoSearch?.month);
             props.getKPIParent({
                 roleId: currentRole,

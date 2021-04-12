@@ -11,12 +11,33 @@ class TreeSelect extends Component {
         }
     }
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id || nextProps.data !== prevState.data) {
+    static isEqual = (items1, items2) => {
+        if (!items1 || !items2) {
+            return false;
+        }
+        if (items1.length !== items2.length) {
+            return false;
+        }
+        for (let i = 0; i < items1.length; ++i) {
+            if (!items1[i] || !items2[i]) return false;
+            else {
+                if (!(items1[i] instanceof Array) && items1[i] !== items2[i]) { // Kiểu bình thường
+                    return false;
+                } else if (items1[i] instanceof Array && JSON.stringify(items1[i]) !== JSON.stringify(items2[i])) { // Kiểu group
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    static getDerivedStateFromProps(props, state) {
+        if (props.id !== state.id || !TreeSelect.isEqual(props.data, state.data) || (props.value && !TreeSelect.isEqual(props.value, state.value))) {
             return {
-                id: nextProps.id,
-                value: nextProps.value, // Lưu value ban đầu vào state
-                data: nextProps.data,
+                id: props.id,
+                value: props.value, // Lưu value ban đầu vào state
+                innerChange: false, // reset lại innerChange (true-tự thay đổi do người dùng chọn, hay false-thay đổi do component cha cập nhật props)
+                data: props.data,
             }
         } else {
             return null;
@@ -24,7 +45,11 @@ class TreeSelect extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        if (nextProps.data !== this.props.data || nextProps.id !== this.state.id || nextProps.value !== nextState.value) // Chỉ render 1 lần, trừ khi id, value, data thay đổi
+        if (nextState.innerChange) {
+            return false;
+        }
+
+        if (!TreeSelect.isEqual(nextProps.data, this.state.data) || nextProps.id !== this.state.id || (nextProps.value && !TreeSelect.isEqual(nextProps.value, this.state.value))) // Chỉ render 1 lần, trừ khi id, value, data thay đổi
             return true;
         return false;  // Tự chủ động update (do đã lưu value vào state)
     }
@@ -35,7 +60,8 @@ class TreeSelect extends Component {
         this.setState(state => {
             return {
                 ...state,
-                value
+                innerChange: true,
+                value: value
             }
         });
 
@@ -62,13 +88,6 @@ class TreeSelect extends Component {
         return data;
     }
 
-    isFreshArray = (arr) => {
-        if (!Array.isArray(arr)) return false;
-        if (arr.length = 0) return false;
-        let fresh = arr.some(node => !node);
-        return !fresh;
-    }
-
     render() {
         /**
          * mode có 4 tùy chọn là 
@@ -80,9 +99,8 @@ class TreeSelect extends Component {
         let { mode, data = [], value = [], placeholder = ' ', action, actionIcon } = this.props;
         let getData = this.convertData(data, value);
         let tree = convertArrayToTree(getData);
-        let c = this.isFreshArray(value);
 
-        placeholder = this.isFreshArray(value) ? placeholder : ' ';
+        placeholder = value.length === 0 ? placeholder : ' ';
 
         if (!action) {
             return (
@@ -126,6 +144,6 @@ class TreeSelect extends Component {
 }
 
 const mapState = state => state;
-const TreeSelectExport = connect(mapState, null)(withTranslate(TreeSelect));
+const TreeSelectExport = connect(null)(withTranslate(TreeSelect));
 
 export { TreeSelectExport as TreeSelect }

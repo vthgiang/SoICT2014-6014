@@ -1,65 +1,63 @@
 // Component này chưa được sử dụng
-import React, { Component } from 'react';
+import React, { Component, useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import c3 from 'c3';
 import 'c3/c3.css';
 
-class MultipleBarChart extends Component {
+const MultipleBarChart = (props) => {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            lineBar: true,
-        }
-    }
+    const [state, setState] = useState({
+        lineBar: true
+    })
 
-    componentDidMount() {
-        this.renderChart(this.state);
-    }
-    componentDidUpdate() {
-        this.renderChart(this.state);
-    }
+    const chart = useRef(null);
+    useEffect(() => {
+        renderChart(state);
+    }, []);
+
+    useEffect(() => {
+        renderChart(state);
+    }, [state])
     // Bắt sự kiện thay đổi chế đọ xem biểu đồ
-    handleChangeViewChart = (value) => {
-        this.setState({
-            ...this.state,
+    const handleChangeViewChart = (value) => {
+        setState({
+            ...state,
             lineBar: value
         })
     }
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        return {
-            ...prevState,
-            nameChart: nextProps.nameChart,
-            nameData1: nextProps.nameData1,
-            nameData2: nextProps.nameData2,
-            nameData3: nextProps.nameData3,
+    useEffect(() => {
+        setState({
+            ...state,
+            nameChart: props.nameChart,
+            nameData1: props.nameData1,
+            nameData2: props.nameData2,
+            nameData3: props.nameData3,
             ratioX: ['x', "2019-07-01", "2019-08-01", "2019-09-01", "2019-10-01", "2019-11-02", "2019-12-01", "2020-01-01", "2020-02-01", "2020-03-01", "2020-04-01", "2020-05-01", "2020-06-01"],
             data1: ['data1', 12.33, 11.33, 10.33, 13.33, 10.33, 11.33, 12.33, 12.33, 11.33, 12.33, 9.33, 10.33],
             data2: ['data2', 13.50, 13.50, 13.50, 12.50, 11.50, 13.50, 10.50, 13.50, 13.50, 11.50, 13.50, 9.50],
             data3: ['data3', 11.50, 12.50, 19.50, 13.50, 13.50, 14.50, 13.50, 10.50, 13.50, 13.50, 12.50, 13.50]
-
-        }
-    }
+        })
+    }, [props, state])
 
     // Xóa các chart đã render khi chưa đủ dữ liệu
-    removePreviousChart() {
-        const chart = this.refs.chart;
+    const removePreviousChart = () => {
+        const chart = chart.current;
         while (chart.hasChildNodes()) {
             chart.removeChild(chart.lastChild);
         }
     }
 
-    renderChart = (data) => {
+    const renderChart = (data) => {
         data.data1.shift(); data.data2.shift(); data.data3.shift();
         let bigData1 = data.data1.map(x => 2 * x);
         let bigData2 = data.data2.map(x => x / 2);
         let bigData3 = data.data3.map(x => x * 1.5);
-        this.removePreviousChart();
+        removePreviousChart();
         let chart = c3.generate({
-            bindto: this.refs.chart,
+            bindto: chart.current,
             data: {
                 x: 'x',
                 columns: [],
@@ -106,8 +104,7 @@ class MultipleBarChart extends Component {
             });
         }, 300);
     }
-    render() {
-        const { lineBar, nameChart } = this.state;
+    const { lineBar, nameChart } = state;
         return (
             <React.Fragment>
                 <div className="box">
@@ -118,16 +115,15 @@ class MultipleBarChart extends Component {
                         <p className="pull-left" style={{ marginBottom: 0 }}><b>ĐV tính: %</b></p>
                         <div className="box-tools pull-right">
                             <div className="btn-group pull-rigth">
-                                <button type="button" className={`btn btn-xs ${lineBar === false ? 'btn-danger' : null}`} onClick={() => this.handleChangeViewChart(true)}>Bar chart</button>
-                                <button type="button" className={`btn btn-xs ${lineBar === true ? 'btn-danger' : null}`} onClick={() => this.handleChangeViewChart(false)}>Line chart</button>
+                                <button type="button" className={`btn btn-xs ${lineBar === false ? 'btn-danger' : null}`} onClick={() => handleChangeViewChart(true)}>Bar chart</button>
+                                <button type="button" className={`btn btn-xs ${lineBar === true ? 'btn-danger' : null}`} onClick={() => handleChangeViewChart(false)}>Line chart</button>
                             </div>
                         </div>
-                        <div ref="chart"></div>
+                        <div ref={chart}></div>
                     </div>
                 </div>
             </React.Fragment>
         )
-    }
 }
 
 // function mapState(state) {

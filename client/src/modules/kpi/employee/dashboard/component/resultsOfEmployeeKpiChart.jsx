@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component, useEffect, useState} from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -11,106 +11,100 @@ import c3 from 'c3';
 import 'c3/c3.css';
 
 
-var translate ='';
-class ResultsOfEmployeeKpiChart extends Component {
+function ResultsOfEmployeeKpiChart(props) {
+    const { translate, createEmployeeKpiSet, auth } = props
 
-    constructor(props) {
-        super(props);
+    let today = new Date(),
+        month = today.getMonth() + 1,
+        year = today.getFullYear();
+    let endMonth;
 
-        translate = this.props.translate;
-
-        let currentDate = new Date();
-        let currentYear = currentDate.getFullYear();
-        let currentMonth = currentDate.getMonth();
-
-        this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
-
-        this.INFO_SEARCH = {
-            startMonth: currentYear + '-0' + 1,
-            endMonth: (currentMonth < 9) ? (currentYear + '-0' + currentMonth + 1) : (currentYear + '-' + (currentMonth + 1))
-        }
-
-        this.state = {
-            dataStatus: this.DATA_STATUS.QUERYING,
-
-            userId: localStorage.getItem("userId"),
-
-            startMonth: this.INFO_SEARCH.startMonth,
-            endMonth: this.INFO_SEARCH.endMonth
-        };
+    if (month < 10) {
+        endMonth = '0' + month;
+    } else {
+        endMonth = month;
     }
 
-    componentDidMount = () => {
-        this.props.getAllEmployeeKpiSetByMonth(undefined, this.state.userId, this.state.startMonth, this.state.endMonth);
+    const DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
 
-        this.setState(state => {
-            return {
-                ...state,
-                dataStatus: this.DATA_STATUS.QUERYING,
-            }
+    const INFO_SEARCH = {
+        startMonth: year + '-0' + 1,
+        endMonth: [year, endMonth].join('-')
+    }
+
+    const[state, setState]  = useState({
+        dataStatus: DATA_STATUS.QUERYING,
+
+        userId: localStorage.getItem("userId"),
+        roleId: localStorage.getItem("currentRole"),
+        startMonth: INFO_SEARCH.startMonth,
+        endMonth: INFO_SEARCH.endMonth,
+        defaultendMonth: [endMonth, year].join('-'),
+        defaultstartMonth: ['01', year].join('-'),
+
+        infosearch: {
+            startMonth: INFO_SEARCH.startMonth,
+            endMonth: INFO_SEARCH.endMonth,
+        }
+    });
+    const { defaultstartMonth, defaultendMonth } = state
+
+
+    let listEmployeeKpiSetEachYear;
+
+    useEffect(() => {
+        props.getAllEmployeeKpiSetByMonth([state.roleId], state.userId, state.startMonth, state.endMonth);
+        props.createEmployeeKpiSet.employeeKpiSetByMonth = null
+
+        setState( {
+            ...state,
+            dataStatus: DATA_STATUS.QUERYING,
         });
-    }
+    }, [])
 
-    shouldComponentUpdate = async (nextProps, nextState) => {
-        if(nextState.startMonth !== this.state.startMonth || nextState.endMonth !== this.state.endMonth) {
-            // Cài đặt await, và phải đặt trước setState để kịp thiết lập createEmployeeKpiSet.employeeKpiSetByMonth là null khi gọi service
-            await this.props.getAllEmployeeKpiSetByMonth(undefined, this.state.userId, nextState.startMonth, nextState.endMonth);
-       
-            this.setState(state => {
-                return {
+    useEffect(()=>{
+        if(state.dataStatus === DATA_STATUS.QUERYING) {
+            if(props.createEmployeeKpiSet.employeeKpiSetByMonth) {
+                setState({
                     ...state,
-                    dataStatus: this.DATA_STATUS.QUERYING,
-                }
-            });
-
-            return false;
-        }
-
-        if(nextState.dataStatus === this.DATA_STATUS.QUERYING) {
-            if(!nextProps.createEmployeeKpiSet.employeeKpiSetByMonth) {
-                return false
+                    dataStatus: DATA_STATUS.AVAILABLE
+                })
             }
+        } else if(state.dataStatus === DATA_STATUS.AVAILABLE) {
+            multiLineChart();
 
-            this.setState(state => {
-                return {
-                    ...state,
-                    dataStatus: this.DATA_STATUS.AVAILABLE
-                }
-            })
-            return false;
-        } else if(nextState.dataStatus === this.DATA_STATUS.AVAILABLE) {
-            this.multiLineChart();
-            
-            this.setState(state => {
-                return {
-                    ...state,
-                    dataStatus: this.DATA_STATUS.FINISHED
-                }
+            setState({
+                ...state,
+                dataStatus: DATA_STATUS.FINISHED
             })
         }
-
-        return false;
-    }
+    });
 
     /**
-     * 
+     *
      * Chọn các thông tin để vẽ biểu đồ
      */
 
-    handleSelectMonthStart = (value) => {
-        let month = value.slice(3,7) + '-' + value.slice(0,2);
-        this.INFO_SEARCH.startMonth = month;
-    }
+    const handleSelectMonthStart = (value) => {
+        let month = value.slice(3, 7) + '-' + value.slice(0, 2);
+        setState({
+            ...state,
+            startMonth: month
+        })
+    };
 
-    handleSelectMonthEnd = (value) => {
-        let month = value.slice(3,7) + '-' + value.slice(0,2);
-        this.INFO_SEARCH.endMonth = month;
-    }
+    const handleSelectMonthEnd = (value) => {
+        let month = value.slice(3, 7) + '-' + value.slice(0, 2);
+        setState({
+            ...state,
+            endMonth: month
+        })
+    };
 
     /**Gửi req và vẽ biểu đồ */
-    handleSearchData = async () => {
-        let startMonth = new Date(this.INFO_SEARCH.startMonth);
-        let endMonth = new Date(this.INFO_SEARCH.endMonth);
+    const handleSearchData = async () => {
+        let startMonth = new Date(state.startMonth);
+        let endMonth = new Date(state.endMonth);
 
         if (startMonth && endMonth && startMonth.getTime() > endMonth.getTime()) {
             Swal.fire({
@@ -120,228 +114,278 @@ class ResultsOfEmployeeKpiChart extends Component {
                 confirmButtonText:  translate('kpi.evaluation.employee_evaluation.confirm')
             })
         } else {
-            await this.setState(state => {
-                return {
+            await setState( {
                     ...state,
-                    startMonth: this.INFO_SEARCH.startMonth,
-                    endMonth: this.INFO_SEARCH.endMonth
+                    startMonth: state.startMonth,
+                    endMonth: state.endMonth,
+                    dataStatus: DATA_STATUS.QUERYING
+            })
+            
+            props.createEmployeeKpiSet.employeeKpiSetByMonth = null
+            props.getAllEmployeeKpiSetByMonth([state.roleId], state.userId, state.startMonth, state.endMonth);
+        }
+    };
+
+    const filterEmloyeeKpiSetSameOrganizationaUnit = () => {
+        let listEmployeeKpiSet, listOrganizationalUnit, listEmployeeKpiSetSameOrganizationalUnit = [], dataChart,
+            exportData;
+
+        if (createEmployeeKpiSet) {
+            listEmployeeKpiSet = createEmployeeKpiSet.employeeKpiSetByMonth
+        }
+
+        if (listEmployeeKpiSet && listEmployeeKpiSet.length !== 0) {
+            listOrganizationalUnit = listEmployeeKpiSet.map(kpi => {
+                if (kpi.organizationalUnit) {
+                    return kpi.organizationalUnit.name;
                 }
             })
         }
-    }
+        listOrganizationalUnit = Array.from(new Set(listOrganizationalUnit));
 
-    /**Thiết lập dữ liệu biểu đồ */
-    setDataMultiLineChart = () => {
-        const { createEmployeeKpiSet } = this.props;
-        let listEmployeeKpiSetEachYear, automaticPoint, employeePoint, approvedPoint, date, dataMultiLineChart,exportData;
+        if (listOrganizationalUnit && listOrganizationalUnit.length !== 0) {
+            listOrganizationalUnit.map((unit, index) => {
+                listEmployeeKpiSetSameOrganizationalUnit[index] = listEmployeeKpiSet.filter(kpi => kpi.organizationalUnit && kpi.organizationalUnit.name === unit);
 
-        if(createEmployeeKpiSet.employeeKpiSetByMonth) {
-            listEmployeeKpiSetEachYear = createEmployeeKpiSet.employeeKpiSetByMonth
-            exportData =this.convertDataToExportData(listEmployeeKpiSetEachYear);
-            this.handleExportData(exportData)
-            
+            })
+        }
+        if (listEmployeeKpiSetSameOrganizationalUnit) {
+            exportData = convertDataToExportData(listEmployeeKpiSetSameOrganizationalUnit, auth?.user?.name)
+            handleExportData(exportData);
         }
 
-        if(listEmployeeKpiSetEachYear) {
-
-            automaticPoint = [translate('kpi.organizational_unit.dashboard.result_kpi_unit_chart.automatic_point')];
-            employeePoint = [translate('kpi.organizational_unit.dashboard.result_kpi_unit_chart.employee_point')];
-            approvedPoint = [translate('kpi.organizational_unit.dashboard.result_kpi_unit_chart.approved_point')];
-            date = ['x'];
-
-            listEmployeeKpiSetEachYear.map(x => {
-                automaticPoint.push(x.automaticPoint);
-                employeePoint.push(x.employeePoint);
-                approvedPoint.push(x.approvedPoint);
-
-                let newDate = new Date(x.date);
-                newDate = newDate.getFullYear() + "-" + (newDate.getMonth() + 1) + "-" + (newDate.getDate() - 1);
-                date.push(newDate);
-            });
+        if (listEmployeeKpiSetSameOrganizationalUnit.length !== 0) {
+            dataChart = listEmployeeKpiSetSameOrganizationalUnit.map(kpi => {
+                return setDataMultiLineChart(kpi);
+            })
         }
-        
-        dataMultiLineChart = [date, automaticPoint, employeePoint, approvedPoint];
 
+        return dataChart;
+    };
+
+    const setDataMultiLineChart = (listEmployeeKpiSet) => {
+
+        let title;
+        let dataMultiLineChart, automaticPoint, employeePoint, approvedPoint, date;
+
+
+        if (listEmployeeKpiSet[0] && listEmployeeKpiSet[0].organizationalUnit) {
+            title = auth?.user?.name + ' - ' + listEmployeeKpiSet[0].organizationalUnit.name;
+        }
+
+        if (listEmployeeKpiSet) {
+            automaticPoint = [translate('kpi.evaluation.dashboard.auto_eva')].concat(listEmployeeKpiSet.map(x => x.automaticPoint ? x.automaticPoint : 0));
+            employeePoint = [translate('kpi.evaluation.dashboard.employee_eva')].concat(listEmployeeKpiSet.map(x => x.employeePoint ? x.employeePoint : 0));
+            approvedPoint = [translate('kpi.evaluation.dashboard.approver_eva')].concat(listEmployeeKpiSet.map(x => x.approvedPoint ? x.approvedPoint : 0));
+            date = listEmployeeKpiSet.map(x => {
+                date = new Date(x.date);
+                return date.getFullYear() + "-" + (date.getMonth() + 1) + "-01";
+            })
+        }
+
+        dataMultiLineChart = {
+            "title": title,
+            "data": [['x'].concat(date), automaticPoint, employeePoint, approvedPoint]
+        };
         return dataMultiLineChart;
     };
 
     /**Xóa các chart đã render trước khi đủ dữ liệu */
-    removePreviosMultiLineChart = () => {
-        const chart =  this.refs.chart;
-        while(chart.hasChildNodes()) {
-            chart.removeChild(chart.lastChild)
+    const removePreviosMultiLineChart = () => {
+        const chart = document.getElementById("chart");
+        if (chart) {
+            while (chart.hasChildNodes()) {
+                chart.removeChild(chart.lastChild)
+            }
         }
-    }
+    };
 
     /**Khởi tạo MultiLineChart bằng C3 */
-    multiLineChart = () => {
-        this.removePreviosMultiLineChart();
-        
+    const multiLineChart = () => {
+        removePreviosMultiLineChart();
+
         // Tạo mảng dữ liệu
-        let dataMultiLineChart = this.setDataMultiLineChart();
+        let dataMultiLineChart = filterEmloyeeKpiSetSameOrganizationaUnit();
+        if (dataMultiLineChart && dataMultiLineChart.length !== 0) {
+            dataMultiLineChart.map(data => {
+                let div = document.createElement('div');
+                div.id = data.title;
+                let section = document.getElementById("chart");
+                section.appendChild(div);
 
-        this.chart = c3.generate({
-            bindto: this.refs.chart,       // Đẩy chart vào thẻ div có id="multiLineChart"
-
-            padding: {                              // Căn lề biểu đồ
-                top: 20,
-                bottom: 20,
-                right: 20
-            },
-
-            data: {                                 // Dữ liệu biểu đồ
-                x: 'x',
-                columns: dataMultiLineChart,
-                type: 'spline'
-            },
-
-            axis : {                                // Config trục tọa độ
-                x : {
-                    type : 'timeseries',
-                    tick: {
-                        format: function (x) { return (x.getMonth() + 1) + "-" + x.getFullYear(); }
-                    }
-                },
-                y: {
-                    max: 100,
-                    min: 0,
-                    label: {
-                        text: translate('kpi.organizational_unit.dashboard.point'),
-                        position: 'outer-right'
+                let chart = c3.generate({
+                    bindto: document.getElementById(data.title),
+                    title: {
+                        show: false,
+                        text: data.title,
+                        position: 'top-left',   // top-left, top-center and top-right
+                        padding: {
+                            top: 20,
+                            bottom: 5,
+                        }
                     },
                     padding: {
-                        top: 10,
-                        bottom: 10
+                        top: 20,
+                        right: 20,
+                        left: 20
+                    },
+                    data: {
+                        x: 'x',
+                        columns: data.data
+                    },
+                    axis: {
+                        x: {
+                            type: 'timeseries',
+                            tick: {
+                                format: function (x) {
+                                    return (x.getMonth() + 1) + "-" + x.getFullYear();
+                                }
+                            }
+                        },
+                        y: {
+                            max: 100,
+                            min: 0,
+                            label: {
+                                text: translate('kpi.evaluation.employee_evaluation.point'),
+                                position: 'outer-right'
+                            },
+                            padding: {
+                                top: 10,
+                                bottom: 10
+                            }
+                        }
+                    },
+                    zoom: {
+                        enabled: false
                     }
-                }
-            },
-            zoom: {                                 // Cho phép zoom biểu đồ
-                enabled: false
-            }
-        });
-    }
 
-    handleExportData =(exportData)=>
+                })
+            })
+        } else {
+            let div = document.createElement('div');
+            div.innerHTML = "Không có dữ liệu";
+            let section = document.getElementById("chart");
+            section.appendChild(div);
+        }
+    };
+
+    const handleExportData =(exportData)=>
     {
-        const { onDataAvailable } = this.props;
+        const { onDataAvailable } = props;
         if (onDataAvailable) {
             onDataAvailable(exportData);
         }
-    }
+    };
 
     /*Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
-    convertDataToExportData = (data,name,email) => {
-        let fileName = "Biểu đồ theo dõi kết quả KPI cá nhân";
+    const convertDataToExportData = (data, name) => {
+        let convertedData = [], names = name?.split("("), temp;
+        let fileName = "Kết quả KPI " + (names ? names?.[0] : "") + " theo từng tháng ";
+        if (data) {
+            for (let i = 0; i < data.length; i++) {
+                for (let j = 0; j < data[i].length; j++) {
+                    convertedData.push(data[i][j])
+                }
+            }
+            let d1, d2;
+            //Sap xep tap kpi theo thu tu thoi gian
+            for (let i = 0; i < convertedData.length - 1; i++) {
+                for (let j = i + 1; j < convertedData.length; j++) {
+                    d1 = new Date(convertedData[i].date);
+                    d2 = new Date(convertedData[j].date)
+                    if (d1 > d2) {
+                        temp = convertedData[i];
+                        convertedData[i] = convertedData[j];
+                        convertedData[j] = temp;
+                    }
+                }
+            }
 
-        if (data) {           
-            data = data.map((x, index) => {
-                let automaticPoint = (x.automaticPoint === null)?"Chưa đánh giá":parseInt(x.automaticPoint);
-                let employeePoint = (x.employeePoint === null)?"Chưa đánh giá":parseInt(x.employeePoint);
-                let approverPoint =(x.approvedPoint===null)?"Chưa đánh giá":parseInt(x.approvedPoint);
-                let d = new Date(x.date),
-                    month = '' + (d.getMonth() + 1),
-                    year = d.getFullYear(),
-                    date =month+'-'+year;
 
-                return {              
-                    automaticPoint: automaticPoint,
-                    employeePoint: employeePoint,
-                    approverPoint: approverPoint,
-                    time : date,                
-                };
-            })
+            for (let i = 0; i < convertedData.length; i++) {
+                let d = new Date(convertedData[i].date);
+                convertedData[i]["time"] = d;
+                convertedData[i]["STT"] = i + 1;
+                convertedData[i]["unit"] = convertedData[i].organizationalUnit.name
+            }
         }
+
 
         let exportData = {
             fileName: fileName,
             dataSheets: [
                 {
-                    sheetName: "Biểu đồ theo dõi kết quả KPI cá nhân của ",
+                    sheetName: "sheet1",
                     sheetTitle: fileName,
                     tables: [
                         {
-                            tableTitle: "Dữ liệu để vẽ biểu đồ "+ fileName,
-                            columns: [                            
-                                { key: "time", value: "Thời gian" },
-                                { key: "automaticPoint", value: "Điểm KPI tự động" },
-                                { key: "employeePoint", value: "Điểm KPI tự đánh giá" },
-                                { key: "approverPoint", value: "Điểm KPI được đánh giá" }
+                            columns: [
+                                {key: "STT", value: "STT"},
+                                {key: "time", value: "Thời gian"},
+                                {key: "unit", value: "Đơn vị "},
+                                {key: "automaticPoint", value: "Điểm KPI tự động"},
+                                {key: "employeePoint", value: "Điểm KPI tự đánh giá"},
+                                {key: "approvedPoint", value: "Điểm KPI được phê duyệt"}
                             ],
-                            data: data
+                            data: convertedData
                         }
                     ]
                 },
             ]
-        }
-        return exportData;        
-       
+
+
+        };
+        return exportData;
+    };
+
+    if (createEmployeeKpiSet.employeeKpiSetByMonth) {
+        listEmployeeKpiSetEachYear = createEmployeeKpiSet.employeeKpiSetByMonth;
     }
 
-    render() {
-        const { createEmployeeKpiSet } = this.props;
+    return (
+        <React.Fragment>
+            {/**Chọn ngày bắt đầu */}
+            <section className="form-inline">
+                <div className="form-group">
+                    <label>{translate('kpi.evaluation.employee_evaluation.from')}</label>
+                    <DatePicker
+                        id="monthStartInDashBoardEmployeeKpiSet"
+                        dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm
+                        value={defaultstartMonth}                 // giá trị mặc định cho datePicker
+                        onChange={handleSelectMonthStart}
+                        disabled={false}                    // sử dụng khi muốn disabled, mặc định là false
+                    />
+                </div>
+            </section>
 
-        let listEmployeeKpiSetEachYear;
-        
-        if (createEmployeeKpiSet.employeeKpiSetByMonth) {
-            listEmployeeKpiSetEachYear = createEmployeeKpiSet.employeeKpiSetByMonth;
-        }
+            {/**Chọn ngày kết thúc */}
+            <section className="form-inline">
+                <div className="form-group">
+                    <label>{translate('kpi.evaluation.employee_evaluation.to')}</label>
+                    <DatePicker
+                        id="monthEndInDashBoardEmployeeKpiSet"
+                        dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm
+                        value={defaultendMonth}                 // giá trị mặc định cho datePicker
+                        onChange={handleSelectMonthEnd}
+                        disabled={false}                    // sử dụng khi muốn disabled, mặc định là false
+                    />
+                </div>
 
-        let d = new Date(),
-        month = '' + (d.getMonth() + 1),
-        day = '' + d.getDate(),
-        year = d.getFullYear();
+                {/**button tìm kiếm data để vẽ biểu đồ */}
+                <div className="form-group">
+                    <button type="button" className="btn btn-success" onClick={handleSearchData}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
+                </div>
+            </section>
 
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
-        let defaultendMonth = [month, year].join('-');
-        let defaultstartMonth = ['01', year].join('-');
+            <section id={"chart"}> </section>
+        </React.Fragment>
+    )
 
-        return (
-            <React.Fragment>
-                {/**Chọn ngày bắt đầu */}
-                <section className="form-inline">
-                    <div className="form-group">
-                        <label>{translate('kpi.evaluation.employee_evaluation.from')}</label>
-                        <DatePicker 
-                            id="monthStartInDashBoardEmployeeKpiSet"      
-                            dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
-                            value={defaultstartMonth}                 // giá trị mặc định cho datePicker    
-                            onChange={this.handleSelectMonthStart}
-                            disabled={false}                    // sử dụng khi muốn disabled, mặc định là false
-                        />
-                    </div>
-                </section>
-
-                {/**Chọn ngày kết thúc */}
-                <section className="form-inline">
-                    <div className="form-group">
-                        <label>{translate('kpi.evaluation.employee_evaluation.to')}</label>
-                        <DatePicker 
-                            id="monthEndInDashBoardEmployeeKpiSet"      
-                            dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
-                            value={defaultendMonth}                 // giá trị mặc định cho datePicker    
-                            onChange={this.handleSelectMonthEnd}
-                            disabled={false}                    // sử dụng khi muốn disabled, mặc định là false
-                        />
-                    </div>
-
-                    {/**button tìm kiếm data để vẽ biểu đồ */}
-                    <div className="form-group">
-                        <button type="button" className="btn btn-success" onClick={this.handleSearchData}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
-                    </div>
-                </section>
-
-                <section ref="chart"></section>
-            </React.Fragment>
-        )
-    }
 }
 
 function mapState(state) {
-    const { createEmployeeKpiSet } = state;
-    return { createEmployeeKpiSet };
+    const { createEmployeeKpiSet, auth } = state;
+    return { createEmployeeKpiSet, auth };
 }
 
 const actions = {

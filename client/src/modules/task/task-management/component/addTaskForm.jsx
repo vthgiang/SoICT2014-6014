@@ -85,13 +85,15 @@ class AddTaskForm extends Component {
     validateTaskName = (value, willUpdateState = true) => {
         let { translate } = this.props;
         let { message } = ValidationHelper.validateEmpty(translate, value);
-
         if (willUpdateState) {
-            this.state.newTask.name = value;
-            this.state.newTask.errorOnName = message;
             this.setState(state => {
                 return {
                     ...state,
+                    newTask: {
+                        ...state.newTask,
+                        name: value,
+                        errorOnName: message
+                    }
                 };
             });
             this.props.handleChangeTaskData(this.state.newTask)
@@ -115,26 +117,16 @@ class AddTaskForm extends Component {
     }
 
     handleChangeTaskDescription = (value, imgs) => {
-        this.validateTaskDescription(value, true);
-    }
-    validateTaskDescription = (value, willUpdateState = true) => {
-        let { translate } = this.props;
-        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
-
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    newTask: {
-                        ...state.newTask,
-                        description: value,
-                        errorOnDescription: message
-                    }
-                };
-            });
-            this.props.handleChangeTaskData(this.state.newTask)
-        }
-        return message === undefined;
+        this.setState(state => {
+            return {
+                ...state,
+                newTask: {
+                    ...state.newTask,
+                    description: value,
+                }
+            };
+        });
+        this.props.handleChangeTaskData(this.state.newTask)
     }
 
     handleChangeTaskStartDate = (value) => {
@@ -669,8 +661,8 @@ class AddTaskForm extends Component {
 
 
                             {/* Mô tả công việc */}
-                            <div className={`form-group ${newTask.errorOnDescription === undefined ? "" : "has-error"}`}>
-                                <label className="control-label">{translate('task.task_management.detail_description')}<span className="text-red">*</span></label>
+                            <div className={`form-group`}>
+                                <label className="control-label">{translate('task.task_management.detail_description')}</label>
                                 <QuillEditor
                                     id={`task-add-modal-${this.props.id}-${this.props.quillId}`}
                                     table={false}

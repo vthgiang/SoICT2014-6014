@@ -6,33 +6,34 @@ import moment from 'moment';
 import { DialogModal } from '../../../../common-components';
 import { convertTime } from '../../../../helpers/stringMethod';
 
-const InforTimeSheetLog = (props) =>{
+const InforTimeSheetLog = (props) => {
     const convertType = (value) => {
         // 1: Tắt bấm giờ bằng tay, 2: Tắt bấm giờ tự động với thời gian hẹn trc, 3: add log timer
         if (value == 1) {
-            return "Bấm bù giờ"
+            return "Bấm giờ"
         } else if (value == 2) {
             return "Bấm hẹn giờ"
         } else {
-            return "Bấm giờ"
+            return "Bấm bù giờ"
         }
     };
 
     const { translate } = props;
-    const { timesheetlogs } = props
+    const { timesheetlogs, filterTimeSheetLogs } = props;
+    console.log('filterTimeSheetLogs', filterTimeSheetLogs);
     return (
         <React.Fragment>
             <DialogModal
                 size='50' modalID="modal-infor-time-sheet-log"
                 formID="modal-infor-time-sheet-log"
-                title={`Thống kê bấm giờ ${props.data.name}`}
+                title={`Thống kê bấm giờ ${timesheetlogs.name}`}
                 hasSaveButton={false}
             >
                 <div className="description-box">
-                    <div><strong>Tổng thời gian:</strong>{convertTime(props.data.totalhours)}</div>
-                    <div><strong>Bấm bù giờ:</strong> {convertTime(props.data.manualtimer)}</div>
-                    <div><strong>Bấm hẹn giờ:</strong> {convertTime(props.data.autotimer)}</div>
-                    <div><strong>Bấm giờ:</strong> {convertTime(props.data.logtimer)}</div>
+                    <div><strong>Tổng thời gian:</strong>{convertTime(timesheetlogs.totalhours)}</div>
+                    <div><strong>Bấm bù giờ:</strong> {convertTime(timesheetlogs.manualtimer)}</div>
+                    <div><strong>Bấm hẹn giờ:</strong> {convertTime(timesheetlogs.autotimer)}</div>
+                    <div><strong>Bấm giờ:</strong> {convertTime(timesheetlogs.logtimer)}</div>
                 </div>
                 <table className="table table-hover table-striped table-bordered" id="table-user-timesheetlogs">
                     <thead>
@@ -47,7 +48,7 @@ const InforTimeSheetLog = (props) =>{
                     </thead>
                     <tbody>
                         {
-                            timesheetlogs && timesheetlogs.length ? timesheetlogs.map((tsl, index) => {
+                            filterTimeSheetLogs && filterTimeSheetLogs.length ? filterTimeSheetLogs.map((tsl, index) => {
                                 return (
                                     <tr key={index}>
                                         <td>{index + 1}</td>

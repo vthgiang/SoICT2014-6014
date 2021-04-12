@@ -162,11 +162,12 @@ exports.createAnnualLeave = async (req, res) => {
                 });
             } else {
                 let newAnnualLeave = await AnnualLeaveService.createAnnualLeave(req.portal, req.body, req.user.company._id);
+                const dataAnnualLeave = newAnnualLeave.result;
                 await Log.info(req.user.email, 'CREATE_ANNUALLEAVE', req.portal);
                 res.status(200).json({
                     success: true,
                     messages: ["create_annual_leave_success"],
-                    content: newAnnualLeave
+                    content: dataAnnualLeave
                 });
             }
         }

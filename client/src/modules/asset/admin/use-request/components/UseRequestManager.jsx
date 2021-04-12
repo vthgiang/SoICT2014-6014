@@ -11,30 +11,31 @@ import { UserActions } from "../../../../super-admin/user/redux/actions";
 import { AssetManagerActions } from "../../asset-information/redux/actions";
 import { AssetEditForm } from '../../asset-information/components/assetEditForm';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
+import { formatDate } from '../../../../../helpers/assetHelper.js';
 
 function UseRequestManager(props) {
     
     const tableId_constructor = "table-use-request-manager";
     const defaultConfig = { limit: 5 }
     const limit_constructor = getTableConfiguration(tableId_constructor, defaultConfig).limit;
-
+    const currentMonth = formatDate(Date.now())
     const [state, setState] = useState({
             tableId: tableId_constructor,
             recommendNumber: "",
-            month: "",
-            status: null,
+            createReceiptsDate: currentMonth,
+            status: ["approved","waiting_for_approval", "disapproved" ],
             page: 0,
             limit: limit_constructor,
             managedBy: props.managedBy ? props.managedBy : ''
     })
     const { translate, recommendDistribute, isActive } = props;
-    const { page, limit, currentRow, currentRowEditAsset, managedBy, tableId } = state;
+    const { page, limit, currentRow, currentRowEditAsset, managedBy, tableId, status, createReceiptsDate } = state;
 
     useEffect(() => {
         let { managedBy } = state;
         props.searchRecommendDistributes(state);
         props.getUser();
-
+        props.getListBuildingAsTree();
         if (!props.isActive || props.isActive === "tab-pane active") {
             props.getAllAsset({
                 code: "",
@@ -112,23 +113,6 @@ function UseRequestManager(props) {
             let formatDate = [day, month, year].join("-")
             return formatDate;
         }
-    }
-    // Function format ngày hiện tại thành dạnh mm-yyyy
-    const formatDate = (date) => {
-        var d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
-
-        if (month.length < 2) {
-            month = '0' + month;
-        }
-
-        if (day.length < 2) {
-            day = '0' + day;
-        }
-
-        return [month, year].join('-');
     }
 
     // Function lưu giá trị mã phiếu vào state khi thay đổi
@@ -319,7 +303,9 @@ function UseRequestManager(props) {
         window.$('#modal-edit-asset').modal('show');
 
         // Mở tab thứ 3
-        window.$('.nav-tabs li:eq(2) a').tab('show');
+        window.$('#modal-edit-asset').on('shown.bs.modal', function (){
+            window.$('#nav-tabs li:eq(2) a').tab('show');
+        });
 
     }
 
@@ -330,7 +316,6 @@ function UseRequestManager(props) {
             case 'approved': return translate('asset.usage.approved');
             case 'waiting_for_approval': return translate('asset.usage.waiting_approval');
             case 'disapproved': return translate('asset.usage.not_approved');
-            default: return '';
         }
     }
 
@@ -345,6 +330,8 @@ function UseRequestManager(props) {
             parseInt(recommendDistribute.totalList / limit) :
             parseInt((recommendDistribute.totalList / limit) + 1);
         var currentPage = parseInt((page / limit) + 1);
+        console.log(state)
+        console.log(listRecommendDistributes)
         return (
             //Khi id !== undefined thi component nay duoc goi tu module user
             <div className={isActive ? isActive : "box"} >
@@ -383,6 +370,7 @@ function UseRequestManager(props) {
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.status')}</label>
                             <SelectMulti id={`multiSelectStatus`} multiple="multiple"
+                                value={status}
                                 options={{ nonSelectedText: translate('page.non_status'), allSelectedText: translate('page.all_status') }}
                                 onChange={handleStatusChange}
                                 items={[
@@ -399,6 +387,7 @@ function UseRequestManager(props) {
                         <div className="form-group">
                             <label className="form-control-static">Ngày lập phiếu</label>
                             <DatePicker
+                                value={createReceiptsDate}
                                 id="month"
                                 dateFormat="month-year"
                                 // value={formatDate(Date.now())}
@@ -510,7 +499,7 @@ function UseRequestManager(props) {
                         code={currentRowEditAsset.code}
                         assetName={currentRowEditAsset.assetName}
                         serial={currentRowEditAsset.serial}
-                        assetType={currentRowEditAsset.assetType}
+                        assetType={JSON.stringify(currentRowEditAsset.assetType)}
                         group={currentRowEditAsset.group}
                         purchaseDate={currentRowEditAsset.purchaseDate}
                         warrantyExpirationDate={currentRowEditAsset.warrantyExpirationDate}
@@ -522,7 +511,6 @@ function UseRequestManager(props) {
                         location={currentRowEditAsset.location}
                         description={currentRowEditAsset.description}
                         status={currentRowEditAsset.status}
-                        canRegisterForUse={currentRowEditAsset.canRegisterForUse}
                         typeRegisterForUse={currentRowEditAsset.typeRegisterForUse}
                         detailInfo={currentRowEditAsset.detailInfo}
                         readByRoles={currentRowEditAsset.readByRoles}
@@ -548,6 +536,8 @@ function UseRequestManager(props) {
                         incidentLogs={currentRowEditAsset.incidentLogs}
                         archivedRecordNumber={currentRowEditAsset.archivedRecordNumber}
                         files={currentRowEditAsset.documents}
+                        linkPage={"management"}
+                        page={page}
                     />
                 }
 
@@ -565,7 +555,7 @@ const actionCreators = {
     getAllAsset: AssetManagerActions.getAllAsset,
     searchRecommendDistributes: RecommendDistributeActions.searchRecommendDistributes,
     deleteRecommendDistribute: RecommendDistributeActions.deleteRecommendDistribute,
-
+    getListBuildingAsTree: AssetManagerActions.getListBuildingAsTree,
 };
 
 const connectedUseRequestManager = connect(mapState, actionCreators)(withTranslate(UseRequestManager));
