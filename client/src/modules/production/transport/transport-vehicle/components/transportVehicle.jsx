@@ -136,10 +136,11 @@ function TransportVehicle(props) {
             payload: vehicle.payload,
             volume: vehicle.volume,
             transportPlan: currentTransportPlanId,
+            vehicleId: vehicle._id,
         }
         // props.createTransportVehicle(data);
-        props.createTransportPlanVehicleNotDuplicate(vehicle._id, data);
-        props.addTransportVehicleToPlan(currentTransportPlanId, {transportVehicle: vehicle._id});
+        // props.createTransportPlanVehicleNotDuplicate(vehicle._id, data);
+        props.addTransportVehicleToPlan(currentTransportPlanId, data);
     }
 
     const selectVehicle = (index) => {

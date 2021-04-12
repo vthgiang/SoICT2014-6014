@@ -23,6 +23,8 @@ function ArrangeVehiclesAndGoods(props) {
     const [transportArrangeRequirements, setAransportArrangeRequirements] = useState([]);
     const [allTransportVehicle, setAllTransportVehicle] = useState([]);
     
+    const [distributionState, setDistributionState] = useState([])
+
     const getListTransportPlans = () => {
         let listTransportPlans = [
             {
@@ -41,17 +43,6 @@ function ArrangeVehiclesAndGoods(props) {
         return listTransportPlans;
     }
 
-    const handleTransportPlanChange = (value) => {
-        if (value[0] !== "0" && allTransportPlans){
-            let filterPlan = allTransportPlans.filter((r) => r._id === value[0]);
-            if (filterPlan.length > 0){
-                setCurrentTransportPlan(filterPlan[0]);
-            }
-        }
-        else{
-            setCurrentTransportPlan({_id: value[0], code: ""});
-        }
-    }
     useEffect(() => {
         props.getAllTransportVehicles({page: 1, limit : 100});
         props.getAllTransportRequirements({page: 1, limit: 100});
@@ -74,6 +65,69 @@ function ArrangeVehiclesAndGoods(props) {
         }
     }, [currentTransportSchedule])
 
+    const handleTransportPlanChange = (value) => {
+        if (value[0] !== "0" && allTransportPlans){
+            let filterPlan = allTransportPlans.filter((r) => r._id === value[0]);
+            if (filterPlan.length > 0){
+                setCurrentTransportPlan(filterPlan[0]);
+            }
+        }
+        else{
+            setCurrentTransportPlan({_id: value[0], code: ""});
+        }
+    }
+    useEffect(() => {
+        console.log(distributionState, "sad");
+    }, [distributionState])
+
+    const handleSelectVehicle = async (transportRequirement, transportVehicle, indexRequirement, indexVehicle) => {
+        let distributionList = [...distributionState];
+        let current;
+        let other = [];
+
+        if (distributionList && distributionList.length!==0){
+            other = await distributionList.filter(r => !(String(transportRequirement._id) in r.transportRequirements?r.transportRequirements:[]))
+            current = await distributionList.filter(r => String(transportRequirement._id) in r.transportRequirements?r.transportRequirements:[]);
+            console.log(other, " other");
+            let newCurrent={};
+            if (current && current.length!==0){
+                let a = current[0].transportRequirements.filter(r=>String(r)!==String(transportRequirement._id));
+                console.log(a, " day la a");
+                let k = current[0].vehicle;
+                newCurrent = {
+                    // transportRequirements: [],
+                    // vehicle: k,
+                }
+                console.log(newCurrent, " newcurrent");
+            }
+            distributionList = other.concat(newCurrent);
+
+            console.log(distributionList, " distributionList");
+
+            other = distributionList.filter(r=>String(r?.vehicle)!==String(transportVehicle._id))
+            current = distributionList.filter(r=>String(r?.vehicle)===String(transportVehicle._id))
+            if (current && current.length !==0) {
+                if (!(String(transportRequirement._id) in current[0].transportRequirements )){
+                    current[0].transportRequirements.push(transportRequirement._id);
+                    console.log(2);
+                }
+            }
+            else {
+                current = [{
+                    vehicle: transportVehicle._id,
+                    transportRequirements: [transportRequirement._id],
+                }]
+            }
+        }
+        else {
+            current = [{
+                vehicle: transportVehicle._id,
+                transportRequirements: [transportRequirement._id],
+            }]
+        }
+        setDistributionState(other.concat(current));
+    }
+
     return (
         <React.Fragment>
         <div className="box-body qlcv">
@@ -87,7 +141,6 @@ function ArrangeVehiclesAndGoods(props) {
                         value={currentTransportPlan._id}
                         items={getListTransportPlans()}
                         onChange={handleTransportPlanChange}
-                        // onChange={this.handleQueryDateChange}
                     />
                 </div>
 
@@ -111,7 +164,7 @@ function ArrangeVehiclesAndGoods(props) {
                                 (allTransportVehicle && allTransportVehicle.length !== 0) &&
                                 allTransportVehicle.map((item, index) => (
                                     item &&
-                                    <th key={index}>{item.name}</th>
+                                    <th key={index}>{item.transportVehicle.name}</th>
                                 ))
                             }
                             {/* <th colSpan={2}>{"Xe 1"}</th>
@@ -123,7 +176,7 @@ function ArrangeVehiclesAndGoods(props) {
                                 (allTransportVehicle && allTransportVehicle.length !== 0) &&
                                 allTransportVehicle.map((item, index) => (
                                     item &&
-                                    <td>{"Payload: " + item.payload}</td>
+                                    <td>{"Payload: " + item.transportVehicle.payload}</td>
                                 ))
                             }
                             {/* <td>{"Trọng tải"}</td>
@@ -136,14 +189,13 @@ function ArrangeVehiclesAndGoods(props) {
                                 (allTransportVehicle && allTransportVehicle.length !== 0) &&
                                 allTransportVehicle.map((item, index) => (
                                     item &&
-                                    <td>{"Volume: " + item.volume}</td>
+                                    <td>{"Volume: " + item.transportVehicle.volume}</td>
                                 ))
                             }
                             {/* <td>{"1000"}</td> */}
                         </tr>
                     </thead>
                     <tbody className="transport-special-row">
-                        
                     {
                             (transportArrangeRequirements && transportArrangeRequirements.length !==0) &&
                             transportArrangeRequirements.map((item, index) => (
@@ -209,15 +261,21 @@ function ArrangeVehiclesAndGoods(props) {
                                 
                                 {
                                     (allTransportVehicle && allTransportVehicle.length !== 0) &&
-                                    allTransportVehicle.map((item, index) => (
-                                        item &&
-                                        <td key={index} className="tooltip-checkbox">
-                                            <span className="icon" title={"alo"} style={{ backgroundColor: "white"}}></span>
-                                            <span className="tooltiptext">
+                                    allTransportVehicle.map((item1, index1) => (
+                                        item1 &&
+                                        <td key={"vehicle "+index1} className="tooltip-checkbox">
+                                            <span className="icon" 
+                                            title={"alo"} 
+                                            style={{ backgroundColor: "white"}}
+                                            onClick={() => handleSelectVehicle(item, item1, index, index1)}
+                                            >
+
+                                            </span>
+                                            {/* <span className="tooltiptext">
                                                 <a style={{ color: "white" }} 
                                                     // onClick={() => this.handleShowDetailManufacturingCommand(command)}
                                                 >{"1"}</a>
-                                            </span>
+                                            </span> */}
                                         </td>
                                     ))
                                 }
@@ -225,85 +283,6 @@ function ArrangeVehiclesAndGoods(props) {
           
                             ))
                         }
-                    <tr className="word-no-break">
-                        <td>
-                            {"1"}
-                        </td>
-                        <td>
-                            <div>
-                                <p>
-                                    {"Mã yêu cầu:"}
-                                </p>
-                                <p>
-                                    {"123"}
-                                </p>
-                            </div>
-                            <div>
-                                <p>
-                                    {"Loại yêu cầu:"}
-                                </p>
-                                <p>
-                                    {"Giao hàng"}
-                                </p>
-                            </div>
-                        </td>
-                        <td>
-                            <div>
-                                <p>
-                                    {"Điểm nhận:"}
-                                </p>
-                                <p>
-                                    {"Lê Thanh Nghị Bách Khoa, Hai Bà Trưng, Hà Nội"}
-                                </p>
-                            </div>
-                            <div>
-                                <p>
-                                    {"Điểm giao:"}
-                                </p>
-                                <p>
-                                    {"Lê Thanh Nghị Bách Khoa, Hai Bà Trưng, Hà Nội"}
-                                </p>
-                            </div>
-                        </td>
-                        <td>
-                            <div>
-                                <p>
-                                    {"Khối lượng:"}
-                                </p>
-                                <p>
-                                    {"1000"}
-                                </p>
-                            </div>
-                            <div>
-                                <p>
-                                    {"Thể tích:"}
-                                </p>
-                                <p>
-                                    {"1000"}
-                                </p>
-                            </div>
-                        </td>
-                        {/* <th>{"Hành động"}</th>
-                        <td>{"Xem"}</td> */}
-                        {
-                            (allTransportVehicle && allTransportVehicle.length !== 0) &&
-                            allTransportVehicle.map((item, index) => (
-                                item &&
-                                <td key={index} className="tooltip-checkbox">
-                                    <span className="icon" title={"alo"} style={{ backgroundColor: "white"}}></span>
-                                    <span className="tooltiptext">
-                                        <a style={{ color: "white" }} 
-                                            // onClick={() => this.handleShowDetailManufacturingCommand(command)}
-                                        >{"1"}</a>
-                                    </span>
-                                </td>
-                            ))
-                        }
-                    </tr >
-
-
-
-
 
                     {/* <tr className="word-no-break">
                         <th>{"Điểm nhận"}</th>

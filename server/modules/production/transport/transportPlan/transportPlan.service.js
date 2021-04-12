@@ -7,6 +7,7 @@ const {
 } = require(`../../../../helpers/dbHelper`);
 
 const TransportScheduleServices = require('../transportSchedule/transportSchedule.service');
+const TransportVehicleServices = require('../transportVehicle/transportVehicle.service')
 
 exports.createTransportPlan = async (portal, data) => {
     let newTransportPlan;
@@ -169,14 +170,46 @@ exports.addTransportRequirementToPlan = async (portal, id, data) => {
     return transportPlan;
 }
 
+/**
+ * Thêm xe vào kế hoạch (đồng thời lưu lại dữ liệu về xe trong vehicle)
+ * @param {*} portal 
+ * @param {*} id id của plan
+ * @param {*} data data = {
+            id: vehicle._id,
+            code: vehicle.code,
+            name: vehicle.assetName,
+            payload: vehicle.payload,
+            volume: vehicle.volume,
+            transportPlan: currentTransportPlanId,
+            vehicleId: vehicle._id,
+        }
+ * @returns 
+ */
+
 exports.addTransportVehicleToPlan = async (portal, id, data) => {
     let oldTransportPlan = await TransportPlan(connect(DB_CONNECTION, portal)).findById(id);
 
     if (!oldTransportPlan) {
         return -1;
     }
-    await TransportPlan(connect(DB_CONNECTION, portal)).update({ _id: id }, {$pull: {transportVehicles: data}});
-    await TransportPlan(connect(DB_CONNECTION, portal)).update({ _id: id }, {$push: {transportVehicles: data}});
+    /**
+     * Lưu lại dữ liệu xe
+     */
+    vehicle = await TransportVehicleServices.editTransportVehicleToSetPlan(portal, data.vehicleId, data);
+
+    /**
+     * Cập nhật xe vào plan
+     */
+    await TransportPlan(connect(DB_CONNECTION, portal)).update({ _id: id }, {$pull: {
+        transportVehicles: {
+            transportVehicle: vehicle._id
+        }
+    }});
+    await TransportPlan(connect(DB_CONNECTION, portal)).update({ _id: id }, {$push: {
+        transportVehicles: {
+            transportVehicle: vehicle._id
+        }
+    }});
     let transportPlan = await TransportPlan(connect(DB_CONNECTION, portal)).findById({ _id: oldTransportPlan._id });
     return transportPlan;    
 }

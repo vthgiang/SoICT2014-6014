@@ -25,7 +25,16 @@ exports.createTransportVehicle = async (portal, data) => {
 }
 
 /**
- * 
+ * Lưu lại xe từ module asset, nếu đã có xe thì ko lưu mới
+ * data = {
+            id: vehicle._id,
+            code: vehicle.code,
+            name: vehicle.assetName,
+            payload: vehicle.payload,
+            volume: vehicle.volume,
+            transportPlan: currentTransportPlanId,
+            vehicleId: vehicle._id,
+        }
  * @param {*} portal 
  * @param {*} vehicleId id phương tiện (assetid)
  * @param {*} data {asset: id tương ứng tài sản cố định, code: mã phương tiện,
