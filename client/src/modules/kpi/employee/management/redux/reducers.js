@@ -56,24 +56,21 @@ export function KPIPersonalManager(state = {}, action) {
         error: action.error,
         isLoading: false
       };
-      // case managerKPIConstants.COPY_KPIPERSONALS_REQUEST:
-      //   return {
-      //     ...state,
-      //     adding: true,
-      //     isLoading: false
-      //   };
-      // case managerKPIConstants.COPY_KPIPERSONALS_SUCCESS:
-      //   return {
-      //     ...state,
-      //     adding: false,
-      //     kpipersonals: action.payload,
-      //     isLoading: false
-      //   };
-      // case managerKPIConstants.COPY_KPIPERSONALS_FAILURE:
-      //   return {
-      //     error: action.payload,
-      //     isLoading: false
-      //   };
+    case  managerKPIConstants.GET_EMPLOYEE_KPI_SET_REQUEST:
+      return {
+        ...state,
+        loading: true,
+      };
+    case managerKPIConstants.GET_EMPLOYEE_KPI_SET_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        employeeKpiSetLogs: action.payload
+      };
+    case managerKPIConstants.GET_EMPLOYEE_KPI_SET_FAILURE:
+      return { 
+        error: action.error
+      };
     default:
       return state
   }

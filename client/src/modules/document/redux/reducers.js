@@ -391,8 +391,6 @@ export function documents(state = initState, action) {
             };
 
         case DocumentConstants.CREATE_DOCUMENT_SUCCESS:
-
-
             return {
                 ...state,
                 isLoading: false,

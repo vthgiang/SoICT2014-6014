@@ -2,7 +2,8 @@ import { sendRequest } from '../../../../../helpers/requestHelper';
 
 export const managerKPIPerService = {
     getAllKpiSetsOrganizationalUnitByMonth,
-    copyEmployeeKPI
+    copyEmployeeKPI,
+    getEmployeeKpiSetLogs
 };
 
 /**
@@ -23,6 +24,7 @@ function getAllKpiSetsOrganizationalUnitByMonth(user, department, date) {
         }
     }, false, true, 'kpi.employee.manager')
 }
+
 /**
  * Tạo kpi tháng mới từ kpi tháng hiện tại
  * @param {*} id 
@@ -39,4 +41,14 @@ function copyEmployeeKPI(id, unitId, dateNew){
             dateNew: dateNew
         }
     }, true, true, 'kpi.organizational_unit');
+}
+
+/**
+ * Lấy logs của 1 tập kpi cá nhân
+ */
+ function getEmployeeKpiSetLogs(id){
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/kpi/employee/management/employee-kpi-sets/${id}/logs`,
+        method: 'GET'
+    }, false, false, 'kpi.organizational_unit');
 }

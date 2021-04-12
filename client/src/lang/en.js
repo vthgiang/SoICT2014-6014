@@ -3625,7 +3625,8 @@ export default {
                     /**
                      * Approve
                      */
-                    approve_KPI_employee: "Approve KPI employee",
+                    approve_KPI_employee: "Approve KPI",
+                    show_logs: "Employee KPI set logs",
                     month: "",
                     end_compare: "End comparing",
                     compare: "Compare",

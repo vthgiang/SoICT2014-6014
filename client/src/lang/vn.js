@@ -3942,7 +3942,8 @@ export default {
                     /**
                      * Approve
                      */
-                    approve_KPI_employee: "Phê duyệt KPI nhân viên",
+                    approve_KPI_employee: "Phê duyệt KPI",
+                    show_logs: "Lịch sử  chỉnh sửa KPI",
                     month: "Tháng",
                     end_compare: "Tắt so sánh",
                     compare: "So sánh",

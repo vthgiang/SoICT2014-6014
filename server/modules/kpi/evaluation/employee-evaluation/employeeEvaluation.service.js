@@ -139,10 +139,19 @@ exports.getEmployeeKPISets = async (portal, data) => {
  */
 
 exports.getKpisByMonth = async (portal, data) => {
-    let date = data.date.split("-");
-    let month = new Date(date[1], date[0], 0);
+    let { userId, date } = data;
+
+    date = new Date(date);
+    nextDate = new Date(date);
+    nextDate.setMonth(nextDate.getMonth() + 1);
+
     let employeeKpiSets = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
-        .findOne({ creator: data.userId, date: month })
+        .findOne({ 
+            creator: userId, 
+            date: {
+                $gte: date, $lt: nextDate
+            } 
+        })
         .populate("organizationalUnit")
         .populate({ path: "creator", select: "_id name email avatar" })
         .populate({ path: "approver", select: "_id name email avatar" })
@@ -151,6 +160,7 @@ exports.getKpisByMonth = async (portal, data) => {
             { path: 'comments.creator', select: 'name email avatar ' },
             { path: 'comments.comments.creator', select: 'name email avatar' }
         ]);
+
     return employeeKpiSets;
 }
 
