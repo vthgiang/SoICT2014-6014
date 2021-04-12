@@ -496,9 +496,9 @@ function GeneralTab(props) {
         }
     };
 
-    if (prevProps.id !== props.id
-        || prevProps.assignedToUser !== props.assignedToUser
-        || prevProps.assignedToOrganizationalUnit !== props.assignedToOrganizationalUnit){
+    if (state.id !== props.id
+        || state.assignedToUser !== props.assignedToUser
+        || state.assignedToOrganizationalUnit !== props.assignedToOrganizationalUnit){
             setState(state => {
                 return{
                     ...state,
@@ -538,7 +538,6 @@ function GeneralTab(props) {
                     errorOnValue: undefined,
                 }
             })
-            setPrevProps(props)
         }
     
         const { id, translate, user, assetsManager, role, department, assetType } = props;
@@ -563,7 +562,6 @@ function GeneralTab(props) {
                 parent: node.location,
             }
         })
-
         let assetTypeName = assetType && assetType.listAssetTypes;
         let typeArr = assetTypeName && assetTypeName.map(item => {
             return {
@@ -572,7 +570,6 @@ function GeneralTab(props) {
                 parent: item.parent ? item.parent._id : null
             }
         })
-
         return (
             <div id={id} className="tab-pane active">
                 <div className="row">

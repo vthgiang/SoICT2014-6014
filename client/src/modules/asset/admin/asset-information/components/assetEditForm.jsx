@@ -357,7 +357,7 @@ function AssetEditForm(props) {
             code: props.code,
             assetName: props.assetName,
             serial: props.serial,
-            assetType: props.assetType && JSON.parse(props.assetType).map(o => o._id),
+            assetType: props.assetType && JSON.parse(props.assetType).map(o => o._id||o),
             group: props.group,
             purchaseDate: props.purchaseDate,
             warrantyExpirationDate: props.warrantyExpirationDate,
@@ -420,7 +420,6 @@ function AssetEditForm(props) {
         })
         setPrevProps(props)
     }
-
     return (
         <React.Fragment>
             <DialogModal
@@ -453,7 +452,7 @@ function AssetEditForm(props) {
                             code={code}
                             assetName={assetName}
                             serial={serial}
-                            assetTypeEdit={JSON.stringify(assetType)}
+                            assetTypeEdit={assetType}
                             group={group}
                             purchaseDate={purchaseDate}
                             warrantyExpirationDate={warrantyExpirationDate}
