@@ -479,8 +479,6 @@ function GeneralTab(props) {
                         id === 'page_general' &&
                         <div className="row col-lg-12 col-md-12 col-ms-12 col-xs-12">
                             <p >(<span className="text-red">*</span>): <span className="text-red">{translate('modal.note')}</span></p>
-
-
                         </div>
                     }
 
@@ -498,7 +496,6 @@ function GeneralTab(props) {
                             <ErrorLabel content={errorOnMSCC} />
                         </div>
                     </div>
-
                     <div className="row">
                         {/* Tên nhân viên */}
                         <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnFullName && "has-error"}`}>
