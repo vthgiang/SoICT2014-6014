@@ -525,16 +525,16 @@ function Table(props) {
                     documentId={currentRow._id}
                     documentName={currentRow.name}
                     documentDescription={currentRow.description}
-                    documentCategory={currentRow.category ? currentRow.category._id : ""}
-                    documentDomains={currentRow.domains ? currentRow.domains.map(domain => domain._id) : []}
-                    documentArchives={currentRow.archives ? currentRow.archives.map(archive => archive._id) : []}
+                    documentCategory={currentRow.category ? currentRow.category._id || currentRow.category: ""}
+                    documentDomains={currentRow.domains ? currentRow.domains.map(domain => domain._id ||domain) : []}
+                    documentArchives={currentRow.archives ? currentRow.archives.map(archive => archive._id||archive) : []}
                     documentIssuingBody={currentRow.issuingBody}
                     documentOfficialNumber={currentRow.officialNumber}
                     documentSigner={currentRow.signer}
                     documentVersions={currentRow.versions}
 
                     documentRelationshipDescription={currentRow.relationshipDescription}
-                    documentRelationshipDocuments={currentRow.relationshipDocuments ? currentRow.relationshipDocuments : []}
+                    documentRelationshipDocuments={currentRow.relationshipDocuments ? currentRow.relationshipDocuments.map(relationshipDocument=>relationshipDocument._id||relationshipDocument) : []}
 
                     documentRoles={currentRow.roles}
                     documentUserCanView={currentRow.userCanView}
