@@ -947,11 +947,15 @@ exports.links = [
         apis: ['@all']
     },
     {
+        url: '/manage-transport-plan',
+        apis: ['@all']
+    },
+    {
         url: '/manage-transport-schedule',
         apis: ['@all']
     },
     {
-        url: '/manage-transport-vehical',
+        url: '/manage-transport-vehicle',
         apis: ['@all']
     },
     {

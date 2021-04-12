@@ -5,10 +5,11 @@ const { auth } = require(`../../../../middleware`);
 
 // router.get('/', auth, ExampleController.getExamples);
 // router.get('/getOnlyExampleName', auth, ExampleController.getOnlyExampleName);
-// router.get('/:id', auth, ExampleController.getExampleById);
+router.get('/:id', auth, TransportRequirementController.getTransportRequirementById);
+router.get('/', auth, TransportRequirementController.getAllTransportRequirements);
 router.post('/', auth, TransportRequirementController.createTransportRequirement);
-// router.patch('/:id', auth, ExampleController.editExample);
-// router.delete('/:id', auth, ExampleController.deleteExample);
+router.patch('/:id', auth, TransportRequirementController.editTransportRequirement);
+router.delete('/:id', auth, TransportRequirementController.deleteTransportRequirement);
 
 module.exports = router;
 

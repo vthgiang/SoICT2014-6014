@@ -7,7 +7,7 @@ import { DataTableSetting, DeleteNotification, PaginateBar } from "../../../../.
 // import { transportRequirementsActions } from "../redux/actions";
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 
-function TransportScheduleManagementTable(props) {
+function TransportEmployee(props) {
     const getTableId = "table-manage-transport-requirements-hooks";
     const defaultConfig = { limit: 5 }
     const getLimit = getTableConfiguration(getTableId, defaultConfig).limit;
@@ -16,28 +16,6 @@ function TransportScheduleManagementTable(props) {
         <React.Fragment>
             <div className="box-body qlcv">
                 <div className="form-inline">
-                    {/* Button thêm mới */}
-                    {/* <div className="dropdown pull-right" style={{ marginBottom: 15 }}> */}
-                        {/* <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('manage_example.add_title')} >{translate('manage_example.add')}</button> */}
-                        {/* <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
-                            <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-import-file-example-hooks').modal('show')} title={translate('manage_example.add_multi_example')}>
-                                {translate('human_resource.salary.add_import')}</a></li>
-                            <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-create-transport-requirements').modal('show')} title={translate('manage_example.add_one_example')}>
-                                {translate('manage_example.add_example')}</a></li>
-                        </ul> */}
-                    {/* </div> */}
-
-                    {/* Tìm kiếm */}
-                    {/* <div className="form-group">
-                        <label className="form-control-static">{translate('manage_example.exampleName')}</label>
-                        <input type="text" className="form-control" name="exampleName" onChange={handleChangeExampleName} placeholder={translate('manage_example.exampleName')} autoComplete="off" />
-                    </div>
-                    <div className="form-group">
-                        <button type="button" className="btn btn-success" title={translate('manage_example.search')} onClick={() => handleSubmitSearch()}>{translate('manage_example.search')}</button>
-                    </div>
-                </div> */}
-
-                {/* Danh sách các ví dụ */}
                 <table id={"123"} className="table table-striped table-bordered table-hover">
                     <thead>
                         <tr>
@@ -47,26 +25,15 @@ function TransportScheduleManagementTable(props) {
                             <th>{"Địa chỉ kết thúc"}</th>
                             <th>{"Người tạo"}</th>
                             <th>{"Trạng thái"}</th>
-                            {/* <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
-                                <DataTableSetting
-                                    tableId={tableId}
-                                    columnArr={[
-                                        translate('manage_example.index'),
-                                        translate('manage_example.exampleName'),
-                                        translate('manage_example.description'),
-                                    ]}
-                                    setLimit={setLimit}
-                                />
-                            </th> */}
                         </tr>
                     </thead>
                     <tbody>
                         <tr key={"1"}>
                             <td>{1}</td>
-                            <td>{"Giao hàng"}</td>
-                            <td>{"Thái Hà"}</td>
-                            <td>{"Bách Khoa"}</td>
-                            <td>{"Nguyễn Văn Danh"}</td>
+                            <td>{"123"}</td>
+                            <td>{"123"}</td>
+                            <td>{"123"}</td>
+                            <td>{"123"}</td>
                             <td>{"Chờ phê duyệt"}</td>
                             {/* <td style={{ textAlign: "center" }}>
                                 <a className="edit text-green" style={{ width: '5px' }} title={translate('manage_example.detail_info_example')} onClick={() => handleShowDetailInfo(example)}><i className="material-icons">visibility</i></a>
@@ -133,5 +100,5 @@ const actions = {
     // deleteExample: exampleActions.deleteExample
 }
 
-const connectedTransportScheduleManagementTable = connect(mapState, actions)(withTranslate(TransportScheduleManagementTable));
-export { connectedTransportScheduleManagementTable as TransportScheduleManagementTable };
+const connectedTransportEmployee = connect(mapState, actions)(withTranslate(TransportEmployee));
+export { connectedTransportEmployee as TransportEmployee };
