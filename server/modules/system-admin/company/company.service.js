@@ -293,7 +293,6 @@ exports.createCompanySuperAdminAccount = async (
             </div>
         </body>
     </html>`
-    await sendEmail(userEmail, subject, text, html);
 
     let user = await User(connect(DB_CONNECTION, companyShortName)).create({
         name: `Super Admin`,
@@ -311,9 +310,7 @@ exports.createCompanySuperAdminAccount = async (
         userId: user._id,
         roleId: roleSuperAdmin._id,
     });
-
-    await transporter.sendMail(mainOptions);
-
+    await sendEmail(userEmail, subject, text, html);
     return user;
 };
 
