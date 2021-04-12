@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -7,22 +7,40 @@ import { DegreeAddModal, CertificateAddModal, DegreeEditModal, CertificateEditMo
 import { AuthActions } from '../../../../auth/redux/actions';
 import { FieldsActions } from '../../../field/redux/actions';
 
-class CertificateTab extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {};
-    }
+function CertificateTab(props) {
+    const [state, setState] = useState({
 
-    componentDidMount() {
-        this.props.getListFields()
-    }
+    });
+
+    useEffect(() => {
+        props.getListFields();
+    }, [])
+
+    useEffect(() => {
+        setState(state => {
+            return {
+                ...state,
+                id: props.id,
+                degrees: props.degrees,
+                certificates: props.certificates,
+            }
+        })
+    }, [props.id])
+
+    const { translate, field } = props;
+
+    const { id } = props;
+
+    const { degrees, certificates, currentRow, currentRowCertificates } = state;
+    let listFields = field.listFields;
+    console.log('listFields', listFields)
 
     /**
      *  Function format dữ liệu Date thành string
      * @param {*} date : Ngày muốn format
      * @param {*} monthYear : true trả về tháng năm, false trả về ngày tháng năm
      */
-    formatDate(date, monthYear = false) {
+    const formatDate = (date, monthYear = false) => {
         if (date) {
             let d = new Date(date),
                 month = '' + (d.getMonth() + 1),
@@ -46,8 +64,8 @@ class CertificateTab extends Component {
      * @param {*} value : Dữ liệu bằng cấp
      * @param {*} index : Số thứ tự bằng cấp muốn chỉnh sửa
      */
-    handleEdit = async (value, index) => {
-        await this.setState(state => {
+    const handleEdit = async (value, index) => {
+        await setState(state => {
             return {
                 ...state,
                 currentRow: { ...value, index: index }
@@ -61,8 +79,8 @@ class CertificateTab extends Component {
      * @param {*} value : Dữ liệu chứng chỉ
      * @param {*} index : Số thứ tự chứng chỉ muốn chỉnh sửa
      */
-    handleEditShort = async (value, index) => {
-        await this.setState(state => {
+    const handleEditShort = async (value, index) => {
+        await setState(state => {
             return {
                 ...state,
                 currentRowCertificates: { ...value, index: index }
@@ -75,14 +93,17 @@ class CertificateTab extends Component {
      * Function thêm thông tin bằng cấp
      * @param {*} data : Dữ liệu thông tin bằng cấp thêm
      */
-    handleAddDegree = async (data) => {
-        let { degrees } = this.state;
-        await this.setState({
-            degrees: [...degrees, {
-                ...data
-            }]
+    const handleAddDegree = async (data) => {
+        let { degrees } = state;
+        await setState(state => {
+            return {
+                ...state,
+                degrees: [...degrees, {
+                    ...data
+                }]
+            }
         })
-        this.props.handleAddDegree(this.state.degrees, data)
+        props.handleAddDegree(state.degrees, data)
 
     }
 
@@ -90,84 +111,85 @@ class CertificateTab extends Component {
      * Function chỉnh sửa thông tin bằng cấp
      * @param {*} data : Dữ liệu thông tin bằng cấp
      */
-    handleEditDegree = async (data) => {
-        let { degrees } = this.state;
+    const handleEditDegree = async (data) => {
+        let { degrees } = state;
         degrees[data.index] = data;
-        await this.setState({
-            degrees: degrees
+        await setState(state => {
+            return {
+                ...state,
+                degrees: degrees
+            }
         })
-        this.props.handleEditDegree(degrees, data)
+        props.handleEditDegree(degrees, data)
     }
 
     /**
      * Function thêm thông tin chứng chỉ
      * @param {*} data : Dữ liệu thông tin chứng chỉ muốn thêm
      */
-    handleAddCertificate = async (data) => {
-        let { certificates } = this.state;
-        await this.setState({
-            certificates: [...certificates, {
-                ...data
-            }]
+    const handleAddCertificate = async (data) => {
+        let { certificates } = state;
+        await setState(state => {
+            return {
+                ...state,
+                certificates: [...certificates, {
+                    ...data
+                }]
+            }
         })
-        this.props.handleAddCertificate(this.state.certificates, data)
+        props.handleAddCertificate(state.certificates, data)
     }
 
     /**
      * Function chỉnh sửa thông tin chứng chỉ
      * @param {*} data : Dữ liệu thông tin chứng chỉ muốn chỉnh sửa
      */
-    handleEditCertificate = async (data) => {
-        let { certificates } = this.state;
+    const handleEditCertificate = async (data) => {
+        let { certificates } = state;
         certificates[data.index] = data;
-        await this.setState({
-            certificates: certificates
+        await setState(state => {
+            return {
+                ...state,
+                certificates: certificates
+            }
         })
-        this.props.handleEditCertificate(certificates, data)
+        props.handleEditCertificate(certificates, data)
     }
 
     /**
      * Function xoá bằng cấp
      * @param {*} index : Số thứ tự bằng cấp muốn xoá
      */
-    handleDeleteDegree = async (index) => {
-        let { degrees } = this.state;
+    const handleDeleteDegree = async (index) => {
+        let { degrees } = state;
         let data = degrees[index];
         degrees.splice(index, 1);
-        await this.setState({
-            ...this.state,
-            degrees: [...degrees]
+        await setState(state => {
+            return {
+                ...state,
+                degrees: [...degrees]
+            }
         })
-        this.props.handleDeleteDegree(degrees, data)
+        props.handleDeleteDegree(degrees, data)
     }
 
     /**
      * Function xoá chứng chỉ
      * @param {*} index : Số thứ tự chứng chỉ muốn xoá
      */
-    handleDeleteCertificate = async (index) => {
-        let { certificates } = this.state;
+    const handleDeleteCertificate = async (index) => {
+        let { certificates } = state;
         let data = certificates[index];
         certificates.splice(index, 1);
-        await this.setState({
-            ...this.state,
-            certificates: [...certificates]
+        await setState(state => {
+            return {
+                ...state,
+                certificates: [...certificates]
+            }
         })
-        this.props.handleDeleteCertificate(certificates, data)
+        props.handleDeleteCertificate(certificates, data)
     }
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id) {
-            return {
-                ...prevState,
-                id: nextProps.id,
-                degrees: nextProps.degrees,
-                certificates: nextProps.certificates,
-            }
-        } else {
-            return null;
-        }
-    }
 
     /**
      * function dowload file
@@ -175,159 +197,149 @@ class CertificateTab extends Component {
      * @param {*} path : Đường dẫn file
      * @param {*} fileName : Tên file dùng để lưu
      */
-    requestDownloadFile = (e, path, fileName) => {
+    const requestDownloadFile = (e, path, fileName) => {
         e.preventDefault()
-        this.props.downloadFile(path, fileName)
+        props.downloadFile(path, fileName)
     }
 
-    render() {
-        const { translate, field } = this.props;
-
-        const { id } = this.props;
-
-        const { degrees, certificates, currentRow, currentRowCertificates } = this.state;
-        let listFields = field.listFields;
-        console.log('listFields', listFields)
-
-        return (
-            <div id={id} className="tab-pane">
-                <div className="box-body">
-                    {/* Danh sách bằng cấp */}
-                    <fieldset className="scheduler-border">
-                        <legend className="scheduler-border"><h4 className="box-title">{translate('human_resource.profile.diploma')}</h4></legend>
-                        <DegreeAddModal handleChange={this.handleAddDegree} id={`addCertificate${id}`} />
-                        <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
-                            <thead>
-                                <tr>
-                                    <th>{translate('human_resource.profile.name_diploma')}</th>
-                                    <th>{translate('human_resource.profile.diploma_issued_by')}</th>
-                                    <th>{translate('human_resource.profile.career_fields')}</th>
-                                    <th>{translate('human_resource.profile.graduation_year')}</th>
-                                    <th>{translate('human_resource.profile.ranking_learning')}</th>
-                                    <th>{translate('human_resource.profile.attached_files')}</th>
-                                    <th style={{ width: '120px' }}>{translate('general.action')}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {degrees && degrees.length !== 0 &&
-                                    degrees.map((x, index) => {
-                                        let field = '';
-                                        if (x.field) {
-                                            field = listFields.find(y => y._id.toString() === x.field.toString());
-                                            if (field) {
-                                                field = field.name
-                                            } else {
-                                                field = 'DELETED'
-                                            }
+    return (
+        <div id={id} className="tab-pane">
+            <div className="box-body">
+                {/* Danh sách bằng cấp */}
+                <fieldset className="scheduler-border">
+                    <legend className="scheduler-border"><h4 className="box-title">{translate('human_resource.profile.diploma')}</h4></legend>
+                    <DegreeAddModal handleChange={handleAddDegree} id={`addCertificate${id}`} />
+                    <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
+                        <thead>
+                            <tr>
+                                <th>{translate('human_resource.profile.name_diploma')}</th>
+                                <th>{translate('human_resource.profile.diploma_issued_by')}</th>
+                                <th>{translate('human_resource.profile.career_fields')}</th>
+                                <th>{translate('human_resource.profile.graduation_year')}</th>
+                                <th>{translate('human_resource.profile.ranking_learning')}</th>
+                                <th>{translate('human_resource.profile.attached_files')}</th>
+                                <th style={{ width: '120px' }}>{translate('general.action')}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {degrees && degrees.length !== 0 &&
+                                degrees.map((x, index) => {
+                                    let field = '';
+                                    if (x.field) {
+                                        field = listFields.find(y => y._id.toString() === x.field.toString());
+                                        if (field) {
+                                            field = field.name
+                                        } else {
+                                            field = 'DELETED'
                                         }
-                                        return (
-                                            <tr key={index}>
-                                                <td>{x.name}</td>
-                                                <td>{x.issuedBy}</td>
-                                                <td>{field}</td>
-                                                <td>{x.year}</td>
-                                                <td>{translate(`human_resource.profile.${x.degreeType}`)}</td>
-                                                <td>{!x.urlFile ? translate('human_resource.profile.no_files') :
-                                                    <a className='intable'
-                                                        style={{ cursor: "pointer" }}
-                                                        onClick={(e) => this.requestDownloadFile(e, `.${x.urlFile}`, x.name)}>
-                                                        <i className="fa fa-download"> &nbsp;Download!</i>
-                                                    </a>
-                                                }</td>
-                                                <td>
-                                                    <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.profile.edit_diploma')}><i className="material-icons">edit</i></a>
-                                                    <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteDegree(index)}><i className="material-icons"></i></a>
-                                                </td>
-                                            </tr>
-                                        )
                                     }
-                                    )}
-                            </tbody>
-                        </table>
-                        {
-                            (!degrees || degrees.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
-                        }
-                    </fieldset>
-
-                    {/* Danh sách chứng chỉ */}
-                    <fieldset className="scheduler-border">
-                        <legend className="scheduler-border"><h4 className="box-title">{translate('human_resource.profile.certificate')}</h4></legend>
-                        <CertificateAddModal handleChange={this.handleAddCertificate} id={`addCertificateShort${id}`} />
-                        <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }} >
-                            <thead>
-                                <tr>
-                                    <th>{translate('human_resource.profile.name_certificate')}</th>
-                                    <th>{translate('human_resource.profile.issued_by')}</th>
-                                    <th>{translate('human_resource.profile.date_issued')}</th>
-                                    <th>{translate('human_resource.profile.end_date_certificate')}</th>
-                                    <th>{translate('human_resource.profile.attached_files')}</th>
-                                    <th style={{ width: '120px' }}>{translate('general.action')}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {certificates && certificates.length !== 0 &&
-                                    certificates.map((x, index) => (
+                                    return (
                                         <tr key={index}>
                                             <td>{x.name}</td>
                                             <td>{x.issuedBy}</td>
-                                            <td>{this.formatDate(x.startDate)}</td>
-                                            <td>{this.formatDate(x.endDate)}</td>
+                                            <td>{field}</td>
+                                            <td>{x.year}</td>
+                                            <td>{translate(`human_resource.profile.${x.degreeType}`)}</td>
                                             <td>{!x.urlFile ? translate('human_resource.profile.no_files') :
                                                 <a className='intable'
                                                     style={{ cursor: "pointer" }}
-                                                    onClick={(e) => this.requestDownloadFile(e, `.${x.urlFile}`, x.name)}>
+                                                    onClick={(e) => requestDownloadFile(e, `.${x.urlFile}`, x.name)}>
                                                     <i className="fa fa-download"> &nbsp;Download!</i>
                                                 </a>
                                             }</td>
                                             <td>
-                                                <a onClick={() => this.handleEditShort(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.profile.edit_certificate')}><i className="material-icons">edit</i></a>
-                                                <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteCertificate(index)}><i className="material-icons"></i></a>
+                                                <a onClick={() => handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.profile.edit_diploma')}><i className="material-icons">edit</i></a>
+                                                <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => handleDeleteDegree(index)}><i className="material-icons"></i></a>
                                             </td>
                                         </tr>
-                                    ))}
-                            </tbody>
-                        </table>
-                        {
-                            (!certificates || certificates.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
-                        }
-                    </fieldset>
-                </div>
-                {   /** Form chỉnh sửa thông tin bằng cấp */
-                    currentRow !== undefined &&
-                    <DegreeEditModal
-                        id={`editCertificate${currentRow.index}`}
-                        _id={currentRow._id}
-                        index={currentRow.index}
-                        name={currentRow.name}
-                        issuedBy={currentRow.issuedBy}
-                        field={currentRow.field}
-                        year={currentRow.year}
-                        degreeType={currentRow.degreeType}
-                        file={currentRow.file}
-                        urlFile={currentRow.urlFile}
-                        fileUpload={currentRow.fileUpload}
-                        handleChange={this.handleEditDegree}
-                    />
-                }
-                {   /** Form chỉnh sửa thông tin chứng chỉ*/
-                    currentRowCertificates !== undefined &&
-                    <CertificateEditModal
-                        id={`editCertificateShort${currentRowCertificates.index}`}
-                        _id={currentRowCertificates._id}
-                        index={currentRowCertificates.index}
-                        name={currentRowCertificates.name}
-                        issuedBy={currentRowCertificates.issuedBy}
-                        startDate={this.formatDate(currentRowCertificates.startDate)}
-                        endDate={this.formatDate(currentRowCertificates.endDate)}
-                        file={currentRowCertificates.file}
-                        urlFile={currentRowCertificates.urlFile}
-                        fileUpload={currentRowCertificates.fileUpload}
-                        handleChange={this.handleEditCertificate}
-                    />
-                }
+                                    )
+                                }
+                                )}
+                        </tbody>
+                    </table>
+                    {
+                        (!degrees || degrees.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                    }
+                </fieldset>
+
+                {/* Danh sách chứng chỉ */}
+                <fieldset className="scheduler-border">
+                    <legend className="scheduler-border"><h4 className="box-title">{translate('human_resource.profile.certificate')}</h4></legend>
+                    <CertificateAddModal handleChange={handleAddCertificate} id={`addCertificateShort${id}`} />
+                    <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }} >
+                        <thead>
+                            <tr>
+                                <th>{translate('human_resource.profile.name_certificate')}</th>
+                                <th>{translate('human_resource.profile.issued_by')}</th>
+                                <th>{translate('human_resource.profile.date_issued')}</th>
+                                <th>{translate('human_resource.profile.end_date_certificate')}</th>
+                                <th>{translate('human_resource.profile.attached_files')}</th>
+                                <th style={{ width: '120px' }}>{translate('general.action')}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {certificates && certificates.length !== 0 &&
+                                certificates.map((x, index) => (
+                                    <tr key={index}>
+                                        <td>{x.name}</td>
+                                        <td>{x.issuedBy}</td>
+                                        <td>{formatDate(x.startDate)}</td>
+                                        <td>{formatDate(x.endDate)}</td>
+                                        <td>{!x.urlFile ? translate('human_resource.profile.no_files') :
+                                            <a className='intable'
+                                                style={{ cursor: "pointer" }}
+                                                onClick={(e) => requestDownloadFile(e, `.${x.urlFile}`, x.name)}>
+                                                <i className="fa fa-download"> &nbsp;Download!</i>
+                                            </a>
+                                        }</td>
+                                        <td>
+                                            <a onClick={() => handleEditShort(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.profile.edit_certificate')}><i className="material-icons">edit</i></a>
+                                            <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => handleDeleteCertificate(index)}><i className="material-icons"></i></a>
+                                        </td>
+                                    </tr>
+                                ))}
+                        </tbody>
+                    </table>
+                    {
+                        (!certificates || certificates.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                    }
+                </fieldset>
             </div>
-        );
-    }
+            {   /** Form chỉnh sửa thông tin bằng cấp */
+                currentRow !== undefined &&
+                <DegreeEditModal
+                    id={`editCertificate${currentRow.index}`}
+                    _id={currentRow._id}
+                    index={currentRow.index}
+                    name={currentRow.name}
+                    issuedBy={currentRow.issuedBy}
+                    field={currentRow.field}
+                    year={currentRow.year}
+                    degreeType={currentRow.degreeType}
+                    file={currentRow.file}
+                    urlFile={currentRow.urlFile}
+                    fileUpload={currentRow.fileUpload}
+                    handleChange={handleEditDegree}
+                />
+            }
+            {   /** Form chỉnh sửa thông tin chứng chỉ*/
+                currentRowCertificates !== undefined &&
+                <CertificateEditModal
+                    id={`editCertificateShort${currentRowCertificates.index}`}
+                    _id={currentRowCertificates._id}
+                    index={currentRowCertificates.index}
+                    name={currentRowCertificates.name}
+                    issuedBy={currentRowCertificates.issuedBy}
+                    startDate={formatDate(currentRowCertificates.startDate)}
+                    endDate={formatDate(currentRowCertificates.endDate)}
+                    file={currentRowCertificates.file}
+                    urlFile={currentRowCertificates.urlFile}
+                    fileUpload={currentRowCertificates.fileUpload}
+                    handleChange={handleEditCertificate}
+                />
+            }
+        </div>
+    );
 };
 
 function mapState(state) {

@@ -91,8 +91,14 @@ function ResultsOfAllEmployeeKpiSetChart(props) {
                 dataStatus: DATA_STATUS.FINISHED,
             });
         }
-
     });
+
+    useEffect(() => {
+        setState({
+            ...state,
+            dataStatus: DATA_STATUS.QUERYING,
+        });
+    }, [props.createEmployeeKpiSet.employeeKpiSetsInOrganizationalUnitByMonth])
 
     if (props.organizationalUnitIds !== state.organizationalUnitIds) {
         props.getAllEmployeeKpiSetInOrganizationalUnitsByMonth(props.organizationalUnitIds, state.startMonth, state.endMonth);

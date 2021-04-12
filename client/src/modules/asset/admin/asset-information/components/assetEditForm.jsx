@@ -420,7 +420,6 @@ function AssetEditForm(props) {
         })
         setPrevProps(props)
     }
-    
 
     return (
         <React.Fragment>

@@ -3,19 +3,21 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { AuthActions } from '../../../../auth/redux/actions';
-
+import _isEqual from 'lodash/isEqual';
 function AttachmentTab(props) {
     const [state, setState] = useState({})
     const [prevProps, setPrevProps] = useState({
         id: null,
+        files: []
     })
     const requestDownloadFile = (e, path, fileName) => {
         e.preventDefault();
         props.downloadFile(path, fileName);
     }
 
-    if(prevProps.id !== props.id) {
-        setState(state =>{
+    if( !_isEqual(prevProps.files, props.files)) {
+        console.log("prevProps", props)
+        setPrevProps(state =>{
             return{
                 ...state,
                 id: props.id,
@@ -23,14 +25,14 @@ function AttachmentTab(props) {
                 archivedRecordNumber: props.archivedRecordNumber,
             }
         })
-        setPrevProps(props)
+        // setPrevProps(props)
     }
     
 
     
         const { id } = props;
         const { translate } = props;
-        const { files, archivedRecordNumber } = state;
+        const { files, archivedRecordNumber } = prevProps;
         console.log('here')
         return (
             <div id={id} className="tab-pane">
@@ -56,7 +58,7 @@ function AttachmentTab(props) {
                                                 <ul style={{ listStyle: 'none' }}>
                                                     {x.files.map((child, index) => {
                                                         return (
-                                                            <React.Fragment>
+                                                            <React.Fragment key={index}>
                                                                 <li>
                                                                     <a style={{ cursor: "pointer" }} onClick={(e) => requestDownloadFile(e, child.url, child.fileName)} >{child.fileName}</a>
                                                                 </li>
