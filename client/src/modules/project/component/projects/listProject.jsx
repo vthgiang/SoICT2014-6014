@@ -29,7 +29,8 @@ function ListProject(props) {
         props.getAllUserInAllUnitsOfCompany();
     }, [])
 
-    const handleCreateProject = () => {
+    // Sau khi add project mới hoặc edit project thì call lại tất cả list project
+    const handleAfterCreateProject = () => {
         props.getProjectsDispatch({ calledId: "paginate", page, limit, userId });
         props.getProjectsDispatch({ calledId: "all", userId });
     }
@@ -132,12 +133,13 @@ function ListProject(props) {
             <ProjectEditForm
                 projectEditId={currentRow && currentRow._id}
                 projectEdit={currentRow}
+                handleAfterCreateProject={handleAfterCreateProject}
             />
 
             <ProjectCreateForm
                 page={page}
                 limit={limit}
-                handleCreateProject={handleCreateProject}
+                handleAfterCreateProject={handleAfterCreateProject}
             />
 
             <div className="box">
@@ -192,27 +194,31 @@ function ListProject(props) {
                         </thead>
                         <tbody>
                             {(lists && lists.length !== 0) &&
-                                lists.map((projectItem, index) => (
-                                    <tr key={index}>
-                                        <td>{projectItem?.name}</td>
-                                        <td>{projectItem?.code}</td>
-                                        <td>{projectItem?.creator?.name}</td>
-                                        <td>{projectItem?.projectManager.map(o => o.name).join(", ")}</td>
-                                        <td>{projectItem?.responsibleEmployees.map(o => o.name).join(", ")}</td>
-                                        <td style={{ textAlign: "center" }}>
-                                            <a className="edit text-green" style={{ width: '5px' }} onClick={() => handleShowDetailInfo(projectItem)}><i className="material-icons">visibility</i></a>
-                                            {checkIfAbleToCRUDProject({ project, user, currentProjectId: projectItem._id }) && <a className="edit text-yellow" style={{ width: '5px' }} onClick={() => handleEdit(projectItem)}><i className="material-icons">edit</i></a>}
-                                            {checkIfAbleToCRUDProject({ project, user, currentProjectId: projectItem._id }) && <DeleteNotification
-                                                content={translate('project.delete')}
-                                                data={{
-                                                    id: projectItem?._id,
-                                                    info: projectItem?.name
-                                                }}
-                                                func={handleDelete}
-                                            />}
-                                        </td>
-                                    </tr>
-                                ))
+                                lists.map((projectItem, index) => {
+                                    console.log('projectItem?.creator?.name', projectItem?.creator?.name, 'projectItem?.responsibleEmployees', projectItem?.responsibleEmployees);
+                                    return (
+                                        <tr key={index}>
+                                            <td>{projectItem?.name}</td>
+                                            <td>{projectItem?.code}</td>
+                                            <td>{projectItem?.creator?.name}</td>
+                                            <td>{projectItem?.projectManager.map(o => o.name).join(", ")}</td>
+                                            <td>{projectItem?.responsibleEmployees.map(o => o.name).join(", ")}</td>
+                                            <td style={{ textAlign: "center" }}>
+                                                <a className="edit text-green" style={{ width: '5px' }} onClick={() => handleShowDetailInfo(projectItem)}><i className="material-icons">visibility</i></a>
+                                                {checkIfAbleToCRUDProject({ project, user, currentProjectId: projectItem._id }) && <a className="edit text-yellow" style={{ width: '5px' }} onClick={() => handleEdit(projectItem)}><i className="material-icons">edit</i></a>}
+                                                {checkIfAbleToCRUDProject({ project, user, currentProjectId: projectItem._id }) && <DeleteNotification
+                                                    content={translate('project.delete')}
+                                                    data={{
+                                                        id: projectItem?._id,
+                                                        info: projectItem?.name
+                                                    }}
+                                                    func={handleDelete}
+                                                />}
+                                            </td>
+                                        </tr>
+                                    )
+                                }
+                                )
                             }
                         </tbody>
                     </table>

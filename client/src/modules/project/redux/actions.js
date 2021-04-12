@@ -53,6 +53,7 @@ function editProjectDispatch(id, data) {
         dispatch({ type: ProjectConstants.EDIT_PROJECTS_REQUEST });
         ProjectServices.editProjectAPI(id, data)
             .then((res) => {
+                console.log('res.data.content', res.data.content)
                 dispatch({
                     type: ProjectConstants.EDIT_PROJECTS_SUCCESS,
                     payload: res.data.content,

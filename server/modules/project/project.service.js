@@ -3,6 +3,9 @@ const {
     Role,
     UserRole,
     OrganizationalUnit,
+    Employee,
+    User,
+    Salary,
 } = require('../../models');
 const arrayToTree = require("array-to-tree");
 const fs = require("fs");
@@ -44,18 +47,17 @@ exports.get = async (portal, query) => {
         ).paginate(options, {
             page, limit,
             populate: [
-                { path: "projectManager", select: "_id name" },
                 { path: "responsibleEmployees", select: "_id name" },
+                { path: "projectManager", select: "_id name" },
                 { path: "creator", select: "_id name" }
             ]
         });
     }
     else {
         project = await Project(connect(DB_CONNECTION, portal)).find(options)
-            .populate({ path: "projectManager", select: "_id name" })
             .populate({ path: "responsibleEmployees", select: "_id name" })
+            .populate({ path: "projectManager", select: "_id name" })
             .populate({ path: "creator", select: "_id name" })
-            .populate({ path: "parent" });
     }
     return project;
 }
@@ -68,19 +70,98 @@ exports.show = async (portal, id) => {
 
 exports.create = async (portal, data) => {
     let newData = {};
+    let newResponsibleEmployeesWithUnit = [];
+
     if (data) {
         for (let i in data) {
             if (data[i] && data[i].length > 0) {
-                newData = { ...newData, [i]: data[i] }
+                newData = {
+                    ...newData,
+                    [i]: data[i]
+                }
             }
+        }
+        for (let employeeItem of data.responsibleEmployeesWithUnit) {
+            let newListUsers = [];
+            for (let userItem of employeeItem.listUsers) {
+                let currentUser = await User(connect(DB_CONNECTION, portal)).findById(userItem.userId);
+                // Tìm employee từ user email
+                let currentEmployee = await Employee(connect(DB_CONNECTION, portal)).find({
+                    'emailInCompany': currentUser.email
+                })
+                // Nếu user này không phải là nhân viên => Không có lương
+                if (!currentEmployee || currentEmployee.length === 0) {
+                    newListUsers.push({
+                        userId: userItem.userId,
+                        salary: 0
+                    })
+                    continue;
+                }
+                // Tra cứu bảng lương
+                let currentSalary = await Salary(connect(DB_CONNECTION, portal)).find({
+                    $and: [
+                        { 'organizationalUnit': employeeItem.unitId },
+                        { 'employee': currentEmployee[0]._id },
+                    ]
+                });
+                newListUsers.push({
+                    userId: userItem.userId,
+                    salary: currentSalary && currentSalary.length > 0 ? Number(currentSalary[0].mainSalary) : 0,
+                })
+            }
+            // Add vào mảng cuối cùng
+            newResponsibleEmployeesWithUnit.push({
+                unitId: employeeItem.unitId,
+                listUsers: newListUsers,
+            })
         }
     }
 
-    let project = await Project(connect(DB_CONNECTION, portal)).create(newData);
+    let project = await Project(connect(DB_CONNECTION, portal)).create({
+        ...newData,
+        responsibleEmployeesWithUnit: newResponsibleEmployeesWithUnit,
+    });
     return project;
 }
 
 exports.edit = async (portal, id, data) => {
+    let newResponsibleEmployeesWithUnit = [];
+    if (data) {
+        for (let employeeItem of data.responsibleEmployeesWithUnit) {
+            let newListUsers = [];
+            for (let userItem of employeeItem.listUsers) {
+                let currentUser = await User(connect(DB_CONNECTION, portal)).findById(userItem.userId);
+                // Tìm employee từ user email
+                let currentEmployee = await Employee(connect(DB_CONNECTION, portal)).find({
+                    'emailInCompany': currentUser.email
+                })
+                // Nếu user này không phải là nhân viên => Không có lương
+                if (!currentEmployee || currentEmployee.length === 0) {
+                    newListUsers.push({
+                        userId: userItem.userId,
+                        salary: 0
+                    })
+                    continue;
+                }
+                // Tra cứu bảng lương
+                let currentSalary = await Salary(connect(DB_CONNECTION, portal)).find({
+                    $and: [
+                        { 'organizationalUnit': employeeItem.unitId },
+                        { 'employee': currentEmployee[0]._id },
+                    ]
+                });
+                newListUsers.push({
+                    userId: userItem.userId,
+                    salary: currentSalary && currentSalary.length > 0 ? Number(currentSalary[0].mainSalary) : 0,
+                })
+            }
+            // Add vào mảng cuối cùng
+            newResponsibleEmployeesWithUnit.push({
+                unitId: employeeItem.unitId,
+                listUsers: newListUsers,
+            })
+        }
+    }
     const a = await Project(connect(DB_CONNECTION, portal)).findByIdAndUpdate(id, {
         $set: {
             code: data.code,
@@ -90,9 +171,12 @@ exports.edit = async (portal, id, data) => {
             endDate: data.startDate,
             description: data.description,
             projectManager: data.projectManager,
+            responsibleEmployeesWithUnit: newResponsibleEmployeesWithUnit,
+            responsibleEmployees: data.responsibleEmployees,
         }
     }, { new: true });
-    return await Project(connect(DB_CONNECTION, portal)).findOne({ _id: id }).populate({ path: "projectManager", select: "_id name" });
+    return await Project(connect(DB_CONNECTION, portal)).findOne({ _id: id })
+        .populate({ path: "projectManager", select: "_id name" })
 }
 
 exports.delete = async (portal, id) => {

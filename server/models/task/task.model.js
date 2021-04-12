@@ -581,38 +581,38 @@ const TaskSchema = new Schema(
                     },
                 ],
                 timesheetLogs: [ // Lưu thời gian bấm giờ của một hoạt động
-                {
-                    creator: {
-                        // Người thực hiện nào tiến hành bấm giờ
-                        type: Schema.Types.ObjectId,
-                        ref: "User",
+                    {
+                        creator: {
+                            // Người thực hiện nào tiến hành bấm giờ
+                            type: Schema.Types.ObjectId,
+                            ref: "User",
+                        },
+                        startedAt: {
+                            // Lưu dạng miliseconds. Thời gian khi người dùng nhất nút bắt đầu bấm giờ
+                            type: Date,
+                        },
+                        stoppedAt: {
+                            // Lưu dạng miliseconds. Thời gian kết thúc bấm giờ. Khi stoppedAt-startedAt quá 4 tiếng, hỏi lại người dùng stop chính xác vào lúc nào và cập nhật lại stoppedAt.
+                            type: Date,
+                        },
+                        description: {
+                            // Mô tả ngắn gọn việc đã làm khi log
+                            type: String,
+                        },
+                        duration: {
+                            type: Number,
+                        },
+                        autoStopped: { // 1: Tắt bấm giờ bằng tay, 2: Tắt bấm giờ tự động với thời gian hẹn trc, 3: add log timer
+                            type: Number,
+                            default: 1,
+                            enum: [1, 2, 3],
+                        },
+                        acceptLog: {
+                            type: Boolean,
+                            default: true
+                        }
                     },
-                    startedAt: {
-                        // Lưu dạng miliseconds. Thời gian khi người dùng nhất nút bắt đầu bấm giờ
-                        type: Date,
-                    },
-                    stoppedAt: {
-                        // Lưu dạng miliseconds. Thời gian kết thúc bấm giờ. Khi stoppedAt-startedAt quá 4 tiếng, hỏi lại người dùng stop chính xác vào lúc nào và cập nhật lại stoppedAt.
-                        type: Date,
-                    },
-                    description: {
-                        // Mô tả ngắn gọn việc đã làm khi log
-                        type: String,
-                    },
-                    duration: {
-                        type: Number,
-                    },
-                    autoStopped: { // 1: Tắt bấm giờ bằng tay, 2: Tắt bấm giờ tự động với thời gian hẹn trc, 3: add log timer
-                        type: Number,
-                        default: 1,
-                        enum: [1, 2, 3],
-                    },
-                    acceptLog: {
-                        type: Boolean,
-                        default: true
-                    }
-                },
-            ],
+                ],
             },
         ],
         taskComments: [
@@ -709,7 +709,7 @@ const TaskSchema = new Schema(
             ref: 'Project'
         },
         //tên phase mà task thuộc về
-        taskPhase: { 
+        taskPhase: {
             type: Schema.Types.ObjectId,
             ref: 'ProjectPhase'
         },
@@ -737,6 +737,10 @@ const TaskSchema = new Schema(
         actualCost: {
             type: Number,
         },
+        // ngân sách để chi trả cho task đó
+        budget: {
+            type: Number,
+        }
     },
     {
         timestamps: true,
