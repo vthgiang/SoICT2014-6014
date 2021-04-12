@@ -117,6 +117,40 @@ exports.create = async (portal, data) => {
                 listUsers: newListUsers,
             })
         }
+        for (let employeeItem of data.responsibleEmployeesWithUnit) {
+            let newListUsers = [];
+            for (let userItem of employeeItem.listUsers) {
+                let currentUser = await User(connect(DB_CONNECTION, portal)).findById(userItem.userId);
+                // Tìm employee từ user email
+                let currentEmployee = await Employee(connect(DB_CONNECTION, portal)).find({
+                    'emailInCompany': currentUser.email
+                })
+                // Nếu user này không phải là nhân viên => Không có lương
+                if (!currentEmployee || currentEmployee.length === 0) {
+                    newListUsers.push({
+                        userId: userItem.userId,
+                        salary: 0
+                    })
+                    continue;
+                }
+                // Tra cứu bảng lương
+                let currentSalary = await Salary(connect(DB_CONNECTION, portal)).find({
+                    $and: [
+                        { 'organizationalUnit': employeeItem.unitId },
+                        { 'employee': currentEmployee[0]._id },
+                    ]
+                });
+                newListUsers.push({
+                    userId: userItem.userId,
+                    salary: currentSalary && currentSalary.length > 0 ? Number(currentSalary[0].mainSalary) : 0,
+                })
+            }
+            // Add vào mảng cuối cùng
+            newResponsibleEmployeesWithUnit.push({
+                unitId: employeeItem.unitId,
+                listUsers: newListUsers,
+            })
+        }
     }
 
     let project = await Project(connect(DB_CONNECTION, portal)).create({
