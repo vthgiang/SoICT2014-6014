@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState, useEffect} from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -14,41 +14,41 @@ import { AssetCreateForm, AssetDetailForm, AssetEditForm, AssetImportForm } from
 import qs from 'qs';
 import { getFormatDateFromTime, getPropertyOfValue } from '../../../../../helpers/stringMethod';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
-class AssetManagement extends Component {
-    constructor(props) {
-        super(props);
-        const tableId = "table-asset-manager";
-        const defaultConfig = { limit: 5 }
-        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+function AssetManagement(props) {
+    const tableId_constructor = "table-asset-manager";
+    const defaultConfig = { limit: 5 }
+    const limit_constructor = getTableConfiguration(tableId_constructor, defaultConfig).limit;
 
-        this.state = {
-            tableId,
-            code: "",
-            assetName: "",
-            purchaseDate: null,
-            disposalDate: null,
-            status: window.location.search ? [qs.parse(window.location.search, { ignoreQueryPrefix: true }).status] : '',
-            group: "",
-            handoverUnit: "",
-            handoverUser: "",
-            typeRegisterForUse: "",
-            page: 0,
-            limit: limit,
-            managedBy: this.props.managedBy ? this.props.managedBy : ''
-        }
-    }
+    const [state, setState] = useState({
+        tableId_constructor,
+        code: "",
+        assetName: "",
+        purchaseDate: null,
+        disposalDate: null,
+        status: window.location.search ? [qs.parse(window.location.search, { ignoreQueryPrefix: true }).status] : ["ready_to_use", "in_use", "broken", "lost", "disposed"],
+        group: ["building", "vehicle", "machine", "other"],
+        handoverUnit: "",
+        handoverUser: "",
+        typeRegisterForUse: ["1", "2", "3"],
+        page: 0,
+        limit: limit_constructor,
+        managedBy: props.managedBy ? props.managedBy : ''
+    })
 
-    componentDidMount() {
-        this.props.getAllAsset(this.state);
-        this.props.searchAssetTypes({ typeNumber: "", typeName: "", limit: 0 });
-        this.props.getListBuildingAsTree();
-        this.props.getUser();
-        this.props.getAllDepartments();
-        this.props.getAllRoles();
-    }
+    const { assetsManager, assetType, translate, user, isActive, department } = props;
+    const { page, limit, currentRowView, status, currentRow, purchaseDate, disposalDate, managedBy, location, tableId, group, typeRegisterForUse } = state;
+
+    useEffect(() => {
+        props.getAllAsset(state);
+        props.searchAssetTypes({ typeNumber: "", typeName: "", limit: 0 });
+        props.getListBuildingAsTree();
+        props.getUser();
+        props.getAllDepartments();
+        props.getAllRoles();
+    }, [])
 
     // Function format ngày hiện tại thành dạnh mm-yyyy
-    formatDate2(date) {
+    const formatDate2 = (date) => {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -65,7 +65,7 @@ class AssetManagement extends Component {
     }
 
     // Function format dữ liệu Date thành string
-    formatDate(date, monthYear = false) {
+    const formatDate = (date, monthYear = false) => {
         if (!date) return null;
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
@@ -88,16 +88,17 @@ class AssetManagement extends Component {
     }
 
     // Bắt sự kiện click xem thông tin tài sản
-    handleView = async (value) => {
-        await this.setState({
+    const handleView = async (value) => {
+        await setState({
+            ...state,
             currentRowView: value
         });
         window.$('#modal-view-asset').modal('show');
     }
 
     // Bắt sự kiện click chỉnh sửa thông tin tài sản
-    handleEdit = async (value) => {
-        await this.setState(state => {
+    const handleEdit = async (value) => {
+        await setState(state => {
             return {
                 ...state,
                 currentRow: value
@@ -107,49 +108,51 @@ class AssetManagement extends Component {
     }
 
     // Function lưu giá trị mã tài sản vào state khi thay đổi
-    handleCodeChange = (event) => {
+    const handleCodeChange = (event) => {
         const { name, value } = event.target;
-        this.setState({
+        setState({
+            ...state,
             [name]: value
         });
 
     }
 
     // Function lưu giá trị tên tài sản vào state khi thay đổi
-    handleAssetNameChange = (event) => {
+    const handleAssetNameChange = (event) => {
         const { name, value } = event.target;
-        this.setState({
+        setState({
+            ...state,
             [name]: value
         });
     }
 
     // Function lưu giá trị tháng vào state khi thay đổi
-    handlePurchaseMonthChange = async (value) => {
+    const handlePurchaseMonthChange = async (value) => {
         if (!value) {
             value = null
         }
 
-        await this.setState({
-            ...this.state,
+        await setState({
+            ...state,
             purchaseDate: value
         });
     }
 
     // Function lưu giá trị tháng vào state khi thay đổi
-    handleDisposalMonthChange = async (value) => {
+    const handleDisposalMonthChange = async (value) => {
         if (!value) {
             value = null
         }
 
-        await this.setState({
-            ...this.state,
+        await setState({
+            ...state,
             disposalDate: value
         });
     }
 
     // Function lưu giá trị loại tài sản vào state khi thay đổi
-    handleAssetTypeChange = (value) => {
-        this.setState(state => {
+    const handleAssetTypeChange = (value) => {
+        setState(state => {
             return {
                 ...state,
                 assetType: value.length !== 0 ? JSON.stringify(value) : null,
@@ -158,33 +161,33 @@ class AssetManagement extends Component {
     }
 
     // Bắt sự kiện thay đổi nhóm tài sản
-    handleGroupChange = (value) => {
+    const handleGroupChange = (value) => {
         if (value.length === 0) {
             value = null
         }
 
-        this.setState({
-            ...this.state,
+        setState({
+            ...state,
             group: value
         })
     }
 
     // Function lưu giá trị status vào state khi thay đổi
-    handleStatusChange = (value) => {
+    const handleStatusChange = (value) => {
         if (value.length === 0) {
             value = null
         }
 
-        this.setState({
-            ...this.state,
+        setState({
+            ...state,
             status: value
         })
     }
 
     // Function lưu giá trị vị trí vào state khi thay đổi
-    handleLocationChange = async (value) => {
+    const handleLocationChange = async (value) => {
 
-        await this.setState(state => {
+        await setState(state => {
             return {
                 ...state,
                 location: value.length !== 0 ? value[0] : null,
@@ -192,77 +195,82 @@ class AssetManagement extends Component {
         });
     }
 
-    // Function lưu giá trị status vào state khi thay đổi
-    handleTypeRegisterForUseChange = (value) => {
+    // Function lưu giá trị quyền đăng kí vào state khi thay đổi
+    const handleTypeRegisterForUseChange = (value) => {
         if (value.length === 0) {
             value = null
         }
 
-        this.setState({
-            ...this.state,
+        setState({
+            ...state,
             typeRegisterForUse: value
         })
     }
 
     // Function lưu giá trị người sử dụng vào state khi thay đổi
-    handleHandoverUserChange = (event) => {
+    const handleHandoverUserChange = (event) => {
         const { name, value } = event.target;
-        this.setState({
+        setState({
+            ...state,
             [name]: value
         });
 
     }
 
     // Function lưu giá trị đơn vị sử dụng vào state khi thay đổi
-    handleHandoverUnitChange = (value) => {
+    const handleHandoverUnitChange = (value) => {
         if (value.length === 0) {
             value = null
         }
 
-        this.setState({
+        setState({
+            ...state,
             handoverUnit: value
         })
     }
 
     // Function bắt sự kiện tìm kiếm
-    handleSubmitSearch = async () => {
-        await this.setState({
+    const handleSubmitSearch = async () => {
+        await setState({
+            ...state,
             page: 0,
         });
-        this.props.getAllAsset({ page: 0, ...this.state });
+        props.getAllAsset({ page: 0, ...state });
     }
 
     // Bắt sự kiện setting số dòng hiện thị trên một trang
-    setLimit = async (number) => {
-        await this.setState({
+    const setLimit = async (number) => {
+        await setState({
+            ...state,
             limit: parseInt(number),
         });
-        this.props.getAllAsset({ ...this.state, limit: parseInt(number) });
+        props.getAllAsset({ ...state, limit: parseInt(number) });
     }
 
     // Bắt sự kiện chuyển trang
-    setPage = async (pageNumber) => {
-        let page = (pageNumber - 1) * this.state.limit;
-        await this.setState({
+    const setPage = async (pageNumber) => {
+        let page = (pageNumber - 1) * state.limit;
+        await setState({
+            ...state,
             page: parseInt(page),
         });
 
-        this.props.getAllAsset({ ...this.state, page });
+        props.getAllAsset({ ...state, page });
     }
 
-    getAssetTypesList = (types) => {
+    const getAssetTypesList = (types) => {
         let list = types.reduce((list, cur) => {
             return list ? list + ', ' + cur.typeName : cur.typeName;
         }, '');
         return list;
     }
 
-    getNumber = (number) => {
+    const getNumber = (number) => {
         return number ? number : '';
     }
 
-    getAssetDepreciationType = (type) => {
-        const { translate } = this.props;
+    const getAssetDepreciationType = (type) => {
+        const { translate } = props;
         switch (type) {
             case 'straight_line':
                 return translate('asset.depreciation.line');
@@ -275,8 +283,8 @@ class AssetManagement extends Component {
         }
     }
 
-    getIncidentType = (type) => {
-        const { translate } = this.props;
+    const getIncidentType = (type) => {
+        const { translate } = props;
         if (Number(type) === 1) {
             return translate('asset.general_information.damaged');
         } else if (Number(type) === 2) {
@@ -286,8 +294,8 @@ class AssetManagement extends Component {
         }
     }
 
-    getIncidentStatus = (status) => {
-        const { translate } = this.props;
+    const getIncidentStatus = (status) => {
+        const { translate } = props;
         if (Number(status) === 1) {
             return translate('asset.general_information.waiting');
         } else if (Number(status) === 2) {
@@ -295,8 +303,8 @@ class AssetManagement extends Component {
         } else return null;
     }
 
-    gettDisposalType = (type) => {
-        const { translate } = this.props;
+    const gettDisposalType = (type) => {
+        const { translate } = props;
 
         if (type === '1') {
             return translate('asset.asset_info.destruction');
@@ -312,13 +320,13 @@ class AssetManagement extends Component {
         }
     }
 
-    getCostNumber = (number) => {
+    const getCostNumber = (number) => {
         if (!number) return '';
         else return new Intl.NumberFormat().format(number);
     }
 
-    convertDataToExportData = (data, assettypelist, userlist) => {
-        const organizationalUnitList = this.props.department.list;
+    const convertDataToExportData = (data, assettypelist, userlist) => {
+        const organizationalUnitList = props.department.list;
         let fileName = "File export tài sản";
         let length = 0;
         let exportThongTinChung = [];
@@ -335,13 +343,13 @@ class AssetManagement extends Component {
                 let code = x.code;
                 let name = x.assetName;
                 let description = x.description;
-                let group = this.convertGroupAsset(x.group);
-                let type = x.assetType && this.getAssetTypesList(x.assetType);
+                let group = convertGroupAsset(x.group);
+                let type = x.assetType && getAssetTypesList(x.assetType);
                 let purchaseDate = getFormatDateFromTime(x.purchaseDate, 'dd-mm-yyyy');
                 let disposalDate = getFormatDateFromTime(x.disposalDate, 'dd-mm-yyyy');
                 let manager = getPropertyOfValue(x.managedBy, 'email', false, userlist);
                 let assigner = getPropertyOfValue(x.assignedToUser, 'email', false, userlist);
-                let status = this.formatStatus(x.status);
+                let status = formatStatus(x.status);
                 length = x.detailInfo && x.detailInfo.length;
                 let info = (length) ? (x.detailInfo.map((item, index) => {
                     return {
@@ -388,11 +396,11 @@ class AssetManagement extends Component {
                 }
 
                 // Dữ liệu tab khấu hao
-                let cost = this.getCostNumber(x.cost);
-                let residualValue = this.getCostNumber(x.residualValue);
-                let usefulLife = this.getNumber(x.usefulLife);
+                let cost = getCostNumber(x.cost);
+                let residualValue = getCostNumber(x.residualValue);
+                let usefulLife = getNumber(x.usefulLife);
                 let startDepreciation = getFormatDateFromTime(x.startDepreciation, 'dd-mm-yyyy')
-                let depreciationType = this.getAssetDepreciationType(x.depreciationType);
+                let depreciationType = getAssetDepreciationType(x.depreciationType);
                 exportKhauHao = [...exportKhauHao, {
                     index: index + 1,
                     code,
@@ -426,11 +434,11 @@ class AssetManagement extends Component {
                         code,
                         name,
                         incidentCode: incident.incidentCode,
-                        incidentType: this.getIncidentType(incident.type),
+                        incidentType: getIncidentType(incident.type),
                         announcer: getPropertyOfValue(incident.reportedBy, 'email', false, userlist),
                         incidentDate: getFormatDateFromTime(incident.dateOfIncident, 'dd-mm-yyyy'),
                         content: incident.description,
-                        status: this.getIncidentStatus(incident.statusIncident)
+                        status: getIncidentStatus(incident.statusIncident)
                     }
                 }) : null;
                 exportSuCo = dataSuCo ? [...exportSuCo, ...dataSuCo] : [...exportSuCo]
@@ -443,12 +451,12 @@ class AssetManagement extends Component {
                         code,
                         name,
                         createDate: getFormatDateFromTime(mt.createDate),
-                        type: this.getIncidentType(mt.type),
+                        type: getIncidentType(mt.type),
                         description: mt.description,
                         startDate: getFormatDateFromTime(mt.startDate, 'dd-mm-yyyy'),
                         endDate: getFormatDateFromTime(mt.endDate, 'dd-mm-yyyy'),
-                        expense: this.getCostNumber(mt.expense),
-                        status: this.getIncidentStatus(mt.status)
+                        expense: getCostNumber(mt.expense),
+                        status: getIncidentStatus(mt.status)
                     }
                 }) : null;
                 exportBaoTriSuaChua = dataBTSC ? [...exportBaoTriSuaChua, ...dataBTSC] : [...exportBaoTriSuaChua];
@@ -456,7 +464,7 @@ class AssetManagement extends Component {
                 // Dữ liệu tab thanh lý
                 let disposalDesc = x.disposalDesc;
                 let disposalType = x.disposalType;
-                let disposalCost = this.getCostNumber(x.disposalCost);
+                let disposalCost = getCostNumber(x.disposalCost);
 
                 exportThanhLy = [...exportThanhLy, {
                     index: index + 1,
@@ -465,7 +473,7 @@ class AssetManagement extends Component {
                     disposalDesc,
                     disposalCost,
                     disposalDate,
-                    disposalType: this.gettDisposalType(disposalType)
+                    disposalType: gettDisposalType(disposalType)
                 }]
             })
         }
@@ -631,8 +639,8 @@ class AssetManagement extends Component {
         return exportData;
     }
 
-    getAssetTypes = () => {
-        let { assetType } = this.props;
+    const getAssetTypes = () => {
+        let { assetType } = props;
         let assetTypeName = assetType && assetType.listAssetTypes;
         let typeArr = [];
         assetTypeName.map(item => {
@@ -646,8 +654,8 @@ class AssetManagement extends Component {
         return typeArr;
     }
 
-    getDepartment = () => {
-        let { department } = this.props;
+    const getDepartment = () => {
+        let { department } = props;
         let listUnit = department && department.list
         let unitArr = [];
 
@@ -661,8 +669,8 @@ class AssetManagement extends Component {
         return unitArr;
     }
 
-    convertGroupAsset = (group) => {
-        const { translate } = this.props;
+    const convertGroupAsset = (group) => {
+        const { translate } = props;
         if (group === 'building') {
             return translate('asset.dashboard.building')
         }
@@ -678,8 +686,8 @@ class AssetManagement extends Component {
         else return null;
     }
 
-    formatStatus = (status) => {
-        const { translate } = this.props;
+    const formatStatus = (status) => {
+        const { translate } = props;
 
         if (status === 'ready_to_use') {
             return translate('asset.general_information.ready_use')
@@ -701,10 +709,10 @@ class AssetManagement extends Component {
         }
     }
 
-    formatDisposalDate(disposalDate, status) {
-        const { translate } = this.props;
+    const formatDisposalDate = (disposalDate, status) =>{
+        const { translate } = props;
         if (status === 'disposed') {
-            if (disposalDate) return this.formatDate(disposalDate);
+            if (disposalDate) return formatDate(disposalDate);
             else return translate('asset.general_information.not_disposal_date');
         }
         else {
@@ -712,405 +720,406 @@ class AssetManagement extends Component {
         }
     }
 
-    render() {
-        const { assetsManager, assetType, translate, user, isActive, department } = this.props;
-        const { page, limit, currentRowView, status, currentRow, purchaseDate, disposalDate, managedBy, location, tableId } = this.state;
-        var lists = "", exportData;
-        var userlist = user.list, departmentlist = department.list;
-        var assettypelist = assetType.listAssetTypes;
-        let typeArr = this.getAssetTypes();
-        let dataSelectBox = this.getDepartment();
-        let assetTypeName = this.state.assetType ? this.state.assetType : [];
+    
+      
+    var lists = "", exportData;
+    var userlist = user.list, departmentlist = department.list;
+    var assettypelist = assetType.listAssetTypes;
+    let typeArr = getAssetTypes();
+    let dataSelectBox = getDepartment();
+    let assetTypeName = state.assetType ? state.assetType : [];
 
-        if (assetsManager.isLoading === false) {
-            lists = assetsManager.listAssets;
+    if (assetsManager.isLoading === false) {
+        lists = assetsManager.listAssets;
+    }
+
+    let assetbuilding = assetsManager && assetsManager.buildingAssets;
+    let assetbuildinglist = assetbuilding && assetbuilding.list;
+    let buildingList = assetbuildinglist && assetbuildinglist.map(node => {
+        return {
+            ...node,
+            id: node._id,
+            name: node.assetName,
+            parent: node.location,
         }
+    })
 
-        let assetbuilding = assetsManager && assetsManager.buildingAssets;
-        let assetbuildinglist = assetbuilding && assetbuilding.list;
-        let buildingList = assetbuildinglist && assetbuildinglist.map(node => {
-            return {
-                ...node,
-                id: node._id,
-                name: node.assetName,
-                parent: node.location,
-            }
-        })
+    var pageTotal = ((assetsManager.totalList % limit) === 0) ?
+        parseInt(assetsManager.totalList / limit) :
+        parseInt((assetsManager.totalList / limit) + 1);
+    var currentPage = parseInt((page / limit) + 1);
 
-        var pageTotal = ((assetsManager.totalList % limit) === 0) ?
-            parseInt(assetsManager.totalList / limit) :
-            parseInt((assetsManager.totalList / limit) + 1);
-        var currentPage = parseInt((page / limit) + 1);
+    if (userlist && lists && assettypelist) {
+        exportData = convertDataToExportData(lists, assettypelist, userlist);
+    }
 
-        if (userlist && lists && assettypelist) {
-            exportData = this.convertDataToExportData(lists, assettypelist, userlist);
-        }
+    return (
+        <div className={isActive ? isActive : "box"}>
+            <div className="box-body qlcv">
+                {/* Form thêm tài sản mới */}
+                <div className="dropdown pull-right">
+                    <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('menu.add_asset_title')} >{translate('menu.add_update_asset')}</button>
+                    <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
+                        <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-add-asset').modal('show')}>{translate('menu.add_asset')}</a></li>
+                        <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-import-asset-add').modal('show')}>{translate('human_resource.profile.employee_management.add_import')}</a></li>
+                        <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-import-asset-update').modal('show')}>{translate('human_resource.profile.employee_management.update_import')}</a></li>
+                    </ul>
+                </div>
+                <AssetCreateForm />
+                <AssetImportForm
+                    id='modal-import-asset-add'
+                    type="add"
+                    page={0}
+                    limit={5}
+                />
+                <AssetImportForm
+                    id='modal-import-asset-update'
+                    type="update"
+                    page={0}
+                    limit={5}
+                />
 
-        return (
-            <div className={isActive ? isActive : "box"}>
-                <div className="box-body qlcv">
-                    {/* Form thêm tài sản mới */}
-                    <div className="dropdown pull-right">
-                        <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('menu.add_asset_title')} >{translate('menu.add_update_asset')}</button>
-                        <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
-                            <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-add-asset').modal('show')}>{translate('menu.add_asset')}</a></li>
-                            <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-import-asset-add').modal('show')}>{translate('human_resource.profile.employee_management.add_import')}</a></li>
-                            <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-import-asset-update').modal('show')}>{translate('human_resource.profile.employee_management.update_import')}</a></li>
-                        </ul>
-                    </div>
-                    <AssetCreateForm />
-                    <AssetImportForm
-                        id='modal-import-asset-add'
-                        type="add"
-                        page={0}
-                        limit={5}
-                    />
-                    <AssetImportForm
-                        id='modal-import-asset-update'
-                        type="update"
-                        page={0}
-                        limit={5}
-                    />
+                {/* Thanh tìm kiếm */}
+                <div className="form-inline">
 
-                    {/* Thanh tìm kiếm */}
-                    <div className="form-inline">
-
-                        {/* Mã tài sản */}
-                        <div className="form-group">
-                            <label className="form-control-static">{translate('asset.general_information.asset_code')}</label>
-                            <input type="text" className="form-control" name="code" onChange={this.handleCodeChange} placeholder={translate('asset.general_information.asset_code')} autoComplete="off" />
-                        </div>
-
-                        {/* Tên tài sản */}
-                        <div className="form-group">
-                            <label className="form-control-static">{translate('asset.general_information.asset_name')}</label>
-                            <input type="text" className="form-control" name="assetName" onChange={this.handleAssetNameChange} placeholder={translate('asset.general_information.asset_name')} autoComplete="off" />
-                        </div>
+                    {/* Mã tài sản */}
+                    <div className="form-group">
+                        <label className="form-control-static">{translate('asset.general_information.asset_code')}</label>
+                        <input type="text" className="form-control" name="code" onChange={handleCodeChange} placeholder={translate('asset.general_information.asset_code')} autoComplete="off" />
                     </div>
 
-                    <div className="form-inline">
-
-                        {/* Nhóm tài sản */}
-                        <div className="form-group">
-                            <label className="form-control-static">{translate('asset.general_information.asset_group')}</label>
-                            <SelectMulti id={`multiSelectGroupInManagement`} multiple="multiple"
-                                options={{ nonSelectedText: translate('asset.asset_info.select_group'), allSelectedText: translate('asset.general_information.select_all_group') }}
-                                onChange={this.handleGroupChange}
-                                items={[
-                                    { value: "building", text: translate('asset.dashboard.building') },
-                                    { value: "vehicle", text: translate('asset.asset_info.vehicle') },
-                                    { value: "machine", text: translate('asset.dashboard.machine') },
-                                    { value: "other", text: translate('asset.dashboard.other') },
-                                ]}
-                            >
-                            </SelectMulti>
-                        </div>
-
-                        {/* Loại tài sản */}
-                        <div className="form-group">
-                            <label>{translate('asset.general_information.asset_type')}</label>
-                            <TreeSelect
-                                data={typeArr}
-                                value={assetTypeName}
-                                handleChange={this.handleAssetTypeChange}
-                                mode="hierarchical"
-                            />
-                        </div>
+                    {/* Tên tài sản */}
+                    <div className="form-group">
+                        <label className="form-control-static">{translate('asset.general_information.asset_name')}</label>
+                        <input type="text" className="form-control" name="assetName" onChange={handleAssetNameChange} placeholder={translate('asset.general_information.asset_name')} autoComplete="off" />
                     </div>
-
-                    <div className="form-inline">
-
-                        {/* Trạng thái */}
-                        <div className="form-group">
-                            <label className="form-control-static">{translate('page.status')}</label>
-                            <SelectMulti id={`multiSelectStatus1`} multiple="multiple"
-                                options={{ nonSelectedText: translate('page.non_status'), allSelectedText: translate('asset.general_information.select_all_status') }}
-                                onChange={this.handleStatusChange}
-                                value={status ? status : []}
-                                items={[
-                                    { value: "ready_to_use", text: translate('asset.general_information.ready_use') },
-                                    { value: "in_use", text: translate('asset.general_information.using') },
-                                    { value: "broken", text: translate('asset.general_information.damaged') },
-                                    { value: "lost", text: translate('asset.general_information.lost') },
-                                    { value: "disposed", text: translate('asset.general_information.disposal') }
-                                ]}
-                            >
-                            </SelectMulti>
-                        </div>
-
-                        {/* Vị trí tài sản */}
-                        <div className="form-group">
-                            <label>{translate('asset.general_information.asset_location')}</label>
-                            <TreeSelect data={buildingList} value={[location]} handleChange={this.handleLocationChange} mode="radioSelect" />
-                        </div>
-                    </div>
-
-                    <div className="form-inline">
-
-                        {/* Đơn vị được giao sử dụng */}
-                        <div className="form-group">
-                            <label>{translate('asset.general_information.organization_unit')}</label>
-                            <SelectMulti
-                                id={`unitInManagement`}
-                                multiple="multiple"
-                                options={{ nonSelectedText: translate('asset.general_information.select_organization_unit'), allSelectedText: translate('asset.general_information.select_all_organization_unit') }}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                items={dataSelectBox}
-                                onChange={this.handleHandoverUnitChange}
-                            />
-                        </div>
-
-                        {/* Người được giao sử dụng */}
-                        <div className="form-group">
-                            <label className="form-control-static">{translate('asset.general_information.user')}</label>
-                            <input type="text" className="form-control" name="handoverUser" onChange={this.handleHandoverUserChange} placeholder={translate('asset.general_information.user')} autoComplete="off" />
-                        </div>
-                    </div>
-
-                    <div className="form-inline">
-                        {/* Ngày nhập */}
-                        <div className="form-group">
-                            <label className="form-control-static">{translate('asset.general_information.purchase_date')}</label>
-                            <DatePicker
-                                id="purchase-month"
-                                dateFormat="month-year"
-                                value={purchaseDate}
-                                onChange={this.handlePurchaseMonthChange}
-                            />
-                        </div>
-
-                        {/* Ngày Thanh lý */}
-                        <div className="form-group">
-                            <label className="form-control-static" style={{ padding: 0 }}>{translate('asset.general_information.disposal_date')}</label>
-                            <DatePicker
-                                id="disposal-month"
-                                dateFormat="month-year"
-                                value={disposalDate}
-                                onChange={this.handleDisposalMonthChange}
-                            />
-                        </div>
-                    </div>
-
-                    <div className="form-inline" style={{ marginBottom: 10 }}>
-                        {/* Quyền đăng ký */}
-                        <div className="form-group">
-                            <label>{translate('asset.general_information.can_register')}</label>
-                            <SelectMulti
-                                id={`typeRegisterForUseInManagement`}
-                                className="form-control select2"
-                                multiple="multiple"
-                                options={{ nonSelectedText: translate('asset.general_information.select_register'), allSelectedText: translate('asset.general_information.select_all_register') }}
-                                style={{ width: "100%" }}
-                                items={[
-                                    { value: 1, text: translate('asset.general_information.not_for_registering') },
-                                    { value: 2, text: translate('asset.general_information.register_by_hour') },
-                                    { value: 3, text: translate('asset.general_information.register_for_long_term') },
-                                ]}
-                                onChange={this.handleTypeRegisterForUseChange}
-                            />
-                        </div>
-                        {/* Nút tìm kiếm */}
-                        <div className="form-group">
-                            <label></label>
-                            <button type="button" className="btn btn-success" title={translate('asset.general_information.search')} onClick={this.handleSubmitSearch}>{translate('asset.general_information.search')}</button>
-                        </div>
-                        {exportData && <ExportExcel id="export-asset-info-management" exportData={exportData} style={{ marginRight: 10 }} />}
-                    </div>
-
-                    {/* Báo lỗi khi thêm mới tài sản */}
-                    {assetsManager && assetsManager.assetCodeError && assetsManager.assetCodeError.length !== 0
-                        && <div style={{ color: 'red' }}>
-                            <strong style={{ 'fontWeight': 600, 'paddingRight': 10 }}>{translate('asset.asset_info.asset_code_exist')}:</strong>
-                            {
-                                assetsManager.assetCodeError.map((item, index) => {
-                                    let seperator = index !== 0 ? ", " : "";
-                                    return <span key={index}>{seperator}{item}</span>
-                                })
-                            }
-                        </div>
-                    }
-
-                    {/* Bảng các tài sản */}
-                    <table id={tableId} className="table table-striped table-bordered table-hover">
-                        <thead>
-                            <tr>
-                                <th style={{ width: "8%" }}>{translate('asset.general_information.asset_code')}</th>
-                                <th style={{ width: "10%" }}>{translate('asset.general_information.asset_name')}</th>
-                                <th style={{ width: "10%" }}>{translate('asset.general_information.asset_group')}</th>
-                                <th style={{ width: "10%" }}>{translate('asset.general_information.asset_type')}</th>
-                                <th style={{ width: "10%" }}>{translate('asset.general_information.purchase_date')}</th>
-                                <th style={{ width: "10%" }}>{translate('asset.general_information.manager')}</th>
-                                <th style={{ width: "10%" }}>{translate('asset.general_information.user')}</th>
-                                <th style={{ width: "10%" }}>{translate('asset.general_information.organization_unit')}</th>
-                                <th style={{ width: "10%" }}>{translate('asset.general_information.status')}</th>
-                                <th style={{ width: "10%" }}>{translate('asset.general_information.disposal_date')}</th>
-                                <th style={{ width: '120px', textAlign: 'center' }}>{translate('asset.general_information.action')}
-                                    <DataTableSetting
-                                        tableId={tableId}
-                                        columnArr={[
-                                            translate('asset.general_information.asset_code'),
-                                            translate('asset.general_information.asset_name'),
-                                            translate('asset.general_information.asset_group'),
-                                            translate('asset.general_information.asset_type'),
-                                            translate('asset.general_information.purchase_date'),
-                                            translate('asset.general_information.manager'),
-                                            translate('asset.general_information.user'),
-                                            translate('asset.general_information.organizaiton_unit'),
-                                            translate('asset.general_information.status'),
-                                            translate('asset.general_information.disposal_date')
-                                        ]}
-                                        setLimit={this.setLimit}
-                                    />
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {(lists && lists.length !== 0) ?
-                                lists.map((x, index) => (
-                                    <tr key={index}>
-                                        <td>{x.code}</td>
-                                        <td>{x.assetName}</td>
-                                        <td>{this.convertGroupAsset(x.group)}</td>
-                                        <td>{x.assetType && x.assetType.length !== 0 && x.assetType.map((type, index, arr) => index !== arr.length - 1 ? type.typeName + ', ' : type.typeName)}</td>
-                                        <td>{this.formatDate(x.purchaseDate)}</td>
-                                        <td>{getPropertyOfValue(x.managedBy, 'email', false, userlist)}</td>
-                                        <td>{getPropertyOfValue(x.assignedToUser, 'email', false, userlist)}</td>
-                                        <td>{getPropertyOfValue(x.assignedToOrganizationalUnit, 'name', false, departmentlist)}</td>
-                                        <td>{this.formatStatus(x.status)}</td>
-                                        <td>{this.formatDisposalDate(x.disposalDate, x.status)}</td>
-                                        <td style={{ textAlign: "center" }}>
-                                            <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title={translate('asset.general_information.view')}><i className="material-icons">view_list</i></a>
-                                            <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.general_information.edit_info')}><i className="material-icons">edit</i></a>
-                                            <DeleteNotification
-                                                content={translate('asset.general_information.delete_info')}
-                                                data={{
-                                                    id: x._id,
-                                                    info: x.code + " - " + x.assetName
-                                                }}
-                                                func={this.props.deleteAsset}
-                                            />
-                                        </td>
-                                    </tr>)) : null
-                            }
-                        </tbody>
-                    </table>
-                    {assetsManager.isLoading ?
-                        <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                        (!lists || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
-                    }
-
-                    {/* PaginateBar */}
-                    <PaginateBar
-                        display={assetsManager.listAssets ? assetsManager.listAssets.length : null}
-                        total={assetsManager.totalList ? assetsManager.totalList : null}
-                        pageTotal={pageTotal ? pageTotal : 0}
-                        currentPage={currentPage}
-                        func={this.setPage}
-                    />
                 </div>
 
-                {/* Form xem thông tin tài sản */}
-                {
-                    currentRowView &&
-                    <AssetDetailForm
-                        _id={currentRowView._id}
-                        avatar={currentRowView.avatar}
-                        code={currentRowView.code}
-                        assetName={currentRowView.assetName}
-                        serial={currentRowView.serial}
-                        assetType={currentRowView.assetType}
-                        group={currentRowView.group}
-                        purchaseDate={currentRowView.purchaseDate}
-                        warrantyExpirationDate={currentRowView.warrantyExpirationDate}
-                        managedBy={getPropertyOfValue(currentRowView.managedBy, '_id', true, userlist)}
-                        assignedToUser={getPropertyOfValue(currentRowView.assignedToUser, '_id', true, userlist)}
-                        assignedToOrganizationalUnit={getPropertyOfValue(currentRowView.assignedToOrganizationalUnit, '_id', true, departmentlist)}
-                        handoverFromDate={currentRowView.handoverFromDate}
-                        handoverToDate={currentRowView.handoverToDate}
-                        location={currentRowView.location}
-                        description={currentRowView.description}
-                        status={currentRowView.status}
-                        typeRegisterForUse={currentRowView.typeRegisterForUse}
-                        detailInfo={currentRowView.detailInfo}
-                        cost={currentRowView.cost}
-                        readByRoles={currentRowView.readByRoles}
-                        residualValue={currentRowView.residualValue}
-                        startDepreciation={currentRowView.startDepreciation}
-                        usefulLife={currentRowView.usefulLife}
-                        depreciationType={currentRowView.depreciationType}
-                        estimatedTotalProduction={currentRowView.estimatedTotalProduction}
-                        unitsProducedDuringTheYears={currentRowView.unitsProducedDuringTheYears}
+                <div className="form-inline">
 
-                        maintainanceLogs={currentRowView.maintainanceLogs}
-                        usageLogs={currentRowView.usageLogs}
-                        incidentLogs={currentRowView.incidentLogs}
+                    {/* Nhóm tài sản */}
+                    <div className="form-group">
+                        <label className="form-control-static">{translate('asset.general_information.asset_group')}</label>
+                        <SelectMulti id={`multiSelectGroupInManagement`} multiple="multiple"
+                            value={group}
+                            options={{ nonSelectedText: translate('asset.asset_info.select_group'), allSelectedText: translate('asset.general_information.select_all_group') }}
+                            onChange={handleGroupChange}
+                            items={[
+                                { value: "building", text: translate('asset.dashboard.building') },
+                                { value: "vehicle", text: translate('asset.asset_info.vehicle') },
+                                { value: "machine", text: translate('asset.dashboard.machine') },
+                                { value: "other", text: translate('asset.dashboard.other') },
+                            ]}
+                        >
+                        </SelectMulti>
+                    </div>
 
-                        disposalDate={currentRowView.disposalDate}
-                        disposalType={currentRowView.disposalType}
-                        disposalCost={currentRowView.disposalCost}
-                        disposalDesc={currentRowView.disposalDesc}
+                    {/* Loại tài sản */}
+                    <div className="form-group">
+                        <label>{translate('asset.general_information.asset_type')}</label>
+                        <TreeSelect
+                            data={typeArr}
+                            value={assetTypeName}
+                            handleChange={handleAssetTypeChange}
+                            mode="hierarchical"
+                        />
+                    </div>
+                </div>
 
-                        archivedRecordNumber={currentRowView.archivedRecordNumber}
-                        files={currentRowView.documents}
-                        linkPage={"management"}
-                    />
+                <div className="form-inline">
+
+                    {/* Trạng thái */}
+                    <div className="form-group">
+                        <label className="form-control-static">{translate('page.status')}</label>
+                        <SelectMulti id={`multiSelectStatus1`} multiple="multiple"
+                            value= {status}
+                            options={{ nonSelectedText: translate('page.non_status'), allSelectedText: translate('asset.general_information.select_all_status') }}
+                            onChange={handleStatusChange}
+                            value={status ? status : []}
+                            items={[
+                                { value: "ready_to_use", text: translate('asset.general_information.ready_use') },
+                                { value: "in_use", text: translate('asset.general_information.using') },
+                                { value: "broken", text: translate('asset.general_information.damaged') },
+                                { value: "lost", text: translate('asset.general_information.lost') },
+                                { value: "disposed", text: translate('asset.general_information.disposal') }
+                            ]}
+                        >
+                        </SelectMulti>
+                    </div>
+
+                    {/* Vị trí tài sản */}
+                    <div className="form-group">
+                        <label>{translate('asset.general_information.asset_location')}</label>
+                        <TreeSelect data={buildingList} value={[location]} handleChange={handleLocationChange} mode="radioSelect" />
+                    </div>
+                </div>
+
+                <div className="form-inline">
+
+                    {/* Đơn vị được giao sử dụng */}
+                    <div className="form-group">
+                        <label>{translate('asset.general_information.organization_unit')}</label>
+                        <SelectMulti
+                            id={`unitInManagement`}
+                            multiple="multiple"
+                            options={{ nonSelectedText: translate('asset.general_information.select_organization_unit'), allSelectedText: translate('asset.general_information.select_all_organization_unit') }}
+                            className="form-control select2"
+                            style={{ width: "100%" }}
+                            items={dataSelectBox}
+                            onChange={handleHandoverUnitChange}
+                        />
+                    </div>
+
+                    {/* Người được giao sử dụng */}
+                    <div className="form-group">
+                        <label className="form-control-static">{translate('asset.general_information.user')}</label>
+                        <input type="text" className="form-control" name="handoverUser" onChange={handleHandoverUserChange} placeholder={translate('asset.general_information.user')} autoComplete="off" />
+                    </div>
+                </div>
+
+                <div className="form-inline">
+                    {/* Ngày nhập */}
+                    <div className="form-group">
+                        <label className="form-control-static">{translate('asset.general_information.purchase_date')}</label>
+                        <DatePicker
+                            id="purchase-month"
+                            dateFormat="month-year"
+                            value={purchaseDate}
+                            onChange={handlePurchaseMonthChange}
+                        />
+                    </div>
+
+                    {/* Ngày Thanh lý */}
+                    <div className="form-group">
+                        <label className="form-control-static" style={{ padding: 0 }}>{translate('asset.general_information.disposal_date')}</label>
+                        <DatePicker
+                            id="disposal-month"
+                            dateFormat="month-year"
+                            value={disposalDate}
+                            onChange={handleDisposalMonthChange}
+                        />
+                    </div>
+                </div>
+
+                <div className="form-inline" style={{ marginBottom: 10 }}>
+                    {/* Quyền đăng ký */}
+                    <div className="form-group">
+                        <label>{translate('asset.general_information.can_register')}</label>
+                        <SelectMulti
+                            id={`typeRegisterForUseInManagement`}
+                            className="form-control select2"
+                            multiple="multiple"
+                            value={typeRegisterForUse}
+                            options={{ nonSelectedText: translate('asset.general_information.select_register'), allSelectedText: translate('asset.general_information.select_all_register') }}
+                            style={{ width: "100%" }}
+                            items={[
+                                { value: 1, text: translate('asset.general_information.not_for_registering') },
+                                { value: 2, text: translate('asset.general_information.register_by_hour') },
+                                { value: 3, text: translate('asset.general_information.register_for_long_term') },
+                            ]}
+                            onChange={handleTypeRegisterForUseChange}
+                        />
+                    </div>
+                    {/* Nút tìm kiếm */}
+                    <div className="form-group">
+                        <label></label>
+                        <button type="button" className="btn btn-success" title={translate('asset.general_information.search')} onClick={handleSubmitSearch}>{translate('asset.general_information.search')}</button>
+                    </div>
+                    {exportData && <ExportExcel id="export-asset-info-management" exportData={exportData} style={{ marginRight: 10 }} />}
+                </div>
+
+                {/* Báo lỗi khi thêm mới tài sản */}
+                {assetsManager && assetsManager.assetCodeError && assetsManager.assetCodeError.length !== 0
+                    && <div style={{ color: 'red' }}>
+                        <strong style={{ 'fontWeight': 600, 'paddingRight': 10 }}>{translate('asset.asset_info.asset_code_exist')}:</strong>
+                        {
+                            assetsManager.assetCodeError.map((item, index) => {
+                                let seperator = index !== 0 ? ", " : "";
+                                return <span key={index}>{seperator}{item}</span>
+                            })
+                        }
+                    </div>
                 }
 
-                {/* Form chỉnh sửa thông tin tài sản */}
-                {
-                    currentRow &&
-                    <AssetEditForm
-                        _id={currentRow._id}
-                        employeeId={managedBy}
-                        avatar={currentRow.avatar}
-                        code={currentRow.code}
-                        assetName={currentRow.assetName}
-                        serial={currentRow.serial}
-                        assetType={JSON.stringify(currentRow.assetType)}
-                        group={currentRow.group}
-                        purchaseDate={currentRow.purchaseDate}
-                        warrantyExpirationDate={currentRow.warrantyExpirationDate}
-                        managedBy={getPropertyOfValue(currentRow.managedBy, '_id', true, userlist)}
-                        assignedToUser={getPropertyOfValue(currentRow.assignedToUser, '_id', true, userlist)}
-                        assignedToOrganizationalUnit={getPropertyOfValue(currentRow.assignedToOrganizationalUnit, '_id', true, departmentlist)}
-                        handoverFromDate={currentRow.handoverFromDate}
-                        handoverToDate={currentRow.handoverToDate}
-                        location={currentRow.location}
-                        description={currentRow.description}
-                        status={currentRow.status}
-                        typeRegisterForUse={currentRow.typeRegisterForUse}
-                        detailInfo={currentRow.detailInfo}
-                        readByRoles={currentRow.readByRoles}
-                        cost={currentRow.cost}
-                        residualValue={currentRow.residualValue}
-                        startDepreciation={currentRow.startDepreciation}
-                        usefulLife={currentRow.usefulLife}
-                        depreciationType={currentRow.depreciationType}
-                        estimatedTotalProduction={currentRow.estimatedTotalProduction}
-                        unitsProducedDuringTheYears={currentRow.unitsProducedDuringTheYears && currentRow.unitsProducedDuringTheYears.map((x) => ({
-                            month: this.formatDate2(x.month),
-                            unitsProducedDuringTheYear: x.unitsProducedDuringTheYear
-                        })
-                        )}
-
-                        disposalDate={currentRow.disposalDate}
-                        disposalType={currentRow.disposalType}
-                        disposalCost={currentRow.disposalCost}
-                        disposalDesc={currentRow.disposalDesc}
-
-                        maintainanceLogs={currentRow.maintainanceLogs}
-                        usageLogs={currentRow.usageLogs}
-                        incidentLogs={currentRow.incidentLogs}
-                        archivedRecordNumber={currentRow.archivedRecordNumber}
-                        files={currentRow.documents}
-                        linkPage={"management"}
-                        page={page}
-                    />
+                {/* Bảng các tài sản */}
+                <table id={tableId} className="table table-striped table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th style={{ width: "8%" }}>{translate('asset.general_information.asset_code')}</th>
+                            <th style={{ width: "10%" }}>{translate('asset.general_information.asset_name')}</th>
+                            <th style={{ width: "10%" }}>{translate('asset.general_information.asset_group')}</th>
+                            <th style={{ width: "10%" }}>{translate('asset.general_information.asset_type')}</th>
+                            <th style={{ width: "10%" }}>{translate('asset.general_information.purchase_date')}</th>
+                            <th style={{ width: "10%" }}>{translate('asset.general_information.manager')}</th>
+                            <th style={{ width: "10%" }}>{translate('asset.general_information.user')}</th>
+                            <th style={{ width: "10%" }}>{translate('asset.general_information.organization_unit')}</th>
+                            <th style={{ width: "10%" }}>{translate('asset.general_information.status')}</th>
+                            <th style={{ width: "10%" }}>{translate('asset.general_information.disposal_date')}</th>
+                            <th style={{ width: '120px', textAlign: 'center' }}>{translate('asset.general_information.action')}
+                                <DataTableSetting
+                                    tableId={tableId}
+                                    columnArr={[
+                                        translate('asset.general_information.asset_code'),
+                                        translate('asset.general_information.asset_name'),
+                                        translate('asset.general_information.asset_group'),
+                                        translate('asset.general_information.asset_type'),
+                                        translate('asset.general_information.purchase_date'),
+                                        translate('asset.general_information.manager'),
+                                        translate('asset.general_information.user'),
+                                        translate('asset.general_information.organizaiton_unit'),
+                                        translate('asset.general_information.status'),
+                                        translate('asset.general_information.disposal_date')
+                                    ]}
+                                    setLimit={setLimit}
+                                />
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {(lists && lists.length !== 0) ?
+                            lists.map((x, index) => (
+                                <tr key={index}>
+                                    <td>{x.code}</td>
+                                    <td>{x.assetName}</td>
+                                    <td>{convertGroupAsset(x.group)}</td>
+                                    <td>{x.assetType && x.assetType.length !== 0 && x.assetType.map((type, index, arr) => index !== arr.length - 1 ? type.typeName + ', ' : type.typeName)}</td>
+                                    <td>{formatDate(x.purchaseDate)}</td>
+                                    <td>{getPropertyOfValue(x.managedBy, 'email', false, userlist)}</td>
+                                    <td>{getPropertyOfValue(x.assignedToUser, 'email', false, userlist)}</td>
+                                    <td>{getPropertyOfValue(x.assignedToOrganizationalUnit, 'name', false, departmentlist)}</td>
+                                    <td>{formatStatus(x.status)}</td>
+                                    <td>{formatDisposalDate(x.disposalDate, x.status)}</td>
+                                    <td style={{ textAlign: "center" }}>
+                                        <a onClick={() => handleView(x)} style={{ width: '5px' }} title={translate('asset.general_information.view')}><i className="material-icons">view_list</i></a>
+                                        <a onClick={() => handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.general_information.edit_info')}><i className="material-icons">edit</i></a>
+                                        <DeleteNotification
+                                            content={translate('asset.general_information.delete_info')}
+                                            data={{
+                                                id: x._id,
+                                                info: x.code + " - " + x.assetName
+                                            }}
+                                            func={props.deleteAsset}
+                                        />
+                                    </td>
+                                </tr>)) : null
+                        }
+                    </tbody>
+                </table>
+                {assetsManager.isLoading ?
+                    <div className="table-info-panel">{translate('confirm.loading')}</div> :
+                    (!lists || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                 }
+
+                {/* PaginateBar */}
+                <PaginateBar
+                    display={assetsManager.listAssets ? assetsManager.listAssets.length : null}
+                    total={assetsManager.totalList ? assetsManager.totalList : null}
+                    pageTotal={pageTotal ? pageTotal : 0}
+                    currentPage={currentPage}
+                    func={setPage}
+                />
             </div>
-        );
-    }
+
+            {/* Form xem thông tin tài sản */}
+            {
+                currentRowView &&
+                <AssetDetailForm
+                    _id={currentRowView._id}
+                    avatar={currentRowView.avatar}
+                    code={currentRowView.code}
+                    assetName={currentRowView.assetName}
+                    serial={currentRowView.serial}
+                    assetType={currentRowView.assetType}
+                    group={currentRowView.group}
+                    purchaseDate={currentRowView.purchaseDate}
+                    warrantyExpirationDate={currentRowView.warrantyExpirationDate}
+                    managedBy={getPropertyOfValue(currentRowView.managedBy, '_id', true, userlist)}
+                    assignedToUser={getPropertyOfValue(currentRowView.assignedToUser, '_id', true, userlist)}
+                    assignedToOrganizationalUnit={getPropertyOfValue(currentRowView.assignedToOrganizationalUnit, '_id', true, departmentlist)}
+                    handoverFromDate={currentRowView.handoverFromDate}
+                    handoverToDate={currentRowView.handoverToDate}
+                    location={currentRowView.location}
+                    description={currentRowView.description}
+                    status={currentRowView.status}
+                    typeRegisterForUse={currentRowView.typeRegisterForUse}
+                    detailInfo={currentRowView.detailInfo}
+                    cost={currentRowView.cost}
+                    readByRoles={currentRowView.readByRoles}
+                    residualValue={currentRowView.residualValue}
+                    startDepreciation={currentRowView.startDepreciation}
+                    usefulLife={currentRowView.usefulLife}
+                    depreciationType={currentRowView.depreciationType}
+                    estimatedTotalProduction={currentRowView.estimatedTotalProduction}
+                    unitsProducedDuringTheYears={currentRowView.unitsProducedDuringTheYears}
+
+                    maintainanceLogs={currentRowView.maintainanceLogs}
+                    usageLogs={currentRowView.usageLogs}
+                    incidentLogs={currentRowView.incidentLogs}
+
+                    disposalDate={currentRowView.disposalDate}
+                    disposalType={currentRowView.disposalType}
+                    disposalCost={currentRowView.disposalCost}
+                    disposalDesc={currentRowView.disposalDesc}
+
+                    archivedRecordNumber={currentRowView.archivedRecordNumber}
+                    files={currentRowView.documents}
+                    linkPage={"management"}
+                />
+            }
+
+            {/* Form chỉnh sửa thông tin tài sản */}
+            {
+                currentRow &&
+                <AssetEditForm
+                    _id={currentRow._id}
+                    employeeId={managedBy}
+                    avatar={currentRow.avatar}
+                    code={currentRow.code}
+                    assetName={currentRow.assetName}
+                    serial={currentRow.serial}
+                    assetType={JSON.stringify(currentRow.assetType)}
+                    group={currentRow.group}
+                    purchaseDate={currentRow.purchaseDate}
+                    warrantyExpirationDate={currentRow.warrantyExpirationDate}
+                    managedBy={getPropertyOfValue(currentRow.managedBy, '_id', true, userlist)}
+                    assignedToUser={getPropertyOfValue(currentRow.assignedToUser, '_id', true, userlist)}
+                    assignedToOrganizationalUnit={getPropertyOfValue(currentRow.assignedToOrganizationalUnit, '_id', true, departmentlist)}
+                    handoverFromDate={currentRow.handoverFromDate}
+                    handoverToDate={currentRow.handoverToDate}
+                    location={currentRow.location}
+                    description={currentRow.description}
+                    status={currentRow.status}
+                    typeRegisterForUse={currentRow.typeRegisterForUse}
+                    detailInfo={currentRow.detailInfo}
+                    readByRoles={currentRow.readByRoles}
+                    cost={currentRow.cost}
+                    residualValue={currentRow.residualValue}
+                    startDepreciation={currentRow.startDepreciation}
+                    usefulLife={currentRow.usefulLife}
+                    depreciationType={currentRow.depreciationType}
+                    estimatedTotalProduction={currentRow.estimatedTotalProduction}
+                    unitsProducedDuringTheYears={currentRow.unitsProducedDuringTheYears && currentRow.unitsProducedDuringTheYears.map((x) => ({
+                        month: formatDate2(x.month),
+                        unitsProducedDuringTheYear: x.unitsProducedDuringTheYear
+                    })
+                    )}
+
+                    disposalDate={currentRow.disposalDate}
+                    disposalType={currentRow.disposalType}
+                    disposalCost={currentRow.disposalCost}
+                    disposalDesc={currentRow.disposalDesc}
+
+                    maintainanceLogs={currentRow.maintainanceLogs}
+                    usageLogs={currentRow.usageLogs}
+                    incidentLogs={currentRow.incidentLogs}
+                    archivedRecordNumber={currentRow.archivedRecordNumber}
+                    files={currentRow.documents}
+                    linkPage={"management"}
+                    page={page}
+                />
+            }
+        </div>
+    );
 };
 
 function mapState(state) {

@@ -52,7 +52,6 @@ export function tasks(state = {
                 tasks: null,
                 pages: null,
                 loadingResponsible: true,
-                isLoading: true
             };
         case taskManagementConstants.GETTASK_RESPONSIBLE_BYUSER_SUCCESS:
             return {
@@ -60,7 +59,7 @@ export function tasks(state = {
                 responsibleTasks: action.payload.tasks,
                 tasks: action.payload.tasks,
                 pages: action.payload.totalPage,
-                isLoading: false
+                loadingResponsible: false
             };
         case taskManagementConstants.GETTASK_RESPONSIBLE_BYUSER_FAILURE:
             return {
@@ -75,7 +74,6 @@ export function tasks(state = {
                 tasks: null,
                 pages: null,
                 loadingAccountable: true,
-                isLoading: true
             };
         case taskManagementConstants.GETTASK_ACCOUNTABLE_BYUSER_SUCCESS:
             return {
@@ -84,7 +82,6 @@ export function tasks(state = {
                 tasks: action.payload.tasks,
                 pages: action.payload.totalPage,
                 loadingAccountable: false,
-                isLoading: false
             };
         case taskManagementConstants.GETTASK_ACCOUNTABLE_BYUSER_FAILURE:
             return {
@@ -99,7 +96,6 @@ export function tasks(state = {
                 tasks: null,
                 pages: null,
                 loadingConsulted: true,
-                isLoading: true
             };
         case taskManagementConstants.GETTASK_CONSULTED_BYUSER_SUCCESS:
             return {
@@ -107,13 +103,13 @@ export function tasks(state = {
                 consultedTasks: action.payload.tasks,
                 tasks: action.payload.tasks,
                 pages: action.payload.totalPage,
-                isLoading: false
+                loadingConsulted: false
             };
         case taskManagementConstants.GETTASK_CONSULTED_BYUSER_FAILURE:
             return {
                 ...state,
                 error: action.error,
-                isLoading: false
+                loadingConsulted: false
             };
         case taskManagementConstants.GETTASK_INFORMED_BYUSER_REQUEST:
             return {
@@ -122,7 +118,6 @@ export function tasks(state = {
                 tasks: null,
                 pages: null,
                 loadingInformed: true,
-                isLoading: true
             };
         case taskManagementConstants.GETTASK_INFORMED_BYUSER_SUCCESS:
             return {
@@ -130,13 +125,13 @@ export function tasks(state = {
                 informedTasks: action.payload.tasks,
                 tasks: action.payload.tasks,
                 pages: action.payload.totalPage,
-                isLoading: false
+                loadingInformed: false
             };
         case taskManagementConstants.GETTASK_INFORMED_BYUSER_FAILURE:
             return {
                 ...state,
                 error: action.error,
-                isLoading: false
+                loadingInformed: false
             };
         case taskManagementConstants.GETTASK_CREATOR_BYUSER_REQUEST:
             return {
@@ -145,7 +140,6 @@ export function tasks(state = {
                 tasks: null,
                 pages: null,
                 loadingCreator: true,
-                isLoading: true
             };
         case taskManagementConstants.GETTASK_CREATOR_BYUSER_SUCCESS:
             return {
@@ -153,13 +147,13 @@ export function tasks(state = {
                 creatorTasks: action.payload.tasks,
                 tasks: action.payload.tasks,
                 pages: action.payload.totalPage,
-                isLoading: false
+                loadingCreator: false,
             };
         case taskManagementConstants.GETTASK_CREATOR_BYUSER_FAILURE:
             return {
                 ...state,
                 error: action.error,
-                isLoading: false
+                loadingCreator: false
             };
         case taskManagementConstants.ADDNEW_TASK_REQUEST:
             return {

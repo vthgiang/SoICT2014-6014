@@ -12,7 +12,7 @@ const mongoose = require("mongoose");
  * @query {*} idunit Id của đơn vị 
  */
 exports.copyKPI = async (portal, kpiId, data) => {
-    let organizationalUnitOldKPISet, checkOrganizationalUnitKpiSet;
+    let organizationalUnitOldKPISet, checkOrganizationalUnitKpiSet, parentUnitKpiSet;
     let newDate, nextNewDate;
 
     newDate = new Date(data.datenew);
@@ -44,6 +44,13 @@ exports.copyKPI = async (portal, kpiId, data) => {
                 .populate("organizationalUnit")
                 .populate({ path: "creator", select: "_id name email avatar" })
                 .populate({ path: "kpis", populate: { path: 'parent' } });
+
+            parentUnitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+                .findOne({
+                    organizationalUnit: mongoose.Types.ObjectId(organizationalUnitOldKPISet?.organizationalUnit?.parent),
+                    date: { $gte: newDate, $lt: nextNewDate }
+                })
+                .populate({ path: "kpis" });
         } else {
             organizationalUnitOldKPISet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
                 .findOne({
@@ -55,14 +62,24 @@ exports.copyKPI = async (portal, kpiId, data) => {
                 .populate({ path: "kpis" });
         }
 
-
-
         for (let i in organizationalUnitOldKPISet?.kpis) {
             if (data?.listKpiUnit?.includes(organizationalUnitOldKPISet.kpis?.[i]?._id.toString())) {
-                let target = await OrganizationalUnitKpi(connect(DB_CONNECTION, portal))
+                let target, parent;
+
+                if (data.type === 'default' ) {
+                    let parentKpi = parentUnitKpiSet?.kpis?.filter(item => {
+                        return item?.name === organizationalUnitOldKPISet.kpis[i]?.name
+                    })
+
+                    parent = parentKpi?.[0]?._id 
+                } else {    // 2 trường hợp, copy từ kpi cha hoặc copy từ đơn vị cùng cha
+                    parent = JSON.parse(data?.matchParent?.toLowerCase()) ? organizationalUnitOldKPISet.kpis[i]?._id : organizationalUnitOldKPISet.kpis[i]?.parent
+                }
+
+                target = await OrganizationalUnitKpi(connect(DB_CONNECTION, portal))
                     .create({
                         name: organizationalUnitOldKPISet.kpis[i]?.name,
-                        parent: data.type !== 'default' ? (JSON.parse(data?.matchParent?.toLowerCase()) ? organizationalUnitOldKPISet.kpis[i]?._id : organizationalUnitOldKPISet.kpis[i]?.parent) : null,
+                        parent: parent,
                         weight: organizationalUnitOldKPISet.kpis[i]?.weight,
                         criteria: organizationalUnitOldKPISet.kpis[i]?.criteria,
                         type: organizationalUnitOldKPISet.kpis[i]?.type
@@ -170,35 +187,76 @@ exports.copyParentKPIUnitToChildrenKPIEmployee = async (portal, kpiId, data) => 
 
 
 exports.calculateKpiUnit = async (portal, data) => {
-
     let kpiUnitSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal)).findOne({ _id: data.idKpiUnitSet })
-        .populate("organizationalUnit")
         .populate({ path: "creator", select: "_id name email avatar" })
         .populate({ path: "kpis", populate: { path: 'parent' } });
 
+    let employeeImportances = kpiUnitSet?.employeeImportances;
     let organizationUnitKpiAutomaticPoint = 0;
     let organizationUnitKpiEmployeePoint = 0;
     let organizationUnitKpiApprovePoint = 0;
     let totalWeight = 0;
+
+    let currentMonth = new Date(kpiUnitSet?.date);
+    let nextMonth = new Date(kpiUnitSet?.date);
+    nextMonth.setMonth(nextMonth.getMonth() + 1);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
     for (i in kpiUnitSet.kpis) {
         let organizationUnitKpi = await OrganizationalUnitKpi(connect(DB_CONNECTION, portal)).findOne({ _id: kpiUnitSet.kpis[i] });
         let weight = organizationUnitKpi.weight / 100;
         let autoPoint = 0;
         let employeePoint = 0;
         let approvedPoint = 0;
+        let totalImportance = 0;
 
-        let kpiEmployee = await EmployeeKpi(connect(DB_CONNECTION, portal)).find({ parent: organizationUnitKpi._id });
+        // Lấy tất cả mục tiêu KPI cá nhân thuộc đơn vị
+        let kpiEmployee = await EmployeeKpiSet(connect(DB_CONNECTION, portal)).aggregate([
+            { $match: 
+                { $and: [
+                    { organizationalUnit: kpiUnitSet?.organizationalUnit },
+                    { date: { $lt: nextMonth, $gte: currentMonth } }
+                ]}
+            },
+            
+            {
+                $lookup: {
+                    from: "employeekpis",
+                    localField: "kpis",
+                    foreignField: "_id",
+                    as: "employeeKpiSet"
+                }
+            },
+            {
+                $addFields: {
+                    'employeeKpiSet.creator': "$creator",
+                }
+            },
+            {
+                $unwind: {
+                    path: "$employeeKpiSet",
+                }
+            },
+            { $replaceRoot: { newRoot: "$employeeKpiSet" } }
+        ])
+
+        // let kpiEmployee = await EmployeeKpi(connect(DB_CONNECTION, portal)).find({ parent: organizationUnitKpi._id });
         for (j in kpiEmployee) {
-            autoPoint += kpiEmployee[j].automaticPoint;
-            employeePoint += kpiEmployee[j].employeePoint;
-            approvedPoint += kpiEmployee[j].approvedPoint;
+            if (Number(kpiEmployee?.[j]?.weight) > 0) {
+                let employeeImportance = employeeImportances.filter(item => item?.employee?.toString() === kpiEmployee?.[j]?.creator?.toString())?.[0];
+
+                autoPoint += kpiEmployee[j].automaticPoint * employeeImportance?.importance;
+                employeePoint += kpiEmployee[j].employeePoint * employeeImportance?.importance;
+                approvedPoint += kpiEmployee[j].approvedPoint * employeeImportance?.importance;
+
+                totalImportance += employeeImportance?.importance;
+            }
         }
-        if (kpiEmployee.length) {
-            autoPoint = autoPoint / kpiEmployee.length;
-            employeePoint = employeePoint / kpiEmployee.length;
-            approvedPoint = approvedPoint / kpiEmployee.length;
+
+        if (kpiEmployee.length && totalImportance) {
+            autoPoint = autoPoint / totalImportance;
+            employeePoint = employeePoint / totalImportance;
+            approvedPoint = approvedPoint / totalImportance;
             totalWeight += weight;
-            newWeight = weight;
         } else {
             organizationUnitKpi.weight = 0;
         }
@@ -214,16 +272,47 @@ exports.calculateKpiUnit = async (portal, data) => {
         organizationUnitKpiAutomaticPoint += autoPoint * weight;
         organizationUnitKpiEmployeePoint += employeePoint * weight;
         organizationUnitKpiApprovePoint += approvedPoint * weight;
-
-
     }
+
     // update kpiUnitSet
     kpiUnitSet.automaticPoint = Math.round(organizationUnitKpiAutomaticPoint / totalWeight ? organizationUnitKpiAutomaticPoint / totalWeight : 0);
     kpiUnitSet.employeePoint = Math.round(organizationUnitKpiEmployeePoint / totalWeight ? organizationUnitKpiEmployeePoint / totalWeight : 0);
     kpiUnitSet.approvedPoint = Math.round(organizationUnitKpiApprovePoint / totalWeight ? organizationUnitKpiApprovePoint / totalWeight : 0);
+    
     await kpiUnitSet.save();
     let childrenKpi = await EmployeeKpiService.getChildTargetByParentId(portal, { organizationalUnitKpiSetId: data.idKpiUnitSet })
+    
     return { kpiUnitSet, childrenKpi };
-
 }
 
+/** Thêm logs */
+exports.createOrganizationalUnitKpiSetLogs = async (portal, data) => {
+    const { creator, title, description, organizationalUnitKpiSetId } = data;
+
+    let log = {
+        creator: creator,
+        title: title,
+        description: description,
+    };
+
+    await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+        .updateOne(
+            { '_id': organizationalUnitKpiSetId },
+            { $push: { logs: log } },
+            { new: true }
+        )
+        .populate({ path: "logs.creator", select: "_id name emmail avatar" });
+
+    let kpiLogs = await this.getOrganizationalUnitKpiSetLogs(portal, organizationalUnitKpiSetId);
+
+    return kpiLogs;
+} 
+
+/** Lấy các logs của tập kpi đơn vị */
+exports.getOrganizationalUnitKpiSetLogs = async (portal, organizationalUnitKpiSetId) => {
+    let kpiLogs = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+        .findById(organizationalUnitKpiSetId)
+        .populate({ path: "logs.creator", select: "_id name emmail avatar" });
+
+    return kpiLogs?.logs?.reverse();
+}

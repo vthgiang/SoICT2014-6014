@@ -701,19 +701,24 @@ exports.links = [
     }, {
         url: '/hr-list-education',
         apis: ['@all']
-    }, {
-        url: '/hr-list-major',
-        apis: ['@all']
-    }, {
-        url: '/hr-list-career-position',
-        apis: ['@all']
-    }, {
-        url: '/hr-search-for-package',
+    },
+    // {
+    //     url: '/hr-list-major',
+    //     apis: ['@all']
+    // }, {
+    //     url: '/hr-list-career-position',
+    //     apis: ['@all']
+    // }, {
+    //     url: '/hr-search-for-package',
+    //     apis: ['@all']
+    // },
+    {
+        url: '/kpi-units/create-for-admin',
         apis: ['@all']
     }, {
         url: '/kpi-units/create',
         apis: ['@all']
-    }, {
+    },{
         url: '/kpi-units/dashboard',
         apis: ['@all']
     }, {
@@ -874,9 +879,13 @@ exports.links = [
         url: '/crm/customer',
         apis: ['@all']
     }, {
-        url: '/crm/lead',
+        url: '/crm/loyal-customer',
         apis: ['@all']
-    }, {
+    },{
+        url: '/crm/evaluation',
+        apis: ['@all']
+    },
+     {
         url: '/crm/group',
         apis: ['@all']
     }, {
@@ -930,10 +939,30 @@ exports.links = [
     }, {
         url: '/hr-manage-field',
         apis: ['@all']
-    }, {
-        url: '/answer-auth-questions',
+    },
+
+    //transport
+    {
+        url: '/manage-transport-requirements',
         apis: ['@all']
     },
+    {
+        url: '/manage-transport-schedule',
+        apis: ['@all']
+    },
+    {
+        url: '/manage-transport-vehical',
+        apis: ['@all']
+    },
+    {
+        url: '/manage-transport-human',
+        apis: ['@all']
+    },
+    {
+        url: '/manage-transport-route',
+        apis: ['@all']
+    },
+
     {
         url: '/projects-management',
         apis: ['@all']

@@ -1,7 +1,10 @@
 const UserService = require(`../../super-admin/user/user.service`);
 const {
     Employee,
-    AnnualLeave
+    AnnualLeave,
+    Privilege,
+    UserRole,
+    Link
 } = require('../../../models');
 
 const {
@@ -424,12 +427,33 @@ exports.createAnnualLeave = async (portal, data, company) => {
         reason: data.reason,
     });
 
-    return await AnnualLeave(connect(DB_CONNECTION, portal)).findOne({
+    let userReceiveds = [];
+    const link = await Link(connect(DB_CONNECTION, portal)).find({ url: "/hr-annual-leave" });
+    if (link.length) {
+        const privilege = await Privilege(connect(DB_CONNECTION, portal)).find({ resourceId: link[0]._id });
+        if (privilege.length) {
+            let roleIds = [];
+            for (let i in privilege) {
+                roleIds.push(privilege[i].roleId);
+            }
+            const userRoles = await UserRole(connect(DB_CONNECTION, portal)).find({ roleId: { $in: roleIds } })
+           
+            if (userRoles && userRoles.length > 0) {
+                for (let j in userRoles) {
+                    userReceiveds = [...userReceiveds, userRoles[j].userId];
+                }
+            }
+        }
+    }
+
+    const result =  await AnnualLeave(connect(DB_CONNECTION, portal)).findOne({
         _id: createAnnualLeave._id
     }).populate([{
         path: 'employee',
         select: 'emailInCompany fullName employeeNumber'
     }])
+
+    return {result, userReceiveds}
 }
 
 /**

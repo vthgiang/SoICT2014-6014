@@ -25,10 +25,10 @@ function EditForm(props) {
         validateCategory(value[0], true);
     }
 
-    function handleDomains(value) {
-        setState({
+    const handleDomains = (value) => {
+        state.documentDomains=[].concat(value)
+         setState({
             ...state,
-            documentDomains: value
         });
     }
     function handleArchives(value) {
@@ -405,13 +405,13 @@ function EditForm(props) {
                 description += nameRole[0].text + " ";
             }
         }
-        if (documentUserCanView !== props.documentUserCanView) {
+        if (!compareArray(documentUserCanView, props.documentUserCanView)) {
             if (!title.includes("Chỉnh sửa phân quyền người xem")) {
                 title += "Chỉnh sửa phân quyền người xem. "
             }
             description += "Các phân quyền người xem mới: "
             for (let i = 0; i < documentUserCanView.length; i++) {
-                formData.append('roles[]', documentUserCanView[i]);
+                formData.append('userCanView[]', documentUserCanView[i]);
                 let nameRole = userList.filter(item => item.value === documentUserCanView[i])
                 description += nameRole[0].text + " ";
             }
@@ -505,19 +505,14 @@ function EditForm(props) {
                 documentIssuingBody: props.documentIssuingBody,
                 documentOfficialNumber: props.documentOfficialNumber,
                 documentSigner: props.documentSigner,
-    
                 documentVersions: props.documentVersions,
-    
                 documentRelationshipDescription: props.documentRelationshipDescription,
-                relatedDocuments: props.documentRelationshipDocuments.map(item => item.id),
-    
+                relatedDocuments: props.documentRelationshipDocuments,
                 documentRoles: props.documentRoles,
                 documentUserCanView: props.documentUserCanView,
-    
                 documentArchivedRecordPlaceInfo: props.documentArchivedRecordPlaceInfo,
                 documentArchivedRecordPlaceOrganizationalUnit: props.documentArchivedRecordPlaceOrganizationalUnit,
                 documentArchivedRecordPlaceManager: props.documentArchivedRecordPlaceManager,
-    
                 errorName: undefined,
             })
         } else {
@@ -529,7 +524,6 @@ function EditForm(props) {
             }
         }
     }, [props.documentId,props.documentVersions.length])
-    
 
     function requestDownloadDocumentFile(id, fileName, numberVersion) {
         props.downloadDocumentFile(id, fileName, numberVersion);
@@ -574,16 +568,24 @@ function EditForm(props) {
     }
 
     const updateDocumentVersions = async (version) => {
-        let { documentVersions } = state;
-        for (let i in documentVersions) {
-            if (documentVersions[i]._id === version._id) {
-                documentVersions[i] = version
+        let index= state.documentVersions.findIndex(value=>value._id=== version._id)
+        let documentVersionsCurrent = state.documentVersions[index]
+        
+            if (version.file){
+                documentVersionsCurrent.file=version.file
             }
-        }
-
+        
+            if (version.scannedFileOfSignedDocument){
+                documentVersionsCurrent.scannedFileOfSignedDocument=version.scannedFileOfSignedDocument
+            }
+            documentVersionsCurrent.effectiveDate= version.effectiveDate
+            documentVersionsCurrent.expiredDate=version.expiredDate
+            documentVersionsCurrent.issuingDate=version.issuingDate
+            documentVersionsCurrent.versionName=version.versionName
+            state.documentVersions[index]=documentVersionsCurrent
+        
         setState({
             ...state,
-            documentVersions: documentVersions
         });
     }
     const formatDate = (date, monthYear = false) => {
@@ -616,13 +618,11 @@ function EditForm(props) {
         documentRoles, documentArchives, documentUserCanView,
         documentArchivedRecordPlaceOrganizationalUnit, currentVersion, errorOfficialNumber
     } = state;
-    const version= useSelector(state=>state)
     const { errorName } = state;
     const { translate, role, documents, department, documentRelationshipDocuments, user } = props;
     const categories = documents.administration.categories.list.map(category => { return { value: category._id, text: category.name } });
     const { list } = documents.administration.domains;
     const roleList = role.list.map(role => { return { value: role._id, text: role.name } });
-
     let tmpMap = {};
     let relationshipDocs = documents.administration.relationshipDocs.paginate.map(
         doc => {
@@ -710,6 +710,7 @@ function EditForm(props) {
                                             <TreeSelect
                                                 data={list}
                                                 value={documentDomains}
+                                                type="1"
                                                 handleChange={handleDomains}
                                                 mode="hierarchical"
                                             />
@@ -880,11 +881,11 @@ function EditForm(props) {
                                         <div className="form-group">
                                             <label>{translate('document.store.information')}</label>
                                             <TreeSelect
-                                                data={archives}
-                                                value={documentArchives}
-                                                handleChange={handleArchives}
-                                                mode="hierarchical"
-                                            />
+                                                    data={archives}
+                                                    value={documentArchives}
+                                                    handleChange={handleArchives}
+                                                    mode="hierarchical"
+                                                />
                                             {path && path.length ? path.map((y, index) =>
                                                 <div key={index}>{y}</div>
                                             ) : null}

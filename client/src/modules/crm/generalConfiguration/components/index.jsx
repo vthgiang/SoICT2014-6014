@@ -89,7 +89,7 @@ class GeneralConfiguration extends Component {
                                 <ul className="nav nav-tabs-left">
                                     <li className="active"><a href="#customer-status" data-toggle="tab" >{translate('crm.customer.status')}</a></li>
                                     <li> <a href="#customer-caretype" data-toggle="tab">{translate('crm.care.careType')}</a> </li>
-                                    <li> <a href="#customer-statusCareTask" data-toggle="tab">Trạng thái công việc cskh</a> </li>
+                                   
                                 </ul>
                             </div>
                             <div className="tab-content tab-content-right">
@@ -131,13 +131,51 @@ class GeneralConfiguration extends Component {
                                 </div>
                                 <div id={`customer-caretype`} className="tab-pane">
                                     <div className="description-box">
-
+                                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                            <h4 class="box-title" style={{ color: 'rgb(68,68,68)' }}>Danh sách các loại hoạt động CSKH</h4>
+                                            <CustomerStatusAddForm />
+                                        </div>
+                                        <ul id="sortItem" className="todo-list">
+                                            <li>
+                                                <a data-toggle="collapse" >
+                                                    <span style={{ margin: '0 5px', display: 'inline-block' }}>
+                                                       1. 
+                                                    </span>
+                                                    <span className='text'> Gọi điện thoại</span>
+                                                    <div className="tools">
+                                                        <i className="fa fa-edit" title="Chỉnh sửa trạng thái"></i>
+                                                        <i className="fa fa-trash-o" title="Xóa trạng thái"></i>
+                                                    </div>
+                                                </a>
+                                            </li>
+                                          < li>
+                                                <a data-toggle="collapse" >
+                                                    <span style={{ margin: '0 5px', display: 'inline-block' }}>
+                                                       2. 
+                                                    </span>
+                                                    <span className='text'> Nhắn tin</span>
+                                                    <div className="tools">
+                                                        <i className="fa fa-edit" title="Chỉnh sửa trạng thái"></i>
+                                                        <i className="fa fa-trash-o" title="Xóa trạng thái"></i>
+                                                    </div>
+                                                </ a>
+                                            </li>
+                                            < li>
+                                                <a data-toggle="collapse" >
+                                                    <span style={{ margin: '0 5px', display: 'inline-block' }}>
+                                                       3. 
+                                                    </span>
+                                                    <span className='text'>Hẹn gặp mặt</span>
+                                                    <div className="tools">
+                                                        <i className="fa fa-edit" title="Chỉnh sửa trạng thái"></i>
+                                                        <i className="fa fa-trash-o" title="Xóa trạng thái"></i>
+                                                    </div>
+                                                </ a>
+                                            </li>
+                                        </ul>
                                     </div>
                                 </div>
-                                <div id={`customer-statusCareTask`} className="tab-pane">
-                                    <div className="description-box">
-                                    </div>
-                                </div>
+                                
                             </div>
                         </div>
                     </div>

@@ -18,10 +18,6 @@ module.exports = {
     Timesheet: require('./human-resource/timesheet.model'),
     Field: require('./human-resource/field.model'),
 
-    Major: require('./human-resource/major.model'),
-    CareerPosition: require('./human-resource/careerPosition.model'),
-    CareerField: require('./human-resource/careerField.model'),
-    CareerAction: require('./human-resource/careerAction.model'),
 
     EmployeeKpi: require('./kpi/employeeKpi.model'),
     EmployeeKpiSet: require('./kpi/employeeKpiSet.model'),
@@ -116,8 +112,9 @@ module.exports = {
     PurchasingRequest: require('./production/manufacturing/purchasingRequest.model'),
     WorkSchedule: require('./production/manufacturing/workSchedule.model'),
 
+    // transport
+    TransportRequirement: require('./production/transport/transportRequirements.model'),
     // project
-
     Project: require('./project/project.model'),
 
     // news feed

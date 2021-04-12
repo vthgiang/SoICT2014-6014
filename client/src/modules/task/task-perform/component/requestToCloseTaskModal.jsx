@@ -18,7 +18,7 @@ function RequestToCloseTaskModal(props) {
     })
 
     let requestToCloseTask;
-    
+
     if (task) {
         requestToCloseTask = task.requestToCloseTask;
     }
@@ -79,14 +79,14 @@ function RequestToCloseTaskModal(props) {
                         {(requestToCloseTask.requestStatus === 0 || requestToCloseTask.requestStatus === 2)
                             ? <button className="btn btn-success" onClick={() => sendRequestCloseTask()}>{translate('task.task_perform.send_request_close_task')}</button>
                             : requestToCloseTask && requestToCloseTask.requestStatus === 1
-                                && <button className="btn btn-danger" onClick={() => cancelRequestCloseTask()}>{translate('task.task_perform.cancel_request_close_task')}</button>
+                            && <button className="btn btn-danger" onClick={() => cancelRequestCloseTask()}>{translate('task.task_perform.cancel_request_close_task')}</button>
                         }
                     </div>
                     : role === 'accountable' && requestToCloseTask && requestToCloseTask.requestStatus === 1
-                        && <div style={{ textAlign: 'right' }}>
-                            <button className="btn btn-success" onClick={() => approvalRequestCloseTask()}>{translate('task.task_perform.approval_request_close_task')}</button>
-                            <button className="btn btn-danger" onClick={() => declineRequestCloseTask()} style={{ marginLeft: '5px' }}>{translate('task.task_perform.decline_request_close_task')}</button>
-                        </div>
+                    && <div style={{ textAlign: 'right' }}>
+                        <button className="btn btn-success" onClick={() => approvalRequestCloseTask()}>{translate('task.task_perform.approval_request_close_task')}</button>
+                        <button className="btn btn-danger" onClick={() => declineRequestCloseTask()} style={{ marginLeft: '5px' }}>{translate('task.task_perform.decline_request_close_task')}</button>
+                    </div>
                 }
                 <div className="form-group">
                     <label style={{ marginRight: '5px' }}>{translate('task.task_perform.status_task_close')}</label>

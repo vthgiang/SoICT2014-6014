@@ -419,10 +419,16 @@ const GeneralTaskChart = (props) => {
         }
     }
 
+    const removeTaskStatusFinished = (data) => {
+        if (data && data.length > 0) {
+            return data.filter(o => o.status !== "finished");
+        } else return data;
+    }
+
     return (
         <React.Fragment>
             <ViewAllGeneralTask showDetailTask={showDetailTask} />
-            <DataTableSetting className="pull-right" tableId='generalTaskUnit' tableContainerId="tree-table-container" tableWidth="1300px"
+            <DataTableSetting className="pull-right" tableId='general-list-task' tableContainerId="tree-table-container" tableWidth="1300px"
                 columnArr={[
                     translate('task.task_dashboard.unit'),
                     translate('task.task_dashboard.all_tasks'),
@@ -434,6 +440,7 @@ const GeneralTaskChart = (props) => {
                     translate('task.task_dashboard.delay_task'),
                     translate('task.task_dashboard.overdue_task')
                 ]}
+                linePerPageOption={false}
             />
             <div className="general_task_unit" id="general-list-task-wrapper">
                 <table id='general-list-task' className="table table-striped table-bordered table-hover">
@@ -452,7 +459,7 @@ const GeneralTaskChart = (props) => {
                     </thead>
                     <tbody>
                         {
-                            state.map((x, index) => {
+                            state.filter(o => o.name).map((x, index) => {
                                 return (
                                     <tr key={index} style={{ fontWeight: x.organization ? 600 : 500, display: x.show ? "table-row" : "none", }} >
                                         <td style={{ display: x.parent === true ? 'flex' : 'table-cell', cursor: 'pointer', paddingLeft: x.parent === true ? '8px' : '30px' }} onClick={() => toggleCollapse(x?._id, x.parent)}>
@@ -467,7 +474,7 @@ const GeneralTaskChart = (props) => {
                                         <td><a onClick={() => handleShowGeneralTask(x.taskInprocess, x.name, index, 'taskInprocess')}>{x.taskInprocess.length}</a></td>
                                         <td><a onClick={() => handleShowGeneralTask(x.taskFinished, x.name, index, 'taskFinished')} className="text-green">{x.taskFinished.length}</a></td>
                                         <td><a onClick={() => handleShowGeneralTask(x.confirmedTask, x.name, index, 'confirmedTask')}>{x.confirmedTask.length}</a></td>
-                                        <td><a onClick={() => handleShowGeneralTask(x.noneUpdateTask, x.name, index, 'noneUpdateTask')}>{x.noneUpdateTask.length}</a></td>
+                                        <td><a onClick={() => handleShowGeneralTask(removeTaskStatusFinished(x.noneUpdateTask), x.name, index, 'noneUpdateTask')}>{removeTaskStatusFinished(x.noneUpdateTask).length}</a></td>
                                         <td><a onClick={() => handleShowGeneralTask(x.intimeTask, x.name, index, 'intimeTask')} className="text-success">{x.intimeTask.length}</a></td>
                                         <td><a onClick={() => handleShowGeneralTask(x.delayTask, x.name, index, 'delayTask')} className="text-yellow">{x.delayTask.length}</a></td>
                                         <td><a onClick={() => handleShowGeneralTask(x.overdueTask, x.name, index, 'overdueTask')} className="text-red">{x.overdueTask.length}</a></td>

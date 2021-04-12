@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, SlimScroll } from '../../../common-components';
+import { DialogModal } from '../../../common-components';
 import dayjs from 'dayjs';
 import { getRoleInTask, checkPrioritySetColor, formatPriority, getProjectName } from '../../../helpers/taskModuleHelpers';
 
@@ -16,7 +16,7 @@ const ViewAllTasks = (props) => {
         return dayjs(date).format("DD-MM-YYYY hh:mm A")
     }
     const { translate, project } = props;
-    const { noneUpdateTask, notLinkedTasks, taskHasActionsAccountable, taskHasActionsResponsible, taskHasNotEvaluationResultIncurrentMonth, unconfirmedTask } = props.listAlarmTask;
+    const { noneUpdateTask, notLinkedTasks, taskHasActionsAccountable, taskHasActionsResponsible, taskHasNotEvaluationResultIncurrentMonth, unconfirmedTask, taskHasNotApproveResquestToClose } = props.listAlarmTask;
 
     return (
         <React.Fragment>
@@ -36,6 +36,7 @@ const ViewAllTasks = (props) => {
                             <li><a className="alarm-tabs-type" href="#allGeneralTaskHasActionsResponsible" data-toggle="tab" >Chưa được đánh giá hoạt động<span>{`(${taskHasActionsResponsible ? taskHasActionsResponsible.length : 0})`}</span></a></li>
                             <li><a className="alarm-tabs-type" href="#allGeneralTaskHasActionsAccountable" data-toggle="tab" >Cần đánh giá công việc<span>{`(${taskHasActionsAccountable ? taskHasActionsAccountable.length : 0})`}</span></a></li>
                             <li><a className="alarm-tabs-type" href="#allGeneralTaskHasEvaluationInMonth" data-toggle="tab" >Chưa có kết quả đánh giá tháng hiện tại<span>{`(${taskHasNotEvaluationResultIncurrentMonth ? taskHasNotEvaluationResultIncurrentMonth.length : 0})`}</span></a></li>
+                            <li><a className="alarm-tabs-type" href="#allGeneralTaskHasNotApproveRequestToClose" data-toggle="tab" >Chưa phê duyệt kết thúc<span>{`(${taskHasNotApproveResquestToClose ? taskHasNotApproveResquestToClose.length : 0})`}</span></a></li>
                         </ul>
                         <div className="tab-content" id="general-tasks-wraper">
                             <div className="tab-pane active notifi-tab-pane" id="allGeneralNoneUpdate">
@@ -309,6 +310,55 @@ const ViewAllTasks = (props) => {
                                                                 }
                                                             </a>
                                                             <div id={`collapse-notevaluation${index}`} className="panel-collapse collapse" role="tabpanel">
+                                                                <div className="panel-body">
+                                                                    <div className="time-todo-range">
+                                                                        <span style={{ marginRight: '10px' }}>Thời gian thực hiện công việc: </span> <span style={{ marginRight: '5px' }}><i className="fa fa-clock-o" style={{ marginRight: '1px', color: "rgb(191 71 71)" }}> </i> {formatTime(obj.startDate)}</span> <span style={{ marginRight: '5px' }}>-</span> <span> <i className="fa fa-clock-o" style={{ marginRight: '4px', color: "rgb(191 71 71)" }}> </i>{formatTime(obj.endDate)}</span>
+                                                                    </div>
+                                                                    <div className="priority-task-wraper">
+                                                                        <span style={{ marginRight: '10px' }}>Độ ưu tiên công việc: </span>
+                                                                        <span style={{ color: checkPrioritySetColor(obj.priority) }}>{formatPriority(obj.priority, translate)}</span>
+                                                                    </div>
+                                                                    <div className="progress-task-wraper">
+                                                                        <span style={{ marginRight: '10px' }}>Tiến độ hiện tại: </span>
+                                                                        <div className="progress-task">
+                                                                            <div className="fillmult" data-width={`${obj.progress}%`} style={{ width: `${obj.progress}%`, backgroundColor: obj.progress < 50 ? "#dc0000" : "#28a745" }}></div>
+                                                                            <span className="perc">{obj.progress}%</span>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div className="role-in-task">
+                                                                        <span style={{ marginRight: '10px' }}>Vai trò trong công việc: </span>
+                                                                        <span>{getRoleInTask(state.userId, obj, translate)}</span>
+                                                                    </div>
+                                                                    <a href={`/task?taskId=${obj._id}`} target="_blank" className="seemore-task">Xem chi tiết</a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    )) : <small style={{ color: "#696767" }}>{translate('task.task_dashboard.no_task')}</small>
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            <div className="tab-pane notifi-tab-pane" id="allGeneralTaskHasNotApproveRequestToClose">
+                                {
+                                    taskHasNotApproveResquestToClose &&
+                                    <div className="faqs-page block ">
+                                        <div className="panel-group" id="accordion-notevaluation" role="tablist" aria-multiselectable="true" style={{ marginBottom: 0 }}>
+                                            {
+                                                (taskHasNotApproveResquestToClose.length !== 0) ?
+                                                    taskHasNotApproveResquestToClose.map((obj, index) => (
+                                                        <div className="panel panel-default" key={index}>
+                                                            <a role="button" className="item-question collapsed" data-toggle="collapse" data-parent="#accordion-notevaluation" href={`#collapse-requested-to-close${index}`} aria-expanded="true" aria-controls="collapse1a">
+                                                                <span className="index">{index + 1}</span>
+                                                                <span className="task-name">{obj.name}</span>
+                                                                {
+                                                                    obj.taskProject &&
+                                                                    <><i className="fa fa-angle-right angle-right-custom" aria-hidden="true"></i>
+                                                                        <a className="task-project-name" title="dự án">{getProjectName(obj.taskProject, project && project.data && project.data.list)}</a></>
+                                                                }
+                                                            </a>
+                                                            <div id={`collapse-requested-to-close${index}`} className="panel-collapse collapse" role="tabpanel">
                                                                 <div className="panel-body">
                                                                     <div className="time-todo-range">
                                                                         <span style={{ marginRight: '10px' }}>Thời gian thực hiện công việc: </span> <span style={{ marginRight: '5px' }}><i className="fa fa-clock-o" style={{ marginRight: '1px', color: "rgb(191 71 71)" }}> </i> {formatTime(obj.startDate)}</span> <span style={{ marginRight: '5px' }}>-</span> <span> <i className="fa fa-clock-o" style={{ marginRight: '4px', color: "rgb(191 71 71)" }}> </i>{formatTime(obj.endDate)}</span>

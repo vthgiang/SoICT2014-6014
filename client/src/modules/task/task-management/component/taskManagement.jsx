@@ -18,7 +18,7 @@ import { TaskAddModal } from './taskAddModal';
 import { ModalPerform } from '../../task-perform/component/modalPerform';
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
 import { convertDataToExportData, getTotalTimeSheetLogs, formatPriority, formatStatus } from './functionHelpers';
-
+import TaskListView from './taskListView';
 class TaskManagement extends Component {
     constructor(props) {
         let userId = getStorage("userId");
@@ -26,20 +26,24 @@ class TaskManagement extends Component {
         const tableId = "tree-table-task-management";
         const defaultConfig = { limit: 20, hiddenColumns: ["2", "7", "8"] }
         const limit = getTableConfiguration(tableId, defaultConfig).limit;
+        // lấy giá trị từ dashboard công việc cá nhân
+        const stateFromTaskDashboard = JSON.parse(localStorage.getItem("stateFromTaskDashboard"));
+        localStorage.removeItem("stateFromTaskDashboard");
+
         this.state = {
             displayType: 'table',
             perPage: limit,
             currentPage: 1,
             tableId,
 
-            currentTab: ["responsible", "accountable"],
+            currentTab: stateFromTaskDashboard && stateFromTaskDashboard.roles && stateFromTaskDashboard.roles.length > 0 ? stateFromTaskDashboard.roles : ["responsible", "accountable"],
             organizationalUnit: [],
-            status: ["inprocess", "wait_for_approval"],
+            status: stateFromTaskDashboard && stateFromTaskDashboard.status && stateFromTaskDashboard.status.length > 0 ? stateFromTaskDashboard.status : ["inprocess", "wait_for_approval"],
             priority: [],
             special: [],
             name: "",
-            startDate: "",
-            endDate: "",
+            startDate: stateFromTaskDashboard && stateFromTaskDashboard.startDate ? stateFromTaskDashboard.startDate : "",
+            endDate: stateFromTaskDashboard && stateFromTaskDashboard.endDate ? stateFromTaskDashboard.endDate : "",
             startDateAfter: "",
             endDateBefore: "",
             startTimer: false,
@@ -63,7 +67,7 @@ class TaskManagement extends Component {
 
     shouldComponentUpdate(nextProps, nextState) {
         let { currentTab, organizationalUnit, status, priority, special, name, startDate, endDate } = this.state;
-
+        console.log('should', nextProps.history.location.state)
         if (currentTab !== nextState.currentTab ||
             organizationalUnit !== nextState.organizationalUnit ||
             status !== nextState.status ||
@@ -385,10 +389,17 @@ class TaskManagement extends Component {
             case 'table':
                 window.$('#tree-table-container').show();
                 window.$('#tasks-list-tree').hide();
+                window.$('#tasks-list').hide();
+                break;
+            case 'list':
+                window.$('#tasks-list').show();
+                window.$('#tree-table-container').hide();
+                window.$('#tasks-list-tree').hide();
                 break;
             default:
                 window.$('#tree-table-container').hide();
                 window.$('#tasks-list-tree').show();
+                window.$('#tasks-list').hide();
                 break;
         }
     }
@@ -448,7 +459,7 @@ class TaskManagement extends Component {
         const { tasks, user, translate, project } = this.props;
         const { currentTaskId, currentPage, currentTab, parentTask, startDate, endDate, perPage, status, monthTimeSheetLog, tableId, responsibleEmployees, creatorTime, projectSearch } = this.state;
         let currentTasks, units = [];
-
+        console.log('redener', this.props.history.location.state)
         if (tasks) {
             currentTasks = tasks.tasks;
         }
@@ -613,14 +624,14 @@ class TaskManagement extends Component {
         }
 
         let exportData = convertDataToExportData(translate, currentTasks, translate("menu.task_management"));
-
         return (
             <React.Fragment>
                 <div className="box">
                     <div className="box-body qlcv">
                         <div style={{ height: "40px" }}>
-                            <button className="btn btn-primary" type="button" style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }} title="Dạng bảng" onClick={() => this.handleDisplayType('table')}><i className="fa fa-list"></i> Dạng bảng</button>
+                            <button className="btn btn-primary" type="button" style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }} title="Dạng bảng" onClick={() => this.handleDisplayType('table')}><i className="fa fa-table"></i> Dạng bảng</button>
                             <button className="btn btn-primary" type="button" style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }} title="Dạng cây" onClick={() => this.handleDisplayType('tree')}><i className="fa fa-sitemap"></i> Dạng cây</button>
+                            <button className="btn btn-primary" type="button" style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }} title="Dạng danh sách" onClick={() => this.handleDisplayType('list')}><i className="fa fa-list"></i> Dạng danh sách</button>
                             <button className="btn btn-primary" type="button" style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }} onClick={() => { window.$('#tasks-filter').slideToggle() }}><i className="fa fa-filter"></i> Lọc</button>
 
                             {exportData && <ExportExcel id="list-task-employee" buttonName="Báo cáo" exportData={exportData} style={{ marginLeft: '10px' }} />}
@@ -652,7 +663,7 @@ class TaskManagement extends Component {
                                         { value: "wait_for_approval", text: translate('task.task_management.wait_for_approval') },
                                         { value: "finished", text: translate('task.task_management.finished') },
                                         { value: "delayed", text: translate('task.task_management.delayed') },
-                                        { value: "canceled", text: translate('task.task_management.canceled') }
+                                        { value: "canceled", text: translate('task.task_management.canceled') },
                                     ]}
                                     onChange={this.handleSelectStatus}
                                     options={{ nonSelectedText: translate('task.task_management.select_status'), allSelectedText: translate('task.task_management.select_all_status') }}>
@@ -693,6 +704,7 @@ class TaskManagement extends Component {
                                     items={[
                                         { value: "stored", text: translate('task.task_management.stored') },
                                         { value: "currentMonth", text: translate('task.task_management.current_month') },
+                                        { value: "request_to_close", text: "Chưa phê duyệt kết thúc" },
                                     ]}
                                     onChange={this.handleSelectSpecial}
                                     options={{ nonSelectedText: translate('task.task_management.select_special'), allSelectedText: translate('task.task_management.select_all_special') }}>
@@ -850,6 +862,21 @@ class TaskManagement extends Component {
                                 onChanged={this.handleShowTask}
                                 data={dataTree}
                             />
+                        </div>
+
+                        <div id="tasks-list" style={{ display: 'none', marginTop: '30px' }}>
+                            {
+                                currentTasks &&
+                                <TaskListView
+                                    data={currentTasks}
+                                    project={project}
+                                    funcEdit={this.handleShowModal}
+                                    funcAdd={this.handleAddTask}
+                                    funcStartTimer={this.startTimer}
+                                    funcStore={this.handleStore}
+                                    funcDelete={this.handleDelete}
+                                />
+                            }
                         </div>
 
                         <PaginateBar

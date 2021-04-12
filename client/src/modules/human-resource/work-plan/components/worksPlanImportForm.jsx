@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -10,41 +10,40 @@ import { WorkPlanActions } from '../redux/actions';
 import { AuthActions } from '../../../auth/redux/actions';
 
 
-class WorkPlanImportForm extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            configData: configurationWorkPlan.configurationImport(this.props.translate),
-            checkFileImport: true,
-            rowError: [],
-            importData: [],
-            month: null,
-            limit: 100,
-            page: 0
-        };
-    }
+const WorkPlanImportForm = (props) => {
+    const { translate } = props;
+    
+    const [state, setState] = useState({
+        configData: configurationWorkPlan.configurationImport(translate),
+        checkFileImport: true,
+        rowError: [],
+        importData: [],
+        month: null,
+        limit: 100,
+        page: 0
+    });
 
-    componentDidUpdate() {
-        const { workPlan } = this.props;
+    useEffect(() => {
+        const { workPlan } = props;
         workPlan.importStatus && window.$(`#modal_import_file`).modal("hide");
-    }
-
+    }, []);
     /**
      * Function Thay đổi cấu hình file import
      * @param {*} value : Dữ liệu cấu hình file import
      */
-    handleChangeConfig = (value) => {
-        this.setState({
+    const handleChangeConfig = (value) => {
+        setState(state => ({
+            ...state,
             configData: value,
-            importData: [],
-        })
+            importData: []
+        }))
     }
 
     /**
      * Convert dữ liệu date trong excel thành dạng dd-mm-yyyy
      * @param {*} serial : seri ngày cần format
      */
-    convertExcelDateToJSDate = (serial) => {
+    const convertExcelDateToJSDate = (serial) => {
         let utc_days = Math.floor(serial - 25569);
         let utc_value = utc_days * 86400;
         let date_info = new Date(utc_value * 1000);
@@ -62,11 +61,11 @@ class WorkPlanImportForm extends Component {
      * @param {*} value : Dữ liệu import
      * @param {*} checkFileImport : true file import hợp lệ, false file import không hợp lệ
      */
-    handleImportExcel = (value, checkFileImport) => {
-        const { translate } = this.props;
+    const handleImportExcel = (value, checkFileImport) => {
+        const { translate } = props;
         value = value.map(x => {
-            let startDate = typeof x.startDate === 'string' ? x.startDate : this.convertExcelDateToJSDate(x.startDate);
-            let endDate = typeof x.endDate === 'string' ? x.endDate : this.convertExcelDateToJSDate(x.endDate);
+            let startDate = typeof x.startDate === 'string' ? x.startDate : convertExcelDateToJSDate(x.startDate);
+            let endDate = typeof x.endDate === 'string' ? x.endDate : convertExcelDateToJSDate(x.endDate);
             let type = x.type;
             switch (type) {
                 case translate('human_resource.work_plan.time_for_holiday'):
@@ -109,22 +108,24 @@ class WorkPlanImportForm extends Component {
                 return x;
             });
 
-            this.setState({
+            setState(state => ({
+                ...state,
                 importData: value,
                 rowError: rowError,
-                checkFileImport: checkFileImport,
-            })
+                checkFileImport: checkFileImport
+            }))
         } else {
-            this.setState({
-                checkFileImport: checkFileImport,
-            })
+            setState(state => ({
+                ...state,
+                checkFileImport: checkFileImport
+            }))
         }
     }
 
     /** Function kiểm tra lỗi của các dữ liệu nhập vào để undisable submit form */
-    isFormValidated = () => {
-        let { rowError, importData } = this.state;
-        const { workPlan } = this.props;
+    const isFormValidated = () => {
+        let { rowError, importData } = state;
+        const { workPlan } = props;
         if (workPlan.error.rowError !== undefined) {
             rowError = workPlan.error.rowError;
             importData = workPlan.error.data
@@ -135,8 +136,9 @@ class WorkPlanImportForm extends Component {
     }
 
     /** function import dữ liệu */
-    save = () => {
-        let { importData } = this.state;
+    const save = () => {
+        const { importWorkPlan } = props;
+        let { importData } = state;
         let data = importData;
         for (let n in data) {
             let partStart = data[n].startDate.split('-');
@@ -145,7 +147,7 @@ class WorkPlanImportForm extends Component {
             let endDate = [partEnd[2], partEnd[1], partEnd[0]].join('-');
             data[n] = { ...data[n], startDate: startDate, endDate: endDate };
         };
-        this.props.importWorkPlan(data);
+        importWorkPlan(data);
     }
 
     /**
@@ -154,84 +156,83 @@ class WorkPlanImportForm extends Component {
      * @param {*} path : Đường dẫn file
      * @param {*} fileName : Tên file dùng đê lưu
      */
-    requestDownloadFile = (e, path, fileName) => {
+    const requestDownloadFile = (e, path, fileName) => {
+        const { downloadFile } = props;
         e.preventDefault()
-        this.props.downloadFile(path, fileName)
+        downloadFile(path, fileName)
     }
 
-    render() {
-        const { translate, workPlan } = this.props;
+    const { workPlan } = props;
 
-        let { limit, page, importData, rowError, configData, checkFileImport } = this.state;
+    let { limit, page, importData, rowError, configData, checkFileImport } = state;
 
-        if (workPlan.error.rowError !== undefined) {
-            rowError = workPlan.error.rowError;
-            importData = workPlan.error.data
-        };
+    if (workPlan.error.rowError !== undefined) {
+        rowError = workPlan.error.rowError;
+        importData = workPlan.error.data
+    };
 
-        importData = importData.map(x => {
-            x = { ...x, type: translate(`human_resource.work_plan.${x.type}`) }
-            return x;
-        })
+    importData = importData.map(x => {
+        x = { ...x, type: translate(`human_resource.work_plan.${x.type}`) }
+        return x;
+    })
 
-        let exportData = configurationWorkPlan.templateImport(translate);
+    let exportData = configurationWorkPlan.templateImport(translate);
 
-        return (
-            <React.Fragment>
-                <DialogModal
-                    modalID={`modal_import_file`} isLoading={false}
-                    formID={`form_import_file`}
-                    title={translate('human_resource.add_data_by_excel')}
-                    func={this.save}
-                    disableSubmit={!this.isFormValidated()}
-                    closeOnSave={false}
-                    size={75}
-                >
-                    <form className="form-group" id={`form_import_file`}>
-                        {/* Cấu hình file import */}
-                        <ConFigImportFile
-                            id="import_salary_config"
-                            configData={configData}
-                            textareaRow={8}
-                            scrollTable={false}
-                            handleChangeConfig={this.handleChangeConfig}
-                        />
-                        <div className="row">
-                            {/* Chọn file import */}
-                            <div className="form-group col-md-4 col-xs-12 col-sm-12">
-                                <label>{translate('human_resource.choose_file')}</label>
-                                <ImportFileExcel
-                                    configData={configData}
-                                    handleImportExcel={this.handleImportExcel}
-                                />
-                            </div>
-
-                            {/* Dowload file import mẫu */}
-                            <div className="form-group pull-right col-md-4 col-xs-12 col-sm-12">
-                                <ExportExcel id="download_template_salary" type='link' exportData={exportData}
-                                    buttonName={` ${translate('human_resource.download_file')}`} />
-
-                            </div>
-
-                            {/* Hiện thị dữ liệu import */}
-                            <div className="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                <ShowImportData
-                                    id="import_salary_show_data"
-                                    configData={configData}
-                                    importData={importData}
-                                    rowError={rowError}
-                                    scrollTable={false}
-                                    checkFileImport={checkFileImport}
-                                    limit={limit}
-                                    page={page}
-                                />
-                            </div>
+    return (
+        <React.Fragment>
+            <DialogModal
+                modalID={`modal_import_file`} isLoading={false}
+                formID={`form_import_file`}
+                title={translate('human_resource.add_data_by_excel')}
+                func={save}
+                disableSubmit={!isFormValidated()}
+                closeOnSave={false}
+                size={75}
+            >
+                <form className="form-group" id={`form_import_file`}>
+                    {/* Cấu hình file import */}
+                    <ConFigImportFile
+                        id="import_salary_config"
+                        configData={configData}
+                        textareaRow={8}
+                        scrollTable={false}
+                        handleChangeConfig={handleChangeConfig}
+                    />
+                    <div className="row">
+                        {/* Chọn file import */}
+                        <div className="form-group col-md-4 col-xs-12 col-sm-12">
+                            <label>{translate('human_resource.choose_file')}</label>
+                            <ImportFileExcel
+                                configData={configData}
+                                handleImportExcel={handleImportExcel}
+                            />
                         </div>
-                    </form>
-                </DialogModal>
-            </React.Fragment >
-        );
-    }
+
+                        {/* Dowload file import mẫu */}
+                        <div className="form-group pull-right col-md-4 col-xs-12 col-sm-12">
+                            <ExportExcel id="download_template_salary" type='link' exportData={exportData}
+                                buttonName={` ${translate('human_resource.download_file')}`} />
+
+                        </div>
+
+                        {/* Hiện thị dữ liệu import */}
+                        <div className="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <ShowImportData
+                                id="import_salary_show_data"
+                                configData={configData}
+                                importData={importData}
+                                rowError={rowError}
+                                scrollTable={false}
+                                checkFileImport={checkFileImport}
+                                limit={limit}
+                                page={page}
+                            />
+                        </div>
+                    </div>
+                </form>
+            </DialogModal>
+        </React.Fragment >
+    );
 };
 
 function mapState(state) {

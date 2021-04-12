@@ -1,0 +1,46 @@
+
+.faqs-page .task-item {
+	border-bottom: 1px solid #f4f4f4;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    line-height: 24px;
+    padding: 7px 12px 10px 65px;
+    font-size: 15px;
+    position: relative;
+    color: rgb(25 25 25);
+    font-weight: 600;
+}
+
+.faqs-page .task-item .task-name{
+    width: 80% !important;
+}
+.faqs-page .task-item .collapsed{
+    font-weight: normal;
+}
+
+.faqs-page .task-item span.index {
+	width: 25px;
+    height: 25px;
+    font-size: 13px !important;
+    line-height: 23px;
+    text-align: center;
+    border-radius: 100%;
+    background-color: #ececec;
+    display: inline-block;
+    position: absolute;
+    left: 17px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.action-another{
+    display: none;
+    transition: 0.5s;
+}
+.action-hide{
+    display: none !important;
+}
+.action-hide:checked ~ .action-another {
+    display: block !important;
+    transition: 0.5s;
+} 

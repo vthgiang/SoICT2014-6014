@@ -1,5 +1,5 @@
 /* Biểu đồ nhân sự phân theo dải lương */
-import React, { Component } from 'react';
+import React, { Component, useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -8,15 +8,15 @@ import { showListInSwal } from '../../../../helpers/showListInSwal';
 import c3 from 'c3';
 import 'c3/c3.css';
 
-class HumanResourceChartBySalary extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {}
-    }
+const HumanResourceChartBySalary = (props) => {
+    
+    const [state, setState] = useState({})
+
+    const rotateChart = useRef(null);
 
     /** Xóa các chart đã render khi chưa đủ dữ liệu */
-    removePreviousChart() {
-        const chart = this.refs.rotateBarChart;
+    const removePreviousChart = _ => {
+        const chart = rotateChart.current;
         while (chart && chart.hasChildNodes()) {
             chart.removeChild(chart.lastChild);
         }
@@ -26,12 +26,12 @@ class HumanResourceChartBySalary extends Component {
      * Render chart
      * @param {*} data : Dữ liệu của chart
      */
-    renderChart = (data) => {
+    const renderChart = (data) => {
         data.data1.shift();
 
-        this.removePreviousChart();
+        removePreviousChart();
         let chart = c3.generate({
-            bindto: this.refs.rotateChart,
+            bindto: rotateChart.current,
             data: {
                 columns: [],
                 hide: true,
@@ -62,7 +62,7 @@ class HumanResourceChartBySalary extends Component {
      * Function chyển dữ liệu thành dữ liệu chart
      * @param {*} dataCovert 
      */
-    convertData = (dataCovert) => {
+    const convertData = (dataCovert) => {
         if (dataCovert.length !== 0) {
             if (dataCovert[0].unit && dataCovert[0].unit === 'VND') {
                 let ratioX = [">100tr", "90tr-100tr", "80tr-90tr", "70tr-80tr", "60tr-70tr", "50tr-60tr", "40tr-50tr", "30tr-40tr", "20tr-30tr", "10tr-20tr", "<10tr"];
@@ -141,7 +141,7 @@ class HumanResourceChartBySalary extends Component {
         }
     }
 
-    static isEqual = (items1, items2) => {
+    const isEqual = (items1, items2) => {
         if (!items1 || !items2) {
             return false;
         }
@@ -156,100 +156,97 @@ class HumanResourceChartBySalary extends Component {
         return true;
     }
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.organizationalUnits !== prevState.organizationalUnits || nextProps.monthShow !== prevState.monthShow ||
-            !HumanResourceChartBySalary.isEqual(nextProps.salary.listSalaryByMonthAndOrganizationalUnits, prevState.listSalaryByMonthAndOrganizationalUnits)) {
-            return {
-                monthShow: nextProps.monthShow,
-                organizationalUnits: nextProps.organizationalUnits,
-                listSalaryByMonthAndOrganizationalUnits: nextProps.salary.listSalaryByMonthAndOrganizationalUnits
-            }
+    useEffect(() => {
+        if (props.organizationalUnits !== state.organizationalUnits || props.monthShow !== state.monthShow ||
+            !isEqual(props.salary.listSalaryByMonthAndOrganizationalUnits, state.listSalaryByMonthAndOrganizationalUnits)) {
+            setState({
+                ...state,
+                monthShow: props.monthShow,
+                organizationalUnits: props.organizationalUnits,
+                listSalaryByMonthAndOrganizationalUnits: props.salary.listSalaryByMonthAndOrganizationalUnits
+            })
         }
-        return null;
-    };
+    }, [props.organizationalUnits, props.monthShow, props.salary.listSalaryByMonthAndOrganizationalUnits])
 
-    shouldComponentUpdate(nextProps, nextState) {
-        if (nextProps.organizationalUnits !== this.state.organizationalUnits || nextProps.monthShow !== this.state.monthShow ||
-            !HumanResourceChartBySalary.isEqual(nextProps.salary.listSalaryByMonthAndOrganizationalUnits, this.state.listSalaryByMonthAndOrganizationalUnits)) {
-            return true;
+    useEffect(() => {
+        if (props.organizationalUnits !== state.organizationalUnits || props.monthShow !== state.monthShow ||
+            !isEqual(props.salary.listSalaryByMonthAndOrganizationalUnits, state.listSalaryByMonthAndOrganizationalUnits)) {
+            setState({...state})
         };
-        return true;
+    }, [props.organizationalUnits, props.monthShow, props.salary.listSalaryByMonthAndOrganizationalUnits]);
+
+    const { translate, salary, department } = props;
+
+    const { monthShow, organizationalUnits } = props;
+
+    let data = salary.listSalaryByMonthAndOrganizationalUnits;
+    let organizationalUnitsName;
+    if (organizationalUnits && department?.list?.length > 0) {
+        organizationalUnitsName = department.list.filter(x => organizationalUnits.includes(x._id));
+        organizationalUnitsName = organizationalUnitsName.map(x => x.name);
     }
 
-    render() {
-        const { translate, salary, department } = this.props;
-
-        const { monthShow, organizationalUnits } = this.props;
-
-        let data = salary.listSalaryByMonthAndOrganizationalUnits;
-        let organizationalUnitsName;
-        if (organizationalUnits && department?.list?.length > 0) {
-            organizationalUnitsName = department.list.filter(x => organizationalUnits.includes(x._id));
-            organizationalUnitsName = organizationalUnitsName.map(x => x.name);
-        }
-
-        if (data.length !== 0) {
-            data = data.map(x => {
-                let total = parseInt(x.mainSalary);
-                if (x.bonus.length !== 0) {
-                    for (let count in x.bonus) {
-                        total = total + parseInt(x.bonus[count].number)
-                    }
-                };
-                return { ...x, total: total }
-            })
-        }
-
-        let result = [];
-        data.forEach(x => {
-            let check;
-            result.forEach(y => {
-                if (y._id === x._id) {
-                    y.total = y.total + x.total;
-                    check = y;
+    if (data.length !== 0) {
+        data = data.map(x => {
+            let total = parseInt(x.mainSalary);
+            if (x.bonus.length !== 0) {
+                for (let count in x.bonus) {
+                    total = total + parseInt(x.bonus[count].number)
                 }
-            })
-            if (check) {
-                result = [...result, check];
-            } else {
-                result = [...result, x]
+            };
+            return { ...x, total: total }
+        })
+    }
+
+    let result = [];
+    data.forEach(x => {
+        let check;
+        result.forEach(y => {
+            if (y._id === x._id) {
+                y.total = y.total + x.total;
+                check = y;
             }
-        });
+        })
+        if (check) {
+            result = [...result, check];
+        } else {
+            result = [...result, x]
+        }
+    });
 
-        this.renderChart(this.convertData(result));
+    renderChart(convertData(result));
 
-        return (
-            <React.Fragment>
-                <div className="box box-solid">
-                    <div className="box-header with-border">
-                        <div className="box-title">
-                            {`Biểu đồ nhân sự `}
-                            {
-                                organizationalUnitsName && organizationalUnitsName.length < 2 ?
-                                    <>
-                                        <span>{` ${translate('task.task_dashboard.of_unit')}`}</span>
-                                        <span style={{ fontWeight: "bold" }}>{` ${organizationalUnitsName?.[0]}`}</span>
-                                    </>
-                                    :
-                                    <span onClick={() => showListInSwal(organizationalUnitsName, translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
-                                        <span>{` ${translate('task.task_dashboard.of')}`}</span>
-                                        <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {organizationalUnitsName?.length}</a>
-                                        <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
-                                    </span>
-                            }
-                            {` phân theo dải lương tháng ${monthShow}`}
-                        </div>
-                    </div>
-                    <div className="box-body">
-                        <div className="dashboard_box_body">
-                            <p className="pull-right" style={{ marginBottom: 0 }} > < b > ĐV tính: Người</b></p >
-                            <div ref="rotateChart"></div>
-                        </div>
+    return (
+        <React.Fragment>
+            <div className="box box-solid">
+                <div className="box-header with-border">
+                    <div className="box-title">
+                        {`Biểu đồ nhân sự `}
+                        {
+                            organizationalUnitsName && organizationalUnitsName.length < 2 ?
+                                <>
+                                    <span>{` ${translate('task.task_dashboard.of_unit')}`}</span>
+                                    <span>{` ${organizationalUnitsName?.[0]}`}</span>
+                                </>
+                                :
+                                <span onClick={() => showListInSwal(organizationalUnitsName, translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
+                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
+                                    <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {organizationalUnitsName?.length}</a>
+                                    <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                </span>
+                        }
+                        {` phân theo dải lương tháng ${monthShow}`}
                     </div>
                 </div>
-            </React.Fragment>
-        )
-    }
+                <div className="box-body">
+                    <div className="dashboard_box_body">
+                        <p className="pull-right" style={{ marginBottom: 0 }} > < b > ĐV tính: Người</b></p >
+                        <div ref={rotateChart}></div>
+                    </div>
+                </div>
+            </div>
+        </React.Fragment>
+    )
 }
 
 function mapState(state) {

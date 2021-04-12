@@ -391,8 +391,6 @@ export function documents(state = initState, action) {
             };
 
         case DocumentConstants.CREATE_DOCUMENT_SUCCESS:
-
-
             return {
                 ...state,
                 isLoading: false,
@@ -449,9 +447,6 @@ export function documents(state = initState, action) {
             };
 
         case DocumentConstants.CREATE_DOCUMENT_CATEGORY_SUCCESS:
-        case DocumentConstants.IMPORT_DOCUMENT_CATEGORY_SUCCESS:
-
-
             return {
                 ...state,
                 isLoading: false,
@@ -467,6 +462,28 @@ export function documents(state = initState, action) {
                             action.payload,
                             ...state.administration.categories.paginate
                         ]
+                    }
+                }
+            }
+        
+        case DocumentConstants.IMPORT_DOCUMENT_CATEGORY_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                administration: {
+                    ...state.administration,
+                    categories: {
+                        ...state.administration.categories,
+                        paginate: action.payload.docs,
+                        totalDocs: action.payload.totalDocs,
+                        limit: action.payload.limit,
+                        totalPages: action.payload.totalPages,
+                        page: action.payload.page,
+                        pagingCounter: action.payload.pagingCounter,
+                        hasPrevPage: action.payload.hasPrevPage,
+                        hasNextPage: action.payload.hasNextPage,
+                        prevPage: action.payload.prevPage,
+                        nextPage: action.payload.nextPage,
                     }
                 }
             };

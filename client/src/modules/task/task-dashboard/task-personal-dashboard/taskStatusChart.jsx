@@ -44,11 +44,11 @@ function TaskStatusChart(props) {
     const { role } = state;
 
     useEffect(() => {
-        if (tasks.responsibleTasks
+        if ((tasks.responsibleTasks
             && tasks.accountableTasks
             && tasks.consultedTasks
             && tasks.informedTasks
-            && tasks.creatorTasks
+            && tasks.creatorTasks) || (tasks.organizationUnitTasks)
         ) {
             pieChart();
         }
@@ -134,7 +134,7 @@ function TaskStatusChart(props) {
             [translate('task.task_management.wait_for_approval'), numberOfWaitForApproval],
             [translate('task.task_management.finished'), numberOfFinished],
             [translate('task.task_management.delayed'), numberOfDelayed],
-            [translate('task.task_management.canceled'), numberOfCanceled]
+            [translate('task.task_management.canceled'), numberOfCanceled],
         ];
         return dataPieChart;
     }

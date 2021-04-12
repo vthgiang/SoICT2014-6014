@@ -85,8 +85,8 @@ class DepartmentManage extends Component {
 
             const seen = new Set();
             const filteredArr = result.filter((el) => {
-                const duplicate = seen.has(el._id);
-                seen.add(el._id);
+                const duplicate = seen.has(el?._id);
+                seen.add(el?._id);
                 return !duplicate;
             });
             return filteredArr.length;
@@ -124,7 +124,7 @@ class DepartmentManage extends Component {
 
         return (
             <div>
-                <div className="qlcv">
+                <div className="qlcv StyleScrollDiv StyleScrollDiv-y" style={{ maxHeight: '600px' }} >
                     <TreeTable
                         behaviour="show-children"
                         tableId='employee-tree-table'

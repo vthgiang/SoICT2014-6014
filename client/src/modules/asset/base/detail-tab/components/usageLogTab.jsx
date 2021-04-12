@@ -1,15 +1,15 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { CalendarUsage } from '../../create-tab/components/calendarUsage';
-class UsageLogTab extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {};
-    }
+function UsageLogTab(props) {
+    const [state, setState] = useState({})
+    const [prevProps, setPrevProps] = useState({
+        id: null
+    })
 
     // Function format dữ liệu Date thành string
-    formatDate(date, monthYear = false) {
+    const formatDate = (date, monthYear = false) =>{
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -30,24 +30,22 @@ class UsageLogTab extends Component {
         }
     }
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id || nextProps.typeRegisterForUse !== prevState.typeRegisterForUse) {
-            return {
-                ...prevState,
-                id: nextProps.id,
-                usageLogs: nextProps.usageLogs,
-                typeRegisterForUse: nextProps.typeRegisterForUse,
-                managedBy: nextProps.managedBy
-            }
-        } else {
-            return null;
-        }
+    if(prevProps.id !== props.id){
+        setState({
+                 ...state,
+                id: props.id,
+                usageLogs: props.usageLogs,
+                typeRegisterForUse: props.typeRegisterForUse,
+                managedBy: props.managedBy
+        })
+        setPrevProps(props)
     }
+    
 
-    render() {
-        const { id, assetId } = this.props;
-        const { translate, user, department } = this.props;
-        const { usageLogs, typeRegisterForUse, managedBy } = this.state;
+  
+        const { id, assetId } = props;
+        const { translate, user, department } = props;
+        const { usageLogs, typeRegisterForUse, managedBy } = state;
         var userlist = user.list, departmentlist = department.list;
 
         return (
@@ -77,8 +75,8 @@ class UsageLogTab extends Component {
                                         <tr key={index}>
                                             <td>{x.usedByUser && userlist.length && userlist.filter(item => item._id === x.usedByUser).pop() ? userlist.filter(item => item._id === x.usedByUser).pop().name : ''}</td>
                                             <td>{x.usedByOrganizationalUnit && departmentlist.length && departmentlist.filter(item => item._id === x.usedByOrganizationalUnit).pop() ? departmentlist.filter(item => item._id === x.usedByOrganizationalUnit).pop().name : ''}</td>
-                                            <td>{x.startDate ? this.formatDate(x.startDate) : ''}</td>
-                                            <td>{x.endDate ? this.formatDate(x.endDate) : ''}</td>
+                                            <td>{x.startDate ? formatDate(x.startDate) : ''}</td>
+                                            <td>{x.endDate ? formatDate(x.endDate) : ''}</td>
                                             <td>{x.description}</td>
                                         </tr>
                                     ))
@@ -94,7 +92,7 @@ class UsageLogTab extends Component {
                             usageLogs={usageLogs}
                             managedBy={managedBy}
                             typeRegisterForUse={typeRegisterForUse}
-                            linkPage={this.props.linkPage}
+                            linkPage={props.linkPage}
                         />
                     }
                     {typeRegisterForUse !== 2 &&
@@ -104,7 +102,6 @@ class UsageLogTab extends Component {
                 </div>
             </div>
         );
-    }
 };
 function mapState(state) {
     const { user, department } = state;

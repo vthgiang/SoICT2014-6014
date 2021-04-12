@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import moment from 'moment';
@@ -12,24 +12,31 @@ import {
 import { AssetManagerActions } from '../redux/actions';
 import { UseRequestActions } from '../../use-request/redux/actions';
 
-class AssetEditForm extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            employeeId: this.props.employeeId ? this.props.employeeId : ''
-        };
-    }
+function AssetEditForm(props) {
+    const [state, setState] = useState({
+        employeeId: props.employeeId ? props.employeeId : ''
+    })
+    const [prevProps, setPrevProps] = useState({
+        _id : null
+    })
+
+    const { translate, assetsManager } = props;
+    const { _id, img, code, assetName, serial, assetType, group, purchaseDate, warrantyExpirationDate, managedBy, assignedToUser, assignedToOrganizationalUnit, handoverFromDate,
+    handoverToDate, location, description, status, typeRegisterForUse, detailInfo, usageLogs, maintainanceLogs, cost, residualValue, startDepreciation,
+    usefulLife, depreciationType, incidentLogs, disposalDate, disposalType, unitsProducedDuringTheYears, disposalCost, disposalDesc, archivedRecordNumber,
+    files, estimatedTotalProduction, readByRoles } = state;
 
     // Function upload avatar
-    handleUpload = (img, avatar) => {
-        this.setState({
+    const handleUpload = (img, avatar) => {
+        setState({
+            ...state,
             img: img,
             avatar: avatar
         })
     }
 
     // Function lưu các trường thông tin vào state
-    handleChange = (name, value) => {
+    const handleChange = (name, value) => {
         if (name === 'purchaseDate' || name === 'warrantyExpirationDate' || name === 'handoverFromDate' ||
             name === 'handoverToDate' || name === 'startDepreciation' || name === 'disposalDate') { //
             if (value) {
@@ -43,49 +50,55 @@ class AssetEditForm extends Component {
             value = JSON.stringify(value);
         }
 
-        this.setState({
+        setState({
+            ...state,
             [name]: value
         });
     }
 
     // Function thêm sửa chữa, thay thế, nâng cấp
-    handleCreateMaintainanceLogs = (data, addData) => {
-        this.setState({
+    const handleCreateMaintainanceLogs = (data, addData) => {
+        setState({
+            ...state,
             maintainanceLogs: data
         })
     }
 
     // Function chỉnh sửa sửa chữa, thay thế, nâng cấp
-    handleEditMaintainanceLogs = (data, editData) => {
+    const handleEditMaintainanceLogs = (data, editData) => {
         if (editData._id) {
-            this.setState({
-                editMaintainanceLogs: [...this.state.editMaintainanceLogs, editData]
+            setState({
+                ...state,
+                editMaintainanceLogs: [...state.editMaintainanceLogs, editData]
             })
         } else {
-            this.setState({
+            setState({
+                ...state,
                 maintainanceLogs: data
             })
         }
     }
 
     // Function xoá sửa chữa, thay thế, nâng cấp
-    handleDeleteMaintainanceLogs = (data, deleteData) => {
+    const handleDeleteMaintainanceLogs = (data, deleteData) => {
         if (deleteData._id) {
-            this.setState({
-                deleteMaintainanceLogs: [...this.state.deleteMaintainanceLogs, deleteData],
-                editMaintainanceLogs: this.state.editMaintainanceLogs.filter(x => x._id !== deleteData._id)
+            setState({
+                ...state,
+                deleteMaintainanceLogs: [...state.deleteMaintainanceLogs, deleteData],
+                editMaintainanceLogs: state.editMaintainanceLogs.filter(x => x._id !== deleteData._id)
             })
         } else {
-            this.setState({
+            setState({
+                ...state,
                 maintainanceLogs: data
             })
         }
     }
 
     // Function thêm thông tin cấp phát, điều chuyển, thu hồi
-    handleCreateUsageLogs = async (data, addData) => {
-        await this.setState({
-            ...this.state,
+    const handleCreateUsageLogs = async (data, addData) => {
+        await setState({
+            ...state,
             usageLogs: data.usageLogs,
             assignedToUser: data.assignedToUser,
             assignedToOrganizationalUnit: data.assignedToOrganizationalUnit,
@@ -95,13 +108,15 @@ class AssetEditForm extends Component {
     }
 
     // Function chỉnh sửa thông tin cấp phát, điều chuyển, thu hồi
-    handleEditUsageLogs = (data, editData) => {
+    const handleEditUsageLogs = (data, editData) => {
         if (editData && editData._id) {
-            this.setState({
-                editUsageLogs: [...this.state.editUsageLogs, editData]
+            setState({
+                ...state,
+                editUsageLogs: [...state.editUsageLogs, editData]
             })
         } else {
-            this.setState({
+            setState({
+                ...state,
                 usageLogs: data.usageLogs,
                 assignedToUser: data.assignedToUser,
                 assignedToOrganizationalUnit: data.assignedToOrganizationalUnit,
@@ -109,9 +124,9 @@ class AssetEditForm extends Component {
         }
     }
 
-    handleRecallAsset = async (data) => {
-        await this.setState({
-            ...this.state,
+    const handleRecallAsset = async (data) => {
+        await setState({
+            ...state,
             assignedToUser: data.assignedToUser,
             assignedToOrganizationalUnit: data.assignedToOrganizationalUnit,
             status: data.status
@@ -119,99 +134,114 @@ class AssetEditForm extends Component {
     }
 
     // Function xoá thông tin cấp phát, điều chuyển, thu hồi
-    handleDeleteUsageLogs = (data, deleteData) => {
+    const handleDeleteUsageLogs = (data, deleteData) => {
         if (deleteData._id) {
-            this.setState({
-                deleteUsageLogs: [...this.state.deleteUsageLogs, deleteData],
-                editUsageLogs: this.state.editUsageLogs.filter(x => x._id !== deleteData._id)
+            setState({
+                ...state,
+                deleteUsageLogs: [...state.deleteUsageLogs, deleteData],
+                editUsageLogs: state.editUsageLogs.filter(x => x._id !== deleteData._id)
             })
         } else {
-            this.setState({
+            setState({
+                ...state,
                 usageLogs: data
             })
         }
     }
 
     // Function thêm thông tin sự cố tài sản
-    handleCreateIncidentLogs = (data, addData) => {
-        this.setState({
+    const handleCreateIncidentLogs = (data, addData) => {
+        setState({
+            ...state,
             incidentLogs: data
         })
     }
 
     // Function chỉnh sửa thông tin sự cố tài sản
-    handleEditIncidentLogs = (data, editData) => {
+    const handleEditIncidentLogs = (data, editData) => {
         if (editData._id) {
-            this.setState({
-                editIncidentLogs: [...this.state.editIncidentLogs, editData]
+            setState({
+                ...state,
+                editIncidentLogs: [...state.editIncidentLogs, editData]
             })
         } else {
-            this.setState({
+            setState({
+                ...state,
                 incidentLogs: data
             })
         }
     }
 
     // Function xoá thông tin sự cố tài sản
-    handleDeleteIncidentLogs = (data, deleteData) => {
+    const handleDeleteIncidentLogs = (data, deleteData) => {
         if (deleteData._id) {
-            this.setState({
-                deleteIncidentLogs: [...this.state.deleteIncidentLogs, deleteData],
-                editIncidentLogs: this.state.editIncidentLogs.filter(x => x._id !== deleteData._id)
+            setState({
+                ...state,
+                deleteIncidentLogs: [...state.deleteIncidentLogs, deleteData],
+                editIncidentLogs: state.editIncidentLogs.filter(x => x._id !== deleteData._id)
             })
         } else {
-            this.setState({
+            setState({
+                ...state,
                 incidentLogs: data
             })
         }
     }
 
     // Function thêm thông tin tài liệu đính kèm
-    handleCreateFile = (data, addData) => {
-        this.setState({
+    const handleCreateFile = (data) => {
+        console.log(data)
+        setState({
+            ...state,
             files: data
         })
     }
 
     // Function chỉnh sửa thông tin tài liệu đính kèm
-    handleEditFile = (data, editData) => {
+    const handleEditFile = (data, editData) => {
         if (editData._id) {
-            this.setState({
-                editFiles: [...this.state.editFiles, editData]
+            setState({
+                ...state,
+                editFiles: [...state.editFiles, editData]
             })
         } else {
-            this.setState({
+            setState({
+                ...state,
                 files: data
             })
         }
     }
 
     // Function xoá thông tin tài liệu đính kèm
-    handleDeleteFile = (data, deleteData) => {
+    const handleDeleteFile = (data, deleteData) => {
         if (deleteData._id) {
-            this.setState({
-                deleteFiles: [...this.state.deleteFiles, deleteData],
-                editFiles: this.state.editFiles.filter(x => x._id !== deleteData._id)
+            setState({
+                ...state,
+                deleteFiles: [...state.deleteFiles, deleteData],
+                editFiles: state.editFiles.filter(x => x._id !== deleteData._id)
             })
         } else {
-            this.setState({
+            setState({
+                ...state,
                 files: data
             })
         }
     }
 
     // TODO: function
-    handleChangeCourse = (data) => {
-        const { assetNew } = this.state;
-        this.setState({
+    const handleChangeCourse = (data) => {
+        const { assetNew } = state;
+        setState({
+            ...state,
             assetNew: {
+                ...state,
                 ...assetNew
             }
         })
     }
 
     // function kiểm tra các trường bắt buộc phải nhập
-    validatorInput = (value) => {
+    const validatorInput = (value) => {
         if (value !== undefined && value !== null && value.toString().trim() !== '') {
             return true;
         }
@@ -219,19 +249,19 @@ class AssetEditForm extends Component {
     }
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
-    isFormValidated = () => {
-        let { code, assetName, assetType, purchaseDate, status, typeRegisterForUse, depreciationType, estimatedTotalProduction } = this.state;
+    const isFormValidated = () => {
+        let { code, assetName, assetType, purchaseDate, status, typeRegisterForUse, depreciationType, estimatedTotalProduction } = state;
 
-        if (this.state !== {}) {
+        if (state !== {}) {
             let unitProductionValidate = true;
             if (depreciationType === "units_of_production") {
-                unitProductionValidate = this.validatorInput(estimatedTotalProduction);
+                unitProductionValidate = validatorInput(estimatedTotalProduction);
             }
 
-            let result = this.validatorInput(code) && this.validatorInput(assetName) &&
-                this.validatorInput(assetType) &&
-                this.validatorInput(status) &&
-                this.validatorInput(typeRegisterForUse) &&
+            let result = validatorInput(code) && validatorInput(assetName) &&
+                validatorInput(assetType) &&
+                validatorInput(status) &&
+                validatorInput(typeRegisterForUse) &&
                 unitProductionValidate;
             return result;
         }
@@ -239,19 +269,25 @@ class AssetEditForm extends Component {
         return true;
     }
 
-    save = async () => {
+    const save = async () => {
         let { avatar, maintainanceLogs, usageLogs, incidentLogs, files, assignedToUser,
-            assignedToOrganizationalUnit, handoverFromDate, handoverToDate, employeeId, page } = this.state;
+            assignedToOrganizationalUnit, handoverFromDate, handoverToDate, employeeId, page } = state;
 
-        await this.setState({
-            // img: img,
-            createMaintainanceLogs: maintainanceLogs.filter(x => !x._id),
-            createUsageLogs: usageLogs.filter(x => !x._id),
-            createIncidentLogs: incidentLogs.filter(x => !x._id),
-            createFiles: files.filter(x => !x._id),
-        })
+        const createMaintainanceLogs = maintainanceLogs.filter(x => !x._id);
+        const createUsageLogs = usageLogs.filter(x => !x._id);
+        const createIncidentLogs = incidentLogs.filter(x => !x._id);
+        const createFiles = files.filter(x => !x._id);
 
-        let formData = convertJsonObjectToFormData(this.state);
+        const data = {
+            ...state,
+            createMaintainanceLogs,
+            createUsageLogs,
+            createIncidentLogs,
+            createFiles
+        }
+
+        console.log(data)
+        let formData = convertJsonObjectToFormData(data);
         files.forEach(x => {
             x.files.forEach(item => {
                 formData.append("file", item.fileUpload);
@@ -259,26 +295,30 @@ class AssetEditForm extends Component {
         })
         formData.append("fileAvatar", avatar);
 
-        this.props.updateInformationAsset(this.state._id, formData);
+        props.updateInformationAsset(data._id, formData);
 
         // Thêm vào thông tin sử dụng
-        if (assignedToUser !== this.props.assignedToUser || assignedToOrganizationalUnit !== this.props.assignedToOrganizationalUnit || handoverFromDate !== this.props.handoverFromDate || handoverToDate !== this.props.handoverToDate) {
-            this.props.createUsage(this.state._id, {
+        if (assignedToUser !== props.assignedToUser || assignedToOrganizationalUnit !== props.assignedToOrganizationalUnit || handoverFromDate !== props.handoverFromDate || handoverToDate !== props.handoverToDate) {
+            props.createUsage(data._id, {
                 usageLogs: {
-                    usedByUser: this.state.assignedToUser,
-                    startDate: this.state.handoverFromDate,
-                    endDate: this.state.handoverToDate,
+                    usedByUser: data.assignedToUser,
+                    startDate: data.handoverFromDate,
+                    endDate: data.handoverToDate,
                     description: '',
                 },
-                assignedToUser: this.state.assignedToUser,
-                assignedToOrganizationalUnit: this.state.assignedToOrganizationalUnit,
+                assignedToUser: data.assignedToUser,
+                assignedToOrganizationalUnit: data.assignedToOrganizationalUnit,
                 status: "in_use",
             });
         }
+
+        setState({
+            ...data,
+        })
     }
 
     // Function format dữ liệu Date thành string
-    formatDate(date, monthYear = false) {
+    const formatDate = (date, monthYear = false) => {
         if (!date) return null;
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
@@ -300,223 +340,210 @@ class AssetEditForm extends Component {
         }
     }
 
-    addMonth = (date, month) => {
+    const addMonth = (date, month) => {
         if (!date) return null;
         date = new Date(date);
         let newDate = new Date(date.setMonth(date.getMonth() + month));
 
-        return this.formatDate(newDate);
+        return formatDate(newDate);
     };
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps._id !== prevState._id) {
-            return {
-                ...prevState,
-                _id: nextProps._id,
-                img: nextProps.avatar ? `.${nextProps.avatar}` : null,
-                avatar: "",
-                code: nextProps.code,
-                assetName: nextProps.assetName,
-                serial: nextProps.serial,
-                assetType: nextProps.assetType && JSON.parse(nextProps.assetType).map(o => o._id),
-                group: nextProps.group,
-                purchaseDate: nextProps.purchaseDate,
-                warrantyExpirationDate: nextProps.warrantyExpirationDate,
-                managedBy: nextProps.managedBy,
-                assignedToUser: nextProps.assignedToUser,
-                assignedToOrganizationalUnit: nextProps.assignedToOrganizationalUnit,
-                handoverFromDate: nextProps.handoverFromDate,
-                handoverToDate: nextProps.handoverToDate,
-                location: nextProps.location,
-                description: nextProps.description,
-                status: nextProps.status,
-                typeRegisterForUse: nextProps.typeRegisterForUse,
-                detailInfo: nextProps.detailInfo,
-                readByRoles: nextProps.readByRoles,
-                // Khấu hao
-                cost: nextProps.cost,
-                residualValue: nextProps.residualValue,
-                usefulLife: nextProps.usefulLife,
-                startDepreciation: nextProps.startDepreciation,
-                depreciationType: nextProps.depreciationType,
-                estimatedTotalProduction: nextProps.estimatedTotalProduction,
-                unitsProducedDuringTheYears: nextProps.unitsProducedDuringTheYears,
-                // Thanh lý
-                disposalDate: nextProps.disposalDate,
-                disposalType: nextProps.disposalType,
-                disposalCost: nextProps.disposalCost,
-                disposalDesc: nextProps.disposalDesc,
-                // Bảo trì
-                maintainanceLogs: nextProps.maintainanceLogs,
-                // Sử dụng
-                usageLogs: nextProps.usageLogs,
-                // Sự cố
-                incidentLogs: nextProps.incidentLogs,
-                // Tài liệu tham khảo
-                archivedRecordNumber: nextProps.archivedRecordNumber,
-                files: nextProps.files,
+    if(prevProps._id !== props._id){
+        setState({
+            ...state,
+            _id: props._id,
+            img: props.avatar ? `.${props.avatar}` : null,
+            avatar: "",
+            code: props.code,
+            assetName: props.assetName,
+            serial: props.serial,
+            assetType: props.assetType && JSON.parse(props.assetType).map(o => o._id||o),
+            group: props.group,
+            purchaseDate: props.purchaseDate,
+            warrantyExpirationDate: props.warrantyExpirationDate,
+            managedBy: props.managedBy,
+            assignedToUser: props.assignedToUser,
+            assignedToOrganizationalUnit: props.assignedToOrganizationalUnit,
+            handoverFromDate: props.handoverFromDate,
+            handoverToDate: props.handoverToDate,
+            location: props.location,
+            description: props.description,
+            status: props.status,
+            typeRegisterForUse: props.typeRegisterForUse,
+            detailInfo: props.detailInfo,
+            readByRoles: props.readByRoles,
+            // Khấu hao
+            cost: props.cost,
+            residualValue: props.residualValue,
+            usefulLife: props.usefulLife,
+            startDepreciation: props.startDepreciation,
+            depreciationType: props.depreciationType,
+            estimatedTotalProduction: props.estimatedTotalProduction,
+            unitsProducedDuringTheYears: props.unitsProducedDuringTheYears,
+            // Thanh lý
+            disposalDate: props.disposalDate,
+            disposalType: props.disposalType,
+            disposalCost: props.disposalCost,
+            disposalDesc: props.disposalDesc,
+            // Bảo trì
+            maintainanceLogs: props.maintainanceLogs,
+            // Sử dụng
+            usageLogs: props.usageLogs,
+            // Sự cố
+            incidentLogs: props.incidentLogs,
+            // Tài liệu tham khảo
+            archivedRecordNumber: props.archivedRecordNumber,
+            files: props.files,
 
-                editUsageLogs: [],
-                deleteUsageLogs: [],
-                editMaintainanceLogs: [],
-                deleteMaintainanceLogs: [],
-                editIncidentLogs: [],
-                deleteIncidentLogs: [],
-                editFiles: [],
-                deleteFiles: [],
-                page: nextProps.page,
+            editUsageLogs: [],
+            deleteUsageLogs: [],
+            editMaintainanceLogs: [],
+            deleteMaintainanceLogs: [],
+            editIncidentLogs: [],
+            deleteIncidentLogs: [],
+            editFiles: [],
+            deleteFiles: [],
+            page: props.page,
 
-                errorOnCode: undefined,
-                errorOnAssetName: undefined,
-                errorOnSerial: undefined,
-                errorOnAssetType: undefined,
-                errorOnLocation: undefined,
-                errorOnPurchaseDate: undefined,
-                errorOnWarrantyExpirationDate: undefined,
-                errorOnManagedBy: undefined,
-                errorOnAssignedToUser: undefined,
-                errorOnAssignedToOrganizationalUnit: undefined,
-                errorOnNameField: undefined,
-                errorOnValue: undefined,
-
-            }
-        } else {
-            return null;
-        }
+            errorOnCode: undefined,
+            errorOnAssetName: undefined,
+            errorOnSerial: undefined,
+            errorOnAssetType: undefined,
+            errorOnLocation: undefined,
+            errorOnPurchaseDate: undefined,
+            errorOnWarrantyExpirationDate: undefined,
+            errorOnManagedBy: undefined,
+            errorOnAssignedToUser: undefined,
+            errorOnAssignedToOrganizationalUnit: undefined,
+            errorOnNameField: undefined,
+            errorOnValue: undefined,
+        })
+        setPrevProps(props)
     }
+    return (
+        <React.Fragment>
+            <DialogModal
+                size='75' modalID="modal-edit-asset" isLoading={assetsManager.isLoading}
+                formID="form-edit-asset"
+                title={translate('asset.general_information.edit_info')}
+                func={save}
+                disableSubmit={!isFormValidated()}
+            >
+                {/* Nav-tabs */}
+                <div className="nav-tabs-custom" style={{ marginTop: '-15px' }}>
+                    <ul className="nav nav-tabs" id = "nav-tabs">
+                        <li className="active"><a title={translate('asset.general_information.general_information')} data-toggle="tab" href={`#edit_general${_id}`}>{translate('asset.general_information.general_information')}</a></li>
+                        <li><a title={translate('asset.general_information.depreciation_information')} data-toggle="tab" href={`#edit_depreciation${_id}`}>{translate('asset.general_information.depreciation_information')}</a></li>
+                        <li><a title={translate('asset.general_information.usage_information')} data-toggle="tab" href={`#edit_usage${_id}`} onClick={() => { Scheduler.triggerOnActiveEvent(".asset-usage-scheduler") }}>{translate('asset.general_information.usage_information')}</a></li>
+                        <li><a title={translate('asset.general_information.incident_information')} data-toggle="tab" href={`#edit_incident${_id}`}>{translate('asset.general_information.incident_information')}</a></li>
+                        <li><a title={translate('asset.general_information.maintainance_information')} data-toggle="tab" href={`#edit_maintainance${_id}`}>{translate('asset.general_information.maintainance_information')}</a></li>
+                        <li><a title={translate('asset.general_information.disposal_information')} data-toggle="tab" href={`#edit_disposal${_id}`}>{translate('asset.general_information.disposal_information')}</a></li>
+                        <li><a title={translate('asset.general_information.attach_infomation')} data-toggle="tab" href={`#edit_attachments${_id}`}>{translate('asset.general_information.attach_infomation')}</a></li>
+                    </ul>
 
-    render() {
-        const { translate, assetsManager } = this.props;
-        const { _id, img, code, assetName, serial, assetType, group, purchaseDate, warrantyExpirationDate, managedBy, assignedToUser, assignedToOrganizationalUnit, handoverFromDate,
-            handoverToDate, location, description, status, typeRegisterForUse, detailInfo, usageLogs, maintainanceLogs, cost, residualValue, startDepreciation,
-            usefulLife, depreciationType, incidentLogs, disposalDate, disposalType, unitsProducedDuringTheYears, disposalCost, disposalDesc, archivedRecordNumber,
-            files, estimatedTotalProduction, readByRoles } = this.state;
+                    < div className="tab-content">
+                        {/* Thông tin chung */}
+                        <GeneralTab
+                            id={`edit_general${_id}`}
+                            img={img}
+                            handleChange={handleChange}
+                            handleUpload={handleUpload}
+                            // avatar={avatar}
+                            code={code}
+                            assetName={assetName}
+                            serial={serial}
+                            assetTypeEdit={assetType}
+                            group={group}
+                            purchaseDate={purchaseDate}
+                            warrantyExpirationDate={warrantyExpirationDate}
+                            managedBy={managedBy}
+                            assignedToUser={assignedToUser}
+                            assignedToOrganizationalUnit={assignedToOrganizationalUnit}
+                            handoverFromDate={handoverFromDate}
+                            handoverToDate={handoverToDate}
+                            location={location}
+                            description={description}
+                            status={status}
+                            typeRegisterForUse={typeRegisterForUse}
+                            detailInfo={detailInfo}
+                            usageLogs={usageLogs}
+                            readByRoles={readByRoles}
+                        />
 
-        return (
-            <React.Fragment>
-                <DialogModal
-                    size='75' modalID="modal-edit-asset" isLoading={assetsManager.isLoading}
-                    formID="form-edit-asset"
-                    title={translate('asset.general_information.edit_info')}
-                    func={this.save}
-                    disableSubmit={!this.isFormValidated()}
-                >
-                    {/* Nav-tabs */}
-                    <div className="nav-tabs-custom" style={{ marginTop: '-15px' }}>
-                        <ul className="nav nav-tabs">
-                            <li className="active"><a title={translate('asset.general_information.general_information')} data-toggle="tab" href={`#edit_general${_id}`}>{translate('asset.general_information.general_information')}</a></li>
-                            <li><a title={translate('asset.general_information.depreciation_information')} data-toggle="tab" href={`#edit_depreciation${_id}`}>{translate('asset.general_information.depreciation_information')}</a></li>
-                            <li><a title={translate('asset.general_information.usage_information')} data-toggle="tab" href={`#edit_usage${_id}`} onClick={() => { Scheduler.triggerOnActiveEvent(".asset-usage-scheduler") }}>{translate('asset.general_information.usage_information')}</a></li>
-                            <li><a title={translate('asset.general_information.incident_information')} data-toggle="tab" href={`#edit_incident${_id}`}>{translate('asset.general_information.incident_information')}</a></li>
-                            <li><a title={translate('asset.general_information.maintainance_information')} data-toggle="tab" href={`#edit_maintainance${_id}`}>{translate('asset.general_information.maintainance_information')}</a></li>
-                            <li><a title={translate('asset.general_information.disposal_information')} data-toggle="tab" href={`#edit_disposal${_id}`}>{translate('asset.general_information.disposal_information')}</a></li>
-                            <li><a title={translate('asset.general_information.attach_infomation')} data-toggle="tab" href={`#edit_attachments${_id}`}>{translate('asset.general_information.attach_infomation')}</a></li>
-                        </ul>
+                        {/* Thông tin khấu hao */}
+                        <DepreciationTab
+                            id={`edit_depreciation${_id}`}
+                            handleChange={handleChange}
+                            cost={cost}
+                            residualValue={residualValue}
+                            startDepreciation={startDepreciation && moment(startDepreciation).format('DD-MM-YYYY')}
+                            endDepreciation={addMonth(startDepreciation, usefulLife)}
+                            usefulLife={usefulLife}
+                            depreciationType={depreciationType}
+                            estimatedTotalProduction={estimatedTotalProduction}
+                            unitsProducedDuringTheYears={unitsProducedDuringTheYears}
+                        />
 
-                        < div className="tab-content">
-                            {/* Thông tin chung */}
-                            <GeneralTab
-                                id={`edit_general${_id}`}
-                                img={img}
-                                handleChange={this.handleChange}
-                                handleUpload={this.handleUpload}
-                                // avatar={avatar}
-                                code={code}
-                                assetName={assetName}
-                                serial={serial}
-                                assetTypeEdit={JSON.stringify(assetType)}
-                                group={group}
-                                purchaseDate={purchaseDate}
-                                warrantyExpirationDate={warrantyExpirationDate}
-                                managedBy={managedBy}
-                                assignedToUser={assignedToUser}
-                                assignedToOrganizationalUnit={assignedToOrganizationalUnit}
-                                handoverFromDate={handoverFromDate}
-                                handoverToDate={handoverToDate}
-                                location={location}
-                                description={description}
-                                status={status}
-                                typeRegisterForUse={typeRegisterForUse}
-                                detailInfo={detailInfo}
-                                usageLogs={usageLogs}
-                                readByRoles={readByRoles}
-                            />
+                        {/* Thông tin sử dụng */}
+                        <UsageLogTab
+                            id={`edit_usage${_id}`}
+                            assetId={_id}
+                            assignedToUser={assignedToUser}
+                            assignedToOrganizationalUnit={assignedToOrganizationalUnit}
+                            usageLogs={usageLogs}
+                            typeRegisterForUse={typeRegisterForUse}
+                            managedBy={managedBy}
+                            handleAddUsage={handleCreateUsageLogs}
+                            handleEditUsage={handleEditUsageLogs}
+                            handleDeleteUsage={handleDeleteUsageLogs}
+                            handleRecallAsset={handleRecallAsset}
+                            linkPage={props.linkPage}
+                        />
 
-                            {/* Thông tin khấu hao */}
-                            <DepreciationTab
-                                id={`edit_depreciation${_id}`}
-                                handleChange={this.handleChange}
-                                cost={cost}
-                                residualValue={residualValue}
-                                startDepreciation={startDepreciation && moment(startDepreciation).format('DD-MM-YYYY')}
-                                endDepreciation={this.addMonth(startDepreciation, usefulLife)}
-                                usefulLife={usefulLife}
-                                depreciationType={depreciationType}
-                                estimatedTotalProduction={estimatedTotalProduction}
-                                unitsProducedDuringTheYears={unitsProducedDuringTheYears}
-                            />
+                        {/* Thông tin sự cố */}
+                        <IncidentLogTab
+                            id={`edit_incident${_id}`}
+                            assetId={_id}
+                            incidentLogs={incidentLogs}
+                            handleAddIncident={handleCreateIncidentLogs}
+                            handleEditIncident={handleEditIncidentLogs}
+                            handleDeleteIncident={handleDeleteIncidentLogs}
+                        />
 
-                            {/* Thông tin sử dụng */}
-                            <UsageLogTab
-                                id={`edit_usage${_id}`}
-                                assetId={_id}
-                                assignedToUser={assignedToUser}
-                                assignedToOrganizationalUnit={assignedToOrganizationalUnit}
-                                usageLogs={usageLogs}
-                                typeRegisterForUse={typeRegisterForUse}
-                                managedBy={managedBy}
-                                handleAddUsage={this.handleCreateUsageLogs}
-                                handleEditUsage={this.handleEditUsageLogs}
-                                handleDeleteUsage={this.handleDeleteUsageLogs}
-                                handleRecallAsset={this.handleRecallAsset}
-                                linkPage={this.props.linkPage}
-                            />
+                        {/* Thông tin bảo trì */}
+                        <MaintainanceLogTab
+                            id={`edit_maintainance${_id}`}
+                            maintainanceLogs={maintainanceLogs}
+                            handleAddMaintainance={handleCreateMaintainanceLogs}
+                            handleEditMaintainance={handleEditMaintainanceLogs}
+                            handleDeleteMaintainance={handleDeleteMaintainanceLogs}
+                        />
 
-                            {/* Thông tin sự cố */}
-                            <IncidentLogTab
-                                id={`edit_incident${_id}`}
-                                assetId={_id}
-                                incidentLogs={incidentLogs}
-                                handleAddIncident={this.handleCreateIncidentLogs}
-                                handleEditIncident={this.handleEditIncidentLogs}
-                                handleDeleteIncident={this.handleDeleteIncidentLogs}
-                            />
+                        {/* Thông tin thanh lý */}
+                        <DisposalTab
+                            id={`edit_disposal${_id}`}
+                            handleChange={handleChange}
+                            disposalDate={disposalDate}
+                            disposalType={disposalType}
+                            disposalCost={disposalCost}
+                            disposalDesc={disposalDesc}
+                        />
 
-                            {/* Thông tin bảo trì */}
-                            <MaintainanceLogTab
-                                id={`edit_maintainance${_id}`}
-                                maintainanceLogs={maintainanceLogs}
-                                handleAddMaintainance={this.handleCreateMaintainanceLogs}
-                                handleEditMaintainance={this.handleEditMaintainanceLogs}
-                                handleDeleteMaintainance={this.handleDeleteMaintainanceLogs}
-                            />
-
-                            {/* Thông tin thanh lý */}
-                            <DisposalTab
-                                id={`edit_disposal${_id}`}
-                                handleChange={this.handleChange}
-                                disposalDate={disposalDate}
-                                disposalType={disposalType}
-                                disposalCost={disposalCost}
-                                disposalDesc={disposalDesc}
-                            />
-
-                            {/* Tài liệu đính kèm */}
-                            <FileTab
-                                id={`edit_attachments${_id}`}
-                                handleChange={this.handleChange}
-                                handleAddFile={this.handleCreateFile}
-                                handleEditFile={this.handleEditFile}
-                                handleDeleteFile={this.handleDeleteFile}
-                                archivedRecordNumber={archivedRecordNumber}
-                                files={files}
-                            />
-                        </div>
+                        {/* Tài liệu đính kèm */}
+                        <FileTab
+                            id={`edit_attachments${_id}`}
+                            handleChange={handleChange}
+                            handleAddFile={handleCreateFile}
+                            handleEditFile={handleEditFile}
+                            handleDeleteFile={handleDeleteFile}
+                            archivedRecordNumber={archivedRecordNumber}
+                            files={files}
+                        />
                     </div>
-                </DialogModal>
-            </React.Fragment>
-        )
-    }
+                </div>
+            </DialogModal>
+        </React.Fragment>
+    )
 };
 
 function mapState(state) {

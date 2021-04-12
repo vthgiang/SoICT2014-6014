@@ -16,6 +16,7 @@ router.patch('/processes/:processId/diagram', auth, TaskProcessController.update
 router.patch('/processes/:processId', auth, TaskProcessController.editProcessInfo);
 
 router.delete("/diagrams/:diagramId", auth, TaskProcessController.deleteXmlDiagram);
+router.delete("/:taskProcessId", auth, TaskProcessController.deleteTaskProcess);
 
 router.post("/processes/:processId/tasks/create", auth, TaskProcessController.createTaskByProcess);
 

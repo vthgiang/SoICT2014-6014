@@ -139,10 +139,19 @@ exports.getEmployeeKPISets = async (portal, data) => {
  */
 
 exports.getKpisByMonth = async (portal, data) => {
-    let date = data.date.split("-");
-    let month = new Date(date[1], date[0], 0);
+    let { userId, date } = data;
+
+    date = new Date(date);
+    nextDate = new Date(date);
+    nextDate.setMonth(nextDate.getMonth() + 1);
+
     let employeeKpiSets = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
-        .findOne({ creator: data.userId, date: month })
+        .findOne({ 
+            creator: userId, 
+            date: {
+                $gte: date, $lt: nextDate
+            } 
+        })
         .populate("organizationalUnit")
         .populate({ path: "creator", select: "_id name email avatar" })
         .populate({ path: "approver", select: "_id name email avatar" })
@@ -151,6 +160,7 @@ exports.getKpisByMonth = async (portal, data) => {
             { path: 'comments.creator', select: 'name email avatar ' },
             { path: 'comments.comments.creator', select: 'name email avatar' }
         ]);
+
     return employeeKpiSets;
 }
 
@@ -290,7 +300,14 @@ exports.editKpi = async (portal, id, data) => {
         .findByIdAndUpdate(id, { $set: objUpdate }, { new: true })
 
     target = target && await target.populate("parent").execPopulate();
-    return target;
+
+    let employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
+        .findOne({ kpis: { $in: [mongoose.Types.ObjectId(id)] }})
+
+    return {
+        target,
+        employeeKpiSet
+    };
 }
 
 /**
@@ -299,7 +316,7 @@ exports.editKpi = async (portal, id, data) => {
  */
 
 exports.getKpisByKpiSetId = async (portal, id) => {
-    let employee_kpi_set = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
+    let employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
         .findById(id)
         .populate("organizationalUnit")
         .populate({ path: "creator", select: "_id name email avatar" })
@@ -309,8 +326,19 @@ exports.getKpisByKpiSetId = async (portal, id) => {
             { path: 'comments.creator', select: 'name email avatar ' },
             { path: 'comments.comments.creator', select: 'name email avatar' }
         ]);
+    for (let i = 0; i < employeeKpiSet?.kpis?.length; i++) {
+        let data = {
+            id: employeeKpiSet?.kpis?.[i]?._id,
+            employeeId: employeeKpiSet?.creator?._id,
+            date: employeeKpiSet?.date,
+            kpiType: employeeKpiSet?.kpis?.[i]?.type
+        }
+        let task = await getResultTaskByMonth(portal, data);
 
-    return employee_kpi_set;
+        employeeKpiSet.kpis[i] = employeeKpiSet.kpis[i].toObject();
+        employeeKpiSet.kpis[i].amountTask = task?.length;
+    }
+    return employeeKpiSet;
 }
 
 /**
@@ -504,7 +532,7 @@ exports.getTasksByListKpis = async (portal, data) => {
         infosearch.push([]);
         let kpis = listkpis[i].kpis;
         for (let j = 0; j < kpis.length; j++) {
-        infosearch[infosearch.length - 1].push({ id: kpis[j]._id, employeeId: listkpis[i].creator._id, date: listkpis[i].date, kpiType: kpis[j].type })
+            infosearch[infosearch.length - 1].push({ id: kpis[j]._id, employeeId: listkpis[i].creator._id, date: listkpis[i].date, kpiType: kpis[j].type })
         }
     }
 
@@ -653,9 +681,9 @@ exports.setPointAllKpi = async (portal, idEmployee, idKpiSet, data) => {
                     let update = await updateTaskImportanceLevel(portal, task[j].id, idEmployee, task[j].taskImportanceLevelCal, date, role)
 
                 }
-                automaticPoint += task[j].results.automaticPoint ? task[j].results.automaticPoint : 0 * taskImportance;
-                approvedPoint += task[j].results.approvedPoint ? task[j].results.approvedPoint : 0 * taskImportance;
-                employeePoint += task[j].results.employeePoint ? task[j].results.employeePoint : 0 * taskImportance;
+                automaticPoint += task[j].results.automaticPoint ? task[j].results.automaticPoint * taskImportance : 0;
+                approvedPoint += task[j].results.approvedPoint ? task[j].results.approvedPoint * taskImportance : 0;
+                employeePoint += task[j].results.employeePoint ? task[j].results.employeePoint * taskImportance : 0;
                 sumTaskImportance += taskImportance;
 
 

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -10,34 +10,39 @@ import { MaintainanceEditForm } from './maintainanceEditForm';
 import { MaintainanceActions } from '../redux/actions';
 import { AssetEditForm } from '../../asset-information/components/assetEditForm';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
-class MaintainanceManagement extends Component {
-    constructor(props) {
-        super(props);
-        const tableId = "table-maintainance-manager";
-        const defaultConfig = { limit: 5 }
-        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+import { formatDate } from '../../../../../helpers/assetHelper.js';
+function MaintainanceManagement(props) {
+    
+    const tableId_constructor = "table-maintainance-manager";
+    const defaultConfig = { limit: 5 }
+    const limit_constructor = getTableConfiguration(tableId_constructor, defaultConfig).limit;
+    const currentDate = formatDate(Date.now())
+    const [state, setState] = useState({
+        tableId: tableId_constructor,
+        code: "",
+        maintainanceCode: "",
+        maintainCreateDate: currentDate,
+        type: [1, 2, 3],
+        status: [1, 2, 3], 
+        page: 1,
+        limit: limit_constructor,
+        managedBy: props.managedBy ? props.managedBy : ''
+    })
 
-        this.state = {
-            tableId,
-            code: "",
-            maintainanceCode: "",
-            maintainCreateDate: "",
-            type: '',
-            status: '',
-            page: 1,
-            limit: limit,
-            managedBy: this.props.managedBy ? this.props.managedBy : ''
-        }
-    }
+    const { translate, mintainanceManager } = props;
+    const { page, limit, currentRow, currentRowEditAsset, managedBy, tableId, type, status, maintainCreateDate } = state;
 
-    componentDidMount() {
-        this.props.getMaintainances(this.state);
-    }
+    
+
+    useEffect(() => {
+        props.getMaintainances(state);
+    }, [])
+    
 
     // Bắt sự kiện click chỉnh sửa thông tin phiếu đề nghị
-    handleEdit = async (value, asset) => {
+    const handleEdit = async (value, asset) => {
         value.asset = asset;
-        await this.setState(state => {
+        await setState(state => {
             return {
                 ...state,
                 currentRow: value
@@ -47,7 +52,7 @@ class MaintainanceManagement extends Component {
     }
 
     // Function format dữ liệu Date thành string
-    formatDate2(date, monthYear = false) {
+    const formatDate2 = (date, monthYear = false) => {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -68,122 +73,125 @@ class MaintainanceManagement extends Component {
         }
     }
 
-    // Function format ngày hiện tại thành dạnh mm-yyyy
-    formatDate(date) {
-        var d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
-
-        if (month.length < 2) {
-            month = '0' + month;
-        }
-
-        if (day.length < 2) {
-            day = '0' + day;
-        }
-
-        return [month, year].join('-');
-    }
-
     // Function lưu giá trị mã phiếu vào state khi thay đổi
-    handleMaintainanceCodeChange = (event) => {
+    const handleMaintainanceCodeChange = (event) => {
         const { name, value } = event.target;
-        this.setState({
-            [name]: value
-        });
+        setState(state => {
+            return {
+                ...state,
+                [name]: value
+            }
+        })
     }
 
     // Function lưu giá trị mã tài sản vào state khi thay đổi
-    handleCodeChange = (event) => {
+    const handleCodeChange = (event) => {
         const { name, value } = event.target;
-        this.setState({
-            [name]: value
-        });
+        setState(state => {
+            return {
+                ...state,
+                [name]: value
+            }
+        })
     }
 
     // Function lưu giá trị tháng vào state khi thay đổi
-    handleMaintainCreateDateChange = (value) => {
-        this.setState({
-            ...this.state,
-            maintainCreateDate: value
-        });
+    const handleMaintainCreateDateChange = (value) => {
+        setState(state => {
+            return {
+                ...state,
+                maintainCreateDate: value
+            }
+        })
     }
 
     // Function lưu giá trị loại phiếu vào state khi thay đổi
-    handleTypeChange = (value) => {
+    const handleTypeChange = (value) => {
         if (value.length === 0) {
             value = ''
         }
 
-        this.setState({
-            ...this.state,
-            type: value
+        setState(state =>{
+            return{
+                ...state,
+                type: value
+            }
         })
     }
 
     // Function lưu giá trị status vào state khi thay đổi
-    handleStatusChange = (value) => {
+    const handleStatusChange = (value) => {
         if (value.length === 0) {
             value = ''
         }
-
-        this.setState({
-            ...this.state,
+        
+        setState(state =>{
+           return{
+            ...state,
             status: value
+           }
         })
     }
 
     // Function bắt sự kiện tìm kiếm
-    handleSubmitSearch = async () => {
-        await this.setState({
-            ...this.state,
-            page: 1
+    const handleSubmitSearch = async () => {
+        await setState(state =>{
+            return{
+                ...state,
+                page: 1
+            }
         })
-        this.props.getMaintainances(this.state);
+        props.getMaintainances(state);
     }
 
     // Bắt sự kiện setting số dòng hiện thị trên một trang
-    setLimit = async (number) => {
-        await this.setState({
-            limit: parseInt(number),
+    const setLimit = async (number) => {
+        await setState(state =>{
+            return{
+                ...state,
+                limit: parseInt(number),
+            }
         });
-        this.props.getMaintainances(this.state);
+        props.getMaintainances({...state, limit:parseInt(number)});
     }
 
     // Bắt sự kiện chuyển trang
-    setPage = async (pageNumber) => {
-        await this.setState({
-            page: parseInt(pageNumber),
+    const setPage = async (pageNumber) => {
+        await setState(state =>{
+            return{
+                ...state,
+                page: parseInt(pageNumber),
+            }
 
         });
-        this.props.getMaintainances(this.state);
+        props.getMaintainances({...state, page:parseInt(pageNumber)});
     }
 
-    deleteMaintainance = (assetId, maintainanceId) => {
-        this.props.deleteMaintainance(assetId, maintainanceId).then(({ response }) => {
+    const deleteMaintainance = (assetId, maintainanceId) => {
+        props.deleteMaintainance(assetId, maintainanceId).then(({ response }) => {
             if (response.data.success) {
-                this.props.getMaintainances(this.state);
+                props.getMaintainances(state);
             }
         });
     }
 
     /*Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
-    convertDataToExportData = (data) => {
+    const convertDataToExportData = (data) => {
         let fileName = "Bảng quản lý thông tin bảo trì tài sản ";
         let convertedData = [];
         if (data) {
+            console.log(data)
             data = data.forEach((x, index) => {
                 let code = x.maintainanceCode;
                 let assetName = x.asset.assetName;
-                let type = this.convertMaintainType(x.type);
+                let type = convertMaintainType(x.type);
                 let description = x.description;
-                let createDate = this.formatDate2(x.createDate)
-                let startDate = this.formatDate2(x.startDate);
-                let endDate = this.formatDate2(x.endDate);
+                let createDate = formatDate2(x.createDate)
+                let startDate = formatDate2(x.startDate);
+                let endDate = formatDate2(x.endDate);
                 let cost = x.expense ? new Intl.NumberFormat().format(parseInt(x.expense)) : '';
                 let assetCode = x.asset.code;
-                let status = this.convertMaintainStatus(x.status);
+                let status = convertMaintainStatus(x.status);
 
                 let item = {
                     index: index + 1,
@@ -238,8 +246,8 @@ class MaintainanceManagement extends Component {
     }
 
     // Bắt sự kiện click chỉnh sửa thông tin tài sản
-    handleEditAsset = async (value) => {
-        await this.setState(state => {
+    const handleEditAsset = async (value) => {
+        await setState(state => {
             return {
                 ...state,
                 currentRowEditAsset: value
@@ -248,12 +256,14 @@ class MaintainanceManagement extends Component {
         window.$('#modal-edit-asset').modal('show');
 
         // Mở tab thứ 5
-        window.$('.nav-tabs li:eq(4) a').tab('show');
+        window.$('#modal-edit-asset').on('shown.bs.modal', function (){
+            window.$('#nav-tabs li:eq(4) a').tab('show');
+        });
 
     }
 
-    convertMaintainStatus = (status) => {
-        const { translate } = this.props;
+    const convertMaintainStatus = (status) => {
+        const { translate } = props;
 
         if (status === "1") {
             return translate('asset.asset_info.unfulfilled');
@@ -264,13 +274,10 @@ class MaintainanceManagement extends Component {
         else if (status === "3") {
             return translate('asset.asset_info.made')
         }
-        else {
-            return ''
-        }
     }
 
-    convertMaintainType = (type) => {
-        const { translate } = this.props;
+    const convertMaintainType = (type) => {
+        const { translate } = props;
 
         if (type === "1") {
             return translate('asset.asset_info.repair')
@@ -281,26 +288,21 @@ class MaintainanceManagement extends Component {
         else if (type === "3") {
             return translate('asset.asset_info.upgrade')
         }
-        else {
-            return ''
-        }
     }
 
-    render() {
-        const { translate, mintainanceManager } = this.props;
-        const { page, limit, currentRow, currentRowEditAsset, managedBy, tableId } = this.state;
+    var lists = "", exportData;
+    var formater = new Intl.NumberFormat();
+    if (mintainanceManager.isLoading === false) {
+        lists = mintainanceManager.mintainanceList;
+        exportData = convertDataToExportData(lists);
+    }
 
-        var lists = "", exportData;
-        var formater = new Intl.NumberFormat();
-        if (mintainanceManager.isLoading === false) {
-            lists = mintainanceManager.mintainanceList;
-            exportData = this.convertDataToExportData(lists);
-        }
+    var pageTotal = ((mintainanceManager.mintainanceLength % limit) === 0) ?
+        parseInt(mintainanceManager.mintainanceLength / limit) :
+        parseInt((mintainanceManager.mintainanceLength / limit) + 1);
 
-        var pageTotal = ((mintainanceManager.mintainanceLength % limit) === 0) ?
-            parseInt(mintainanceManager.mintainanceLength / limit) :
-            parseInt((mintainanceManager.mintainanceLength / limit) + 1);
-
+        console.log(state)
+        console.log(lists)
         return (
             <div className="box">
                 <div className="box-body qlcv">
@@ -313,13 +315,13 @@ class MaintainanceManagement extends Component {
                         {/* Mã phiếu */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('asset.general_information.form_code')}</label>
-                            <input type="text" className="form-control" name="maintainanceCode" onChange={this.handleMaintainanceCodeChange} placeholder={translate('asset.general_information.form_code')} autoComplete="off" />
+                            <input type="text" className="form-control" name="maintainanceCode" onChange={handleMaintainanceCodeChange} placeholder={translate('asset.general_information.form_code')} autoComplete="off" />
                         </div>
 
                         {/* Mã tài sản */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('asset.general_information.asset_code')}</label>
-                            <input type="text" className="form-control" name="code" onChange={this.handleCodeChange} placeholder={translate('asset.general_information.asset_code')} autoComplete="off" />
+                            <input type="text" className="form-control" name="code" onChange={handleCodeChange} placeholder={translate('asset.general_information.asset_code')} autoComplete="off" />
                         </div>
                     </div>
                     <div className="form-inline">
@@ -327,8 +329,9 @@ class MaintainanceManagement extends Component {
                         <div className="form-group">
                             <label className="form-control-static">{translate('asset.general_information.type')}</label>
                             <SelectMulti id={`multiSelectType`} multiple="multiple"
+                                value = {type}
                                 options={{ nonSelectedText: translate('asset.general_information.select_reception_type'), allSelectedText: translate('asset.general_information.select_all_reception_type') }}
-                                onChange={this.handleTypeChange}
+                                onChange={handleTypeChange}
                                 items={[
                                     { value: 1, text: translate('asset.asset_info.repair') },
                                     { value: 2, text: translate('asset.asset_info.replace') },
@@ -344,8 +347,8 @@ class MaintainanceManagement extends Component {
                             <DatePicker
                                 id="maintain-month"
                                 dateFormat="month-year"
-                                // value={this.formatDate(Date.now())}
-                                onChange={this.handleMaintainCreateDateChange}
+                                value={maintainCreateDate}
+                                onChange={handleMaintainCreateDateChange}
                             />
                         </div>
                     </div>
@@ -354,8 +357,9 @@ class MaintainanceManagement extends Component {
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.status')}</label>
                             <SelectMulti id={`multiSelectStatus`} multiple="multiple"
+                                value= {status}
                                 options={{ nonSelectedText: translate('page.non_status'), allSelectedText: translate('page.all_status') }}
-                                onChange={this.handleStatusChange}
+                                onChange={handleStatusChange}
                                 items={[
                                     { value: 1, text: translate('asset.asset_info.unfulfilled') },
                                     { value: 2, text: translate('asset.asset_info.processing') },
@@ -368,7 +372,7 @@ class MaintainanceManagement extends Component {
                         {/* Button tìm kiếm */}
                         <div className="form-group">
                             <label></label>
-                            <button type="button" className="btn btn-success" title={translate('asset.general_information.search')} onClick={() => this.handleSubmitSearch()}>{translate('asset.general_information.search')}</button>
+                            <button type="button" className="btn btn-success" title={translate('asset.general_information.search')} onClick={() => handleSubmitSearch()}>{translate('asset.general_information.search')}</button>
                         </div>
                         {exportData && <ExportExcel id="export-asset-maintainance-management" exportData={exportData} style={{ marginRight: 10 }} />}
                     </div>
@@ -402,7 +406,7 @@ class MaintainanceManagement extends Component {
                                             translate('asset.general_information.expense'),
                                             translate('asset.general_information.status')
                                         ]}
-                                        setLimit={this.setLimit}
+                                        setLimit={setLimit}
                                     />
                                 </th>
                             </tr>
@@ -411,18 +415,18 @@ class MaintainanceManagement extends Component {
                             {(lists && lists.length !== 0) ?
                                 lists.map((x, index) => (
                                     <tr key={index}>
-                                        <td><span onClick={() => this.handleEditAsset(x.asset)} style={{ color: '#367FA9', cursor: 'pointer' }}>{x.asset.code}</span></td>
+                                        <td><span onClick={() => handleEditAsset(x.asset)} style={{ color: '#367FA9', cursor: 'pointer' }}>{x.asset.code}</span></td>
                                         <td>{x.maintainanceCode}</td>
-                                        <td>{x.createDate ? this.formatDate2(x.createDate) : ''}</td>
-                                        <td>{this.convertMaintainType(x.type)}</td>
+                                        <td>{x.createDate ? formatDate2(x.createDate) : ''}</td>
+                                        <td>{convertMaintainType(x.type)}</td>
                                         <td>{x.asset.assetName}</td>
                                         <td>{x.description}</td>
-                                        <td>{x.startDate ? this.formatDate2(x.startDate) : ''}</td>
-                                        <td>{x.endDate ? this.formatDate2(x.endDate) : ''}</td>
+                                        <td>{x.startDate ? formatDate2(x.startDate) : ''}</td>
+                                        <td>{x.endDate ? formatDate2(x.endDate) : ''}</td>
                                         <td>{x.expense ? formater.format(parseInt(x.expense)) : ''}</td>
-                                        <td>{this.convertMaintainStatus(x.status)}</td>
+                                        <td>{convertMaintainStatus(x.status)}</td>
                                         <td style={{ textAlign: "center" }}>
-                                            <a onClick={() => this.handleEdit(x, x.asset)} className="edit text-yellow" style={{ width: '5px', cursor: 'pointer' }} title={translate('asset.asset_info.edit_maintenance_card')}><i
+                                            <a onClick={() => handleEdit(x, x.asset)} className="edit text-yellow" style={{ width: '5px', cursor: 'pointer' }} title={translate('asset.asset_info.edit_maintenance_card')}><i
                                                 className="material-icons">edit</i></a>
                                             <DeleteNotification
                                                 content={translate('asset.asset_info.delete_maintenance_card')}
@@ -430,7 +434,7 @@ class MaintainanceManagement extends Component {
                                                     id: x._id,
                                                     info: x.maintainanceCode ? x.maintainanceCode : '' + " - "
                                                 }}
-                                                func={() => this.deleteMaintainance(x.asset._id, x._id)}
+                                                func={() => deleteMaintainance(x.asset._id, x._id)}
                                             />
                                         </td>
                                     </tr>
@@ -444,7 +448,7 @@ class MaintainanceManagement extends Component {
                     }
 
                     {/* PaginateBar */}
-                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
+                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={setPage} />
                 </div>
 
                 {/* Form chỉnh sửa phiếu bảo trì */}
@@ -454,11 +458,11 @@ class MaintainanceManagement extends Component {
                         _id={currentRow._id}
                         asset={currentRow.asset}
                         maintainanceCode={currentRow.maintainanceCode}
-                        createDate={this.formatDate2(currentRow.createDate)}
+                        createDate={formatDate2(currentRow.createDate)}
                         type={currentRow.type}
                         description={currentRow.description}
-                        startDate={this.formatDate2(currentRow.startDate)}
-                        endDate={this.formatDate2(currentRow.endDate)}
+                        startDate={formatDate2(currentRow.startDate)}
+                        endDate={formatDate2(currentRow.endDate)}
                         expense={currentRow.expense}
                         status={currentRow.status}
                     />
@@ -473,7 +477,7 @@ class MaintainanceManagement extends Component {
                         code={currentRowEditAsset.code}
                         assetName={currentRowEditAsset.assetName}
                         serial={currentRowEditAsset.serial}
-                        assetType={currentRowEditAsset.assetType}
+                        assetType={JSON.stringify(currentRowEditAsset.assetType)}
                         group={currentRowEditAsset.group}
                         purchaseDate={currentRowEditAsset.purchaseDate}
                         warrantyExpirationDate={currentRowEditAsset.warrantyExpirationDate}
@@ -485,7 +489,7 @@ class MaintainanceManagement extends Component {
                         location={currentRowEditAsset.location}
                         description={currentRowEditAsset.description}
                         status={currentRowEditAsset.status}
-                        canRegisterForUse={currentRowEditAsset.canRegisterForUse}
+                        typeRegisterForUse={currentRowEditAsset.typeRegisterForUse}
                         detailInfo={currentRowEditAsset.detailInfo}
                         readByRoles={currentRowEditAsset.readByRoles}
                         cost={currentRowEditAsset.cost}
@@ -495,7 +499,7 @@ class MaintainanceManagement extends Component {
                         depreciationType={currentRowEditAsset.depreciationType}
                         estimatedTotalProduction={currentRowEditAsset.estimatedTotalProduction}
                         unitsProducedDuringTheYears={currentRowEditAsset.unitsProducedDuringTheYears && currentRowEditAsset.unitsProducedDuringTheYears.map((x) => ({
-                            month: this.formatDate2(x.month),
+                            month: formatDate2(x.month),
                             unitsProducedDuringTheYear: x.unitsProducedDuringTheYear
                         })
                         )}
@@ -510,11 +514,12 @@ class MaintainanceManagement extends Component {
                         incidentLogs={currentRowEditAsset.incidentLogs}
                         archivedRecordNumber={currentRowEditAsset.archivedRecordNumber}
                         files={currentRowEditAsset.documents}
+                        linkPage={"management"}
+                        page={page}
                     />
                 }
             </div>
         );
-    }
 };
 
 function mapState(state) {

@@ -246,6 +246,11 @@ class SideBar extends Component {
                                             path: "/kpi-units/dashboard",
                                         },
                                         {
+                                            name: "menu.kpi_unit_create_for_admin",
+                                            icon: "fa fa-circle-o",
+                                            path: "/kpi-units/create-for-admin",
+                                        },
+                                        {
                                             name: "menu.kpi_unit_create",
                                             icon: "fa fa-circle-o",
                                             path: "/kpi-units/create",
@@ -492,20 +497,26 @@ class SideBar extends Component {
                                             icon: "fa fa-circle-o",
                                             path: "/crm/customer",
                                         },
-                                        {
-                                            name: "menu.crm_list.lead",
-                                            icon: "fa fa-circle-o",
-                                            path: "/crm/lead",
-                                        },
+                                        
                                         {
                                             name: "menu.crm_list.care",
                                             icon: "fa fa-circle-o",
                                             path: "/crm/care",
                                         },
                                         {
+                                            name: "menu.crm_list.lead",
+                                            icon: "fa fa-circle-o",
+                                            path: "/crm/loyal-customer",
+                                        },
+                                        {
                                             name: "menu.crm_list.group",
                                             icon: "fa fa-circle-o",
                                             path: "/crm/group",
+                                        },
+                                        {
+                                            name: "menu.crm_list.evaluation",
+                                            icon: "fa fa-circle-o",
+                                            path: "/crm/evaluation",
                                         },
                                         {
                                             name: "menu.crm_list.statistic",
@@ -705,6 +716,46 @@ class SideBar extends Component {
                                 }}
                             />
 
+                            {/* Quản lý vận chuyển */}
+                            <GroupItem
+                                groupItem={{
+                                    name: "menu.manage_transport",
+                                    icon: "fa fa-truck",
+                                    list: [
+                                        {
+                                            name: "menu.manufacturing_dashboard",
+                                            icon: "fa fa-dashboard",
+                                            path: "/manufacturing-dashboard",
+                                        },
+                                        {
+                                            name: "menu.manage_transport_requirements",
+                                            icon: "fa fa-calendar-o",
+                                            path: "/manage-transport-requirements",
+                                        },
+                                        {
+                                            name: "menu.manage_transport_schedule",
+                                            icon: "fa fa-calendar-o",
+                                            path: "/manage-transport-schedule",
+                                        },
+                                        {
+                                            name: "menu.manage_transport_vehical",
+                                            icon: "fa fa-calendar-o",
+                                            path: "/manage-transport-vehical",
+                                        },
+                                        {
+                                            name: "menu.manage_transport_human",
+                                            icon: "fa fa-calendar-o",
+                                            path: "/manage-transport-human",
+                                        },
+                                        {
+                                            name: "menu.manage_transport_route",
+                                            icon: "fa fa-calendar-o",
+                                            path: "/manage-transport-route",
+                                        },
+                                    ]
+                                }}
+                            />
+                            
                             {/* CRUD ví dụ theo 2 mô hình lấy dữ liệu */}
                             <GroupItem
                                 groupItem={{
@@ -734,7 +785,6 @@ class SideBar extends Component {
                                     ],
                                 }}
                             />
-
 
                             {/* Hướng dẫn sử dụng */}
                             <Item

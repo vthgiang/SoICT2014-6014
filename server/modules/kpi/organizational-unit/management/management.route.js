@@ -7,4 +7,7 @@ const {auth} = require(`../../../../middleware`);
 router.post('/organizational-unit-kpi-sets/:id/copy', auth, managerController.copyKPI);
 router.post('/organizational-unit-kpi-sets/calculate', auth, managerController.calculateKpiUnit);
 
+// Lấy logs của 1 tập kpi đơn vị
+router.get('/organizational-unit-kpi-sets/:id/logs', auth, managerController.getOrganizationalUnitKpiSetLogs)
+
 module.exports = router;

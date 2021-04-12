@@ -111,7 +111,7 @@ class DataTableSetting extends Component {
     }
 
     render() {
-        const { text, fontSize = 19, className, style, translate, columnArr = [], hideColumnOption = true, tableContainerId, tableId, tableWidth } = this.props;
+        const { text, fontSize = 19, className, style, translate, columnArr = [], hideColumnOption = true, linePerPageOption = true, tableContainerId, tableId, tableWidth } = this.props;
         const { hiddenColumns, limit } = this.state;
         return (
             <React.Fragment>
@@ -135,10 +135,13 @@ class DataTableSetting extends Component {
                             />
                         </div>
                     }
-                    <div className="form-group">
-                        <label>{translate('table.line_per_page')}</label>
-                        <input className="form-control" type="Number" onKeyUp={this.handleEnterLimitSetting} defaultValue={limit} ref={this.record} />
-                    </div>
+                    {
+                        linePerPageOption &&
+                        <div className="form-group">
+                            <label>{translate('table.line_per_page')}</label>
+                            <input className="form-control" type="Number" onKeyUp={this.handleEnterLimitSetting} defaultValue={limit} ref={this.record} />
+                        </div>
+                    }
 
                     {window.$(`#${tableContainerId}`)[0] !== undefined &&
                         <div className="form-group">

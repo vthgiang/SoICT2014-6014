@@ -8,42 +8,39 @@ import { showListInSwal } from '../../../../helpers/showListInSwal';
 import { ApiImage } from '../../../../common-components';
 import { ViewAllSalary } from '../../../dashboard-personal/components/combinedContent';
 
-class HighestSalaryChart extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {}
-    }
+const HighestSalaryChart = (props) => {
+    
 
     /** Function xem tất cả lương thưởng nhân viên  */
-    viewAllSalary = () => {
+    const viewAllSalary = () => {
         window.$(`#modal-view-all-salary`).modal('show');
     }
 
-    render() {
-        const { translate, salary, department } = this.props;
+    const { translate, salary, department } = props;
 
-        const { monthShow, organizationalUnits, childOrganizationalUnit } = this.props;
+    const { monthShow, organizationalUnits, childOrganizationalUnit } = props;
 
-        let organizationalUnitsName;
-        if (organizationalUnits) {
-            organizationalUnitsName = department.list.filter(x => organizationalUnits.includes(x._id));
-            organizationalUnitsName = organizationalUnitsName.map(x => x.name);
-        };
+    let organizationalUnitsName;
 
-        let data = salary.listSalaryByMonthAndOrganizationalUnits;
-        if (data.length !== 0) {
-            data = data.map(x => {
-                let total = parseInt(x.mainSalary);
-                if (x.bonus.length !== 0) {
-                    for (let count in x.bonus) {
-                        total = total + parseInt(x.bonus[count].number)
-                    }
-                };
-                return { ...x, total: total }
-            })
-        };
+    if (organizationalUnits) {
+        organizationalUnitsName = department.list.filter(x => organizationalUnits.includes(x._id));
+        organizationalUnitsName = organizationalUnitsName.map(x => x.name);
+    };
 
-        let dataSalary = []
+    let data = salary.listSalaryByMonthAndOrganizationalUnits;
+    if (data.length !== 0) {
+        data = data.map(x => {
+            let total = parseInt(x.mainSalary);
+            if (x.bonus.length !== 0) {
+                for (let count in x.bonus) {
+                    total = total + parseInt(x.bonus[count].number)
+                }
+            };
+            return { ...x, total: total }
+        })
+    };
+
+    let dataSalary = []
         data.forEach(x => {
             const index = dataSalary.findIndex(y => y.employee._id === x.employee._id)
             if (index >= 0) {
@@ -53,8 +50,10 @@ class HighestSalaryChart extends Component {
             }
         });
 
-        dataSalary = dataSalary.sort((a, b) => b.total - a.total);
+    dataSalary = dataSalary.sort((a, b) => b.total - a.total);
 
+    
+    
         return (
             <React.Fragment>
                 {childOrganizationalUnit.length === department.list.length &&
@@ -67,7 +66,7 @@ class HighestSalaryChart extends Component {
                                         organizationalUnitsName && organizationalUnitsName.length < 2 ?
                                             <>
                                                 <span>{` ${translate('task.task_dashboard.of_unit')}`}</span>
-                                                <span style={{ fontWeight: "bold" }}>{` ${organizationalUnitsName?.[0]}`}</span>
+                                                <span>{` ${organizationalUnitsName?.[0]}`}</span>
                                             </>
                                             :
                                             <span onClick={() => showListInSwal(organizationalUnitsName, translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
@@ -96,15 +95,14 @@ class HighestSalaryChart extends Component {
                                 </ul>
                             </div>
                             <div className="box-footer text-center">
-                                <a style={{ cursor: 'pointer' }} onClick={this.viewAllSalary} className="uppercase">Xem tất cả</a>
+                                <a style={{ cursor: 'pointer' }} onClick={viewAllSalary} className="uppercase">Xem tất cả</a>
                             </div>
                         </div>
                         <ViewAllSalary dataSalary={dataSalary} title={`Tổng hợp tình hình lương thưởng ${monthShow}`} viewTotalSalary={true} />
                     </React.Fragment>
                 }
             </React.Fragment>
-        )
-    }
+        );
 }
 
 function mapState(state) {

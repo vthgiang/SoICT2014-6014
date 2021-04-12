@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, Scheduler } from '../../../../../common-components';
@@ -8,67 +8,73 @@ import {
 } from '../../../base/detail-tab/components/combinedContent';
 import { AssetViewInfo } from './assetViewInfo';
 
-class AssetDetailForm extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {};
-    }
-
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps._id !== prevState._id || nextProps.depreciationType !== prevState.depreciationType || nextProps.typeRegisterForUse !== prevState.typeRegisterForUse) {
-            return {
-                ...prevState,
-                _id: nextProps._id,
-                img: process.env.REACT_APP_SERVER + nextProps.avatar,
-                avatar: nextProps.avatar,
-                code: nextProps.code,
-                assetName: nextProps.assetName,
-                serial: nextProps.serial,
-                assetType: nextProps.assetType,
-                group: nextProps.group,
-                purchaseDate: nextProps.purchaseDate,
-                warrantyExpirationDate: nextProps.warrantyExpirationDate,
-                managedBy: nextProps.managedBy,
-                assignedToUser: nextProps.assignedToUser,
-                assignedToOrganizationalUnit: nextProps.assignedToOrganizationalUnit,
-                handoverFromDate: nextProps.handoverFromDate,
-                handoverToDate: nextProps.handoverToDate,
-                location: nextProps.location,
-                description: nextProps.description,
-                status: nextProps.status,
-                typeRegisterForUse: nextProps.typeRegisterForUse,
-                detailInfo: nextProps.detailInfo,
-                cost: nextProps.cost,
-                residualValue: nextProps.residualValue,
-                startDepreciation: nextProps.startDepreciation,
-                usefulLife: nextProps.usefulLife,
-                estimatedTotalProduction: nextProps.estimatedTotalProduction,
-                unitsProducedDuringTheYears: nextProps.unitsProducedDuringTheYears,
-                depreciationType: nextProps.depreciationType,
-                maintainanceLogs: nextProps.maintainanceLogs,
-                usageLogs: nextProps.usageLogs,
-                incidentLogs: nextProps.incidentLogs,
-                disposalDate: nextProps.disposalDate,
-                disposalType: nextProps.disposalType,
-                disposalCost: nextProps.disposalCost,
-                disposalDesc: nextProps.disposalDesc,
-                archivedRecordNumber: nextProps.archivedRecordNumber,
-                files: nextProps.files,
-                readByRoles: nextProps.readByRoles
-            }
-        } else {
-            return null;
+function AssetDetailForm(props) {
+    const [state, setState] = useState({})
+    const [prevProps, setPrevProps] = useState({
+        _id:null,
+        depreciationType: null,
+        typeRegisterForUse:null
+    })
+    const { translate, assetsManager } = props;
+    const { _id, avatar, code, assetName, serial, assetType, group, purchaseDate, warrantyExpirationDate,
+        managedBy, assignedToUser, assignedToOrganizationalUnit, handoverFromDate, handoverToDate, location, description, status, typeRegisterForUse,
+        detailInfo, cost, residualValue, startDepreciation, usefulLife, depreciationType, estimatedTotalProduction,
+        unitsProducedDuringTheYears, maintainanceLogs, usageLogs, incidentLogs, disposalDate, disposalType, disposalCost,
+        disposalDesc, archivedRecordNumber, files, readByRoles
+    } = state;
+    let isChange = 0;
+    for(const property in prevProps){
+        if(prevProps[property] !== props[property]){
+        isChange =1;
         }
     }
-    render() {
-        const { translate, assetsManager } = this.props;
-        const { _id, avatar, code, assetName, serial, assetType, group, purchaseDate, warrantyExpirationDate,
-            managedBy, assignedToUser, assignedToOrganizationalUnit, handoverFromDate, handoverToDate, location, description, status, typeRegisterForUse,
-            detailInfo, cost, residualValue, startDepreciation, usefulLife, depreciationType, estimatedTotalProduction,
-            unitsProducedDuringTheYears, maintainanceLogs, usageLogs, incidentLogs, disposalDate, disposalType, disposalCost,
-            disposalDesc, archivedRecordNumber, files, readByRoles
-        } = this.state;
-        console.log('this.state', this.state)
+    
+    
+    if (isChange ===1) {
+        setState({
+            ...state,
+            _id: props._id,
+            img: process.env.REACT_APP_SERVER + props.avatar,
+            avatar: props.avatar,
+            code: props.code,
+            assetName: props.assetName,
+            serial: props.serial,
+            assetType: props.assetType,
+            group: props.group,
+            purchaseDate: props.purchaseDate,
+            warrantyExpirationDate: props.warrantyExpirationDate,
+            managedBy: props.managedBy,
+            assignedToUser: props.assignedToUser,
+            assignedToOrganizationalUnit: props.assignedToOrganizationalUnit,
+            handoverFromDate: props.handoverFromDate,
+            handoverToDate: props.handoverToDate,
+            location: props.location,
+            description: props.description,
+            status: props.status,
+            typeRegisterForUse: props.typeRegisterForUse,
+            detailInfo: props.detailInfo,
+            cost: props.cost,
+            residualValue: props.residualValue,
+            startDepreciation: props.startDepreciation,
+            usefulLife: props.usefulLife,
+            estimatedTotalProduction: props.estimatedTotalProduction,
+            unitsProducedDuringTheYears: props.unitsProducedDuringTheYears,
+            depreciationType: props.depreciationType,
+            maintainanceLogs: props.maintainanceLogs,
+            usageLogs: props.usageLogs,
+            incidentLogs: props.incidentLogs,
+            disposalDate: props.disposalDate,
+            disposalType: props.disposalType,
+            disposalCost: props.disposalCost,
+            disposalDesc: props.disposalDesc,
+            archivedRecordNumber: props.archivedRecordNumber,
+            files: props.files,
+            readByRoles: props.readByRoles
+        });
+        setPrevProps(props);
+    } 
+    
+    
 
         return (
             <React.Fragment>
@@ -119,12 +125,12 @@ class AssetDetailForm extends Component {
 
                         archivedRecordNumber={archivedRecordNumber}
                         files={files}
-                        linkPage={this.props.linkPage}
+                        linkPage={props.linkPage}
                     />
                 </DialogModal>
             </React.Fragment>
         );
-    };
+
 }
 function mapState(state) {
     const { assetsManager } = state;

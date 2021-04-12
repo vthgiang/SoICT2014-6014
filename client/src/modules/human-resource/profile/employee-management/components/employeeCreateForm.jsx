@@ -1,14 +1,16 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { convertJsonObjectToFormData } from '../../../../../helpers/jsonObjectToFormDataObjectConverter';
 
 import { DialogModal } from '../../../../../common-components';
 
-import { GeneralTab, ContactTab, TaxTab, InsurranceTab, DisciplineTab, ExperienceTab, CertificateTab, ContractTab, SalaryTab, FileTab, CareerMajorTab } from '../../employee-create/components/combinedContent';
+import { GeneralTab, ContactTab, TaxTab, InsurranceTab, DisciplineTab, ExperienceTab, CertificateTab, ContractTab, SalaryTab, FileTab } from '../../employee-create/components/combinedContent';
 
 import { EmployeeManagerActions } from '../redux/actions';
 import FamilyMemberTab from '../../employee-create/components/familyMemberTab';
+import { generateCode } from "../../../../../helpers/generateCode";
+
 
 const initMember = {
     name: '',
@@ -25,11 +27,34 @@ const initMember = {
     numberPassport: '',
     note: ''
 }
-class EmployeeCreateForm extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            img: './upload/human-resource/avatars/avatar5.png',
+const EmployeeCreateForm = (props) => {
+
+    /**
+     * Function format dữ liệu Date thành string
+     * @param {*} date : Ngày muốn format
+     * @param {*} monthYear : true trả về yyyy-mm, false trả về yyyy-mm-dd
+     */
+     const formatDate2 = (date, monthYear = false) => {
+        if (date) {
+            let d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
+
+            if (month.length < 2)
+                month = '0' + month;
+            if (day.length < 2)
+                day = '0' + day;
+
+            if (monthYear === true) {
+                return [year, month].join('-');
+            } else return [year, month, day].join('-');
+        }
+        return date;
+    }
+    
+    const [state, setState] = useState({
+        img: './upload/human-resource/avatars/avatar5.png',
             avatar: "",
             employee: {
                 avatar: '/upload/human-resource/avatars/avatar5.png',
@@ -38,8 +63,8 @@ class EmployeeCreateForm extends Component {
                 educationalLevel: "",
                 professionalSkill: "unavailable",
                 status: 'active',
-                identityCardDate: this.formatDate2(Date.now()),
-                birthdate: this.formatDate2(Date.now()),
+                identityCardDate: formatDate2(Date.now()),
+                birthdate: formatDate2(Date.now()),
                 experiences: [],
                 socialInsuranceDetails: [],
             },
@@ -66,44 +91,21 @@ class EmployeeCreateForm extends Component {
                 familyMembers: []
             },
             editMember: initMember
-        };
-        this.handleChangeCourse = this.handleChangeCourse.bind(this);
-    }
 
-    /**
-     * Function format dữ liệu Date thành string
-     * @param {*} date : Ngày muốn format
-     * @param {*} monthYear : true trả về yyyy-mm, false trả về yyyy-mm-dd
-     */
-    formatDate2(date, monthYear = false) {
-        if (date) {
-            let d = new Date(date),
-                month = '' + (d.getMonth() + 1),
-                day = '' + d.getDate(),
-                year = d.getFullYear();
+    })
 
-            if (month.length < 2)
-                month = '0' + month;
-            if (day.length < 2)
-                day = '0' + day;
-
-            if (monthYear === true) {
-                return [year, month].join('-');
-            } else return [year, month, day].join('-');
-        }
-        return date;
-    }
 
     /**
      * Function upload avatar 
      * @param {*} img 
      * @param {*} avatar 
      */
-    handleUpload = (img, avatar) => {
-        this.setState({
+    const handleUpload = (img, avatar) => {
+        setState(state => ({
+            ...state,
             img: img,
             avatar: avatar
-        })
+        }))
     }
 
     /**
@@ -111,20 +113,21 @@ class EmployeeCreateForm extends Component {
      * @param {*} name : Tên trường
      * @param {*} value : Giá trị của trường
      */
-    handleChange = (name, value) => {
-        const { employee } = this.state;
+    const handleChange = (name, value) => {
+        const { employee } = state;
         if (name === 'startingDate' || name === 'leavingDate' || name === 'birthdate' || name === 'identityCardDate' || name === 'taxDateOfIssue' || name === 'healthInsuranceStartDate' || name === 'healthInsuranceEndDate') {
             if (value) {
                 let partValue = value.split('-');
                 value = [partValue[2], partValue[1], partValue[0]].join('-');
             }
         }
-        this.setState({
+        setState(state => ({
+            ...state,
             employee: {
                 ...employee,
                 [name]: value
             }
-        });
+        }));
     }
 
     /**
@@ -132,14 +135,15 @@ class EmployeeCreateForm extends Component {
      * @param {*} data : Dữ liệu thông tin kinh nghiệm làm việc
      * @param {*} addData : Kinh nghiệm làm việc muốn thêm
      */
-    handleChangeExperience = (data, addData) => {
-        const { employee } = this.state;
-        this.setState({
+    const handleChangeExperience = (data, addData) => {
+        const { employee } = state;
+        setState(state => ({
+            ...state,
             employee: {
                 ...employee,
                 experiences: data
             }
-        })
+        }))
     }
 
     /**
@@ -147,10 +151,11 @@ class EmployeeCreateForm extends Component {
      * @param {*} data : Dữ liệu thông tin bằng cấp
      * @param {*} addData : Bằng cấp muốn thêm
      */
-    handleChangeDegree = (data, addData) => {
-        this.setState({
+    const handleChangeDegree = (data, addData) => {
+        setState(state => ({
+            ...state,
             degrees: data
-        })
+        }))
     }
 
     /**
@@ -158,10 +163,11 @@ class EmployeeCreateForm extends Component {
      * @param {*} data : Dữ liệu thông tin chứng chỉ
      * @param {*} addData : Chứng chỉ muốn thêm
      */
-    handleChangeCertificate = (data, addData) => {
-        this.setState({
+    const handleChangeCertificate = (data, addData) => {
+        setState(state => ({
+            ...state,
             certificates: data
-        })
+        }))
     }
 
     /**
@@ -169,10 +175,11 @@ class EmployeeCreateForm extends Component {
      * @param {*} data : Dữ liệu thông tin chuyên ngành tương đương
      * @param {*} addData : Chuyên ngành tương đương muốn thêm
      */
-    handleChangeMajor = (data, addData) => {
-        this.setState({
+    const handleChangeMajor = (data, addData) => {
+        setState(state => ({
+            ...state,
             major: data
-        })
+        }))
     }
 
     /**
@@ -180,10 +187,11 @@ class EmployeeCreateForm extends Component {
      * @param {*} data : Dữ liệu thông tin công việc tương đương
      * @param {*} addData : Công việc tương đương muốn thêm
      */
-    handleChangeCareer = (data, addData) => {
-        this.setState({
+    const handleChangeCareer = (data, addData) => {
+        setState(state => ({
+            ...state,
             career: data
-        })
+        }))
     }
 
     /**
@@ -191,14 +199,15 @@ class EmployeeCreateForm extends Component {
      * @param {*} data : Dữ liệu thông tin quá trình đóng BHXH
      * @param {*} addData : Quá trình đóng BHXH muốn thêm
      */
-    handleChangeBHXH = (data, addData) => {
-        const { employee } = this.state;
-        this.setState({
+    const handleChangeBHXH = (data, addData) => {
+        const { employee } = state;
+        setState(state => ({
+            ...state,
             employee: {
                 ...employee,
                 socialInsuranceDetails: data
             }
-        })
+        }))
     }
 
     /**
@@ -206,10 +215,11 @@ class EmployeeCreateForm extends Component {
      * @param {*} data : Dữ liệu thông tin hợp đồng
      * @param {*} addData : Hợp đồng muốn thêm
      */
-    handleChangeContract = (data, addData) => {
-        this.setState({
+    const handleChangeContract = (data, addData) => {
+        setState(state => ({
+            ...state,
             contracts: data
-        })
+        }))
     }
 
     /**
@@ -217,10 +227,11 @@ class EmployeeCreateForm extends Component {
      * @param {*} data : Dữ liệu thông tin khen thưởng
      * @param {*} addData : Khen thưởng muốn thêm
      */
-    handleChangeConmmendation = (data, addData) => {
-        this.setState({
+    const handleChangeConmmendation = (data, addData) => {
+        setState(state => ({
+            ...state,
             commendations: data
-        })
+        }))
     }
 
     /**
@@ -228,10 +239,11 @@ class EmployeeCreateForm extends Component {
      * @param {*} data : Dữ liệu thông tin kỷ luật
      * @param {*} addData : Kỷ luật muốn thêm
      */
-    handleChangeDiscipline = (data, addData) => {
-        this.setState({
+    const handleChangeDiscipline = (data, addData) => {
+        setState(state => ({
+            ...state,
             disciplines: data
-        })
+        }))
     }
 
     /**
@@ -239,10 +251,11 @@ class EmployeeCreateForm extends Component {
      * @param {*} data : Dữ liệu thông tin nghỉ phép
      * @param {*} addData : Nghỉ phép muốn thêm
      */
-    handleChangeAnnualLeave = (data, addData) => {
-        this.setState({
+    const handleChangeAnnualLeave = (data, addData) => {
+        setState(state => ({
+            ...state,
             annualLeaves: data
-        })
+        }))
     }
 
     /**
@@ -250,27 +263,29 @@ class EmployeeCreateForm extends Component {
      * @param {*} data : Dữ liệu thông tin tài liệu đính kèm
      * @param {*} addData : Tài liệu đính kèm muốn thêm
      */
-    handleChangeFile = (data, addData) => {
-        this.setState({
+    const handleChangeFile = (data, addData) => {
+        setState(state => ({
+            ...state,
             files: data
-        })
+        }))
     }
 
     /**
      *  Function thêm thông tin quá trình đào tạo
      * @param {*} data : Dữ liệu thông tin quá trình đào tạo
      */
-    handleChangeCourse = (data) => {
-        this.setState({
+    const handleChangeCourse = (data) => {
+        setState(state => ({
+            ...state,
             courses: data
-        })
+        }))
     }
 
     /**
      * Function kiểm tra các trường bắt buộc phải nhập
      * @param {*} value : Giá trị của trường cần kiểm tra
      */
-    validatorInput = (value) => {
+    const validatorInput = (value) => {
         if (value !== undefined && value.toString().trim() !== '') {
             return true;
         }
@@ -278,13 +293,13 @@ class EmployeeCreateForm extends Component {
     }
 
     /** Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form */
-    isFormValidated = () => {
-        const { employee } = this.state;
-        let result = this.validatorInput(employee.employeeNumber) && this.validatorInput(employee.employeeTimesheetId) &&
-            this.validatorInput(employee.fullName) && this.validatorInput(employee.birthdate) &&
-            this.validatorInput(employee.emailInCompany) && this.validatorInput(employee.identityCardNumber) &&
-            this.validatorInput(employee.identityCardDate) && this.validatorInput(employee.identityCardAddress) &&
-            this.validatorInput(employee.phoneNumber) && this.validatorInput(employee.temporaryResidence);
+    const isFormValidated = () => {
+        const { employee } = state;
+        let result = validatorInput(employee.employeeNumber) && validatorInput(employee.employeeTimesheetId) &&
+            validatorInput(employee.fullName) && validatorInput(employee.birthdate) &&
+            validatorInput(employee.emailInCompany) && validatorInput(employee.identityCardNumber) &&
+            validatorInput(employee.identityCardDate) && validatorInput(employee.identityCardAddress) &&
+            validatorInput(employee.phoneNumber) && validatorInput(employee.temporaryResidence);
 
         if (employee.healthInsuranceStartDate && employee.healthInsuranceEndDate) {
             if (new Date(employee.healthInsuranceEndDate).getTime() < new Date(employee.healthInsuranceStartDate).getTime()) {
@@ -305,11 +320,12 @@ class EmployeeCreateForm extends Component {
     }
 
     /** Function thêm mới thông tin nhân viên */
-    save = async () => {
+    const save = async () => {
         let { employee, degrees, certificates, contracts, files, avatar,
-            disciplines, commendations, annualLeaves, courses, major, career, houseHold } = this.state;
+            disciplines, commendations, annualLeaves, courses, major, career, houseHold } = state;
 
-        await this.setState({
+        await setState(state => ({
+            ...state,
             employee: {
                 ...employee,
                 degrees,
@@ -324,9 +340,9 @@ class EmployeeCreateForm extends Component {
                 major,
                 houseHold
             }
-        })
+        }))
 
-        let formData = convertJsonObjectToFormData(this.state.employee);
+        let formData = convertJsonObjectToFormData(state.employee);
         degrees.forEach(x => {
             formData.append("fileDegree", x.fileUpload);
         })
@@ -349,301 +365,294 @@ class EmployeeCreateForm extends Component {
         employee && employee.healthInsuranceAttachment && employee.healthInsuranceAttachment.forEach(x => {
             formData.append('healthInsuranceAttachment', x.fileUpload)
         })
-        this.props.addNewEmployee(formData);
+        props.addNewEmployee(formData);
     }
 
-    _fm_saveMember = (data) => {
-        this.setState({
+    const _fm_saveMember = (data) => {
+        setState(prev => ({
+            ...prev,
             houseHold: {
-                ...this.state.houseHold,
-                familyMembers: [...this.state.houseHold.familyMembers, data]
+                ...state.houseHold,
+                familyMembers: [...state.houseHold.familyMembers, data]
             }
-        })
+        }))
     }
 
-    _fm_handleHeadHouseHoldName = (e) => {
-        this.setState({
+    const _fm_handleHeadHouseHoldName = (e) => {
+        setState(prev => ({
+            ...prev,
             houseHold: {
-                ...this.state.houseHold,
+                ...state.houseHold,
                 headHouseHoldName: e.target.value
             }
-        });
+        }))
     }
 
-    _fm_handleDocumentType = (e) => {
-        this.setState({
+    const _fm_handleDocumentType = (e) => {
+        setState(prev => ({
+            ...prev,
             houseHold: {
-                ...this.state.houseHold,
+                ...state.houseHold,
                 documentType: e.target.value
             }
-        });
+        }))
     }
 
-    _fm_handleHouseHoldNumber = (e) => {
-        this.setState({
+    const _fm_handleHouseHoldNumber = (e) => {
+        setState(prev => ({
+            ...prev,
             houseHold: {
-                ...this.state.houseHold,
+                ...state.houseHold,
                 houseHoldNumber: e.target.value
             }
-        })
+        }))
     }
 
-    _fm_handleCity = (e) => {
-        this.setState({
+    const _fm_handleCity = (e) => {
+        setState(prev => ({
+            ...prev,
             houseHold: {
-                ...this.state.houseHold,
+                ...state.houseHold,
                 city: e.target.value
             }
-        })
+        }))
     }
 
-    _fm_handleDistrict = (e) => {
-        this.setState({
+    const _fm_handleDistrict = (e) => {
+        setState(prev => ({
+            ...prev,
             houseHold: {
-                ...this.state.houseHold,
+                ...state.houseHold,
                 district: e.target.value
             }
-        });
+        }))
     }
 
-    _fm_handleWard = (e) => {
-        this.setState({
+    const _fm_handleWard = (e) => {
+        setState(prev => ({
+            ...prev,
             houseHold: {
-                ...this.state.houseHold,
+                ...state.houseHold,
                 ward: e.target.value
             }
-        });
+        }))
     }
 
-    _fm_handleHouseHoldAddress = (e) => {
-        this.setState({
+    const _fm_handleHouseHoldAddress = (e) => {
+        setState(prev => ({
+            ...prev,
             houseHold: {
-                ...this.state.houseHold,
+                ...state.houseHold,
                 houseHoldAddress: e.target.value
             }
-        })
+        }))
     }
 
-    _fm_handlePhone = (e) => {
-        this.setState({
+    const _fm_handlePhone = (e) => {
+        setState(prev => ({
+            ...prev,
             houseHold: {
-                ...this.state.houseHold,
+                ...state.houseHold,
                 phone: e.target.value
             }
-        });
+        }))
     }
 
-    _fm_handleHouseHoldCode = (e) => {
-        this.setState({
+    const _fm_handleHouseHoldCode = (e) => {
+        setState(prev => ({
+            ...prev,
             houseHold: {
-                ...this.state.houseHold,
+                ...state.houseHold,
                 houseHoldCode: e.target.value
             }
-        });
+        }))
     }
 
-    _fm_editMember = (index, data) => {
+    const _fm_editMember = (index, data) => {
         console.log('index, data', index, data)
-        let familyMembers = this.state.houseHold.familyMembers;
+        let familyMembers = state.houseHold.familyMembers;
         familyMembers[index] = data;
-        this.setState({
+        setState(prev => ({
+            ...prev,
             houseHold: {
-                ...this.state.houseHold,
+                ...state.houseHold,
                 familyMembers
             }
-        })
+        }))
     }
 
-    _fm_deleteMember = (index) => {
-        let familyMembers = this.state.houseHold.familyMembers;
+    const _fm_deleteMember = (index) => {
+        let familyMembers = state.houseHold.familyMembers;
         familyMembers = familyMembers.filter((node, i) => i !== index);
-        this.setState({
+        setState(prev => ({
+            ...prev,
             houseHold: {
-                ...this.state.houseHold,
+                ...state.houseHold,
                 familyMembers
             }
-        })
+        }))
     }
 
-    render() {
-        const { translate, employeesManager } = this.props;
-        const { img, employee, degrees, certificates, contracts, courses, commendations, disciplines, annualLeaves, files, major, career, editMember } = this.state;
+    const { translate, employeesManager } = props;
+    const { img, employee, degrees, certificates, contracts, courses, commendations, disciplines, annualLeaves, files, major, career, editMember } = state;
 
-        return (
-            <React.Fragment>
-                <DialogModal
-                    size='75' modalID="modal-create-employee" isLoading={employeesManager.isLoading}
-                    formID="form-create-employee"
-                    title={translate('human_resource.profile.add_staff')}
-                    func={this.save}
-                    disableSubmit={!this.isFormValidated()}
-                >
-                    {/* <form className="form-group" id="form-create-employee"> */}
-                    <div className="nav-tabs-custom row" style={{ marginTop: '-15px' }} >
-                        <ul className="nav nav-tabs">
-                            <li className="active"><a title={translate('human_resource.profile.tab_name.menu_general_infor_title')} data-toggle="tab" href="#general">{translate('human_resource.profile.tab_name.menu_general_infor')}</a></li>
-                            <li><a title={translate('human_resource.profile.tab_name.menu_contact_infor_title')} data-toggle="tab" href="#contact">{translate('human_resource.profile.tab_name.menu_contact_infor')}</a></li>
-                            <li><a title={translate('human_resource.profile.tab_name.menu_education_experience_title')} data-toggle="tab" href="#experience">{translate('human_resource.profile.tab_name.menu_education_experience')}</a></li>
-                            <li><a title={translate('human_resource.profile.tab_name.menu_diploma_certificate_title')} data-toggle="tab" href="#diploma">{translate('human_resource.profile.tab_name.menu_diploma_certificate')}</a></li>
-                            <li><a title={translate('human_resource.profile.tab_name.menu_account_tax_title')} data-toggle="tab" href="#account">{translate('human_resource.profile.tab_name.menu_account_tax')}</a></li>
-                            <li><a title={translate('human_resource.profile.tab_name.menu_insurrance_infor_title')} data-toggle="tab" href="#insurrance">{translate('human_resource.profile.tab_name.menu_insurrance_infor')}</a></li>
-                            <li><a title={translate('human_resource.profile.tab_name.menu_contract_training_title')} data-toggle="tab" href="#contract">{translate('human_resource.profile.tab_name.menu_contract_training')}</a></li>
-                            <li><a title={translate('human_resource.profile.tab_name.menu_reward_discipline_title')} data-toggle="tab" href="#reward">{translate('human_resource.profile.tab_name.menu_reward_discipline')}</a></li>
-                            <li><a title={translate('menu.annual_leave_personal')} data-toggle="tab" href="#salary">{translate('menu.annual_leave_personal')}</a></li>
-                            <li><a title={"Công việc - chuyên ngành tương đương"} data-toggle="tab" href="#major_career">Công việc - chuyên ngành tương đương</a></li>
-                            <li><a title={"Thành viên hộ gia đình"} data-toggle="tab" href="#family_member">Thành viên hộ gia đình</a></li>
-                            <li><a title={translate('human_resource.profile.tab_name.menu_attachments_title')} data-toggle="tab" href="#attachments">{translate('human_resource.profile.tab_name.menu_attachments')}</a></li>
-                        </ul>
-                        < div className="tab-content">
-                            {/* Tab thông tin chung */}
-                            <GeneralTab
-                                id="general"
-                                img={img}
-                                handleChange={this.handleChange}
-                                handleUpload={this.handleUpload}
-                                employee={employee}
-                            />
-                            {/* Tab thông tin liên hệ */}
-                            <ContactTab
-                                id="contact"
-                                handleChange={this.handleChange}
-                                employee={employee}
-                            />
-                            {/* Tab học vấn - kinh nghiệm */}
-                            <ExperienceTab
-                                id="experience"
-                                employee={employee}
-                                handleChange={this.handleChange}
+    return (
+        <React.Fragment>
+            <DialogModal
+                size='75' modalID="modal-create-employee" isLoading={employeesManager.isLoading}
+                formID="form-create-employee"
+                title={translate('human_resource.profile.add_staff')}
+                func={save}
+                disableSubmit={!isFormValidated()}
+            >
+                {/* <form className="form-group" id="form-create-employee"> */}
+                <div className="nav-tabs-custom row" style={{ marginTop: '-15px' }} >
+                    <ul className="nav nav-tabs">
+                        <li className="active"><a title={translate('human_resource.profile.tab_name.menu_general_infor_title')} data-toggle="tab" href="#general">{translate('human_resource.profile.tab_name.menu_general_infor')}</a></li>
+                        <li><a title={translate('human_resource.profile.tab_name.menu_contact_infor_title')} data-toggle="tab" href="#contact">{translate('human_resource.profile.tab_name.menu_contact_infor')}</a></li>
+                        <li><a title={translate('human_resource.profile.tab_name.menu_education_experience_title')} data-toggle="tab" href="#experience">{translate('human_resource.profile.tab_name.menu_education_experience')}</a></li>
+                        <li><a title={translate('human_resource.profile.tab_name.menu_diploma_certificate_title')} data-toggle="tab" href="#diploma">{translate('human_resource.profile.tab_name.menu_diploma_certificate')}</a></li>
+                        <li><a title={translate('human_resource.profile.tab_name.menu_account_tax_title')} data-toggle="tab" href="#account">{translate('human_resource.profile.tab_name.menu_account_tax')}</a></li>
+                        <li><a title={translate('human_resource.profile.tab_name.menu_insurrance_infor_title')} data-toggle="tab" href="#insurrance">{translate('human_resource.profile.tab_name.menu_insurrance_infor')}</a></li>
+                        <li><a title={translate('human_resource.profile.tab_name.menu_contract_training_title')} data-toggle="tab" href="#contract">{translate('human_resource.profile.tab_name.menu_contract_training')}</a></li>
+                        <li><a title={translate('human_resource.profile.tab_name.menu_reward_discipline_title')} data-toggle="tab" href="#reward">{translate('human_resource.profile.tab_name.menu_reward_discipline')}</a></li>
+                        <li><a title={translate('menu.annual_leave_personal')} data-toggle="tab" href="#salary">{translate('menu.annual_leave_personal')}</a></li>
+                        <li><a title={"Thành viên hộ gia đình"} data-toggle="tab" href="#family_member">Thành viên hộ gia đình</a></li>
+                        <li><a title={translate('human_resource.profile.tab_name.menu_attachments_title')} data-toggle="tab" href="#attachments">{translate('human_resource.profile.tab_name.menu_attachments')}</a></li>
+                    </ul>
+                    < div className="tab-content">
+                        {/* Tab thông tin chung */}
+                        <GeneralTab
+                            id="general"
+                            img={img}
+                            handleChange={handleChange}
+                            handleUpload={handleUpload}
+                            employee={employee}
+                        />
+                        {/* Tab thông tin liên hệ */}
+                        <ContactTab
+                            id="contact"
+                            handleChange={handleChange}
+                            employee={employee}
+                        />
+                        {/* Tab học vấn - kinh nghiệm */}
+                        <ExperienceTab
+                            id="experience"
+                            employee={employee}
+                            handleChange={handleChange}
 
-                                handleAddExperience={this.handleChangeExperience}
-                                handleEditExperience={this.handleChangeExperience}
-                                handleDeleteExperience={this.handleChangeExperience}
-                            />
-                            {/* Tab bằng cấp - chứng chỉ */}
-                            <CertificateTab
-                                id="diploma"
-                                degrees={degrees}
-                                certificates={certificates}
+                            handleAddExperience={handleChangeExperience}
+                            handleEditExperience={handleChangeExperience}
+                            handleDeleteExperience={handleChangeExperience}
+                        />
+                        {/* Tab bằng cấp - chứng chỉ */}
+                        <CertificateTab
+                            id="diploma"
+                            degrees={degrees}
+                            certificates={certificates}
 
-                                handleAddDegree={this.handleChangeDegree}
-                                handleEditDegree={this.handleChangeDegree}
-                                handleDeleteDegree={this.handleChangeDegree}
+                            handleAddDegree={handleChangeDegree}
+                            handleEditDegree={handleChangeDegree}
+                            handleDeleteDegree={handleChangeDegree}
 
-                                handleAddCertificate={this.handleChangeCertificate}
-                                handleEditCertificate={this.handleChangeCertificate}
-                                handleDeleteCertificate={this.handleChangeCertificate}
-                            />
-                            {/* Tab Tài khoản - thuế */}
-                            <TaxTab
-                                id="account"
-                                employee={employee}
-                                handleChange={this.handleChange} />
-                            {/* Tab thông tin bảo hiểm */}
-                            <InsurranceTab
-                                id="insurrance"
-                                pageCreate={true}
-                                socialInsuranceDetails={employee.socialInsuranceDetails}
-                                employee={employee}
-                                handleChange={this.handleChange}
+                            handleAddCertificate={handleChangeCertificate}
+                            handleEditCertificate={handleChangeCertificate}
+                            handleDeleteCertificate={handleChangeCertificate}
+                        />
+                        {/* Tab Tài khoản - thuế */}
+                        <TaxTab
+                            id="account"
+                            employee={employee}
+                            handleChange={handleChange} />
+                        {/* Tab thông tin bảo hiểm */}
+                        <InsurranceTab
+                            id="insurrance"
+                            pageCreate={true}
+                            socialInsuranceDetails={employee.socialInsuranceDetails}
+                            employee={employee}
+                            handleChange={handleChange}
 
-                                handleAddBHXH={this.handleChangeBHXH}
-                                handleEditBHXH={this.handleChangeBHXH}
-                                handleDeleteBHXH={this.handleChangeBHXH}
-                            />
-                            {/* Tab hợp đồng - quá trình đào tạo*/}
-                            <ContractTab
-                                id="contract"
-                                pageCreate={true}
-                                employee={employee}
-                                contracts={contracts}
-                                courses={courses}
-                                handleChange={this.handleChange}
+                            handleAddBHXH={handleChangeBHXH}
+                            handleEditBHXH={handleChangeBHXH}
+                            handleDeleteBHXH={handleChangeBHXH}
+                        />
+                        {/* Tab hợp đồng - quá trình đào tạo*/}
+                        <ContractTab
+                            id="contract"
+                            pageCreate={true}
+                            employee={employee}
+                            contracts={contracts}
+                            courses={courses}
+                            handleChange={handleChange}
 
-                                handleAddContract={this.handleChangeContract}
-                                handleEditContract={this.handleChangeContract}
-                                handleDeleteContract={this.handleChangeContract}
+                            handleAddContract={handleChangeContract}
+                            handleEditContract={handleChangeContract}
+                            handleDeleteContract={handleChangeContract}
 
-                                handleAddCourse={this.handleChangeCourse}
-                                handleEditCourse={this.handleChangeCourse}
-                                handleDeleteCourse={this.handleChangeCourse}
-                            />
-                            {/* Tab khen thưởng - kỷ luật*/}
-                            <DisciplineTab
-                                id="reward"
-                                commendations={commendations}
-                                disciplines={disciplines}
+                            handleAddCourse={handleChangeCourse}
+                            handleEditCourse={handleChangeCourse}
+                            handleDeleteCourse={handleChangeCourse}
+                        />
+                        {/* Tab khen thưởng - kỷ luật*/}
+                        <DisciplineTab
+                            id="reward"
+                            commendations={commendations}
+                            disciplines={disciplines}
 
-                                handleAddConmmendation={this.handleChangeConmmendation}
-                                handleEditConmmendation={this.handleChangeConmmendation}
-                                handleDeleteConmmendation={this.handleChangeConmmendation}
+                            handleAddConmmendation={handleChangeConmmendation}
+                            handleEditConmmendation={handleChangeConmmendation}
+                            handleDeleteConmmendation={handleChangeConmmendation}
 
-                                handleAddDiscipline={this.handleChangeDiscipline}
-                                handleEditDiscipline={this.handleChangeDiscipline}
-                                handleDeleteDiscipline={this.handleChangeDiscipline}
-                            />
-                            {/* Tab lương thưởng - nghỉ phép*/}
-                            <SalaryTab
-                                id="salary"
-                                pageCreate={true}
-                                annualLeaves={annualLeaves}
+                            handleAddDiscipline={handleChangeDiscipline}
+                            handleEditDiscipline={handleChangeDiscipline}
+                            handleDeleteDiscipline={handleChangeDiscipline}
+                        />
+                        {/* Tab lương thưởng - nghỉ phép*/}
+                        <SalaryTab
+                            id="salary"
+                            pageCreate={true}
+                            annualLeaves={annualLeaves}
 
-                                handleAddAnnualLeave={this.handleChangeAnnualLeave}
-                                handleEditAnnualLeave={this.handleChangeAnnualLeave}
-                                handleDeleteAnnualLeave={this.handleChangeAnnualLeave}
-                            />
-                            {/* Tab tài liệu đính kèm */}
-                            <FileTab
-                                id="attachments"
-                                files={files}
-                                employee={employee}
-                                handleChange={this.handleChange}
+                            handleAddAnnualLeave={handleChangeAnnualLeave}
+                            handleEditAnnualLeave={handleChangeAnnualLeave}
+                            handleDeleteAnnualLeave={handleChangeAnnualLeave}
+                        />
+                        {/* Tab tài liệu đính kèm */}
+                        <FileTab
+                            id="attachments"
+                            files={files}
+                            employee={employee}
+                            handleChange={handleChange}
 
-                                handleAddFile={this.handleChangeFile}
-                                handleEditFile={this.handleChangeFile}
-                                handleDeleteFile={this.handleChangeFile}
-                            />
-                            {/* Tab công việc - chuyên ngành tương đương */}
-                            <CareerMajorTab
-                                id={`major_career`}
-                                files={files}
-                                major={major}
-                                career={career}
-                                handleChange={this.handleChange}
-
-                                handleAddMajor={this.handleChangeMajor}
-                                handleEditMajor={this.handleChangeMajor}
-                                handleDeleteMajor={this.handleChangeMajor}
-
-                                handleAddCareer={this.handleChangeCareer}
-                                handleEditCareer={this.handleChangeCareer}
-                                handleDeleteCareer={this.handleChangeCareer}
-                            />
-                            {/* Tab thành viên hộ gia đình */}
-                            <FamilyMemberTab
-                                id="family_member"
-                                tabEditMember="modal-create-member-c"
-                                editMember={editMember}
-                                _fm_editMember={this._fm_editMember}
-                                _fm_deleteMember={this._fm_deleteMember}
-                                houseHold={this.state.houseHold}
-                                _fm_handleHeadHouseHoldName={this._fm_handleHeadHouseHoldName}
-                                _fm_handleDocumentType={this._fm_handleDocumentType}
-                                _fm_handleHouseHoldNumber={this._fm_handleHouseHoldNumber}
-                                _fm_handleCity={this._fm_handleCity}
-                                _fm_handleDistrict={this._fm_handleDistrict}
-                                _fm_handleWard={this._fm_handleWard}
-                                _fm_handleHouseHoldAddress={this._fm_handleHouseHoldAddress}
-                                _fm_handlePhone={this._fm_handlePhone}
-                                _fm_handleHouseHoldCode={this._fm_handleHouseHoldCode}
-                                _fm_saveMember={this._fm_saveMember}
-                            />
-                        </div>
+                            handleAddFile={handleChangeFile}
+                            handleEditFile={handleChangeFile}
+                            handleDeleteFile={handleChangeFile}
+                        />
+                        {/* Tab thành viên hộ gia đình */}
+                        <FamilyMemberTab
+                            id="family_member"
+                            tabEditMember="modal-create-member-c"
+                            editMember={editMember}
+                            _fm_editMember={_fm_editMember}
+                            _fm_deleteMember={_fm_deleteMember}
+                            houseHold={state.houseHold}
+                            _fm_handleHeadHouseHoldName={_fm_handleHeadHouseHoldName}
+                            _fm_handleDocumentType={_fm_handleDocumentType}
+                            _fm_handleHouseHoldNumber={_fm_handleHouseHoldNumber}
+                            _fm_handleCity={_fm_handleCity}
+                            _fm_handleDistrict={_fm_handleDistrict}
+                            _fm_handleWard={_fm_handleWard}
+                            _fm_handleHouseHoldAddress={_fm_handleHouseHoldAddress}
+                            _fm_handlePhone={_fm_handlePhone}
+                            _fm_handleHouseHoldCode={_fm_handleHouseHoldCode}
+                            _fm_saveMember={_fm_saveMember}
+                        />
                     </div>
-                    {/* </form> */}
-                </DialogModal>
-            </React.Fragment>
-        );
-    }
+                </div>
+                {/* </form> */}
+            </DialogModal>
+        </React.Fragment>
+    );
 };
 
 function mapState(state) {

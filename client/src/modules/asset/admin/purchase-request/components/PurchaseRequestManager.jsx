@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState, useEffect} from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -11,33 +11,36 @@ import { PurchaseRequestDetailForm } from "../../../user/purchase-request/compon
 import { PurchaseRequestEditForm } from './PurchaseRequestManagerEditForm';
 import { getFormatDateFromTime } from '../../../../../helpers/stringMethod';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
+import { formatDate } from '../../../../../helpers/assetHelper.js';
+function PurchaseRequestManager(props) {
 
-class PurchaseRequestManager extends Component {
-    constructor(props) {
-        super(props);
-        const tableId = "table-purchase-request-manager";
-        const defaultConfig = { limit: 5 }
-        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+    const tableId_constructor = "table-purchase-request-manager";
+    const currentMonth = formatDate(Date.now())
+    const defaultConfig = { limit: 5 }
+    const limit_constructor = getTableConfiguration(tableId_constructor, defaultConfig).limit;
+    const [state, setState] = useState({
+        tableId: tableId_constructor,
+        recommendNumber: "",
+        proposalDate: currentMonth,
+        status: ["approved", "waiting_for_approval", "disapproved"],
+        page: 0,
+        limit: limit_constructor,
+    })
+    const { translate, recommendProcure } = props;
+    const { page, limit, currentRowView, currentRow, tableId, status, proposalDate  } = state;
 
-        this.state = {
-            tableId,
-            recommendNumber: "",
-            month: "",
-            status: null,
-            page: 0,
-            limit: limit,
-        }
-    }
 
-    componentDidMount() {
-        this.props.searchRecommendProcures(this.state);
-        this.props.getUser();
-    }
+    useEffect(() => {
+        props.searchRecommendProcures(state);
+        props.getUser();
+    }, [])
+
 
     // Bắt sự kiện click xem thông tin phiếu đề nghị mua sắm
-    handleView = async (value) => {
-        await this.setState(state => {
+    const handleView = async (value) => {
+        await setState(state => {
             return {
+                ...state,
                 currentRowView: value
             }
         });
@@ -45,8 +48,8 @@ class PurchaseRequestManager extends Component {
     }
 
     // Bắt sự kiện click chỉnh sửa thông tin phiếu đề nghị mua sắm
-    handleEdit = async (value) => {
-        await this.setState(state => {
+    const handleEdit = async (value) => {
+        await setState(state => {
             return {
                 ...state,
                 currentRow: value
@@ -56,76 +59,99 @@ class PurchaseRequestManager extends Component {
     }
 
     // Function lưu giá trị mã nhân viên vào state khi thay đổi
-    handleRecommendNumberChange = (event) => {
+    const handleRecommendNumberChange = (event) => {
         const { name, value } = event.target;
-        this.setState({
-            [name]: value
+        setState(state =>{
+            return{
+                ...state,
+                [name]: value
+            }
         });
     }
 
     // Function lưu giá trị tháng vào state khi thay đổi
-    handleMonthChange = (value) => {
-        this.setState({
-            ...this.state,
-            proposalDate: value
+    const handleMonthChange = (value) => {
+        setState(state =>{
+            return{
+                ...state,
+                proposalDate: value
+            }
         });
     }
 
     // Function lưu người đề nghị vào state khi thay đổi
-    handleProposalEmployeeChange = (event) => {
+    const handleProposalEmployeeChange = (event) => {
         const { name, value } = event.target;
-        this.setState({
-            [name]: value
+        setState(state =>{
+            return{
+                ...state,
+                [name]: value
+            }
         });
     }
 
     // Function lưu giá trị tháng vào state khi thay đổi
-    handleApproverChange = (event) => {
+    const handleApproverChange = (event) => {
         const { name, value } = event.target;
-        this.setState({
-            [name]: value
+        setState(state =>{
+            return{
+                ...state,
+                [name]: value
+            }
         });
     }
 
     // Function lưu giá trị status vào state khi thay đổi
-    handleStatusChange = (value) => {
+    const handleStatusChange = (value) => {
         if (value.length === 0) {
             value = null
         };
 
-        this.setState({
-            status: value
+        setState(state =>{
+            return{
+                ...state,
+                status: value
+            }
         })
     }
 
     // Function bắt sự kiện tìm kiếm 
-    handleSubmitSearch = async () => {
-        await this.setState({
-            page: 0
+    const handleSubmitSearch = async () => {
+        await setState(state =>{
+            return{
+                ...state,
+                page: 0
+            }
         })
-        this.props.searchRecommendProcures({ ...this.state, page: 0 });
+        props.searchRecommendProcures({ ...state, page: 0 });
     }
 
     // Bắt sự kiện setting số dòng hiện thị trên một trang
-    setLimit = async (number) => {
-        await this.setState({
-            limit: parseInt(number),
+    const setLimit = async (number) => {
+        await setState(state =>{
+            return{
+                ...state,
+                limit: parseInt(number),
+            }
         });
-        this.props.searchRecommendProcures(this.state);
+        props.searchRecommendProcures({...state, limit: parseInt(number)});
     }
 
     // Bắt sự kiện chuyển trang
-    setPage = async (pageNumber) => {
-        var page = (pageNumber - 1) * this.state.limit;
-        await this.setState({
-            page: parseInt(page),
+    const setPage = async (pageNumber) => {
+        var page = (pageNumber - 1) * state.limit;
+        await setState(state =>{
+            return{
+                ...state,
+                page: parseInt(page),
+            }
 
         });
-        this.props.searchRecommendProcures({ ...this.state, page: parseInt(page) });
+        props.searchRecommendProcures({ ...state, page: parseInt(page) });
     }
 
     /*Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
-    convertDataToExportData = (data) => {
+    const convertDataToExportData = (data) => {
         let fileName = "Bảng quản lý đề nghị mua sắm tài sản ";
         if (data) {
             data = data.map((x, index) => {
@@ -138,7 +164,7 @@ class PurchaseRequestManager extends Component {
                 let supplier = x.supplier;
                 let amount = x.total;
                 let cost = x.estimatePrice ? Intl.NumberFormat().format(parseInt(x.estimatePrice)) : null;
-                let status = this.formatStatus(x.status);
+                let status = formatStatus(x.status);
                 let approver = x.approver ? x.approver.email : null;
 
                 return {
@@ -189,8 +215,8 @@ class PurchaseRequestManager extends Component {
 
     }
 
-    getUserId = () => {
-        let { user } = this.props;
+    const getUserId = () => {
+        let { user } = props;
         let listUser = user && user.list;
         let userArr = [];
         listUser.map(x => {
@@ -203,25 +229,21 @@ class PurchaseRequestManager extends Component {
         return userArr;
     }
 
-    formatStatus(status) {
-        const { translate } = this.props;
+    const formatStatus = (status) => {
+        const { translate } = props;
 
         switch (status) {
             case 'approved': return translate('asset.usage.approved');
             case 'waiting_for_approval': return translate('asset.usage.waiting_approval');
             case 'disapproved': return translate('asset.usage.not_approved');
-            default: return '';
         }
     }
 
-    render() {
-        const { translate, recommendProcure } = this.props;
-        const { page, limit, currentRowView, currentRow, tableId } = this.state;
 
         var listRecommendProcures = "", exportData;
         if (recommendProcure.isLoading === false) {
             listRecommendProcures = recommendProcure.listRecommendProcures;
-            exportData = this.convertDataToExportData(listRecommendProcures)
+            exportData = convertDataToExportData(listRecommendProcures)
         }
 
         var pageTotal = ((recommendProcure.totalList % limit) === 0) ?
@@ -229,7 +251,7 @@ class PurchaseRequestManager extends Component {
             parseInt((recommendProcure.totalList / limit) + 1);
 
         var currentPage = parseInt((page / limit) + 1);
-        let userIdArr = this.getUserId();
+        let userIdArr = getUserId();
 
         return (
             <div className="box" >
@@ -240,16 +262,17 @@ class PurchaseRequestManager extends Component {
                         {/* Mã phiếu */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('asset.general_information.form_code')}</label>
-                            <input type="text" className="form-control" name="recommendNumber" onChange={this.handleRecommendNumberChange} placeholder={translate('asset.general_information.form_code')} autoComplete="off" />
+                            <input type="text" className="form-control" name="recommendNumber" onChange={handleRecommendNumberChange} placeholder={translate('asset.general_information.form_code')} autoComplete="off" />
                         </div>
 
                         {/* Tháng */}
                         <div className="form-group">
                             <label className="form-control-static">Ngày lập phiếu</label>
                             <DatePicker
+                                value={proposalDate}
                                 id="month"
                                 dateFormat="month-year"
-                                onChange={this.handleMonthChange}
+                                onChange={handleMonthChange}
                             />
 
                         </div>
@@ -259,13 +282,13 @@ class PurchaseRequestManager extends Component {
                         {/* Người đề nghị */}
                         <div className="form-group">
                             <label className="form-control-static">Người đề nghị</label>
-                            <input type="text" className="form-control" name="proponent" onChange={this.handleProposalEmployeeChange} placeholder="Người đề nghị" autoComplete="off" />
+                            <input type="text" className="form-control" name="proponent" onChange={handleProposalEmployeeChange} placeholder="Người đề nghị" autoComplete="off" />
                         </div>
 
                         {/* Người phê duyệt */}
                         <div className="form-group">
                             <label className="form-control-static">Người phê duyệt</label>
-                            <input type="text" className="form-control" name="approver" onChange={this.handleApproverChange} placeholder="Người phê duyệt" autoComplete="off" />
+                            <input type="text" className="form-control" name="approver" onChange={handleApproverChange} placeholder="Người phê duyệt" autoComplete="off" />
                         </div>
                     </div>
                     <div className="form-inline" style={{ marginBottom: 10 }}>
@@ -273,8 +296,9 @@ class PurchaseRequestManager extends Component {
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.status')}</label>
                             <SelectMulti id={`multiSelectStatus`} multiple="multiple"
+                                value={status}
                                 options={{ nonSelectedText: translate('page.non_status'), allSelectedText: translate('page.all_status') }}
-                                onChange={this.handleStatusChange}
+                                onChange={handleStatusChange}
                                 items={[
                                     { value: "approved", text: translate('asset.usage.approved') },
                                     { value: "waiting_for_approval", text: translate('asset.usage.waiting_approval') },
@@ -287,7 +311,7 @@ class PurchaseRequestManager extends Component {
                         {/* Button tìm kiếm */}
                         <div className="form-group">
                             <label></label>
-                            <button type="button" className="btn btn-success" title={translate('page.add_search')} onClick={() => this.handleSubmitSearch()} >{translate('page.add_search')}</button>
+                            <button type="button" className="btn btn-success" title={translate('page.add_search')} onClick={() => handleSubmitSearch()} >{translate('page.add_search')}</button>
                         </div>
                         {exportData && <ExportExcel id="export-asset-incident-management" exportData={exportData} style={{ marginRight: 10 }} />}
                     </div>
@@ -317,7 +341,7 @@ class PurchaseRequestManager extends Component {
                                             translate('asset.usage.note'),
                                             translate('asset.general_information.status'),
                                         ]}
-                                        setLimit={this.setLimit}
+                                        setLimit={setLimit}
                                     />
                                 </th>
                             </tr>
@@ -333,17 +357,17 @@ class PurchaseRequestManager extends Component {
                                         <td>{x.equipmentDescription}</td>
                                         <td>{x.approver && x.status && x.approver.length ? x.approver[0].email : ''}</td>
                                         <td>{x.note}</td>
-                                        <td>{this.formatStatus(x.status)}</td>
+                                        <td>{formatStatus(x.status)}</td>
                                         <td style={{ textAlign: "center" }}>
-                                            <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title={translate('asset.manage_recommend_procure.view_recommend_card')}><i className="material-icons">view_list</i></a>
-                                            <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.manage_recommend_procure.edit_recommend_card')}><i className="material-icons">edit</i></a>
+                                            <a onClick={() => handleView(x)} style={{ width: '5px' }} title={translate('asset.manage_recommend_procure.view_recommend_card')}><i className="material-icons">view_list</i></a>
+                                            <a onClick={() => handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.manage_recommend_procure.edit_recommend_card')}><i className="material-icons">edit</i></a>
                                             <DeleteNotification
                                                 content={translate('asset.manage_recommend_procure.delete_recommend_card')}
                                                 data={{
                                                     id: x._id,
                                                     // info: x.recommendNumber + " - " + x.dateCreate.replace(/-/gi, "/")
                                                 }}
-                                                func={this.props.deleteRecommendProcure}
+                                                func={props.deleteRecommendProcure}
                                             />
                                         </td>
                                     </tr>
@@ -357,7 +381,7 @@ class PurchaseRequestManager extends Component {
                     }
 
                     {/* PaginateBar */}
-                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={this.setPage} />
+                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={setPage} />
                 </div>
 
                 {/* Form xem chi tiết phiếu đăng ký mua sắm tài sản */}
@@ -405,7 +429,6 @@ class PurchaseRequestManager extends Component {
                 }
             </div >
         );
-    }
 };
 
 function mapState(state) {

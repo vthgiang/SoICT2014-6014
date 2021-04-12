@@ -108,7 +108,7 @@ const CustomerSchema = new Schema({
             type: String
         }
     }],
-    statusHistories: [{
+    statusHistories: [{// lịch sử thay đổi trạng thái
         oldValue: {
             type: Schema.Types.ObjectId,
             ref: 'Status'
@@ -117,21 +117,32 @@ const CustomerSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: 'Status'
         },
-        createdAt: {
+        createdAt: { // ngày tạo khách hàng
             type: Date,
         },
-        createdBy: {
+        createdAt: {// ngày cập nhật
+            type: Date,
+        },
+        createdBy: {// người cập nhật
             type: Schema.Types.ObjectId,
             ref: 'User'
         },
+        description :{
+            type: String
+        }
     }],
-    note: {
+    
+    updatedAt: { // ngày cập nhật
+        type: Date,
+    },
+    updatedBy: {// người cập nhật
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    },
+    note: { // ghi chú
         type: String,
     }
-    // company: {
-    //     type: Schema.Types.ObjectId,
-    //     ref: 'Company',
-    // }
+   
 
 }, {
     timestamps: true,

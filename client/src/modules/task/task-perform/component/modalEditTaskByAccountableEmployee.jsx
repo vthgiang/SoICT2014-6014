@@ -1013,7 +1013,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
             { value: "wait_for_approval", text: translate('task.task_management.wait_for_approval') },
             { value: "finished", text: translate('task.task_management.finished') },
             { value: "delayed", text: translate('task.task_management.delayed') },
-            { value: "canceled", text: translate('task.task_management.canceled') }
+            { value: "canceled", text: translate('task.task_management.canceled') },
         ];
 
         let usersOfChildrenOrganizationalUnit;

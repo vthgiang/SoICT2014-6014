@@ -26,9 +26,6 @@ import { annualLeave } from '../modules/human-resource/annual-leave/redux/reduce
 import { workPlan } from '../modules/human-resource/work-plan/redux/reducers';
 import { timesheets } from '../modules/human-resource/timesheets/redux/reducers';
 
-import { career } from '../modules/human-resource/career/redux/reducers';
-import { major } from '../modules/human-resource/major/redux/reducers';
-
 import { notifications } from '../modules/notification/redux/reducers';
 import { documents } from '../modules/document/redux/reducers';
 
@@ -107,6 +104,9 @@ import { workSchedule } from "../modules/production/manufacturing/work-schedule/
 import { manufacturingPlan } from "../modules/production/manufacturing/manufacturing-plan/redux/reducers";
 import { manufacturingCommand } from "../modules/production/manufacturing/manufacturing-command/redux/reducers";
 
+// Transport
+import { transportRequirements } from '../modules/production/transport/transport-requirements/redux/reducers'
+
 import { project } from "../modules/project/redux/reducers";
 import { newsFeeds } from "../modules/home/redux/reducers";
 
@@ -142,10 +142,6 @@ const appReducer = combineReducers({
     workPlan,
     timesheets,
     field,
-
-    // gói thầu
-    career,
-    major,
 
     // hr-tranning
     education,
@@ -212,7 +208,7 @@ const appReducer = combineReducers({
 
     //plane
     plan,
-
+    
     //example1
     example1,
 
@@ -227,6 +223,10 @@ const appReducer = combineReducers({
     workSchedule,
     manufacturingPlan,
     manufacturingCommand,
+
+    // production - transport
+
+    transportRequirements,
 
     // project
     project,

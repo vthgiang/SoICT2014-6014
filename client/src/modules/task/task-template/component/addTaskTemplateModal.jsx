@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
 
@@ -10,11 +10,9 @@ import { TaskTemplateFormValidator } from './taskTemplateFormValidator';
 import { AddTaskTemplate } from './addTaskTemplate';
 import ValidationHelper from '../../../../helpers/validationHelper';
 
-class ModalAddTaskTemplate extends Component {
-    constructor(props) {
-        super(props);
+function ModalAddTaskTemplate (props) {
 
-        this.state = {
+    const [state, setState] = useState({
             newTemplate: {
                 organizationalUnit: '',
                 collaboratedWithOrganizationalUnits: [],
@@ -32,48 +30,46 @@ class ModalAddTaskTemplate extends Component {
                 taskInformations: []
             },
             currentRole: localStorage.getItem('currentRole'),
-        };
+        })
 
-        this.handleSubmit = this.handleSubmit.bind(this);
-    }
-
-    componentDidMount() {
-        this.props.getDepartment();
-        this.props.getAllUserOfCompany();
-        this.props.getRoleSameDepartment(localStorage.getItem("currentRole"));
-        this.props.getDepartmentsThatUserIsManager();
-        this.props.getAllUserInAllUnitsOfCompany();
-    }
+    useEffect(() => {
+        props.getDepartment();
+        props.getAllUserOfCompany();
+        props.getRoleSameDepartment(localStorage.getItem("currentRole"));
+        props.getDepartmentsThatUserIsManager();
+        props.getAllUserInAllUnitsOfCompany();
+    },[])
 
     /**Submit new template in data */
-    handleSubmit = async (event) => {
-        let { newTemplate } = this.state;
-        this.props.addNewTemplate(newTemplate);
-        window.$("#addTaskTemplate").modal("hide");
+    const handleSubmit = async (event) => {
+        let { newTemplate } = state;
+        console.log(newTemplate);
+        props.addNewTemplate(newTemplate);
+        // window.$("#addTaskTemplate").modal("hide");
     }
 
 
     /**
      * Xử lý form lớn tasktemplate
      */
-    isTaskTemplateFormValidated = () => {
+    const isTaskTemplateFormValidated = () => {
         // let result =
-        //     this.validateTaskTemplateUnit(this.state.newTemplate.organizationalUnit, false) &&
-        //     this.validateTaskTemplateRead(this.state.newTemplate.readByEmployees, false) &&
-        //     this.validateTaskTemplateName(this.state.newTemplate.name, false) &&
-        //     this.validateTaskTemplateDescription(this.state.newTemplate.description, false) &&
-        //     this.validateTaskTemplateFormula(this.state.newTemplate.formula, false);
+        //     validateTaskTemplateUnit(state.newTemplate.organizationalUnit, false) &&
+        //     validateTaskTemplateRead(state.newTemplate.readByEmployees, false) &&
+        //     validateTaskTemplateName(state.newTemplate.name, false) &&
+        //     validateTaskTemplateDescription(state.newTemplate.description, false) &&
+        //     validateTaskTemplateFormula(state.newTemplate.formula, false);
         // return result;
     }
 
 
-    validateTaskTemplateName = (value, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateName(this.props.translate, value);
+    const validateTaskTemplateName = (value, willUpdateState = true) => {
+        let { message } = ValidationHelper.validateName(props.translate, value);
 
         if (willUpdateState) {
-            this.state.newTemplate.name = value;
-            this.state.newTemplate.errorOnName = message;
-            this.setState(state => {
+            state.newTemplate.name = value;
+            state.newTemplate.errorOnName = message;
+            setState(state => {
                 return {
                     ...state,
                 };
@@ -82,13 +78,13 @@ class ModalAddTaskTemplate extends Component {
         return message === undefined;
     }
 
-    validateTaskTemplateDescription = (value, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+    const validateTaskTemplateDescription = (value, willUpdateState = true) => {
+        let { message } = ValidationHelper.validateEmpty(props.translate, value);
 
         if (willUpdateState) {
-            this.state.newTemplate.description = value;
-            this.state.newTemplate.errorOnDescription = message;
-            this.setState(state => {
+            state.newTemplate.description = value;
+            state.newTemplate.errorOnDescription = message;
+            setState(state => {
                 return {
                     ...state,
                 };
@@ -97,13 +93,13 @@ class ModalAddTaskTemplate extends Component {
         return message === undefined;
     }
 
-    validateTaskTemplateFormula = (value, willUpdateState = true) => {
+    const validateTaskTemplateFormula = (value, willUpdateState = true) => {
         let msg = TaskTemplateFormValidator.validateTaskTemplateFormula(value);
 
         if (willUpdateState) {
-            this.state.newTemplate.formula = value;
-            this.state.newTemplate.errorOnFormula = msg;
-            this.setState(state => {
+            state.newTemplate.formula = value;
+            state.newTemplate.errorOnFormula = msg;
+            setState(state => {
                 return {
                     ...state,
                 };
@@ -112,15 +108,15 @@ class ModalAddTaskTemplate extends Component {
         return msg === undefined;
     }
 
-    validateTaskTemplateUnit = (value, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+    const validateTaskTemplateUnit = (value, willUpdateState = true) => {
+        let { message } = ValidationHelper.validateEmpty(props.translate, value);
 
         if (willUpdateState) {
-            this.setState(state => {
+            setState(state => {
                 return {
                     ...state,
                     newTemplate: { // update lại unit, và reset các selection phía sau
-                        ...this.state.newTemplate,
+                        ...state.newTemplate,
                         organizationalUnit: value,
                         errorOnUnit: message,
                         readByEmployees: [],
@@ -135,13 +131,13 @@ class ModalAddTaskTemplate extends Component {
         return message === undefined;
     }
 
-    validateTaskTemplateRead = (value, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateArrayLength(this.props.translate, value);
+    const validateTaskTemplateRead = (value, willUpdateState = true) => {
+        let { message } = ValidationHelper.validateArrayLength(props.translate, value);
 
         if (willUpdateState) {
-            this.state.newTemplate.readByEmployees = value;
-            this.state.newTemplate.errorOnRead = message;
-            this.setState(state => {
+            state.newTemplate.readByEmployees = value;
+            state.newTemplate.errorOnRead = message;
+            setState(state => {
                 return {
                     ...state,
                 };
@@ -150,38 +146,38 @@ class ModalAddTaskTemplate extends Component {
         return message === undefined;
     }
 
-    onChangeTemplateData = (value) => {
-        this.setState({
+    const onChangeTemplateData = (value) => {
+        setState({
             newTemplate: value
         });
     }
 
-    render() {
-        const { user, translate, savedTaskAsTemplate, savedTaskItem, savedTaskId } = this.props;
-        return (
-            <React.Fragment>
-                <DialogModal
-                    modalID={`modal-add-task-template-${savedTaskId}`} isLoading={user.isLoading}
-                    formID={`form-add-task-template-${savedTaskId}`}
-                    title={translate('task_template.add_tasktemplate')}
-                    func={this.handleSubmit}
-                    size={100}
-                >
-                    <AddTaskTemplate
-                        onChangeTemplateData={this.onChangeTemplateData}
+    const { user, translate, savedTaskAsTemplate, savedTaskItem, savedTaskId } = props;
+    
+    return (
+        <React.Fragment>
+            <DialogModal
+                modalID={`modal-add-task-template-${savedTaskId}`} isLoading={user.isLoading}
+                formID={`form-add-task-template-${savedTaskId}`}
+                title={translate('task_template.add_tasktemplate')}
+                func={handleSubmit}
+                size={100}
+            >
+                <AddTaskTemplate
+                    onChangeTemplateData={onChangeTemplateData}
 
-                        // dùng cho chức năng lưu task thành template
-                        savedTaskAsTemplate={savedTaskAsTemplate}
-                        savedTaskItem={savedTaskItem}
-                        savedTaskId={savedTaskId}
+                    // dùng cho chức năng lưu task thành template
+                    savedTaskAsTemplate={savedTaskAsTemplate}
+                    savedTaskItem={savedTaskItem}
+                    savedTaskId={savedTaskId}
                     // end
 
-                    />
-                </DialogModal>
-            </React.Fragment>
-        );
-    }
+                />
+            </DialogModal>
+        </React.Fragment>
+    );
 }
+
 
 function mapState(state) {
     const { department, user, tasktemplates } = state;

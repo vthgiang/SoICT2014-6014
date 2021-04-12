@@ -21,15 +21,15 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
         if (nextProps._id !== prevState._id) {
             let roleManagers = nextProps.department[0].managers.map(x => {
                 let infoRole = nextProps.role.find(y => y._id === x._id);
-                return { id: x._id, name: x.name, parents: x.parents, users: infoRole.users.map(y => y.userId._id) }
+                return { id: x._id, name: x.name, parents: x.parents, users: infoRole.users.map(y => y?.userId?._id) }
             }),
                 roleDeputyManagers = nextProps.department[0].deputyManagers.map(x => {
                     let infoRole = nextProps.role.find(y => y._id === x._id);
-                    return { id: x._id, name: x.name, parents: x.parents, users: infoRole.users.map(y => y.userId._id) }
+                    return { id: x._id, name: x.name, parents: x.parents, users: infoRole.users.map(y => y?.userId?._id) }
                 }),
                 roleEmployees = nextProps.department[0].employees.map(x => {
                     let infoRole = nextProps.role.find(y => y._id === x._id);
-                    return { id: x._id, name: x.name, parents: x.parents, users: infoRole.users.map(y => y.userId._id) }
+                    return { id: x._id, name: x.name, parents: x.parents, users: infoRole.users.map(y => y?.userId?._id) }
                 });
             return {
                 ...prevState,
@@ -171,7 +171,7 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
     render() {
         let { translate, user } = this.props;
         const { _id, roleEmployees, roleManagers, roleDeputyManagers, textSearch } = this.state;
-        let userlist = user.list;
+        let userlist = user?.list;
 
         // Lấy các role chức danh
         const getRolePosition = this.props.role.filter(obj => obj.type?.name === "Position");
@@ -194,14 +194,14 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                                     roleManagers.map((obj, index) => {
                                         let infoManager = [], users = obj.users;
                                         for (let n in users) {
-                                            infoManager = userlist.filter(y => y._id === users[n]).concat(infoManager)
+                                            infoManager = userlist?.length > 0 && userlist.filter(y => y?._id === users?.[n]).concat(infoManager)
                                         }
 
                                         // lấy thông tin các role nhân viên có.
                                         infoManager.forEach(uId => {
                                             let roleName = [];
                                             getRolePosition.forEach(rl => {
-                                                if (rl.users.some(check => check.userId._id === uId._id)) {
+                                                if (rl.users.some(check => check?.userId?._id === uId._id)) {
                                                     roleName = [...roleName, rl.name];
                                                 }
                                             })
@@ -262,19 +262,19 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                         {/* Phó đơn vị */}
                         {roleDeputyManagers && roleDeputyManagers.length !== 0 &&
                             <React.Fragment>
-                                <h4 style={{ marginBottom: 0 }}>{translate('human_resource.manage_department.manager_unit')}</h4>
+                                <h4 style={{ marginBottom: 0 }}>{translate('human_resource.manage_department.deputy_manager_unit')}</h4>
                                 {
                                     roleDeputyManagers.map((obj, index) => {
                                         let infoDeputyManagers = [], users = obj.users;
                                         for (let n in users) {
-                                            infoDeputyManagers = userlist.filter(y => y._id === users[n]).concat(infoDeputyManagers)
+                                            infoDeputyManagers = userlist?.length > 0 && userlist.filter(y => y?._id === users?.[n]).concat(infoDeputyManagers)
                                         }
 
                                         // lấy thông tin các role nhân viên có.
                                         infoDeputyManagers.forEach(uId => {
                                             let roleName = [];
                                             getRolePosition.forEach(rl => {
-                                                if (rl.users.some(check => check.userId._id === uId._id)) {
+                                                if (rl.users.some(check => check?.userId?._id === uId._id)) {
                                                     roleName = [...roleName, rl.name];
                                                 }
                                             })
@@ -339,14 +339,14 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                                 {roleEmployees && roleEmployees.map((x, index) => {
                                     let infoEmployee = [], users = x.users;
                                     for (let n in users) {
-                                        infoEmployee = userlist.filter(y => y._id === users[n]).concat(infoEmployee)
+                                        infoEmployee = userlist?.length > 0 && userlist.filter(y => y?._id === users?.[n]).concat(infoEmployee)
                                     }
 
                                     // lấy thông tin các role nhân viên có.
                                     infoEmployee.forEach(uId => {
                                         let roleName = [];
                                         getRolePosition.forEach(rl => {
-                                            if (rl.users.some(check => check.userId._id === uId._id)) {
+                                            if (rl.users.some(check => check?.userId?._id === uId._id)) {
                                                 roleName = [...roleName, rl.name];
                                             }
                                         })

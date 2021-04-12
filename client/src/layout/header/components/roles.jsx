@@ -35,7 +35,7 @@ class Roles extends Component {
         const { auth } = this.props;
         const { currentRole } = this.state;
         return (
-            <li style={{ marginRight: '16px' }}>
+            <li style={{ marginLeft: '5px', marginRight: '5px' }}>
                 {
                     auth.user.roles && auth.user.roles.length > 0 &&
                     <select

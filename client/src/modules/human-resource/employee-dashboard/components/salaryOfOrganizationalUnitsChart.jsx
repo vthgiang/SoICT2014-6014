@@ -1,5 +1,5 @@
 /* Biểu đồ thể hiện lương thưởng các đơn vị trong công ty */
-import React, { Component } from 'react';
+import React, { Component, useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -8,56 +8,48 @@ import { showListInSwal } from '../../../../helpers/showListInSwal';
 import c3 from 'c3';
 import 'c3/c3.css';
 
-class SalaryOfOrganizationalUnitsChart extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            unit: true
-        }
-    }
+const SalaryOfOrganizationalUnitsChart = (props) => {
+    
+    const [state, setState] = useState({
+        unit: true
+    });
 
+    const salaryChart = useRef(null);
     /**
      * Bắt sự kiện thay đổi đơn vị biểu đồ
      * @param {*} value : đơn vị biểu đồ (true or false)
      */
-    handleChangeUnitChart = (value) => {
-        this.setState({
-            ...this.state,
+    const handleChangeUnitChart = (value) => {
+        setState({
+            ...state,
             unit: value
         })
     }
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.salary.listSalaryByMonth !== prevState.listSalaryByMonth) {
-            return {
-                listSalaryByMonth: nextProps.salary.listSalaryByMonth
-            };
-        }
-        return null;
-    };
-
-    shouldComponentUpdate(nextProps, nextState) {
-        if (nextProps.salary.listSalaryByMonth !== this.state.listSalaryByMonth || nextState.unit !== this.unit) {
-            return true
+    useEffect(() => {
+        if (props.salary.listSalaryByMonth !== state.listSalaryByMonth) {
+            setState({
+                ...state, 
+                listSalaryByMonth: props.salary.listSalaryByMonth
+            })
         };
-        return false;
-    }
+    }, [props.salary.listSalaryByMonth, state.unit, state.listSalaryByMonth])
 
     /** Xóa các chart đã render khi chưa đủ dữ liệu */
-    removePreviousChart() {
-        const chart = this.refs.salaryChart;
+    const removePreviousChart = () => {
+        const chart = salaryChart.current;
         while (chart && chart.hasChildNodes()) {
             chart.removeChild(chart.lastChild);
         }
     }
 
     /** Render chart */
-    renderChart = (data) => {
+    const renderChart = (data) => {
         data.data1.shift();
         let setHeightChart = (data.ratioX.length * 40) < 320 ? 320 : (data.ratioX.length * 40);
-        this.removePreviousChart();
+        removePreviousChart();
         let chart = c3.generate({
-            bindto: this.refs.salaryChart,
+            bindto: salaryChart.current,
             data: {
                 columns: [],
                 hide: true,
@@ -90,11 +82,10 @@ class SalaryOfOrganizationalUnitsChart extends Component {
         }, 100);
     };
 
-    render() {
-        const { translate, salary, department } = this.props;
+    const { translate, salary, department } = props;
 
-        const { monthShow } = this.props;
-        const { unit } = this.state;
+        const { monthShow } = props;
+        const { unit } = state;
 
         let organizationalUnitsName = department.list.map(x => { return { _id: x._id, name: x.name, salary: 0 } });
         let data = salary.listSalaryByMonth;
@@ -128,7 +119,7 @@ class SalaryOfOrganizationalUnitsChart extends Component {
         }
 
 
-        this.renderChart(dataChart);
+        renderChart(dataChart);
 
         return (
             <React.Fragment>
@@ -140,7 +131,7 @@ class SalaryOfOrganizationalUnitsChart extends Component {
                                 organizationalUnitsName && organizationalUnitsName.length < 2 ?
                                     <>
                                         <span>{` ${translate('task.task_dashboard.of_unit')}`}</span>
-                                        <span style={{ fontWeight: "bold" }}>{` ${organizationalUnitsName?.[0]?.name}`}</span>
+                                        <span>{` ${organizationalUnitsName?.[0]?.name}`}</span>
                                     </>
                                     :
                                     <span onClick={() => showListInSwal(organizationalUnitsName.map(item => item?.name), translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
@@ -156,17 +147,16 @@ class SalaryOfOrganizationalUnitsChart extends Component {
                         <div className="box-tools pull-right" >
 
                             <div className="btn-group pull-right">
-                                <button type="button" className={`btn btn-xs ${unit ? "active" : "btn-danger"}`} onClick={() => this.handleChangeUnitChart(false)}>Triệu</button>
-                                <button type="button" className={`btn btn-xs ${unit ? 'btn-danger' : "active"}`} onClick={() => this.handleChangeUnitChart(true)}>Tỷ</button>
+                                <button type="button" className={`btn btn-xs ${unit ? "active" : "btn-danger"}`} onClick={() => handleChangeUnitChart(false)}>Triệu</button>
+                                <button type="button" className={`btn btn-xs ${unit ? 'btn-danger' : "active"}`} onClick={() => handleChangeUnitChart(true)}>Tỷ</button>
                             </div>
                             <p className="pull-right" style={{ marginBottom: 0, marginRight: 10 }} > < b > ĐV tính</b></p >
                         </div>
-                        <div ref="salaryChart"></div>
+                        <div ref={salaryChart}></div>
                     </div>
                 </div>
             </React.Fragment>
         )
-    }
 }
 
 function mapState(state) {

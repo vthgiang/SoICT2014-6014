@@ -262,41 +262,6 @@ const EmployeeSchema = new Schema({
         file: String,
         urlFile: String
     }],
-    major: [{
-        group: {
-            name: String,
-            id: String,
-            code: String
-        },
-        specialized: {
-            name: String,
-            id: String,
-            code: String
-        },
-        file: String,
-        urlFile: String
-    }],
-    career: [{
-        package: [{
-            type: String,
-        }],
-        field: [{
-            type: Schema.Types.ObjectId,
-            ref: 'CareerField',
-        }],
-        position: {
-            type: Schema.Types.ObjectId,
-            ref: "CareerPosition",
-        },
-        action: [{
-            type: Schema.Types.ObjectId,
-            ref: "CareerAction",
-        }],
-        startDate: Date,
-        endDate: Date,
-        file: String,
-        urlFile: String
-    }],
     houseHold: {
         headHouseHoldName: { type: String }, // tên chủ hộ
         documentType: { type: String }, // loại giấy tờ

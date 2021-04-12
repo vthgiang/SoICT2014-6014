@@ -2,9 +2,10 @@ import React, { useEffect, useRef, useState } from 'react'
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { SelectMulti } from '../../../../common-components';
-import { taskManagementActions } from '../../task-management/redux/actions';
+import { filterDifference } from '../../../../helpers/taskModuleHelpers';
 import c3 from 'c3';
 import 'c3/c3.css';
+import dayjs from 'dayjs';
 
 const CHART_INFO = {
     currentRoles: []
@@ -31,29 +32,33 @@ const InprocessTask = (props) => {
                     taskList = taskList.concat(allTask[role[i]]);
                 }
 
+                taskList = filterDifference(taskList);
                 let inprocessTask = taskList?.filter(x => x.status === "inprocess");
+
                 let delayed = [translate('task.task_management.delayed_time')];
                 let intime = [translate('task.task_management.in_time')];
                 let notAchived = [translate('task.task_management.not_achieved')];
-                let currentTime = new Date();
+                let currentTime = dayjs(new Date());
                 let delayedCnt = 0, intimeCnt = 0, notAchivedCnt = 0;
 
                 for (let i in inprocessTask) {
-                    let startTime = new Date(inprocessTask[i].startDate);
-                    let endTime = new Date(inprocessTask[i].endDate);
+                    let startTime = dayjs(inprocessTask[i].startDate);
+                    let endTime = dayjs(inprocessTask[i].endDate);
+                    let duration = endTime.diff(startTime, 'day');
 
-                    if (currentTime > endTime && inprocessTask[i].progress < 100) {
-                        notAchivedCnt++; // not achieved
+                    if (currentTime > endTime) {
+                        notAchivedCnt++; // quá hạn
                     }
                     else {
-                        let workingDayMin = (endTime - startTime) * inprocessTask[i].progress / 100;
-                        let dayFromStartDate = currentTime - startTime;
-                        let timeOver = workingDayMin - dayFromStartDate;
-                        if (inprocessTask[i].status === 'finished' || timeOver >= 0) {
-                            intimeCnt++;
-                        }
-                        else {
+                        let processDay = Math.floor(inprocessTask[i].progress * duration / 100);
+                        let startToNow = currentTime.diff(startTime, 'days');
+
+                        if (startToNow > processDay) {
+                            // Trễ tiến độ
                             delayedCnt++;
+                        } else if (startToNow <= processDay) {
+                            // Đúng tiến độ
+                            intimeCnt++;
                         }
                     }
                 }

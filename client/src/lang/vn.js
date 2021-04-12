@@ -37,6 +37,7 @@ export default {
             new_notification: "Bạn có thông báo mới!",
             month: "tháng",
             value: "Giá trị",
+            export: "Xuất",
             auth_alert: {
                 title:
                     "Hệ thống xác nhận có lỗi xảy ra trong phiên làm việc của bạn!",
@@ -110,6 +111,7 @@ export default {
                 group: "Nhóm khách hàng",
                 statistic: "Thống kê",
                 generalConfiguration: "Cấu hình chung",
+                evaluation: "Đánh giá hoạt động CSKH"
             },
 
             task_template: "Mẫu Công Việc",
@@ -162,10 +164,11 @@ export default {
             manage_kpi_unit: "KPI đơn vị",
             manage_kpi_personal: "KPI cá nhân",
             kpi_unit_create: "Khởi tạo KPI đơn vị",
+            kpi_unit_create_for_admin: "Khởi tạo KPI toàn công ty",
             kpi_unit_evaluate: "Dữ liệu KPI đơn vị",
             kpi_unit_overview: "Tổng quan KPI đơn vị",
             kpi_unit_dashboard: "Dashboard KPI đơn vị",
-            kpi_unit_statistic: "Thống kê KPI đơn vị",
+            kpi_unit_statistic: "Phân tích tính hợp lý trong thiết lập KPI đơn vị",
             kpi_unit_manager: "Quản lý KPI đơn vị",
             kpi_member_manager: "Đánh giá KPI nhân viên",
             kpi_member_dashboard: "DashBoard KPI nhân viên",
@@ -174,6 +177,7 @@ export default {
             kpi_personal_overview: "Tổng quan KPI cá nhân",
             kpi_personal_dashboard: "Dashboard KPI cá nhân",
             kpi_personal_manager: "Quản lí KPI cá nhân",
+            kpi_member_detail: "Chi tiết KPI cá nhân",
 
             notifications: "Thông báo",
 
@@ -181,7 +185,7 @@ export default {
             task: "Chi tiết công việc",
             task_management: "Danh sách công việc cá nhân",
             task_management_of_unit: "Danh sách công việc đơn vị",
-            task_management_dashboard: "Dashboard công việc",
+            task_management_dashboard: "Dashboard công việc cá nhân",
             task_organization_management_dashboard:
                 "Dashboard công việc đơn vị",
             task_management_process: "Danh sách quy trình",
@@ -261,6 +265,14 @@ export default {
             manage_manufacturing_lot: "Quản lý lô sản xuất",
             manage_project: "Quản lý dự án",
 
+            // Quản lý vận chuyển
+            manage_transport: "Quản lý vận chuyển",
+            manage_transport_requirements: "Yêu cầu vận chuyển",
+            manage_transport_schedule: "Kế hoạch vận chuyển",
+            manage_transport_vehical: "Phương tiện vận chuyển",
+            manage_transport_human: "Nhân viên vận chuyển",
+            manage_transport_route: "Lộ trình vận chuyển",
+
             user_guide: "Hướng dẫn sử dụng",
             user_guide_detail: "Chi tiết hướng dẫn sử dụng",
         },
@@ -268,7 +280,7 @@ export default {
         news_feed: {
             news_feed: 'Tin tức'
         },
-        
+
         intro: {
             title: "Giải pháp không gian làm việc số cho doanh nghiệp",
             contents: [
@@ -385,6 +397,8 @@ export default {
             validator: {
                 confirm_password_invalid:
                     "Mật khẩu không trùng khớp. Vui lòng kiểm tra lại",
+                confirm_password2_invalid:
+                    "Mật khẩu cấp 2 không trùng khớp. Vui lòng kiểm tra lại",
                 password_length_error:
                     "Mật khẩu phải có độ dài tối thiểu 6 và không quá 30 ký tự",
                 confirm_password_error: "Mật khẩu xác thực không khớp",
@@ -393,8 +407,12 @@ export default {
                 label: "Bảo mật",
                 title: "Thay đổi mật khẩu người dùng",
                 old_password: "Mật khẩu cũ",
+                old_password2: "Mật khẩu cấp 2 cũ",
                 new_password: "Mật khẩu mới",
+                new_password2: "Mật khẩu cấp 2 mới",
                 confirm_password: "Xác thực mật khẩu",
+                re_enter_new_password: "Nhập lại mật khẩu mới",
+                re_enter_new_password2: "Nhập lại mật khẩu cấp 2 mới"
             },
             login: "Đăng nhập",
             logout: "Đăng xuất",
@@ -417,9 +435,14 @@ export default {
             change_user_password_success: "Thay đổi mật khẩu thành công",
             change_user_password_faile: "Thay đổi mật khẩu thất bại",
             user_not_found: "Không tìm thấy thông tin người dùng",
+            username_invalid_length: "Tên người dùng có độ dài không hợp lê",
+            username_empty: "Tên người dùng không được để trống",
+            email_empty: "Email không được để trống",
             email_invalid: "Email không hợp lệ",
             email_not_found: "Email này chưa được đăng kí trên hệ thống",
             password_invalid: "Mật khẩu không chính xác",
+            password2_empty: "Mật khẩu cấp 2 không được để trống",
+            password2_invalid: "Mật khẩu cấp 2 không chính xác",
             email_password_invalid: "Email hoặc mật khẩu không chính xác",
             acc_blocked: "Tài khoản này đã bị tạm khóa",
             acc_have_not_role: "Tài khoản chưa được phân quyền trên hệ thống",
@@ -430,8 +453,16 @@ export default {
             reset_password_success: "Thiết lập mật khẩu thành công",
             otp_invalid: "Yêu cầu thiết lập lại mật khẩu không hợp lệ",
             portal_invalid: "Portal không hợp lệ",
-            answer_auth_question_success: 'Thêm mật khẩu cấp 2 thành công',
-            answer_auth_question_faile: 'Thêm mật khẩu cấp 2 thất bại',
+            create_password2_success: 'Thêm mật khẩu cấp 2 thành công',
+            create_password2_faile: 'Thêm mật khẩu cấp 2 thất bại',
+            change_user_password2_success: "Chỉnh sửa mật khảu cấp 2 thành công",
+            change_user_password2_faile: "Chỉnh sửa mật khảu cấp 2 thất bại",
+            old_password_empty: "Mật khẩu cũ không được để trống",
+            old_password2_empty: "Mật khẩu cấp 2 cũ không được để trống",
+            new_password2_empty: "Mật khẩu cấp 2 mới không được để trống",
+            confirm_password2_invalid: "Xác nhận mật khẩu cấp 2 không hợp lệ",
+            old_password_invalid: "Mật khẩu cũ không hợp lệ",
+            old_password2_invalid: "Mật khẩu cấp 2 cũ không hợp lệ",
         },
 
         system_admin: {
@@ -1028,7 +1059,6 @@ export default {
                 by_customer: "Theo khách hàng",
                 payment: "Hình thức thanh toán",
                 creator: "Người tạo",
-
                 personal: "Cá nhân",
                 organization: "Tổ chức",
                 northern: "Miền Bắc",
@@ -1067,6 +1097,7 @@ export default {
                 cannot_be_empty: "không được để trống",
                 value_duplicate: "bị trùng lặp",
             },
+
             group: {
                 name: "Tên nhóm khách hàng",
                 code: "Mã nhóm khách hàng",
@@ -1077,22 +1108,23 @@ export default {
                 edit: "Chỉnh sửa thông tin nhóm khách hàng",
                 delete: "Xóa thông tin nhóm khách hàng",
             },
+
             lead: {},
             care: {
-                name: "Tên công việc",
+                name: "Tên hoạt động",
                 caregiver: "Nhân viên phụ trách",
-                customer: "Khách hàng được chăm sóc",
-                description: "Mô tả công việc chăm sóc",
+                customer: "Tên khách hàng",
+                description: "Mô tả ",
                 careType: "Loại hình chăm sóc",
                 status: "Trạng thái",
                 startDate: "Ngày bắt đầu",
                 endDate: "Ngày kết thúc",
                 notes: "Ghi chú",
                 action: "Hành động",
-
-                add: "Thêm mới chăm sóc khách hàng",
-                info: "Xem công việc chăm sóc khách hàng",
+                add: "Thêm mới hoạt động chăm sóc khách hàng",
+                info: "Xem chi tiết hoạt động chăm sóc khách hàng",
                 edit: "Chỉnh sửa công việc chăm sóc khách hàng",
+                priority: 'Độ ưu tiên',
             },
             status: {
                 add: "Thêm mới trạng thái",
@@ -1219,7 +1251,7 @@ export default {
             all_position: "Chọn tất cả các chức vụ",
             non_position: "Chọn chức vụ",
             all_status: "Chọn tất cả các trạng thái",
-            non_status: "Chọn trạng thái",
+            non_status: "Chọn trạng thái"
         },
 
         common_component: {
@@ -1650,6 +1682,12 @@ export default {
                     delete_discipline_faile: "Xoá kỷ luật thất bại",
                     edit_discipline_success: "Chỉnh sửa kỷ luật thành công",
                     edit_discipline_faile: "Chỉnh sửa kỷ luật thất bại",
+
+                    update_major_success: "Chỉnh sửa chuyên ngành thành công",
+                    update_major_failure: "Chỉnh sửa chuyên ngành thất bại",
+
+                    delete_major_success: "Xóa chuyên ngành thành công",
+                    delete_major_failure: "Xóa chuyên ngành thất bại"
                 },
             },
 
@@ -2531,6 +2569,7 @@ export default {
                 value: "Giá trị",
                 maintainance_cost: "Chi phí bảo trì-sửa chữa",
                 lost_value: "Giá trị hao mòn (Triệu)",
+                lost: "Hao mòn",
                 sum_value: "Tổng giá trị (Triệu)",
                 building: "Mặt bằng",
                 machine: "Máy móc",
@@ -2941,6 +2980,11 @@ export default {
                 select_all_department: "Tất cả các đơn vị",
                 role: "Vai trò",
 
+                role_unit: "Vai trò đơn vị",
+                select_role_organizational: "Chọn vai trò đơn vị",
+                organizational_unit_management: "Đơn vị quản lý",
+                organizational_unit_collaborate: "Đơn vị phối hợp",
+
                 status: "Trạng thái",
                 select_status: "Chọn trạng thái",
                 select_all_status: "Chọn tất cả trạng thái",
@@ -2949,6 +2993,7 @@ export default {
                 finished: "Đã hoàn thành",
                 delayed: "Tạm hoãn",
                 canceled: "Bị hủy",
+                requested_to_close: "Chờ kết thúc",
                 task_status: "Trạng thái công việc",
                 filter: "Lọc",
 
@@ -2996,7 +3041,7 @@ export default {
 
                 col_name: "Tên công việc",
                 col_organization: "Đơn vị",
-                col_project:"Dự án",
+                col_project: "Dự án",
                 col_priority: "Độ ưu tiên",
                 col_start_date: "Ngày bắt đầu",
                 col_end_date: "Ngày kết thúc",
@@ -3184,10 +3229,10 @@ export default {
                 get_outside_info:
                     "Nhập tự động từ thông tin công việc hiện tại",
 
-                dashboard_created: "Số CV bạn đã tạo",
-                dashboard_need_perform: "Số CV bạn thực hiện",
-                dashboard_need_approve: "Số CV bạn phê duyệt",
-                dashboard_need_consult: "Số CV bạn tư vấn",
+                dashboard_created: "Bạn đã tạo",
+                dashboard_need_perform: "Bạn thực hiện",
+                dashboard_need_approve: "Bạn phê duyệt",
+                dashboard_need_consult: "Bạn tư vấn",
                 dashboard_area_result: "Miền kết quả công việc",
                 dashboard_overdue: "Công việc quá hạn",
                 dashboard_about_to_overdue: "Công việc sắp hết hạn",
@@ -3233,7 +3278,7 @@ export default {
                     "Đơn vị phối hợp thực hiện công việc",
                 not_collaborated_with_organizational_units:
                     "Không có đơn vị phối hợp",
-                task_empty_employee: "Chưa có người tham gia phối hợp",
+                task_empty_employee: "Không có người tham gia",
                 delete_eval: "Xóa đánh giá tháng này",
                 delete_eval_title: "Bạn có chắc chắn muốn xóa đánh giá này?",
                 delete_evaluation_success: "Xóa đánh giá thành công",
@@ -3280,8 +3325,8 @@ export default {
                 project: 'Thuộc dự án (nếu có)',
                 load_task: "Tải công việc",
                 time: "Thời gian",
-                load_task_chart: "Dashboard tải công việc",
-                load_task_chart_unit: "Dashboard tải công việc của đơn vị",
+                load_task_chart: "Tải công việc cá nhân",
+                load_task_chart_unit: "Tải công việc đơn vị",
                 explain: "Giải thích",
                 select_responsible: "Chọn người thực hiện",
             },
@@ -3616,7 +3661,7 @@ export default {
                 general_unit_task: "Tổng quan công việc",
                 general_unit_task_title_file_export: "Tổng quan công việc đơn vị",
                 unit: "Đơn vị",
-                unit_lowercase : "đơn vị",
+                unit_lowercase: "đơn vị",
                 of_unit: "của đơn vị",
                 of: "của",
                 all_tasks: "Tổng số công việc",
@@ -3625,13 +3670,13 @@ export default {
                 confirmed_task: "Đã xác nhận thực hiện",
                 none_update_recently: "Chưa cập nhật trong 7 ngày qua",
                 intime_task: "Đúng tiến độ",
-                incoming_task: "Công việc sắp hết hạn",
+                incoming_task: "Sắp hết hạn",
                 delay_task: "Trễ tiến độ",
                 overdue_task: "Quá hạn",
                 no_task: "Không có công việc nào",
-                unconfirmed_task: "Công việc chưa xác nhận thực hiện",
-                urgent_task: "Công việc khẩn cấp",
-                to_do_task: "Công việc cần làm",
+                unconfirmed_task: "Chưa xác nhận thực hiện",
+                urgent_task: "Khẩn cấp",
+                to_do_task: "Cần làm",
                 day_ago: "ngày trước",
                 rest: "Còn",
                 updated: "Cập nhật",
@@ -3669,6 +3714,8 @@ export default {
                             delete: "Xóa KPI này",
                             cancel: "Hủy",
                         },
+                        overview: "Tổng quan",
+                        evaluation: "Đánh giá",
                         time: "Thời gian",
                         approver: "Người phê duyệt",
                         weight_total: "Tổng trọng số",
@@ -3748,7 +3795,7 @@ export default {
                                 "KPI đang được phê duyệt, Bạn không thể chỉnh sửa!",
                             activated:
                                 "KPI đã được kích hoạt, Bạn không thể chỉnh sửa!",
-                            evaluated: 
+                            evaluated:
                                 "KPI đã được đánh giá, Bạn không thể chỉnh sửa!",
                         },
                         delete_kpi: {
@@ -3895,7 +3942,8 @@ export default {
                     /**
                      * Approve
                      */
-                    approve_KPI_employee: "Phê duyệt KPI nhân viên",
+                    approve_KPI_employee: "Phê duyệt KPI",
+                    show_logs: "Lịch sử  chỉnh sửa KPI",
                     month: "Tháng",
                     end_compare: "Tắt so sánh",
                     compare: "So sánh",
@@ -3958,7 +4006,7 @@ export default {
                     new_value: "Giá trị mới",
                     old_value: "Giá trị cũ",
                     auto_value: "Giá trị tự động",
-                    cal_all_kpis: '(*)Tính điểm toàn bộ KPI',
+                    cal_all_kpis: 'Tính điểm toàn bộ KPI',
                     update_task_importance: `(*)Cập nhật độ quan trọng công việc và Tính điểm KPI `,
 
                     /**
@@ -5670,6 +5718,9 @@ export default {
                 finished_product: "Số lượng thành phẩm",
                 sub_product: "số lượng phế phẩm"
             }
+        },
+        manage_transport: {
+            add_requirements: "Thêm yêu cầu vận chuyển",
         },
 
         project: {

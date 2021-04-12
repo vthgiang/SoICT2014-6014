@@ -36,6 +36,7 @@ export default {
             new_notification: "You have new notification!",
             month: "in",
             value: "Value",
+            export: 'Export',
             auth_alert: {
                 title: "Current Session invalid. Please log in again",
                 reason: "Reasons maybe:",
@@ -74,7 +75,7 @@ export default {
             select_all: "Select all",
             add_import: "Add data from file",
         },
-        
+
         dashboard_unit: {
             urgent_need_to_do_chart: "The chart shows the number of urgent / To-do tasks",
             urgent_task_amount: "The number of urgent tasks",
@@ -106,6 +107,7 @@ export default {
                 group: "Groups",
                 statistic: "Statistics",
                 generalConfiguration: "generalConfiguration",
+                evaluation: "Evaluation"
             },
 
             task_template: "Task Template",
@@ -146,10 +148,11 @@ export default {
             manage_kpi_unit: "Organizational unit KPI",
             manage_kpi_personal: "Personal KPI",
             kpi_unit_create: "Create unit KPI",
+            kpi_unit_create_for_admin: "Create unit KPI in company",
             kpi_unit_evaluate: "Evaluate unit KPI",
             kpi_unit_overview: "Overview unit KPI",
             kpi_unit_dashboard: "Dashboard unit KPI",
-            kpi_unit_statistic: "Statistic unit KPI",
+            kpi_unit_statistic: "Ananyze the rationality of unit KPI",
             kpi_unit_manager: "Manage organizational unit KPI",
             kpi_member_manager: "Evaluate Employee KPI",
             kpi_member_dashboard: "DashBoard KPI Member",
@@ -158,6 +161,7 @@ export default {
             kpi_personal_overview: "Overview personal KPI",
             kpi_personal_dashboard: "DashBoard personal KPI",
             kpi_personal_manager: "Manager personal KPI",
+            kpi_member_detail: "Details of personal KPI",
 
             notifications: "Notifications",
 
@@ -165,7 +169,7 @@ export default {
             task: "Detailed Task",
             task_management: "Personal task list",
             task_management_of_unit: "Unit task list",
-            task_management_dashboard: "Task dashboard",
+            task_management_dashboard: "Personal task dashboard",
             task_organization_management_dashboard: "Unit task dashboard",
             task_management_process: "Process list",
             task_process_template: "Process template",
@@ -243,6 +247,13 @@ export default {
             manage_manufacturing_mill: "Manage manufacturing mill",
             manage_project: "Manage Project",
 
+            // Quản lý vận chuyển
+            manage_transport: "Manage transport",
+            manage_transport_requirements: "Manage transport requirements",
+            manage_transport_schedule: "Manage transport schedule",
+            manage_transport_vehical: "Manage transport vehical",
+            manage_transport_human: "Manage transport human",
+            manage_transport_route: "Manage transport route",
 
             user_guide: "User guide",
             user_guide_detail: "User guide detail",
@@ -398,9 +409,14 @@ export default {
             change_user_password_success: "Change password success",
             change_user_password_faile: "Change password faile",
             user_not_found: "User not found",
+            username_empty: "Username not empty",
+            username_invalid_length: "Username invalid length",
+            email_empty: "Email not empty",
             email_invalid: "Email invalid",
             email_not_found: "Email not found",
             password_invalid: "Password invalid",
+            password2_empty: "Password2 not empty",
+            password2_invalid: "Password2 invalid",
             email_password_invalid: "Email or Password invalid",
             acc_blocked: "Account blocked",
             acc_have_not_role: "Account have not role",
@@ -940,6 +956,15 @@ export default {
                 gender: "Gender",
                 liability: "Liability",
                 document: "Document",
+                note: "Note",
+                carier: "Carier",
+                discount: "discount",
+                by_group: "Group by",
+                by_customer: "Group by customer",
+                organization: "organization",
+                northern: "northern",
+                central: "central",
+                southern: "southern",
             },
             group: {},
             lead: {},
@@ -954,7 +979,7 @@ export default {
         },
 
         language: "Setting language",
-        
+
         alert: {
             title: "Notification from system",
             log_again: "Error! Log in again!",
@@ -1466,6 +1491,12 @@ export default {
                     delete_discipline_faile: "Delete discipline faile",
                     edit_discipline_success: "Edit discipline success",
                     edit_discipline_faile: "Edit discipline faile",
+
+                    update_major_success: "Edit major successfully",
+                    update_major_failure: "Edit major unsuccessfully",
+
+                    delete_major_success: "Delete major successfully",
+                    delete_major_failure: "Delete major unsuccessfully"
                 },
             },
 
@@ -2670,6 +2701,11 @@ export default {
                 select_all_department: "Selected all",
                 role: "Role",
 
+                role_unit: "Role of unit",
+                select_role_organizational: "Select unit role",
+                organizational_unit_management: "Management unit",
+                organizational_unit_collaborate: "Collaborative unit",
+
                 status: "Status",
                 select_status: "Select status",
                 select_all_status: "Selected all",
@@ -2678,6 +2714,7 @@ export default {
                 finished: "Finished",
                 delayed: "Delayed",
                 canceled: "Canceled",
+                requested_to_close: "Requested to close",
                 task_status: "Task status",
                 filter: "Filter",
 
@@ -2952,8 +2989,7 @@ export default {
                     "Units that have collaborated",
                 not_collaborated_with_organizational_units:
                     "No units that have collaborated",
-                task_empty_employee:
-                    "Your organization unit has no participants",
+                task_empty_employee: "No participants",
                 delete_eval: "Delete evaluation",
                 delete_eval_title: "Are you sure to delete this evaluation?",
 
@@ -3307,9 +3343,9 @@ export default {
             task_dashboard: {
                 general_unit_task: "General unit task dashboard",
                 unit: "Organizational unit",
-                unit_lowercase : "organizational unit",
+                unit_lowercase: "organizational unit",
                 all_tasks: "All tasks",
-                 of: "of",
+                of: "of",
                 all_tasks_inprocess: "All tasks inprocess",
                 all_tasks_finished: "All tasks finished",
                 confirmed_task: "Confirmed tasks",
@@ -3355,6 +3391,8 @@ export default {
                             delete: "Delete this KPI",
                             cancel: "Cancel",
                         },
+                        overview: "Overview",
+                        evaluation: "Evaluation",
                         time: "Time",
                         approver: "Approver",
                         weight: {
@@ -3431,7 +3469,7 @@ export default {
                                 "KPI is being approved, you can not edit!",
                             activated:
                                 "KPI is being activated, you can not edit!",
-                            evaluated: 
+                            evaluated:
                                 "KPI is being evaluated, you can not edit!"
                         },
                         request_approval_kpi: {
@@ -3587,7 +3625,8 @@ export default {
                     /**
                      * Approve
                      */
-                    approve_KPI_employee: "Approve KPI employee",
+                    approve_KPI_employee: "Approve KPI",
+                    show_logs: "Employee KPI set logs",
                     month: "",
                     end_compare: "End comparing",
                     compare: "Compare",
@@ -3680,7 +3719,7 @@ export default {
                     priority: "Priority",
                     formula: "Formula",
                     explain_automatic_point: "Explain automatic value",
-                    cal_all_kpis: '(*)Calculator all kpi',
+                    cal_all_kpis: 'Calculator all kpi',
                     update_task_importance: `(*)Update task importance level and Calculator KPI point`,
 
                 },
@@ -3743,7 +3782,7 @@ export default {
                     copy_kpi_unit: "Copy KPI Unit",
                     employee_importance: "Employee importances",
                     organizational_unit_importance: "Children organizational unit importances",
-                    
+
                     // Nhóm dành cho trọng số
                     weight_total: "Weight total",
                     not_satisfied: "Not satisfied",
@@ -4142,6 +4181,9 @@ export default {
             },
         },
 
+        manage_transport: {
+            add_requirements: "Add a new requirement",
+        },
         // Quản lý dự án
         project: {
             code: "Project code",

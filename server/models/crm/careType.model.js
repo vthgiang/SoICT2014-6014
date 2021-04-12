@@ -10,10 +10,20 @@ const CareTypeSchema = new Schema({
     description: { // Mô tả loại hình chăm sóc
         type: String,
     },
-    company: {
+    createdAt: { // ngày tạo loại CSKH
+        type: Date,
+    },
+    createdBy: {// người tạo loại CSKH
         type: Schema.Types.ObjectId,
-        ref: 'Company',
-    }
+        ref: 'User'
+    },
+    updatedAt: { // ngày cập nhật
+        type: Date,
+    },
+    updatedBy: {// người cập nhật
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    },
 }, {
     timestamps: true,
 });

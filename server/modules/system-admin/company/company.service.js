@@ -15,7 +15,6 @@ const {
 } = require(`../../../models`);
 
 const bcrypt = require("bcryptjs");
-const nodemailer = require("nodemailer");
 const generator = require("generate-password");
 const Terms = require('../../../helpers/config');
 const { connect } = require('../../../helpers/dbHelper');
@@ -216,17 +215,9 @@ exports.createCompanySuperAdminAccount = async (
     let password = await generator.generate({ length: 10, numbers: true });
     let hash = await bcrypt.hashSync(password, salt);
 
-    let transporter = await nodemailer.createTransport({
-        service: "Gmail",
-        auth: { user: "vnist.qlcv@gmail.com", pass: "VnistQLCV123@" },
-    });
-
-    let mainOptions = {
-        from: "vnist.qlcv@gmail.com",
-        to: userEmail,
-        subject: `Tạo tài khoản SUPER ADMIN cho doanh nghiệp/công ty ${companyShortName}`,
-        text: `Email thông báo đăng kí thành công sử dụng dịch vụ Quản lý công việc và thông tin về tài khoản SUPER ADMIN của doanh nghiệp/công ty ${companyShortName}.`,
-        html: `<html>
+    let subject = `Tạo tài khoản SUPER ADMIN cho doanh nghiệp/công ty ${companyShortName}`;
+    let text= `Email thông báo đăng kí thành công sử dụng dịch vụ Quản lý công việc và thông tin về tài khoản SUPER ADMIN của doanh nghiệp/công ty ${companyShortName}.`
+    let html = `<html>
         <head>
             <style>
                 .wrapper {
@@ -301,8 +292,7 @@ exports.createCompanySuperAdminAccount = async (
                 </div>
             </div>
         </body>
-    </html>`,
-    };
+    </html>`
 
     let user = await User(connect(DB_CONNECTION, companyShortName)).create({
         name: `Super Admin`,
@@ -320,9 +310,7 @@ exports.createCompanySuperAdminAccount = async (
         userId: user._id,
         roleId: roleSuperAdmin._id,
     });
-
-    await transporter.sendMail(mainOptions);
-
+    await sendEmail(userEmail, subject, text, html);
     return user;
 };
 

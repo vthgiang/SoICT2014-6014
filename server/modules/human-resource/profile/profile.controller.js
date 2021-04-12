@@ -81,7 +81,6 @@ exports.searchEmployeeProfiles = async (req, res) => {
         } else if (req.query.page === undefined && req.query.limit === undefined) {
             data = await EmployeeService.getEmployees(req.portal, req.user.company._id, req.query.organizationalUnits, req.query.position, false, req.query.status);
         } else if(req.query.searchForPackage){
-            console.log('----searchForPackage----');
             let params = {
                 organizationalUnits: req.query.organizationalUnits,
                 professionalSkill: req.query.professionalSkill,
@@ -98,7 +97,6 @@ exports.searchEmployeeProfiles = async (req, res) => {
                 page: Number(req.query.page),
                 limit: Number(req.query.limit),
             }
-            console.log('search params', params);
             data = await EmployeeService.searchEmployeeForPackage(req.portal, params, req.user.company);
         } else {
             let params = {
@@ -117,6 +115,7 @@ exports.searchEmployeeProfiles = async (req, res) => {
             }
             data = await EmployeeService.searchEmployeeProfiles(req.portal, params, req.user.company._id);
         }
+        
         await Log.info(req.user.email, 'GET_EMPLOYEES', req.portal);
         res.status(200).json({
             success: true,
@@ -124,7 +123,6 @@ exports.searchEmployeeProfiles = async (req, res) => {
             content: data
         });
     } catch (error) {
-        console.log(error);
         await Log.error(req.user.email, 'GET_EMPLOYEES', req.portal);
         res.status(400).json({
             success: false,
