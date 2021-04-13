@@ -232,8 +232,16 @@ exports.deleteUseRequest = async (portal, id) => {
  * @id: id phiếu đề nghị cap phat thiết bị muốn update
  */
 exports.updateUseRequest = async (portal, id, data) => {
-    let dateStartUse, dateEndUse, date, partStart, partEnd;
-
+    let dateCreate, dateStartUse, dateEndUse, date, partCreate, partStart, partEnd;
+    if (data.dateCreate) {
+        partCreate = data.dateCreate.split('-');
+        if (data.dateCreate.length > 12) {
+            date = data.dateCreate;
+        } else {
+            date = [partCreate[2], partCreate[1], partCreate[0]].join('-');
+        }
+        dateCreate = new Date(date);
+    }
     if (data.dateStartUse) {
         partStart = data.dateStartUse.split('-');
         if (data.dateStartUse.length > 12) {
@@ -252,7 +260,6 @@ exports.updateUseRequest = async (portal, id, data) => {
         }
         dateEndUse = new Date(date);
     }
-
     if (data.startTime && data.dateStartUse) {
         date = [partStart[2], partStart[1], partStart[0]].join('-') + ' ' + data.startTime;
         dateStartUse = new Date(date);
@@ -264,7 +271,7 @@ exports.updateUseRequest = async (portal, id, data) => {
 
     var recommendDistributeChange = {
         recommendNumber: data.recommendNumber,
-        dateCreate: new Date(data.dateCreate),
+        dateCreate: dateCreate,
         proponent: data.proponent, // Người đề nghị
         reqContent: data.reqContent, // Người đề nghị
         asset: data.asset,
@@ -276,11 +283,12 @@ exports.updateUseRequest = async (portal, id, data) => {
     };
 
     // Cập nhật thông tin phiếu đề nghị cap phat thiết bị vào database
-    await RecommendDistribute(connect(DB_CONNECTION, portal)).findOneAndUpdate({
+    const a = await RecommendDistribute(connect(DB_CONNECTION, portal)).findOneAndUpdate({
         _id: id
     }, {
         $set: recommendDistributeChange
     });
+    console.log("a", a)
     return await RecommendDistribute(connect(DB_CONNECTION, portal)).findOne({
         _id: id
     })

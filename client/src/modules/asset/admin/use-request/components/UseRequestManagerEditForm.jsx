@@ -10,11 +10,12 @@ import { UserActions } from "../../../../super-admin/user/redux/actions";
 import { AssetManagerActions } from '../../asset-information/redux/actions';
 
 import ValidationHelper from '../../../../../helpers/validationHelper';
-
+import { formatDate2 } from '../../../../../helpers/assetHelper.js';
 function UseRequestManagerEditForm(props) {
     const [state, setState] =  useState({
         status: "waiting_approval",
-        managedBy: props.employeeId ? props.employeeId : ''
+        managedBy: props.employeeId ? props.employeeId : '', 
+
     })
     const [prevProps, setPrevProps] = useState({
         _id: null
@@ -73,7 +74,7 @@ function UseRequestManagerEditForm(props) {
                 ...state,
                 _id: props._id,
                 recommendNumber: props.recommendNumber,
-                dateCreate: props.dateCreate,
+                dateCreate: formatDate2(props.dateCreate),
                 proponent: props.proponent,
                 reqContent: props.reqContent,
                 asset: props.asset,
@@ -115,29 +116,6 @@ function UseRequestManagerEditForm(props) {
 
     var assetlist = assetsManager.listAssets;
     var userlist = user.list;
-
-
-    
-    const formatDate = (date, monthYear = false) => {
-        var d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
-
-        if (month.length < 2) {
-            month = '0' + month;
-        }
-
-        if (day.length < 2) {
-            day = '0' + day;
-        }
-
-        if (monthYear === true) {
-            return [month, year].join('-');
-        } else {
-            return [day, month, year].join('-');
-        }
-    }
 
     // Bắt sự kiện thay đổi mã phiếu
     const handleRecommendNumberChange = (e) => {
@@ -321,8 +299,11 @@ function UseRequestManagerEditForm(props) {
     const isFormValidated = () => {
         let result = validateDateCreate(state.dateCreate, false) &&
             validateReqContent(state.reqContent, false) &&
-            validateDateStartUse(state.dateCreate, false)
-
+            validateDateStartUse(state.dateStartUse, false)
+            console.log("date create", validateDateCreate(state.dateCreate, false))
+            console.log("req content", validateReqContent(state.reqContent, false))
+            console.log("date start", validateDateStartUse(state.dateStartUse, false))
+        console.log(result)
         return result;
     }
 
@@ -341,7 +322,7 @@ function UseRequestManagerEditForm(props) {
                 dateStartUse: dataToSubmit.dateStartUse,
                 dateEndUse: dataToSubmit.dateEndUse,
                 approver: dataToSubmit.approver, // Người phê duyệt
-                note: dataToSubmit.note,
+                note: dataToSubmit.note ? dataToSubmit.note : null,
                 stopTime: dataToSubmit.stopTime,
                 startTime: dataToSubmit.startTime
             }
@@ -393,11 +374,12 @@ function UseRequestManagerEditForm(props) {
                     props.createUsage(dataToSubmit.asset._id, createNewUsage)
                 }
             }
+            console.log(props)
             return props.updateRecommendDistribute(state._id, data, managedBy);
         }
     }
 
-
+    console.log(state)
     return (
         <React.Fragment>
             <DialogModal
@@ -424,7 +406,7 @@ function UseRequestManagerEditForm(props) {
                                 <label>{translate('asset.general_information.create_date')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`edit_start_date${_id}`}
-                                    value={formatDate(dateCreate)}
+                                    value={dateCreate}
                                     onChange={handleDateCreateChange}
                                 />
                                 <ErrorLabel content={errorOnDateCreate} />
