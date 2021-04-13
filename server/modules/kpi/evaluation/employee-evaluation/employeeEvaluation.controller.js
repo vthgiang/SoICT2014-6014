@@ -130,7 +130,6 @@ exports.editKpi = async (req, res) => {
                 content: data?.target
             });
         } catch (error) {
-            console.log(error)
             await Logger.error(req.user.email, `Edit target member`, req.portal);
             res.status(400).json({
                 messages: ['edit_kpi_target_member_fail'],

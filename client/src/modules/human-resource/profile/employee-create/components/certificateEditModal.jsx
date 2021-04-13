@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -6,41 +6,80 @@ import { DialogModal, ErrorLabel, DatePicker, UploadFile } from '../../../../../
 
 import ValidationHelper from '../../../../../helpers/validationHelper';
 
-class CertificateEditModal extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {}
+function CertificateEditModal(props) {
+
+    /**
+     * Function format ngày hiện tại thành dạnh mm-yyyy
+     * @param {*} date : Ngày muốn format
+     */
+    const formatDate = (date) => {
+        if (date) {
+            let d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
+
+            if (month.length < 2)
+                month = '0' + month;
+            if (day.length < 2)
+                day = '0' + day;
+
+            return [day, month, year].join('-');
+        }
+        return date;
     }
 
-    /** Bắt sự kiện thay đổi file đính kèm */
-    handleChangeFile = (value) => {
-        if (value.length !== 0) {
-            this.setState({
-                file: value[0].fileName,
-                urlFile: value[0].urlFile,
-                fileUpload: value[0].fileUpload
+    const [state, setState] = useState({
+        startDate: formatDate(Date.now()),
+        endDate: "",
+        name: "",
+        issuedBy: "",
+        urlFile: "",
+        fileUpload: "",
+        file: "",
+    })
 
+    const { translate } = props;
+
+    const { id } = props;
+
+    const { name, issuedBy, endDate, startDate, file, urlFile, fileUpload, errorOnName, errorOnUnit, errorOnEndDate, errorOnStartDate } = state;
+
+    /** Bắt sự kiện thay đổi file đính kèm */
+    const handleChangeFile = (value) => {
+        if (value.length !== 0) {
+            setState(state => {
+                return {
+                    ...state,
+                    file: value[0].fileName,
+                    urlFile: value[0].urlFile,
+                    fileUpload: value[0].fileUpload
+                }
             })
         } else {
-            this.setState({
-                file: "",
-                urlFile: "",
-                fileUpload: ""
+            setState(state => {
+                return {
+                    ...state,
+                    file: "",
+                    urlFile: "",
+                    fileUpload: ""
+                }
             })
         }
     }
 
     /** Bắt sự kiên thay đổi tên chứng chỉ */
-    handleNameChange = (e) => {
+    const handleNameChange = (e) => {
         let { value } = e.target;
-        this.validateNameCertificate(value, true);
+        validateNameCertificate(value, true);
     }
-    validateNameCertificate = (value, willUpdateState = true) => {
-        const { translate } = this.props;
+
+    const validateNameCertificate = (value, willUpdateState = true) => {
+        const { translate } = props;
         let { message } = ValidationHelper.validateEmpty(translate, value);
 
         if (willUpdateState) {
-            this.setState(state => {
+            setState(state => {
                 return {
                     ...state,
                     errorOnName: message,
@@ -52,16 +91,17 @@ class CertificateEditModal extends Component {
     }
 
     /** Bắt sự kiện thay đổi nơi cấp */
-    handleIssuedByChange = (e) => {
+    const handleIssuedByChange = (e) => {
         let { value } = e.target;
-        this.validateIssuedByCertificate(value, true);
+        validateIssuedByCertificate(value, true);
     }
-    validateIssuedByCertificate = (value, willUpdateState = true) => {
-        const { translate } = this.props;
+
+    const validateIssuedByCertificate = (value, willUpdateState = true) => {
+        const { translate } = props;
         let { message } = ValidationHelper.validateEmpty(translate, value);
 
         if (willUpdateState) {
-            this.setState(state => {
+            setState(state => {
                 return {
                     ...state,
                     errorOnUnit: message,
@@ -76,27 +116,30 @@ class CertificateEditModal extends Component {
      * Bắt sự kiện thay đổi ngày cấp
      * @param {*} value : Ngày cấp
      */
-    handleStartDateChange = (value) => {
-        const { translate } = this.props;
-        let { errorOnEndDate, endDate } = this.state;
+    const handleStartDateChange = (value) => {
+        const { translate } = props;
+        let { errorOnEndDate, endDate } = state;
 
         let errorOnStartDate;
         let partValue = value.split('-');
         let date = new Date([partValue[2], partValue[1], partValue[0]].join('-'));
+        if (endDate) {
+            let partEndDate = endDate.split('-');
+            let d = new Date([partEndDate[2], partEndDate[1], partEndDate[0]].join('-'));
 
-        let partEndDate = endDate.split('-');
-        let d = new Date([partEndDate[2], partEndDate[1], partEndDate[0]].join('-'));
-
-        if (date.getTime() > d.getTime()) {
-            errorOnStartDate = translate('human_resource.profile.start_date_before_end_date');
-        } else {
-            errorOnEndDate = undefined;
+            if (date.getTime() > d.getTime()) {
+                errorOnStartDate = translate('human_resource.profile.start_date_before_end_date');
+            } else {
+                errorOnEndDate = undefined;
+            }
         }
-
-        this.setState({
-            startDate: value,
-            errorOnStartDate: errorOnStartDate,
-            errorOnEndDate: errorOnEndDate
+        setState(state => {
+            return {
+                ...state,
+                startDate: value,
+                errorOnStartDate: errorOnStartDate,
+                errorOnEndDate: errorOnEndDate
+            }
         })
     }
 
@@ -104,9 +147,9 @@ class CertificateEditModal extends Component {
      * Bắt sự kiện thay đổi ngày hết hạn
      * @param {*} value : Ngày hết hạn
      */
-    handleEndDateChange = (value) => {
-        const { translate } = this.props;
-        let { startDate, errorOnStartDate } = this.state;
+    const handleEndDateChange = (value) => {
+        const { translate } = props;
+        let { startDate, errorOnStartDate } = state;
 
         let errorOnEndDate;
         let partValue = value.split('-');
@@ -121,20 +164,23 @@ class CertificateEditModal extends Component {
             errorOnStartDate = undefined;
         }
 
-        this.setState({
-            endDate: value,
-            errorOnStartDate: errorOnStartDate,
-            errorOnEndDate: errorOnEndDate
+        setState(state => {
+            return {
+                ...state,
+                endDate: value,
+                errorOnStartDate: errorOnStartDate,
+                errorOnEndDate: errorOnEndDate
+            }
         })
     }
 
     /** Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form */
-    isFormValidated = () => {
-        const { endDate, startDate, name, issuedBy } = this.state;
+    const isFormValidated = () => {
+        const { endDate, startDate, name, issuedBy } = state;
 
-        let result = this.validateNameCertificate(name, false) && this.validateIssuedByCertificate(issuedBy, false);
+        let result = validateNameCertificate(name, false) && validateIssuedByCertificate(issuedBy, false);
 
-        let partStart = startDate.split('-');
+        let partStart = startDate?.split('-');
         let startDateNew = [partStart[2], partStart[1], partStart[0]].join('-');
 
         if (endDate) {
@@ -149,8 +195,8 @@ class CertificateEditModal extends Component {
     }
 
     /** Bắt sự kiện submit form */
-    save = async () => {
-        const { startDate, endDate } = this.state;
+    const save = async () => {
+        const { startDate, endDate } = state;
         let partStart = startDate.split('-');
         let startDateNew = [partStart[2], partStart[1], partStart[0]].join('-');
         let endDateNew = null;
@@ -158,103 +204,93 @@ class CertificateEditModal extends Component {
             let partEnd = endDate.split('-');
             endDateNew = [partEnd[2], partEnd[1], partEnd[0]].join('-');
         };
-        if (this.isFormValidated()) {
-            this.props.handleChange({ ...this.state, startDate: startDateNew, endDate: endDateNew });
+        if (isFormValidated()) {
+            props.handleChange({ ...state, startDate: startDateNew, endDate: endDateNew });
         }
     }
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id) {
+    useEffect(() => {
+        setState(state => {
             return {
-                ...prevState,
-                id: nextProps.id,
-                _id: nextProps._id,
-                index: nextProps.index,
-                issuedBy: nextProps.issuedBy,
-                startDate: nextProps.startDate,
-                endDate: nextProps.endDate,
-                name: nextProps.name,
-                file: nextProps.file,
-                urlFile: nextProps.urlFile,
-                fileUpload: nextProps.fileUpload,
+                ...state,
+                id: props.id,
+                _id: props._id,
+                index: props.index,
+                issuedBy: props.issuedBy,
+                startDate: props.startDate,
+                endDate: props.endDate,
+                name: props.name,
+                file: props.file,
+                urlFile: props.urlFile,
+                fileUpload: props.fileUpload,
                 errorOnName: undefined,
                 errorOnUnit: undefined,
                 errorOnStartDate: undefined,
                 errorOnEndDate: undefined
             }
-        } else {
-            return null;
-        }
+        })
+    }, [props.id])
+
+    let files;
+    if (file) {
+        files = [{ fileName: file, urlFile: urlFile, fileUpload: fileUpload }]
     }
 
-    render() {
-        const { translate } = this.props;
-
-        const { id } = this.props;
-
-        const { name, issuedBy, endDate, startDate, file, urlFile, fileUpload, errorOnName, errorOnUnit, errorOnEndDate, errorOnStartDate } = this.state;
-
-        let files;
-        if (file) {
-            files = [{ fileName: file, urlFile: urlFile, fileUpload: fileUpload }]
-        }
-
-        return (
-            <React.Fragment>
-                <DialogModal
-                    size='50' modalID={`modal-edit-certificateShort-${id}`} isLoading={false}
-                    formID={`form-edit-certificateShort-${id}`}
-                    title={translate('human_resource.profile.edit_certificate')}
-                    func={this.save}
-                    disableSubmit={!this.isFormValidated()}
-                >
-                    <form className="form-group" id={`form-edit-certificateShort-${id}`}>
-                        {/* Tên chứng chỉ */}
-                        <div className={`form-group ${errorOnName && "has-error"}`}>
-                            <label>{translate('human_resource.profile.name_certificate')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="name" value={name} onChange={this.handleNameChange} autoComplete="off" />
-                            <ErrorLabel content={errorOnName} />
+    return (
+        <React.Fragment>
+            <DialogModal
+                size='50' modalID={`modal-edit-certificateShort-${id}`} isLoading={false}
+                formID={`form-edit-certificateShort-${id}`}
+                title={translate('human_resource.profile.edit_certificate')}
+                func={save}
+                disableSubmit={!isFormValidated()}
+            >
+                <form className="form-group" id={`form-edit-certificateShort-${id}`}>
+                    {/* Tên chứng chỉ */}
+                    <div className={`form-group ${errorOnName && "has-error"}`}>
+                        <label>{translate('human_resource.profile.name_certificate')}<span className="text-red">*</span></label>
+                        <input type="text" className="form-control" name="name" value={name} onChange={handleNameChange} autoComplete="off" />
+                        <ErrorLabel content={errorOnName} />
+                    </div>
+                    {/* Nơi cấp */}
+                    <div className={`form-group ${errorOnUnit && "has-error"}`}>
+                        <label>{translate('human_resource.profile.issued_by')}<span className="text-red">*</span></label>
+                        <input type="text" className="form-control" name="issuedBy" value={issuedBy} onChange={handleIssuedByChange} autoComplete="off" />
+                        <ErrorLabel content={errorOnUnit} />
+                    </div>
+                    <div className="row">
+                        {/* Ngày cấp */}
+                        <div className={`form-group col-sm-6 col-xs-12 ${errorOnStartDate && "has-error"}`}>
+                            <label>{translate('human_resource.profile.date_issued')}<span className="text-red">*</span></label>
+                            <DatePicker
+                                id={`edit-start-date-${id}`}
+                                deleteValue={false}
+                                value={startDate}
+                                onChange={handleStartDateChange}
+                            />
+                            <ErrorLabel content={errorOnStartDate} />
                         </div>
-                        {/* Nơi cấp */}
-                        <div className={`form-group ${errorOnUnit && "has-error"}`}>
-                            <label>{translate('human_resource.profile.issued_by')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="issuedBy" value={issuedBy} onChange={this.handleIssuedByChange} autoComplete="off" />
-                            <ErrorLabel content={errorOnUnit} />
+                        {/* Ngày hết hạn */}
+                        <div className={`form-group col-sm-6 col-xs-12 ${errorOnEndDate && "has-error"}`}>
+                            <label>{translate('human_resource.profile.end_date_certificate')}</label>
+                            <DatePicker
+                                id={`edit-end-date-${id}`}
+                                deleteValue={true}
+                                value={endDate}
+                                onChange={handleEndDateChange}
+                            />
+                            <ErrorLabel content={errorOnEndDate} />
                         </div>
-                        <div className="row">
-                            {/* Ngày cấp */}
-                            <div className={`form-group col-sm-6 col-xs-12 ${errorOnStartDate && "has-error"}`}>
-                                <label>{translate('human_resource.profile.date_issued')}<span className="text-red">*</span></label>
-                                <DatePicker
-                                    id={`edit-start-date-${id}`}
-                                    deleteValue={false}
-                                    value={startDate}
-                                    onChange={this.handleStartDateChange}
-                                />
-                                <ErrorLabel content={errorOnStartDate} />
-                            </div>
-                            {/* Ngày hết hạn */}
-                            <div className={`form-group col-sm-6 col-xs-12 ${errorOnEndDate && "has-error"}`}>
-                                <label>{translate('human_resource.profile.end_date_certificate')}</label>
-                                <DatePicker
-                                    id={`edit-end-date-${id}`}
-                                    deleteValue={true}
-                                    value={endDate}
-                                    onChange={this.handleEndDateChange}
-                                />
-                                <ErrorLabel content={errorOnEndDate} />
-                            </div>
-                        </div>
-                        {/* File đính kèm */}
-                        <div className="form-group">
-                            <label htmlFor="file">{translate('human_resource.profile.attached_files')}</label>
-                            <UploadFile files={files} onChange={this.handleChangeFile} />
-                        </div>
-                    </form>
-                </DialogModal>
-            </React.Fragment>
-        );
-    }
+                    </div>
+                    {/* File đính kèm */}
+                    <div className="form-group">
+                        <label htmlFor="file">{translate('human_resource.profile.attached_files')}</label>
+                        <UploadFile files={files} onChange={handleChangeFile} />
+                    </div>
+                </form>
+            </DialogModal>
+        </React.Fragment>
+    );
 };
 
 const editModal = connect(null, null)(withTranslate(CertificateEditModal));

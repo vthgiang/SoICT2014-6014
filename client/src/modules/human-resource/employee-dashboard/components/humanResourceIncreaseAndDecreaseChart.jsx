@@ -7,39 +7,14 @@ import { SelectMulti, DatePicker } from '../../../../common-components';
 import { showListInSwal } from '../../../../helpers/showListInSwal';
 
 import { EmployeeManagerActions } from '../../profile/employee-management/redux/actions';
-
+import { formatDate } from '../../../../helpers/formatDate';
 import c3 from 'c3';
 import 'c3/c3.css';
 
 const HumanResourceIncreaseAndDecreaseChart = (props) => {
-    
-    /**
-     * Function format dữ liệu Date thành string
-     * @param {*} date : Ngày muốn format
-     * @param {*} monthYear : true trả về tháng năm, false trả về ngày tháng năm
-     */
-    const formatDate = (date, monthYear = false) => {
-        if (date) {
-            let d = new Date(date),
-                month = '' + (d.getMonth() + 1),
-                day = '' + d.getDate(),
-                year = d.getFullYear();
-
-            if (month.length < 2)
-                month = '0' + month;
-            if (day.length < 2)
-                day = '0' + day;
-
-            if (monthYear === true) {
-                return [month, year].join('-');
-            } else return [day, month, year].join('-');
-        }
-        return date;
-    }
-    
     let date = new Date()
-    let _startDate = formatDate(date.setMonth(new Date().getMonth() - 5), true);
-    
+    let _startDate = formatDate(date.setMonth(new Date().getMonth() - 3), true);
+
     const [state, setState] = useState({
         lineChart: false,
         startDate: _startDate,
@@ -123,9 +98,9 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
         return true;
     }
 
-    if (!state.arrMonth 
-        || props.employeesManager.arrMonth?.length !== state.arrMonth?.length 
-        || !isEqual(props.employeesManager.listEmployeesHaveStartingDateOfNumberMonth, state.listEmployeesHaveStartingDateOfNumberMonth) 
+    if (!state.arrMonth
+        || props.employeesManager.arrMonth?.length !== state.arrMonth?.length
+        || !isEqual(props.employeesManager.listEmployeesHaveStartingDateOfNumberMonth, state.listEmployeesHaveStartingDateOfNumberMonth)
         || !isEqual(props.employeesManager.listEmployeesHaveLeavingDateOfNumberMonth, state.listEmployeesHaveLeavingDateOfNumberMonth)
     ) {
         setState({
@@ -228,13 +203,13 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
                 endDateShow: endDate,
                 organizationalUnitsSearch: organizationalUnits,
             });
-    
+
             let arrStart = startDate.split('-');
             let startDateNew = [arrStart[1], arrStart[0]].join('-');
-    
+
             let arrEnd = endDate.split('-');
             let endDateNew = [arrEnd[1], arrEnd[0]].join('-');
-    
+
             props.getAllEmployee({ organizationalUnits: organizationalUnits, startDate: startDateNew, endDate: endDateNew });
         }
     }
@@ -296,7 +271,7 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
                             </span>
                     }
                     {` ${startDateShow}`}<i className="fa fa-fw fa-caret-right"></i>{`${endDateShow}`}
-                </div> 
+                </div>
             </div>
             <div className="box-body" >
                 <div className="qlcv" style={{ marginBottom: 15 }} >

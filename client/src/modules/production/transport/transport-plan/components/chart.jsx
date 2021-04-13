@@ -10,7 +10,7 @@ function Chart(props){
 		animationEnabled: true,
 		theme: "light2",
 		title:{
-			text: "Khối lượng vận chuyển CBM"
+			text: "Khối lượng vận chuyển"
 		},
 		axisX: {
 			valueFormatString: "DDD"

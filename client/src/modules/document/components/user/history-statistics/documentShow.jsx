@@ -493,9 +493,22 @@ function DocumentShow(props) {
                         <button type="button" className="btn btn-success" onClick={() => searchWithOption()}>{
                             translate('kpi.organizational_unit.management.over_view.search')}</button>
                     </div>
-
                 </div>
-                <table className="table table-hover table-striped table-bordered" id={tableId}>
+
+                <DataTableSetting
+                    columnArr={[
+                        translate('document.name'),
+                        translate('document.description'),
+                        translate('document.issuing_date'),
+                        translate('document.effective_date'),
+                        translate('document.expired_date'),
+                        translate('document.upload_file'),
+                        translate('document.upload_file_scan'),
+                    ]}
+                    setLimit={setLimit}
+                    tableId={tableId}
+                />
+                <table className="table table-hover table-striped table-bordered" id={tableId} style={{ marginBottom: "0px" }}>
                     <thead>
                         <tr>
                             <th>{translate('document.name')}</th>
@@ -507,25 +520,12 @@ function DocumentShow(props) {
                             <th>{translate('document.upload_file_scan')}</th>
                             <th style={{ width: '120px', textAlign: 'center' }}>
                                 {translate('general.action')}
-                                <DataTableSetting
-                                    columnArr={[
-                                        translate('document.name'),
-                                        translate('document.description'),
-                                        translate('document.issuing_date'),
-                                        translate('document.effective_date'),
-                                        translate('document.expired_date'),
-                                        translate('document.upload_file'),
-                                        translate('document.upload_file_scan'),
-                                    ]}
-                                    setLimit={setLimit}
-                                    tableId={tableId}
-                                />
                             </th>
                         </tr>
                     </thead>
                     <tbody>
                         {
-                            paginate && paginate.length > 0 ?
+                            paginate && paginate.length > 0 &&
                                 paginate.map(doc =>
                                     <tr key={doc._id}>
                                         <td>{doc.name}</td>
@@ -546,13 +546,15 @@ function DocumentShow(props) {
                                         <td style={{ width: '10px' }}>
                                             <a className="text-green" title={translate('document.edit')} onClick={() => toggleDocumentInformation(doc)}><i className="material-icons">visibility</i></a>
                                         </td>
-                                    </tr>) :
-                                isLoading ?
-                                    <tr><td colSpan={10}>{translate('general.loading')}</td></tr> : <tr><td colSpan={10}>{translate('general.no_data')}</td></tr>
+                                    </tr>) 
                         }
-
                     </tbody>
                 </table>
+                {
+                    isLoading ?
+                        <div className="table-info-panel">{translate('confirm.loading')}</div> :
+                        paginate?.length === 0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                }
                 <PaginateBar pageTotal={dataShow.totalPages} currentPage={dataShow.page} func={setPage} />
             </React.Fragment>
         </div>

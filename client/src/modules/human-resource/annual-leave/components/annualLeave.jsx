@@ -93,7 +93,7 @@ function AnnualLeave(props) {
     // Bắt sự kiện tìm kiếm
     const handleSunmitSearch = () => {
         const { year } = state;
-        props.getNumberAnnulLeave({ numberAnnulLeave: true, year: year });
+        props.getNumberAnnaulLeave({ numberAnnulLeave: true, year: year });
     }
 
     return (

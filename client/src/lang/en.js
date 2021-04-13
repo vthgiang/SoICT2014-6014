@@ -250,8 +250,9 @@ export default {
             // Quản lý vận chuyển
             manage_transport: "Manage transport",
             manage_transport_requirements: "Manage transport requirements",
+            manage_transport_plan: "Manage transport plan",
             manage_transport_schedule: "Manage transport schedule",
-            manage_transport_vehical: "Manage transport vehical",
+            manage_transport_vehicle: "Manage transport vehical",
             manage_transport_human: "Manage transport human",
             manage_transport_route: "Manage transport route",
 
@@ -3625,7 +3626,8 @@ export default {
                     /**
                      * Approve
                      */
-                    approve_KPI_employee: "Approve KPI employee",
+                    approve_KPI_employee: "Approve KPI",
+                    show_logs: "Employee KPI set logs",
                     month: "",
                     end_compare: "End comparing",
                     compare: "Compare",

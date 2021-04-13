@@ -5,7 +5,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { DeleteNotification, DatePicker, PaginateBar, DataTableSetting, SelectMulti, ExportExcel } from '../../../../../common-components';
 
 import { UseRequestEditForm } from './UseRequestManagerEditForm';
-
+import { AssetTypeActions } from "../../asset-type/redux/actions";
 import { RecommendDistributeActions } from '../../../user/use-request/redux/actions';
 import { UserActions } from "../../../../super-admin/user/redux/actions";
 import { AssetManagerActions } from "../../asset-information/redux/actions";
@@ -35,7 +35,8 @@ function UseRequestManager(props) {
         let { managedBy } = state;
         props.searchRecommendDistributes(state);
         props.getUser();
-
+        props.searchAssetTypes({ typeNumber: "", typeName: "", limit: state.limit });
+        props.getListBuildingAsTree();
         if (!props.isActive || props.isActive === "tab-pane active") {
             props.getAllAsset({
                 code: "",
@@ -551,11 +552,12 @@ function mapState(state) {
 };
 
 const actionCreators = {
+    searchAssetTypes: AssetTypeActions.searchAssetTypes,
     getUser: UserActions.get,
     getAllAsset: AssetManagerActions.getAllAsset,
     searchRecommendDistributes: RecommendDistributeActions.searchRecommendDistributes,
     deleteRecommendDistribute: RecommendDistributeActions.deleteRecommendDistribute,
-
+    getListBuildingAsTree: AssetManagerActions.getListBuildingAsTree,
 };
 
 const connectedUseRequestManager = connect(mapState, actionCreators)(withTranslate(UseRequestManager));

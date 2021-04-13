@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const TransporterSchema = new Schema({
-    transporter: {
+const CarrierSchema = new Schema({ // Doccument nhân viên vận chuyển
+    carrier: { // Nhân viên vận chuyển
         type: Schema.Types.ObjectId,
         ref: 'User',
         required: true
@@ -27,7 +27,7 @@ const TransporterSchema = new Schema({
     transportRequirements: [{ // Yeu cau van chuyen phu trach
         transportRequirement: {
             type: Schema.Types.ObjectId,
-            ref: 'TransportRequirements',
+            ref: 'TransportRequirement',
         },
         pos: {  // Vai tro: tai xe, di cung...
             type: Number,
@@ -39,7 +39,7 @@ const TransporterSchema = new Schema({
 });
 
 module.exports = (db) => {
-    if (!db.models.Transporter)
-        return db.model('Transporter', TransporterSchema);
-    return db.models.Transporter;
+    if (!db.models.Carrier)
+        return db.model('Carrier', CarrierSchema);
+    return db.models.Carrier;
 } 

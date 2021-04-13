@@ -626,7 +626,7 @@ exports.getDocumentCategories = async (portal, query, company) => {
         });
     } else {
         const option =
-            query.key !== undefined && query.value !== undefined
+            query.key && query.value
                 ? Object.assign(
                     { company },
                     { [`${query.key}`]: new RegExp(query.value, "i") }

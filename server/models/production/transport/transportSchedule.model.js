@@ -2,49 +2,39 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const TransportScheduleSchema = new Schema({
-    transportRequirements: [{
-        transportRequirement: {
+    transportPlan: {
+        type: Schema.Types.ObjectId,
+        ref: 'TransportPlan',
+        required: true,
+    },
+    route: [{
+        ordinal: { // thu tu
+            type: Number,
+            required: true,
+        },
+        transportRequirement: { // yeu cau van chuyen
             type: Schema.Types.ObjectId,
             ref: 'TransportRequirements',
-            required: true
+            required: true,
         },
-        fromAddress: {
+        address: {
             type: String,
             required: true,
         },
-        toAddress: {
-            type: String,
-            required: true,
-        },
-        timeTransport: {
-            type: String,
-            required: true,
-        },
-        totalVolumn: { // Tong khoi luong van chuyen cua yeu cau
-            type: Number,
-            required: true
-        }
     }],
-    transportVehicles: [{ // phuong tien van chuyen
+    transportVehicles: [{ // Xep nguoi, hang hoa
         transportVehicle: {
             type: Schema.Types.ObjectId,
-            ref: 'TransportVehicles',
-            required: true
-        },
-        maxVolumne: { // khoi luong van chuyen cua xe
-            type: Number,
+            ref: 'TransportVehicle',
             required: true,
         },
-        transporters: [{ // nguoi su dung xe nay
-            transporter: {
-                type: Schema.Types.ObjectId,
-                ref: 'User',
-                required: true
-            }
-        }]
-    }],
-    startTime: date,
-    endTime: date,
+        transportRequirements: [{
+            type: Schema.Types.ObjectId,
+            ref: 'TransportRequirements',
+            required: true,
+        }],        
+    }]
+   
 });
 
 module.exports = (db) => {

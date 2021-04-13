@@ -26,7 +26,8 @@ function TransportGoods(props) {
             _id: "0",
             quantity: 1,
             currentSelectBoxGoodText: "Chọn hàng hóa",
-            volumn: 1,
+            volume: 1,
+            weight: 1
         })
     }, [])
 
@@ -70,7 +71,6 @@ function TransportGoods(props) {
             })
         }
     }
-
     const handleQuantityChange = (e) => {
         let {value} = e.target;
         validateQuantityChange(value);
@@ -87,12 +87,13 @@ function TransportGoods(props) {
             quantity: v,
         })
     }
-    const handleVolumnChange = (e) => {
+
+    const handleWeightChange = (e) => {
         let {value} = e.target;
-        validateVolumnChange(value);
+        validateWeightChange(value);
     }
 
-    const validateVolumnChange = (value) => {
+    const validateWeightChange = (value) => {
         let v = 1;
         value = parseInt(value);
         if (value > 0) {
@@ -100,9 +101,29 @@ function TransportGoods(props) {
         }
         setCurrentGood({
             ...currentGood,
-            volumn: v,
+            weight: v,
         })
     }
+
+    const handleVolumeChange = (e) => {
+        let {value} = e.target;
+        validateVolumeChange(value);
+    }
+
+    const validateVolumeChange = (value) => {
+        let v = 1;
+        value = parseInt(value);
+        if (value > 0) {
+            v = parseInt(value);
+        }
+        setCurrentGood({
+            ...currentGood,
+            volume: v,
+        })
+    }
+    /**
+     * Xử lý khi ấn nút thêm hàng hóa (set state listGoodsChosen để callback) 
+     */
     const handleAddGood = (e) => {
         e.preventDefault();
         let good = {
@@ -110,7 +131,8 @@ function TransportGoods(props) {
             code: currentGood.code ? currentGood.code : "",
             name: currentGood.name ? currentGood.name : "",
             quantity: currentGood.quantity,
-            volumn: currentGood.volumn,
+            volume: currentGood.volume,
+            payload: currentGood.weight,
         }
         setListGoodsChosen(listGoodsChosen => [...listGoodsChosen, good]);
     }
@@ -231,14 +253,6 @@ function TransportGoods(props) {
                                     <input type="number" value={good.inventory} disabled={true} className="form-control" />
                                 </div>
                             </div> */}
-                        </div>
-                        <div className="row">
-                            {/* <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                <div className={`form-group`}>
-                                    <label>{translate("manufacturing.plan.base_unit")}</label>
-                                    <input type="text" value={good.baseUnit} disabled={true} className="form-control" />
-                                </div>
-                            </div> */}
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group`}>
                                     <label>{"Số lượng"}</label>
@@ -249,12 +263,30 @@ function TransportGoods(props) {
                                     {/* <ErrorLabel content={errorQuantity} /> */}
                                 </div>
                             </div>
+                        </div>
+                        <div className="row">
+                            {/* <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                <div className={`form-group`}>
+                                    <label>{translate("manufacturing.plan.base_unit")}</label>
+                                    <input type="text" value={good.baseUnit} disabled={true} className="form-control" />
+                                </div>
+                            </div> */}
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group`}>
-                                    <label>{"Khối lượng vận chuyển"}</label>
+                                    <label>{"Khối lượng"}</label>
                                     <input type="number" 
-                                    value={currentGood.volumn} 
-                                    onChange={handleVolumnChange} 
+                                    value={currentGood.weight} 
+                                    onChange={handleWeightChange} 
+                                    className="form-control" />
+                                    {/* <ErrorLabel content={errorQuantity} /> */}
+                                </div>
+                            </div>
+                            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                <div className={`form-group`}>
+                                    <label>{"Thể tích CBM"}</label>
+                                    <input type="number" 
+                                    value={currentGood.volume} 
+                                    onChange={handleVolumeChange} 
                                     className="form-control" />
                                     {/* <ErrorLabel content={errorQuantity} /> */}
                                 </div>
@@ -318,7 +350,7 @@ function TransportGoods(props) {
                                                 <td>{x.code}</td>
                                                 <td>{x.name}</td>
                                                 <td>{x.quantity}</td>
-                                                <td>{x.volumn}</td>
+                                                <td>{x.volume}</td>
                                                 {/* <td>
                                                     <a
                                                         href="#abc"

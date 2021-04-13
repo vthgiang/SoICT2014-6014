@@ -35,12 +35,14 @@ function OrganizationalUnitKpiCreate(props) {
     const [state, setState] = useState({
         defaultDate: [currentMonth, year].join('-'),
 
+        organizationalUnit: null,
         organizationalUnitId: null,
         month: [year, currentMonth].join('-'),
 
         infoSearch: {
+            organizationalUnit: null,
             organizationalUnitId: null,
-            month: [year, currentMonth].join('-'),
+            month: [year, currentMonth].join('-')
         },
 
         adding: false,
@@ -66,7 +68,7 @@ function OrganizationalUnitKpiCreate(props) {
                 roleId: localStorage.getItem('currentRole')
             })
         }
-    },[])
+    }, [])
 
     // Trường hợp trưởng đơn vị truy cập
     useEffect(()=>{
@@ -92,13 +94,14 @@ function OrganizationalUnitKpiCreate(props) {
             setState((state) => {
                 return {
                     ...state,
+                    organizationalUnit: selectBoxAllUnit?.[0],
                     organizationalUnitId: selectBoxAllUnit?.[0]?.id,
                     selectBoxUnit: selectBoxAllUnit,
                     infoSearch: {
                         ...state.infoSearch,
-                        organizationalUnitId: selectBoxAllUnit?.[0]?.id
+                        organizationalUnitId: selectBoxAllUnit?.[0]?.id,
+                        organizationalUnit: selectBoxAllUnit?.[0]
                     },
-                    organizationalUnit: selectBoxAllUnit?.[0]
                 }
             });
 
@@ -132,13 +135,14 @@ function OrganizationalUnitKpiCreate(props) {
         setState((state) => {
             return {
                 ...state,
+                organizationalUnit: childrenOrganizationalUnit?.[0],
                 organizationalUnitId: childrenOrganizationalUnit?.[0]?.id,
                 selectBoxUnit: childrenOrganizationalUnit,
                 infoSearch: {
                     ...state.infoSearch,
-                    organizationalUnitId: childrenOrganizationalUnit?.[0]?.id
-                },
-                organizationalUnit: childrenOrganizationalUnit?.[0]
+                    organizationalUnitId: childrenOrganizationalUnit?.[0]?.id,
+                    organizationalUnit: childrenOrganizationalUnit?.[0]
+                }
             }
         });
     }
@@ -300,6 +304,7 @@ function OrganizationalUnitKpiCreate(props) {
         })
 
         if (infoSearch?.organizationalUnitId && infoSearch?.month && infoSearch?.month !== '') {
+            console.log(infoSearch?.organizationalUnitId ,infoSearch?.month, infoSearch?.organizationalUnit)
             props.getCurrentKPIUnit(currentRole, infoSearch?.organizationalUnitId, infoSearch?.month);
             props.getKPIParent({
                 roleId: currentRole,

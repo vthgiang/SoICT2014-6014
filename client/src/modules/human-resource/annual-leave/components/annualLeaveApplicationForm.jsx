@@ -4,16 +4,16 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { DialogModal, ButtonModal, ErrorLabel, DatePicker, TimePicker, SelectBox } from '../../../../common-components';
 
-import { AnnualLeaveFormValidator } from './annualLeaveFormValidator';
-
 import { AnnualLeaveActions } from '../redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
+import { formatDate } from '../../../../helpers/formatDate';
+import ValidationHelper from '../../../../helpers/validationHelper';
 
 function AnnualLeaveApplicationForm(props) {
     const [state, setState] = useState({
         organizationalUnit: "",
-        startDate: formatDate(Date.now()),
-        endDate: formatDate(Date.now()),
+        startDate: formatDate(new Date()),
+        endDate: formatDate(new Date()),
         reason: "",
         type: false,
         startTime: '',
@@ -33,48 +33,19 @@ function AnnualLeaveApplicationForm(props) {
     }, []);
 
     /**
-     * Function format ngày hiện tại thành dạng dd-mm-yyyy
-     * @param {*} date : Ngày muốn format
-     */
-    const formatDate = (date) => {
-        if (date) {
-            let d = new Date(date),
-                month = '' + (d.getMonth() + 1),
-                day = '' + d.getDate(),
-                year = d.getFullYear();
-
-            if (month.length < 2)
-                month = '0' + month;
-            if (day.length < 2)
-                day = '0' + day;
-
-            return [day, month, year].join('-');
-        }
-        return date;
-
-    }
-
-    const validateOrganizationalUnit = (value, willUpdateState = true) => {
-        const { translate } = props;
-        let msg = AnnualLeaveFormValidator.validateReason(value, translate)
-        if (willUpdateState) {
-            setState(state => {
-                return {
-                    ...state,
-                    errorOnOrganizationalUnit: msg,
-                    organizationalUnit: value,
-                }
-            });
-        }
-        return msg === undefined;
-    }
-
-    /**
      * Bắt sự kiện thay đổi người nhận
      * @param {*} value : Giá trị người nhận
      */
     const handleOrganizationalUnitChange = (value) => {
-        validateOrganizationalUnit(value[0], true);
+        value = value[0];
+        const { translate } = props;
+        const { message } = ValidationHelper.validateEmpty(translate, value);
+
+        setState({
+            ...state,
+            organizationalUnit: value,
+            errorOnOrganizationalUnit: message,
+        })
     }
 
     /**
@@ -172,51 +143,37 @@ function AnnualLeaveApplicationForm(props) {
         });
     };
 
-    const validateTotalHours = (value, willUpdateState = true) => {
-        const { translate } = props;
-        let msg = AnnualLeaveFormValidator.validateTotalHour(value, translate)
-        if (willUpdateState) {
-            setState(state => {
-                return {
-                    ...state,
-                    errorOnTotalHours: msg,
-                    totalHours: value,
-                }
-            });
-        };
-        return msg === undefined;
-    }
-
     /** Bắt sự kiện thay đổi tổng số giờ nghỉ phép */
     const handleTotalHoursChange = (e) => {
         let { value } = e.target;
-        validateTotalHours(value, true);
-    }
-
-    const validateReason = (value, willUpdateState = true) => {
         const { translate } = props;
-        let msg = AnnualLeaveFormValidator.validateReason(value, translate);
-        setState(state => {
-            return {
-                ...state,
-                errorOnReason: msg,
-                reason: value,
-            }
-        });
-        return msg === undefined;
+        const { message } = ValidationHelper.validateEmpty(translate, value);
+        setState({
+            ...state,
+            errorOnTotalHours: message,
+            totalHours: value,
+        })
     }
 
     /** Bắt sự kiện thay đổi lý do xin nghỉ phép */
     const handleReasonChange = (e) => {
         let { value } = e.target;
-        validateReason(value, true);
+        const { translate } = props;
+        const { message } = ValidationHelper.validateEmpty(translate, value);
+        setState({
+            ...state,
+            errorOnReason: message,
+            reason: value,
+        })
     }
 
     /** Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form */
     const isFormValidated = () => {
         const { organizationalUnit, reason, startDate, endDate, type, totalHours } = state;
-        let result = validateOrganizationalUnit(organizationalUnit, false) &&
-            validateReason(reason, false) && (type ? validateTotalHours(totalHours, false) : true);
+        const { translate } = props;
+        let result = ValidationHelper.validateEmpty(translate, organizationalUnit).status &&
+            ValidationHelper.validateEmpty(translate, reason).status && (type ? ValidationHelper.validateEmpty(translate, totalHours).status : true);
+
         let partStart = startDate.split('-');
         let startDateNew = [partStart[2], partStart[1], partStart[0]].join('-');
         let partEnd = endDate.split('-');

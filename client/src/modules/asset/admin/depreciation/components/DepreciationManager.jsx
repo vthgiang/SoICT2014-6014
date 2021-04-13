@@ -36,6 +36,7 @@ function DepreciationManager(props) {
     useEffect(() => {
         props.searchAssetTypes({ typeNumber: "", typeName: "", limit: 0 });
         props.getAllAsset(state);
+        props.getListBuildingAsTree();
     },[])
 
     // Bắt sự kiện click xem thông tin tài sản
@@ -675,6 +676,7 @@ function mapState(state) {
 const actionCreators = {
     searchAssetTypes: AssetTypeActions.searchAssetTypes,
     getAllAsset: AssetManagerActions.getAllAsset,
+    getListBuildingAsTree: AssetManagerActions.getListBuildingAsTree,
     getUser: UserActions.get,
 };
 

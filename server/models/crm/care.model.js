@@ -19,12 +19,12 @@ const CareSchema = new Schema({
         ref: 'Customer',
         required: true,
     },
-    caregiver: [{ //nhân viên chăm sóc khách hàng
+    customerCareStaffs : [{ //nhân viên chăm sóc khách hàng
         type: Schema.Types.ObjectId,
         ref: 'User',
         required: true,
     }],
-    careType: [{
+    customerCareTypes: [{
         type: Schema.Types.ObjectId,//loại hình cskh
         ref: 'CareType',
         required: true,
@@ -32,6 +32,9 @@ const CareSchema = new Schema({
     status: { //trạng thái công việc 1: chưa thực hiện, 2: đang thực hiện, 3: Hoàn thành, 4: quá hạn, 5: hoàn thành quá hạn
         type: Number,
         default: 1,
+    },
+    priority:{// độ ưu tiên
+        type: Number,
     },
     startDate: {// ngày bắt đầu
         type: Date,
