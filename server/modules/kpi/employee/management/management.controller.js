@@ -159,17 +159,17 @@ exports.getEmployeeKpiSetLogs = async (req, res) => {
     try {
         let logs = await overviewService.getEmployeeKpiSetLogs(req.portal, req.params.id);
         
-        await Logger.info(req.user.email, ` get logs employee kpi `, req.portal)
+        await Logger.info(req.user.email, ` get logs employee kpi set `, req.portal)
         res.status(200).json({
             success: true,
-            messages: ['get_logs_employee_kpi_success'],
+            messages: ['get_logs_employee_kpi_set_success'],
             content: logs
         })
     } catch (error) {
-        await Logger.error(req.user.email, ` get logs employee kpi  `, req.portal)
+        await Logger.error(req.user.email, ` get logs employee kpi set `, req.portal)
         res.status(400).json({
             success: true,
-            messages: ['get_logs_employee_kpi_failure'],
+            messages: ['get_logs_employee_kpi_set_failure'],
             content: error
         })
     }
