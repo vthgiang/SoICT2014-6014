@@ -198,7 +198,7 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                                         }
 
                                         // lấy thông tin các role nhân viên có.
-                                        infoManager.forEach(uId => {
+                                        infoManager?.length > 0 && infoManager.forEach(uId => {
                                             let roleName = [];
                                             getRolePosition.forEach(rl => {
                                                 if (rl.users.some(check => check?.userId?._id === uId._id)) {
@@ -234,7 +234,7 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                                                     </thead>
                                                     <tbody>
                                                         {
-                                                            infoManager.length !== 0 &&
+                                                            infoManager.length > 0 &&
                                                             infoManager.map((user, index) => (
                                                                 <tr key={index}>
                                                                     <td style={{ textAlign: "left" }}>{user.name}</td>
@@ -343,7 +343,7 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                                     }
 
                                     // lấy thông tin các role nhân viên có.
-                                    infoEmployee.forEach(uId => {
+                                    infoEmployee?.length > 0 && infoEmployee.forEach(uId => {
                                         let roleName = [];
                                         getRolePosition.forEach(rl => {
                                             if (rl.users.some(check => check?.userId?._id === uId._id)) {
@@ -379,7 +379,7 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                                                 </thead>
                                                 <tbody>
                                                     {
-                                                        infoEmployee.length !== 0 &&
+                                                        infoEmployee.length > 0 &&
                                                         infoEmployee.map((user, index) => (
                                                             <tr key={index}>
                                                                 <td style={{ textAlign: "left" }}>{user.name}</td>
