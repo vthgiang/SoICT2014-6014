@@ -103,7 +103,11 @@ function CertificateTab(props) {
                 }]
             }
         })
-        props.handleAddDegree(state.degrees, data)
+        props.handleAddDegree(
+            [...degrees, {
+                ...data
+            }]
+            , data)
 
     }
 
@@ -137,7 +141,11 @@ function CertificateTab(props) {
                 }]
             }
         })
-        props.handleAddCertificate(state.certificates, data)
+        props.handleAddCertificate(
+            [...certificates, {
+                ...data
+            }]
+            , data)
     }
 
     /**
@@ -170,7 +178,7 @@ function CertificateTab(props) {
                 degrees: [...degrees]
             }
         })
-        props.handleDeleteDegree(degrees, data)
+        props.handleDeleteDegree([...degrees], data)
     }
 
     /**
@@ -187,7 +195,7 @@ function CertificateTab(props) {
                 certificates: [...certificates]
             }
         })
-        props.handleDeleteCertificate(certificates, data)
+        props.handleDeleteCertificate([...certificates], data)
     }
 
 

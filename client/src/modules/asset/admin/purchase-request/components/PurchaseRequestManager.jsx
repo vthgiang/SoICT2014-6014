@@ -11,7 +11,7 @@ import { PurchaseRequestDetailForm } from "../../../user/purchase-request/compon
 import { PurchaseRequestEditForm } from './PurchaseRequestManagerEditForm';
 import { getFormatDateFromTime } from '../../../../../helpers/stringMethod';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
-import { formatDate } from '../../../../../helpers/assetHelper.js';
+import { formatDate, formatDate2 } from '../../../../../helpers/assetHelper.js';
 function PurchaseRequestManager(props) {
 
     const tableId_constructor = "table-purchase-request-manager";
@@ -365,7 +365,7 @@ function PurchaseRequestManager(props) {
                                                 content={translate('asset.manage_recommend_procure.delete_recommend_card')}
                                                 data={{
                                                     id: x._id,
-                                                    // info: x.recommendNumber + " - " + x.dateCreate.replace(/-/gi, "/")
+                                                    info: x.recommendNumber + " - " + formatDate2(x.dateCreate)
                                                 }}
                                                 func={props.deleteRecommendProcure}
                                             />

@@ -2,10 +2,11 @@ exports.getDataOrganizationalUnitKpiSetLog = (data) => {
     const { creator, type, organizationalUnit, month, newData } = data
     let monthIso = new Date(month);
 
+    console.log(newData)
     let log = {
         creator: creator,
         title: getTitleLogs(type) + " " + organizationalUnit?.name + " tháng " + (monthIso?.getMonth() + 1) + "-" + monthIso?.getFullYear(),
-        description: getDescriptionLogs(type, newData)
+        description: getDescriptionLogs(type, newData, true)
     }
 
     return log
@@ -18,7 +19,7 @@ exports.getDataEmployeeKpiSetLog = (data) => {
     let log = {
         creator: creator,
         title: getTitleLogs(type) + " " + employee?.name + " tháng " + (monthIso?.getMonth() + 1) + "-" + monthIso?.getFullYear() + " của " + organizationalUnit?.name,
-        description: getDescriptionLogs(type, newData)
+        description: getDescriptionLogs(type, newData, false)
     }
 
     return log
@@ -47,7 +48,7 @@ const getTitleLogs = (type) => {
     }
 }
 
-const getDescriptionLogs = (type, newData) => {
+const getDescriptionLogs = (type, newData, isUnit) => {
     switch (type) {
         case "create":
             let totalWeight = 0
@@ -93,20 +94,29 @@ const getDescriptionLogs = (type, newData) => {
             return "Đánh gía KPI"
         case "edit_status":
             return `
-                <div>Trạng thái mới: ${formatStatus(newData?.status)}</div>
+                <div>Trạng thái mới: ${isUnit ? formatStatusOrganizationalUnitKpiSet(newData?.status) : formatStatusEmployeeKpiSet(newData?.status)}</div>
             `
         default:
             return null
     }
 }
 
-const formatStatus = (status) => {
+const formatStatusEmployeeKpiSet = (status) => {
     switch (status) {
         case 0:
             return "Đang thiết lập"
         case 1: 
             return "Chờ phê duyệt"
         case 2:
+            return "Đã kích hoạt"
+    }
+}
+
+const formatStatusOrganizationalUnitKpiSet = (status) => {
+    switch (status) {
+        case 0:
+            return "Đang thiết lập"
+        case 1:
             return "Đã kích hoạt"
     }
 }

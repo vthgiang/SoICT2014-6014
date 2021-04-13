@@ -140,7 +140,7 @@ class FileTab extends Component {
                                                 <ul style={{ listStyle: 'none' }}>
                                                     {x.files.map((child, index) => {
                                                         return (
-                                                            <React.Fragment>
+                                                            <React.Fragment key={index}>
                                                                 <li>
                                                                     <a style={{ cursor: "pointer" }} onClick={(e) => this.requestDownloadFile(e, child.url, child.fileName)} >{child.fileName}</a>
                                                                 </li>

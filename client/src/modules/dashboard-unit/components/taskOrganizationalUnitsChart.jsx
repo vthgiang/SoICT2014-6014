@@ -171,7 +171,6 @@ class TaskOrganizationalUnitsChart extends Component {
                 x: 'x',
                 columns: [],
                 hide: true,
-                type: 'spline',
             },
             bar: {
                 width: {

@@ -430,14 +430,17 @@ function MaintainanceManagement(props) {
                                         <td style={{ textAlign: "center" }}>
                                             <a onClick={() => handleEdit(x, x.asset)} className="edit text-yellow" style={{ width: '5px', cursor: 'pointer' }} title={translate('asset.asset_info.edit_maintenance_card')}><i
                                                 className="material-icons">edit</i></a>
-                                            <DeleteNotification
-                                                content={translate('asset.asset_info.delete_maintenance_card')}
-                                                data={{
-                                                    id: x._id,
-                                                    info: x.maintainanceCode ? x.maintainanceCode : '' + " - "
-                                                }}
-                                                func={() => deleteMaintainance(x.asset._id, x._id)}
-                                            />
+                                            {
+                                                (x.status !== "3") &&
+                                                <DeleteNotification
+                                                    content={translate('asset.asset_info.delete_maintenance_card')}
+                                                    data={{
+                                                        id: x._id,
+                                                        info: x.maintainanceCode ? x.maintainanceCode : '' + " - "
+                                                    }}
+                                                    func={() => deleteMaintainance(x.asset._id, x._id)}
+                                                />
+                                            }    
                                         </td>
                                     </tr>
                                 )) : null
