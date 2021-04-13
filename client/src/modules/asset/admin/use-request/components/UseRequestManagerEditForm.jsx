@@ -474,7 +474,6 @@ function UseRequestManagerEditForm(props) {
                                 {asset && asset.typeRegisterForUse == 2 &&
                                     < TimePicker
                                         id={`edit_start_time_use${_id}`}
-                                        ref={`edit_start_time_use${_id}`}
                                         value={startTime}
                                         onChange={handleStartTimeChange}
                                     />
