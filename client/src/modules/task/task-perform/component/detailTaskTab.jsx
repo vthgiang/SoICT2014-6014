@@ -641,9 +641,9 @@ class DetailTaskTab extends Component {
         if (usersInUnitsOfCompany && usersInUnitsOfCompany.length !== 0) {
             unitThatCurrentUserIsManager = usersInUnitsOfCompany.filter(unit => {
                 let check = false;
-                let unitCollaborated = task.collaboratedWithOrganizationalUnits.map(item => item.organizationalUnit && item.organizationalUnit._id);
+                let unitCollaborated = task?.collaboratedWithOrganizationalUnits?.length > 0 && task.collaboratedWithOrganizationalUnits.map(item => item.organizationalUnit && item.organizationalUnit?._id);
 
-                if (unitCollaborated.includes(unit.id) && unit.managers) {
+                if (unitCollaborated?.length > 0 && unitCollaborated.includes(unit.id) && unit.managers) {
                     let employee = Object.values(unit.managers);
                     if (employee && employee.length !== 0) {
                         employee.map(employee => {
