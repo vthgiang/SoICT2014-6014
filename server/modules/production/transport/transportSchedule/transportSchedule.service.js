@@ -48,73 +48,24 @@ exports.getTransportRouteByPlanId = async (portal, id) => {
 }
 
 /**
- * 
+ * Edit transportschedule qua plan id
  * @param {*} portal 
- * @param {*} vehicleId id phương tiện (assetid)
- * @param {*} data {asset: id tương ứng tài sản cố định, code: mã phương tiện,
- *                  name: tên phương tiện, payload, volume, transportPlan: id plan } 
+ * @param {*} id 
+ * @param {*} data 
  * @returns 
  */
-exports.editTransportVehicleToSetPlan = async (portal, vehicleId, data) => {
-    let newTransportVehicle;
-    let oldTransportVehicle = await TransportVehicle(connect(DB_CONNECTION, portal)).findOne({asset: vehicleId});
-    
-    if (!oldTransportVehicle) {
-        newTransportVehicle = await TransportVehicle(connect(DB_CONNECTION, portal)).create({
-            asset: data.id,
-            code: data.code,
-            name: data.name,
-            payload: data.payload,
-            volume: data.volume,
-            transportPlan: data.transportPlan,
-        });
-    }
-    else {
-        const transportVehicleId = oldTransportVehicle._id; 
-        await TransportVehicle(connect(DB_CONNECTION, portal)).update({ _id: transportVehicleId }, { $set: data });
-        newTransportVehicle = await TransportVehicle(connect(DB_CONNECTION, portal)).findById({ _id: transportVehicleId });
-    }
-    return newTransportVehicle;
-}
-
-exports.getAllTransportVehicles = async (portal, data) => {
-    let keySearch = {};
-    // if (data?.exampleName?.length > 0) {
-    //     keySearch = {
-    //         exampleName: {
-    //             $regex: data.exampleName,
-    //             $options: "i"
-    //         }
-    //     }
-    // }
-
-    let page, limit;
-    page = data?.page ? Number(data.page) : 1;
-    limit = data?.limit ? Number(data.limit) : 200;
-
-    let totalList = await TransportVehicle(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
-    let vehicles = await TransportVehicle(connect(DB_CONNECTION, portal)).find(keySearch)
-        .skip((page - 1) * limit)
-        .limit(limit);
-    return { 
-        data: vehicles, 
-        totalList 
-    }
-}
-
-
-// Chỉnh sửa một Ví dụ
-exports.editTransportRouteByPlanId = async (portal, id, data) => {
-    let oldTransportRoute = await TransportSchedule(connect(DB_CONNECTION, portal)).findOne({transportPlan: id});
-    if (!oldTransportRoute) {
+exports.editTransportRouteByPlanId = async (portal, planId, data) => {
+    console.log(planId, " planId", data, " data");
+    let oldTransportSchedule = await TransportSchedule(connect(DB_CONNECTION, portal)).findOne({transportPlan: planId});
+    if (!oldTransportSchedule) {
         return -1;
     }
 
     // Cach 2 de update
-    await TransportSchedule(connect(DB_CONNECTION, portal)).update({ _id: oldTransportRoute._id }, { $set: data });
-    let newTransportRoute = await TransportSchedule(connect(DB_CONNECTION, portal)).findById({ _id: oldTransportRoute._id });
+    await TransportSchedule(connect(DB_CONNECTION, portal)).update({ _id: oldTransportSchedule._id }, { $set: data });
+    let newTransportSchedule = await TransportSchedule(connect(DB_CONNECTION, portal)).findById({ _id: oldTransportSchedule._id });
 
-    return newTransportRoute;
+    return newTransportSchedule;
 }
 
 // // Xóa một Ví dụ

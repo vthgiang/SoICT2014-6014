@@ -259,9 +259,9 @@ function TransportPlanChosenEdit(props) {
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-6">
                         <fieldset className="scheduler-border" style={{ height: "100%" }}>
                         <legend className="scheduler-border">Các địa điểm trong kế hoạch</legend>
-                            <MapContainer 
+                            {/* <MapContainer 
                                 locations = {placeGeocode}
-                            />
+                            /> */}
                         </fieldset>
                     </div>
                 </div>

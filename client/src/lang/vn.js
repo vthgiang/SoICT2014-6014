@@ -272,7 +272,7 @@ export default {
             manage_transport_schedule: "Lịch vận chuyển",
             manage_transport_vehicle: "Phương tiện vận chuyển",
             manage_transport_human: "Nhân viên vận chuyển",
-            manage_transport_route: "Lộ trình vận chuyển",
+            manage_transport_route: "Hành trình vận chuyển",
 
             user_guide: "Hướng dẫn sử dụng",
             user_guide_detail: "Chi tiết hướng dẫn sử dụng",

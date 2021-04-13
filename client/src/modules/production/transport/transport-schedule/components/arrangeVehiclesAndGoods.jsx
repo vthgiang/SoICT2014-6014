@@ -23,8 +23,17 @@ function ArrangeVehiclesAndGoods(props) {
     const [transportArrangeRequirements, setAransportArrangeRequirements] = useState([]);
     const [allTransportVehicle, setAllTransportVehicle] = useState([]);
     
+    /**
+     * Trạng thái các lựa chọn hiện tại
+     * [{
+     *  vehicle: id,
+     *  transportRequirements: [{
+     *      id, id...
+     * }]
+     * }] 
+     */ 
+
     const [distributionState, setDistributionState] = useState([]);
-    const [tickBoxStatus, setTickBoxStatus] = useState([]);
 
     const getListTransportPlans = () => {
         let listTransportPlans = [
@@ -88,8 +97,7 @@ function ArrangeVehiclesAndGoods(props) {
          * distributionList = 
          * [{vehicle: id
          * transportRequirements: [
-         *      transportRequirement: id1,
-         *      transportRequirement: id2
+         *      id1,id2
          * ]}]
          * 
          * thực hiện xóa bỏ transportRequirement ở element cũ và thêm vào element mới
@@ -133,37 +141,9 @@ function ArrangeVehiclesAndGoods(props) {
             }];
 
         }
-        // console.log(distributionList);
-        // let tickBoxStatusList = new Array();
-        // if (transportArrangeRequirements && transportArrangeRequirements.length !==0 && allTransportVehicle && allTransportVehicle.length!==0) {
-            // allTransportVehicle.map((vehicle, i) => {
-            //     let tmpArr = [];
-            //     transportArrangeRequirements.map((requirement, j) => {
-            //         console.log(distributionList, " sadasd");
-            //         tmpArr.push(getStatusTickBox(vehicle._id, requirement._id, distributionList));
-            //     })                
-            //     tickBoxStatusList[i] = tmpArr;
-            // })
-
-            // console.log(distributionList, " distributionList");
-            // for (let i = 0; i<allTransportVehicle.length; i++){
-            //     let tmpArr = [];
-            //     for (let j = 0;j<transportArrangeRequirements.length; j++){
-            //         tmpArr.push(
-            //             getStatusTickBox(allTransportVehicle[i].transportVehicle._id, 
-            //                 transportArrangeRequirements[j]._id, 
-            //                 distributionList));
-            //     }
-            //     tickBoxStatusList[i] = tmpArr;
-            // }
-            // setTickBoxStatus(tickBoxStatusList);
-        // }
         setDistributionState(distributionList);
     }
 
-    // useEffect(() => {
-    //     console.log(tickBoxStatus, " tickBoxStataus");
-    // }, [tickBoxStatus])
     /**
      * trả về trạng thái hàng được xếp lên xe này hay ko, trả về tên class iconactive
      * @param {*} vehicleId 
@@ -193,7 +173,38 @@ function ArrangeVehiclesAndGoods(props) {
             return "iconunactive";
         }
     }
-    
+
+    const handleSubmitDistribution = () => {
+        console.log(distributionState);
+        let data = [];
+        /**
+         * data = 
+         * [
+         *  transportVehicle: id,
+         *  transportRequirements: [id1, id2,...]
+         * ]
+         * item = [
+         *      vehicle: id,
+         *      transportRequirements: [id, id]
+         * ]
+         * data model tương ứng: 
+         * transportVehicles: [
+         *      transportVehicle: id,
+         *      transportRequirements: [id, id];
+         * ]
+         */
+        if (distributionState && distributionState.length !== 0){
+            distributionState.map((item, index) => {
+                let singleData = {
+                    transportVehicle: item.vehicle,
+                    transportRequirements: item.transportRequirements,
+                }
+                data.push(singleData);
+            })
+        }
+        props.editTransportScheduleByPlanId(currentTransportPlan._id, {transportVehicles: data});
+    }
+
     return (
         <React.Fragment>
         <div className="box-body qlcv">
@@ -211,10 +222,10 @@ function ArrangeVehiclesAndGoods(props) {
                 </div>
 
                 <div className="form-group">
-                    <button type="button" className="btn btn-success" title="Lọc" 
-                        // onClick={this.handleSubmitSearch}
+                    <button type="button" className="btn btn-success" title="Lưu" 
+                        onClick={handleSubmitDistribution}
                     >
-                        Tìm kiếm
+                        Lưu
                     </button>
                 </div>
             </div>
@@ -605,6 +616,7 @@ const actions = {
     editTransportRequirement: transportRequirementsActions.editTransportRequirement,
     getAllTransportVehicles: transportVehicleActions.getAllTransportVehicles,
     getTransportScheduleByPlanId: transportScheduleActions.getTransportScheduleByPlanId,
+    editTransportScheduleByPlanId: transportScheduleActions.editTransportScheduleByPlanId,
     getAllTransportPlans: transportPlanActions.getAllTransportPlans,
 }
 
