@@ -229,4 +229,15 @@ export default class ValidationHelper {
 
         return { status: true };
     }
+
+    
+    /**
+     * Kiểm tra giá trị ô input chỉ nhập số và không được bỏ trống
+     * @param {*} value giá trị nhập vào
+     */
+     static validateNumericInputMandatory = (translate, value) => {
+        if(value.length === 0 || value.match(/.*[a-zA-Z]+.*/))
+            return { status: false, message: "Không được bỏ trống và chỉ được điền số" };
+        return { status: true };
+    }
 }

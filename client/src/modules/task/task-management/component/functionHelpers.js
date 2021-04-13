@@ -138,3 +138,17 @@ export const formatStatusCode = (translate, data) => {
     else if (data === "delayed") return "DELAYED";
     else if (data === "canceled") return "CANCELED";
 }
+
+export const getSalaryFromUserId = (responsibleEmployeesWithUnit,userId) => {
+    for (let unitItem of responsibleEmployeesWithUnit) {
+        for (let userItem of unitItem.listUsers) {
+            if (userId === userItem.userId) return userItem.salary;
+        }
+    }
+}
+
+export const numberWithCommas = (resultToComma) => {
+    const parts = resultToComma.toString().split('.')
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+    return parts.join('.')
+}

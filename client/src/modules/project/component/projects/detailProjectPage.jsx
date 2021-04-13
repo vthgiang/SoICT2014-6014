@@ -159,7 +159,8 @@ const ProjectDetailPage = (props) => {
                     {/* Button thêm mới */}
                     {checkIfAbleToCRUDProject({ project, user, currentProjectId }) &&
                         <div className="dropdown pull-right" style={{ marginTop: 15, marginRight: 10 }}>
-                            {currentProjectTasks && currentProjectTasks.length > 0 ? null : <TaskProjectAddModal onHandleReRender={onHandleReRender} currentProjectTasks={currentProjectTasks} parentTask={parentTask} />}
+                            {currentProjectTasks && currentProjectTasks.length > 0 ? null :<ModalAddTaskSchedule />}
+                            <TaskProjectAddModal onHandleReRender={onHandleReRender} currentProjectTasks={currentProjectTasks} parentTask={parentTask} />
                             <ModalAddTaskSchedule />
                             <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true"
                                 title={translate('project.add_btn_task')}>
@@ -196,7 +197,7 @@ const ProjectDetailPage = (props) => {
                         <LazyLoadComponent
                             key="GanttTasksProject"
                         >
-                            <GanttTasksProject />
+                            <GanttTasksProject currentProjectTasks={currentProjectTasks} />
                         </LazyLoadComponent>
                     </div>
 

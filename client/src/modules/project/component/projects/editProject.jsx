@@ -181,7 +181,7 @@ const ProjectEditForm = (props) => {
 
             setTimeout(() => {
                 props.handleAfterCreateProject()
-            }, 500);
+            }, 30 * newEmployeesArr.length);
         }
     }
 

@@ -37,6 +37,8 @@ class TaskProjectAddModal extends Component {
                 estimateNormalCost: '',
                 estimateMaxCost: '',
                 preceedingTasks: [],
+                budget: '',
+                estimateAssetCost: '',
             },
             startTime: "08:00 AM",
             endTime: "05:30 PM",
@@ -81,9 +83,10 @@ class TaskProjectAddModal extends Component {
             estimateNormalTime,
             estimateOptimisticTime,
             estimatePessimisticTime,
-            estimateNormalCost: Number(newTask.estimateNormalCost),
+            estimateNormalCost: Number(newTask.estimateNormalCost.replace(/,/g, '')),
             estimateMaxCost: Number(newTask.estimateMaxCost),
             preceedingTasks,
+            budget: Number(newTask.budget.replace(/,/g, '')),
         }
         await this.props.addProjectTask({
             ...newTaskFormatted,
@@ -100,6 +103,13 @@ class TaskProjectAddModal extends Component {
         this.props.getRoleSameDepartment(currentRole);
     }
 
+    isFormValidated = () => {
+        const { newTask } = this.state;
+        return newTask.name.trim().length > 0 && newTask.budget.trim().length > 0 && newTask.startDate.trim().length > 0
+            && newTask.endDate.trim().length > 0 && newTask.responsibleEmployees.length > 0 && newTask.accountableEmployees.length > 0
+            && newTask.estimateAssetCost.trim().length > 0
+    }
+
     render() {
         const { translate, task, id, parentTask, currentTasks, currentProjectTasks } = this.props;
         return (
@@ -109,6 +119,7 @@ class TaskProjectAddModal extends Component {
                     formID={`form-add-new-project-task-${id}`}
                     func={this.handleSubmit}
                     title={translate('task.task_management.add_new_task')}
+                    disableSubmit={!this.isFormValidated()}
                 >
                     <AddProjectTaskForm
                         quillId={this.props.id}

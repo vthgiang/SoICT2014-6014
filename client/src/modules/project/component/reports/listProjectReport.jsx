@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { DataTableSetting, PaginateBar } from "../../../../common-components";
@@ -7,6 +7,7 @@ import { UserActions } from '../../../super-admin/user/redux/actions';
 import { getStorage } from "../../../../config";
 import { checkIfAbleToCRUDProject } from "../projects/functionHelper";
 import ModalDetailReport from "./modalDetailReport";
+import { taskManagementActions } from "../../../task/task-management/redux/actions";
 
 function ListProjectReport(props) {
     // Khởi tạo state
@@ -81,7 +82,7 @@ function ListProjectReport(props) {
         });
         setTimeout(() => {
             window.$(`#modal-show-detail-report-${projectItem?._id}`).modal('show');
-        }, 10);
+        }, 100);
     }
 
 
@@ -92,12 +93,30 @@ function ListProjectReport(props) {
 
     const totalPage = project && project.data.totalPage;
 
+    const renderModal = useCallback(
+        () => {
+            console.log('HEHEHEH', projectDetail?._id)
+            return projectDetail && projectDetail._id &&
+                <ModalDetailReport
+                    projectDetailId={projectDetail && projectDetail._id}
+                    projectDetail={projectDetail} />
+        },
+        [projectDetail],
+    )
+
     return (
         <React.Fragment>
             {/* Modal chi tiết báo cáo dự án */}
-            <ModalDetailReport
+            {
+                projectDetail && projectDetail._id &&
+                <ModalDetailReport
+                    projectDetailId={projectDetail && projectDetail._id}
+                    projectDetail={projectDetail} />
+            }
+            {/* {renderModal()} */}
+            {/* <ModalDetailReport
                 projectDetailId={projectDetail && projectDetail._id}
-                projectDetail={projectDetail} />
+                projectDetail={projectDetail} /> */}
 
             <div className="box">
                 <div className="box-body qlcv">
@@ -184,6 +203,7 @@ const actions = {
     deleteProjectDispatch: ProjectActions.deleteProjectDispatch,
     createProjectDispatch: ProjectActions.createProjectDispatch,
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
+    getTasksByProject: taskManagementActions.getTasksByProject,
 }
 
 const connectedExampleManagementTable = connect(mapState, actions)(withTranslate(ListProjectReport));

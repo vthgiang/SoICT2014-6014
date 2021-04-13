@@ -17,6 +17,7 @@ import { ROOT_ROLE } from '../../../../helpers/constants';
 import dayjs from "dayjs";
 import { getCurrentProjectDetails } from '../../../project/component/projects/functionHelper';
 import moment from 'moment';
+import { getSalaryFromUserId, numberWithCommas } from './functionHelpers';
 
 class AddProjectTaskForm extends Component {
     constructor(props) {
@@ -45,6 +46,8 @@ class AddProjectTaskForm extends Component {
                 estimateNormalCost: '',
                 estimateMaxCost: '',
                 parent: '',
+                budget: '',
+                estimateAssetCost: '',
             },
             startTime: "08:00 AM",
             endTime: "05:30 PM",
@@ -72,17 +75,6 @@ class AddProjectTaskForm extends Component {
     // convert ISODate to String hh:mm AM/PM
     formatTime(date) {
         return dayjs(date).format("hh:mm A");
-    }
-
-    isTaskFormValidated = () => {
-        let result =
-            this.validateTaskName(this.state.newTask.name, false) &&
-            this.validateTaskDescription(this.state.newTask.description, false) &&
-            this.validateTaskStartDate(this.state.newTask.startDate, false) &&
-            this.validateTaskEndDate(this.state.newTask.endDate, false) &&
-            this.validateTaskAccountableEmployees(this.state.newTask.accountableEmployees, false) &&
-            this.validateTaskResponsibleEmployees(this.state.newTask.responsibleEmployees, false);
-        return result;
     }
 
     handleChangeTaskName = (event) => {
@@ -468,6 +460,28 @@ class AddProjectTaskForm extends Component {
         }, () => this.props.handleChangeTaskData(this.state.newTask))
     }
 
+    handleChangeBudget = (event) => {
+        let value = event.target.value;
+        this.validateBudget(value, true);
+    }
+    validateBudget = (value, willUpdateState = true) => {
+        let { translate } = this.props;
+        let { message } = ValidationHelper.validateNumericInputMandatory(translate, value);
+
+        if (willUpdateState) {
+            this.state.newTask.budget = value;
+            this.state.newTask.errorOnBudget = message;
+            this.setState(state => {
+                return {
+                    ...state,
+                };
+            });
+            this.props.handleChangeTaskData(this.state.newTask)
+            // this.props.isProcess && this.props.handleChangeName(this.state.newTask.name)
+        }
+        return message === undefined;
+    }
+
     handleChangeEstTimeTask = (value, timeType) => {
         if (timeType === 'estimateNormalTime') {
             this.setState({
@@ -528,124 +542,6 @@ class AddProjectTaskForm extends Component {
         return [day, month, year].join('-');
     }
 
-    shouldComponentUpdate = (nextProps, nextState) => {
-        const { user, department } = this.props;
-        const { newTask } = this.state;
-
-        //Chức năng tạo task bằng process
-        if (nextProps.isProcess && nextProps.id !== this.state.id) {
-            let { info } = nextProps;
-            this.setState(state => {
-                return {
-                    id: nextProps.id,
-                    newTask: {
-                        organizationalUnit: (info && info.organizationalUnit) ? info.organizationalUnit._id : "",//nextProps.department?.tree[0]?.id
-                        collaboratedWithOrganizationalUnits: (info && info.collaboratedWithOrganizationalUnits) ? info.collaboratedWithOrganizationalUnits : [],
-                        name: (info && info.name) ? info.name : '',
-                        responsibleEmployees: (info && info.responsibleEmployees) ? info.responsibleEmployees : [],
-                        accountableEmployees: (info && info.accountableEmployees) ? info.accountableEmployees : [],
-                        consultedEmployees: (info && info.consultedEmployees) ? info.consultedEmployees : [],
-                        informedEmployees: (info && info.informedEmployees) ? info.informedEmployees : [],
-                        quillDescriptionDefault: (info && info.description) ? info.description : '',
-                        description: (info && info.description) ? info.description : '',
-                        creator: (info && info.creator) ? info.creator : getStorage("userId"),
-                        priority: (info && info.priority) ? info.priority : 3,
-                        parent: (info && info.parent) ? info.parent : "",
-                        taskProject: (info && info.taskProject) ? info.taskProject : "",
-                        endDate: (info && info.endDate) ? info.endDate : "",
-                        startDate: (info && info.startDate) ? info.startDate : "",
-                    },
-                    showMore: this.props.isProcess ? false : true,
-                }
-            })
-
-
-            let defaultUnit;
-            if (user && user.organizationalUnitsOfUser) defaultUnit = user.organizationalUnitsOfUser.find(item =>
-                item.manager === this.state.currentRole
-                || item.deputyManager === this.state.currentRole
-                || item.employee === this.state.currentRole);
-            if (!defaultUnit && user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.length > 0) {
-                // Khi không tìm được default unit, mặc định chọn là đơn vị đầu tiên
-                defaultUnit = user.organizationalUnitsOfUser[0]
-            }
-            return false;
-        }
-
-
-        if (nextProps.task && nextProps.id !== this.state.id) {
-            this.setState({
-                id: nextProps.id,
-                newTask: {
-                    name: nextProps.task.name,
-                    description: nextProps.task.description,
-                    quillDescriptionDefault: nextProps.task.description,
-                    startDate: this.formatDate(nextProps.task.startDate),
-                    endDate: this.formatDate(nextProps.task.endDate),
-                    priority: nextProps.task.priority,
-                    responsibleEmployees: nextProps.task?.responsibleEmployees?.map(e => e._id),
-                    accountableEmployees: nextProps.task?.accountableEmployees?.map(e => e._id),
-                    consultedEmployees: nextProps.task?.consultedEmployees?.map(e => e._id),
-                    informedEmployees: nextProps.task?.informedEmployees?.map(e => e._id),
-                    creator: getStorage("userId"),
-                    organizationalUnit: nextProps.task.organizationalUnit._id,
-                    collaboratedWithOrganizationalUnits: nextProps.task?.collaboratedWithOrganizationalUnits?.map(e => { return { organizationalUnit: e.organizationalUnit._id } }),
-                    parent: nextProps.task.parent,
-                    taskProject: nextProps.task.taskProject,
-                    formula: nextProps.task.formula,
-                    taskInformations: nextProps.task.taskInformations,
-                    taskActions: nextProps.task.taskActions,
-                },
-                startTime: this.formatTime(nextProps.task.startDate),
-                endTime: this.formatTime(nextProps.task.endDate),
-            });
-            return true;
-        }
-
-        if (nextProps.parentTask !== this.props.parentTask) { // Khi đổi nhấn add new task sang nhấn add subtask hoặc ngược lại
-            this.setState(state => {
-                return {
-                    ...state,
-                    newTask: {
-                        ...this.state.newTask,
-                        parent: nextProps.parentTask,
-                    }
-                };
-            });
-            return false;
-        }
-
-        // Khi truy vấn lấy các đơn vị của user đã có kết quả, và thuộc tính đơn vị của newTask chưa được thiết lập
-        if (newTask.organizationalUnit === "" && department.list.length !== 0) {
-            // Tìm unit mà currentRole của user đang thuộc về
-            let defaultUnit = department.list?.find(item =>
-                item.managers.find(x => x.id === this.state.currentRole)
-                || item.deputyManagers.find(x => x.id === this.state.currentRole)
-                || item.employees.find(x => x.id === this.state.currentRole));
-            if (!defaultUnit && department.list.length > 0) { // Khi không tìm được default unit, mặc định chọn là đơn vị đầu tiên
-                defaultUnit = department.list[0]
-            }
-
-            if (defaultUnit) {
-                this.props.getChildrenOfOrganizationalUnits(defaultUnit._id);
-                this.props.getTaskTemplateByUser(1, 10000, [defaultUnit._id], ""); //pageNumber, noResultsPerPage, arrayUnit, name=""
-            }
-
-            this.setState(state => { // Khởi tạo giá trị cho organizationalUnit của newTask
-                return {
-                    ...state,
-                    newTask: {
-                        ...this.state.newTask,
-                        organizationalUnit: defaultUnit && defaultUnit._id,
-                    }
-                };
-            });
-            return false; // Sẽ cập nhật lại state nên không cần render
-        }
-
-        return true;
-    }
-
     getProjectParticipants = () => {
         const { project } = this.props;
         const projectDetail = getCurrentProjectDetails(project);
@@ -681,9 +577,60 @@ class AddProjectTaskForm extends Component {
         return moment(this.state.newTask.endDate).diff(moment(this.state.newTask.startDate), 'days');
     }
 
+    convertDateTime = (date, time) => {
+        let splitter = date.split("-");
+        let strDateTime = `${splitter[2]}/${splitter[1]}/${splitter[0]} ${time}`;
+        return new Date(strDateTime);
+    }
+
+    getEstHumanCost = () => {
+        const { newTask, endTime, startTime } = this.state;
+        const { responsibleEmployees, accountableEmployees, endDate, startDate } = newTask;
+        const projectDetail = getCurrentProjectDetails(this.props.project);
+        const startDateTask = this.convertDateTime(startDate, startTime);
+        const endDateTask = this.convertDateTime(endDate, endTime);
+        const duration = moment(endDateTask).diff(moment(startDateTask), `${projectDetail?.unitTime}s`);
+        // Cần phải có biện pháp trừ đi ngày thứ 7 chủ nhật
+
+        let sum = 0;
+        for (let responsibleItem of responsibleEmployees) {
+            // 0.8 là trọng số của Responsible
+            // Chia 20 là số ngày công
+            sum += getSalaryFromUserId(projectDetail?.responsibleEmployeesWithUnit, responsibleItem) / 20 * duration * 0.8;
+        }
+        for (let accountableItem of accountableEmployees) {
+            // 0.2 là trọng số của Accountable
+            // Chia 20 là số ngày công
+            sum += getSalaryFromUserId(projectDetail?.responsibleEmployeesWithUnit, accountableItem) / 20 * duration * 0.2;
+        }
+        return numberWithCommas(sum);
+    }
+
+    handleChangeAssetCost = (event) => {
+        let value = event.target.value.toString();
+        this.validateAssetCode(value, true);
+    }
+    validateAssetCode = (value, willUpdateState = true) => {
+        let { translate } = this.props;
+        let { message } = ValidationHelper.validateNumericInputMandatory(translate, value);
+
+        if (willUpdateState) {
+            this.setState({
+                ...this.state,
+                newTask: {
+                    ...this.state.newTask,
+                    estimateAssetCost: value,
+                    estimateNormalCost: numberWithCommas(Number(this.getEstHumanCost().replace(/,/g, '')) + Number(value)),
+                    errorOnAssetCode: message,
+                }
+            }, () => this.props.handleChangeTaskData(this.state.newTask))
+        }
+        return message === undefined;
+    }
+
     render() {
         const { id, newTask, startTime, endTime } = this.state;
-        const { estimateNormalTime, estimateOptimisticTime, estimatePessimisticTime, estimateNormalCost, estimateMaxCost } = newTask;
+        const { estimateNormalTime, estimateOptimisticTime, estimatePessimisticTime, estimateNormalCost, estimateMaxCost, estimateAssetCost } = newTask;
         const { tasktemplates, user, translate, tasks, department, project, isProcess, info, role } = this.props;
         let listTaskTemplate;
         let listDepartment = department?.list;
@@ -727,7 +674,6 @@ class AddProjectTaskForm extends Component {
         const checkCurrentRoleIsManager = role && role.item &&
             role.item.parents.length > 0 && role.item.parents.filter(o => o.name === ROOT_ROLE.MANAGER)
 
-
         return (
             <React.Fragment>
                 {/** Form chứa thông tin của task */}
@@ -758,12 +704,46 @@ class AddProjectTaskForm extends Component {
                                 </div>
                             </div>
 
-                            {/* Tên công việc */}
-                            <div className={`form-group ${newTask.errorOnName === undefined ? "" : "has-error"}`}>
-                                <label>{translate('task.task_management.name')}<span className="text-red">*</span></label>
-                                <input type="Name" className="form-control" placeholder={translate('task.task_management.name')} value={(newTask.name)} onChange={this.handleChangeTaskName} />
-                                <ErrorLabel content={newTask.errorOnName} />
+                            <div className={'row'}>
+                                {/* Tên công việc */}
+                                <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 form-group ${newTask.errorOnName === undefined ? "" : "has-error"}`}>
+                                    <label>{translate('task.task_management.name')}<span className="text-red">*</span></label>
+                                    <input type="Name" className="form-control" placeholder={translate('task.task_management.name')} value={(newTask.name)} onChange={this.handleChangeTaskName} />
+                                    <ErrorLabel content={newTask.errorOnName} />
+                                </div>
+                                {/* Ngân sách cho công việc */}
+                                <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 form-group ${newTask.errorOnBudget === undefined ? "" : "has-error"}`}>
+                                    <label>Ngân sách<span className="text-red">*</span></label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        placeholder="Ngân sách"
+                                        value={newTask.budget}
+                                        onChange={this.handleChangeBudget}
+                                        onFocus={() => {
+                                            this.setState({
+                                                ...this.state,
+                                                newTask: {
+                                                    ...this.state.newTask,
+                                                    budget: newTask.budget.replace(/,/g, ''),
+                                                }
+                                            })
+                                        }}
+                                        onBlur={() => {
+                                            this.setState({
+                                                ...this.state,
+                                                newTask: {
+                                                    ...this.state.newTask,
+                                                    budget: numberWithCommas(newTask.budget),
+                                                }
+                                            })
+                                        }}
+                                    />
+                                    <ErrorLabel content={newTask.errorOnBudget} />
+                                </div>
                             </div>
+
+
 
                             {/* Công việc tiền nhiệm */}
                             {listPreceedTasks.length > 0 && <div className="form-group">
@@ -793,7 +773,72 @@ class AddProjectTaskForm extends Component {
                                 />
                                 <ErrorLabel content={newTask.errorOnDescription} />
                             </div>
+                        </fieldset>
 
+                        {/* Chi phí */}
+                        {newTask.startDate.trim().length > 0 && newTask.endDate.trim().length > 0
+                            && newTask.responsibleEmployees.length > 0 && newTask.accountableEmployees.length > 0
+                            &&
+                            <fieldset className="scheduler-border">
+                                <legend className="scheduler-border">Ước lượng chi phí</legend>
+                                {/* Chi phí ước lượng nhân lực */}
+                                <div className={'row'}>
+                                    <div className={`col-md-12 form-group`}>
+                                        <label className="control-label">Chi phí ước lượng nhân lực (Lương Responsible * Thời gian ước lượng * 0.8 + Lương Accountable * Thời gian ước lượng * 0.2)
+                                            <span className="text-red">*</span> ({getCurrentProjectDetails(project)?.unitCost})
+                                        </label>
+                                        <div className="form-control">
+                                            {this.getEstHumanCost()}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className={'row'}>
+                                    {/* Chi phí ước lượng tài sản */}
+                                    <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 form-group ${newTask.errorOnAssetCode === undefined ? "" : 'has-error'}`}>
+                                        <label className="control-label">Chi phí ước lượng tài sản<span className="text-red">*</span> ({getCurrentProjectDetails(project)?.unitCost})</label>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            value={estimateAssetCost}
+                                            onChange={this.handleChangeAssetCost}
+                                            onFocus={() => {
+                                                this.setState({
+                                                    ...this.state,
+                                                    newTask: {
+                                                        ...this.state.newTask,
+                                                        estimateAssetCost: estimateAssetCost.replace(/,/g, ''),
+                                                    }
+                                                })
+                                            }}
+                                            onBlur={() => {
+                                                this.setState({
+                                                    ...this.state,
+                                                    newTask: {
+                                                        ...this.state.newTask,
+                                                        estimateAssetCost: numberWithCommas(estimateAssetCost),
+                                                    }
+                                                })
+                                            }}
+                                        />
+                                    </div>
+                                    <ErrorLabel content={newTask.errorOnAssetCode} />
+                                    {/* Chi phí ước lượng */}
+                                    <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 form-group ${Number(estimateNormalCost.replace(/,/g, '')) > Number(newTask.budget.replace(/,/g, '')) ? 'has-error' : ''}`}>
+                                        <label className="control-label">Chi phí ước lượng tổng<span className="text-red">*</span> ({getCurrentProjectDetails(project)?.unitCost})</label>
+                                        <div className="form-control">
+                                            {estimateNormalCost}
+                                        </div>
+                                        <ErrorLabel content={Number(estimateNormalCost.replace(/,/g, '')) > Number(newTask.budget.replace(/,/g, '')) && "Ngân sách đang thấp hơn chi phí ước lượng"} />
+                                    </div>
+                                </div>
+                            </fieldset>}
+                    </div>
+
+
+                    <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`} >
+                        {/* Thời gian */}
+                        <fieldset className="scheduler-border">
+                            <legend className="scheduler-border">Ước lượng thời gian</legend>
                             {/* Ngày bắt đầu, dự kiến kết thúc công việc */}
                             <div className="row form-group">
                                 <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${newTask.errorOnStartDate === undefined ? "" : "has-error"}`}>
@@ -829,48 +874,10 @@ class AddProjectTaskForm extends Component {
                                 </div>
                             </div>
                         </fieldset>
-                    </div>
-
-
-                    <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`} >
-                        {/* Thời gian và chi phí */}
-                        <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">{translate('project.task_management.estimate')}</legend>
-
-                            <strong style={{ marginBottom: 10 }}>
-                                {translate('project.task_management.estimatedCost')} ({getCurrentProjectDetails(project)?.unitCost})
-                            </strong>
-                            <ErrorLabel content={newTask.errorOnCostEst} />
-                            <div className={'row'}>
-                                {/* Chi phí ước lượng thông thường */}
-                                <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 form-group ${newTask.errorOnCostEst === undefined ? "" : 'has-error'}`}>
-                                    <label className="control-label">{translate('project.task_management.estimatedCostNormal')}<span className="text-red">*</span></label>
-                                    <input
-                                        type="number"
-                                        className="form-control"
-                                        value={estimateNormalCost}
-                                        onChange={(e) => this.handleChangeEstCostNormalTask(e?.target?.value, 'estimateNormalCost')}
-                                    />
-                                    <ErrorLabel content={newTask.errorOnResponsibleEmployees} />
-                                </div>
-                                {/* Chi phí ước lượng tối đa */}
-                                <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 form-group ${newTask.errorOnCostEst === undefined ? "" : 'has-error'}`}>
-                                    <label className="control-label">{translate('project.task_management.estimatedCostMaximum')}<span className="text-red">*</span></label>
-                                    <input
-                                        type="number"
-                                        className="form-control"
-                                        value={estimateMaxCost}
-                                        onChange={(e) => this.handleChangeEstCostNormalTask(e?.target?.value, 'estimateMaxCost')}
-                                    />
-                                    <ErrorLabel content={newTask.errorOnResponsibleEmployees} />
-                                </div>
-                            </div>
-                        </fieldset>
 
                         {/* Phân định trách nhiệm công việc */}
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border">{translate('task.task_management.add_raci')} (RACI)</legend>
-
                             {/* Những người thực hiện công việc */}
                             <div className={`form-group ${newTask.errorOnResponsibleEmployees === undefined ? "" : "has-error"}`}>
                                 <label className="control-label">{translate('task.task_management.responsible')}<span className="text-red">*</span></label>
@@ -888,7 +895,6 @@ class AddProjectTaskForm extends Component {
                                 }
                                 <ErrorLabel content={newTask.errorOnResponsibleEmployees} />
                             </div>
-
                             {/* Những người quản lý/phê duyệt công việc */}
                             <div className={`form-group ${newTask.errorOnAccountableEmployees === undefined ? "" : "has-error"}`}>
                                 <label className="control-label">{translate('task.task_management.accountable')}<span className="text-red">*</span></label>
@@ -906,7 +912,6 @@ class AddProjectTaskForm extends Component {
                                 }
                                 <ErrorLabel content={newTask.errorOnAccountableEmployees} />
                             </div>
-
                             {/* Những người tư vấn công việc */}
                             <div className='form-group'>
                                 <label className="control-label">{translate('task.task_management.consulted')}</label>
@@ -923,7 +928,6 @@ class AddProjectTaskForm extends Component {
                                     />
                                 }
                             </div>
-
                             {/* Những người quan sát công việc */}
                             <div className='form-group'>
                                 <label className="control-label">{translate('task.task_management.informed')}</label>

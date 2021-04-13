@@ -149,7 +149,9 @@ const ProjectCreateForm = (props) => {
                 responsibleEmployeesWithUnit: newResponsibleEmployeesWithUnit,
             });
 
-            props.handleAfterCreateProject()
+            setTimeout(() => {
+                props.handleAfterCreateProject()
+            }, 30 * newEmployeesArr.length);
         }
     }
 
