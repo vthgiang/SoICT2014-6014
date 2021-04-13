@@ -135,6 +135,7 @@ function ArrangeVehiclesAndGoods(props) {
             }
         }
         else{
+            // Chưa có list -> tạo mới
             distributionList = [{
                 vehicle: vehicleId,
                 transportRequirements: [requirementId],
@@ -152,10 +153,13 @@ function ArrangeVehiclesAndGoods(props) {
      */
     const getStatusTickBox = (vehicleId, requirementId, distributionList) => {
         console.log(vehicleId, requirementId, distributionList);
+        // Kiểm tra có state trạng thái các phân phối lựa chọn hay chưa
         if (distributionList && distributionList.length !== 0){
+            // Tìm xe
             let distribution = distributionList.filter(r => String(r.vehicle) === String(vehicleId));
             console.log(distribution, " b1");
             if (distribution && distribution.length !== 0 ){
+                // Kiểm tra có requirementId trên xe này không
                 let check = distribution[0].transportRequirements.filter(r => String(r) === String(requirementId))
                 console.log(check, " b2")
                 if (check && check.length !== 0) {
