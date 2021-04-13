@@ -35,7 +35,7 @@ function MaintainanceManagement(props) {
     
 
     useEffect(() => {
-        props.searchAssetTypes({ typeNumber: "", typeName: "", limit: state.limit });
+        props.searchAssetTypes({ typeNumber: "", typeName: "", limit:0});
         props.getMaintainances(state);
         props.getListBuildingAsTree();
     }, [])
