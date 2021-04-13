@@ -11,6 +11,7 @@ import { PurchaseRequestCreateForm } from './PurchaseRequestCreateForm';
 import { PurchaseRequestDetailForm } from './PurchaseRequestDetailForm';
 import { PurchaseRequestEditForm } from './PurchaseRequestEditForm';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
+import { formatDate } from '../../../../../helpers/assetHelper.js';
 function PurchaseRequest(props) {
     const tableId_constructor = "table-purchase-request";
     const defaultConfig = { limit: 5 }
@@ -18,17 +19,18 @@ function PurchaseRequest(props) {
     const [state, setState] =useState({
         tableId: tableId_constructor,
         recommendNumber: "",
-        month: "",
-        status: "",
+        month: formatDate(Date.now()),
+        status: ["approved", "waiting_for_approval", "disapproved"],
         page: 0,
         limit: limit_constructor,
     })
     const { translate, recommendProcure, auth } = props;
-    const { page, limit, currentRowView, currentRow, tableId } = state;
+    const { page, limit, currentRowView, currentRow, tableId, month, status } = state;
 
     var listRecommendProcures = "";
     if (recommendProcure.isLoading === false) {
         listRecommendProcures = recommendProcure.listRecommendProcures;
+        console.log(recommendProcure)
     }
 
     var pageTotal = ((recommendProcure.totalList % limit) === 0) ?
@@ -65,24 +67,6 @@ function PurchaseRequest(props) {
         window.$('#modal-edit-recommendprocure').modal('show');
     }
 
-    // Function format ngày hiện tại thành dạnh mm-yyyy
-    const formatDate = (date) => {
-        if (!date) return null;
-        var d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
-
-        if (month.length < 2) {
-            month = '0' + month;
-        }
-
-        if (day.length < 2) {
-            day = '0' + day;
-        }
-
-        return [month, year].join('-');
-    }
     // Function format dữ liệu Date thành string
     const formatDate2 = (date, monthYear = false) => {
         if (!date) return null;
@@ -160,18 +144,14 @@ function PurchaseRequest(props) {
     }
 
     // Bắt sự kiện chuyển trang
-    const setPage = (pageNumber) => {
-        var page = (pageNumber - 1) * state.limit;
-        setState(state =>{
-            return{
-                ...state,
-                page: parseInt(page)
-            }
-        });
-        props.searchRecommendProcures({
+    const setPage = async (pageNumber) => {
+        let page = (pageNumber - 1) * state.limit;
+        await setState({
             ...state,
-            page: parseInt(page)
+            page: parseInt(page),
         });
+
+        props.searchRecommendProcures({ ...state, page });
     }
 
     const formatStatus = (status) => {
@@ -205,8 +185,9 @@ function PurchaseRequest(props) {
 
                     {/* Tháng */}
                     <div className="form-group">
-                        <label className="form-control-static">{translate('asset.general_information.create_date')}</label>
+                        <label className="form-control-static">{translate('asset.general_information.create_month')}</label>
                         <DatePicker
+                            value={month}
                             id="month"
                             dateFormat="month-year"
                             onChange={handleMonthChange}
@@ -219,6 +200,7 @@ function PurchaseRequest(props) {
                     <div className="form-group">
                         <label className="form-control-static">{translate('page.status')}</label>
                         <SelectMulti id={`multiSelectStatus`} multiple="multiple"
+                            value={status}
                             options={{ nonSelectedText: translate('page.non_status'), allSelectedText: translate('page.all_status') }}
                             onChange={handleStatusChange}
                             items={[
@@ -305,7 +287,13 @@ function PurchaseRequest(props) {
                 }
 
                 {/* PaginateBar */}
-                <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={setPage} />
+                <PaginateBar 
+                    // display={recommendProcure.listRecommendProcures ? recommendProcure.listRecommendProcures.length : null}
+                    // total={recommendProcure.totalList ? recommendProcure.totalList : null}
+                    // pageTotal={pageTotal ? pageTotal : 0} 
+                    // currentPage={currentPage} 
+                    // func={setPage} 
+                />
             </div>
 
             {/* Form xem chi tiết phiếu đề nghị mua sắm thiết bị */}

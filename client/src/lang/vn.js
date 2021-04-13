@@ -2514,6 +2514,7 @@ export default {
                 content: "Nội dung",
                 form_code: "Mã phiếu",
                 create_date: "Ngày lập",
+                create_month: "Tháng lập",
                 type: "Phân loại",
                 choose_type: "Chọn phân loại",
                 start_date: "Ngày bắt đầu",
