@@ -35,7 +35,7 @@ function UseRequestManager(props) {
         let { managedBy } = state;
         props.searchRecommendDistributes(state);
         props.getUser();
-        props.searchAssetTypes({ typeNumber: "", typeName: "", limit: state.limit });
+        props.searchAssetTypes({ typeNumber: "", typeName: "", limit: 0 });
         props.getListBuildingAsTree();
         if (!props.isActive || props.isActive === "tab-pane active") {
             props.getAllAsset({
