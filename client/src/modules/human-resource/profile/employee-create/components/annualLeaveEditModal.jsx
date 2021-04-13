@@ -45,12 +45,14 @@ function AnnualLeaveEditModal(props) {
 
     /** Bắt sự kiện chọn xin nghi theo giờ */
     const handleChecked = () => {
-        setState({
-            ...state,
-            type: !state.type,
-            endTime: "",
-            startTime: "",
-            totalHours: ""
+        setState(state => {
+            return {
+                ...state,
+                type: !state.type,
+                endTime: "",
+                startTime: "",
+                totalHours: ""
+            }
         })
     }
 
@@ -59,22 +61,27 @@ function AnnualLeaveEditModal(props) {
      * @param {*} value : Giá trị giờ bắt đầu
      */
     const handleStartTimeChange = (value) => {
-        setState({
-            ...state,
-            startTime: value
-        })
-    };
+        setState(state => {
+            return {
+                ...state,
+                startTime: value
+            }
+        });
+    }
 
     /**
      * Bắt sự kiện thay đổi giờ kết thúc
      * @param {*} value : Giá trị giờ kết thúc
      */
     const handleEndTimeChange = (value) => {
-        setState({
-            ...state,
-            endTime: value
-        })
-    };
+        setState(state => {
+            return {
+                ...state,
+                endTime: value
+            }
+        });
+    }
+
 
     /**
      * Bắt sự kiện thay đổi ngày bắt đầu
@@ -97,11 +104,13 @@ function AnnualLeaveEditModal(props) {
             errorOnEndDate = undefined;
         }
 
-        setState({
-            ...state,
-            startDate: value,
-            errorOnStartDate: errorOnStartDate,
-            errorOnEndDate: errorOnEndDate
+        setState(state => {
+            return {
+                ...state,
+                startDate: value,
+                errorOnStartDate: errorOnStartDate,
+                errorOnEndDate: errorOnEndDate
+            }
         })
     }
 
@@ -126,11 +135,13 @@ function AnnualLeaveEditModal(props) {
             errorOnStartDate = undefined;
         }
 
-        setState({
-            ...state,
-            endDate: value,
-            errorOnStartDate: errorOnStartDate,
-            errorOnEndDate: errorOnEndDate
+        setState(state => {
+            return {
+                ...state,
+                endDate: value,
+                errorOnStartDate: errorOnStartDate,
+                errorOnEndDate: errorOnEndDate
+            }
         })
     }
 
@@ -145,10 +156,12 @@ function AnnualLeaveEditModal(props) {
 
         let msg = AnnualLeaveFormValidator.validateTotalHour(value, translate)
         if (willUpdateState) {
-            setState({
-                ...state,
-                errorOnTotalHours: msg,
-                totalHours: value,
+            setState(state => {
+                return {
+                    ...state,
+                    errorOnTotalHours: msg,
+                    totalHours: value,
+                }
             })
         };
         return msg === undefined;
@@ -164,10 +177,12 @@ function AnnualLeaveEditModal(props) {
         const { translate } = props;
         let msg = AnnualLeaveFormValidator.validateReason(value, translate)
         if (willUpdateState) {
-            setState({
-                ...state,
-                errorOnReason: msg,
-                reason: value,
+            setState(state => {
+                return {
+                    ...state,
+                    errorOnReason: msg,
+                    reason: value,
+                }
             })
         };
         return msg === undefined;
@@ -176,17 +191,18 @@ function AnnualLeaveEditModal(props) {
     /** Bắt sự kiện thay đổi trạng thái đơn xin nghỉ phép */
     const handleStatusChange = (e) => {
         let { value } = e.target;
-        setState({
-            ...state,
-            status: value
+        setState(state => {
+            return {
+                ...state,
+                status: value
+            }
         })
     }
 
     /** Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form */
     const isFormValidated = () => {
-        const { reason, startDate, endDate, type, totalHours } = state;
+        const { organizationalUnit, reason, startDate, endDate, type, totalHours } = state;
         let result = validateReason(reason, false) && (type ? validateTotalHours(totalHours, false) : true);
-
         let partStart = startDate.split('-');
         let startDateNew = [partStart[2], partStart[1], partStart[0]].join('-');
         let partEnd = endDate.split('-');
@@ -196,20 +212,24 @@ function AnnualLeaveEditModal(props) {
         } else return false;
     }
 
+    /** Bắt sự kiện submit form */
     const save = async () => {
-        const { id, startDate, endDate, type, startTime, endTime } = state;
+        const { id } = props;
+        let { startDate, endDate, type, startTime, endTime } = state;
         let partStart = startDate.split('-');
         let startDateNew = [partStart[2], partStart[1], partStart[0]].join('-');
         let partEnd = endDate.split('-');
         let endDateNew = [partEnd[2], partEnd[1], partEnd[0]].join('-');
+
         if (type) {
             if (startTime === "") {
-                startTime = editStartTime.current.getValue()
+                startTime = editEndTime.current.getValue()
             };
             if (endTime === "") {
-                endTime = editEndTime.current.getValue()
+                endTime = editStartTime.current.getValue()
             }
         }
+
         if (isFormValidated()) {
             return props.handleChange({ ...state, startTime: startTime, endTime: endTime, startDate: startDateNew, endDate: endDateNew });
         }

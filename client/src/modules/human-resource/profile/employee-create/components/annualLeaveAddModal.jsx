@@ -64,10 +64,12 @@ function AnnualLeaveAddModal(props) {
         let { translate } = props;
         let msg = AnnualLeaveFormValidator.validateEmployeeNumber(value, translate);
         if (willUpdateState) {
-            setState({
-                ...state,
-                errorOnOrganizationalUnit: msg,
-                organizationalUnit: value,
+            setState(state => {
+                return {
+                    ...state,
+                    errorOnOrganizationalUnit: msg,
+                    organizationalUnit: value,
+                }
             })
         }
         return msg === undefined;
@@ -75,12 +77,14 @@ function AnnualLeaveAddModal(props) {
 
     /** Bắt sự kiện chọn xin nghi theo giờ */
     const handleChecked = () => {
-        setState({
-            ...state,
-            type: !state.type,
-            endTime: "",
-            startTime: "",
-            totalHours: ""
+        setState(state => {
+            return {
+                ...state,
+                type: !state.type,
+                endTime: "",
+                startTime: "",
+                totalHours: ""
+            }
         })
     }
 
@@ -89,9 +93,11 @@ function AnnualLeaveAddModal(props) {
      * @param {*} value : Giá trị giờ bắt đầu
      */
     const handleStartTimeChange = (value) => {
-        setState({
-            ...state,
-            startTime: value
+        setState(state => {
+            return {
+                ...state,
+                startTime: value
+            }
         });
     }
 
@@ -100,9 +106,11 @@ function AnnualLeaveAddModal(props) {
      * @param {*} value : Giá trị giờ kết thúc
      */
     const handleEndTimeChange = (value) => {
-        setState({
-            ...state,
-            endTime: value
+        setState(state => {
+            return {
+                ...state,
+                endTime: value
+            }
         });
     }
 
@@ -128,11 +136,13 @@ function AnnualLeaveAddModal(props) {
             errorOnEndDate = undefined;
         }
 
-        setState({
-            ...state,
-            startDate: value,
-            errorOnStartDate: errorOnStartDate,
-            errorOnEndDate: errorOnEndDate
+        setState(state => {
+            return {
+                ...state,
+                startDate: value,
+                errorOnStartDate: errorOnStartDate,
+                errorOnEndDate: errorOnEndDate
+            }
         })
     }
 
@@ -157,11 +167,13 @@ function AnnualLeaveAddModal(props) {
             errorOnStartDate = undefined;
         }
 
-        setState({
-            ...state,
-            endDate: value,
-            errorOnStartDate: errorOnStartDate,
-            errorOnEndDate: errorOnEndDate
+        setState(state => {
+            return {
+                ...state,
+                endDate: value,
+                errorOnStartDate: errorOnStartDate,
+                errorOnEndDate: errorOnEndDate
+            }
         })
     }
 
@@ -176,10 +188,12 @@ function AnnualLeaveAddModal(props) {
 
         let msg = AnnualLeaveFormValidator.validateTotalHour(value, translate)
         if (willUpdateState) {
-            setState({
-                ...state,
-                errorOnTotalHours: msg,
-                totalHours: value,
+            setState(state => {
+                return {
+                    ...state,
+                    errorOnTotalHours: msg,
+                    totalHours: value,
+                }
             })
         };
         return msg === undefined;
@@ -195,10 +209,12 @@ function AnnualLeaveAddModal(props) {
         const { translate } = props;
         let msg = AnnualLeaveFormValidator.validateReason(value, translate)
         if (willUpdateState) {
-            setState({
-                ...state,
-                errorOnReason: msg,
-                reason: value,
+            setState(state => {
+                return {
+                    ...state,
+                    errorOnReason: msg,
+                    reason: value,
+                }
             })
         };
         return msg === undefined;
@@ -207,9 +223,11 @@ function AnnualLeaveAddModal(props) {
     /** Bắt sự kiện thay đổi trạng thái đơn xin nghỉ phép */
     const handleStatusChange = (e) => {
         let { value } = e.target;
-        setState({
-            ...state,
-            status: value
+        setState(state => {
+            return {
+                ...state,
+                status: value
+            }
         })
     }
 
