@@ -230,7 +230,6 @@ export default class ValidationHelper {
         return { status: true };
     }
 
-
     /**
      * Kiểm tra giá trị ô input chỉ nhập số và không được bỏ trống
      * @param {*} value giá trị nhập vào

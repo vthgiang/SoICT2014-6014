@@ -690,6 +690,57 @@ class AddProjectTaskForm extends Component {
         return message === undefined;
     }
 
+    convertDateTime = (date, time) => {
+        let splitter = date.split("-");
+        let strDateTime = `${splitter[2]}/${splitter[1]}/${splitter[0]} ${time}`;
+        return new Date(strDateTime);
+    }
+
+    getEstHumanCost = () => {
+        const { newTask, endTime, startTime } = this.state;
+        const { responsibleEmployees, accountableEmployees, endDate, startDate } = newTask;
+        const projectDetail = getCurrentProjectDetails(this.props.project);
+        const startDateTask = this.convertDateTime(startDate, startTime);
+        const endDateTask = this.convertDateTime(endDate, endTime);
+        const duration = moment(endDateTask).diff(moment(startDateTask), `${projectDetail?.unitTime}s`);
+        // Cần phải có biện pháp trừ đi ngày thứ 7 chủ nhật
+
+        let sum = 0;
+        for (let responsibleItem of responsibleEmployees) {
+            // 0.8 là trọng số của Responsible
+            // Chia 20 là số ngày công
+            sum += getSalaryFromUserId(projectDetail?.responsibleEmployeesWithUnit, responsibleItem) / 20 * duration * 0.8;
+        }
+        for (let accountableItem of accountableEmployees) {
+            // 0.2 là trọng số của Accountable
+            // Chia 20 là số ngày công
+            sum += getSalaryFromUserId(projectDetail?.responsibleEmployeesWithUnit, accountableItem) / 20 * duration * 0.2;
+        }
+        return numberWithCommas(sum);
+    }
+
+    handleChangeAssetCost = (event) => {
+        let value = event.target.value.toString();
+        this.validateAssetCode(value, true);
+    }
+    validateAssetCode = (value, willUpdateState = true) => {
+        let { translate } = this.props;
+        let { message } = ValidationHelper.validateNumericInputMandatory(translate, value);
+
+        if (willUpdateState) {
+            this.setState({
+                ...this.state,
+                newTask: {
+                    ...this.state.newTask,
+                    estimateAssetCost: value,
+                    estimateNormalCost: numberWithCommas(Number(this.getEstHumanCost().replace(/,/g, '')) + Number(value)),
+                    errorOnAssetCode: message,
+                }
+            }, () => this.props.handleChangeTaskData(this.state.newTask))
+        }
+        return message === undefined;
+    }
+
     render() {
         const { id, newTask, startTime, endTime } = this.state;
         const { estimateNormalTime, estimateOptimisticTime, estimatePessimisticTime, estimateNormalCost, estimateMaxCost, estimateAssetCost } = newTask;
