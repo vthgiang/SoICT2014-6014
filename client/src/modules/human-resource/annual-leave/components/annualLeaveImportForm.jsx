@@ -10,22 +10,20 @@ import { AnnualLeaveActions } from '../redux/actions';
 import { AuthActions } from '../../../auth/redux/actions';
 
 function AnnualLeaveImportForm(props) {
+    const { translate, department, annualLeave } = props
 
-    const _organizationalUnit = props.department.list[0];
+    const _organizationalUnit = department?.list?.[0]
+
     const [state, setState] = useState({
-        organizationalUnit: _organizationalUnit._id,
-        configData: configurationAnnualLeave.configurationImport(props.translate),
+        organizationalUnit: _organizationalUnit?._id,
+        configData: configurationAnnualLeave.configurationImport(translate),
         checkFileImport: true,
         rowError: [],
         importData: [],
         limit: 100,
         page: 0
     });
-
-    useEffect(() => {
-        const { annualLeave } = props;
-        annualLeave.importStatus && window.$(`#modal_import_file`).modal("hide");
-    }, [])
+    let { limit, page, importData, rowError, configData, checkFileImport, organizationalUnit } = state;
 
     /**
     * Convert dữ liệu date trong excel thành dạng dd-mm-yyyy
@@ -73,7 +71,6 @@ function AnnualLeaveImportForm(props) {
      * @param {*} value : Giá trị đơn vị
      */
     const handleOrganizationalUnitChange = (value) => {
-        const { salary } = props;
         setState(state => {
             return {
                 ...state,
@@ -87,8 +84,6 @@ function AnnualLeaveImportForm(props) {
 
     /** Function kiểm tra lỗi trước khi submit form*/
     const isFormValidated = () => {
-        let { rowError, importData } = state;
-        const { annualLeave } = props;
         if (annualLeave.error.rowError !== undefined) {
             rowError = annualLeave.error.rowError;
             importData = annualLeave.error.data
@@ -206,10 +201,6 @@ function AnnualLeaveImportForm(props) {
         e.preventDefault()
         props.downloadFile(path, fileName)
     }
-
-    const { translate, annualLeave, department } = props;
-
-    let { limit, page, importData, rowError, configData, checkFileImport, organizationalUnit } = state;
 
     if (annualLeave.error.rowError !== undefined) {
         rowError = annualLeave.error.rowError;
