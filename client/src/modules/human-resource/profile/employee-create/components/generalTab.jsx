@@ -17,7 +17,8 @@ function GeneralTab(props) {
         errorOnFullName: "",
         emailInCompany: "",
         errorOnEmailCompany: undefined,
-        identityCardAddress: "",
+        identityCardNumber: "",
+        identityCardAddress: ""
     });
 
     const { translate } = props;
