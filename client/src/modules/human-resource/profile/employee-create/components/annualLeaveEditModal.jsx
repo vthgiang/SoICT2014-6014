@@ -223,10 +223,10 @@ function AnnualLeaveEditModal(props) {
 
         if (type) {
             if (startTime === "") {
-                startTime = editEndTime.current.getValue()
+                startTime = editStartTime.current.getValue()
             };
             if (endTime === "") {
-                endTime = editStartTime.current.getValue()
+                endTime = editEndTime.current.getValue()
             }
         }
 
