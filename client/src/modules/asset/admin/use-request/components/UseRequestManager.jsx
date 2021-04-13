@@ -452,7 +452,8 @@ function UseRequestManager(props) {
                                             <DeleteNotification
                                                 content={translate('asset.asset_info.delete_usage_info')}
                                                 data={{
-                                                    id: x._id
+                                                    id: x._id,
+                                                    info: x.recommendNumber
                                                 }}
                                                 func={props.deleteRecommendDistribute}
                                             />
