@@ -25,7 +25,7 @@ exports.planCreateTransportRoute = async (portal, data) => {
 
 exports.getTransportRouteByPlanId = async (portal, id) => {
     let transportRoute = await TransportSchedule(connect(DB_CONNECTION, portal)).findOne({transportPlan: id})
-    .populate(
+    .populate([
         {
             path: 'transportPlan',
             select: 'transportVehicles transportRequirements',
@@ -40,7 +40,15 @@ exports.getTransportRouteByPlanId = async (portal, id) => {
                 }
             ]
         },
-    )
+        {
+            path: 'route.transportVehicle',
+            model: 'TransportVehicle'
+        },
+        {
+            path: 'route.routeOrdinal.transportRequirement',
+            model: 'TransportRequirement'       
+        }
+    ])
     if (transportRoute) {
         return transportRoute;
     }

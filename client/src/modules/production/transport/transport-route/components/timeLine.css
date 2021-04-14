@@ -308,8 +308,8 @@
   }
 
 /* tableeeeeeeeeeee */
-div.divTest {
-  margin-left: 5em;
+div.divTest2 {
+  /* margin-left: 5em; */
   margin-top: 20px;
   overflow-x:auto;
 }
@@ -323,9 +323,10 @@ div.divTest {
   /*only relevant for first row*/
   margin-left: 1em;
   margin-top: -1px;
+  height: auto;
   /*compensate for top border*/
 }
-table.tableTest {
+table.tableTest2 {
   border-collapse: collapse;
   border-spacing: 0;
   width: 100%;
@@ -333,13 +334,13 @@ table.tableTest {
   word-break: keep-all !important;
 }
 
-table.tableTest th, td {
+table.tableTest2 th, table.tableTest2 td {
   text-align: left;
   padding: 8px;
   word-break: keep-all;
-  white-space: nowrap;
-  /* border: solid green 1px; */
+  border: solid green 1px;
+  min-width: 50px;
 }
-table.tableTest th.first-column {
-  min-width: 100px;
+table.tableTest2 th.first-column {
+  min-width: 4em;
 }

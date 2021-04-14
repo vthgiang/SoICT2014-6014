@@ -13,7 +13,6 @@ function getTransportScheduleByPlanId(id) {
         });
         transportScheduleServices.getTransportScheduleByPlanId(id)
             .then((res) => {
-                console.log(res.data.content);
                 dispatch({
                     type: transportScheduleConstants.GET_TRANSPORT_SCHEDULE_BY_PLAN_ID_SUCCESS,
                     payload: res.data.content
