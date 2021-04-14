@@ -15,7 +15,7 @@ import { AuthActions } from '../../../../auth/redux/actions';
 function ContractTab(props) {
 
     const [state, setState] = useState({
-        contracts: []
+
     });
 
     /**
@@ -152,6 +152,7 @@ function ContractTab(props) {
     const handleAddContract = async (data) => {
         const { translate } = props;
         let { contracts } = state;
+        console.log(data);
 
         let checkData = checkForDuplicate(data, contracts);
         if (checkData) {
@@ -163,7 +164,11 @@ function ContractTab(props) {
                     }]
                 }
             })
-            props.handleAddContract(state.contracts, data);
+            props.handleAddContract(
+                [...contracts, {
+                    ...data
+                }], data
+            );
             let contract = getCurrentContract(state.contracts);
 
             setState(state => {
@@ -206,7 +211,8 @@ function ContractTab(props) {
                     contracts: contracts
                 }
             })
-            props.handleEditContract(contracts, data);
+            props.handleEditContract(
+                contracts, data);
 
             let contract = getCurrentContract(state.contracts);
             setState(state => {
@@ -244,7 +250,9 @@ function ContractTab(props) {
                 contracts: [...contracts]
             }
         })
-        props.handleDeleteContract(contracts, data);
+        props.handleDeleteContract(
+            [...contracts]
+            , data);
         let contract = {};
         if (contracts.length !== 0) {
             contract = getCurrentContract(contracts)
@@ -284,7 +292,10 @@ function ContractTab(props) {
                     }]
                 }
             })
-            props.handleAddCourse(state.courses, data);
+            props.handleAddCourse(
+                [...courses, {
+                    ...data
+                }], data);
 
         } else {
             toast.error(
@@ -328,7 +339,8 @@ function ContractTab(props) {
                 courses: [...courses]
             }
         })
-        props.handleDeleteCourse(courses, data)
+        props.handleDeleteCourse(
+            [...courses], data)
     }
 
     /**
@@ -475,7 +487,7 @@ function ContractTab(props) {
                     handleChange={handleEditContract}
                 />
             }
-            {   /** Form chỉnh sửa hợp đồng */
+            {   /** Form chỉnh sửa khoá học */
                 currentCourseRow &&
                 <CourseEditModal
                     id={`editCourse${currentCourseRow.index}`}

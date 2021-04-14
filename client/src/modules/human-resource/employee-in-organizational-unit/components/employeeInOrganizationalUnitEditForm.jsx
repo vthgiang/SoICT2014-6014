@@ -379,7 +379,7 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                                                 </thead>
                                                 <tbody>
                                                     {
-                                                        infoEmployee.length !== 0 &&
+                                                        infoEmployee.length > 0 &&
                                                         infoEmployee.map((user, index) => (
                                                             <tr key={index}>
                                                                 <td style={{ textAlign: "left" }}>{user.name}</td>

@@ -46,7 +46,7 @@ function PurchaseRequestDetailForm(props) {
 
         switch (status) {
             case 'approved': return translate('asset.usage.approved');
-            case 'waiting_approval': return translate('asset.usage.waiting_approval');
+            case 'waiting_for_approval': return translate('asset.usage.waiting_approval');
             case 'disapproved': return translate('asset.usage.not_approved');
             default: return '';
         }

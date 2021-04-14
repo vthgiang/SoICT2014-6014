@@ -51,7 +51,7 @@ function IncidentManagement(props) {
     
     useEffect(() => {
         let { managedBy } = state;
-        props.searchAssetTypes({ typeNumber: "", typeName: "", limit: state.limit });
+        props.searchAssetTypes({ typeNumber: "", typeName: "", limit: 0 });
         props.getUser();
         props.getIncidents(state);
         props.getListBuildingAsTree();
@@ -317,7 +317,6 @@ function IncidentManagement(props) {
     if (lists && userlist) {
         exportData = convertDataToExportData(lists, userlist);
     }
-
     return (
         <div className={isActive ? isActive : "box"}>
             <div className="box-body qlcv">

@@ -2286,6 +2286,7 @@ export default {
                 content: "Content",
                 form_code: "Form code",
                 create_date: "Create date",
+                create_month: "Create month",
                 type: "Classify",
                 choose_type: "Choose classify",
                 start_date: "Start date of repair",
