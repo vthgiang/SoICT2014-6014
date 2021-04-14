@@ -27,7 +27,7 @@ function GeneralTab(props) {
         startingDate, leavingDate, emailInCompany, maritalStatus, identityCardNumber, identityCardAddress, ethnic, religion, nationality,
         errorOnBrithdate, errorOnDateCMND, errorOnEmployeeNumber, errorOnMSCC, errorOnFullName, errorOnEmailCompany, errorOnStartingDate,
         errorOnCMND, errorOnAddressCMND, errorOnLeavingDate } = state;
-    console.log('employeeNumber', employeeNumber)
+    // console.log('employeeNumber', employeeNumber)
 
     useEffect(() => {
         if ((props.id === "general" || props.id === "page_general") && !state.employeeNumber && !state.employeeTimesheetId && props.employee && props.employee.employeeNumber && props.employee.employeeTimesheetId) {

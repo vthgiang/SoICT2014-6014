@@ -36,6 +36,37 @@ const EmployeeEditFrom = (props) => {
 
     const [state, setState] = useState({
         dataStatus: DATA_STATUS.NOT_AVAILABLE,
+        img: './upload/human-resource/avatars/avatar5.png',
+        avatar: "",
+        employee: {
+            employeeNumber: "",
+            employeeTimesheetId: "",
+            fullName: "",
+            emailInCompany: "",
+            phoneNumber: "",
+            avatar: '/upload/human-resource/avatars/avatar5.png',
+            gender: "male",
+            maritalStatus: "single",
+            educationalLevel: "",
+            professionalSkill: "unavailable",
+            status: 'active',
+            identityCardNumber: "",
+            identityCardAddress: "",
+            identityCardDate: "",
+            birthdate: "",
+            experiences: [],
+            socialInsuranceDetails: [],
+        },
+        courses: [],
+        degrees: [],
+        certificates: [],
+        contracts: [],
+        files: [],
+        disciplines: [],
+        commendations: [],
+        annualLeaves: [],
+        // major: [],
+        // career: [],
         houseHold: {
             headHouseHoldName: '',
             documentType: '',
@@ -49,7 +80,8 @@ const EmployeeEditFrom = (props) => {
             familyMembers: []
         },
         editMember: initMember
-    });
+
+    })
 
     /**
      * Function upload avatar 
@@ -937,113 +969,145 @@ const EmployeeEditFrom = (props) => {
 
 
     const _fm_saveMember = (data) => {
-        setState({
-            ...state,
-            houseHold: {
-                ...state.houseHold,
-                familyMembers: [...state.houseHold.familyMembers, data]
+        setState(state => {
+            return {
+                ...state,
+                houseHold: {
+                    ...state.houseHold,
+                    familyMembers: [...state.houseHold.familyMembers, data]
+                }
             }
         })
     }
 
     const _fm_handleHeadHouseHoldName = (e) => {
-        setState({
-            ...state,
-            houseHold: {
-                ...state.houseHold,
-                headHouseHoldName: e.target.value
+        let headHouseHoldName = e.target.value;
+        setState(state => {
+            return {
+                ...state,
+                houseHold: {
+                    ...state.houseHold,
+                    headHouseHoldName
+                }
             }
         });
     }
 
     const _fm_handleDocumentType = (e) => {
-        setState({
-            ...state,
-            houseHold: {
-                ...state.houseHold,
-                documentType: e.target.value
+        let documentType = e.target.value
+        setState(state => {
+            return {
+                ...state,
+                houseHold: {
+                    ...state.houseHold,
+                    documentType
+                }
             }
         });
     }
 
     const _fm_handleHouseHoldNumber = (e) => {
-        setState({
-            ...state,
-            houseHold: {
-                ...state.houseHold,
-                houseHoldNumber: e.target.value
+        let houseHoldNumber = e.target.value
+        setState(state => {
+            return {
+                ...state,
+                houseHold: {
+                    ...state.houseHold,
+                    houseHoldNumber
+                }
             }
         })
     }
 
     const _fm_handleCity = (e) => {
-        setState({
-            ...state,
-            houseHold: {
-                ...state.houseHold,
-                city: e.target.value
+        let city = e.target.value
+        setState(state => {
+            return {
+                ...state,
+                houseHold: {
+                    ...state.houseHold,
+                    city
+                }
             }
         })
     }
 
     const _fm_handleDistrict = (e) => {
-        setState({
-            ...state,
-            houseHold: {
-                ...state.houseHold,
-                district: e.target.value
+        let district = e.target.value
+        setState(state => {
+            return {
+                ...state,
+                houseHold: {
+                    ...state.houseHold,
+                    district
+                }
             }
         });
     }
 
     const _fm_handleWard = (e) => {
-        setState({
-            ...state,
-            houseHold: {
-                ...state.houseHold,
-                ward: e.target.value
+        let ward = e.target.value
+        setState(state => {
+            return {
+                ...state,
+                houseHold: {
+                    ...state.houseHold,
+                    ward
+                }
             }
         });
     }
 
     const _fm_handleHouseHoldAddress = (e) => {
-        setState({
-            ...state,
-            houseHold: {
-                ...state.houseHold,
-                houseHoldAddress: e.target.value
+        let houseHoldAddress = e.target.value
+        setState(state => {
+            return {
+                ...state,
+                houseHold: {
+                    ...state.houseHold,
+                    houseHoldAddress
+                }
             }
         })
     }
 
     const _fm_handlePhone = (e) => {
-        setState({
-            ...state,
-            houseHold: {
-                ...state.houseHold,
-                phone: e.target.value
+        let phone = e.target.value
+        setState(state => {
+            return {
+                ...state,
+                houseHold: {
+                    ...state.houseHold,
+                    phone
+                }
             }
         });
     }
 
     const _fm_handleHouseHoldCode = (e) => {
-        setState({
-            ...state,
-            houseHold: {
-                ...state.houseHold,
-                houseHoldCode: e.target.value
+        let houseHoldCode = e.target.value
+        setState(state => {
+            return {
+                ...state,
+                houseHold: {
+                    ...state.houseHold,
+                    houseHoldCode
+                }
             }
         });
     }
 
+
     const _fm_editMember = (index, data) => {
         let familyMembers = state.houseHold.familyMembers;
         familyMembers[index] = data;
-        setState({
-            ...state,
-            houseHold: {
-                ...state.houseHold,
-                familyMembers
+        setState(state => {
+            return {
+                ...state,
+                houseHold: {
+                    ...state.houseHold,
+                    familyMembers: familyMembers
+                }
             }
         })
     }
@@ -1051,11 +1115,13 @@ const EmployeeEditFrom = (props) => {
     const _fm_deleteMember = (index) => {
         let familyMembers = state.houseHold.familyMembers;
         familyMembers = familyMembers.filter((node, i) => i !== index);
-        setState({
-            ...state,
-            houseHold: {
-                ...state.houseHold,
-                familyMembers
+        setState(state => {
+            return {
+                ...state,
+                houseHold: {
+                    ...state.houseHold,
+                    familyMembers: familyMembers
+                }
             }
         })
     }

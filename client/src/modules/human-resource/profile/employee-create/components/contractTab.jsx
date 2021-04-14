@@ -84,7 +84,7 @@ function ContractTab(props) {
 
     const { contracts, contractEndDate, contractType, courses, pageCreate, roles, currentRow, currentCourseRow } = state;
 
-    console.log(contractEndDate);
+    // console.log(contractEndDate);
 
     /**
      * Bắt sự kiện click edit khoá học

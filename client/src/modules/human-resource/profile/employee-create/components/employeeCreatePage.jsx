@@ -558,7 +558,8 @@ function EmployeeCreatePage(props) {
             }
         })
     }
-    console.log(state);
+    // console.log(state);
+
     return (
         <div className=" qlcv">
             <div className="nav-tabs-custom" >
