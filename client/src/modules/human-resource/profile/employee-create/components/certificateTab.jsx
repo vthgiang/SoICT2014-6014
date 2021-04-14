@@ -33,7 +33,7 @@ function CertificateTab(props) {
 
     const { degrees, certificates, currentRow, currentRowCertificates } = state;
     let listFields = field.listFields;
-    console.log('listFields', listFields)
+    // console.log('listFields', listFields)
 
     /**
      *  Function format dữ liệu Date thành string

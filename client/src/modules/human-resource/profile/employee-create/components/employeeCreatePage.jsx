@@ -57,22 +57,24 @@ function EmployeeCreatePage(props) {
         let code = generateCode("NV");
         let { employeeNumber, employeeTimesheetId } = state.employee;
         if (!employeeNumber && !employeeTimesheetId)
-            setState((state) => ({
-                ...state,
-                employee: {
-                    ...state.employee,
-                    employeeNumber: code,
-                    employeeTimesheetId: code,
+            setState(state => {
+                return {
+                    ...state,
+                    employee: {
+                        ...state.employee,
+                        employeeNumber: code,
+                        employeeTimesheetId: code,
+                    }
                 }
-            }));
+            });
     }
 
     const [state, setState] = useState({
         img: './upload/human-resource/avatars/avatar5.png',
         avatar: "",
         employee: {
-            employeeNumber: "",
-            employeeTimesheetId: "",
+            employeeNumber: generateCode("NV"),
+            employeeTimesheetId: generateCode("NV"),
             fullName: "",
             emailInCompany: "",
             phoneNumber: "",
@@ -97,8 +99,8 @@ function EmployeeCreatePage(props) {
         disciplines: [],
         commendations: [],
         annualLeaves: [],
-        major: [],
-        career: [],
+        // major: [],
+        // career: [],
         houseHold: {
             headHouseHoldName: '',
             documentType: '',
@@ -114,6 +116,8 @@ function EmployeeCreatePage(props) {
         editMember: initMember,
     });
 
+    const { img, employee, degrees, certificates, contracts, courses, commendations, disciplines, annualLeaves, files, editMember } = state;
+
     useEffect(() => {
         props.getDepartment();
     }, [])
@@ -123,8 +127,6 @@ function EmployeeCreatePage(props) {
     }, [])
 
     const { translate } = props;
-
-    const { img, employee, degrees, certificates, contracts, courses, commendations, disciplines, annualLeaves, files, major, career, editMember } = state;
 
     /**
      * Function upload avatar
@@ -314,41 +316,40 @@ function EmployeeCreatePage(props) {
         })
     }
 
-    /**
-     * Function thêm, chỉnh sửa thông tin chuyên ngành tương đương
-     * @param {*} data : Dữ liệu thông tin chuyên ngành tương đương
-     * @param {*} addData : Chuyên ngành tương đương muốn thêm
-     */
-    const handleChangeMajor = (data, addData) => {
-        setState(state => {
-            return {
-                ...state,
-                major: data
-            }
-        })
-    }
+    // /**
+    //  * Function thêm, chỉnh sửa thông tin chuyên ngành tương đương
+    //  * @param {*} data : Dữ liệu thông tin chuyên ngành tương đương
+    //  * @param {*} addData : Chuyên ngành tương đương muốn thêm
+    //  */
+    // const handleChangeMajor = (data, addData) => {
+    //     setState(state => {
+    //         return {
+    //             ...state,
+    //             major: data
+    //         }
+    //     })
+    // }
 
-    /**
-     * Function thêm, chỉnh sửa thông tin công việc tương đương
-     * @param {*} data : Dữ liệu thông tin công việc tương đương
-     * @param {*} addData : Công việc tương đương muốn thêm
-     */
-    const handleChangeCareer = (data, addData) => {
-        setState(state => {
-            return {
-                ...state,
-                career: data
-            }
-        })
-    }
+    // /**
+    //  * Function thêm, chỉnh sửa thông tin công việc tương đương
+    //  * @param {*} data : Dữ liệu thông tin công việc tương đương
+    //  * @param {*} addData : Công việc tương đương muốn thêm
+    //  */
+    // const handleChangeCareer = (data, addData) => {
+    //     setState(state => {
+    //         return {
+    //             ...state,
+    //             career: data
+    //         }
+    //     })
+    // }
 
-    console.log(certificates);
     /**
      * Function thêm mới thông tin nhân viên
      */
     const handleSubmit = async () => {
         let { employee, degrees, certificates, contracts, files, avatar,
-            disciplines, commendations, annualLeaves, courses, major, career, houseHold } = state;
+            disciplines, commendations, annualLeaves, courses, houseHold } = state;
 
         await setState(state => {
             return {
@@ -363,8 +364,8 @@ function EmployeeCreatePage(props) {
                     commendations,
                     annualLeaves,
                     courses,
-                    career,
-                    major,
+                    // career,
+                    // major,
                     houseHold,
                 }
             }
@@ -381,19 +382,18 @@ function EmployeeCreatePage(props) {
             })
         }
 
-        console.log(certificates)
         contracts.forEach(x => {
             formData.append("fileContract", x.fileUpload);
         })
         files.forEach(x => {
             formData.append("file", x.fileUpload);
         })
-        major.forEach(x => {
-            formData.append("fileMajor", x.fileUpload);
-        })
-        career.forEach(x => {
-            formData.append("fileCareer", x.fileUpload);
-        })
+        // major.forEach(x => {
+        //     formData.append("fileMajor", x.fileUpload);
+        // })
+        // career.forEach(x => {
+        //     formData.append("fileCareer", x.fileUpload);
+        // })
         formData.append("fileAvatar", avatar);
         employee && employee.healthInsuranceAttachment && employee.healthInsuranceAttachment.forEach(x => {
             formData.append('healthInsuranceAttachment', x.fileUpload)
@@ -414,108 +414,117 @@ function EmployeeCreatePage(props) {
     }
 
     const _fm_handleHeadHouseHoldName = (e) => {
+        let headHouseHoldName = e.target.value;
         setState(state => {
             return {
                 ...state,
                 houseHold: {
                     ...state.houseHold,
-                    headHouseHoldName: e.target.value
+                    headHouseHoldName
                 }
             }
         });
     }
 
     const _fm_handleDocumentType = (e) => {
+        let documentType = e.target.value
         setState(state => {
             return {
                 ...state,
                 houseHold: {
                     ...state.houseHold,
-                    documentType: e.target.value
+                    documentType
                 }
             }
         });
     }
 
     const _fm_handleHouseHoldNumber = (e) => {
+        let houseHoldNumber = e.target.value
         setState(state => {
             return {
                 ...state,
                 houseHold: {
                     ...state.houseHold,
-                    houseHoldNumber: e.target.value
+                    houseHoldNumber
                 }
             }
         })
     }
 
     const _fm_handleCity = (e) => {
+        let city = e.target.value
         setState(state => {
             return {
                 ...state,
                 houseHold: {
                     ...state.houseHold,
-                    city: e.target.value
+                    city
                 }
             }
         })
     }
 
     const _fm_handleDistrict = (e) => {
+        let district = e.target.value
         setState(state => {
             return {
                 ...state,
                 houseHold: {
                     ...state.houseHold,
-                    district: e.target.value
+                    district
                 }
             }
         });
     }
 
     const _fm_handleWard = (e) => {
+        let ward = e.target.value
         setState(state => {
             return {
                 ...state,
                 houseHold: {
                     ...state.houseHold,
-                    ward: e.target.value
+                    ward
                 }
             }
         });
     }
 
     const _fm_handleHouseHoldAddress = (e) => {
+        let houseHoldAddress = e.target.value
         setState(state => {
             return {
                 ...state,
                 houseHold: {
                     ...state.houseHold,
-                    houseHoldAddress: e.target.value
+                    houseHoldAddress
                 }
             }
         })
     }
 
     const _fm_handlePhone = (e) => {
+        let phone = e.target.value
         setState(state => {
             return {
                 ...state,
                 houseHold: {
                     ...state.houseHold,
-                    phone: e.target.value
+                    phone
                 }
             }
         });
     }
 
     const _fm_handleHouseHoldCode = (e) => {
+        let houseHoldCode = e.target.value
         setState(state => {
             return {
                 ...state,
                 houseHold: {
                     ...state.houseHold,
-                    houseHoldCode: e.target.value
+                    houseHoldCode
                 }
             }
         });
@@ -530,7 +539,7 @@ function EmployeeCreatePage(props) {
                 ...state,
                 houseHold: {
                     ...state.houseHold,
-                    familyMembers
+                    familyMembers: familyMembers
                 }
             }
         })
@@ -544,12 +553,13 @@ function EmployeeCreatePage(props) {
                 ...state,
                 houseHold: {
                     ...state.houseHold,
-                    familyMembers
+                    familyMembers: familyMembers
                 }
             }
         })
     }
-    console.log(state);
+    // console.log(state);
+
     return (
         <div className=" qlcv">
             <div className="nav-tabs-custom" >
@@ -563,7 +573,7 @@ function EmployeeCreatePage(props) {
                     <li><a title={translate('human_resource.profile.tab_name.menu_contract_training_title')} data-toggle="tab" href="#hopdong">{translate('human_resource.profile.tab_name.menu_contract_training')}</a></li>
                     <li><a title={translate('human_resource.profile.tab_name.menu_reward_discipline_title')} data-toggle="tab" href="#khenthuong">{translate('human_resource.profile.tab_name.menu_reward_discipline')}</a></li>
                     <li><a title={translate('menu.annual_leave_personal')} data-toggle="tab" href="#historySalary">{translate('menu.annual_leave_personal')}</a></li>
-                    <li><a title={"Công việc - chuyên ngành tương đương"} data-toggle="tab" href="#major_career">Công việc - chuyên ngành tương đương</a></li>
+                    {/* <li><a title={"Công việc - chuyên ngành tương đương"} data-toggle="tab" href="#major_career">Công việc - chuyên ngành tương đương</a></li> */}
                     <li><a title={"Thành viên hộ gia đình"} data-toggle="tab" href="#family_member">Thành viên hộ gia đình</a></li>
                     <li><a title={translate('human_resource.profile.tab_name.menu_attachments_title')} data-toggle="tab" href="#pageAttachments">{translate('human_resource.profile.tab_name.menu_attachments')}</a></li>
                 </ul>

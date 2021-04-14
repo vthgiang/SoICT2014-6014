@@ -1,7 +1,8 @@
-const KPIUnitService = require('./creation.service');
-const Logger = require(`../../../../logs`);
+const KPIUnitService = require('./creation.service')
+const Logger = require(`../../../../logs`)
 
 const managerService = require('../management/management.service')
+
 const { getDataOrganizationalUnitKpiSetLog } = require('../../../../helpers/descriptionLogKpi')
 
 /**
@@ -100,6 +101,7 @@ exports.deleteOrganizationalUnitKpi = async (req, res) => {
     try {
         let data = await KPIUnitService.deleteOrganizationalUnitKpi(req.portal, req.params.idUnitKpi, req.params.idUnitKpiSet);
         
+        // Thêm logs 
         let log = getDataOrganizationalUnitKpiSetLog({
             type: "delete_kpi",
             creator: req.user._id,
@@ -111,6 +113,13 @@ exports.deleteOrganizationalUnitKpi = async (req, res) => {
             ...log,
             organizationalUnitKpiSetId: data?.organizationalUnitKpiSet?._id
         })
+
+        // Thêm newsfeed
+        await KPIUnitService.createNewsFeedForOrganizationalUnitKpiSet(req.portal, {
+            ...log,
+            organizationalUnit: data?.organizationalUnitKpiSet?.organizationalUnit,
+            organizationalUnitKpiSetId: data?.organizationalUnitKpiSet?._id
+        });
 
         Logger.info(req.user.email, 'delete target kpi unit', req.portal);
         res.status(200).json({
@@ -159,6 +168,7 @@ exports.createOrganizationalUnitKpi = async (req, res) => {
     try {
         let organizationalUnitKpiSet = await KPIUnitService.createOrganizationalUnitKpi(req.portal, req.body);
         
+        // Thêm log
         let log = getDataOrganizationalUnitKpiSetLog({
             type: "add_kpi",
             creator: req.user._id,
@@ -170,6 +180,13 @@ exports.createOrganizationalUnitKpi = async (req, res) => {
             ...log,
             organizationalUnitKpiSetId: organizationalUnitKpiSet?._id
         })
+
+        // Thêm newsfeed
+        await KPIUnitService.createNewsFeedForOrganizationalUnitKpiSet(req.portal, {
+            ...log,
+            organizationalUnit: organizationalUnitKpiSet?.organizationalUnit,
+            organizationalUnitKpiSetId: organizationalUnitKpiSet?._id
+        });
 
         Logger.info(req.user.email, 'create target kpi unit', req.portal)
         res.status(200).json({
@@ -196,6 +213,7 @@ exports.editOrganizationalUnitKpi = async (req, res) => {
     try {
         let data = await KPIUnitService.editOrganizationalUnitKpi(req.portal, req.body, req.params.id);
         
+        // Thêm log
         let log = getDataOrganizationalUnitKpiSetLog({
             type: "edit_kpi",
             creator: req.user._id,
@@ -205,6 +223,13 @@ exports.editOrganizationalUnitKpi = async (req, res) => {
         })
         await managerService.createOrganizationalUnitKpiSetLogs(req.portal, {
             ...log,
+            organizationalUnitKpiSetId: data?.unitKpiSet?._id
+        })
+
+        // Thêm newsfeed
+        await KPIUnitService.createNewsFeedForOrganizationalUnitKpiSet(req.portal, {
+            ...log,
+            organizationalUnit: data?.unitKpiSet?.organizationalUnit,
             organizationalUnitKpiSetId: data?.unitKpiSet?._id
         })
         
@@ -234,6 +259,7 @@ editOrganizationalUnitKpiSetStatus = async (req, res) => {
     try {
         let kpiunit = await KPIUnitService.editOrganizationalUnitKpiSetStatus(req.portal, req.params.id, req.body);
         
+        // Thêm log
         let log = getDataOrganizationalUnitKpiSetLog({
             type: "edit_status",
             creator: req.user._id,
@@ -241,11 +267,17 @@ editOrganizationalUnitKpiSetStatus = async (req, res) => {
             month: kpiunit?.date,
             newData: kpiunit
         })
-        console.log(kpiunit?._id)
         await managerService.createOrganizationalUnitKpiSetLogs(req.portal, {
             ...log,
             organizationalUnitKpiSetId: kpiunit?._id
         })
+
+        // Thêm newsfeed
+        await KPIUnitService.createNewsFeedForOrganizationalUnitKpiSet(req.portal, {
+            ...log,
+            organizationalUnit: kpiunit?.organizationalUnit,
+            organizationalUnitKpiSetId: kpiunit?._id
+        });
 
         Logger.info(req.user.email, 'edit status kpi unit', req.portal)
         res.status(200).json({
@@ -274,6 +306,7 @@ exports.createOrganizationalUnitKpiSet = async (req, res) => {
         }
         let organizationalUnitKpiSet = await KPIUnitService.createOrganizationalUnitKpiSet(req.portal, data);
         
+        // Thêm log
         let log = getDataOrganizationalUnitKpiSetLog({
             type: "create",
             creator: req.user._id,
@@ -285,6 +318,13 @@ exports.createOrganizationalUnitKpiSet = async (req, res) => {
             ...log,
             organizationalUnitKpiSetId: organizationalUnitKpiSet?._id
         })
+
+        // Thêm newsfeed
+        await KPIUnitService.createNewsFeedForOrganizationalUnitKpiSet(req.portal, {
+            ...log,
+            organizationalUnit: organizationalUnitKpiSet?.organizationalUnit,
+            organizationalUnitKpiSetId: organizationalUnitKpiSet?._id
+        });
 
         Logger.info(req.user.email, 'create kpi unit', req.portal)
         res.status(200).json({

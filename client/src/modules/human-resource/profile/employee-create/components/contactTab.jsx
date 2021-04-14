@@ -101,7 +101,7 @@ function ContactTab(props) {
             setState(state => {
                 return {
                     ...state,
-                    errorOnPersonalEmail: message,
+                    errorOnPersonalEmail: (value && value.length !== 0) ? message : undefined,
                     personalEmail: value,
                 }
             });
@@ -124,7 +124,7 @@ function ContactTab(props) {
             setState(state => {
                 return {
                     ...state,
-                    errorOnPersonalEmail2: message,
+                    errorOnPersonalEmail2: (value && value.length !== 0) ? message : undefined,
                     personalEmail2: value,
                 }
             });

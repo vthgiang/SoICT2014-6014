@@ -16,16 +16,19 @@ const EmployeeManagement = (props) => {
     let search = window.location.search.split('?')
     let keySearch = 'organizationalUnits';
     let _organizationalUnits = null;
-    for (let n in search) {
-        let index = search[n].lastIndexOf(keySearch);
-        if (index !== -1) {
-            _organizationalUnits = search[n].slice(keySearch.length + 1, search[n].length);
-            if (_organizationalUnits !== 'null' && _organizationalUnits.trim() !== '') {
-                _organizationalUnits = _organizationalUnits.split(',')
-            } else _organizationalUnits = null
-            break;
+
+    useEffect(() => {
+        for (let n in search) {
+            let index = search[n].lastIndexOf(keySearch);
+            if (index !== -1) {
+                _organizationalUnits = search[n].slice(keySearch.length + 1, search[n].length);
+                if (_organizationalUnits !== 'null' && _organizationalUnits.trim() !== '') {
+                    _organizationalUnits = _organizationalUnits.split(',')
+                } else _organizationalUnits = null
+                break;
+            }
         }
-    }
+    }, [search])
 
     const tableId = "table-employee-management";
     const defaultConfig = { limit: 5 }
@@ -47,7 +50,6 @@ const EmployeeManagement = (props) => {
 
     useEffect(() => {
         props.getListFields({ page: 0, limit: 10000 })
-        props.getAllEmployee(state);
         props.getDepartment();
     }, [])
 

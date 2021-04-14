@@ -6,8 +6,8 @@ import { ViewAllOverTime, } from '../../../dashboard-personal/components/combine
 import { ViewAllEmployee, ViewAllCommendation, ViewAllDiscipline } from '../../../dashboard-unit/components/combinedContent';
 
 const TabIntegratedStatistics = (props) => {
-    
-    
+
+
     /**
      * Function format dữ liệu Date thành string
      * @param {*} date : Ngày muốn format
@@ -59,13 +59,13 @@ const TabIntegratedStatistics = (props) => {
 
     /** Function xem tất cả tình hình tăng ca */
     const viewAllOverTime = async () => {
-        await setState(state => ({...state, viewOverTime: 'overTime'}));
+        await setState(state => ({ ...state, viewOverTime: 'overTime' }));
         window.$(`#modal-view-${"overTime"}`).modal('show');
     };
 
     /** Function xem tất cả tình hình nghỉ phép */
     const viewAllHoursOff = async () => {
-        await setState(state => ({...state, viewHoursOff: 'hoursOff'}));
+        await setState(state => ({ ...state, viewHoursOff: 'hoursOff' }));
         window.$(`#modal-view-${"hoursOff"}`).modal('show');
     }
 
@@ -73,7 +73,7 @@ const TabIntegratedStatistics = (props) => {
 
     const { month, listAllEmployees } = props;
 
-    
+
 
     let listEmployee = user.employees;
     let employeeOvertime = [], employeeHoursOff = [];
@@ -164,7 +164,7 @@ const TabIntegratedStatistics = (props) => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {discipline.totalListCommendation.length !== 0 &&
+                                        {discipline.totalListCommendation.length !== 0 && Array.isArray(discipline) &&
                                             discipline.totalListCommendation.map((x, index) => index < 5 ? (
                                                 <tr key={index}>
                                                     <td>{index + 1}</td>

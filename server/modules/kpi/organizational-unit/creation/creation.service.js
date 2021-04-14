@@ -1,7 +1,8 @@
-const Models = require(`../../../../models`);
-const { OrganizationalUnitKpi, OrganizationalUnit, OrganizationalUnitKpiSet } = Models;
-const overviewService = require('../../employee/management/management.service');
-const UserService = require('../../../super-admin/user/user.service');
+const Models = require(`../../../../models`)
+const { OrganizationalUnitKpi, OrganizationalUnit, OrganizationalUnitKpiSet } = Models
+const overviewService = require('../../employee/management/management.service')
+const UserService = require('../../../super-admin/user/user.service')
+const NewsFeedService = require('../../../news-feed/newsFeed.service')
 
 const { connect } = require(`../../../../helpers/dbHelper`);
 const mongoose = require('mongoose');
@@ -930,3 +931,24 @@ exports.deleteFileChildComment = async (portal, params) => {
     return task.comments;
 }
 
+/** Thêm newsfeed cho kpi đơn vị */
+exports.createNewsFeedForOrganizationalUnitKpiSet = async (portal, data) => {
+    const { creator, title, description, organizationalUnitKpiSetId, organizationalUnit } = data
+
+    let relatedUsers = await UserService.getAllEmployeeOfUnitByIds(portal, {
+        ids: [organizationalUnit?._id]
+    })
+
+    let newsFeed = await NewsFeedService.createNewsFeed(portal, {
+        title: title,
+        description: description,
+        creator: creator,
+        associatedDataObject: { 
+            dataType: 2,
+            value: organizationalUnitKpiSetId
+        },
+        relatedUsers: relatedUsers?.employees?.map(item => item?.userId?._id)
+    })
+
+    return newsFeed
+}
