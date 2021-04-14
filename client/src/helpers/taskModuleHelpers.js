@@ -112,10 +112,12 @@ export const getProjectName = (id, listProject) => {
  * @returns hàm trả ra các phần tử khác nhau
  */
 export const filterDifference = (arr) => {
-        const seen = new Set();
-        return arr.filter((el) => {
-            const duplicate = seen.has(el._id);
-            seen.add(el._id);
-            return !duplicate;
-        });
+    if (!arr && !Array.isArray(arr))
+        return [];
+    const seen = new Set();
+    return arr.filter((el) => {
+        const duplicate = seen.has(el._id);
+        seen.add(el._id);
+        return !duplicate;
+    });
     }

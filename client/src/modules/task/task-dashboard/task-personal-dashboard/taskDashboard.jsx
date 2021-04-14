@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
+import { Link } from 'react-router-dom';
 
 import { taskManagementActions } from '../../task-management/redux/actions';
 
@@ -7,26 +9,20 @@ import { TaskStatusChart } from './taskStatusChart';
 import { DomainOfTaskResultsChart } from './domainOfTaskResultsChart';
 import { GanttCalendar } from './ganttCalendar';
 import { AverageResultsOfTask } from './averageResultsOfTask';
-
-import { withTranslate } from 'react-redux-multilingual';
+import GeneralTaskPersonalChart from './generalTaskPersonalChart';
+import { InprocessTask } from './inprocessTask';
+import { LoadTaskChart } from './loadTaskChart';
 
 import { DatePicker, LazyLoadComponent } from '../../../../common-components';
 import Swal from 'sweetalert2';
-import { TasksIsNotLinked } from './tasksIsNotLinked';
-import { TaskHasActionNotEvaluated } from './taskHasActionNotEvaluated';
-import { InprocessTask } from './inprocessTask';
-import { LoadTaskChart } from './loadTaskChart';
+import dayjs from 'dayjs';
+
 import { convertTime } from '../../../../helpers/stringMethod';
 import { filterDifference } from '../../../../helpers/taskModuleHelpers';
 import { getStorage } from '../../../../config';
-import dayjs from 'dayjs';
-import GeneralTaskPersonalChart from './generalTaskPersonalChart';
-import { Link } from 'react-router-dom';
 class TaskDashboard extends Component {
-
     constructor(props) {
         super(props);
-
         this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
 
         let d = new Date(),
@@ -75,9 +71,6 @@ class TaskDashboard extends Component {
 
             startMonthTitle: this.INFO_SEARCH.startMonthTitle,
             endMonthTitle: this.INFO_SEARCH.endMonthTitle,
-
-            willUpdate: false,       // Khi true sẽ cập nhật dữ liệu vào props từ redux
-            callAction: false,
             type: 'status',
             monthTimeSheetLog: this.INFO_SEARCH.endMonthTitle,
         };
@@ -100,48 +93,6 @@ class TaskDashboard extends Component {
             type: "user"
         }
         await this.props.getTaskByUser(data);
-        await this.setState(state => {
-            return {
-                ...state,
-                dataStatus: this.DATA_STATUS.QUERYING,
-                willUpdate: true       // Khi true sẽ cập nhật dữ liệu vào props từ redux
-            };
-        });
-    }
-
-    shouldComponentUpdate = async (nextProps, nextState) => {
-        if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
-            if (!nextProps.tasks.responsibleTasks
-                || !nextProps.tasks.accountableTasks
-                || !nextProps.tasks.consultedTasks
-                || !nextProps.tasks.informedTasks
-                || !nextProps.tasks.creatorTasks
-                || !nextProps.tasks.tasksbyuser
-            ) {
-                return false;
-            }
-
-            this.setState(state => {
-                return {
-                    ...state,
-                    dataStatus: this.DATA_STATUS.AVAILABLE,
-                    callAction: true
-                }
-            });
-        } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE && nextState.willUpdate) {
-            this.setState(state => {
-
-                return {
-                    ...state,
-                    dataStatus: this.DATA_STATUS.FINISHED,
-                    willUpdate: false       // Khi true sẽ cập nhật dữ liệu vào props từ redux
-                }
-            });
-
-            return true;
-        }
-
-        return false;
     }
 
     generateDataPoints(noOfDps) {
@@ -278,108 +229,55 @@ class TaskDashboard extends Component {
         })
     }
 
-
     render() {
         const { tasks, translate } = this.props;
-        const { startMonth, endMonth, willUpdate, callAction, taskAnalys, monthTimeSheetLog } = this.state;
-        const { loadingInformed, loadingCreator, loadingConsulted, loadingAccountable } = tasks;
+        const { startMonth, endMonth, monthTimeSheetLog } = this.state;
+        const { loadingInformed, loadingCreator, loadingConsulted, loadingAccountable, loadingResponsible } = tasks;
         let { startMonthTitle, endMonthTitle } = this.INFO_SEARCH;
         let { userTimeSheetLogs } = tasks;       // Thống kê bấm giờ
 
         let amountResponsibleTask = 0, amountTaskCreated = 0, amountAccountableTasks = 0, amountConsultedTasks = 0, amountInformedTasks = 0;
         let totalTasks = 0;
         let newNumTask = [], listTasksGeneral = [];
+        // Tinh tong so luong cong viec co trang thai Inprogess
+        let responsibleTasks = [], creatorTasks = [], accountableTasks = [], consultedTasks = [], informedTasks = [];
 
-        if (!loadingInformed && !loadingCreator && !loadingConsulted && !loadingAccountable) {
-            // Tinh so luong tat ca cac task
-            if (tasks && tasks.responsibleTasks) {
-                let task = tasks.responsibleTasks;
-                let i;
-                for (i in task) {
-                    if (task[i].status === "inprocess")
-                        amountResponsibleTask++;
-
-                }
+        if (!loadingResponsible && !loadingInformed && !loadingCreator && !loadingConsulted && !loadingAccountable) {
+            // Tinh so luong tat ca cac task người này là người thực hiện
+            if (tasks?.responsibleTasks?.length > 0) {
+                responsibleTasks = tasks.responsibleTasks.filter(o => o.status === "inprocess");
+                amountResponsibleTask = responsibleTasks.length;
             }
 
-            // tính số lượng task mà người này là creator
-            if (tasks && tasks.creatorTasks) {
-                let task = tasks.creatorTasks;
-                let i;
-                for (i in task) {
-                    if (task[i].status === "inprocess")
-                        amountTaskCreated++;
-
-                }
+            if (tasks?.creatorTasks?.length > 0) {
+                creatorTasks = tasks.creatorTasks.filter(o => o.status === "inprocess");
+                amountTaskCreated = creatorTasks.length;
             }
 
-            // tính số lượng task mà người này cần phê duyệt
-            if (tasks && tasks.accountableTasks) {
-                let task = tasks.accountableTasks;
-                let i;
-                for (i in task) {
-                    if (task[i].status === "inprocess")
-                        amountAccountableTasks++;
-                }
+            if (tasks?.accountableTasks?.length > 0) {
+                accountableTasks = tasks.accountableTasks.filter(o => o.status === "inprocess");
+                amountAccountableTasks = accountableTasks.length;
             }
 
-            // tính số lượng task mà người này là người tư vấn
-            if (tasks && tasks.consultedTasks) {
-                let task = tasks.consultedTasks;
-                let i;
-                for (i in task) {
-                    if (task[i].status === "inprocess")
-                        amountConsultedTasks++;
-                }
+            if (tasks?.consultedTasks?.length > 0) {
+                consultedTasks = tasks.consultedTasks.filter(o => o.status === "inprocess");
+                amountConsultedTasks = consultedTasks.length;
             }
 
-            // tính số lượng task mà người này là người quan sát
-            if (tasks && tasks.informedTasks) {
-                let task = tasks.informedTasks;
-                let i;
-                for (i in task) {
-                    if (task[i].status === "inprocess")
-                        amountInformedTasks++;
-                }
+            if (tasks?.informedTasks?.length > 0) {
+                informedTasks = tasks.informedTasks.filter(o => o.status === "inprocess");
+                amountInformedTasks = informedTasks.length;
             }
 
-            // Tinh tong so luong cong viec co trang thai Inprogess
-            let responsibleTasks = [], creatorTasks = [], accountableTasks = [], consultedTasks = [], informedTasks = [];
+            newNumTask = [...newNumTask, ...responsibleTasks, ...creatorTasks, ...consultedTasks, ...accountableTasks, ...informedTasks];
+            listTasksGeneral = [...listTasksGeneral, ...responsibleTasks, ...accountableTasks, ...consultedTasks];
 
+            newNumTask = filterDifference(newNumTask);
+            listTasksGeneral = filterDifference(listTasksGeneral);
 
-            if (tasks) {
-                if (tasks.responsibleTasks && tasks.responsibleTasks.length > 0) {
-                    responsibleTasks = tasks.responsibleTasks.filter(o => o.status === "inprocess")
-                }
-
-                if (tasks.creatorTasks && tasks.creatorTasks.length > 0) {
-                    creatorTasks = tasks.creatorTasks.filter(o => o.status === "inprocess")
-                }
-
-                if (tasks.accountableTasks && tasks.accountableTasks.length > 0) {
-                    accountableTasks = tasks.accountableTasks.filter(o => o.status === "inprocess")
-                }
-
-                if (tasks.consultedTasks && tasks.consultedTasks.length > 0) {
-                    consultedTasks = tasks.consultedTasks.filter(o => o.status === "inprocess")
-                }
-
-                if (tasks.informedTasks && tasks.informedTasks.length > 0) {
-                    informedTasks = tasks.informedTasks.filter(o => o.status === "inprocess")
-                }
-
-                newNumTask = [...newNumTask, ...responsibleTasks, ...creatorTasks, ...consultedTasks, ...accountableTasks, ...informedTasks];
-                listTasksGeneral = [...listTasksGeneral, ...responsibleTasks, ...accountableTasks, ...consultedTasks];
-
-                newNumTask = filterDifference(newNumTask);
-                listTasksGeneral = filterDifference(listTasksGeneral);
-
-                totalTasks = newNumTask.length;
-            }
+            totalTasks = newNumTask.length;
         }
-
-
-
+        console.count();
         return (
             <React.Fragment>
                 <div className="qlcv" style={{ textAlign: "left" }}>
@@ -589,7 +487,6 @@ class TaskDashboard extends Component {
                             <div className="box-body qlcv">
                                 <LazyLoadComponent once={true}>
                                     <DomainOfTaskResultsChart
-                                        callAction={!willUpdate}
                                         startMonth={startMonth}
                                         endMonth={endMonth}
                                     />
@@ -661,13 +558,12 @@ class TaskDashboard extends Component {
                             </div>
 
                             <div className="box-body qlcv">
-                                {callAction &&
+                                <LazyLoadComponent once={true}>
                                     <LoadTaskChart
-                                        callAction={!willUpdate}
                                         startMonth={startMonth}
                                         endMonth={endMonth}
                                     />
-                                }
+                                </LazyLoadComponent>
                             </div>
                         </div>
                     </div>
@@ -723,7 +619,7 @@ class TaskDashboard extends Component {
                                         {
                                             userTimeSheetLogs.map((tsl, index) => {
                                                 return (
-                                                    tsl?.acceptLog && <tr>
+                                                    tsl?.acceptLog && <tr key={index}>
                                                         <td>{index + 1}</td>
                                                         <td>{tsl.name}</td>
                                                         <td>{dayjs(tsl.startedAt).format("DD-MM-YYYY h:mm:ss A")}</td>

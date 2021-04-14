@@ -25,7 +25,7 @@ function TaskListView(props) {
                     (state.length !== 0) ?
                         state.map((obj, index) => (
                             <div className="panel panel-default" key={index}>
-                                <a role="button" className="task-item" >
+                                <span role="button" className="task-item" >
                                     <div className="collapsed task-name" data-toggle="collapse" data-parent="#accordion-urgent" href={`#collapse-tasks${index}`} aria-expanded="true" aria-controls="collapse1a" >
                                         <span className="index">{index + 1}</span>
                                         <span className="task-name">{obj.name}</span>
@@ -71,7 +71,7 @@ function TaskListView(props) {
                                                 </a>
                                         }
                                     </div>
-                                </a>
+                                </span>
                                 <div id={`collapse-tasks${index}`} className="panel-collapse collapse" role="tabpanel">
                                     <div className="panel-body">
                                         <div className="time-todo-range">

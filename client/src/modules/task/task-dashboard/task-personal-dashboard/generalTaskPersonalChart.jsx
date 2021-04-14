@@ -250,7 +250,7 @@ const GeneralTaskPersonalChart = (props) => {
                                             (state.urgentTask.length !== 0) ?
                                                 state.urgentTask.map((obj, index) => (
                                                     <div className="panel panel-default" key={index}>
-                                                        <a role="button" className="item-question collapsed" data-toggle="collapse" data-parent="#accordion-urgent" href={`#collapse-urgent${index}`} aria-expanded="true" aria-controls="collapse1a">
+                                                        <span role="button" className="item-question collapsed" data-toggle="collapse" data-parent="#accordion-urgent" href={`#collapse-urgent${index}`} aria-expanded="true" aria-controls="collapse1a">
                                                             <span className="index">{index + 1}</span>
                                                             <span className="task-name">{obj.name}</span>
                                                             {
@@ -259,7 +259,7 @@ const GeneralTaskPersonalChart = (props) => {
                                                                         <a className="task-project-name" title="dự án">{getProjectName(obj.taskProject, project && project.data && project.data.list)}</a></> : null
                                                             }
                                                             <small className="label label-danger" style={{ fontSize: '9px', marginLeft: '5px', borderRadius: '.5em' }}>{obj.createdToNow} {translate('task.task_dashboard.day')} trước</small>
-                                                        </a>
+                                                        </span>
                                                         <div id={`collapse-urgent${index}`} className="panel-collapse collapse" role="tabpanel">
                                                             <div className="panel-body">
                                                                 <div className="time-todo-range">
@@ -301,7 +301,7 @@ const GeneralTaskPersonalChart = (props) => {
                                             (state.todoTask.length !== 0) ?
                                                 state.todoTask.map((obj, index) => (
                                                     <div className="panel panel-default" key={index}>
-                                                        <a role="button" className="item-question collapsed" data-toggle="collapse" data-parent="#accordion-todo" href={`#collapse-todo${index}`} aria-expanded="false" aria-controls={`#collapse-todo${index}`}>
+                                                        <span role="button" className="item-question collapsed" data-toggle="collapse" data-parent="#accordion-todo" href={`#collapse-todo${index}`} aria-expanded="false" aria-controls={`#collapse-todo${index}`}>
                                                             <span className="index">{index + 1}</span>
                                                             <span className="task-name">{obj.name}</span>
                                                             {
@@ -310,7 +310,7 @@ const GeneralTaskPersonalChart = (props) => {
                                                                         <a className="task-project-name" title="dự án">{getProjectName(obj.taskProject, project && project.data && project.data.list)}</a></> : null
                                                             }
                                                             <small className="label label-primary" style={{ fontSize: '9px', marginLeft: '5px', borderRadius: '.5em' }}>{obj.createdToNow} {translate('task.task_dashboard.day')} trước</small>
-                                                        </a>
+                                                        </span>
                                                         <div id={`collapse-todo${index}`} className="panel-collapse collapse" role="tabpanel">
                                                             <div className="panel-body">
                                                                 <div className="time-todo-range">
@@ -354,7 +354,7 @@ const GeneralTaskPersonalChart = (props) => {
                                             (state.overdueTask.length !== 0) ?
                                                 state.overdueTask.map((obj, index) => (
                                                     <div className="panel panel-default" key={index}>
-                                                        <a role="button" className="item-question collapsed" data-toggle="collapse" data-parent="#accordion-overdue" href={`#collapse-overdue${index}`} aria-expanded="true" aria-controls="collapse1a">
+                                                        <span role="button" className="item-question collapsed" data-toggle="collapse" data-parent="#accordion-overdue" href={`#collapse-overdue${index}`} aria-expanded="true" aria-controls="collapse1a">
                                                             <span className="index">{index + 1}</span>
                                                             <span className="task-name">{obj.name}</span>
                                                             {
@@ -363,7 +363,7 @@ const GeneralTaskPersonalChart = (props) => {
                                                                         <a className="task-project-name" title="dự án">{getProjectName(obj.taskProject, project && project.data && project.data.list)}</a></> : null
                                                             }
                                                             <small className="label label-danger" style={{ fontSize: '9px', marginLeft: '5px', borderRadius: '.5em' }}>{translate('task.task_dashboard.overdue')} {obj.nowToEnd} {translate('task.task_dashboard.day')}</small>
-                                                        </a>
+                                                        </span>
                                                         <div id={`collapse-overdue${index}`} className="panel-collapse collapse" role="tabpanel">
                                                             <div className="panel-body">
                                                                 <div className="time-todo-range">
@@ -407,7 +407,7 @@ const GeneralTaskPersonalChart = (props) => {
                                             (state.delayTask.length !== 0) ?
                                                 state.delayTask.map((obj, index) => (
                                                     <div className="panel panel-default" key={index}>
-                                                        <a role="button" className="item-question collapsed" data-toggle="collapse" data-parent="#accordion-delay" href={`#collapse-delay${index}`} aria-expanded="true" aria-controls="collapse1a">
+                                                        <span role="button" className="item-question collapsed" data-toggle="collapse" data-parent="#accordion-delay" href={`#collapse-delay${index}`} aria-expanded="true" aria-controls="collapse1a">
                                                             <span className="index">{index + 1}</span>
                                                             <span className="task-name">{obj.name}</span>
                                                             {
@@ -416,7 +416,7 @@ const GeneralTaskPersonalChart = (props) => {
                                                                         <a className="task-project-name" title="dự án">{getProjectName(obj.taskProject, project && project.data && project.data.list)}</a></> : null
                                                             }
                                                             <small className="label" style={{ fontSize: '9px', marginLeft: '5px', borderRadius: '.5em', backgroundColor: "#db8b0b" }}>{obj.progress}% - {translate('task.task_dashboard.rest')} {obj.nowToEnd} {translate('task.task_dashboard.day')} tới hạn</small>
-                                                        </a>
+                                                        </span>
                                                         <div id={`collapse-delay${index}`} className="panel-collapse collapse" role="tabpanel">
                                                             <div className="panel-body">
                                                                 <div className="time-todo-range">
@@ -462,7 +462,7 @@ const GeneralTaskPersonalChart = (props) => {
                                             (state.deadlineNow.length !== 0) ?
                                                 state.deadlineNow.map((obj, index) => (
                                                     <div className="panel panel-default" key={index}>
-                                                        <a role="button" className="item-question collapsed" data-toggle="collapse" data-parent="#accordion-deadlinenow" href={`#collapse-deadlinenow${index}`} aria-expanded="true" aria-controls="collapse1a">
+                                                        <span role="button" className="item-question collapsed" data-toggle="collapse" data-parent="#accordion-deadlinenow" href={`#collapse-deadlinenow${index}`} aria-expanded="true" aria-controls="collapse1a">
                                                             <span className="index">{index + 1}</span>
                                                             <span className="task-name">{obj.name}</span>
                                                             {
@@ -471,7 +471,7 @@ const GeneralTaskPersonalChart = (props) => {
                                                                         <a className="task-project-name" title="dự án">{getProjectName(obj.taskProject, project && project.data && project.data.list)}</a></> : null
                                                             }
                                                             <small className="label" style={{ fontSize: '9px', marginLeft: '5px', borderRadius: '.5em', backgroundColor: "rgb(117 152 224)" }}>{obj?.diff?.hours >= 0 ? `còn ${obj.diff.hours}h:${obj.diff.minutes}p hết hạn` : `hết hạn ${-obj.diff.hours}h:${obj.diff.minutes}p trước`}</small>
-                                                        </a>
+                                                        </span>
                                                         <div id={`collapse-deadlinenow${index}`} className="panel-collapse collapse" role="tabpanel">
                                                             <div className="panel-body">
                                                                 <div className="time-todo-range">
@@ -516,7 +516,7 @@ const GeneralTaskPersonalChart = (props) => {
                                         (deadlineincoming.length > 0) ?
                                             deadlineincoming.map((obj, index) => (
                                                 <div className="panel panel-default" key={index}>
-                                                    <a role="button" className="item-question collapsed" data-toggle="collapse" data-parent="#accordion-deadlineincoming" href={`#collapse-deadlineincoming${index}`} aria-expanded="true" aria-controls="collapse1a">
+                                                    <span role="button" className="item-question collapsed" data-toggle="collapse" data-parent="#accordion-deadlineincoming" href={`#collapse-deadlineincoming${index}`} aria-expanded="true" aria-controls="collapse1a">
                                                         <span className="index">{index + 1}</span>
                                                         <span className="task-name">{obj.task && obj.task.name}</span>
                                                         {
@@ -525,7 +525,7 @@ const GeneralTaskPersonalChart = (props) => {
                                                                     <a className="task-project-name" title="dự án">{getProjectName(obj.task.taskProject, project && project.data && project.data.list)}</a></> : null
                                                         }
                                                         <small className="label" style={{ fontSize: '9px', marginLeft: '5px', borderRadius: '.5em', backgroundColor: "#db8b0b" }}>{obj.task && obj.task.progress}% - {translate('task.task_dashboard.rest')} {obj.totalDays} {translate('task.task_dashboard.day')}</small>
-                                                    </a>
+                                                    </span>
                                                     <div id={`collapse-deadlineincoming${index}`} className="panel-collapse collapse" role="tabpanel">
                                                         <div className="panel-body">
                                                             <div className="time-todo-range">
@@ -572,7 +572,7 @@ const GeneralTaskPersonalChart = (props) => {
                                         (state.intimeTask.length !== 0) ?
                                             state.intimeTask.map((obj, index) => (
                                                 <div className="panel panel-default" key={index}>
-                                                    <a role="button" className="item-question collapsed" data-toggle="collapse" data-parent="#accordion-intime" href={`#collapse-intime${index}`} aria-expanded="true" aria-controls="collapse1a">
+                                                    <span role="button" className="item-question collapsed" data-toggle="collapse" data-parent="#accordion-intime" href={`#collapse-intime${index}`} aria-expanded="true" aria-controls="collapse1a">
                                                         <span className="index">{index + 1}</span>
                                                         <span className="task-name">{obj.name}</span>
                                                         {
@@ -581,7 +581,7 @@ const GeneralTaskPersonalChart = (props) => {
                                                                 <a className="task-project-name" title="dự án">{getProjectName(obj.taskProject, project && project.data && project.data.list)}</a></>
                                                         }
                                                         <small className="label label-success" style={{ fontSize: '9px', marginLeft: '5px', borderRadius: '.5em' }}>{obj.progress}% - {translate('task.task_dashboard.rest')} {obj.nowToEnd} {translate('task.task_dashboard.day')}</small>
-                                                    </a>
+                                                    </span>
                                                     <div id={`collapse-intime${index}`} className="panel-collapse collapse" role="tabpanel">
                                                         <div className="panel-body">
                                                             <div className="time-todo-range">
