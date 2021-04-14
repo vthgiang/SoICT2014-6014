@@ -1,6 +1,8 @@
-const overviewService = require('./management.service');
-const Logger = require(`../../../../logs`);
+const overviewService = require('./management.service')
+const Logger = require(`../../../../logs`)
+const EmployeeKpiSetService = require('../creation/creation.service')
 
+const { getDataEmployeeKpiSetLog } = require('../../../../helpers/descriptionLogKpi')
 
 /** Lấy tất cả tập kpi cá nhân của một nhân viên có trạng thái đã kết thúc */
 exports.getAllKPIEmployeeSetsInOrganizationByMonth = async (req, res) => {
@@ -34,16 +36,39 @@ exports.getAllKPIEmployeeSetsInOrganizationByMonth = async (req, res) => {
  */
 exports.copyKPI = async (req, res) => {
     try {
-        let data = {
+        let query = {
             ...req.query,
             creator: req.user._id
         }
-        let kpipersonals = await overviewService.copyKPI(req.portal, req.params.id, data);
+        let data = await overviewService.copyKPI(req.portal, req.params.id, query);
+        
+        // Thêm log
+        let log = getDataEmployeeKpiSetLog({
+            type: "copy_kpi_employee_to_employee",
+            creator: req.user._id,
+            organizationalUnit: data?.employeeKpiSet?.organizationalUnit, 
+            month: data?.employeeKpiSet?.date,
+            employee: data?.employeeKpiSet?.creator,
+            newData: data?.employeeKpiSet,
+            copyKpi: data?.copyKpi
+        })
+        await overviewService.createEmployeeKpiSetLogs(req.portal, {
+            ...log,
+            employeeKpiSetId: data?.employeeKpiSet?._id
+        })
+
+        // Thêm newsfeed
+        await EmployeeKpiSetService.createNewsFeedForEmployeeKpiSet(req.portal, {
+            ...log,
+            organizationalUnit: data?.employeeKpiSet?.organizationalUnit,
+            employeeKpiSet: data?.employeeKpiSet
+        })
+        
         Logger.info(req.user.email, ` get all kpi personal `, req.portal);
         res.status(200).json({
             success: true,
             messages: ['copy_employee_kpi_success'],
-            content: kpipersonals
+            content: data?.employeeKpiSet
         });
     } catch (error) {
         let messages = error && error.messages === 'employee_kpi_set_exist'
