@@ -1,6 +1,8 @@
-const managerService = require('./management.service');
-const Logger = require(`../../../../logs`);
+const managerService = require('./management.service')
+const KPIUnitService = require('../creation/creation.service')
+const Logger = require(`../../../../logs`)
 
+const { getDataOrganizationalUnitKpiSetLog } = require('../../../../helpers/descriptionLogKpi')
 
 /**
  * Copy KPI đơn vị từ một tháng cũ sang tháng mới
@@ -76,6 +78,27 @@ copyParentKPIUnitToChildrenKPIEmployee = async (req, res) => {
 exports.calculateKpiUnit = async (req, res) => {
     try {
         let kpiUnit = await managerService.calculateKpiUnit(req.portal, req.body);
+       
+        // Thêm log
+        let log = getDataOrganizationalUnitKpiSetLog({
+            type: "set_point_all",
+            creator: req.user._id,
+            organizationalUnit: kpiUnit?.kpiUnitSet?.organizationalUnit, 
+            month: kpiUnit?.kpiUnitSet?.date,
+            newData: kpiUnit?.kpiUnitSet
+        })
+        await managerService.createOrganizationalUnitKpiSetLogs(req.portal, {
+            ...log,
+            organizationalUnitKpiSetId: kpiUnit?.kpiUnitSet?._id
+        })
+
+        // Thêm newsfeed
+        await KPIUnitService.createNewsFeedForOrganizationalUnitKpiSet(req.portal, {
+            ...log,
+            organizationalUnit: kpiUnit?.kpiUnitSet?.organizationalUnit,
+            organizationalUnitKpiSetId: kpiUnit?.kpiUnitSet?._id
+        })
+        
         Logger.info(req.user.email, ' calculate kpi unit ', req.portal)
         res.status(200).json({
             success: true,
