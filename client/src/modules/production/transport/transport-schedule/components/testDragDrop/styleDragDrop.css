@@ -1,13 +1,15 @@
 .test1 {
     display: flex;
     flex-direction: row;
+    justify-content: flex-start;
     overflow-x: auto;
 }
 .address-element {
     display: inline-block;
-    min-width: 200px;
+    width: 300px;
     background-color: white;
     padding: 10px;
+    border: green solid 1px;
 }
 .address-element:hover {
     background-color: whitesmoke;

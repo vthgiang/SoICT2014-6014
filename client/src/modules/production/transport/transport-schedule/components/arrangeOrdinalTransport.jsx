@@ -56,7 +56,33 @@ function ArrangeOrdinalTransport(props) {
             setCurrentTransportPlan({_id: value[0], code: ""});
         }
     }
-
+    /**
+     * Submit state và lưu vào transportSchedule qua plan id, lưu lại lộ trình các xe
+     */
+    const handleSubmitRoute = () => {
+        console.log(transportOrdinalAddress, " trnasportordinal")
+        console.log(currentTransportPlan._id, "");
+        if (transportOrdinalAddress && transportOrdinalAddress.length !==0){
+            let data = [];
+            transportOrdinalAddress.map((item, index) => {
+                let routeOrdinal = [];
+                if (item.addressOrdinal && item.addressOrdinal.length !==0){
+                    item.addressOrdinal.map((item2, index2) => {
+                        routeOrdinal.push({
+                            ordinal: index2,
+                            transportRequirement: item2.transportRequirementId,
+                            type: item2.addressType,
+                        })
+                    })
+                }
+                data.push({
+                    transportVehicle: item.transportVehicle,
+                    routeOrdinal: routeOrdinal,
+                })
+            })
+            props.editTransportScheduleByPlanId(currentTransportPlan._id, {route: data})
+        }
+    }
     useEffect(() => {
         props.getAllTransportPlans({page: 1, limit: 100});
     }, []);
@@ -157,6 +183,13 @@ function ArrangeOrdinalTransport(props) {
                             items={getListTransportPlans()}
                             onChange={handleTransportPlanChange}
                         />
+                    </div>                
+                    <div className="form-group">
+                        <button type="button" className="btn btn-success" title="Lưu" 
+                            onClick={handleSubmitRoute}
+                        >
+                            Lưu
+                        </button>
                     </div>
                 </div>
 
@@ -205,6 +238,7 @@ function mapState(state) {
 const actions = {
     getAllTransportPlans: transportPlanActions.getAllTransportPlans,
     getTransportScheduleByPlanId: transportScheduleActions.getTransportScheduleByPlanId,
+    editTransportScheduleByPlanId: transportScheduleActions.editTransportScheduleByPlanId,
 }
 
 const connectedArrangeOrdinalTransport = connect(mapState, actions)(withTranslate(ArrangeOrdinalTransport));
