@@ -39,7 +39,7 @@ exports.getTransportRouteByPlanId = async (portal, id) => {
                     model: 'TransportVehicle'
                 }
             ]
-        }   
+        },
     )
     if (transportRoute) {
         return transportRoute;

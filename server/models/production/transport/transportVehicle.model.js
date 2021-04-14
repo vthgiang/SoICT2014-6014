@@ -29,17 +29,17 @@ const TransportVehicleSchema = new Schema({ // Phương tiện vận tải (lấ
             required: true,
         }
     }],
-    carriers: [{ // Người vận chuyển trên xe
-        pos: { // Tài xế hay người đi cùng
-            type: Number,
-            required: true,
-        },
-        carrier: { // Thông tin người vận chuyển, liên kết bảng người vận chuyển
-            type: Schema.Types.ObjectId,
-            ref: 'carrier',
-            required: true
-        }
-    }],
+    // carriers: [{ // Người vận chuyển trên xe
+    //     pos: { // Tài xế hay người đi cùng
+    //         type: Number,
+    //         required: true,
+    //     },
+    //     carrier: { // Thông tin người vận chuyển, liên kết bảng người vận chuyển
+    //         type: Schema.Types.ObjectId,
+    //         ref: 'carrier',
+    //         required: true
+    //     }
+    // }],
     payload: { // Tải trọng xe
         type: Number,
         required: true,

@@ -152,16 +152,15 @@ function ArrangeVehiclesAndGoods(props) {
      * @returns 
      */
     const getStatusTickBox = (vehicleId, requirementId, distributionList) => {
-        console.log(vehicleId, requirementId, distributionList);
         // Kiểm tra có state trạng thái các phân phối lựa chọn hay chưa
         if (distributionList && distributionList.length !== 0){
             // Tìm xe
             let distribution = distributionList.filter(r => String(r.vehicle) === String(vehicleId));
-            console.log(distribution, " b1");
+            // console.log(distribution, " b1");
             if (distribution && distribution.length !== 0 ){
                 // Kiểm tra có requirementId trên xe này không
                 let check = distribution[0].transportRequirements.filter(r => String(r) === String(requirementId))
-                console.log(check, " b2")
+                // console.log(check, " b2")
                 if (check && check.length !== 0) {
                     return "iconactive";
                 }
@@ -245,7 +244,7 @@ function ArrangeVehiclesAndGoods(props) {
                                 (allTransportVehicle && allTransportVehicle.length !== 0) &&
                                 allTransportVehicle.map((item, index) => (
                                     item &&
-                                    <th key={index}>{item.transportVehicle.name}</th>
+                                    <th key={"v" + index}>{item.transportVehicle.name}</th>
                                 ))
                             }
                             {/* <th colSpan={2}>{"Xe 1"}</th>
@@ -327,7 +326,7 @@ function ArrangeVehiclesAndGoods(props) {
                                             {"Khối lượng:"}
                                         </p>
                                         <p>
-                                            {"1000"}
+                                            {item.payload}
                                         </p>
                                     </div>
                                     <div>
@@ -335,7 +334,7 @@ function ArrangeVehiclesAndGoods(props) {
                                             {"Thể tích:"}
                                         </p>
                                         <p>
-                                            {"1000"}
+                                            {item.volume}
                                         </p>
                                     </div>
                                 </td>
@@ -607,7 +606,6 @@ function ArrangeVehiclesAndGoods(props) {
 }
 
 function mapState(state) {
-    // console.log(state, " 113213123");
     const transportArrangeRequirements = state.transportRequirements.lists;
     const allTransportVehicle = state.transportVehicle.lists;
     const allTransportPlans = state.transportPlan.lists;
