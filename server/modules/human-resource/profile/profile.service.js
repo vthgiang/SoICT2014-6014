@@ -735,7 +735,7 @@ exports.createEmployee = async (portal, data, company, fileInfor) => {
     contracts = this.mergeUrlFileToObject(fileContract, contracts);
     files = this.mergeUrlFileToObject(file, files);
 
-    console.log('mcmcmcmcmcmcm\n\n', data.houseHold.familyMembers);
+    // console.log('mcmcmcmcmcmcm\n\n', data.houseHold.familyMembers);
     // file đính kèm bảo hiểm y tế
     if (healthInsuranceAttachment) {
         healthInsuranceAttachment = healthInsuranceAttachment.map(obj => {
