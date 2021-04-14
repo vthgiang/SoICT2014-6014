@@ -303,6 +303,9 @@ exports.editKpi = async (portal, id, data) => {
 
     let employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
         .findOne({ kpis: { $in: [mongoose.Types.ObjectId(id)] }})
+        .populate("organizationalUnit ")
+        .populate({path: "creator", select :"_id name email avatar"})
+        .populate({path: "approver", select :"_id name email avatar"})
 
     return {
         target,

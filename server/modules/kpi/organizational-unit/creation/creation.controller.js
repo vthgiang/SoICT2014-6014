@@ -115,7 +115,7 @@ exports.deleteOrganizationalUnitKpi = async (req, res) => {
         })
 
         // Thêm newsfeed
-        await KPIUnitService.createNewsFeedForOrganizationalUnit(req.portal, {
+        await KPIUnitService.createNewsFeedForOrganizationalUnitKpiSet(req.portal, {
             ...log,
             organizationalUnit: data?.organizationalUnitKpiSet?.organizationalUnit,
             organizationalUnitKpiSetId: data?.organizationalUnitKpiSet?._id
@@ -182,7 +182,7 @@ exports.createOrganizationalUnitKpi = async (req, res) => {
         })
 
         // Thêm newsfeed
-        await KPIUnitService.createNewsFeedForOrganizationalUnit(req.portal, {
+        await KPIUnitService.createNewsFeedForOrganizationalUnitKpiSet(req.portal, {
             ...log,
             organizationalUnit: organizationalUnitKpiSet?.organizationalUnit,
             organizationalUnitKpiSetId: organizationalUnitKpiSet?._id
@@ -227,11 +227,11 @@ exports.editOrganizationalUnitKpi = async (req, res) => {
         })
 
         // Thêm newsfeed
-        await KPIUnitService.createNewsFeedForOrganizationalUnit(req.portal, {
+        await KPIUnitService.createNewsFeedForOrganizationalUnitKpiSet(req.portal, {
             ...log,
             organizationalUnit: data?.unitKpiSet?.organizationalUnit,
             organizationalUnitKpiSetId: data?.unitKpiSet?._id
-        });
+        })
         
         Logger.info(req.user.email, 'edit target kpi unit', req.portal)
         res.status(200).json({
@@ -273,7 +273,7 @@ editOrganizationalUnitKpiSetStatus = async (req, res) => {
         })
 
         // Thêm newsfeed
-        await KPIUnitService.createNewsFeedForOrganizationalUnit(req.portal, {
+        await KPIUnitService.createNewsFeedForOrganizationalUnitKpiSet(req.portal, {
             ...log,
             organizationalUnit: kpiunit?.organizationalUnit,
             organizationalUnitKpiSetId: kpiunit?._id
@@ -320,7 +320,7 @@ exports.createOrganizationalUnitKpiSet = async (req, res) => {
         })
 
         // Thêm newsfeed
-        await KPIUnitService.createNewsFeedForOrganizationalUnit(req.portal, {
+        await KPIUnitService.createNewsFeedForOrganizationalUnitKpiSet(req.portal, {
             ...log,
             organizationalUnit: organizationalUnitKpiSet?.organizationalUnit,
             organizationalUnitKpiSetId: organizationalUnitKpiSet?._id

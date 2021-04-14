@@ -101,6 +101,7 @@ exports.createEmployeeKpiSet = async (req, res) => {
         }
         let employeeKpiSet = await EmployeeKpiSetService.createEmployeeKpiSet(req.portal, data);
 
+        // Thêm log
         let log = getDataEmployeeKpiSetLog({
             type: "create",
             creator: req.user._id,
@@ -114,6 +115,13 @@ exports.createEmployeeKpiSet = async (req, res) => {
             employeeKpiSetId: employeeKpiSet?._id
         })
 
+        // Thêm newsfeed
+        await EmployeeKpiSetService.createNewsFeedForEmployeeKpiSet(req.portal, {
+            ...log,
+            organizationalUnit: employeeKpiSet?.organizationalUnit,
+            employeeKpiSet: employeeKpiSet
+        });
+
         await Logger.info(req.user.email, ` create employee kpi set `, req.portal)
         res.status(200).json({
             success: true,
@@ -121,7 +129,6 @@ exports.createEmployeeKpiSet = async (req, res) => {
             content: employeeKpiSet
         })
     } catch (error) {
-        console.log(error)
         await Logger.error(req.user.email, ` create employee kpi set `, req.portal)
         res.status(400).json({
             success: false,
@@ -137,6 +144,7 @@ exports.createEmployeeKpi = async (req, res) => {
     try {
         let employeeKpiSet = await EmployeeKpiSetService.createEmployeeKpi(req.portal, req.body);
 
+        // Thêm logs
         let log = getDataEmployeeKpiSetLog({
             type: "add_kpi",
             creator: req.user._id,
@@ -150,6 +158,13 @@ exports.createEmployeeKpi = async (req, res) => {
             employeeKpiSetId: employeeKpiSet?._id
         })
 
+        // THêm newsfeed
+        await EmployeeKpiSetService.createNewsFeedForEmployeeKpiSet(req.portal, {
+            ...log,
+            organizationalUnit: employeeKpiSet?.organizationalUnit,
+            employeeKpiSet: employeeKpiSet
+        });
+
         await Logger.info(req.user.email, ` create employee kpi `, req.portal)
         res.status(200).json({
             success: true,
@@ -157,7 +172,6 @@ exports.createEmployeeKpi = async (req, res) => {
             content: employeeKpiSet
         })
     } catch (error) {
-        console.log(error)
         await Logger.error(req.user.email, ` create employee kpi `, req.portal)
         res.status(400).json({
             success: false,
@@ -176,6 +190,7 @@ exports.editEmployeeKpiSet = async (req, res) => {
         try {
             let employeeKpiSet = await EmployeeKpiSetService.editEmployeeKpiSet(req.portal, req.body.approver, req.params.id);
             
+            // THêm logs
             let log = getDataEmployeeKpiSetLog({
                 type: "edit_kpi_set",
                 creator: req.user._id,
@@ -188,6 +203,13 @@ exports.editEmployeeKpiSet = async (req, res) => {
                 ...log,
                 employeeKpiSetId: employeeKpiSet?._id
             })
+
+            // THêm newsfeed
+            await EmployeeKpiSetService.createNewsFeedForEmployeeKpiSet(req.portal, {
+                ...log,
+                organizationalUnit: employeeKpiSet?.organizationalUnit,
+                employeeKpiSet: employeeKpiSet
+            });
 
             await Logger.info(req.user.email, ` edit employee kpi set `, req.portal)
             res.status(200).json({
@@ -211,6 +233,7 @@ exports.updateEmployeeKpiSetStatus = async (req, res) => {
     try {
         let employeeKpiSet = await EmployeeKpiSetService.updateEmployeeKpiSetStatus(req.portal, req.params.id, req.query.status, req.user.company._id);
        
+        // Thêm logs
         let log = getDataEmployeeKpiSetLog({
             type: "edit_status",
             creator: req.user._id,
@@ -224,6 +247,13 @@ exports.updateEmployeeKpiSetStatus = async (req, res) => {
             employeeKpiSetId: employeeKpiSet?._id
         })
 
+        // THêm newsfeed
+        await EmployeeKpiSetService.createNewsFeedForEmployeeKpiSet(req.portal, {
+            ...log,
+            organizationalUnit: employeeKpiSet?.organizationalUnit,
+            employeeKpiSet: employeeKpiSet
+        });
+
         await Logger.info(req.user.email, ` edit employee kpi set status `, req.portal)
         res.status(200).json({
             success: true,
@@ -231,7 +261,6 @@ exports.updateEmployeeKpiSetStatus = async (req, res) => {
             content: employeeKpiSet
         })
     } catch (error) {
-        console.log(error)
         await Logger.error(req.user.email, ` edit employee kpi set status `, req.portal)
         res.status(400).json({
             success: false,
@@ -271,6 +300,7 @@ exports.deleteEmployeeKpi = async (req, res) => {
     try {
         let data = await EmployeeKpiSetService.deleteEmployeeKpi(req.portal, req.params.id, req.query.employeeKpiSetId);
         
+        // Thêm logs
         let log = getDataEmployeeKpiSetLog({
             type: "delete_kpi",
             creator: req.user._id,
@@ -283,6 +313,13 @@ exports.deleteEmployeeKpi = async (req, res) => {
             ...log,
             employeeKpiSetId: data?.employeeKpiSet?._id
         })
+
+        // THêm newsfeed
+        await EmployeeKpiSetService.createNewsFeedForEmployeeKpiSet(req.portal, {
+            ...log,
+            organizationalUnit: data?.employeeKpiSet?.organizationalUnit,
+            employeeKpiSet: data?.employeeKpiSet
+        });
         
         await Logger.info(req.user.email, ` delete employee kpi `, req.portal)
         res.status(200).json({

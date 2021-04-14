@@ -1,5 +1,6 @@
 const KPIMemberService = require('./employeeEvaluation.service');
 const overviewService = require('../../employee/management/management.service')
+const EmployeeKpiSetService = require('../../employee/creation/creation.service')
 
 const Logger = require(`../../../../logs`);
 
@@ -110,6 +111,7 @@ exports.editKpi = async (req, res) => {
         try {
             const data = await KPIMemberService.editKpi(req.portal, req.params.id, req.body);
            
+            // Thêm logs
             let log = getDataEmployeeKpiSetLog({
                 type: "edit_kpi",
                 creator: req.user._id,
@@ -123,6 +125,13 @@ exports.editKpi = async (req, res) => {
                 employeeKpiSetId: data?.employeeKpiSet?._id
             })
            
+            // THêm newsfeed
+            await EmployeeKpiSetService.createNewsFeedForEmployeeKpiSet(req.portal, {
+                ...log,
+                organizationalUnit: data?.employeeKpiSet?.organizationalUnit,
+                employeeKpiSet: data?.employeeKpiSet
+            });
+
             await Logger.info(req.user.email, `Edit target member`, req.portal);
             res.status(200).json({
                 success: true,

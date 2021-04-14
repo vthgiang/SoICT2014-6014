@@ -1,7 +1,7 @@
-const Models = require(`../../../../models`);
-const { OrganizationalUnitKpi, OrganizationalUnit, OrganizationalUnitKpiSet } = Models;
-const overviewService = require('../../employee/management/management.service');
-const UserService = require('../../../super-admin/user/user.service');
+const Models = require(`../../../../models`)
+const { OrganizationalUnitKpi, OrganizationalUnit, OrganizationalUnitKpiSet } = Models
+const overviewService = require('../../employee/management/management.service')
+const UserService = require('../../../super-admin/user/user.service')
 const NewsFeedService = require('../../../news-feed/newsFeed.service')
 
 const { connect } = require(`../../../../helpers/dbHelper`);
@@ -931,7 +931,8 @@ exports.deleteFileChildComment = async (portal, params) => {
     return task.comments;
 }
 
-exports.createNewsFeedForOrganizationalUnit = async (portal, data) => {
+/** Thêm newsfeed cho kpi đơn vị */
+exports.createNewsFeedForOrganizationalUnitKpiSet = async (portal, data) => {
     const { creator, title, description, organizationalUnitKpiSetId, organizationalUnit } = data
 
     let relatedUsers = await UserService.getAllEmployeeOfUnitByIds(portal, {
