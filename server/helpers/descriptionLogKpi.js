@@ -2,7 +2,6 @@ exports.getDataOrganizationalUnitKpiSetLog = (data) => {
     const { creator, type, organizationalUnit, month, newData } = data
     let monthIso = new Date(month);
 
-    console.log(newData)
     let log = {
         creator: creator,
         title: getTitleLogs(type) + " " + organizationalUnit?.name + " tháng " + (monthIso?.getMonth() + 1) + "-" + monthIso?.getFullYear(),
