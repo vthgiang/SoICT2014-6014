@@ -50,6 +50,12 @@ function MaintainanceLogTab(props) {
                 return translate('asset.asset_info.replace');
             case "3":
                 return translate('asset.asset_info.upgrade');
+            case "Sửa chữa":
+                return translate('asset.asset_info.repair');
+            case "Thay thế":
+                    return translate('asset.asset_info.replace');
+            case "Nâng cấp":
+                return translate('asset.asset_info.upgrade');
             default:
                 return '';
         }

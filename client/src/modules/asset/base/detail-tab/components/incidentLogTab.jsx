@@ -51,9 +51,9 @@ function IncidentLogTab(props) {
 
     const formatType = (type) => {
         const { translate } = props;
-        if (Number(type) === 1) {
+        if (Number(type) === 1 || type === 'Hỏng hóc') {
             return translate('asset.general_information.damaged');
-        } else if (Number(type) === 2) {
+        } else if (Number(type) === 2 || type === 'Mất') {
             return translate('asset.general_information.lost');
         } else {
             return '';

@@ -104,7 +104,12 @@ function IncidentLogTab(props) {
         }
         else if (type === '2') {
             return translate('asset.general_information.lost');
+        }else if (type === 'Hỏng hóc'){
+            return translate('asset.general_information.damaged');
+        } else if (type === 'Mất') {
+            return translate('asset.general_information.lost');
         }
+
         else return '';
     }
 
