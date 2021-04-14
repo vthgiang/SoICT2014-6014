@@ -86,6 +86,28 @@ getKpisByMonth = async (req, res) => {
 exports.approveAllKpis = async (req, res) => {
     try {
         const kpimembers = await KPIMemberService.approveAllKpis(req.portal, req.params.id, req.user.company._id);
+        
+        // Thêm log
+        let log = getDataEmployeeKpiSetLog({
+            type: "approval_all",
+            creator: req.user._id,
+            organizationalUnit: kpimembers?.organizationalUnit, 
+            employee: kpimembers?.creator,
+            month: kpimembers?.date,
+            newData: kpimembers
+        })
+        await overviewService.createEmployeeKpiSetLogs(req.portal, {
+            ...log,
+            employeeKpiSetId: kpimembers?._id
+        })
+
+        // Thêm newsfeed
+        await EmployeeKpiSetService.createNewsFeedForEmployeeKpiSet(req.portal, {
+            ...log,
+            organizationalUnit: kpimembers?.organizationalUnit,
+            employeeKpiSet: kpimembers
+        });
+
         await Logger.info(req.user.email, `Approve all target`, req.portal);
         res.status(200).json({
             success: true,
@@ -154,12 +176,34 @@ exports.editKpi = async (req, res) => {
 
 exports.editStatusKpi = async (req, res) => {
     try {
-        const kpimembers = await KPIMemberService.editStatusKpi(req.portal, req.params, req.query, req.user.company._id);
+        const data = await KPIMemberService.editStatusKpi(req.portal, req.params, req.query, req.user.company._id);
+        
+        // Thêm log
+        let log = getDataEmployeeKpiSetLog({
+            type: "edit_status_kpi",
+            creator: req.user._id,
+            organizationalUnit: data?.kpimembers?.organizationalUnit, 
+            employee: data?.kpimembers?.creator,
+            month: data?.kpimembers?.date,
+            newData: data?.target
+        })
+        await overviewService.createEmployeeKpiSetLogs(req.portal, {
+            ...log,
+            employeeKpiSetId: data?.kpimembers?._id
+        })
+
+        // Thêm newsfeed
+        await EmployeeKpiSetService.createNewsFeedForEmployeeKpiSet(req.portal, {
+            ...log,
+            organizationalUnit: data?.kpimembers?.organizationalUnit,
+            employeeKpiSet: data?.kpimembers
+        });
+
         await Logger.info(req.user.email, `Edit status target`, req.portal);
         res.status(200).json({
             success: true,
             messages: ['edit_status_target_success'],
-            content: kpimembers
+            content: data?.kpimembers
         });
     } catch (error) {
         await Logger.error(req.user.email, `Edit status target`, req.portal);
@@ -219,6 +263,28 @@ getTasksByListKpiSet = async (req, res) => {
 exports.setTaskImportanceLevel = async (req, res) => {
     try {
         const kpimembers = await KPIMemberService.setTaskImportanceLevel(req.portal, req.params.id, req.query.kpiType, req.body);
+       
+        // Thêm log
+        let log = getDataEmployeeKpiSetLog({
+            type: "set_point_kpi",
+            creator: req.user._id,
+            organizationalUnit: kpimembers?.updateKpiSet?.organizationalUnit, 
+            employee: kpimembers?.updateKpiSet?.creator,
+            month: kpimembers?.updateKpiSet?.date,
+            newData: kpimembers?.result
+        })
+        await overviewService.createEmployeeKpiSetLogs(req.portal, {
+            ...log,
+            employeeKpiSetId: kpimembers?.updateKpiSet?._id
+        })
+
+        // Thêm newsfeed
+        await EmployeeKpiSetService.createNewsFeedForEmployeeKpiSet(req.portal, {
+            ...log,
+            organizationalUnit: kpimembers?.updateKpiSet?.organizationalUnit,
+            employeeKpiSet: kpimembers?.updateKpiSet
+        });
+
         await Logger.info(req.user.email, `Set task importance level`, req.portal);
         res.status(200).json({
             success: true,
@@ -241,6 +307,28 @@ exports.setTaskImportanceLevel = async (req, res) => {
 exports.setPointAllKpi = async (req, res) => {
     try {
         const kpi = await KPIMemberService.setPointAllKpi(req.portal, req.params.id, req.query.id, req.body);
+        
+        // Thêm log
+        let log = getDataEmployeeKpiSetLog({
+            type: "set_point_all",
+            creator: req.user._id,
+            organizationalUnit: kpi?.organizationalUnit, 
+            employee: kpi?.creator,
+            month: kpi?.date,
+            newData: kpi
+        })
+        await overviewService.createEmployeeKpiSetLogs(req.portal, {
+            ...log,
+            employeeKpiSetId: kpi?._id
+        })
+
+        // Thêm newsfeed
+        await EmployeeKpiSetService.createNewsFeedForEmployeeKpiSet(req.portal, {
+            ...log,
+            organizationalUnit: kpi?.organizationalUnit,
+            employeeKpiSet: kpi
+        });
+        
         await Logger.info(req.user.email, `Set point kpi`, req.portal);
         res.status(200).json({
             success: true,

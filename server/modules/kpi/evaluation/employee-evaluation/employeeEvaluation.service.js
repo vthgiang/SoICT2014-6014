@@ -280,7 +280,10 @@ exports.editStatusKpi = async (portal, data, query, companyId) => {
         NotificationServices.createNotification(portal, companyId, dataNotify)
     }
 
-    return employee_kpi_set;
+    return {
+        kpimembers: employee_kpi_set,
+        target: target
+    }
 }
 
 /**
@@ -471,12 +474,12 @@ exports.setTaskImportanceLevel = async (portal, id, kpiType, data) => {
                 },
             },
             { new: true }
-        );
-
-
+        )
+        .populate("organizationalUnit")
+        .populate({path: "creator", select :"_id name email avatar"})
+        .populate({path: "approver", select :"_id name email avatar"})
 
     return { task, result, updateKpiSet };
-
 }
 
 async function updateTaskImportanceLevel(portal, taskId, employeeId, point, date, role) {
@@ -745,9 +748,6 @@ exports.setPointAllKpi = async (portal, idEmployee, idKpiSet, data) => {
         ]);
 
     return updateKpiSet;
-
-
-
 }
 
 

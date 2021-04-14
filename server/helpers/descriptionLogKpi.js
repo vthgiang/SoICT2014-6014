@@ -36,12 +36,16 @@ const getTitleLogs = (type) => {
             return "Thêm mục tiêu KPI"
         case "delete_kpi": 
             return "Xóa mục tiêu KPI"
-        case "approval": 
-            return "Phê duyệt KPI"
-        case "evaluate":
-            return "Đánh gía KPI"
+        case "approval_all": 
+            return "Phê duyệt tất cả mục tiêu KPI"
+        case "set_point_all":
+            return "Tính điểm toàn bộ mục tiêu KPI"
+        case "set_point_kpi":
+            return "Tính điểm mục tiêu KPI"
         case "edit_status":
             return "Chỉnh sửa trạng thái KPI"
+        case "edit_status_kpi":
+            return "Phê duyệt mục tiêu KPI"
         default:
             return null
     }
@@ -71,7 +75,7 @@ const getDescriptionLogs = (type, newData, isUnit) => {
                 ` 
         case "edit_kpi":
             return `
-                <div>Mục tiêu mới: ${newData?.name}</div>
+                <div>Mục tiêu chỉnh sửa: ${newData?.name}</div>
                 <div>Tiêu chí đánh giá: ${newData?.criteria}</div>
                 <div>Trọng số: ${newData?.weight}</div>
             `
@@ -87,16 +91,47 @@ const getDescriptionLogs = (type, newData, isUnit) => {
                 <div>Tiêu chí đánh giá: ${newData?.criteria}</div>
                 <div>Trọng số: ${newData?.weight}</div>
             `
-        case "approval": 
-            return "Phê duyệt KPI"
-        case "evaluate":
-            return "Đánh gía KPI"
+        case "approval_all": 
+            return `
+                <div>Trạng thái mới: ${formatStatusEmployeeKpiSet(newData?.status)}</div>
+            `
+        case "set_point_all":
+            return `
+                <div>Điểm tự động: ${newData?.automaticPoint}</div>
+                <div>Điểm tự đánh giá: ${newData?.employeePoint}</div>
+                <div>Điểm người phê duyệt đánh giá: ${newData?.approvedPoint}</div>
+            `
+        case "set_point_kpi":
+            return `
+                <div>Mục tiêu: ${newData?.name}</div>
+                <div>Điểm tự động: ${newData?.automaticPoint}</div>
+                <div>Điểm tự đánh giá: ${newData?.employeePoint}</div>
+                <div>Điểm người phê duyệt đánh giá: ${newData?.approvedPoint}</div>
+            `
         case "edit_status":
             return `
                 <div>Trạng thái mới: ${isUnit ? formatStatusOrganizationalUnitKpiSet(newData?.status) : formatStatusEmployeeKpiSet(newData?.status)}</div>
             `
+        case "edit_status_kpi":
+            return `
+                <div>Mục tiêu: ${newData?.name}</div>
+                <div>Trạng thái mục tiêu mới: ${formatStatusEmployeeKpi(newData?.status)}</div>
+            `
         default:
             return null
+    }
+}
+
+const formatStatusEmployeeKpi = (status) => {
+    switch (status) {
+        case 0:
+            return "Yêu cầu làm lại"
+        case 1: 
+            return "Đã kích hoạt"
+        case 2:
+            return "Đã kết thúc"
+        default:
+            return "Chưa phê duyệt"
     }
 }
 

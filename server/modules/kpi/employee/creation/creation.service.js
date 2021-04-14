@@ -6,7 +6,6 @@ const fs = require('fs');
 const { EmployeeKpi, EmployeeKpiSet, OrganizationalUnit, OrganizationalUnitKpiSet, UserRole } = Models;
 
 const NotificationServices = require(`../../../notification/notification.service`)
-const UserService = require('../../../super-admin/user/user.service')
 const NewsFeedService = require('../../../news-feed/newsFeed.service')
 // File này làm nhiệm vụ thao tác với cơ sở dữ liệu của module quản lý kpi cá nhân
 
@@ -673,6 +672,10 @@ exports.createNewsFeedForEmployeeKpiSet = async (portal, data) => {
     // Thêm người phê duyệt
     if (!relatedUsers?.includes(employeeKpiSet?.approver?._id?.toString())) {
         relatedUsers.push(employeeKpiSet?.approver?._id)
+    }
+    // Thêm người tạo kpi
+    if (!relatedUsers?.includes(employeeKpiSet?.creator?._id?.toString())) {
+        relatedUsers.push(employeeKpiSet?.creator?._id)
     }
 
     let newsFeed = await NewsFeedService.createNewsFeed(portal, {
