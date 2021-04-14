@@ -13,18 +13,18 @@ import { EmployeeInfoActions } from '../../employee-info/redux/actions';
 import FamilyMemberTabInfo from '../../employee-info/components/familyMemberTab';
 
 const EmployeeDetailForm = (props) => {
-    
+
     const DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, };
 
     const [state, setState] = useState({
         dataStatus: DATA_STATUS.NOT_AVAILABLE
     })
-    
 
-    useEffect(() => {   
-        shouldUpdate() 
+
+    useEffect(() => {
+        shouldUpdate()
     }, [props._id, props.employeesInfo.isLoading, state.dataStatus]);
- 
+
     const shouldUpdate = async () => {
         if (props._id !== state._id && !props.employeesInfo.isLoading) {
             await props.getEmployeeProfile({ id: props._id, callAPIByUser: false });
@@ -38,9 +38,9 @@ const EmployeeDetailForm = (props) => {
                 disciplines: [],
                 courses: [],
                 roles: [],
-                career: [],
-                major: [],
-            })    
+                // career: [],
+                // major: [],
+            })
         };
         if (state.dataStatus === DATA_STATUS.QUERYING && !props.employeesInfo.isLoading) {
             setState({
@@ -52,11 +52,11 @@ const EmployeeDetailForm = (props) => {
                 disciplines: props.employeesInfo?.disciplines,
                 courses: props.employeesInfo?.courses,
                 roles: props.employeesInfo?.roles,
-                career: props.employeesInfo?.employees?.[0]?.career,
-                major: props.employeesInfo?.employees?.[0]?.major,
+                // career: props.employeesInfo?.employees?.[0]?.career,
+                // major: props.employeesInfo?.employees?.[0]?.major,
                 houseHold: props.employeesInfo?.employees?.[0]?.houseHold,
 
-            });    
+            });
         };
     }
 
