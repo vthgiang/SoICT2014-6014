@@ -24,31 +24,23 @@ function ListAsset(props) {
         code: "",
         assetName: "",
         assetType: null,
-        group: ["building", "vehicle", "machine", "other"],
-        status: ["ready_use", "using", "damaged", "lost", "disposal"],
-        typeRegisterForUse: ["1", "2", "3"],
+        status: "",
+        typeRegisterForUse: ["2", "3"],
         page: 0,
         limit: limit_constructor,
         currentRole: localStorage.getItem('currentRole'),
     })
+    useEffect(()=> {
+        props.searchAssetTypes({ typeNumber: "", typeName: "", limit: 0 });
+        props.getAllAsset({
+            ...state
+        });
+        props.getUser();
+    }, [])
 
     const { translate, assetsManager, assetType, user, auth } = props;
     const { page, limit, currentRowView, currentRow, tableId, group, status, typeRegisterForUse } = state;
     
-    useEffect(()=> {
-        props.searchAssetTypes({ typeNumber: "", typeName: "", limit: 0 });
-        props.getAllAsset({
-            code: "",
-            assetName: "",
-            assetType: null,
-            status: "",
-            page: 0,
-            limit: 5,
-            typeRegisterForUse: "",
-            currentRole: localStorage.getItem('currentRole'),
-        });
-        props.getUser();
-    }, [])
 
     // Bắt sự kiện click xem thông tin tài sản
     const handleView = async (value) => {
@@ -203,14 +195,13 @@ function ListAsset(props) {
 
     // Bắt sự kiện chuyển trang
     const setPage = async (pageNumber) => {
-        var page = (pageNumber - 1) * state.limit;
-        await setState(state =>{
-            return{
-                ...state,
-                page: parseInt(page),
-            }
+        let page = (pageNumber - 1) * state.limit;
+        await setState({
+            ...state,
+            page: parseInt(page),
         });
-        props.getAllAsset({...state,  page: parseInt(page)});
+
+        props.getAllAsset({ ...state, page:parseInt(page)});
     }
 
     const getAssetTypes = () => {
@@ -276,6 +267,7 @@ function ListAsset(props) {
 
     var currentPage = parseInt((page / limit) + 1);
     let typeArr = getAssetTypes();
+
 
     return (
         <div id="listasset" className="tab-pane active" >

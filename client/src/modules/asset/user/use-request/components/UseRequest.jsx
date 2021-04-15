@@ -12,6 +12,7 @@ import { RecommendDistributeActions } from '../redux/actions';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 
 function UseRequest(props) {
+    const { translate, recommendDistribute, auth } = props;
    
     const tableId_constructor = "table-use-request";
     const defaultConfig = { limit: 10 }
@@ -22,10 +23,12 @@ function UseRequest(props) {
         reqUseStatus: null,
         page: 0,
         limit: limit_constructor,
+        reqUseEmployee:auth.user.email
     })
+    const { page, limit, currentRowEdit, tableId } = state;
     
     useEffect(() => {
-        props.searchRecommendDistributes(state);
+        props.searchRecommendDistributes({...state});
         props.getUser();
     }, [])
  
@@ -187,8 +190,7 @@ function UseRequest(props) {
         }
     }
 
-        const { translate, recommendDistribute, auth } = props;
-        const { page, limit, currentRowEdit, tableId } = state;
+        
 
         var listRecommendDistributes = "";
 
@@ -201,7 +203,7 @@ function UseRequest(props) {
         parseInt((recommendDistribute.totalList / limit) + 1);
 
     var currentPage = parseInt((page / limit) + 1);
-
+    
     return (
         <div id="recommenddistribute" className="tab-pane">
             <div className="box-body qlcv">
