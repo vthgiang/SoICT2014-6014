@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -200,8 +200,8 @@ const TabIntegratedStatistics = (props) => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {discipline.totalListDiscipline.length !== 0 &&
-                                            discipline.totalListDiscipline.map((x, index) => index < 5 ? (
+                                        {discipline.totalListCommendation.length !== 0 && Array.isArray(discipline)
+                                            && discipline.totalListDiscipline.map((x, index) => index < 5 ? (
                                                 <tr key={index}>
                                                     <td>{index + 1}</td>
                                                     <td>{x.employee.fullName}</td>
