@@ -61,9 +61,9 @@ function EmployeeKpiOverviewModal(props) {
                                 <td>{index + 1}</td>
                                 <td>{kpi?.name}</td>
                                 <td>{kpi?.amountTask}</td>
-                                <td>{kpi?.automaticPoint}</td>
-                                <td>{kpi?.employeePoint}</td>
-                                <td>{kpi?.approvedPoint}</td>
+                                <td>{kpi?.automaticPoint !== null && kpi?.automaticPoint >= 0 ? kpi.automaticPoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')}</td>
+                                <td>{kpi?.employeePoint !== null && kpi?.employeePoint >= 0 ? kpi.employeePoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')}</td>
+                                <td>{kpi?.approvedPoint !== null && kpi?.approvedPoint >= 0 ? kpi.approvedPoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')}</td>
                                 <td>{kpi?.weight}</td>
                             </tr>
                         ))

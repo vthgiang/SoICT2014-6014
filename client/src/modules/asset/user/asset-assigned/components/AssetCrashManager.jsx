@@ -24,7 +24,8 @@ function AssetCrashManager(props) {
         assetName: "",
         month: null,
         type: null,
-        page: limit_constructor,
+        limit: limit_constructor,
+        page:0
     })
 
     useEffect(() => {
@@ -159,7 +160,7 @@ function AssetCrashManager(props) {
                 limit: parseInt(number),
             }
         });
-        props.getAllAsset({...state, limit: parseInt(number)});
+        props.getAllAsset({...state, limit: 10000,page:0});
     }
 
     // Bắt sự kiện chuyển trang
@@ -172,7 +173,7 @@ function AssetCrashManager(props) {
             }
 
         });
-        props.getAllAsset({...state, page: parseInt(page)});
+        props.getAllAsset({...state, page: 0,limit:10000});
     }
 
     const deleteIncident = (assetId, incidentId) => {
@@ -222,13 +223,18 @@ function AssetCrashManager(props) {
         if (assetsManager.isLoading === false) {
             lists = assetsManager.listAssets;
         }
-
-        var pageTotal = ((assetsManager.totalList % limit) === 0) ?
-            parseInt(assetsManager.totalList / limit) :
-            parseInt((assetsManager.totalList / limit) + 1);
-
+        let listAssetAssignShow,listAssetAssigns,pageTotal;
         var currentPage = parseInt((page / limit) + 1);
 
+        if (lists && lists.length !== 0) {
+            listAssetAssigns = lists.filter(item => item.assignedToUser === auth.user._id)
+            listAssetAssigns=listAssetAssigns.filter(value=>value.incidentLogs.some(value1=>value1.reportedBy===auth.user._id)===true)
+            pageTotal = ((listAssetAssigns.length % limit) === 0) ?
+            parseInt(listAssetAssigns.length / limit) :
+            parseInt((listAssetAssigns.length / limit) + 1);
+            listAssetAssignShow=listAssetAssigns.slice((currentPage-1)*limit,currentPage*limit)
+        }
+        // console.log(pageTotal,listAssetAssignShow,page,limit);
     return (
         <div id="assetcrash" className="tab-pane">
             <div className="box-body qlcv">
@@ -311,8 +317,8 @@ function AssetCrashManager(props) {
                         </tr>
                     </thead>
                     <tbody>
-                        {(lists && lists.length) ?
-                            lists.filter(item => item.assignedToUser === auth.user._id).map(asset => {
+                        {(listAssetAssignShow && listAssetAssignShow.length) ?
+                            listAssetAssignShow.map(asset => {
                                 return asset.incidentLogs.filter(item => item.reportedBy === auth.user._id).map((x, index) => (
                                     <tr key={index}>
                                         <td>{asset.code}</td>

@@ -31,7 +31,7 @@ function AssetAssignedManager(props){
        
     useEffect(() => {
         props.searchAssetTypes({ typeNumber: "", typeName: "", limit: 0 });
-        props.getAllAsset(state);
+        props.getAllAsset({...state});
         props.getUser();
     }, [])
    
@@ -194,7 +194,7 @@ function AssetAssignedManager(props){
                 limit: parseInt(number),
             }
         });
-        props.getAllAsset({...state, limit: parseInt(number)});
+        props.getAllAsset({...state, limit: 10000,page:0});
     }
 
     // Bắt sự kiện chuyển trang
@@ -207,7 +207,7 @@ function AssetAssignedManager(props){
             }
 
         });
-        props.getAllAsset({...state, page: parseInt(page)});
+        props.getAllAsset({...state, page: 0,limit:10000});
     }
     const getAssetTypes = () => {
         let { assetType } = props;
@@ -276,19 +276,23 @@ function AssetAssignedManager(props){
         lists = assetsManager.listAssets;
     }
 
-    var pageTotal = ((assetsManager.totalList % limit) === 0) ?
-        parseInt(assetsManager.totalList / limit) :
-        parseInt((assetsManager.totalList / limit) + 1);
+ 
 
     var currentPage = parseInt((page / limit) + 1);
     let typeArr = getAssetTypes();
     let dataSelectBox = getUserAndDepartment();
-
+    let pageTotal=0;
     let listAssetAssigns;
+    let listAssetAssignShow;
     if (lists && lists.length !== 0) {
         listAssetAssigns = lists.filter(item => item.assignedToUser === auth.user._id)
+        pageTotal = ((listAssetAssigns.length % limit) === 0) ?
+        parseInt(listAssetAssigns.length / limit) :
+        parseInt((listAssetAssigns.length / limit) + 1);
+        listAssetAssignShow=listAssetAssigns.slice((currentPage-1)*limit,currentPage*limit)
     }
-
+    
+    // console.log(pageTotal,limit,listAssetAssigns,lists,page,currentPage);
     return (
         <div id="assetassigned" className="tab-pane active">
             <div className="box-body qlcv">
@@ -388,8 +392,8 @@ function AssetAssignedManager(props){
                         </tr>
                     </thead>
                     <tbody>
-                        {(listAssetAssigns && listAssetAssigns.length !== 0) ?
-                            listAssetAssigns.map((x, index) => (
+                        {(listAssetAssignShow && listAssetAssignShow.length !== 0) ?
+                            listAssetAssignShow.map((x, index) => (
                                 <tr key={index}>
                                     <td>{x.code}</td>
                                     <td>{x.assetName}</td>

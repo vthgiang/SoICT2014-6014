@@ -1,6 +1,11 @@
-const managerService = require('./management.service');
-const Logger = require(`../../../../logs`);
+const managerService = require('./management.service')
+const KPIUnitService = require('../creation/creation.service')
+const EmployeeKpiSetService = require('../../employee/creation/creation.service')
+const overviewService = require('../../employee/management/management.service')
 
+const Logger = require(`../../../../logs`)
+
+const { getDataOrganizationalUnitKpiSetLog, getDataEmployeeKpiSetLog } = require('../../../../helpers/descriptionLogKpi')
 
 /**
  * Copy KPI đơn vị từ một tháng cũ sang tháng mới
@@ -12,17 +17,38 @@ exports.copyKPI = async (req, res) => {
         copyParentKPIUnitToChildrenKPIEmployee(req, res);
     } else {
         try {
-            let data = {
+            let query = {
                 ...req.query,
                 creator: req.user._id
             }
-            let kpiunit = await managerService.copyKPI(req.portal, req.params.id, data);
+            let data = await managerService.copyKPI(req.portal, req.params.id, query);
             
+            // Thêm log
+            let log = getDataOrganizationalUnitKpiSetLog({
+                type: "copy_kpi_unit_to_unit",
+                creator: req.user._id,
+                organizationalUnit: data?.kpiunit?.organizationalUnit, 
+                month: data?.kpiunit?.date,
+                newData: data?.kpiunit,
+                copyKpi: data?.copyKpi
+            })
+            await managerService.createOrganizationalUnitKpiSetLogs(req.portal, {
+                ...log,
+                organizationalUnitKpiSetId: data?.kpiunit?._id
+            })
+
+            // Thêm newsfeed
+            await KPIUnitService.createNewsFeedForOrganizationalUnitKpiSet(req.portal, {
+                ...log,
+                organizationalUnit: data?.kpiunit?.organizationalUnit,
+                organizationalUnitKpiSetId: data?.kpiunit?._id
+            })
+
             Logger.info(req.user.email, ' copy kpi unit ', req.portal)
             res.status(200).json({
                 success: true,
                 messages: ['copy_kpi_unit_success'],
-                content: kpiunit
+                content: data?.kpiunit
             });
         } catch (error) {
             let messages = error && error.messages === 'organizatinal_unit_kpi_set_exist'
@@ -46,17 +72,39 @@ exports.copyKPI = async (req, res) => {
  */
 copyParentKPIUnitToChildrenKPIEmployee = async (req, res) => {
     try {
-        let data = {
+        let query = {
             ...req.query,
             creator: req.user._id
         }
-        let emloyeeKpiSet = await managerService.copyParentKPIUnitToChildrenKPIEmployee(req.portal, req.params.id, data);
+        let data = await managerService.copyParentKPIUnitToChildrenKPIEmployee(req.portal, req.params.id, query);
         
+        // Thêm log
+        let log = getDataEmployeeKpiSetLog({
+            type: "copy_kpi_unit_to_employee",
+            creator: req.user._id,
+            organizationalUnit: data?.employeeKpiSet?.organizationalUnit, 
+            month: data?.employeeKpiSet?.date,
+            employee: data?.employeeKpiSet?.creator,
+            newData: data?.employeeKpiSet,
+            copyKpi: data?.copyKpi
+        })
+        await overviewService.createEmployeeKpiSetLogs(req.portal, {
+            ...log,
+            employeeKpiSetId: data?.employeeKpiSet?._id
+        })
+
+        // Thêm newsfeed
+        await EmployeeKpiSetService.createNewsFeedForEmployeeKpiSet(req.portal, {
+            ...log,
+            organizationalUnit: data?.employeeKpiSet?.organizationalUnit,
+            employeeKpiSet: data?.employeeKpiSet
+        })
+
         Logger.info(req.user.email, ' copy kpi unit ', req.portal)
         res.status(200).json({
             success: true,
             messages: ['copy_kpi_unit_success'],
-            content: emloyeeKpiSet
+            content: data?.employeeKpiSet
         });
     } catch (error) {
         let messages = error && error.messages === 'employee_kpi_set_exist'
@@ -76,6 +124,27 @@ copyParentKPIUnitToChildrenKPIEmployee = async (req, res) => {
 exports.calculateKpiUnit = async (req, res) => {
     try {
         let kpiUnit = await managerService.calculateKpiUnit(req.portal, req.body);
+       
+        // Thêm log
+        let log = getDataOrganizationalUnitKpiSetLog({
+            type: "set_point_all",
+            creator: req.user._id,
+            organizationalUnit: kpiUnit?.kpiUnitSet?.organizationalUnit, 
+            month: kpiUnit?.kpiUnitSet?.date,
+            newData: kpiUnit?.kpiUnitSet
+        })
+        await managerService.createOrganizationalUnitKpiSetLogs(req.portal, {
+            ...log,
+            organizationalUnitKpiSetId: kpiUnit?.kpiUnitSet?._id
+        })
+
+        // Thêm newsfeed
+        await KPIUnitService.createNewsFeedForOrganizationalUnitKpiSet(req.portal, {
+            ...log,
+            organizationalUnit: kpiUnit?.kpiUnitSet?.organizationalUnit,
+            organizationalUnitKpiSetId: kpiUnit?.kpiUnitSet?._id
+        })
+        
         Logger.info(req.user.email, ' calculate kpi unit ', req.portal)
         res.status(200).json({
             success: true,

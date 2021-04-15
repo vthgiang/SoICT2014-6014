@@ -69,11 +69,11 @@ exports.copyKPI = async (portal, id, data) => {
 
         newEmployeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
             .create({
-                organizationalUnit: oldEmployeeKpiSet.organizationalUnit._id,
+                organizationalUnit: oldEmployeeKpiSet?.organizationalUnit?._id,
                 creator: creator,
                 date: dateNew,
                 kpis: [],
-                approver: oldEmployeeKpiSet.approver,
+                approver: oldEmployeeKpiSet?.approver,
             })
 
         for (let i in oldEmployeeKpiSet.kpis) {
@@ -94,10 +94,14 @@ exports.copyKPI = async (portal, id, data) => {
         employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
             .findById(newEmployeeKpiSet)
             .populate("organizationalUnit")
+            .populate("approver")
             .populate({path: "creator", select :"_id name email avatar"})
             .populate({ path: "kpis", populate: { path: 'parent' } })
 
-        return employeeKpiSet;
+        return {
+            employeeKpiSet: employeeKpiSet,
+            copyKpi: oldEmployeeKpiSet
+        };
     }
 }
 
