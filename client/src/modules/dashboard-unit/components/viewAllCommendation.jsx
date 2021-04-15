@@ -31,7 +31,7 @@ class ViewAllCommendation extends Component {
             parseInt(dataCommendation.length / limit) :
             parseInt((dataCommendation.length / limit) + 1);
         let currentPage = parseInt(page + 1);
-        const listData = dataCommendation.slice(page * limit, page * limit + limit)
+        const listData = Array.isArray(dataCommendation) ? dataCommendation?.slice(page * limit, page * limit + limit) : []
 
         return (
             <React.Fragment>

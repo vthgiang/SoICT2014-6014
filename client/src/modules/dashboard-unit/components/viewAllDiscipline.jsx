@@ -31,7 +31,7 @@ class ViewAllDiscipline extends Component {
             parseInt(dataDiscipline.length / limit) :
             parseInt((dataDiscipline.length / limit) + 1);
         let currentPage = parseInt(page + 1);
-        const listData = dataDiscipline.slice(page * limit, page * limit + limit)
+        const listData = Array.isArray(dataDiscipline) ? dataDiscipline?.slice(page * limit, page * limit + limit) : []
 
         return (
             <React.Fragment>
