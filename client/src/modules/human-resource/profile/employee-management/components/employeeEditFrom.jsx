@@ -79,9 +79,23 @@ const EmployeeEditFrom = (props) => {
             houseHoldCode: '',
             familyMembers: []
         },
-        editMember: initMember
-
+        editMember: initMember,
+        editAnnualLeaves: [],
+        editCertificates: [],
+        editConmmendations: [],
+        editContracts: [],
+        editCourses: [],
+        editDegrees: [],
+        editDisciplines: [],
+        editSocialInsuranceDetails: [],
+        editExperiences: [],
+        editFiles: [],
     })
+
+    const { translate, employeesInfo } = props;
+
+    let { _id, img, employee, degrees, certificates, socialInsuranceDetails, contracts, courses,
+        organizationalUnits, roles, commendations, disciplines, annualLeaves, files, houseHold, editMember } = state;
 
     /**
      * Function upload avatar 
@@ -806,25 +820,28 @@ const EmployeeEditFrom = (props) => {
         return result;
     }
 
+    console.log(state);
 
     const save = async () => {
         let { _id, experiences, degrees, certificates, contracts, files, avatar,
             disciplines, commendations, annualLeaves, socialInsuranceDetails, courses } = state;
 
-        await setState({
-            ...state,
-            createExperiences: experiences.filter(x => x._id === undefined),
-            createDegrees: degrees.filter(x => x._id === undefined),
-            createCertificates: certificates.filter(x => x._id === undefined),
-            // createCareer: career.filter(x => x._id === undefined),
-            // createMajor: major.filter(x => x._id === undefined),
-            createContracts: contracts.filter(x => x._id === undefined),
-            createDisciplines: disciplines.filter(x => x._id === undefined),
-            createCommendations: commendations.filter(x => x._id === undefined),
-            createAnnualLeaves: annualLeaves.filter(x => x._id === undefined),
-            createCourses: courses.filter(x => x._id === undefined),
-            createSocialInsuranceDetails: socialInsuranceDetails.filter(x => x._id === undefined),
-            createFiles: files.filter(x => x._id === undefined),
+        await setState(state => {
+            return {
+                ...state,
+                createExperiences: experiences.filter(x => x._id === undefined),
+                createDegrees: degrees.filter(x => x._id === undefined),
+                createCertificates: certificates.filter(x => x._id === undefined),
+                // createCareer: career.filter(x => x._id === undefined),
+                // createMajor: major.filter(x => x._id === undefined),
+                createContracts: contracts.filter(x => x._id === undefined),
+                createDisciplines: disciplines.filter(x => x._id === undefined),
+                createCommendations: commendations.filter(x => x._id === undefined),
+                createAnnualLeaves: annualLeaves.filter(x => x._id === undefined),
+                createCourses: courses.filter(x => x._id === undefined),
+                createSocialInsuranceDetails: socialInsuranceDetails.filter(x => x._id === undefined),
+                createFiles: files.filter(x => x._id === undefined),
+            }
         });
 
         let formData = convertJsonObjectToFormData(state);
@@ -1125,11 +1142,6 @@ const EmployeeEditFrom = (props) => {
             }
         })
     }
-
-    const { translate, employeesInfo } = props;
-
-    let { _id, img, employee, degrees, certificates, socialInsuranceDetails, contracts, courses,
-        organizationalUnits, roles, commendations, disciplines, annualLeaves, files, houseHold, editMember } = state;
 
     return (
         <React.Fragment>
