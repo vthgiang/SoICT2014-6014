@@ -60,7 +60,7 @@ function ArrangeVehiclesAndGoods(props) {
     }, []);
 
     useEffect(() => {
-        if (currentTransportPlan && currentTransportPlan._id !==0){
+        if (currentTransportPlan && currentTransportPlan._id !=="0"){
             props.getTransportScheduleByPlanId(currentTransportPlan._id);
         }
     }, [currentTransportPlan])
@@ -71,12 +71,26 @@ function ArrangeVehiclesAndGoods(props) {
             if (currentTransportSchedule.transportPlan){
                 setAransportArrangeRequirements(currentTransportSchedule.transportPlan.transportRequirements);
                 setAllTransportVehicle(currentTransportSchedule.transportPlan.transportVehicles);
+                if (currentTransportSchedule.transportVehicles){
+                    let distributionList = [];
+                    currentTransportSchedule.transportVehicles.map((item,index) => {
+                        let transportRequirementsList = [];
+                        item.transportRequirements.map((item2, index2) =>{
+                            transportRequirementsList.push(item2._id);
+                        })
+                        distributionList.push({
+                            vehicle: item.transportVehicle._id,
+                            transportRequirements: transportRequirementsList,
+                        })
+                    })
+                    setDistributionState(distributionList);
+                }
             }
         }
     }, [currentTransportSchedule])
     
     useEffect(() => {
-        console.log(distributionState, "sad");
+        // console.log(distributionState, "sad");
     }, [distributionState])
 
     const handleTransportPlanChange = (value) => {
@@ -233,7 +247,9 @@ function ArrangeVehiclesAndGoods(props) {
                 </div>
             </div>
                         
-
+        {
+            currentTransportPlan && (currentTransportPlan._id !== "0")
+            &&
             <div className={"divTest"}>
                 <table className={"tableTest table-bordered table-hover not-sort"}>
                     <thead>
@@ -437,6 +453,8 @@ function ArrangeVehiclesAndGoods(props) {
                     </tbody>
                 </table>
             </div>
+            
+        }
             </div>
         </React.Fragment>
     )
