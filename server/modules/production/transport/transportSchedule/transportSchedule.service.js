@@ -41,6 +41,14 @@ exports.getTransportRouteByPlanId = async (portal, id) => {
             ]
         },
         {
+            path: 'transportVehicles.transportVehicle',
+            model: 'TransportVehicle',
+        },
+        {
+            path: 'transportVehicles.transportRequirements',
+            model: 'TransportRequirement'
+        },
+        {
             path: 'route.transportVehicle',
             model: 'TransportVehicle'
         },
@@ -63,8 +71,8 @@ exports.getTransportRouteByPlanId = async (portal, id) => {
  * @returns 
  */
 exports.editTransportRouteByPlanId = async (portal, planId, data) => {
-    console.log(planId, " planId", data, " data");
     let oldTransportSchedule = await TransportSchedule(connect(DB_CONNECTION, portal)).findOne({transportPlan: planId});
+
     if (!oldTransportSchedule) {
         return -1;
     }
@@ -76,8 +84,30 @@ exports.editTransportRouteByPlanId = async (portal, planId, data) => {
     return newTransportSchedule;
 }
 
-// // Xóa một Ví dụ
-// exports.deleteExample = async (portal, id) => {
-//     let example = Example(connect(DB_CONNECTION, portal)).findByIdAndDelete({ _id: id });
-//     return example;
-// }
+/**
+ * Xóa tất cả các requirementId trong transportSchedule có transportPlanId
+ * @param {} portal 
+ * @param {*} planId 
+ * @param {*} requirementId 
+ */
+exports.deleteTransportRequirementByPlanId = async (portal, planId, requirementId) => {
+    let oldTransportSchedule = await TransportSchedule(connect(DB_CONNECTION, portal)).findOne({transportPlan: planId});
+    let newTransportVehicles = [];
+    if (oldTransportSchedule.transportVehicles && oldTransportSchedule.transportVehicles.length!==0){
+        transportVehicles= oldTransportSchedule.transportVehicles;
+        let newTransportRequirements = [];
+        for (let i = 0; i<transportVehicles.length;i++){
+            newTransportRequirements = transportVehicles[i].transportRequirements;
+            if (String(requirementId) in transportVehicles[i].transportRequirements){
+                newTransportRequirements = transportVehicles[i].transportRequirements.filter(r => r!==requirementId);
+            }
+            newTransportVehicles.push({
+                transportVehicle: transportVehicles.transportVehicle,
+                transportRequirements: newTransportRequirements,
+            })
+        }
+        this.editTransportRouteByPlanId(portal, planId, {
+            transportVehicles: newTransportVehicles,
+        })
+    }
+}

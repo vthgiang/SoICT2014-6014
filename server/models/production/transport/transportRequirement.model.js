@@ -6,6 +6,10 @@ const TransportRequirementSchema = new Schema({
         type: Number,
         // required: true
     },
+    code: {
+        type: String,
+        required: true,
+    },
     type: { // Loại yêu cầu: giao hàng, trả hàng ....
         type: Number,
         // required: true
@@ -13,7 +17,7 @@ const TransportRequirementSchema = new Schema({
     creator: {  // Người tạo yêu cầu
         type: Schema.Types.ObjectId,
         ref: 'User',
-        // required: true
+        required: true
     },
     customer: { // Khách hàng
         type: Schema.Types.ObjectId,

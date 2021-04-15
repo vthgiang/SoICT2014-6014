@@ -18,7 +18,6 @@ function SortableComponent(props) {
 				setTimeout(
 				await getDistanceAndTime(addressList[i-1].geocodeAddress, addressList[i].geocodeAddress)
 				.then(value => {
-					console.log(value, " day la duration tim")
 					distanceArr.push(value.distance);
 					durationArr.push(value.duration);
 				}), 3000)
@@ -58,7 +57,6 @@ function SortableComponent(props) {
 
 	useEffect(() => {
 		callBackStateOrdinalAddress(addressList, transportVehicle._id);
-		console.log(addressList, " day la addresslist")
 	}, [addressList])
 
 	useEffect(() => {
@@ -172,7 +170,6 @@ function SortableComponent(props) {
 					await getDistanceAndTime(arrayAddress[newIndex-1].geocodeAddress, arrayAddress[newIndex].geocodeAddress)
 					.then(
 						value => {
-							console.log(value," update chinh nos")
 							arrayAddress[newIndex].distance = value.distance;
 							arrayAddress[newIndex].duration = value.duration;
 						}

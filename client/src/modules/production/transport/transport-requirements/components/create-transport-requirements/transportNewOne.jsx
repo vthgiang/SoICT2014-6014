@@ -184,7 +184,7 @@ function TransportNewOne(props) {
                                 Địa chỉ giao hàng
                                 <span className="attention"> * </span>
                             </label>
-                            <textarea type="text" className="form-control" 
+                            <textarea type="text" className="form-control" value="Đại học bách khoa hà nội"
                                 onChange={handleCustomer1AddressTransportChange}
                             />
                         </div>
@@ -259,7 +259,7 @@ function TransportNewOne(props) {
                                 Địa chỉ nhận hàng
                                 <span className="attention"> * </span>
                             </label>
-                            <textarea type="text" className="form-control" 
+                            <textarea type="text" className="form-control" value="Đại học thương mại hà nội"
                                 onChange={handleCustomer2AddressTransportChange}
                             />
                         </div>

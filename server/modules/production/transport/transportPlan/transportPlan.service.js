@@ -213,3 +213,16 @@ exports.addTransportVehicleToPlan = async (portal, id, data) => {
     let transportPlan = await TransportPlan(connect(DB_CONNECTION, portal)).findById({ _id: oldTransportPlan._id });
     return transportPlan;    
 }
+
+exports.deleteTransportRequirementByPlanId = async (portal, planId, requirementId) => {
+    let oldTransportPlan = await TransportPlan(connect(DB_CONNECTION, portal)).findById(planId);
+    if (oldTransportPlan){
+        let listTransportRequirements = oldTransportPlan.transportRequirements;
+        if (listTransportRequirements && listTransportRequirements.length!==0){
+            let newListTransportRequirements = listTransportRequirements.filter(r => String(r) !== String(requirementId));
+            this.editTransportPlan(portal, planId, {transportRequirements: newListTransportRequirements})
+        }
+        TransportScheduleServices.deleteTransportRequirementByPlanId(portal, planId, requirementId);
+    }
+
+}

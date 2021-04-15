@@ -98,30 +98,7 @@ function ArrangeOrdinalTransport(props) {
         // Lưu dữ liệu xe và hàng trên xe
         if (currentTransportSchedule){
             if (currentTransportSchedule.transportVehicles && currentTransportSchedule.transportVehicles.length !== 0){
-                // setTransportVehicles(currentTransportSchedule.transportVehicles);
-
-                // Lọc theo id trường vehicles theo trường plan (do dữ liệu chi tiết requirement và vehicle đã có ở trường transportPlan)
-                let transportVehiclesDetail = [];
-                currentTransportSchedule.transportVehicles.map((item, index) => {
-                    let transportRequirementsList = [];
-                    if (item.transportRequirements && item.transportRequirements.length !== 0 ){
-                        item.transportRequirements.map((requirement, index2) => {
-                            transportRequirementsList.push(
-                                currentTransportSchedule
-                                .transportPlan
-                                .transportRequirements.filter(r=>String(r._id) === String(requirement))[0],
-                            )
-                        })
-                    }
-                    transportVehiclesDetail.push({
-                        transportVehicle: 
-                            currentTransportSchedule
-                                .transportPlan.transportVehicles.filter(r=>String(r.transportVehicle._id) === String(item.transportVehicle))[0],
-                        transportRequirements: transportRequirementsList,
-                        
-                    })
-                })
-                setTransportVehicles(transportVehiclesDetail);
+                setTransportVehicles(currentTransportSchedule.transportVehicles);
             }
         }
     }, [currentTransportSchedule])
@@ -200,22 +177,22 @@ function ArrangeOrdinalTransport(props) {
                             <fieldset className="scheduler-border" style={{ height: "100%" }}>
 
                                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                    <legend className="scheduler-border">{item.transportVehicle.transportVehicle.name}</legend>
+                                    <legend className="scheduler-border">{item.transportVehicle.name}</legend>
                                     <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                                         <div className="form-group">
-                                            <strong>{"Trọng tải: "+item.transportVehicle.transportVehicle.payload}</strong>
+                                            <strong>{"Trọng tải: "+item.transportVehicle.payload}</strong>
                                         </div>
                                     </div>                                    
                                     <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                                         <div className="form-group">
-                                            <strong>{"Thể tích thùng chứa: "+item.transportVehicle.transportVehicle.volume}</strong>
+                                            <strong>{"Thể tích thùng chứa: "+item.transportVehicle.volume}</strong>
                                         </div>
                                     </div>
                                 </div>
                                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                     <SortableComponent
                                         transportRequirements = {item.transportRequirements}
-                                        transportVehicle = {item.transportVehicle.transportVehicle}
+                                        transportVehicle = {item.transportVehicle}
                                         callBackStateOrdinalAddress = {callBackStateOrdinalAddress}
                                     />
                                 </div>

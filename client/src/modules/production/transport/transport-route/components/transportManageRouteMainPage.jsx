@@ -136,15 +136,18 @@ function TransportManageRouteMainPage(props) {
                                         <div className="timeline">
                                         <div className="timeline-progress" style={{ width: `10%` }}></div>
                                         <div className="timeline-items">
-                                            {/* {
-                                                listStatus && listStatus.length > 0 &&
-                                                listStatus.map((o, index) => (
-                                                    <div key={index} className={`timeline-item ${o.active ? 'active' : ''}`} >
-                                                        <div className="timeline-contain">{o.name}</div>
+                                            {
+                                                (item.routeOrdinal && item.routeOrdinal.length !== 0)
+                                                && item.routeOrdinal.map((item2, index2) => (
+                                                    <div key={item + "-"+ index2} 
+                                                        // className={`timeline-item ${o.active ? 'active' : ''}`}
+                                                        className={`timeline-item`}
+                                                    >
+                                                        <div className="timeline-contain">{"1"}</div>
                                                     </div>
                                                 ))
-                                            } */}
-                                            <div key={"1"} className={`timeline-item active`} >
+                                            }
+                                            {/* <div key={"1"} className={`timeline-item active`} >
                                                 <div className="timeline-contain">{"123131323"}</div>
                                             </div>
                                             <div key={"2"} className={`timeline-item`} >
@@ -152,7 +155,7 @@ function TransportManageRouteMainPage(props) {
                                                 // onClick={(e) => this.setCurrentStep(e, index)}
                                                 >{"123131323"}</div>
                                                 
-                                            </div>
+                                            </div> */}
                                         </div>
                                         </div>
                                     </td>
@@ -160,46 +163,6 @@ function TransportManageRouteMainPage(props) {
     
                             ))
                         }
-                        <tr>
-                            <th>2</th>
-                            <td>Xe tải</td>
-                            <td>
-                                <a className="edit text-green" 
-                                style={{ width: '5px' }} 
-                                title={'manage_example.detail_info_example'} 
-                                // onClick={() => handleShowDetailInfo(example)}
-                                >
-                                    <i className="material-icons">visibility</i>
-                                    </a>
-                            </td>
-                            <td>
-                                <div className="timeline">
-                                <div className="timeline-progress" style={{ width: `10%` }}></div>
-                                <div className="timeline-items">
-                                    {/* {
-                                        listStatus && listStatus.length > 0 &&
-                                        listStatus.map((o, index) => (
-                                            <div key={index} className={`timeline-item ${o.active ? 'active' : ''}`} >
-                                                <div className="timeline-contain">{o.name}</div>
-                                            </div>
-                                        ))
-                                    } */}
-                                    <div key={"1"} className={`timeline-item active`} >
-                                        <div className="timeline-contain">{"123131323"}</div>
-                                    </div>
-                                    <div key={"2"} className={`timeline-item`} >
-                                        <div className="timeline-contain" 
-                                        // onClick={(e) => this.setCurrentStep(e, index)}
-                                        >{"123131323"}</div>
-                                        
-                                    </div>
-                                </div>
-                                </div>
-                    
-                            </td>
-                            
-                        </tr>
-
                     </table>
                 </div>
                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{marginTop: '20px'}}>
