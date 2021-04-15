@@ -14,6 +14,7 @@ import { AssetManagerActions } from '../../asset-information/redux/actions';
 import { AssetTypeActions } from "../../asset-type/redux/actions";
 import { AssetEditForm } from '../../asset-information/components/assetEditForm';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
+import { parse } from 'uuid';
 
 function IncidentManagement(props) {
     const tableId_constructor = "table-incident-manager";
@@ -184,7 +185,7 @@ function IncidentManagement(props) {
             limit: parseInt(number),
         });
 
-        props.getIncidents(state);
+        props.getIncidents({...state, limit: parseInt(number)});
     }
 
     // Bắt sự kiện chuyển trang

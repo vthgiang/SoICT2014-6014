@@ -20,13 +20,13 @@ function AssetManagement(props) {
     const limit_constructor = getTableConfiguration(tableId_constructor, defaultConfig).limit;
 
     const [state, setState] = useState({
-        tableId_constructor,
+        tableId: tableId_constructor,
         code: "",
         assetName: "",
         purchaseDate: null,
         disposalDate: null,
         status: window.location.search ? [qs.parse(window.location.search, { ignoreQueryPrefix: true }).status] : ["ready_to_use", "in_use", "broken", "lost", "disposed"],
-        group: ["building", "vehicle", "machine", "other"],
+        group: "",
         handoverUnit: "",
         handoverUser: "",
         typeRegisterForUse: ["1", "2", "3"],
@@ -255,7 +255,7 @@ function AssetManagement(props) {
             page: parseInt(page),
         });
 
-        props.getAllAsset({ ...state, page });
+        props.getAllAsset({ ...state, page:parseInt(page)});
     }
 
     const getAssetTypesList = (types) => {

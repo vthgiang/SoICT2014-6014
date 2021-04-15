@@ -43,7 +43,6 @@ class FileTab extends Component {
         await this.setState({
             files: [...this.state.files, ...defaulteFile]
         })
-        console.log(this.state.files)
         this.props.handleAddFile(this.state.files,defaulteFile[0])
         this.props.handleAddFile(this.state.files,defaulteFile[1])
         this.props.handleAddFile(this.state.files,defaulteFile[2])

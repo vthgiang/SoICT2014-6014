@@ -177,6 +177,7 @@ function UseRequestEditForm(props) {
     }
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     const isFormValidated = () => {
+
         let result = validateDateCreate(state.dateCreate, false) &&
             validateReqContent(state.reqContent, false) &&
             validateDateStartUse(state.dateCreate, false)
@@ -217,7 +218,7 @@ function UseRequestEditForm(props) {
                 ...state,
                 _id: props._id,
                 recommendNumber: props.recommendNumber,
-                dateCreate: props.dateCreate,
+                dateCreate: formatDate(props.dateCreate),
                 proponent: props.proponent,
                 reqContent: props.reqContent,
                 asset: props.asset,
@@ -251,7 +252,7 @@ function UseRequestEditForm(props) {
         var assetlist = assetsManager.listAssets;
         var userlist = user.list;
 
-        console.log(state)
+        
     return (
         <React.Fragment>
             <DialogModal
@@ -278,7 +279,7 @@ function UseRequestEditForm(props) {
                                 <label>{translate('asset.general_information.create_date')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`edit_start_date${_id}`}
-                                    value={formatDate(dateCreate)}
+                                    value={dateCreate}
                                     onChange={handleDateCreateChange}
                                 />
                                 <ErrorLabel content={errorOnDateCreate} />
