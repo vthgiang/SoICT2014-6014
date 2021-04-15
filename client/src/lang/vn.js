@@ -3095,11 +3095,11 @@ export default {
                 detail_route: "Điều hướng",
                 detail_route_task: "Điều hướng công việc",
 
-                detail_link: "Link công việc",
-                detail_priority: "Độ ưu tiên công việc",
-                detail_status: "Trạng thái công việc",
+                detail_link: "Công việc",
+                detail_priority: "Độ ưu tiên",
+                detail_status: "Trạng thái",
                 average_task_result: "Kết quả trung bình công việc",
-                detail_time: "Thời gian thực hiện công việc",
+                detail_time: "Thời gian thực hiện",
                 detail_average_results: "Kết quả trung bình công việc",
 
                 detail_general_info: "Thông tin chung",
@@ -3275,9 +3275,9 @@ export default {
                 date_not_empty: "Tháng tìm kiếm không được bỏ trống",
 
                 unit_evaluate: "Đơn vị tiếp nhận kết quả đánh giá công việc",
-                unit_manage_task: "Đơn vị quản lý công việc",
+                unit_manage_task: "Đơn vị quản lý",
                 collaborated_with_organizational_units:
-                    "Đơn vị phối hợp thực hiện công việc",
+                    "Đơn vị phối hợp thực hiện",
                 not_collaborated_with_organizational_units:
                     "Không có đơn vị phối hợp",
                 task_empty_employee: "Không có người tham gia",

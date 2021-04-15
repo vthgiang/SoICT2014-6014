@@ -344,3 +344,14 @@ to {transform:scale(1)}
     align-items: center;
     
 }
+
+.raci-style{
+    max-width: max-content;
+    background-color: #eaeaea;
+    padding: 0 5px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    margin-right: 6px;
+    margin-bottom: 6px;
+}
