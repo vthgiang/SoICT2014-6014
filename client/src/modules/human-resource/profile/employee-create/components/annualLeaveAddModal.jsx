@@ -286,7 +286,7 @@ function AnnualLeaveAddModal(props) {
                             className="form-control select2"
                             style={{ width: "100%" }}
                             value={organizationalUnit}
-                            items={organizationalUnits.map(y => { return { value: y._id, text: y.name } }).concat([{ value: "", text: translate('human_resource.non_unit') }])}
+                            items={organizationalUnits?.map(y => { return { value: y._id, text: y.name } }).concat([{ value: "", text: translate('human_resource.non_unit') }])}
                             onChange={handleOrganizationalUnitChange}
                         />
                         <ErrorLabel content={errorOnOrganizationalUnit} />
