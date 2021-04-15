@@ -7,8 +7,38 @@ import { DialogModal, ErrorLabel, DatePicker, TimePicker, SelectBox } from '../.
 import { AnnualLeaveFormValidator } from '../../../annual-leave/components/combinedContent';
 
 function AnnualLeaveEditModal(props) {
-    const [state, setState] = useState({
+    /**
+     * Function format ngày hiện tại thành dạnh dd-mm-yyyy
+     * @param {*} date : Ngày cần format
+     */
+    const formatDate = (date) => {
+        if (date) {
+            let d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
 
+            if (month.length < 2)
+                month = '0' + month;
+            if (day.length < 2)
+                day = '0' + day;
+
+            return [day, month, year].join('-');
+        }
+        return date;
+
+    }
+
+    const [state, setState] = useState({
+        organizationalUnit: "",
+        totalHours: "",
+        startDate: formatDate(Date.now()),
+        endDate: formatDate(Date.now()),
+        type: false,
+        startTime: '',
+        endTime: '',
+        status: "approved",
+        reason: "",
     });
 
     useEffect(() => {
