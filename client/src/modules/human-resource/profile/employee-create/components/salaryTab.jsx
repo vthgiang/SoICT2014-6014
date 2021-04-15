@@ -118,8 +118,8 @@ class SalaryTab extends Component {
                         {/* Table thông tin nghỉ phép */}
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border" ><h4 className="box-title">{translate('human_resource.profile.sabbatical')}</h4></legend>
-                            {(pageCreate || employeesInfo.organizationalUnits.length === 0) && <a style={{ marginBottom: '10px', marginTop: '2px', cursor: "pointer" }} className="btn btn-success pull-right" title={translate('human_resource.profile.employee_management.staff_no_unit_title')} disabled >{translate('modal.create')}</a>}
-                            {!pageCreate && employeesInfo.organizationalUnits.length !== 0 && <AnnualLeaveAddModal handleChange={this.handleAddAnnualLeave} id={`addSabbatical${id}`} />}
+                            {(pageCreate || employeesInfo?.organizationalUnits?.length === 0) && <a style={{ marginBottom: '10px', marginTop: '2px', cursor: "pointer" }} className="btn btn-success pull-right" title={translate('human_resource.profile.employee_management.staff_no_unit_title')} disabled >{translate('modal.create')}</a>}
+                            {!pageCreate && employeesInfo?.organizationalUnits?.length !== 0 && <AnnualLeaveAddModal handleChange={this.handleAddAnnualLeave} id={`addSabbatical${id}`} />}
                             <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
                                 <thead>
                                     <tr>
