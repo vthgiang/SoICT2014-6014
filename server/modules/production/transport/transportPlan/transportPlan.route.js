@@ -11,7 +11,7 @@ router.get('/:id', auth, TransportPlanController.getPlanById);
 router.get('/', auth, TransportPlanController.getAllTransportPlans);
 router.post('/', auth, TransportPlanController.createTransportPlan);
 router.patch('/:id', auth, TransportPlanController.editTransportPlan);
-// router.delete('/:id', auth, ExampleController.deleteExample);
+router.delete('/:id', auth, TransportPlanController.deleteTransportPlan);
 
 router.patch('/add-transport-requirement/:id', auth, TransportPlanController.addTransportRequirementToPlan);
 router.patch('/add-transport-vehicle/:id', auth, TransportPlanController.addTransportVehicleToPlan);

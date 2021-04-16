@@ -201,7 +201,7 @@ function TransportGoods(props) {
                             </div>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group`}>
-                                    <label>{"Thể tích CBM"}</label>
+                                    <label>{"Thể tích"}</label>
                                     <input type="number" 
                                     value={currentGood.volume} 
                                     onChange={handleVolumeChange} 

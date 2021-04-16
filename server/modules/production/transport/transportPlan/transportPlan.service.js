@@ -7,7 +7,8 @@ const {
 } = require(`../../../../helpers/dbHelper`);
 
 const TransportScheduleServices = require('../transportSchedule/transportSchedule.service');
-const TransportVehicleServices = require('../transportVehicle/transportVehicle.service')
+const TransportVehicleServices = require('../transportVehicle/transportVehicle.service');
+const TransportRequirementServices = require('../transportRequirements/transportRequirements.service')
 
 exports.createTransportPlan = async (portal, data) => {
     let newTransportPlan;
@@ -224,5 +225,18 @@ exports.deleteTransportRequirementByPlanId = async (portal, planId, requirementI
         }
         TransportScheduleServices.deleteTransportRequirementByPlanId(portal, planId, requirementId);
     }
+    TransportRequirementServices.editTransportRequirement(portal, requirementId, {transportPlan: null})
+}
 
+exports.deleteTransportPlan = async (portal, planId) => {
+    // Tìm plan hiện tại, lấy array transportRequirements, và xóa bỏ trường transportPlan trong các requirement này
+    let transportPlan = await TransportPlan(connect(DB_CONNECTION, portal)).findById({ _id: planId });
+    if (transportPlan && transportPlan.transportRequirements && transportPlan.transportRequirements.length !==0){
+        transportPlan.transportRequirements.map((item,index) => {
+            TransportRequirementServices.editTransportRequirement(portal, item, {transportPlan: null})
+        })
+    }
+    await TransportScheduleServices.planDeleteTransportSchedule(portal, planId);
+    transportPlan = await TransportPlan(connect(DB_CONNECTION, portal)).findByIdAndDelete({ _id: planId });
+    return transportPlan;
 }

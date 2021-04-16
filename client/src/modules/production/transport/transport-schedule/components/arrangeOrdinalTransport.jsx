@@ -10,6 +10,9 @@ import { getTableConfiguration } from '../../../../../helpers/tableConfiguration
 import { transportPlanActions } from "../../transport-plan/redux/actions";
 import { transportScheduleActions } from "../redux/actions";
 
+import { MapContainer } from "./googleReactMap/maphook"
+
+import './arrangeOrdinalTransport.css'
 
 function ArrangeOrdinalTransport(props) {
 
@@ -27,6 +30,15 @@ function ArrangeOrdinalTransport(props) {
     // [transportVehicle: id, addressOrdinal: []]
     const [transportOrdinalAddress, setTransportOrdinalAddress] = useState([]);
 
+    /**
+     * Định vị các điểm trên bản đồ
+     * [
+     *  transportVehicle: id;
+     *  location: 
+     * ]
+     */
+    const [locationsOnMap, setLocationsOnMap] = useState([]);
+    
     const getListTransportPlans = () => {
         let listTransportPlans = [
             {
@@ -69,7 +81,6 @@ function ArrangeOrdinalTransport(props) {
                 if (item.addressOrdinal && item.addressOrdinal.length !==0){
                     item.addressOrdinal.map((item2, index2) => {
                         routeOrdinal.push({
-                            ordinal: index2,
                             transportRequirement: item2.transportRequirementId,
                             type: item2.addressType,
                         })
@@ -88,7 +99,7 @@ function ArrangeOrdinalTransport(props) {
     }, []);
 
     useEffect(() => {
-        if (currentTransportPlan && currentTransportPlan._id !==0){
+        if (currentTransportPlan && currentTransportPlan._id !=="0"){
             props.getTransportScheduleByPlanId(currentTransportPlan._id);
         }
     }, [currentTransportPlan])
@@ -176,25 +187,30 @@ function ArrangeOrdinalTransport(props) {
                         && transportVehicles.map((item, index) => (					
                             <fieldset className="scheduler-border" style={{ height: "100%" }}>
 
-                                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <div className="col-xs-12 col-sm-12 col-md-8 col-lg-8">
                                     <legend className="scheduler-border">{item.transportVehicle.name}</legend>
-                                    <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                         <div className="form-group">
                                             <strong>{"Trọng tải: "+item.transportVehicle.payload}</strong>
                                         </div>
                                     </div>                                    
-                                    <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                         <div className="form-group">
                                             <strong>{"Thể tích thùng chứa: "+item.transportVehicle.volume}</strong>
                                         </div>
                                     </div>
                                 </div>
+                                <div className="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                                    <div className = "transport-map">
+                                        {/* <MapContainer /> */}
+                                    </div>
+                                </div>
                                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                    <SortableComponent
+                                    {/* <SortableComponent
                                         transportRequirements = {item.transportRequirements}
                                         transportVehicle = {item.transportVehicle}
                                         callBackStateOrdinalAddress = {callBackStateOrdinalAddress}
-                                    />
+                                    /> */}
                                 </div>
                             </fieldset>
                         ))

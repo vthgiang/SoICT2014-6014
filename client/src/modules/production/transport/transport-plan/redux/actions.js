@@ -5,10 +5,10 @@ export const transportPlanActions = {
     getAllTransportPlans,
     createTransportPlan,
     getDetailTransportPlan,
-    getDetailTransportPlan2,
     editTransportPlan,
     addTransportRequirementToPlan,
     addTransportVehicleToPlan,
+    deleteTransportPlan,
 }
 
 function getAllTransportPlans(queryData) {
@@ -70,26 +70,6 @@ function getDetailTransportPlan(id) {
             }).catch((error) => {
                 dispatch({
                     type: transportPlanConstants.GET_DETAIL_TRANSPORT_PLAN_FAILURE,
-                    error
-                });
-            });
-    }
-}
-
-function getDetailTransportPlan2(id) {
-    return dispatch => {
-        dispatch({
-            type: transportPlanConstants.GET_DETAIL_TRANSPORT_PLAN_2_REQUEST
-        });
-        transportPlanServices.getDetailTransportPlan2(id)
-            .then((res) => {
-                dispatch({
-                    type: transportPlanConstants.GET_DETAIL_TRANSPORT_PLAN_2_SUCCESS,
-                    payload: res.data.content
-                });
-            }).catch((error) => {
-                dispatch({
-                    type: transportPlanConstants.GET_DETAIL_TRANSPORT_PLAN_2_FAILURE,
                     error
                 });
             });
@@ -161,6 +141,29 @@ function addTransportVehicleToPlan(id, data) {
             .catch((error) => {
                 dispatch({
                     type: transportPlanConstants.ADD_TRANSPORT_VEHICLE_TO_PLAN_FAILURE,
+                    error
+                });
+            });
+    }
+}
+
+function deleteTransportPlan(id) {
+    return (dispatch) => {
+        dispatch({
+            type: transportPlanConstants.DELETE_TRANSPORT_PLAN_REQUEST
+        });
+
+        transportPlanServices
+            .deleteTransportPlan(id)
+            .then((res) => {
+                dispatch({
+                    type: transportPlanConstants.DELETE_TRANSPORT_PLAN_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch((error) => {
+                dispatch({
+                    type: transportPlanConstants.DELETE_TRANSPORT_PLAN_FAILURE,
                     error
                 });
             });

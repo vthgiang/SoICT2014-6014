@@ -9,6 +9,7 @@ import { transportRequirementsActions } from "../../transport-requirements/redux
 import { transportVehicleActions } from "../../transport-vehicle/redux/actions";
 import { transportScheduleActions } from "../redux/actions";
 import { transportPlanActions } from "../../transport-plan/redux/actions";
+import { MapContainer } from "./googleReactMap/maphook"
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 
 function ArrangeVehiclesAndGoods(props) {
@@ -246,7 +247,40 @@ function ArrangeVehiclesAndGoods(props) {
                     </button>
                 </div>
             </div>
-                        
+        {
+            // <MapContainer 
+            //     locations={[
+            //         {
+            //             name: "1",
+            //             location: {
+            //                 lat: 21.0058354500001,
+            //                 lng: 105.842277338
+            //             }
+            //         },
+            //         {
+            //             name: "2",
+            //             location: {
+            //                 lat: 21.0365079490001,
+            //                 lng: 105.783347768
+            //             }
+            //         },
+            //         // {
+            //         //     name: "3",
+            //         //     location: {
+            //         //         lat: 21.037254283,
+            //         //         lng: 105.774934226
+            //         //     }
+            //         // },
+            //         // {
+            //         //     name: "4",
+            //         //     location: {
+            //         //         lat: 21.081394706,
+            //         //         lng: 105.710463162
+            //         //     }
+            //         // },
+            //     ]}
+            // />
+        }               
         {
             currentTransportPlan && (currentTransportPlan._id !== "0")
             &&
