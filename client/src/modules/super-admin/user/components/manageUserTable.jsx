@@ -207,7 +207,7 @@ class ManageUserTable extends Component {
                 }
 
                 {/* PaginateBar */}
-                <PaginateBar display={user.listPaginate.length} total={user.totalDocs} pageTotal={user.totalPages} currentPage={user.page} func={this.setPage} />
+                <PaginateBar display={user?.listPaginate?.length} total={user?.totalDocs} pageTotal={user?.totalPages} currentPage={user?.page} func={this.setPage} />
             </React.Fragment>
         );
     }

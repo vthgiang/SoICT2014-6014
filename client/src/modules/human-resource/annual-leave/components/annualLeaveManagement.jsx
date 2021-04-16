@@ -324,7 +324,9 @@ const AnnualLeaveManagement = (props) => {
                     </ul>
                 </div>
 
-                <AnnualLeaveCreateForm />
+                <AnnualLeaveCreateForm 
+                    typeView="admin"
+                />
                 {importAnnualLeave && <AnnualLeaveImportForm />}
                 <ExportExcel id="export-annual_leave" buttonName={translate('human_resource.name_button_export')} exportData={exportData} style={{ marginRight: 15, marginTop: 0 }} />
 

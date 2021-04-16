@@ -299,7 +299,9 @@ function ManageLeaveApplication(props) {
                     {/* Button tìm kiếm */}
                     <button type="button" className="btn btn-success" title={translate('general.search')} onClick={() => handleSunmitSearch()} >{translate('general.search')}</button>
                 </div>
-                <AnnualLeaveCreateForm />
+                <AnnualLeaveCreateForm 
+                    typeView="manager"
+                />
                 <AnnualLeaveImportForm />
 
                 <table className="table table-striped table-bordered table-hover" id={tableId}>
