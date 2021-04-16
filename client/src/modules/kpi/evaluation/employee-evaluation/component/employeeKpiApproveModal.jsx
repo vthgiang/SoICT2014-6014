@@ -14,8 +14,8 @@ import { DialogModal, ErrorLabel, DatePicker, Comment } from '../../../../../com
 import { getStorage } from '../../../../../config';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 
-import { ModalEditEmployeeKpi } from '../../../employee/creation/component/employeeKpiEditTargetModal';
-import { EmployeeKpiSetLogsModal } from './employeeKpiSetLogsModal'
+import { ModalEditEmployeeKpi } from '../../../employee/creation/component/employeeKpiEditTargetModal'
+import { EmployeeKpiSetLogsModal } from '../../../employee/management/component/employeeKpiSetLogsModal'
 
 function EmployeeKpiApproveModal(props) {
     let idUser = getStorage("userId");

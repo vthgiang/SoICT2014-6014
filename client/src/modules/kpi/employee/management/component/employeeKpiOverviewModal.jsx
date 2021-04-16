@@ -1,15 +1,30 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual';
+import _deepClone from 'lodash/cloneDeep';
+
+import { EmployeeKpiSetLogsModal } from './employeeKpiSetLogsModal'
 
 import { DataTableSetting } from '../../../../../common-components';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
-import _deepClone from 'lodash/cloneDeep';
 
 function EmployeeKpiOverviewModal(props) {
     const { translate, kpimembers } = props;
+    const [state, setState] = useState({
+        employeeKpiSetId: null
+    })
+    const { employeeKpiSetId } = state
     const tableId = "employee-kpi-overview-modal";
     getTableConfiguration(tableId);
+
+    const showEmployeeKPISetLogs = (id) => {
+        setState({
+            ...state,
+            employeeKpiSetId: id
+        })
+        window.$('#modal-employee-kpi-set-log').modal('show')
+    }
+
 
     let list;
     if (kpimembers?.currentKPI) {
@@ -26,6 +41,12 @@ function EmployeeKpiOverviewModal(props) {
 
     return (
         <React.Fragment>
+            <EmployeeKpiSetLogsModal
+                employeeKpiSetId={employeeKpiSetId}
+            />
+            <button className=" btn btn-primary pull-right" onClick={() => showEmployeeKPISetLogs(kpimembers?.currentKPI?._id)}>{translate('kpi.evaluation.employee_evaluation.show_logs')}</button>
+            <br/><br/>
+
             <DataTableSetting
                 className="pull-right"
                 tableId={tableId}
