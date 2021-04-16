@@ -65,9 +65,7 @@ exports.getEmployeeKPISets = async (portal, data) => {
     if (status !== -1 && status && status !== 5 || status === 0) {
         keySearch = {
             ...keySearch,
-            status: {
-                $in: status
-            }
+            status:  status
         }
     }
 

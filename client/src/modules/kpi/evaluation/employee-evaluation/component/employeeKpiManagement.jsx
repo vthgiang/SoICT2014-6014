@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
 
-import { DataTableSetting, ExportExcel, DatePicker, SelectBox, PaginateBar } from '../../../../../common-components';
+import { DataTableSetting, ExportExcel, DatePicker, SelectBox, PaginateBar, SelectMulti } from '../../../../../common-components';
 import getEmployeeSelectBoxItems from '../../../../task/organizationalUnitHelper';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 
@@ -41,40 +41,46 @@ function EmployeeKpiManagement(props) {
     var tableId = "table-employee-kpi-management";
     const defaultConfig = { limit: 20 }
     const limit = getTableConfiguration(tableId, defaultConfig).limit;
+    const stateFromEmployeeKpiEvaluationDashboard = JSON.parse(localStorage.getItem("stateFromEmployeeKpiEvaluationDashboard"));
+    localStorage.removeItem("stateFromEmployeeKpiEvaluationDashboard");
 
     const [state, setState] = useState({
         tableId,
         commenting: false,
         userId: '',
-        status: -1,
-        startDate: [startYear, startMonth].join('-'),
-        endDate: [year, endMonth].join('-'),
+        approver: '',
+        status: stateFromEmployeeKpiEvaluationDashboard?.status ?? -1,
+        startDate: stateFromEmployeeKpiEvaluationDashboard?.startDate ?? [startYear, startMonth].join('-'),
+        endDate: stateFromEmployeeKpiEvaluationDashboard?.endDate ?? [year, endMonth].join('-'),
         infosearch: {
             role: localStorage.getItem("currentRole"),
             user: '',
-            status: -1,
-            startDate: [startYear, startMonth].join('-'),
-            endDate: [year, endMonth].join('-'),
+            status: stateFromEmployeeKpiEvaluationDashboard?.status ?? -1,
+            startDate: stateFromEmployeeKpiEvaluationDashboard?.startDate ?? [startYear, startMonth].join('-'),
+            endDate: stateFromEmployeeKpiEvaluationDashboard?.endDate ?? [year, endMonth].join('-'),
             perPage: limit,
             page: 1
         },
-        startDateDefault: [startMonth, startYear].join('-'),
-        endDateDefault: [endMonth, year].join('-'),
+        startDateDefault: stateFromEmployeeKpiEvaluationDashboard?.startDateDefault ?? [startMonth, startYear].join('-'),
+        endDateDefault: stateFromEmployeeKpiEvaluationDashboard?.endDateDefault ?? [endMonth, year].join('-'),
         showApproveModal: null,
         showEvaluateModal: null,
-        dataStatus: DATA_STATUS.NOT_AVAILABLE
+        dataStatus: DATA_STATUS.NOT_AVAILABLE,
+
+        organizationalUnitSelectBox: null,
+        organizationalUnit: []
     });
 
     const { user, kpimembers, dashboardEvaluationEmployeeKpiSet } = props;
     const { translate } = props;
-    const { status, kpiId, employeeKpiSet, perPage, userId, startDateDefault, endDateDefault, organizationalUnit, approver, infosearch } = state;
+    const { status, kpiId, employeeKpiSet, startDate, endDate,
+        perPage, userId, startDateDefault, 
+        endDateDefault, organizationalUnit, 
+        approver, infosearch, organizationalUnitSelectBox
+    } = state;
     let userdepartments, kpimember, unitMembers, exportData, approverSelectBox = [];
-    let childrenOrganizationalUnit = [], queue = [], currentOrganizationalUnit;
 
     useEffect(() => {
-        const { infosearch } = state;
-        props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
-        props.getEmployeeKPISets(infosearch);
         props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
     }, []);
 
@@ -92,6 +98,45 @@ function EmployeeKpiManagement(props) {
             }
         }
     });
+
+    useEffect(() => {
+        let childrenOrganizationalUnit = [], queue = [], currentOrganizationalUnit;
+
+        // Khởi tạo selectbox đơn vị
+        if (dashboardEvaluationEmployeeKpiSet) {
+            currentOrganizationalUnit = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
+        }
+        if (currentOrganizationalUnit) {
+            childrenOrganizationalUnit.push(currentOrganizationalUnit);
+            queue.push(currentOrganizationalUnit);
+            while (queue.length > 0) {
+                let v = queue.shift();
+                if (v.children) {
+                    for (let i = 0; i < v.children.length; i++) {
+                        let u = v.children[i];
+                        queue.push(u);
+                        childrenOrganizationalUnit.push(u);
+                    }
+                }
+            }
+        }
+
+        setState({
+            ...state,
+            organizationalUnitSelectBox: childrenOrganizationalUnit,
+            organizationalUnit: stateFromEmployeeKpiEvaluationDashboard?.organizationalUnit ?? [childrenOrganizationalUnit?.[0]?.id],
+            approver: '',
+            userId: ''
+        })
+
+        if (stateFromEmployeeKpiEvaluationDashboard?.organizationalUnit || childrenOrganizationalUnit?.[0]?.id) {
+            props.getEmployeeKPISets({
+                ...infosearch,
+                organizationalUnit: stateFromEmployeeKpiEvaluationDashboard?.organizationalUnit ?? [childrenOrganizationalUnit?.[0]?.id]
+            });
+            props.getAllUserOfDepartment(stateFromEmployeeKpiEvaluationDashboard?.organizationalUnit ?? [childrenOrganizationalUnit?.[0]?.id]);
+        }
+    }, [dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit])
 
     function formatDateBack(date) {
         let d = new Date(date), month, day, year;
@@ -155,8 +200,8 @@ function EmployeeKpiManagement(props) {
         setState({
             ...state,
             organizationalUnit: value,
-            approver: [],
-            userId: []
+            approver: '',
+            userId: ''
         })
         props.getAllUserOfDepartment(value);
     };
@@ -213,9 +258,6 @@ function EmployeeKpiManagement(props) {
     };
 
     const handleSearchData = async () => {
-        const { translate } = props;
-        const { startDate, endDate, userId, status, organizationalUnit, approver } = state;
-
         await setState({
             ...state,
             infosearch: {
@@ -247,8 +289,15 @@ function EmployeeKpiManagement(props) {
             })
         }
         else {
-            let { infosearch } = state;
-            props.getEmployeeKPISets(infosearch);
+            props.getEmployeeKPISets({
+                user: userId && userId[0] !== '0' ? userId : [],
+                status: status && Number(status),
+                startDate: startDate !== "" ? startDate : null,
+                endDate: endDate !== "" ? endDate : null,
+                organizationalUnit: organizationalUnit,
+                approver: approver && approver[0] !== '0' ? approver : [],
+                page: 1
+            });
         }
     };
 
@@ -301,8 +350,10 @@ function EmployeeKpiManagement(props) {
                 }
             })
 
-            let { infosearch } = state;
-            props.getEmployeeKPISets(infosearch);
+            props.getEmployeeKPISets({
+                ...infosearch,
+                perPage: Number(limit)
+            });
         }
     }
 
@@ -315,8 +366,10 @@ function EmployeeKpiManagement(props) {
             }
         })
 
-        let { infosearch } = state;
-        props.getEmployeeKPISets(infosearch);
+        props.getEmployeeKPISets({
+            ...infosearch,
+            page: index
+        });
     };
 
     const pushDataIntoTable = (dataOfOneSheet) => {
@@ -761,27 +814,7 @@ function EmployeeKpiManagement(props) {
     if (kpimember && userdepartments) {
         exportData = convertDataToExportData(kpimember, userdepartments.department);
     }
-
-    // Khởi tạo selectbox đơn vị
-    if (dashboardEvaluationEmployeeKpiSet) {
-        currentOrganizationalUnit = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
-    }
-    if (currentOrganizationalUnit) {
-        childrenOrganizationalUnit.push(currentOrganizationalUnit);
-        queue.push(currentOrganizationalUnit);
-        while (queue.length > 0) {
-            let v = queue.shift();
-            if (v.children) {
-                for (let i = 0; i < v.children.length; i++) {
-                    let u = v.children[i];
-                    queue.push(u);
-                    childrenOrganizationalUnit.push(u);
-                }
-            }
-        }
-    }
-
-
+    
     return (
         <React.Fragment>
             <div className="box">
@@ -794,17 +827,17 @@ function EmployeeKpiManagement(props) {
                         <div className="form-inline hide-component">
                             <div className="form-group">
                                 <label>{translate('task.task_management.department')}</label>
-                                {childrenOrganizationalUnit && childrenOrganizationalUnit.length !== 0
-                                    && <SelectBox
+                                {organizationalUnitSelectBox && organizationalUnitSelectBox.length !== 0
+                                    && <SelectMulti
                                         key="multiSelectUnitEmployeeKpiManagement"
                                         id="multiSelectUnitEmployeeKpiManagement"
                                         className="form-control select2"
                                         style={{ width: "100%" }}
-                                        items={childrenOrganizationalUnit.map(item => { return { value: item.id, text: item.name } })}
+                                        items={organizationalUnitSelectBox.map(item => { return { value: item.id, text: item.name } })}
                                         onChange={handleSelectOrganizationalUnit}
                                         value={organizationalUnit}
                                     >
-                                    </SelectBox>
+                                    </SelectMulti>
                                 }
                             </div>
                             <div className="form-group">
@@ -911,7 +944,7 @@ function EmployeeKpiManagement(props) {
                         hideColumnOption={true}
                     />
                     <div id="tree-table-container" style={{ marginTop: '30px' }}>
-                        <table id={tableId} className="table table-hover table-bordered">
+                        <table id={tableId} className="table table-hover table-bordered" style={{ marginBottom: '0px' }}>
                             <thead>
                                 <tr>
                                     <th title="STT" style={{ width: "40px" }} className="col-fixed not-sort">STT</th>
@@ -975,7 +1008,6 @@ function mapState(state) {
 
 const actionCreators = {
     getAllUserOfDepartment: UserActions.getAllUserOfDepartment,
-    getAllUserSameDepartment: UserActions.getAllUserSameDepartment,
     getEmployeeKPISets: kpiMemberActions.getEmployeeKPISets,
     getTaskByListKpis: kpiMemberActions.getTaskByListKpis,
     getAllKPIUnit: managerActions.getAllKPIUnit,
