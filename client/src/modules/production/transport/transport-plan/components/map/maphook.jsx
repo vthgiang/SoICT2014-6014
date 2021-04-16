@@ -36,9 +36,9 @@ function MapContainer(props){
   
   return (
     <LoadScript
-        // googleMapsApiKey='AIzaSyCkVQAqCoJU79mTctNsNmQLy9ME7qiTlfs'>
-        
-        googleMapsApiKey={"AIzaSyDldqMTHKND5STLHrVjMuSUXXJKvn3E-gE"}>
+        // googleMapsApiKey='AIzaSyCkVQAqCoJU79mTctNsNmQLy9ME7qiTlfs'        
+        googleMapsApiKey={process.env.REACT_APP_API_KEY}
+        >
           <GoogleMap
             mapContainerStyle={mapStyles}
             zoom={11}

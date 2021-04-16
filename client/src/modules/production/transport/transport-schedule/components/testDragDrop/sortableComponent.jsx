@@ -4,7 +4,12 @@ import './styleDragDrop.css';
 import { getDistanceAndTime } from '../../../transportHelper/getDistanceAndTimeGoong'
 function SortableComponent(props) {
 
-	const {transportRequirements, transportVehicle, callBackStateOrdinalAddress} = props
+	const {
+		transportRequirements, 
+		transportVehicle, 
+		callBackStateOrdinalAddress,
+		callBackToSetLocationsOnMap
+		} = props
 
 	const [addressList, setAddressList] = useState([]);
 	const [distance, setDistance] = useState([]);
@@ -57,6 +62,7 @@ function SortableComponent(props) {
 
 	useEffect(() => {
 		callBackStateOrdinalAddress(addressList, transportVehicle._id);
+		callBackToSetLocationsOnMap(addressList);
 	}, [addressList])
 
 	useEffect(() => {

@@ -9,7 +9,6 @@ function MapDirectionsRenderer(props) {
     const { places, travelMode } = props;
     useEffect(() => {
         if (places && travelMode){
-            console.log(process.env.REACT_APP_SERVER, " api");
             let waypoints = []
             places.map((p, index) => {
                 waypoints.push({
@@ -29,9 +28,7 @@ function MapDirectionsRenderer(props) {
                     waypoints: waypoints
                 },
                 (result, status) => {
-                    console.log(result, status, "123");
                     if (status === window.google.maps.DirectionsStatus.OK) {
-                        console.log(result, " day la ket qua")
                         setDirections(result);
                     } else {
                         setError(result);
