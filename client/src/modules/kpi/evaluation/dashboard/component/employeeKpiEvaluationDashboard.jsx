@@ -435,7 +435,7 @@ function EmployeeKpiEvaluationDashboard(props) {
                         {/* Đã kích hoạt */}
                         <div className="col-md-3 col-sm-6 form-inline">
                             <div className="info-box">
-                                <span className="info-box-icon bg-red"><i className="fa fa-thumbs-o-up"/></span>
+                                <span className="info-box-icon bg-green"><i className="fa fa-check-circle"/></span>
                                 <div className="info-box-content">
                                     <span className="info-box-text">{`${translate('kpi.evaluation.dashboard.activated')}`}</span>
                                     
@@ -459,7 +459,7 @@ function EmployeeKpiEvaluationDashboard(props) {
                         {/* Chờ phê duyệt */}
                         <div className="col-md-3 col-sm-6 form-inline">
                             <div className="info-box">
-                                <span className="info-box-icon bg-green"><i className="fa fa-comments-o"/></span>
+                                <span className="info-box-icon bg-red"><i className="fa fa-hourglass-half"/></span>
                                 <div className="info-box-content">
                                     <span className="info-box-text">{`${translate('kpi.evaluation.dashboard.awaiting_approval')}`}</span>
                                     <Link to="/kpi-member/manager" onClick={() => localStorage.setItem('stateFromEmployeeKpiEvaluationDashboard', 
