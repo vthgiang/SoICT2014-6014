@@ -48,7 +48,7 @@ const ViewAllTasks = (props) => {
                                                 (noneUpdateTask.length !== 0) ?
                                                     noneUpdateTask.map((obj, index) => (
                                                         <div className="panel panel-default" key={index}>
-                                                            <a role="button" className="item-question collapsed" data-toggle="collapse" data-parent="#accordion-noneupdate" href={`#collapse-noneupdate${index}`} aria-expanded="true" aria-controls="collapse1a">
+                                                            <span role="button" className="item-question collapsed" data-toggle="collapse" data-parent="#accordion-noneupdate" href={`#collapse-noneupdate${index}`} aria-expanded="true" aria-controls="collapse1a">
                                                                 <span className="index">{index + 1}</span>
                                                                 <span className="task-name">{obj.name}</span>
                                                                 {
@@ -61,7 +61,7 @@ const ViewAllTasks = (props) => {
                                                                     {translate('task.task_dashboard.updated')} {obj.updatedToNow}
                                                                     {translate('task.task_dashboard.day_ago')}
                                                                 </small>
-                                                            </a>
+                                                            </span>
                                                             <div id={`collapse-noneupdate${index}`} className="panel-collapse collapse" role="tabpanel">
                                                                 <div className="panel-body">
                                                                     <div className="time-todo-range">
@@ -103,7 +103,7 @@ const ViewAllTasks = (props) => {
                                                 (unconfirmedTask.length !== 0) ?
                                                     unconfirmedTask.map((obj, index) => (
                                                         <div className="panel panel-default" key={index}>
-                                                            <a role="button" className="item-question collapsed" data-toggle="collapse" data-parent="#accordion-unconfirm" href={`#collapse-unconfirm${index}`} aria-expanded="true" aria-controls="collapse1a">
+                                                            <span role="button" className="item-question collapsed" data-toggle="collapse" data-parent="#accordion-unconfirm" href={`#collapse-unconfirm${index}`} aria-expanded="true" aria-controls="collapse1a">
                                                                 <span className="index">{index + 1}</span>
                                                                 <span className="task-name">{obj.name}</span>
                                                                 {
@@ -112,7 +112,7 @@ const ViewAllTasks = (props) => {
                                                                         <a className="task-project-name" title="dự án">{getProjectName(obj.taskProject, project && project.data && project.data.list)}</a></>
                                                                 }
                                                                 <small className="label label-primary" style={{ fontSize: '9px', marginLeft: '5px', borderRadius: '.5em' }}>{obj.createdToNow} {translate('task.task_dashboard.day_ago')}</small>
-                                                            </a>
+                                                            </span>
                                                             <div id={`collapse-unconfirm${index}`} className="panel-collapse collapse" role="tabpanel">
                                                                 <div className="panel-body">
                                                                     <div className="time-todo-range">
@@ -153,7 +153,7 @@ const ViewAllTasks = (props) => {
                                                 (notLinkedTasks.length !== 0) ?
                                                     notLinkedTasks.map((obj, index) => (
                                                         <div className="panel panel-default" key={index}>
-                                                            <a role="button" className="item-question collapsed" data-toggle="collapse" data-parent="#accordion-notlinkkpi" href={`#collapse-notlinkkpi${index}`} aria-expanded="true" aria-controls="collapse1a">
+                                                            <span role="button" className="item-question collapsed" data-toggle="collapse" data-parent="#accordion-notlinkkpi" href={`#collapse-notlinkkpi${index}`} aria-expanded="true" aria-controls="collapse1a">
                                                                 <span className="index">{index + 1}</span>
                                                                 <span className="task-name">{obj.name}</span>
                                                                 {
@@ -161,7 +161,7 @@ const ViewAllTasks = (props) => {
                                                                     <><i className="fa fa-angle-right angle-right-custom" aria-hidden="true"></i>
                                                                         <a className="task-project-name" title="dự án">{getProjectName(obj.taskProject, project && project.data && project.data.list)}</a></>
                                                                 }
-                                                            </a>
+                                                            </span>
                                                             <div id={`collapse-notlinkkpi${index}`} className="panel-collapse collapse" role="tabpanel">
                                                                 <div className="panel-body">
                                                                     <div className="time-todo-range">
@@ -202,7 +202,7 @@ const ViewAllTasks = (props) => {
                                                 (taskHasActionsResponsible.length !== 0) ?
                                                     taskHasActionsResponsible.map((obj, index) => (
                                                         <div className="panel panel-default" key={index}>
-                                                            <a role="button" className="item-question collapsed" data-toggle="collapse" data-parent="#accordion-hasactionres" href={`#collapse-hasactionres${index}`} aria-expanded="true" aria-controls="collapse1a">
+                                                            <span role="button" className="item-question collapsed" data-toggle="collapse" data-parent="#accordion-hasactionres" href={`#collapse-hasactionres${index}`} aria-expanded="true" aria-controls="collapse1a">
                                                                 <span className="index">{index + 1}</span>
                                                                 <span className="task-name">{obj.name}</span>
                                                                 {
@@ -210,7 +210,7 @@ const ViewAllTasks = (props) => {
                                                                     <><i className="fa fa-angle-right angle-right-custom" aria-hidden="true"></i>
                                                                         <a className="task-project-name" title="dự án">{getProjectName(obj.taskProject, project && project.data && project.data.list)}</a></>
                                                                 }
-                                                            </a>
+                                                            </span>
                                                             <div id={`collapse-hasactionres${index}`} className="panel-collapse collapse" role="tabpanel">
                                                                 <div className="panel-body">
                                                                     <div className="time-todo-range">
@@ -251,7 +251,7 @@ const ViewAllTasks = (props) => {
                                                 (taskHasActionsAccountable.length !== 0) ?
                                                     taskHasActionsAccountable.map((obj, index) => (
                                                         <div className="panel panel-default" key={index}>
-                                                            <a role="button" className="item-question collapsed" data-toggle="collapse" data-parent="#accordion-hasactionacc" href={`#collapse-hasactionacc${index}`} aria-expanded="true" aria-controls="collapse1a">
+                                                            <span role="button" className="item-question collapsed" data-toggle="collapse" data-parent="#accordion-hasactionacc" href={`#collapse-hasactionacc${index}`} aria-expanded="true" aria-controls="collapse1a">
                                                                 <span className="index">{index + 1}</span>
                                                                 <span className="task-name">{obj.name}</span>
                                                                 {
@@ -259,7 +259,7 @@ const ViewAllTasks = (props) => {
                                                                     <><i className="fa fa-angle-right angle-right-custom" aria-hidden="true"></i>
                                                                         <a className="task-project-name" title="dự án">{getProjectName(obj.taskProject, project && project.data && project.data.list)}</a></>
                                                                 }
-                                                            </a>
+                                                            </span>
                                                             <div id={`collapse-hasactionacc${index}`} className="panel-collapse collapse" role="tabpanel">
                                                                 <div className="panel-body">
                                                                     <div className="time-todo-range">
@@ -300,7 +300,7 @@ const ViewAllTasks = (props) => {
                                                 (taskHasNotEvaluationResultIncurrentMonth.length !== 0) ?
                                                     taskHasNotEvaluationResultIncurrentMonth.map((obj, index) => (
                                                         <div className="panel panel-default" key={index}>
-                                                            <a role="button" className="item-question collapsed" data-toggle="collapse" data-parent="#accordion-notevaluation" href={`#collapse-notevaluation${index}`} aria-expanded="true" aria-controls="collapse1a">
+                                                            <span role="button" className="item-question collapsed" data-toggle="collapse" data-parent="#accordion-notevaluation" href={`#collapse-notevaluation${index}`} aria-expanded="true" aria-controls="collapse1a">
                                                                 <span className="index">{index + 1}</span>
                                                                 <span className="task-name">{obj.name}</span>
                                                                 {
@@ -308,7 +308,7 @@ const ViewAllTasks = (props) => {
                                                                     <><i className="fa fa-angle-right angle-right-custom" aria-hidden="true"></i>
                                                                         <a className="task-project-name" title="dự án">{getProjectName(obj.taskProject, project && project.data && project.data.list)}</a></>
                                                                 }
-                                                            </a>
+                                                            </span>
                                                             <div id={`collapse-notevaluation${index}`} className="panel-collapse collapse" role="tabpanel">
                                                                 <div className="panel-body">
                                                                     <div className="time-todo-range">
@@ -349,7 +349,7 @@ const ViewAllTasks = (props) => {
                                                 (taskHasNotApproveResquestToClose.length !== 0) ?
                                                     taskHasNotApproveResquestToClose.map((obj, index) => (
                                                         <div className="panel panel-default" key={index}>
-                                                            <a role="button" className="item-question collapsed" data-toggle="collapse" data-parent="#accordion-notevaluation" href={`#collapse-requested-to-close${index}`} aria-expanded="true" aria-controls="collapse1a">
+                                                            <span role="button" className="item-question collapsed" data-toggle="collapse" data-parent="#accordion-notevaluation" href={`#collapse-requested-to-close${index}`} aria-expanded="true" aria-controls="collapse1a">
                                                                 <span className="index">{index + 1}</span>
                                                                 <span className="task-name">{obj.name}</span>
                                                                 {
@@ -357,7 +357,7 @@ const ViewAllTasks = (props) => {
                                                                     <><i className="fa fa-angle-right angle-right-custom" aria-hidden="true"></i>
                                                                         <a className="task-project-name" title="dự án">{getProjectName(obj.taskProject, project && project.data && project.data.list)}</a></>
                                                                 }
-                                                            </a>
+                                                            </span>
                                                             <div id={`collapse-requested-to-close${index}`} className="panel-collapse collapse" role="tabpanel">
                                                                 <div className="panel-body">
                                                                     <div className="time-todo-range">

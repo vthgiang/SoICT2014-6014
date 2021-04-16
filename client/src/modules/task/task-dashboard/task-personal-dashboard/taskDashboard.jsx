@@ -76,23 +76,18 @@ class TaskDashboard extends Component {
         };
     }
 
-    componentDidMount = async () => {
+    componentDidMount = () => {
         const { startMonth, endMonth } = this.state;
         let d = new Date(),
             month = d.getMonth() + 1,
             year = d.getFullYear();
 
-        await this.props.getResponsibleTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
-        await this.props.getAccountableTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
-        await this.props.getConsultedTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
-        await this.props.getCreatorTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
-        await this.props.getInformedTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
-        await this.props.getTimeSheetOfUser(getStorage('userId'), month, year);
-
-        let data = {
-            type: "user"
-        }
-        await this.props.getTaskByUser(data);
+        this.props.getResponsibleTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
+        this.props.getAccountableTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
+        this.props.getConsultedTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
+        this.props.getCreatorTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
+        this.props.getInformedTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
+        this.props.getTimeSheetOfUser(getStorage('userId'), month, year);
     }
 
     generateDataPoints(noOfDps) {
@@ -447,8 +442,8 @@ class TaskDashboard extends Component {
                             <LazyLoadComponent once={true}>
                                 {
                                     listTasksGeneral && listTasksGeneral.length > 0 ?
-                                        <GeneralTaskPersonalChart tasks={listTasksGeneral} tasksbyuser={tasks && tasks.tasksbyuser} />
-                                        : (loadingInformed && loadingCreator && loadingConsulted && loadingAccountable) ?
+                                        <GeneralTaskPersonalChart tasks={listTasksGeneral} />
+                                        : (loadingInformed && loadingConsulted && loadingAccountable) ?
                                             <div className="table-info-panel">{translate('confirm.loading')}</div> :
                                             <div className="table-info-panel">{translate('confirm.no_data')}</div>
                                 }
@@ -651,7 +646,6 @@ const actionCreators = {
     getConsultedTaskByUser: taskManagementActions.getConsultedTaskByUser,
     getInformedTaskByUser: taskManagementActions.getInformedTaskByUser,
     getCreatorTaskByUser: taskManagementActions.getCreatorTaskByUser,
-    getTaskByUser: taskManagementActions.getTasksByUser,
     getTimeSheetOfUser: taskManagementActions.getTimeSheetOfUser,
 };
 

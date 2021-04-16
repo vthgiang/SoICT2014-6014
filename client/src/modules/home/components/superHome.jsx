@@ -17,8 +17,6 @@ class SuperHome extends Component {
     constructor(props) {
         super(props);
 
-        this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
-
         let d = new Date(),
             month = d.getMonth() + 1,
             year = d.getFullYear();
@@ -49,8 +47,6 @@ class SuperHome extends Component {
 
         this.state = {
             userID: "",
-
-            dataStatus: this.DATA_STATUS.NOT_AVAILABLE,
 
             startMonth: this.INFO_SEARCH.startMonth,
             endMonth: this.INFO_SEARCH.endMonth,
@@ -267,19 +263,6 @@ class SuperHome extends Component {
         await this.props.getConsultedTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
         await this.props.getInformedTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
         await this.props.getCreatorTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
-
-        let data = {
-            type: "user"
-        }
-        await this.props.getTaskByUser(data);
-
-        await this.setState(state => {
-            return {
-                ...state,
-                dataStatus: this.DATA_STATUS.QUERYING,
-                willUpdate: true       // Khi true sẽ cập nhật dữ liệu vào props từ redux
-            };
-        });
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -349,9 +332,6 @@ class SuperHome extends Component {
             this.props.getAccountableTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
             this.props.getConsultedTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
             this.props.getInformedTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
-
-            let data = { type: "user" };
-            this.props.getTaskByUser(data);
         }
     }
 
@@ -461,7 +441,6 @@ class SuperHome extends Component {
                                     <LazyLoadComponent once={true}>
                                         <GeneralTaskPersonalChart
                                             tasks={listTasksGeneral}
-                                            tasksbyuser={tasks && tasks.tasksbyuser}
                                         />
                                     </LazyLoadComponent>
                                     : (loadingInformed && loadingCreator && loadingConsulted && loadingAccountable) ?
@@ -541,7 +520,6 @@ const actionCreators = {
     getConsultedTaskByUser: taskManagementActions.getConsultedTaskByUser,
     getInformedTaskByUser: taskManagementActions.getInformedTaskByUser,
     getCreatorTaskByUser: taskManagementActions.getCreatorTaskByUser,
-    getTaskByUser: taskManagementActions.getTasksByUser,
 };
 const connectedHome = connect(mapState, actionCreators)(withTranslate(SuperHome));
 export { connectedHome as SuperHome };
