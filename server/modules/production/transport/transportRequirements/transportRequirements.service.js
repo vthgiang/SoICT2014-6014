@@ -9,7 +9,7 @@ const {
 const TransportPlanServices = require("../transportPlan/transportPlan.service")
 
 // Tạo mới mảng Ví dụ
-exports.createTransportRequirement = async (portal, data) => {
+exports.createTransportRequirement = async (portal, data, userId) => {
     let newTransportRequirement;
     if (data && data.length !== 0) {
         let listGoods = [];
@@ -34,7 +34,9 @@ exports.createTransportRequirement = async (portal, data) => {
         }
         newTransportRequirement = await TransportRequirement(connect(DB_CONNECTION, portal)).create({
             status: data.status,
+            code: data.code,
             type: data.type,
+            creator: userId,
             fromAddress: data.fromAddress,
             toAddress: data.toAddress,
             goods: listGoods,
@@ -55,7 +57,10 @@ exports.createTransportRequirement = async (portal, data) => {
         
     }
 
-    let requirement = await TransportRequirement(connect(DB_CONNECTION, portal)).findById({ _id: newTransportRequirement._id });;
+    let requirement = await TransportRequirement(connect(DB_CONNECTION, portal)).findById({ _id: newTransportRequirement._id })
+                            .populate({
+                                path: 'creator'
+                            });
     return requirement;
 }
 
@@ -118,6 +123,12 @@ exports.getAllTransportRequirements = async (portal, data) => {
     let totalList = await TransportRequirement(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
     let requirements = await TransportRequirement(connect(DB_CONNECTION, portal)).find(keySearch)
         .populate({path:'transportPlan'})
+        .populate({
+            path: 'creator'
+        })
+        .populate({
+            path: 'goods.good'
+        })
         .skip((page - 1) * limit)
         .limit(limit);
         // .populate('TransportPlan');
@@ -170,7 +181,12 @@ exports.editTransportRequirement = async (portal, id, data) => {
 
 // Xóa một Ví dụ
 exports.deleteTransportRequirement = async (portal, id) => {
-    let requirement = TransportRequirement(connect(DB_CONNECTION, portal)).findByIdAndDelete({ _id: id });
+    let deleteRequirement = await TransportRequirement(connect(DB_CONNECTION, portal)).findOne({_id: id});
+
+    if (deleteRequirement && deleteRequirement.transportPlan){
+        await TransportPlanServices.deleteTransportRequirementByPlanId(portal, deleteRequirement.transportPlan, id);
+    }
+    let requirement = await TransportRequirement(connect(DB_CONNECTION, portal)).findByIdAndDelete({ _id: id });
     return requirement;
 }
 

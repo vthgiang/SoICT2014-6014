@@ -8,19 +8,26 @@ const TransportScheduleSchema = new Schema({
         required: true,
     },
     route: [{
-        ordinal: { // thu tu
-            type: Number,
-            required: true,
-        },
-        transportRequirement: { // yeu cau van chuyen
+        transportVehicle: { // Phương tiện vận chuyển
             type: Schema.Types.ObjectId,
-            ref: 'TransportRequirements',
+            ref: 'TransportVehicle',
             required: true,
         },
-        address: {
-            type: String,
-            required: true,
-        },
+        routeOrdinal: [{
+            ordinal: { // Thứ tự
+                type: Number,
+                required: true,
+            },
+            transportRequirement: { // Yêu cầu vận chuyển
+                type: Schema.Types.ObjectId,
+                ref: 'TransportRequirement',
+                required: true,
+            },
+            type: { // Giao hay nhận hàng
+                type: Number,
+                required: true
+            }
+        }]
     }],
     transportVehicles: [{ // Xep nguoi, hang hoa
         transportVehicle: {
@@ -30,7 +37,7 @@ const TransportScheduleSchema = new Schema({
         },
         transportRequirements: [{
             type: Schema.Types.ObjectId,
-            ref: 'TransportRequirements',
+            ref: 'TransportRequirement',
             required: true,
         }],        
     }]

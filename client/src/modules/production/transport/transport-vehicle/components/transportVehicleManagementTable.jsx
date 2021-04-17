@@ -80,39 +80,43 @@ function TransportVehicleManagementTable(props) {
                     </button>
                 </div> */}
             </div>
-            
-            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <fieldset className="scheduler-border" style={{ height: "100%" }}>
-                <legend className="scheduler-border">Kế hoạch: {currentTransportPlan.code}</legend>
-                    {/* <TransportVehicle 
-                        currentTransportPlan = {currentTransportPlan}
-                    /> */}
-                </fieldset>
-
-            </div>            
+            {
+                (currentTransportPlan && currentTransportPlan._id !== "0")
+                &&
                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-6">
-                        
+                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <fieldset className="scheduler-border" style={{ height: "100%" }}>
-                        <legend className="scheduler-border">Phương tiện</legend>
-                        {
-                            (currentTransportPlan && currentTransportPlan._id !== "0")
-                            && 
-                            <TransportVehicle 
-                                currentTransportPlanId = {currentTransportPlan._id}
-                            />
-                        } 
-                        
+                        <legend className="scheduler-border">Kế hoạch: {currentTransportPlan.code}</legend>
+                            {/* <TransportVehicle 
+                                currentTransportPlan = {currentTransportPlan}
+                            /> */}
                         </fieldset>
-                    </div>
-                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-6">
-                    <fieldset className="scheduler-border" style={{ height: "100%" }}>
-                        <legend className="scheduler-border">Nhân viên vận chuyển</legend>
-                            <TransportEmployee />
-                        </fieldset>
+                    </div>            
+                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-6">
+                            <fieldset className="scheduler-border" style={{ height: "100%" }}>
+                            <legend className="scheduler-border">Phương tiện</legend>
+                            {
+                                (currentTransportPlan && currentTransportPlan._id !== "0")
+                                && 
+                                <TransportVehicle 
+                                    currentTransportPlanId = {currentTransportPlan._id}
+                                />
+                            } 
+                            
+                            </fieldset>
+                        </div>
+                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-6">
+                        <fieldset className="scheduler-border" style={{ height: "100%" }}>
+                            <legend className="scheduler-border">Nhân viên vận chuyển</legend>
+                                <TransportEmployee />
+                            </fieldset>
+                        </div>
                     </div>
                 </div>
-            </div>
+            }
+            
+        </div>
         </React.Fragment>
     )
 }

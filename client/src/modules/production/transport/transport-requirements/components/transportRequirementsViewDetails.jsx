@@ -5,10 +5,14 @@ import { ButtonModal, DialogModal, ErrorLabel, DatePicker, SelectBox } from '../
 import { withTranslate } from 'react-redux-multilingual';
 import ValidationHelper from '../../../../../helpers/validationHelper';
 
+import {TransportDetailNewOne} from './detail-transport-requirement/transportDetailNewOne'
+import {TransportDetailGoods} from './detail-transport-requirement/transportDetailGoods'
+
 import { exampleActions } from '../redux/actions';
 
 function TransportRequirementsViewDetails(props) {
     // const { translate, example, page, perPage } = props;
+    const {curentTransportRequirementDetail} = props;
 
     // const { exampleName, description, exampleNameError } = state;
 
@@ -18,33 +22,42 @@ function TransportRequirementsViewDetails(props) {
     //     }
     //     return true;
     // }
-
+    useEffect(() => {
+        console.log(curentTransportRequirementDetail)
+  
+    }, [curentTransportRequirementDetail])
 
         return (
 
-            // <DialogModal
-            //     modalID={`modal-detail-info-example-hooks`}
-            //     title={"fff"}
-            //     formID={`form-detail-example-hooks`}
-            //     size={50}
-            //     maxWidth={500}
-            //     hasSaveButton={false}
-            //     hasNote={false}
-            // >
-                <form id={`form-detail-example-hooks`}>
+            <DialogModal
+                modalID={`modal-detail-info-example-hooks`}
+                title={"Chi tiết yêu cầu vận chuyển"}
+                formID={`form-detail-transport-requirement`}
+                size={100}
+                maxWidth={500}
+                hasSaveButton={false}
+                hasNote={false}
+            >
+                <form id={`form-detail-transport-requirement`}>
                     {/* Tên ví dụ */}
                     <div className={`form-group`}>
-                        <label>{"translate"}:</label>
-                        <span> {"exampleName"}</span>
+                        {/* <label>{"translate"}:</label>
+                        <span> {"exampleName"}</span> */}
                     </div>
 
                     {/* Mô tả ví dụ */}
                     <div className={`form-group`}>
-                        <label>{"translate"}:</label>
-                        <span> {"description"}</span>
+                        {/* <label>{"translate"}:</label>
+                        <span> {"description"}</span> */}
                     </div>
+                    <TransportDetailNewOne 
+                        curentTransportRequirementDetail = {curentTransportRequirementDetail}
+                    />
+                    <TransportDetailGoods
+                        listGoodsChosen = {curentTransportRequirementDetail?.goods}
+                    />
                 </form>
-            // </DialogModal>
+            </DialogModal>
         
 
         );

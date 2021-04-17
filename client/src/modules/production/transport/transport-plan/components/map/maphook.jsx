@@ -35,22 +35,24 @@ function MapContainer(props){
   }, [locations])
   
   return (
-     <LoadScript
-       googleMapsApiKey='AIzaSyCkVQAqCoJU79mTctNsNmQLy9ME7qiTlfs'>
-        <GoogleMap
-          mapContainerStyle={mapStyles}
-          zoom={11}
-          center={defaultCenter}
-          >
-          {
-              locations.map(item => {
-                  return (
-                      <Marker key={item.name} position={item.location} icon={item.icon}/>
-                  )
-              })
-          }
-          </GoogleMap>
-     </LoadScript>
+    <LoadScript
+        googleMapsApiKey='AIzaSyCkVQAqCoJU79mTctNsNmQLy9ME7qiTlfs'        
+        // googleMapsApiKey={process.env.REACT_APP_API_KEY}
+        >
+          <GoogleMap
+            mapContainerStyle={mapStyles}
+            zoom={11}
+            center={defaultCenter}
+            >
+            {
+                locations.map(item => {
+                    return (
+                        <Marker key={item.name} position={item.location} icon={item.icon}/>
+                    )
+                })
+            }
+            </GoogleMap>
+      </LoadScript>
   )
 }
 export {MapContainer};

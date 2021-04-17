@@ -47,7 +47,7 @@ export function transportSchedule(state = initialState, action) {
             return {
                 ...state,
                 isLoading: false,
-                currentTransportSchedule: action.payload,
+                currentTransportScheduleAfterEdit: action.payload,
             }
 		default:
             		return state

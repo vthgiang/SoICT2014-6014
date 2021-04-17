@@ -25,7 +25,7 @@ exports.planCreateTransportRoute = async (portal, data) => {
 
 exports.getTransportRouteByPlanId = async (portal, id) => {
     let transportRoute = await TransportSchedule(connect(DB_CONNECTION, portal)).findOne({transportPlan: id})
-    .populate(
+    .populate([
         {
             path: 'transportPlan',
             select: 'transportVehicles transportRequirements',
@@ -39,8 +39,24 @@ exports.getTransportRouteByPlanId = async (portal, id) => {
                     model: 'TransportVehicle'
                 }
             ]
-        }   
-    )
+        },
+        {
+            path: 'transportVehicles.transportVehicle',
+            model: 'TransportVehicle',
+        },
+        {
+            path: 'transportVehicles.transportRequirements',
+            model: 'TransportRequirement'
+        },
+        {
+            path: 'route.transportVehicle',
+            model: 'TransportVehicle'
+        },
+        {
+            path: 'route.routeOrdinal.transportRequirement',
+            model: 'TransportRequirement'       
+        }
+    ])
     if (transportRoute) {
         return transportRoute;
     }
@@ -48,77 +64,86 @@ exports.getTransportRouteByPlanId = async (portal, id) => {
 }
 
 /**
- * 
+ * Edit transportschedule qua plan id
  * @param {*} portal 
- * @param {*} vehicleId id phương tiện (assetid)
- * @param {*} data {asset: id tương ứng tài sản cố định, code: mã phương tiện,
- *                  name: tên phương tiện, payload, volume, transportPlan: id plan } 
+ * @param {*} id 
+ * @param {*} data 
  * @returns 
  */
-exports.editTransportVehicleToSetPlan = async (portal, vehicleId, data) => {
-    let newTransportVehicle;
-    let oldTransportVehicle = await TransportVehicle(connect(DB_CONNECTION, portal)).findOne({asset: vehicleId});
-    
-    if (!oldTransportVehicle) {
-        newTransportVehicle = await TransportVehicle(connect(DB_CONNECTION, portal)).create({
-            asset: data.id,
-            code: data.code,
-            name: data.name,
-            payload: data.payload,
-            volume: data.volume,
-            transportPlan: data.transportPlan,
-        });
-    }
-    else {
-        const transportVehicleId = oldTransportVehicle._id; 
-        await TransportVehicle(connect(DB_CONNECTION, portal)).update({ _id: transportVehicleId }, { $set: data });
-        newTransportVehicle = await TransportVehicle(connect(DB_CONNECTION, portal)).findById({ _id: transportVehicleId });
-    }
-    return newTransportVehicle;
-}
+exports.editTransportRouteByPlanId = async (portal, planId, data) => {
+    let oldTransportSchedule = await TransportSchedule(connect(DB_CONNECTION, portal)).findOne({transportPlan: planId});
 
-exports.getAllTransportVehicles = async (portal, data) => {
-    let keySearch = {};
-    // if (data?.exampleName?.length > 0) {
-    //     keySearch = {
-    //         exampleName: {
-    //             $regex: data.exampleName,
-    //             $options: "i"
-    //         }
-    //     }
-    // }
-
-    let page, limit;
-    page = data?.page ? Number(data.page) : 1;
-    limit = data?.limit ? Number(data.limit) : 200;
-
-    let totalList = await TransportVehicle(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
-    let vehicles = await TransportVehicle(connect(DB_CONNECTION, portal)).find(keySearch)
-        .skip((page - 1) * limit)
-        .limit(limit);
-    return { 
-        data: vehicles, 
-        totalList 
-    }
-}
-
-
-// Chỉnh sửa một Ví dụ
-exports.editTransportRouteByPlanId = async (portal, id, data) => {
-    let oldTransportRoute = await TransportSchedule(connect(DB_CONNECTION, portal)).findOne({transportPlan: id});
-    if (!oldTransportRoute) {
+    if (!oldTransportSchedule) {
         return -1;
     }
 
     // Cach 2 de update
-    await TransportSchedule(connect(DB_CONNECTION, portal)).update({ _id: oldTransportRoute._id }, { $set: data });
-    let newTransportRoute = await TransportSchedule(connect(DB_CONNECTION, portal)).findById({ _id: oldTransportRoute._id });
+    await TransportSchedule(connect(DB_CONNECTION, portal)).update({ _id: oldTransportSchedule._id }, { $set: data });
+    let newTransportSchedule = await TransportSchedule(connect(DB_CONNECTION, portal)).findById({ _id: oldTransportSchedule._id });
 
-    return newTransportRoute;
+    return newTransportSchedule;
 }
 
-// // Xóa một Ví dụ
-// exports.deleteExample = async (portal, id) => {
-//     let example = Example(connect(DB_CONNECTION, portal)).findByIdAndDelete({ _id: id });
-//     return example;
-// }
+/**
+ * Xóa tất cả các requirementId trong transportSchedule có transportPlanId
+ * @param {} portal 
+ * @param {*} planId 
+ * @param {*} requirementId 
+ */
+exports.deleteTransportRequirementByPlanId = async (portal, planId, requirementId) => {
+    let oldTransportSchedule = await TransportSchedule(connect(DB_CONNECTION, portal)).findOne({transportPlan: planId});
+    // Xóa bỏ requirement trong transportVehicles
+    /**
+     * transportVehicles = [
+     * transportRequirements: array,
+     * transportVehicle: id
+     * ]
+     */
+    let newTransportVehicles = [];
+    if (oldTransportSchedule.transportVehicles && oldTransportSchedule.transportVehicles.length!==0){
+        let transportVehicles= oldTransportSchedule.transportVehicles;
+        let newTransportRequirements = [];
+        for (let i = 0; i<transportVehicles.length;i++){
+            newTransportRequirements = transportVehicles[i].transportRequirements;
+            if (String(requirementId) in transportVehicles[i].transportRequirements){
+                newTransportRequirements = transportVehicles[i].transportRequirements.filter(r => r!==requirementId);
+            }
+            newTransportVehicles.push({
+                transportVehicle: transportVehicles[i].transportVehicle,
+                transportRequirements: newTransportRequirements,
+            })
+        }
+        this.editTransportRouteByPlanId(portal, planId, {
+            transportVehicles: newTransportVehicles,
+        })
+    }
+    // Xóa bỏ requirement trong route
+    let newTransportRoute = []
+    if (oldTransportSchedule.route && oldTransportSchedule.route.length!==0 ){
+        let route = oldTransportSchedule.route;
+        for ( let i=0;i<route.length;i++){
+            let newTransportRouteOrdinal = route[i].routeOrdinal.filter(r => String(r.transportRequirement)!==String(requirementId))
+            newTransportRoute.push({
+                transportVehicle: route[i].transportVehicle,
+                routeOrdinal: newTransportRouteOrdinal,
+            })
+        }
+        this.editTransportRouteByPlanId(portal, planId, {
+            route: newTransportRoute,
+        })
+    }
+}
+
+/**
+ * Xóa plan xóa bỏ cả schedule
+ * @param {} portal 
+ * @param {*} planId 
+ */
+exports.planDeleteTransportSchedule = async (portal, planId) => {
+    // Tìm plan hiện tại, lấy array transportRequirements, và xóa bỏ trường transportPlan trong các requirement này
+    let transportSchedule = await TransportSchedule(connect(DB_CONNECTION, portal)).findOne({transportPlan: planId });
+    if (transportSchedule){
+        await TransportSchedule(connect(DB_CONNECTION, portal)).findByIdAndDelete({ _id: transportSchedule._id });
+    }
+    // return transportPlan;
+}

@@ -4,7 +4,8 @@ import { withTranslate } from "react-redux-multilingual";
 
 import { DataTableSetting, DeleteNotification, PaginateBar } from "../../../../../common-components";
 
-import { TransportRequirementsCreateForm } from "./create-transport-requirements/transportRequirementsCreateForm"
+import { TransportRequirementsCreateForm } from "./transportRequirementsCreateForm"
+import { TransportRequirementsViewDetails } from "./transportRequirementsViewDetails"
 
 import { transportRequirementsActions } from "../redux/actions";
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
@@ -22,7 +23,7 @@ function TransportRequirementsManagementTable(props) {
         tableId: getTableId,
     })
     const { example, translate, allTransportRequirements } = props;
-    const { exampleName, page, perPage, currentRow, curentRowDetail, tableId } = state;
+    const { exampleName, page, perPage, currentRow, curentRowDetail, tableId, curentTransportRequirementDetail } = state;
 
     useEffect(() => {
         props.getAllTransportRequirements({ page : 1, perPage : 100 });
@@ -123,10 +124,10 @@ function TransportRequirementsManagementTable(props) {
      * Hàm xử lý khi click xem chi tiết một ví dụ
      * @param {*} example thông tin của ví dụ cần xem
      */
-    const handleShowDetailInfo = (example) => {
+    const handleShowDetailInfo = (transportRequirement) => {
         setState({
             ...state,
-            curentRowDetail: example,
+            curentTransportRequirementDetail: transportRequirement,
         });
         window.$(`#modal-detail-info-example-hooks`).modal('show')
     }
@@ -139,30 +140,34 @@ function TransportRequirementsManagementTable(props) {
     const totalPage = example && Math.ceil(example.totalList / perPage);
     return (
         <React.Fragment>
-             <TransportRequirementsCreateForm />
-
+            <TransportRequirementsCreateForm />
+            <TransportRequirementsViewDetails
+                curentTransportRequirementDetail={curentTransportRequirementDetail}
+            />
             <div className="box-body qlcv">
-                <div className="form-inline">
+                {/* <div className="form-inline"> */}
                     {/* Tìm kiếm */}
-                    <div className="form-group">
+                    {/* <div className="form-group">
                         <label className="form-control-static">{translate('manage_example.exampleName')}</label>
                         <input type="text" className="form-control" name="exampleName" onChange={handleChangeExampleName} placeholder={translate('manage_example.exampleName')} autoComplete="off" />
                     </div>
                     <div className="form-group">
                         <button type="button" className="btn btn-success" title={translate('manage_example.search')} onClick={() => handleSubmitSearch()}>{translate('manage_example.search')}</button>
-                    </div>
-                </div>
+                    </div> */}
+                {/* </div> */}
 
                 {/* Danh sách các yêu cầu */}
                 <table id={tableId} className="table table-striped table-bordered table-hover">
                     <thead>
                         <tr>
                             <th className="col-fixed" style={{ width: 60 }}>{translate('manage_example.index')}</th>
+                            <th>{"Mã yêu cầu"}</th>
                             <th>{"Loại yêu cầu"}</th>
-                            <th>{"Địa chỉ bắt đầu"}</th>
-                            <th>{"Địa chỉ kết thúc"}</th>
+                            <th>{"Địa chỉ nhận hàng"}</th>
+                            <th>{"Địa chỉ giao hàng"}</th>
                             <th>{"Người tạo"}</th>
                             <th>{"Trạng thái"}</th>
+                            <th>{"Hành động"}</th>
                             {/* <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
                                 <DataTableSetting
                                     tableId={tableId}
@@ -182,18 +187,29 @@ function TransportRequirementsManagementTable(props) {
                                 x &&
                                 <tr key={index}>
                                     <td>{index + 1 + (page - 1) * perPage}</td>
-                                    <td>{"Giao hàng"}</td>
+                                    <td>{x.code}</td>
+                                    <td>{x.type}</td>
                                     <td>{x.fromAddress}</td>
                                     <td>{x.toAddress}</td>
+                                    <td>{x.creator ? x.creator.name : ""}</td>
+                                    <td>{x.status}</td>
                                     <td style={{ textAlign: "center" }}>
-                                        {/* <a className="edit text-green" style={{ width: '5px' }} title={translate('manage_example.detail_info_example')} onClick={() => handleShowDetailInfo(example)}><i className="material-icons">visibility</i></a>
-                                        <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_example.edit')} onClick={() => handleEdit(example)}><i className="material-icons">edit</i></a> */}
+                                        <a className="edit text-green" style={{ width: '5px' }} 
+                                            // title={translate('manage_example.detail_info_example')} 
+                                            title={'Thông tin chi tiết yêu cầu vận chuyển'}
+                                            onClick={() => handleShowDetailInfo(x)}
+                                        >
+                                            <i className="material-icons">
+                                                visibility
+                                            </i>
+                                        </a>
+                                        {/* <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_example.edit')} onClick={() => handleEdit(example)}><i className="material-icons">edit</i></a> */}
                                         <DeleteNotification
                                             // content={translate('manage_example.delete')}
-                                            content={"123"}
+                                            content={"Xóa yêu cầu vận chuyển "}
                                             data={{
                                                 id: x._id,
-                                                info: "day la info"
+                                                info: x.code,
                                             }}
                                             func={handleDelete}
                                         />
