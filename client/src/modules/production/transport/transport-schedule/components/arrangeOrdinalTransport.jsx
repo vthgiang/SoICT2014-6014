@@ -172,16 +172,22 @@ function ArrangeOrdinalTransport(props) {
                             items={getListTransportPlans()}
                             onChange={handleTransportPlanChange}
                         />
-                    </div>                
-                    <div className="form-group">
-                        <button type="button" className="btn btn-success" title="Lưu" 
-                            onClick={handleSubmitRoute}
-                        >
-                            Lưu
-                        </button>
                     </div>
+                    {
+                        (currentTransportPlan && currentTransportPlan._id!=="0") 
+                        &&
+                        <div className="form-group">
+                            <button type="button" className="btn btn-success" title="Lưu" 
+                                onClick={handleSubmitRoute}
+                            >
+                                Lưu
+                            </button>
+                        </div>
+                    }
                 </div>
-
+            {
+                (currentTransportPlan && currentTransportPlan._id!=="0") 
+                &&
                 <div>                       
                     {
                         (transportVehicles && transportVehicles.length !==0 )
@@ -193,7 +199,7 @@ function ArrangeOrdinalTransport(props) {
                         ))
                     }
                 </div>
-                
+            }
             </div>
         </React.Fragment>
     )

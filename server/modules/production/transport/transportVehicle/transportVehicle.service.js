@@ -5,7 +5,7 @@ const {
 const {
     connect
 } = require(`../../../../helpers/dbHelper`);
-
+const TransportPlanServices = require('../transportPlan/transportPlan.service')
 exports.createTransportVehicle = async (portal, data) => {
     let newTransportVehicle;
     console.log(data);
@@ -127,46 +127,20 @@ exports.getAllTransportVehicles = async (portal, data) => {
     }
 }
 
-//     let page, perPage;
-//     page = data?.page ? Number(data.page) : 1;
-//     perPage = data?.perPage ? Number(data.perPage) : 20;
-
-//     let totalList = await Example(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
-//     let ExampleCollection = await Example(connect(DB_CONNECTION, portal)).find(keySearch, { exampleName: 1 })
-//         .skip((page - 1) * perPage)
-//         .limit(perPage);
-
-//     return { 
-//         data: ExampleCollection,
-//         totalList 
-//     }
-// }
-
-// // Lấy ra Ví dụ theo id
-// exports.getExampleById = async (portal, id) => {
-//     let example = await Example(connect(DB_CONNECTION, portal)).findById({ _id: id });
-//     if (example) {
-//         return example;
-//     }
-//     return -1;
-// }
-
-// // Chỉnh sửa một Ví dụ
-// exports.editExample = async (portal, id, data) => {
-//     let oldExample = await Example(connect(DB_CONNECTION, portal)).findById(id);
-//     if (!oldExample) {
-//         return -1;
-//     }
-
-//     // Cach 2 de update
-//     await Example(connect(DB_CONNECTION, portal)).update({ _id: id }, { $set: data });
-//     let example = await Example(connect(DB_CONNECTION, portal)).findById({ _id: oldExample._id });
-
-//     return example;
-// }
-
-// // Xóa một Ví dụ
-// exports.deleteExample = async (portal, id) => {
-//     let example = Example(connect(DB_CONNECTION, portal)).findByIdAndDelete({ _id: id });
-//     return example;
-// }
+/**
+ * Xóa bỏ phương tiện vận tải hiện có trong plan
+ * @param {*} portal 
+ * @param {*} id 
+ * @returns 
+ */
+exports.deleteTransportVehicleInPlanSchedule = async (portal, vehicleId, planId) => {
+    // Tìm plan hiện tại, lấy array transportRequirements, và xóa bỏ trường transportPlan trong các requirement này
+    let TransportPlan = await TransportPlan(connect(DB_CONNECTION, portal)).findById({ _id: planId });
+    if (transportPlan && transportPlan.transportVehicles && transportPlan.transportVehicles.length !==0){
+        let newTransportVehicles = transportPlan.transportVehicles.filter(r => String(r.transportVehicle)!==vehicleId);
+        TransportPlanServices.editTransportPlan(portal, planId, {transportVehicles: newTransportVehicles});
+    }
+    await TransportScheduleServices.planDeleteTransportSchedule(portal, planId);
+    transportPlan = await TransportPlan(connect(DB_CONNECTION, portal)).findByIdAndDelete({ _id: planId });
+    return transportPlan;
+}

@@ -42,9 +42,19 @@ function MapDirectionsRenderer(props) {
       return <h1>{error}</h1>;
     }
     return (
-      directions && (
-        <DirectionsRenderer directions={directions} options={{suppressMarkers: true}}/>
-      )
+        directions && (
+            <DirectionsRenderer 
+            directions={directions} 
+            options={
+                {
+                    suppressMarkers: true,
+                    polylineOptions: {
+                        strokeColor: '#'+Math.floor(Math.random()*16777215).toString(16),
+                    }
+                }
+            
+            }/>
+        )
     );
   }
 

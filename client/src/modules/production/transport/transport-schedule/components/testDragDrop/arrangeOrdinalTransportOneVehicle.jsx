@@ -69,10 +69,10 @@ function ArrangeOrdinalTransportOneVehicle(props) {
                 <div className = "transport-map">
                     {
                         (activeMapState && activeMapState.length!==0)
-                        &&
-                        <MapContainer 
-                            locations={activeMapState}
-                        />
+                        // &&
+                        // <MapContainer 
+                        //     locations={activeMapState}
+                        // />
                     }
                 </div>
                 <div className="form-group">
