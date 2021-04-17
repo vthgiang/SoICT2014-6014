@@ -38,12 +38,35 @@ function ContractEditModal(props) {
         fileUpload: ""
     })
 
+
     const { translate } = props;
 
     const { id } = props;
 
     const { name, contractType, startDate, endDate, file, urlFile, fileUpload, errorOnNameContract,
         errorOnTypeContract, errorOnStartDate, errorOnEndDate } = state;
+
+    useEffect(() => {
+        setState(state => {
+            return {
+                ...state,
+                id: props.id,
+                _id: props._id,
+                index: props.index,
+                name: props.name,
+                startDate: props.startDate,
+                endDate: props.endDate,
+                contractType: props.contractType,
+                file: props.file,
+                urlFile: props.urlFile,
+                fileUpload: props.fileUpload,
+                errorOnNameContract: undefined,
+                errorOnTypeContract: undefined,
+                errorOnStartDate: undefined,
+                errorOnEndDate: undefined
+            }
+        })
+    }, [props.id])
 
     let files;
     if (file) {
@@ -129,16 +152,16 @@ function ContractEditModal(props) {
         let errorOnStartDate;
         let partValue = value.split('-');
         let date = new Date([partValue[2], partValue[1], partValue[0]].join('-'));
+        if (endDate) {
+            let partEndDate = endDate.split('-');
+            let d = new Date([partEndDate[2], partEndDate[1], partEndDate[0]].join('-'));
 
-        let partEndDate = endDate.split('-');
-        let d = new Date([partEndDate[2], partEndDate[1], partEndDate[0]].join('-'));
-
-        if (date.getTime() > d.getTime()) {
-            errorOnStartDate = translate('human_resource.commendation_discipline.discipline.start_date_before_end_date');
-        } else {
-            errorOnEndDate = undefined;
+            if (date.getTime() > d.getTime()) {
+                errorOnStartDate = translate('human_resource.commendation_discipline.discipline.start_date_before_end_date');
+            } else {
+                errorOnEndDate = undefined;
+            }
         }
-
         setState(state => {
             return {
                 ...state,

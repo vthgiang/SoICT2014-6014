@@ -43,8 +43,9 @@ class FileTab extends Component {
         await this.setState({
             files: [...this.state.files, ...defaulteFile]
         })
-
-        this.props.handleAddFile(this.state.files)
+        this.props.handleAddFile(this.state.files,defaulteFile[0])
+        this.props.handleAddFile(this.state.files,defaulteFile[1])
+        this.props.handleAddFile(this.state.files,defaulteFile[2])
     }
 
     // Function thêm thông tin tài liệu đính kèm
@@ -140,7 +141,7 @@ class FileTab extends Component {
                                                 <ul style={{ listStyle: 'none' }}>
                                                     {x.files.map((child, index) => {
                                                         return (
-                                                            <React.Fragment>
+                                                            <React.Fragment key={index}>
                                                                 <li>
                                                                     <a style={{ cursor: "pointer" }} onClick={(e) => this.requestDownloadFile(e, child.url, child.fileName)} >{child.fileName}</a>
                                                                 </li>

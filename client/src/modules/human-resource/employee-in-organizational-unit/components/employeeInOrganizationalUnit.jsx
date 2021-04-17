@@ -124,7 +124,7 @@ class DepartmentManage extends Component {
 
         return (
             <div>
-                <div className="qlcv StyleScrollDiv StyleScrollDiv-y" style={{ maxHeight: '600px' }} >
+                <div className="qlcv">
                     <TreeTable
                         behaviour="show-children"
                         tableId='employee-tree-table'

@@ -64,6 +64,7 @@
     "unique-random": "^2.1.0",
     "uuid": "^8.3.2",
     "webpack": "^5.9.0",
+    "webpack-node-externals": "^2.5.2",
     "winston": "^3.2.1"
   },
   "devDependencies": {

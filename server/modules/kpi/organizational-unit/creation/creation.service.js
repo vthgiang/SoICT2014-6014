@@ -1,8 +1,8 @@
-const Models = require(`../../../../models`);
-const { OrganizationalUnitKpi, OrganizationalUnit, OrganizationalUnitKpiSet } = Models;
-const overviewService = require('../../employee/management/management.service');
-const UserService = require('../../../super-admin/user/user.service');
-const OrganizationalUnitService = require('../../../super-admin/organizational-unit/organizationalUnit.service');
+const Models = require(`../../../../models`)
+const { OrganizationalUnitKpi, OrganizationalUnit, OrganizationalUnitKpiSet } = Models
+const overviewService = require('../../employee/management/management.service')
+const UserService = require('../../../super-admin/user/user.service')
+const NewsFeedService = require('../../../news-feed/newsFeed.service')
 
 const { connect } = require(`../../../../helpers/dbHelper`);
 const mongoose = require('mongoose');
@@ -571,7 +571,14 @@ exports.editOrganizationalUnitKpi = async (portal, data, id) => {
         target = target && await target.populate("parent").execPopulate();
     }
 
-    return target;
+    let unitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+        .findOne({ kpis: { $elemMatch: { $eq: mongoose.Types.ObjectId(id) } } })
+        .populate("organizationalUnit")
+        
+    return {
+        target,
+        unitKpiSet
+    }
 }
 
 /**
@@ -597,7 +604,10 @@ exports.deleteOrganizationalUnitKpi = async (portal, id, organizationalUnitKpiSe
         .populate({ path: 'organizationalUnitImportances', populate: { path: 'organizationalUnit' } })
         .execPopulate();
 
-    return organizationalUnitKpiSet;
+    return {
+        organizationalUnitKpiSet,
+        organizationalUnitKpi
+    }
 }
 
 /**
@@ -919,4 +929,26 @@ exports.deleteFileChildComment = async (portal, params) => {
         ]);
 
     return task.comments;
+}
+
+/** Thêm newsfeed cho kpi đơn vị */
+exports.createNewsFeedForOrganizationalUnitKpiSet = async (portal, data) => {
+    const { creator, title, description, organizationalUnitKpiSetId, organizationalUnit } = data
+
+    let relatedUsers = await UserService.getAllEmployeeOfUnitByIds(portal, {
+        ids: [organizationalUnit?._id]
+    })
+
+    let newsFeed = await NewsFeedService.createNewsFeed(portal, {
+        title: title,
+        description: description,
+        creator: creator,
+        associatedDataObject: { 
+            dataType: 2,
+            value: organizationalUnitKpiSetId
+        },
+        relatedUsers: relatedUsers?.employees?.map(item => item?.userId?._id)
+    })
+
+    return newsFeed
 }

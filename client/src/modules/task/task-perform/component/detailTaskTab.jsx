@@ -641,9 +641,9 @@ class DetailTaskTab extends Component {
         if (usersInUnitsOfCompany && usersInUnitsOfCompany.length !== 0) {
             unitThatCurrentUserIsManager = usersInUnitsOfCompany.filter(unit => {
                 let check = false;
-                let unitCollaborated = task.collaboratedWithOrganizationalUnits.map(item => item.organizationalUnit && item.organizationalUnit._id);
+                let unitCollaborated = task?.collaboratedWithOrganizationalUnits?.length > 0 && task.collaboratedWithOrganizationalUnits.map(item => item.organizationalUnit && item.organizationalUnit?._id);
 
-                if (unitCollaborated.includes(unit.id) && unit.managers) {
+                if (unitCollaborated?.length > 0 && unitCollaborated.includes(unit.id) && unit.managers) {
                     let employee = Object.values(unit.managers);
                     if (employee && employee.length !== 0) {
                         employee.map(employee => {
@@ -701,6 +701,36 @@ class DetailTaskTab extends Component {
     // convert ISODate to String hh:mm AM/PM
     formatTime(date) {
         return dayjs(date).format("DD-MM-YYYY hh:mm A")
+    }
+
+    taskStatusColor = (status) => {
+        switch (status) {
+            case "inprocess":
+                return "#385898";
+            case "canceled":
+                return "#e86969";
+            case "delayed":
+                return "#db8b0b";
+            case "finished":
+                return "#31b337";
+            default:
+                return "#333";
+        }
+    }
+
+    taskPriorityColor = (priority) => {
+        switch (priority) {
+            case 5:
+                return "#ff0707";
+            case 4:
+                return "#ff5707";
+            case 3:
+                return "#28A745";
+            case 2:
+                return "#ffa707";
+            default:
+                return "#808080"
+        }
     }
 
     render() {
@@ -1066,7 +1096,10 @@ class DetailTaskTab extends Component {
                         {/* Các trường thông tin cơ bản */}
                         {task &&
                             <div className="description-box">
-                                <h4>{translate('task.task_management.detail_general_info')}</h4>
+                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    <i style={{ fontSize: '17px', marginRight: '5px' }} className="fa fa-info-circle" aria-hidden="true"></i>
+                                    <h4>{translate('task.task_management.detail_general_info')}</h4>
+                                </div>
 
                                 <div><strong>{translate('task.task_management.detail_link')}:</strong> <a href={`/task?taskId=${task._id}`} target="_blank">{task.name}</a></div>
                                 <div><strong>{translate('task.task_management.detail_time')}:</strong> {this.formatTime(task && task.startDate)} <i className="fa fa-fw fa-caret-right"></i> {this.formatTime(task && task.endDate)} </div>
@@ -1087,9 +1120,21 @@ class DetailTaskTab extends Component {
                                         }
                                     </span>
                                 </div>
-                                <div><strong>{translate('task.task_management.detail_priority')}:</strong> {task && this.formatPriority(task.priority)}</div>
-                                <div><strong>{translate('task.task_management.detail_status')}:</strong> {task && this.formatStatus(task.status)}</div>
-                                <div><strong>{translate('task.task_management.detail_progress')}:</strong> {task && task.progress}%</div>
+                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    <strong>{translate('task.task_management.detail_priority')}:</strong>
+                                    <div style={{ display: 'flex', alignItems: 'center' }} >
+                                        <span className="material-icons" style={{ fontSize: "17px", color: this.taskPriorityColor(task?.priority) }}>priority_high</span>
+                                        <span> {task && this.formatPriority(task.priority)}</span>
+                                    </div>
+
+                                </div>
+                                <div><strong>{translate('task.task_management.detail_status')}:</strong> <span style={{ color: this.taskStatusColor(task?.status) }}>{task && this.formatStatus(task.status)}</span></div>
+                                <div style={{ display: 'flex', alignItems: 'center' }}><strong>{translate('task.task_management.detail_progress')}:</strong>
+                                    <div className="progress-task" style={{ width: '30%' }}>
+                                        <div className="fillmult" data-width={`${task && task.progress}%`} style={{ width: `${task && task.progress}%`, backgroundColor: task && task.progress < 50 ? "#dc0000" : "#28a745" }}></div>
+                                        <span className="perc"> {task && task.progress}%</span>
+                                    </div>
+                                </div>
                                 {
                                     (task && task.taskInformations && task.taskInformations.length !== 0) &&
                                     task.taskInformations.map((info, key) => {
@@ -1124,82 +1169,113 @@ class DetailTaskTab extends Component {
                             {/* Vai trò */}
                             {task &&
                                 <div className="description-box">
-                                    <h4>{translate('task.task_management.role')}</h4>
+                                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                                        <span style={{ fontSize: '17px', marginRight: '5px' }} className="material-icons">
+                                            people_alt
+                                    </span>
+                                        <h4>
+                                            {translate('task.task_management.role')}
+                                        </h4>
+                                    </div>
 
                                     {/* Người thực hiện */}
                                     <strong>{translate('task.task_management.responsible')}:</strong>
-                                    <span>
+                                    <div style={{ display: 'flex', flexWrap: 'wrap' }}>
                                         {
-                                            (task && task.responsibleEmployees && task.responsibleEmployees.length !== 0) &&
-                                            task.responsibleEmployees.map((item, index) => {
-                                                let seperator = index !== 0 ? ", " : "";
-                                                if (task.inactiveEmployees.indexOf(item._id) !== -1) { // tìm thấy item._id
-                                                    return <span key={index}><strike>{seperator}{item.name}</strike></span>
-                                                } else {
-                                                    return <span key={index}>{seperator}{item.name}</span>
+                                            task?.responsibleEmployees?.length > 0 && task.responsibleEmployees.map((item, index) => {
+                                                // Nếu người này không còn trong công việc
+                                                if (task?.inactiveEmployees.some(o => o._id === item._id)) {
+                                                    return (
+                                                        <a key={index} title="đã rời khỏi công việc" className="raci-style" style={{ opacity: .5 }}>
+                                                            <img src={process.env.REACT_APP_SERVER + item.avatar} className="img-circle" style={{ width: '20px', height: '20px', borderRadius: '50%', marginRight: '5px' }} alt="User avatar" />
+                                                            <span>{item.name}</span>
+                                                        </a>
+                                                    )
                                                 }
+
+                                                return <span key={index} className="raci-style">
+                                                    <img src={process.env.REACT_APP_SERVER + item.avatar} className="img-circle" style={{ width: '20px', height: '20px', borderRadius: '50%', marginRight: '5px' }} alt="User avatar" />
+                                                    <span>{item.name}</span>
+                                                </span>
                                             })
                                         }
-                                    </span>
-                                    <br />
+                                    </div>
 
                                     {/* Người phê duyệt */}
-                                    <strong>{translate('task.task_management.accountable')}:</strong>
-                                    <span>
+                                    <strong style={{ display: "inline-block", marginTop: '5px' }}>{translate('task.task_management.accountable')}:</strong>
+                                    <div style={{ display: 'flex', flexWrap: 'wrap' }}>
                                         {
-                                            (task && task.accountableEmployees && task.accountableEmployees.length !== 0) &&
-                                            task.accountableEmployees.map((item, index) => {
-                                                let seperator = index !== 0 ? ", " : "";
-                                                if (task.inactiveEmployees.indexOf(item._id) !== -1) { // tìm thấy item._id
-                                                    return <span key={index}><strike>{seperator}{item.name}</strike></span>
-                                                } else {
-                                                    return <span key={index}>{seperator}{item.name}</span>
+                                            task?.accountableEmployees?.length > 0 && task.accountableEmployees.map((item, index) => {
+                                                // Nếu người này không còn trong công việc
+                                                if (task?.inactiveEmployees.some(o => o._id === item._id)) {
+                                                    return (
+                                                        <a key={index} title="đã rời khỏi công việc" className="raci-style" style={{ opacity: .5 }}>
+                                                            <img src={process.env.REACT_APP_SERVER + item.avatar} className="img-circle" style={{ width: '20px', height: '20px', borderRadius: '50%', marginRight: '5px' }} alt="User avatar" />
+                                                            <span>{item.name}</span>
+                                                        </a>
+                                                    )
                                                 }
+
+                                                return <span key={index} className="raci-style">
+                                                    <img src={process.env.REACT_APP_SERVER + item.avatar} className="img-circle" style={{ width: '20px', height: '20px', borderRadius: '50%', marginRight: '5px' }} alt="User avatar" />
+                                                    <span>{item.name}</span>
+                                                </span>
                                             })
                                         }
-                                    </span>
-                                    <br />
+                                    </div>
 
                                     {
                                         (task && task.consultedEmployees && task.consultedEmployees.length !== 0) &&
                                         <div>
                                             {/* Người hỗ trợ */}
-                                            <strong>{translate('task.task_management.consulted')}:</strong>
-                                            <span>
+                                            <strong style={{ display: "inline-block", marginTop: '5px' }}>{translate('task.task_management.consulted')}:</strong>
+                                            <div style={{ display: 'flex', flexWrap: 'wrap' }}>
                                                 {
-                                                    (task && task.consultedEmployees.length !== 0) &&
-                                                    task.consultedEmployees.map((item, index) => {
-                                                        let seperator = index !== 0 ? ", " : "";
-                                                        if (task.inactiveEmployees.indexOf(item._id) !== -1) { // tìm thấy item._id
-                                                            return <span key={index}><strike>{seperator}{item.name}</strike></span>
-                                                        } else {
-                                                            return <span key={index}>{seperator}{item.name}</span>
+                                                    task?.consultedEmployees?.length > 0 && task.consultedEmployees.map((item, index) => {
+                                                        // Nếu người này không còn trong công việc
+                                                        if (task?.inactiveEmployees.some(o => o._id === item._id)) {
+                                                            return (
+                                                                <a key={index} title="đã rời khỏi công việc" className="raci-style" style={{ opacity: .5 }}>
+                                                                    <img src={process.env.REACT_APP_SERVER + item.avatar} className="img-circle" style={{ width: '20px', height: '20px', borderRadius: '50%', marginRight: '5px' }} alt="User avatar" />
+                                                                    <span>{item.name}</span>
+                                                                </a>
+                                                            )
                                                         }
+
+                                                        return <span key={index} className="raci-style">
+                                                            <img src={process.env.REACT_APP_SERVER + item.avatar} className="img-circle" style={{ width: '20px', height: '20px', borderRadius: '50%', marginRight: '5px' }} alt="User avatar" />
+                                                            <span>{item.name}</span>
+                                                        </span>
                                                     })
                                                 }
-                                            </span>
-                                            <br />
+                                            </div>
                                         </div>
                                     }
                                     {
                                         (task && task.informedEmployees && task.informedEmployees.length !== 0) &&
                                         <div>
                                             {/* Người quan sát */}
-                                            <strong>{translate('task.task_management.informed')}:</strong>
-                                            <span>
+                                            <strong style={{ display: "inline-block", marginTop: '5px' }}>{translate('task.task_management.informed')}:</strong>
+                                            <div style={{ display: 'flex', flexWrap: 'wrap' }}>
                                                 {
-                                                    (task && task.informedEmployees.length !== 0) &&
-                                                    task.informedEmployees.map((item, index) => {
-                                                        let seperator = index !== 0 ? ", " : "";
-                                                        if (task.inactiveEmployees.indexOf(item._id) !== -1) { // tìm thấy item._id
-                                                            return <span key={index}><strike>{seperator}{item.name}</strike></span>
-                                                        } else {
-                                                            return <span key={index}>{seperator}{item.name}</span>
+                                                    task?.informedEmployees?.length > 0 && task.informedEmployees.map((item, index) => {
+                                                        // Nếu người này không còn trong công việc
+                                                        if (task?.inactiveEmployees.some(o => o._id === item._id)) {
+                                                            return (
+                                                                <a key={index} title="đã rời khỏi công việc" className="raci-style" style={{ opacity: .5 }}>
+                                                                    <img src={process.env.REACT_APP_SERVER + item.avatar} className="img-circle" style={{ width: '20px', height: '20px', borderRadius: '50%', marginRight: '5px' }} alt="User avatar" />
+                                                                    <span>{item.name}</span>
+                                                                </a>
+                                                            )
                                                         }
+
+                                                        return <span key={index} className="raci-style">
+                                                            <img src={process.env.REACT_APP_SERVER + item.avatar} className="img-circle" style={{ width: '20px', height: '20px', borderRadius: '50%', marginRight: '5px' }} alt="User avatar" />
+                                                            <span>{item.name}</span>
+                                                        </span>
                                                     })
                                                 }
-                                            </span>
-                                            <br />
+                                            </div>
                                         </div>
                                     }
 

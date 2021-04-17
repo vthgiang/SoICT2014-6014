@@ -92,9 +92,6 @@ class UploadFile extends Component {
         if (!UploadFile.isEqual(nextState.files, this.state.files) && !nextProps.importFile && this.state.files) {
             this.props.onChange(nextState.files ? nextState.files : []);
         };
-        if (nextState.files && nextState.files.length === 0 && !nextProps.importFile) {
-            this.props.onChange(nextState.files ? nextState.files : []);
-        }
         return true
     }
 
@@ -104,7 +101,6 @@ class UploadFile extends Component {
         const { multiple = false, disabled = false, accept = '', deleteValue = true } = this.props;
 
         const { files } = this.state;
-
         return (
             <React.Fragment>
                 <div className="form-group">

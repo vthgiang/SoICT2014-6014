@@ -67,7 +67,6 @@ class TaskManagement extends Component {
 
     shouldComponentUpdate(nextProps, nextState) {
         let { currentTab, organizationalUnit, status, priority, special, name, startDate, endDate } = this.state;
-        console.log('should', nextProps.history.location.state)
         if (currentTab !== nextState.currentTab ||
             organizationalUnit !== nextState.organizationalUnit ||
             status !== nextState.status ||
@@ -194,7 +193,6 @@ class TaskManagement extends Component {
         else {
             Swal.fire({
                 title: translate('task.task_management.confirm_delete'),
-                // type: 'warning',
                 confirmButtonColor: '#3085d6',
                 confirmButtonText: 'Xác nhận'
             })
@@ -459,7 +457,7 @@ class TaskManagement extends Component {
         const { tasks, user, translate, project } = this.props;
         const { currentTaskId, currentPage, currentTab, parentTask, startDate, endDate, perPage, status, monthTimeSheetLog, tableId, responsibleEmployees, creatorTime, projectSearch } = this.state;
         let currentTasks, units = [];
-        console.log('redener', this.props.history.location.state)
+
         if (tasks) {
             currentTasks = tasks.tasks;
         }

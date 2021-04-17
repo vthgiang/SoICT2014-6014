@@ -352,9 +352,9 @@ class SideBar extends Component {
                                         { name: "menu.manage_work_plan", icon: "fa fa-calendar", path: "/hr-manage-work-plan" },
                                         { name: "menu.manage_field", icon: "fa fa-list-ul", path: "/hr-manage-field" },
                                         // nhân sự gói thầu
-                                        { name: "menu.list_search_for_package", icon: "fa fa-calendar", path: "/hr-search-for-package" },
-                                        { name: "menu.list_major", icon: "fa fa-calendar", path: "/hr-list-major" },
-                                        { name: "menu.list_career_position", icon: "fa fa-calendar", path: "/hr-list-career-position" },
+                                        // { name: "menu.list_search_for_package", icon: "fa fa-calendar", path: "/hr-search-for-package" },
+                                        // { name: "menu.list_major", icon: "fa fa-calendar", path: "/hr-list-major" },
+                                        // { name: "menu.list_career_position", icon: "fa fa-calendar", path: "/hr-list-career-position" },
                                     ],
                                 }}
                             />
@@ -497,7 +497,7 @@ class SideBar extends Component {
                                             icon: "fa fa-circle-o",
                                             path: "/crm/customer",
                                         },
-                                        
+
                                         {
                                             name: "menu.crm_list.care",
                                             icon: "fa fa-circle-o",
@@ -760,7 +760,7 @@ class SideBar extends Component {
                                     ]
                                 }}
                             />
-                            
+
                             {/* CRUD ví dụ theo 2 mô hình lấy dữ liệu */}
                             <GroupItem
                                 groupItem={{

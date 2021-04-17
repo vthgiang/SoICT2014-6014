@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -12,18 +12,18 @@ import { ContractAddModal, ContractEditModal, CourseAddModal, CourseEditModal } 
 import { CourseActions } from '../../../../training/course/redux/actions';
 import { AuthActions } from '../../../../auth/redux/actions';
 
-class ContractTab extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {};
-    }
+function ContractTab(props) {
+
+    const [state, setState] = useState({
+
+    });
 
     /**
      *  Function format dữ liệu Date thành string
      * @param {*} date : Ngày muốn format
      * @param {*} monthYear : true trả về tháng năm, false trả về ngày tháng năm
      */
-    formatDate(date, monthYear = false) {
+    const formatDate = (date, monthYear = false) => {
         if (date) {
             let d = new Date(date),
                 month = '' + (d.getMonth() + 1),
@@ -43,7 +43,7 @@ class ContractTab extends Component {
 
     };
 
-    getCurrentContract = (contracts) => {
+    const getCurrentContract = (contracts) => {
         let contract = contracts[0];
         contracts.forEach(x => {
             if (new Date(contract.startDate).getTime() < new Date(x.startDate).getTime()) {
@@ -54,23 +54,51 @@ class ContractTab extends Component {
     }
 
 
-    componentDidMount() {
-        this.props.getListCourse({ organizationalUnits: this.state.organizationalUnits, positions: this.state.roles });
-    }
+    useEffect(() => {
+        props.getListCourse({ organizationalUnits: state.organizationalUnits, positions: state.roles });
+    }, [])
+
+    useEffect(() => {
+        props.getListCourse({ organizationalUnits: props.organizationalUnits, positions: props.roles });
+    }, [props.id])
+
+    useEffect(() => {
+        setState(state => {
+            return {
+                ...state,
+                id: props.id,
+                contracts: props.contracts,
+                contractEndDate: props.employee ? props.employee.contractEndDate : '',
+                contractType: props.employee ? props.employee.contractType : '',
+                courses: props.courses,
+                pageCreate: props.pageCreate,
+                organizationalUnits: props.organizationalUnits,
+                roles: props.roles
+            }
+        })
+    }, [props.id])
+
+    const { translate, course, } = props;
+
+    const { id } = props;
+
+    const { contracts, contractEndDate, contractType, courses, pageCreate, roles, currentRow, currentCourseRow } = state;
+
+    // console.log(contractEndDate);
 
     /**
      * Bắt sự kiện click edit khoá học
      * @param {*} value : Dữ liệu khoá học
      * @param {*} index : Số thứ tự khoá học muốn chỉnh sửa
      */
-    handleCourseEdit = async (value, index) => {
+    const handleCourseEdit = async (value, index) => {
         let courseInfo = '';
-        this.props.course.listCourses.forEach(list => {
+        props.course.listCourses.forEach(list => {
             if (list._id === value.course) {
                 courseInfo = list
             }
         });
-        await this.setState(state => {
+        await setState(state => {
             return {
                 ...state,
                 currentCourseRow: { ...value, index: index, courseInfo: courseInfo }
@@ -84,8 +112,8 @@ class ContractTab extends Component {
      * @param {*} value : Dữ liệu hợp đồng
      * @param {*} index : Số thứ tự hợp đồng muốn chỉnh sửa
      */
-    handleEdit = async (value, index) => {
-        await this.setState(state => {
+    const handleEdit = async (value, index) => {
+        await setState(state => {
             return {
                 ...state,
                 currentRow: { ...value, index: index }
@@ -99,7 +127,7 @@ class ContractTab extends Component {
      * @param {*} data 
      * @param {*} array 
      */
-    checkForDuplicate = (data, array) => {
+    const checkForDuplicate = (data, array) => {
         let checkData = true;
         if (data.startDate && data.endDate) {
             let startDate = new Date(data.startDate);
@@ -121,27 +149,37 @@ class ContractTab extends Component {
      * Function thêm thông tin hợp đồng lao động
      * @param {*} data : Dữ liệu thông tin hợp đồng muốn thêm
      */
-    handleAddContract = async (data) => {
-        const { translate } = this.props;
-        let { contracts } = this.state;
+    const handleAddContract = async (data) => {
+        const { translate } = props;
+        let { contracts } = state;
+        console.log(data);
 
-        let checkData = this.checkForDuplicate(data, contracts);
+        let checkData = checkForDuplicate(data, contracts);
         if (checkData) {
-            await this.setState({
-                ...this.state,
-                contracts: [...contracts, {
+            await setState(state => {
+                return {
+                    ...state,
+                    contracts: [...contracts, {
+                        ...data
+                    }]
+                }
+            })
+            props.handleAddContract(
+                [...contracts, {
                     ...data
-                }]
-            })
-            this.props.handleAddContract(this.state.contracts, data);
-            let contract = this.getCurrentContract(this.state.contracts);
+                }], data
+            );
+            let contract = getCurrentContract(state.contracts);
 
-            this.setState({
-                contractEndDate: contract.endDate,
-                contractType: contract.contractType
+            setState(state => {
+                return {
+                    ...state,
+                    contractEndDate: contract?.endDate ? contract.endDate : "",
+                    contractType: contract?.contractType
+                }
             })
-            this.props.handleChange('contractEndDate', contract.endDate ? contract.endDate : "");
-            this.props.handleChange('contractType', contract.contractType);
+            props.handleChange('contractEndDate', contract?.endDate ? contract.endDate : "");
+            props.handleChange('contractType', contract?.contractType);
 
         } else {
             toast.error(
@@ -159,26 +197,33 @@ class ContractTab extends Component {
      * Function chỉnh sửa thông tin hợp đồng lao động
      * @param {*} data : Dữ liệu thông tin hợp đồng muốn chỉnh sửa
      */
-    handleEditContract = async (data) => {
-        const { translate } = this.props;
-        let { contracts } = this.state;
+    const handleEditContract = async (data) => {
+        const { translate } = props;
+        let { contracts } = state;
 
         let contractsNew = [...contracts];
-        let checkData = this.checkForDuplicate(data, contractsNew.filter((x, index) => index !== data.index));
+        let checkData = checkForDuplicate(data, contractsNew.filter((x, index) => index !== data.index));
         if (checkData) {
             contracts[data.index] = data;
-            await this.setState({
-                contracts: contracts
+            await setState(state => {
+                return {
+                    ...state,
+                    contracts: contracts
+                }
             })
-            this.props.handleEditContract(contracts, data);
+            props.handleEditContract(
+                contracts, data);
 
-            let contract = this.getCurrentContract(this.state.contracts);
-            this.setState({
-                contractEndDate: contract.endDate,
-                contractType: contract.contractType
+            let contract = getCurrentContract(state.contracts);
+            setState(state => {
+                return {
+                    ...state,
+                    contractEndDate: contract?.endDate ? contract.endDate : "",
+                    contractType: contract?.contractType
+                }
             })
-            this.props.handleChange('contractEndDate', contract.endDate ? contract.endDate : "");
-            this.props.handleChange('contractType', contract.contractType);
+            props.handleChange('contractEndDate', contract?.endDate ? contract.endDate : "");
+            props.handleChange('contractType', contract?.contractType);
         } else {
             toast.error(
                 <ServerResponseAlert
@@ -195,27 +240,34 @@ class ContractTab extends Component {
      * Function xoá hợp đồng lao động
      * @param {*} index : Số thứ tự hợp đồng lao động muốn chỉnh sửa
      */
-    delete = async (index) => {
-        let { contracts } = this.state;
+    const _delete = async (index) => {
+        let { contracts } = state;
         let data = contracts[index];
         contracts.splice(index, 1);
-        await this.setState({
-            ...this.state,
-            contracts: [...contracts]
+        await setState(state => {
+            return {
+                ...state,
+                contracts: [...contracts]
+            }
         })
-        this.props.handleDeleteContract(contracts, data);
+        props.handleDeleteContract(
+            [...contracts]
+            , data);
         let contract = {};
         if (contracts.length !== 0) {
-            contract = this.getCurrentContract(contracts);
+            contract = getCurrentContract(contracts)
         };
 
-        await this.setState({
-            contractEndDate: contract.endDate ? contract.endDate : "",
-            contractType: contract.contractType ? contract.contractType : "",
+        await setState(state => {
+            return {
+                ...state,
+                contractEndDate: contract?.endDate ? contract.endDate : "",
+                contractType: contract?.contractType ? contract.contractType : "",
+            }
         });
 
-        await this.props.handleChange('contractEndDate', contract.endDate ? contract.endDate : "");
-        await this.props.handleChange('contractType', contract.contractType ? contract.contractType : "");
+        await props.handleChange('contractEndDate', contract?.endDate ? contract.endDate : "");
+        await props.handleChange('contractType', contract?.contractType ? contract.contractType : "");
     }
 
 
@@ -223,8 +275,8 @@ class ContractTab extends Component {
      * Function thêm thông tin khoá đào tạo
      * @param {*} data : Dữ liệu thông tin khoá đào tạo muốn thêm
      */
-    handleAddCourse = async (data) => {
-        const { courses } = this.state;
+    const handleAddCourse = async (data) => {
+        const { courses } = state;
         let check = false;
         courses.forEach(x => {
             if (x.course === data.course) {
@@ -232,12 +284,19 @@ class ContractTab extends Component {
             }
         })
         if (check === false) {
-            await this.setState({
-                courses: [...courses, {
-                    ...data
-                }]
+            await setState(state => {
+                return {
+                    ...state,
+                    courses: [...courses, {
+                        ...data
+                    }]
+                }
             })
-            this.props.handleAddCourse(this.state.courses, data);
+            props.handleAddCourse(
+                [...courses, {
+                    ...data
+                }], data);
+
         } else {
             toast.error(
                 <ServerResponseAlert
@@ -254,212 +313,194 @@ class ContractTab extends Component {
      * Function chỉnh sửa thông tin khoá đào tạo
      * @param {*} data : Dữ liệu thông tin khoá đào tạo muốn chỉnh sửa
      */
-    handleEditCourse = async (data) => {
-        const { courses } = this.state;
+    const handleEditCourse = async (data) => {
+        const { courses } = state;
         courses[data.index] = data;
-        await this.setState({
-            courses: courses
+        await setState(state => {
+            return {
+                ...state,
+                courses: courses
+            }
         })
-        this.props.handleEditCourse(courses, data);
+        props.handleEditCourse(courses, data);
     }
 
     /**
      * Function xoá thông tin khoá đào tạo
      * @param {*} index : Số thứ tự khoá đào tạo muốn chỉnh sửa
      */
-    deleteCourse = async (index) => {
-        let { courses } = this.state;
+    const deleteCourse = async (index) => {
+        let { courses } = state;
         let data = courses[index];
         courses.splice(index, 1);
-        await this.setState({
-            ...this.state,
-            courses: [...courses]
-        })
-        this.props.handleDeleteCourse(courses, data)
-    }
-
-    shouldComponentUpdate(nextProps, nextState) {
-        if (nextProps.id !== this.state.id) {
-            this.props.getListCourse({ organizationalUnits: nextProps.organizationalUnits, positions: nextProps.roles });
-        }
-        return true
-    }
-
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id) {
+        await setState(state => {
             return {
-                ...prevState,
-                id: nextProps.id,
-                contracts: nextProps.contracts,
-                contractEndDate: nextProps.employee ? nextProps.employee.contractEndDate : '',
-                contractType: nextProps.employee ? nextProps.employee.contractType : '',
-                courses: nextProps.courses,
-                pageCreate: nextProps.pageCreate,
-                organizationalUnits: nextProps.organizationalUnits,
-                roles: nextProps.roles
+                ...state,
+                courses: [...courses]
             }
-        } else {
-            return null;
-        }
+        })
+        props.handleDeleteCourse(
+            [...courses], data)
     }
 
+    /**
+     * function dowload file
+     * @param {*} e 
+     * @param {*} path : Đường dẫn file
+     * @param {*} fileName : Tên file dùng để lưu
+     */
+    const requestDownloadFile = (e, path, fileName) => {
+        e.preventDefault()
+        props.downloadFile(path, fileName)
+    }
 
-    render() {
-        const { translate, course, } = this.props;
-
-        const { id } = this.props;
-
-        const { contracts, contractEndDate, contractType, courses, pageCreate, roles, currentRow, currentCourseRow } = this.state;
-
-        console.log(contractEndDate);
-        return (
-            <div id={id} className="tab-pane">
-                <div className="box-body">
-                    {/* Danh sách hợp đồng lao động */}
-                    <fieldset className="scheduler-border">
-                        <legend className="scheduler-border"><h4 className="box-title">{translate('human_resource.profile.labor_contract')}</h4></legend>
-                        <div className="row">
-                            {/* Ngày hết hạn hợp đồng */}
-                            <div className="form-group col-md-4">
-                                <label>{translate('human_resource.profile.contract_end_date')}</label>
-                                <DatePicker
-                                    id={`contractEndDate-${id}`}
-                                    disabled={true}
-                                    value={this.formatDate(contractEndDate)}
-                                    onChange={this.handleContractEndDateChange}
-                                />
-                            </div>
-                            {/* Loại hợp đồng */}
-                            <div className="form-group col-md-4">
-                                <label >{translate('human_resource.profile.type_contract')}</label>
-                                <input type="text" className="form-control" name="contractType" value={contractType ? contractType : ''} disabled />
-                            </div>
-                            <div className="form-group col-md-4 col-xs-12">
-                                <ContractAddModal handleChange={this.handleAddContract} id={`addContract${id}`} />
-                            </div>
+    return (
+        <div id={id} className="tab-pane">
+            <div className="box-body">
+                {/* Danh sách hợp đồng lao động */}
+                <fieldset className="scheduler-border">
+                    <legend className="scheduler-border"><h4 className="box-title">{translate('human_resource.profile.labor_contract')}</h4></legend>
+                    <div className="row">
+                        {/* Ngày hết hạn hợp đồng */}
+                        <div className="form-group col-md-4">
+                            <label>{translate('human_resource.profile.contract_end_date')}</label>
+                            <DatePicker
+                                id={`contractEndDate-${id}`}
+                                disabled={true}
+                                value={formatDate(contractEndDate)}
+                            // onChange={handleContractEndDateChange}
+                            />
                         </div>
-                        <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}  >
-                            <thead>
-                                <tr>
-                                    <th >{translate('human_resource.profile.name_contract')}</th>
-                                    <th >{translate('human_resource.profile.type_contract')}</th>
-                                    <th >{translate('human_resource.profile.start_date')}</th>
-                                    <th >{translate('human_resource.profile.end_date_certificate')}</th>
-                                    <th >{translate('human_resource.profile.attached_files')}</th>
-                                    <th style={{ width: '120px' }}>{translate('general.action')}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {contracts && contracts.length !== 0 &&
-                                    contracts.map((x, index) => (
-                                        <tr key={index}>
-                                            <td>{x.name}</td>
-                                            <td>{x.contractType}</td>
-                                            <td>{this.formatDate(x.startDate)}</td>
-                                            <td>{this.formatDate(x.endDate)}</td>
-                                            <td>{!x.urlFile ? translate('human_resource.profile.no_files') :
-                                                <a className='intable'
-                                                    style={{ cursor: "pointer" }}
-                                                    onClick={(e) => this.requestDownloadFile(e, `.${x.urlFile}`, x.name)}>
-                                                    <i className="fa fa-download"> &nbsp;Download!</i>
-                                                </a>
-                                            }</td>
-                                            <td>
-                                                <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.profile.edit_contract')} ><i className="material-icons">edit</i></a>
-                                                <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete(index)}><i className="material-icons"></i></a>
-                                            </td>
-                                        </tr>
-                                    ))}
-                            </tbody>
-                        </table>
-                        {
-                            (!contracts || contracts.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
-                        }
-                    </fieldset>
-                    {/* Danh sách khoá học */}
-                    <fieldset className="scheduler-border">
-                        <legend className="scheduler-border"><h4 className="box-title">{translate('human_resource.profile.training_process')}</h4></legend>
-                        {pageCreate && <a style={{ marginBottom: '10px', marginTop: '2px' }} className="btn btn-success pull-right" title={translate('human_resource.profile.employee_management.staff_no_unit_title')} disabled >{translate('modal.create')}</a>}
-                        {!pageCreate && <CourseAddModal roles={roles} handleChange={this.handleAddCourse} id={`addCourse${id}`} />}
-                        <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }} >
-                            <thead>
-                                <tr>
-                                    <th>Mã khoá đào tạo</th>
-                                    <th>{translate('human_resource.profile.course_name')}</th>
-                                    <th>{translate('human_resource.profile.start_day')}</th>
-                                    <th>{translate('human_resource.profile.end_date')}</th>
-                                    <th>Địa điểm đào tạo</th>
-                                    <th>Kết quả</th>
-                                    <th>{translate('table.action')}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {courses && courses.length !== 0 &&
-                                    courses.map((x, index) => {
-                                        let courseInfo;
-                                        course.listCourses.forEach(list => {
-                                            if (list._id === x.course) {
-                                                courseInfo = list
-                                            }
-                                        });
-                                        if (courseInfo) {
-                                            return (
-                                                <tr key={index}>
-                                                    <td>{courseInfo.courseId}</td>
-                                                    <td>{courseInfo.name}</td>
-                                                    <td>{this.formatDate(courseInfo.startDate)}</td>
-                                                    <td>{this.formatDate(courseInfo.endDate)}</td>
-                                                    <td>{courseInfo.coursePlace}</td>
-                                                    <td>{translate(`training.course.result.${x.result}`)}</td>
-                                                    <td >
-                                                        <a onClick={() => this.handleCourseEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title='Chỉnh sửa thông tin khoá đào tạo' ><i className="material-icons">edit</i></a>
-                                                        <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.deleteCourse(index)}><i className="material-icons"></i></a>
-                                                    </td>
-                                                </tr>
-                                            )
-                                        } else {
-                                            return null
+                        {/* Loại hợp đồng */}
+                        <div className="form-group col-md-4">
+                            <label >{translate('human_resource.profile.type_contract')}</label>
+                            <input type="text" className="form-control" name="contractType" value={contractType ? contractType : ''} disabled />
+                        </div>
+                        <div className="form-group col-md-4 col-xs-12">
+                            <ContractAddModal handleChange={handleAddContract} id={`addContract${id}`} />
+                        </div>
+                    </div>
+                    <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}  >
+                        <thead>
+                            <tr>
+                                <th >{translate('human_resource.profile.name_contract')}</th>
+                                <th >{translate('human_resource.profile.type_contract')}</th>
+                                <th >{translate('human_resource.profile.start_date')}</th>
+                                <th >{translate('human_resource.profile.end_date_certificate')}</th>
+                                <th >{translate('human_resource.profile.attached_files')}</th>
+                                <th style={{ width: '120px' }}>{translate('general.action')}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {contracts && contracts.length !== 0 &&
+                                contracts.map((x, index) => (
+                                    <tr key={index}>
+                                        <td>{x.name}</td>
+                                        <td>{x.contractType}</td>
+                                        <td>{formatDate(x.startDate)}</td>
+                                        <td>{formatDate(x.endDate)}</td>
+                                        <td>{!x.urlFile ? translate('human_resource.profile.no_files') :
+                                            <a className='intable'
+                                                style={{ cursor: "pointer" }}
+                                                onClick={(e) => requestDownloadFile(e, `.${x.urlFile}`, x.name)}>
+                                                <i className="fa fa-download"> &nbsp;Download!</i>
+                                            </a>
+                                        }</td>
+                                        <td>
+                                            <a onClick={() => handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.profile.edit_contract')} ><i className="material-icons">edit</i></a>
+                                            <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => _delete(index)}><i className="material-icons"></i></a>
+                                        </td>
+                                    </tr>
+                                ))}
+                        </tbody>
+                    </table>
+                    {
+                        (!contracts || contracts.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                    }
+                </fieldset>
+                {/* Danh sách khoá học */}
+                <fieldset className="scheduler-border">
+                    <legend className="scheduler-border"><h4 className="box-title">{translate('human_resource.profile.training_process')}</h4></legend>
+                    {pageCreate && <a style={{ marginBottom: '10px', marginTop: '2px' }} className="btn btn-success pull-right" title={translate('human_resource.profile.employee_management.staff_no_unit_title')} disabled >{translate('modal.create')}</a>}
+                    {!pageCreate && <CourseAddModal roles={roles} handleChange={handleAddCourse} id={`addCourse${id}`} />}
+                    <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }} >
+                        <thead>
+                            <tr>
+                                <th>Mã khoá đào tạo</th>
+                                <th>{translate('human_resource.profile.course_name')}</th>
+                                <th>{translate('human_resource.profile.start_day')}</th>
+                                <th>{translate('human_resource.profile.end_date')}</th>
+                                <th>Địa điểm đào tạo</th>
+                                <th>Kết quả</th>
+                                <th>{translate('table.action')}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {courses && courses.length !== 0 &&
+                                courses.map((x, index) => {
+                                    let courseInfo;
+                                    course.listCourses.forEach(list => {
+                                        if (list._id === x.course) {
+                                            courseInfo = list
                                         }
+                                    });
+                                    if (courseInfo) {
+                                        return (
+                                            <tr key={index}>
+                                                <td>{courseInfo.courseId}</td>
+                                                <td>{courseInfo.name}</td>
+                                                <td>{formatDate(courseInfo.startDate)}</td>
+                                                <td>{formatDate(courseInfo.endDate)}</td>
+                                                <td>{courseInfo.coursePlace}</td>
+                                                <td>{translate(`training.course.result.${x.result}`)}</td>
+                                                <td >
+                                                    <a onClick={() => handleCourseEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title='Chỉnh sửa thông tin khoá đào tạo' ><i className="material-icons">edit</i></a>
+                                                    <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => deleteCourse(index)}><i className="material-icons"></i></a>
+                                                </td>
+                                            </tr>
+                                        )
+                                    } else {
+                                        return null
+                                    }
 
-                                    })}
-                            </tbody>
-                        </table>
-                        {
-                            (!courses || courses.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
-                        }
-                    </fieldset>
-                </div>
-                {   /** Form chỉnh sửa hợp đồng */
-                    currentRow &&
-                    <ContractEditModal
-                        id={`editContract${currentRow.index}`}
-                        _id={currentRow._id}
-                        index={currentRow.index}
-                        name={currentRow.name}
-                        contractType={currentRow.contractType}
-                        startDate={this.formatDate(currentRow.startDate)}
-                        endDate={this.formatDate(currentRow.endDate)}
-                        file={currentRow.file}
-                        urlFile={currentRow.urlFile}
-                        fileUpload={currentRow.fileUpload}
-                        handleChange={this.handleEditContract}
-                    />
-                }
-                {   /** Form chỉnh sửa hợp đồng */
-                    currentCourseRow &&
-                    <CourseEditModal
-                        id={`editCourse${currentCourseRow.index}`}
-                        _id={currentCourseRow._id}
-                        index={currentCourseRow.index}
-                        courseId={currentCourseRow.course}
-                        result={currentCourseRow.result}
-                        nameCourse={currentCourseRow.courseInfo.name}
-                        handleChange={this.handleEditCourse}
-                    />
-                }
+                                })}
+                        </tbody>
+                    </table>
+                    {
+                        (!courses || courses.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                    }
+                </fieldset>
             </div>
-        );
-    }
+            {   /** Form chỉnh sửa hợp đồng */
+                currentRow &&
+                <ContractEditModal
+                    id={`editContract${currentRow.index}`}
+                    _id={currentRow._id}
+                    index={currentRow.index}
+                    name={currentRow.name}
+                    contractType={currentRow.contractType}
+                    startDate={formatDate(currentRow.startDate)}
+                    endDate={formatDate(currentRow.endDate)}
+                    file={currentRow.file}
+                    urlFile={currentRow.urlFile}
+                    fileUpload={currentRow.fileUpload}
+                    handleChange={handleEditContract}
+                />
+            }
+            {   /** Form chỉnh sửa khoá học */
+                currentCourseRow &&
+                <CourseEditModal
+                    id={`editCourse${currentCourseRow.index}`}
+                    _id={currentCourseRow._id}
+                    index={currentCourseRow.index}
+                    courseId={currentCourseRow.course}
+                    result={currentCourseRow.result}
+                    nameCourse={currentCourseRow.courseInfo.name}
+                    handleChange={handleEditCourse}
+                />
+            }
+        </div>
+    );
 };
 
 function mapState(state) {

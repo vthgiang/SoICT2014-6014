@@ -98,7 +98,10 @@ exports.copyKPI = async (portal, kpiId, data) => {
             .populate({ path: "creator", select: "_id name email avatar" })
             .populate({ path: "kpis", populate: { path: 'parent' } });
 
-        return organizationalUnitKpiSet;
+        return {
+            kpiunit: organizationalUnitKpiSet,
+            copyKpi: organizationalUnitOldKPISet
+        };
     }
 }
 
@@ -181,14 +184,18 @@ exports.copyParentKPIUnitToChildrenKPIEmployee = async (portal, kpiId, data) => 
                 { path: 'comments.comments.creator', select: 'name email avatar' }
             ])
 
-        return employeeKpiSet;
+        return {
+            employeeKpiSet: employeeKpiSet,
+            copyKpi: organizationalUnitOldKPISet
+        };
     }
 }
 
 
 exports.calculateKpiUnit = async (portal, data) => {
     let kpiUnitSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal)).findOne({ _id: data.idKpiUnitSet })
-        .populate({ path: "creator", select: "_id name email avatar" })
+    .populate("organizationalUnit")
+    .populate({ path: "creator", select: "_id name email avatar" })
         .populate({ path: "kpis", populate: { path: 'parent' } });
 
     let employeeImportances = kpiUnitSet?.employeeImportances;

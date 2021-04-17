@@ -871,7 +871,7 @@ const initHumanResourceData = async () => {
         name: "Ban giám đốc",
     });
     const departments = await OrganizationalUnit(vnistDB).findOne({
-        name: "Phòng kinh doanh",
+        name: "Bộ phận kinh doanh",
     });
 
     const phongMaketing = await OrganizationalUnit(vnistDB).insertMany([

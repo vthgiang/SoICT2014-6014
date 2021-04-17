@@ -272,7 +272,7 @@ class InsurranceTab extends Component {
     convertDataToExportData = (data) => {
         const { translate, employee } = this.props;
 
-        data = data.map((x, index) => {
+        data = data?.map((x, index) => {
             return {
                 STT: index + 1,
                 startDate: this.formatDate(x.startDate, true),

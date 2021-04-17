@@ -10,14 +10,11 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import c3 from 'c3';
 import 'c3/c3.css';
-// import { TaskOrganizationUnitDashboard } from '../task-organization-dashboard/taskOrganizationUnitDashboard';
-// import { TaskInformationForm } from '../../../task-perform/component/taskInformationForm';
-
+import { filterDifference } from '../../../../helpers/taskModuleHelpers';
 class DomainOfTaskResultsChart extends Component {
 
     constructor(props) {
         super(props);
-
         let { translate } = this.props;
 
         this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
@@ -67,14 +64,11 @@ class DomainOfTaskResultsChart extends Component {
 
             role: this.DATA_SEARCH.role,
             typePoint: this.DATA_SEARCH.typePoint,
-
-            willUpdate: false,       // Khi true sẽ cập nhật dữ liệu vào props từ redux
-            callAction: false,
         };
     }
 
     shouldComponentUpdate = async (nextProps, nextState) => {
-        if (nextProps.units !== this.props.units || nextProps.callAction !== this.state.callAction || nextProps.startMonth !== this.state.startMonth || nextProps.endMonth !== this.state.endMonth) {
+        if (nextProps.units !== this.props.units || nextProps.startMonth !== this.state.startMonth || nextProps.endMonth !== this.state.endMonth) {
             if (this.props.TaskOrganizationUnitDashboard) {
                 this.setState(state => {
                     return {
@@ -90,7 +84,6 @@ class DomainOfTaskResultsChart extends Component {
                 return {
                     ...state,
                     dataStatus: this.DATA_STATUS.QUERYING,
-                    willUpdate: true       // Khi true sẽ cập nhật dữ liệu vào props từ redux
                 };
             });
 
@@ -105,7 +98,6 @@ class DomainOfTaskResultsChart extends Component {
                     typePoint: nextState.typePoint
                 }
             })
-
             this.domainChart();
         }
 
@@ -114,7 +106,6 @@ class DomainOfTaskResultsChart extends Component {
                 return {
                     ...state,
                     dataStatus: this.DATA_STATUS.QUERYING,
-                    willUpdate: true       // Khi true sẽ cập nhật dữ liệu vào props từ redux
                 };
             });
 
@@ -142,14 +133,13 @@ class DomainOfTaskResultsChart extends Component {
             });
 
             return false;
-        } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE && nextState.willUpdate) {
+        } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE) {
             this.domainChart();
 
             this.setState(state => {
                 return {
                     ...state,
                     dataStatus: this.DATA_STATUS.FINISHED,
-                    willUpdate: false       // Khi true sẽ cập nhật dữ liệu vào props từ redux
                 };
             });
         }
@@ -159,10 +149,9 @@ class DomainOfTaskResultsChart extends Component {
 
     static getDerivedStateFromProps = (nextProps, prevState) => {
 
-        if (nextProps.callAction !== prevState.callAction || nextProps.startMonth !== prevState.startMonth || nextProps.endMonth !== prevState.endMonth) {
+        if (nextProps.startMonth !== prevState.startMonth || nextProps.endMonth !== prevState.endMonth) {
             return {
                 ...prevState,
-                callAction: nextProps.callAction,
                 startMonth: nextProps.startMonth,
                 endMonth: nextProps.endMonth
             }
@@ -190,24 +179,6 @@ class DomainOfTaskResultsChart extends Component {
         })
     }
 
-    // Lọc công việc trùng lặp
-    filterDuplicateTask = (listTask) => {
-        let idArray = listTask.map(item => item && item._id);
-        idArray = idArray.map((item, index, array) => {
-            if (array.indexOf(item) === index) {
-                return index;
-            } else {
-                return false
-            }
-        })
-        idArray = idArray.filter(item => listTask[item]);
-        let listTaskNotDuplicate = idArray.map(item => {
-            return listTask[item]
-        })
-
-        return listTaskNotDuplicate;
-    }
-
     // Hàm lọc các công việc theo từng tháng
     filterTasksByMonth = (currentMonth, nextMonth) => {
         const { tasks, TaskOrganizationUnitDashboard, units } = this.props;
@@ -229,7 +200,7 @@ class DomainOfTaskResultsChart extends Component {
                 })
             }
 
-            listTask = this.filterDuplicateTask(listTask);
+            listTask = filterDifference(listTask);
         };
 
         if (listTask) {

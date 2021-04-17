@@ -33,9 +33,40 @@ const initMember = {
 const EmployeeEditFrom = (props) => {
 
     const DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, };
-    
+
     const [state, setState] = useState({
         dataStatus: DATA_STATUS.NOT_AVAILABLE,
+        img: './upload/human-resource/avatars/avatar5.png',
+        avatar: "",
+        employee: {
+            employeeNumber: "",
+            employeeTimesheetId: "",
+            fullName: "",
+            emailInCompany: "",
+            phoneNumber: "",
+            avatar: '/upload/human-resource/avatars/avatar5.png',
+            gender: "male",
+            maritalStatus: "single",
+            educationalLevel: "",
+            professionalSkill: "unavailable",
+            status: 'active',
+            identityCardNumber: "",
+            identityCardAddress: "",
+            identityCardDate: "",
+            birthdate: "",
+            experiences: [],
+            socialInsuranceDetails: [],
+        },
+        courses: [],
+        degrees: [],
+        certificates: [],
+        contracts: [],
+        files: [],
+        disciplines: [],
+        commendations: [],
+        annualLeaves: [],
+        // major: [],
+        // career: [],
         houseHold: {
             headHouseHoldName: '',
             documentType: '',
@@ -48,8 +79,23 @@ const EmployeeEditFrom = (props) => {
             houseHoldCode: '',
             familyMembers: []
         },
-        editMember: initMember
-    });
+        editMember: initMember,
+        editAnnualLeaves: [],
+        editCertificates: [],
+        editConmmendations: [],
+        editContracts: [],
+        editCourses: [],
+        editDegrees: [],
+        editDisciplines: [],
+        editSocialInsuranceDetails: [],
+        editExperiences: [],
+        editFiles: [],
+    })
+
+    const { translate, employeesInfo } = props;
+
+    let { _id, img, employee, degrees, certificates, socialInsuranceDetails, contracts, courses,
+        organizationalUnits, roles, commendations, disciplines, annualLeaves, files, houseHold, editMember } = state;
 
     /**
      * Function upload avatar 
@@ -194,111 +240,111 @@ const EmployeeEditFrom = (props) => {
         }
     }
 
-    /**
-     * Function thêm thông tin chuyên ngành tuowg đương
-     * @param {*} data : Dữ liệu thông tin chuyên ngành tuowg đương
-     * @param {*} addData : Chuyên ngành tuowg đương muốn thêm 
-     */
-    const handleAddMajor = (data, addData) => {
-        setState({
-            ...state,
-            major: data
-        })
-    }
+    // /**
+    //  * Function thêm thông tin chuyên ngành tuowg đương
+    //  * @param {*} data : Dữ liệu thông tin chuyên ngành tuowg đương
+    //  * @param {*} addData : Chuyên ngành tuowg đương muốn thêm 
+    //  */
+    // const handleAddMajor = (data, addData) => {
+    //     setState({
+    //         ...state,
+    //         major: data
+    //     })
+    // }
 
-    /**
-     * Function chỉnh sửa thông tin chuyên ngành tuowg đương
-     * @param {*} data : Dữ liệu thông tin chuyên ngành tuowg đương
-     * @param {*} editData : chuyên ngành tuowg đương muốn chỉnh sửa
-     */
-    const handleEditMajor = (data, editData) => {
-        const { editMajor } = state;
-        if (editData._id) {
-            setState({
-                ...state,
-                editMajor: [...editMajor, editData]
-            })
-        } else {
-            setState({
-                ...state,
-                major: data
-            })
-        }
-    }
+    // /**
+    //  * Function chỉnh sửa thông tin chuyên ngành tuowg đương
+    //  * @param {*} data : Dữ liệu thông tin chuyên ngành tuowg đương
+    //  * @param {*} editData : chuyên ngành tuowg đương muốn chỉnh sửa
+    //  */
+    // const handleEditMajor = (data, editData) => {
+    //     const { editMajor } = state;
+    //     if (editData._id) {
+    //         setState({
+    //             ...state,
+    //             editMajor: [...editMajor, editData]
+    //         })
+    //     } else {
+    //         setState({
+    //             ...state,
+    //             major: data
+    //         })
+    //     }
+    // }
 
-    /**
-     * Function xoá thông tin chuyên ngành tuowg đương
-     * @param {*} data : Dữ liệu thông tin chuyên ngành tuowg đương
-     * @param {*} deleteData : chuyên ngành tuowg đương muốn xoá
-     */
-    const handleDeleteMajor = (data, deleteData) => {
-        const { deleteMajor, editMajor } = state;
-        if (deleteData._id) {
-            setState({
-                ...state,
-                deleteMajor: [...deleteMajor, deleteData],
-                editMajor: editMajor.filter(x => x._id !== deleteData._id)
-            })
-        } else {
-            setState({
-                ...state,
-                major: data
-            })
-        }
-    }
+    // /**
+    //  * Function xoá thông tin chuyên ngành tuowg đương
+    //  * @param {*} data : Dữ liệu thông tin chuyên ngành tuowg đương
+    //  * @param {*} deleteData : chuyên ngành tuowg đương muốn xoá
+    //  */
+    // const handleDeleteMajor = (data, deleteData) => {
+    //     const { deleteMajor, editMajor } = state;
+    //     if (deleteData._id) {
+    //         setState({
+    //             ...state,
+    //             deleteMajor: [...deleteMajor, deleteData],
+    //             editMajor: editMajor.filter(x => x._id !== deleteData._id)
+    //         })
+    //     } else {
+    //         setState({
+    //             ...state,
+    //             major: data
+    //         })
+    //     }
+    // }
 
-    /**
-     * Function thêm thông tin Công việc đương tương
-     * @param {*} data : Dữ liệu thông tin Công việc đương tương
-     * @param {*} addData : Công việc đương tương muốn thêm 
-     */
-    const handleAddCareer = (data, addData) => {
-        setState({
-            ...state,
-            career: data
-        })
-    }
+    // /**
+    //  * Function thêm thông tin Công việc đương tương
+    //  * @param {*} data : Dữ liệu thông tin Công việc đương tương
+    //  * @param {*} addData : Công việc đương tương muốn thêm 
+    //  */
+    // const handleAddCareer = (data, addData) => {
+    //     setState({
+    //         ...state,
+    //         career: data
+    //     })
+    // }
 
-    /**
-     * Function chỉnh sửa thông tin bằng cấp
-     * @param {*} data : Dữ liệu thông tin bằng cấp
-     * @param {*} editData : bằng cấp muốn chỉnh sửa
-     */
-    const handleEditCareer = (data, editData) => {
-        const { editCareer } = state;
-        if (editData._id) {
-            setState({
-                ...state,
-                editCareer: [...editCareer, editData]
-            })
-        } else {
-            setState({
-                ...state,
-                career: data
-            })
-        }
-    }
+    // /**
+    //  * Function chỉnh sửa thông tin bằng cấp
+    //  * @param {*} data : Dữ liệu thông tin bằng cấp
+    //  * @param {*} editData : bằng cấp muốn chỉnh sửa
+    //  */
+    // const handleEditCareer = (data, editData) => {
+    //     const { editCareer } = state;
+    //     if (editData._id) {
+    //         setState({
+    //             ...state,
+    //             editCareer: [...editCareer, editData]
+    //         })
+    //     } else {
+    //         setState({
+    //             ...state,
+    //             career: data
+    //         })
+    //     }
+    // }
 
-    /**
-     * Function xoá thông tin Công việc đương tương
-     * @param {*} data : Dữ liệu thông tin Công việc đương tương
-     * @param {*} deleteData : Công việc đương tương muốn xoá
-     */
-    const handleDeleteCareer = (data, deleteData) => {
-        const { deleteCareer, editCareer } = state;
-        if (deleteData._id) {
-            setState({
-                ...state,
-                deleteCareer: [...deleteCareer, deleteData],
-                editCareer: editCareer.filter(x => x._id !== deleteData._id)
-            })
-        } else {
-            setState({
-                ...state,
-                career: data
-            })
-        }
-    }
+    // /**
+    //  * Function xoá thông tin Công việc đương tương
+    //  * @param {*} data : Dữ liệu thông tin Công việc đương tương
+    //  * @param {*} deleteData : Công việc đương tương muốn xoá
+    //  */
+    // const handleDeleteCareer = (data, deleteData) => {
+    //     const { deleteCareer, editCareer } = state;
+    //     if (deleteData._id) {
+    //         setState({
+    //             ...state,
+    //             deleteCareer: [...deleteCareer, deleteData],
+    //             editCareer: editCareer.filter(x => x._id !== deleteData._id)
+    //         })
+    //     } else {
+    //         setState({
+    //             ...state,
+    //             career: data
+    //         })
+    //     }
+    // }
 
 
     /**
@@ -774,25 +820,28 @@ const EmployeeEditFrom = (props) => {
         return result;
     }
 
+    console.log(state);
 
     const save = async () => {
         let { _id, experiences, degrees, certificates, contracts, files, avatar,
-            disciplines, commendations, annualLeaves, socialInsuranceDetails, courses, career, major } = state;
+            disciplines, commendations, annualLeaves, socialInsuranceDetails, courses } = state;
 
-        await setState({
-            ...state,
-            createExperiences: experiences.filter(x => x._id === undefined),
-            createDegrees: degrees.filter(x => x._id === undefined),
-            createCertificates: certificates.filter(x => x._id === undefined),
-            createCareer: career.filter(x => x._id === undefined),
-            createMajor: major.filter(x => x._id === undefined),
-            createContracts: contracts.filter(x => x._id === undefined),
-            createDisciplines: disciplines.filter(x => x._id === undefined),
-            createCommendations: commendations.filter(x => x._id === undefined),
-            createAnnualLeaves: annualLeaves.filter(x => x._id === undefined),
-            createCourses: courses.filter(x => x._id === undefined),
-            createSocialInsuranceDetails: socialInsuranceDetails.filter(x => x._id === undefined),
-            createFiles: files.filter(x => x._id === undefined),
+        await setState(state => {
+            return {
+                ...state,
+                createExperiences: experiences.filter(x => x._id === undefined),
+                createDegrees: degrees.filter(x => x._id === undefined),
+                createCertificates: certificates.filter(x => x._id === undefined),
+                // createCareer: career.filter(x => x._id === undefined),
+                // createMajor: major.filter(x => x._id === undefined),
+                createContracts: contracts.filter(x => x._id === undefined),
+                createDisciplines: disciplines.filter(x => x._id === undefined),
+                createCommendations: commendations.filter(x => x._id === undefined),
+                createAnnualLeaves: annualLeaves.filter(x => x._id === undefined),
+                createCourses: courses.filter(x => x._id === undefined),
+                createSocialInsuranceDetails: socialInsuranceDetails.filter(x => x._id === undefined),
+                createFiles: files.filter(x => x._id === undefined),
+            }
         });
 
         let formData = convertJsonObjectToFormData(state);
@@ -802,12 +851,12 @@ const EmployeeEditFrom = (props) => {
         certificates.forEach(x => {
             formData.append("fileCertificate", x.fileUpload);
         })
-        career.forEach(x => {
-            formData.append("fileCareer", x.fileUpload);
-        })
-        major.forEach(x => {
-            formData.append("fileMajor", x.fileUpload);
-        })
+        // career.forEach(x => {
+        //     formData.append("fileCareer", x.fileUpload);
+        // })
+        // major.forEach(x => {
+        //     formData.append("fileMajor", x.fileUpload);
+        // })
         contracts.forEach(x => {
             formData.append("fileContract", x.fileUpload);
         })
@@ -882,7 +931,7 @@ const EmployeeEditFrom = (props) => {
         const shouldUpdate = async () => {
             if (props._id !== state._id && !props.employeesInfo.isLoading) {
                 await props.getEmployeeProfile({ id: props._id, callAPIByUser: false });
-                
+
                 setState({
                     ...state,
                     _id: props?._id,
@@ -893,8 +942,8 @@ const EmployeeEditFrom = (props) => {
                     experiences: [],
                     degrees: [],
                     certificates: [],
-                    career: [],
-                    major: [],
+                    // career: [],
+                    // major: [],
                     contracts: [],
                     files: [],
                     socialInsuranceDetails: [],
@@ -917,8 +966,8 @@ const EmployeeEditFrom = (props) => {
                     experiences: props.employeesInfo.employees?.[0]?.experiences,
                     degrees: props.employeesInfo.employees?.[0]?.degrees,
                     certificates: props.employeesInfo.employees?.[0]?.certificates,
-                    career: props.employeesInfo.employees?.[0]?.career,
-                    major: props.employeesInfo.employees?.[0]?.major,
+                    // career: props.employeesInfo.employees?.[0]?.career,
+                    // major: props.employeesInfo.employees?.[0]?.major,
                     contracts: props.employeesInfo.employees?.[0]?.contracts,
                     files: props.employeesInfo.employees?.[0]?.files,
                     socialInsuranceDetails: props.employeesInfo.employees?.[0]?.socialInsuranceDetails,
@@ -937,113 +986,145 @@ const EmployeeEditFrom = (props) => {
 
 
     const _fm_saveMember = (data) => {
-        setState({
-            ...state,
-            houseHold: {
-                ...state.houseHold,
-                familyMembers: [...state.houseHold.familyMembers, data]
+        setState(state => {
+            return {
+                ...state,
+                houseHold: {
+                    ...state.houseHold,
+                    familyMembers: [...state.houseHold.familyMembers, data]
+                }
             }
         })
     }
 
     const _fm_handleHeadHouseHoldName = (e) => {
-        setState({
-            ...state,
-            houseHold: {
-                ...state.houseHold,
-                headHouseHoldName: e.target.value
+        let headHouseHoldName = e.target.value;
+        setState(state => {
+            return {
+                ...state,
+                houseHold: {
+                    ...state.houseHold,
+                    headHouseHoldName
+                }
             }
         });
     }
 
     const _fm_handleDocumentType = (e) => {
-        setState({
-            ...state,
-            houseHold: {
-                ...state.houseHold,
-                documentType: e.target.value
+        let documentType = e.target.value
+        setState(state => {
+            return {
+                ...state,
+                houseHold: {
+                    ...state.houseHold,
+                    documentType
+                }
             }
         });
     }
 
     const _fm_handleHouseHoldNumber = (e) => {
-        setState({
-            ...state,
-            houseHold: {
-                ...state.houseHold,
-                houseHoldNumber: e.target.value
+        let houseHoldNumber = e.target.value
+        setState(state => {
+            return {
+                ...state,
+                houseHold: {
+                    ...state.houseHold,
+                    houseHoldNumber
+                }
             }
         })
     }
 
     const _fm_handleCity = (e) => {
-        setState({
-            ...state,
-            houseHold: {
-                ...state.houseHold,
-                city: e.target.value
+        let city = e.target.value
+        setState(state => {
+            return {
+                ...state,
+                houseHold: {
+                    ...state.houseHold,
+                    city
+                }
             }
         })
     }
 
     const _fm_handleDistrict = (e) => {
-        setState({
-            ...state,
-            houseHold: {
-                ...state.houseHold,
-                district: e.target.value
+        let district = e.target.value
+        setState(state => {
+            return {
+                ...state,
+                houseHold: {
+                    ...state.houseHold,
+                    district
+                }
             }
         });
     }
 
     const _fm_handleWard = (e) => {
-        setState({
-            ...state,
-            houseHold: {
-                ...state.houseHold,
-                ward: e.target.value
+        let ward = e.target.value
+        setState(state => {
+            return {
+                ...state,
+                houseHold: {
+                    ...state.houseHold,
+                    ward
+                }
             }
         });
     }
 
     const _fm_handleHouseHoldAddress = (e) => {
-        setState({
-            ...state,
-            houseHold: {
-                ...state.houseHold,
-                houseHoldAddress: e.target.value
+        let houseHoldAddress = e.target.value
+        setState(state => {
+            return {
+                ...state,
+                houseHold: {
+                    ...state.houseHold,
+                    houseHoldAddress
+                }
             }
         })
     }
 
     const _fm_handlePhone = (e) => {
-        setState({
-            ...state,
-            houseHold: {
-                ...state.houseHold,
-                phone: e.target.value
+        let phone = e.target.value
+        setState(state => {
+            return {
+                ...state,
+                houseHold: {
+                    ...state.houseHold,
+                    phone
+                }
             }
         });
     }
 
     const _fm_handleHouseHoldCode = (e) => {
-        setState({
-            ...state,
-            houseHold: {
-                ...state.houseHold,
-                houseHoldCode: e.target.value
+        let houseHoldCode = e.target.value
+        setState(state => {
+            return {
+                ...state,
+                houseHold: {
+                    ...state.houseHold,
+                    houseHoldCode
+                }
             }
         });
     }
 
+
     const _fm_editMember = (index, data) => {
         let familyMembers = state.houseHold.familyMembers;
         familyMembers[index] = data;
-        setState({
-            ...state,
-            houseHold: {
-                ...state.houseHold,
-                familyMembers
+        setState(state => {
+            return {
+                ...state,
+                houseHold: {
+                    ...state.houseHold,
+                    familyMembers: familyMembers
+                }
             }
         })
     }
@@ -1051,19 +1132,16 @@ const EmployeeEditFrom = (props) => {
     const _fm_deleteMember = (index) => {
         let familyMembers = state.houseHold.familyMembers;
         familyMembers = familyMembers.filter((node, i) => i !== index);
-        setState({
-            ...state,
-            houseHold: {
-                ...state.houseHold,
-                familyMembers
+        setState(state => {
+            return {
+                ...state,
+                houseHold: {
+                    ...state.houseHold,
+                    familyMembers: familyMembers
+                }
             }
         })
     }
-
-    const { translate, employeesInfo } = props;
-
-    let { _id, img, employee, degrees, certificates, socialInsuranceDetails, contracts, courses,
-        organizationalUnits, roles, commendations, disciplines, annualLeaves, files, major, career, houseHold, editMember } = state;
 
     return (
         <React.Fragment>

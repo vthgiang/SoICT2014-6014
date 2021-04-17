@@ -2,10 +2,11 @@ import React, { useState, useEffect, useRef } from 'react'
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 
-import { DateTimeConverter, SelectBox, SelectMulti } from '../../../../common-components';
+import { SelectBox, SelectMulti } from '../../../../common-components';
 
 import c3 from 'c3';
 import 'c3/c3.css';
+import { filterDifference } from '../../../../helpers/taskModuleHelpers';
 
 function AverageResultsOfTask(props) {
     // Khai báo props
@@ -111,26 +112,9 @@ function AverageResultsOfTask(props) {
         }
     }
 
-    // Lọc công việc trùng lặp
-    const filterDuplicateTask = (listTask) => {
-        let idArray = listTask.map(item => item && item._id);
-        idArray = idArray.map((item, index, array) => {
-            if (array.indexOf(item) === index) {
-                return index;
-            } else {
-                return false
-            }
-        })
-        idArray = idArray.filter(item => listTask[item]);
-        let listTaskNotDuplicate = idArray.map(item => {
-            return listTask[item]
-        })
-
-        return listTaskNotDuplicate;
-    }
-
     // Hàm lọc các công việc theo từng tháng
     const filterTasksByMonth = (currentMonth, nextMonth) => {
+        const { loadingResponsible, loadingConsulted, loadingAccountable } = tasks;
         let averageAutomatic, averageEmployee, averageApproved;
         let sumAutomaticPointNotCoefficient = 0, sumAutomaticPointCoefficient = 0, sumNotCoefficientAutomatic = 0, sumCoefficientAutomatic = 0;
         let sumEmployeePointNotCoefficient = 0, sumEmployeePointCoefficient = 0, sumNotCoefficientEmployee = 0, sumCoefficientEmployee = 0;
@@ -138,10 +122,10 @@ function AverageResultsOfTask(props) {
 
         let listTask = [], listTaskByRole = [];
 
-        if (tasks.responsibleTasks && tasks.accountableTasks && tasks.consultedTasks) {
-            listTaskByRole[ROLE.RESPONSIBLE] = tasks.responsibleTasks;
-            listTaskByRole[ROLE.ACCOUNTABLE] = tasks.accountableTasks;
-            listTaskByRole[ROLE.CONSULTED] = tasks.consultedTasks;
+        if (!loadingResponsible && !loadingConsulted && !loadingAccountable) {
+            listTaskByRole[ROLE.RESPONSIBLE] = tasks.responsibleTasks ? tasks.responsibleTasks : [];
+            listTaskByRole[ROLE.ACCOUNTABLE] = tasks.accountableTasks ? tasks.accountableTasks : [];
+            listTaskByRole[ROLE.CONSULTED] = tasks.consultedTasks ? tasks.consultedTasks : [];
 
             if (role.length !== 0) {
                 role.map(role => {
@@ -149,7 +133,7 @@ function AverageResultsOfTask(props) {
                 })
             }
 
-            listTask = filterDuplicateTask(listTask);
+            listTask = filterDifference(listTask);
         };
 
         if (listTask) {

@@ -17,7 +17,8 @@ function GeneralTab(props) {
         errorOnFullName: "",
         emailInCompany: "",
         errorOnEmailCompany: undefined,
-        identityCardAddress: "",
+        identityCardNumber: "",
+        identityCardAddress: ""
     });
 
     const { translate } = props;
@@ -26,7 +27,7 @@ function GeneralTab(props) {
         startingDate, leavingDate, emailInCompany, maritalStatus, identityCardNumber, identityCardAddress, ethnic, religion, nationality,
         errorOnBrithdate, errorOnDateCMND, errorOnEmployeeNumber, errorOnMSCC, errorOnFullName, errorOnEmailCompany, errorOnStartingDate,
         errorOnCMND, errorOnAddressCMND, errorOnLeavingDate } = state;
-    console.log('employeeNumber', employeeNumber)
+    // console.log('employeeNumber', employeeNumber)
 
     useEffect(() => {
         if ((props.id === "general" || props.id === "page_general") && !state.employeeNumber && !state.employeeTimesheetId && props.employee && props.employee.employeeNumber && props.employee.employeeTimesheetId) {
@@ -479,8 +480,6 @@ function GeneralTab(props) {
                         id === 'page_general' &&
                         <div className="row col-lg-12 col-md-12 col-ms-12 col-xs-12">
                             <p >(<span className="text-red">*</span>): <span className="text-red">{translate('modal.note')}</span></p>
-
-
                         </div>
                     }
 
@@ -498,7 +497,6 @@ function GeneralTab(props) {
                             <ErrorLabel content={errorOnMSCC} />
                         </div>
                     </div>
-
                     <div className="row">
                         {/* Tên nhân viên */}
                         <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnFullName && "has-error"}`}>

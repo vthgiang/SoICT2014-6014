@@ -13,14 +13,15 @@ const LoadTaskChart = (props) => {
     const [role, setRole] = useState(["res", "acc", "con"]);
     const { translate } = props;
     let { startMonth, endMonth } = props;
+
     useEffect(() => {
         let { tasks } = props;
+        const { loadingResponsible, loadingConsulted, loadingAccountable } = tasks;
 
-        if (tasks) {
-
-            let res = tasks.responsibleTasks;
-            let acc = tasks.accountableTasks;
-            let con = tasks.consultedTasks;
+        if (!loadingConsulted && !loadingAccountable && !loadingResponsible) {
+            let res = tasks.responsibleTasks ? tasks.responsibleTasks : [];
+            let acc = tasks.accountableTasks ? tasks.accountableTasks : [];
+            let con = tasks.consultedTasks ? tasks.consultedTasks : [];
 
             if (res && acc && con) {
                 let allTask = { res, acc, con }

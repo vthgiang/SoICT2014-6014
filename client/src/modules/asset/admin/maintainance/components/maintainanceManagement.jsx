@@ -6,7 +6,7 @@ import { DataTableSetting, DatePicker, DeleteNotification, PaginateBar, SelectMu
 import { AssetManagerActions } from '../../asset-information/redux/actions';
 import { MaintainanceCreateForm } from './maintainanceCreateForm';
 import { MaintainanceEditForm } from './maintainanceEditForm';
-
+import { AssetTypeActions } from "../../asset-type/redux/actions";
 import { MaintainanceActions } from '../redux/actions';
 import { AssetEditForm } from '../../asset-information/components/assetEditForm';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
@@ -35,6 +35,7 @@ function MaintainanceManagement(props) {
     
 
     useEffect(() => {
+        props.searchAssetTypes({ typeNumber: "", typeName: "", limit:0});
         props.getMaintainances(state);
         props.getListBuildingAsTree();
     }, [])
@@ -429,14 +430,17 @@ function MaintainanceManagement(props) {
                                         <td style={{ textAlign: "center" }}>
                                             <a onClick={() => handleEdit(x, x.asset)} className="edit text-yellow" style={{ width: '5px', cursor: 'pointer' }} title={translate('asset.asset_info.edit_maintenance_card')}><i
                                                 className="material-icons">edit</i></a>
-                                            <DeleteNotification
-                                                content={translate('asset.asset_info.delete_maintenance_card')}
-                                                data={{
-                                                    id: x._id,
-                                                    info: x.maintainanceCode ? x.maintainanceCode : '' + " - "
-                                                }}
-                                                func={() => deleteMaintainance(x.asset._id, x._id)}
-                                            />
+                                            {
+                                                (x.status !== "3") &&
+                                                <DeleteNotification
+                                                    content={translate('asset.asset_info.delete_maintenance_card')}
+                                                    data={{
+                                                        id: x._id,
+                                                        info: x.maintainanceCode ? x.maintainanceCode : '' + " - "
+                                                    }}
+                                                    func={() => deleteMaintainance(x.asset._id, x._id)}
+                                                />
+                                            }    
                                         </td>
                                     </tr>
                                 )) : null
@@ -530,6 +534,7 @@ function mapState(state) {
 
 const actionCreators = {
     getMaintainances: MaintainanceActions.getMaintainances,
+    searchAssetTypes: AssetTypeActions.searchAssetTypes,
     deleteMaintainance: MaintainanceActions.deleteMaintainance,
     getListBuildingAsTree: AssetManagerActions.getListBuildingAsTree,
 };

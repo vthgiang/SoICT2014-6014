@@ -1,5 +1,9 @@
-const KPIUnitService = require('./creation.service');
-const Logger = require(`../../../../logs`);
+const KPIUnitService = require('./creation.service')
+const Logger = require(`../../../../logs`)
+
+const managerService = require('../management/management.service')
+
+const { getDataOrganizationalUnitKpiSetLog } = require('../../../../helpers/descriptionLogKpi')
 
 /**
  * Get organizational unit kpi set
@@ -95,12 +99,33 @@ exports.deleteOrganizationalUnitKpiSet = async (req, res) => {
  */
 exports.deleteOrganizationalUnitKpi = async (req, res) => {
     try {
-        let organizationalUnitKpiSet = await KPIUnitService.deleteOrganizationalUnitKpi(req.portal, req.params.idUnitKpi, req.params.idUnitKpiSet);
+        let data = await KPIUnitService.deleteOrganizationalUnitKpi(req.portal, req.params.idUnitKpi, req.params.idUnitKpiSet);
+        
+        // Thêm logs 
+        let log = getDataOrganizationalUnitKpiSetLog({
+            type: "delete_kpi",
+            creator: req.user._id,
+            organizationalUnit: data?.organizationalUnitKpiSet?.organizationalUnit, 
+            month: data?.organizationalUnitKpiSet?.date,
+            newData: data?.organizationalUnitKpi
+        })
+        await managerService.createOrganizationalUnitKpiSetLogs(req.portal, {
+            ...log,
+            organizationalUnitKpiSetId: data?.organizationalUnitKpiSet?._id
+        })
+
+        // Thêm newsfeed
+        await KPIUnitService.createNewsFeedForOrganizationalUnitKpiSet(req.portal, {
+            ...log,
+            organizationalUnit: data?.organizationalUnitKpiSet?.organizationalUnit,
+            organizationalUnitKpiSetId: data?.organizationalUnitKpiSet?._id
+        });
+
         Logger.info(req.user.email, 'delete target kpi unit', req.portal);
         res.status(200).json({
             success: true,
             messages: ['confirm_delete_target_success'],
-            content: organizationalUnitKpiSet
+            content: data?.organizationalUnitKpiSet
         });
     } catch (error) {
         Logger.error(req.user.email, 'delete target kpi unit', req.portal)
@@ -142,6 +167,27 @@ getParentOrganizationalUnitKpiSet = async (req, res) => {
 exports.createOrganizationalUnitKpi = async (req, res) => {
     try {
         let organizationalUnitKpiSet = await KPIUnitService.createOrganizationalUnitKpi(req.portal, req.body);
+        
+        // Thêm log
+        let log = getDataOrganizationalUnitKpiSetLog({
+            type: "add_kpi",
+            creator: req.user._id,
+            organizationalUnit: organizationalUnitKpiSet?.organizationalUnit, 
+            month: organizationalUnitKpiSet?.date,
+            newData: organizationalUnitKpiSet?.kpis?.[organizationalUnitKpiSet?.kpis?.length - 1]
+        })
+        await managerService.createOrganizationalUnitKpiSetLogs(req.portal, {
+            ...log,
+            organizationalUnitKpiSetId: organizationalUnitKpiSet?._id
+        })
+
+        // Thêm newsfeed
+        await KPIUnitService.createNewsFeedForOrganizationalUnitKpiSet(req.portal, {
+            ...log,
+            organizationalUnit: organizationalUnitKpiSet?.organizationalUnit,
+            organizationalUnitKpiSetId: organizationalUnitKpiSet?._id
+        });
+
         Logger.info(req.user.email, 'create target kpi unit', req.portal)
         res.status(200).json({
             success: true,
@@ -164,14 +210,34 @@ exports.createOrganizationalUnitKpi = async (req, res) => {
  * Chỉnh sửa KPI đơn vị
  */
 exports.editOrganizationalUnitKpi = async (req, res) => {
-
     try {
-        let target = await KPIUnitService.editOrganizationalUnitKpi(req.portal, req.body, req.params.id);
+        let data = await KPIUnitService.editOrganizationalUnitKpi(req.portal, req.body, req.params.id);
+        
+        // Thêm log
+        let log = getDataOrganizationalUnitKpiSetLog({
+            type: "edit_kpi",
+            creator: req.user._id,
+            organizationalUnit: data?.unitKpiSet?.organizationalUnit, 
+            month: data?.unitKpiSet?.date,
+            newData: data?.target
+        })
+        await managerService.createOrganizationalUnitKpiSetLogs(req.portal, {
+            ...log,
+            organizationalUnitKpiSetId: data?.unitKpiSet?._id
+        })
+
+        // Thêm newsfeed
+        await KPIUnitService.createNewsFeedForOrganizationalUnitKpiSet(req.portal, {
+            ...log,
+            organizationalUnit: data?.unitKpiSet?.organizationalUnit,
+            organizationalUnitKpiSetId: data?.unitKpiSet?._id
+        })
+        
         Logger.info(req.user.email, 'edit target kpi unit', req.portal)
         res.status(200).json({
             success: true,
             messages: ['edit_target_success'],
-            content: target
+            content: data?.target
         });
     } catch (error) {
         let messages = error && error.messages === 'organizational_unit_kpi_exist' ? ['organizational_unit_kpi_exist'] : ['edit_target_failure'];
@@ -192,6 +258,27 @@ exports.editOrganizationalUnitKpi = async (req, res) => {
 editOrganizationalUnitKpiSetStatus = async (req, res) => {
     try {
         let kpiunit = await KPIUnitService.editOrganizationalUnitKpiSetStatus(req.portal, req.params.id, req.body);
+        
+        // Thêm log
+        let log = getDataOrganizationalUnitKpiSetLog({
+            type: "edit_status",
+            creator: req.user._id,
+            organizationalUnit: kpiunit?.organizationalUnit, 
+            month: kpiunit?.date,
+            newData: kpiunit
+        })
+        await managerService.createOrganizationalUnitKpiSetLogs(req.portal, {
+            ...log,
+            organizationalUnitKpiSetId: kpiunit?._id
+        })
+
+        // Thêm newsfeed
+        await KPIUnitService.createNewsFeedForOrganizationalUnitKpiSet(req.portal, {
+            ...log,
+            organizationalUnit: kpiunit?.organizationalUnit,
+            organizationalUnitKpiSetId: kpiunit?._id
+        });
+
         Logger.info(req.user.email, 'edit status kpi unit', req.portal)
         res.status(200).json({
             success: true,
@@ -217,13 +304,33 @@ exports.createOrganizationalUnitKpiSet = async (req, res) => {
             ...req.body,
             creator: req.user._id
         }
-        let organizationalUnitKpi = await KPIUnitService.createOrganizationalUnitKpiSet(req.portal, data);
+        let organizationalUnitKpiSet = await KPIUnitService.createOrganizationalUnitKpiSet(req.portal, data);
         
+        // Thêm log
+        let log = getDataOrganizationalUnitKpiSetLog({
+            type: "create",
+            creator: req.user._id,
+            organizationalUnit: organizationalUnitKpiSet?.organizationalUnit, 
+            month: organizationalUnitKpiSet?.date,
+            newData: organizationalUnitKpiSet
+        })
+        await managerService.createOrganizationalUnitKpiSetLogs(req.portal, {
+            ...log,
+            organizationalUnitKpiSetId: organizationalUnitKpiSet?._id
+        })
+
+        // Thêm newsfeed
+        await KPIUnitService.createNewsFeedForOrganizationalUnitKpiSet(req.portal, {
+            ...log,
+            organizationalUnit: organizationalUnitKpiSet?.organizationalUnit,
+            organizationalUnitKpiSetId: organizationalUnitKpiSet?._id
+        });
+
         Logger.info(req.user.email, 'create kpi unit', req.portal)
         res.status(200).json({
             success: true,
             messages: ['create_organizational_unit_kpi_set_success'],
-            content: organizationalUnitKpi,
+            content: organizationalUnitKpiSet,
         });
     } catch (error) {
         Logger.error(req.user.email, 'create kpi unit', req.portal)
@@ -335,29 +442,30 @@ exports.createComment = async (req, res) => {
  * Tạo comment trong comment trong trang create KPI employee (tạo replied comment)
  */
 exports.createChildComment = async (req, res) => {
-    // try {
-    var files = [];
-    if (req.files !== undefined) {
-        req.files.forEach((elem, index) => {
-            var path = elem.destination + '/' + elem.filename;
-            files.push({ name: elem.originalname, url: path })
-        })
+    try {
+        let files = [];
+        if (req.files !== undefined) {
+            req.files.forEach((elem, index) => {
+                let path = elem.destination + '/' + elem.filename;
+                files.push({ name: elem.originalname, url: path })
+            })
+        }
+
+        let comments = await KPIUnitService.createChildComment(req.portal, req.params, req.body, files);
+        await Logger.info(req.user.email, ` create comment `, req.portal)
+        res.status(200).json({
+            success: true,
+            messages: ['create_child_comment_success'],
+            content: comments
+            })
+    } catch (error) {
+        await Logger.error(req.user.email, ` create child comment kpi `, req.portal)
+        res.status(400).json({
+            success: false,
+            messages: ['create_child_comment_fail'],
+            content: error
+        });
     }
-    var comments = await KPIUnitService.createChildComment(req.portal, req.params, req.body, files);
-    await Logger.info(req.user.email, ` create comment `, req.portal)
-    res.status(200).json({
-        success: true,
-        messages: ['create_child_comment_success'],
-        content: comments
-    })
-    // } catch (error) {
-    //     await Logger.error(req.user.email, ` create child comment kpi `, req.portal)
-    //     res.status(400).json({
-    //         success: false,
-    //         messages: ['create_child_comment_fail'],
-    //         content: error
-    //     });
-    // }
 }
 
 /**
@@ -396,7 +504,7 @@ exports.editComment = async (req, res) => {
  */
 exports.deleteComment = async (req, res) => {
     try {
-        var comments = await KPIUnitService.deleteComment(req.portal, req.params);
+        let comments = await KPIUnitService.deleteComment(req.portal, req.params);
         await Logger.info(req.user.email, ` delete comment kpi`, req.portal)
         res.status(200).json({
             success: false,
@@ -425,7 +533,7 @@ exports.editChildComment = async (req, res) => {
 
             })
         }
-        var comments = await KPIUnitService.editChildComment(req.portal, req.params, req.body, files);
+        let comments = await KPIUnitService.editChildComment(req.portal, req.params, req.body, files);
         await Logger.info(req.user.email, ` edit comment of comment kpi `, req.portal)
         res.status(200).json({
             success: true,
@@ -505,3 +613,4 @@ exports.deleteFileChildComment = async (req, res) => {
         })
     }
 }
+

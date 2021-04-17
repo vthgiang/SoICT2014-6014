@@ -172,7 +172,7 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
         let { translate, user } = this.props;
         const { _id, roleEmployees, roleManagers, roleDeputyManagers, textSearch } = this.state;
         let userlist = user?.list;
-
+        console.log('this.state', this.state)
         // Lấy các role chức danh
         const getRolePosition = this.props.role.filter(obj => obj.type?.name === "Position");
 
@@ -192,15 +192,23 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                                 <h4 style={{ marginBottom: 0 }}>{translate('human_resource.manage_department.manager_unit')}</h4>
                                 {
                                     roleManagers.map((obj, index) => {
-                                        let infoManager = [], users = obj.users;
-                                        for (let n in users) {
-                                            infoManager = userlist?.length > 0 && userlist.filter(y => y?._id === users?.[n]).concat(infoManager)
+                                        let infoManager = [];
+                                        if (obj.users && obj.users.length > 0) {
+                                            let users = obj.users;
+                                            for (let n in users) {
+                                                if (userlist?.length > 0) {
+                                                    userlist.forEach(item => {
+                                                        if (item._id === users[n])
+                                                            infoManager = [...infoManager, item];
+                                                    })
+                                                }
+                                            }
                                         }
 
                                         // lấy thông tin các role nhân viên có.
-                                        infoManager.forEach(uId => {
+                                        infoManager?.length > 0 && infoManager.forEach(uId => {
                                             let roleName = [];
-                                            getRolePosition.forEach(rl => {
+                                            getRolePosition?.length > 0 && getRolePosition.forEach(rl => {
                                                 if (rl.users.some(check => check?.userId?._id === uId._id)) {
                                                     roleName = [...roleName, rl.name];
                                                 }
@@ -234,7 +242,7 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                                                     </thead>
                                                     <tbody>
                                                         {
-                                                            infoManager.length !== 0 &&
+                                                            infoManager?.length !== 0 &&
                                                             infoManager.map((user, index) => (
                                                                 <tr key={index}>
                                                                     <td style={{ textAlign: "left" }}>{user.name}</td>
@@ -249,7 +257,7 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                                                     </tbody>
                                                 </table>
                                                 {
-                                                    (infoManager.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                                                    (infoManager?.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                                                 }
                                             </fieldset>
                                         )
@@ -265,15 +273,23 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                                 <h4 style={{ marginBottom: 0 }}>{translate('human_resource.manage_department.deputy_manager_unit')}</h4>
                                 {
                                     roleDeputyManagers.map((obj, index) => {
-                                        let infoDeputyManagers = [], users = obj.users;
-                                        for (let n in users) {
-                                            infoDeputyManagers = userlist?.length > 0 && userlist.filter(y => y?._id === users?.[n]).concat(infoDeputyManagers)
+                                        let infoDeputyManagers = [];
+                                        if (obj.users && obj.users.length > 0) {
+                                            let users = obj.users;
+                                            for (let n in users) {
+                                                if (userlist?.length > 0) {
+                                                    userlist.forEach(item => {
+                                                        if (item._id === users[n])
+                                                            infoDeputyManagers = [...infoDeputyManagers, item];
+                                                    })
+                                                }
+                                            }
                                         }
 
                                         // lấy thông tin các role nhân viên có.
-                                        infoDeputyManagers.forEach(uId => {
+                                        infoDeputyManagers?.length > 0 && infoDeputyManagers.forEach(uId => {
                                             let roleName = [];
-                                            getRolePosition.forEach(rl => {
+                                            getRolePosition?.length > 0 && getRolePosition.forEach(rl => {
                                                 if (rl.users.some(check => check?.userId?._id === uId._id)) {
                                                     roleName = [...roleName, rl.name];
                                                 }
@@ -307,7 +323,7 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                                                     </thead>
                                                     <tbody>
                                                         {
-                                                            infoDeputyManagers.length !== 0 &&
+                                                            infoDeputyManagers?.length !== 0 &&
                                                             infoDeputyManagers.map((user, index) => (
                                                                 <tr key={index}>
                                                                     <td style={{ textAlign: "left" }}>{user.name}</td>
@@ -322,7 +338,7 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                                                     </tbody>
                                                 </table>
                                                 {
-                                                    (infoDeputyManagers.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                                                    (infoDeputyManagers?.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                                                 }
                                             </fieldset>
                                         )
@@ -336,16 +352,25 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                             roleEmployees && roleEmployees.length !== 0 &&
                             <React.Fragment>
                                 <h4 style={{ marginBottom: 0, marginTop: 40 }}>{translate('human_resource.manage_department.employee_unit')}</h4>
+
                                 {roleEmployees && roleEmployees.map((x, index) => {
-                                    let infoEmployee = [], users = x.users;
-                                    for (let n in users) {
-                                        infoEmployee = userlist?.length > 0 && userlist.filter(y => y?._id === users?.[n]).concat(infoEmployee)
+                                    let infoEmployee = [];
+                                    if (x.users && x.users.length > 0) {
+                                        let users = x.users;
+                                        for (let n in users) {
+                                            if (userlist?.length > 0) {
+                                                userlist.forEach(item => {
+                                                    if (item._id === users[n])
+                                                        infoEmployee = [...infoEmployee, item];
+                                                })
+                                            }
+                                        }
                                     }
 
                                     // lấy thông tin các role nhân viên có.
-                                    infoEmployee.forEach(uId => {
+                                    infoEmployee?.length > 0 && infoEmployee.forEach(uId => {
                                         let roleName = [];
-                                        getRolePosition.forEach(rl => {
+                                        getRolePosition?.length > 0 && getRolePosition.forEach(rl => {
                                             if (rl.users.some(check => check?.userId?._id === uId._id)) {
                                                 roleName = [...roleName, rl.name];
                                             }
@@ -379,7 +404,7 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                                                 </thead>
                                                 <tbody>
                                                     {
-                                                        infoEmployee.length !== 0 &&
+                                                        infoEmployee.length > 0 &&
                                                         infoEmployee.map((user, index) => (
                                                             <tr key={index}>
                                                                 <td style={{ textAlign: "left" }}>{user.name}</td>
@@ -394,7 +419,7 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                                                 </tbody>
                                             </table>
                                             {
-                                                (infoEmployee.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                                                (infoEmployee?.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                                             }
                                         </fieldset>
                                     )

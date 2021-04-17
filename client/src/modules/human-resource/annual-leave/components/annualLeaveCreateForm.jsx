@@ -11,10 +11,16 @@ import { UserActions } from '../../../super-admin/user/redux/actions';
 import { EmployeeManagerActions } from '../../profile/employee-management/redux/actions';
 
 function AnnualLeaveCreateForm(props) {
-    const { translate, annualLeave, user, employeesManager, department } = props;
+    const { translate, annualLeave, user, employeesManager, department } = props
+    const { typeView } = props
 
-    const createStartTime = useRef('');
-    const createEndTime = useRef('');
+    const createStartTime = useRef('')
+    const createEndTime = useRef('')
+    const TYPE_VIEW = {
+        ADMIN: "admin",
+        MANAGER: "manager"
+    }
+
     /**
      * Function format ngày hiện tại thành dạnh dd-mm-yyyy
      * @param {*} date : Ngày muốn format
@@ -54,42 +60,69 @@ function AnnualLeaveCreateForm(props) {
     } = state;
 
     useEffect(() => {
-        let unit;
-        if (department?.departmentsThatUserIsManager) {
-            unit = department.departmentsThatUserIsManager.map(item => item?._id)
+        if (typeView === TYPE_VIEW.ADMIN) {
+            props.getAllUserOfCompany()
         }
+    }, [])
 
-        if (unit?.length > 0) {
-            props.getAllEmployeeOfUnitByIds({
-                organizationalUnitIds: unit,
-                callApi: true
-            });
+    useEffect(() => {
+        if (typeView === TYPE_VIEW.MANAGER) {
+            let unit;
+            if (department?.departmentsThatUserIsManager) {
+                unit = department.departmentsThatUserIsManager.map(item => item?._id)
+            }
+    
+            if (unit?.length > 0) {
+                props.getAllEmployeeOfUnitByIds({
+                    organizationalUnitIds: unit,
+                    callApi: true
+                });
+            }
         }
     }, [department.departmentsThatUserIsManager])
 
     useEffect(() => {
-        let listAllEmployees;
-        if (user?.employeesOfUnitsUserIsManager) {
-            listAllEmployees = user.employeesOfUnitsUserIsManager;
-            if (listAllEmployees?.length > 0) {
-                listAllEmployees = listAllEmployees.map(item => { 
-                    return {
-                        text: item?.userId?.name, 
-                        value: item?.userId?.email 
-                    }
-                })
+        let listAllEmployees, organizationalUnit, employee, email
+
+        if (typeView === TYPE_VIEW.MANAGER) {
+            if (user?.employeesOfUnitsUserIsManager) {
+                listAllEmployees = user.employeesOfUnitsUserIsManager;
+                if (listAllEmployees?.length > 0) {
+                    listAllEmployees = listAllEmployees.map(item => { 
+                        return {
+                            text: item?.userId?.name, 
+                            value: item?.userId?.email 
+                        }
+                    })
+                }
+            }
+        } else if (typeView === TYPE_VIEW.ADMIN) {
+            if (user?.usercompanys) {
+                listAllEmployees = user.usercompanys;
+                if (listAllEmployees?.length > 0) {
+                    listAllEmployees = listAllEmployees.map(item => { 
+                        return {
+                            text: item?.name, 
+                            value: item?.email 
+                        }
+                    })
+                }
             }
         }
 
+        organizationalUnit = user?.userdepartments?.[0]?.id
+        employee = listAllEmployees?.[0]?.value
+        email = listAllEmployees?.[0]?.value
+
         setState({
             ...state,
-            organizationalUnit: user?.userdepartments?.[0]?.id,
+            organizationalUnit: organizationalUnit,
             listAllEmployees: listAllEmployees,
-            employee: listAllEmployees?.[0]?.value
+            employee: employee
         })
 
-        props.getDepartmentOfUser({ email: listAllEmployees?.[0]?.value });
-    }, [user.employeesOfUnitsUserIsManager])
+        props.getDepartmentOfUser({ email: email });
+    }, [user.employeesOfUnitsUserIsManager, user.usercompanys])
 
 
     useEffect(() => {
@@ -382,7 +415,7 @@ function AnnualLeaveCreateForm(props) {
                                 value={startDate}
                                 onChange={handleStartDateChange}
                             />
-                            {type &&
+                            {type && 
                                 < TimePicker
                                     id="create_start_time"
                                     ref={createStartTime}
@@ -451,7 +484,8 @@ const actionCreators = {
     createAnnualLeave: AnnualLeaveActions.createAnnualLeave,
     getAllEmployee: EmployeeManagerActions.getAllEmployee,
     getDepartmentOfUser: UserActions.getDepartmentOfUser,
-    getAllEmployeeOfUnitByIds: UserActions.getAllEmployeeOfUnitByIds
+    getAllEmployeeOfUnitByIds: UserActions.getAllEmployeeOfUnitByIds,
+    getAllUserOfCompany: UserActions.getAllUserOfCompany
 };
 
 const createForm = connect(mapState, actionCreators)(withTranslate(AnnualLeaveCreateForm));

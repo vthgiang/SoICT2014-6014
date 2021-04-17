@@ -8,28 +8,28 @@ class ModalPerform extends Component {
     constructor(props) {
         super(props);
         this.state = {}
-        
+
     }
 
     render() {
-        let task;
-        const { tasks, units } = this.props; 
-        
-        if (typeof tasks.task !== 'undefined' && tasks.task !== null) task = tasks.task;
-        
+        let taskName;
+        const { performtasks, units } = this.props;
+
+        if (performtasks?.task)
+            taskName = performtasks.task?.name;
         return (
             <React.Fragment>
                 <DialogModal
                     size="100"
                     modalID={`modelPerformTask${this.props.id}`}
                     formID="form-perform-task"
-                    title={task && task.name}
-                    bodyStyle={{padding: "0px"}}
+                    title={taskName ? taskName : ""}
+                    bodyStyle={{ padding: "0px" }}
                     hasSaveButton={false}
                 >
-                    <TaskComponent 
+                    <TaskComponent
                         units={units}
-                        id={this.props.id} 
+                        id={this.props.id}
                     />
                 </DialogModal>
             </React.Fragment>
@@ -38,8 +38,8 @@ class ModalPerform extends Component {
 }
 
 function mapState(state) {
-    const { tasks } = state;
-    return { tasks };
+    const { performtasks } = state;
+    return { performtasks };
 }
 
 const actionDispatch = {}

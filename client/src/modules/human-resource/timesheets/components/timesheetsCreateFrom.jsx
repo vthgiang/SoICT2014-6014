@@ -17,7 +17,7 @@ const TimesheetsCreateForm = (props) => {
      * @param {*} date : Ngày muốn format
      * @param {*} monthYear : true trả về tháng năm, false trả về ngày tháng năm
      */
-     const formatDate = (date, monthYear = false) => {
+    const formatDate = (date, monthYear = false) => {
         if (date) {
             let d = new Date(date),
                 month = '' + (d.getMonth() + 1),
@@ -40,7 +40,7 @@ const TimesheetsCreateForm = (props) => {
      * Function lấy danh sách các ngày trong tháng
      * @param {*} month : Tháng
      */
-     const getAllDayOfMonth = (month) => {
+    const getAllDayOfMonth = (month) => {
         const lang = getStorage("lang");
         let arrayDay = [], days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
         if (lang === 'vn') {
@@ -60,7 +60,7 @@ const TimesheetsCreateForm = (props) => {
     }
 
     let _allDayOfMonth = getAllDayOfMonth(formatDate(Date.now(), true));
-    
+
     const [state, setState] = useState({
         employee: "",
         month: formatDate(Date.now(), true),
@@ -69,17 +69,17 @@ const TimesheetsCreateForm = (props) => {
         shift3s: _allDayOfMonth.map(x => false),
         timekeepingByHours: _allDayOfMonth.map(x => 0),
         allDayOfMonth: _allDayOfMonth,
-        totalHoursOff: null,
-        totalOvertime: null
+        totalHoursOff: "",
+        totalOvertime: ""
     })
 
     useEffect(() => {
         props.getAllEmployee();
     }, []);
 
-    
 
-    
+
+
 
     /** Function bắt sự kiện thay đổi mã nhân viên */
     const handleMSNVChange = async (value) => {
@@ -118,6 +118,7 @@ const TimesheetsCreateForm = (props) => {
             })
         }
     }
+
     const validateMonth = (value, willUpdateState = true) => {
         const { translate } = props;
         let msg = TimesheetsFormValidator.validateMonth(value, translate);

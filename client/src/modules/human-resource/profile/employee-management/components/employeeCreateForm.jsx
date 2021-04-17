@@ -34,7 +34,7 @@ const EmployeeCreateForm = (props) => {
      * @param {*} date : Ngày muốn format
      * @param {*} monthYear : true trả về yyyy-mm, false trả về yyyy-mm-dd
      */
-     const formatDate2 = (date, monthYear = false) => {
+    const formatDate2 = (date, monthYear = false) => {
         if (date) {
             let d = new Date(date),
                 month = '' + (d.getMonth() + 1),
@@ -52,45 +52,52 @@ const EmployeeCreateForm = (props) => {
         }
         return date;
     }
-    
+
     const [state, setState] = useState({
         img: './upload/human-resource/avatars/avatar5.png',
-            avatar: "",
-            employee: {
-                avatar: '/upload/human-resource/avatars/avatar5.png',
-                gender: "male",
-                maritalStatus: "single",
-                educationalLevel: "",
-                professionalSkill: "unavailable",
-                status: 'active',
-                identityCardDate: formatDate2(Date.now()),
-                birthdate: formatDate2(Date.now()),
-                experiences: [],
-                socialInsuranceDetails: [],
-            },
-            courses: [],
-            degrees: [],
-            certificates: [],
-            contracts: [],
-            files: [],
-            disciplines: [],
-            commendations: [],
-            annualLeaves: [],
-            major: [],
-            career: [],
-            houseHold: {
-                headHouseHoldName: '',
-                documentType: '',
-                houseHoldNumber: '',
-                city: '',
-                district: '',
-                ward: '',
-                houseHoldAddress: '',
-                phone: '',
-                houseHoldCode: '',
-                familyMembers: []
-            },
-            editMember: initMember
+        avatar: "",
+        employee: {
+            employeeNumber: generateCode("NV"),
+            employeeTimesheetId: generateCode("NV"),
+            fullName: "",
+            emailInCompany: "",
+            phoneNumber: "",
+            avatar: '/upload/human-resource/avatars/avatar5.png',
+            gender: "male",
+            maritalStatus: "single",
+            educationalLevel: "",
+            professionalSkill: "unavailable",
+            status: 'active',
+            identityCardNumber: "",
+            identityCardAddress: "",
+            identityCardDate: formatDate2(Date.now()),
+            birthdate: formatDate2(Date.now()),
+            experiences: [],
+            socialInsuranceDetails: [],
+        },
+        courses: [],
+        degrees: [],
+        certificates: [],
+        contracts: [],
+        files: [],
+        disciplines: [],
+        commendations: [],
+        annualLeaves: [],
+        // major: [],
+        // career: [],
+        houseHold: {
+            headHouseHoldName: '',
+            documentType: '',
+            houseHoldNumber: '',
+            city: '',
+            district: '',
+            ward: '',
+            houseHoldAddress: '',
+            phone: '',
+            houseHoldCode: '',
+            familyMembers: []
+        },
+        editMember: initMember
 
     })
 
@@ -170,29 +177,29 @@ const EmployeeCreateForm = (props) => {
         }))
     }
 
-    /**
-     * Function thêm, chỉnh sửa thông tin chuyên ngành tương đương
-     * @param {*} data : Dữ liệu thông tin chuyên ngành tương đương
-     * @param {*} addData : Chuyên ngành tương đương muốn thêm
-     */
-    const handleChangeMajor = (data, addData) => {
-        setState(state => ({
-            ...state,
-            major: data
-        }))
-    }
+    // /**
+    //  * Function thêm, chỉnh sửa thông tin chuyên ngành tương đương
+    //  * @param {*} data : Dữ liệu thông tin chuyên ngành tương đương
+    //  * @param {*} addData : Chuyên ngành tương đương muốn thêm
+    //  */
+    // const handleChangeMajor = (data, addData) => {
+    //     setState(state => ({
+    //         ...state,
+    //         major: data
+    //     }))
+    // }
 
-    /**
-     * Function thêm, chỉnh sửa thông tin công việc tương đương
-     * @param {*} data : Dữ liệu thông tin công việc tương đương
-     * @param {*} addData : Công việc tương đương muốn thêm
-     */
-    const handleChangeCareer = (data, addData) => {
-        setState(state => ({
-            ...state,
-            career: data
-        }))
-    }
+    // /**
+    //  * Function thêm, chỉnh sửa thông tin công việc tương đương
+    //  * @param {*} data : Dữ liệu thông tin công việc tương đương
+    //  * @param {*} addData : Công việc tương đương muốn thêm
+    //  */
+    // const handleChangeCareer = (data, addData) => {
+    //     setState(state => ({
+    //         ...state,
+    //         career: data
+    //     }))
+    // }
 
     /**
      * Function thêm, chỉnh sửa thông tin quá trình đóng BHXH
@@ -322,7 +329,7 @@ const EmployeeCreateForm = (props) => {
     /** Function thêm mới thông tin nhân viên */
     const save = async () => {
         let { employee, degrees, certificates, contracts, files, avatar,
-            disciplines, commendations, annualLeaves, courses, major, career, houseHold } = state;
+            disciplines, commendations, annualLeaves, courses, houseHold } = state;
 
         await setState(state => ({
             ...state,
@@ -336,8 +343,8 @@ const EmployeeCreateForm = (props) => {
                 commendations,
                 annualLeaves,
                 courses,
-                career,
-                major,
+                // career,
+                // major,
                 houseHold
             }
         }))
@@ -349,12 +356,12 @@ const EmployeeCreateForm = (props) => {
         certificates.forEach(x => {
             formData.append("fileCertificate", x.fileUpload);
         })
-        major.forEach(x => {
-            formData.append("fileMajor", x.fileUpload);
-        })
-        career.forEach(x => {
-            formData.append("fileCareer", x.fileUpload);
-        })
+        // major.forEach(x => {
+        //     formData.append("fileMajor", x.fileUpload);
+        // })
+        // career.forEach(x => {
+        //     formData.append("fileCareer", x.fileUpload);
+        // })
         contracts.forEach(x => {
             formData.append("fileContract", x.fileUpload);
         })
@@ -494,7 +501,7 @@ const EmployeeCreateForm = (props) => {
     }
 
     const { translate, employeesManager } = props;
-    const { img, employee, degrees, certificates, contracts, courses, commendations, disciplines, annualLeaves, files, major, career, editMember } = state;
+    const { img, employee, degrees, certificates, contracts, courses, commendations, disciplines, annualLeaves, files, editMember } = state;
 
     return (
         <React.Fragment>

@@ -2286,6 +2286,7 @@ export default {
                 content: "Content",
                 form_code: "Form code",
                 create_date: "Create date",
+                create_month: "Create month",
                 type: "Classify",
                 choose_type: "Choose classify",
                 start_date: "Start date of repair",
@@ -4005,6 +4006,7 @@ export default {
                 },
 
                 statistics: {
+                    unit_not_initial_kpi: "Organizational unit list has not been initialized",
                     detail_participant: "Participant detail",
                     detail_employee_kpi: "Employee KPI detail",
                     email: "Email",

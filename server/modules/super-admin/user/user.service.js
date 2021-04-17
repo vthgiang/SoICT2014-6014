@@ -241,13 +241,16 @@ exports.getAllEmployeeOfUnitByIds = async (portal, query) => {
     employees = await UserRole(connect(DB_CONNECTION, portal)).aggregate(keyQuery)
 
     employees = employees.map(item => {
+        let roleId = item?.user?.map(item => item?.roleId)
+
         if (item?.user?.[0]) {
             item.user[0].idUnit = item?.organizationalUnit?.[0]?._id
+            item.user[0].roleId = roleId
             return item.user[0]
         }
     });
     await User(connect(DB_CONNECTION, portal)).populate(employees, { path: "userId" });
-    await Role(connect(DB_CONNECTION, portal)).populate(employees, { path: 'roleId' });
+    await Role(connect(DB_CONNECTION, portal)).populate(employees, { path: 'roleId', populate: { path: "parents" } });
     countDocument = await UserRole(connect(DB_CONNECTION, portal)).aggregate(keyCountDocument);
     let totalEmployee = countDocument?.[0]?.totalEmployee;
     let totalPage = totalEmployee && perPage ? Math.ceil(totalEmployee / perPage) : 1;

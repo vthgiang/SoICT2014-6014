@@ -14,6 +14,7 @@ import { AssetManagerActions } from '../../asset-information/redux/actions';
 import { AssetTypeActions } from "../../asset-type/redux/actions";
 import { AssetEditForm } from '../../asset-information/components/assetEditForm';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
+import { parse } from 'uuid';
 
 function IncidentManagement(props) {
     const tableId_constructor = "table-incident-manager";
@@ -51,7 +52,7 @@ function IncidentManagement(props) {
     
     useEffect(() => {
         let { managedBy } = state;
-        props.searchAssetTypes({ typeNumber: "", typeName: "", limit: state.limit });
+        props.searchAssetTypes({ typeNumber: "", typeName: "", limit: 0 });
         props.getUser();
         props.getIncidents(state);
         props.getListBuildingAsTree();
@@ -184,7 +185,7 @@ function IncidentManagement(props) {
             limit: parseInt(number),
         });
 
-        props.getIncidents(state);
+        props.getIncidents({...state, limit: parseInt(number)});
     }
 
     // Bắt sự kiện chuyển trang
@@ -317,7 +318,6 @@ function IncidentManagement(props) {
     if (lists && userlist) {
         exportData = convertDataToExportData(lists, userlist);
     }
-
     return (
         <div className={isActive ? isActive : "box"}>
             <div className="box-body qlcv">

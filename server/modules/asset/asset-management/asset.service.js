@@ -536,7 +536,7 @@ exports.createAsset = async (portal, company, data, fileInfo) => {
                 disposalDesc: data[i].disposalDesc,
 
                 // Tài liệu đính kèm
-                files: files,
+                documents: files,
             });
         }
     } else {

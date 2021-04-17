@@ -234,7 +234,7 @@ function ManageLeaveApplication(props) {
     }
 
     const { translate, annualLeave } = props;
-    const { month, status, limit, page, currentRow, currentRowView, importAnnualLeave, tableId } = state;
+    const { month, status, limit, page, currentRow, currentRowView, tableId } = state;
 
     let listAnnualLeaves = [];
     if (annualLeave.isLoading === false) {
@@ -265,7 +265,7 @@ function ManageLeaveApplication(props) {
                         <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('human_resource.annual_leave.add_annual_leave_title')} >{translate('human_resource.annual_leave.add_annual_leave')}</button>
                         <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
                             <li><a style={{ cursor: 'pointer' }} onClick={() => window.$(`#modal-create-annual-leave`).modal('show')}>{translate('human_resource.salary.add_by_hand')}</a></li>
-                            <li><a style={{ cursor: 'pointer' }} onClick={() => setState({ ...state, importAnnualLeave: true }, () => window.$(`#modal_import_file`).modal('show'))}>{translate('human_resource.salary.add_import')}</a></li>
+                            <li><a style={{ cursor: 'pointer' }} onClick={() => window.$(`#modal_import_file`).modal('show')}>{translate('human_resource.salary.add_import')}</a></li>
                         </ul>
                     </div>
                 </div>
@@ -299,8 +299,10 @@ function ManageLeaveApplication(props) {
                     {/* Button tìm kiếm */}
                     <button type="button" className="btn btn-success" title={translate('general.search')} onClick={() => handleSunmitSearch()} >{translate('general.search')}</button>
                 </div>
-                <AnnualLeaveCreateForm />
-                {importAnnualLeave && <AnnualLeaveImportForm />}
+                <AnnualLeaveCreateForm 
+                    typeView="manager"
+                />
+                <AnnualLeaveImportForm />
 
                 <table className="table table-striped table-bordered table-hover" id={tableId}>
                     <thead>

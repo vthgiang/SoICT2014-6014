@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -17,9 +17,9 @@ import './employeeDashBoard.css';
 const DashBoardEmployees = (props) => {
     const {
         translate, employeesManager, annualLeave, discipline, timesheets,
-        childOrganizationalUnit, getAllEmployeeOfUnitByIds, 
-        getAllEmployee, searchAnnualLeaves, 
-        getListPraise, getListDiscipline, 
+        childOrganizationalUnit, getAllEmployeeOfUnitByIds,
+        getAllEmployee, searchAnnualLeaves,
+        getListPraise, getListDiscipline,
         searchSalary, getTimesheets
     } = props;
 
@@ -28,7 +28,7 @@ const DashBoardEmployees = (props) => {
      * @param {*} date : Ngày muốn format
      * @param {*} monthYear : true trả về tháng năm, false trả về ngày tháng năm
      */
-     const formatDate = (date, monthYear = false) => {
+    const formatDate = (date, monthYear = false) => {
         if (date) {
             let d = new Date(date),
                 month = '' + (d.getMonth() + 1),
@@ -46,7 +46,7 @@ const DashBoardEmployees = (props) => {
         }
         return date;
     };
-    
+
     const [state, setState] = useState({
         month: formatDate(Date.now(), true),
         monthShow: formatDate(Date.now(), true),
@@ -84,14 +84,14 @@ const DashBoardEmployees = (props) => {
 
 
 
-    
+
     /**
      * Function bắt sự kiện thay đổi đơn vị
      * @param {*} value : Array id đơn vị
      */
     const handleSelectOrganizationalUnit = (value) => {
         setState(state => ({
-            ...state, 
+            ...state,
             arrayUnitShow: value
         }));
     }
@@ -101,7 +101,7 @@ const DashBoardEmployees = (props) => {
      * @param {*} value : Giá trị tháng
      */
     const handleSelectMonth = (value) => {
-        setState(state => ({...state, month: value}));
+        setState(state => ({ ...state, month: value }));
     };
 
     /** Bắt sự kiện phân tích dữ liệu */
@@ -113,32 +113,32 @@ const DashBoardEmployees = (props) => {
 
         if (arrayUnitShow?.length > 0) {
             setState(state => ({
-                ...state, 
-                organizationalUnits: arrayUnitShow, 
+                ...state,
+                organizationalUnits: arrayUnitShow,
                 monthShow: month
             }));
-    
+
             if (arrayUnitShow && arrayUnitShow.length === childOrganizationalUnit.length) {
                 arrayUnitShow = null;
             };
             const { getAllEmployeeOfUnitByIds, getAllEmployee, searchAnnualLeaves, getListPraise, getListDiscipline, searchSalary, getTimesheets } = props;
-    
+
             getAllEmployeeOfUnitByIds(arrayUnitShow && arrayUnitShow.length !== 0 ? arrayUnitShow : childOrganizationalUnit.map(x => x.id));
-    
+
             /* Lấy danh sách nhân viên  */
             getAllEmployee({ organizationalUnits: arrayUnitShow, status: ["active", 'maternity_leave', 'unpaid_leave', 'probationary', 'sick_leave'] });
-    
+
             /* Lấy thông tin nghi phép */
             searchAnnualLeaves({ organizationalUnits: arrayUnitShow, month: newMonth });
-    
+
             /* Lấy dánh sách khen thưởng, kỷ luật */
             getListPraise({ organizationalUnits: arrayUnitShow, month: newMonth });
             getListDiscipline({ organizationalUnits: arrayUnitShow, month: newMonth });
-    
+
             /* Lấy dữ liệu lương nhân viên*/
             searchSalary({ callApiDashboard: true, organizationalUnits: arrayUnitShow, month: newMonth });
             searchSalary({ callApiDashboard: true, month: newMonth });
-    
+
             /* Lấy dữ liệu nghỉ phép, tăng ca của nhân viên */
             getTimesheets({
                 organizationalUnits: arrayUnitShow, month: newMonth, page: 0,
@@ -168,117 +168,117 @@ const DashBoardEmployees = (props) => {
     });
 
     // Tab lương thưởng
-    const tabSalary = useMemo(() => <TabSalary childOrganizationalUnit={childOrganizationalUnit} organizationalUnits={organizationalUnits} monthShow={monthShow}/>, [organizationalUnits, monthShow]);
+    const tabSalary = useMemo(() => <TabSalary childOrganizationalUnit={childOrganizationalUnit} organizationalUnits={organizationalUnits} monthShow={monthShow} />, [organizationalUnits, monthShow]);
 
     return (
-            <React.Fragment>
-                <div className="qlcv">
-                    <div className="form-inline" style={{ marginBottom: 10 }}>
-                        <div className="form-group">
-                            <label style={{ width: "auto" }}>{translate('kpi.organizational_unit.dashboard.organizational_unit')}</label>
-                            <SelectMulti id="multiSelectOrganizationalUnitInDashboardUnit"
-                                items={childOrganizationalUnit.map(item => { return { value: item.id, text: item.name } })}
-                                options={{ nonSelectedText: translate('page.non_unit'), allSelectedText: translate('page.all_unit') }}
-                                onChange={handleSelectOrganizationalUnit}
-                                value={arrayUnitShow ? arrayUnitShow : []}
-                            >
-                            </SelectMulti>
-                        </div>
-
-                        <div className="form-group">
-                            <label style={{ width: "auto" }}>{translate('kpi.organizational_unit.dashboard.month')}</label>
-                            <DatePicker
-                                id="monthInDashboardUnit"
-                                dateFormat="month-year"
-                                value={month}
-                                onChange={handleSelectMonth}
-                                deleteValue={false}
-                            />
-                        </div>
-                        <button type="button" className="btn btn-success" onClick={handleUpdateData}>{translate('kpi.evaluation.dashboard.analyze')}</button>
+        <React.Fragment>
+            <div className="qlcv">
+                <div className="form-inline" style={{ marginBottom: 10 }}>
+                    <div className="form-group">
+                        <label style={{ width: "auto" }}>{translate('kpi.organizational_unit.dashboard.organizational_unit')}</label>
+                        <SelectMulti id="multiSelectOrganizationalUnitInDashboardUnit"
+                            items={childOrganizationalUnit.map(item => { return { value: item.id, text: item.name } })}
+                            options={{ nonSelectedText: translate('page.non_unit'), allSelectedText: translate('page.all_unit') }}
+                            onChange={handleSelectOrganizationalUnit}
+                            value={arrayUnitShow ? arrayUnitShow : []}
+                        >
+                        </SelectMulti>
                     </div>
-                    <div className="row">
-                        <div className="col-md-3 col-sm-6 col-xs-6">
-                            <div className="info-box with-border">
-                                <span className="info-box-icon bg-aqua"><i className="fa fa-users"></i></span>
-                                <div className="info-box-content">
-                                    <span className="info-box-text">Số nhân viên</span>
-                                    <span className="info-box-number" style={{ fontSize: '20px' }}>
-                                        {listAllEmployees.length}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
 
-                        <div className="col-lg-3 col-md-3 col-sm-6 col-xs-6">
-                            <div className="info-box with-border">
-                                <span className="info-box-icon bg-yellow"><i className="fa fa-clock-o" aria-hidden="true"></i></span>
-                                <div className="info-box-content">
-                                    <span className="info-box-text">Số giờ nghỉ phép</span>
-                                    <span className="info-box-number" style={{ fontSize: '20px' }}>
-                                        {totalHourAnnualLeave}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="col-lg-3 col-md-3 col-sm-6 col-xs-6">
-                            <div className="info-box with-border">
-                                <span className="info-box-icon bg-green"><i className="fa fa-gift"></i></span>
-                                <div className="info-box-content">
-                                    <span className="info-box-text">Số khen thưởng</span>
-                                    <span className="info-box-number" style={{ fontSize: '20px' }}>
-                                        {discipline.totalListCommendation ? discipline.totalListCommendation.length : 0}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-lg-3 col-md-3 col-sm-6 col-xs-6">
-                            <div className="info-box with-border">
-                                <span className="info-box-icon bg-red"><i className="fa fa-balance-scale"></i></span>
-                                <div className="info-box-content">
-                                    <span className="info-box-text">Số kỷ luật</span>
-                                    <span className="info-box-number" style={{ fontSize: '20px' }}>
-                                        {discipline.totalListDiscipline ? discipline.totalListDiscipline.length : 0}
-                                    </span>
-                                </div>
+                    <div className="form-group">
+                        <label style={{ width: "auto" }}>{translate('kpi.organizational_unit.dashboard.month')}</label>
+                        <DatePicker
+                            id="monthInDashboardUnit"
+                            dateFormat="month-year"
+                            value={month}
+                            onChange={handleSelectMonth}
+                            deleteValue={false}
+                        />
+                    </div>
+                    <button type="button" className="btn btn-success" onClick={handleUpdateData}>{translate('kpi.evaluation.dashboard.analyze')}</button>
+                </div>
+                <div className="row">
+                    <div className="col-md-3 col-sm-6 col-xs-6">
+                        <div className="info-box with-border">
+                            <span className="info-box-icon bg-aqua"><i className="fa fa-users"></i></span>
+                            <div className="info-box-content">
+                                <span className="info-box-text">Số nhân viên</span>
+                                <span className="info-box-number" style={{ fontSize: '20px' }}>
+                                    {listAllEmployees.length}
+                                </span>
                             </div>
                         </div>
                     </div>
-                    <div className="nav-tabs-custom">
-                        <ul className="nav nav-tabs">
-                            <li className="active"><a href="#human-resourse" data-toggle="tab" onClick={() => handleNavTabs(true)}>Tổng quan nhân sự</a></li>
-                            <li><a href="#annualLeave" data-toggle="tab" onClick={() => handleNavTabs()}>Nghỉ phép-Tăng ca</a></li>
-                            <li><a href="#salary" data-toggle="tab" onClick={() => handleNavTabs(true)}>Lương thưởng nhân viên</a></li>
-                            <li><a href="#integrated-statistics" data-toggle="tab">Thống kê tổng hợp</a></li>
-                        </ul>
-                        <div className="tab-content ">
-                            {/* Tab tổng quan nhân sự*/}
-                            <div className="tab-pane active" id="human-resourse">
-                                <TabHumanResource childOrganizationalUnit={childOrganizationalUnit} defaultUnit={true} organizationalUnits={organizationalUnits} monthShow={monthShow} />
-                            </div>
 
-                            {/* Tab nghỉ phép tăng ca*/}
-                            <div className="tab-pane" id="annualLeave">
-                                <LazyLoadComponent>
-                                    <TabAnualLeave childOrganizationalUnit={childOrganizationalUnit} defaultUnit={true} />
-                                </LazyLoadComponent>
+                    <div className="col-lg-3 col-md-3 col-sm-6 col-xs-6">
+                        <div className="info-box with-border">
+                            <span className="info-box-icon bg-yellow"><i className="fa fa-clock-o" aria-hidden="true"></i></span>
+                            <div className="info-box-content">
+                                <span className="info-box-text">Số giờ nghỉ phép</span>
+                                <span className="info-box-number" style={{ fontSize: '20px' }}>
+                                    {totalHourAnnualLeave}
+                                </span>
                             </div>
+                        </div>
+                    </div>
 
-                            {/* Tab lương thưởng*/}
-                            <div className="tab-pane" id="salary">
-                                {/* <TabSalary childOrganizationalUnit={childOrganizationalUnit} organizationalUnits={organizationalUnits} monthShow={monthShow} /> */}
-                                {tabSalary}
+                    <div className="col-lg-3 col-md-3 col-sm-6 col-xs-6">
+                        <div className="info-box with-border">
+                            <span className="info-box-icon bg-green"><i className="fa fa-gift"></i></span>
+                            <div className="info-box-content">
+                                <span className="info-box-text">Số khen thưởng</span>
+                                <span className="info-box-number" style={{ fontSize: '20px' }}>
+                                    {discipline.totalListCommendation ? discipline.totalListCommendation.length : 0}
+                                </span>
                             </div>
-
-                            {/* Tab thống kê tổng hợp*/}
-                            <div className="tab-pane" id="integrated-statistics">
-                                <TabIntegratedStatistics listAllEmployees={listAllEmployees} month={monthShow} />
+                        </div>
+                    </div>
+                    <div className="col-lg-3 col-md-3 col-sm-6 col-xs-6">
+                        <div className="info-box with-border">
+                            <span className="info-box-icon bg-red"><i className="fa fa-balance-scale"></i></span>
+                            <div className="info-box-content">
+                                <span className="info-box-text">Số kỷ luật</span>
+                                <span className="info-box-number" style={{ fontSize: '20px' }}>
+                                    {discipline.totalListDiscipline ? discipline.totalListDiscipline.length : 0}
+                                </span>
                             </div>
                         </div>
                     </div>
                 </div>
-            </React.Fragment> );
+                <div className="nav-tabs-custom">
+                    <ul className="nav nav-tabs">
+                        <li className="active"><a href="#human-resourse" data-toggle="tab" onClick={() => handleNavTabs(true)}>Tổng quan nhân sự</a></li>
+                        <li><a href="#annualLeave" data-toggle="tab" onClick={() => handleNavTabs()}>Nghỉ phép-Tăng ca</a></li>
+                        <li><a href="#salary" data-toggle="tab" onClick={() => handleNavTabs(true)}>Lương thưởng nhân viên</a></li>
+                        <li><a href="#integrated-statistics" data-toggle="tab">Thống kê tổng hợp</a></li>
+                    </ul>
+                    <div className="tab-content ">
+                        {/* Tab tổng quan nhân sự*/}
+                        <div className="tab-pane active" id="human-resourse">
+                            <TabHumanResource childOrganizationalUnit={childOrganizationalUnit} defaultUnit={true} organizationalUnits={organizationalUnits} monthShow={monthShow} />
+                        </div>
+
+                        {/* Tab nghỉ phép tăng ca*/}
+                        <div className="tab-pane" id="annualLeave">
+                            <LazyLoadComponent>
+                                <TabAnualLeave childOrganizationalUnit={childOrganizationalUnit} defaultUnit={true} />
+                            </LazyLoadComponent>
+                        </div>
+
+                        {/* Tab lương thưởng*/}
+                        <div className="tab-pane" id="salary">
+                            {/* <TabSalary childOrganizationalUnit={childOrganizationalUnit} organizationalUnits={organizationalUnits} monthShow={monthShow} /> */}
+                            {tabSalary}
+                        </div>
+
+                        {/* Tab thống kê tổng hợp*/}
+                        <div className="tab-pane" id="integrated-statistics">
+                            <TabIntegratedStatistics listAllEmployees={listAllEmployees} month={monthShow} />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </React.Fragment>);
 }
 
 function mapState(state) {

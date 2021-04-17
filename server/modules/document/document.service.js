@@ -89,24 +89,7 @@ exports.getDocuments = async (
         if (query.name) {
             option.name = new RegExp(query.name, "i");
         }
-        //   console.log('aaaaa', option)
-        // let list = await Document(connect(DB_CONNECTION, portal)).paginate(option, {
-        //     page,
-        //     limit,
-        //     populate: [
-        //         { path: "category", select: "name id" },
-        //         { path: "domains", select: "name id" },
-        //         { path: "archives", select: "name id path" },
-        //         { path: "views.viewer", select: "name id" },
-        //         { path: "downloads.downloader", select: "name id" },
-        //         {
-        //             path: "archivedRecordPlaceOrganizationalUnit",
-        //             select: "name id",
-        //         },
-        //         { path: "logs.creator", select: "name id" },
-        //         { path: "relationshipDocuments", select: "name id" },
-        //     ],
-        // });
+       
         let allDocs = await Document(connect(DB_CONNECTION, portal)).find(option).populate([
             { path: "category", select: "name id" },
             { path: "domains", select: "name id" },
@@ -151,7 +134,7 @@ exports.getDocuments = async (
             prevPage: prevPage,
             nextPage: parseInt(nextPage),
         };
-        // console.log('listt', res)
+
         return res;
     }
 };
@@ -212,13 +195,12 @@ exports.increaseNumberView = async (id, viewer, portal) => {
  * Tạo một tài liệu văn bản mới
  */
 exports.createDocument = async (portal, data, company) => {
-    console.log('dtaaaaaaaa', data);
     let numberFile = 0,
         numberFileScan = 0;
     const existedName = await Document(connect(DB_CONNECTION, portal)).findOne({
         name: data.name,
     });
-    console.log('exxx', existedName)
+
     if (existedName) throw ["document_exist"];
     const existedNumber = await Document(
         connect(DB_CONNECTION, portal)
@@ -278,7 +260,7 @@ exports.createDocument = async (portal, data, company) => {
             }
         }
     }
-    // console.log('ser', versions)
+
     newDoc.versions = versions;
 
     const doc = await Document(connect(DB_CONNECTION, portal)).create(newDoc);
@@ -413,7 +395,6 @@ exports.editDocument = async (id, data, query = undefined, portal) => {
             data.archivedRecordPlaceOrganizationalUnit &&
             data.archivedRecordPlaceOrganizationalUnit !== "[object Object]"
         ) {
-            console.log('type:', typeof (data.archivedRecordPlaceOrganizationalUnit))
             doc.archivedRecordPlaceOrganizationalUnit =
                 data.archivedRecordPlaceOrganizationalUnit;
         }
@@ -573,7 +554,6 @@ exports.importDocument = async (portal, data, company) => {
         }
 
         // file role
-        console.log('rrroddddddddd', data[i].roles)
         if (data[i].roles && data[i].roles.length && data[i].roles[0]) {
             let roles = [];
             for (let j in data[i].roles) {
@@ -583,7 +563,6 @@ exports.importDocument = async (portal, data, company) => {
                         name: data[i].roles[j],
                     }
                 );
-                console.log('rrrrrr', role);
                 if (role) {
                     roles.push(role._id);
                 }
@@ -720,7 +699,6 @@ exports.getDocumentDomains = async (portal, company) => {
 };
 
 exports.createDocumentDomain = async (portal, data, company) => {
-    console.log("data", data);
     const existed = await DocumentDomain(
         connect(DB_CONNECTION, portal)
     ).findOne({ name: data.name });
@@ -795,25 +773,7 @@ exports.getDocumentsThatRoleCanView = async (portal, query, id, company) => {
         if (query.name) {
             option.name = new RegExp(query.name, "i");
         }
-        console.log('oooooo', option);
 
-        // let list = await Document(connect(DB_CONNECTION, portal)).paginate(option, {
-        //     page,
-        //     limit,
-        //     populate: [
-        //         { path: "category", select: "name id" },
-        //         { path: "domains", select: "name id" },
-        //         { path: "archives", select: "name id path" },
-        //         { path: "views.viewer", select: "name id" },
-        //         { path: "downloads.downloader", select: "name id" },
-        //         {
-        //             path: "archivedRecordPlaceOrganizationalUnit",
-        //             select: "name id",
-        //         },
-        //         { path: "logs.creator", select: "name id" },
-        //         { path: "relationshipDocuments", select: "name id" },
-        //     ],
-        // });
         let allDocs = await Document(connect(DB_CONNECTION, portal)).find(option).populate([
             { path: "category", select: "name id" },
             { path: "domains", select: "name id" },
@@ -826,8 +786,8 @@ exports.getDocumentsThatRoleCanView = async (portal, query, id, company) => {
             },
             { path: "logs.creator", select: "name id" },
             { path: "relationshipDocuments", select: "name id" }]);
-        //console.log('aaaa', allDocs);
-        page = parseInt(page);
+
+            page = parseInt(page);
         let totalDocs = allDocs.length;
         let totalPage = Math.ceil(totalDocs / limit);
         let pagingCounter = (page - 1) * limit + 1;
@@ -915,7 +875,6 @@ exports.getDocumentsUserStatistical = async (userId, query, portal) => {
         condition.name = new RegExp(query.name, "i");
     }
     let { option } = query;
-    console.log('connn', condition);
     switch (option) {
         case "downloaded": //những tài liệu văn bản mà người dùng đã tải xuống
             condition = { ...condition, "downloads.downloader": userId };
@@ -1011,7 +970,6 @@ exports.getDocumentsUserStatistical = async (userId, query, portal) => {
                 },
                 { path: "logs.creator", select: "name id" },
                 { path: "relationshipDocuments", select: "name id" }]);
-            //console.log('aaaa', allDocs);
             page = parseInt(page);
             let totalDocsLast = allDocsLast.length;
             let totalPageLast = Math.ceil(totalDocsLast / limit);
@@ -1044,7 +1002,6 @@ exports.getDocumentsUserStatistical = async (userId, query, portal) => {
                 prevPage: prevPageLast,
                 nextPage: parseInt(nextPageLast),
             };
-            //  console.log('listt', res)
             return listLast;
         default:
             return null;

@@ -1,9 +1,12 @@
 const mongoose = require('mongoose');
+const { connect } = require(`../../../../helpers/dbHelper`);
 const Models = require('../../../../models');
 const fs = require('fs');
-const { EmployeeKpi, EmployeeKpiSet, OrganizationalUnit, OrganizationalUnitKpiSet, User, taskCommentModel } = Models;
-const { connect } = require(`../../../../helpers/dbHelper`);
-const NotificationServices = require(`../../../notification/notification.service`);
+
+const { EmployeeKpi, EmployeeKpiSet, OrganizationalUnit, OrganizationalUnitKpiSet, UserRole } = Models;
+
+const NotificationServices = require(`../../../notification/notification.service`)
+const NewsFeedService = require('../../../news-feed/newsFeed.service')
 // File này làm nhiệm vụ thao tác với cơ sở dữ liệu của module quản lý kpi cá nhân
 
 /*Lấy tập KPI cá nhân hiện tại theo người dùng */
@@ -653,4 +656,38 @@ exports.deleteFileChildComment = async (portal, params) => {
         ]);
 
     return task.comments;
+}
+
+/** Thêm newsfeed cho kpi cá nhân */
+exports.createNewsFeedForEmployeeKpiSet = async (portal, data) => {
+    const { creator, title, description, employeeKpiSet, organizationalUnit } = data
+
+    let managers = await UserRole(connect(DB_CONNECTION, portal))
+        .find({ roleId: { $in: [...organizationalUnit?.managers] }})
+    
+    // Thêm trưởng phòng các đơn vị
+    let relatedUsers = []
+    relatedUsers = managers?.map(item => item?.userId?.toString())
+
+    // Thêm người phê duyệt
+    if (!relatedUsers?.includes(employeeKpiSet?.approver?._id?.toString())) {
+        relatedUsers.push(employeeKpiSet?.approver?._id)
+    }
+    // Thêm người tạo kpi
+    if (!relatedUsers?.includes(employeeKpiSet?.creator?._id?.toString())) {
+        relatedUsers.push(employeeKpiSet?.creator?._id)
+    }
+
+    let newsFeed = await NewsFeedService.createNewsFeed(portal, {
+        title: title,
+        description: description,
+        creator: creator,
+        associatedDataObject: { 
+            dataType: 2,
+            value: employeeKpiSet?._id
+        },
+        relatedUsers: relatedUsers
+    })
+
+    return newsFeed
 }
