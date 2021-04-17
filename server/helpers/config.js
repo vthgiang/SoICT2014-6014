@@ -1437,6 +1437,15 @@ const LINKS = [{
         ROOT_ROLES.ADMIN.name
     ]
 },
+{
+    url: "/manage-transport-department",
+    description: "Phân vai trò đơn vị vận chuyển",
+    category: LINK_CATEGORY.TRANSPORT.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name
+    ]
+},
 // Quan li du an
 {
     url: '/projects-management',

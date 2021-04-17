@@ -966,6 +966,11 @@ exports.links = [
         url: '/manage-transport-route',
         apis: ['@all']
     },
+    {
+        url: '/manage-transport-department',
+        apis: ['@all']
+    },
+
 
     {
         url: '/projects-management',

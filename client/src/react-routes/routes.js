@@ -161,6 +161,7 @@ import TransportSchedule from '../modules/production/transport/transport-schedul
 import TransportVehicle from '../modules/production/transport/transport-vehicle/components';
 import TransportHuman from '../modules/production/transport/transport-human/components';
 import TransportRoute from '../modules/production/transport/transport-route/components';
+import TransportDepartment from '../modules/production/transport/transport-department/components'
 
 import { Project } from '../modules/project/component/index';
 import { UserGuide } from '../modules/user-guide/components';
@@ -2508,7 +2509,25 @@ class Routes extends Component {
                         layout={Layout}
                         component={TransportRoute} // component ứng với trang, tạo ở bước 1
                     />                    
-
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"manage-transport-department"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-transport-department", // url trang
+                                name: "manage_transport_department", // tên trang
+                                icon: " fa fa-address-card ",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-transport-department"}
+                        path={"/manage-transport-department"}
+                        pageName={"manage_transport_department"}
+                        layout={Layout}
+                        component={TransportDepartment} // component ứng với trang, tạo ở bước 1
+                    />  
 
                     <PrivateRoute
                         isLoading={false}

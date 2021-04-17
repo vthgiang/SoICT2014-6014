@@ -255,6 +255,7 @@ export default {
             manage_transport_vehicle: "Manage transport vehical",
             manage_transport_human: "Manage transport human",
             manage_transport_route: "Manage transport route",
+            manage_transport_department: "Manage transport department",
 
             user_guide: "User guide",
             user_guide_detail: "User guide detail",
