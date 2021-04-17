@@ -4326,6 +4326,7 @@ export default {
                 },
 
                 statistics: {
+                    unit_not_initial_kpi: "Danh sách đơn vị chưa khởi tạo KPI",
                     detail_participant: "Chi tiết người tham gia",
                     detail_employee_kpi: "Chi tiết KPI nhân viên",
                     email: "Email",

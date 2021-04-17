@@ -4006,6 +4006,7 @@ export default {
                 },
 
                 statistics: {
+                    unit_not_initial_kpi: "Organizational unit list has not been initialized",
                     detail_participant: "Participant detail",
                     detail_employee_kpi: "Employee KPI detail",
                     email: "Email",
