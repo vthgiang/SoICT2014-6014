@@ -4,8 +4,8 @@ import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
 
 import { DataTableSetting, ExportExcel, DatePicker, SelectBox, PaginateBar, SelectMulti } from '../../../../../common-components';
-import getEmployeeSelectBoxItems from '../../../../task/organizationalUnitHelper';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
+import { ROOT_ROLE } from '../../../../../helpers/constants';
 
 import { UserActions } from "../../../../super-admin/user/redux/actions";
 import { managerActions } from '../../../organizational-unit/management/redux/actions';
@@ -38,7 +38,7 @@ function EmployeeKpiManagement(props) {
         endMonth = month;
     }
 
-    var tableId = "table-employee-kpi-management";
+    const tableId = "table-employee-kpi-management";
     const defaultConfig = { limit: 20 }
     const limit = getTableConfiguration(tableId, defaultConfig).limit;
     const stateFromEmployeeKpiEvaluationDashboard = JSON.parse(localStorage.getItem("stateFromEmployeeKpiEvaluationDashboard"));
@@ -68,7 +68,7 @@ function EmployeeKpiManagement(props) {
         dataStatus: DATA_STATUS.NOT_AVAILABLE,
 
         organizationalUnitSelectBox: null,
-        organizationalUnit: []
+        organizationalUnit: stateFromEmployeeKpiEvaluationDashboard?.organizationalUnit ?? []
     });
 
     const { user, kpimembers, dashboardEvaluationEmployeeKpiSet } = props;
@@ -78,7 +78,6 @@ function EmployeeKpiManagement(props) {
         endDateDefault, organizationalUnit, 
         approver, infosearch, organizationalUnitSelectBox
     } = state;
-    let userdepartments, kpimember, unitMembers, exportData, approverSelectBox = [];
 
     useEffect(() => {
         props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
@@ -121,41 +120,27 @@ function EmployeeKpiManagement(props) {
             }
         }
 
-        setState({
-            ...state,
-            organizationalUnitSelectBox: childrenOrganizationalUnit,
-            organizationalUnit: stateFromEmployeeKpiEvaluationDashboard?.organizationalUnit ?? [childrenOrganizationalUnit?.[0]?.id],
-            approver: '',
-            userId: ''
-        })
-
-        if (stateFromEmployeeKpiEvaluationDashboard?.organizationalUnit || childrenOrganizationalUnit?.[0]?.id) {
+        if (state?.organizationalUnit?.length > 0 || childrenOrganizationalUnit?.[0]?.id) {
+            let unit = state?.organizationalUnit?.length > 0 ? state?.organizationalUnit : [childrenOrganizationalUnit?.[0]?.id]
+            
+            setState({
+                ...state,
+                organizationalUnitSelectBox: childrenOrganizationalUnit,
+                organizationalUnit: unit,
+                approver: '',
+                userId: ''
+            })
             props.getEmployeeKPISets({
                 ...infosearch,
-                organizationalUnit: stateFromEmployeeKpiEvaluationDashboard?.organizationalUnit ?? [childrenOrganizationalUnit?.[0]?.id]
+                organizationalUnit: unit
             });
-            props.getAllUserOfDepartment(stateFromEmployeeKpiEvaluationDashboard?.organizationalUnit ?? [childrenOrganizationalUnit?.[0]?.id]);
+            props.getAllEmployeeOfUnitByIds({
+                organizationalUnitIds: unit,
+                perPage: 10000,
+                page: 1
+            });
         }
     }, [dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit])
-
-    function formatDateBack(date) {
-        let d = new Date(date), month, day, year;
-        if (d.getMonth() === 0) {
-            month = '' + 12;
-            day = '' + d.getDate();
-            year = d.getFullYear() - 1;
-        } else {
-            month = '' + (d.getMonth() + 1);
-            day = '' + d.getDate();
-            year = d.getFullYear();
-        }
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
-
-        return [month, year].join('-');
-    }
 
     function formatDate(date) {
         let d = new Date(date),
@@ -203,7 +188,11 @@ function EmployeeKpiManagement(props) {
             approver: '',
             userId: ''
         })
-        props.getAllUserOfDepartment(value);
+        props.getAllEmployeeOfUnitByIds({
+            organizationalUnitIds: value,
+            perPage: 10000,
+            page: 1
+        });
     };
 
     const handleApproverChange = (value) => {
@@ -373,10 +362,11 @@ function EmployeeKpiManagement(props) {
     };
 
     const pushDataIntoTable = (dataOfOneSheet) => {
-        let tables = [], table = [], names = [], kpiSetApproverPoint = [], kpiSetAutomaticPoint = [], kpiSetEmployeePoint = [], kpiNum = [], numTask = 0, row;
+        let tables = [], table = [], names = [], organizationalUnits = [], kpiSetApproverPoint = [], kpiSetAutomaticPoint = [], kpiSetEmployeePoint = [], kpiNum = [], numTask = 0, row;
 
         for (let i = 0; i < dataOfOneSheet.data.length; i++) {
             names.push(dataOfOneSheet.data[i].name);
+            organizationalUnits.push(dataOfOneSheet.data[i].organizationalUnit);
             kpiSetApproverPoint.push(dataOfOneSheet.data[i].kpiSetApproverPoint);
             kpiSetAutomaticPoint.push(dataOfOneSheet.data[i].kpiSetAutomaticPoint);
             kpiSetEmployeePoint.push(dataOfOneSheet.data[i].kpiSetEmployeePoint);
@@ -482,6 +472,7 @@ function EmployeeKpiManagement(props) {
         return {
             tables: tables,
             names: names,
+            organizationalUnits: organizationalUnits,
             kpiSetApproverPoint,
             kpiSetAutomaticPoint,
             kpiSetEmployeePoint,
@@ -491,14 +482,21 @@ function EmployeeKpiManagement(props) {
     }
 
     const convertDataToExportTotalData = (kpimembers, managerKpiUnit) => {
-        const { user, translate } = props;
-        let listTasks, listKpis, data = {}, convertedData = [], listKpiUnit = [], unitName;
+        let listTasks, listKpis, data = {}, convertedData = [], listKpiUnit = [], unitName = "";
 
-        if (user.userdepartments) {
-            unitName = user.userdepartments.department;
+        if (organizationalUnit?.length > 0 && organizationalUnitSelectBox?.length > 0) {
+            if (organizationalUnit?.length > 1) {
+                unitName = organizationalUnit?.length + " đơn vị"
+            } else {
+                let unit = organizationalUnitSelectBox.filter(item => organizationalUnit.includes(item?.id))
+
+                unit.map(item => {
+                    unitName = item?.name
+                })
+            }
         }
-        if (kpimembers.tasksList) {
 
+        if (kpimembers.tasksList) {
             listTasks = kpimembers.tasksList;
             listKpis = kpimembers.kpimembers;
         }
@@ -578,8 +576,10 @@ function EmployeeKpiManagement(props) {
                     })
                     return oneKpiTasks;
                 })
+
                 let oneSet = {
-                    name: listKpis[i].creator.name,
+                    organizationalUnit: listKpis?.[i]?.organizationalUnit?.name,
+                    name: listKpis?.[i]?.creator?.name,
                     oneKpiSetTasks: oneKpiSetTasks,
                     kpis: kpis,
                     kpiSetAutomaticPoint: kpiSetAutomaticPoint,
@@ -627,6 +627,7 @@ function EmployeeKpiManagement(props) {
                     sheetTitle: "Báo cáo tổng hợp " + unitName + " tháng " + convertedData[i].time,
                     tables: tablesData.tables,
                     names: tablesData.names,
+                    organizationalUnits: tablesData.organizationalUnits,
                     kpiSetEmployeePoint: tablesData.kpiSetEmployeePoint,
                     kpiSetAutomaticPoint: tablesData.kpiSetAutomaticPoint,
                     kpiSetApproverPoint: tablesData.kpiSetApproverPoint,
@@ -656,7 +657,7 @@ function EmployeeKpiManagement(props) {
                                         ]
                                     } : "",
                                     {
-                                        title: "Báo cáo " + (item?.names?.[index] ? item.names[index] : "") + " " + item?.sheetName,
+                                        title: "Báo cáo " + (item?.names?.[index] ? item.names[index] : "") + " của " + (item?.organizationalUnits?.[index] ? item.organizationalUnits[index] : "") + " " + item?.sheetName,
                                         value: [
                                             "Số KPI: " + item?.kpiNum?.[index],
                                             "Điểm KPI tự động: " + item?.kpiSetAutomaticPoint?.[index],
@@ -721,23 +722,38 @@ function EmployeeKpiManagement(props) {
     }
 
     /** Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
-    const convertDataToExportData = (data, unitName) => {
-        let fileName = "Bảng theo dõi KPI nhân viên " + (unitName ? unitName : "");
-        if (data && data.length !== 0) {
-            data = data.map((x, index) => {
+    const convertDataToExportData = (data) => {
+        let unitName, fileName;
 
-                let fullName = x.creator.name;
-                let email = x.creator.email;
-                let automaticPoint = (x.automaticPoint === null) ? "Chưa đánh giá" : parseInt(x.automaticPoint);
-                let employeePoint = (x.employeePoint === null) ? "Chưa đánh giá" : parseInt(x.employeePoint);
-                let approverPoint = (x.approvedPoint === null) ? "Chưa đánh giá" : parseInt(x.approvedPoint);
-                let time = new Date(x.date)
-                let status = checkStatusKPI(x.status);
-                let numberTarget = parseInt(x.kpis.length);
+        if (organizationalUnit?.length > 0 && organizationalUnitSelectBox?.length > 0) {
+            if (organizationalUnit?.length > 1) {
+                unitName = organizationalUnit?.length + " đơn vị"
+            } else {
+                let unit = organizationalUnitSelectBox.filter(item => organizationalUnit.includes(item?.id))
+
+                unit.map(item => {
+                    unitName = item?.name
+                })
+            }
+        }
+        fileName = "Bảng theo dõi KPI nhân viên " + (unitName ? unitName : "");
+
+        if (data?.length > 0) {
+            data = data.map((x, index) => {
+                let organizationalUnit = x?.organizationalUnit?.name;
+                let fullName = x?.creator?.name;
+                let email = x?.creator?.email;
+                let automaticPoint = (x?.automaticPoint === null) ? "Chưa đánh giá" : parseInt(x?.automaticPoint);
+                let employeePoint = (x?.employeePoint === null) ? "Chưa đánh giá" : parseInt(x?.employeePoint);
+                let approverPoint = (x?.approvedPoint === null) ? "Chưa đánh giá" : parseInt(x?.approvedPoint);
+                let time = new Date(x?.date)
+                let status = checkStatusKPI(x?.status);
+                let numberTarget = parseInt(x?.kpis?.length);
 
                 return {
                     STT: index + 1,
                     fullName: fullName,
+                    organizationalUnit: organizationalUnit,
                     email: email,
                     automaticPoint: automaticPoint,
                     status: status,
@@ -761,6 +777,7 @@ function EmployeeKpiManagement(props) {
                                 { key: "STT", value: "STT" },
                                 { key: "time", value: "Thời gian" },
                                 { key: "fullName", value: "Họ và tên" },
+                                { key: "organizationalUnit", value: "Đơn vị" },
                                 { key: "email", value: "Email nhân viên" },
                                 { key: "numberTarget", value: "Số lượng mục tiêu" },
                                 { key: "status", value: "Trạng thái mục tiêu" },
@@ -778,41 +795,51 @@ function EmployeeKpiManagement(props) {
         return exportData;
     }
 
-    if (kpimembers.kpimembers) {
-        kpimember = kpimembers.kpimembers;
-    }
-
-    if (user) {
-        userdepartments = user.userdepartments;
-        if (userdepartments && !Array.isArray(userdepartments)) {
-            userdepartments = [userdepartments];
-        }
-    }
+    let userdepartments, kpimember, unitMembers, exportData, approverSelectBox = [];
 
     // Khởi tạo select box chọn nhân viên
-    if (userdepartments) {
-        unitMembers = getEmployeeSelectBoxItems(userdepartments);
-        unitMembers = [{ text: translate('kpi.evaluation.employee_evaluation.choose_employee'), value: 0 }, ...unitMembers[0].value];
+    if (user?.employees?.length > 0) {
+        unitMembers = user.employees.map(item => { 
+            return {
+                text: item?.userId?.name, 
+                value: item?.userId?._id
+            }
+        })
+        unitMembers.unshift({ text: translate('kpi.evaluation.employee_evaluation.choose_employee'), value: 0 })
     }
 
     // Khởi tạo select box chọn người phê duyệt
-    if (userdepartments) {
-        let managers = userdepartments[0] && userdepartments[0].managers;
-        if (managers) {
-            managers = Object.values(managers);
-            if (managers && managers.length !== 0) {
-                managers = managers[0] && managers[0].members;
+    if (user?.employees?.length > 0) {
+        approverSelectBox = user.employees.filter(employee => { 
+            let checkManager = false
 
-                if (managers && managers.length !== 0) {
-                    approverSelectBox = managers.map(item => { return { text: item.name, value: item.id } })
-                }
+            if (employee?.roleId?.length > 0) {
+                employee.roleId.map(role => {
+                    if (role?.parents?.length > 0) {
+                        role.parents.map(parent => {
+                            if (parent?.name === ROOT_ROLE.MANAGER) {
+                                checkManager = true
+                            }
+                        })
+                    }
+                })
             }
-        }
-        approverSelectBox = [{ text: translate('manage_warehouse.bill_management.choose_approver'), value: 0 }, ...approverSelectBox];
+
+            return checkManager
+        }).map(employee => {
+            return {
+                text: employee?.userId?.name, 
+                value: employee?.userId?._id
+            }
+        });
+        approverSelectBox.unshift({ text: translate('manage_warehouse.bill_management.choose_approver'), value: 0 });
     }
 
-    if (kpimember && userdepartments) {
-        exportData = convertDataToExportData(kpimember, userdepartments.department);
+    if (kpimembers.kpimembers) {
+        kpimember = kpimembers.kpimembers;
+    }
+    if (kpimember) {
+        exportData = convertDataToExportData(kpimember);
     }
     
     return (
@@ -1007,7 +1034,7 @@ function mapState(state) {
 }
 
 const actionCreators = {
-    getAllUserOfDepartment: UserActions.getAllUserOfDepartment,
+    getAllEmployeeOfUnitByIds: UserActions.getAllEmployeeOfUnitByIds,
     getEmployeeKPISets: kpiMemberActions.getEmployeeKPISets,
     getTaskByListKpis: kpiMemberActions.getTaskByListKpis,
     getAllKPIUnit: managerActions.getAllKPIUnit,
