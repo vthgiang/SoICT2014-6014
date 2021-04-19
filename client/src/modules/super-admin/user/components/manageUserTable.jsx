@@ -182,7 +182,7 @@ class ManageUserTable extends Component {
                                             className="text-blue"
                                             title="Gửi email thay đổi mật khẩu"
                                             name="contact_mail"
-                                            content={`Gửi email thay đổi mật khẩu đến tài khoản [ ${u.email} ]`}
+                                            content={`Xóa mật khẩu cấp 2 của người dùng (nếu có) và gửi email thay đổi mật khẩu đăng nhập tới tài khoản ${u.email}?`}
                                             icon="question"
                                             func={() => this.sendEmailResetPasswordUser(u.email)}
                                         />
