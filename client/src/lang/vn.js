@@ -134,6 +134,7 @@ export default {
             dashboard_employee: "Bảng tin quản lý nhân sự",
             dashboard_personal: "Bảng tin cá nhân",
             dashboard_unit: "Bảng tin đơn vị",
+            dashboard_all_unit: "Bảng tin đơn vị toàn công ty",
             employee_capacity: "Năng lực nhân viên",
             discipline: "Quản lý khen thưởng - kỷ luật",
             annual_leave: "Quản lý nghỉ phép",

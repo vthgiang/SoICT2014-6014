@@ -130,6 +130,7 @@ export default {
             dashboard_employee: "DashBoard Manage Staffs ",
             dashboard_personal: "DashBoard personal",
             dashboard_unit: "DashBoard unit",
+            dashboard_all_unit: "DashBoard all unit in company",
             employee_capacity: "Employee capacity",
             discipline: "Manage Commendation And Discipline",
             annual_leave: "Manage Annual Leave",

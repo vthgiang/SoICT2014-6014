@@ -672,6 +672,9 @@ exports.links = [
         url: '/dashboard-unit',
         apis: ['@all']
     }, {
+        url: '/dashboard-all-unit',
+        apis: ['@all']
+    }, {
         url: '/hr-manage-leave-application',
         apis: ['@all']
     }, {
