@@ -407,6 +407,7 @@ export default {
             security: {
                 label: "Bảo mật",
                 title: "Thay đổi mật khẩu người dùng",
+                password: "Mật khẩu",
                 old_password: "Mật khẩu cũ",
                 old_password2: "Mật khẩu cấp 2 cũ",
                 new_password: "Mật khẩu mới",
@@ -439,6 +440,8 @@ export default {
             username_invalid_length: "Tên người dùng có độ dài không hợp lê",
             username_empty: "Tên người dùng không được để trống",
             email_empty: "Email không được để trống",
+            email_exist: "Email này đã được sử dụng",
+            userName_exist: "Tên người dùng đã được sử dụng",
             email_invalid: "Email không hợp lệ",
             email_not_found: "Email này chưa được đăng kí trên hệ thống",
             password_invalid: "Mật khẩu không chính xác",
@@ -464,6 +467,8 @@ export default {
             confirm_password2_invalid: "Xác nhận mật khẩu cấp 2 không hợp lệ",
             old_password_invalid: "Mật khẩu cũ không hợp lệ",
             old_password2_invalid: "Mật khẩu cấp 2 cũ không hợp lệ",
+            delete_password2_success: "Xóa mật khẩu cấp 2 thành công",
+            delete_password2_faile: "Xóa mật khẩu cấp 2 thất bại",
         },
 
         system_admin: {

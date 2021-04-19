@@ -17,6 +17,7 @@ export const AuthActions = {
     changePassword,
     downloadFile,
     createPassword2,
+    deletePassword2,
 }
 
 function login(user) {
@@ -251,6 +252,22 @@ function createPassword2(data) {
             })
             .catch(err => {
                 dispatch({ type: AuthConstants.CREATE_PASSWORD2_FAILE });
+            })
+    }
+}
+
+function deletePassword2(data) {
+    return dispatch => {
+        dispatch({ type: AuthConstants.DELETE_PASSWORD2_REQUEST });
+        AuthService.deletePassword2(data)
+            .then(res => {
+                dispatch({
+                    type: AuthConstants.DELETE_PASSWORD2_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({ type: AuthConstants.DELETE_PASSWORD2_FAILE });
             })
     }
 }
