@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     withScriptjs,
     withGoogleMap,
@@ -13,9 +13,10 @@ const Map = withScriptjs(
         defaultZoom={props.defaultZoom}
     >
       {
-            props.locations.map((item, index) => {
+            props.locations && props.locations.length!==0
+            &&props.locations.map((item, index) => {
               return (
-                  <Marker key={item.name} position={item.location} icon={item.icon} label={item.name}/>
+                  <Marker key={item.name+index} position={item.location} icon={item.icon} label={item.name}/>
               )
           })
       }
@@ -32,6 +33,9 @@ const LocationMap = props => {
     defaultCenter,
     defaultZoom
   } = props;
+  useEffect(() => {
+    console.log(locations, " locations")
+  }, [locations])
   return (
     <Map
       googleMapURL={
@@ -41,12 +45,14 @@ const LocationMap = props => {
       }
       locations={locations}
     //   loadingElement={loadingElement || <div style={{height: `100%`}}/>}
-      loadingElement={loadingElement || <div style={{height: `400px`}}/>}
-      containerElement={containerElement || <div style={{height: "80vh"}}/>}
+      loadingElement={loadingElement || <div style={{height: `300px`}}/>}
+      containerElement={containerElement || <div style={{height: "50vh"}}/>}
+      
+      // containerElement={containerElement || <div style={{height: "30vh"}}/>}
     //   mapElement={mapElement || <div style={{height: `100%`}}/>}
-      mapElement={mapElement || <div style={{height: `400px`}}/>}
+      mapElement={mapElement || <div style={{height: `300px`}}/>}
       defaultCenter={defaultCenter || {lat: 21.078017641, lng: 105.70710958}}
-      defaultZoom={defaultZoom || 11}
+      defaultZoom={defaultZoom || 9}
     />
   );
 };

@@ -6,6 +6,7 @@ import { DataTableSetting, DeleteNotification, PaginateBar } from "../../../../.
 
 import { TransportRequirementsCreateForm } from "./transportRequirementsCreateForm"
 import { TransportRequirementsViewDetails } from "./transportRequirementsViewDetails"
+import { TransportRequirementsEditForm } from './transportRequirementsEditForm'
 
 import { transportRequirementsActions } from "../redux/actions";
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
@@ -112,10 +113,10 @@ function TransportRequirementsManagementTable(props) {
      * Hàm xử lý khi click edit một ví vụ
      * @param {*} example thông tin của ví dụ cần chỉnh sửa
      */
-    const handleEdit = (example) => {
+    const handleEdit = (transportRequirement) => {
         setState({
             ...state,
-            currentRow: example
+            curentTransportRequirementDetail: transportRequirement,
         });
         window.$('#modal-edit-example-hooks').modal('show');
     }
@@ -142,6 +143,9 @@ function TransportRequirementsManagementTable(props) {
         <React.Fragment>
             <TransportRequirementsCreateForm />
             <TransportRequirementsViewDetails
+                curentTransportRequirementDetail={curentTransportRequirementDetail}
+            />
+            <TransportRequirementsEditForm
                 curentTransportRequirementDetail={curentTransportRequirementDetail}
             />
             <div className="box-body qlcv">
@@ -203,7 +207,15 @@ function TransportRequirementsManagementTable(props) {
                                                 visibility
                                             </i>
                                         </a>
-                                        {/* <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_example.edit')} onClick={() => handleEdit(example)}><i className="material-icons">edit</i></a> */}
+                                        <a className="edit text-yellow" 
+                                            style={{ width: '5px' }} 
+                                            // title={translate('manage_example.edit')} 
+                                            onClick={() => handleEdit(x)}
+                                        >
+                                            <i className="material-icons">
+                                                edit
+                                            </i>
+                                        </a>
                                         <DeleteNotification
                                             // content={translate('manage_example.delete')}
                                             content={"Xóa yêu cầu vận chuyển "}

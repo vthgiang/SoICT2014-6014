@@ -151,9 +151,33 @@ function TransportPlanCreateForm(props) {
             transportRequirements: listSelectedRequirements,
         })
 
-        if (listSelectedRequirements && listSelectedRequirements.length !==0){
-            console.log(listSelectedRequirements, " listSelected");
+        let locationArr= []
+        if (listRequirements && listRequirements.length!==0
+            &&listSelectedRequirements && listSelectedRequirements.length !==0){
+            listRequirements.map((item, index) => {
+                if (listSelectedRequirements.indexOf(item._id) >=0){
+                    console.log(item, "otem");
+                    locationArr.push(
+                        {
+                            name: String(index),
+                            location: {
+                                lat: item.geocode?.fromAddress?.lat,
+                                lng: item.geocode?.fromAddress?.lng,
+                            }
+                        },
+                        {
+                            name: String(index),
+                            location: {
+                                lat: item.geocode?.toAddress?.lat,
+                                lng: item.geocode?.toAddress?.lng,
+                            }
+                        }
+                    )
+                }
+            })
         }
+        console.log(locationArr, " ar")
+        setListSelectedRequirementsLocation(locationArr);
 
     }, [listSelectedRequirements])
 
@@ -248,7 +272,13 @@ function TransportPlanCreateForm(props) {
                             </div>  
                         </div>
                         <div className="col-xs-12 col-sm-12 col-md-5 col-lg-5">
-                            {/* <LocationMap /> */}
+                            {
+                                (listRequirements && listRequirements.length!==0)
+                                &&
+                                <LocationMap 
+                                    locations = {listSelectedRequirementsLocation}
+                                />
+                            }
                         </div>
                     </div>
                     <table id={"1"} className="table table-striped table-bordered table-hover">
