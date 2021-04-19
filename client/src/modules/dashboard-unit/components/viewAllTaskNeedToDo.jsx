@@ -8,7 +8,7 @@ const ViewAllTaskNeedToDo = (props) => {
 
     let taskNeedTodo = props.data;
 
-    taskNeedTodo = taskNeedTodo.reduce((groups, item) => {
+    taskNeedTodo = taskNeedTodo?.length > 0 && taskNeedTodo.reduce((groups, item) => {
         if (item?.organizationalUnit?.name) {
             groups[item.organizationalUnit.name] = [...groups[item.organizationalUnit.name] || [], item];
         }

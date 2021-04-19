@@ -52,6 +52,7 @@ import { ManageLeaveApplication } from "../modules/human-resource/annual-leave/c
 import EmployeesInfomation from "../modules/human-resource/employee-infomation/components/";
 import { DashboardPersonal } from "../modules/dashboard-personal/components";
 import { DashboardUnit } from "../modules/dashboard-unit/components";
+import { DashboardUnitForAdmin } from "../modules/dashboard-unit/components/dashboardUnitForAdmin";
 
 import { ListEducation } from "../modules/training/education-program/components/educationProgramList";
 import { TrainingPlan } from "../modules/training/course/components/course";
@@ -583,6 +584,25 @@ class Routes extends Component {
                         pageName={"dashboard_unit"}
                         layout={Layout}
                         component={DashboardUnit}
+                    />
+                    <PrivateRoute
+                        isLoading={this.props.annualLeave.isLoading}
+                        key={"dashboard_all_unit"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/dashboard-all-unit",
+                                name: "dashboard_all_unit",
+                                icon: "fa fa-newspaper-o",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/dashboard-all-unit"}
+                        path={"/dashboard-all-unit"}
+                        pageName={"dashboard_all_unit"}
+                        layout={Layout}
+                        component={DashboardUnitForAdmin}
                     />
                     <PrivateRoute
                         isLoading={this.props.annualLeave.isLoading}

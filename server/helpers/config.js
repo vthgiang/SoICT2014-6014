@@ -467,6 +467,15 @@ const LINKS = [{
     components: getComponentsInLink('/dashboard-unit')
 },
 {
+    url: '/dashboard-all-unit',
+    description: 'Bảng tin đơn vị toàn công ty',
+    category: LINK_CATEGORY.COMMON.name,
+    roles: [
+        ROOT_ROLES.ADMIN.name,
+    ],
+    components: getComponentsInLink('/dashboard-all-unit')
+},
+{
     url: '/hr-manage-leave-application',
     description: 'Quản lý đơn xin nghỉ đơn vị',
     category: LINK_CATEGORY.HUMAN_RESOURCE.name,

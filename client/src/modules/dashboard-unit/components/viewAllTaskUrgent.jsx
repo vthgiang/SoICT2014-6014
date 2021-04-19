@@ -7,7 +7,7 @@ import { DialogModal } from '../../../common-components';
 const ViewAllTaskUrgent = (props) => {
     let taskUrgent = props.data;
 
-    taskUrgent = taskUrgent.reduce((groups, item) => {
+    taskUrgent = taskUrgent?.length > 0 && taskUrgent.reduce((groups, item) => {
         if (item?.organizationalUnit?.name) {
             groups[item.organizationalUnit.name] = [...groups[item.organizationalUnit.name] || [], item];
         }
