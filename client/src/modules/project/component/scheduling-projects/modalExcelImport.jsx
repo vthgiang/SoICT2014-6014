@@ -48,16 +48,6 @@ const ModalExcelImport = (props) => {
             description: "Thời gian ước lượng bi quan",
             value: "Thời gian ước lượng bi quan"
         },
-        estimateNormalCost: {
-            columnName: "Chi phí ước lượng",
-            description: "Chi phí ước lượng",
-            value: "Chi phí ước lượng"
-        },
-        estimateMaxCost: {
-            columnName: "Chi phí ước lượng thoả hiệp tối đa",
-            description: "Chi phí ước lượng thoả hiệp tối đa",
-            value: "Chi phí ước lượng thoả hiệp tối đa"
-        },
     }
 
     const dataImportTemplate = () => {
@@ -76,8 +66,6 @@ const ModalExcelImport = (props) => {
                                 { key: "estimateNormalTime", value: "Thời gian ước lượng" },
                                 { key: 'estimateOptimisticTime', value: 'Thời gian ước lượng lạc quan' },
                                 { key: "estimatePessimisticTime", value: "Thời gian ước lượng bi quan" },
-                                { key: 'estimateNormalCost', value: 'Chi phí ước lượng' },
-                                { key: "estimateMaxCost", value: "Chi phí ước lượng thoả hiệp tối đa" },
                             ],
                             data: [
                                 {
@@ -87,8 +75,6 @@ const ModalExcelImport = (props) => {
                                     estimateNormalTime: 5,
                                     estimatePessimisticTime: 8,
                                     predecessors: '',
-                                    estimateNormalCost: 100000,
-                                    estimateMaxCost: 105000,
                                 },
                                 {
                                     code: 'B',
@@ -97,8 +83,6 @@ const ModalExcelImport = (props) => {
                                     estimateNormalTime: 8,
                                     estimatePessimisticTime: 10,
                                     predecessors: 'A',
-                                    estimateNormalCost: 300000,
-                                    estimateMaxCost: 105000,
                                 }
                             ]
                         }
@@ -113,7 +97,7 @@ const ModalExcelImport = (props) => {
         let data = state.data; // mảng các công việc cpm tương ứng
         // let params = { limit }
         // props.importCPM({ data }, params);
-        console.log('last data', data);
+        // console.log('last data', data);
         props.importCPM(data);
     }
 
@@ -127,8 +111,8 @@ const ModalExcelImport = (props) => {
 
     const getDataImportCPM = (data) => {
         let newData = data.map(u => {
-            const {code, name, predecessors, estimateNormalTime, estimateOptimisticTime, estimatePessimisticTime, estimateNormalCost, estimateMaxCost} = u;
-            console.log('predecessors', predecessors)
+            const {code, name, predecessors, estimateNormalTime, estimateOptimisticTime, estimatePessimisticTime} = u;
+            // console.log('predecessors', predecessors)
             let preceedingTasks = predecessors === null || predecessors === '' || predecessors === undefined ? [] : predecessors.split(',');
             return {
                 code: code.trim(),
@@ -137,8 +121,6 @@ const ModalExcelImport = (props) => {
                 estimateNormalTime,
                 estimateOptimisticTime,
                 estimatePessimisticTime,
-                estimateNormalCost,
-                estimateMaxCost,
             }
         });
         return newData;

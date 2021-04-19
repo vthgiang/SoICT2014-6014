@@ -33,6 +33,7 @@
     "js-file-download": "^0.4.12",
     "js-pert": "^2.0.1",
     "jsencrypt": "^3.0.0-rc.1",
+    "lodash": "^4.17.21",
     "math-expression-evaluator": "^1.3.6",
     "moment": "^2.27.0",
     "quill": "^1.3.6",

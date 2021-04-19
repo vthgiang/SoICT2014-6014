@@ -67,7 +67,7 @@ const ModalCalculateCPM = (props) => {
         for (let taskItem of tasksData) {
             // for (let taskItem of fakeArr) {
             for (let preceedingItem of taskItem.preceedingTasks) {
-                console.log('taskItem.preceedingTasks', taskItem.preceedingTasks)
+                // console.log('taskItem.preceedingTasks', taskItem.preceedingTasks)
                 resultEdges.push({
                     id: preceedingItem.trim() ? `${preceedingItem.trim()}-${taskItem.code}` : `${taskItem.code}`,
                     from: preceedingItem.trim(),
@@ -75,7 +75,7 @@ const ModalCalculateCPM = (props) => {
                 })
             }
         }
-        console.log('resultEdges', resultEdges)
+        // console.log('resultEdges', resultEdges)
         return resultEdges;
     }
 
@@ -183,18 +183,23 @@ const ModalCalculateCPM = (props) => {
                             node={
                                 <Node>
                                     {event => (
-                                        <foreignObject style={{ backgroundColor: 'white' }} height={event.height} width={event.width} x={0} y={0}>
+                                        <foreignObject
+                                            style={{ backgroundColor: event.node.data.slack === 0 ? 'red' : 'white' }}
+                                            height={event.height} width={event.width}
+                                            x={0}
+                                            y={0}
+                                        >
                                             <table className="table table-bordered" style={{ height: '100%' }}>
                                                 <tbody>
                                                     <tr>
-                                                        <td><strong>{event.node.data.code}</strong></td>
-                                                        <td>ES: {event.node.data.es}</td>
-                                                        <td>LS: {event.node.data.ls}</td>
+                                                        <td><strong style={{color: event.node.data.slack === 0 ? 'white' : 'black'}}>{event.node.data.code}</strong></td>
+                                                        <td style={{color: event.node.data.slack === 0 ? 'white' : 'black'}}>ES: {event.node.data.es}</td>
+                                                        <td style={{color: event.node.data.slack === 0 ? 'white' : 'black'}}>LS: {event.node.data.ls}</td>
                                                     </tr>
                                                     <tr>
-                                                        <td>Slack: {event.node.data.slack}</td>
-                                                        <td>EF: {event.node.data.ef}</td>
-                                                        <td>LF: {event.node.data.lf}</td>
+                                                        <td style={{color: event.node.data.slack === 0 ? 'white' : 'black'}}>Slack: {event.node.data.slack}</td>
+                                                        <td style={{color: event.node.data.slack === 0 ? 'white' : 'black'}}>EF: {event.node.data.ef}</td>
+                                                        <td style={{color: event.node.data.slack === 0 ? 'white' : 'black'}}>LF: {event.node.data.lf}</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -202,7 +207,7 @@ const ModalCalculateCPM = (props) => {
                                     )}
                                 </Node>
                             }
-                            onLayoutChange={layout => console.log('Layout', layout)}
+                            onLayoutChange={layout => null}
                         />
                     </fieldset>
                 </div>

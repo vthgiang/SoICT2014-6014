@@ -8,6 +8,8 @@ import { taskManagementActions } from '../../../task/task-management/redux/actio
 import { getCurrentProjectDetails } from '../projects/functionHelper';
 import ModalCalculateCPM from './modalCalculateCPM';
 import ModalExcelImport from './modalExcelImport';
+import ModalEditRowCPMExcel from './modalEditRowCPMExcel';
+import { checkIsNullUndefined } from '../../../task/task-management/component/functionHelpers';
 
 const ModalAddTaskSchedule = (props) => {
     const { translate, project } = props;
@@ -28,6 +30,8 @@ const ModalAddTaskSchedule = (props) => {
         },
         listTasks: [],
     })
+    const [currentEditRowIndex, setCurrentEditRowIndex] = useState(undefined);
+    const [currentRow, setCurrentRow] = useState(undefined);
     const modeImportCPM = [
         {
             text: 'Thêm bằng tay',
@@ -38,7 +42,7 @@ const ModalAddTaskSchedule = (props) => {
             value: 'EXCEL',
         },
     ]
-    const [currentModeImport, setCurrentModeImport] = useState('HAND');
+    const [currentModeImport, setCurrentModeImport] = useState('EXCEL');
     const [estDurationEndProject, setEstDurationEndProject] = useState(0)
     const { listTasks } = state;
 
@@ -126,6 +130,12 @@ const ModalAddTaskSchedule = (props) => {
         }
     }
 
+    const handleEditRow = async (index) => {
+        await setCurrentRow(state.listTasks[index]);
+        await setCurrentEditRowIndex(index);
+        await window.$(`#modal-edit-row-cpm-excel-${state.listTasks[index].code}`).modal('show');
+    }
+
     const handleOpenCalculateCPM = () => {
         setTimeout(() => {
             window.$(`#modal-show-info-calculate-cpm`).modal('show');
@@ -163,6 +173,24 @@ const ModalAddTaskSchedule = (props) => {
             },
             listTasks: [],
         })
+    }
+
+    const handleSaveEditInfoRow = (newData, currentEditRowIndex) => {
+        state.listTasks[currentEditRowIndex] = newData;
+        setState({
+            ...state,
+            listTasks: state.listTasks,
+        })
+        console.log('state.listTasks', state.listTasks)
+    }
+
+    const checkIfCanCalculateCPM = () => {
+        for (let taskItem of state.listTasks) {
+            if (checkIsNullUndefined(taskItem?.estimateNormalCost) || checkIsNullUndefined(taskItem?.estimateMaxCost)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     return (
@@ -203,6 +231,13 @@ const ModalAddTaskSchedule = (props) => {
                 {/* Phần import excel */}
                 <ModalExcelImport importCPM={handleImportCPM} />
 
+                {/* Phần edit row tu file excel */}
+                {currentRow && currentRow.code &&
+                    <ModalEditRowCPMExcel importCPM={handleImportCPM} currentRow={currentRow}
+                        currentEditRowIndex={currentEditRowIndex}
+                        handleSave={handleSaveEditInfoRow} />
+                }
+
                 {/* Chọn chế độ import task cpm */}
                 <div className="form-group pull-right">
                     <label>Chọn chế độ thêm công việc</label>
@@ -233,13 +268,12 @@ const ModalAddTaskSchedule = (props) => {
                             <th>{translate('project.schedule.taskCode')}</th>
                             <th>{translate('project.schedule.taskName')}</th>
                             <th>{translate('project.schedule.preceedingTasks')}</th>
-                            <th>{translate('project.schedule.estimatedTime')}</th>
-                            <th>{translate('project.schedule.estimatedTimeOptimistic')}</th>
-                            <th>{translate('project.schedule.estimatedTimePessimistic')}</th>
-                            <th>{translate('project.schedule.estimatedCostNormal')}</th>
-                            <th>{translate('project.schedule.estimatedCostMaximum')}</th>
-                            {currentModeImport === 'EXCEL' ? null : <th>{translate('task_template.action')}</th>}
-
+                            <th>{translate('project.schedule.estimatedTime')} (ngày)</th>
+                            {currentModeImport === 'HAND' && <th>{translate('project.schedule.estimatedTimeOptimistic')}</th>}
+                            {currentModeImport === 'HAND' && <th>{translate('project.schedule.estimatedTimePessimistic')}</th>}
+                            <th>{translate('project.schedule.estimatedCostNormal')} (VND)</th>
+                            <th>{translate('project.schedule.estimatedCostMaximum')} (VND)</th>
+                            <th>{translate('task_template.action')}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -251,13 +285,18 @@ const ModalAddTaskSchedule = (props) => {
                                     <td>{taskItem?.name}</td>
                                     <td>{taskItem?.preceedingTasks?.join(', ')}</td>
                                     <td>{taskItem?.estimateNormalTime}</td>
-                                    <td>{taskItem?.estimateOptimisticTime}</td>
-                                    <td>{taskItem?.estimatePessimisticTime}</td>
-                                    <td>{taskItem?.estimateNormalCost}</td>
-                                    <td>{taskItem?.estimateMaxCost}</td>
+                                    {currentModeImport === 'HAND' && <td>{taskItem?.estimateOptimisticTime}</td>}
+                                    {currentModeImport === 'HAND' && <td>{taskItem?.estimatePessimisticTime}</td>}
+                                    <td>{checkIsNullUndefined(taskItem?.estimateNormalCost) ? 'Chưa tính được' : taskItem?.estimateNormalCost}</td>
+                                    <td>{checkIsNullUndefined(taskItem?.estimateMaxCost) ? 'Chưa tính được' : taskItem?.estimateMaxCost}</td>
                                     {currentModeImport === 'HAND' &&
                                         <td>
                                             <a className="delete" title={translate('general.delete')} onClick={() => handleDelete(index)}><i className="material-icons">delete</i></a>
+                                        </td>
+                                    }
+                                    {currentModeImport === 'EXCEL' &&
+                                        <td>
+                                            <a className="edit" title={translate('general.edit')} onClick={() => handleEditRow(index)}><i className="material-icons">edit</i></a>
                                         </td>
                                     }
                                 </tr>
@@ -295,7 +334,7 @@ const ModalAddTaskSchedule = (props) => {
                                             type="number" placeholder="Enter time" onChange={(event) => handleChangeForm(event.target.value, 'estimateNormalTime')} />
                                     </div>
                                 </td>
-                                <td>
+                                {/* <td>
                                     <div className={`form-group`}>
                                         <input className="form-control" value={state.taskInit.estimateOptimisticTime}
                                             type="number" placeholder="Enter best time" onChange={(event) => handleChangeForm(event.target.value, 'estimateOptimisticTime')} />
@@ -306,7 +345,7 @@ const ModalAddTaskSchedule = (props) => {
                                         <input className="form-control" value={state.taskInit.estimatePessimisticTime}
                                             type="number" placeholder="Enter worst time" onChange={(event) => handleChangeForm(event.target.value, 'estimatePessimisticTime')} />
                                     </div>
-                                </td>
+                                </td> */}
                                 <td>
                                     <div className={`form-group`}>
                                         <input className="form-control" value={state.taskInit.estimateNormalCost}
@@ -337,6 +376,7 @@ const ModalAddTaskSchedule = (props) => {
                 {state.listTasks && state.listTasks.length > 0 &&
                     <div className="dropdown pull-right" style={{ marginTop: 15, marginRight: 10 }}>
                         <button
+                            disabled={!checkIfCanCalculateCPM()}
                             onClick={handleOpenCalculateCPM}
                             type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true"
                             title={translate('project.schedule.calculateCPM')}>

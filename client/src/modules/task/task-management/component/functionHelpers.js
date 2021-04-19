@@ -150,8 +150,19 @@ export const getSalaryFromUserId = (responsibleEmployeesWithUnit, userId) => {
 }
 
 export const numberWithCommas = (resultToComma) => {
+    if (resultToComma === null || resultToComma === undefined) return '';
     const parts = resultToComma.toString().split('.')
     parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',')
     if (parts.length > 1 && parts[1].length > 2) parts[1] = parts[1].substring(0, 2);
     return parts.join('.')
+}
+
+export const checkIsNullUndefined = (x) => {
+    return x === null || x === undefined;
+}
+
+export const checkIfHasCommonItems = (arr1, arr2) => {
+    return arr1.some(item => {
+        return arr2.includes(item);
+    })
 }
