@@ -7,6 +7,7 @@ import parse from 'html-react-parser';
 import { kpiMemberActions } from '../redux/actions';
 import { createKpiSetActions } from '../../../employee/creation/redux/actions';
 import { AuthActions } from '../../../../auth/redux/actions';
+import { createUnitKpiActions } from '../../../organizational-unit/creation/redux/actions';
 
 import { DataTableSetting } from '../../../../../common-components';
 import { DialogModal, ErrorLabel, DatePicker, Comment } from '../../../../../common-components/index';
@@ -19,7 +20,7 @@ import { EmployeeKpiSetLogsModal } from '../../../employee/management/component/
 
 function EmployeeKpiApproveModal(props) {
     let idUser = getStorage("userId");
-    const { translate, kpimembers } = props;
+    const { translate, kpimembers, createKpiUnit } = props;
 
     const tableId = "employee-kpi-approve-modal";
     getTableConfiguration(tableId);
@@ -38,26 +39,25 @@ function EmployeeKpiApproveModal(props) {
     const { errorOnDate, date, compare, edit, defaultDate, employeeKpiSetId } = state;
     let kpimember, kpimembercmp, month, totalWeight;
 
-    useEffect(()=>{
-        if (props.id !== state.id) {
-            setState({
-                ...state,
-                id: props.id,
-            })
-        }
-    },[props.id])
+    if (props.id !== state.id) {
+        setState({
+            ...state,
+            id: props.id,
+        })
+    }
 
     useEffect(()=>{
-        const { id } = state;
-        if (props.id !== id) {
-            if (props.id) {
-                props.getKpisByKpiSetId(props.id);
-            }
+        if (state.id) {
+            props.getKpisByKpiSetId(state.id);
         }
-        if (props?.auth?.user?.avatar !== props?.auth?.user?.avatar) {
-            props.getKpisByKpiSetId(props.id);
+    }, [state.id, props?.auth?.user?.avatar])
+
+    useEffect(() => {
+        if (!createKpiUnit.currentKPI && kpimembers.currentKPI?.organizationalUnit?._id) {
+            let month = new Date(kpimembers.currentKPI?.date)
+            props.getCurrentKPIUnit(null, kpimembers.currentKPI.organizationalUnit._id, month)
         }
-    })
+    }, [kpimembers.currentKPI])
 
     const handleEditOrganizationalUnitKPi = async (employeeKPI) => {
         // if (employeeKPI?.approvedPoint !== null && employeeKPI?.approvedPoint >= 0) {
@@ -398,8 +398,8 @@ function EmployeeKpiApproveModal(props) {
 }
 
 function mapState(state) {
-    const { kpimembers, auth, KPIPersonalManager } = state;
-    return { kpimembers, auth, KPIPersonalManager };
+    const { kpimembers, auth, KPIPersonalManager, createKpiUnit } = state;
+    return { kpimembers, auth, KPIPersonalManager, createKpiUnit };
 }
 
 const actionCreators = {
@@ -416,6 +416,7 @@ const actionCreators = {
     deleteFileComment: createKpiSetActions.deleteFileComment,
     deleteFileChildComment: createKpiSetActions.deleteFileChildComment,
     downloadFile: AuthActions.downloadFile,
+    getCurrentKPIUnit: createUnitKpiActions.getCurrentKPIUnit,
 };
 const connectedEmployeeKpiApproveModal = connect(mapState, actionCreators)(withTranslate(EmployeeKpiApproveModal));
 export { connectedEmployeeKpiApproveModal as EmployeeKpiApproveModal };
