@@ -58,188 +58,161 @@ class SuperHome extends Component {
 
     static getDerivedStateFromProps(props, state) {
         const { tasks } = props;
-        const { loadingInformed, loadingCreator, loadingConsulted, loadingAccountable
+        const { loadingInformed, loadingCreator, loadingConsulted, loadingAccountable, loadingResponsible
         } = tasks;
         const { userId } = state;
-
-        if (tasks && !loadingInformed && !loadingCreator && !loadingConsulted && !loadingAccountable) {
+        if (tasks && !loadingInformed && !loadingCreator && !loadingConsulted && !loadingAccountable && !loadingResponsible) {
             let currentMonth = new Date().getMonth() + 1;
             let currentYear = new Date().getFullYear();
-
-            let notLinkedTasks = [], taskList = [], unconfirmedTask = [], noneUpdateTask = [],
+            let notLinkedTasks = [], taskList = [], unconfirmedTask = [], noneUpdateTask = [], distinctTasks = [],
                 taskHasActionsResponsible = [], taskHasActionsAccountable = [], taskHasNotEvaluationResultIncurrentMonth = [], taskHasNotApproveResquestToClose = [];
             const taskOfUser = tasks?.tasks;
 
-            // xu ly du lieu
-            if (taskOfUser && taskOfUser.length) {
-                for (let i in taskOfUser) {
-                    let created = moment(taskOfUser[i].createdAt);
-                    let start = moment(taskOfUser[i].startDate);
-                    let end = moment(taskOfUser[i].endDate);
-                    let lastUpdate = moment(taskOfUser[i].updatedAt);
-                    let now = moment(new Date());
-                    let updatedToNow = now.diff(lastUpdate, 'days');
-                    let createdToNow = now.diff(created, 'days');
+            let accTasks = tasks.accountableTasks;
+            let resTasks = tasks.responsibleTasks;
+            let conTasks = tasks.consultedTasks;
 
-                    if (taskOfUser[i].status === 'inprocess') {
-                        // viec 7 ngay chua update
+            if (accTasks && accTasks.length > 0)
+                accTasks = accTasks.filter(task => task.status === "inprocess");
+            if (resTasks && resTasks.length > 0)
+                resTasks = resTasks.filter(task => task.status === "inprocess");
+            if (conTasks && conTasks.length > 0)
+                conTasks = conTasks.filter(task => task.status === "inprocess");
+
+            // Láy công việc chưa phê duyệt yêu cầu kết thúc
+            accTasks && accTasks.forEach(o => {
+                if (o.requestToCloseTask && o.requestToCloseTask.requestStatus === 1) {
+                    taskHasNotApproveResquestToClose = [...taskHasNotApproveResquestToClose, o]
+                }
+            })
+
+            // tính toán lấy số công việc chưa được đánh giá kpi
+            if (accTasks && resTasks && conTasks) {
+                taskList = [...accTasks, ...resTasks, ...conTasks];
+                if (taskList && taskList.length > 0) {
+                    distinctTasks = filterDifference(taskList);
+
+                    distinctTasks.length && distinctTasks.map(x => {
+                        let evaluations;
+                        let currentEvaluate = [];
+                        let created = moment(x.createdAt);
+                        let lastUpdate = moment(x.updatedAt);
+                        let now = moment(new Date());
+                        let updatedToNow = now.diff(lastUpdate, 'days');
+                        let createdToNow = now.diff(created, 'days');
                         if (updatedToNow >= 7) {
                             let add = {
-                                ...taskOfUser[i],
+                                ...x,
                                 updatedToNow
                             }
                             noneUpdateTask.push(add);
                         }
-                    }
-                    // cac cong viec chua xac nhan
-                    if (!taskOfUser[i].confirmedByEmployees.length) {
-                        let add = {
-                            ...taskOfUser[i],
-                            createdToNow
+
+                        if (x?.confirmedByEmployees.length === 0 || !x?.confirmedByEmployees.includes(localStorage.getItem("userId"))) {
+                            let add = {
+                                ...x,
+                                createdToNow
+                            }
+                            unconfirmedTask.push(add)
                         }
-                        unconfirmedTask.push(add)
-                    }
+
+                        evaluations = x.evaluations.length && x.evaluations;
+                        for (let i in evaluations) {
+                            let month = evaluations[i] && evaluations[i].evaluatingMonth && evaluations[i].evaluatingMonth.slice(5, 7);
+                            let year = evaluations[i] && evaluations[i].evaluatingMonth && evaluations[i].evaluatingMonth.slice(0, 4);
+                            if (month == currentMonth && year == currentYear) {
+                                currentEvaluate.push(evaluations[i]);
+                            }
+                        }
+                        if (currentEvaluate.length === 0) notLinkedTasks.push(x);
+
+                        else {
+                            let break1 = false;
+                            let add = true;
+                            if (currentEvaluate.length !== 0)
+                                for (let i in currentEvaluate) {
+                                    if (currentEvaluate[i].results.length !== 0) {
+                                        for (let j in currentEvaluate[i].results) {
+                                            let res = currentEvaluate[i].results[j];
+
+                                            if (res.employee === userId) {
+                                                add = false;
+                                                if (res.kpis.length === 0) {
+                                                    notLinkedTasks.push(x);
+                                                    break1 = true
+                                                }
+                                            };
+                                            if (break1) break;
+                                        }
+                                        if (break1) break;
+                                        if (add) notLinkedTasks.push(x);
+                                    }
+                                }
+                        }
+                    })
+
+                    // Lấy các công việc chưa có kết quả đánh giá ở tháng hiện tại
+                    distinctTasks.length && distinctTasks.forEach((o, index) => {
+                        if (o.evaluations && o.evaluations.length > 0) {
+                            let lengthEvaluations = o.evaluations.length;
+                            let add = true;
+                            for (let i = 0; i <= lengthEvaluations; i++) {
+                                let currentEvaluationsMonth = o.evaluations[i] && o.evaluations[i].evaluatingMonth && o.evaluations[i].evaluatingMonth.slice(5, 7);
+                                let currentEvaluationsYear = o.evaluations[i] && o.evaluations[i].evaluatingMonth && o.evaluations[i].evaluatingMonth.slice(0, 4);
+
+                                if (parseInt(currentEvaluationsMonth) === currentMonth && parseInt(currentEvaluationsYear) === currentYear) {
+                                    add = false;
+                                }
+                            }
+                            if (add)
+                                taskHasNotEvaluationResultIncurrentMonth.push(o);
+                        } else {
+                            taskHasNotEvaluationResultIncurrentMonth.push(o);
+                        }
+                    })
                 }
             }
 
-            if (tasks) {
-                let accTasks = tasks.accountableTasks;
-                let resTasks = tasks.responsibleTasks;
-                let conTasks = tasks.consultedTasks;
+            // Tính toán lấy số công việc chưa được đánh gia
+            if (resTasks?.length > 0) {
+                resTasks.forEach(x => {
+                    let taskActions;
 
-                if (accTasks && accTasks.length > 0)
-                    accTasks = accTasks.filter(task => task.status === "inprocess");
-                if (resTasks && resTasks.length > 0)
-                    resTasks = resTasks.filter(task => task.status === "inprocess");
-                if (conTasks && conTasks.length > 0)
-                    conTasks = conTasks.filter(task => task.status === "inprocess");
-
-                // Láy công việc chưa phê duyệt yêu cầu kết thúc
-                accTasks && accTasks.forEach(o => {
-                    if (o.requestToCloseTask && o.requestToCloseTask.requestStatus === 1) {
-                        taskHasNotApproveResquestToClose = [...taskHasNotApproveResquestToClose, o]
+                    taskActions = x.taskActions.length && x.taskActions;
+                    for (let i in taskActions) {
+                        let month = taskActions[i].createdAt.slice(5, 7);
+                        let year = taskActions[i].createdAt.slice(0, 4)
+                        if (month == currentMonth && year == currentYear) {
+                            if (taskActions[i].rating == -1) {
+                                taskHasActionsResponsible.push(x);
+                                break;
+                            }
+                        }
                     }
                 })
+            }
 
-                // tính toán lấy số công việc chưa được đánh giá kpi
-                if (accTasks && resTasks && conTasks) {
-                    taskList = [...accTasks, ...resTasks, ...conTasks];
+            // Tính toán lấy số công việc cần đánh giá
+            if (accTasks?.length > 0) {
+                accTasks.forEach(x => {
+                    let taskActions;
 
-                    if (taskList && taskList.length > 0) {
-                        let distinctTasks = [];
-                        for (let i in taskList) {
-                            let check = false;
-                            for (let j in distinctTasks) {
-
-                                if (taskList[i]._id === distinctTasks[j]._id) {
-                                    check = true
-                                    break;
-                                }
+                    taskActions = x.taskActions.length && x.taskActions;
+                    for (let i in taskActions) {
+                        let month = taskActions[i].createdAt.slice(5, 7);
+                        let year = taskActions[i].createdAt.slice(0, 4)
+                        if (month == currentMonth && year == currentYear) {
+                            if (taskActions[i].rating == -1) {
+                                taskHasActionsAccountable.push(x);
+                                break;
                             }
-                            if (!check) distinctTasks.push(taskList[i])
                         }
-
-                        distinctTasks.length && distinctTasks.map(x => {
-                            let evaluations;
-                            let currentEvaluate = [];
-
-                            evaluations = x.evaluations.length && x.evaluations;
-                            for (let i in evaluations) {
-                                let month = evaluations[i] && evaluations[i].evaluatingMonth && evaluations[i].evaluatingMonth.slice(5, 7);
-                                let year = evaluations[i] && evaluations[i].evaluatingMonth && evaluations[i].evaluatingMonth.slice(0, 4);
-                                if (month == currentMonth && year == currentYear) {
-                                    currentEvaluate.push(evaluations[i]);
-                                }
-                            }
-                            if (currentEvaluate.length === 0) notLinkedTasks.push(x);
-
-                            else {
-                                let break1 = false;
-                                let add = true;
-                                if (currentEvaluate.length !== 0)
-                                    for (let i in currentEvaluate) {
-                                        if (currentEvaluate[i].results.length !== 0) {
-                                            for (let j in currentEvaluate[i].results) {
-                                                let res = currentEvaluate[i].results[j];
-
-                                                if (res.employee === userId) {
-                                                    add = false;
-                                                    if (res.kpis.length === 0) {
-                                                        notLinkedTasks.push(x);
-                                                        break1 = true
-                                                    }
-                                                };
-                                                if (break1) break;
-                                            }
-                                            if (break1) break;
-                                            if (add) notLinkedTasks.push(x);
-                                        }
-                                    }
-                            }
-                        })
-
-                        // Lấy các công việc chưa có kết quả đánh giá ở tháng hiện tại
-                        distinctTasks.length && distinctTasks.forEach((o, index) => {
-                            if (o.evaluations && o.evaluations.length > 0) {
-                                let lengthEvaluations = o.evaluations.length;
-                                let add = true;
-                                for (let i = 0; i <= lengthEvaluations; i++) {
-                                    let currentEvaluationsMonth = o.evaluations[i] && o.evaluations[i].evaluatingMonth && o.evaluations[i].evaluatingMonth.slice(5, 7);
-                                    let currentEvaluationsYear = o.evaluations[i] && o.evaluations[i].evaluatingMonth && o.evaluations[i].evaluatingMonth.slice(0, 4);
-
-                                    if (parseInt(currentEvaluationsMonth) === currentMonth && parseInt(currentEvaluationsYear) === currentYear) {
-                                        add = false;
-                                    }
-                                }
-                                if (add)
-                                    taskHasNotEvaluationResultIncurrentMonth.push(o);
-                            } else {
-                                taskHasNotEvaluationResultIncurrentMonth.push(o);
-                            }
-                        })
                     }
-                }
-
-                // Tính toán lấy số công việc chưa được đánh gia
-                if (resTasks?.length > 0) {
-                    resTasks.forEach(x => {
-                        let taskActions;
-
-                        taskActions = x.taskActions.length && x.taskActions;
-                        for (let i in taskActions) {
-                            let month = taskActions[i].createdAt.slice(5, 7);
-                            let year = taskActions[i].createdAt.slice(0, 4)
-                            if (month == currentMonth && year == currentYear) {
-                                if (taskActions[i].rating == -1) {
-                                    taskHasActionsResponsible.push(x);
-                                    break;
-                                }
-                            }
-                        }
-                    })
-                }
-
-                // Tính toán lấy số công việc cần đánh giá
-                if (accTasks?.length > 0) {
-                    accTasks.forEach(x => {
-                        let taskActions;
-
-                        taskActions = x.taskActions.length && x.taskActions;
-                        for (let i in taskActions) {
-                            let month = taskActions[i].createdAt.slice(5, 7);
-                            let year = taskActions[i].createdAt.slice(0, 4)
-                            if (month == currentMonth && year == currentYear) {
-                                if (taskActions[i].rating == -1) {
-                                    taskHasActionsAccountable.push(x);
-                                    break;
-                                }
-                            }
-                        }
-                    })
-                }
+                })
             }
 
             return {
+                listTasksGeneral: distinctTasks,
                 listAlarmTask: {
                     notLinkedTasks,
                     unconfirmedTask,
@@ -343,7 +316,7 @@ class SuperHome extends Component {
         const { tasks, translate } = this.props;
         const { loadingInformed, loadingCreator, loadingConsulted, loadingAccountable } = tasks;
 
-        const { listAlarmTask } = this.state;
+        const { listAlarmTask, listTasksGeneral } = this.state;
 
         // Config ngày mặc định cho datePiker
         let d = new Date(),
@@ -370,26 +343,6 @@ class SuperHome extends Component {
         let defaultEndMonth = month < 10 ? ['0' + month, year].join('-') : [month, year].join('-');
 
         let { startMonthTitle, endMonthTitle } = this.INFO_SEARCH;
-
-        let listTasksGeneral = [], responsibleTasks = [], accountableTasks = [], consultedTasks = [];
-
-        if (tasks && !loadingInformed && !loadingCreator && !loadingConsulted && !loadingAccountable) {
-            if (tasks.responsibleTasks && tasks.responsibleTasks.length > 0) {
-                responsibleTasks = tasks.responsibleTasks.filter(o => o.status === "inprocess")
-            }
-
-            if (tasks.accountableTasks && tasks.accountableTasks.length > 0) {
-                accountableTasks = tasks.accountableTasks.filter(o => o.status === "inprocess")
-            }
-
-            if (tasks.consultedTasks && tasks.consultedTasks.length > 0) {
-                consultedTasks = tasks.consultedTasks.filter(o => o.status === "inprocess")
-            }
-
-            listTasksGeneral = [...listTasksGeneral, ...responsibleTasks, ...accountableTasks, ...consultedTasks];
-
-            listTasksGeneral = filterDifference(listTasksGeneral);
-        }
 
         return (
             <React.Fragment>
