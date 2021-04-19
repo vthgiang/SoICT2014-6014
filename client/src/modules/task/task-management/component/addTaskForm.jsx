@@ -67,39 +67,24 @@ class AddTaskForm extends Component {
         return dayjs(date).format("hh:mm A");
     }
 
-    isTaskFormValidated = () => {
-        let result =
-            this.validateTaskName(this.state.newTask.name, false) &&
-            this.validateTaskDescription(this.state.newTask.description, false) &&
-            this.validateTaskStartDate(this.state.newTask.startDate, false) &&
-            this.validateTaskEndDate(this.state.newTask.endDate, false) &&
-            this.validateTaskAccountableEmployees(this.state.newTask.accountableEmployees, false) &&
-            this.validateTaskResponsibleEmployees(this.state.newTask.responsibleEmployees, false);
-        return result;
-    }
-
     handleChangeTaskName = (event) => {
-        let value = event.target.value;
-        this.validateTaskName(value, true);
-    }
-    validateTaskName = (value, willUpdateState = true) => {
+        let { value } = event.target;
         let { translate } = this.props;
         let { message } = ValidationHelper.validateEmpty(translate, value);
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    newTask: {
-                        ...state.newTask,
-                        name: value,
-                        errorOnName: message
-                    }
-                };
-            });
+
+        this.setState(state => {
+            return {
+                ...state,
+                newTask: {
+                    ...state.newTask,
+                    name: value,
+                    errorOnName: message
+                }
+            };
+        }, () => {
             this.props.handleChangeTaskData(this.state.newTask)
             this.props.isProcess && this.props.handleChangeName(this.state.newTask.name)
-        }
-        return message === undefined;
+        })
     }
 
     handleChangeTaskProject = (e) => {
