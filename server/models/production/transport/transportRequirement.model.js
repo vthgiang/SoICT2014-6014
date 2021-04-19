@@ -110,6 +110,8 @@ const TransportRequirementSchema = new Schema({
             },
         },
     }
+},{
+    timestamps: true,
 });
 
 module.exports = (db) => {

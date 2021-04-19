@@ -191,7 +191,8 @@ function ArrangeOrdinalTransport(props) {
                 <div>                       
                     {
                         (transportVehicles && transportVehicles.length !==0 )
-                        && transportVehicles.map((item, index) => (					
+                        && transportVehicles.map((item, index) => (
+                            item.transportRequirements && item.transportRequirements.length !==0 &&					
                             <ArrangeOrdinalTransportOneVehicle
                                 item={item}
                                 callBackStateOrdinalAddress={callBackStateOrdinalAddress}

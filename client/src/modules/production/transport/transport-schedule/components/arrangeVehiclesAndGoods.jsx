@@ -22,6 +22,16 @@ function ArrangeVehiclesAndGoods(props) {
     });    
 
     const [transportArrangeRequirements, setAransportArrangeRequirements] = useState([]);
+
+    /**
+     * = transportPlan.transportVehicles
+     * [
+     *  carriers: [],
+     *  transportVehicle: {
+     *      _id, payload, volume, asset....
+     * }
+     * ] 
+     */
     const [allTransportVehicle, setAllTransportVehicle] = useState([]);
     
     /**
@@ -280,9 +290,15 @@ function ArrangeVehiclesAndGoods(props) {
             //         // },
             //     ]}
             // />
+        }
+        {
+            (!allTransportVehicle || !(allTransportVehicle.length!==0))
+            &&
+            <h1>Kế hoạch chưa có phương tiện vận chuyển</h1>
         }               
         {
-            currentTransportPlan && (currentTransportPlan._id !== "0")
+            currentTransportPlan && (currentTransportPlan._id !== "0") 
+            && allTransportVehicle && allTransportVehicle.length!==0
             &&
             <div className={"divTest"}>
                 <table className={"tableTest table-bordered table-hover not-sort"}>
@@ -393,7 +409,7 @@ function ArrangeVehiclesAndGoods(props) {
                                     (allTransportVehicle && allTransportVehicle.length !== 0) &&
                                     allTransportVehicle.map((item1, index1) => (
                                         item1 &&
-                                        <td key={"vehicle "+index1} className="tooltip-checkbox">
+                                        <td key={"vehicle "+index+" "+index1} className="tooltip-checkbox">
                                             <span className={"icon "+getStatusTickBox(item1.transportVehicle._id, item._id, distributionState)}
                                             title={"alo"} 
                                             onClick={() => handleSelectVehicle(item, item1, index, index1)}

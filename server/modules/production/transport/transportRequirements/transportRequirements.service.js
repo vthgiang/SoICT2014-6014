@@ -165,7 +165,6 @@ exports.getAllTransportRequirements = async (portal, data) => {
 // Chỉnh sửa một Ví dụ
 exports.editTransportRequirement = async (portal, id, data) => {
 
-
     let oldTransportRequirement = await TransportRequirement(connect(DB_CONNECTION, portal)).findById(id);
 
     if (!oldTransportRequirement) {
@@ -174,6 +173,9 @@ exports.editTransportRequirement = async (portal, id, data) => {
 
     // Cach 2 de update
     await TransportRequirement(connect(DB_CONNECTION, portal)).update({ _id: id }, { $set: data });
+    let transportRequirement1 = await TransportRequirement(connect(DB_CONNECTION, portal)).findById({ _id: oldTransportRequirement._id })
+
+
     let transportRequirement = await TransportRequirement(connect(DB_CONNECTION, portal)).findById({ _id: oldTransportRequirement._id })
     .populate({path: 'transportPlan'})
     return transportRequirement;
@@ -195,7 +197,6 @@ exports.getTransportRequirementById = async (portal, id) => {
     .populate({
         path: 'transportPlan',
     });
-    console.log(transportRequirement);
     if (transportRequirement) {
         return transportRequirement;
     }

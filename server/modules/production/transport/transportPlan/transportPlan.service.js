@@ -18,15 +18,32 @@ const TransportRequirementServices = require('../transportRequirements/transport
  */
 exports.createTransportPlan = async (portal, data) => {
     let newTransportPlan;
-    if (data && data.length !== 0) {
-            newTransportPlan = await TransportPlan(connect(DB_CONNECTION, portal)).create({
-            code: data.code,
-            startTime: data.startDate,
-            endTime: data.endDate,
+    if (data && data.length !== 0) {        
+        newTransportPlan = await TransportPlan(connect(DB_CONNECTION, portal)).create({
+        code: data.code,
+        startTime: data.startDate,
+        endTime: data.endDate,
+        transportRequirements: data.transportRequirements,
         });
-        
+        // Nếu có requirements đi kèm {transportRequirements: [id, id, id...]}
+        if (data.transportRequirements && data.transportRequirements.length!==0){
+            for (let i=0; i<data.transportRequirements.length;i++ ){
+                // Lấy dữ liệu chi tiết từng requirement để lấy transportPlan._id
+                transportRequirement = await TransportRequirementServices.getTransportRequirementById(portal,data.transportRequirements[i]);
+                // Xóa requirement trong plan.id cũ bảng transportPlan và cập nhật lại transportPlan mới cho requirement
+                if (transportRequirement.transportPlan){
+                    await this.deleteTransportRequirementByPlanId(portal, transportRequirement.transportPlan._id, data.transportRequirements[i]);
+                    
+                    await TransportRequirementServices.editTransportRequirement(portal, data.transportRequirements[i], {transportPlan: newTransportPlan._id});
+                }
+                else {
+                    await TransportRequirementServices.editTransportRequirement(portal, data.transportRequirements[i], {transportPlan: newTransportPlan._id});
+                }
+            }
+            
+        }
     }
-    TransportScheduleServices.planCreateTransportRoute(portal, {transportPlan: newTransportPlan._id,})
+    await TransportScheduleServices.planCreateTransportRoute(portal, {transportPlan: newTransportPlan._id,})
     let transportPlan = await TransportPlan(connect(DB_CONNECTION, portal)).findById({ _id: newTransportPlan._id });;
     return transportPlan;
 }
@@ -97,6 +114,8 @@ exports.editTransportPlan = async (portal, id, data) => {
     }
 
     // Cach 2 de update
+    await TransportScheduleServices.planDeleteTransportSchedule(portal, id);
+    await TransportScheduleServices.planCreateTransportRoute(portal,{transportPlan:id});
     await TransportPlan(connect(DB_CONNECTION, portal)).update({ _id: id }, { $set: data });
     let transportPlan = await TransportPlan(connect(DB_CONNECTION, portal)).findById({ _id: oldTransportPlan._id });
     return transportPlan;
@@ -177,12 +196,12 @@ exports.deleteTransportRequirementByPlanId = async (portal, planId, requirementI
         let listTransportRequirements = oldTransportPlan.transportRequirements;
         if (listTransportRequirements && listTransportRequirements.length!==0){
             let newListTransportRequirements = listTransportRequirements.filter(r => String(r) !== String(requirementId));
-            this.editTransportPlan(portal, planId, {transportRequirements: newListTransportRequirements})
+            await this.editTransportPlan(portal, planId, {transportRequirements: newListTransportRequirements})
         }
         // Xóa bỏ yêu cầu vận chuyển trong lịch vận chuyển (nếu có)
-        TransportScheduleServices.deleteTransportRequirementByPlanId(portal, planId, requirementId);
+        await TransportScheduleServices.deleteTransportRequirementByPlanId(portal, planId, requirementId);
     }
-    TransportRequirementServices.editTransportRequirement(portal, requirementId, {transportPlan: null})
+    await TransportRequirementServices.editTransportRequirement(portal, requirementId, {transportPlan: null})
 }
 
 /**
@@ -203,4 +222,18 @@ exports.deleteTransportPlan = async (portal, planId) => {
     await TransportScheduleServices.planDeleteTransportSchedule(portal, planId);
     transportPlan = await TransportPlan(connect(DB_CONNECTION, portal)).findByIdAndDelete({ _id: planId });
     return transportPlan;
+}
+
+exports.onlyDeleteTransportRequirementFromPlan = async (portal, planId, requirementId) => {
+    let oldTransportPlan = await TransportPlan(connect(DB_CONNECTION, portal)).findById(planId);
+    if (oldTransportPlan){
+        let listTransportRequirements = oldTransportPlan.transportRequirements;
+        if (listTransportRequirements && listTransportRequirements.length!==0){
+            let newListTransportRequirements = listTransportRequirements.filter(r => String(r) !== String(requirementId));
+            await this.editTransportPlan(portal, planId, {transportRequirements: newListTransportRequirements})
+        }
+        // Xóa bỏ yêu cầu vận chuyển trong lịch vận chuyển (nếu có)
+        await TransportScheduleServices.deleteTransportRequirementByPlanId(portal, planId, requirementId);
+    }
+    await TransportRequirementServices.editTransportRequirement(portal, requirementId, {transportPlan: null})
 }
