@@ -453,6 +453,15 @@ class TaskManagement extends Component {
         })
     }
 
+    checkTaskRequestToClose = (task) => {
+        const { translate } = this.props;
+        if (task.requestToCloseTask && task.requestToCloseTask.requestStatus === 1) {
+            return `${translate('task.task_management.inprocess')} - ${translate('task.task_management.requested_to_close')} `
+        } else {
+            return formatStatus(translate, task.status)
+        }
+    }
+
     render() {
         const { tasks, user, translate, project } = this.props;
         const { currentTaskId, currentPage, currentTab, parentTask, startDate, endDate, perPage, status, monthTimeSheetLog, tableId, responsibleEmployees, creatorTime, projectSearch } = this.state;
@@ -499,7 +508,7 @@ class TaskManagement extends Component {
                     creatorEmployees: dataTemp[n].creator ? dataTemp[n].creator.name : null,
                     startDate: getFormatDateFromTime(dataTemp[n].startDate, 'dd-mm-yyyy'),
                     endDate: getFormatDateFromTime(dataTemp[n].endDate, 'dd-mm-yyyy'),
-                    status: formatStatus(translate, dataTemp[n].status),
+                    status: this.checkTaskRequestToClose(dataTemp[n]),
                     progress: dataTemp[n].progress ? dataTemp[n].progress + "%" : "0%",
                     totalLoggedTime: getTotalTimeSheetLogs(dataTemp[n].timesheetLogs),
                     parent: dataTemp[n].parent ? dataTemp[n].parent._id : null
