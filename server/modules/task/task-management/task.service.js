@@ -377,14 +377,12 @@ exports.getPaginatedTasks = async (portal, task) => {
             ]
         })
 
-        const getIdResponsible = responsible && responsible.length > 0 ? responsible.map(o => o._id): null;
+        const getIdResponsible = responsible && responsible.length > 0 ? responsible.map(o => o._id): [];
 
-        if (getIdResponsible) {
-            keySearch = {
-                ...keySearch,
-                responsibleEmployees: {
-                    $in: getIdResponsible
-                }
+        keySearch = {
+            ...keySearch,
+            responsibleEmployees: {
+                $in: getIdResponsible
             }
         }
     }
@@ -407,14 +405,12 @@ exports.getPaginatedTasks = async (portal, task) => {
             ]
         })
 
-        const getIdAccountable = accountable && accountable.length > 0 ? accountable.map(o => o._id): null;
+        const getIdAccountable = accountable && accountable.length > 0 ? accountable.map(o => o._id): [];
 
-        if (getIdAccountable) {
-            keySearch = {
-                ...keySearch,
-                accountableEmployees: {
-                    $in: getIdAccountable
-                }
+        keySearch = {
+            ...keySearch,
+            accountableEmployees: {
+                $in: getIdAccountable
             }
         }
     }
@@ -437,14 +433,12 @@ exports.getPaginatedTasks = async (portal, task) => {
             ]
         })
 
-        const getIdCreator = creator && creator.length > 0 ? creator.map(o => o._id): null;
+        const getIdCreator = creator && creator.length > 0 ? creator.map(o => o._id): [];
 
-        if (getIdCreator) {
-            keySearch = {
-                ...keySearch,
-                creator: {
-                    $in: getIdCreator
-                }
+        keySearch = {
+            ...keySearch,
+            creator: {
+                $in: getIdCreator
             }
         }
     }
@@ -1434,14 +1428,12 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
             ]
         })
 
-        const getIdResponsible = responsible && responsible.length > 0 ? responsible.map(o => o._id): null;
+        const getIdResponsible = responsible && responsible.length > 0 ? responsible.map(o => o._id): [];
 
-        if (getIdResponsible) {
-            keySearch = {
-                ...keySearch,
-                responsibleEmployees: {
-                    $in: getIdResponsible
-                }
+        keySearch = {
+            ...keySearch,
+            responsibleEmployees: {
+                $in: getIdResponsible
             }
         }
     }
@@ -1464,14 +1456,12 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
             ]
         })
 
-        const getIdAccountable = accountable && accountable.length > 0 ? accountable.map(o => o._id): null;
+        const getIdAccountable = accountable && accountable.length > 0 ? accountable.map(o => o._id): [];
 
-        if (getIdAccountable) {
-            keySearch = {
-                ...keySearch,
-                accountableEmployees: {
-                    $in: getIdAccountable
-                }
+        keySearch = {
+            ...keySearch,
+            accountableEmployees: {
+                $in: getIdAccountable
             }
         }
     }
@@ -1494,14 +1484,12 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
             ]
         })
 
-        const getIdCreator = creator && creator.length > 0 ? creator.map(o => o._id): null;
+        const getIdCreator = creator && creator.length > 0 ? creator.map(o => o._id): [];
 
-        if (getIdCreator) {
-            keySearch = {
-                ...keySearch,
-                creator: {
-                    $in: getIdCreator
-                }
+        keySearch = {
+            ...keySearch,
+            creator: {
+                $in: getIdCreator
             }
         }
     }
