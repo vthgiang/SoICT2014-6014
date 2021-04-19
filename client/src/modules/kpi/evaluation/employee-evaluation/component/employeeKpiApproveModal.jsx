@@ -60,20 +60,20 @@ function EmployeeKpiApproveModal(props) {
     })
 
     const handleEditOrganizationalUnitKPi = async (employeeKPI) => {
-        if (employeeKPI?.approvedPoint !== null && employeeKPI?.approvedPoint >= 0) {
-            Swal.fire({
-                title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.edit_target.evaluated'),
-                type: 'warning',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
-            })
-        } else {
+        // if (employeeKPI?.approvedPoint !== null && employeeKPI?.approvedPoint >= 0) {
+        //     Swal.fire({
+        //         title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.edit_target.evaluated'),
+        //         type: 'warning',
+        //         confirmButtonColor: '#3085d6',
+        //         confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
+        //     })
+        // } else {
             await setState( {
                 ...state,
                 edit: employeeKPI,
             })
             window.$(`#editEmployeeKpi`).modal("show");
-        }
+        // }
     }
 
     const handleDateChange = (value) => {
@@ -163,14 +163,14 @@ function EmployeeKpiApproveModal(props) {
     const handleEditStatusTarget = (event, kpi, status, listTarget) => {
         event.preventDefault();
 
-        if (kpi?.approvedPoint !== null && kpi?.approvedPoint >= 0) {
-            Swal.fire({
-                title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.edit_target.evaluated'),
-                type: 'warning',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
-            })
-        } else {
+        // if (kpi?.approvedPoint !== null && kpi?.approvedPoint >= 0) {
+        //     Swal.fire({
+        //         title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.edit_target.evaluated'),
+        //         type: 'warning',
+        //         confirmButtonColor: '#3085d6',
+        //         confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
+        //     })
+        // } else {
             if (listTarget) {
                 let totalWeight;
                 if (listTarget) {
@@ -192,7 +192,7 @@ function EmployeeKpiApproveModal(props) {
             } else {
                 props.editStatusKpi(kpi?._id, status);
             }
-        }
+        // }
     }
 
    const handleApproveKPI = async (id, listTarget) => {
