@@ -22,27 +22,28 @@ function OrganizationalUnitKpiEditTargetModal(props) {
 
     const { createKpiUnit, translate } = props;
     const { organizationalUnit } = props;
-    const { editing, newTarget, _id, name, parent, weight, criteria, errorOnName, errorOnCriteria, errorOnWeight, quillValueDefault } = state;
+    const { editing, newTarget, _id, name, parent, weight, 
+        criteria, errorOnName, errorOnCriteria, errorOnWeight, 
+        quillValueDefault 
+    } = state;
 
     let parentKPI;
 
-    useEffect(()=>{
-        if (props.id !== state._id && props.organizationalUnitKpi) {
-            setState( {
-                ...state,
-                _id: props.id,
-                name: props.organizationalUnitKpi.name,
-                parent: props.organizationalUnitKpi.parent ? props.organizationalUnitKpi.parent._id : null,
-                weight: props.organizationalUnitKpi.weight,
-                criteria: props.organizationalUnitKpi.criteria,
-                quillValueDefault: props.organizationalUnitKpi.criteria,
+    if (props.id !== state._id && props.organizationalUnitKpi) {
+        setState( {
+            ...state,
+            _id: props.id,
+            name: props.organizationalUnitKpi.name,
+            parent: props.organizationalUnitKpi.parent ? props.organizationalUnitKpi.parent._id : null,
+            weight: props.organizationalUnitKpi.weight,
+            criteria: props.organizationalUnitKpi.criteria,
+            quillValueDefault: props.organizationalUnitKpi.criteria,
 
-                errorOnName: undefined,
-                errorOnCriteria: undefined,
-                errorOnWeight: undefined,
-            })
-        }
-    },[props.id])
+            errorOnName: undefined,
+            errorOnCriteria: undefined,
+            errorOnWeight: undefined,
+        })
+    }
 
     const handleEditTarget = async () => {
         let id = state._id;

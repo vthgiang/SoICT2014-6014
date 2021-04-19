@@ -8,7 +8,7 @@ const { auth } = require(`../../../../middleware`);
 // router.get('/:id', auth, ExampleController.getExampleById);
 
 router.get('/get-by-plan-id/:id', auth, transportScheduleController.getTransportRouteByPlanId);
-router.patch('/edit-by-plan-id/:id', auth, transportScheduleController.editTransportRouteByPlanId);
+router.patch('/edit-by-plan-id/:planId', auth, transportScheduleController.editTransportScheduleByPlanId);
 // router.get('/', auth, TransportRequirementController.getAllTransportRequirements);
 // router.get('/', auth, TransportVehicleController.getAllTransportVehicles);
 // router.post('/', auth, TransportVehicleController.createTransportVehicle);

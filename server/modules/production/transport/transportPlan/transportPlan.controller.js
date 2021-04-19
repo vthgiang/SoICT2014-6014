@@ -231,3 +231,26 @@ exports.addTransportVehicleToPlan = async (req, res) => {
     }
 }
 
+exports.deleteTransportPlan = async (req, res) => {
+    try {
+        let { id } = req.params;
+        let deleteTransportPlan = await TransportPlanService.deleteTransportPlan(req.portal, id);
+        if (deleteTransportPlan) {
+            await Log.info(req.user.email, "DELETED_TRANSPORT_PLAN", req.portal);
+            res.status(200).json({
+                success: true,
+                messages: ["delete_success"],
+                content: deleteTransportPlan
+            });
+        } else {
+            throw Error("TransportPlan is invalid");
+        }
+    } catch (error) {
+        await Log.error(req.user.email, "DELETED_TRANSPORT_PLAN", req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ["delete_fail"],
+            content: error.message
+        });
+    }
+}

@@ -1,6 +1,6 @@
 import { sendRequest } from '../../../../../helpers/requestHelper';
 export const transportScheduleServices = {
-    editTransportRouteByPlanId,
+    editTransportScheduleByPlanId,
     getTransportScheduleByPlanId,
 }
 
@@ -16,10 +16,10 @@ function getTransportScheduleByPlanId(planId) {
     )
 }
 
-function editTransportRouteByPlanId(planId, data) {
+function editTransportScheduleByPlanId(planId, data) {
     return sendRequest(
         {
-            url: `${process.env.REACT_APP_SERVER}/transport-route/edit-by-plan-id/${planId}`,
+            url: `${process.env.REACT_APP_SERVER}/transport-schedule/edit-by-plan-id/${planId}`,
             method: "PATCH",
             data: data
         },

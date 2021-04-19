@@ -3,6 +3,7 @@ import { transportScheduleServices } from './services';
 
 export const transportScheduleActions = {
     getTransportScheduleByPlanId,
+    editTransportScheduleByPlanId,
 }
 
 function getTransportScheduleByPlanId(id) {
@@ -12,7 +13,6 @@ function getTransportScheduleByPlanId(id) {
         });
         transportScheduleServices.getTransportScheduleByPlanId(id)
             .then((res) => {
-                console.log(res.data.content);
                 dispatch({
                     type: transportScheduleConstants.GET_TRANSPORT_SCHEDULE_BY_PLAN_ID_SUCCESS,
                     payload: res.data.content
@@ -25,25 +25,30 @@ function getTransportScheduleByPlanId(id) {
             });
     }
 }
-
-// function editTransportRequirement(id, data) {
-//     return (dispatch) => {
-//         dispatch({
-//             type: transportRequirementsConstants.EDIT_TRANSPORT_REQUIREMENT_REQUEST
-//         });
-//         transportRequirementsServices
-//             .editTransportRequirement(id, data)
-//             .then((res) => {
-//                 dispatch({
-//                     type: transportRequirementsConstants.EDIT_TRANSPORT_REQUIREMENT_SUCCESS,
-//                     payload: res.data.content
-//                 });
-//             })
-//             .catch((error) => {
-//                 dispatch({
-//                     type: transportRequirementsConstants.EDIT_TRANSPORT_REQUIREMENT_FAILURE,
-//                     error
-//                 });
-//             });
-//     }
-// }
+/**
+ * Edit transportSchedule có transportPlan === planid
+ * @param {*} planId 
+ * @param {*} data 
+ * @returns 
+ */
+function editTransportScheduleByPlanId(planId, data) {
+    return (dispatch) => {
+        dispatch({
+            type: transportScheduleConstants.EDIT_TRANSPORT_SCHEDULE_BY_PLAN_ID_REQUEST
+        });
+        transportScheduleServices
+            .editTransportScheduleByPlanId(planId, data)
+            .then((res) => {
+                dispatch({
+                    type: transportScheduleConstants.EDIT_TRANSPORT_SCHEDULE_BY_PLAN_ID_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch((error) => {
+                dispatch({
+                    type: transportScheduleConstants.EDIT_TRANSPORT_SCHEDULE_BY_PLAN_ID_FAILURE,
+                    error
+                });
+            });
+    }
+}

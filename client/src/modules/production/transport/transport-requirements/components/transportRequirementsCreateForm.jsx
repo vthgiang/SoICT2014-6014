@@ -1,44 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { ButtonModal, DialogModal, ErrorLabel, DatePicker, SelectBox } from '../../../../../../common-components';
+import { ButtonModal, DialogModal, ErrorLabel, DatePicker, SelectBox } from '../../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { formatToTimeZoneDate } from '../../../../../../helpers/formatDate'
-import ValidationHelper from '../../../../../../helpers/validationHelper';
+import { formatToTimeZoneDate } from '../../../../../helpers/formatDate'
+import ValidationHelper from '../../../../../helpers/validationHelper';
+import {generateCode} from '../../../../../helpers/generateCode'
 
-import { TransportGeneralInfo } from '../create-transport-requirements/transportGeneralInfo';
-import { TransportRequirementsViewDetails } from '../transportRequirementsViewDetails';
-import { TransportGeneralInfoShip } from '../create-transport-requirements/transportGeneralInfoShip';
-import { TransportReturn } from '../create-transport-requirements/transportReturn';
-import { TransportImportGoods } from '../create-transport-requirements/transportImportGoods';
-import { TransportMaterial } from '../create-transport-requirements/transportMaterial';
-import { TransportNewOne} from '../create-transport-requirements/transportNewOne';
-import { TransportGoods } from '../create-transport-requirements/transportGoods';
-import { TransportTime } from '../create-transport-requirements/transportTime';
+import { TransportGeneralInfo } from './create-transport-requirements/transportGeneralInfo';
+import { TransportRequirementsViewDetails } from './transportRequirementsViewDetails';
+import { TransportGeneralInfoShip } from './create-transport-requirements/transportGeneralInfoShip';
+import { TransportReturn } from './create-transport-requirements/transportReturn';
+import { TransportImportGoods } from './create-transport-requirements/transportImportGoods';
+import { TransportMaterial } from './create-transport-requirements/transportMaterial';
+import { TransportNewOne} from './create-transport-requirements/transportNewOne';
+import { TransportGoods } from './create-transport-requirements/transportGoods';
+import { TransportTime } from './create-transport-requirements/transportTime';
 
-import { exampleActions } from '../../redux/actions';
+import { exampleActions } from '../redux/actions';
 
-import { BillActions } from '../../../../warehouse/bill-management/redux/actions';
-import { CrmCustomerActions } from "../../../../../crm/customer/redux/actions";
-import { GoodActions} from '../../../../common-production/good-management/redux/actions';
-import { transportRequirementsActions } from '../../redux/actions'
-import { getGeocode } from '../../../transportHelper/getGeocodeGoong'
+import { BillActions } from '../../../warehouse/bill-management/redux/actions';
+import { CrmCustomerActions } from "../../../../crm/customer/redux/actions";
+import { GoodActions} from '../../../common-production/good-management/redux/actions';
+import { transportRequirementsActions } from '../redux/actions'
+import { getGeocode } from '../../transportHelper/getGeocodeGoong'
 
 function TransportRequirementsCreateForm(props) {
-
-    // Khởi tạo state
-    // const [state1, setState1] = useState({
-    //     exampleName: "",
-    //     description: "",
-    //     exampleNameError: {
-    //         message: undefined,
-    //         status: true
-    //     },
-    //     step: 0,
-    // })
-
-
-
 
     // const { translate, example, page, perPage } = props;
     // const { exampleName, description, exampleNameError } = state1;
@@ -53,32 +40,6 @@ function TransportRequirementsCreateForm(props) {
     //     return true;
     // }
 
-
-    // /**
-    //  * Hàm xử lý khi tên ví dụ thay đổi
-    //  * @param {*} e 
-    //  */
-    // const handleExampleName = (e) => {
-    //     const { value } = e.target;
-    //     let result = ValidationHelper.validateName(translate, value, 6, 255);
-
-    //     setState1({
-    //         ...state1,
-    //         exampleName: value,
-    //         exampleNameError: result
-    //     })
-    // }
-
-    // const setCurrentStep = (e, step) => {
-    //     e.preventDefault();
-    //     setState1({
-    //         ...state1,
-    //         step: step,
-    //     });
-    // }
-    // useEffect(() => {
-    //     console.log(state, '- Has changed')
-    // },[state])
 
     const requirements = [
         {
@@ -166,7 +127,9 @@ function TransportRequirementsCreateForm(props) {
         //         });
         //     }
         const {payload, volume} = getTotalPayloadVolume(requirementsForm.goods);
-
+        /**
+         * Khi tạo mới yêu cầu vận chuyển, đồng thời lấy tọa độ geocode {Lat, Lng} lưu vào db
+         */
         let fromLat, fromLng;
         let toLat, toLng;
         if (requirementsForm.info.customer1AddressTransport){
@@ -188,7 +151,8 @@ function TransportRequirementsCreateForm(props) {
 
         let data = {
             status: 1,
-            type: 5, 
+            code: requirementsForm.code,
+            type: state.value, 
             fromAddress: requirementsForm.info.customer1AddressTransport ? requirementsForm.info.customer1AddressTransport : "",
             toAddress: requirementsForm.info.customer2AddressTransport ? requirementsForm.info.customer2AddressTransport : [],
             goods : formatGoodsForSubmit(requirementsForm.goods),
@@ -360,10 +324,16 @@ function TransportRequirementsCreateForm(props) {
         })
     }
 
+    const handleClickCreateCode = () => {
+        setRequirementsForm({
+            ...requirementsForm,
+            code: generateCode("YCVC"),
+        })
+    }
     return (
         <React.Fragment>
             <ButtonModal
-                    // onButtonCallBack={this.handleClickCreateCode}
+                    onButtonCallBack={handleClickCreateCode}
                     modalID={"modal-create-transport-requirements"}
                     button_name={"Yêu cầu vận chuyển mới"}
                     title={"Yêu cầu vận chuyển mới"}
@@ -383,51 +353,22 @@ function TransportRequirementsCreateForm(props) {
                 <form id="form-create-transport-requirements" 
                 // onSubmit={() => save(translate('manage_example.add_success'))}
                 >
-                    
-                <div>
-                    
-                    {/* Tên ví dụ */}
-                    {/* <div className={`form-group ${exampleNameError.status ? "" : "has-error"}`}>
-                        <label>{"Tên khách hàng"}<span className="text-red">*</span></label>
-                        <input type="text" className="form-control" value={exampleName} onChange={handleExampleName}></input>
-                        <ErrorLabel content={exampleNameError.message} />
-                    </div> */}
-                    {/* <ul className="breadcrumbs">
-                        <li key="1">
-                            <a
-                                className={`${state.step >= 0 ? "quote-active-tab" : "quote-defaul-tab"}`}
-                                onClick={(e) => setCurrentStep(e, 0)}
-                                style={{ cursor: "pointer" }}
-                            >
-                                <span>Thông tin vận chuyển</span>
-                            </a>
-                        </li>
-                        <li key="2">
-                            <a
-                                className={`${state.step >= 1 ? "quote-active-tab" : "quote-defaul-tab"} 
-                                `}
-                                onClick={(e) => setCurrentStep(e, 1)}
-                                style={{ cursor: "pointer" }}
-                            >
-                                <span>Thông tin hàng hóa và thời gian</span>
-                            </a>
-                        </li>
-                        <li key="3">
-                            <a
-                                className={`${state.step >= 2 ? "quote-active-tab" : "quote-defaul-tab"} `}
-                                onClick={(e) => setCurrentStep(e, 2)}
-                                style={{ cursor: "pointer" }}
-                            >
-                                <span>Xác nhận yêu cầu</span>
-                            </a>
-                        </li>
-                    </ul> */}
-                    
-                </div>
-                    
+                  
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <fieldset className="scheduler-border" style={{ height: "100%" }}>
-                        <legend className="scheduler-border">Thông tin kho</legend>
+                        <legend className="scheduler-border">Thông tin chung</legend>
+                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                <div className={`form-group`}>
+                                    <label>
+                                        Mã yêu cầu vận chuyển
+                                    </label>
+                                    <input type="text" className="form-control" disabled={true} 
+                                        value={requirementsForm.code}
+                                    />
+                                </div>
+                            </div>
+                        </div>
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group`}>
@@ -447,22 +388,25 @@ function TransportRequirementsCreateForm(props) {
                                 </div>
                             </div>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                <div className={`form-group`}>
-                                    <label>
-                                        Phiếu kho
-                                        <span className="attention"> * </span>
-                                    </label>
-                                    <SelectBox
-                                        id={`select-bills`}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        value={"0"}
-                                        items={getBills()}
-                                        onChange={handleTypeBillChange}
-                                        multiple={false}
-                                    />
+                                {
+                                    state.value !== "5" &&
+                                    <div className={`form-group`}>
+                                        <label>
+                                            Phiếu kho
+                                            <span className="attention"> * </span>
+                                        </label>
+                                        <SelectBox
+                                            id={`select-bills`}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            value={"0"}
+                                            items={getBills()}
+                                            onChange={handleTypeBillChange}
+                                            multiple={false}
+                                        />
+                                    </div>
+                                }
                                 </div>
-                            </div>
                         </div> 
                     </fieldset>
 
@@ -517,8 +461,8 @@ function TransportRequirementsCreateForm(props) {
 
 function mapState(state) {
     // const example = state.example1;
-    // return { example }
-    
+    // return { example }  
+    console.log(state, " day la state");    
     const bills = state.bills.listPaginate;
     // const listAllGoods = state.goods.listALLGoods;
     return { bills }

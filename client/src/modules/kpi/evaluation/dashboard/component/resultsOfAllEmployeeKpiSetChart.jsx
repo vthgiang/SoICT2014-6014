@@ -68,7 +68,7 @@ function ResultsOfAllEmployeeKpiSetChart(props) {
     }, [props.organizationalUnitIds, state.infosearch.startMonth, state.infosearch.endMonth]);
 
     useEffect(() => {
-        if (state.dataStatus === DATA_STATUS.NOT_AVAILABLE) {
+        if (state.dataStatus === DATA_STATUS.NOT_AVAILABLE && props.organizationalUnitIds) {
             props.getAllEmployeeKpiSetInOrganizationalUnitsByMonth(props.organizationalUnitIds, state.startMonth, state.endMonth);
 
             setState({
@@ -100,11 +100,11 @@ function ResultsOfAllEmployeeKpiSetChart(props) {
         });
     }, [props.createEmployeeKpiSet.employeeKpiSetsInOrganizationalUnitByMonth])
 
-    if (props.organizationalUnitIds !== state.organizationalUnitIds) {
+    if (props.organizationalUnitIds !== state.organizationalUnitIds && props.organizationalUnitIds) {
         props.getAllEmployeeKpiSetInOrganizationalUnitsByMonth(props.organizationalUnitIds, state.startMonth, state.endMonth);
 
         setState({
-            ...state,
+            ...state, 
             organizationalUnitIds: props.organizationalUnitIds
         })
     }
@@ -156,11 +156,11 @@ function ResultsOfAllEmployeeKpiSetChart(props) {
                 infosearch: {
                     ...state.infosearch,
                     startMonth: state.startMonth,
-                    endMonth: state.endMonth
+                    endMonth: state.endMonth 
                 }
             })
 
-            props.getAllEmployeeKpiSetInOrganizationalUnitsByMonth(props.organizationalUnitIds, state.startMonth, state.endMonth);
+            props.organizationalUnitIds && props.getAllEmployeeKpiSetInOrganizationalUnitsByMonth(props.organizationalUnitIds, state.startMonth, state.endMonth);
         }
     };
 
@@ -196,7 +196,7 @@ function ResultsOfAllEmployeeKpiSetChart(props) {
         let employeeKpiSetsInOrganizationalUnitByMonth, point = [], exportData;
 
         if (createEmployeeKpiSet.employeeKpiSetsInOrganizationalUnitByMonth) {
-            employeeKpiSetsInOrganizationalUnitByMonth = createEmployeeKpiSet.employeeKpiSetsInOrganizationalUnitByMonth
+            employeeKpiSetsInOrganizationalUnitByMonth = JSON.parse(JSON.stringify(createEmployeeKpiSet.employeeKpiSetsInOrganizationalUnitByMonth))
             exportData = convertDataToExportData(employeeKpiSetsInOrganizationalUnitByMonth)
             handleExportData(exportData);
         }
@@ -402,7 +402,6 @@ function ResultsOfAllEmployeeKpiSetChart(props) {
             </section>
 
             <section className="box-body" style={{textAlign: "right"}}>
-
                 <div className="btn-group">
                     <button type="button"
                             className={`btn btn-xs ${state.kindOfPoint === KIND_OF_POINT.AUTOMATIC ? 'btn-danger' : null}`}

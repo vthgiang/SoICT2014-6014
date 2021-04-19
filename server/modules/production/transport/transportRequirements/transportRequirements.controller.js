@@ -4,7 +4,7 @@ const Log = require(`../../../../logs`);
 // Thêm mới một ví dụ
 exports.createTransportRequirement = async (req, res) => {
     try {
-        const newTransportRequirement = await TransportRequirementService.createTransportRequirement(req.portal, req.body);
+        const newTransportRequirement = await TransportRequirementService.createTransportRequirement(req.portal, req.body, req.user._id);
 
         await Log.info(req.user.email, 'CREATED_NEW_TRANSPORT_REQUIREMENT', req.portal);
 

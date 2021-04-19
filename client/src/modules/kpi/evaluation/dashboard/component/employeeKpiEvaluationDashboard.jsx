@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
+import { Link } from 'react-router-dom';
 
 import { UserActions } from "../../../../super-admin/user/redux/actions";
 import { kpiMemberActions } from '../../employee-evaluation/redux/actions';
@@ -12,8 +13,7 @@ import { StatisticsOfEmployeeKpiSetChart } from './statisticsOfEmployeeKpiSetCha
 import { ResultsOfAllEmployeeKpiSetChart } from './resultsOfAllEmployeeKpiSetChart';
 
 import { SelectBox, SelectMulti, ExportExcel, DatePicker } from '../../../../../common-components';
-
-
+import { showListInSwal } from '../../../../../helpers/showListInSwal';
 import getEmployeeSelectBoxItems from '../../../../task/organizationalUnitHelper';
 
 function EmployeeKpiEvaluationDashboard(props) {
@@ -79,24 +79,13 @@ function EmployeeKpiEvaluationDashboard(props) {
         organizationalUnitIds, statisticsOfEmployeeKpiSetChartData, resultsOfAllEmployeeKpiSetChartData
     } = state;
 
-    let employeeKpiSets, lastMonthEmployeeKpiSets, currentMonthEmployeeKpiSets, settingUpKpi, awaitingApprovalKpi,
-        activatedKpi, totalKpi, numberOfEmployee;
-    let queue = [], childrenOrganizationalUnit = [], userName;
-    let kpimember;
-    let listkpi, kpiApproved;
-    let currentUnit, currentUnitLoading;
-
-    // let currentDate = new Date();
-    // let currentYear = currentDate.getFullYear();
-    // let currentMonth = currentDate.getMonth();
-
     useEffect(() => {
         let infosearch = {
             role: localStorage.getItem("currentRole"),
             user: null,
             status: 5,
             startDate: state.startMonth,
-            endDate: endMonth
+            endDate: state.endMonth
         }
 
         props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
@@ -312,6 +301,13 @@ function EmployeeKpiEvaluationDashboard(props) {
         })
     };
 
+    let employeeKpiSets, lastMonthEmployeeKpiSets, currentMonthEmployeeKpiSets, settingUpKpi, awaitingApprovalKpi,
+        activatedKpi, totalKpi, numberOfEmployee;
+    let queue = [], childrenOrganizationalUnit = [], userName;
+    let kpimember;
+    let listkpi, kpiApproved;
+    let currentUnit, currentUnitLoading;
+    let allEmployeesUnit = [], idOfEmployees = [];
 
     if (dashboardEvaluationEmployeeKpiSet) {
         currentUnit = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
@@ -339,29 +335,24 @@ function EmployeeKpiEvaluationDashboard(props) {
     if (employeeKpiSets) {
         currentMonthEmployeeKpiSets = employeeKpiSets.filter(item => formatDate(item.date) == formatDate(new Date(currentYear, currentMonth, 1)));
         totalKpi = currentMonthEmployeeKpiSets.length;
-        settingUpKpi = currentMonthEmployeeKpiSets.filter(item => item.status == 0);
+
+        settingUpKpi = currentMonthEmployeeKpiSets.filter(item => item.status === 0);
         settingUpKpi = settingUpKpi.length;
-        awaitingApprovalKpi = currentMonthEmployeeKpiSets.filter(item => item.status == 1);
+        awaitingApprovalKpi = currentMonthEmployeeKpiSets.filter(item => item.status === 1);
         awaitingApprovalKpi = awaitingApprovalKpi.length;
-        activatedKpi = currentMonthEmployeeKpiSets.filter(item => item.status == 2);
+        activatedKpi = currentMonthEmployeeKpiSets.filter(item => item.status === 2);
         activatedKpi = activatedKpi.length;
     }
 
     if (user) {
-        // organizationalUnitsOfUser = user.organizationalUnitsOfUser;
-        // organizationalUnitsOfUserLoading = user.organizationalUnitsOfUserLoading;
-
-        let allEmployeesUnit = [], idOfEmployees = [];
-        let set;
-
         allEmployeesUnit = user.employees;
         allEmployeesUnit && allEmployeesUnit.map(employee => {
             idOfEmployees.push(employee.userId.id)
         })
 
-        set = new Set(idOfEmployees);
-        allEmployeesUnit = Array.from(set);
-        numberOfEmployee = allEmployeesUnit.length;
+        idOfEmployees = new Set(idOfEmployees);
+        idOfEmployees = Array.from(idOfEmployees);
+        numberOfEmployee = idOfEmployees.length;
     }
 
     if (currentUnit) {
@@ -435,24 +426,32 @@ function EmployeeKpiEvaluationDashboard(props) {
                             <div className="info-box">
                                 <span className="info-box-icon bg-yellow"><i className="fa fa-users"/></span>
                                 <div className="info-box-content">
-                                    <span
-                                        className="info-box-text">{translate('kpi.evaluation.dashboard.number_of_employee')}</span>
-                                    <span className="info-box-number"
-                                          style={{fontSize: '20px'}}>{numberOfEmployee ? numberOfEmployee : 0}</span>
+                                    <span className="info-box-text">{translate('kpi.evaluation.dashboard.number_of_employee')}</span>
+                                    <a className="info-box-number" onClick={() => showListInSwal(allEmployeesUnit?.map(item => item?.userId?.name), translate('general.list_employee'))} style={{ cursor: 'pointer', fontSize: '20px'}}>{numberOfEmployee ? numberOfEmployee : 0}</a>
                                 </div>
                             </div>
                         </div>
 
                         {/* Đã kích hoạt */}
-                        <div className="clearfix visible-sm-block"/>
                         <div className="col-md-3 col-sm-6 form-inline">
                             <div className="info-box">
-                                <span className="info-box-icon bg-red"><i className="fa fa-thumbs-o-up"/></span>
+                                <span className="info-box-icon bg-green"><i className="fa fa-check-circle"/></span>
                                 <div className="info-box-content">
-                                    <span
-                                        className="info-box-text">{`${translate('kpi.evaluation.dashboard.activated')}`}</span>
-                                    <span className="info-box-number"
-                                          style={{fontSize: '20px'}}>{`${activatedKpi ? activatedKpi : 0}`}</span>
+                                    <span className="info-box-text">{`${translate('kpi.evaluation.dashboard.activated')}`}</span>
+                                    
+                                    <Link to="/kpi-member/manager" onClick={() => localStorage.setItem('stateFromEmployeeKpiEvaluationDashboard', 
+                                        JSON.stringify({
+                                            organizationalUnit: organizationalUnitIds,
+                                            status: ["2"],
+                                            startDate: state.endMonth,
+                                            endDate: state.endMonth,
+                                            startDateDefault: [state?.endMonth?.slice(5), state?.endMonth?.slice(0, 4)].join('-'),
+                                            endDateDefault: [state?.endMonth?.slice(5), state?.endMonth?.slice(0, 4)].join('-')
+                                        }))} 
+                                        target="_blank" rel="noopener noreferrer"
+                                    >
+                                        <span className="info-box-number" style={{fontSize: '20px'}}>{`${activatedKpi ? activatedKpi : 0}`}</span>
+                                    </Link>
                                 </div>
                             </div>
                         </div>
@@ -460,12 +459,22 @@ function EmployeeKpiEvaluationDashboard(props) {
                         {/* Chờ phê duyệt */}
                         <div className="col-md-3 col-sm-6 form-inline">
                             <div className="info-box">
-                                <span className="info-box-icon bg-green"><i className="fa fa-comments-o"/></span>
+                                <span className="info-box-icon bg-red"><i className="fa fa-hourglass-half"/></span>
                                 <div className="info-box-content">
-                                    <span
-                                        className="info-box-text">{`${translate('kpi.evaluation.dashboard.awaiting_approval')}`}</span>
-                                    <span className="info-box-number"
-                                          style={{fontSize: '20px'}}>{`${awaitingApprovalKpi ? awaitingApprovalKpi : 0}`}</span>
+                                    <span className="info-box-text">{`${translate('kpi.evaluation.dashboard.awaiting_approval')}`}</span>
+                                    <Link to="/kpi-member/manager" onClick={() => localStorage.setItem('stateFromEmployeeKpiEvaluationDashboard', 
+                                        JSON.stringify({
+                                            organizationalUnit: organizationalUnitIds,
+                                            status: ["1"],
+                                            startDate: state.endMonth,
+                                            endDate: state.endMonth,
+                                            startDateDefault: [state?.endMonth?.slice(5), state?.endMonth?.slice(0, 4)].join('-'),
+                                            endDateDefault: [state?.endMonth?.slice(5), state?.endMonth?.slice(0, 4)].join('-')
+                                        }))} 
+                                        target="_blank" rel="noopener noreferrer"
+                                    >
+                                        <span className="info-box-number" style={{fontSize: '20px'}}>{`${awaitingApprovalKpi ? awaitingApprovalKpi : 0}`}</span>
+                                    </Link>
                                 </div>
                             </div>
                         </div>
@@ -475,10 +484,20 @@ function EmployeeKpiEvaluationDashboard(props) {
                             <div className="info-box">
                                 <span className="info-box-icon bg-aqua"><i className="fa fa-cogs"/></span>
                                 <div className="info-box-content">
-                                    <span
-                                        className="info-box-text">{`${translate('kpi.evaluation.dashboard.setting_up')}`}</span>
-                                    <span className="info-box-number"
-                                          style={{fontSize: '20px'}}>{`${settingUpKpi ? settingUpKpi : 0}`}</span>
+                                    <span className="info-box-text">{`${translate('kpi.evaluation.dashboard.setting_up')}`}</span>
+                                    <Link to="/kpi-member/manager" onClick={() => localStorage.setItem('stateFromEmployeeKpiEvaluationDashboard', 
+                                        JSON.stringify({
+                                            organizationalUnit: organizationalUnitIds,
+                                            status: ["0"],
+                                            startDate: state.endMonth,
+                                            endDate: state.endMonth,
+                                            startDateDefault: [state?.endMonth?.slice(5), state?.endMonth?.slice(0, 4)].join('-'),
+                                            endDateDefault: [state?.endMonth?.slice(5), state?.endMonth?.slice(0, 4)].join('-')
+                                        }))} 
+                                        target="_blank" rel="noopener noreferrer"
+                                    >
+                                        <span className="info-box-number"  style={{fontSize: '20px'}}>{`${settingUpKpi ? settingUpKpi : 0}`}</span>
+                                    </Link>
                                 </div>
                             </div>
                         </div>

@@ -57,7 +57,7 @@ function TransportPlanCreateForm(props) {
                 msg_faile={"fail"}
                 func={save}
                 // disableSubmit={!isFormValidated()}
-                size={50}
+                size={100}
                 maxWidth={500}
             >
                 <form id="form-create-transport-requirements" 

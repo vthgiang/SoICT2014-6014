@@ -272,7 +272,7 @@ export default {
             manage_transport_schedule: "Lịch vận chuyển",
             manage_transport_vehicle: "Phương tiện vận chuyển",
             manage_transport_human: "Nhân viên vận chuyển",
-            manage_transport_route: "Lộ trình vận chuyển",
+            manage_transport_route: "Hành trình vận chuyển",
 
             user_guide: "Hướng dẫn sử dụng",
             user_guide_detail: "Chi tiết hướng dẫn sử dụng",
@@ -4326,6 +4326,7 @@ export default {
                 },
 
                 statistics: {
+                    unit_not_initial_kpi: "Danh sách đơn vị chưa khởi tạo KPI",
                     detail_participant: "Chi tiết người tham gia",
                     detail_employee_kpi: "Chi tiết KPI nhân viên",
                     email: "Email",

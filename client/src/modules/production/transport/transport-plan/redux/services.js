@@ -7,6 +7,7 @@ export const transportPlanServices = {
     editTransportPlan,
     addTransportRequirementToPlan,
     addTransportVehicleToPlan,
+    deleteTransportPlan,
 }
 
 function getAllTransportPlans(queryData) {
@@ -96,6 +97,18 @@ function addTransportVehicleToPlan(id, data) {
             url: `${process.env.REACT_APP_SERVER}/transport-plan/add-transport-vehicle/${id}`,
             method: "PATCH",
             data: data
+        },
+        true,
+        true,
+        "manage_transport"
+    )
+}
+
+function deleteTransportPlan(id) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/transport-plan/${id}`,
+            method: "DELETE"
         },
         true,
         true,

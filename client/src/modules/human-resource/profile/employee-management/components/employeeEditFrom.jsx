@@ -893,69 +893,42 @@ const EmployeeEditFrom = (props) => {
 
     }
 
-    // useEffect(() => {
-    //     if (props._id != state._id) {
-    //         setState({
-    //             ...state,
-    //             _id: props._id,
-    //             dataStatus: 0,
-    //             editExperiences: [],
-    //             deleteExperiences: [],
-    //             editDegrees: [],
-    //             deleteDegrees: [],
-    //             editMajor: [],
-    //             deleteMajor: [],
-    //             editCareer: [],
-    //             deleteCareer: [],
-    //             editCertificates: [],
-    //             deleteCertificates: [],
-    //             editSocialInsuranceDetails: [],
-    //             deleteSocialInsuranceDetails: [],
-    //             editContracts: [],
-    //             deleteContracts: [],
-    //             editConmmendations: [],
-    //             deleteConmmendations: [],
-    //             editDisciplines: [],
-    //             deleteDisciplines: [],
-    //             editAnnualLeaves: [],
-    //             deleteAnnualLeaves: [],
-    //             editCourses: [],
-    //             deleteCourses: [],
-    //             editFiles: [],
-    //             deleteFiles: [],
-    //         })
-    //     }
-    // }, [props._id, state._id])
+    if (props._id !== state._id) {
+        props.getEmployeeProfile({ id: props._id, callAPIByUser: false });
+
+        setState({
+            ...state,
+            _id: props?._id,
+            dataStatus: DATA_STATUS.QUERYING,
+            img: undefined,
+            avatar: "",
+            employee: '',
+            experiences: [],
+            degrees: [],
+            certificates: [],
+            // career: [],
+            // major: [],
+            contracts: [],
+            files: [],
+            socialInsuranceDetails: [],
+            annualLeaves: [],
+            commendations: [],
+            disciplines: [],
+            courses: [],
+            roles: [],
+            houseHold: {}
+        })
+    };
+
+    useEffect(() => {
+        setState({
+            ...state,
+            dataStatus: DATA_STATUS.QUERYING,
+        })
+    }, [props.employeesInfo.isLoading])
 
     useEffect(() => {
         const shouldUpdate = async () => {
-            if (props._id !== state._id && !props.employeesInfo.isLoading) {
-                await props.getEmployeeProfile({ id: props._id, callAPIByUser: false });
-
-                setState({
-                    ...state,
-                    _id: props?._id,
-                    dataStatus: DATA_STATUS.QUERYING,
-                    img: undefined,
-                    avatar: "",
-                    employee: '',
-                    experiences: [],
-                    degrees: [],
-                    certificates: [],
-                    // career: [],
-                    // major: [],
-                    contracts: [],
-                    files: [],
-                    socialInsuranceDetails: [],
-                    annualLeaves: [],
-                    commendations: [],
-                    disciplines: [],
-                    courses: [],
-                    roles: [],
-                    houseHold: {}
-                })
-            };
-
             if (state.dataStatus === DATA_STATUS.QUERYING && !props.employeesInfo.isLoading) {
                 await setState({
                     ...state,
@@ -968,16 +941,16 @@ const EmployeeEditFrom = (props) => {
                     certificates: props.employeesInfo.employees?.[0]?.certificates,
                     // career: props.employeesInfo.employees?.[0]?.career,
                     // major: props.employeesInfo.employees?.[0]?.major,
-                    contracts: props.employeesInfo.employees?.[0]?.contracts,
-                    files: props.employeesInfo.employees?.[0]?.files,
-                    socialInsuranceDetails: props.employeesInfo.employees?.[0]?.socialInsuranceDetails,
+                    contracts: props.employeesInfo?.employees?.[0]?.contracts,
+                    files: props.employeesInfo?.employees?.[0]?.files,
+                    socialInsuranceDetails: props.employeesInfo?.employees?.[0]?.socialInsuranceDetails,
                     annualLeaves: props.employeesInfo?.annualLeaves,
                     commendations: props.employeesInfo?.commendations,
                     disciplines: props.employeesInfo?.disciplines,
                     courses: props.employeesInfo?.courses,
-                    roles: props.employeesInfo.roles?.map(x => x.roleId.id),
-                    organizationalUnits: props.employeesInfo.organizationalUnits?.map(x => x._id),
-                    houseHold: props.employeesInfo.employees?.[0]?.houseHold,
+                    roles: props.employeesInfo?.roles?.length > 0 && props.employeesInfo?.roles.map(x => x?.roleId?.id),
+                    organizationalUnits: props.employeesInfo?.organizationalUnits?.length > 0 && props.employeesInfo?.organizationalUnits.map(x => x._id),
+                    houseHold: props.employeesInfo?.employees?.[0]?.houseHold,
                 });
             };
         }

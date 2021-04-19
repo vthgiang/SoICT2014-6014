@@ -272,7 +272,7 @@ class TaskDashboard extends Component {
 
             totalTasks = newNumTask.length;
         }
-        console.count();
+
         return (
             <React.Fragment>
                 <div className="qlcv" style={{ textAlign: "left" }}>
