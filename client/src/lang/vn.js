@@ -264,8 +264,17 @@ export default {
             manage_manufacturing_works: "Quản lý nhà máy sản xuất",
             manage_manufacturing_mill: "Quản lý xưởng sản xuất",
             manage_manufacturing_lot: "Quản lý lô sản xuất",
-            manage_project: "Quản lý dự án",
 
+            // Quản lý dự án
+            manage_project: "Quản lý dự án",
+            projects_list: 'Danh sách dự án',
+            project_details: 'Chi tiết dự án',
+            tasks_list: 'Danh sách công việc',
+            phases_list: 'Danh sách giai đoạn',
+            issues_list: 'Danh sách vấn đề',
+            project_report: 'Báo cáo dự án',
+            project_evaluation: 'Đánh giá',
+            
             // Quản lý vận chuyển
             manage_transport: "Quản lý vận chuyển",
             manage_transport_requirements: "Yêu cầu vận chuyển",
@@ -274,6 +283,8 @@ export default {
             manage_transport_vehicle: "Phương tiện vận chuyển",
             manage_transport_human: "Nhân viên vận chuyển",
             manage_transport_route: "Hành trình vận chuyển",
+
+
 
             user_guide: "Hướng dẫn sử dụng",
             user_guide_detail: "Chi tiết hướng dẫn sử dụng",
@@ -5731,18 +5742,95 @@ export default {
         manage_transport: {
             add_requirements: "Thêm yêu cầu vận chuyển",
         },
-
+        
+        // Quản lý dự án
         project: {
             code: "Mã dự án",
             name: "Tên dự án",
             startDate: "Ngày bắt đầu dự án",
-            endDate: "Ngày kết thúc dự án",
+            endDate: "Ngày dự kiến kết thúc dự án",
             parent: "Dự án cha",
             manager: "Người quản trị",
+            member: 'Thành viên dự án',
+            detail_link: 'Link chi tiết dự án',
+            estimatedTime: 'Thời gian ước lượng hoàn thành dự án',
+            estimatedCost: 'Chi phí ước lượng cho dự án',
+            unitTime: 'Đơn vị của thời gian',
+            unitCost: 'Đơn vị của chi phí',
             description: "Mô tả dự án",
             add_title: "Thêm mới dự án",
-            detail_title: "Chi tiết dự án",
-            edit_title: "Chỉnh sửa dự án"
-        }
+            detail_title: "Thông tin chi tiết dự án",
+            edit_title: "Chỉnh sửa dự án",
+            add_btn_from_excel: "Thêm từ file excel",
+            add_btn_new: "Thêm dự án mới",
+            add_btn_normal: "Thêm bằng tay",
+            add_btn_scheduling: "Thêm bằng lập lịch",
+            add_btn_task: 'Thêm công việc mới',
+            delete: 'Xoá dự án',
+            list_tasks: 'Danh sách công việc dự án',
+            role: 'Vai trò trong dự án',
+            creator: 'Người tạo dự án',
+
+            task_management:  {
+                add_err_time_cost: "Thời gian & Chi phí phải là số lớn hơn 0",
+                end_date: "Ngày dự kiến kết thúc",
+
+                // unit time and cost
+                estimate: "Ước lượng",
+                timeAndCost: "Thời gian & Chi phí cho Lập lịch",
+                estimatedTime: "Thời gian ước lượng cho công việc",
+                estimatedTimeNormal: "Thông thường",
+                estimatedTimePessimistic: "Bi quan",
+                estimatedTimeOptimistic: "Lạc quan",
+                estimatedCost: "Chi phí ước lượng cho công việc",
+                estimatedCostNormal: "Thông thường",
+                estimatedCostMaximum: "Tối đa",
+
+                preceedingTask: "Công việc tiền nhiệm",
+            },
+
+            unit: {
+                day: 'Ngày',
+                hour: 'Giờ',
+            },
+            schedule: {
+                taskCode: 'Mã công việc',
+                taskName: 'Tên công việc',
+                preceedingTasks: "Công việc tiền nhiệm",
+                estimatedTime: "Thời gian ước lượng",
+                estimatedTimePessimistic: "Thời gian bi quan",
+                estimatedTimeOptimistic: "Thời gian lạc quan",
+                estimatedCostNormal: "Chi phí thông thường",
+                estimatedCostMaximum: "Chi phí thoả hiệp tối đa",
+                slack: 'Thời gian dự trữ',
+                criticalPath: 'Thuộc đường găng',
+                calculateCPM: 'Tính toán CPM',
+                showTableCPM: 'Hiển thị dữ liệu đường găng',
+                hideTableCPM: 'Ẩn dữ liệu đường găng',
+                insertListTasksToDB: 'Thêm vào cơ sở dữ liệu',
+                calculateRecommend: 'Tính toán đề xuất thoả hiệp dự án',
+                percentFinishTask: 'Xác suất hoàn thành dự án trong',
+            },
+            eval: {
+                undefined: 'Nếu costPerformanceIndex không tính được (mẫu số actualCost = 0 HOẶC costPerformanceIndex = Infinity): Điểm = Chưa tính được',
+                level1: 'Nếu realDuration = 0 HOẶC costPerformanceIndex < 0.5: Điểm = 0',
+                level2: 'Nếu 0.5 <= costPerformanceIndex < 0.75: Điểm = 40',
+                level3: 'Nếu 0.75 <= costPerformanceIndex < 1: Điểm = 60',
+                level4: 'Nếu 1 <= costPerformanceIndex < 1.25: Điểm = 80',
+                level5: 'Nếu 1.25 <= costPerformanceIndex < 1.5: Điểm = 90',
+                level6: 'Nếu 1.5 <= costPerformanceIndex: Điểm = 100',
+            },
+            report: {
+                title: 'Báo cáo chi tiết dự án'
+            }
+        },
+        phase: {
+            projectCodeName: 'Mã dự án',
+            fullName: 'Tên giai đoạn',
+            progress: 'Tiến độ',
+            listTasks: 'Công việc liên quan',
+            duration: 'Thời lượng',
+            add_btn_new: "Thêm giai đoạn mới",
+        },
     },
 };

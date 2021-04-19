@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 
-import { Tree, SlimScroll, ExportExcel } from '../../../common-components';
-import { ProjectActions } from "../redux/actions";
-import { UserActions } from '../../super-admin/user/redux/actions';
+import { Tree, SlimScroll, ExportExcel } from '../../../../common-components';
+import { ProjectActions } from "../../redux/actions";
+import { UserActions } from '../../../super-admin/user/redux/actions';
 function CategoryProject(props) {
 
     const [state, setState] = useState({
@@ -23,7 +23,7 @@ function CategoryProject(props) {
         })
     }
     useEffect(() => {
-        props.getProjects({ calledId: "all" })
+        props.getProjectsDispatch({ calledId: "all" })
     }, [])
 
 
@@ -96,8 +96,8 @@ function mapState(state) {
     return { project, user }
 }
 const actions = {
-    getProjects: ProjectActions.getProjects,
-    deleteProject: ProjectActions.deleteProject,
+    getProjectsDispatch: ProjectActions.getProjectsDispatch,
+    deleteProjectDispatch: ProjectActions.deleteProjectDispatch,
 
 
 

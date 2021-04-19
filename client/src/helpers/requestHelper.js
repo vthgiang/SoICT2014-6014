@@ -21,6 +21,7 @@ const AuthenticateHeader = async () => {
     const fpAgent = await FingerprintJS.load();
     const result = await fpAgent.get();
     const fingerprint = result.visitorId;
+    console.log('fingerprint', fingerprint)
 
     return {
         "crtp": encryptMessage(window.location.pathname),

@@ -23,6 +23,9 @@ export const taskManagementActions = {
     getTaskByPriorityInOrganizationUnit,
     getTimeSheetOfUser,
     getAllUserTimeSheet,
+
+    addProjectTask,
+    getTasksByProject,
 };
 
 
@@ -527,6 +530,49 @@ function getAllUserTimeSheet(month, year) {
             })
             .catch(error => {
                 dispatch({ type: taskManagementConstants.GET_ALL_USER_TIME_SHEET_LOG_FAILE });
+            });
+    };
+}
+
+/**
+ * thêm mới công việc cho dự án
+ * @param {*} task dữ liệu task mới thêm
+ */
+
+ function addProjectTask(task) {
+    return dispatch => {
+        dispatch({ type: taskManagementConstants.ADDNEW_TASK_REQUEST, task });
+
+        taskManagementService.addNewProjectTask(task)
+            .then(res => {
+                dispatch({
+                    type: taskManagementConstants.ADDNEW_TASK_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: taskManagementConstants.ADDNEW_TASK_FAILURE, error
+                })
+            })
+    }
+}
+
+/**
+ * get task by user and projectId
+ */
+function getTasksByProject(projectId) {
+    return dispatch => {
+        dispatch({ type: taskManagementConstants.GETTASK_BYPROJECT_REQUEST });
+        taskManagementService.getTasksByProject(projectId)
+            .then(res => {
+                dispatch({
+                    type: taskManagementConstants.GETTASK_BYPROJECT_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch(error => {
+                dispatch({ type: taskManagementConstants.GETTASK_BYPROJECT_FAILURE, error });
             });
     };
 }

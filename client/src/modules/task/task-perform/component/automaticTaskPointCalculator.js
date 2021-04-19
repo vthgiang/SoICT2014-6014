@@ -1,10 +1,14 @@
+import moment from 'moment';
 import Swal from 'sweetalert2';
 var mexp = require('math-expression-evaluator'); // native js package
 
 export const AutomaticTaskPointCalculator = {
-    calcAutoPoint
+    calcAutoPoint,
+    calcProjectAutoPoint,
+    getAmountOfWeekDaysInMonth,
 }
 
+const MILISECS_TO_DAYS = 86400000;
 
 // Replaces all instances of the given substring.
 String.prototype.replaceAll = function (
@@ -23,7 +27,7 @@ String.prototype.replaceAll = function (
 }
 
 const calculateExpression = (expression) => {
-    try{
+    try {
         // let point = eval(expression);
 
         let token1 = {
@@ -42,20 +46,20 @@ const calculateExpression = (expression) => {
         console.log('point-calculateExpression', point);
 
         return point;
-    }catch(err){
+    } catch (err) {
         return null;
     }
 }
 
 const convertDateTime = (date, time) => {
-    if(date) {
+    if (date) {
         let splitter = date.split("-");
         let strDateTime = `${splitter[2]}-${splitter[1]}-${splitter[0]} ${time}`;
         return new Date(strDateTime);
     } else {
         return new Date();
     }
-    
+
 }
 
 function calcAutoPoint(data) {
@@ -218,4 +222,77 @@ function calcAutoPoint(data) {
     }
 
     return Math.round(Math.min(automaticPoint, 100));
+}
+
+function getAmountOfWeekDaysInMonth(date) {
+    let result = 0;
+    for (var i = 1; i < 6; i++) {
+        date.date(1);
+        var dif = (7 + (i - date.weekday())) % 7 + 1;
+        result += Math.floor((date.daysInMonth() - dif) / 7) + 1;
+    }
+    return result;
+}
+
+function calcProjectAutoPoint(data, getCalcPointsOnly = true) {
+    const { task, progress, evaluatingMonth, date, time } = data;
+    // Lấy ngày giờ đánh giá từ picker
+    let evaluationDateFromPicker = convertDateTime(date, time);
+    // console.log('evaluationDateFromPicker', evaluationDateFromPicker)
+    const { timesheetLogs, budget, estimateNormalCost, startDate, endDate, actorsWithSalary, responsibleEmployees, estimateAssetCost, accountableEmployees } = task;
+    const weekDays = evaluatingMonth ? getAmountOfWeekDaysInMonth(moment(evaluatingMonth, 'MM-YYYY')) : 22;
+    const endDateOfEvalMonthMoment = moment(evaluatingMonth, 'MM-YYYY').endOf('month');
+    // console.log(endDateOfEvalMonthMoment.format('YYYY-MM-DD HH:mm'))
+    let autoCalPointProject = undefined;
+    // 1/3 thoi gian trong ngay tren cong ty = 8 tieng
+    let estDuration = 0
+    if (moment(evaluationDateFromPicker).isBefore(endDateOfEvalMonthMoment)) {
+        estDuration = moment(evaluationDateFromPicker).diff(moment(startDate), 'milliseconds') / MILISECS_TO_DAYS;
+    } else {
+        estDuration = endDateOfEvalMonthMoment.diff(moment(startDate), 'milliseconds') / MILISECS_TO_DAYS;
+    }
+    const estCost = estimateNormalCost + estimateAssetCost;
+    const progressTask = progress;
+    let realDuration = 0;
+    if (timesheetLogs && timesheetLogs.length > 0) {
+        for (let timeSheetItem of timesheetLogs) {
+            realDuration += timeSheetItem.duration / MILISECS_TO_DAYS;
+        }
+    }
+    // console.log('estDuration---------------------', estDuration)
+    let realCost = estimateAssetCost;
+    for (let actorItem of actorsWithSalary) {
+        const weight = responsibleEmployees.find(responsibleItem => responsibleItem.id === actorItem.userId) ? 0.8 : 0.2;
+        for (let timeSheetItem of timesheetLogs) {
+            if (actorItem.userId === timeSheetItem.creator.id) {
+                realCost += timeSheetItem.duration / MILISECS_TO_DAYS * weight * actorItem.salary / weekDays;
+            }
+        }
+    }
+    const earnedValue = Number(progressTask) / 100 * Number(budget);
+    const plannedValue = Number(estDuration) / Number(realDuration) * 100 * Number(budget);
+    const actualCost = realCost;
+    const costPerformanceIndex = earnedValue / actualCost;
+
+    if (actualCost === 0 || costPerformanceIndex === undefined || costPerformanceIndex === Infinity) autoCalPointProject = undefined;
+    else if (realDuration === 0 || costPerformanceIndex < 0.5) autoCalPointProject = 0;
+    else if (costPerformanceIndex >= 0.5 && costPerformanceIndex < 0.75) autoCalPointProject = 40;
+    else if (costPerformanceIndex >= 0.75 && costPerformanceIndex < 1) autoCalPointProject = 60;
+    else if (costPerformanceIndex >= 1 && costPerformanceIndex < 1.25) autoCalPointProject = 80;
+    else if (costPerformanceIndex >= 1.25 && costPerformanceIndex < 1.5) autoCalPointProject = 90;
+    else autoCalPointProject = 100;
+
+    if (getCalcPointsOnly) return autoCalPointProject;
+    return {
+        estCost,
+        estDuration,
+        realCost,
+        realDuration,
+        progressTask,
+        earnedValue,
+        plannedValue,
+        actualCost,
+        costPerformanceIndex,
+        autoCalPointProject,
+    }
 }

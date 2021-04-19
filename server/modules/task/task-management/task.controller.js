@@ -47,8 +47,12 @@ exports.getTasks = async (req, res) => {
     }
     else if (req.query.type === "get_all_task_of_children_organizational_unit") {
         getAllTaskOfChildrenOrganizationalUnit(req, res)
-    } else if (req.query.type === "priority") {
+    } 
+    else if (req.query.type === "priority") {
         getAllTaskByPriorityOfOrganizationalUnit(req, res)
+    }
+    else if (req.query.type === "project") {
+        getTasksByProject(req, res)
     }
 }
 
@@ -495,6 +499,94 @@ exports.createTask = async (req, res) => {
             content: task
         });
     } catch (error) {
+        console.log('CREATE TASK ERROR', error)
+        await Logger.error(req.user.email, 'create_task', req.portal)
+        res.status(400).json({
+            success: false,
+            messages: ['create_task_fail'],
+            content: error
+        })
+    }
+}
+
+/**
+ * Tạo một công việc mới của dự án
+ */
+ exports.createProjectTask = async (req, res) => {
+    try {
+        var tasks = await TaskManagementService.createProjectTask(req.portal, req.body);
+        var task = tasks.task;
+        var user = tasks.user.filter(user => user !== req.user._id); //lọc thông tin người tạo ra khỏi danh sách sẽ gửi thông báo
+
+        // // Gửi mail cho nhân viện tham gia công việc
+        var email = tasks.email;
+        var html = tasks.html;
+        var data = {
+            organizationalUnits: task.organizationalUnit._id,
+            title: "Tạo mới công việc",
+            level: "general",
+            content: html,
+            sender: task.organizationalUnit.name,
+            users: user,
+            associatedDataObject: {
+                dataType: 1,
+                value: task.priority,
+                description: `<p>${req.user.name} đã tạo mới công việc: <strong>${task.name}</strong> có sự tham gia của bạn.</p>`
+            },
+        };
+
+        // // Gửi mail cho trưởng đơn vị phối hợp thực hiện công việc
+        // let collaboratedEmail = tasks.collaboratedEmail;
+        // let collaboratedHtml = tasks.collaboratedHtml;
+        // let collaboratedData = {
+        //     organizationalUnits: task.organizationalUnit._id,
+        //     title: "Tạo mới công việc được phối hợp với đơn vị bạn",
+        //     level: "general",
+        //     content: collaboratedHtml,
+        //     sender: task.organizationalUnit.name,
+        //     users: tasks.managersOfOrganizationalUnitThatHasCollaborated,
+        //     associatedDataObject: {
+        //         dataType: 1,
+        //         description: `Đơn vị bạn được mời phối hợp thực hiện trong công việc: <strong>${task.name}</strong></p>`
+        //     },
+        // };
+
+        await NotificationServices.createNotification(req.portal, req.user.company._id, data);
+        // await NotificationServices.createNotification(req.portal, req.user.company._id, collaboratedData);
+        await sendEmail(email, "Bạn có công việc mới", '', html);
+        // collaboratedEmail && collaboratedEmail.length !== 0
+        //     && await sendEmail(collaboratedEmail, "Đơn vị bạn được phối hợp thực hiện công việc mới", '', collaboratedHtml);
+        await NewsFeed.createNewsFeed(req.portal, {
+            title: data?.title,
+            description: data?.content,
+            creator: req.user._id,
+            associatedDataObject: { 
+                dataType: 1,
+                value: task?._id,
+                description: task?.name
+            },
+            relatedUsers: data?.users
+        });
+        // await NewsFeed.createNewsFeed(req.portal, {
+        //     title: collaboratedData?.title,
+        //     description: collaboratedData?.content,
+        //     creator: req.user._id,
+        //     associatedDataObject: { 
+        //         dataType: 1,
+        //         value: task?._id,
+        //         description: task?.name
+        //     },
+        //     relatedUsers: collaboratedData?.users
+        // });
+
+        await Logger.info(req.user.email, 'create_task', req.portal)
+        res.status(200).json({
+            success: true,
+            messages: ['create_task_success'],
+            content: task
+        });
+    } catch (error) {
+        console.log('CREATE TASK ERROR', error)
         await Logger.error(req.user.email, 'create_task', req.portal)
         res.status(400).json({
             success: false,
@@ -869,6 +961,28 @@ exports.getAllUserTimeSheet = async(req, res) => {
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['get_all_user_time_sheet_faile'],
+            content: error
+        })
+    }
+}
+
+getTasksByProject = async(req, res) => {
+    try {
+        let portal = req.portal;
+        let {projectId} = req.query;
+        let tasksResult = await TaskManagementService.getTasksByProject(portal, projectId);
+
+        await Logger.info(req.user.email, 'get_tasks_by_project_success', req.portal)
+        res.status(200).json({
+            success: true,
+            messages: ['get_tasks_by_project_success'],
+            content: tasksResult
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, 'get_tasks_by_project_faile', req.portal)
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['get_tasks_by_project_faile'],
             content: error
         })
     }

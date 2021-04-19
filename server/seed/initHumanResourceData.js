@@ -3631,6 +3631,112 @@ const initHumanResourceData = async () => {
             archivedRecordNumber: "T3 - 123698",
             files: [],
         },
+
+        
+        {
+            // user 25
+            avatar: "/upload/human-resource/avatars/avatar5.png",
+            fullName: "Nguyễn Văn Danh",
+            employeeNumber: "MS202026",
+            status: "active",
+            company: vnist._id,
+            employeeTimesheetId: "12326",
+            gender: "male",
+            startingDate: new Date(`${currentYear}-06-19`),
+            leavingDate: new Date(`${currentYear}-03-19`),
+            birthdate: new Date("1991-06-17"),
+            birthplace: "Hải Phương - Hải Hậu - Nam Định",
+            identityCardNumber: 163414569,
+            identityCardDate: new Date("2015-10-20"),
+            identityCardAddress: "Nam Định",
+            emailInCompany: "nvd.vnist@gmail.com",
+            nationality: "Việt Nam",
+            atmNumber: "102298653",
+            bankName: "ViettinBank",
+            bankAddress: "Hai Bà Trưng",
+            ethnic: "Kinh",
+            religion: "Không",
+            maritalStatus: "single",
+            phoneNumber: 962586290,
+            personalEmail: "tranhungcuong703@gmail.com",
+            phoneNumber2: 9625845,
+            personalEmail2: "hungkaratedo03101998@gmail.com",
+            homePhone: 978590338,
+            emergencyContactPerson: "Nguyễn Văn Thái",
+            relationWithEmergencyContactPerson: "Em trai",
+            emergencyContactPersonPhoneNumber: 962586278,
+            emergencyContactPersonEmail: "cuong@gmail.com",
+            emergencyContactPersonHomePhone: 962586789,
+            emergencyContactPersonAddress: "Hải Phương - Hải Hậu - Nam Định",
+            permanentResidence: "Hải Phương - Hải Hậu - Nam Định",
+            permanentResidenceCountry: "Việt Nam",
+            permanentResidenceCity: "Nam Định",
+            permanentResidenceDistrict: "Hải Hậu",
+            permanentResidenceWard: "Hải Phương",
+            temporaryResidence:
+                "số nhà 14 ngách 53/1 ngõ Trại Cá phường Trương Định",
+            temporaryResidenceCountry: "Việt Nam",
+            temporaryResidenceCity: "Hà Nội",
+            temporaryResidenceDistrict: "Hai Bà Trưng",
+            temporaryResidenceWard: "Bạch Mai",
+            educationalLevel: "12/12",
+            foreignLanguage: "500 Toeic",
+            professionalSkill: "phd",
+            healthInsuranceNumber: "N1236589",
+            healthInsuranceStartDate: new Date(`${currentYear}-01-25`),
+            healthInsuranceEndDate: new Date(`${currentYear}-02-16`),
+            socialInsuranceNumber: "XH1569874",
+            socialInsuranceDetails: [
+                {
+                    company: "Vnist",
+                    position: "Nhân viên",
+                    startDate: new Date(`${currentYear}-01`),
+                    endDate: new Date(`${currentYear}-05`),
+                },
+            ],
+            taxNumber: "12658974",
+            taxRepresentative: "Nguyễn Văn Hưng",
+            taxDateOfIssue: new Date(`12/08/${currentYear-1}`),
+            taxAuthority: "Chi cục thuế Huyện Hải Hậu",
+            degrees: [
+                {
+                    name: "Bằng tốt nghiệp",
+                    issuedBy: "Đại học Bách Khoa",
+                    year: currentYear,
+                    field:fields[Math.floor(Math.random() * 6)]._id,
+                    degreeType: "good",
+                },
+            ],
+            certificates: [
+                {
+                    name: "PHP",
+                    issuedBy: "Hà Nội",
+                    startDate: new Date(`${currentYear-1}-10-25`),
+                    endDate: new Date(`${currentYear}-10-25`),
+                },
+            ],
+            experiences: [
+                {
+                    startDate: new Date(`${currentYear-1}-06`),
+                    endDate: new Date(`${currentYear}-02`),
+                    company: "Vnist",
+                    position: "Nhân viên",
+                },
+            ],
+            contractType: "Phụ thuộc",
+            contractEndDate: new Date(`${currentYear}-10-25`),
+            contracts: [
+                {
+                    name: "Thực tập",
+                    contractType: "Phụ thuộc",
+                    startDate: new Date(`${currentYear-1}-10-25`),
+                    endDate: new Date(`${currentYear}-10-25`),
+                },
+            ],
+            archivedRecordNumber: "T3 - 123698",
+            files: [],
+        },
+
     ]);
     console.log(`Xong! Thông tin nhân viên đã được tạo`);
     //END
@@ -3820,7 +3926,7 @@ const initHumanResourceData = async () => {
                 month: `${currentYear}-${months[Math.floor(Math.random() * 12)]}`,
                 organizationalUnit: unit[0]._id,
                 mainSalary:
-                    (index % 19) * 10000000 +
+                    (index % 19) * 7000000 +
                     Math.floor(Math.random() * 20) * 1000000,
                 unit: "VND",
                 bonus: [

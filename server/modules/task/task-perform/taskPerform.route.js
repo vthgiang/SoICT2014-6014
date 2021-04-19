@@ -6,7 +6,7 @@ const PerformTaskController = require("./taskPerform.controller");
 
 router.get('/tasks/:taskId', auth, PerformTaskController.getTaskById);
 router.post('/tasks/:taskId', auth, PerformTaskController.editTask);
- 
+
 
 router.get('/task-timesheet-logs', auth, PerformTaskController.getTaskTimesheetLog);
 router.post('/tasks/:taskId/timesheet-logs/start-timer', auth, PerformTaskController.startTimesheetLog);
@@ -75,5 +75,7 @@ router.patch('/process/tasks/:taskId/comments/:commentId/child-comments/:childCo
 router.delete('/process/tasks/:taskId/comments/:commentId/child-comments/:childCommentId', auth, PerformTaskController.deleteChildComment)
 router.patch('/process/tasks/:taskId/comments/:commentId/child-comments/:childCommentId/files/:fileId', auth, PerformTaskController.deleteFileChildComment)
 
+// Project task evaluation
+router.post('/tasks/:taskId/evaluate-project', auth, PerformTaskController.evaluateTaskProject);
 
 module.exports = router;
