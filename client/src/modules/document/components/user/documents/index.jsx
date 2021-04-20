@@ -580,7 +580,7 @@ function UserDocumentsData(props) {
                 <table className="table table-hover table-striped table-bordered" id={tableId} style={{ marginBottom: "0px" }}>
                     <thead>
                         <tr>
-                            <th>{translate('document.doc_version.issuing_body')}</th>
+                            {/* <th>{translate('document.doc_version.issuing_body')}</th> */}
                             <th>{translate('document.name')}</th>
                             <th>{translate('document.description')}</th>
                             <th>{translate('document.issuing_date')}</th>
@@ -599,7 +599,7 @@ function UserDocumentsData(props) {
                             paginate.length > 0 ?
                                 paginate.map(doc =>
                                     <tr key={doc._id}>
-                                        <td>{doc.issuingBody}</td>
+                                        {/* <td>{doc.issuingBody}</td> */}
                                         <td>{doc.name}</td>
                                         <td>{doc.description ? doc.description : ""}</td>
                                         <td>{doc.versions.length ? formatDate(doc.versions[doc.versions.length - 1].issuingDate) : null}</td>

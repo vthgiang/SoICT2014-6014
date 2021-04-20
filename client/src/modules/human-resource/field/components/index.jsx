@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { FieldManagement } from './combinedContent';
 
-const SalaryField = (props) => {
+const FieldManager = (props) => {
     return (
         <React.Fragment>
             <FieldManagement />
@@ -12,4 +12,4 @@ const SalaryField = (props) => {
     );
 }
 
-export default connect(null, null)(withTranslate(SalaryField)); 
+export default connect(null, null)(withTranslate(FieldManager));
