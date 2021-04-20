@@ -58,37 +58,18 @@ function TransportPlanChosenEdit(props) {
     ]);
 
     /**
-     * Khi xác nhận chọn 1 kế hoạch làm 3 việc
-     * Thêm id kế hoạch chọn vào yêu cầu vận chuyển editTransportRequirement
-     * Thêm _id yêu cầu vận chuyển vào kế hoạch được chọn getDetailTransportPlan, useEffect selectedTransportPlan
-     * Xóa _id yêu cầu vận chuyển trong kế hoạch cũ
      * @param {*} item - kế hoạch user chọn 
      * @returns 
      */
     const handleSelectPlan = (id) => {
         console.log(currentTransportRequirement);
-            // Update plan cũ
-            if (currentTransportRequirement?.transportPlan){
-                if (String(currentTransportRequirementPlanId) === String(id)){
-                    return;
-                }
-                let requirementsList= [];
-                if (currentTransportRequirement.transportPlan.transportRequirements) {
-                    requirementsList = currentTransportRequirement.transportPlan.transportRequirements.filter(r => String(r)!== String(currentTransportRequirement._id));
-                }
-                props.editTransportPlan(currentTransportRequirementPlanId, {transportRequirements: requirementsList});
-            }
-            // Thêm requirement id vào plan mới
-            props.addTransportRequirementToPlan(id, {requirement: currentTransportRequirement._id});
-            // Edit transport plan của requirement
-            props.editTransportRequirement(currentRequirementId, { transportPlan: id});
+            props.addTransportRequirementToPlan(id, {requirement:currentTransportRequirement._id});
             setCurrentTransportRequirementPlanId(id);
     }
 
     const handleShowDetailInfo = (transportPlan) => {
         props.getDetailTransportPlan(transportPlan._id);
     }
-
 
     useEffect(() => {
         props.getAllTransportPlans({page:1, limit: 100});

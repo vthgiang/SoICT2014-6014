@@ -14,8 +14,8 @@ import { TransportReturn } from './create-transport-requirements/transportReturn
 import { TransportImportGoods } from './create-transport-requirements/transportImportGoods';
 import { TransportMaterial } from './create-transport-requirements/transportMaterial';
 import { TransportNewOne} from './create-transport-requirements/transportNewOne';
-import { TransportGoods } from './create-transport-requirements/transportGoods';
-import { TransportTime } from './create-transport-requirements/transportTime';
+import { TransportGoods } from './edit-transport-requirement/transportGoods';
+import { TransportTime } from './edit-transport-requirement/transportTime';
 
 import { LocateTransportRequirement } from './edit-transport-requirement/locateTransportRequirement'
 
@@ -109,6 +109,18 @@ function TransportRequirementsEditForm(props) {
          * Khi tạo mới yêu cầu vận chuyển, đồng thời lấy tọa độ geocode {Lat, Lng} lưu vào db
          */
         console.log(requirementsForm, " 2123");
+        let data = requirementsForm;
+        let timeRequest = [];
+        if(data.timeRequests && data.timeRequests.length!==0){
+            data.timeRequests.map(item => {
+                timeRequest.push({
+                    timeRequest: formatToTimeZoneDate(item.time),
+                    description: item.detail,
+                })
+            })
+        }
+        data.timeRequests = timeRequest;
+        console.log(data);
     }
 
      useEffect(() => {
@@ -207,6 +219,7 @@ function TransportRequirementsEditForm(props) {
                 <ul className="nav nav-tabs">
                     <li className="active"><a href="#list-transport-plan" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Thông tin chung"}</a></li>
                     <li><a href="#list-arrange-plan" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Địa chỉ điểm giao và nhận hàng"}</a></li>
+                    <li><a href="#list-arrange-plan2" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Kế hoạch vận chuyển"}</a></li>
                 </ul>
                 <div className="tab-content">
                     <div className="tab-pane active" id="list-transport-plan">
@@ -272,6 +285,7 @@ function TransportRequirementsEditForm(props) {
                             />
                             < TransportTime 
                                 callBackState = {callBackTimeInfo}
+                                timeRequested = {curentTransportRequirementDetail?.timeRequests}
                             />
                                 {/* </LazyLoadComponent> */}
                             </div>
@@ -282,6 +296,15 @@ function TransportRequirementsEditForm(props) {
                                         curentTransportRequirementDetail={curentTransportRequirementDetail}
                                         callBackLocate={callBackLocate}
                                     />
+                                </LazyLoadComponent>
+                            </div>
+                            <div className="tab-pane" id="list-arrange-plan2">
+                                <LazyLoadComponent
+                                >
+                                    {/* <LocateTransportRequirement 
+                                        curentTransportRequirementDetail={curentTransportRequirementDetail}
+                                        callBackLocate={callBackLocate}
+                                    /> */}
                                 </LazyLoadComponent>
                             </div>
                         </div>

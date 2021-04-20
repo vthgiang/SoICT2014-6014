@@ -4,7 +4,7 @@ import { withTranslate } from "react-redux-multilingual";
 
 import { DataTableSetting, DeleteNotification, PaginateBar } from "../../../../../../common-components";
 
-import { MapContainer } from "../../../transportHelper/map/maphook"
+import { MapContainer } from "../../../transportHelper/map/googleMap"
 
 import { getAddressName } from "../../../transportHelper/getAddressNameGoogleMap"
 

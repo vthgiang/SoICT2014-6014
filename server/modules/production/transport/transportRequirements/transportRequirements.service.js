@@ -173,7 +173,6 @@ exports.editTransportRequirement = async (portal, id, data) => {
 
     // Cach 2 de update
     await TransportRequirement(connect(DB_CONNECTION, portal)).update({ _id: id }, { $set: data });
-    let transportRequirement1 = await TransportRequirement(connect(DB_CONNECTION, portal)).findById({ _id: oldTransportRequirement._id })
 
 
     let transportRequirement = await TransportRequirement(connect(DB_CONNECTION, portal)).findById({ _id: oldTransportRequirement._id })

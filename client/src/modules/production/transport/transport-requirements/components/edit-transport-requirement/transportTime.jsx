@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { ButtonModal, DialogModal, ErrorLabel, DatePicker, SelectBox } from '../../../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
 import ValidationHelper from '../../../../../../helpers/validationHelper';
+import { formatDate } from "../../../../../../helpers/formatDate"
 
 import { exampleActions } from '../../redux/actions';
 import { BillActions } from '../../../../warehouse/bill-management/redux/actions'
@@ -52,7 +53,7 @@ function TransportTime(props) {
             let list = [];
             timeRequested.map(time => {
                 list.push({
-                    time: time.timeRequest,
+                    time: formatDate(time.timeRequest),
                     detail: time.description,
                 })
             })
@@ -74,7 +75,7 @@ function TransportTime(props) {
                                         <span className="attention"> * </span>
                                     </label>
                                     <DatePicker
-                                        id={`expected_date`}
+                                        id={`expected_date2`}
                                         value={currentTime.time}
                                         onChange={handleTimeChange}
                                         disabled={false}

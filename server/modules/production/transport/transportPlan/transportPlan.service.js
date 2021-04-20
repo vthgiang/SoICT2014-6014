@@ -123,19 +123,30 @@ exports.editTransportPlan = async (portal, id, data) => {
 /**
  * push requirement vào plan
  * @param {*} portal 
- * @param {*} id 
- * @param {*} data {requirement: ....} 
+ * @param {*} planId 
+ * @param {*} data = {requirement:....}
  * @returns 
  */
-exports.addTransportRequirementToPlan = async (portal, id, data) => {
-    let transportRequirement = data.requirement; // String id
-    let oldTransportPlan = await TransportPlan(connect(DB_CONNECTION, portal)).findById(id);
+exports.addTransportRequirementToPlan = async (portal, planId, data) => {
+    let requirementId = data.requirement;
+    let transportRequirement = await TransportRequirementServices.getTransportRequirementById(portal, requirementId); // String id
+
+    // Xóa bỏ kế hoạch vận chuyển trong kế hoạch cũ
+    if (transportRequirement.transportPlan){
+        console.log(transportRequirement.transportPlan._id)
+        await this.deleteTransportRequirementByPlanId(portal, transportRequirement.transportPlan._id, requirementId);
+    }
+    // Xóa bỏ trong kế hoạch mới (chỉ để tránh trùng lặp)
+    await this.deleteTransportRequirementByPlanId(portal, planId, requirementId);
+    // Thêm yêu plan mới vào trường transportPlan của yêu cầu vận chuyển
+    await TransportRequirementServices.editTransportRequirement(portal, requirementId, {transportPlan: planId})
+    // Thêm yêu cầu vận chuyển vào kế hoạch
+    let oldTransportPlan = await TransportPlan(connect(DB_CONNECTION, portal)).findById(planId);
 
     if (!oldTransportPlan) {
         return -1;
     }
-
-    await TransportPlan(connect(DB_CONNECTION, portal)).update({ _id: id }, {$push: {transportRequirements: transportRequirement}});
+    await TransportPlan(connect(DB_CONNECTION, portal)).update({ _id: planId }, {$push: {transportRequirements: requirementId}});
     let transportPlan = await TransportPlan(connect(DB_CONNECTION, portal)).findById({ _id: oldTransportPlan._id });
     return transportPlan;
 }
