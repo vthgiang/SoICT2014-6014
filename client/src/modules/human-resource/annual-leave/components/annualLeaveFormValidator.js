@@ -44,7 +44,7 @@ function validateTotalHour(value, translate) {
     }
     let t = parseFloat(value.toString().trim());
     if (value.toString().trim() !== "" && (!t || t<0)) {
-        msg = 'Giá trị lớn hơn 0'
+        msg = 'Giá trị phải lớn hơn 0'
     }
 
     return msg;
