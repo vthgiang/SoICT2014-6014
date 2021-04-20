@@ -17,7 +17,7 @@ import { TransportNewOne} from './create-transport-requirements/transportNewOne'
 import { TransportGoods } from './create-transport-requirements/transportGoods';
 import { TransportTime } from './create-transport-requirements/transportTime';
 
-import { LocateAndPlan } from './edit-transport-requirement/locateAndPlan'
+import { LocateTransportRequirement } from './edit-transport-requirement/locateTransportRequirement'
 
 import { exampleActions } from '../redux/actions';
 
@@ -81,7 +81,6 @@ function TransportRequirementsEditForm(props) {
         id: "",
     });
 
-    const [billDetail, setBillDetail] = useState({})
 
     const [importGoodsDetails, setImportGoodsDetails] = useState({
         addressStock: "",
@@ -105,144 +104,28 @@ function TransportRequirementsEditForm(props) {
         //             perPage: perPage
         //         });
         //     }
-        const {payload, volume} = getTotalPayloadVolume(requirementsForm.goods);
+        // const {payload, volume} = getTotalPayloadVolume(requirementsForm.goods);
         /**
          * Khi tạo mới yêu cầu vận chuyển, đồng thời lấy tọa độ geocode {Lat, Lng} lưu vào db
          */
-        let fromLat, fromLng;
-        let toLat, toLng;
-        if (requirementsForm.info.customer1AddressTransport){
-            await getGeocode(requirementsForm.info.customer1AddressTransport).then(
-                (value) => {
-                    fromLat = value.lat;
-                    fromLng = value.lng;
-                }
-            );
-        }
-        if (requirementsForm.info.customer2AddressTransport){
-            await getGeocode(requirementsForm.info.customer2AddressTransport).then(
-                (value) => {
-                    toLat = value.lat;
-                    toLng = value.lng;
-                }
-            );
-        }
-
-        let data = {
-            status: 1,
-            code: requirementsForm.code,
-            type: state.value, 
-            fromAddress: requirementsForm.info.customer1AddressTransport ? requirementsForm.info.customer1AddressTransport : "",
-            toAddress: requirementsForm.info.customer2AddressTransport ? requirementsForm.info.customer2AddressTransport : [],
-            goods : formatGoodsForSubmit(requirementsForm.goods),
-            payload: payload,
-            volume: volume,
-            timeRequests: formatTimeForSubmit(requirementsForm.timeRequests),
-            fromLat: fromLat,
-            fromLng: fromLng,
-            toLat: toLat,
-            toLng: toLng,
-        }
-        props.createTransportRequirement(data)
+        console.log(requirementsForm, " 2123");
     }
 
-
-    /**
-     * chuẩn hóa dữ liệu goods để lưu vào db
-     */
-    const formatGoodsForSubmit = (goods) => {
-        let goodMap = goods.map((item) => {
-            return {
-                good: item._id,
-                quantity: item.quantity,
-                volume: item.volume,
-                payload: item.payload,
-            };
-        });
-        return goodMap;
-    }
-
-    const getTotalPayloadVolume = (goods) => {
-        let payload = 0;
-        let volume = 0;
-        if (goods && goods.length !==0) {
-            goods.map((good) => {
-                payload+=Number(good.payload);
-                volume+=Number(good.volume)
-            })
-        }
-        return {payload, volume};
-    }
-
-    /**
-     * chuẩn hóa dữ liệu time request để lưu vào db
-     */
-    const formatTimeForSubmit = (time) => {
-        let timeMap = time.map((item) => {
-            return {
-                timeRequest: formatToTimeZoneDate(item.time),
-                description: item.detail,
-            }
-        })
-        return timeMap;
-    }
-
-    const handleTypeRequirementChange = (value) => {        
-        const requirement = requirements.filter(r => r.value === value[0]);
-        if (value[0] !== "0") {
-            setState({
-                ...state,
-                value: value[0],
-                billGroup: requirement[0].billGroup,
-                billType: requirement[0].billType,
-            });
-        }
-    }
-
-    const getBills = () => {
-        let listBills = [
-            {
-                value: "0",
-                text: "Chọn phiếu",
-            },
-        ];
-        const listAllBills = props.bills;        
-        if (listAllBills) {
-            listAllBills.map((item) => {
-                listBills.push({
-                    value: item._id,
-                    text: item.code,
-                });
-            });
-        }
-        return listBills;
-    }
-
-    useEffect(() => {
+     useEffect(() => {
         props.getCustomers();
         props.getBillsByType({ page:1, limit:30, group: parseInt(state.billGroup), managementLocation: localStorage.getItem("currentRole") });
     },[state])
 
-    // useEffect(() => {
-    //     const getGoods = async () => {
-    //         props.getAllGoods();
-    //     }
-    //     getGoods();
-    // }, [state, billId])
-
     useEffect(() => {
         console.log(curentTransportRequirementDetail, " curentTransportRequirementDetail");
+        if (curentTransportRequirementDetail){
+            setRequirementsForm(curentTransportRequirementDetail);
+        }
     }, [curentTransportRequirementDetail])
 
-    const handleTypeBillChange = (value) => {
-        console.log(value[0]);
-        if (value[0] !== "0") {
-            setBillId({
-                ...billId,
-                id: value[0],
-            });
-        }
-    }
+    useEffect(() => {
+        console.log(requirementsForm);
+    }, [requirementsForm])
 
     /**
      * Hàm lấy dữ liệu hàng hóa từ component con
@@ -273,20 +156,43 @@ function TransportRequirementsEditForm(props) {
             timeRequests: value,
         })
     }
-
-    const handleClickCreateCode = () => {
-        setRequirementsForm({
-            ...requirementsForm,
-            code: generateCode("YCVC"),
-        })
+    /**
+     * Lấy dữ liệu về tọa độ và địa chỉ điểm giao nhận
+     * {
+     *  fromAddress: 
+     *  fromLat:
+     *  fromLng:
+     *  to...
+     * }
+     * @param {*} value 
+     */
+    const callBackLocate = (value) => {
+        if(value){
+            setRequirementsForm({
+                ...requirementsForm,
+                fromAddress: value.fromAddress,
+                toAddress: value.toAddress,
+                geocode: {
+                    fromAddress: {
+                        lat: value.fromLat,
+                        lng: value.fromLng,
+                    },
+                    toAddress: {
+                        lat: value.toLat,
+                        lng: value.toLng,
+                    },
+                }
+            })
+        }
     }
+
     return (
         <React.Fragment>
             <DialogModal
                 modalID="modal-edit-example-hooks" 
                 isLoading={false}
                 formID="modal-edit-example-hooks"
-                title={'manage_transport.add_requirements'}
+                title={'Chỉnh sửa yêu cầu vận chuyển'}
                 // msg_success={translate('manage_example.add_success')}
                 // msg_faile={translate('manage_example.add_fail')}
                 func={save}
@@ -300,7 +206,7 @@ function TransportRequirementsEditForm(props) {
                     <div className="nav-tabs-custom">
                 <ul className="nav nav-tabs">
                     <li className="active"><a href="#list-transport-plan" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Thông tin chung"}</a></li>
-                    <li><a href="#list-arrange-plan" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Tọa độ và kế hoạch"}</a></li>
+                    <li><a href="#list-arrange-plan" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Địa chỉ điểm giao và nhận hàng"}</a></li>
                 </ul>
                 <div className="tab-content">
                     <div className="tab-pane active" id="list-transport-plan">
@@ -316,7 +222,7 @@ function TransportRequirementsEditForm(props) {
                                         Mã yêu cầu vận chuyển
                                     </label>
                                     <input type="text" className="form-control" disabled={true} 
-                                        value={curentTransportRequirementDetail?.code}
+                                        value={requirementsForm?.code}
                                     />
                                 </div>
                             </div>
@@ -356,6 +262,7 @@ function TransportRequirementsEditForm(props) {
                                 state.value === "5" && (
                                     < TransportNewOne
                                         callBackGeneralInfo = {callBackGeneralInfo}
+                                        curentTransportRequirementDetail={curentTransportRequirementDetail}
                                     />
                                 )
                             }
@@ -371,8 +278,9 @@ function TransportRequirementsEditForm(props) {
                             <div className="tab-pane" id="list-arrange-plan">
                                 <LazyLoadComponent
                                 >
-                                    <LocateAndPlan 
-                                    curentTransportRequirementDetail={curentTransportRequirementDetail}
+                                    <LocateTransportRequirement 
+                                        curentTransportRequirementDetail={curentTransportRequirementDetail}
+                                        callBackLocate={callBackLocate}
                                     />
                                 </LazyLoadComponent>
                             </div>

@@ -10,8 +10,8 @@ import { getAddressName } from "../../../transportHelper/getAddressNameGoogleMap
 
 import { getTableConfiguration } from '../../../../../../helpers/tableConfiguration';
 
-function LocateAndPlan(props) {
-    let {curentTransportRequirementDetail} = props
+function LocateTransportRequirement(props) {
+    let {curentTransportRequirementDetail , callBackLocate} = props
 
     /**
      * location = {
@@ -99,12 +99,16 @@ function LocateAndPlan(props) {
         }
     }, [curentTransportRequirementDetail])
 
+    useEffect(() => {
+        callBackLocate(location)
+    }, [location])
+
     return (
         <React.Fragment>
             <div className="box-body qlcv">
                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ padding: 0 }}>
                     <fieldset className="scheduler-border" style={{ height: "100%" }}>
-                        <legend className="scheduler-border">Tọa độ vị trí</legend>
+                        <legend className="scheduler-border">Vị trí giao hàng</legend>
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                             <div className="col-xs-12 col-sm-12 col-md-4 col-lg-4">
                                 <div className={`form-group`}>
@@ -118,7 +122,7 @@ function LocateAndPlan(props) {
                                     />
                                 </div>
                             </div>
-                            <div className="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                            <div className="col-xs-12 col-sm-12 col-md-2 col-lg-2">
                                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                     <div className={`form-group`}>
                                         <label>
@@ -144,7 +148,7 @@ function LocateAndPlan(props) {
                                     </div>
                                 </div>
                             </div>
-                            <div className="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                            <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                                 <MapContainer
                                     locations = {[
                                         {
@@ -161,7 +165,7 @@ function LocateAndPlan(props) {
                         </div>
                     </fieldset>
                     <fieldset className="scheduler-border" style={{ height: "100%" }}>
-                        <legend className="scheduler-border">Tọa độ vị trí</legend>
+                        <legend className="scheduler-border">Vị trí nhận hàng</legend>
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                             <div className="col-xs-12 col-sm-12 col-md-4 col-lg-4">
                                 <div className={`form-group`}>
@@ -175,7 +179,7 @@ function LocateAndPlan(props) {
                                     />
                                 </div>
                             </div>
-                            <div className="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                            <div className="col-xs-12 col-sm-12 col-md-2 col-lg-2">
                                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                     <div className={`form-group`}>
                                         <label>
@@ -201,7 +205,7 @@ function LocateAndPlan(props) {
                                     </div>
                                 </div>
                             </div>
-                            <div className="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                            <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                                 <MapContainer
                                     locations = {[
                                         {
@@ -229,5 +233,5 @@ function mapState(state) {
 const actions = {
 }
 
-const connectedLocateAndPlan = connect(mapState, actions)(withTranslate(LocateAndPlan));
-export { connectedLocateAndPlan as LocateAndPlan };
+const connectedLocateTransportRequirement = connect(mapState, actions)(withTranslate(LocateTransportRequirement));
+export { connectedLocateTransportRequirement as LocateTransportRequirement };

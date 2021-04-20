@@ -6,7 +6,6 @@ export async function getAddressName(lat, lng){
                 +"address="+lat+","+lng
                 +"&key="+process.env.REACT_APP_API_KEY
     const response = await axios.get(url)
-    console.log(response.data);
     if(response.data){
         if (response.data.status === "OK"){
           if (response.data.results && response.data.results.length!==0){

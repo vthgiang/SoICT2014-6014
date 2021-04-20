@@ -7,7 +7,7 @@ import ValidationHelper from '../../../../../../helpers/validationHelper';
 
 function TransportNewOne(props) {
 
-    const { callBackGeneralInfo } = props;
+    const { callBackGeneralInfo, curentTransportRequirementDetail} = props;
 
     const [formInfo, setFormInfo] = useState({
         customer1: "",
@@ -26,35 +26,30 @@ function TransportNewOne(props) {
     });
 
     const handleCustomer1Change = (e) => {
-        console.log(e.target.value);
         setFormInfo({
             ...formInfo,
             customer1: e.target.value,
         })
     }
     const handleCustomer1NameChange = (e) => {
-        console.log(e.target.value);
         setFormInfo({
             ...formInfo,
             customer1Name: e.target.value,
         })
     }
     const handleCustomer1PhoneChange = (e) => {
-        console.log(e.target.value);
         setFormInfo({
             ...formInfo,
             customer1Phone: e.target.value,
         })
     }
     const handleCustomer1EmailChange = (e) => {
-        console.log(e.target.value);
         setFormInfo({
             ...formInfo,
             customer1Email: e.target.value,
         })
     }     
     const handleCustomer1AddressChange = (e) => {
-        console.log(e.target.value);
         setFormInfo({
             ...formInfo,
             customer1Address: e.target.value,
@@ -67,8 +62,6 @@ function TransportNewOne(props) {
             customer1AddressTransport: e.target.value,
         })
     }
-
-
     const handleCustomer2Change = (e) => {
         console.log(e.target.value);
         setFormInfo({
@@ -109,8 +102,19 @@ function TransportNewOne(props) {
     }
     
     useEffect(() => {
+        if (curentTransportRequirementDetail){
+            setFormInfo({
+                ...formInfo,
+                customer1AddressTransport: curentTransportRequirementDetail.fromAddress,
+                customer2AddressTransport: curentTransportRequirementDetail.toAddress,
+            })
+        }
+    }, [curentTransportRequirementDetail])
+
+    useEffect(() => {
         callBackGeneralInfo(formInfo);
     }, [formInfo])
+
 
     return (
         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -181,6 +185,7 @@ function TransportNewOne(props) {
                                 <span className="attention"> * </span>
                             </label>
                             <textarea type="text" className="form-control"
+                                value={formInfo.customer1AddressTransport}
                                 onChange={handleCustomer1AddressTransportChange}
                             />
                         </div>
@@ -256,6 +261,7 @@ function TransportNewOne(props) {
                                 <span className="attention"> * </span>
                             </label>
                             <textarea type="text" className="form-control"
+                                value={formInfo.customer2AddressTransport}
                                 onChange={handleCustomer2AddressTransportChange}
                             />
                         </div>

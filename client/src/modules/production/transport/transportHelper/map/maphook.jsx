@@ -12,7 +12,7 @@ function MapContainer(props){
   // ]
   let { locations, callBackLatLng } = props;
   const mapStyles = {        
-    height: "200px",
+    height: "350px",
     width: "100%",
     margin: "10px"};
   
@@ -41,6 +41,7 @@ function MapContainer(props){
           lat: latLng.lat(), 
           lng: latLng.lng()
         })
+        
   }
   return (
     <LoadScript
