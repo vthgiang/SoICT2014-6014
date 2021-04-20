@@ -827,6 +827,7 @@ class TaskManagement extends Component {
                                 translate('task.task_management.col_name'),
                                 translate('task.task_management.detail_description'),
                                 translate('task.task_management.col_organization'),
+                                translate('task.task_management.col_project'),
                                 translate('task.task_management.col_priority'),
                                 translate('task.task_management.responsible'),
                                 translate('task.task_management.accountable'),
