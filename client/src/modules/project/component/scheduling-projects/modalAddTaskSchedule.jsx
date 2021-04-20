@@ -9,7 +9,10 @@ import { getCurrentProjectDetails } from '../projects/functionHelper';
 import ModalCalculateCPM from './modalCalculateCPM';
 import ModalExcelImport from './modalExcelImport';
 import ModalEditRowCPMExcel from './modalEditRowCPMExcel';
-import { checkIsNullUndefined } from '../../../task/task-management/component/functionHelpers';
+import { checkIsNullUndefined, numberWithCommas } from '../../../task/task-management/component/functionHelpers';
+import moment from 'moment';
+
+const MILISECS_TO_DAYS = 86400000;
 
 const ModalAddTaskSchedule = (props) => {
     const { translate, project } = props;
@@ -43,7 +46,11 @@ const ModalAddTaskSchedule = (props) => {
         },
     ]
     const [currentModeImport, setCurrentModeImport] = useState('EXCEL');
-    const [estDurationEndProject, setEstDurationEndProject] = useState(0)
+    const [estDurationEndProject, setEstDurationEndProject] = useState(
+        numberWithCommas(
+            moment(projectDetail?.endDate).diff(moment(projectDetail?.startDate), `milliseconds`) / MILISECS_TO_DAYS
+        )
+    )
     const { listTasks } = state;
 
     const handleAddRow = () => {
@@ -219,11 +226,7 @@ const ModalAddTaskSchedule = (props) => {
                         </div>
                         <div className={`form-group col-md-3`}>
                             <label>Khoảng thời gian dự kiến hoàn thành dự án</label>
-                            <input
-                                type="number"
-                                value={estDurationEndProject}
-                                onChange={(event) => setEstDurationEndProject(event?.target?.value)}
-                                className="form-control" />
+                            <div>{estDurationEndProject} (ngày)</div>
                         </div>
                     </div>
                 </fieldset>

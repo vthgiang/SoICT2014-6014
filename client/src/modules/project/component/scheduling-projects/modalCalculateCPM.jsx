@@ -10,9 +10,11 @@ import { Collapse } from 'react-bootstrap';
 import { DialogModal } from '../../../../common-components';
 import { getCurrentProjectDetails } from '../projects/functionHelper';
 import { Canvas, Node } from 'reaflow';
+import { numberWithCommas } from '../../../task/task-management/component/functionHelpers';
 
 const ModalCalculateCPM = (props) => {
     const { tasksData, translate, project, estDurationEndProject } = props;
+    console.log('tasksData', tasksData)
     const projectDetail = getCurrentProjectDetails(project);
     const [isTableShown, setIsTableShown] = useState(true);
     let formattedTasksData = {}
@@ -30,7 +32,7 @@ const ModalCalculateCPM = (props) => {
     }
     const pert = jsPERT(formattedTasksData || {});
     // const pert = jsPERT(fakeObj);
-    const estProjectDone = (pertProbability(pert, estDurationEndProject) * 100);
+    const percentEstProjectDone = (pertProbability(pert, estDurationEndProject) * 100);
 
     const handleInsertListToDB = () => {
 
@@ -48,7 +50,7 @@ const ModalCalculateCPM = (props) => {
             return ({
                 id: taskItem.code,
                 height: 80,
-                width: 200,
+                width: 250,
                 data: {
                     code: taskItem.code,
                     es: pert.earliestStartTimes[taskItem.code],
@@ -114,7 +116,7 @@ const ModalCalculateCPM = (props) => {
 
                         <div style={{ flexDirection: 'row', display: 'flex', marginLeft: 10 }}>
                             <h4><strong>{translate('project.schedule.percentFinishTask')} {estDurationEndProject} {translate(`project.unit.${projectDetail?.unitTime}`)}:</strong></h4>
-                            <h4 style={{ marginLeft: 5 }}>{estProjectDone.toFixed(2)}%</h4>
+                            <h4 style={{ marginLeft: 5 }}>{percentEstProjectDone.toFixed(2)}%</h4>
                         </div>
 
                         {/* Button toggle bảng dữ liệu */}
@@ -131,12 +133,9 @@ const ModalCalculateCPM = (props) => {
                                     <thead>
                                         <tr>
                                             <th>{translate('project.schedule.taskCode')}</th>
-                                            <th>ES</th>
-                                            <th>LS</th>
-                                            <th>EF</th>
-                                            <th>LF</th>
-                                            <th>{translate('project.schedule.slack')}</th>
                                             <th>{translate('project.schedule.criticalPath')}</th>
+                                            <th>Người thực hiện</th>
+                                            <th>Người phê duyệt</th>
                                             <th>{translate('project.schedule.estimatedTime')}</th>
                                             <th>{translate('project.schedule.estimatedTimeOptimistic')}</th>
                                             <th>{translate('project.schedule.estimatedTimePessimistic')}</th>
@@ -149,12 +148,11 @@ const ModalCalculateCPM = (props) => {
                                             tasksData.map((taskItem, index) => (
                                                 <tr key={index}>
                                                     <td>{taskItem?.code}</td>
-                                                    <td>{pert.earliestStartTimes[taskItem?.code]}</td>
-                                                    <td>{pert.latestStartTimes[taskItem?.code]}</td>
-                                                    <td>{pert.earliestFinishTimes[taskItem?.code]}</td>
-                                                    <td>{pert.latestFinishTimes[taskItem?.code]}</td>
-                                                    <td>{pert.slack[taskItem?.code]}</td>
                                                     <td>{pert.slack[taskItem?.code] === 0 ? 'Đúng' : ''}</td>
+                                                    <td>{taskItem?.currentResponsibleEmployees ?
+                                                        taskItem?.currentResponsibleEmployees.map(o => o).join(', ') : null}</td>
+                                                    <td>{taskItem?.currentAccountableEmployees ?
+                                                        taskItem?.currentAccountableEmployees.map(o => o).join(', ') : null}</td>
                                                     <td>{taskItem?.estimateNormalTime}</td>
                                                     <td>{taskItem?.estimateOptimisticTime}</td>
                                                     <td>{taskItem?.estimatePessimisticTime}</td>
@@ -192,14 +190,14 @@ const ModalCalculateCPM = (props) => {
                                             <table className="table table-bordered" style={{ height: '100%' }}>
                                                 <tbody>
                                                     <tr>
-                                                        <td><strong style={{color: event.node.data.slack === 0 ? 'white' : 'black'}}>{event.node.data.code}</strong></td>
-                                                        <td style={{color: event.node.data.slack === 0 ? 'white' : 'black'}}>ES: {event.node.data.es}</td>
-                                                        <td style={{color: event.node.data.slack === 0 ? 'white' : 'black'}}>LS: {event.node.data.ls}</td>
+                                                        <td><strong style={{ color: event.node.data.slack === 0 ? 'white' : 'black' }}>{event.node.data.code}</strong></td>
+                                                        <td style={{ color: event.node.data.slack === 0 ? 'white' : 'black' }}>ES: {numberWithCommas(event.node.data.es)}</td>
+                                                        <td style={{ color: event.node.data.slack === 0 ? 'white' : 'black' }}>LS: {numberWithCommas(event.node.data.ls)}</td>
                                                     </tr>
                                                     <tr>
-                                                        <td style={{color: event.node.data.slack === 0 ? 'white' : 'black'}}>Slack: {event.node.data.slack}</td>
-                                                        <td style={{color: event.node.data.slack === 0 ? 'white' : 'black'}}>EF: {event.node.data.ef}</td>
-                                                        <td style={{color: event.node.data.slack === 0 ? 'white' : 'black'}}>LF: {event.node.data.lf}</td>
+                                                        <td style={{ color: event.node.data.slack === 0 ? 'white' : 'black' }}>Slack: {numberWithCommas(event.node.data.slack)}</td>
+                                                        <td style={{ color: event.node.data.slack === 0 ? 'white' : 'black' }}>EF: {numberWithCommas(event.node.data.ef)}</td>
+                                                        <td style={{ color: event.node.data.slack === 0 ? 'white' : 'black' }}>LF: {numberWithCommas(event.node.data.lf)}</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
