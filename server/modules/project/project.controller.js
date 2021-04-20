@@ -24,7 +24,7 @@ exports.get = async (req, res) => {
 
 exports.show = async (req, res) => {
     try {
-        let tp = await TaskProjectService.show(req.portal, req.params.id);
+        let tp = await ProjectService.show(req.portal, req.params.id);
 
         await Logger.info(req.user.email, 'show_task_project', req.portal)
         res.status(200).json({
@@ -53,6 +53,7 @@ exports.create = async (req, res) => {
             content: project
         });
     } catch (error) {
+        console.log('error', error)
         await Logger.error(req.user.email, ' create_task_project_faile ', req.portal);
         res.status(400).json({
             success: false,
@@ -97,6 +98,50 @@ exports.delete = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['delete_task_project_faile'],
+            content: error
+        })
+    }
+}
+
+exports.getMembersWithScore = async (req, res) => {
+    try {
+        let tp = await ProjectService.getMembersWithScore(req.portal, req.params.id, req.params.evalMonth);
+
+        await Logger.info(req.user.email, 'get_members_with_score', req.portal)
+        res.status(200).json({
+            success: true,
+            messages: ['get_members_with_score_success'],
+            content: tp
+        });
+    } catch (error) {
+        console.log('get_members_with_score', error);
+        await Logger.error(req.user.email, 'get_members_with_score', req.portal)
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['get_members_with_score_faile'],
+            content: error
+        })
+    }
+}
+
+
+exports.getListTasksEval = async (req, res) => {
+    console.log(req.params)
+    try {
+        let tp = await ProjectService.getListTasksEval(req.portal, req.params.id, req.params.evalMonth);
+
+        await Logger.info(req.user.email, 'get_list_tasks_eval', req.portal)
+        res.status(200).json({
+            success: true,
+            messages: ['get_list_tasks_eval_success'],
+            content: tp
+        });
+    } catch (error) {
+        console.log('get_list_tasks_eval', error);
+        await Logger.error(req.user.email, 'get_list_tasks_eval', req.portal)
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['get_list_tasks_eval_faile'],
             content: error
         })
     }

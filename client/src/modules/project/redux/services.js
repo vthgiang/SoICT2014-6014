@@ -1,15 +1,15 @@
 import { sendRequest } from "../../../helpers/requestHelper";
 
 export const ProjectServices = {
-    getProjects,
-    createProject,
-    editProject,
-    deleteProject,
+    getProjectsAPI,
+    createProjectAPI,
+    editProjectAPI,
+    deleteProjectAPI,
 
+    getListTasksEvalDispatchAPI,
 }
 
-function getProjects(params = undefined) {
-
+function getProjectsAPI(params = undefined) {
     return sendRequest(
         {
             url: `${process.env.REACT_APP_SERVER}/projects/project`,
@@ -22,7 +22,7 @@ function getProjects(params = undefined) {
     );
 };
 
-function createProject(data) {
+function createProjectAPI(data) {
     return sendRequest(
         {
             url: `${process.env.REACT_APP_SERVER}/projects/project`,
@@ -35,7 +35,7 @@ function createProject(data) {
     );
 };
 
-function editProject(id, data) {
+function editProjectAPI(id, data) {
     return sendRequest(
         {
             url: `${process.env.REACT_APP_SERVER}/projects/project/${id}`,
@@ -49,13 +49,30 @@ function editProject(id, data) {
     );
 }
 
-function deleteProject(id) {
+function deleteProjectAPI(id) {
     return sendRequest(
         {
             url: `${process.env.REACT_APP_SERVER}/projects/project/${id}`,
             method: "DELETE",
         },
         true,
+        true,
+        "project"
+    );
+}
+
+function getListTasksEvalDispatchAPI(id, evalMonth) {
+    console.log('evalMonth', evalMonth)
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/projects/project/${id}/getListTasksEval/${evalMonth}`,
+            method: "GET",
+            params: {
+                id,
+                evalMonth,
+            },
+        },
+        false,
         true,
         "project"
     );

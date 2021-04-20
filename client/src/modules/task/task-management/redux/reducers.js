@@ -590,6 +590,25 @@ export function tasks(state = {
                 tasks: state.tasks.map(t=>(t._id === action.payload._id) ? action.payload : t),
                 isLoading: false
             };
+            
+        case taskManagementConstants.GETTASK_BYPROJECT_REQUEST:
+            return {
+                ...state,
+                tasksbyproject: null,
+                isLoading: true
+            };
+        case taskManagementConstants.GETTASK_BYPROJECT_SUCCESS:
+            return {
+                ...state,
+                tasksbyproject: action.payload,
+                isLoading: false
+            };
+        case taskManagementConstants.GETTASK_BYPROJECT_FAILURE:
+            return {
+                ...state,
+                error: action.error,
+                isLoading: false
+            }
 
         default:
             return state

@@ -1,6 +1,8 @@
 export const TaskFormValidator = {
     validateTaskStartDate,
     validateTaskEndDate,
+    validateTimeEst,
+    validateCostEst
 }
 
 
@@ -10,9 +12,9 @@ export const TaskFormValidator = {
 function validateTaskStartDate(startDate, endDate, translate) {
     let msg = undefined;
 
-    if (startDate.trim() === ""){
+    if (startDate.trim() === "") {
         msg = translate('task.task_management.add_err_empty_start_date');
-    } else if (endDate !== ""){
+    } else if (endDate !== "") {
         msg = _validateTaskDate(startDate, endDate, translate);
     }
     return msg;
@@ -25,9 +27,9 @@ function validateTaskStartDate(startDate, endDate, translate) {
 function validateTaskEndDate(startDate, endDate, translate) {
     let msg = undefined;
 
-    if (endDate.trim() === ""){
+    if (endDate.trim() === "") {
         msg = translate('task.task_management.add_err_empty_end_date');
-    } else if (startDate !== ""){
+    } else if (startDate !== "") {
         msg = _validateTaskDate(startDate, endDate, translate);
     }
     return msg;
@@ -38,14 +40,38 @@ function validateTaskEndDate(startDate, endDate, translate) {
  * @param {*} startDate ngày bắt đầu
  * @param {*} endDate ngày kết thúc
  */
-function _validateTaskDate(startDate, endDate, translate){
+function _validateTaskDate(startDate, endDate, translate) {
     let msg = undefined;
     var pattern = /(\d{2})\-(\d{2})\-(\d{4})/;
 
-    var startDate = new Date(startDate.replace(pattern,'$3-$2-$1'));
-    var endDate = new Date(endDate.replace(pattern,'$3-$2-$1'));
-    if (startDate > endDate){
+    var startDate = new Date(startDate.replace(pattern, '$3-$2-$1'));
+    var endDate = new Date(endDate.replace(pattern, '$3-$2-$1'));
+    if (startDate > endDate) {
         msg = translate('task.task_management.add_err_end_date');
+    }
+    return msg;
+}
+
+/**
+ * Hàm tiện ích kiểm tra thời gian ước lượng
+ * @param {*} value giá trị kiểm tra
+ */
+function validateTimeEst(value, translate) {
+    let msg = undefined;
+    if (!value || Number(value) < 0 || (Number(value) - 2) < 0 ) {
+        msg = translate('project.task_management.add_err_time_cost');
+    }
+    return msg;
+}
+
+/**
+ * Hàm tiện ích kiểm tra chi phí ước lượng
+ * @param {*} value giá trị kiểm tra
+ */
+function validateCostEst(value, translate) {
+    let msg = undefined;
+    if (!value || Number(value) < 0) {
+        msg = translate('project.task_management.add_err_time_cost');
     }
     return msg;
 }

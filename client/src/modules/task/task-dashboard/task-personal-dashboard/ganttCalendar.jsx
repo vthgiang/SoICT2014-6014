@@ -432,6 +432,9 @@ class GanttCalendar extends Component {
     const count = dataCalendar.countAllTask;
     const task = tasks && tasks.task;
 
+    console.log('dataCalendar', dataCalendar)
+    console.log('dataTask', dataTask)
+
     return (
       <div className="gantt qlcv" >
         <section className="form-inline" style={{ textAlign: "right", marginBottom: "10px" }}>
