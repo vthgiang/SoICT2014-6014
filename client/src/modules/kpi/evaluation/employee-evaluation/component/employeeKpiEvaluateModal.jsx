@@ -117,7 +117,6 @@ function EmployeeKpiEvaluateModal(props) {
         let employeeId = props.employeeKpiSet.creator._id;
         let { tasks, points, type, content } = state;
         if (tasks && tasks.length > 0) {
-            console.log(state.points);
             let data = [];
             tasks.forEach(element => {
                 data.push({
@@ -417,7 +416,7 @@ function EmployeeKpiEvaluateModal(props) {
                                                                             min='0'
                                                                             max='10'
                                                                             name={`taskImportanceLevel${itemTask.taskId}`}
-                                                                            value={points[itemTask.taskId] || ''}
+                                                                            value={points[itemTask.taskId] || 0}
                                                                             onChange={(e) => setValueSlider(e, itemTask.taskId)}
                                                                         />
                                                                         <div>

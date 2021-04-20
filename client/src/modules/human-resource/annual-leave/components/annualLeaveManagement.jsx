@@ -130,7 +130,7 @@ const AnnualLeaveManagement = (props) => {
 
     const { translate, annualLeave, department } = props;
 
-    const { month, limit, page, organizationalUnits, currentRow, currentRowView, importAnnualLeave, tableId, } = state;
+    const { month, limit, page, organizationalUnits, currentRow, currentRowView, importAnnualLeave, tableId } = state;
 
     const { list } = department;
     let listAnnualLeaves = [], exportData = [];
@@ -324,7 +324,7 @@ const AnnualLeaveManagement = (props) => {
                     </ul>
                 </div>
 
-                <AnnualLeaveCreateForm 
+                <AnnualLeaveCreateForm
                     typeView="admin"
                 />
                 {importAnnualLeave && <AnnualLeaveImportForm />}
