@@ -219,7 +219,7 @@ function PurchaseRequestCreateForm(props) {
     }
 
     const validateApprover = (value, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateEmpty(props.translate, value);
+        let { message } = ValidationHelper.validateArrayLength(props.translate, value);
 
         if (willUpdateState) {
             setState(state => {
@@ -400,7 +400,7 @@ function PurchaseRequestCreateForm(props) {
                             {/* Số lượng */}
                             <div className={`form-group ${errorOnTotal === undefined ? "" : "has-error"}`}>
                                 <label>{translate('asset.general_information.number')}<span className="text-red">*</span></label>
-                                <input type="number" className="form-control" name="total" value={total} onChange={handleTotalChange} autoComplete="off" placeholder="Số lượng" />
+                                <input type="number" className="form-control" name="total" value={total} min="1" onChange={handleTotalChange} autoComplete="off" placeholder="Số lượng" />
                                 <ErrorLabel content={errorOnTotal} />
                             </div>
 
@@ -414,7 +414,7 @@ function PurchaseRequestCreateForm(props) {
                             {/* Giá trị dự tính */}
                             <div className="form-group">
                                 <label>{translate('asset.manage_recommend_procure.expected_value')} (VNĐ)</label>
-                                <input type="number" className="form-control" name="estimatePrice" value={estimatePrice}
+                                <input type="number" className="form-control" name="estimatePrice" min="1" value={estimatePrice}
                                     onChange={handleEstimatePriceChange} autoComplete="off" placeholder="Giá trị dự tính" />
                             </div>
 
