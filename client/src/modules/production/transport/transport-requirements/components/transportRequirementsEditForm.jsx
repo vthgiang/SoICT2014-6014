@@ -371,7 +371,9 @@ function TransportRequirementsEditForm(props) {
                             <div className="tab-pane" id="list-arrange-plan">
                                 <LazyLoadComponent
                                 >
-                                    <LocateAndPlan />
+                                    <LocateAndPlan 
+                                    curentTransportRequirementDetail={curentTransportRequirementDetail}
+                                    />
                                 </LazyLoadComponent>
                             </div>
                         </div>

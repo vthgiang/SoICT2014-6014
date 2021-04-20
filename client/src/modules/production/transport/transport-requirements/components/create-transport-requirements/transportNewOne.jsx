@@ -84,28 +84,24 @@ function TransportNewOne(props) {
         })
     }
     const handleCustomer2PhoneChange = (e) => {
-        console.log(e.target.value);
         setFormInfo({
             ...formInfo,
             customer2Phone: e.target.value,
         })
     }
     const handleCustomer2EmailChange = (e) => {
-        console.log(e.target.value);
         setFormInfo({
             ...formInfo,
             customer2Email: e.target.value,
         })
     }     
     const handleCustomer2AddressChange = (e) => {
-        console.log(e.target.value);
         setFormInfo({
             ...formInfo,
             customer2Address: e.target.value,
         })
     }
     const handleCustomer2AddressTransportChange = (e) => {
-        console.log(e.target.value);
         setFormInfo({
             ...formInfo,
             customer2AddressTransport: e.target.value,
