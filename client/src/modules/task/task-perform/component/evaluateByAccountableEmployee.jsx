@@ -258,7 +258,7 @@ class EvaluateByAccountableEmployee extends Component {
                 }
             }
 
-            let empPoint = {}, results = {}, endDateEval, timesheetLogs, duration = 0;
+            let empPoint = {}, results = {}, endDateEval, timesheetLogs = [], duration = 0;
             let inactiveEmp = task.inactiveEmployees.map(e => e._id);
 
             if (dateParam.toString().includes("-")) {
@@ -292,7 +292,7 @@ class EvaluateByAccountableEmployee extends Component {
             for (let i in task.responsibleEmployees) {
                 if (inactiveEmp.indexOf(task.responsibleEmployees[i]._id) === -1) {
                     let durationResponsible = 0
-                    timesheetLogs.filter(item => {
+                    timesheetLogs?.length > 0 && timesheetLogs.filter(item => {
                         if (item?.acceptLog
                             && item?.creator?._id === task.responsibleEmployees[i]._id
                         ) {
