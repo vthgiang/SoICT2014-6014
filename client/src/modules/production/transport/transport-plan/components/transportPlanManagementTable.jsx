@@ -24,9 +24,17 @@ function TransportPlanManagementTable(props) {
     const handleDelete = (id) => {
         props.deleteTransportPlan(id);
     }
+
+    const getCurrentDate = () => {
+        let currentDate = new Date();
+        currentDate = currentDate.getFullYear()+"-"+currentDate.getMonth()+"-"+currentDate.getDate();
+        return currentDate;
+    }
     return (
             <div className="box-body qlcv">
-                <TransportPlanCreateForm />
+                <TransportPlanCreateForm 
+                    currentDateClient={getCurrentDate()}
+                />
                 <div className="form-inline">
 
                 </div>

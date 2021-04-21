@@ -69,3 +69,30 @@ exports.editTransportVehicleToSetPlan = async (req, res) => {
         })
     }
 }
+
+exports.editTransportVehicle = async (req, res) => {
+    try {
+        let { id } = req.params;
+        let data = req.body;
+        let updatedTransportVehicle = await TransportVehicleServices.editTransportVehicle(req.portal, id, data);
+        if (updatedTransportVehicle !== -1) {
+            await Log.info(req.user.email, "UPDATED_TRANSPORT_VEHICLE", req.portal);
+            res.status(200).json({
+                success: true,
+                messages: ["edit_transport_vehicle_success"],
+                content: updatedTransportVehicle
+            });
+        } else {
+            throw Error("TransportVehicle is invalid");
+        }
+
+    } catch (error) {
+        await Log.error(req.user.email, "UPDATED_TRANSPORT_VEHICLE", req.portal);
+
+        res.status(400).json({
+            success: false,
+            messages: ["edit_transport_vehicle_fail"],
+            content: error.message
+        });
+    }
+}

@@ -6,7 +6,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { TransportPlanManagementTable } from './transportPlanManagementTable';
 import { TransportArrangePlan } from './transportArrangePlan';
 import { TransportVehicleManagementTable } from '../../transport-vehicle/components/transportVehicleManagementTable';
-
+import { TransportVehicle } from '../../transport-vehicle/components/transportVehicle'
 class TransportPlan extends Component {
     constructor(props) {
         super(props);
@@ -36,7 +36,7 @@ class TransportPlan extends Component {
                     <div className="tab-pane" id="list-vehicle-carrier">
                         <LazyLoadComponent
                         >
-                            <TransportVehicleManagementTable />
+                            <TransportVehicle />
                         </LazyLoadComponent>
                     </div>
                 </div>

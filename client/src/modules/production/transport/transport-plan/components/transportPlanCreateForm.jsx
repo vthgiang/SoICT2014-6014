@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { ButtonModal, DialogModal, ErrorLabel, DatePicker, SelectBox } from '../../../../../common-components';
+import { ButtonModal, DialogModal, ErrorLabel, DatePicker, SelectBox, LazyLoadComponent, forceCheckOrVisible } from '../../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
 import { generateCode } from "../../../../../helpers/generateCode";
 import { formatToTimeZoneDate, formatDate } from "../../../../../helpers/formatDate"
@@ -15,7 +15,7 @@ import {} from './transport-plan.css'
 
 function TransportPlanCreateForm(props) {
     let allTransportRequirements;
-    let {transportRequirements} = props;
+    let {transportRequirements, currentDateClient} = props;
     const [formSchedule, setFormSchedule] = useState({
         code: "",
         startDate: "",
@@ -128,7 +128,6 @@ function TransportPlanCreateForm(props) {
     useEffect(() => {
         props.getAllTransportRequirements({page:1, limit: 100})
     }, [])
-
     useEffect(() => {
         if (transportRequirements){
             let {lists} = transportRequirements;
@@ -140,8 +139,10 @@ function TransportPlanCreateForm(props) {
                         setListRequirements(arrangeRequirement(lists, startDate))
                     }
                 }
+                else {
+                    setListRequirements([])
+                }
             }
-
         }
     }, [formSchedule.startDate, formSchedule.endDate])
 
@@ -178,7 +179,7 @@ function TransportPlanCreateForm(props) {
         }
         console.log(locationArr, " ar")
         setListSelectedRequirementsLocation(locationArr);
-
+        console.log(new Date(), " day la ngay");
     }, [listSelectedRequirements])
 
     return (
@@ -201,149 +202,166 @@ function TransportPlanCreateForm(props) {
                 size={100}
                 maxWidth={500}
             >
-                <form id="form-create-transport-requirements" 
-                // onSubmit={() => save(translate('manage_example.add_success'))}
-                >
-                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-
-                        <div className="col-xs-12 col-sm-12 col-md-7 col-lg-7">
-
+            <form id="form-create-transport-requirements" >
+            <div className="nav-tabs-custom">
+                <ul className="nav nav-tabs">
+                    <li className="active"><a href="#plan-list-transport-requirement" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Kế hoạch vận chuyển"}</a></li>
+                    <li><a href="#plan-transport-vehicle-carrier" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Xếp kế hoạch vận chuyển"}</a></li>
+                </ul>
+                <div className="tab-content">
+                    <div className="tab-pane active" id="plan-list-transport-requirement">
+                        <div className="box-body">
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                                    <div className="form-group">
-                                        <label>
-                                            Mã lịch trình <span className="attention"> </span>
-                                        </label>
-                                        <input type="text" className="form-control" disabled={true} 
-                                            value={formSchedule.code}
-                                        />
-                                    </div>
+
+                                <div className="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+
+                                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                            <div className="form-group">
+                                                <label>
+                                                    Mã lịch trình <span className="attention"> </span>
+                                                </label>
+                                                <input type="text" className="form-control" disabled={true} 
+                                                    value={formSchedule.code}
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                            <div className={`form-group`}>
+                                                <label>
+                                                    Người phụ trách
+                                                    <span className="attention"> * </span>
+                                                </label>
+                                                <input type="text" className="form-control" disabled={false} 
+                                                />
+                                                {/* <SelectBox
+                                                    id={`select-type-requirement`}
+                                                    className="form-control select2"
+                                                    style={{ width: "100%" }}
+                                                    value={"5"}
+                                                    // items={requirements}
+                                                    // onChange={handleTypeRequirementChange}
+                                                    multiple={false}
+                                                /> */}
+                                            </div>
+                                        </div>
+
+                                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                            <div className="form-group">
+                                                <label>
+                                                    Ngày bắt đầu <span className="attention"> * </span>
+                                                </label>
+                                                <DatePicker
+                                                    id={`start_date`}
+                                                    value={formSchedule.startDate}
+                                                    onChange={handleStartDateChange}
+                                                    disabled={false}
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                            <div className={`form-group`}>
+                                                <label>
+                                                    Ngày kết thúc
+                                                    <span className="attention"> * </span>
+                                                </label>
+                                                <DatePicker
+                                                    id={`end_date`}
+                                                    value={formSchedule.endDate}
+                                                    onChange={handleEndDateChange}
+                                                    disabled={false}
+                                                />
+                                            </div>
+                                        </div>
+
                                 </div>
-                                <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                                    <div className={`form-group`}>
-                                        <label>
-                                            Người phụ trách
-                                            <span className="attention"> * </span>
-                                        </label>
-                                        <input type="text" className="form-control" disabled={false} 
-                                        />
-                                        {/* <SelectBox
-                                            id={`select-type-requirement`}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            value={"5"}
-                                            // items={requirements}
-                                            // onChange={handleTypeRequirementChange}
-                                            multiple={false}
-                                        /> */}
-                                    </div>
+                                <div className="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+                                    {
+                                        (listRequirements && listRequirements.length!==0)
+                                        // &&
+                                        // <LocationMap 
+                                        //     locations = {listSelectedRequirementsLocation}
+                                        //     loadingElement={<div style={{height: `100%`}}/>}
+                                        //     containerElement={<div style={{height: "40vh"}}/>}
+                                        //     mapElement={<div style={{height: `100%`}}/>}
+                                        // />
+                                    }
                                 </div>
                             </div>
-
-                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-6">
-                                    <div className="form-group">
-                                        <label>
-                                            Ngày bắt đầu <span className="attention"> * </span>
-                                        </label>
-                                        <DatePicker
-                                            id={`start_date`}
-                                            value={formSchedule.startDate}
-                                            onChange={handleStartDateChange}
-                                            disabled={false}
-                                        />
-                                    </div>
-                                </div>
-                                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-6">
-                                    <div className={`form-group`}>
-                                        <label>
-                                            Ngày kết thúc
-                                            <span className="attention"> * </span>
-                                        </label>
-                                        <DatePicker
-                                            id={`end_date`}
-                                            value={formSchedule.endDate}
-                                            onChange={handleEndDateChange}
-                                            disabled={false}
-                                        />
-                                    </div>
-                                </div>
-
-                            </div>  
-                        </div>
-                        <div className="col-xs-12 col-sm-12 col-md-5 col-lg-5">
-                            {
-                                (listRequirements && listRequirements.length!==0)
-                                &&
-                                <LocationMap 
-                                    locations = {listSelectedRequirementsLocation}
-                                />
-                            }
+                        {
+                            listRequirements && listRequirements.length!==0
+                            &&
+                            <table id={"1"} className="table table-striped table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th className="col-fixed" style={{ width: 60 }}>{"STT"}</th>
+                                        <th>{"Mã yêu cầu"}</th>
+                                        <th>{"Loại yêu cầu"}</th>
+                                        <th>{"Địa chỉ nhận hàng"}</th>
+                                        <th>{"Địa chỉ giao hàng"}</th>
+                                        <th>{"Ngày tạo"}</th>
+                                        <th>{"Ngày mong muốn vận chuyển"}</th>
+                                        <th>{"Trạng thái"}</th>
+                                        <th>{"Hành động"}</th>
+                                        {/* <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
+                                            <DataTableSetting
+                                                tableId={tableId}
+                                                columnArr={[
+                                                    translate('manage_example.index'),
+                                                    translate('manage_example.exampleName'),
+                                                    translate('manage_example.description'),
+                                                ]}
+                                                setLimit={setLimit}
+                                            />
+                                        </th> */}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {(listRequirements && listRequirements.length !== 0) &&
+                                        listRequirements.map((x, index) => (
+                                            x &&
+                                            <tr key={index}>
+                                                <td>{index+1}</td>
+                                                <td>{x.code}</td>
+                                                <td>{x.type}</td>
+                                                <td>{x.fromAddress}</td>
+                                                <td>{x.toAddress}</td>
+                                                <td>{x.createdAt ? formatDate(x.createdAt) : ""}</td>
+                                                <td>
+                                                    {
+                                                        (x.timeRequests && x.timeRequests.length!==0)
+                                                        && x.timeRequests.map((timeRequest, index2)=>(
+                                                            <div key={index+" "+index2}>
+                                                                {index2+1+"/ "+formatDate(timeRequest.timeRequest)}
+                                                            </div>
+                                                        ))
+                                                    }
+                                                </td>
+                                                <td>{x.status}</td>
+                                                <td style={{ textAlign: "center" }} className="tooltip-checkbox">
+                                                    <span className={"icon "
+                                                    +getStatusTickBox(x)
+                                                }
+                                                    title={"alo"} 
+                                                    onClick={() => handleSelectRequirement(x)}
+                                                    >
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    }
+                                </tbody>
+                            </table>
+                        }
                         </div>
                     </div>
-                    <table id={"1"} className="table table-striped table-bordered table-hover">
-                        <thead>
-                            <tr>
-                                <th className="col-fixed" style={{ width: 60 }}>{"STT"}</th>
-                                <th>{"Mã yêu cầu"}</th>
-                                <th>{"Loại yêu cầu"}</th>
-                                <th>{"Địa chỉ nhận hàng"}</th>
-                                <th>{"Địa chỉ giao hàng"}</th>
-                                <th>{"Ngày tạo"}</th>
-                                <th>{"Ngày mong muốn vận chuyển"}</th>
-                                <th>{"Trạng thái"}</th>
-                                <th>{"Hành động"}</th>
-                                {/* <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
-                                    <DataTableSetting
-                                        tableId={tableId}
-                                        columnArr={[
-                                            translate('manage_example.index'),
-                                            translate('manage_example.exampleName'),
-                                            translate('manage_example.description'),
-                                        ]}
-                                        setLimit={setLimit}
-                                    />
-                                </th> */}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {(listRequirements && listRequirements.length !== 0) &&
-                                listRequirements.map((x, index) => (
-                                    x &&
-                                    <tr key={index}>
-                                        <td>{index+1}</td>
-                                        <td>{x.code}</td>
-                                        <td>{x.type}</td>
-                                        <td>{x.fromAddress}</td>
-                                        <td>{x.toAddress}</td>
-                                        <td>{x.createdAt ? formatDate(x.createdAt) : ""}</td>
-                                        <td>
-                                            {
-                                                (x.timeRequests && x.timeRequests.length!==0)
-                                                && x.timeRequests.map((timeRequest, index2)=>(
-                                                    <div key={index+" "+index2}>
-                                                        {index+1+"/ "+formatDate(timeRequest.timeRequest)}
-                                                    </div>
-                                                ))
-                                            }
-                                        </td>
-                                        <td>{x.status}</td>
-                                        <td style={{ textAlign: "center" }} className="tooltip-checkbox">
-                                            <span className={"icon "
-                                            +getStatusTickBox(x)
-                                        }
-                                            title={"alo"} 
-                                            onClick={() => handleSelectRequirement(x)}
-                                            >
-
-                                            </span>
-                                        </td>
-                                    </tr>
-                                ))
-                            }
-                        </tbody>
-                    </table>
-            
+                    <div className="tab-pane" id="plan-transport-vehicle-carrier">
+                        <LazyLoadComponent
+                        >
+                            {/* <TransportArrangePlan /> */}
+                        </LazyLoadComponent>
+                    </div>
+                </div>
+            </div>
                 </form>
             </DialogModal>
         </React.Fragment>
