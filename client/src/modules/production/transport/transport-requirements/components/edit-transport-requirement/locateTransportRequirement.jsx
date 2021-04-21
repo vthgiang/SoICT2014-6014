@@ -111,18 +111,18 @@ function LocateTransportRequirement(props) {
                         <legend className="scheduler-border">Vị trí giao hàng</legend>
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                             <div className="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                                <div className={`form-group`}>
-                                    <label>
-                                        Địa chỉ khách hàng
-                                        <span className="attention"> * </span>
-                                    </label>
-                                    <textarea type="text" className="form-control" 
-                                        value={location?.fromAddress}
-                                        onChange={handleCustomer1AddressChange}
-                                    />
+                                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <div className={`form-group`}>
+                                        <label>
+                                            Địa chỉ khách hàng
+                                            <span className="attention"> * </span>
+                                        </label>
+                                        <textarea type="text" className="form-control" 
+                                            value={location?.fromAddress}
+                                            onChange={handleCustomer1AddressChange}
+                                        />
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="col-xs-12 col-sm-12 col-md-2 col-lg-2">
                                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                     <div className={`form-group`}>
                                         <label>
@@ -130,25 +130,13 @@ function LocateTransportRequirement(props) {
                                             {/* <span className="attention"> * </span> */}
                                         </label>
                                         <input type="text" className="form-control" disabled={true}
-                                            value={location?.fromLat} 
+                                            value={location?.fromLat + ", " +location?.fromLng} 
                                             // onChange={handleCustomer1LatChange}
                                         />
                                     </div>
                                 </div>
-                                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                    <div className={`form-group`}>
-                                        {/* <label>
-                                            Tọa độ
-                                            <span className="attention"> * </span>
-                                        </label> */}
-                                        <input type="text" className="form-control" disabled={true}
-                                            value={location?.fromLng} 
-                                            // onChange={handleCustomer1LngChange}
-                                        />
-                                    </div>
-                                </div>
                             </div>
-                            <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                            <div className="col-xs-12 col-sm-12 col-md-8 col-lg-8">
                                 <MapContainer
                                     locations = {[
                                         {
@@ -168,48 +156,34 @@ function LocateTransportRequirement(props) {
                         <legend className="scheduler-border">Vị trí nhận hàng</legend>
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                             <div className="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                                <div className={`form-group`}>
-                                    <label>
-                                        Địa chỉ khách hàng
-                                        <span className="attention"> * </span>
-                                    </label>
-                                    <textarea type="text" className="form-control" 
-                                        value={location?.toAddress}
-                                        onChange={handleCustomer2AddressChange}
-                                    />
+                                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <div className={`form-group`}>
+                                        <label>
+                                            Địa chỉ khách hàng
+                                            <span className="attention"> * </span>
+                                        </label>
+                                        <textarea type="text" className="form-control" 
+                                            value={location?.toAddress}
+                                            onChange={handleCustomer2AddressChange}
+                                        />
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="col-xs-12 col-sm-12 col-md-2 col-lg-2">
                                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                     <div className={`form-group`}>
                                         <label>
                                             Tọa độ
-                                            {/* <span className="attention"> * </span> */}
                                         </label>
                                         <input type="text" className="form-control" disabled={true}
-                                            value={location?.toLat} 
-                                            // onChange={handleCustomer1LatChange}
-                                        />
-                                    </div>
-                                </div>
-                                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                    <div className={`form-group`}>
-                                        {/* <label>
-                                            Tọa độ
-                                            <span className="attention"> * </span>
-                                        </label> */}
-                                        <input type="text" className="form-control" disabled={true}
-                                            value={location?.toLng} 
-                                            // onChange={handleCustomer1LngChange}
+                                            value={location?.toLat+", "+location?.toLng} 
                                         />
                                     </div>
                                 </div>
                             </div>
-                            <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                            <div className="col-xs-12 col-sm-12 col-md-8 col-lg-8">
                                 <MapContainer
                                     locations = {[
                                         {
-                                            name: "from",
+                                            name: "to",
                                             location: {
                                                 lat: location?.toLat,
                                                 lng: location?.toLng

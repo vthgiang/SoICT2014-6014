@@ -13,13 +13,11 @@ import { TransportGeneralInfoShip } from './create-transport-requirements/transp
 import { TransportReturn } from './create-transport-requirements/transportReturn';
 import { TransportImportGoods } from './create-transport-requirements/transportImportGoods';
 import { TransportMaterial } from './create-transport-requirements/transportMaterial';
-import { TransportNewOne} from './create-transport-requirements/transportNewOne';
+import { TransportNewOne} from './edit-transport-requirement/transportNewOne';
 import { TransportGoods } from './edit-transport-requirement/transportGoods';
 import { TransportTime } from './edit-transport-requirement/transportTime';
 
 import { LocateTransportRequirement } from './edit-transport-requirement/locateTransportRequirement'
-
-import { exampleActions } from '../redux/actions';
 
 import { BillActions } from '../../../warehouse/bill-management/redux/actions';
 import { CrmCustomerActions } from "../../../../crm/customer/redux/actions";
@@ -29,38 +27,7 @@ import { getGeocode } from '../../transportHelper/getGeocodeGoong'
 
 function TransportRequirementsEditForm(props) {
     
-    let {curentTransportRequirementDetail} = props;
-    
-    const requirements = [
-        {
-            value: "1",
-            text: "Giao hàng",
-            billType: "3",
-            billGroup: "2",
-        },
-        {
-            value: "2",
-            text: "Trả hàng",
-            billType: "5",
-            billGroup: "3",
-        },
-        {
-            value: "3",
-            text: "Chuyển thành phẩm tới kho",
-            billType: "1",
-            billGroup: "1",
-        },
-        {
-            value: "4",
-            text: "Giao nguyên vật liệu",
-            billType: "4",
-            billGroup: "2"
-        },
-        {
-            value: "5",
-            text: "Khác",
-        }
-    ];
+    let {curentTransportRequirementDetail, editTransportRequirement} = props;
     // Khởi tạo state
     const [state, setState] = useState({
         value: "5",
@@ -76,21 +43,9 @@ function TransportRequirementsEditForm(props) {
         timeRequests: [],
     });
 
-
-    const [billId, setBillId] = useState({
-        id: "",
-    });
-
-
     const [importGoodsDetails, setImportGoodsDetails] = useState({
         addressStock: "",
         nameStock: ""
-    })
-
-    const [goodsTransport, setGoodsTransport] = useState([])
-
-    const [goodDetails, setGoodDetails] = useState({
-        good: [],
     })
     /**
      * Hàm dùng để lưu thông tin của form và gọi service tạo mới ví dụ
@@ -109,18 +64,42 @@ function TransportRequirementsEditForm(props) {
          * Khi tạo mới yêu cầu vận chuyển, đồng thời lấy tọa độ geocode {Lat, Lng} lưu vào db
          */
         console.log(requirementsForm, " 2123");
-        let data = requirementsForm;
         let timeRequest = [];
-        if(data.timeRequests && data.timeRequests.length!==0){
-            data.timeRequests.map(item => {
+        if(requirementsForm.timeRequests && requirementsForm.timeRequests.length!==0){
+            requirementsForm.timeRequests.map(item => {
                 timeRequest.push({
                     timeRequest: formatToTimeZoneDate(item.time),
                     description: item.detail,
                 })
             })
         }
-        data.timeRequests = timeRequest;
-        console.log(data);
+        let totalPayload=0, totalVolume=0;
+        let listGoods = [] // Chuẩn hóa good => _id => good
+        if (requirementsForm.goods && requirementsForm.goods.length!==0 ){
+            requirementsForm.goods.map(item => {
+                if (item){
+                    listGoods.push({
+                        payload: item.payload,
+                        quantity: item.quantity,
+                        volume: item.volume,
+                        good: item._id,
+                    })
+
+                    totalPayload+=item.payload;
+                    totalVolume+=item.volume;
+                }
+            })
+        }        
+        let data ={
+            volume: totalVolume,
+            payload: totalPayload,
+            goods: listGoods,
+            timeRequests: timeRequest,
+            fromAddress: requirementsForm.fromAddress,
+            toAddress: requirementsForm.toAddress,
+        };
+        editTransportRequirement(curentTransportRequirementDetail._id, data);
+        setRequirementsForm({})
     }
 
      useEffect(() => {
@@ -128,16 +107,13 @@ function TransportRequirementsEditForm(props) {
         props.getBillsByType({ page:1, limit:30, group: parseInt(state.billGroup), managementLocation: localStorage.getItem("currentRole") });
     },[state])
 
+    // Khởi tạo giá trị ban đầu
     useEffect(() => {
         console.log(curentTransportRequirementDetail, " curentTransportRequirementDetail");
         if (curentTransportRequirementDetail){
             setRequirementsForm(curentTransportRequirementDetail);
         }
     }, [curentTransportRequirementDetail])
-
-    useEffect(() => {
-        console.log(requirementsForm);
-    }, [requirementsForm])
 
     /**
      * Hàm lấy dữ liệu hàng hóa từ component con
@@ -241,7 +217,6 @@ function TransportRequirementsEditForm(props) {
                             </div>
                         </div>
                     </fieldset>
-
                             </div>
                             {
                                 state.value === "1" && ( 
@@ -322,7 +297,6 @@ function mapState(state) {
 const actions = {
     getBillsByType: BillActions.getBillsByType,
     getCustomers: CrmCustomerActions.getCustomers,
-    createTransportRequirement: transportRequirementsActions.createTransportRequirement,
 }
 
 const connectedTransportRequirementsEditForm = connect(mapState, actions)(withTranslate(TransportRequirementsEditForm));

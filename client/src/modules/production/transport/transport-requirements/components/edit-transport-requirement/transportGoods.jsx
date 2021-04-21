@@ -142,8 +142,8 @@ function TransportGoods(props) {
             goods.map(good => {
                 goodList.push({
                     _id: good?.good?._id,
-                    code: good?.good.code ? good.good.code : "",
-                    name: good?.good.name ? good?.good.name : "",
+                    code: good?.good?.code ? good.good.code : "",
+                    name: good?.good?.name ? good.good.name : "",
                     quantity: good?.quantity,
                     volume: good?.volume,
                     payload: good?.payload,  

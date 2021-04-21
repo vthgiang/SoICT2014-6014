@@ -159,14 +159,14 @@ function TransportPlanCreateForm(props) {
                     console.log(item, "otem");
                     locationArr.push(
                         {
-                            name: String(index),
+                            name: String(index+1),
                             location: {
                                 lat: item.geocode?.fromAddress?.lat,
                                 lng: item.geocode?.fromAddress?.lng,
                             }
                         },
                         {
-                            name: String(index),
+                            name: String(index+1),
                             location: {
                                 lat: item.geocode?.toAddress?.lat,
                                 lng: item.geocode?.toAddress?.lng,

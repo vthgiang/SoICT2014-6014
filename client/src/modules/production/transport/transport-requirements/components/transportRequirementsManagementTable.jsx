@@ -23,77 +23,23 @@ function TransportRequirementsManagementTable(props) {
         perPage: getLimit,
         tableId: getTableId,
     })
-    const { example, translate, allTransportRequirements } = props;
-    const { exampleName, page, perPage, currentRow, curentRowDetail, tableId, curentTransportRequirementDetail } = state;
 
+    const [allTransportRequirements, setAllTransportRequirements] = useState()
+    const { example, translate, transportRequirements } = props;
+    const { exampleName, page, perPage, currentRow, curentRowDetail, tableId, curentTransportRequirementDetail } = state;
+    
     useEffect(() => {
         props.getAllTransportRequirements({ page : 1, perPage : 100 });
     }, [])
-    /**
-     * Hàm xử lý khi tên ví dụ thay đổi
-     * @param {*} e 
-     */
-    
-    const handleChangeExampleName = (e) => {
-        const { value } = e.target;
-        setState({
-            ...state,
-            exampleName: value
-        });
-    }
 
-
-    /**
-     * Hàm xử lý khi click nút tìm kiếm
-     */
-    const handleSubmitSearch = () => {
-        props.getExamples({
-            exampleName,
-            perPage,
-            page: 1
-        });
-        setState({
-            ...state,
-            page: 1
-        });
-    }
-
-
-    /**
-     * Hàm xử lý khi click chuyển trang
-     * @param {*} pageNumber Số trang định chuyển
-     */
-    const setPage = (pageNumber) => {
-        setState({
-            ...state,
-            page: parseInt(pageNumber)
-        });
-
-        props.getExamples({
-            exampleName,
-            perPage,
-            page: parseInt(pageNumber)
-        });
-    }
-
-
-    /**
-     * Hàm xử lý thiết lập giới hạn hiển thị số bản ghi
-     * @param {*} number số bản ghi sẽ hiển thị
-     */
-    const setLimit = (number) => {
-        setState({
-            ...state,
-            perPage: parseInt(number),
-            page: 1
-        });
-        props.getExamples({
-            exampleName,
-            perPage: parseInt(number),
-            page: 1
-        });
-    }
-
+    useEffect(() => {
+        if(transportRequirements){
+            if(transportRequirements.lists){
+                setAllTransportRequirements(transportRequirements.lists)
+            }
+        }
+        console.log(transportRequirements)
+    }, [transportRequirements])
 
     /**
      * Hàm xử lý khi click xóa 1 ví dụ
@@ -119,6 +65,9 @@ function TransportRequirementsManagementTable(props) {
             curentTransportRequirementDetail: transportRequirement,
         });
         window.$('#modal-edit-example-hooks').modal('show');
+    }
+    const editTransportRequirement = (requirementId, data) => {
+        props.editTransportRequirement(requirementId, data);
     }
 
     /**
@@ -147,6 +96,7 @@ function TransportRequirementsManagementTable(props) {
             />
             <TransportRequirementsEditForm
                 curentTransportRequirementDetail={curentTransportRequirementDetail}
+                editTransportRequirement={editTransportRequirement}
             />
             <div className="box-body qlcv">
                 {/* <div className="form-inline"> */}
@@ -241,26 +191,27 @@ function TransportRequirementsManagementTable(props) {
                     <div className="table-info-panel">{translate('confirm.loading')}</div> :
                     (typeof lists === 'undefined' || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                 } */}
-                <PaginateBar
+                {/* <PaginateBar
                     pageTotal={totalPage ? totalPage : 0}
                     currentPage={page}
                     display={lists && lists.length !== 0 && lists.length}
                     total={example && example.totalList}
                     func={setPage}
-                />
+                /> */}
             </div>
         </React.Fragment>
     )
 }
 
 function mapState(state) {
-    const allTransportRequirements = state.transportRequirements.lists;
-    return { allTransportRequirements }
+    const {transportRequirements} = state;
+    return { transportRequirements }
 }
 
 const actions = {
     getAllTransportRequirements: transportRequirementsActions.getAllTransportRequirements,
     deleteTransportRequirement: transportRequirementsActions.deleteTransportRequirement,
+    editTransportRequirement: transportRequirementsActions.editTransportRequirement,
 }
 
 const connectedTransportRequirementsManagementTable = connect(mapState, actions)(withTranslate(TransportRequirementsManagementTable));

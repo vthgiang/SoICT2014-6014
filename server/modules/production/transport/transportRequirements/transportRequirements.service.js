@@ -176,7 +176,17 @@ exports.editTransportRequirement = async (portal, id, data) => {
 
 
     let transportRequirement = await TransportRequirement(connect(DB_CONNECTION, portal)).findById({ _id: oldTransportRequirement._id })
-    .populate({path: 'transportPlan'})
+    .populate([
+        {
+            path: 'transportPlan'
+        },
+        {
+            path: 'creator'
+        },
+        {
+            path: 'goods.good'
+        }
+    ])        
     return transportRequirement;
 }
 
@@ -193,9 +203,14 @@ exports.deleteTransportRequirement = async (portal, id) => {
 
 exports.getTransportRequirementById = async (portal, id) => {
     let transportRequirement = await TransportRequirement(connect(DB_CONNECTION, portal)).findById({ _id: id })
-    .populate({
-        path: 'transportPlan',
-    });
+    .populate([
+        {
+            path: 'transportPlan',
+        },
+        {
+            path: 'goods.good',
+        }
+    ]);
     if (transportRequirement) {
         return transportRequirement;
     }

@@ -53,7 +53,7 @@ function TransportTime(props) {
             let list = [];
             timeRequested.map(time => {
                 list.push({
-                    time: formatDate(time.timeRequest),
+                    time: time.timeRequest?formatDate(time.timeRequest):"",
                     detail: time.description,
                 })
             })
