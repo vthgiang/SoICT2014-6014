@@ -179,7 +179,6 @@ function TransportPlanCreateForm(props) {
         }
         console.log(locationArr, " ar")
         setListSelectedRequirementsLocation(locationArr);
-        console.log(new Date(), " day la ngay");
     }, [listSelectedRequirements])
 
     return (

@@ -42,6 +42,7 @@ function TransportVehicle(props) {
             managedBy: props.managedBy ? props.managedBy : ''
         }
         props.getAllAsset(data);
+        props.getAllTransportVehicles();
     }, [])
 
     /**

@@ -16,6 +16,10 @@ const TransportPlanSchema = new Schema({
             ref: 'Asset',
             // required: true
         },
+        vehicle: {
+            type: Schema.Types.ObjectId,
+            ref: 'TransportVehicle',
+        },
         volume: { // Thể tích thùng của xe
             type: Number,
             // required: true,
@@ -28,6 +32,9 @@ const TransportPlanSchema = new Schema({
                 type: Schema.Types.ObjectId,
                 ref: 'User',
                 // required: true
+            },
+            pos: {
+                type: Number, // Là lái xe => ==1 hay không
             }
         }]
     }],
