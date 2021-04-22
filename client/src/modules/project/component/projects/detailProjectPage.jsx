@@ -46,6 +46,7 @@ const ProjectDetailPage = (props) => {
     return (
         <div>
             <div className="description-box" style={{ lineHeight: 1.5 }}>
+                <h3 style={{ marginBottom: 15 }}>Thông số dự án</h3>
                 <div className="row">
                     <div className="col-md-6">
                         <div className="form-horizontal">
@@ -159,7 +160,7 @@ const ProjectDetailPage = (props) => {
                     {/* Button thêm mới */}
                     {checkIfAbleToCRUDProject({ project, user, currentProjectId }) &&
                         <div className="dropdown pull-right" style={{ marginTop: 15, marginRight: 10 }}>
-                            {currentProjectTasks && currentProjectTasks.length > 0 ? null :<ModalAddTaskSchedule />}
+                            {currentProjectTasks && currentProjectTasks.length > 0 ? null : <ModalAddTaskSchedule />}
                             <TaskProjectAddModal onHandleReRender={onHandleReRender} currentProjectTasks={currentProjectTasks} parentTask={parentTask} />
                             <ModalAddTaskSchedule />
                             <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true"

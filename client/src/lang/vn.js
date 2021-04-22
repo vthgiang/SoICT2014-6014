@@ -5792,7 +5792,6 @@ export default {
                 day: 'Ngày',
                 hour: 'Giờ',
             },
-
             schedule: {
                 taskCode: 'Mã công việc',
                 taskName: 'Tên công việc',
@@ -5811,7 +5810,15 @@ export default {
                 calculateRecommend: 'Tính toán đề xuất thoả hiệp dự án',
                 percentFinishTask: 'Xác suất hoàn thành dự án trong',
             },
-
+            eval: {
+                undefined: 'Nếu costPerformanceIndex không tính được (mẫu số actualCost = 0 HOẶC costPerformanceIndex = Infinity): Điểm = Chưa tính được',
+                level1: 'Nếu realDuration = 0 HOẶC costPerformanceIndex < 0.5: Điểm = 0',
+                level2: 'Nếu 0.5 <= costPerformanceIndex < 0.75: Điểm = 40',
+                level3: 'Nếu 0.75 <= costPerformanceIndex < 1: Điểm = 60',
+                level4: 'Nếu 1 <= costPerformanceIndex < 1.25: Điểm = 80',
+                level5: 'Nếu 1.25 <= costPerformanceIndex < 1.5: Điểm = 90',
+                level6: 'Nếu 1.5 <= costPerformanceIndex: Điểm = 100',
+            },
             report: {
                 title: 'Báo cáo chi tiết dự án'
             }

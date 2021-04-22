@@ -18,7 +18,9 @@ import dayjs from "dayjs";
 import { getCurrentProjectDetails } from '../../../project/component/projects/functionHelper';
 import moment from 'moment';
 import { getSalaryFromUserId, numberWithCommas } from './functionHelpers';
+import { AutomaticTaskPointCalculator } from '../../task-perform/component/automaticTaskPointCalculator';
 
+const MILISECS_TO_DAYS = 86400000;
 class AddProjectTaskForm extends Component {
     constructor(props) {
         super(props);
@@ -48,6 +50,7 @@ class AddProjectTaskForm extends Component {
                 parent: '',
                 budget: '',
                 estimateAssetCost: '',
+                actorsWithSalary: [],
             },
             startTime: "08:00 AM",
             endTime: "05:30 PM",
@@ -83,7 +86,7 @@ class AddProjectTaskForm extends Component {
     }
     validateTaskName = (value, willUpdateState = true) => {
         let { translate } = this.props;
-        let { message } = ValidationHelper.validateEmpty(translate, value);
+        let { message } = ValidationHelper.validateTaskName(translate, value, this.props.currentProjectTasks);
 
         if (willUpdateState) {
             this.state.newTask.name = value;
@@ -150,7 +153,10 @@ class AddProjectTaskForm extends Component {
         }
         if (willUpdateState) {
             newTask.startDate = value;
-            newTask.estimateNormalTime = moment(endDate).diff(moment(startDate), 'days').toString()
+            const numsOfSaturdays = this.getNumsOfDaysWithoutGivenDay(new Date(startDate), new Date(endDate), 6)
+            const numsOfSundays = this.getNumsOfDaysWithoutGivenDay(new Date(startDate), new Date(endDate), 0)
+            newTask.estimateNormalTime = (moment(endDate).diff(moment(startDate), 'milliseconds') - numsOfSaturdays * MILISECS_TO_DAYS - numsOfSundays * MILISECS_TO_DAYS)
+                .toString()
             newTask.errorOnStartDate = msg;
             if (!msg && newTask.endDate) newTask.errorOnEndDate = msg;
             this.setState(state => {
@@ -235,7 +241,13 @@ class AddProjectTaskForm extends Component {
         if (willUpdateState) {
             newTask.endDate = value;
             newTask.errorOnEndDate = msg;
-            newTask.estimateNormalTime = moment(newTask.endDate).diff(moment(newTask.startDate), 'days').toString()
+            const numsOfSaturdays = this.getNumsOfDaysWithoutGivenDay(new Date(newTask.startDate), new Date(newTask.endDate), 6)
+            const numsOfSundays = this.getNumsOfDaysWithoutGivenDay(new Date(newTask.startDate), new Date(newTask.endDate), 0)
+            newTask.estimateNormalTime = (
+                moment(newTask.endDate)
+                    .diff(moment(newTask.startDate), 'milliseconds') - numsOfSaturdays * MILISECS_TO_DAYS - numsOfSundays * MILISECS_TO_DAYS
+            )
+                .toString()
             if (!msg && newTask.startDate) newTask.errorOnStartDate = msg;
             this.setState(state => {
                 return {
@@ -381,12 +393,26 @@ class AddProjectTaskForm extends Component {
         this.validateTaskResponsibleEmployees(value, true);
     }
     validateTaskResponsibleEmployees = (value, willUpdateState = true) => {
-        let { translate } = this.props;
+        let { translate, project } = this.props;
+        const projectDetail = getCurrentProjectDetails(project);
         let { message } = ValidationHelper.validateArrayLength(this.props.translate, value);
 
         if (willUpdateState) {
             this.state.newTask.responsibleEmployees = value;
             this.state.newTask.errorOnResponsibleEmployees = message;
+            const responsiblesWithSalaryArr = value?.map(valueItem => {
+                return ({
+                    userId: valueItem,
+                    salary: getSalaryFromUserId(projectDetail?.responsibleEmployeesWithUnit, valueItem)
+                })
+            })
+            const accountablesWithSalaryArr = this.state.newTask.accountableEmployees?.map(valueItem => {
+                return ({
+                    userId: valueItem,
+                    salary: getSalaryFromUserId(projectDetail?.responsibleEmployeesWithUnit, valueItem)
+                })
+            })
+            this.state.newTask.actorsWithSalary = [...responsiblesWithSalaryArr, ...accountablesWithSalaryArr];
             this.setState(state => {
                 return {
                     ...state,
@@ -403,12 +429,26 @@ class AddProjectTaskForm extends Component {
         this.validateTaskAccountableEmployees(value, true);
     }
     validateTaskAccountableEmployees = (value, willUpdateState = true) => {
-        let { translate } = this.props;
+        let { translate, project } = this.props;
+        const projectDetail = getCurrentProjectDetails(project);
         let { message } = ValidationHelper.validateArrayLength(this.props.translate, value);
 
         if (willUpdateState) {
             this.state.newTask.accountableEmployees = value;
             this.state.newTask.errorOnAccountableEmployees = message;
+            const accountablesWithSalaryArr = value?.map(valueItem => {
+                return ({
+                    userId: valueItem,
+                    salary: getSalaryFromUserId(projectDetail?.responsibleEmployeesWithUnit, valueItem)
+                })
+            })
+            const responsiblesWithSalaryArr = this.state.newTask.responsibleEmployees?.map(valueItem => {
+                return ({
+                    userId: valueItem,
+                    salary: getSalaryFromUserId(projectDetail?.responsibleEmployeesWithUnit, valueItem)
+                })
+            })
+            this.state.newTask.actorsWithSalary = [...responsiblesWithSalaryArr, ...accountablesWithSalaryArr];
             this.setState(state => {
                 return {
                     ...state,
@@ -488,8 +528,8 @@ class AddProjectTaskForm extends Component {
                 newTask: {
                     ...this.state.newTask,
                     estimateNormalTime: value,
-                    estimateOptimisticTime: value || Number(value) < 0 ? (Number(value) - 2).toString() : '',
-                    estimatePessimisticTime: value || Number(value) < 0 ? (Number(value) + 2).toString() : '',
+                    estimateOptimisticTime: value || Number(value) < 0 ? (Number(value) - 200).toString() : '',
+                    estimatePessimisticTime: value || Number(value) < 0 ? (Number(value) + 200).toString() : '',
                     errorOnTimeEst: TaskFormValidator.validateTimeEst(value, this.props.translate),
                 }
             }, () => this.props.handleChangeTaskData(this.state.newTask))
@@ -552,17 +592,23 @@ class AddProjectTaskForm extends Component {
                 value: item._id
             })
         })
-        const formattedEmployeeArr = projectDetail?.responsibleEmployees?.map(item => {
-            return ({
-                text: item.name,
-                value: item._id
-            })
-        })
-        if (!projectParticipants || !formattedManagerArr || !formattedManagerArr) {
+        let formattedEmployeeArr = [];
+        if (Array.isArray(projectDetail?.responsibleEmployees)) {
+            for (let item of projectDetail?.responsibleEmployees) {
+                if (!projectDetail?.projectManager.find(managerItem => managerItem.name === item.name)) {
+                    formattedEmployeeArr.push({
+                        text: item.name,
+                        value: item._id
+                    })
+                }
+            }
+        }
+        
+        if (!projectParticipants || !formattedManagerArr || !formattedEmployeeArr) {
             return []
         }
         projectParticipants = formattedManagerArr.concat(formattedEmployeeArr)
-        if (projectParticipants.find(item => item.value === projectDetail?.creator?._id)) {
+        if (projectParticipants.find(item => String(item.value) === String(projectDetail?.creator?._id))) {
             return projectParticipants;
         }
         projectParticipants.push({
@@ -572,15 +618,21 @@ class AddProjectTaskForm extends Component {
         return projectParticipants;
     }
 
-    calculateDuration = () => {
-        console.log(this.state.newTask.startDate, this.state.newTask.endDate);
-        return moment(this.state.newTask.endDate).diff(moment(this.state.newTask.startDate), 'days');
-    }
-
     convertDateTime = (date, time) => {
         let splitter = date.split("-");
         let strDateTime = `${splitter[2]}/${splitter[1]}/${splitter[0]} ${time}`;
         return new Date(strDateTime);
+    }
+
+    getNumsOfDaysWithoutGivenDay = (startDate, endDate, givenDay) => {
+        let numberOfDates = 0
+        while (startDate < endDate) {
+            if (startDate.getDay() === givenDay) {
+                numberOfDates++
+            }
+            startDate.setDate(startDate.getDate() + 1)
+        }
+        return numberOfDates
     }
 
     getEstHumanCost = () => {
@@ -589,19 +641,29 @@ class AddProjectTaskForm extends Component {
         const projectDetail = getCurrentProjectDetails(this.props.project);
         const startDateTask = this.convertDateTime(startDate, startTime);
         const endDateTask = this.convertDateTime(endDate, endTime);
-        const duration = moment(endDateTask).diff(moment(startDateTask), `${projectDetail?.unitTime}s`);
         // Cần phải có biện pháp trừ đi ngày thứ 7 chủ nhật
+        const numsOfSaturdays = this.getNumsOfDaysWithoutGivenDay(new Date(startDateTask), new Date(endDateTask), 6)
+        const numsOfSundays = this.getNumsOfDaysWithoutGivenDay(new Date(startDateTask), new Date(endDateTask), 0)
+        const duration = moment(endDateTask).diff(moment(startDateTask), `milliseconds`) / MILISECS_TO_DAYS - numsOfSaturdays - numsOfSundays;
+        console.log('duration-------', duration)
+
+        // Tính số ngày công của tháng
+        const weekDays = AutomaticTaskPointCalculator.getAmountOfWeekDaysInMonth(moment(startDateTask));
 
         let sum = 0;
         for (let responsibleItem of responsibleEmployees) {
             // 0.8 là trọng số của Responsible
-            // Chia 20 là số ngày công
-            sum += getSalaryFromUserId(projectDetail?.responsibleEmployeesWithUnit, responsibleItem) / 20 * duration * 0.8;
+            // Chia cho length đề phòng có nhiều người trong array này
+            const resWeight = 0.8 / responsibleEmployees.length
+            // Chia weekDays là số ngày công
+            sum += getSalaryFromUserId(projectDetail?.responsibleEmployeesWithUnit, responsibleItem) / weekDays * duration * resWeight;
         }
         for (let accountableItem of accountableEmployees) {
             // 0.2 là trọng số của Accountable
-            // Chia 20 là số ngày công
-            sum += getSalaryFromUserId(projectDetail?.responsibleEmployeesWithUnit, accountableItem) / 20 * duration * 0.2;
+            // Chia cho length đề phòng có nhiều người trong array này
+            const accWeight = 0.2 / accountableEmployees.length
+            // Chia weekDays là số ngày công
+            sum += getSalaryFromUserId(projectDetail?.responsibleEmployeesWithUnit, accountableItem) / weekDays * duration * accWeight;
         }
         return numberWithCommas(sum);
     }
@@ -713,7 +775,7 @@ class AddProjectTaskForm extends Component {
                                 </div>
                                 {/* Ngân sách cho công việc */}
                                 <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 form-group ${newTask.errorOnBudget === undefined ? "" : "has-error"}`}>
-                                    <label>Ngân sách<span className="text-red">*</span></label>
+                                    <label>Ngân sách<span className="text-red">*</span> ({getCurrentProjectDetails(project)?.unitCost})</label>
                                     <input
                                         type="text"
                                         className="form-control"

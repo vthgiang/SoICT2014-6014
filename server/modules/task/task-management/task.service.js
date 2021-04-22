@@ -2077,7 +2077,7 @@ exports.createTask = async (portal, task) => {
         consultedEmployees: task.consultedEmployees,
         informedEmployees: task.informedEmployees,
         confirmedByEmployees: task.responsibleEmployees.concat(task.accountableEmployees).concat(task.consultedEmployees).includes(task.creator) ? task.creator : [],
-        taskProject
+        taskProject,
     });
 
     if (newTask.taskTemplate !== null) {
@@ -2206,6 +2206,9 @@ exports.createProjectTask = async (portal, task) => {
         estimateNormalCost: task.estimateNormalCost,
         estimateMaxCost: task.estimateMaxCost,
         preceedingTasks: task.preceedingTasks,
+        budget: task.budget,
+        actorsWithSalary: task.actorsWithSalary,
+        estimateAssetCost: task.estimateAssetCost,
     });
 
     if (newTask.taskTemplate !== null) {

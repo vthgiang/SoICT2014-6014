@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal } from '../../../../common-components';
-import { TaskComponent } from './taskComponent';
+import { TaskProjectComponent } from './taskProjectComponent';
 
 class ModalPerformProject extends Component {
     constructor(props) {
@@ -27,7 +27,7 @@ class ModalPerformProject extends Component {
                     bodyStyle={{padding: "0px"}}
                     hasSaveButton={false}
                 >
-                    <TaskComponent 
+                    <TaskProjectComponent 
                         units={units}
                         id={this.props.id} 
                     />

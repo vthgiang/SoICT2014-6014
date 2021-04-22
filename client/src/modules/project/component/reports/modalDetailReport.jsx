@@ -9,7 +9,6 @@ import { taskManagementActions } from '../../../task/task-management/redux/actio
 import moment from 'moment';
 import { getStorage } from '../../../../config';
 import { getCurrentProjectDetails } from '../projects/functionHelper';
-import TimeLine from "react-gantt-timeline";
 
 const ModalDetailReport = (props) => {
     const { projectDetailId, projectDetail, translate, project, tasks } = props;

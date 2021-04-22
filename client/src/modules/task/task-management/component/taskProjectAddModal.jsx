@@ -39,6 +39,7 @@ class TaskProjectAddModal extends Component {
                 preceedingTasks: [],
                 budget: '',
                 estimateAssetCost: '',
+                actorsWithSalary: [],
             },
             startTime: "08:00 AM",
             endTime: "05:30 PM",
@@ -69,9 +70,9 @@ class TaskProjectAddModal extends Component {
         let startDateTask = this.convertDateTime(newTask.startDate, startTime);
         let endDateTask = this.convertDateTime(newTask.endDate, endTime);
 
-        let estimateNormalTime = moment(endDateTask).diff(moment(startDateTask), `${projectDetail?.unitTime}s`) || null;
-        let estimateOptimisticTime = typeof estimateNormalTime === 'number' ? estimateNormalTime - 2 : null;
-        let estimatePessimisticTime = typeof estimateNormalTime === 'number' ? estimateNormalTime + 2 : null;
+        let estimateNormalTime = moment(endDateTask).diff(moment(startDateTask), `milliseconds`) || null;
+        let estimateOptimisticTime = typeof estimateNormalTime === 'number' ? estimateNormalTime - 20000 : null;
+        let estimatePessimisticTime = typeof estimateNormalTime === 'number' ? estimateNormalTime + 20000 : null;
         let preceedingTasks = newTask.preceedingTasks?.map(item => ({
             task: item,
             link: ''
@@ -87,6 +88,8 @@ class TaskProjectAddModal extends Component {
             estimateMaxCost: Number(newTask.estimateMaxCost),
             preceedingTasks,
             budget: Number(newTask.budget.replace(/,/g, '')),
+            actorsWithSalary: newTask.actorsWithSalary,
+            estimateAssetCost: Number(newTask.estimateAssetCost.replace(/,/g, '')),
         }
         await this.props.addProjectTask({
             ...newTaskFormatted,

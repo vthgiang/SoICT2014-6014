@@ -340,7 +340,7 @@ const initSampleCompanyDB = async () => {
             company: vnist._id,
         }
     ]);
-    console.log("Dữ liệu tài khoản người dùng cho công ty VNIST", users);
+    // console.log("Dữ liệu tài khoản người dùng cho công ty VNIST", users);
 
     let vnistCom = await Company(systemDB).findById(vnist._id);
     vnistCom.superAdmin = users[0]._id;
@@ -832,15 +832,15 @@ const initSampleCompanyDB = async () => {
         employees: [nvPhongKH._id],
         parent: Directorate._id,
     });
-    console.log(
-        "Đã tạo dữ liệu phòng ban: ",
-        Directorate,
-        departments,
-        nhamaythuocbot,
-        nhamaythuocnuoc,
-        nhamaythucphamchucnang,
-        phongkehoach
-    );
+    // console.log(
+    //     "Đã tạo dữ liệu phòng ban: ",
+    //     Directorate,
+    //     departments,
+    //     nhamaythuocbot,
+    //     nhamaythuocnuoc,
+    //     nhamaythucphamchucnang,
+    //     phongkehoach
+    // );
 
     /**
      * 8. Tạo link cho các trang web của công ty VNIST
@@ -6472,19 +6472,40 @@ const initSampleCompanyDB = async () => {
 
     ]);
     console.log("Khởi tạo xong danh sách thông tin báo giá");
+    const newProject = {
+        code: 'DUAN11',
+        name: 'Du an 1',
+        "unitTime": "day",
+        "unitCost": "VND",
+        "status": "inprocess",
+        "startDate": new Date("2021-04-16T00:00:00Z"),
+        "endDate": new Date("2021-07-23T00:00:00Z"),
+        "description": "ádasdasdasdasd",
+        projectManager: [
+            projectManager._id,
+        ],
+        creator: projectManager._id,
+        responsibleEmployees: [],
+        responsibleEmployeesWithUnit: []
+    }
+
+    await Project(vnist).insertMany([
+        newProject,
+    ]);
+    console.log('Hoàn thành tạo dữ liệu cho dự án')
 
     /*---------------------------------------------------------------------------------------------
       -----------------------------------------------------------------------------------------------
           TẠO DỮ LIỆU ĐƠN BÁN HÀNG
       -----------------------------------------------------------------------------------------------
       ----------------------------------------------------------------------------------------------- */
-    console.log("Khởi tạo dữ liệu đơn bán hàng");
-    var listSalesOrder = await SalesOrder(vnistDB).insertMany([
-        {
+    // console.log("Khởi tạo dữ liệu đơn bán hàng");
+    // var listSalesOrder = await SalesOrder(vnistDB).insertMany([
+    //     {
            
-        },
-    ]);
-    console.log("Khởi tạo xong danh sách đơn bán hàng");
+    //     },
+    // ]);
+    // console.log("Khởi tạo xong danh sách đơn bán hàng");
 
        /*---------------------------------------------------------------------------------------------
     -----------------------------------------------------------------------------------------------
@@ -6492,27 +6513,27 @@ const initSampleCompanyDB = async () => {
     -----------------------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------------------- */
 
-    console.log("Khởi tạo dữ liệu đơn mua nguyên vật liệu");
-    var listPurchaseOrder = await PurchaseOrder(vnistDB).insertMany([
-        {
+    // console.log("Khởi tạo dữ liệu đơn mua nguyên vật liệu");
+    // var listPurchaseOrder = await PurchaseOrder(vnistDB).insertMany([
+    //     {
 
-        },
+    //     },
 
-    ]);
-    console.log("Khởi tạo xong danh sách đơn mua nguyên vật liệu");
+    // ]);
+    // console.log("Khởi tạo xong danh sách đơn mua nguyên vật liệu");
 
     /*---------------------------------------------------------------------------------------------
       -----------------------------------------------------------------------------------------------
           TẠO DỮ LIỆU THÔNG TIN THANH TOÁN ĐƠN MUA HÀNG, ĐƠN MUA NGUYÊN VẬT LIỆU
       -----------------------------------------------------------------------------------------------
       ----------------------------------------------------------------------------------------------- */
-    console.log("Khởi tạo dữ liệu thông tin thanh toán đơn hàng, đơn mua nvl");
-    var listPurchaseOrders = await purchaseDate(vnistDB).insertMany([
-        {
+    // console.log("Khởi tạo dữ liệu thông tin thanh toán đơn hàng, đơn mua nvl");
+    // var listPurchaseOrders = await purchaseDate(vnistDB).insertMany([
+    //     {
             
-        },
-    ]);
-    console.log("Khởi tạo xong danh sách thông tin thanh toán đơn hàng, đơn mua nvl");
+    //     },
+    // ]);
+    // console.log("Khởi tạo xong danh sách thông tin thanh toán đơn hàng, đơn mua nvl");
 
 
     /**

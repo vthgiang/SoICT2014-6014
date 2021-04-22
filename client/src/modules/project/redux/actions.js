@@ -6,6 +6,8 @@ export const ProjectActions = {
     createProjectDispatch,
     editProjectDispatch,
     deleteProjectDispatch,
+
+    getListTasksEvalDispatch,
 }
 
 function getProjectsDispatch(data = undefined) {
@@ -79,6 +81,22 @@ function deleteProjectDispatch(id) {
             })
             .catch((err) => {
                 dispatch({ type: ProjectConstants.DELETE_PROJECTS_FAILE });
+            });
+    };
+}
+
+function getListTasksEvalDispatch(id, evalMonth) {
+    return (dispatch) => {
+        dispatch({ type: ProjectConstants.GET_LIST_TASKS_EVAL });
+        ProjectServices.getListTasksEvalDispatchAPI(id, evalMonth)
+            .then((res) => {
+                dispatch({
+                    type: ProjectConstants.GET_LIST_TASKS_EVAL_SUCCESS,
+                    payload: res.data.content,
+                });
+            })
+            .catch((err) => {
+                dispatch({ type: ProjectConstants.GET_LIST_TASKS_EVAL_FAILE });
             });
     };
 }

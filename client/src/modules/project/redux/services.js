@@ -5,6 +5,8 @@ export const ProjectServices = {
     createProjectAPI,
     editProjectAPI,
     deleteProjectAPI,
+
+    getListTasksEvalDispatchAPI,
 }
 
 function getProjectsAPI(params = undefined) {
@@ -54,6 +56,23 @@ function deleteProjectAPI(id) {
             method: "DELETE",
         },
         true,
+        true,
+        "project"
+    );
+}
+
+function getListTasksEvalDispatchAPI(id, evalMonth) {
+    console.log('evalMonth', evalMonth)
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/projects/project/${id}/getListTasksEval/${evalMonth}`,
+            method: "GET",
+            params: {
+                id,
+                evalMonth,
+            },
+        },
+        false,
         true,
         "project"
     );

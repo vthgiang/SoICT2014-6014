@@ -1,16 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
-import { DataTableSetting, DeleteNotification, PaginateBar } from "../../../../common-components";
-import ProjectCreateForm from "./createProject";
-import ProjectEditForm from './editProject';
-import ProjectDetailForm from './detailProject';
+import { DataTableSetting, PaginateBar } from "../../../../common-components";
 import { ProjectActions } from "../../redux/actions";
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { getStorage } from "../../../../config";
-import { checkIfAbleToCRUDProject } from "./functionHelper";
+import { checkIfAbleToCRUDProject } from "../projects/functionHelper";
+import ModalProjectEvaluation from "./modalProjectEvaluation";
+import { taskManagementActions } from "../../../task/task-management/redux/actions";
 
-function ListProject(props) {
+function ListProjectEvaluation(props) {
     // Khởi tạo state
     const [state, setState] = useState({
         exampleName: "",
@@ -28,12 +27,6 @@ function ListProject(props) {
         props.getProjectsDispatch({ calledId: "all", userId });
         props.getAllUserInAllUnitsOfCompany();
     }, [])
-
-    // Sau khi add project mới hoặc edit project thì call lại tất cả list project
-    const handleAfterCreateProject = () => {
-        props.getProjectsDispatch({ calledId: "paginate", page, limit, userId });
-        props.getProjectsDispatch({ calledId: "all", userId });
-    }
 
     const handleChangeProjectName = (e) => {
         const { value } = e.target;
@@ -82,37 +75,18 @@ function ListProject(props) {
         });
     }
 
-    const handleShowDetailInfo = (projectItem) => {
-        setState({
+    const handleShowDetailInfo = async (projectItem) => {
+        await setState({
+            ...state,
+            projectDetail: {}
+        });
+        await setState({
             ...state,
             projectDetail: projectItem
         });
         setTimeout(() => {
-            window.$(`#modal-detail-project-${projectItem?._id}`).modal('show');
-        }, 10);
-    }
-
-    const handleEdit = (projectItem) => {
-        setState({
-            ...state,
-            currentRow: projectItem
-        })
-        setTimeout(() => {
-            window.$(`#modal-edit-project-${projectItem?._id}`).modal('show')
-        }, 10);
-    }
-
-    const handleDelete = (id) => {
-        props.deleteProjectDispatch(id);
-        props.getProjectsDispatch({
-            projectName,
-            limit,
-            page: project && project.lists && project.lists.length === 1 ? page - 1 : page
-        });
-    }
-
-    const handleOpenCreateForm = () => {
-        window.$('#modal-create-project').modal('show')
+            window.$(`#modal-show-project-eval-${projectItem?._id}`).modal('show');
+        }, 100);
     }
 
 
@@ -125,22 +99,13 @@ function ListProject(props) {
 
     return (
         <React.Fragment>
-            <ProjectDetailForm
-                projectDetailId={projectDetail && projectDetail._id}
-                projectDetail={projectDetail}
-            />
-
-            <ProjectEditForm
-                projectEditId={currentRow && currentRow._id}
-                projectEdit={currentRow}
-                handleAfterCreateProject={handleAfterCreateProject}
-            />
-
-            <ProjectCreateForm
-                page={page}
-                limit={limit}
-                handleAfterCreateProject={handleAfterCreateProject}
-            />
+            {/* Modal chi tiết báo cáo dự án */}
+            {
+                projectDetail && projectDetail._id &&
+                <ModalProjectEvaluation
+                    projectDetailId={projectDetail && projectDetail._id}
+                    projectDetail={projectDetail} />
+            }
 
             <div className="box">
                 <div className="box-body qlcv">
@@ -153,17 +118,6 @@ function ListProject(props) {
                         <div className="form-group">
                             <button type="button" className="btn btn-success" title={translate('manage_example.search')} onClick={() => handleSubmitSearch()}>{translate('manage_example.search')}</button>
                         </div>
-
-                        {/* Button thêm mới */}
-                        {checkIfAbleToCRUDProject({ project, user }) &&
-                            <div className="dropdown pull-right" style={{ marginTop: 5 }}>
-                                <button type="button" className="btn btn-success dropdown-toggle pull-right"
-                                    onClick={handleOpenCreateForm}
-                                    data-toggle="dropdown" aria-expanded="true" title={translate('project.add_btn_new')}>
-                                    {translate('project.add_btn_new')}
-                                </button>
-                            </div>
-                        }
 
                     </div>
 
@@ -194,31 +148,19 @@ function ListProject(props) {
                         </thead>
                         <tbody>
                             {(lists && lists.length !== 0) &&
-                                lists.map((projectItem, index) => {
-                                    // console.log('projectItem?.creator?.name', projectItem?.creator?.name, 'projectItem?.responsibleEmployees', projectItem?.responsibleEmployees);
-                                    return (
-                                        <tr key={index}>
-                                            <td>{projectItem?.name}</td>
-                                            <td>{projectItem?.code}</td>
-                                            <td>{projectItem?.creator?.name}</td>
-                                            <td>{projectItem?.projectManager.map(o => o.name).join(", ")}</td>
-                                            <td>{projectItem?.responsibleEmployees.map(o => o.name).join(", ")}</td>
-                                            <td style={{ textAlign: "center" }}>
-                                                <a className="edit text-green" style={{ width: '5px' }} onClick={() => handleShowDetailInfo(projectItem)}><i className="material-icons">visibility</i></a>
-                                                {checkIfAbleToCRUDProject({ project, user, currentProjectId: projectItem._id }) && <a className="edit text-yellow" style={{ width: '5px' }} onClick={() => handleEdit(projectItem)}><i className="material-icons">edit</i></a>}
-                                                {checkIfAbleToCRUDProject({ project, user, currentProjectId: projectItem._id }) && <DeleteNotification
-                                                    content={translate('project.delete')}
-                                                    data={{
-                                                        id: projectItem?._id,
-                                                        info: projectItem?.name
-                                                    }}
-                                                    func={handleDelete}
-                                                />}
-                                            </td>
-                                        </tr>
-                                    )
-                                }
-                                )
+                                lists.map((projectItem, index) => (
+                                    <tr key={index}>
+                                        <td>{projectItem?.name}</td>
+                                        <td>{projectItem?.code}</td>
+                                        <td>{projectItem?.creator?.name}</td>
+                                        <td>{projectItem?.projectManager.map(o => o.name).join(", ")}</td>
+                                        <td>{projectItem?.responsibleEmployees.map(o => o.name).join(", ")}</td>
+                                        <td style={{ textAlign: "center" }}>
+                                            <a className="edit text-green" style={{ width: '5px' }} onClick={() => handleShowDetailInfo(projectItem)}><i className="material-icons">visibility</i></a>
+
+                                        </td>
+                                    </tr>
+                                ))
                             }
                         </tbody>
                     </table>
@@ -250,7 +192,8 @@ const actions = {
     deleteProjectDispatch: ProjectActions.deleteProjectDispatch,
     createProjectDispatch: ProjectActions.createProjectDispatch,
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
+    getTasksByProject: taskManagementActions.getTasksByProject,
 }
 
-const connectedExampleManagementTable = connect(mapState, actions)(withTranslate(ListProject));
-export { connectedExampleManagementTable as ListProject };
+const connectedExampleManagementTable = connect(mapState, actions)(withTranslate(ListProjectEvaluation));
+export { connectedExampleManagementTable as ListProjectEvaluation };

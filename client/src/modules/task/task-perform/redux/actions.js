@@ -73,6 +73,9 @@ export const performTaskAction = {
     sortActions,
     refreshData,
     evaluationAllAction,
+
+    evaluateTaskByResponsibleEmployeesProject,
+    evaluateTaskByAccountableEmployeesProject,
 };
 
 
@@ -1201,4 +1204,49 @@ function evaluationAllAction(taskId, evaluation) {
                 error => dispatch({ type: performTaskConstants.EVALUATION_ALL_ACTION_FAILURE, error })
             );
     }
+}
+
+
+/**
+ * evaluate Task By Responsible Employees PROJECT
+ * @param {*} data du lieu gui di
+ * @param {*} taskId id task
+ */
+ function evaluateTaskByResponsibleEmployeesProject(data, taskId) {
+    return dispatch => {
+        dispatch({ type: performTaskConstants.EVALUATE_TASK_BY_RESPONSIBLE_REQUEST, taskId });
+        performTaskService.evaluateTaskByResponsibleEmployeesProject(data, taskId)
+            .then(res => {
+                dispatch({
+                    type: performTaskConstants.EVALUATE_TASK_BY_RESPONSIBLE_SUCCESS,
+                    // payload: res.data.content.task
+                    payload: res.data.content
+                });
+            })
+            .catch(error => {
+                dispatch({ type: performTaskConstants.EVALUATE_TASK_BY_RESPONSIBLE_FAILURE, error });
+            });
+    };
+}
+
+
+/**
+ * evaluate Task By Accountable Employees PROJECT
+ * @param {*} data du lieu gui di
+ * @param {*} taskId id task
+ */
+ function evaluateTaskByAccountableEmployeesProject(data, taskId) {
+    return dispatch => {
+        dispatch({ type: performTaskConstants.EVALUATE_TASK_BY_ACCOUNTABLE_REQUEST, taskId });
+        performTaskService.evaluateTaskByAccountableEmployeesProject(data, taskId)
+            .then(res => {
+                dispatch({
+                    type: performTaskConstants.EVALUATE_TASK_BY_ACCOUNTABLE_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch(error => {
+                dispatch({ type: performTaskConstants.EVALUATE_TASK_BY_ACCOUNTABLE_FAILURE, error });
+            });
+    };
 }

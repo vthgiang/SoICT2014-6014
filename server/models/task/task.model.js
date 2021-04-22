@@ -309,6 +309,41 @@ const TaskSchema = new Schema(
                         },
                     },
                 ],
+                resultsForProject: {
+                    // Kết quả thực hiện công việc CỦA DỰ ÁN
+                    employee: {
+                        // Người đánh giá
+                        type: Schema.Types.ObjectId,
+                        ref: "User",
+                    },
+                    organizationalUnit: {
+                        type: Schema.Types.ObjectId,
+                        ref: "OrganizationalUnit",
+                    },
+                    role: {
+                        // người thực hiện: responsible, người tư vấn: consulted, người phê duyệt: accountable
+                        type: String,
+                        enum: ["responsible", "consulted", "accountable"],
+                    },
+                    automaticPoint: {
+                        // Điểm hệ thống đánh giá
+                        type: Number,
+                        default: 0,
+                    },
+                    employeePoint: {
+                        // Điểm tự đánh giá
+                        type: Number,
+                        default: 0,
+                    },
+                    approvedPoint: {
+                        // Điểm được phê duyệt
+                        type: Number,
+                        default: 0,
+                    },
+                    hoursSpent: {
+                        type: Number,
+                    },
+                },
                 taskInformations: [
                     {
                         // Lưu lại lịch sử các giá trị của thuộc tính công việc trong mỗi lần đánh giá
@@ -739,6 +774,20 @@ const TaskSchema = new Schema(
         },
         // ngân sách để chi trả cho task đó
         budget: {
+            type: Number,
+        },
+        actorsWithSalary: [
+            {
+                userId: {
+                    type: Schema.Types.ObjectId,
+                    ref: 'User',
+                },
+                salary: {
+                    type: Number,
+                },
+            },
+        ],
+        estimateAssetCost: {
             type: Number,
         }
     },
