@@ -17,7 +17,7 @@ import './transport-plan.css'
 function TransportVehicleAndCarrierSelect(props) {
     let listRequirements = []
     let {startTime, endTime, transportDepartment, transportVehicle, transportPlan} = props;
-    const [listVehicleAndCarrier, setListVehicleAndCarrier] = useState();
+    const [listVehicleAndCarrier, setListVehicleAndCarrier] = useState([]);
 
     // Danh sách nhân viên vận chuyển có thể phân công hiện tại
     const [listCarriersUsable, setListCarriersUsable] = useState();
@@ -106,7 +106,9 @@ function TransportVehicleAndCarrierSelect(props) {
         console.log(transportVehicle, transportDepartment)
         console.log(startTime)
     }, [startTime, endTime, transportDepartment, transportVehicle, transportPlan])
-
+    /**
+     * Lấy id tài xế đã có trong listVehicleAndCarrier
+     */
     const getCurrentDriver = (vehicleId) => {
         let currentDriver = "0";
         if (listVehicleAndCarrier && listVehicleAndCarrier.length!==0){
@@ -114,7 +116,7 @@ function TransportVehicleAndCarrierSelect(props) {
                 if (String(transportVehicles.vehicle) === vehicleId){
                     if (transportVehicles.carriers && transportVehicles.carriers.length!==0){
                         transportVehicles.carriers.map(carriers => {
-                            if (String(carriers.pos) === 1){
+                            if (String(carriers.pos) === "1"){
                                 currentDriver = carriers.carrier;
                             }
                         })
@@ -124,7 +126,12 @@ function TransportVehicleAndCarrierSelect(props) {
         }
         return currentDriver;
     }
-
+    /**
+     * Lấy danh sách nhân viên có thể lái xe
+     * Lọc từ nhân viên có thể sử dụng và các nhân viên đã có trong listVehicleAndCarrier
+     * @param {*} vehicleId 
+     * @returns 
+     */
     const getAllDriver = (vehicleId) => {       
         let selectedBoxDriver = [{
             value: "0",
@@ -151,9 +158,209 @@ function TransportVehicleAndCarrierSelect(props) {
         }
         return selectedBoxDriver;
     }
+    /**
+     * Cập nhật listVehicleAndCarrier
+     * @param {*} value 
+     * @param {*} vehicleId 
+     */
+    const handleDriverChange = (value, vehicleId) => {
+        let vehicleAndCarrier = [...listVehicleAndCarrier];
+        // Nếu không chọn tài xế nào, xóa hết các tài xế trong listVehicleAndCarrier
+        if (value[0]==="0"){
+            if (vehicleAndCarrier && vehicleAndCarrier.length!==0){
+                let currentVehicleAndCarrier =  vehicleAndCarrier.filter(r => r.vehicle === vehicleId)
+                if (currentVehicleAndCarrier && currentVehicleAndCarrier.length!==0){
+                    if (currentVehicleAndCarrier[0].carriers && currentVehicleAndCarrier[0].carriers.length!==0){
+                        currentVehicleAndCarrier[0].carriers = currentVehicleAndCarrier[0].carriers.filter(r => String(r.pos)!=="1")
+                    }
+                }
+            }
+        }
+        else {
+            // Chọn 1 tài xế
+            if (vehicleAndCarrier && vehicleAndCarrier.length!==0){
+                let currentVehicleAndCarrier =  vehicleAndCarrier.filter(r => r.vehicle === vehicleId);
+                // Nếu đã lưu xe này trong listVehicleAndCarrier
+                if (currentVehicleAndCarrier && currentVehicleAndCarrier.length!==0){
+                    // Nếu xe này cũng đã có nhân viên vận chuyển, xóa bỏ các tài xế đã có và đẩy tài xế mới vào
+                    if (currentVehicleAndCarrier[0].carriers && currentVehicleAndCarrier[0].carriers.length!==0){
+                        currentVehicleAndCarrier[0].carriers = currentVehicleAndCarrier[0].carriers.filter(r => String(r.carrier)!==value[0]);
+                        currentVehicleAndCarrier[0].carriers = currentVehicleAndCarrier[0].carriers.filter(r => String(r.carrier)!==getCurrentDriver(vehicleId));
+                        currentVehicleAndCarrier[0].carriers.push({
+                            carrier: value[0],
+                            pos :1,
+                        })
+                    }
+                    else {
+                        // Nếu xe chưa có nhân viên vận chuyển nào => tạo mới
+                        currentVehicleAndCarrier[0].push({
+                            carriers: [{
+                                carrier: value[0],
+                                pos: 1,
+                            }]
+                        })
+                    }
+                }
+                else {
+                    // Nếu chưa có xe này trong phân công
+                    vehicleAndCarrier.push({
+                        vehicle: vehicleId,
+                        carriers: [{
+                            carrier: value[0],
+                            pos: 1,
+                        }]
+                    })
+                }
+            }
+            else {
+                // Nếu mảng trạng thái hoàn toàn rỗng
+                vehicleAndCarrier = [{
+                    vehicle: vehicleId,
+                    carriers: [{
+                        carrier: value[0],
+                        pos: 1,
+                    }]
+                }]
+            }
+        }
+        setListVehicleAndCarrier(vehicleAndCarrier)
+    }
 
-    const handleDriverChange = (value, id) => {
-        console.log(value[0], id)
+    const getCurrentCarriers = (vehicleId) => {
+        // let currentDriver = ["0"];
+        let currentDriver=[]
+        if (listVehicleAndCarrier && listVehicleAndCarrier.length!==0){
+            listVehicleAndCarrier.map(transportVehicles => {
+                if (String(transportVehicles.vehicle) === vehicleId){
+                    if (transportVehicles.carriers && transportVehicles.carriers.length!==0){
+                        transportVehicles.carriers.map(carriers => {
+                            if (!(String(carriers.pos) === "1")){
+                                currentDriver.push(carriers.carrier);
+                            }
+                        })
+                    }
+                }
+            })
+        }
+        if (currentDriver.length>=1){
+            return currentDriver.slice(0);
+        }
+        return currentDriver;
+    }
+    /**
+     * Lấy danh sách nhân viên có thể lái xe
+     * Lọc từ nhân viên có thể sử dụng và các nhân viên đã có trong listVehicleAndCarrier
+     * @param {*} vehicleId 
+     * @returns 
+     */
+    const getAllCarriers = (vehicleId) => {       
+        // let selectedBoxCarriers = [{
+        //     // value: "0",
+        //     // text: "--Chọn nhân viên--"
+        // }]
+        let selectedBoxCarriers = []
+        if (listCarriersUsable && listCarriersUsable.length!==0){
+            listCarriersUsable.map(x => {
+                selectedBoxCarriers.push({
+                    value: x._id,
+                    text: x.name,
+                })
+            })
+        }
+        if (listVehicleAndCarrier && listVehicleAndCarrier.length!==0){
+            listVehicleAndCarrier.map(transportVehicles => {
+                if (transportVehicles.carriers && transportVehicles.carriers.length!==0){
+                    transportVehicles.carriers.map(carriers => {
+                        if (!(transportVehicles.vehicle===vehicleId && String(carriers.pos)!=="1")){
+                            selectedBoxCarriers=selectedBoxCarriers.filter(r=>String(r.value)!==carriers.carrier)
+                        }
+                    })
+                }
+            })
+        }
+        return selectedBoxCarriers;
+    }
+    /**
+     * Cập nhật listVehicleAndCarrier
+     * @param {*} value 
+     * @param {*} vehicleId 
+     */
+    const handleCarriersChange = (value, vehicleId1) => {
+        const vehicleId = vehicleId1.slice(0, -1) // cắt bỏ ký tự cuối cùng do cài đặt thêm id cho khác biệt
+        let vehicleAndCarrier = [...listVehicleAndCarrier];
+        if (value[0]==="0"){
+            if (vehicleAndCarrier && vehicleAndCarrier.length!==0){
+                let currentVehicleAndCarrier =  vehicleAndCarrier.filter(r => r.vehicle === vehicleId)
+                if (currentVehicleAndCarrier && currentVehicleAndCarrier.length!==0){
+                    if (currentVehicleAndCarrier[0].carriers && currentVehicleAndCarrier[0].carriers.length!==0){
+                        currentVehicleAndCarrier[0].carriers = currentVehicleAndCarrier[0].carriers.filter(r => String(r.pos)==="1")
+                    }
+                }
+            }
+        }
+        else {
+            if (vehicleAndCarrier && vehicleAndCarrier.length!==0){
+                let currentVehicleAndCarrier =  vehicleAndCarrier.filter(r => r.vehicle === vehicleId);
+                if (currentVehicleAndCarrier && currentVehicleAndCarrier.length!==0){
+                    if (currentVehicleAndCarrier[0].carriers && currentVehicleAndCarrier[0].carriers.length!==0){
+                        // Lọc tài xế đã chọn
+                        currentVehicleAndCarrier[0].carriers = currentVehicleAndCarrier[0].carriers.filter(r => String(r.pos)==="1");
+                        if (value && value.length!==0){
+                            value.map(val => {
+                                currentVehicleAndCarrier[0].carriers.push({
+                                    carrier: val,
+                                })
+                            })
+                        }
+                    }
+                    else {                        
+                        if (value && value.length!==0){
+                            let carrierList = [];
+                            value.map(val => {
+                                carrierList.push({
+                                    carrier: val,
+                                })
+                            })
+                            currentVehicleAndCarrier[0].push({
+                                carriers: [{
+                                    carrier: carrierList,
+                                }]
+                            })
+                        }
+                    }
+                }
+                else {                        
+                    if (value && value.length!==0){
+                        let carrierList = [];
+                        value.map(val => {
+                            carrierList.push({
+                                carrier: val,
+                            })
+                        })
+                        vehicleAndCarrier.push({
+                            vehicle: vehicleId,
+                            carriers: carrierList,
+                        })
+                    }
+
+                }
+            }
+            else {
+                if (value && value.length!==0){
+                    let carrierList = [];
+                    value.map(val => {
+                        carrierList.push({
+                            carrier: val,
+                        })
+                    })
+                    vehicleAndCarrier = [{
+                        vehicle: vehicleId,
+                        carriers: carrierList,
+                    }]
+                }
+            }
+        }
+        setListVehicleAndCarrier(vehicleAndCarrier)
     }
 
     useEffect(() => {
@@ -161,20 +368,8 @@ function TransportVehicleAndCarrierSelect(props) {
     }, [listVehiclesUsable])
 
     useEffect(() => {
-        // let selectedBoxDriver = [{
-        //     value: "0",
-        //     text: "--Chọn tài xế--"
-        // }]
-        // if (listCarriersUsable && listCarriersUsable.length!==0){
-        //     listCarriersUsable.map(x =>{
-        //         if (listVehicleAndCarrier && listVehicleAndCarrier.length!==0){
-        //             listVehicleAndCarrier.map(transportVehicles => {
-        //                 if (transportVehicles.length)
-        //             })
-        //         }
-        //     })
-        // }
-    }, [listCarriersUsable, listVehicleAndCarrier])
+        console.log(listVehicleAndCarrier)
+    }, [listVehicleAndCarrier])
 
     return (
         <React.Fragment>
@@ -191,8 +386,8 @@ function TransportVehicleAndCarrierSelect(props) {
                             <th>{"Trọng tải"}</th>
                             <th>{"Thể tích thùng"}</th>
                             <th>{"Tài xế"}</th>
-                            <th>{"Nhân viên đi cùng"}</th>
-                            <th>{"Hành động"}</th>
+                            <th style={{width: '200px'}}>{"Nhân viên đi cùng"}</th>
+                            <th >{"Hành động"}</th>
                             {/* <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
                                 <DataTableSetting
                                     tableId={tableId}
@@ -225,6 +420,17 @@ function TransportVehicleAndCarrierSelect(props) {
                                             items={getAllDriver(x._id)}
                                             onChange={handleDriverChange}
                                             multiple={false}
+                                        />
+                                    </td>
+                                    <td>
+                                        <SelectBox
+                                            id={x._id+"1"}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            value={getCurrentCarriers(x._id)}
+                                            items={getAllCarriers(x._id)}
+                                            onChange={handleCarriersChange}
+                                            multiple={true}
                                         />
                                     </td>
                                     {/* <td>{x.createdAt ? formatDate(x.createdAt) : ""}</td> */}
