@@ -130,8 +130,8 @@ const SalaryOfOrganizationalUnitsChart = (props) => {
                             {
                                 organizationalUnitsName && organizationalUnitsName.length < 2 ?
                                     <>
-                                        <span>{` ${translate('task.task_dashboard.of_unit')}`}</span>
-                                        <span>{` ${organizationalUnitsName?.[0]?.name}`}</span>
+                                        <span>{` ${translate('task.task_dashboard.of')}`}</span>
+                                        <span>{` ${organizationalUnitsName?.[0]?.name ? organizationalUnitsName?.[0]?.name : ""}`}</span>
                                     </>
                                     :
                                     <span onClick={() => showListInSwal(organizationalUnitsName.map(item => item?.name), translate('general.list_unit'))} style={{ cursor: 'pointer' }}>

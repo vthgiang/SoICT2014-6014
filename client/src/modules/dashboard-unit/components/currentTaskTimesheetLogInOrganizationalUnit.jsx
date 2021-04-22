@@ -60,7 +60,7 @@ function CurrentTaskTimesheetLogInOrganizationalUnit(props) {
                     {
                         organizationalUnitId?.length < 2 ?
                             <>
-                                <span>{` ${translate('task.task_dashboard.of_unit')}`}</span>
+                                <span>{` ${translate('task.task_dashboard.of')}`}</span>
                                 <span style={{ fontWeight: "bold" }}>{` ${props.getUnitName(listUnitSelect, organizationalUnitId).map(o => o).join(", ")}`}</span>
                             </>
                             :
