@@ -117,7 +117,7 @@ const CustomerSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: 'Status'
         },
-        createdAt: { // ngày tạo khách hàng
+        createdAt: { // ngày cập nhật
             type: Date,
         },
         createdAt: {// ngày cập nhật

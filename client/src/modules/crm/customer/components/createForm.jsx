@@ -10,10 +10,13 @@ import GeneralTabCreateForm from './generalTabCreateForm';
 import FileTabCreateForm from './fileTabCreateForm';
 import { convertJsonObjectToFormData } from '../../../../helpers/jsonObjectToFormDataObjectConverter';
 function CrmCustomerCreate(props) {
-    const [newCustomer, setNewCustomer] = useState({});
-    const [currentRole, setCurrentRole] = useState(getStorage('currentRole'))
+    const { auth, user,crm,translate } = props;
 
-    const { auth, user } = props;
+    const [currentRole, setCurrentRole] = useState(getStorage('currentRole'))
+    //lấy danh sách trạng thái
+    const listStatus = crm.status.list.map(o => ({ _id: o._id, name: o.name, active: o.active }))
+
+    const [newCustomer, setNewCustomer] = useState({status: [listStatus[0]._id]});
     useEffect(() => {
         if (!newCustomer.owner && auth.user && user.organizationalUnitsOfUser) {
             let getCurrentUnit = user.organizationalUnitsOfUser.find(item =>
@@ -80,6 +83,7 @@ function CrmCustomerCreate(props) {
                 newValue: getStatus[0],
                 createdAt: getDateTime,
                 createdBy: auth.user._id,
+                description:'Khách hàng được tạo mới'
             })
         }
         const newCustomerInput = { ...newCustomer, statusHistories }
@@ -98,7 +102,7 @@ function CrmCustomerCreate(props) {
     }
 
 
-    const { translate, crm } = props;
+    
     return (
         <React.Fragment>
             <DialogModal

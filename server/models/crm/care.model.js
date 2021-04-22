@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const mongoosePaginate = require('mongoose-paginate-v2');
 
-const CareSchema = new Schema({
+const CustomerCareSchema = new Schema({
     creator: {
         type: Schema.Types.ObjectId,//người tạo hoạt động
         ref: 'User',
@@ -56,6 +56,7 @@ const CareSchema = new Schema({
         comment : {// nhận xét
             type : String
         }
+        
 
     },
     notes: { // Ghi chu
@@ -66,10 +67,10 @@ const CareSchema = new Schema({
     timestamps: true,
 });
 
-CareSchema.plugin(mongoosePaginate);
+CustomerCareSchema.plugin(mongoosePaginate);
 
 module.exports = (db) => {
     if (!db.models.Care)
-        return db.model('Care', CareSchema);
+        return db.model('CustomerCare', CustomerCareSchema);
     return db.models.Care;
 }
