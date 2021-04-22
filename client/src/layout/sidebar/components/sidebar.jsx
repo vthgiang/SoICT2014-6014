@@ -79,7 +79,14 @@ class SideBar extends Component {
                                     icon: "fa fa-newspaper-o",
                                 }}
                             />
-
+                            {/* Bảng tin đơn vị toàn công ty */}
+                            <Item
+                                item={{
+                                    name: "menu.dashboard_all_unit",
+                                    path: "/dashboard-all-unit",
+                                    icon: "fa fa-newspaper-o",
+                                }}
+                            />
                             {/* Bảng tin đơn vị */}
                             <Item
                                 item={{

@@ -276,6 +276,7 @@ class MainDashboardUnit extends Component {
                 urgentPieChartData = [...urgentPieChartData, [key, result[key]]]
             }
         }
+
         return urgentPieChartData;
     }
 
@@ -351,7 +352,7 @@ class MainDashboardUnit extends Component {
             })
         }
         if (!chartUrgentData && tasks?.organizationUnitTasksChart?.urgent) {
-            let chartUrgentDataTmp = this.convertDataTaskNeedToDoPieChart(tasks?.organizationUnitTasksChart?.urgent);
+            let chartUrgentDataTmp = this.convertDataUrgentPieChart(tasks?.organizationUnitTasksChart?.urgent);
             this.setState(state => {
                 return {
                     ...state,
@@ -567,7 +568,7 @@ class MainDashboardUnit extends Component {
                                         {
                                             arrayUnitForUrgentChart && arrayUnitForUrgentChart.length < 2 ?
                                                 <>
-                                                    <span>{` ${translate('task.task_dashboard.of_unit')}`}</span>
+                                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
                                                     <span>{` ${this.getUnitName(listUnitSelect, arrayUnitForUrgentChart).map(o => o).join(", ")}`}</span>
                                                 </>
                                                 :

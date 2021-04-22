@@ -2,27 +2,25 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DatePicker, SelectMulti, CustomLegendC3js } from '../../../common-components';
+import { SelectMulti, LazyLoadComponent } from '../../../common-components';
 import { showListInSwal } from '../../../helpers/showListInSwal';
+import { customAxisC3js } from '../../../helpers/customAxisC3js';
 
 import { EmployeeManagerActions } from '../../human-resource/profile/employee-management/redux/actions';
-import { TimesheetsActions } from '../../human-resource/timesheets/redux/actions';
-import { DisciplineActions } from '../../human-resource/commendation-discipline/redux/actions';
-import { SalaryActions } from '../../human-resource/salary/redux/actions';
 import { taskManagementActions } from '../../task/task-management/redux/actions';
 import { UserActions } from '../../super-admin/user/redux/actions';
 import { DepartmentActions } from '../../super-admin/organizational-unit/redux/actions';
 
+import { AnnualLeaveChartAndTable } from '../../human-resource/employee-dashboard/components/combinedContent';
+import ViewAllTaskUrgent from './viewAllTaskUrgent';
+import ViewAllTaskNeedToDo from './viewAllTaskNeedToDo';
 
 import c3 from 'c3';
 import Swal from 'sweetalert2';
 import "./dashboardUnit.css";
 
-import ViewAllTaskUrgent from './viewAllTaskUrgent';
-import ViewAllTaskNeedToDo from './viewAllTaskNeedToDo';
-
 function DashboardUnitForAdmin(props) {
-    const { translate, department, employeesManager, user, tasks, discipline } = props;
+    const { translate, department, employeesManager, user, tasks } = props;
 
     const [state, setState] = useState({
         month: formatDate(Date.now(), true),
@@ -33,14 +31,11 @@ function DashboardUnitForAdmin(props) {
         listUnit: null,
         urgent: null,
         taskNeedToDo: null,
-        arrayUnitForUrgentChart: [],
         listUnitSelect: []
     })
     const { listUnit, urgent, taskNeedToDo, 
         organizationalUnits, month, 
-        currentDate, arrayUnitForUrgentChart,
-        chartTaskNeedToDoData, chartUrgentData,
-        clickUrgentChart, clickNeedTodoChart,
+        currentDate, clickUrgentChart, clickNeedTodoChart,
         listUnitSelect
     } = state
     
@@ -151,43 +146,44 @@ function DashboardUnitForAdmin(props) {
         const chartUrgent = c3.generate({
             bindto: document.getElementById('pieChartUrgent'),
             data: { // Dữ liệu biểu đồ
+                x: 'x',
                 columns: chartUrgentDataTmp,
-                type: 'pie',
+                type: 'bar',
                 labels: true,
                 onclick: function (d, e) {
                     setState({
                         ...state,
-                        clickUrgentChart: d,
+                        clickUrgentChart: chartUrgentDataTmp?.[0]?.[d?.index + 1]
                     })
                     window.$('#modal-view-all-task-urgent').modal('show');
                 }.bind(this)
             },
-            pie: {
-                label: {
-                    format: function (value, ratio, id) {
-                        return value;
-                    }
-                }
-            },
 
             padding: {
                 top: 20,
-                bottom: 20,
-                right: 20,
-                left: 20
+                bottom: 50,
+                right: 20
+            },
+
+            axis: {
+                x: {
+                    type: 'category',
+                    tick: {
+                        format: function (index) {
+                            let result = customAxisC3js('pieChartUrgent', chartUrgentDataTmp?.[0]?.filter((item, i) => i > 0), index);
+                            return result;
+                        }
+                    }
+                }
             },
 
             tooltip: {
                 format: {
-                    title: function (d) { return d; },
-                    value: function (value) {
-                        return value;
+                    title: function (d) {
+                        if (chartUrgentDataTmp?.[0]?.length > 1)
+                            return chartUrgentDataTmp?.[0]?.[d + 1];
                     }
                 }
-            },
-
-            legend: {
-                show: false
             }
         })
     }
@@ -199,43 +195,56 @@ function DashboardUnitForAdmin(props) {
         const chartTaskNeedToDo = c3.generate({
             bindto: document.getElementById('pieChartTaskNeedToDo'),
             data: { // Dữ liệu biểu đồ
+                x: 'x',
                 columns: chartTaskNeedToDoDataTmp,
-                type: 'pie',
+                type: 'bar',
                 labels: true,
                 onclick: function (d, e) {
                     setState({
                         ...state,
-                        clickNeedTodoChart: d,
+                        clickNeedTodoChart: chartTaskNeedToDoDataTmp?.[0]?.[d?.index + 1],
                     })
                     window.$('#modal-view-all-task-need-to-do').modal('show');
                 }.bind(this)
             },
-            pie: {
-                label: {
-                    format: function (value, ratio, id) {
-                        return value;
-                    }
-                }
-            },
 
             padding: {
                 top: 20,
-                bottom: 20,
-                right: 20,
-                left: 20
+                bottom: 50,
+                right: 20
+            },
+
+            axis: {
+                x: {
+                    type: 'category',
+                    tick: {
+                        format: function (index) {
+                            let result = customAxisC3js('pieChartTaskNeedToDo', chartTaskNeedToDoDataTmp?.[0]?.filter((item, i) => i > 0), index);
+                            return result;
+                        }
+                    }
+                },
+
+                y: {
+                    tick: {
+                        format: function(d) {
+                            if (d - parseInt(d) === 0) {
+                                return d;
+                            } else {
+                                return "";
+                            }
+                        }
+                    }
+                }
             },
 
             tooltip: {
                 format: {
-                    title: function (d) { return d; },
-                    value: function (value) {
-                        return value;
+                    title: function (d) {
+                        if (chartTaskNeedToDoDataTmp?.[0]?.length > 1)
+                            return chartTaskNeedToDoDataTmp?.[0]?.[d + 1];
                     }
                 }
-            },
-
-            legend: {
-                show: false
             }
         })
     }
@@ -243,29 +252,35 @@ function DashboardUnitForAdmin(props) {
     const handleSelectOrganizationalUnitUrgent = (value) => {
         setState({
             ...state,
-            arrayUnitForUrgentChart: value,
+            organizationalUnits: value,
         });
     }
 
     const convertDataUrgentPieChart = (data) => {
-        let urgentPieChartData = [];
+        let urgentPieChartDataAxis = ['x'], urgentPieChartDataData = [translate('dashboard_unit.urgent_task_amount')];
 
         // convert công việc khẩn cấp qua dạng c3js
         if (data && data.length > 0) {
             const result = data.reduce((total, value) => {
-                total[value.organizationalUnit.name] = (total[value.organizationalUnit.name] || 0) + 1;
+                if (value?.organizationalUnit?.name) {
+                    total[value.organizationalUnit.name] = (total[value.organizationalUnit.name] || 0) + 1;
+                }
                 return total;
             }, [])
 
             for (let key in result) {
-                urgentPieChartData = [...urgentPieChartData, [key, result[key]]]
+                urgentPieChartDataAxis.push(key)
+                urgentPieChartDataData.push(result[key])
             }
         }
-        return urgentPieChartData;
+        return [
+            urgentPieChartDataAxis,
+            urgentPieChartDataData
+        ];
     }
 
     const convertDataTaskNeedToDoPieChart = (data) => {
-        let taskNeedToDoPieChartAxis = ['x'], taskNeedToDoPieChartData = [translate('dashboard_unit.urgent_task_amount')];
+        let taskNeedToDoPieChartAxis = ['x'], taskNeedToDoPieChartData = [translate('dashboard_unit.need_to_do_task_amount')];
         // convert công việc cần làm qua dạng c3js
         if (data && data.length > 0) {
             const result2 = data.reduce((total, value) => {
@@ -289,19 +304,11 @@ function DashboardUnitForAdmin(props) {
     }
 
     const handleUpdateDataUrgent = () => {
-        const { currentDate, arrayUnitForUrgentChart } = state;
-
         let partDate = currentDate.split('-');
         let newDate = [partDate[2], partDate[1], partDate[0]].join('-');
 
-        props.getTaskInOrganizationUnitByDateNow(arrayUnitForUrgentChart, newDate);
-        setState({
-            ...state,
-            chartTaskNeedToDoData: null,
-            chartUrgentData: null
-        })
+        props.getTaskInOrganizationUnitByDateNow(organizationalUnits, newDate);
     }
-
     
     const handleClickshowTaskUrgent = () => {
         Swal.fire({
@@ -412,7 +419,7 @@ function DashboardUnitForAdmin(props) {
 
         /* Lấy dữ liệu công việc của nhân viên trong đơn vị */
         let taskListByStatus = tasks.organizationUnitTasksInMonth ? tasks.organizationUnitTasksInMonth.tasks : null;
-        let listEmployee = user.employees;
+        let listEmployee = user?.employees;
         let employeeTasks = [];
         for (let i in listEmployee) {
             let tasks = [];
@@ -445,8 +452,8 @@ function DashboardUnitForAdmin(props) {
         return (
             <React.Fragment>
                 <div className="qlcv">
-                    <ViewAllTaskUrgent data={state.urgent} clickUrgentChart={clickUrgentChart} />
-                    <ViewAllTaskNeedToDo data={state.taskNeedToDo} clickNeedTodoChart={clickNeedTodoChart} />
+                    <ViewAllTaskUrgent data={tasks?.organizationUnitTasksChart?.urgent} clickUrgentChart={clickUrgentChart} />
+                    <ViewAllTaskNeedToDo data={tasks?.organizationUnitTasksChart?.taskNeedToDo} clickNeedTodoChart={clickNeedTodoChart} />
                     
                     {/* Biểu đồ só công việc khẩn cấp /  cần làm */}
                     <div className="row">
@@ -456,15 +463,15 @@ function DashboardUnitForAdmin(props) {
                                     <div className="box-title" >
                                         {translate('dashboard_unit.urgent_need_to_do_chart')}
                                         {
-                                            arrayUnitForUrgentChart && arrayUnitForUrgentChart.length < 2 ?
+                                            organizationalUnits && organizationalUnits.length < 2 ?
                                                 <>
-                                                    <span>{` ${translate('task.task_dashboard.of_unit')}`}</span>
-                                                    <span>{` ${getUnitName(listUnitSelect, arrayUnitForUrgentChart).map(o => o).join(", ")}`}</span>
+                                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
+                                                    <span>{` ${getUnitName(listUnitSelect, organizationalUnits).map(o => o).join(", ")}`}</span>
                                                 </>
                                                 :
-                                                <span onClick={() => showUnitTask(listUnitSelect, arrayUnitForUrgentChart)} style={{ cursor: 'pointer' }}>
+                                                <span onClick={() => showUnitTask(listUnitSelect, organizationalUnits)} style={{ cursor: 'pointer' }}>
                                                     <span>{` ${translate('task.task_dashboard.of')}`}</span>
-                                                    <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {arrayUnitForUrgentChart?.length}</a>
+                                                    <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {organizationalUnits?.length}</a>
                                                     <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
                                                 </span>
                                         }
@@ -484,7 +491,7 @@ function DashboardUnitForAdmin(props) {
                                                         allSelectedText: translate('page.all_unit'),
                                                     }}
                                                     onChange={handleSelectOrganizationalUnitUrgent}
-                                                    value={arrayUnitForUrgentChart}
+                                                    value={organizationalUnits}
                                                 >
                                                 </SelectMulti>
                                             </div>
@@ -494,7 +501,7 @@ function DashboardUnitForAdmin(props) {
 
                                     <div className="row " >
                                         <div className="">
-                                            <div className="col-md-6">
+                                            <div className="col-md-12">
                                                 <div style={{ display: 'flex', flexDirection: 'column', marginTop: '10px', marginBottom: 0 }}>
                                                     <p className="pull-left" style={{ display: 'flex', alignItems: 'center' }}> <b style={{ marginTop: '10px', marginRight: '5px' }}>{translate('dashboard_unit.urgent_task_amount')}</b>
                                                         <span className="material-icons title-urgent " style={{ zIndex: 999, cursor: "pointer", fontSize: '15px', marginTop: '10px' }}
@@ -504,14 +511,14 @@ function DashboardUnitForAdmin(props) {
                                                     </p >
                                                     {
                                                         tasks.isLoading ? <p style={{ marginTop: '60px', textAlign: "center" }}>{translate('general.loading')}</p>
-                                                            : urgent && urgent.length > 0 
+                                                            : tasks?.organizationUnitTasksChart?.urgent?.length > 0 
                                                                 ? <div id="pieChartUrgent"></div>
                                                                 : <p style={{ marginTop: '60px', textAlign: "center" }}>{translate('kpi.organizational_unit.dashboard.no_data')}</p>
                                                     }
                                                 </div>
                                             </div>
 
-                                            <div className="col-md-6">
+                                            <div className="col-md-12">
                                                 <div style={{ display: 'flex', flexDirection: 'column', marginTop: '10px', marginBottom: 0 }}>
                                                     <p className="pull-left" style={{ marginRight: '10px', display: 'flex', alignItems: 'center' }}>
                                                         <b style={{ marginTop: '10px', marginRight: '5px' }} >{translate('dashboard_unit.need_to_do_task_amount')}</b>
@@ -524,7 +531,7 @@ function DashboardUnitForAdmin(props) {
                                                         tasks.isLoading ?
                                                             <p style={{ marginTop: '60px', textAlign: "center" }}>{translate('general.loading')}</p>
                                                             :
-                                                            taskNeedToDo && taskNeedToDo.length > 0 
+                                                            tasks?.organizationUnitTasksChart?.taskNeedToDo?.length > 0 
                                                                 ? <div id="pieChartTaskNeedToDo"></div>
                                                                 : <p style={{ marginTop: '60px', textAlign: "center" }}>{translate('kpi.organizational_unit.dashboard.no_data')}</p>
                                                     }
@@ -536,28 +543,38 @@ function DashboardUnitForAdmin(props) {
                             </div>
                         </div>
                     </div>
+
+                    <LazyLoadComponent>
+                        <AnnualLeaveChartAndTable
+                            defaultUnit={true} 
+                            organizationalUnits={listUnitSelect?.map(item => item?.value)}
+                            childOrganizationalUnit={listUnitSelect?.map(item => {
+                                return {
+                                    id: item?.value,
+                                    name: item?.text
+                                }
+                            })}
+                        />
+                    </LazyLoadComponent>
                 </div>
             </React.Fragment>
         );
 }
 
 function mapState(state) {
-    const { department, employeesManager, tasks, user, discipline } = state;
-    return { department, employeesManager, tasks, user, discipline };
+    const { department, employeesManager, tasks, user } = state;
+    return { department, employeesManager, tasks, user };
 }
 
 const actionCreators = {
     getAllUnit: DepartmentActions.get,
 
     getAllEmployee: EmployeeManagerActions.getAllEmployee,
-    getListPraise: DisciplineActions.getListPraise,
-    getListDiscipline: DisciplineActions.getListDiscipline,
-    searchSalary: SalaryActions.searchSalary,
-    getTimesheets: TimesheetsActions.searchTimesheets,
 
     getAllEmployeeOfUnitByIds: UserActions.getAllEmployeeOfUnitByIds,
-    getTaskInOrganizationUnitByMonth: taskManagementActions.getTaskInOrganizationUnitByMonth,
+
     getTaskByUser: taskManagementActions.getTasksByUser,
+    getTaskInOrganizationUnitByMonth: taskManagementActions.getTaskInOrganizationUnitByMonth,
     getTaskInOrganizationUnitByDateNow: taskManagementActions.getTaskByPriorityInOrganizationUnit,
 };
 
