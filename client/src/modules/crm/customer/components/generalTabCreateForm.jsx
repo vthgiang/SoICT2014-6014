@@ -585,19 +585,6 @@ function GeneralTabCreateForm(props) {
                         </div>
 
 
-                        <div className="row">
-
-
-
-                            {/* // Mã số thuế */}
-                            <div className="col-md-6">
-                                <div className={`form-group ${!customerTaxNumberError ? "" : "has-error"}`}>
-                                    <label>{translate('crm.customer.taxNumber')}</label>
-                                    <input type="text" className="form-control" value={taxNumber ? taxNumber : ''} onChange={handleChangeTaxNumber} placeholder={translate('crm.customer.taxNumber')} />
-                                    <ErrorLabel content={customerTaxNumberError} />
-                                </div>
-                            </div>
-                        </div>
                     </>) : (<>
                         <div className="row">
 
@@ -680,7 +667,17 @@ function GeneralTabCreateForm(props) {
                     </div>
 
                     <div className="row">
-                        {/* location */}
+                            {/* // Mã số thuế */}
+                            <div className="col-md-6">
+                                <div className={`form-group ${!customerTaxNumberError ? "" : "has-error"}`}>
+                                    <label>{translate('crm.customer.taxNumber')}</label>
+                                    <input type="text" className="form-control" value={taxNumber ? taxNumber : ''} onChange={handleChangeTaxNumber} placeholder={translate('crm.customer.taxNumber')} />
+                                    <ErrorLabel content={customerTaxNumberError} />
+                                </div>
+                            </div>
+                        </div>
+                    <div className="row">
+                        {/* khu vực */}
                         <div className="col-md-6">
                             <div className="form-group">
                                 <label>{translate('crm.customer.location')} </label>

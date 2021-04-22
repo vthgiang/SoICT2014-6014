@@ -13,7 +13,7 @@ class FileTabEditForm extends Component {
 
     static getDerivedStateFromProps(props, state) {
         const { id, files, customerIdEdit } = props;
-        if (customerIdEdit !== state.customerIdEdit) {
+        if (customerIdEdit !== state.customerIdEdit || files !== state.files) {
             return {
                 ...state,
                 customerIdEdit,
@@ -43,7 +43,7 @@ class FileTabEditForm extends Component {
                 fileUpload: value.fileUpload,
             }
         ]
-
+        console.log('File moi', files)
         this.setState({
             files,
         }, () => callBackFromParentEditForm('files', files));
@@ -77,7 +77,7 @@ class FileTabEditForm extends Component {
     }
 
     render() {
-        const { translate,id } = this.props;
+        const { translate, id } = this.props;
         const { files, data, itemEdit } = this.state;
         return (
             <React.Fragment>

@@ -30,6 +30,7 @@ class FileTabCreateForm extends Component {
                 fileUpload: value.fileUpload,
             }
         ]
+        console.log('LISTFILE MOI', listFiles)
         this.setState({
             listFiles,
         }, () => callBackFromParentCreateForm('files', listFiles));
@@ -107,12 +108,10 @@ class FileTabCreateForm extends Component {
                             <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }} >
                                 <thead>
                                     <tr>
-                                        
+
                                         <th>{translate('crm.customer.file.name')}</th>
                                         <th>{translate('crm.customer.file.description')}</th>
                                         <th>{translate('crm.customer.file.attachment')}</th>
-                                        <th>{translate('crm.customer.file.name')}</th>
-                         
                                         <th style={{ width: '120px' }}>{translate('general.action')}</th>
                                     </tr>
                                 </thead>
