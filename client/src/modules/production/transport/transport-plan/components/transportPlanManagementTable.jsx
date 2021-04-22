@@ -6,7 +6,7 @@ import { DataTableSetting, DeleteNotification, PaginateBar } from "../../../../.
 
 import { formatDate } from "../../../../../helpers/formatDate"
 import { TransportPlanCreateForm } from "./transportPlanCreateForm"
-
+import { TransportPlanEditForm } from "./transportPlanEditForm"
 import { transportPlanActions } from "../redux/actions"
 // import { transportRequirementsActions } from "../redux/actions";
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
@@ -17,7 +17,7 @@ import { convertJsonObjectToFormData } from '../../../../../helpers/jsonObjectTo
 function TransportPlanManagementTable(props) {
 
     let { allTransportPlans } = props;
-
+    const [currentTransportPlan, setCurrentTransportPlan] = useState()
     useEffect(() => {
         props.getAllTransportPlans({page: 1, limit: 500});
     }, [])
@@ -30,11 +30,19 @@ function TransportPlanManagementTable(props) {
         currentDate = currentDate.getFullYear()+"-"+currentDate.getMonth()+"-"+currentDate.getDate();
         return currentDate;
     }
+    const handleEditPlan = (transportPlan) => {
+        setCurrentTransportPlan(transportPlan);
+        window.$('#modal-edit-transport-plan').modal('show');
+    }
     return (
             <div className="box-body qlcv">
                 <TransportPlanCreateForm 
                     currentDateClient={getCurrentDate()}
                 />
+                <TransportPlanEditForm 
+                    currentTransportPlan={currentTransportPlan}
+                />
+                
                 <div className="form-inline">
 
                 </div>
@@ -71,7 +79,12 @@ function TransportPlanManagementTable(props) {
                                             <i className="material-icons">visibility
                                             </i>
                                         </a>
-                                        {/* <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_example.edit')} onClick={() => handleEdit(example)}><i className="material-icons">edit</i></a> */}
+                                        <a className="edit text-yellow" style={{ width: '5px' }} 
+                                            title={"Chỉnh sửa kế hoạch"} 
+                                            onClick={() => handleEditPlan(x)}
+                                        >
+                                            <i className="material-icons">edit</i>
+                                        </a>
                                         <DeleteNotification
                                             content={"Xóa kế hoạch vận chuyển"}
                                             data={{

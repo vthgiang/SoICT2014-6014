@@ -72,6 +72,11 @@ exports.getAllTransportPlans = async (portal, data) => {
 
     let totalList = await TransportPlan(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
     let plans = await TransportPlan(connect(DB_CONNECTION, portal)).find(keySearch)
+        .populate([
+            {
+                path: "transportRequirements transportVehicles.vehicle"
+            }
+        ])
         .skip((page - 1) * limit)
         .limit(limit);
     return { 
