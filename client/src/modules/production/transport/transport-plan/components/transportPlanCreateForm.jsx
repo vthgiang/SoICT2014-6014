@@ -129,6 +129,10 @@ function TransportPlanCreateForm(props) {
     useEffect(() => {
         props.getAllTransportRequirements({page:1, limit: 100})
     }, [])
+
+    useEffect(() => {
+        console.log(formSchedule, " day la form schedule");
+    }, [formSchedule])
     useEffect(() => {
         if (transportRequirements){
             let {lists} = transportRequirements;
@@ -181,6 +185,13 @@ function TransportPlanCreateForm(props) {
         console.log(locationArr, " ar")
         setListSelectedRequirementsLocation(locationArr);
     }, [listSelectedRequirements])
+
+    const callBackVehicleAndCarrier = (transportVehicles) => {
+        setFormSchedule({
+            ...formSchedule,
+            transportVehicles: transportVehicles,
+        })
+    }
 
     return (
         <React.Fragment>
@@ -360,6 +371,7 @@ function TransportPlanCreateForm(props) {
                             <TransportVehicleAndCarrierSelect
                                 startTime={formSchedule.startDate}
                                 endTime={formSchedule.endDate}
+                                callBackVehicleAndCarrier={callBackVehicleAndCarrier}
                             />
                         </LazyLoadComponent>
                     </div>

@@ -16,15 +16,34 @@ import './transport-plan.css'
 
 function TransportVehicleAndCarrierSelect(props) {
     let listRequirements = []
-    let {startTime, endTime, transportDepartment, transportVehicle, transportPlan} = props;
+    let {startTime, endTime, transportDepartment, transportVehicle, transportPlan, callBackVehicleAndCarrier} = props;
+    // Danh sách cách phân công người và xe
+    /**
+     * [{
+     *  vehicle: id,
+     *  carriers: [{
+     *      carrier: id,
+     *      pos =1 // nếu là tài xế
+     *  }]
+     * }]
+     */
     const [listVehicleAndCarrier, setListVehicleAndCarrier] = useState([]);
+
+    /**
+     * danh sách xe lựa chọn [{
+     *  vehicle: id,
+     *  carriers: [{
+     *  carrier: id,
+     *  pos =1 // nếu là tài xế
+     * }]
+     * }]
+     */
+    const [listChosenVehicle, setListChosenVehicle] = useState([]);
 
     // Danh sách nhân viên vận chuyển có thể phân công hiện tại
     const [listCarriersUsable, setListCarriersUsable] = useState();
     // Danh sách phương tiện có thể sử dụng hiện tại
     const [listVehiclesUsable, setListVehiclesUsable] = useState();
-    // Danh sách nhân viên vận chuyển - tài xế - có thể phân công trong selectBox
-    const [selectedBoxDriverList, setSelectedBoxDriverList] = useState();
     useEffect(() => {
         // Lấy tất cả plans đã có để kiểm tra xe và người có bị trùng lặp không
         props.getAllTransportDepartments();
@@ -193,12 +212,10 @@ function TransportVehicleAndCarrierSelect(props) {
                     }
                     else {
                         // Nếu xe chưa có nhân viên vận chuyển nào => tạo mới
-                        currentVehicleAndCarrier[0].push({
-                            carriers: [{
+                        currentVehicleAndCarrier[0].carriers=[{
                                 carrier: value[0],
                                 pos: 1,
                             }]
-                        })
                     }
                 }
                 else {
@@ -224,6 +241,10 @@ function TransportVehicleAndCarrierSelect(props) {
             }
         }
         setListVehicleAndCarrier(vehicleAndCarrier)
+
+        let chosenVehicle = [...listChosenVehicle]
+        chosenVehicle = chosenVehicle.filter(r => r.vehicle !== vehicleId)
+        setListChosenVehicle(chosenVehicle)
     }
 
     const getCurrentCarriers = (vehicleId) => {
@@ -321,11 +342,7 @@ function TransportVehicleAndCarrierSelect(props) {
                                     carrier: val,
                                 })
                             })
-                            currentVehicleAndCarrier[0].push({
-                                carriers: [{
-                                    carrier: carrierList,
-                                }]
-                            })
+                            currentVehicleAndCarrier[0].carriers =carrierList
                         }
                     }
                 }
@@ -361,16 +378,50 @@ function TransportVehicleAndCarrierSelect(props) {
             }
         }
         setListVehicleAndCarrier(vehicleAndCarrier)
+
+        // Bỏ xe này ra khỏi xe đã chọn
+        let chosenVehicle = [...listChosenVehicle]
+        chosenVehicle = chosenVehicle.filter(r => r.vehicle !== vehicleId)
+        setListChosenVehicle(chosenVehicle)
     }
-
-    useEffect(() => {
-        console.log(listVehiclesUsable)
-    }, [listVehiclesUsable])
-
+    const handleSelectVehicle = (vehicle) => {
+        console.log(vehicle._id)
+        let chosenVehicle = [...listChosenVehicle]
+        if (chosenVehicle && chosenVehicle.length !==0){
+            chosenVehicle = chosenVehicle.filter(r => r.vehicle!==vehicle._id);
+        }
+        if (getStatusTickBox(vehicle) === "iconunactive"){
+            let currentVehicleAndCarrier = listVehicleAndCarrier.filter(r => r.vehicle === vehicle._id);
+            console.log(currentVehicleAndCarrier)
+            if (currentVehicleAndCarrier && currentVehicleAndCarrier.length!==0){
+                if (currentVehicleAndCarrier[0].carriers && currentVehicleAndCarrier[0].carriers.length!==0){
+                    let driver = currentVehicleAndCarrier[0].carriers.filter(r => String(r.pos) === "1");
+                    if (driver && driver.length!==0){
+                        chosenVehicle.push(currentVehicleAndCarrier[0]);
+                    }
+                }
+            }
+        }
+        setListChosenVehicle(chosenVehicle);
+    }
+    const getStatusTickBox = (vehicle) => {
+        if (listChosenVehicle && listChosenVehicle.length!==0){
+            for (let i=0;i<listChosenVehicle.length;i++){
+                if (listChosenVehicle[i].vehicle === vehicle._id){
+                    return "iconactive"
+                }
+            }
+        }
+        return "iconunactive"
+    }
     useEffect(() => {
         console.log(listVehicleAndCarrier)
     }, [listVehicleAndCarrier])
 
+    useEffect(() => {
+        console.log(listChosenVehicle , " listChosenVehicle")
+        callBackVehicleAndCarrier(listChosenVehicle);
+    }, [listChosenVehicle])
     return (
         <React.Fragment>
             <div className="box-body">
@@ -433,24 +484,13 @@ function TransportVehicleAndCarrierSelect(props) {
                                             multiple={true}
                                         />
                                     </td>
-                                    {/* <td>{x.createdAt ? formatDate(x.createdAt) : ""}</td> */}
-                                    <td>
-                                        {
-                                            // (x.timeRequests && x.timeRequests.length!==0)
-                                            // && x.timeRequests.map((timeRequest, index2)=>(
-                                            //     <div key={index+" "+index2}>
-                                            //         {index2+1+"/ "+formatDate(timeRequest.timeRequest)}
-                                            //     </div>
-                                            // ))
-                                        }
-                                    </td>
-                                    {/* <td>{x.status}</td> */}
+                                    
                                     <td style={{ textAlign: "center" }} className="tooltip-checkbox">
                                         <span className={"icon "
-                                        // +getStatusTickBox(x)
+                                        +getStatusTickBox(x)
                                     }
                                         title={"alo"} 
-                                        // onClick={() => handleSelectRequirement(x)}
+                                        onClick={() => handleSelectVehicle(x)}
                                         >
                                         </span>
                                     </td>
