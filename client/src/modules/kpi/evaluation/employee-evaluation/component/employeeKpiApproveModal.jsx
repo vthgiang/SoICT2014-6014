@@ -34,9 +34,10 @@ function EmployeeKpiApproveModal(props) {
         compare: false,
         checkInput: false,
         tableId,
-        employeeKpiSetId: null
+        employeeKpiSetId: null,
+        type: "approve"
     });
-    const { errorOnDate, date, compare, edit, defaultDate, employeeKpiSetId } = state;
+    const { errorOnDate, date, compare, edit, defaultDate, employeeKpiSetId, type } = state;
     let kpimember, kpimembercmp, month, totalWeight;
 
     if (props.id !== state.id) {
@@ -110,7 +111,7 @@ function EmployeeKpiApproveModal(props) {
             ...state,
             employeeKpiSetId: id
         })
-        window.$('#modal-employee-kpi-set-log').modal('show')
+        window.$(`#modal-employee-kpi-set-log-${type}`).modal('show')
     }
 
     function formatDate(date) {
@@ -253,6 +254,7 @@ function EmployeeKpiApproveModal(props) {
                 />
                 <EmployeeKpiSetLogsModal
                     employeeKpiSetId={employeeKpiSetId}
+                    type={type}
                 />
                 <div className="qlcv">
                     <div className="form-inline pull-right">

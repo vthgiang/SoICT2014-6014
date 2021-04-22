@@ -11,9 +11,10 @@ import { getTableConfiguration } from '../../../../../helpers/tableConfiguration
 function EmployeeKpiOverviewModal(props) {
     const { translate, kpimembers } = props;
     const [state, setState] = useState({
-        employeeKpiSetId: null
+        employeeKpiSetId: null,
+        type: "overview"
     })
-    const { employeeKpiSetId } = state
+    const { employeeKpiSetId, type } = state
     const tableId = "employee-kpi-overview-modal";
     getTableConfiguration(tableId);
 
@@ -22,7 +23,8 @@ function EmployeeKpiOverviewModal(props) {
             ...state,
             employeeKpiSetId: id
         })
-        window.$('#modal-employee-kpi-set-log').modal('show')
+
+        window.$(`#modal-employee-kpi-set-log-${type}`).modal('show')
     }
 
 
@@ -43,6 +45,7 @@ function EmployeeKpiOverviewModal(props) {
         <React.Fragment>
             <EmployeeKpiSetLogsModal
                 employeeKpiSetId={employeeKpiSetId}
+                type={type}
             />
             <button className=" btn btn-primary pull-right" onClick={() => showEmployeeKPISetLogs(kpimembers?.currentKPI?._id)}>{translate('kpi.evaluation.employee_evaluation.show_logs')}</button>
             <br/><br/>

@@ -9,7 +9,7 @@ import { managerKpiActions } from '../../../employee/management/redux/actions'
 import { DialogModal } from '../../../../../common-components/index';
 
 function EmployeeKpiSetLogsModal (props) {
-    const { translate, KPIPersonalManager, employeeKpiSetId } = props
+    const { translate, KPIPersonalManager, employeeKpiSetId, type } = props
     
     useEffect(() => {
         if (employeeKpiSetId) {
@@ -24,7 +24,7 @@ function EmployeeKpiSetLogsModal (props) {
 
     return (
         <DialogModal
-            modalID={`modal-employee-kpi-set-log`}
+            modalID={`modal-employee-kpi-set-log-${type}`}
             title={`${translate('kpi.evaluation.employee_evaluation.show_logs')}`}
             hasSaveButton={false}
             size={75}
