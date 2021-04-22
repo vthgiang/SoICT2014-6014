@@ -37,6 +37,14 @@ exports.getTransportRouteByPlanId = async (portal, id) => {
                 {
                     path: 'transportVehicles.transportVehicle',
                     model: 'TransportVehicle'
+                },
+                {
+                    path: 'transportVehicles.vehicle',
+                    populate: [
+                        {
+                            path: 'asset'
+                        }
+                    ]
                 }
             ]
         },

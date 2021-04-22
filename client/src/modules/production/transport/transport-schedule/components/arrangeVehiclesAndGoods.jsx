@@ -80,6 +80,7 @@ function ArrangeVehiclesAndGoods(props) {
         console.log(currentTransportSchedule, " currentTransportSchedule")
         if (currentTransportSchedule){
             if (currentTransportSchedule.transportPlan){
+                console.log(currentTransportSchedule.transportPlan);
                 setAransportArrangeRequirements(currentTransportSchedule.transportPlan.transportRequirements);
                 setAllTransportVehicle(currentTransportSchedule.transportPlan.transportVehicles);
                 if (currentTransportSchedule.transportVehicles){
@@ -130,7 +131,7 @@ function ArrangeVehiclesAndGoods(props) {
         let distributionList = [...distributionState];
 
         const requirementId = String(transportRequirement._id);
-        const vehicleId = String(transportVehicle.transportVehicle._id);
+        const vehicleId = String(transportVehicle.vehicle._id);
         let newDistribution = [];
         
         if (distributionList && distributionList.length!==0){
@@ -310,35 +311,27 @@ function ArrangeVehiclesAndGoods(props) {
                                 (allTransportVehicle && allTransportVehicle.length !== 0) &&
                                 allTransportVehicle.map((item, index) => (
                                     item &&
-                                    <th key={"v" + index}>{item.transportVehicle.name}</th>
+                                    <th key={"v" + index}>{item.vehicle.name}</th>
                                 ))
                             }
-                            {/* <th colSpan={2}>{"Xe 1"}</th>
-                            <th colSpan={2}>{"Xe 1"}</th>
-                            <th colSpan={2}>{"Xe 1"}</th> */}
                         </tr>
                         <tr className="word-no-break">
                             {
                                 (allTransportVehicle && allTransportVehicle.length !== 0) &&
                                 allTransportVehicle.map((item, index) => (
                                     item &&
-                                    <td>{"Payload: " + item.transportVehicle.payload}</td>
+                                    <td>{"Payload: " + item.vehicle.payload}</td>
                                 ))
                             }
-                            {/* <td>{"Trọng tải"}</td>
-                            <td>{"Thể tích"}</td>
-                            <td>{"Trọng tải"}</td>
-                            <td>{"Thể tích"}</td> */}
                         </tr>
                         <tr className="word-no-break">
                             {
                                 (allTransportVehicle && allTransportVehicle.length !== 0) &&
                                 allTransportVehicle.map((item, index) => (
                                     item &&
-                                    <td>{"Volume: " + item.transportVehicle.volume}</td>
+                                    <td>{"Volume: " + item.vehicle.volume}</td>
                                 ))
                             }
-                            {/* <td>{"1000"}</td> */}
                         </tr>
                     </thead>
                     <tbody className="transport-special-row">
@@ -410,7 +403,7 @@ function ArrangeVehiclesAndGoods(props) {
                                     allTransportVehicle.map((item1, index1) => (
                                         item1 &&
                                         <td key={"vehicle "+index+" "+index1} className="tooltip-checkbox">
-                                            <span className={"icon "+getStatusTickBox(item1.transportVehicle._id, item._id, distributionState)}
+                                            <span className={"icon "+getStatusTickBox(item1.vehicle._id, item._id, distributionState)}
                                             title={"alo"} 
                                             onClick={() => handleSelectVehicle(item, item1, index, index1)}
                                             >

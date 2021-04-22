@@ -24,6 +24,7 @@ exports.createTransportPlan = async (portal, data) => {
         startTime: data.startDate,
         endTime: data.endDate,
         transportRequirements: data.transportRequirements,
+        transportVehicles: data.transportVehicles,
         });
         // Nếu có requirements đi kèm {transportRequirements: [id, id, id...]}
         if (data.transportRequirements && data.transportRequirements.length!==0){
