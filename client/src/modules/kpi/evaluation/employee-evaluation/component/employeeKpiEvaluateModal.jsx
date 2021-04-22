@@ -9,6 +9,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import parse from 'html-react-parser';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 import { EmployeeKpiOverviewModal } from "../../../employee/management/component/employeeKpiOverviewModal";
+
 // import './tableCSS.css';
 
 function EmployeeKpiEvaluateModal(props) {
@@ -45,7 +46,7 @@ function EmployeeKpiEvaluateModal(props) {
         }
     })
 
-    useEffect(() => {
+    useEffect( () => {
         const { id, dataStatus } = state;
         if (props.employeeKpiSet && props.employeeKpiSet._id !== id) {
             if (props.employeeKpiSet._id) {
@@ -53,9 +54,8 @@ function EmployeeKpiEvaluateModal(props) {
             }
         }
 
-        if (dataStatus === DATA_STATUS.QUERYING) {
-            if (!props.kpimembers.tasks) {
-            } else {
+         if (dataStatus === DATA_STATUS.QUERYING) {
+            if (props.kpimembers.tasks) {
                 let tasks = props.kpimembers.tasks;
                 let importanceLevels = {};
                 tasks.forEach(element => {
@@ -69,6 +69,7 @@ function EmployeeKpiEvaluateModal(props) {
                 });
             }
         }
+    
     })
 
     function formatDate(date) {
@@ -100,15 +101,18 @@ function EmployeeKpiEvaluateModal(props) {
     }
 
     const handleChangeContent = (id, employeeId, kpiType, name) => {
+        async function fecth() {
         let date = props.employeeKpiSet.date;
-        props.getTaskById(id, employeeId, date, kpiType);
-        setState({
+        await props.getTaskById(id, employeeId, date, kpiType);
+        await setState({
             ...state,
             content: id,
             contentName: name,
             type: kpiType,
             dataStatus: DATA_STATUS.QUERYING,
         });
+    }
+    fecth()
     }
 
     const handleSetPointKPI = () => {
@@ -285,6 +289,10 @@ function EmployeeKpiEvaluateModal(props) {
             hasSaveButton={false}
             size={100}
         >
+             {/* <EmployeeKpiSetLogsModal
+                    employeeKpiSetId={employeeKpiSetId}
+                /> */}
+            
             <div className="nav-tabs-custom" style={{ boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none" }}>
                 <ul className="nav nav-tabs">
                     <li className="active"><a href="#overview" data-toggle="tab">{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.overview')}</a></li>
