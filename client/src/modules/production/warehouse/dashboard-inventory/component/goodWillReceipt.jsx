@@ -37,7 +37,7 @@ class GoodWillReceipt extends Component {
                     ['x', '13-10-2020', '14-10-2020', '15-10-2020', '16-10-2020', '17-10-2020', '18-10-2020', '19-10-2020', '20-10-2020'],
                     ['Số lượng', 0, 0, 140, 0, 300, 228, 400, 0],
                 ],
-                type: barAndLineChart ? 'bar' : 'spline',
+                type: barAndLineChart ? 'bar' : '',
             },
             axis: {
                 x: {
@@ -106,7 +106,7 @@ class GoodWillReceipt extends Component {
                             <p className="pull-left" style={{ marginBottom: 0 }}><b>ĐV tính: Hộp</b></p>
                             <div className="box-tools pull-right">
                                 <div className="btn-group pull-rigth">
-                                    <button type="button" className={`btn btn-xs ${barAndLineChart ? "active" : "btn-danger"}`} onClick={() => this.handleChangeViewChart(false)}>Spline chart</button>
+                                    <button type="button" className={`btn btn-xs ${barAndLineChart ? "active" : "btn-danger"}`} onClick={() => this.handleChangeViewChart(false)}>Line chart</button>
                                     <button type="button" className={`btn btn-xs ${barAndLineChart ? 'btn-danger' : "active"}`} onClick={() => this.handleChangeViewChart(true)}>Bar chart</button>
                                 </div>
                             </div>

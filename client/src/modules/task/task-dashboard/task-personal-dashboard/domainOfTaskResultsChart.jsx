@@ -308,7 +308,7 @@ class DomainOfTaskResultsChart extends Component {
             data: {
                 x: 'x',
                 columns: dataChart,
-                type: 'area-spline'
+                type: 'area'
             },
 
             // Căn lề biểu đồ
