@@ -227,7 +227,6 @@ class EvaluateByAccountableEmployeeProject extends Component {
                 newMonth += 12;
                 dateOfPrevEval.setYear(dateOfPrevEval.getFullYear() - 1);
             }
-
             dateOfPrevEval.setDate(15);
             dateOfPrevEval.setMonth(newMonth);
 

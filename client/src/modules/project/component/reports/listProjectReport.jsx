@@ -93,17 +93,6 @@ function ListProjectReport(props) {
 
     const totalPage = project && project.data.totalPage;
 
-    const renderModal = useCallback(
-        () => {
-            console.log('HEHEHEH', projectDetail?._id)
-            return projectDetail && projectDetail._id &&
-                <ModalDetailReport
-                    projectDetailId={projectDetail && projectDetail._id}
-                    projectDetail={projectDetail} />
-        },
-        [projectDetail],
-    )
-
     return (
         <React.Fragment>
             {/* Modal chi tiết báo cáo dự án */}

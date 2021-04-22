@@ -307,6 +307,10 @@ const TaskSchema = new Schema(
                             type: Number, // Suggest tự động dựa theo lần đánh giá trước đó (nếu có), theo thời gian thực hiện, độ quan trọng của công việc, % đóng góp
                             default: -1,
                         },
+                        isProject: {
+                            // Check xem task co phai cua project khong hay task doc lap
+                            type: Boolean,
+                        }
                     },
                 ],
                 resultsForProject: {

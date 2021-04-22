@@ -3923,6 +3923,7 @@ exports.evaluateTaskByResponsibleEmployees = async (portal, data, taskId) => {
         endDate,
         kpi,
         info,
+        isProject,
     } = data;
 
     let splitter = evaluatingMonth.split("-");
@@ -3940,6 +3941,7 @@ exports.evaluateTaskByResponsibleEmployees = async (portal, data, taskId) => {
         employeePoint: employeePoint,
         automaticPoint: automaticPoint,
         role: role,
+        isProject,
     };
 
     let evaluateId = await checkEvaluations(portal, evaluatingMonth, taskId, evaluatingMonth);

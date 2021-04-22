@@ -2329,6 +2329,9 @@ exports.createProjectTask = async (portal, task) => {
         estimateNormalCost: task.estimateNormalCost,
         estimateMaxCost: task.estimateMaxCost,
         preceedingTasks: task.preceedingTasks,
+        budget: task.budget,
+        actorsWithSalary: task.actorsWithSalary,
+        estimateAssetCost: task.estimateAssetCost,
     });
 
     if (newTask.taskTemplate !== null) {
