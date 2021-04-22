@@ -7,6 +7,7 @@ import { formatToTimeZoneDate, formatDate } from "../../../../../helpers/formatD
 import ValidationHelper from '../../../../../helpers/validationHelper';
 
 import { LocationMap } from './map/locationMap'
+import { TransportVehicleAndCarrierSelect } from './transportVehicleAndCarrierSelect'
 
 import { transportPlanActions } from '../redux/actions';
 import { transportRequirementsActions } from '../../transport-requirements/redux/actions'
@@ -356,7 +357,10 @@ function TransportPlanCreateForm(props) {
                     <div className="tab-pane" id="plan-transport-vehicle-carrier">
                         <LazyLoadComponent
                         >
-                            {/* <TransportArrangePlan /> */}
+                            <TransportVehicleAndCarrierSelect
+                                startTime={formSchedule.startDate}
+                                endTime={formSchedule.endDate}
+                            />
                         </LazyLoadComponent>
                     </div>
                 </div>

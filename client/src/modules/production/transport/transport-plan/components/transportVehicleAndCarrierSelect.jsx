@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { ButtonModal, DialogModal, ErrorLabel, DatePicker, SelectBox, LazyLoadComponent, forceCheckOrVisible } from '../../../../../common-components';
+import { ButtonModal, DialogModal, ErrorLabel, DatePicker, LazyLoadComponent, forceCheckOrVisible } from '../../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
 import { generateCode } from "../../../../../helpers/generateCode";
 import { formatToTimeZoneDate, formatDate } from "../../../../../helpers/formatDate"
 import ValidationHelper from '../../../../../helpers/validationHelper';
 
 import { LocationMap } from './map/locationMap'
-
+import { SelectBox } from '../../transportHelper/select-box-id/selectBoxId'
 import { transportPlanActions } from '../redux/actions';
 import { transportVehicleActions } from '../../transport-vehicle/redux/actions'
 import { transportDepartmentActions } from "../../transport-department/redux/actions"
@@ -15,6 +15,7 @@ import { isTimeZoneDateSmaller } from "../../transportHelper/compareDateTimeZone
 import './transport-plan.css'
 
 function TransportVehicleAndCarrierSelect(props) {
+    let listRequirements = []
     let {startTime, endTime, transportDepartment, transportVehicle, transportPlan} = props;
     const [listVehicleAndCarrier, setListVehicleAndCarrier] = useState();
 
@@ -22,6 +23,8 @@ function TransportVehicleAndCarrierSelect(props) {
     const [listCarriersUsable, setListCarriersUsable] = useState();
     // Danh sách phương tiện có thể sử dụng hiện tại
     const [listVehiclesUsable, setListVehiclesUsable] = useState();
+    // Danh sách nhân viên vận chuyển - tài xế - có thể phân công trong selectBox
+    const [selectedBoxDriverList, setSelectedBoxDriverList] = useState();
     useEffect(() => {
         // Lấy tất cả plans đã có để kiểm tra xe và người có bị trùng lặp không
         props.getAllTransportDepartments();
@@ -53,7 +56,7 @@ function TransportVehicleAndCarrierSelect(props) {
                                 && employees.users.map(users => {
                                     if (users.userId){
                                         if (users.userId.name){
-                                            carriersList.push(users.userId._id)
+                                            carriersList.push(users.userId)
                                         }
                                     }
                                 })
@@ -100,24 +103,95 @@ function TransportVehicleAndCarrierSelect(props) {
             setListVehiclesUsable(vehiclesList);
             setListCarriersUsable(carriersList);
         }
+        console.log(transportVehicle, transportDepartment)
+        console.log(startTime)
     }, [startTime, endTime, transportDepartment, transportVehicle, transportPlan])
+
+    const getCurrentDriver = (vehicleId) => {
+        let currentDriver = "0";
+        if (listVehicleAndCarrier && listVehicleAndCarrier.length!==0){
+            listVehicleAndCarrier.map(transportVehicles => {
+                if (String(transportVehicles.vehicle) === vehicleId){
+                    if (transportVehicles.carriers && transportVehicles.carriers.length!==0){
+                        transportVehicles.carriers.map(carriers => {
+                            if (String(carriers.pos) === 1){
+                                currentDriver = carriers.carrier;
+                            }
+                        })
+                    }
+                }
+            })
+        }
+        return currentDriver;
+    }
+
+    const getAllDriver = (vehicleId) => {       
+        let selectedBoxDriver = [{
+            value: "0",
+            text: "--Chọn tài xế--"
+        }]
+        if (listCarriersUsable && listCarriersUsable.length!==0){
+            listCarriersUsable.map(x => {
+                selectedBoxDriver.push({
+                    value: x._id,
+                    text: x.name,
+                })
+            })
+        }
+        if (listVehicleAndCarrier && listVehicleAndCarrier.length!==0){
+            listVehicleAndCarrier.map(transportVehicles => {
+                if (transportVehicles.carriers && transportVehicles.carriers.length!==0){
+                    transportVehicles.carriers.map(carriers => {
+                        if (!(transportVehicles.vehicle===vehicleId && String(carriers.pos)==="1")){
+                            selectedBoxDriver=selectedBoxDriver.filter(r=>String(r.value)!==carriers.carrier)
+                        }
+                    })
+                }
+            })
+        }
+        return selectedBoxDriver;
+    }
+
+    const handleDriverChange = (value, id) => {
+        console.log(value[0], id)
+    }
+
+    useEffect(() => {
+        console.log(listVehiclesUsable)
+    }, [listVehiclesUsable])
+
+    useEffect(() => {
+        // let selectedBoxDriver = [{
+        //     value: "0",
+        //     text: "--Chọn tài xế--"
+        // }]
+        // if (listCarriersUsable && listCarriersUsable.length!==0){
+        //     listCarriersUsable.map(x =>{
+        //         if (listVehicleAndCarrier && listVehicleAndCarrier.length!==0){
+        //             listVehicleAndCarrier.map(transportVehicles => {
+        //                 if (transportVehicles.length)
+        //             })
+        //         }
+        //     })
+        // }
+    }, [listCarriersUsable, listVehicleAndCarrier])
+
     return (
         <React.Fragment>
             <div className="box-body">
                 {
-                listRequirements && listRequirements.length!==0
+                listVehiclesUsable && listVehiclesUsable.length!==0
                 &&
                 <table id={"1"} className="table table-striped table-bordered table-hover">
                     <thead>
                         <tr>
                             <th className="col-fixed" style={{ width: 60 }}>{"STT"}</th>
-                            <th>{"Mã yêu cầu"}</th>
-                            <th>{"Loại yêu cầu"}</th>
-                            <th>{"Địa chỉ nhận hàng"}</th>
-                            <th>{"Địa chỉ giao hàng"}</th>
-                            <th>{"Ngày tạo"}</th>
-                            <th>{"Ngày mong muốn vận chuyển"}</th>
-                            <th>{"Trạng thái"}</th>
+                            <th>{"Mã xe"}</th>
+                            <th>{"Tên xe"}</th>
+                            <th>{"Trọng tải"}</th>
+                            <th>{"Thể tích thùng"}</th>
+                            <th>{"Tài xế"}</th>
+                            <th>{"Nhân viên đi cùng"}</th>
                             <th>{"Hành động"}</th>
                             {/* <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
                                 <DataTableSetting
@@ -133,33 +207,105 @@ function TransportVehicleAndCarrierSelect(props) {
                         </tr>
                     </thead>
                     <tbody>
-                        {(listRequirements && listRequirements.length !== 0) &&
-                            listRequirements.map((x, index) => (
+                        {(listVehiclesUsable && listVehiclesUsable.length !== 0) &&
+                            listVehiclesUsable.map((x, index) => (
                                 x &&
                                 <tr key={index}>
                                     <td>{index+1}</td>
                                     <td>{x.code}</td>
-                                    <td>{x.type}</td>
-                                    <td>{x.fromAddress}</td>
-                                    <td>{x.toAddress}</td>
-                                    <td>{x.createdAt ? formatDate(x.createdAt) : ""}</td>
+                                    <td>{x.name}</td>
+                                    <td>{x.payload}</td>
+                                    <td>{x.volume}</td>
+                                    <td>
+                                        <SelectBox
+                                            id={x._id}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            value={getCurrentDriver(x._id)}
+                                            items={getAllDriver(x._id)}
+                                            onChange={handleDriverChange}
+                                            multiple={false}
+                                        />
+                                    </td>
+                                    {/* <td>{x.createdAt ? formatDate(x.createdAt) : ""}</td> */}
                                     <td>
                                         {
-                                            (x.timeRequests && x.timeRequests.length!==0)
-                                            && x.timeRequests.map((timeRequest, index2)=>(
-                                                <div key={index+" "+index2}>
-                                                    {index2+1+"/ "+formatDate(timeRequest.timeRequest)}
-                                                </div>
-                                            ))
+                                            // (x.timeRequests && x.timeRequests.length!==0)
+                                            // && x.timeRequests.map((timeRequest, index2)=>(
+                                            //     <div key={index+" "+index2}>
+                                            //         {index2+1+"/ "+formatDate(timeRequest.timeRequest)}
+                                            //     </div>
+                                            // ))
                                         }
                                     </td>
-                                    <td>{x.status}</td>
+                                    {/* <td>{x.status}</td> */}
                                     <td style={{ textAlign: "center" }} className="tooltip-checkbox">
                                         <span className={"icon "
-                                        +getStatusTickBox(x)
+                                        // +getStatusTickBox(x)
                                     }
                                         title={"alo"} 
-                                        onClick={() => handleSelectRequirement(x)}
+                                        // onClick={() => handleSelectRequirement(x)}
+                                        >
+                                        </span>
+                                    </td>
+                                </tr>
+                            ))
+                        }
+                    </tbody>
+                </table>
+            }
+
+            {
+                listCarriersUsable && listCarriersUsable.length!==0
+                &&
+                <table id={"1"} className="table table-striped table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th className="col-fixed" style={{ width: 60 }}>{"STT"}</th>
+                            <th>{"Tên nhân viên"}</th>
+                            <th>{"Email"}</th>
+                            <th>{"Thể tích thùng"}</th>
+                            <th>{"Hành động"}</th>
+                            {/* <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
+                                <DataTableSetting
+                                    tableId={tableId}
+                                    columnArr={[
+                                        translate('manage_example.index'),
+                                        translate('manage_example.exampleName'),
+                                        translate('manage_example.description'),
+                                    ]}
+                                    setLimit={setLimit}
+                                />
+                            </th> */}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {(listCarriersUsable && listCarriersUsable.length !== 0) &&
+                            listCarriersUsable.map((x, index) => (
+                                x &&
+                                <tr key={index}>
+                                    <td>{index+1}</td>
+                                    <td>{x.name}</td>
+                                    <td>{x.email}</td>
+                                    {/* <td>{x.volume}</td> */}
+                                    {/* <td>{x.createdAt ? formatDate(x.createdAt) : ""}</td> */}
+                                    <td>
+                                        {
+                                            // (x.timeRequests && x.timeRequests.length!==0)
+                                            // && x.timeRequests.map((timeRequest, index2)=>(
+                                            //     <div key={index+" "+index2}>
+                                            //         {index2+1+"/ "+formatDate(timeRequest.timeRequest)}
+                                            //     </div>
+                                            // ))
+                                        }
+                                    </td>
+                                    {/* <td>{x.status}</td> */}
+                                    <td style={{ textAlign: "center" }} className="tooltip-checkbox">
+                                        <span className={"icon "
+                                        // +getStatusTickBox(x)
+                                    }
+                                        title={"alo"} 
+                                        // onClick={() => handleSelectRequirement(x)}
                                         >
                                         </span>
                                     </td>
