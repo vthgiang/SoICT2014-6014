@@ -3,6 +3,8 @@ const NotificationServices = require(`../../notification/notification.service`);
 const NewsFeed = require('../../news-feed/newsFeed.service');
 const { sendEmail } = require(`../../../helpers/emailHelper`);
 const Logger = require(`../../../logs`);
+const { Task } = require('../../../models');
+const { connect } = require(`../../../helpers/dbHelper`);
 // Điều hướng đến dịch vụ cơ sở dữ liệu của module quản lý công việc
 
 
@@ -47,7 +49,7 @@ exports.getTasks = async (req, res) => {
     }
     else if (req.query.type === "get_all_task_of_children_organizational_unit") {
         getAllTaskOfChildrenOrganizationalUnit(req, res)
-    } 
+    }
     else if (req.query.type === "priority") {
         getAllTaskByPriorityOfOrganizationalUnit(req, res)
     }
@@ -370,7 +372,7 @@ getPaginatedTasksByOrganizationalUnit = async (req, res) => {
         };
 
         let tasks = await TaskManagementService.getPaginatedTasksByOrganizationalUnit(req.portal, task, req.query.type);
-        
+
         await Logger.info(req.user.email, ` get paginated tasks by organizational unit `, req.portal)
         res.status(200).json({
             success: true,
@@ -475,7 +477,7 @@ exports.createTask = async (req, res) => {
             title: data?.title,
             description: data?.content,
             creator: req.user._id,
-            associatedDataObject: { 
+            associatedDataObject: {
                 dataType: 1,
                 value: task?._id
             },
@@ -485,7 +487,7 @@ exports.createTask = async (req, res) => {
             title: collaboratedData?.title,
             description: collaboratedData?.content,
             creator: req.user._id,
-            associatedDataObject: { 
+            associatedDataObject: {
                 dataType: 1,
                 value: task?._id
             },
@@ -512,7 +514,7 @@ exports.createTask = async (req, res) => {
 /**
  * Tạo một công việc mới của dự án
  */
- exports.createProjectTask = async (req, res) => {
+exports.createProjectTask = async (req, res) => {
     try {
         var tasks = await TaskManagementService.createProjectTask(req.portal, req.body);
         var task = tasks.task;
@@ -560,7 +562,7 @@ exports.createTask = async (req, res) => {
             title: data?.title,
             description: data?.content,
             creator: req.user._id,
-            associatedDataObject: { 
+            associatedDataObject: {
                 dataType: 1,
                 value: task?._id,
                 description: task?.name
@@ -591,6 +593,84 @@ exports.createTask = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: ['create_task_fail'],
+            content: error
+        })
+    }
+}
+
+/**
+ * Tạo các công việc theo file excel - CPM cho dự án
+ */
+exports.createProjectTasksFromCPM = async (req, res) => {
+    try {
+        for (let currentTask of req.body) {
+            console.log(currentTask.name)
+            if (currentTask.preceedingTasks.length > 0) {
+                console.log('currentTask.preceedingTasks', currentTask.preceedingTasks)
+                for (let currentPreceedingItem of currentTask.preceedingTasks) {
+                    const localPreceedingItem = req.body.find(item => item.code === currentPreceedingItem.task);
+                    const remotePreceedingItem = await Task(connect(DB_CONNECTION, req.portal)).findOne({
+                        taskProject: currentTask.taskProject,
+                        name: localPreceedingItem.name
+                    });
+                    currentTask = {
+                        ...currentTask,
+                        preceedingTasks: {
+                            task: remotePreceedingItem._id,
+                            link: ''
+                        }
+                    }
+                }
+            }
+            console.log(currentTask)
+            var tasks = await TaskManagementService.createProjectTask(req.portal, currentTask);
+            var task = tasks.task;
+            var user = tasks.user.filter(user => user !== req.user._id); // Lọc thông tin người tạo ra khỏi danh sách sẽ gửi thông báo
+
+            // Gửi mail cho nhân viện tham gia công việc
+            var email = tasks.email;
+            var html = tasks.html;
+            var data = {
+                organizationalUnits: task.organizationalUnit._id,
+                title: "Tạo mới công việc",
+                level: "general",
+                content: html,
+                sender: task.organizationalUnit.name,
+                users: user,
+                associatedDataObject: {
+                    dataType: 1,
+                    value: task.priority,
+                    description: `<p>${req.user.name} đã tạo mới công việc: <strong>${task.name}</strong> có sự tham gia của bạn.</p>`
+                },
+            };
+
+            await NotificationServices.createNotification(req.portal, req.user.company._id, data);
+            await sendEmail(email, "Bạn có công việc mới", '', html);
+            await NewsFeed.createNewsFeed(req.portal, {
+                title: data?.title,
+                description: data?.content,
+                creator: req.user._id,
+                associatedDataObject: {
+                    dataType: 1,
+                    value: task?._id,
+                    description: task?.name
+                },
+                relatedUsers: data?.users
+            });
+
+            await Logger.info(req.user.email, 'create_tasks_list_excel_cpm', req.portal)
+        }
+        res.status(200).json({
+            success: true,
+            messages: ['create_tasks_list_excel_cpm_success'],
+            content: null
+        });
+    } catch (error) {
+        console.log('CREATE TASK ERROR', error)
+        await Logger.error(req.user.email, 'create_tasks_list_excel_cpm', req.portal)
+        res.status(400).json({
+            success: false,
+            messages: ['create_tasks_list_excel_cpm_fail'],
             content: error
         })
     }
@@ -701,7 +781,7 @@ exports.editTaskByAccountableEmployees = async (req, res) => {
                 description: `<p><strong>${tasks.name}:</strong> ${user.name} đã cập nhật thông tin công việc với vai trò người phê duyệt</p>`
             }
         };
-        
+
         NotificationServices.createNotification(req.portal, tasks.organizationalUnit, data,);
         let title = "Cập nhật thông tin công việc:" + task.name;
         sendEmail(task.email, title, '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.id}">${process.env.WEBSITE}/task?taskId=${req.params.id}</a></p>`);
@@ -922,10 +1002,10 @@ getAllTaskByPriorityOfOrganizationalUnit = async (req, res) => {
     }
 }
 
-exports.getUserTimeSheet = async(req, res) => {
+exports.getUserTimeSheet = async (req, res) => {
     try {
         let portal = req.portal;
-        let {userId, month, year} = req.query;
+        let { userId, month, year } = req.query;
         let timesheetlogs = await TaskManagementService.getUserTimeSheet(portal, userId, month, year);
 
         await Logger.info(req.user.email, 'get_user_time_sheet_success', req.portal)
@@ -944,10 +1024,10 @@ exports.getUserTimeSheet = async(req, res) => {
     }
 }
 
-exports.getAllUserTimeSheet = async(req, res) => {
+exports.getAllUserTimeSheet = async (req, res) => {
     try {
         let portal = req.portal;
-        let {month, year} = req.query;
+        let { month, year } = req.query;
         let timesheetlogs = await TaskManagementService.getAllUserTimeSheet(portal, month, year);
 
         await Logger.info(req.user.email, 'get_all_user_time_sheet_success', req.portal)
@@ -966,10 +1046,10 @@ exports.getAllUserTimeSheet = async(req, res) => {
     }
 }
 
-getTasksByProject = async(req, res) => {
+getTasksByProject = async (req, res) => {
     try {
         let portal = req.portal;
-        let {projectId} = req.query;
+        let { projectId } = req.query;
         let tasksResult = await TaskManagementService.getTasksByProject(portal, projectId);
 
         await Logger.info(req.user.email, 'get_tasks_by_project_success', req.portal)

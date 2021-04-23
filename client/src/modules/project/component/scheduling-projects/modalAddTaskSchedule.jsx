@@ -75,6 +75,10 @@ const ModalAddTaskSchedule = (props) => {
         })
     }
 
+    const handleResetData = () => {
+        props.onHandleReRender();
+    }
+
     const handleChangeForm = (value, type) => {
         if (type === 'preceedingTasks') {
             setState({
@@ -188,7 +192,6 @@ const ModalAddTaskSchedule = (props) => {
             ...state,
             listTasks: state.listTasks,
         })
-        console.log('state.listTasks', state.listTasks)
     }
 
     const checkIfCanCalculateCPM = () => {
@@ -212,19 +215,27 @@ const ModalAddTaskSchedule = (props) => {
                 <fieldset className="scheduler-border">
                     <legend className="scheduler-border">Thông số dự án</legend>
                     <div className="row md-12">
-                        <div className={`form-group col-md-3`}>
+                        <div className={`form-group col-md-2`}>
                             <label>{translate('project.code')}</label>
                             <div>{projectDetail?.code}</div>
                         </div>
-                        <div className={`form-group col-md-3`}>
+                        <div className={`form-group col-md-2`}>
                             <label>{translate('project.unitTime')}</label>
                             <div>{translate(`project.unit.${projectDetail?.unitTime}`)}</div>
                         </div>
-                        <div className={`form-group col-md-3`}>
+                        <div className={`form-group col-md-2`}>
                             <label>{translate('project.unitCost')}</label>
                             <div>{projectDetail?.unitCost}</div>
                         </div>
-                        <div className={`form-group col-md-3`}>
+                        <div className={`form-group col-md-2`}>
+                            <label>Thời gian bắt đầu dự án</label>
+                            <div>{moment(projectDetail?.startDate).format('HH:mm DD/MM/YYYY')}</div>
+                        </div>
+                        <div className={`form-group col-md-2`}>
+                            <label>Thời gian dự kiến kết thúc dự án</label>
+                            <div>{moment(projectDetail?.endDate).format('HH:mm DD/MM/YYYY')}</div>
+                        </div>
+                        <div className={`form-group col-md-2`}>
                             <label>Khoảng thời gian dự kiến hoàn thành dự án</label>
                             <div>{estDurationEndProject} (ngày)</div>
                         </div>
@@ -265,6 +276,19 @@ const ModalAddTaskSchedule = (props) => {
                     </button>
                 </div> : null}
 
+                {/* Button tính toán CPM */}
+                {state.listTasks && state.listTasks.length > 0 &&
+                    <div className="dropdown pull-right" style={{ marginTop: 20, marginRight: 10 }}>
+                        <button
+                            disabled={!checkIfCanCalculateCPM()}
+                            onClick={handleOpenCalculateCPM}
+                            type="button" className="btn btn-warning dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true"
+                            title={translate('project.schedule.calculateCPM')}>
+                            {translate('project.schedule.calculateCPM')}
+                        </button>
+                    </div>
+                }
+
                 <table id="project-table" className="table table-striped table-bordered table-hover">
                     <thead>
                         <tr>
@@ -287,7 +311,13 @@ const ModalAddTaskSchedule = (props) => {
                                     <td>{taskItem?.code}</td>
                                     <td>{taskItem?.name}</td>
                                     <td>{taskItem?.preceedingTasks?.join(', ')}</td>
-                                    <td>{taskItem?.estimateNormalTime}</td>
+                                    <td>
+                                        {taskItem?.estimateNormalTime}
+                                        <strong style={{ color: '#FAC547' }}>
+                                            {taskItem?.estimateNormalTime > 7 || taskItem?.estimateNormalTime < 1 / 6
+                                                ? ' - Thời gian không nên lớn hơn 7 ngày và nhỏ hơn 4 tiếng'
+                                                : null}
+                                        </strong></td>
                                     {currentModeImport === 'HAND' && <td>{taskItem?.estimateOptimisticTime}</td>}
                                     {currentModeImport === 'HAND' && <td>{taskItem?.estimatePessimisticTime}</td>}
                                     <td>{checkIsNullUndefined(taskItem?.estimateNormalCost) ? 'Chưa tính được' : taskItem?.estimateNormalCost}</td>
@@ -372,20 +402,7 @@ const ModalAddTaskSchedule = (props) => {
 
                 {/* Phần tính toán CPM từ danh sách tasks */}
                 {state.listTasks && state.listTasks.length > 0 &&
-                    <ModalCalculateCPM estDurationEndProject={Number(estDurationEndProject)} tasksData={state.listTasks} />
-                }
-
-                {/* Button tính toán CPM */}
-                {state.listTasks && state.listTasks.length > 0 &&
-                    <div className="dropdown pull-right" style={{ marginTop: 15, marginRight: 10 }}>
-                        <button
-                            disabled={!checkIfCanCalculateCPM()}
-                            onClick={handleOpenCalculateCPM}
-                            type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true"
-                            title={translate('project.schedule.calculateCPM')}>
-                            {translate('project.schedule.calculateCPM')}
-                        </button>
-                    </div>
+                    <ModalCalculateCPM estDurationEndProject={Number(estDurationEndProject)} tasksData={state.listTasks} handleResetData={handleResetData} />
                 }
             </DialogModal>
         </React.Fragment>

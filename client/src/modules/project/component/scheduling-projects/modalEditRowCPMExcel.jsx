@@ -20,7 +20,7 @@ const ModalEditRowCPMExcel = (props) => {
     const [currentEstimateMaxCost, setCurrentEstimateMaxCost] = useState(numberWithCommas(currentRow?.estimateMaxCost));
     const [currentAssetCost, setCurrentAssetCost] = useState('');
     const [currentHumanCost, setCurrentHumanCost] = useState('');
-    const [currentResponsibleEmployees, setCurrentResponsibleEmployees] = useState( []);
+    const [currentResponsibleEmployees, setCurrentResponsibleEmployees] = useState([]);
     const [currentAccountableEmployees, setCurrentAccountableEmployees] = useState([]);
     const [error, setError] = useState({
         errorOnResponsibleEmployees: undefined,
@@ -273,7 +273,7 @@ const ModalEditRowCPMExcel = (props) => {
                         {/* Dong 3 */}
                         <div className="row">
                             {/* Chi phí ước lượng tài sản */}
-                            <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 form-group ${error.errorOnAssetCode === undefined ? "" : 'has-error'}`}>
+                            <div className={`col-md-12 form-group ${error.errorOnAssetCode === undefined ? "" : 'has-error'}`}>
                                 <label className="control-label">Chi phí ước lượng tài sản<span className="text-red">*</span> (VND)</label>
                                 <input
                                     type="text"
@@ -289,10 +289,51 @@ const ModalEditRowCPMExcel = (props) => {
                                 />
                                 <ErrorLabel content={error.errorOnAssetCode} />
                             </div>
+                        </div>
 
-                            {/* Chi phí thoả hiệp tối đa - ngân sách (VND) */}
-                            <div className="col-lg-6 col-md-6 col-ms-12 col-xs-12 form-group">
-                                <label className="control-label">Chi phí thoả hiệp tối đa - ngân sách (VND)<span className="text-red">*</span> (VND)</label>
+                        {/* Dòng các tác nhân trong công việc */}
+                        <div className="row">
+                            {/* Những người thực hiện công việc */}
+                            <div className={`col-md-6 form-group ${error.errorOnResponsibleEmployees === undefined ? "" : "has-error"}`}>
+                                <label className="control-label">{translate('task.task_management.responsible')}<span className="text-red">*</span></label>
+                                {getProjectParticipants() &&
+                                    <SelectBox
+                                        id={`responsible-select-box-edit-row-cpm-excel-${currentRowCode}`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={getProjectParticipants()}
+                                        onChange={handleChangeTaskResponsibleEmployees}
+                                        value={currentResponsibleEmployees}
+                                        multiple={true}
+                                        options={{ placeholder: translate('task.task_management.add_resp') }}
+                                    />
+                                }
+                                <ErrorLabel content={error.errorOnResponsibleEmployees} />
+                            </div>
+
+                            {/* Những người quản lý/phê duyệt công việc */}
+                            <div className={`col-md-6  form-group ${error.errorOnAccountableEmployees === undefined ? "" : "has-error"}`}>
+                                <label className="control-label">{translate('task.task_management.accountable')}<span className="text-red">*</span></label>
+                                {getProjectParticipants() &&
+                                    <SelectBox
+                                        id={`accounatable-select-box-edit-row-cpm-excel-${currentRowCode}`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={getProjectParticipants()}
+                                        onChange={handleChangeTaskAccountableEmployees}
+                                        value={currentAccountableEmployees}
+                                        multiple={true}
+                                        options={{ placeholder: translate('task.task_management.add_acc') }}
+                                    />
+                                }
+                                <ErrorLabel content={error.errorOnAccountableEmployees} />
+                            </div>
+                        </div>
+
+                        {/* Chi phí thoả hiệp tối đa - ngân sách (VND) */}
+                        <div className="row">
+                            <div className="col-md-12 form-group">
+                                <label className="control-label">Chi phí thoả hiệp tối đa - ngân sách<span className="text-red">*</span> (VND)</label>
                                 <input
                                     type="text"
                                     className="form-control"
@@ -308,41 +349,8 @@ const ModalEditRowCPMExcel = (props) => {
                                 <ErrorLabel content={error.errorOnBudget} />
                             </div>
                         </div>
-                        {/* Những người thực hiện công việc */}
-                        <div className={`form-group ${error.errorOnResponsibleEmployees === undefined ? "" : "has-error"}`}>
-                            <label className="control-label">{translate('task.task_management.responsible')}<span className="text-red">*</span></label>
-                            {getProjectParticipants() &&
-                                <SelectBox
-                                    id={`responsible-select-box-edit-row-cpm-excel-${currentRowCode}`}
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    items={getProjectParticipants()}
-                                    onChange={handleChangeTaskResponsibleEmployees}
-                                    value={currentResponsibleEmployees}
-                                    multiple={true}
-                                    options={{ placeholder: translate('task.task_management.add_resp') }}
-                                />
-                            }
-                            <ErrorLabel content={error.errorOnResponsibleEmployees} />
-                        </div>
-                        {/* Những người quản lý/phê duyệt công việc */}
-                        <div className={`form-group ${error.errorOnAccountableEmployees === undefined ? "" : "has-error"}`}>
-                            <label className="control-label">{translate('task.task_management.accountable')}<span className="text-red">*</span></label>
-                            {getProjectParticipants() &&
-                                <SelectBox
-                                    id={`accounatable-select-box-edit-row-cpm-excel-${currentRowCode}`}
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    items={getProjectParticipants()}
-                                    onChange={handleChangeTaskAccountableEmployees}
-                                    value={currentAccountableEmployees}
-                                    multiple={true}
-                                    options={{ placeholder: translate('task.task_management.add_acc') }}
-                                />
-                            }
-                            <ErrorLabel content={error.errorOnAccountableEmployees} />
-                        </div>
 
+                        {/* Dòng chi phí ước lượng */}
                         <div className="row">
                             {/* Chi phí ước lượng nhân sự */}
                             <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 form-group`}>

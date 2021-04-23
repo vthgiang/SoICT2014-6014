@@ -386,6 +386,42 @@ const TaskSchema = new Schema(
                 ],
             },
         ],
+        overallEvaluation: {
+            automaticPoint: {
+                // Điểm hệ thống đánh giá cho task
+                type: Number,
+                default: 0,
+            },
+            responsibleEmployee: {
+                automaticPoint: {
+                    // Điểm hệ thống đánh giá cho người thực hiện
+                    type: Number,
+                    default: 0,
+                },
+                employeePoint: {
+                    // Điểm người thực hiện tự đánh giá bản thân
+                    type: Number,
+                    default: 0,
+                },
+                accountablePoint: {
+                    // Điểm người phê duyệt đánh giá cho người thực hiện
+                    type: Number,
+                    default: 0,
+                },
+            },
+            accountableEmployee: {
+                automaticPoint: {
+                    // Điểm hệ thống đánh giá cho người phê duyệt
+                    type: Number,
+                    default: 0,
+                },
+                employeePoint: {
+                    // Điểm người phê duyệt tự đánh giá bản thân
+                    type: Number,
+                    default: 0,
+                },
+            },
+        },
         formula: {
             type: String,
             default:
