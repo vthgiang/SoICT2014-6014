@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect} from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -255,7 +255,7 @@ function AssetManagement(props) {
             page: parseInt(page),
         });
 
-        props.getAllAsset({ ...state, page:parseInt(page)});
+        props.getAllAsset({ ...state, page: parseInt(page) });
     }
 
     const getAssetTypesList = (types) => {
@@ -709,7 +709,7 @@ function AssetManagement(props) {
         }
     }
 
-    const formatDisposalDate = (disposalDate, status) =>{
+    const formatDisposalDate = (disposalDate, status) => {
         const { translate } = props;
         if (status === 'disposed') {
             if (disposalDate) return formatDate(disposalDate);
@@ -720,8 +720,8 @@ function AssetManagement(props) {
         }
     }
 
-    
-      
+
+
     var lists = "", exportData;
     var userlist = user.list, departmentlist = department.list;
     var assettypelist = assetType.listAssetTypes;
@@ -752,7 +752,6 @@ function AssetManagement(props) {
     if (userlist && lists && assettypelist) {
         exportData = convertDataToExportData(lists, assettypelist, userlist);
     }
-
     return (
         <div className={isActive ? isActive : "box"}>
             <div className="box-body qlcv">
@@ -832,7 +831,7 @@ function AssetManagement(props) {
                     <div className="form-group">
                         <label className="form-control-static">{translate('page.status')}</label>
                         <SelectMulti id={`multiSelectStatus1`} multiple="multiple"
-                            value= {status}
+                            value={status}
                             options={{ nonSelectedText: translate('page.non_status'), allSelectedText: translate('asset.general_information.select_all_status') }}
                             onChange={handleStatusChange}
                             value={status ? status : []}
