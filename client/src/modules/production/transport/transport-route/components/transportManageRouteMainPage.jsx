@@ -23,7 +23,19 @@ function TransportManageRouteMainPage(props) {
         _id: "0",
         code: "",
     });
-
+    useEffect(() => {
+        if (props.socket){
+            console.log("okkkk")
+            props.socket.io.emit("hihi", {data: "123456"});
+        }
+    })
+    // useEffect(() => {
+    //     if (props.socket){
+    //         props.socket.io.on("hihi", data => {
+    //             console.log(data);
+    //         });
+    //     }
+    // }, [])
     const getListTransportPlans = () => {
         let listTransportPlans = [
             {
@@ -60,6 +72,9 @@ function TransportManageRouteMainPage(props) {
 
     useEffect(() => {
         props.getTransportScheduleByPlanId(currentTransportPlan._id);
+        if (props.socket){
+            props.socket.io.emit("hihi", "nguyen dang trung kien");
+        }
     }, [currentTransportPlan])
 
     useEffect(() => {
@@ -234,7 +249,8 @@ function TransportManageRouteMainPage(props) {
 function mapState(state) {
     const allTransportPlans = state.transportPlan.lists;
     const {currentTransportSchedule} = state.transportSchedule;
-    return { allTransportPlans, currentTransportSchedule }
+    const {socket} = state
+    return { allTransportPlans, currentTransportSchedule,socket }
 }
 
 const actions = {

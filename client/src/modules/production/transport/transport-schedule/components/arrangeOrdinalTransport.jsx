@@ -11,6 +11,8 @@ import { ArrangeOrdinalTransportOneVehicle } from './testDragDrop/arrangeOrdinal
 import { transportPlanActions } from "../../transport-plan/redux/actions";
 import { transportScheduleActions } from "../redux/actions";
 
+import { convertDistanceToKm, convertTimeToMinutes } from "../../transportHelper/convertDistanceAndDuration"
+
 import { MapContainer } from "./googleReactMap/maphook"
 
 import './arrangeOrdinalTransport.css'
@@ -84,6 +86,8 @@ function ArrangeOrdinalTransport(props) {
                         routeOrdinal.push({
                             transportRequirement: item2.transportRequirementId,
                             type: item2.addressType,
+                            distance: convertDistanceToKm(item2.distance),
+                            duration: convertTimeToMinutes(item2.duration),
                         })
                     })
                 }
@@ -126,7 +130,8 @@ function ArrangeOrdinalTransport(props) {
      * @param {*} vehicleId 
      */
     const callBackStateOrdinalAddress = (addressOrdinalList, vehicleId) => {
-        console.log(vehicleId, " vehicleId")
+        // console.log(vehicleId, " vehicleId")
+        console.log(addressOrdinalList, "aaaaaaaaaaaa");
         const transportOrdinal = [...transportOrdinalAddress];
         if (transportOrdinal && transportOrdinal.length !==0 ){
             let index = -1;
