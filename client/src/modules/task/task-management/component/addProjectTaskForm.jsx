@@ -155,7 +155,8 @@ class AddProjectTaskForm extends Component {
             newTask.startDate = value;
             const numsOfSaturdays = this.getNumsOfDaysWithoutGivenDay(new Date(startDate), new Date(endDate), 6)
             const numsOfSundays = this.getNumsOfDaysWithoutGivenDay(new Date(startDate), new Date(endDate), 0)
-            newTask.estimateNormalTime = (moment(endDate).diff(moment(startDate), 'milliseconds') - numsOfSaturdays * MILISECS_TO_DAYS - numsOfSundays * MILISECS_TO_DAYS)
+            // newTask.estimateNormalTime = (moment(endDate).diff(moment(startDate), 'milliseconds') - numsOfSaturdays * MILISECS_TO_DAYS - numsOfSundays * MILISECS_TO_DAYS)
+            newTask.estimateNormalTime = (moment(endDate).diff(moment(startDate), 'milliseconds'))
                 .toString()
             newTask.errorOnStartDate = msg;
             if (!msg && newTask.endDate) newTask.errorOnEndDate = msg;
@@ -245,7 +246,8 @@ class AddProjectTaskForm extends Component {
             const numsOfSundays = this.getNumsOfDaysWithoutGivenDay(new Date(newTask.startDate), new Date(newTask.endDate), 0)
             newTask.estimateNormalTime = (
                 moment(newTask.endDate)
-                    .diff(moment(newTask.startDate), 'milliseconds') - numsOfSaturdays * MILISECS_TO_DAYS - numsOfSundays * MILISECS_TO_DAYS
+                    .diff(moment(newTask.startDate), 'milliseconds')
+                // .diff(moment(newTask.startDate), 'milliseconds') - numsOfSaturdays * MILISECS_TO_DAYS - numsOfSundays * MILISECS_TO_DAYS
             )
                 .toString()
             if (!msg && newTask.startDate) newTask.errorOnStartDate = msg;
@@ -603,7 +605,7 @@ class AddProjectTaskForm extends Component {
                 }
             }
         }
-        
+
         if (!projectParticipants || !formattedManagerArr || !formattedEmployeeArr) {
             return []
         }
@@ -644,7 +646,8 @@ class AddProjectTaskForm extends Component {
         // Cần phải có biện pháp trừ đi ngày thứ 7 chủ nhật
         const numsOfSaturdays = this.getNumsOfDaysWithoutGivenDay(new Date(startDateTask), new Date(endDateTask), 6)
         const numsOfSundays = this.getNumsOfDaysWithoutGivenDay(new Date(startDateTask), new Date(endDateTask), 0)
-        const duration = moment(endDateTask).diff(moment(startDateTask), `milliseconds`) / MILISECS_TO_DAYS - numsOfSaturdays - numsOfSundays;
+        // const duration = moment(endDateTask).diff(moment(startDateTask), `milliseconds`) / MILISECS_TO_DAYS - numsOfSaturdays - numsOfSundays;
+        const duration = moment(endDateTask).diff(moment(startDateTask), `milliseconds`) / MILISECS_TO_DAYS;
         console.log('duration-------', duration)
 
         // Tính số ngày công của tháng
