@@ -2,6 +2,7 @@ import { sendRequest } from '../../../../../helpers/requestHelper';
 export const transportScheduleServices = {
     editTransportScheduleByPlanId,
     getTransportScheduleByPlanId,
+    driverSendMessage,
 }
 
 function getTransportScheduleByPlanId(planId) {
@@ -39,4 +40,17 @@ function deleteTransportRequirement(id) {
         true,
         "manage_transport"
     )
+}
+
+function driverSendMessage(data) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/transport-schedule/driver-send-message`,
+            method: "POST",
+            data: data
+        },
+        false,
+        true,
+        "manage_transport"
+    )  
 }

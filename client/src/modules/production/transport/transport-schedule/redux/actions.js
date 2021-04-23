@@ -4,6 +4,7 @@ import { transportScheduleServices } from './services';
 export const transportScheduleActions = {
     getTransportScheduleByPlanId,
     editTransportScheduleByPlanId,
+    driverSendMessage,
 }
 
 function getTransportScheduleByPlanId(id) {
@@ -50,5 +51,26 @@ function editTransportScheduleByPlanId(planId, data) {
                     error
                 });
             });
+    }
+}
+
+function driverSendMessage(data){
+    return (dispatch) => {
+        dispatch({
+            type: transportScheduleConstants.DRIVER_SEND_MESSAGE_REQUEST
+        });
+        transportScheduleServices.driverSendMessage(data)
+        .then((res) => {
+            dispatch({
+                type: transportScheduleConstants.DRIVER_SEND_MESSAGE_SUCCESS,
+                payload: res.data.content
+            });
+        })
+        .catch((error) => {
+            dispatch({
+                type: transportScheduleConstants.DRIVER_SEND_MESSAGE_FAILURE,
+                error
+            });
+        });
     }
 }

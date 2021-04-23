@@ -19,7 +19,7 @@ import './timeLine.css';
 
 function TransportManageRouteMainPage(props) {
 
-    const {allTransportPlans, currentTransportSchedule} = props
+    const {allTransportPlans, currentTransportSchedule, socket} = props
 
     const [ currentPosition, setCurrentPosition ] = useState({});
 
@@ -35,13 +35,6 @@ function TransportManageRouteMainPage(props) {
         setCurrentVehicleRoute(route);
         window.$(`#modal-detail-route`).modal('show')
     }
-
-    useEffect(() => {
-        if (props.socket){
-            console.log("okkkk")
-            props.socket.io.emit("hihi", {data: "123456"});
-        }
-    })
     // useEffect(() => {
     //     if (props.socket){
     //         props.socket.io.on("hihi", data => {
@@ -79,14 +72,22 @@ function TransportManageRouteMainPage(props) {
         }
     }
 
+    // setInterval(()=>{     
+    //     navigator.geolocation.getCurrentPosition(success);
+    // }, 50000)
     useEffect(() => {
         props.getAllTransportPlans({page:1, limit: 100})
+        // socket.io.on("current position", data => {
+        //     console.log(data);
+        // })
+
+
+        console.log(localStorage.getItem("userId"))
     }, [])
 
     useEffect(() => {
-        props.getTransportScheduleByPlanId(currentTransportPlan._id);
-        if (props.socket){
-            props.socket.io.emit("hihi", "nguyen dang trung kien");
+        if (currentTransportPlan && currentTransportPlan._id !== "0"){
+            props.getTransportScheduleByPlanId(currentTransportPlan._id);
         }
     }, [currentTransportPlan])
 
@@ -110,14 +111,26 @@ function TransportManageRouteMainPage(props) {
         // return () => clearTimeout(timer);
         })
       useEffect(() => {
-        console.log(currentPosition, " currentPosition");
+        // console.log(currentPosition, " currentPosition");
+        if (currentPosition){
+            if (localStorage.getItem("userId") !== '607a98a6e57ad61670049a2c')
+            props.driverSendMessage({
+                data: {
+                    position: currentPosition,
+                }
+            })
+        }
       }, [currentPosition])
    return (
             <div className="box-body qlcv">
-                <TransportDetailRoute 
-                    currentVehicleRoute = {currentVehicleRoute}
-                    transportPlanId = {currentTransportPlan._id}
-                />
+                {
+                    currentTransportPlan && currentTransportPlan._id !== "0"
+                    && 
+                    <TransportDetailRoute 
+                        currentVehicleRoute = {currentVehicleRoute}
+                        transportPlanId = {currentTransportPlan._id}
+                    />
+                }
                 <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">Chọn kế hoạch</label>
@@ -170,7 +183,7 @@ function TransportManageRouteMainPage(props) {
                                     <td>
                                         <TransportManageVehicleProcess
                                             route={item}
-                                            timelineBarWidth={1200}
+                                            timelineBarWidth={900}
                                         />
                                     </td>
                                         
@@ -215,7 +228,7 @@ function mapState(state) {
 const actions = {
     getAllTransportPlans: transportPlanActions.getAllTransportPlans,
     getTransportScheduleByPlanId: transportScheduleActions.getTransportScheduleByPlanId,
-    
+    driverSendMessage: transportScheduleActions.driverSendMessage,    
 }
 
 const connectedTransportManageRouteMainPage = connect(mapState, actions)(withTranslate(TransportManageRouteMainPage));

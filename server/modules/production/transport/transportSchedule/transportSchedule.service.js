@@ -161,3 +161,10 @@ exports.planDeleteTransportSchedule = async (portal, planId) => {
     }
     // return transportPlan;
 }
+
+exports.driverSendMessage = async (portal, data, userId) => {
+    if (data.position){
+        SOCKET_IO.emit("current position", data.position); 
+    }
+    return 1;   
+}

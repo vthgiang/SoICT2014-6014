@@ -52,3 +52,29 @@ exports.editTransportScheduleByPlanId = async (req, res) => {
         });
     }
 }
+
+exports.driverSendMessage = async (req, res) => {
+    try {
+        let {data, userId} = req.body;
+        let updatedTransportRoute = await TransportScheduleServices.driverSendMessage(req.portal, data, userId);
+        if (updatedTransportRoute !== -1) {
+            await Log.info(req.user.email, "UPDATED_TRANSPORT_SCHEDULE", req.portal);
+            res.status(200).json({
+                success: true,
+                messages: ["edit_transport_schedule_success"],
+                content: updatedTransportRoute
+            });
+        } else {
+            throw Error("TransportSchedule is invalid");
+        }
+
+    } catch (error) {
+        await Log.error(req.user.email, "UPDATED_TRANSPORT_SCHEDULE", req.portal);
+
+        res.status(400).json({
+            success: false,
+            messages: ["edit_transport_schedule_fail"],
+            content: error.message
+        });
+    }
+}
