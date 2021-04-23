@@ -12,7 +12,6 @@ export async function getDistanceAndTime(origin, destination){
                 + "api_key=" + api_key
                 + "&origins=" + latOrigin +"," + lngOrigin
                 + "&destinations=" + latDestination + "," + lngDestination;
-	console.log(url, " distance");
     const response = await axios.get(url)
     
     if(response.data){

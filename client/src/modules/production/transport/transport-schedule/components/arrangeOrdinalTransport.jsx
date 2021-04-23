@@ -96,7 +96,9 @@ function ArrangeOrdinalTransport(props) {
                     routeOrdinal: routeOrdinal,
                 })
             })
+            console.log(data);
             props.editTransportScheduleByPlanId(currentTransportPlan._id, {route: data})
+            setTransportOrdinalAddress([]);
         }
     }
     useEffect(() => {

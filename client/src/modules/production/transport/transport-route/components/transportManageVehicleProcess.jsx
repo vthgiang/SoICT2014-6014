@@ -14,106 +14,57 @@ import { convertJsonObjectToFormData } from '../../../../../helpers/jsonObjectTo
 // import './timeLine.css';
 
 function TransportManageVehicleProcess(props) {
+    /**
+     * route = {routeOrdinal: ....., transportVehicle: ....}
+     * timelineBarWidth: chiều dài thanh timeline
+     */
+    const {route, timelineBarWidth} = props
+    let totalDistance = 0;
 
-    const {allTransportPlans, currentTransportSchedule} = props
-
-    const [ currentPosition, setCurrentPosition ] = useState({});
-
-    const [currentTransportPlan, setCurrentTransportPlan] = useState({
-        _id: "0",
-        code: "",
-    });
+    //Vị trí các điểm trên timeline bar - sử dụng để marginLeft
+    const [timelineItemPos, setTimelineItemPos] = useState([])
     useEffect(() => {
-        if (props.socket){
-            console.log("okkkk")
-            props.socket.io.emit("hihi", {data: "123456"});
-        }
-    })
-    // useEffect(() => {
-    //     if (props.socket){
-    //         props.socket.io.on("hihi", data => {
-    //             console.log(data);
-    //         });
-    //     }
-    // }, [])
-    const getListTransportPlans = () => {
-        let listTransportPlans = [
-            {
-                value: "0",
-                text: "Lịch trình",
-            },
-        ];        
-        if (allTransportPlans) {
-            allTransportPlans.map((item) => {
-                listTransportPlans.push({
-                    value: item._id,
-                    text: item.code,
+        if (route){
+            let barWidth = timelineBarWidth?timelineBarWidth:600
+            // Tính tổng khoảng cách xe phải di chuyển
+            if (route.routeOrdinal && route.routeOrdinal.length!==0){
+                route.routeOrdinal.map(routeOrdinal => {
+                    totalDistance+=routeOrdinal.distance;
                 });
-            });
-        }
-        return listTransportPlans;
-    }
 
-    const handleTransportPlanChange = (value) => {
-        if (value[0] !== "0" && allTransportPlans){
-            let filterPlan = allTransportPlans.filter((r) => r._id === value[0]);
-            if (filterPlan.length > 0){
-                setCurrentTransportPlan(filterPlan[0]);
+                // Chia tỉ lệ các điểm trên đường đi
+                let timelineItem = [];
+                let currentTimelineItemDistance = 0
+                route.routeOrdinal.map(routeOrdinal => {
+                    currentTimelineItemDistance+= routeOrdinal.distance;
+                    // timelineItem.push((currentTimelineItemDistance/totalDistance)*barWidth);
+                    timelineItem.push((routeOrdinal.distance/totalDistance)*barWidth);
+                });
+                setTimelineItemPos(timelineItem)
             }
         }
-        else{
-            setCurrentTransportPlan({_id: value[0], code: ""});
-        }
-    }
+    }, [route, timelineBarWidth])
 
     useEffect(() => {
-        props.getAllTransportPlans({page:1, limit: 100})
-    }, [])
+        console.log(timelineItemPos);
+    }, [timelineItemPos])
 
-    useEffect(() => {
-        props.getTransportScheduleByPlanId(currentTransportPlan._id);
-        if (props.socket){
-            props.socket.io.emit("hihi", "nguyen dang trung kien");
-        }
-    }, [currentTransportPlan])
-
-    useEffect(() => {
-        console.log(currentTransportSchedule, " allll")
-    }, [currentTransportSchedule])
-
-    const success = position => {
-        const currentPosition = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude
-        }
-        setCurrentPosition(currentPosition);
-      };
-      
-      useEffect(() => {
-        // navigator.geolocation.getCurrentPosition(success);  
-        // const timer = setTimeout(() => {
-        //     navigator.geolocation.getCurrentPosition(success);  
-        // }, 5000);
-        // return () => clearTimeout(timer);
-        })
-      useEffect(() => {
-        console.log(currentPosition, " currentPosition");
-      }, [currentPosition])
    return (
-        <div className="timeline">
-            <div className="timeline-progress" style={{ width: `10%` }}></div>
-            <div className="timeline-items">
-                {
-                    (item.routeOrdinal && item.routeOrdinal.length !== 0)
-                    && item.routeOrdinal.map((item2, index2) => (
-                        <div key={item + "-"+ index2} 
-                            // className={`timeline-item ${o.active ? 'active' : ''}`}
-                            className={`timeline-item`}
-                        >
-                            <div className="timeline-contain">{"1"}</div>
-                        </div>
-                    ))
-                }
+        <div className="timeline-transport" style={{width: timelineBarWidth+"px"}}>
+            <div className="timeline-progress" style={{ width: `0%` }}></div>
+            <div className="timeline-items-transport">
+            {
+                (route && route.routeOrdinal && route.routeOrdinal.length !== 0)
+                && route.routeOrdinal.map((routeOrdinal, index) => (
+                    <div key={"--"+ index} 
+                        // className={`timeline-item ${o.active ? 'active' : ''}`}
+                        className={`timeline-item-transport`}
+                        style={{marginLeft: timelineItemPos[index]-15+"px"}}
+                    >
+                        {/* <div className="timeline-contain-transport">{routeOrdinal._id}</div> */}
+                    </div>
+                ))
+            }
                 {/* <div key={"1"} className={`timeline-item active`} >
                     <div className="timeline-contain">{"123131323"}</div>
                 </div>

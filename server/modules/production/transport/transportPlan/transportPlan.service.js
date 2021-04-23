@@ -94,10 +94,15 @@ exports.getAllTransportPlans = async (portal, data) => {
 exports.getPlanById = async (portal, id) => {
     console.log(id);
     let plan = await TransportPlan(connect(DB_CONNECTION, portal)).findById({ _id: id })
-    .populate({
-        path: 'transportRequirements',
-        select: 'geocode'
-    });
+    .populate([
+        {
+            path: 'transportRequirements',
+            select: 'geocode'
+        },
+        {
+            path: 'transportVehicles.carriers.carrier'
+        }
+    ]);
     if (plan) {
         return plan;
     }

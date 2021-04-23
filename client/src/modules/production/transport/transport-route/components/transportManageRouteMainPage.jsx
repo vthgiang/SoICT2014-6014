@@ -6,6 +6,10 @@ import { DataTableSetting, DeleteNotification, PaginateBar, SelectBox } from "..
 
 import { formatDate } from "../../../../../helpers/formatDate"
 
+import { TransportManageVehicleProcess } from "./transportManageVehicleProcess"
+
+import { TransportDetailRoute } from "./transportDetailRoute"
+
 import { transportPlanActions } from "../../transport-plan/redux/actions"
 import { transportScheduleActions } from "../../transport-schedule/redux/actions";
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
@@ -23,6 +27,15 @@ function TransportManageRouteMainPage(props) {
         _id: "0",
         code: "",
     });
+
+    const [currentVehicleRoute, setCurrentVehicleRoute] = useState({})
+
+
+    const handleShowDetailRoute = (route) => {
+        setCurrentVehicleRoute(route);
+        window.$(`#modal-detail-route`).modal('show')
+    }
+
     useEffect(() => {
         if (props.socket){
             console.log("okkkk")
@@ -101,6 +114,10 @@ function TransportManageRouteMainPage(props) {
       }, [currentPosition])
    return (
             <div className="box-body qlcv">
+                <TransportDetailRoute 
+                    currentVehicleRoute = {currentVehicleRoute}
+                    transportPlanId = {currentTransportPlan._id}
+                />
                 <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">Chọn kế hoạch</label>
@@ -116,52 +133,47 @@ function TransportManageRouteMainPage(props) {
                 </div>
                 <div className={"divTest2"}>
                     <table className="tableTest2 not-sort">
-                        <tr>
-                            <th>
-                                STT
-                            </th>
-                            <th>
-                                Tên xe
-                            </th>
-                            <th>
-                                Hành động
-                            </th>
-                            <th>
-                                Tiến độ vận chuyển
-                            </th>
-                            
-                        </tr>
+                        <thead>
+                            <tr>
+                                <th>
+                                    STT
+                                </th>
+                                <th>
+                                    Tên xe
+                                </th>
+                                <th>
+                                    Hành động
+                                </th>
+                                <th>
+                                    Tiến độ vận chuyển
+                                </th>
+                                
+                            </tr>
+                        </thead>
+                        <tbody>
                         {
                             (currentTransportSchedule && currentTransportSchedule.route && currentTransportSchedule.route.length !== 0)
                             && currentTransportSchedule.route.map((item, index) => (
                                 item &&
-                                <tr>
+                                <tr key={"route"+index}>
                                     <th>{index + 1}</th>
                                     <td>{item.transportVehicle.name}</td>
                                     <td>
                                         <a className="edit text-green" 
-                                        style={{ width: '5px' }} 
+                                        style={{ width: '5px', cursor:"pointer" }} 
                                         title={'manage_example.detail_info_example'} 
-                                        // onClick={() => handleShowDetailInfo(example)}
+                                        onClick={() => handleShowDetailRoute(item)}
                                         >
                                             <i className="material-icons">visibility</i>
-                                            </a>
+                                        </a>
                                     </td>
                                     <td>
-                                        <div className="timeline">
-                                        <div className="timeline-progress" style={{ width: `10%` }}></div>
-                                        <div className="timeline-items">
-                                            {
-                                                (item.routeOrdinal && item.routeOrdinal.length !== 0)
-                                                && item.routeOrdinal.map((item2, index2) => (
-                                                    <div key={item + "-"+ index2} 
-                                                        // className={`timeline-item ${o.active ? 'active' : ''}`}
-                                                        className={`timeline-item`}
-                                                    >
-                                                        <div className="timeline-contain">{"1"}</div>
-                                                    </div>
-                                                ))
-                                            }
+                                        <TransportManageVehicleProcess
+                                            route={item}
+                                            timelineBarWidth={1200}
+                                        />
+                                    </td>
+                                        
                                             {/* <div key={"1"} className={`timeline-item active`} >
                                                 <div className="timeline-contain">{"123131323"}</div>
                                             </div>
@@ -171,68 +183,15 @@ function TransportManageRouteMainPage(props) {
                                                 >{"123131323"}</div>
                                                 
                                             </div> */}
-                                        </div>
-                                        </div>
-                                    </td>
                                 </tr>
     
                             ))
                         }
+                        </tbody>
                     </table>
                 </div>
-                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{marginTop: '20px'}}>
-                    <div className='col-xs-12 col-sm-12 col-md-4 col-lg-4'>
-
-                    <table id={"123"} className="table table-striped table-bordered table-hover">
-                    <thead>
-                        <tr>
-                            <th className="col-fixed" style={{ width: 60 }}>{"STT"}</th>
-                            <th>{"Loại yêu cầu"}</th>
-                            <th>{"Địa chỉ bắt đầu"}</th>
-                            <th>{"Địa chỉ kết thúc"}</th>
-                            <th>{"Người tạo"}</th>
-                            <th>{"Trạng thái"}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr key={"1"}>
-                            <td>{1}</td>
-                            <td>{"123"}</td>
-                            <td>{"123"}</td>
-                            <td>{"123"}</td>
-                            <td>{"123"}</td>
-                            <td>{"Chờ phê duyệt"}</td>
-                        </tr>
-                    </tbody>
-                </table>
 
 
-                    </div>
-                    <div className="col-md-12 col-sm-12 col-md-8 col-lg-8 container-time-line">
-                        <div className="timeline">
-                            <div className="timeline-progress" style={{ width: `10%` }}></div>
-                            <div className="timeline-items">
-                                {/* {
-                                    listStatus && listStatus.length > 0 &&
-                                    listStatus.map((o, index) => (
-                                        <div key={index} className={`timeline-item ${o.active ? 'active' : ''}`} >
-                                            <div className="timeline-contain">{o.name}</div>
-                                        </div>
-                                    ))
-                                } */}
-                                <div key={"1"} className={`timeline-item active`} >
-                                    <div className="timeline-contain">{"123131323"}</div>
-                                </div>
-                                <div key={"2"} className={`timeline-item`} >
-                                    <div className="timeline-contain" 
-                                    // onClick={(e) => this.setCurrentStep(e, index)}
-                                    >{"123131323"}</div>
-                                    
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 {/* <iframe src={"https://www.google.com/maps/embed/v1/place?key=AIzaSyCkVQAqCoJU79mTctNsNmQLy9ME7qiTlfs&q=21.0058354500001,105.842277338"} 
                 width="600" 
                 height="450" 

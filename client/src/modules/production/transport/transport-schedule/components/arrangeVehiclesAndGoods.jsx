@@ -14,7 +14,7 @@ import { getTableConfiguration } from '../../../../../helpers/tableConfiguration
 
 function ArrangeVehiclesAndGoods(props) {
 
-    let { allTransportPlans, currentTransportSchedule} = props;
+    let { allTransportPlans, currentTransportSchedule, reloadOrdinalTransport} = props;
 
     const [currentTransportPlan, setCurrentTransportPlan] = useState({
         _id: "0",
@@ -232,6 +232,7 @@ function ArrangeVehiclesAndGoods(props) {
             })
         }
         props.editTransportScheduleByPlanId(currentTransportPlan._id, {transportVehicles: data});
+        reloadOrdinalTransport();
     }
 
     return (
