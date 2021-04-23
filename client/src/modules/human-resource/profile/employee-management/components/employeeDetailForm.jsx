@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from 'react';
+import React, { Component, useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -20,47 +20,47 @@ const EmployeeDetailForm = (props) => {
         dataStatus: DATA_STATUS.NOT_AVAILABLE
     })
 
+    const mountedRef = useRef(true)
 
     useEffect(() => {
         const shouldUpdate = async () => {
             if (props._id !== state._id && !props.employeesInfo.isLoading) {
                 await props.getEmployeeProfile({ id: props._id, callAPIByUser: false });
-                setState(state => {
-                    return {
-                        ...state,
-                        _id: props._id,
-                        dataStatus: DATA_STATUS.QUERYING,
-                        employees: [],
-                        annualLeaves: [],
-                        commendations: [],
-                        disciplines: [],
-                        courses: [],
-                        roles: [],
-                        // career: [],
-                        // major: [],
-                    }
+                setState({
+                    ...state,
+                    _id: props._id,
+                    dataStatus: DATA_STATUS.QUERYING,
+                    employees: [],
+                    annualLeaves: [],
+                    commendations: [],
+                    disciplines: [],
+                    courses: [],
+                    roles: [],
+                    // career: [],
+                    // major: [],
                 })
             };
             if (state.dataStatus === DATA_STATUS.QUERYING && !props.employeesInfo.isLoading) {
-                setState(state => {
-                    return {
-                        ...state,
-                        dataStatus: DATA_STATUS.AVAILABLE,
-                        employees: props.employeesInfo?.employees,
-                        annualLeaves: props.employeesInfo?.annualLeaves,
-                        commendations: props.employeesInfo?.commendations,
-                        disciplines: props.employeesInfo?.disciplines,
-                        courses: props.employeesInfo?.courses,
-                        roles: props.employeesInfo?.roles,
-                        // career: props.employeesInfo?.employees?.[0]?.career,
-                        // major: props.employeesInfo?.employees?.[0]?.major,
-                        houseHold: props.employeesInfo?.employees?.[0]?.houseHold,
-                    }
+                setState({
+                    ...state,
+                    dataStatus: DATA_STATUS.AVAILABLE,
+                    employees: props.employeesInfo?.employees,
+                    annualLeaves: props.employeesInfo?.annualLeaves,
+                    commendations: props.employeesInfo?.commendations,
+                    disciplines: props.employeesInfo?.disciplines,
+                    courses: props.employeesInfo?.courses,
+                    roles: props.employeesInfo?.roles,
+                    // career: props.employeesInfo?.employees?.[0]?.career,
+                    // major: props.employeesInfo?.employees?.[0]?.major,
+                    houseHold: props.employeesInfo.employees?.[0].houseHold,
                 });
             };
         }
 
         shouldUpdate()
+        return () => {
+            mountedRef.current = false;
+        }
     }, [props._id, props.employeesInfo.isLoading, state.dataStatus]);
 
     const { employeesInfo, translate } = props;
