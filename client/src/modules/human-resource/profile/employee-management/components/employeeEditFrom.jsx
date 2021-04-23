@@ -68,15 +68,15 @@ const EmployeeEditFrom = (props) => {
         // major: [],
         // career: [],
         houseHold: {
-            headHouseHoldName: '',
-            documentType: '',
-            houseHoldNumber: '',
-            city: '',
-            district: '',
-            ward: '',
-            houseHoldAddress: '',
-            phone: '',
-            houseHoldCode: '',
+            headHouseHoldName: "",
+            documentType: "",
+            houseHoldNumber: "",
+            city: "",
+            district: "",
+            ward: "",
+            houseHoldAddress: "",
+            phone: "",
+            houseHoldCode: "",
             familyMembers: []
         },
         editMember: initMember,
@@ -94,8 +94,7 @@ const EmployeeEditFrom = (props) => {
 
     const { translate, employeesInfo } = props;
 
-    let { _id, img, employee, degrees, certificates, socialInsuranceDetails, contracts, courses,
-        organizationalUnits, roles, commendations, disciplines, annualLeaves, files, houseHold, editMember } = state;
+    
 
     /**
      * Function upload avatar 
@@ -893,32 +892,45 @@ const EmployeeEditFrom = (props) => {
 
     }
 
-    if (props._id !== state._id) {
-        props.getEmployeeProfile({ id: props._id, callAPIByUser: false });
-
-        setState({
-            ...state,
-            _id: props?._id,
-            dataStatus: DATA_STATUS.QUERYING,
-            img: undefined,
-            avatar: "",
-            employee: '',
-            experiences: [],
-            degrees: [],
-            certificates: [],
-            // career: [],
-            // major: [],
-            contracts: [],
-            files: [],
-            socialInsuranceDetails: [],
-            annualLeaves: [],
-            commendations: [],
-            disciplines: [],
-            courses: [],
-            roles: [],
-            houseHold: {}
-        })
-    };
+    useEffect(() => {
+        if (props._id !== state._id) {
+            props.getEmployeeProfile({ id: props._id, callAPIByUser: false });
+    
+            setState({
+                ...state,
+                _id: props?._id,
+                dataStatus: DATA_STATUS.QUERYING,
+                img: undefined,
+                avatar: "",
+                employee: '',
+                experiences: [],
+                degrees: [],
+                certificates: [],
+                // career: [],
+                // major: [],
+                contracts: [],
+                files: [],
+                socialInsuranceDetails: [],
+                annualLeaves: [],
+                commendations: [],
+                disciplines: [],
+                courses: [],
+                roles: [],
+                houseHold: {
+                    headHouseHoldName: '',
+                    documentType: '',
+                    houseHoldNumber: '',
+                    city: '',
+                    district: '',
+                    ward: '',
+                    houseHoldAddress: '',
+                    phone: '',
+                    houseHoldCode: '',
+                    familyMembers: []
+                }
+            })
+        };
+    })
 
     useEffect(() => {
         setState({
@@ -1115,6 +1127,9 @@ const EmployeeEditFrom = (props) => {
             }
         })
     }
+
+    let { _id, img, employee, degrees, certificates, socialInsuranceDetails, contracts, courses,
+        organizationalUnits, roles, commendations, disciplines, annualLeaves, files, houseHold, editMember } = state;
 
     return (
         <React.Fragment>
