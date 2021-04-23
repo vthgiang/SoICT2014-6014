@@ -411,7 +411,7 @@ function EmployeeKpiEvaluateModal(props) {
                                                     (kpimembers.tasks.map((itemTask, index) =>
                                                         <tr key={index}>
                                                             <td>{index + 1}</td>
-                                                            <td><a style={{ cursor: 'pointer' }} onClick={() => handleClickTaskName(itemTask.taskId)}>{itemTask.name}</a></td>
+                                                            <td><a style={{ cursor: 'pointer' }} onClick={() => handleClickTaskName(itemTask.taskId)}>{itemTask.name}</a><a target="_blank" href={`/task?taskId=${itemTask.taskId}`}><i className="fa fa-arrow-circle-right"></i></a></td>
                                                             <td>{formatDate(itemTask.startDateTask)}<br /> <i className="fa fa-angle-double-down"></i><br /> {formatDate(itemTask.endDateTask)}</td>
                                                             <td>{itemTask.startDate ? formatDate(itemTask.startDate) : ""}<br /> <i className="fa fa-angle-double-down"></i><br /> {itemTask.endDate ? formatDate(itemTask.endDate) : ""}</td>
                                                             <td>{formatTaskStatus(translate, itemTask.status)}</td>
