@@ -169,9 +169,9 @@ td { /* Cho phép bảng hoạt động tốt với kích thước nhỏ, không
 }
 .table>thead>tr>th { /* Hiện thông báo không có dữ liệu */
     vertical-align: top;
-    position: sticky;
+    /* position: sticky;
     top: 0;
-    background-color: #ffffff;
+    background-color: #ffffff; */
 }
 
 
