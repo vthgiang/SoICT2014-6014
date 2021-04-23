@@ -302,7 +302,12 @@ class MainDashboardUnit extends Component {
                         </ul>
                         <div className="tab-content ">
                             <div className="tab-pane active" id="task">
-                                <TabTask childOrganizationalUnit={childOrganizationalUnit} />
+                                <TabTask 
+                                    childOrganizationalUnit={childOrganizationalUnit} 
+                                    organizationalUnits={organizationalUnits}
+                                    getUnitName={this.getUnitName}
+                                    showUnitTask={this.showUnitTask}
+                                />
                             </div>
                             {/* Tab năng lực nhân viên*/}
                             <div className="tab-pane" id="employee-capacity">
