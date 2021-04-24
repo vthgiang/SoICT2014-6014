@@ -173,11 +173,14 @@ function TransportVehicleAndCarrierSelect(props) {
             })
         }
         if (listVehicleAndCarrier && listVehicleAndCarrier.length!==0){
+            console.log("aaa")
             listVehicleAndCarrier.map(transportVehicles => {
                 if (transportVehicles.carriers && transportVehicles.carriers.length!==0){
                     transportVehicles.carriers.map(carriers => {
                         if (!(transportVehicles.vehicle===vehicleId && String(carriers.pos)==="1")){
+                            console.log(carriers.carrier);
                             selectedBoxDriver=selectedBoxDriver.filter(r=>String(r.value)!==carriers.carrier)
+                            console.log(selectedBoxDriver)
                         }
                     })
                 }

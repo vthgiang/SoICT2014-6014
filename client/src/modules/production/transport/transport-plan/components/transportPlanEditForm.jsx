@@ -128,20 +128,23 @@ function TransportPlanEditForm(props) {
 
             // khởi tạo giá trị cho chọn người lên xe => chosenVehicleCarrier => listChosenVehicle, listVehicleAndCarrier
             let chosenVehicleCarrier = [];
+            console.log(currentTransportPlan)
             if (currentTransportPlan.transportVehicles && currentTransportPlan.transportVehicles.length!==0){
                 currentTransportPlan.transportVehicles.map(transportVehicles => {
                     let carriers = [];
+                    console.log(transportVehicles)
                     if (transportVehicles.carriers && transportVehicles.carriers.length !==0){
                         transportVehicles.carriers.map(carrier => {
+                            console.log(carrier)
                             if (carrier.pos && String(carrier.pos) ==="1"){
                                 carriers.push({
-                                    carrier: carrier._id?carrier._id:carrier,
+                                    carrier: carrier.carrier._id?carrier.carrier._id:carrier.carrier,
                                     pos: 1,
                                 })
                             }
                             else {
                                 carriers.push({
-                                    carrier: carrier._id?carrier._id:carrier,
+                                    carrier: carrier.carrier._id?carrier.carrier._id:carrier.carrier,
                                 })
                             }
                         })
