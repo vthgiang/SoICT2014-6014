@@ -35,7 +35,7 @@ exports.createTransportPlan = async (portal, data) => {
                 if (transportRequirement.transportPlan){
                     await this.deleteTransportRequirementByPlanId(portal, transportRequirement.transportPlan._id, data.transportRequirements[i]);
                     
-                    await TransportRequirementServices.editTransportRequirement(portal, data.transportRequirements[i], {transportPlan: newTransportPlan._id});
+                    await TransportRequirementServices.editTransportRequirement(portal, data.transportRequirements[i], {transportPlan: newTransportPlan._id, status: 3});
                 }
                 else {
                     await TransportRequirementServices.editTransportRequirement(portal, data.transportRequirements[i], {transportPlan: newTransportPlan._id});
@@ -218,12 +218,12 @@ exports.deleteTransportRequirementByPlanId = async (portal, planId, requirementI
         let listTransportRequirements = oldTransportPlan.transportRequirements;
         if (listTransportRequirements && listTransportRequirements.length!==0){
             let newListTransportRequirements = listTransportRequirements.filter(r => String(r) !== String(requirementId));
-            await this.editTransportPlan(portal, planId, {transportRequirements: newListTransportRequirements})
+            // Set lại danh sách requirement trong plan
+            await TransportPlan(connect(DB_CONNECTION, portal)).update({ _id: planId }, { $set: {transportRequirements: newListTransportRequirements}});
         }
         // Xóa bỏ yêu cầu vận chuyển trong lịch vận chuyển (nếu có)
         await TransportScheduleServices.deleteTransportRequirementByPlanId(portal, planId, requirementId);
     }
-    await TransportRequirementServices.editTransportRequirement(portal, requirementId, {transportPlan: null})
 }
 
 /**
@@ -238,7 +238,7 @@ exports.deleteTransportPlan = async (portal, planId) => {
     let transportPlan = await TransportPlan(connect(DB_CONNECTION, portal)).findById({ _id: planId });
     if (transportPlan && transportPlan.transportRequirements && transportPlan.transportRequirements.length !==0){
         transportPlan.transportRequirements.map((item,index) => {
-            TransportRequirementServices.editTransportRequirement(portal, item, {transportPlan: null})
+            TransportRequirementServices.editTransportRequirement(portal, item, {transportPlan: null, status:2})
         })
     }
     await TransportScheduleServices.planDeleteTransportSchedule(portal, planId);

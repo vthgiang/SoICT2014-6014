@@ -64,49 +64,9 @@ exports.createTransportRequirement = async (portal, data, userId) => {
     return requirement;
 }
 
-// Lấy ra tất cả các thông tin Ví dụ theo mô hình lấy dữ liệu số  1
-// exports.getExamples = async (portal, data) => {
-//     let keySearch = {};
-//     if (data?.exampleName?.length > 0) {
-//         keySearch = {
-//             exampleName: {
-//                 $regex: data.exampleName,
-//                 $options: "i"
-//             }
-//         }
-//     }
-
-//     let page, perPage;
-//     page = data?.page ? Number(data.page) : 1;
-//     perPage = data?.perPage ? Number(data.perPage) : 20;
-
-//     let totalList = await Example(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
-//     let examples = await Example(connect(DB_CONNECTION, portal)).find(keySearch)
-//         .skip((page - 1) * perPage)
-//         .limit(perPage);
-
-//     return { 
-//         data: examples, 
-//         totalList 
-//     }
-// }
-
-// // Lấy ra một phần thông tin Ví dụ (lấy ra exampleName) theo mô hình dữ liệu số  2
-// exports.getOnlyExampleName = async (portal, data) => {
-//     let keySearch;
-//     if (data?.exampleName?.length > 0) {
-//         keySearch = {
-//             exampleName: {
-//                 $regex: data.exampleName,
-//                 $options: "i"
-//             }
-//         }
-//     }
 
 exports.getAllTransportRequirements = async (portal, data) => {
-    if (data.transportPlan){
-        transportPlans = TransportPlanServices.getPlanById(portal,data.transportPlan);
-    }
+
     let keySearch = {};
     // if (data?.exampleName?.length > 0) {
     //     keySearch = {
@@ -116,6 +76,10 @@ exports.getAllTransportRequirements = async (portal, data) => {
     //         }
     //     }
     // }
+    if (data.status){
+        keySearch.status = data.status;
+    }
+    console.log(keySearch)
     let page, limit;
     page = data?.page ? Number(data.page) : 1;
     limit = data?.limit ? Number(data.limit) : 20;
@@ -190,10 +154,14 @@ exports.editTransportRequirement = async (portal, id, data) => {
     return transportRequirement;
 }
 
-// Xóa một Ví dụ
+/**
+ * Xóa yêu cầu vận chuyển => xóa trong plan => xóa trong lịch vận chuyển: route, transportVehicles(hàng trên xe)
+ * @param {*} portal 
+ * @param {*} id 
+ * @returns 
+ */
 exports.deleteTransportRequirement = async (portal, id) => {
     let deleteRequirement = await TransportRequirement(connect(DB_CONNECTION, portal)).findOne({_id: id});
-
     if (deleteRequirement && deleteRequirement.transportPlan){
         await TransportPlanServices.deleteTransportRequirementByPlanId(portal, deleteRequirement.transportPlan, id);
     }

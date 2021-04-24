@@ -114,7 +114,7 @@ exports.deleteTransportRequirementByPlanId = async (portal, planId, requirementI
      * ]
      */
     let newTransportVehicles = [];
-    if (oldTransportSchedule.transportVehicles && oldTransportSchedule.transportVehicles.length!==0){
+    if (oldTransportSchedule && oldTransportSchedule.transportVehicles && oldTransportSchedule.transportVehicles.length!==0){
         let transportVehicles= oldTransportSchedule.transportVehicles;
         let newTransportRequirements = [];
         for (let i = 0; i<transportVehicles.length;i++){
@@ -122,10 +122,12 @@ exports.deleteTransportRequirementByPlanId = async (portal, planId, requirementI
             if (String(requirementId) in transportVehicles[i].transportRequirements){
                 newTransportRequirements = transportVehicles[i].transportRequirements.filter(r => r!==requirementId);
             }
-            newTransportVehicles.push({
-                transportVehicle: transportVehicles[i].transportVehicle,
-                transportRequirements: newTransportRequirements,
-            })
+            if (newTransportRequirements.length !==0){
+                newTransportVehicles.push({
+                    transportVehicle: transportVehicles[i].transportVehicle,
+                    transportRequirements: newTransportRequirements,
+                })
+            }
         }
         this.editTransportRouteByPlanId(portal, planId, {
             transportVehicles: newTransportVehicles,
@@ -133,7 +135,7 @@ exports.deleteTransportRequirementByPlanId = async (portal, planId, requirementI
     }
     // Xóa bỏ requirement trong route
     let newTransportRoute = []
-    if (oldTransportSchedule.route && oldTransportSchedule.route.length!==0 ){
+    if (oldTransportSchedule && oldTransportSchedule.route && oldTransportSchedule.route.length!==0 ){
         let route = oldTransportSchedule.route;
         for ( let i=0;i<route.length;i++){
             let newTransportRouteOrdinal = route[i].routeOrdinal.filter(r => String(r.transportRequirement)!==String(requirementId))

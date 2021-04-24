@@ -7,7 +7,7 @@ import { formatToTimeZoneDate, formatDate } from "../../../../../helpers/formatD
 import ValidationHelper from '../../../../../helpers/validationHelper';
 
 import { LocationMap } from './map/locationMap'
-import { TransportVehicleAndCarrierSelect } from './transportVehicleAndCarrierSelect'
+import { TransportVehicleAndCarrierSelect } from "./transport-plan-edit/transportVehicleAndCarrierSelect"
 
 import { transportPlanActions } from '../redux/actions';
 import { transportRequirementsActions } from '../../transport-requirements/redux/actions'
@@ -38,27 +38,9 @@ function TransportPlanEditForm(props) {
      * Danh sách vị trí tọa độ tương ứng với transportrequirements
      */
     const [listSelectedRequirementsLocation, setListSelectedRequirementsLocation] = useState([])
-    const handleClickCreateCode = () => {
-        setFormSchedule({
-            ...formSchedule,
-            code: generateCode("KHVC"),
-        })
-    }
 
-    const handleStartDateChange = async (value) => {
-        await setFormSchedule({
-            ...formSchedule,
-            startDate: formatToTimeZoneDate(value),
-        })
-    }
+    const [listChosenVehicleCarrier, setListChosenVehicleCarrier] = useState()
 
-    const handleEndDateChange = async (value) => {
-        console.log(value, " end date change");
-        await setFormSchedule({
-            ...formSchedule,
-            endDate: formatToTimeZoneDate(value),
-        })
-    }
     const save = () => {
         props.createTransportPlan(formSchedule);
     }
@@ -118,11 +100,11 @@ function TransportPlanEditForm(props) {
                 return "iconactive";
             }
             else{
-                return "iconunactive";
+                return "iconinactive";
             }
         }
         else{
-            return "iconunactive"
+            return "iconinactive"
         }
     }
 
@@ -143,6 +125,37 @@ function TransportPlanEditForm(props) {
                 })
             }
             setListSelectedRequirements(idArr);
+
+            // khởi tạo giá trị cho chọn người lên xe => chosenVehicleCarrier => listChosenVehicle, listVehicleAndCarrier
+            let chosenVehicleCarrier = [];
+            if (currentTransportPlan.transportVehicles && currentTransportPlan.transportVehicles.length!==0){
+                currentTransportPlan.transportVehicles.map(transportVehicles => {
+                    let carriers = [];
+                    if (transportVehicles.carriers && transportVehicles.carriers.length !==0){
+                        transportVehicles.carriers.map(carrier => {
+                            if (carrier.pos && String(carrier.pos) ==="1"){
+                                carriers.push({
+                                    carrier: carrier._id?carrier._id:carrier,
+                                    pos: 1,
+                                })
+                            }
+                            else {
+                                carriers.push({
+                                    carrier: carrier._id?carrier._id:carrier,
+                                })
+                            }
+                        })
+                    }
+                    if (transportVehicles.vehicle){
+                        chosenVehicleCarrier.push({
+                            vehicle: transportVehicles.vehicle._id,
+                            carriers: carriers,
+                        })
+                    }
+                })
+            }
+            setListChosenVehicleCarrier(chosenVehicleCarrier)
+            console.log(currentTransportPlan)
         }
     }, [currentTransportPlan])
     useEffect(() => {
@@ -227,11 +240,11 @@ function TransportPlanEditForm(props) {
             <form id="form-create-transport-requirements" >
             <div className="nav-tabs-custom">
                 <ul className="nav nav-tabs">
-                    <li className="active"><a href="#plan-list-transport-requirement" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Kế hoạch vận chuyển"}</a></li>
-                    <li><a href="#plan-transport-vehicle-carrier" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Xếp kế hoạch vận chuyển"}</a></li>
+                    <li className="active"><a href="#plan-list-transport-requirement-edit" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Kế hoạch vận chuyển"}</a></li>
+                    <li><a href="#plan-transport-vehicle-carrier-edit" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Xếp kế hoạch vận chuyển"}</a></li>
                 </ul>
                 <div className="tab-content">
-                    <div className="tab-pane active" id="plan-list-transport-requirement">
+                    <div className="tab-pane active" id="plan-list-transport-requirement-edit">
                         <div className="box-body">
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 
@@ -376,13 +389,16 @@ function TransportPlanEditForm(props) {
                         }
                         </div>
                     </div>
-                    <div className="tab-pane" id="plan-transport-vehicle-carrier">
+                    <div className="tab-pane" id="plan-transport-vehicle-carrier-edit">
                         <LazyLoadComponent
                         >
                             <TransportVehicleAndCarrierSelect
+                                key={formSchedule.transportRequirements}
                                 startTime={formSchedule.startDate}
                                 endTime={formSchedule.endDate}
                                 callBackVehicleAndCarrier={callBackVehicleAndCarrier}
+                                chosenVehicleCarrier={listChosenVehicleCarrier}
+                                currentTransportPlanId = {currentTransportPlan?._id}
                             />
                         </LazyLoadComponent>
                     </div>
@@ -395,7 +411,6 @@ function TransportPlanEditForm(props) {
 }
 
 function mapState(state) {
-    console.log(state, " ssss")
     const {transportRequirements} = state;
     return {transportRequirements}
 }

@@ -191,15 +191,15 @@ function ArrangeVehiclesAndGoods(props) {
                     return "iconactive";
                 }
                 else{
-                    return "iconunactive";
+                    return "iconinactive";
                 }
             }
             else{
-                return "iconunactive";
+                return "iconinactive";
             }
         }
         else{
-            return "iconunactive";
+            return "iconinactive";
         }
     }
 

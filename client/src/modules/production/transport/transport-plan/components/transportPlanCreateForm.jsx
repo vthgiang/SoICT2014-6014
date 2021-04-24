@@ -118,21 +118,24 @@ function TransportPlanCreateForm(props) {
                 return "iconactive";
             }
             else{
-                return "iconunactive";
+                return "iconinactive";
             }
         }
         else{
-            return "iconunactive"
+            return "iconinactive"
         }
     }
 
-    useEffect(() => {
-        props.getAllTransportRequirements({page:1, limit: 100})
-    }, [])
+    // useEffect(() => {
+    //     props.getAllTransportRequirements({page:1, limit: 100, status: 2})
+    // }, [])
 
+    // useEffect(() => {
+    //     console.log(formSchedule, " day la form schedule");
+    // }, [formSchedule])
     useEffect(() => {
-        console.log(formSchedule, " day la form schedule");
-    }, [formSchedule])
+        props.getAllTransportRequirements({page: 1, limit: 100, status: "2"})
+    }, [formSchedule.startDate, formSchedule.endDate])
     useEffect(() => {
         if (transportRequirements){
             let {lists} = transportRequirements;
@@ -149,7 +152,7 @@ function TransportPlanCreateForm(props) {
                 }
             }
         }
-    }, [formSchedule.startDate, formSchedule.endDate])
+    }, [formSchedule.startDate, formSchedule.endDate, transportRequirements])
 
     useEffect(() => {
         setFormSchedule({
@@ -369,6 +372,7 @@ function TransportPlanCreateForm(props) {
                         <LazyLoadComponent
                         >
                             <TransportVehicleAndCarrierSelect
+                                key={formSchedule.endDate}
                                 startTime={formSchedule.startDate}
                                 endTime={formSchedule.endDate}
                                 callBackVehicleAndCarrier={callBackVehicleAndCarrier}
@@ -384,7 +388,6 @@ function TransportPlanCreateForm(props) {
 }
 
 function mapState(state) {
-    console.log(state, " ssss")
     const {transportRequirements} = state;
     return {transportRequirements}
 }

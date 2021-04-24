@@ -1,23 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { ButtonModal, DialogModal, ErrorLabel, DatePicker, LazyLoadComponent, forceCheckOrVisible } from '../../../../../common-components';
+import { ButtonModal, DialogModal, ErrorLabel, DatePicker, LazyLoadComponent, forceCheckOrVisible } from '../../../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
-import { generateCode } from "../../../../../helpers/generateCode";
-import { formatToTimeZoneDate, formatDate } from "../../../../../helpers/formatDate"
-import ValidationHelper from '../../../../../helpers/validationHelper';
+import { generateCode } from "../../../../../../helpers/generateCode";
+import { formatToTimeZoneDate, formatDate } from "../../../../../../helpers/formatDate"
+import ValidationHelper from '../../../../../../helpers/validationHelper';
 
-import { LocationMap } from './map/locationMap'
-import { SelectBox } from '../../transportHelper/select-box-id/selectBoxId'
-import { transportPlanActions } from '../redux/actions';
-import { transportVehicleActions } from '../../transport-vehicle/redux/actions'
-import { transportDepartmentActions } from "../../transport-department/redux/actions"
-import { isTimeZoneDateSmaller } from "../../transportHelper/compareDateTimeZone"
-import './transport-plan.css'
+import { SelectBox } from '../../../transportHelper/select-box-id/selectBoxId'
+import { transportPlanActions } from '../../redux/actions';
+import { transportVehicleActions } from '../../../transport-vehicle/redux/actions'
+import { transportDepartmentActions } from "../../../transport-department/redux/actions"
+import { isTimeZoneDateSmaller } from "../../../transportHelper/compareDateTimeZone"
+import '../transport-plan.css'
 
 function TransportVehicleAndCarrierSelect(props) {
     let listRequirements = []
-    let {startTime, endTime, transportDepartment, transportVehicle, transportPlan, callBackVehicleAndCarrier} = props;
-    // Danh sách cách phân công người và xe
+    let {startTime, endTime, chosenVehicleCarrier,currentTransportPlanId,
+        transportDepartment, transportVehicle, transportPlan, 
+        callBackVehicleAndCarrier} = props;
+    // Danh sách cách phân công người và xe chưa chọn (tick box)
     /**
      * [{
      *  vehicle: id,
@@ -50,7 +51,13 @@ function TransportVehicleAndCarrierSelect(props) {
         props.getAllTransportVehicles();
         props.getAllTransportPlans();
     }, [])
-
+    useEffect(() => {
+        if (chosenVehicleCarrier){
+            setListChosenVehicle(chosenVehicleCarrier);
+            setListVehicleAndCarrier(chosenVehicleCarrier);
+            console.log(chosenVehicleCarrier);
+        }
+    }, [chosenVehicleCarrier])
     useEffect(() => {
         if (startTime && endTime){
             let vehiclesList = []
@@ -86,50 +93,50 @@ function TransportVehicleAndCarrierSelect(props) {
             }
             if (transportPlan && transportPlan.lists && transportPlan.lists.length!==0){
                 transportPlan.lists.map(plan => {
+                    if(plan._id !== currentTransportPlanId){
                     // nếu có kế hoạch khác bị trùng thời gian
-                    if (!(isTimeZoneDateSmaller(endTime, plan.startTime) || isTimeZoneDateSmaller(plan.endTime, startTime))){
-                        if(plan.transportVehicles && plan.transportVehicles.length!==0){
-                            plan.transportVehicles.map(transportVehicles => {
-                                // xét xe đã sử dụng trong kế hoạch đó
-                                if (transportVehicles.vehicle?._id){
-                                    let newVehiclesList = [];
-                                    for (let i=0;i<vehiclesList.length;i++){
-                                        if (String(vehiclesList[i]._id) !== String(transportVehicles.vehicle._id)){
-                                            newVehiclesList.push(vehiclesList[i])
+                        if (!(isTimeZoneDateSmaller(endTime, plan.startTime) || isTimeZoneDateSmaller(plan.endTime, startTime))){
+                            if(plan.transportVehicles && plan.transportVehicles.length!==0){
+                                plan.transportVehicles.map(transportVehicles => {
+                                    // xét xe đã sử dụng trong kế hoạch đó
+                                    if (transportVehicles.vehicle?._id){
+                                        let newVehiclesList = [];
+                                        for (let i=0;i<vehiclesList.length;i++){
+                                            if (String(vehiclesList[i]._id) !== String(transportVehicles.vehicle._id)){
+                                                newVehiclesList.push(vehiclesList[i])
+                                            }
                                         }
+                                        vehiclesList = newVehiclesList;
                                     }
-                                    vehiclesList = newVehiclesList;
-                                }
-                                // xét người đã sử dụng trong kế hoạch đó
-                                console.log(carriersList, " carrierList");
-                                if (plan.transportVehicles && plan.transportVehicles.length!==0){
-                                    plan.transportVehicles.map(transportVehicles => {
-                                        if (transportVehicles.carriers && transportVehicles.carriers.length !==0){
-                                            transportVehicles.carriers.map(carriers => {
-                                                console.log(carriers);
-                                                if(carriers.carrier){
-                                                    carriersList = carriersList.filter(r => String(r._id) !== String(carriers.carrier))
-                                                }
-                                            })
-                                        }
-                                    })
-                                }
-                                
-                            })
-                        }
-                    } 
+                                    // xét người đã sử dụng trong kế hoạch đó
+                                    if (plan.transportVehicles && plan.transportVehicles.length!==0){
+                                        plan.transportVehicles.map(transportVehicles => {
+                                            if (transportVehicles.carriers && transportVehicles.carriers.length !==0){
+                                                transportVehicles.carriers.map(carriers => {
+                                                    if(carriers.carrier){
+                                                        carriersList = carriersList.filter(r => String(r._id) !== String(carriers.carrier))
+                                                    }
+                                                })
+                                            }
+                                        })
+                                    }
+                                    
+                                })
+                            }
+                        } 
+                    }
                 })
             }
             setListVehiclesUsable(vehiclesList);
             setListCarriersUsable(carriersList);
         }
-        console.log(transportVehicle, transportDepartment)
-        console.log(startTime)
-    }, [startTime, endTime, transportDepartment, transportVehicle, transportPlan])
+        // console.log(transportVehicle, transportDepartment)
+        // console.log(startTime)
+    }, [startTime, endTime, transportDepartment, transportVehicle, transportPlan, currentTransportPlanId])
     /**
      * Lấy id tài xế đã có trong listVehicleAndCarrier
      */
-    const getCurrentDriver = (vehicleId) => {
+    const getCurrentDriverEdit = (vehicleId) => {
         let currentDriver = "0";
         if (listVehicleAndCarrier && listVehicleAndCarrier.length!==0){
             listVehicleAndCarrier.map(transportVehicles => {
@@ -152,7 +159,7 @@ function TransportVehicleAndCarrierSelect(props) {
      * @param {*} vehicleId 
      * @returns 
      */
-    const getAllDriver = (vehicleId) => {       
+    const getAllDriverEdit = (vehicleId) => {       
         let selectedBoxDriver = [{
             value: "0",
             text: "--Chọn tài xế--"
@@ -176,6 +183,8 @@ function TransportVehicleAndCarrierSelect(props) {
                 }
             })
         }
+        console.log(listVehicleAndCarrier)
+        console.log(selectedBoxDriver, " x e driver ", vehicleId)
         return selectedBoxDriver;
     }
     /**
@@ -183,7 +192,8 @@ function TransportVehicleAndCarrierSelect(props) {
      * @param {*} value 
      * @param {*} vehicleId 
      */
-    const handleDriverChange = (value, vehicleId) => {
+    const handleDriverChangeEdit = (value, vehicleId2) => {
+        let vehicleId = vehicleId2.slice(0,-1);
         let vehicleAndCarrier = [...listVehicleAndCarrier];
         // Nếu không chọn tài xế nào, xóa hết các tài xế trong listVehicleAndCarrier
         if (value[0]==="0"){
@@ -205,7 +215,7 @@ function TransportVehicleAndCarrierSelect(props) {
                     // Nếu xe này cũng đã có nhân viên vận chuyển, xóa bỏ các tài xế đã có và đẩy tài xế mới vào
                     if (currentVehicleAndCarrier[0].carriers && currentVehicleAndCarrier[0].carriers.length!==0){
                         currentVehicleAndCarrier[0].carriers = currentVehicleAndCarrier[0].carriers.filter(r => String(r.carrier)!==value[0]);
-                        currentVehicleAndCarrier[0].carriers = currentVehicleAndCarrier[0].carriers.filter(r => String(r.carrier)!==getCurrentDriver(vehicleId));
+                        currentVehicleAndCarrier[0].carriers = currentVehicleAndCarrier[0].carriers.filter(r => String(r.carrier)!==getCurrentDriverEdit(vehicleId));
                         currentVehicleAndCarrier[0].carriers.push({
                             carrier: value[0],
                             pos :1,
@@ -248,8 +258,9 @@ function TransportVehicleAndCarrierSelect(props) {
         setListChosenVehicle(chosenVehicle)
     }
 
-    const getCurrentCarriers = (vehicleId) => {
+    const getCurrentCarriersEdit = (vehicleId) => {
         // let currentDriver = ["0"];
+
         let currentDriver=[]
         if (listVehicleAndCarrier && listVehicleAndCarrier.length!==0){
             listVehicleAndCarrier.map(transportVehicles => {
@@ -275,7 +286,7 @@ function TransportVehicleAndCarrierSelect(props) {
      * @param {*} vehicleId 
      * @returns 
      */
-    const getAllCarriers = (vehicleId) => {       
+    const getAllCarriersEdit = (vehicleId) => {       
         // let selectedBoxCarriers = [{
         //     // value: "0",
         //     // text: "--Chọn nhân viên--"
@@ -307,7 +318,7 @@ function TransportVehicleAndCarrierSelect(props) {
      * @param {*} value 
      * @param {*} vehicleId 
      */
-    const handleCarriersChange = (value, vehicleId1) => {
+    const handleCarriersChangeEdit = (value, vehicleId1) => {
         const vehicleId = vehicleId1.slice(0, -1) // cắt bỏ ký tự cuối cùng do cài đặt thêm id cho khác biệt
         let vehicleAndCarrier = [...listVehicleAndCarrier];
         if (value[0]==="0"){
@@ -386,14 +397,13 @@ function TransportVehicleAndCarrierSelect(props) {
         setListChosenVehicle(chosenVehicle)
     }
     const handleSelectVehicle = (vehicle) => {
-        console.log(vehicle._id)
         let chosenVehicle = [...listChosenVehicle]
         if (chosenVehicle && chosenVehicle.length !==0){
             chosenVehicle = chosenVehicle.filter(r => r.vehicle!==vehicle._id);
         }
         if (getStatusTickBox(vehicle) === "iconinactive"){
             let currentVehicleAndCarrier = listVehicleAndCarrier.filter(r => r.vehicle === vehicle._id);
-            console.log(currentVehicleAndCarrier)
+            
             if (currentVehicleAndCarrier && currentVehicleAndCarrier.length!==0){
                 if (currentVehicleAndCarrier[0].carriers && currentVehicleAndCarrier[0].carriers.length!==0){
                     let driver = currentVehicleAndCarrier[0].carriers.filter(r => String(r.pos) === "1");
@@ -420,7 +430,7 @@ function TransportVehicleAndCarrierSelect(props) {
     }, [listVehicleAndCarrier])
 
     useEffect(() => {
-        console.log(listChosenVehicle , " listChosenVehicle")
+        // console.log(listChosenVehicle , " listChosenVehicle")
         callBackVehicleAndCarrier(listChosenVehicle);
     }, [listChosenVehicle])
     return (
@@ -465,23 +475,23 @@ function TransportVehicleAndCarrierSelect(props) {
                                     <td>{x.volume}</td>
                                     <td>
                                         <SelectBox
-                                            id={x._id}
+                                            id={x._id+"2"}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
-                                            value={getCurrentDriver(x._id)}
-                                            items={getAllDriver(x._id)}
-                                            onChange={handleDriverChange}
+                                            value={getCurrentDriverEdit(x._id)}
+                                            items={getAllDriverEdit(x._id)}
+                                            onChange={handleDriverChangeEdit}
                                             multiple={false}
                                         />
                                     </td>
                                     <td>
                                         <SelectBox
-                                            id={x._id+"1"}
+                                            id={x._id+"3"}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
-                                            value={getCurrentCarriers(x._id)}
-                                            items={getAllCarriers(x._id)}
-                                            onChange={handleCarriersChange}
+                                            value={getCurrentCarriersEdit(x._id)}
+                                            items={getAllCarriersEdit(x._id)}
+                                            onChange={handleCarriersChangeEdit}
                                             multiple={true}
                                         />
                                     </td>

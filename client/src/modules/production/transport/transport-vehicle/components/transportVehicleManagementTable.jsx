@@ -131,7 +131,7 @@ function TransportVehicleManagementTable(props) {
     const selectVehicle = (index, vehicle) => {
         let value;
         if (getTickboxStatus(vehicle)==="iconactive"){
-            value = "iconunactive";
+            value = "iconinactive";
             handleDeleteVehicle(vehicle);
         }
         else {
@@ -148,7 +148,7 @@ function TransportVehicleManagementTable(props) {
                 }
             }
         }
-        return "iconunactive";
+        return "iconinactive";
     }
     return (
         <React.Fragment>

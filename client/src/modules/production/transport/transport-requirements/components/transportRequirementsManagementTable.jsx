@@ -69,7 +69,9 @@ function TransportRequirementsManagementTable(props) {
     const editTransportRequirement = (requirementId, data) => {
         props.editTransportRequirement(requirementId, data);
     }
-
+    const handleShowApprove = (requirement) => {
+        props.editTransportRequirement(requirement._id, {status: 2})
+    }
     /**
      * Hàm xử lý khi click xem chi tiết một ví dụ
      * @param {*} example thông tin của ví dụ cần xem
@@ -166,6 +168,18 @@ function TransportRequirementsManagementTable(props) {
                                                 edit
                                             </i>
                                         </a>
+                                        {
+                                        // this.checkUserForApprove(item) === 1 && 
+                                        String(x.status) === "1" && (
+                                            <a
+                                                onClick={() => handleShowApprove(x)}
+                                                className="add text-success"
+                                                style={{ width: "5px" }}
+                                                title="Phê duyệt yêu cầu vận chuyển"
+                                            >
+                                                <i className="material-icons">check_circle_outline</i>
+                                            </a>
+                                        )}
                                         <DeleteNotification
                                             // content={translate('manage_example.delete')}
                                             content={"Xóa yêu cầu vận chuyển "}

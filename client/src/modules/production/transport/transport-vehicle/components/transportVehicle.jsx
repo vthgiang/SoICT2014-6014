@@ -109,7 +109,7 @@ function TransportVehicle(props) {
         let listIconState = []
         if (vehiclesList && vehiclesList.length !==0){
             for (let i = 0; i < vehiclesList.length; i++){
-                listIconState.push("iconunactive")
+                listIconState.push("iconinactive")
             }
             for (let i = 0; i < vehiclesList.length; i++){
                 if (planVehiclesList && planVehiclesList.length!==0){
@@ -148,7 +148,7 @@ function TransportVehicle(props) {
         console.log(index);
         let value;
         if (state1[index]==="iconactive"){
-            value = "iconunactive";
+            value = "iconinactive";
         }
         else {
             value = "iconactive";
