@@ -131,12 +131,11 @@ function DegreeAddModal(props) {
      * @param {*} value : id Ngành nghề lĩnh vực
      */
     const handleFieldChange = (value) => {
-        setState(state => {
-            return {
-                ...state,
-                field: value
-            }
-        })
+        console.log(value);
+        setState({
+            ...state,
+            field: value[0]
+        });
     }
 
     /** Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form */
