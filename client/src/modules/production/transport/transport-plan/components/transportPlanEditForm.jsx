@@ -42,7 +42,15 @@ function TransportPlanEditForm(props) {
     const [listChosenVehicleCarrier, setListChosenVehicleCarrier] = useState()
 
     const save = () => {
-        props.createTransportPlan(formSchedule);
+        console.log(formSchedule)
+        let data = {
+            code: formSchedule?.code,
+            startTime: formSchedule?.startDate,
+            endTime: formSchedule?.endDate,
+            transportRequirements: formSchedule?.transportRequirements?formSchedule.transportRequirements:listSelectedRequirements,
+            transportVehicles: formSchedule?.transportVehicles?formSchedule.transportVehicles:listChosenVehicleCarrier,
+        }
+        props.editTransportPlan(currentTransportPlan?._id, data);
     }
     
     /**
@@ -116,6 +124,7 @@ function TransportPlanEditForm(props) {
             setFormSchedule({
                 startDate: currentTransportPlan.startTime,
                 endDate: currentTransportPlan.endTime,
+                code: currentTransportPlan.code,
             });
 
             let idArr = []
@@ -421,6 +430,7 @@ function mapState(state) {
 const actions = {
     getAllTransportRequirements: transportRequirementsActions.getAllTransportRequirements,
     createTransportPlan: transportPlanActions.createTransportPlan,
+    editTransportPlan: transportPlanActions.editTransportPlan,
 }
 
 const connectedTransportPlanEditForm = connect(mapState, actions)(withTranslate(TransportPlanEditForm));

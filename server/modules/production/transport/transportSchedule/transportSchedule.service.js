@@ -150,6 +150,30 @@ exports.deleteTransportRequirementByPlanId = async (portal, planId, requirementI
     }
 }
 
+exports.deleteTransportVehiclesByPlanId = async (portal, planId, vehicleId) => {
+    let oldTransportSchedule = await TransportSchedule(connect(DB_CONNECTION, portal)).findOne({transportPlan: planId});
+
+    let newTransportVehicles = [];
+    if (oldTransportSchedule && oldTransportSchedule.transportVehicles && oldTransportSchedule.transportVehicles.length!==0){
+        newTransportVehicles = oldTransportSchedule.transportVehicles.filter(r=>{
+            r.transportVehicle !== vehicleId;
+        })
+        this.editTransportRouteByPlanId(portal, planId, {
+            transportVehicles: newTransportVehicles,
+        })
+    }
+    // Xóa bỏ vehicles trong route
+    let newTransportRoute = []
+    if (oldTransportSchedule && oldTransportSchedule.route && oldTransportSchedule.route.length!==0 ){
+        newTransportRoute = oldTransportSchedule.route.filter(r => {
+            r.transportVehicle !==vehicleId;
+        })
+        this.editTransportRouteByPlanId(portal, planId, {
+            route: newTransportRoute,
+        })
+    }
+}
+
 /**
  * Xóa plan xóa bỏ cả schedule
  * @param {} portal 
