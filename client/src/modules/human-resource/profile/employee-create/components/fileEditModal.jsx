@@ -23,7 +23,6 @@ function FileEditModal(props) {
             return {
                 ...state,
                 id: props.id,
-                _id: props._id,
                 index: props.index,
                 name: props.name,
                 description: props.description,
@@ -32,12 +31,19 @@ function FileEditModal(props) {
                 file: props.file,
                 urlFile: props.urlFile,
                 fileUpload: props.fileUpload,
-
                 errorOnNameFile: undefined,
                 errorOnDiscFile: undefined,
                 errorOnNumberFile: undefined,
             }
         })
+        if (props._id) {
+            setState(state => {
+                return {
+                    ...state,
+                    _id: props._id
+                }
+            })
+        }
     }, [props.id])
 
     const { translate } = props;

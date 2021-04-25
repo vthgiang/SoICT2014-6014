@@ -23,7 +23,6 @@ function DegreeEditModal(props) {
             return {
                 ...state,
                 id: props.id,
-                _id: props._id,
                 index: props.index,
                 name: props.name,
                 issuedBy: props.issuedBy,
@@ -33,12 +32,19 @@ function DegreeEditModal(props) {
                 file: props.file,
                 urlFile: props.urlFile,
                 fileUpload: props.fileUpload,
-
                 errorOnName: undefined,
                 errorOnIssuedBy: undefined,
                 errorOnYear: undefined,
             }
         })
+        if (props._id) {
+            setState(state => {
+                return {
+                    ...state,
+                    _id: props._id
+                }
+            })
+        }
     }, [props.id])
 
     const { translate } = props;
@@ -178,7 +184,7 @@ function DegreeEditModal(props) {
             }
             return props.handleChange({ ...state, field: field });
         }
-        console.log(state);
+        // console.log(state);
     }
 
     return (
@@ -219,7 +225,7 @@ function DegreeEditModal(props) {
                         {/* Năm tốt nghiệp */}
                         <div className={`form-group col-sm-6 col-xs-12 ${errorOnYear && "has-error"}`}>
                             <label>{translate('human_resource.profile.graduation_year')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="year" value={year} onChange={handleYearChange} autoComplete="off" />
+                            <input type="number" className="form-control" name="year" value={year} onChange={handleYearChange} autoComplete="off" />
                             <ErrorLabel content={errorOnYear} />
                         </div>
                         {/* Loại bằng cấp */}

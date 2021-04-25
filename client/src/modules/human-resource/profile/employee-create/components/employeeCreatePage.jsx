@@ -195,7 +195,7 @@ function EmployeeCreatePage(props) {
                 }
             }
         })
-        console.log("exp", employee);
+        // console.log("exp", employee);
     }
 
     /**
@@ -210,7 +210,7 @@ function EmployeeCreatePage(props) {
                 degrees: data
             }
         })
-        console.log('degrees', data)
+        // console.log('degrees', data)
     }
 
     /**
@@ -271,7 +271,7 @@ function EmployeeCreatePage(props) {
                 commendations: data
             }
         })
-        console.log("commen", data);
+        // console.log("commen", data);
     }
 
     /**
@@ -286,7 +286,7 @@ function EmployeeCreatePage(props) {
                 disciplines: data
             }
         })
-        console.log("dis", data);
+        // console.log("dis", data);
     }
 
     /**
@@ -422,8 +422,8 @@ function EmployeeCreatePage(props) {
             formData.append('healthInsuranceAttachment', x.fileUpload)
         })
         props.addNewEmployee(formData);
-        console.log(...formData);
-        console.log(employee);
+        // console.log(...formData);
+        // console.log(employee);
     }
 
     const _fm_saveMember = (data) => {
