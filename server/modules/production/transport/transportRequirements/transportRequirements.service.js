@@ -79,7 +79,6 @@ exports.getAllTransportRequirements = async (portal, data) => {
     if (data.status){
         keySearch.status = data.status;
     }
-    console.log(keySearch)
     let page, limit;
     page = data?.page ? Number(data.page) : 1;
     limit = data?.limit ? Number(data.limit) : 20;

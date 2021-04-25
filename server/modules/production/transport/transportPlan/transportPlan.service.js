@@ -92,7 +92,6 @@ exports.getAllTransportPlans = async (portal, data) => {
  * @returns 
  */
 exports.getPlanById = async (portal, id) => {
-    console.log(id);
     let plan = await TransportPlan(connect(DB_CONNECTION, portal)).findById({ _id: id })
     .populate([
         {
@@ -117,7 +116,6 @@ exports.getPlanById = async (portal, id) => {
  * @returns 
  */
 exports.editTransportPlan = async (portal, id, data) => {
-    console.log(data)
     let oldTransportPlan = await TransportPlan(connect(DB_CONNECTION, portal)).findById(id);
 
     if (!oldTransportPlan) {
@@ -132,11 +130,11 @@ exports.editTransportPlan = async (portal, id, data) => {
     if (oldTransportPlan.transportRequirements && oldTransportPlan.transportRequirements.length!==0
         && data.transportRequirements && data.transportRequirements.length!==0){
             let sameTransportRequirements = oldTransportPlan.transportRequirements.filter(r=>{
-                return data.transportRequirements.indexOf(r) !==-1;
+                return data.transportRequirements.indexOf(String(r)) !==-1;
             })
             if (sameTransportRequirements && sameTransportRequirements.length!==0){
                 let needRemoveTransportRequirements = oldTransportPlan.transportRequirements.filter(r=>{
-                    return sameTransportRequirements.indexOf(r) !==-1;
+                    return sameTransportRequirements.indexOf(String(r)) ===-1;
                 })
                 if (needRemoveTransportRequirements && needRemoveTransportRequirements.length!==0){
                     needRemoveTransportRequirements.map(requirementId => {
@@ -153,12 +151,17 @@ exports.editTransportPlan = async (portal, id, data) => {
         await TransportScheduleServices.planDeleteTransportSchedule(portal, id);
         await TransportScheduleServices.planCreateTransportRoute(portal,{transportPlan:id});
     }
-
     if (oldTransportPlan.transportVehicles && oldTransportPlan.transportVehicles.length!==0
         && data.transportVehicles && data.transportVehicles.length!==0){
             let sameVehicle = oldTransportPlan.transportVehicles.filter(r=>{
+                let flag = false;
                 if (r.vehicle){
-                    return data.transportVehicles.indexOf(r.vehicle) !==-1;
+                    for (let i=0;i<data.transportVehicles.length;i++){
+                        if (String(data.transportVehicles[i].vehicle) === String(r.vehicle)){
+                            flag = true
+                        }
+                    }
+                    return flag;
                 }
                 else{
                     return false;
@@ -169,7 +172,7 @@ exports.editTransportPlan = async (portal, id, data) => {
                     if (r.vehicle){
                         let flag = true;
                         for (let i = 0; i< sameVehicle.length;i++){
-                            if (sameVehicle[i].vehicle === r.vehicle){
+                            if (String(sameVehicle[i].vehicle) === String(r.vehicle)){
                                 flag = false;
                             }
                         }

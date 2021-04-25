@@ -88,9 +88,9 @@ exports.editTransportRouteByPlanId = async (portal, planId, data) => {
     if (!oldTransportSchedule) {
         return -1;
     }
-    if (data.transportVehicles && data.transportVehicles.length!==0){
-        await TransportSchedule(connect(DB_CONNECTION, portal)).update({ _id: oldTransportSchedule._id }, { $set: {route: []} });
-    }
+    // if (data.transportVehicles && data.transportVehicles.length!==0){
+    //     await TransportSchedule(connect(DB_CONNECTION, portal)).update({ _id: oldTransportSchedule._id }, { $set: {route: []} });
+    // }
     // Cach 2 de update
     await TransportSchedule(connect(DB_CONNECTION, portal)).update({ _id: oldTransportSchedule._id }, { $set: data });
     let newTransportSchedule = await TransportSchedule(connect(DB_CONNECTION, portal)).findById({ _id: oldTransportSchedule._id });
@@ -118,10 +118,7 @@ exports.deleteTransportRequirementByPlanId = async (portal, planId, requirementI
         let transportVehicles= oldTransportSchedule.transportVehicles;
         let newTransportRequirements = [];
         for (let i = 0; i<transportVehicles.length;i++){
-            newTransportRequirements = transportVehicles[i].transportRequirements;
-            if (String(requirementId) in transportVehicles[i].transportRequirements){
-                newTransportRequirements = transportVehicles[i].transportRequirements.filter(r => r!==requirementId);
-            }
+            newTransportRequirements = transportVehicles[i].transportRequirements.filter(r =>String(r)!==String(requirementId))
             if (newTransportRequirements.length !==0){
                 newTransportVehicles.push({
                     transportVehicle: transportVehicles[i].transportVehicle,
@@ -154,19 +151,20 @@ exports.deleteTransportVehiclesByPlanId = async (portal, planId, vehicleId) => {
     let oldTransportSchedule = await TransportSchedule(connect(DB_CONNECTION, portal)).findOne({transportPlan: planId});
 
     let newTransportVehicles = [];
+    
     if (oldTransportSchedule && oldTransportSchedule.transportVehicles && oldTransportSchedule.transportVehicles.length!==0){
         newTransportVehicles = oldTransportSchedule.transportVehicles.filter(r=>{
-            r.transportVehicle !== vehicleId;
+            return String(r.transportVehicle) !== String(vehicleId);
         })
         this.editTransportRouteByPlanId(portal, planId, {
             transportVehicles: newTransportVehicles,
         })
     }
-    // Xóa bỏ vehicles trong route
+    // Xóa vehicle trong route
     let newTransportRoute = []
     if (oldTransportSchedule && oldTransportSchedule.route && oldTransportSchedule.route.length!==0 ){
         newTransportRoute = oldTransportSchedule.route.filter(r => {
-            r.transportVehicle !==vehicleId;
+            return  r.transportVehicle !==vehicleId;
         })
         this.editTransportRouteByPlanId(portal, planId, {
             route: newTransportRoute,
