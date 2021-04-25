@@ -7,6 +7,8 @@ import { DataTableSetting, DeleteNotification, PaginateBar } from "../../../../.
 import { formatDate } from "../../../../../helpers/formatDate"
 import { TransportPlanCreateForm } from "./transportPlanCreateForm"
 import { TransportPlanEditForm } from "./transportPlanEditForm"
+import { TransportPlanDetailInfo } from "./transportPlanDetailInfo"
+
 import { transportPlanActions } from "../redux/actions"
 // import { transportRequirementsActions } from "../redux/actions";
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
@@ -36,6 +38,11 @@ function TransportPlanManagementTable(props) {
         window.$('#modal-edit-transport-plan').modal('show');
     }
 
+    const handleShowDetailInfo = (transportPlan) => {
+        setCurrentTransportPlan(transportPlan);
+        window.$('#modal-detail-info-transport-plan').modal('show');
+    }
+
     const reloadOtherEditForm = (value) => {
         setReloadRequirementTable(value);
     }
@@ -48,6 +55,10 @@ function TransportPlanManagementTable(props) {
                     currentTransportPlan={currentTransportPlan}
                     reloadRequirementTable = {reloadRequirementTable}
                     reloadOtherEditForm = {reloadOtherEditForm}
+                />
+
+                <TransportPlanDetailInfo
+                    currentTransportPlan={currentTransportPlan}
                 />
                 
                 <div className="form-inline">
@@ -81,7 +92,7 @@ function TransportPlanManagementTable(props) {
                                         <a className="edit text-green" 
                                             style={{ width: '5px' }} 
                                             title={"Thông tin chi tiết kế hoạch"} 
-                                            // onClick={() => handleShowDetailInfo(example)}
+                                            onClick={() => handleShowDetailInfo(x)}
                                         >
                                             <i className="material-icons">visibility
                                             </i>

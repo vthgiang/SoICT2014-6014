@@ -7,7 +7,7 @@ import { formatToTimeZoneDate, formatDate } from "../../../../../helpers/formatD
 import ValidationHelper from '../../../../../helpers/validationHelper';
 
 import { LocationMap } from './map/locationMap'
-import { TransportVehicleAndCarrierSelect } from './transportVehicleAndCarrierSelect'
+import { TransportVehicleAndCarrierSelect } from './transport-plan-create/transportVehicleAndCarrierSelect'
 
 import { transportPlanActions } from '../redux/actions';
 import { transportRequirementsActions } from '../../transport-requirements/redux/actions'
@@ -40,7 +40,6 @@ function TransportPlanCreateForm(props) {
     const [listSelectedRequirementsLocation, setListSelectedRequirementsLocation] = useState([])
     const handleClickCreateCode = () => {
         setFormSchedule({
-            ...formSchedule,
             code: generateCode("KHVC"),
         })
     }

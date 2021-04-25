@@ -145,7 +145,6 @@ function TransportPlanEditForm(props) {
             if (currentTransportPlan.transportVehicles && currentTransportPlan.transportVehicles.length!==0){
                 currentTransportPlan.transportVehicles.map(transportVehicles => {
                     let carriers = [];
-                    console.log(transportVehicles)
                     if (transportVehicles.carriers && transportVehicles.carriers.length !==0){
                         transportVehicles.carriers.map(carrier => {
                             console.log(carrier)
@@ -175,7 +174,7 @@ function TransportPlanEditForm(props) {
         }
     }, [currentTransportPlan])
     useEffect(() => {
-        console.log(formSchedule, " day la form schedule");
+        // console.log(formSchedule, " day la form schedule");
     }, [formSchedule])
     useEffect(() => {
         console.log(currentTransportPlan, " sss");
