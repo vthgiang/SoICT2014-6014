@@ -16,8 +16,9 @@ import { convertJsonObjectToFormData } from '../../../../../helpers/jsonObjectTo
 
 function TransportPlanManagementTable(props) {
 
-    let { allTransportPlans } = props;
+    let { allTransportPlans, transportPlan } = props;
     const [currentTransportPlan, setCurrentTransportPlan] = useState()
+    const [reloadRequirementTable, setReloadRequirementTable] = useState()
     useEffect(() => {
         props.getAllTransportPlans({page: 1, limit: 500});
     }, [])
@@ -34,13 +35,19 @@ function TransportPlanManagementTable(props) {
         setCurrentTransportPlan(transportPlan);
         window.$('#modal-edit-transport-plan').modal('show');
     }
+
+    const reloadOtherEditForm = (value) => {
+        setReloadRequirementTable(value);
+    }
     return (
             <div className="box-body qlcv">
                 <TransportPlanCreateForm 
                     currentDateClient={getCurrentDate()}
                 />
-                <TransportPlanEditForm 
+                <TransportPlanEditForm
                     currentTransportPlan={currentTransportPlan}
+                    reloadRequirementTable = {reloadRequirementTable}
+                    reloadOtherEditForm = {reloadOtherEditForm}
                 />
                 
                 <div className="form-inline">
@@ -61,8 +68,8 @@ function TransportPlanManagementTable(props) {
                     </thead>
                     <tbody>
                     {
-                    (allTransportPlans && allTransportPlans.length !== 0) &&
-                    allTransportPlans.map((x, index) => (
+                    (transportPlan && transportPlan.lists && transportPlan.lists.length !== 0) &&
+                    transportPlan.lists.map((x, index) => (
                                 x &&
                                 <tr key={index}>
                                     <td>{index + 1}</td>
@@ -105,7 +112,8 @@ function TransportPlanManagementTable(props) {
 
 function mapState(state) {
     const allTransportPlans = state.transportPlan.lists;
-    return { allTransportPlans }
+    const {transportPlan} = state
+    return { allTransportPlans, transportPlan }
 }
 
 const actions = {

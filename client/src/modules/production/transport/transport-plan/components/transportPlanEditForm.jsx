@@ -16,7 +16,9 @@ import {} from './transport-plan.css'
 
 function TransportPlanEditForm(props) {
     let allTransportRequirements;
-    let {transportRequirements, currentDateClient, currentTransportPlan} = props;
+    let {transportRequirements, currentDateClient, currentTransportPlan,
+        reloadRequirementTable, reloadOtherEditForm
+    } = props;
     const [formSchedule, setFormSchedule] = useState({
         code: "",
         startDate: "",
@@ -41,7 +43,7 @@ function TransportPlanEditForm(props) {
 
     const [listChosenVehicleCarrier, setListChosenVehicleCarrier] = useState()
 
-    const save = () => {
+    const save = async () => {
         console.log(formSchedule)
         let data = {
             code: formSchedule?.code,
@@ -50,7 +52,9 @@ function TransportPlanEditForm(props) {
             transportRequirements: formSchedule?.transportRequirements?formSchedule.transportRequirements:listSelectedRequirements,
             transportVehicles: formSchedule?.transportVehicles?formSchedule.transportVehicles:listChosenVehicleCarrier,
         }
-        props.editTransportPlan(currentTransportPlan?._id, data);
+        await props.editTransportPlan(currentTransportPlan?._id, data);
+        reloadOtherEditForm(new Date());
+        // await props.getAllTransportRequirements({page:1, limit: 100, status: 2})
     }
     
     /**
@@ -117,8 +121,8 @@ function TransportPlanEditForm(props) {
     }
 
     useEffect(() => {
-        props.getAllTransportRequirements({page:1, limit: 100})
-    }, [])
+        props.getAllTransportRequirements({page:1, limit: 100, status:2})
+    }, [reloadRequirementTable])
     useEffect(() => {
         if (currentTransportPlan){
             setFormSchedule({
@@ -174,20 +178,26 @@ function TransportPlanEditForm(props) {
         console.log(formSchedule, " day la form schedule");
     }, [formSchedule])
     useEffect(() => {
+        console.log(currentTransportPlan, " sss");
         if (transportRequirements){
             let {lists} = transportRequirements;
+            let allRequirementCanSelect = []
             if (lists && lists.length!==0){
                 if (formSchedule.startDate && formSchedule.endDate){
                     const startDate = new Date(formSchedule.startDate);
                     const endDate = new Date(formSchedule.endDate);
                     if(startDate.getTime() <= endDate.getTime()){
-                        setListRequirements(arrangeRequirement(lists, startDate))
+                        allRequirementCanSelect = arrangeRequirement(lists, startDate);
                     }
                 }
                 else {
                     setListRequirements([])
                 }
             }
+            if (currentTransportPlan && currentTransportPlan.transportRequirements && currentTransportPlan.transportRequirements.length!==0){
+                allRequirementCanSelect = allRequirementCanSelect.concat(currentTransportPlan.transportRequirements);
+            }
+            setListRequirements(allRequirementCanSelect)
         }
     }, [formSchedule.startDate, formSchedule.endDate, currentTransportPlan])
 
@@ -221,12 +231,11 @@ function TransportPlanEditForm(props) {
                 }
             })
         }
-        console.log(locationArr, " ar")
         setListSelectedRequirementsLocation(locationArr);
     }, [listSelectedRequirements, listRequirements])
 
     useEffect(() => {
-        console.log(listRequirements, " lui")
+        console.log(listRequirements, " luiaaaaaaaa")
     }, [listRequirements])
     const callBackVehicleAndCarrier = (transportVehicles) => {
         setFormSchedule({

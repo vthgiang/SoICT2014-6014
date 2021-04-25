@@ -127,8 +127,17 @@ exports.editTransportPlan = async (portal, id, data) => {
      * Xóa bỏ các kế hoạch trong plan mới, xóa bỏ trong schedule
      * Set lại plan mới
      */
+    if (data.transportRequirements && data.transportRequirements.length!==0){
+        data.transportRequirements.map(async requirementId => {
+            await TransportRequirementServices.editTransportRequirement(portal, requirementId, {
+                transportPlan: id,
+                status: 3,
+            }) 
+        })
+    }
     if (oldTransportPlan.transportRequirements && oldTransportPlan.transportRequirements.length!==0
         && data.transportRequirements && data.transportRequirements.length!==0){
+
             let sameTransportRequirements = oldTransportPlan.transportRequirements.filter(r=>{
                 return data.transportRequirements.indexOf(String(r)) !==-1;
             })
@@ -139,6 +148,10 @@ exports.editTransportPlan = async (portal, id, data) => {
                 if (needRemoveTransportRequirements && needRemoveTransportRequirements.length!==0){
                     needRemoveTransportRequirements.map(requirementId => {
                         TransportScheduleServices.deleteTransportRequirementByPlanId(portal, id, requirementId)
+                        TransportRequirementServices.editTransportRequirement(portal, requirementId, {
+                            transportPlan: null,
+                            status: 2,
+                        })
                     })
                 }
             }
@@ -195,7 +208,12 @@ exports.editTransportPlan = async (portal, id, data) => {
     }
     // Cach 2 de update
     await TransportPlan(connect(DB_CONNECTION, portal)).update({ _id: id }, { $set: data });
-    let transportPlan = await TransportPlan(connect(DB_CONNECTION, portal)).findById({ _id: oldTransportPlan._id });
+    let transportPlan = await TransportPlan(connect(DB_CONNECTION, portal)).findById({ _id: oldTransportPlan._id })
+    .populate([
+        {
+            path: 'transportRequirements'
+        }
+    ]);
     return transportPlan;
 }
 /**
