@@ -79,32 +79,27 @@ function AdministrationDocumentArchives(props) {
     const convertDataToExportData = (data) => {
         data = data.map((x, index) => {
             return {
-                STT: index + 1,
                 name: x.name,
                 description: x.description,
-                path: x.path,
+                pathParent: x.path,
             }
         })
         let exportData = {
-            fileName: "Bảng thống kê lưu trữ",
-            dataSheets: [
-                {
-                    sheetName: "Sheet1",
-                    tables: [
-                        {
-                            tableName: "Bảng thống kê lưu trữ",
-                            rowHeader: 1,
-                            columns: [
-                                { key: "STT", value: "STT" },
-                                { key: "name", value: "Tên danh mục" },
-                                { key: "description", value: "Mô tả danh mục" },
-                                { key: "path", value: "Đường dẫn danh mục" },
-                            ],
-                            data: data
-                        },
-                    ]
-                },
-            ]
+            fileName: "Mẫu import vị trí lưu trữ",
+            dataSheets: [{
+                sheetName: "Sheet1",
+                sheetTitle: "Danh sách vị trí lưu trữ",
+                tables: [{
+                    rowHeader: 1,
+                    columns: [
+                        { key: "name", value: "Tên vị trí lưu trữ" },
+                        { key: "description", value: "Mô tả vị trí lưu trữ" },
+                        { key: "pathParent", value: "Đường dẫn vị trí lưu trữ" },
+                    ],
+                    data: data
+                }]
+
+            }]
         }
         return exportData;
     }
