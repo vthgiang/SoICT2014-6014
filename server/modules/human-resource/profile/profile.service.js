@@ -1101,7 +1101,7 @@ exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company)
             return {
                 deleteOne: {
                     "filter": {
-                        "_id": x._id
+                        _id: x._id
                     }
                 }
             }
@@ -1110,7 +1110,7 @@ exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company)
             return {
                 updateOne: {
                     "filter": {
-                        "_id": x._id
+                        _id: x._id
                     },
                     "update": {
                         $set: x
@@ -1131,7 +1131,7 @@ exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company)
         }) : [];
         let query = [...queryDelete, ...queryEdit, ...queryCrete];
         if (query.length !== 0) {
-            await collection.bulkWrite(query);
+            await collection(connect(DB_CONNECTION, portal)).bulkWrite(query);
         }
     };
     queryEditCreateDeleteDocumentInCollection(oldEmployee._id, company, Discipline, deleteDisciplines, editDisciplines, createDisciplines);
