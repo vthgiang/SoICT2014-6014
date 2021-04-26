@@ -1,12 +1,12 @@
 import React, { useCallback, useState } from 'react';
 import { connect } from 'react-redux';
-import { DialogModal, ErrorLabel, DatePicker, SelectBox } from '../../../../common-components';
+import { DialogModal, ErrorLabel, DatePicker, SelectBox, TimePicker } from '../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
 import ValidationHelper from '../../../../helpers/validationHelper';
 import { ProjectActions } from '../../redux/actions';
 import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
 import { formatDate } from '../../../../helpers/formatDate';
-import { convertDepartmentIdToDepartmentName, convertUserIdToUserName, getListDepartments } from './functionHelper';
+import { convertDateTime, convertDepartmentIdToDepartmentName, convertUserIdToUserName, formatTime, getListDepartments } from './functionHelper';
 import { getStorage } from '../../../../config';
 
 const ProjectEditForm = (props) => {
@@ -44,13 +44,23 @@ const ProjectEditForm = (props) => {
         estimatedCost: projectEdit?.estimatedCost || '',
     })
 
+    const [startTime, setStartTime] = useState(formatTime(projectEdit?.startDate) || '08:00 AM');
+    const [endTime, setEndTime] = useState(formatTime(projectEdit?.endDate) || '05:30 PM');
+
+    if (formatTime(projectEdit?.startDate) !== startTime) {
+        setStartTime(formatTime(projectEdit?.startDate))
+    }
+    if (formatTime(projectEdit?.endDate) !== endTime) {
+        setEndTime(formatTime(projectEdit?.endDate))
+    }
+
     const [responsibleEmployeesWithUnit, setResponsibleEmployeesWithUnit] = useState({
         list: [],
         currentUnitRow: '',
         currentEmployeeRow: [],
     })
 
-    const { projectName, projectNameError,codeError, description, code, startDate, endDate, projectManager, responsibleEmployees, unitCost, unitTime, estimatedCost, projectId } = form;
+    const { projectName, projectNameError, codeError, description, code, startDate, endDate, projectManager, responsibleEmployees, unitCost, unitTime, estimatedCost, projectId } = form;
 
     if (projectEditId !== projectId) {
         setForm({
@@ -127,29 +137,32 @@ const ProjectEditForm = (props) => {
 
     const isFormValidated = () => {
         let { translate } = props;
-        if (!ValidationHelper.validateName(translate, projectName, 6, 255).status) {
-            return false;
-        }
+        if (!ValidationHelper.validateName(translate, projectName, 6, 255).status) return false;
+        if (!ValidationHelper.validateName(translate, code, 6, 6).status) return false;
+        if (projectManager.length === 0) return false;
+        if (responsibleEmployees.length === 0) return false;
+        if (startDate.length === 0) return false;
+        if (endDate.length === 0) return false;
         return true;
     }
 
     const save = async () => {
         if (isFormValidated()) {
-            let partStartDate = startDate.split('-');
+            let partStartDate = convertDateTime(startDate, startTime).split('-');
             let start = new Date([partStartDate[2], partStartDate[1], partStartDate[0]].join('-'));
 
-            let partEndDate = endDate.split('-');
+            let partEndDate = convertDateTime(endDate, endTime).split('-');
             let end = new Date([partEndDate[2], partEndDate[1], partEndDate[0]].join('-'));
 
             // Cái này để hiển thị danh sách ra - không quan tâm user nào thuộc unit nào
             let newEmployeesArr = [];
             for (let unitItem of responsibleEmployeesWithUnit.list) {
                 for (let userItem of unitItem.listUsers) {
-                    console.log(userItem.userId || userItem);
+                    // console.log(userItem.userId || userItem);
                     newEmployeesArr.push(userItem.userId || userItem)
                 }
-            }            
-            
+            }
+
             // Cái này để hiển thị danh sách ra - có quan tâm user và unit và salary của user đó
             let newResponsibleEmployeesWithUnit = [];
             for (let employeeItem of responsibleEmployeesWithUnit.list) {
@@ -162,7 +175,7 @@ const ProjectEditForm = (props) => {
                         })
                     })
                 })
-            } 
+            }
 
             await props.editProjectDispatch(projectEdit?._id, {
                 name: projectName,
@@ -240,24 +253,48 @@ const ProjectEditForm = (props) => {
                                     <ErrorLabel content={codeError} />
                                 </div>
 
-                                <div className="form-group">
-                                    <label>{translate('project.startDate')}<span className="text-red">*</span></label>
-                                    <DatePicker
-                                        id={`edit-project-state-date`}
-                                        value={startDate}
-                                        onChange={(e) => handleChangeForm(e, 'startDate')}
-                                        disabled={false}
-                                    />
+                                <div className="row">
+                                    <div className="form-group col-md-6">
+                                        <label>{translate('project.startDate')}<span className="text-red">*</span></label>
+                                        <DatePicker
+                                            id={`edit-project-start-date`}
+                                            value={startDate}
+                                            onChange={(e) => handleChangeForm(e, 'startDate')}
+                                            dateFormat="day-month-year"
+                                            disabled={false}
+                                        />
+                                    </div>
+                                    <div className="form-group col-md-6">
+                                        <label>Thời gian bắt đầu dự án<span className="text-red">*</span></label>
+                                        <TimePicker
+                                            id={`edit-project-start-time`}
+                                            value={startTime}
+                                            onChange={(e) => setStartTime(e)}
+                                            disabled={false}
+                                        />
+                                    </div>
                                 </div>
 
-                                <div className="form-group">
-                                    <label>{translate('project.endDate')}<span className="text-red">*</span></label>
-                                    <DatePicker
-                                        id={`edit-project-end-date`}
-                                        value={endDate}
-                                        onChange={(e) => handleChangeForm(e, 'endDate')}
-                                        disabled={false}
-                                    />
+                                <div className="row">
+                                    <div className="form-group col-md-6">
+                                        <label>{translate('project.endDate')}<span className="text-red">*</span></label>
+                                        <DatePicker
+                                            id={`edit-project-end-date`}
+                                            value={endDate}
+                                            onChange={(e) => handleChangeForm(e, 'endDate')}
+                                            dateFormat="day-month-year"
+                                            disabled={false}
+                                        />
+                                    </div>
+                                    <div className="form-group col-md-6">
+                                        <label>Thời gian dự kiến kết thúc dự án<span className="text-red">*</span></label>
+                                        <TimePicker
+                                            id={`edit-project-end-time`}
+                                            value={endTime}
+                                            onChange={(e) => setEndTime(e)}
+                                            disabled={false}
+                                        />
+                                    </div>
                                 </div>
 
                                 <div className="form-group">

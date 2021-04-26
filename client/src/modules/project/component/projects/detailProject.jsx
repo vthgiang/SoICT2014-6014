@@ -3,11 +3,12 @@ import { connect } from 'react-redux';
 import { LazyLoadComponent, forceCheckOrVisible, DialogModal } from '../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
 import { ProjectActions } from '../../redux/actions';
-import { formatDate } from '../../../../helpers/formatDate';
+import { formatDate, formatFullDate } from '../../../../helpers/formatDate';
 import TableTasksProject from './tableTasksProject';
 import GanttTasksProject from './ganttTasksProject';
 import KanbanTasksProject from './kanbanTasksProject';
 import CpmTasksProject from './cpmTasksProject';
+import moment from 'moment';
 
 const ProjectDetailForm = (props) => {
     const { translate, projectDetail, projectDetailId } = props;
@@ -53,7 +54,7 @@ const ProjectDetailForm = (props) => {
                                     <div className="form-group">
                                         <strong className="col-sm-4">{translate('project.startDate')}</strong>
                                         <div className="col-sm-8">
-                                            <span>{projectDetail ? formatDate(projectDetail?.startDate) : null}</span>
+                                            <span>{projectDetail ? moment(projectDetail?.startDate).format('HH:mm DD/MM/YYYY') : null}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -63,7 +64,7 @@ const ProjectDetailForm = (props) => {
                                     <div className="form-group">
                                         <strong className="col-sm-4">{translate('project.endDate')}</strong>
                                         <div className="col-sm-8">
-                                            <span>{projectDetail ? formatDate(projectDetail?.endDate) : null}</span>
+                                            <span>{projectDetail ? moment(projectDetail?.endDate).format('HH:mm DD/MM/YYYY') : null}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -71,16 +72,6 @@ const ProjectDetailForm = (props) => {
                         </div>
 
                         <div className="row">
-                            <div className="col-md-6">
-                                <div className="form-horizontal">
-                                    <div className="form-group">
-                                        <strong className="col-sm-4">{translate('project.estimatedCost')}</strong>
-                                        <div className="col-sm-8">
-                                            <span>{projectDetail && projectDetail?.estimatedCost ? projectDetail?.estimatedCost : null}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                             <div className="col-md-6">
                                 <div className="form-horizontal">
                                     <div className="form-group">
@@ -91,25 +82,12 @@ const ProjectDetailForm = (props) => {
                                     </div>
                                 </div>
                             </div>
-                        </div>
-
-                        <div className="row">
                             <div className="col-md-6">
                                 <div className="form-horizontal">
                                     <div className="form-group">
                                         <strong className="col-sm-4">{translate('project.unitCost')}</strong>
                                         <div className="col-sm-8">
                                             <span>{projectDetail && projectDetail?.unitCost ? projectDetail?.unitCost : null}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-md-6">
-                                <div className="form-horizontal">
-                                    <div className="form-group">
-                                        <strong className="col-sm-4">{translate('project.unitTime')}</strong>
-                                        <div className="col-sm-8">
-                                            <span>{projectDetail && projectDetail?.unitTime ? projectDetail?.unitTime : null}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -123,6 +101,16 @@ const ProjectDetailForm = (props) => {
                                         <strong className="col-sm-4">{translate('project.member')}</strong>
                                         <div className="col-sm-8">
                                             <span>{projectDetail && projectDetail?.responsibleEmployees ? projectDetail?.responsibleEmployees.map(o => o.name).join(", ") : null}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-md-6">
+                                <div className="form-horizontal">
+                                    <div className="form-group">
+                                        <strong className="col-sm-4">{translate('project.unitTime')}</strong>
+                                        <div className="col-sm-8">
+                                            <span>{projectDetail && projectDetail?.unitTime ? translate(`project.unit.${projectDetail?.unitTime}`) : null}</span>
                                         </div>
                                     </div>
                                 </div>

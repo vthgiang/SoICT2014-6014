@@ -1,10 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { LazyLoadComponent, forceCheckOrVisible } from '../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
 import { ProjectActions } from '../../redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
-import { formatDate } from '../../../../helpers/formatDate';
+import { formatFullDate } from '../../../../helpers/formatDate';
 import TableTasksProject from './tableTasksProject';
 import GanttTasksProject from './ganttTasksProject';
 import KanbanTasksProject from './kanbanTasksProject';
@@ -15,17 +15,20 @@ import { checkIfAbleToCRUDProject, getCurrentProjectDetails } from './functionHe
 import { taskManagementActions } from '../../../task/task-management/redux/actions';
 import { TaskProjectAddModal } from '../../../task/task-management/component/taskProjectAddModal';
 import ModalAddTaskSchedule from '../scheduling-projects/modalAddTaskSchedule';
+import ProjectEditForm from './editProject';
+import moment from 'moment';
 
 const ProjectDetailPage = (props) => {
     const { translate, project, user, tasks } = props;
     const userId = getStorage("userId");
-    const projectDetail = getCurrentProjectDetails(project);
+    // const [projectDetail, setProjectDetail] = useState(getCurrentProjectDetails(project));
+    let projectDetail = getCurrentProjectDetails(project);
     const currentProjectId = window.location.href.split('?id=')[1];
 
     useEffect(() => {
         props.getProjectsDispatch({ calledId: "all", userId });
         props.getAllUserInAllUnitsOfCompany();
-        props.getTasksByProject(currentProjectId)
+        props.getTasksByProject(currentProjectId);
     }, [])
 
     const handleOpenCreateTask = () => {
@@ -43,9 +46,33 @@ const ProjectDetailPage = (props) => {
         window.$('#modal-add-task-schedule').modal('show')
     }
 
+    const handleOpenEditProject = () => {
+        setTimeout(() => {
+            window.$(`#modal-edit-project-${currentProjectId}`).modal('show')
+        }, 10);
+    }
+
+    const handleAfterCreateProject = async () => {
+        await props.getProjectsDispatch({ calledId: "all", userId });
+        await props.getTasksByProject(currentProjectId);
+        console.log('project', project)
+        projectDetail = getCurrentProjectDetails(project);
+    }
+
     return (
         <div>
             <div className="description-box" style={{ lineHeight: 1.5 }}>
+                {/* Button để edit project */}
+                <div className="dropdown pull-right">
+                    <ProjectEditForm
+                        projectEditId={projectDetail && currentProjectId}
+                        projectEdit={projectDetail}
+                        handleAfterCreateProject={handleAfterCreateProject}
+                    />
+                    <button style={{paddingTop: 8}} onClick={handleOpenEditProject}>
+                        <span className="material-icons">edit</span>
+                    </button>
+                </div>
                 <h3 style={{ marginBottom: 15 }}>Thông số dự án</h3>
                 <div className="row">
                     <div className="col-md-6">
@@ -76,7 +103,7 @@ const ProjectDetailPage = (props) => {
                             <div className="form-group">
                                 <strong className="col-sm-4">{translate('project.startDate')}</strong>
                                 <div className="col-sm-8">
-                                    <span>{projectDetail ? formatDate(projectDetail?.startDate) : null}</span>
+                                    <span>{projectDetail ? moment(projectDetail?.startDate).format('HH:mm DD/MM/YYYY') : null}</span>
                                 </div>
                             </div>
                         </div>
@@ -86,7 +113,7 @@ const ProjectDetailPage = (props) => {
                             <div className="form-group">
                                 <strong className="col-sm-4">{translate('project.endDate')}</strong>
                                 <div className="col-sm-8">
-                                    <span>{projectDetail ? formatDate(projectDetail?.endDate) : null}</span>
+                                    <span>{projectDetail ? moment(projectDetail?.endDate).format('HH:mm DD/MM/YYYY') : null}</span>
                                 </div>
                             </div>
                         </div>
@@ -94,16 +121,6 @@ const ProjectDetailPage = (props) => {
                 </div>
 
                 <div className="row">
-                    <div className="col-md-6">
-                        <div className="form-horizontal">
-                            <div className="form-group">
-                                <strong className="col-sm-4">{translate('project.estimatedCost')}</strong>
-                                <div className="col-sm-8">
-                                    <span>{projectDetail && projectDetail?.estimatedCost ? projectDetail?.estimatedCost : null}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                     <div className="col-md-6">
                         <div className="form-horizontal">
                             <div className="form-group">
@@ -114,25 +131,12 @@ const ProjectDetailPage = (props) => {
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <div className="row">
                     <div className="col-md-6">
                         <div className="form-horizontal">
                             <div className="form-group">
                                 <strong className="col-sm-4">{translate('project.unitCost')}</strong>
                                 <div className="col-sm-8">
                                     <span>{projectDetail && projectDetail?.unitCost ? projectDetail?.unitCost : null}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-md-6">
-                        <div className="form-horizontal">
-                            <div className="form-group">
-                                <strong className="col-sm-4">{translate('project.unitTime')}</strong>
-                                <div className="col-sm-8">
-                                    <span>{projectDetail && projectDetail?.unitTime ? translate(`project.unit.${projectDetail?.unitTime}`) : null}</span>
                                 </div>
                             </div>
                         </div>
@@ -150,6 +154,16 @@ const ProjectDetailPage = (props) => {
                             </div>
                         </div>
                     </div>
+                    <div className="col-md-6">
+                        <div className="form-horizontal">
+                            <div className="form-group">
+                                <strong className="col-sm-4">{translate('project.unitTime')}</strong>
+                                <div className="col-sm-8">
+                                    <span>{projectDetail && projectDetail?.unitTime ? translate(`project.unit.${projectDetail?.unitTime}`) : null}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -160,19 +174,27 @@ const ProjectDetailPage = (props) => {
                     {/* Button thêm mới */}
                     {checkIfAbleToCRUDProject({ project, user, currentProjectId }) &&
                         <div className="dropdown pull-right" style={{ marginTop: 15, marginRight: 10 }}>
-                            {currentProjectTasks && currentProjectTasks.length > 0 ? null : <ModalAddTaskSchedule />}
-                            <TaskProjectAddModal onHandleReRender={onHandleReRender} currentProjectTasks={currentProjectTasks} parentTask={parentTask} />
-                            <ModalAddTaskSchedule onHandleReRender={onHandleReRender} />
+                            {currentProjectTasks && currentProjectTasks.length > 0 ? null : <ModalAddTaskSchedule projectDetail={projectDetail} onHandleReRender={onHandleReRender} />}
+                            {currentProjectTasks && currentProjectTasks.length > 0
+                                &&
+                                <TaskProjectAddModal onHandleReRender={onHandleReRender} currentProjectTasks={currentProjectTasks} parentTask={parentTask} />}
+
                             <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true"
                                 title={translate('project.add_btn_task')}>
                                 {translate('project.add_btn_task')}
                             </button>
                             <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
-                                <li><a style={{ cursor: 'pointer' }} onClick={onHandleOpenScheduleModal} title={translate('project.add_btn_scheduling')}>
-                                    {translate('project.add_btn_scheduling')}</a></li>
-                                {currentProjectTasks && currentProjectTasks.length === 0 ? null :
-                                    <li><a style={{ cursor: 'pointer' }} onClick={handleOpenCreateTask} title={translate('project.add_btn_normal')}>
-                                        {translate('project.add_btn_normal')}</a></li>}
+                                {
+                                    currentProjectTasks && currentProjectTasks.length === 0
+                                    &&
+                                    <li><a style={{ cursor: 'pointer' }} onClick={onHandleOpenScheduleModal} title={translate('project.add_btn_scheduling')}>
+                                        {translate('project.add_btn_scheduling')}</a></li>
+                                }
+                                {
+                                    currentProjectTasks && currentProjectTasks.length === 0 ? null :
+                                        <li><a style={{ cursor: 'pointer' }} onClick={handleOpenCreateTask} title={translate('project.add_btn_normal')}>
+                                            {translate('project.add_btn_normal')}</a></li>
+                                }
 
                             </ul>
                         </div>}
@@ -180,8 +202,6 @@ const ProjectDetailPage = (props) => {
                 <ul className="nav nav-tabs">
                     <li className="active"><a href="#project-tasks-table" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Bảng</a></li>
                     <li><a href="#project-tasks-gantt" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Gantt</a></li>
-                    <li><a href="#project-tasks-kanban" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Kanban</a></li>
-                    <li><a href="#project-tasks-cpm" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>CPM</a></li>
                 </ul>
                 <div className="tab-content">
 
@@ -200,24 +220,6 @@ const ProjectDetailPage = (props) => {
                             key="GanttTasksProject"
                         >
                             <GanttTasksProject currentProjectTasks={currentProjectTasks} />
-                        </LazyLoadComponent>
-                    </div>
-
-                    {/** Kanban công việc */}
-                    <div className="tab-pane" id="project-tasks-kanban">
-                        <LazyLoadComponent
-                            key="KanbanTasksProject"
-                        >
-                            <KanbanTasksProject />
-                        </LazyLoadComponent>
-                    </div>
-
-                    {/** CPM công việc */}
-                    <div className="tab-pane" id="project-tasks-cpm">
-                        <LazyLoadComponent
-                            key="CPMTasksProject"
-                        >
-                            <CpmTasksProject />
                         </LazyLoadComponent>
                     </div>
 

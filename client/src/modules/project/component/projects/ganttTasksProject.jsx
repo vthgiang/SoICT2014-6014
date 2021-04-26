@@ -5,6 +5,7 @@ import { ProjectActions } from "../../redux/actions";
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import moment from 'moment';
 import { ProjectGantt } from '../../../../common-components/src/gantt/projectGantt';
+import { getDurationDaysWithoutSatSun } from './functionHelper';
 
 const GanttTasksProject = (props) => {
     const currentProjectId = window.location.href.split('?id=')[1];
@@ -58,7 +59,14 @@ const GanttTasksProject = (props) => {
                 let start = moment(taskItem.startDate);
                 let end = moment(taskItem.endDate);
                 let now = moment(new Date());
-                let duration = end.diff(start, currentMode);
+                let duration = 0;
+                if (currentMode === 'days') {
+                    duration = getDurationDaysWithoutSatSun(taskItem.startDate, taskItem.endDate)
+                } else if (currentMode === 'hours') {
+                    duration = getDurationDaysWithoutSatSun(taskItem.startDate, taskItem.endDate, 'hours')
+                } else {
+                    duration = end.diff(start, currentMode);
+                }
                 if (duration == 0) duration = 1;
                 let process = 0;
 

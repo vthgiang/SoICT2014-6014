@@ -5,18 +5,16 @@ import { DialogModal, SelectBox } from '../../../../common-components/index';
 import { ProjectActions } from '../../redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { taskManagementActions } from '../../../task/task-management/redux/actions';
-import { getCurrentProjectDetails } from '../projects/functionHelper';
+import { getCurrentProjectDetails, getDurationDaysWithoutSatSun } from '../projects/functionHelper';
 import ModalCalculateCPM from './modalCalculateCPM';
 import ModalExcelImport from './modalExcelImport';
 import ModalEditRowCPMExcel from './modalEditRowCPMExcel';
 import { checkIsNullUndefined, numberWithCommas } from '../../../task/task-management/component/functionHelpers';
 import moment from 'moment';
 
-const MILISECS_TO_DAYS = 86400000;
-
 const ModalAddTaskSchedule = (props) => {
-    const { translate, project } = props;
-    const projectDetail = getCurrentProjectDetails(project);
+    const { translate, project, projectDetail } = props;
+    // const projectDetail = getCurrentProjectDetails(project);
     const [state, setState] = useState({
         taskInit: {
             taskProject: projectDetail?._id,
@@ -48,9 +46,18 @@ const ModalAddTaskSchedule = (props) => {
     const [currentModeImport, setCurrentModeImport] = useState('EXCEL');
     const [estDurationEndProject, setEstDurationEndProject] = useState(
         numberWithCommas(
-            moment(projectDetail?.endDate).diff(moment(projectDetail?.startDate), `milliseconds`) / MILISECS_TO_DAYS
+            getDurationDaysWithoutSatSun(projectDetail?.startDate, projectDetail?.endDate)
         )
     )
+    if (
+        numberWithCommas(getDurationDaysWithoutSatSun(projectDetail?.startDate, projectDetail?.endDate)) !== estDurationEndProject
+    ) {
+        setEstDurationEndProject(
+            numberWithCommas(
+                getDurationDaysWithoutSatSun(projectDetail?.startDate, projectDetail?.endDate)
+            )
+        )
+    }
     const { listTasks } = state;
 
     const handleAddRow = () => {
@@ -196,9 +203,11 @@ const ModalAddTaskSchedule = (props) => {
 
     const checkIfCanCalculateCPM = () => {
         for (let taskItem of state.listTasks) {
-            if (checkIsNullUndefined(taskItem?.estimateNormalCost) || checkIsNullUndefined(taskItem?.estimateMaxCost)) {
-                return false;
-            }
+            // if (checkIsNullUndefined(taskItem?.estimateNormalCost) || checkIsNullUndefined(taskItem?.estimateMaxCost)
+            //     || taskItem?.estimateNormalTime > 7 || taskItem?.estimateNormalTime < 1 / 6) {
+            //     return false;
+            // }
+            if (taskItem?.estimateNormalTime > 7 || taskItem?.estimateNormalTime < 1 / 6) return false
         }
         return true;
     }
@@ -313,9 +322,9 @@ const ModalAddTaskSchedule = (props) => {
                                     <td>{taskItem?.preceedingTasks?.join(', ')}</td>
                                     <td>
                                         {taskItem?.estimateNormalTime}
-                                        <strong style={{ color: '#FAC547' }}>
+                                        <strong style={{ color: 'red' }}>
                                             {taskItem?.estimateNormalTime > 7 || taskItem?.estimateNormalTime < 1 / 6
-                                                ? ' - Thời gian không nên lớn hơn 7 ngày và nhỏ hơn 4 tiếng'
+                                                ? ' - Thời gian không được lớn hơn 7 ngày và nhỏ hơn 4 tiếng'
                                                 : null}
                                         </strong></td>
                                     {currentModeImport === 'HAND' && <td>{taskItem?.estimateOptimisticTime}</td>}

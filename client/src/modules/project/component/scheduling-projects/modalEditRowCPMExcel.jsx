@@ -9,7 +9,7 @@ import { UserActions } from '../../../super-admin/user/redux/actions'
 import { checkIfHasCommonItems, getSalaryFromUserId, numberWithCommas } from '../../../task/task-management/component/functionHelpers'
 import { taskManagementActions } from '../../../task/task-management/redux/actions'
 import { ProjectActions } from '../../redux/actions'
-import { getCurrentProjectDetails } from '../projects/functionHelper'
+import { getAmountOfWeekDaysInMonth, getCurrentProjectDetails } from '../projects/functionHelper'
 
 const ModalEditRowCPMExcel = (props) => {
     const { currentRow, translate, project, currentEditRowIndex } = props;
@@ -18,6 +18,7 @@ const ModalEditRowCPMExcel = (props) => {
     const [currentRowIndex, setCurrentRowIndex] = useState(undefined);
     const [currentEstimateNormalCost, setCurrentEstimateNormalCost] = useState(numberWithCommas(currentRow?.estimateNormalCost));
     const [currentEstimateMaxCost, setCurrentEstimateMaxCost] = useState(numberWithCommas(currentRow?.estimateMaxCost));
+    const [currentEstimateNormalTime, setCurrentEstimateNormalTime] = useState(numberWithCommas(currentRow?.estimateNormalTime));
     const [currentAssetCost, setCurrentAssetCost] = useState('');
     const [currentHumanCost, setCurrentHumanCost] = useState('');
     const [currentResponsibleEmployees, setCurrentResponsibleEmployees] = useState([]);
@@ -27,18 +28,33 @@ const ModalEditRowCPMExcel = (props) => {
         errorOnAccountableEmployees: undefined,
         errorOnAssetCode: undefined,
         errorOnBudget: undefined,
+        errorOnNormalTime: undefined,
     })
     // Điều kiện để rerender lại modal khi thay đổi id của row
     if (currentRow.code !== currentRowCode) {
         setCurrentRowCode(currentRow.code);
-        setCurrentAssetCost(currentRow?.currentAssetCost || '');
+        setCurrentAssetCost(currentRow?.currentAssetCost || '1,000,000');
         setCurrentHumanCost(currentRow?.currentHumanCost || '');
-        setCurrentEstimateMaxCost(currentRow?.estimateMaxCost || '')
+        setCurrentEstimateMaxCost(currentRow?.estimateMaxCost || '');
+        setCurrentEstimateNormalTime(currentRow?.estimateNormalTime || '');
         setCurrentResponsibleEmployees(currentRow?.currentResponsibleEmployees || []);
         setCurrentAccountableEmployees(currentRow?.currentAccountableEmployees || []);
     }
     if (currentEditRowIndex !== currentRowIndex) {
         setCurrentRowIndex(currentEditRowIndex);
+    }
+
+    // value ở dạng number
+    const getNearestIntegerNumber = (value) => {
+        const beforeDecimalPart = value.toString().split('.')[0].replace(/,/g, '');
+        const beforeDecimalPartArr = beforeDecimalPart.split('');
+        const numberWithFirstSecondIndexArr = beforeDecimalPartArr.map((item, index) => {
+            if (index === 0 || index === 1) return item
+            else return "0";
+        })
+        const numberWithFirstSecondIndex = numberWithFirstSecondIndexArr.join('');
+        const result = Number(numberWithFirstSecondIndex) + Math.pow(10, beforeDecimalPart.length - 2);
+        return result;
     }
 
     useEffect(() => {
@@ -52,15 +68,16 @@ const ModalEditRowCPMExcel = (props) => {
         const currentMonthWorkDays = getAmountOfWeekDaysInMonth(moment());
         const projectDetail = getCurrentProjectDetails(project);
         for (let resItem of currentResponsibleEmployees) {
-            result += resWeight * getSalaryFromUserId(projectDetail?.responsibleEmployeesWithUnit, resItem) / currentMonthWorkDays * currentRow?.estimateNormalTime;
+            result += resWeight * getSalaryFromUserId(projectDetail?.responsibleEmployeesWithUnit, resItem) / currentMonthWorkDays * currentEstimateNormalTime;
         }
         for (let accItem of currentAccountableEmployees) {
-            result += accWeight * getSalaryFromUserId(projectDetail?.responsibleEmployeesWithUnit, accItem) / currentMonthWorkDays * currentRow?.estimateNormalTime;
+            result += accWeight * getSalaryFromUserId(projectDetail?.responsibleEmployeesWithUnit, accItem) / currentMonthWorkDays * currentEstimateNormalTime;
         }
         setCurrentHumanCost(numberWithCommas(result));
         result += Number(currentAssetCost.replace(/,/g, ''));
         setCurrentEstimateNormalCost(numberWithCommas(result));
-    }, [currentResponsibleEmployees, currentAccountableEmployees, currentAssetCost])
+        setCurrentEstimateMaxCost(numberWithCommas(getNearestIntegerNumber(result)));
+    }, [currentResponsibleEmployees, currentAccountableEmployees, currentAssetCost, currentEstimateNormalTime])
 
     // Hàm thay đổi responsible arr
     const handleChangeTaskResponsibleEmployees = (value) => {
@@ -176,15 +193,23 @@ const ModalEditRowCPMExcel = (props) => {
         return message === undefined;
     }
 
-    // Lấy số ngày công trong tháng
-    const getAmountOfWeekDaysInMonth = (date) => {
-        let result = 0;
-        for (var i = 1; i < 6; i++) {
-            date.date(1);
-            var dif = (7 + (i - date.weekday())) % 7 + 1;
-            result += Math.floor((date.daysInMonth() - dif) / 7) + 1;
+    // Hàm thay đổi thời gian ước lượng
+    const handleChangeNormalTime = (event) => {
+        let value = event.target.value;
+        validateNormalTime(value, true);
+    }
+    const validateNormalTime = (value, willUpdateState = true) => {
+        let { translate } = props;
+        let { message } = ValidationHelper.validateNumericInputMandatory(translate, value);
+
+        if (willUpdateState) {
+            setCurrentEstimateNormalTime(value);
+            setError({
+                ...error,
+                errorOnNormalTime: message,
+            });
         }
-        return result;
+        return message === undefined;
     }
 
     const save = () => {
@@ -192,7 +217,7 @@ const ModalEditRowCPMExcel = (props) => {
             code: currentRow?.code,
             name: currentRow?.name,
             preceedingTasks: currentRow?.preceedingTasks,
-            estimateNormalTime: currentRow?.estimateNormalTime,
+            estimateNormalTime: currentEstimateNormalTime,
             estimateOptimisticTime: currentRow?.estimateOptimisticTime,
             estimatePessimisticTime: currentRow?.estimatePessimisticTime,
             estimateNormalCost: currentEstimateNormalCost,
@@ -207,8 +232,9 @@ const ModalEditRowCPMExcel = (props) => {
 
     const isFormValidated = useMemo(() => {
         return !checkIfHasCommonItems(currentAccountableEmployees, currentResponsibleEmployees) && currentAccountableEmployees.length > 0 && currentResponsibleEmployees.length > 0
-            && Number(currentEstimateMaxCost.replace(/,/g, '')) >= Number(currentEstimateNormalCost.replace(/,/g, ''));
-    }, [currentAccountableEmployees, currentResponsibleEmployees, currentEstimateMaxCost, currentEstimateNormalCost])
+            && Number(currentEstimateMaxCost.replace(/,/g, '')) >= Number(currentEstimateNormalCost.replace(/,/g, ''))
+            && currentEstimateNormalTime.toString().trim().length > 0;
+    }, [currentAccountableEmployees, currentResponsibleEmployees, currentEstimateMaxCost, currentEstimateNormalCost, currentEstimateNormalTime])
 
     return (
         <React.Fragment>
@@ -260,10 +286,16 @@ const ModalEditRowCPMExcel = (props) => {
                             </div>
                             <div className="col-md-6">
                                 <div className="form-horizontal">
-                                    <div className="form-group">
+                                    <div className={`form-group  ${error.errorOnNormalTime === undefined ? "" : 'has-error'}`}>
                                         <strong className="col-sm-4">Thời gian ước lượng (ngày)</strong>
                                         <div className="col-sm-8">
-                                            <span>{currentRow?.estimateNormalTime}</span>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                value={Number(currentEstimateNormalTime)}
+                                                onChange={handleChangeNormalTime}
+                                            />
+                                            <ErrorLabel content={error.errorOnNormalTime} />
                                         </div>
                                     </div>
                                 </div>

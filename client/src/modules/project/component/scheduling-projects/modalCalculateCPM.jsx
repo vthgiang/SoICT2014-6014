@@ -10,7 +10,7 @@ import { Collapse } from 'react-bootstrap';
 import { DialogModal } from '../../../../common-components';
 import { convertUserIdToUserName, getCurrentProjectDetails } from '../projects/functionHelper';
 import { Canvas, Node } from 'reaflow';
-import { getSalaryFromUserId, numberWithCommas } from '../../../task/task-management/component/functionHelpers';
+import { getNumsOfDaysWithoutGivenDay, getSalaryFromUserId, numberWithCommas } from '../../../task/task-management/component/functionHelpers';
 import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
 import moment from 'moment';
 import Swal from 'sweetalert2';
@@ -51,6 +51,15 @@ const ModalCalculateCPM = (props) => {
             if ((!taskItem.startDate || !taskItem.endDate) && taskItem.preceedingTasks.length === 0) {
                 taskItem.startDate = projectDetail?.startDate;
                 taskItem.endDate = moment(taskItem.startDate).add(taskItem.estimateNormalTime, 'days').format();
+                // Cộng thêm thứ 7 chủ nhật nếu có
+                let numsOfSaturdays = getNumsOfDaysWithoutGivenDay(new Date(taskItem.startDate), new Date(taskItem.endDate), 6);
+                let numsOfSundays = getNumsOfDaysWithoutGivenDay(new Date(taskItem.startDate), new Date(taskItem.endDate), 0);
+                taskItem.endDate = moment(taskItem.endDate).add(numsOfSaturdays + numsOfSundays, 'days').format();
+                let newNumsOfSaturdays = getNumsOfDaysWithoutGivenDay(new Date(taskItem.startDate), new Date(taskItem.endDate), 6);
+                let newNumsOfSundays = getNumsOfDaysWithoutGivenDay(new Date(taskItem.startDate), new Date(taskItem.endDate), 0);
+                if (newNumsOfSaturdays + newNumsOfSundays > 0) {
+                    taskItem.endDate = moment(taskItem.endDate).add(newNumsOfSaturdays + newNumsOfSundays, 'days').format();
+                }
             } else {
                 // Lặp mảng preceedingTasks của taskItem hiện tại
                 for (let preceedingItem of taskItem.preceedingTasks) {
@@ -62,11 +71,20 @@ const ModalCalculateCPM = (props) => {
                             .isBefore(moment(currentPreceedingTaskItem.endDate)))
                         taskItem.startDate = currentPreceedingTaskItem.endDate;
                     taskItem.endDate = moment(taskItem.startDate).add(taskItem.estimateNormalTime, 'days').format();
+                    // Cộng thêm thứ 7 chủ nhật nếu có
+                    let numsOfSaturdays = getNumsOfDaysWithoutGivenDay(new Date(taskItem.startDate), new Date(taskItem.endDate), 6);
+                    let numsOfSundays = getNumsOfDaysWithoutGivenDay(new Date(taskItem.startDate), new Date(taskItem.endDate), 0);
+                    taskItem.endDate = moment(taskItem.endDate).add(numsOfSaturdays + numsOfSundays, 'days').format();
+                    let newNumsOfSaturdays = getNumsOfDaysWithoutGivenDay(new Date(taskItem.startDate), new Date(taskItem.endDate), 6);
+                    let newNumsOfSundays = getNumsOfDaysWithoutGivenDay(new Date(taskItem.startDate), new Date(taskItem.endDate), 0);
+                    if (newNumsOfSaturdays + newNumsOfSundays > 0) {
+                        taskItem.endDate = moment(taskItem.endDate).add(newNumsOfSaturdays + newNumsOfSundays, 'days').format();
+                    }
                 }
             }
+            // console.log('tempTasksData', tempTasksData);
+            return tempTasksData;
         }
-        // console.log('tempTasksData', tempTasksData);
-        return tempTasksData;
     }
 
     const handleCalculateRecommend = () => {
@@ -149,7 +167,7 @@ const ModalCalculateCPM = (props) => {
                             salary: getSalaryFromUserId(projectDetail?.responsibleEmployeesWithUnit, accItem)
                         })
                     })
-                    const newActorsWithSalary= [...responsiblesWithSalaryArr, ...accountablesWithSalaryArr];
+                    const newActorsWithSalary = [...responsiblesWithSalaryArr, ...accountablesWithSalaryArr];
                     const preceedingTasks = processDataItem.preceedingTasks?.map(item => ({
                         task: item.trim(),
                         link: ''
@@ -179,6 +197,19 @@ const ModalCalculateCPM = (props) => {
                 props.handleResetData();
             }
         })
+    }
+
+    const renderRowTableStyle= (condition) => {
+        if (condition) {
+            return {
+                color: 'white',
+                backgroundColor: '#28A745',
+            }
+        }
+        return {
+            color: 'black',
+            backgroundColor: 'white',
+        }
     }
 
     return (
@@ -245,7 +276,7 @@ const ModalCalculateCPM = (props) => {
                                             <th>Người thực hiện</th>
                                             <th>Người phê duyệt</th>
                                             <th>Thời gian bắt đầu</th>
-                                            <th>Thời gian dự kiến kết thúc</th>
+                                            <th>Thời gian dự kiến kết thúc (không tính T7, CN)</th>
                                             <th>{translate('project.schedule.estimatedTime')} (ngày)</th>
                                             <th>{translate('project.schedule.estimatedTimeOptimistic')} (ngày)</th>
                                             <th>{translate('project.schedule.estimatedCostNormal')} (VND)</th>
@@ -256,22 +287,22 @@ const ModalCalculateCPM = (props) => {
                                         {(tasksData && tasksData.length > 0) &&
                                             processedData.map((taskItem, index) => (
                                                 <tr key={index}>
-                                                    <td style={{ color: pert.slack[taskItem?.code] === 0 ? 'green' : 'black' }}>{taskItem?.code}</td>
-                                                    <td style={{ color: pert.slack[taskItem?.code] === 0 ? 'green' : 'black' }}>{taskItem?.preceedingTasks.join(', ')}</td>
-                                                    <td style={{ color: pert.slack[taskItem?.code] === 0 ? 'green' : 'black' }}>{taskItem?.currentResponsibleEmployees ?
+                                                    <td style={renderRowTableStyle(pert.slack[taskItem?.code] === 0)}>{taskItem?.code}</td>
+                                                    <td style={renderRowTableStyle(pert.slack[taskItem?.code] === 0)}>{taskItem?.preceedingTasks.join(', ')}</td>
+                                                    <td style={renderRowTableStyle(pert.slack[taskItem?.code] === 0)}>{taskItem?.currentResponsibleEmployees ?
                                                         taskItem?.currentResponsibleEmployees
                                                             .map(userId => convertUserIdToUserName(listUsers, userId)).join(', ') : null}
                                                     </td>
-                                                    <td style={{ color: pert.slack[taskItem?.code] === 0 ? 'green' : 'black' }}>{taskItem?.currentAccountableEmployees ?
+                                                    <td style={renderRowTableStyle(pert.slack[taskItem?.code] === 0)}>{taskItem?.currentAccountableEmployees ?
                                                         taskItem?.currentAccountableEmployees
                                                             .map(userId => convertUserIdToUserName(listUsers, userId)).join(', ') : null}
                                                     </td>
-                                                    <td style={{ color: pert.slack[taskItem?.code] === 0 ? 'green' : 'black' }}>{moment(taskItem?.startDate).format('HH:mm DD/MM/YYYY')}</td>
-                                                    <td style={{ color: pert.slack[taskItem?.code] === 0 ? 'green' : 'black' }}>{moment(taskItem?.endDate).format('HH:mm DD/MM/YYYY')}</td>
-                                                    <td style={{ color: pert.slack[taskItem?.code] === 0 ? 'green' : 'black' }}>{taskItem?.estimateNormalTime}</td>
-                                                    <td style={{ color: pert.slack[taskItem?.code] === 0 ? 'green' : 'black' }}>{taskItem?.estimateOptimisticTime}</td>
-                                                    <td style={{ color: pert.slack[taskItem?.code] === 0 ? 'green' : 'black' }}>{taskItem?.estimateNormalCost}</td>
-                                                    <td style={{ color: pert.slack[taskItem?.code] === 0 ? 'green' : 'black' }}>{taskItem?.estimateMaxCost}</td>
+                                                    <td style={renderRowTableStyle(pert.slack[taskItem?.code] === 0)}>{moment(taskItem?.startDate).format('HH:mm DD/MM/YYYY')}</td>
+                                                    <td style={renderRowTableStyle(pert.slack[taskItem?.code] === 0)}>{moment(taskItem?.endDate).format('HH:mm DD/MM/YYYY')}</td>
+                                                    <td style={renderRowTableStyle(pert.slack[taskItem?.code] === 0)}>{taskItem?.estimateNormalTime}</td>
+                                                    <td style={renderRowTableStyle(pert.slack[taskItem?.code] === 0)}>{taskItem?.estimateOptimisticTime}</td>
+                                                    <td style={renderRowTableStyle(pert.slack[taskItem?.code] === 0)}>{taskItem?.estimateNormalCost}</td>
+                                                    <td style={renderRowTableStyle(pert.slack[taskItem?.code] === 0)}>{taskItem?.estimateMaxCost}</td>
                                                 </tr>
                                             ))
                                         }
@@ -296,7 +327,7 @@ const ModalCalculateCPM = (props) => {
                                 <Node>
                                     {event => (
                                         <foreignObject
-                                            style={{ backgroundColor: event.node.data.slack === 0 ? 'red' : 'white' }}
+                                            style={{ backgroundColor: event.node.data.slack === 0 ? 'green' : 'white' }}
                                             height={event.height} width={event.width}
                                             x={0}
                                             y={0}

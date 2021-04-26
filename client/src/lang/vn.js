@@ -273,7 +273,7 @@ export default {
             phases_list: 'Danh sách giai đoạn',
             issues_list: 'Danh sách vấn đề',
             project_report: 'Báo cáo dự án',
-            project_evaluation: 'Đánh giá',
+            project_evaluation: 'Thống kê đánh giá',
             
             // Quản lý vận chuyển
             manage_transport: "Quản lý vận chuyển",
