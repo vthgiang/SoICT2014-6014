@@ -33,6 +33,9 @@ exports.getAllFields = async (portal, params, company) => {
     } else {
         let data = await Field(connect(DB_CONNECTION, portal)).find(keySearch);
         listField = await Field(connect(DB_CONNECTION, portal)).find(keySearch)
+        .sort({
+            'createdAt': -1
+        })
         .skip(params.page).limit(params.limit);
         return {
             listField: listField,

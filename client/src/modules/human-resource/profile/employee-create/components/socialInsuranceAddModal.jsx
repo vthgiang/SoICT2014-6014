@@ -35,7 +35,7 @@ function SocialInsuranceAddModal(props) {
         startDate: formatDate(Date.now()),
         endDate: formatDate(Date.now()),
         position: "",
-        money: null
+        money: ""
     })
 
     const { translate } = props;
@@ -96,7 +96,7 @@ function SocialInsuranceAddModal(props) {
 
     const validateMoney = (value, willUpdateState = true) => {
         const { translate } = props;
-        let { message } = ValidationHelper.validateEmpty(translate, value);
+        let { message } = ValidationHelper.validateEmpty(translate, value.toString());
 
         if (willUpdateState) {
             setState(state => {

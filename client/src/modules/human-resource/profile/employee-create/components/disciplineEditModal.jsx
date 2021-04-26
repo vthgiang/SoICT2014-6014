@@ -44,7 +44,6 @@ function DisciplineEditModal(props) {
             return {
                 ...state,
                 id: props.id,
-                _id: props._id,
                 index: props.index,
                 decisionNumber: props.decisionNumber,
                 organizationalUnit: props.organizationalUnit,
@@ -52,7 +51,6 @@ function DisciplineEditModal(props) {
                 startDate: props.startDate,
                 endDate: props.endDate,
                 type: props.type,
-
                 errorOnNumber: undefined,
                 errorOnUnit: undefined,
                 errorOnStartDate: undefined,
@@ -62,6 +60,14 @@ function DisciplineEditModal(props) {
 
             }
         })
+        if (props._id) {
+            setState(state => {
+                return {
+                    ...state,
+                    _id: props._id
+                }
+            })
+        }
     }, [props.id])
 
     const { translate, department } = props;

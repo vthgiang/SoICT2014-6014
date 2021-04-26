@@ -23,7 +23,6 @@ function FileEditModal(props) {
             return {
                 ...state,
                 id: props.id,
-                _id: props._id,
                 index: props.index,
                 name: props.name,
                 description: props.description,
@@ -32,12 +31,19 @@ function FileEditModal(props) {
                 file: props.file,
                 urlFile: props.urlFile,
                 fileUpload: props.fileUpload,
-
                 errorOnNameFile: undefined,
                 errorOnDiscFile: undefined,
                 errorOnNumberFile: undefined,
             }
         })
+        if (props._id) {
+            setState(state => {
+                return {
+                    ...state,
+                    _id: props._id
+                }
+            })
+        }
     }, [props.id])
 
     const { translate } = props;
@@ -126,7 +132,7 @@ function FileEditModal(props) {
         return message === undefined;
     }
 
-    /** Bắt sự kiên thay đổi mô tả */
+    /** Bắt sự kiên thay đổi số lượng */
     const handleNumberChange = (e) => {
         let { value } = e.target;
         validateNumberFile(value, true);
@@ -134,7 +140,7 @@ function FileEditModal(props) {
 
     const validateNumberFile = (value, willUpdateState = true) => {
         const { translate } = props;
-        let { message } = ValidationHelper.validateEmpty(translate, value);
+        let { message } = ValidationHelper.validateEmpty(translate, value.toString());
 
         if (willUpdateState) {
             setState(state => {

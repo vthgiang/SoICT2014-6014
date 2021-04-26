@@ -50,7 +50,6 @@ function CertificateEditModal(props) {
             return {
                 ...state,
                 id: props.id,
-                _id: props._id,
                 index: props.index,
                 issuedBy: props.issuedBy,
                 startDate: props.startDate,
@@ -65,6 +64,14 @@ function CertificateEditModal(props) {
                 errorOnEndDate: undefined
             }
         })
+        if (props._id) {
+            setState(state => {
+                return {
+                    ...state,
+                    _id: props._id
+                }
+            })
+        }
     }, [props.id])
 
 
@@ -230,7 +237,7 @@ function CertificateEditModal(props) {
         if (isFormValidated()) {
             props.handleChange({ ...state, startDate: startDateNew, endDate: endDateNew });
         }
-        console.log(props.id);
+        // console.log(props.id);
     }
 
     let files;

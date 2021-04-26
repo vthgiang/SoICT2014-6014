@@ -709,8 +709,8 @@ exports.createEmployee = async (portal, data, company, fileInfor) => {
         fileDegree = fileInfor.fileDegree,
         fileCertificate = fileInfor.fileCertificate,
         fileContract = fileInfor.fileContract,
-        fileMajor = fileInfor.fileMajor,
-        fileCareer = fileInfor.fileCareer,
+        // fileMajor = fileInfor.fileMajor,
+        // fileCareer = fileInfor.fileCareer,
         file = fileInfor.file,
         healthInsuranceAttachment = fileInfor.healthInsuranceAttachment;
     let {
@@ -728,8 +728,8 @@ exports.createEmployee = async (portal, data, company, fileInfor) => {
         }
     }
 
-    career = this.mergeUrlFileToObject(fileCareer, career);
-    major = this.mergeUrlFileToObject(fileMajor, major);
+    // career = this.mergeUrlFileToObject(fileCareer, career);
+    // major = this.mergeUrlFileToObject(fileMajor, major);
     degrees = this.mergeUrlFileToObject(fileDegree, degrees);
     certificates = this.mergeUrlFileToObject(fileCertificate, certificates);
     contracts = this.mergeUrlFileToObject(fileContract, contracts);
@@ -787,8 +787,8 @@ exports.createEmployee = async (portal, data, company, fileInfor) => {
         experiences: data.experiences,
         certificates: certificates,
         degrees: degrees,
-        major: major,
-        career: career,
+        // major: major,
+        // career: career,
         contractEndDate: data.contractEndDate ? data.contractEndDate : null,
         contractType: data.contractType,
         contracts: contracts,
@@ -902,12 +902,12 @@ exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company)
         createDegrees,
         editDegrees,
         deleteDegrees,
-        createMajor,
-        editMajor,
-        deleteMajor,
-        createCareer,
-        editCareer,
-        deleteCareer,
+        // createMajor,
+        // editMajor,
+        // deleteMajor,
+        // createCareer,
+        // editCareer,
+        // deleteCareer,
         createCertificates,
         editCertificates,
         deleteCertificates,

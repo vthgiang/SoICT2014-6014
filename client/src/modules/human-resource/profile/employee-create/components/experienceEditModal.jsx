@@ -41,19 +41,25 @@ function ModalEditExperience(props) {
             return {
                 ...state,
                 id: props.id,
-                _id: props._id,
                 index: props.index,
                 company: props.company,
                 startDate: props.startDate,
                 endDate: props.endDate,
                 position: props.position,
-
                 errorOnPosition: undefined,
                 errorOnUnit: undefined,
                 errorOnStartDate: undefined,
                 errorOnEndDate: undefined
             }
         })
+        if (props._id) {
+            setState(state => {
+                return {
+                    ...state,
+                    _id: props._id
+                }
+            })
+        }
     }, [props.id])
 
     const { translate } = props;

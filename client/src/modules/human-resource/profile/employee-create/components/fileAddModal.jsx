@@ -98,7 +98,7 @@ function FileAddModal(props) {
         return message === undefined;
     }
 
-    /** Bắt sự kiên thay đổi mô tả */
+    /** Bắt sự kiên thay đổi số lượng */
     const handleNumberChange = (e) => {
         let { value } = e.target;
         validateNumberFile(value, true);
@@ -106,7 +106,7 @@ function FileAddModal(props) {
 
     const validateNumberFile = (value, willUpdateState = true) => {
         const { translate } = props;
-        let { message } = ValidationHelper.validateEmpty(translate, value);
+        let { message } = ValidationHelper.validateEmpty(translate, value.toString());
 
         if (willUpdateState) {
             setState(state => {

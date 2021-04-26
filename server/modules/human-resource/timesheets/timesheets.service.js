@@ -80,7 +80,7 @@ exports.searchTimesheets = async (portal, params, company) => {
             select: 'employeeNumber fullName emailInCompany'
         })
         .sort({
-            'createAt': 'desc'
+            'createdAt': 'desc'
         }).skip(params.page).limit(params.limit);
 
     return {

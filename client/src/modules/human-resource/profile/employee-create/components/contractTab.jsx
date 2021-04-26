@@ -53,13 +53,10 @@ function ContractTab(props) {
         return contract
     }
 
-
     useEffect(() => {
-        props.getListCourse({ organizationalUnits: state.organizationalUnits, positions: state.roles });
-    }, [])
-
-    useEffect(() => {
-        props.getListCourse({ organizationalUnits: props.organizationalUnits, positions: props.roles });
+        if (props.organizationalUnits && props.roles) {
+            props.getListCourse({ organizationalUnits: props.organizationalUnits, positions: props.roles });
+        }
     }, [props.id])
 
     useEffect(() => {

@@ -45,7 +45,6 @@ function AnnualLeaveEditModal(props) {
         setState({
             ...state,
             id: props.id,
-            _id: props._id,
             index: props.index,
             organizationalUnit: props.organizationalUnit,
             endDate: props.endDate,
@@ -61,6 +60,14 @@ function AnnualLeaveEditModal(props) {
             errorOnEndDate: undefined,
             errorOnTotalHours: undefined,
         })
+        if (props._id) {
+            setState(state => {
+                return {
+                    ...state,
+                    _id: props._id
+                }
+            })
+        }
     }, [props.id]);
 
     const editStartTime = useRef('');
