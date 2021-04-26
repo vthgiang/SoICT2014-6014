@@ -24,7 +24,7 @@ exports.getAllFields = async (portal, params, company) => {
         }
     }
 
-    if(params.limit===undefined&&params.page===undefined){
+    if(params.limit === undefined && params.page === undefined){
         let data = await Field(connect(DB_CONNECTION, portal)).find(keySearch);
         return {
             listField: data,
@@ -33,9 +33,7 @@ exports.getAllFields = async (portal, params, company) => {
     } else {
         let data = await Field(connect(DB_CONNECTION, portal)).find(keySearch);
         listField = await Field(connect(DB_CONNECTION, portal)).find(keySearch)
-        .sort({
-            'createAt': 'desc'
-        }).skip(params.page).limit(params.limit);
+        .skip(params.page).limit(params.limit);
         return {
             listField: listField,
             totalList: data.length

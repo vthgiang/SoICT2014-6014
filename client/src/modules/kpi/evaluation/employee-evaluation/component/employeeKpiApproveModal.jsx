@@ -7,9 +7,9 @@ import parse from 'html-react-parser';
 import { kpiMemberActions } from '../redux/actions';
 import { createKpiSetActions } from '../../../employee/creation/redux/actions';
 import { AuthActions } from '../../../../auth/redux/actions';
+import { createUnitKpiActions } from '../../../organizational-unit/creation/redux/actions';
 
-import { DataTableSetting } from '../../../../../common-components';
-import { DialogModal, ErrorLabel, DatePicker, Comment } from '../../../../../common-components/index';
+import { DialogModal, ErrorLabel, DatePicker, Comment, DataTableSetting, SlimScroll } from '../../../../../common-components/index';
 
 import { getStorage } from '../../../../../config';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
@@ -19,7 +19,7 @@ import { EmployeeKpiSetLogsModal } from '../../../employee/management/component/
 
 function EmployeeKpiApproveModal(props) {
     let idUser = getStorage("userId");
-    const { translate, kpimembers } = props;
+    const { translate, kpimembers, createKpiUnit, employeeKpiSet } = props;
 
     const tableId = "employee-kpi-approve-modal";
     getTableConfiguration(tableId);
@@ -33,47 +33,57 @@ function EmployeeKpiApproveModal(props) {
         compare: false,
         checkInput: false,
         tableId,
-        employeeKpiSetId: null
+        employeeKpiSetId: null,
+        type: "approve",
+        tableBodyKpiId: "table-body-kpi",
+        tableBodyKpiCompareId: "table-body-kpi-compare"
     });
-    const { errorOnDate, date, compare, edit, defaultDate, employeeKpiSetId } = state;
+    const { errorOnDate, date, compare, edit, defaultDate, employeeKpiSetId, type, tableBodyKpiId, tableBodyKpiCompareId } = state;
     let kpimember, kpimembercmp, month, totalWeight;
 
-    useEffect(()=>{
-        if (props.id !== state.id) {
-            setState({
-                ...state,
-                id: props.id,
-            })
-        }
-    },[props.id])
+    if (props.id !== state.id) {
+        setState({
+            ...state,
+            id: props.id,
+        })
+    }
 
     useEffect(()=>{
-        const { id } = state;
-        if (props.id !== id) {
-            if (props.id) {
-                props.getKpisByKpiSetId(props.id);
-            }
+        if (state.id) {
+            props.getKpisByKpiSetId(state.id);
         }
-        if (props?.auth?.user?.avatar !== props?.auth?.user?.avatar) {
-            props.getKpisByKpiSetId(props.id);
-        }
+    }, [state.id, props?.auth?.user?.avatar])
+
+    useEffect(() => {
+        SlimScroll.removeVerticalScrollStyleCSS(tableBodyKpiId)
+        SlimScroll.addVerticalScrollStyleCSS(tableBodyKpiId, 450, true)
+
+        SlimScroll.removeVerticalScrollStyleCSS(tableBodyKpiCompareId)
+        SlimScroll.addVerticalScrollStyleCSS(tableBodyKpiCompareId, 450, true)
     })
 
+    useEffect(() => {
+        if (!createKpiUnit.currentKPI && kpimembers.currentKPI?.organizationalUnit?._id) {
+            let month = new Date(kpimembers.currentKPI?.date)
+            props.getCurrentKPIUnit(null, kpimembers.currentKPI.organizationalUnit._id, month)
+        }
+    }, [kpimembers.currentKPI])
+
     const handleEditOrganizationalUnitKPi = async (employeeKPI) => {
-        if (employeeKPI?.approvedPoint !== null && employeeKPI?.approvedPoint >= 0) {
-            Swal.fire({
-                title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.edit_target.evaluated'),
-                type: 'warning',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
-            })
-        } else {
+        // if (employeeKPI?.approvedPoint !== null && employeeKPI?.approvedPoint >= 0) {
+        //     Swal.fire({
+        //         title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.edit_target.evaluated'),
+        //         type: 'warning',
+        //         confirmButtonColor: '#3085d6',
+        //         confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
+        //     })
+        // } else {
             await setState( {
                 ...state,
                 edit: employeeKPI,
             })
             window.$(`#editEmployeeKpi`).modal("show");
-        }
+        // }
     }
 
     const handleDateChange = (value) => {
@@ -110,7 +120,7 @@ function EmployeeKpiApproveModal(props) {
             ...state,
             employeeKpiSetId: id
         })
-        window.$('#modal-employee-kpi-set-log').modal('show')
+        window.$(`#modal-employee-kpi-set-log-${type}`).modal('show')
     }
 
     function formatDate(date) {
@@ -163,14 +173,14 @@ function EmployeeKpiApproveModal(props) {
     const handleEditStatusTarget = (event, kpi, status, listTarget) => {
         event.preventDefault();
 
-        if (kpi?.approvedPoint !== null && kpi?.approvedPoint >= 0) {
-            Swal.fire({
-                title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.edit_target.evaluated'),
-                type: 'warning',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
-            })
-        } else {
+        // if (kpi?.approvedPoint !== null && kpi?.approvedPoint >= 0) {
+        //     Swal.fire({
+        //         title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.edit_target.evaluated'),
+        //         type: 'warning',
+        //         confirmButtonColor: '#3085d6',
+        //         confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
+        //     })
+        // } else {
             if (listTarget) {
                 let totalWeight;
                 if (listTarget) {
@@ -192,7 +202,7 @@ function EmployeeKpiApproveModal(props) {
             } else {
                 props.editStatusKpi(kpi?._id, status);
             }
-        }
+        // }
     }
 
    const handleApproveKPI = async (id, listTarget) => {
@@ -209,7 +219,21 @@ function EmployeeKpiApproveModal(props) {
         }
     }
 
-   const handleCheckEmployeeKpiStatus = (employeeKpiStatus) => {
+    function formatMonth(date) {
+        let d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        return [month, year].join('-');
+    }
+
+    const handleCheckEmployeeKpiStatus = (employeeKpiStatus) => {
         if (employeeKpiStatus === null) {
             return translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.check_status_target.not_approved');
         } else if (employeeKpiStatus === 0) {
@@ -243,7 +267,7 @@ function EmployeeKpiApproveModal(props) {
         <React.Fragment>
             <DialogModal
                 modalID={`modal-approve-KPI-member`}
-                title={`${translate('kpi.evaluation.employee_evaluation.approve_KPI_employee')} ${kpimember?.creator?.name} - ${translate('kpi.evaluation.employee_evaluation.month')} ${kpimember && month[1]}/${kpimember && month[0]}`}
+                title={employeeKpiSet?.creator?.name && `KPI ${employeeKpiSet.creator.name}, ${translate('kpi.evaluation.employee_evaluation.month')} ${formatMonth(employeeKpiSet?.date)}`}
                 hasSaveButton={false}
                 size={100}
             >
@@ -253,6 +277,7 @@ function EmployeeKpiApproveModal(props) {
                 />
                 <EmployeeKpiSetLogsModal
                     employeeKpiSetId={employeeKpiSetId}
+                    type={type}
                 />
                 <div className="qlcv">
                     <div className="form-inline pull-right">
@@ -283,67 +308,70 @@ function EmployeeKpiApproveModal(props) {
                                 <button className="btn btn-success" onClick={() => searchKPIMemberByMonth(kpimember && kpimember.creator._id)}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
                             </div>
                         </div>
-                        <table className="table table-bordered table-striped table-hover">
-                            <thead>
-                            <tr key="approve">
-                                <th title="STT" className="col-fixed" style={{ width: 50 }}>STT</th>
-                                <th title="Tên mục tiêu">{translate('kpi.evaluation.employee_evaluation.name')}</th>
-                                <th title="Mục tiêu đơn vị">{translate('kpi.evaluation.employee_evaluation.target')}</th>
-                                <th title="Tiêu chí đánh giá">{translate('kpi.evaluation.employee_evaluation.criteria')}</th>
-                                <th title="Trọng số">{translate('kpi.evaluation.employee_evaluation.weight')}</th>
-                                <th title="Kết quả đánh giá">{translate('kpi.evaluation.employee_evaluation.result')}</th>
-                            </tr>
-                            </thead>
-                            <tbody >
-                            {kpimembercmp ?
-                                kpimembercmp.kpis.map((item, index) =>
-                                    <tr key={index}>
-                                        <td>{index + 1}</td>
-                                        <td>{item ? item.name : ""}</td>
-                                        <td>{item.parent ? item.parent.name : ""}</td>
-                                        <td>{item ? parse(item.criteria) : ""}</td>
-                                        <td>{item.weight}</td>
-                                        <td>{item ? item.approvedPoint : ""}</td>
-                                    </tr>
-                                ) : <tr><td colSpan={6}>{translate('kpi.evaluation.employee_evaluation.data_not_found')}</td></tr>
-                            }
-                            </tbody>
-                        </table>
+                        <div id={tableBodyKpiCompareId}>
+                            <table className="table table-bordered table-striped table-hover">
+                                <thead>
+                                <tr key="approve">
+                                    <th title="STT" className="col-fixed" style={{ width: 50 }}>STT</th>
+                                    <th title="Tên mục tiêu">{translate('kpi.evaluation.employee_evaluation.name')}</th>
+                                    <th title="Mục tiêu đơn vị">{translate('kpi.evaluation.employee_evaluation.target')}</th>
+                                    <th title="Tiêu chí đánh giá">{translate('kpi.evaluation.employee_evaluation.criteria')}</th>
+                                    <th title="Trọng số">{translate('kpi.evaluation.employee_evaluation.weight')}</th>
+                                    <th title="Kết quả đánh giá">{translate('kpi.evaluation.employee_evaluation.result')}</th>
+                                </tr>
+                                </thead>
+                                <tbody style={{ height: "200px" }}>
+                                {kpimembercmp ?
+                                    kpimembercmp.kpis.map((item, index) =>
+                                        <tr key={index}>
+                                            <td>{index + 1}</td>
+                                            <td>{item ? item.name : ""}</td>
+                                            <td>{item.parent ? item.parent.name : ""}</td>
+                                            <td>{item ? parse(item.criteria) : ""}</td>
+                                            <td>{item.weight}</td>
+                                            <td>{item ? item.approvedPoint : ""}</td>
+                                        </tr>
+                                    ) : <tr><td colSpan={6}>{translate('kpi.evaluation.employee_evaluation.data_not_found')}</td></tr>
+                                }
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                     }
                     <br></br>
                     <br></br>
+                </div>
 
-                    {/* Label cảnh báo */}
-                    <label>{`${translate('kpi.evaluation.employee_evaluation.kpi_this_month')} ${kpimember && month[1]}/${kpimember && month[0]}`} ({totalWeight}/100)</label>
-
-                    {/* Danh sách KPI */}
-                    <DataTableSetting 
-                        className="pull-right" 
-                        tableId={tableId}
-                        columnArr={[
-                            'STT',
-                            'Tên mục tiêu'
-                            , 'Mục tiêu đơn vị',
-                            'Tiêu chí đánh giá',
-                            'Trọng số',
-                            'Trạng thái',
-                            'Kết quả đánh giá',
-                            'Hành động'
-                        ]}
-                    />
-                    <table id={tableId} className="table table-bordered table-striped table-hover">
+                {/* Label cảnh báo */}
+                <label>{`${translate('kpi.evaluation.employee_evaluation.kpi_this_month')} ${formatMonth(employeeKpiSet?.date)} (${totalWeight ?? 0}/100)`}</label>
+                {/* Danh sách KPI */}
+                <DataTableSetting 
+                    className="pull-right" 
+                    tableId={tableId}
+                    columnArr={[
+                        'STT',
+                        'Tên mục tiêu'
+                        , 'Mục tiêu đơn vị',
+                        'Tiêu chí đánh giá',
+                        'Trọng số',
+                        'Trạng thái',
+                        'Kết quả đánh giá',
+                        'Hành động'
+                    ]}
+                />
+                <div id={tableBodyKpiId}>
+                    <table id={tableId} className="table table-bordered table-hover">
                         <thead>
-                        <tr>
-                            <th className="col-fixed" style={{ width: 50 }}>{translate('kpi.evaluation.employee_evaluation.index')}</th>
-                            <th>{translate('kpi.evaluation.employee_evaluation.name')}</th>
-                            <th>{translate('kpi.evaluation.employee_evaluation.target')}</th>
-                            <th>{translate('kpi.evaluation.employee_evaluation.criteria')}</th>
-                            <th>{translate('kpi.evaluation.employee_evaluation.weight')}</th>
-                            <th>{translate('kpi.evaluation.employee_evaluation.status')}</th>
-                            <th>{translate('kpi.evaluation.employee_evaluation.result')}</th>
-                            <th className="col-fixed" style={{ width: 130 }}>{translate('kpi.evaluation.employee_evaluation.action')}</th>
-                        </tr>
+                            <tr>
+                                <th className="col-fixed" style={{ width: 50 }}>{translate('kpi.evaluation.employee_evaluation.index')}</th>
+                                <th>{translate('kpi.evaluation.employee_evaluation.name')}</th>
+                                <th>{translate('kpi.evaluation.employee_evaluation.target')}</th>
+                                <th>{translate('kpi.evaluation.employee_evaluation.criteria')}</th>
+                                <th>{translate('kpi.evaluation.employee_evaluation.weight')}</th>
+                                <th>{translate('kpi.evaluation.employee_evaluation.status')}</th>
+                                <th>{translate('kpi.evaluation.employee_evaluation.result')}</th>
+                                <th className="col-fixed" style={{ width: 130 }}>{translate('kpi.evaluation.employee_evaluation.action')}</th>
+                            </tr>
                         </thead>
                         <tbody>
                         {kpimember && kpimember.kpis.map((item, index) =>
@@ -374,6 +402,8 @@ function EmployeeKpiApproveModal(props) {
                         </tbody>
                     </table>
                 </div>
+                <br/><br/>
+
                 <div className="row" style={{ display: 'flex', flex: 'no-wrap', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                     <div className="col-xs-12 col-sm-12 col-md-6">
                         <Comment
@@ -398,8 +428,8 @@ function EmployeeKpiApproveModal(props) {
 }
 
 function mapState(state) {
-    const { kpimembers, auth, KPIPersonalManager } = state;
-    return { kpimembers, auth, KPIPersonalManager };
+    const { kpimembers, auth, KPIPersonalManager, createKpiUnit } = state;
+    return { kpimembers, auth, KPIPersonalManager, createKpiUnit };
 }
 
 const actionCreators = {
@@ -416,6 +446,7 @@ const actionCreators = {
     deleteFileComment: createKpiSetActions.deleteFileComment,
     deleteFileChildComment: createKpiSetActions.deleteFileChildComment,
     downloadFile: AuthActions.downloadFile,
+    getCurrentKPIUnit: createUnitKpiActions.getCurrentKPIUnit,
 };
 const connectedEmployeeKpiApproveModal = connect(mapState, actionCreators)(withTranslate(EmployeeKpiApproveModal));
 export { connectedEmployeeKpiApproveModal as EmployeeKpiApproveModal };

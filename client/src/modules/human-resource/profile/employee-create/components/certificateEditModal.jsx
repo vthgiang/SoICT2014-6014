@@ -45,6 +45,29 @@ function CertificateEditModal(props) {
 
     const { name, issuedBy, endDate, startDate, file, urlFile, fileUpload, errorOnName, errorOnUnit, errorOnEndDate, errorOnStartDate } = state;
 
+    useEffect(() => {
+        setState(state => {
+            return {
+                ...state,
+                id: props.id,
+                _id: props._id,
+                index: props.index,
+                issuedBy: props.issuedBy,
+                startDate: props.startDate,
+                endDate: props.endDate,
+                name: props.name,
+                file: props.file,
+                urlFile: props.urlFile,
+                fileUpload: props.fileUpload,
+                errorOnName: undefined,
+                errorOnUnit: undefined,
+                errorOnStartDate: undefined,
+                errorOnEndDate: undefined
+            }
+        })
+    }, [props.id])
+
+
     /** Bắt sự kiện thay đổi file đính kèm */
     const handleChangeFile = (value) => {
         if (value.length !== 0) {
@@ -207,29 +230,8 @@ function CertificateEditModal(props) {
         if (isFormValidated()) {
             props.handleChange({ ...state, startDate: startDateNew, endDate: endDateNew });
         }
+        console.log(props.id);
     }
-
-    useEffect(() => {
-        setState(state => {
-            return {
-                ...state,
-                id: props.id,
-                _id: props._id,
-                index: props.index,
-                issuedBy: props.issuedBy,
-                startDate: props.startDate,
-                endDate: props.endDate,
-                name: props.name,
-                file: props.file,
-                urlFile: props.urlFile,
-                fileUpload: props.fileUpload,
-                errorOnName: undefined,
-                errorOnUnit: undefined,
-                errorOnStartDate: undefined,
-                errorOnEndDate: undefined
-            }
-        })
-    }, [props.id])
 
     let files;
     if (file) {

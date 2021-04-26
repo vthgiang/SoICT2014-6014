@@ -147,7 +147,7 @@ function AnnualLeaveApplicationForm(props) {
     const handleTotalHoursChange = (e) => {
         let { value } = e.target;
         const { translate } = props;
-        const { message } = ValidationHelper.validateEmpty(translate, value);
+        const { message } = ValidationHelper.validateNumberInputMin(translate, value, 0);
         setState({
             ...state,
             errorOnTotalHours: message,

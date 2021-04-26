@@ -170,6 +170,7 @@ exports.getCustomerById = async (portal, companyId, id) => {
         .populate({ path: 'status', select: '_id name' })
         .populate({ path: 'owner', select: '_id name email' })
         .populate({ path: 'creator', select: '_id name email' })
+        .populate({ path: 'files.creator', select: '_id name ' })
         .populate({ path: 'statusHistories.oldValue statusHistories.newValue statusHistories.createdBy', select: '_id name' })
     return getCustomer;
 }

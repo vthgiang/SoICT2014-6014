@@ -10,6 +10,7 @@ import { getStorage } from '../../../config';
 import ModalChangeUserInformation from './modalChangeUserInformation';
 import ResetPassword2 from '../../../modules/auth/components/resetPassword2';
 import CreatePassword2 from '../../../modules/auth/components/createPassword2';
+import DeletePassword2 from '../../../modules/auth/components/deletePassword2';
 import { toast } from 'react-toastify';
 import ValidationHelper from '../../../helpers/validationHelper';
 
@@ -21,6 +22,10 @@ class Header extends Component {
 
     handleResetPassword2 = () => {
         window.$('#modal-reset-pwd2').appendTo("body").modal('show');
+    }
+
+    handleDeletePassword2 = () => {
+        window.$('#modal-delete-pwd2').appendTo("body").modal('show');
     }
 
     handleCreatePassword2 = () => {
@@ -60,6 +65,7 @@ class Header extends Component {
                 }
                 <ResetPassword2 />
                 <CreatePassword2 />
+                <DeletePassword2 />
 
                 {/* Modal Security */}
                 <DialogModal
@@ -91,6 +97,7 @@ class Header extends Component {
                                     Mật khẩu cấp 2
                                     <span className="text-red" style={{ marginLeft: '5px' }}>*</span>
                                     <a onClick={this.handleResetPassword2} style={{ marginLeft: '5px', cursor: 'pointer' }}>Đổi mật khẩu cấp 2</a>
+                                    <a onClick={this.handleDeletePassword2} style={{ marginLeft: '5px', cursor: 'pointer' }}>Xóa mật khẩu cấp 2</a>
                                 </label>
                                 <input className="form-control" type="password" onChange={this.handleChangePassword2} placeholder="Nhập mật khẩu cấp 2" />
                                 <ErrorLabel content={password2Error} />

@@ -16,6 +16,7 @@ import CreateCareCommonForm from '../../common/createCareCommonForm';
 import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
 import { getStorage } from '../../../../config';
 import useDeepCompareEffect from 'use-deep-compare-effect';
+import { CrmCareTypeActions } from '../../careType/redux/action';
 function CustomerHomePage(props) {
     const tableId = "table-manage-crm-customer";
     const defaultConfig = { limit: 6 }
@@ -33,6 +34,7 @@ function CustomerHomePage(props) {
     const { translate, crm, user } = props;
 
 
+
     const [state, setState] = useState({
         limit: limit,
         page: 0,
@@ -48,7 +50,7 @@ function CustomerHomePage(props) {
                 props.getCustomers(state);
                 props.getGroups();
                 props.getStatus();
-                console.log(user);
+                props.getCareTypes({});           
                 const currentRole = getStorage('currentRole')
                 if (user && user.organizationalUnitsOfUser) {
                     console.log('user.organizationalUnitsOfUser', user.organizationalUnitsOfUser)
@@ -61,7 +63,7 @@ function CustomerHomePage(props) {
                         console.log('vao day');
                     }
                 }
-            }
+             }
             getData();
         }
 
@@ -74,16 +76,16 @@ function CustomerHomePage(props) {
     /**
      * Hàm xử lý khi click button import khách hàng
      */
-    const handleImportCustomer = () => {
-        setImportCustomer(true);
+    async function handleImportCustomer() {
+        await setImportCustomer(true);
         window.$('#modal-customer-import').modal('show');
     }
 
     /**
      * Hàm xử lý khi click button thêm khách hàng bằng tay
      */
-    const handleCreateCustomer = () => {
-        setCreateCustomer(true);
+    async function handleCreateCustomer() {
+        await setCreateCustomer(true);
         window.$('#modal-customer-create').modal('show');
     }
 
@@ -91,27 +93,28 @@ function CustomerHomePage(props) {
      * Hàm xử lý khi click nút xem chi tiết khách hàng
      * @param {*} id 
       */
-    const handleInfo = (id) => {
-        setCustomerId(id);
-        window.$('#modal-crm-customer-info').modal('show');
+    async function handleInfo(id) {
+        await setCustomerId(id);
+        window.$(`#modal-crm-customer-info-${id}`).modal('show');
     }
 
     /**
      * Hàm xử lý khi click nút edit khách hàng
      * @param {*} id 
      */
-    const handleEdit = (id) => {
-        setCustomerIdEdit(id);
+    async function handleEdit(id) {
+        await setCustomerIdEdit(id);
         window.$('#modal-crm-customer-edit').modal('show');
     }
     // ham xử lý thêm hoạt động chăm sóc khách hàng
-    const handleCreateCareAction = () => {
+    const handleCreateCareAction = async (id) => {
+        await setCustomerId(id);
         window.$('#modal-crm-care-common-create').modal('show');
     }
 
     // ham tim kiem 
     const search = () => {
-        console.log(state)
+        console.log('CUSSTATE', state)
         props.getCustomers(state);
 
     }
@@ -148,9 +151,9 @@ function CustomerHomePage(props) {
      * 
      * @param {*} owner 
      */
-    const handleSearchByOwner = (value) => {
+    async function handleSearchByOwner(value) {
         const newState = { ...state, customerOwner: value }
-        setState(newState);
+        await setState(newState);
     }
 
     const setPage = (pageNumber) => {
@@ -259,7 +262,7 @@ function CustomerHomePage(props) {
 
     let pageTotal = (crm.customers.totalDocs % limit === 0) ?
         parseInt(crm.customers.totalDocs / limit) :
-        parseInt((crm.customers.totalDocs / limit) + 1);
+        parseInt((crm.customers.totalDocs / limit) + 1); 
     let cr_page = parseInt((page / limit) + 1);
 
     //lay danh sach nhan vien
@@ -297,7 +300,6 @@ function CustomerHomePage(props) {
 
         <div className="box">
             <div className="box-body qlcv">
-
                 {/* Nút thêm khách hàng */}
                 <div className="form-inline">
                     {/* export excel danh sách khách hàng */}
@@ -330,7 +332,7 @@ function CustomerHomePage(props) {
                 {customerIdEdit && <EditForm customerIdEdit={customerIdEdit} />}
 
                 {/* form thêm mới hoạt động cskh*/}
-                <CreateCareCommonForm type={1}></CreateCareCommonForm>
+                {customerId && <CreateCareCommonForm customerId={customerId} type={1}></CreateCareCommonForm>}
 
                 {/* search form */}
                 <div className="form-inline" >
@@ -339,12 +341,12 @@ function CustomerHomePage(props) {
                         <label>{translate('crm.customer.owner')}</label>
                         {
                             unitMembers &&
-                            <SelectBox
+                            <SelectMulti
                                 id={`customer-group-edit-form`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={
-                                    unitMembers
+                                    unitMembers[0].value
                                 }
                                 onChange={handleSearchByOwner}
                                 multiple={false}
@@ -440,7 +442,7 @@ function CustomerHomePage(props) {
                                                 onClick={() => handleInfo(cus._id)}
                                             ><i className="material-icons">visibility</i></a>
                                             <a className="text-yellow" onClick={() => handleEdit(cus._id)}><i className="material-icons">edit</i></a>
-                                            <a className="text-green" onClick={handleCreateCareAction}><i className="material-icons">add_comment</i> </a>
+                                            <a className="text-green" onClick={()=>handleCreateCareAction(cus._id)}><i className="material-icons">add_comment</i> </a>
                                             <ConfirmNotification
                                                 icon="question"
                                                 title="Xóa thông tin về khách hàng"
@@ -482,6 +484,9 @@ const mapDispatchToProps = {
     getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
     getGroups: CrmGroupActions.getGroups,
     getStatus: CrmStatusActions.getStatus,
+    getCareTypes: CrmCareTypeActions.getCareTypes,
+    getAllEmployeeOfUnitByRole: UserActions.getAllEmployeeOfUnitByRole,
+
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CustomerHomePage));

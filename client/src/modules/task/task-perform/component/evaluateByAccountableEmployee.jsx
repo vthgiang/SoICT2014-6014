@@ -32,7 +32,6 @@ class EvaluateByAccountableEmployee extends Component {
             info: data.info,
             results: data.results,
             empPoint: data.empPoint,
-            status: data.statusOptions,
             progress: data.progress,
             autoPoint: data.calcAuto,
             oldAutoPoint: data.automaticPoint,
@@ -109,7 +108,6 @@ class EvaluateByAccountableEmployee extends Component {
                     info: data.info,
                     results: data.results,
                     empPoint: data.empPoint,
-                    status: data.statusOptions,
                     progress: data.progress,
                     autoPoint: data.calcAuto,
                     oldAutoPoint: data.automaticPoint,
@@ -258,7 +256,7 @@ class EvaluateByAccountableEmployee extends Component {
                 }
             }
 
-            let empPoint = {}, results = {}, endDateEval, timesheetLogs, duration = 0;
+            let empPoint = {}, results = {}, endDateEval, timesheetLogs = [], duration = 0;
             let inactiveEmp = task.inactiveEmployees.map(e => e._id);
 
             if (dateParam.toString().includes("-")) {
@@ -292,7 +290,7 @@ class EvaluateByAccountableEmployee extends Component {
             for (let i in task.responsibleEmployees) {
                 if (inactiveEmp.indexOf(task.responsibleEmployees[i]._id) === -1) {
                     let durationResponsible = 0
-                    timesheetLogs.filter(item => {
+                    timesheetLogs?.length > 0 && timesheetLogs.filter(item => {
                         if (item?.acceptLog
                             && item?.creator?._id === task.responsibleEmployees[i]._id
                         ) {
@@ -1113,16 +1111,6 @@ class EvaluateByAccountableEmployee extends Component {
         });
     }
 
-    // hàm cập nhật trạng thái
-    handleStatusChange = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                status: value
-            }
-        });
-    }
-
 
     // hàm thay đổi kpi
     handleKpiChange = (value) => {
@@ -1410,7 +1398,6 @@ class EvaluateByAccountableEmployee extends Component {
                 indexReRender: state.indexReRender + 1,
 
                 info: data.info,
-                status: data.statusOptions,
                 progress: data.progress,
                 date: data.date,
                 checkSave: data.checkSave,
@@ -1602,7 +1589,6 @@ class EvaluateByAccountableEmployee extends Component {
             progress: this.state.progress,
             automaticPoint: this.state.autoPoint,
             role: "accountable",
-            status: this.state.status,
             hasAccountable: this.state.hasAccountable,
 
             evaluatingMonth: this.state.storedEvaluatingMonth,
@@ -1656,7 +1642,7 @@ class EvaluateByAccountableEmployee extends Component {
 
     render() {
         const { translate, user, KPIPersonalManager, performtasks } = this.props;
-        const { isEval, startDate, endDate, endTime, startTime, storedEvaluatingMonth, evaluatingMonth, task, date, status, oldAutoPoint, autoPoint, errorOnDate, errorOnMonth, showAutoPointInfo, dentaDate, prevDate, info, results, empPoint, progress,
+        const { isEval, startDate, endDate, endTime, startTime, storedEvaluatingMonth, evaluatingMonth, task, date, oldAutoPoint, autoPoint, errorOnDate, errorOnMonth, showAutoPointInfo, dentaDate, prevDate, info, results, empPoint, progress,
             errorInfo, errorOnStartDate, errorOnEndDate, errorApprovedPoint, errorContribute, errSumContribution, indexReRender, unit, kpi, evaluation } = this.state;
         const { id, perform, role, hasAccountable } = this.props;
 
@@ -1681,15 +1667,6 @@ class EvaluateByAccountableEmployee extends Component {
                 && new Date(item.createdAt).getFullYear() === evaluationsDate.getFullYear()
             ))
         }
-
-
-        let statusArr = [
-            { value: "inprocess", text: translate('task.task_management.inprocess') },
-            { value: "wait_for_approval", text: translate('task.task_management.wait_for_approval') },
-            { value: "finished", text: translate('task.task_management.finished') },
-            { value: "delayed", text: translate('task.task_management.delayed') },
-            { value: "canceled", text: translate('task.task_management.canceled') },
-        ];
 
         let checkNoteMonth;
         // checkNoteMonth = this.checkNote();
@@ -1782,24 +1759,6 @@ class EvaluateByAccountableEmployee extends Component {
                                         <ErrorLabel content={errorOnEndDate} />
                                     </div>
                                 </div>
-                                {
-                                    // Trạng thái công việc
-                                    <div className="form-group">
-                                        <label>{translate('task.task_management.detail_status')}</label>
-                                        {
-                                            <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                                                id={`select-priority-task-${perform}-${role}`}
-                                                className="form-control select2"
-                                                style={{ width: "100%" }}
-                                                items={statusArr}
-                                                onChange={this.handleStatusChange}
-                                                multiple={false}
-                                                value={status[0]}
-                                                disabled={disabled}
-                                            />
-                                        }
-                                    </div>
-                                }
                                 {/* Đơn vị đánh giá */}
                                 <div className="form-group">
                                     <label>{translate('task.task_management.unit_evaluate')}</label>

@@ -163,7 +163,10 @@ exports.getAllSalesOrders = async (userId, query, portal) => {
         option.code = new RegExp(code, "i")
     }
     if (status) {
-        option.status = status
+        option = {
+            ...option,
+            status: { $in: status.map((item)=> parseInt(item)) }
+        }
     }
     if (customer) {
         option.customer = customer
@@ -171,7 +174,7 @@ exports.getAllSalesOrders = async (userId, query, portal) => {
 
     page = Number(page);
     limit = Number(limit);
-
+    console.log(option)
     if (!page || !limit) {
         let allSalesOrders = await SalesOrder(connect(DB_CONNECTION, portal)).find(option)
             .populate([{
@@ -506,7 +509,7 @@ async function getListWorksIdsByCurrentRole(currentRole, portal) {
 //Lấy các đơn hàng chưa thanh toán của khách hàng
 exports.getSalesOrdersForPayment = async (customerId, portal) => {
 
-    let salesOrdersForPayment = await SalesOrder(connect(DB_CONNECTION, portal)).find({ customer: customerId, status: [1,2,3,4,5,6,7] });
+    let salesOrdersForPayment = await SalesOrder(connect(DB_CONNECTION, portal)).find({ customer: customerId, status: [1, 2, 3, 4, 5, 6, 7] });
     let salesOrders = [];
     if (salesOrdersForPayment.length) {
         for (let index = 0; index < salesOrdersForPayment.length; index++) {
@@ -535,9 +538,9 @@ exports.getSalesOrderDetail = async (id, portal) => {
             path: 'creator', select: 'name'
         }, {
             path: 'customer', select: 'name taxNumber'
-        },{
+        }, {
             path: 'approvers.approver', select: 'name'
-        },  {
+        }, {
             path: 'goods.good',
             populate: [{
                 path: 'manufacturingMills.manufacturingMill'

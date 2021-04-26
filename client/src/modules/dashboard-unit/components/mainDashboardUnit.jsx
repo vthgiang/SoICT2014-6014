@@ -15,13 +15,8 @@ import { SalaryActions } from '../../human-resource/salary/redux/actions';
 import { taskManagementActions } from '../../task/task-management/redux/actions';
 import { UserActions } from '../../super-admin/user/redux/actions';
 
-import c3 from 'c3';
-import Swal from 'sweetalert2';
 import "./dashboardUnit.css";
 
-import ViewAllTaskUrgent from './viewAllTaskUrgent';
-import ViewAllTaskNeedToDo from './viewAllTaskNeedToDo';
-import { CurrentTaskTimesheetLogInOrganizationalUnit } from './currentTaskTimesheetLogInOrganizationalUnit';
 class MainDashboardUnit extends Component {
     constructor(props) {
         super(props);
@@ -147,173 +142,6 @@ class MainDashboardUnit extends Component {
         window.dispatchEvent(new Event('resize')); // Fix lỗi chart bị resize khi đổi tab
     }
 
-    removePreviousUrgentPieChart() {
-        const chart = this.refs.pieChartUrgent;
-        if (chart) {
-            while (chart.hasChildNodes()) {
-                chart.removeChild(chart.lastChild);
-            }
-        }
-    }
-    removePreviousNeedToDoPieChart() {
-        const chart = this.refs.pieChartTaskNeedToDo;
-        if (chart) {
-            while (chart.hasChildNodes()) {
-                chart.removeChild(chart.lastChild);
-            }
-        }
-    }
-
-    pieChartUrgent = (data) => {
-        this.removePreviousUrgentPieChart();
-        this.chartUrgent = c3.generate({
-            bindto: this.refs.pieChartUrgent,
-            data: { // Dữ liệu biểu đồ
-                columns: data,
-                type: 'pie',
-                labels: true,
-                onclick: function (d, e) {
-                    this.setState({
-                        ...this.state,
-                        clickUrgentChart: d,
-                    })
-                    window.$('#modal-view-all-task-urgent').modal('show');
-                }.bind(this)
-            },
-            pie: {
-                label: {
-                    format: function (value, ratio, id) {
-                        return value;
-                    }
-                }
-            },
-
-            padding: {
-                top: 20,
-                bottom: 20,
-                right: 20,
-                left: 20
-            },
-
-            tooltip: {
-                format: {
-                    title: function (d) { return d; },
-                    value: function (value) {
-                        return value;
-                    }
-                }
-            },
-
-            legend: {
-                show: false
-            }
-        })
-    }
-
-    pieChartNeedTodo = (data) => {
-        this.removePreviousNeedToDoPieChart();
-        this.chartTaskNeedToDo = c3.generate({
-            bindto: this.refs.pieChartTaskNeedToDo,
-            data: { // Dữ liệu biểu đồ
-                columns: data,
-                type: 'pie',
-                labels: true,
-                onclick: function (d, e) {
-                    this.setState({
-                        ...this.state,
-                        clickNeedTodoChart: d,
-                    })
-                    window.$('#modal-view-all-task-need-to-do').modal('show');
-                }.bind(this)
-            },
-            pie: {
-                label: {
-                    format: function (value, ratio, id) {
-                        return value;
-                    }
-                }
-            },
-
-            padding: {
-                top: 20,
-                bottom: 20,
-                right: 20,
-                left: 20
-            },
-
-            tooltip: {
-                format: {
-                    title: function (d) { return d; },
-                    value: function (value) {
-                        return value;
-                    }
-                }
-            },
-
-            legend: {
-                show: false
-            }
-        })
-    }
-
-    handleSelectOrganizationalUnitUrgent = (value) => {
-        this.setState({
-            arrayUnitForUrgentChart: value,
-        });
-    }
-
-    convertDataUrgentPieChart = (data) => {
-        let urgentPieChartData = [];
-
-        // convert công việc khẩn cấp qua dạng c3js
-        if (data && data.length > 0) {
-            const result = data.reduce((total, value) => {
-                total[value.organizationalUnit.name] = (total[value.organizationalUnit.name] || 0) + 1;
-                return total;
-            }, [])
-
-            for (let key in result) {
-                urgentPieChartData = [...urgentPieChartData, [key, result[key]]]
-            }
-        }
-        return urgentPieChartData;
-    }
-
-    convertDataTaskNeedToDoPieChart = (data) => {
-        let taskNeedToDoPieChart = [];
-        // convert công việc cần làm qua dạng c3js
-        if (data && data.length > 0) {
-            const result2 = data.reduce((total, value) => {
-                if (value?.organizationalUnit?.name) {
-                    total[value.organizationalUnit.name] = (total[value.organizationalUnit.name] || 0) + 1;
-                }
-
-                return total;
-            }, [])
-
-            for (let key in result2) {
-                taskNeedToDoPieChart = [...taskNeedToDoPieChart, [key, result2[key]]]
-            }
-        }
-
-        return taskNeedToDoPieChart;
-    }
-
-    handleUpdateDataUrgent = () => {
-        const { currentDate, arrayUnitForUrgentChart } = this.state;
-
-        let partDate = currentDate.split('-');
-        let newDate = [partDate[2], partDate[1], partDate[0]].join('-');
-
-        this.props.getTaskInOrganizationUnitByDateNow(arrayUnitForUrgentChart, newDate);
-        this.setState(state => {
-            return {
-                ...state,
-                chartTaskNeedToDoData: null,
-                chartUrgentData: null
-            }
-        })
-    }
 
     static getDerivedStateFromProps(props, state) {
         const { tasks } = props;
@@ -328,39 +156,6 @@ class MainDashboardUnit extends Component {
         } else {
             return null;
         }
-    }
-
-    componentDidUpdate() {
-        if (this.state.chartTaskNeedToDoData || this.state.chartUrgentData) {
-            this.pieChartNeedTodo(this.state.chartTaskNeedToDoData);
-            this.pieChartUrgent(this.state.chartUrgentData);
-        }
-    }
-
-    shouldComponentUpdate(nextProps, nextState) {
-        const { tasks } = this.props;
-        const { chartTaskNeedToDoData, chartUrgentData } = this.state;
-
-        if (!chartTaskNeedToDoData && tasks?.organizationUnitTasksChart?.taskNeedToDo) {
-            let chartTaskNeedToDoDataTmp = this.convertDataTaskNeedToDoPieChart(tasks?.organizationUnitTasksChart?.taskNeedToDo);
-            this.setState(state => {
-                return {
-                    ...state,
-                    chartTaskNeedToDoData: chartTaskNeedToDoDataTmp
-                }
-            })
-        }
-        if (!chartUrgentData && tasks?.organizationUnitTasksChart?.urgent) {
-            let chartUrgentDataTmp = this.convertDataTaskNeedToDoPieChart(tasks?.organizationUnitTasksChart?.urgent);
-            this.setState(state => {
-                return {
-                    ...state,
-                    chartUrgentData: chartUrgentDataTmp
-                }
-            })
-        }
-
-        return true
     }
 
     componentDidMount() {
@@ -401,89 +196,6 @@ class MainDashboardUnit extends Component {
         this.props.getTaskInOrganizationUnitByDateNow(arrayUnitForUrgentChart, newDate)
     }
 
-    handleClickshowTaskUrgent = () => {
-        Swal.fire({
-            html: `<h3 style="color: red"><div>Công việc được xem là khẩn cấp nếu: ?</div> </h3>
-            <table class="table" style=" margin-bottom: 0 ">
-                <tbody style="text-align: left;font-size: 13px;">
-                    <tr>
-                        <th class="not-sort" style="width: 100px">Độ ưu tiên công việc</th>
-                        <th class="not-sort" style="width: 43px">Quá hạn</th>
-                        <th class="not-sort" style="width: 61px">Chậm tiến độ</th>
-                    </tr>
-                    <tr>
-                        <td>Cv độ ưu tiên thấp</td>
-                        <td>> 25 %</td>
-                        <td>>= 50 %</td>
-                    </tr>
-                    <tr>
-                        <td>Cv độ ưu tiên trung bình</td>
-                        <td>> 20 %</td>
-                        <td>>= 40 %</td>
-                    </tr>
-                    <tr>
-                        <td>Cv độ ưu tiên tiêu chuẩn</td>
-                        <td>> 15 % </td>
-                        <td>>= 30 %</td>
-                    </tr>
-                    <tr>
-                        <td>Cv độ ưu tiên cao</td>
-                        <td>> 10 % </td>
-                        <td>>= 20 %</td>
-                    </tr>
-                    <tr>
-                        <td>Cv độ ưu tiên khẩn cấp</td>
-                        <td>> 5 %</td>
-                        <td>>= 10 %</td>
-                    </tr>
-                </tbody>
-            </table>`,
-            width: "40%",
-        })
-    }
-
-    handleClickshowTaskNeedToDo = () => {
-        Swal.fire({
-            html: `<h3 style="color: red"><div>Công việc được xem là cần làm nếu: ?</div> </h3>
-            <table class="table" style=" margin-bottom: 0 ">
-                <tbody style="text-align: left;font-size: 13px;">
-                    <tr>
-                        <th class="not-sort" style="width: 100px">Độ ưu tiên công việc</th>
-                        <th class="not-sort" style="width: 43px">Quá hạn</th>
-                        <th class="not-sort" style="width: 61px">Chậm tiến độ</th>
-                    </tr>
-                    <tr>
-                        <td>Cv độ ưu tiên thấp</td>
-                        <td><= 25%</td>
-                        <td>40% < x < 50%</td>
-                    </tr>
-                    <tr>
-                        <td>Cv độ ưu tiên trung bình</td>
-                        <td><= 20%</td>
-                        <td>30% < x < 40%</td>
-                    </tr>
-                    <tr>
-                        <td>Cv độ ưu tiên tiêu chuẩn</td>
-                        <td><= 15%</td>
-                        <td>20% < x < 30%</td>
-                    </tr>
-                    <tr>
-                        <td>Cv độ ưu tiên cao</td>
-                        <td><= 10%</td>
-                        <td>10% < x < 20%</td>
-                    </tr>
-                    <tr>
-                        <td>Cv độ ưu tiên khẩn cấp</td>
-                        <td><= 5%</td>
-                        <td>0% < x < 10%</td>
-                    </tr>
-                </tbody>
-            </table>`,
-            width: "40%",
-        })
-
-    }
-
     getUnitName = (arrayUnit, arrUnitId) => {
         let data = [];
         arrayUnit && arrayUnit.forEach(x => {
@@ -508,11 +220,7 @@ class MainDashboardUnit extends Component {
 
         const { childOrganizationalUnit } = this.props;
 
-        const { monthShow, month, organizationalUnits, arrayUnitShow, listUnit, 
-            taskNeedToDo, urgent, arrayUnitForUrgentChart, TaskUrgentIsHovering, 
-            TaskNeedToDoIsHovering, clickUrgentChart, clickNeedTodoChart,
-            chartUrgentData, chartTaskNeedToDoData
-        } = this.state;
+        const { monthShow, month, organizationalUnits, arrayUnitShow, listUnit } = this.state;
 
         let listAllEmployees = (!organizationalUnits || organizationalUnits.length === department.list.length) ?
             employeesManager.listAllEmployees : employeesManager.listEmployeesOfOrganizationalUnits;
@@ -555,128 +263,6 @@ class MainDashboardUnit extends Component {
         return (
             <React.Fragment>
                 <div className="qlcv">
-                    <ViewAllTaskUrgent data={this.state.urgent} clickUrgentChart={clickUrgentChart} />
-                    <ViewAllTaskNeedToDo data={this.state.taskNeedToDo} clickNeedTodoChart={clickNeedTodoChart} />
-                    {/* Biểu đồ só công việc khẩn cấp /  cần làm */}
-                    <div className="row">
-                        <div className="col-md-12">
-                            <div className="box box-solid">
-                                <div className="box-header with-border">
-                                    <div className="box-title" >
-                                        {translate('dashboard_unit.urgent_need_to_do_chart')}
-                                        {
-                                            arrayUnitForUrgentChart && arrayUnitForUrgentChart.length < 2 ?
-                                                <>
-                                                    <span>{` ${translate('task.task_dashboard.of_unit')}`}</span>
-                                                    <span>{` ${this.getUnitName(listUnitSelect, arrayUnitForUrgentChart).map(o => o).join(", ")}`}</span>
-                                                </>
-                                                :
-                                                <span onClick={() => this.showUnitTask(listUnitSelect, arrayUnitForUrgentChart)} style={{ cursor: 'pointer' }}>
-                                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
-                                                    <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {arrayUnitForUrgentChart?.length}</a>
-                                                    <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
-                                                </span>
-                                        }
-                                    </div>
-                                </div>
-
-                                <div className="box-body" style={{ marginBottom: 15 }}>
-                                    {/* Seach theo thời gian */}
-                                    <div className="qlcv">
-                                        <div className="form-inline" >
-                                            <div className="form-group">
-                                                <label style={{ width: "auto" }}>{translate('kpi.organizational_unit.dashboard.organizational_unit')}</label>
-                                                <SelectMulti id="multiSelectOrganizationalUnitInpriority"
-                                                    items={listUnitSelect}
-                                                    options={{
-                                                        nonSelectedText: translate('page.non_unit'),
-                                                        allSelectedText: translate('page.all_unit'),
-                                                    }}
-                                                    onChange={this.handleSelectOrganizationalUnitUrgent}
-                                                    value={arrayUnitForUrgentChart}
-                                                >
-                                                </SelectMulti>
-                                            </div>
-                                            <button type="button" className="btn btn-success" onClick={this.handleUpdateDataUrgent}>{translate('general.search')}</button>
-                                        </div>
-                                    </div>
-
-                                    <div className="row " >
-                                        <div className="">
-                                            <div className="col-md-6">
-                                                <div style={{ display: 'flex', flexDirection: 'column', marginTop: '10px', marginBottom: 0 }}>
-                                                    <p className="pull-left" style={{ display: 'flex', alignItems: 'center' }}> <b style={{ marginTop: '10px', marginRight: '5px' }}>{translate('dashboard_unit.urgent_task_amount')}</b>
-                                                        <span className="material-icons title-urgent " style={{ zIndex: 999, cursor: "pointer", fontSize: '15px', marginTop: '10px' }}
-                                                            onClick={this.handleClickshowTaskUrgent}>
-                                                            help
-                                                        </span>
-                                                    </p >
-                                                    {
-                                                        tasks.isLoading ? <p style={{ marginTop: '60px', textAlign: "center" }}>{translate('general.loading')}</p>
-                                                            : urgent && urgent.length > 0 ?
-                                                                <section id={"pieChartUrgent"} className="c3-chart-container">
-                                                                    <div ref="pieChartUrgent"></div>
-                                                                    <CustomLegendC3js
-                                                                        chart={this.chartUrgent}
-                                                                        chartId={"pieChartUrgent"}
-                                                                        legendId={"pieChartUrgentLegend"}
-                                                                        title={chartUrgentData && `${translate('general.list_unit')} (${chartUrgentData.length})`}
-                                                                        dataChartLegend={chartUrgentData && chartUrgentData.map(item => item[0])}
-                                                                    />
-                                                                </section>
-                                                                : <p style={{ marginTop: '60px', textAlign: "center" }}>{translate('kpi.organizational_unit.dashboard.no_data')}</p>
-                                                    }
-                                                </div>
-                                            </div>
-
-                                            <div className="col-md-6">
-                                                <div style={{ display: 'flex', flexDirection: 'column', marginTop: '10px', marginBottom: 0 }}>
-                                                    <p className="pull-left" style={{ marginRight: '10px', display: 'flex', alignItems: 'center' }}>
-                                                        <b style={{ marginTop: '10px', marginRight: '5px' }} >{translate('dashboard_unit.need_to_do_task_amount')}</b>
-                                                        <span className="material-icons title-urgent " style={{ zIndex: 999, cursor: "pointer", fontSize: '15px', marginTop: '10px' }}
-                                                            onClick={this.handleClickshowTaskNeedToDo}>
-                                                            help
-                                                        </span>
-                                                    </p >
-                                                    {
-                                                        tasks.isLoading ?
-                                                            <p style={{ marginTop: '60px', textAlign: "center" }}>{translate('general.loading')}</p>
-                                                            :
-                                                            taskNeedToDo && taskNeedToDo.length > 0 ?
-                                                                <section id={"pieChartTaskNeedToDo"} className="c3-chart-container">
-                                                                    <div ref="pieChartTaskNeedToDo"></div>
-                                                                    <CustomLegendC3js
-                                                                        chart={this.chartTaskNeedToDo}
-                                                                        chartId={"pieChartTaskNeedToDo"}
-                                                                        legendId={"pieChartTaskNeedToDoLegend"}
-                                                                        title={chartTaskNeedToDoData && `${translate('general.list_unit')} (${chartTaskNeedToDoData.length})`}
-                                                                        dataChartLegend={chartTaskNeedToDoData && chartTaskNeedToDoData.map(item => item[0])}
-                                                                    />
-                                                                </section>
-                                                                : <p style={{ marginTop: '60px', textAlign: "center" }}>{translate('kpi.organizational_unit.dashboard.no_data')}</p>
-                                                    }
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Danh sách nhân viên đang bấm giờ */}
-                    <div className="row">
-                        <div className="col-md-12">
-                            <div className="box box-solid">
-                                <CurrentTaskTimesheetLogInOrganizationalUnit
-                                    listUnitSelect={listUnitSelect}
-                                    getUnitName={this.getUnitName}
-                                    showUnitTask={this.showUnitTask}
-                                />
-                            </div>
-                        </div>
-                    </div>
-
                     <div className="form-inline" style={{ marginBottom: 10 }}>
                         <div className="form-group">
                             <label style={{ width: "auto" }}>{translate('kpi.organizational_unit.dashboard.organizational_unit')}</label>
@@ -716,7 +302,12 @@ class MainDashboardUnit extends Component {
                         </ul>
                         <div className="tab-content ">
                             <div className="tab-pane active" id="task">
-                                <TabTask childOrganizationalUnit={childOrganizationalUnit} />
+                                <TabTask 
+                                    childOrganizationalUnit={childOrganizationalUnit} 
+                                    organizationalUnits={organizationalUnits}
+                                    getUnitName={this.getUnitName}
+                                    showUnitTask={this.showUnitTask}
+                                />
                             </div>
                             {/* Tab năng lực nhân viên*/}
                             <div className="tab-pane" id="employee-capacity">

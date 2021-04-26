@@ -307,8 +307,47 @@ const TaskSchema = new Schema(
                             type: Number, // Suggest tự động dựa theo lần đánh giá trước đó (nếu có), theo thời gian thực hiện, độ quan trọng của công việc, % đóng góp
                             default: -1,
                         },
+                        isProject: {
+                            // Check xem task co phai cua project khong hay task doc lap
+                            type: Boolean,
+                        }
                     },
                 ],
+                resultsForProject: {
+                    // Kết quả thực hiện công việc CỦA DỰ ÁN
+                    employee: {
+                        // Người đánh giá
+                        type: Schema.Types.ObjectId,
+                        ref: "User",
+                    },
+                    organizationalUnit: {
+                        type: Schema.Types.ObjectId,
+                        ref: "OrganizationalUnit",
+                    },
+                    role: {
+                        // người thực hiện: responsible, người tư vấn: consulted, người phê duyệt: accountable
+                        type: String,
+                        enum: ["responsible", "consulted", "accountable"],
+                    },
+                    automaticPoint: {
+                        // Điểm hệ thống đánh giá
+                        type: Number,
+                        default: 0,
+                    },
+                    employeePoint: {
+                        // Điểm tự đánh giá
+                        type: Number,
+                        default: 0,
+                    },
+                    approvedPoint: {
+                        // Điểm được phê duyệt
+                        type: Number,
+                        default: 0,
+                    },
+                    hoursSpent: {
+                        type: Number,
+                    },
+                },
                 taskInformations: [
                     {
                         // Lưu lại lịch sử các giá trị của thuộc tính công việc trong mỗi lần đánh giá
@@ -347,6 +386,42 @@ const TaskSchema = new Schema(
                 ],
             },
         ],
+        overallEvaluation: {
+            automaticPoint: {
+                // Điểm hệ thống đánh giá cho task
+                type: Number,
+                default: 0,
+            },
+            responsibleEmployee: {
+                automaticPoint: {
+                    // Điểm hệ thống đánh giá cho người thực hiện
+                    type: Number,
+                    default: 0,
+                },
+                employeePoint: {
+                    // Điểm người thực hiện tự đánh giá bản thân
+                    type: Number,
+                    default: 0,
+                },
+                accountablePoint: {
+                    // Điểm người phê duyệt đánh giá cho người thực hiện
+                    type: Number,
+                    default: 0,
+                },
+            },
+            accountableEmployee: {
+                automaticPoint: {
+                    // Điểm hệ thống đánh giá cho người phê duyệt
+                    type: Number,
+                    default: 0,
+                },
+                employeePoint: {
+                    // Điểm người phê duyệt tự đánh giá bản thân
+                    type: Number,
+                    default: 0,
+                },
+            },
+        },
         formula: {
             type: String,
             default:
@@ -581,38 +656,38 @@ const TaskSchema = new Schema(
                     },
                 ],
                 timesheetLogs: [ // Lưu thời gian bấm giờ của một hoạt động
-                {
-                    creator: {
-                        // Người thực hiện nào tiến hành bấm giờ
-                        type: Schema.Types.ObjectId,
-                        ref: "User",
+                    {
+                        creator: {
+                            // Người thực hiện nào tiến hành bấm giờ
+                            type: Schema.Types.ObjectId,
+                            ref: "User",
+                        },
+                        startedAt: {
+                            // Lưu dạng miliseconds. Thời gian khi người dùng nhất nút bắt đầu bấm giờ
+                            type: Date,
+                        },
+                        stoppedAt: {
+                            // Lưu dạng miliseconds. Thời gian kết thúc bấm giờ. Khi stoppedAt-startedAt quá 4 tiếng, hỏi lại người dùng stop chính xác vào lúc nào và cập nhật lại stoppedAt.
+                            type: Date,
+                        },
+                        description: {
+                            // Mô tả ngắn gọn việc đã làm khi log
+                            type: String,
+                        },
+                        duration: {
+                            type: Number,
+                        },
+                        autoStopped: { // 1: Tắt bấm giờ bằng tay, 2: Tắt bấm giờ tự động với thời gian hẹn trc, 3: add log timer
+                            type: Number,
+                            default: 1,
+                            enum: [1, 2, 3],
+                        },
+                        acceptLog: {
+                            type: Boolean,
+                            default: true
+                        }
                     },
-                    startedAt: {
-                        // Lưu dạng miliseconds. Thời gian khi người dùng nhất nút bắt đầu bấm giờ
-                        type: Date,
-                    },
-                    stoppedAt: {
-                        // Lưu dạng miliseconds. Thời gian kết thúc bấm giờ. Khi stoppedAt-startedAt quá 4 tiếng, hỏi lại người dùng stop chính xác vào lúc nào và cập nhật lại stoppedAt.
-                        type: Date,
-                    },
-                    description: {
-                        // Mô tả ngắn gọn việc đã làm khi log
-                        type: String,
-                    },
-                    duration: {
-                        type: Number,
-                    },
-                    autoStopped: { // 1: Tắt bấm giờ bằng tay, 2: Tắt bấm giờ tự động với thời gian hẹn trc, 3: add log timer
-                        type: Number,
-                        default: 1,
-                        enum: [1, 2, 3],
-                    },
-                    acceptLog: {
-                        type: Boolean,
-                        default: true
-                    }
-                },
-            ],
+                ],
             },
         ],
         taskComments: [
@@ -708,6 +783,53 @@ const TaskSchema = new Schema(
             type: Schema.Types.ObjectId,
             ref: 'Project'
         },
+        //tên phase mà task thuộc về
+        taskPhase: {
+            type: Schema.Types.ObjectId,
+            ref: 'ProjectPhase'
+        },
+        //thời gian ước lượng thông thường của task
+        estimateNormalTime: {
+            type: Number,
+        },
+        //thời gian ước lượng ít nhất để hoàn thành task
+        estimateOptimisticTime: {
+            type: Number,
+        },
+        //thời gian ước lượng nhiều nhất có thể cho phép để hoàn thành task
+        estimatePessimisticTime: {
+            type: Number,
+        },
+        //chi phí ước lượng thông thường của task
+        estimateNormalCost: {
+            type: Number,
+        },
+        //chi phí ước lượng nhiều nhất có thể cho phép của task
+        estimateMaxCost: {
+            type: Number,
+        },
+        //chi phí thực cho task đó
+        actualCost: {
+            type: Number,
+        },
+        // ngân sách để chi trả cho task đó
+        budget: {
+            type: Number,
+        },
+        actorsWithSalary: [
+            {
+                userId: {
+                    type: Schema.Types.ObjectId,
+                    ref: 'User',
+                },
+                salary: {
+                    type: Number,
+                },
+            },
+        ],
+        estimateAssetCost: {
+            type: Number,
+        }
     },
     {
         timestamps: true,

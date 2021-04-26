@@ -52,6 +52,7 @@ import { ManageLeaveApplication } from "../modules/human-resource/annual-leave/c
 import EmployeesInfomation from "../modules/human-resource/employee-infomation/components/";
 import { DashboardPersonal } from "../modules/dashboard-personal/components";
 import { DashboardUnit } from "../modules/dashboard-unit/components";
+import { DashboardUnitForAdmin } from "../modules/dashboard-unit/components/dashboardUnitForAdmin";
 
 import { ListEducation } from "../modules/training/education-program/components/educationProgramList";
 import { TrainingPlan } from "../modules/training/course/components/course";
@@ -162,7 +163,14 @@ import TransportVehicle from '../modules/production/transport/transport-vehicle/
 import TransportHuman from '../modules/production/transport/transport-human/components';
 import TransportRoute from '../modules/production/transport/transport-route/components';
 
-import { Project } from '../modules/project/component/index';
+// import AnswerAuthQuestionPage from '../modules/auth/components/answerAuthQuestion';
+
+import { Project } from '../modules/project/component/projects/index';
+import Phase from '../modules/project/component/phases/index';
+import PhaseDetail from '../modules/project/component/phases/detailPhase';
+import ProjectDetailPage from '../modules/project/component/projects/detailProjectPage';
+import ProjectReport from '../modules/project/component/reports/index';
+import ProjectEvaluation from '../modules/project/component/evaluations/index';
 import { UserGuide } from '../modules/user-guide/components';
 import AllTimeSheetLog from '../modules/task/task-dashboard/statistic/allTimeSheetLog';
 
@@ -583,6 +591,25 @@ class Routes extends Component {
                         pageName={"dashboard_unit"}
                         layout={Layout}
                         component={DashboardUnit}
+                    />
+                    <PrivateRoute
+                        isLoading={this.props.annualLeave.isLoading}
+                        key={"dashboard_all_unit"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/dashboard-all-unit",
+                                name: "dashboard_all_unit",
+                                icon: "fa fa-newspaper-o",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/dashboard-all-unit"}
+                        path={"/dashboard-all-unit"}
+                        pageName={"dashboard_all_unit"}
+                        layout={Layout}
+                        component={DashboardUnitForAdmin}
                     />
                     <PrivateRoute
                         isLoading={this.props.annualLeave.isLoading}
@@ -1966,7 +1993,7 @@ class Routes extends Component {
                         layout={Layout}
                         component={Quote}
                     />
-                  
+
                     <PrivateRoute
                         isLoading={false}
                         key={"/manage-sales-order-dashboard"}
@@ -2507,28 +2534,172 @@ class Routes extends Component {
                         pageName={"manage_transport_route"}
                         layout={Layout}
                         component={TransportRoute} // component ứng với trang, tạo ở bước 1
-                    />                    
+                    />
 
-
+                    {/* Quản lý dự án */}
                     <PrivateRoute
                         isLoading={false}
-                        key={"/projects-management"}
+                        key={"/project/projects-list"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
                             {
-                                link: "/projects-management",
-                                name: "manage_project",
+                                link: "/project/projects-list",
+                                name: "projects_list",
                                 icon: "fa fa-folder-open",
                             }
                         ]}
                         auth={auth}
                         exact={true}
-                        link={"/projects-management"}
-                        path={"/projects-management"}
-                        pageName={"manage_project"}
+                        link={"/project/projects-list"}
+                        path={"/project/projects-list"}
+                        pageName={"projects_list"}
                         layout={Layout}
                         component={Project}
                     />
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"/project/project-details"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/project/projects-list",
+                                name: "projects_list",
+                                icon: "fa fa-folder-open",
+                            },
+                            {
+                                link: "/project/project-details",
+                                name: "project_details",
+                                icon: "fa fa-folder-open",
+                            }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/project/project-details"}
+                        path={"/project/project-details"}
+                        pageName={"project_details"}
+                        layout={Layout}
+                        component={ProjectDetailPage}
+                    />
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"/project/tasks-list"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/project/tasks-list",
+                                name: "tasks_list",
+                                icon: "fa fa-folder-open",
+                            }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/project/tasks-list"}
+                        path={"/project/tasks-list"}
+                        pageName={"tasks_list"}
+                        layout={Layout}
+                        component={Project}
+                    />
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"/project/phases-list"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/project/phases-list",
+                                name: "phases_list",
+                                icon: "fa fa-folder-open",
+                            }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/project/phases-list"}
+                        path={"/project/phases-list"}
+                        pageName={"phases_list"}
+                        layout={Layout}
+                        component={Phase}
+                    />
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"/project/phase-details"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/project/phases-list",
+                                name: "phases_list",
+                                icon: "fa fa-folder-open",
+                            },
+                            {
+                                link: "/project/phase-details",
+                                name: "phase_details",
+                                icon: "fa fa-folder-open",
+                            }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/project/phase-details"}
+                        path={"/project/phase-details"}
+                        pageName={"phase"}
+                        layout={Layout}
+                        component={PhaseDetail}
+                    />
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"/project/issues-list"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/project/issues-list",
+                                name: "issues_list",
+                                icon: "fa fa-folder-open",
+                            }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/project/issues-list"}
+                        path={"/project/issues-list"}
+                        pageName={"issues_list"}
+                        layout={Layout}
+                        component={Project}
+                    />
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"/project/project-report"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/project/project-report",
+                                name: "project_report",
+                                icon: "fa fa-folder-open",
+                            }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/project/project-report"}
+                        path={"/project/project-report"}
+                        pageName={"project_report"}
+                        layout={Layout}
+                        component={ProjectReport}
+                    />
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"/project/project-evaluation"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/project/project-evaluation",
+                                name: "project_evaluation",
+                                icon: "fa fa-folder-open",
+                            }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/project/project-evaluation"}
+                        path={"/project/project-evaluation"}
+                        pageName={"project_evaluation"}
+                        layout={Layout}
+                        component={ProjectEvaluation}
+                    />
+
                     <PrivateRoute
                         isLoading={false}
                         key={"user-guide"}

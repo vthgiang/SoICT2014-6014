@@ -10,6 +10,8 @@ router.get('/task-evaluations', auth, TaskManagementController.getTaskEvaluation
 
 router.post('/tasks', auth, TaskManagementController.createTask);
 
+router.post('/tasks/project-tasks', auth, TaskManagementController.createProjectTask);
+
 router.delete('/tasks/:taskId', auth, TaskManagementController.deleteTask);
 
 router.get('/analys/user/:userId', auth, TaskManagementController.getTaskAnalysOfUser);
@@ -17,5 +19,7 @@ router.get('/analys/user/:userId', auth, TaskManagementController.getTaskAnalysO
 router.get('/time-sheet', auth, TaskManagementController.getUserTimeSheet);
 
 router.get('/time-sheet/all', auth, TaskManagementController.getAllUserTimeSheet);
+
+router.post('/tasks/project-tasks/cpm', auth, TaskManagementController.createProjectTasksFromCPM);
 
 module.exports = router;

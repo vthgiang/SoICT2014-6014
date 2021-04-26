@@ -14,6 +14,7 @@ router.patch("/profile/:id/change-password", auth, authCUIP, AuthController.chan
 router.get("/get-links-that-role-can-access/:id", authFunc(false), AuthController.getLinksThatRoleCanAccess);
 router.get("/download-file", auth, AuthController.downloadFile);
 router.patch("/profile/create-password2", authFunc(false), AuthController.createPassword2);
+router.delete("/profile/:id/delete-password2", authFunc(false), AuthController.deletePassword2);
 router.get("/profile/check-user-exists-password2", authFunc(false), AuthController.checkPassword2Exists);
 
 module.exports = router;

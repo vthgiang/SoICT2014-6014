@@ -226,10 +226,10 @@ class DistributionOfEmployee extends Component {
             axis: {
                 x: {
                     type: 'category',
-                    categories: data?.nameEmployee
+                    categories: data?.nameEmployee?.length > 0 ? data?.nameEmployee : []
                 },
                 rotated: true
-            }
+            },
         });
     }
 

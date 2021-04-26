@@ -78,7 +78,7 @@ function ContractTab(props) {
         })
     }, [props.id])
 
-    const { translate, course, } = props;
+    const { translate, course } = props;
 
     const { id } = props;
 
@@ -152,7 +152,6 @@ function ContractTab(props) {
     const handleAddContract = async (data) => {
         const { translate } = props;
         let { contracts } = state;
-        console.log(data);
 
         let checkData = checkForDuplicate(data, contracts);
         if (checkData) {

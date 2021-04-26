@@ -46,6 +46,8 @@ const EmployeeManagement = (props) => {
         careerFields: null,
         page: 0,
         limit: _limit,
+        currentRow: {},
+        currentRowView: {}
     });
 
     useEffect(() => {

@@ -131,7 +131,7 @@ const LoadTaskOrganizationChart = (props) => {
                     },
 
                     type: 'category',
-                    categories: category,
+                    categories: category?.length > 0 ? category : [],
                 },
                 y: {
                     label: {

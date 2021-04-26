@@ -62,7 +62,7 @@ const MultipleBarChart = (props) => {
                 x: 'x',
                 columns: [],
                 hide: true,
-                type: data.lineBar === true ? 'bar' : 'spline',
+                type: data.lineBar === true ? 'bar' : '',
                 names: {
                     data1: data.nameData1,
                     data2: data.nameData2,

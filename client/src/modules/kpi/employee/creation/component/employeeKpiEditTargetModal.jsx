@@ -179,19 +179,19 @@ function ModalEditEmployeeKpi(props) {
 
                     {/**Mục tiêu cha */}
                     {(createKpiUnit.currentKPI !== null) &&
-                    (items.length !== 0) &&
-                    <div className="form-group">
-                        <label>{translate('kpi.employee.employee_kpi_set.edit_employee_kpi_modal.parents')}<span className="text-red">*</span></label>
-                        <SelectBox
-                            id={`parent-target-edit${_id}`}
-                            className="form-control select2"
-                            style={{ width: "100%" }}
-                            items={items}
-                            onChange={handleParentChange}
-                            multiple={false}
-                            value={parent ? parent : ""}
-                        />
-                    </div>
+                        (items.length !== 0) &&
+                            <div className="form-group">
+                                <label>{translate('kpi.employee.employee_kpi_set.edit_employee_kpi_modal.parents')}<span className="text-red">*</span></label>
+                                <SelectBox
+                                    id={`parent-target-edit${_id}`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    items={items}
+                                    onChange={handleParentChange}
+                                    multiple={false}
+                                    value={parent ? parent : ""}
+                                />
+                            </div>
                     }
 
                     {/**Tiêu chí đánh giá */}

@@ -38,7 +38,7 @@ class SupplierNumberDashboard extends Component {
                     ['x', '01-2020', '02-2020', '03-2020', '04-2020', '05-2020', '06-2020', '07-2020', '08-2020'],
                     ['Phiếu nhập kho', 100, 200, 140, 200, 600, 228, 600, 200, 130],
                 ],
-                type: barAndLineChart ? 'bar' : 'spline',
+                type: barAndLineChart ? 'bar' : '',
             },
             axis: {
                 x: {
@@ -121,7 +121,7 @@ class SupplierNumberDashboard extends Component {
                             <p className="pull-left" style={{ marginBottom: 0 }}><b>ĐV tính: Số phiếu</b></p>
                             <div className="box-tools pull-right">
                                 <div className="btn-group pull-rigth">
-                                    <button type="button" className={`btn btn-xs ${barAndLineChart ? "active" : "btn-danger"}`} onClick={() => this.handleChangeViewChart(false)}>Spline chart</button>
+                                    <button type="button" className={`btn btn-xs ${barAndLineChart ? "active" : "btn-danger"}`} onClick={() => this.handleChangeViewChart(false)}>Line chart</button>
                                     <button type="button" className={`btn btn-xs ${barAndLineChart ? 'btn-danger' : "active"}`} onClick={() => this.handleChangeViewChart(true)}>Bar chart</button>
                                 </div>
                             </div>

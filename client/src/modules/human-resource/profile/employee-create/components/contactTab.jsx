@@ -147,7 +147,7 @@ function ContactTab(props) {
             setState(state => {
                 return {
                     ...state,
-                    errorOnEmergencyContactPersonEmail: message,
+                    errorOnEmergencyContactPersonEmail: (value && value.length !== 0) ? message : undefined,
                     emergencyContactPersonEmail: value,
                 }
             });

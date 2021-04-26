@@ -36,6 +36,7 @@ export function auth(state = initState, action) {
         case AuthConstants.CHANGE_USER_PASSWORD_REQUEST:
         case AuthConstants.GET_COMPONENTS_OF_USER_IN_LINK_REQUEST:
         case AuthConstants.CREATE_PASSWORD2_REQUEST:
+        case AuthConstants.DELETE_PASSWORD2_REQUEST:
             return {
                 ...state,
                 isLoading: true,
@@ -49,6 +50,13 @@ export function auth(state = initState, action) {
                 user: action.payload,
             };
 
+        case AuthConstants.DELETE_PASSWORD2_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                user: action.payload,
+            }
+        
         case AuthConstants.LOGIN_SUCCESS:
             return {
                 ...state,
@@ -139,6 +147,7 @@ export function auth(state = initState, action) {
         case AuthConstants.CHANGE_USER_INFORMATION_FAILE:
         case AuthConstants.CHANGE_USER_PASSWORD_FAILE:
         case AuthConstants.CREATE_PASSWORD2_FAILE:
+        case AuthConstants.DELETE_PASSWORD2_FAILE:
             return {
                 ...state,
                 isLoading: false,

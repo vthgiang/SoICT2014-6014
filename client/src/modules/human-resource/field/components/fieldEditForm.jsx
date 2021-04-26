@@ -8,7 +8,7 @@ import { FieldsActions } from '../redux/actions';
 import ValidationHelper from '../../../../helpers/validationHelper';
 
 const FieldEditForm = (props) => {
-    
+
     const [state, setState] = useState({});
 
 
@@ -59,7 +59,7 @@ const FieldEditForm = (props) => {
     const { translate, field } = props;
 
     const { _id, name, description, errorOnName } = state;
-    
+
     return (
         <React.Fragment>
             <DialogModal
@@ -69,20 +69,21 @@ const FieldEditForm = (props) => {
                 func={save}
                 disableSubmit={!isFormValidated()}
             >
-                <form className="form-group" id={`form-edit-field${_id}`}>
-                    {/* Tên ngành nghề/lĩnh vực */}
-                    <div className={`form-group ${errorOnName && "has-error"}`}>
-                        <label>{translate('human_resource.field.table.name')}<span className="text-red">*</span></label>
-                        <input type="text" className="form-control" name="name" value={name} onChange={handleChangeName} autoComplete="off"></input>
-                        <ErrorLabel content={errorOnName} />
+                <div>
+                    <div className="form-group" id={`form-edit-field${_id}`}>
+                        {/* Tên ngành nghề/lĩnh vực */}
+                        <div className={`form-group ${errorOnName && "has-error"}`}>
+                            <label>{translate('human_resource.field.table.name')}<span className="text-red">*</span></label>
+                            <input type="text" className="form-control" name="name" value={name} onChange={handleChangeName} autoComplete="off"></input>
+                            <ErrorLabel content={errorOnName} />
+                        </div>
+                        {/* Mô tả */}
+                        <div className={`form-group`}>
+                            <label>{translate('human_resource.field.table.description')}</label>
+                            <textarea className="form-control" rows="3" style={{ height: 72 }} name="description" value={description} onChange={handleChange} placeholder="Enter ..." autoComplete="off"></textarea>
+                        </div>
                     </div>
-                    {/* Mô tả */}
-                    <div className={`form-group`}>
-                        <label>{translate('human_resource.field.table.description')}</label>
-                        <textarea className="form-control" rows="3" style={{ height: 72 }} name="description" value={description} onChange={handleChange} placeholder="Enter ..." autoComplete="off"></textarea>
-                    </div>
-
-                </form>
+                </div>
             </DialogModal>
         </React.Fragment>
     );

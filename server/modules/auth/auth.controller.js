@@ -264,6 +264,25 @@ exports.createPassword2 = async(req, res) => {
     }
 }
 
+exports.deletePassword2 = async (req, res) => {
+    try {
+        const result = await AuthService.deletePassword2(req.portal, req.body, req.params.id);
+        await Logger.info(req.user.email, 'delete_password2_success', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['delete_password2_success'],
+            content: result
+        });
+    } catch (error) {
+        await Logger.info(req.user.email, 'delete_password2_faile', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['delete_password2_faile'],
+            content: error
+        });
+    }
+}
+
 exports.checkPassword2Exists = async (req, res) => {
     try {
         const result = await AuthService.checkPassword2Exists(req.portal, req.user._id);

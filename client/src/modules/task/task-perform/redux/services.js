@@ -72,6 +72,9 @@ export const performTaskService = {
     getAllPreceedingTasks,
     sortActions,
     evaluationAllAction,
+
+    evaluateTaskByResponsibleEmployeesProject,
+    evaluateTaskByAccountableEmployeesProject,
 };
 
 /**
@@ -755,4 +758,36 @@ function sortActions(taskId, data) {
         method: 'POST',
         data: data,
     }, false, false)
+}
+
+/**
+ * evaluate Task By Responsible Employees Project
+ * @param {*} data du lieu cap nhat
+ * @param {*} taskId id cua task muon cap nhat
+ */
+function evaluateTaskByResponsibleEmployeesProject(data, taskId) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/evaluate-project`,
+        method: 'POST',
+        data: {
+            data: data,
+            role: 'responsible',
+        }
+    }, true, true, 'task.task_management');
+}
+
+/**
+ * evaluate Task By Accountable Employees PROJECT
+ * @param {*} data du lieu cap nhat
+ * @param {*} taskId id cua task muon cap nhat
+ */
+ function evaluateTaskByAccountableEmployeesProject(data, taskId) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/evaluate-project`,
+        method: 'POST',
+        data: {
+            data: data,
+            role: 'accountable',
+        }
+    }, true, true, 'task.task_management');
 }

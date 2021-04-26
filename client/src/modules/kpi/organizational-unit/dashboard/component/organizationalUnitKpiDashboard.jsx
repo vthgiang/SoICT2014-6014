@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
+import Swal from 'sweetalert2';
 
 import { DashboardEvaluationEmployeeKpiSetAction } from '../../../evaluation/dashboard/redux/actions';
 
@@ -9,11 +11,10 @@ import { DistributionOfOrganizationalUnitKpiChart } from './distributionOfOrgani
 import { ResultsOfOrganizationalUnitKpiChart } from './resultsOfOrganizationalUnitKpiChart';
 import { ResultsOfAllOrganizationalUnitKpiChart } from './resultsOfAllOrganizationalUnitKpiChart';
 import { StatisticsOfOrganizationalUnitKpiResultsChart } from './statisticsOfOrganizationalUnitKpiResultsChart';
+import StatisticsKpiUnits from './statisticsKpiUnits';
 
 import { SelectBox, DatePicker, LazyLoadComponent, ExportExcel } from '../../../../../common-components/index';
 import { showListInSwal } from '../../../../../helpers/showListInSwal';
-import { withTranslate } from 'react-redux-multilingual';
-import StatisticsKpiUnits from './statisticsKpiUnits';
 
 function OrganizationalUnitKpiDashboard(props) {
     const today = new Date();
@@ -167,6 +168,21 @@ function OrganizationalUnitKpiDashboard(props) {
         })
     };
 
+    const showDistributionOfOrganizationalUnitKpiDoc = () => {
+        Swal.fire({
+            icon: "question",
+
+            html: `<h3 style="color: red"><div>Xu hướng thực hiện mục tiêu của nhân viên</div> </h3>
+            <div style="font-size: 1.3em; text-align: left; margin-top: 15px; line-height: 1.7">
+            <p>Biểu đồ này cho biết xu hướng thực hiện mục tiêu của nhân viên. Biểu đồ có 5 đường: (1) số công việc, (2) thời gian thực hiện (ngày), (3) số người tham gia (4) số KPI nhân viên (5) trọng số. </b></p>
+            <p>Lưu ý: 5 đường trên càng song song với nhau thì xu hướng thực hiện mục tiêu của nhân viên đúng với xu hướng đã đề ra của đơn vị.</p>
+            <p>(3) = số người tham gia vào (1) và (4)</p>
+            <p>(2) = thời gian thực hiện các công việc trong (1)</p>
+            </div>`,
+            width: "50%",
+        })
+    }
+
     const { dashboardEvaluationEmployeeKpiSet, translate } = props;
     const { childUnitChart, organizationalUnitId,
         month, date, resultsOfOrganizationalUnitKpiChartData,
@@ -310,7 +326,12 @@ function OrganizationalUnitKpiDashboard(props) {
                         <div className="col-xs-12">
                             <div className="box box-primary">
                                 <div className="box-header with-border">
-                                    <div className="box-title">{translate('kpi.organizational_unit.dashboard.trend')} {currentOrganizationalUnit} {translate('general.month')} {date}</div>
+                                    <div className="box-title">
+                                        <span>{translate('kpi.organizational_unit.dashboard.trend')} {currentOrganizationalUnit} {translate('general.month')} {date}</span>
+                                        <a className="text-red" title={translate('task.task_management.explain')} onClick={() => showDistributionOfOrganizationalUnitKpiDoc()}>
+                                            <i className="fa fa-question-circle" style={{ color: '#dd4b39', cursor: 'pointer', marginLeft: '5px' }} />
+                                        </a>
+                                    </div>
                                 </div>
 
                                 <div className="box-body qlcv" style={{ minHeight: "420px" }}>

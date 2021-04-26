@@ -21,11 +21,14 @@ export const taskManagementService = {
     getTasksByUser,
     getTaskEvaluations,
     getTaskInOrganizationUnitByMonth,
-    
+
     getTaskAnalysOfUser,
     getTaskByPriorityInOrganizationUnit,
     getTimeSheetOfUser,
-    getAllUserTimeSheet
+    getAllUserTimeSheet,
+
+    addNewProjectTask,
+    getTasksByProject,
 };
 
 
@@ -310,7 +313,7 @@ function getPaginatedTasksByOrganizationalUnit(data) {
  * @param {*} endDate kết thúc công việc
  */
 
-function getPaginateTasks(role, unit, number, perPage, status, priority, special, name, startDate, endDate,responsibleEmployees,accountableEmployees, creatorEmployees,creatorTime, projectSearch, startDateAfter, endDateBefore, aPeriodOfTime) {
+function getPaginateTasks(role, unit, number, perPage, status, priority, special, name, startDate, endDate, responsibleEmployees, accountableEmployees, creatorEmployees, creatorTime, projectSearch, startDateAfter, endDateBefore, aPeriodOfTime) {
     var user = getStorage("userId");
 
     return sendRequest({
@@ -332,8 +335,8 @@ function getPaginateTasks(role, unit, number, perPage, status, priority, special
             responsibleEmployees: responsibleEmployees,
             accountableEmployees: accountableEmployees,
             creatorEmployees: creatorEmployees,
-            creatorTime:creatorTime,
-            projectSearch:projectSearch,
+            creatorTime: creatorTime,
+            projectSearch: projectSearch,
             startDateAfter: startDateAfter,
             endDateBefore: endDateBefore,
             aPeriodOfTime: aPeriodOfTime
@@ -430,7 +433,7 @@ function getTaskInOrganizationUnitByMonth(organizationUnitId, startDateAfter, en
     }, false, true, 'task.task_management');
 }
 
-function getTaskAnalysOfUser(userId, type){
+function getTaskAnalysOfUser(userId, type) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/task/analys/user/${userId}`,
         method: 'GET',
@@ -464,5 +467,26 @@ function getAllUserTimeSheet(month, year) {
         url: `${process.env.REACT_APP_SERVER}/task/time-sheet/all`,
         method: 'GET',
         params: { month, year }
+    }, false, true, 'task.task_management');
+}
+
+/**
+ * thêm công việc mới cho dự án
+ * @param {*} newTask công việc mới 
+ */
+
+function addNewProjectTask(newTask) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/task/tasks/project-tasks`,
+        method: 'POST',
+        data: newTask
+    }, true, true, 'task.task_management');
+}
+
+function getTasksByProject(projectId) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/task/tasks`,
+        method: 'GET',
+        params: { type: 'project', projectId }
     }, false, true, 'task.task_management');
 }

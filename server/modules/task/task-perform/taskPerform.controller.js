@@ -1879,3 +1879,117 @@ exports.sortActions = async (req, res) => {
         })
     }
 }
+
+/**
+ * đánh giá công việc PROJECT
+ * @param {*} req 
+ * @param {*} res 
+ */
+exports.evaluateTaskProject = async (req, res) => {
+    if (req.body.role === 'responsible') {
+        evaluateTaskByResponsibleEmployeesProject(req, res);
+    }
+    else if (req.body.role === 'accountable') {
+        evaluateTaskByAccountableEmployeesProject(req, res);
+    }
+}
+/**
+ * evaluate task by responsible employee PROJECT
+ */
+ evaluateTaskByResponsibleEmployeesProject = async (req, res) => {
+    try {
+        const data = req.body.data;
+        let oldTask = await PerformTaskService.getTaskById(req.portal, req.params.taskId, req.user._id);
+        let task = await PerformTaskService.evaluateTaskByResponsibleEmployeesProject(req.portal, data, req.params.taskId);
+
+        // Thêm nhật ký hoạt động
+        let description = await PerformTaskService.createDescriptionEvaluationTaskLogs(req.portal, req.user._id, data, oldTask);
+        let log = {
+            createdAt: Date.now(),
+            creator: req.user._id,
+            title: "Chỉnh sửa thông tin đánh giá công việc tháng " + data?.evaluatingMonth?.slice(3) + " theo vai trò người thực hiện",
+            description: description
+        }
+        let taskLog = await PerformTaskService.addTaskLog(req.portal, req.params.taskId, log);
+        
+        // Tạo newsfeed
+        await NewsFeed.createNewsFeed(req.portal, {
+            title: log?.title,
+            description: log?.description,
+            creator: req.user._id,
+            associatedDataObject: { 
+                dataType: 1,
+                value: task?._id
+            },
+            relatedUsers: task?.accountableEmployees?.map(item => item?._id)
+        });
+
+        await Logger.info(req.user.email, ` edit task  `, req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['evaluate_task_success'],
+            content: {
+                task,
+                taskLog
+            }
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, ` edit task `, req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ['evaluate_task_fail'],
+            content: error
+        });
+    }
+}
+
+/**
+ * evaluate PROJECT task by accountable employee
+ */
+evaluateTaskByAccountableEmployeesProject = async (req, res) => {
+    try {
+        const data = req.body.data;
+        let oldTask = await PerformTaskService.getTaskById(req.portal, req.params.taskId, req.user._id);
+        let task = await PerformTaskService.evaluateTaskByAccountableEmployeesProject(req.portal, data, req.params.taskId);
+        
+        // Thêm nhật ký hoạt động
+        let description = await PerformTaskService.createDescriptionEvaluationTaskLogs(req.portal, req.user._id, data, oldTask);
+        let log = {
+            createdAt: Date.now(),
+            creator: req.user._id,
+            title: "Chỉnh sửa thông tin đánh giá công việc tháng " + data?.evaluatingMonth?.slice(3) + " theo vai trò người phê duyệt",
+            description: description
+        }
+        let taskLog = await PerformTaskService.addTaskLog(req.portal, req.params.taskId, log);
+
+        // Tạo newsfeed
+        await NewsFeed.createNewsFeed(req.portal, {
+            title: log?.title,
+            description: log?.description,
+            creator: req.user._id,
+            associatedDataObject: { 
+                dataType: 1,
+                value: task?._id
+            },
+            relatedUsers: task?.accountableEmployees?.map(item => item?._id).filter(item => item !== req.user._id)
+        });
+
+
+        await Logger.info(req.user.email, ` edit task  `, req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['evaluate_task_success'],
+            content: {
+                task,
+                taskLog
+            }
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, ` edit task `, req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ['evaluate_task_fail'],
+            content: error
+        });
+    }
+}

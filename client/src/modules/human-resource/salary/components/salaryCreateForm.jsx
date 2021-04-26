@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -40,11 +40,11 @@ const SalaryCreateForm = (props) => {
         bonus: [],
     });
 
-    useState(() => {
+    useEffect(() => {
         getAllEmployee({ organizationalUnits: 'allUnist' });
     }, []);
 
-    
+
 
     /** Function bắt sự kiện thay đổi mã nhân viên */
     const validateEmployeeNumber = (value, willUpdateState = true) => {
@@ -52,10 +52,12 @@ const SalaryCreateForm = (props) => {
         let { message } = ValidationHelper.validateEmpty(translate, value);
 
         if (willUpdateState) {
-            setState(state => ({...state,
+            setState(state => ({
+                ...state,
                 errorOnEmployee: message,
                 employee: value,
-                organizationalUnit: ""}))
+                organizationalUnit: ""
+            }))
         }
         return message === undefined;
     }
@@ -83,7 +85,7 @@ const SalaryCreateForm = (props) => {
     const handleOrganizationalUnitChange = (value) => {
         validateOrganizationalUnit(value[0], true);
     }
-    
+
 
 
     /**
@@ -107,7 +109,7 @@ const SalaryCreateForm = (props) => {
     const handleMonthChange = (value) => {
         validateMonthSalary(value, true);
     }
-    
+
 
     /** Function bắt sự kiện thay đổi tiền lương chính */
     const validateMainSalary = (value, willUpdateState = true) => {
@@ -127,12 +129,12 @@ const SalaryCreateForm = (props) => {
         let value = e.target.value;
         validateMainSalary(value, true);
     }
-    
+
 
     /** Function bắt sự kiện thay đổi đơn vị tiền lương */
     const handleChange = (e) => {
         let value = e.target.value;
-        setState(state => ({...state, unit: value}));
+        setState(state => ({ ...state, unit: value }));
     }
 
     /** Bắt sự kiện click thêm lương thưởng khác */
@@ -214,7 +216,7 @@ const SalaryCreateForm = (props) => {
     const Delete = (index) => {
         let { bonus } = state;
         bonus.splice(index, 1);
-        setState(state => ({...state, bonus: bonus}))
+        setState(state => ({ ...state, bonus: bonus }))
         if (bonus.length !== 0) {
             for (let n in bonus) {
                 validateNameSalary(bonus[n].nameBonus, n);
@@ -237,7 +239,7 @@ const SalaryCreateForm = (props) => {
         if (user.organizationalUnitsOfUserByEmail) {
             if (!organizationalUnit) {
                 let department = user.organizationalUnitsOfUserByEmail[0];
-                organizationalUnit = department._id;
+                organizationalUnit = department?._id;
             }
         }
 
@@ -266,7 +268,7 @@ const SalaryCreateForm = (props) => {
         if (user.organizationalUnitsOfUserByEmail) {
             if (!organizationalUnit) {
                 let department = user.organizationalUnitsOfUserByEmail[0];
-                organizationalUnit = department._id;
+                organizationalUnit = department?._id;
             }
         }
         let employeeID = employeesManager.listEmployeesOfOrganizationalUnits.find(x => x.emailInCompany === employee);
@@ -291,7 +293,7 @@ const SalaryCreateForm = (props) => {
         listDepartments = user.organizationalUnitsOfUserByEmail;
         if (!organizationalUnit) {
             let department = user.organizationalUnitsOfUserByEmail[0];
-            organizationalUnit = department._id;
+            organizationalUnit = department?._id;
         }
     }
 

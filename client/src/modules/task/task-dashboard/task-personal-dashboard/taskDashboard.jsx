@@ -308,123 +308,139 @@ class TaskDashboard extends Component {
                     </div>
                 </div>
 
-                <div className="row" style={{ marginTop: '5px' }}>
-                    <div className="col-md-4 col-sm-12 col-xs-12">
-                        <div className="info-box">
-                            <span className="info-box-icon bg-aqua"><i className="fa fa-plus" /></span>
-                            <div className="info-box-content">
-                                <span className="info-box-text">Tổng số công việc</span>
-                                <Link to="/task-management" onClick={() => localStorage.setItem('stateFromTaskDashboard', JSON.stringify(
-                                    {
-                                        fromTaskPersonalDashboard: true,
-                                        status: ["inprocess"],
-                                        startDate: this.INFO_SEARCH.startMonth,
-                                        endDate: this.INFO_SEARCH.endMonth,
-                                        roles: ["responsible", "accountable", "consulted", "creator", "informed"]
-                                    }
-                                ))} target="_blank" rel="noopener noreferrer">
-                                    <span className="info-box-number">{totalTasks}</span>
-                                </Link>
+                <div className="row statistical-wrapper" style={{ marginTop: '5px' }}>
+                    <div className="col-md-2 col-sm-4 col-xs-4 statistical-item">
+                        <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: "#fff", padding: '10px', borderRadius: '10px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                                <span style={{ marginRight: '10px', color: "#00c0ef" }} className="material-icons">
+                                    list_alt
+                                </span>
+                                <span style={{ fontWeight: 'bold' }}>Tổng số cv</span>
                             </div>
-                        </div>
-                    </div>
-                    <div className="col-md-4 col-sm-12 col-xs-12">
-                        <div className="info-box">
-                            <span className="info-box-icon bg-aqua"><i className="fa fa-plus" /></span>
-                            <div className="info-box-content">
-                                <span className="info-box-text">{translate('task.task_management.dashboard_created')}</span>
-                                <Link to="/task-management" onClick={() => localStorage.setItem('stateFromTaskDashboard', JSON.stringify(
-                                    {
-                                        fromTaskPersonalDashboard: true,
-                                        status: ["inprocess"],
-                                        startDate: this.INFO_SEARCH.startMonth,
-                                        endDate: this.INFO_SEARCH.endMonth,
-                                        roles: ["creator"]
-                                    }
-                                ))} target="_blank" rel="noopener noreferrer">
-                                    <span className="info-box-number">{amountTaskCreated}</span>
-                                </Link>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-md-4 col-sm-12 col-xs-12">
-                        <div className="info-box">
-                            <span className="info-box-icon bg-green"><i className="fa fa-spinner" /></span>
-                            <div className="info-box-content">
-                                <span className="info-box-text">{translate('task.task_management.dashboard_need_perform')}</span>
-                                <Link to="/task-management" onClick={() => localStorage.setItem('stateFromTaskDashboard', JSON.stringify(
-                                    {
-                                        fromTaskPersonalDashboard: true,
-                                        status: ["inprocess"],
-                                        startDate: this.INFO_SEARCH.startMonth,
-                                        endDate: this.INFO_SEARCH.endMonth,
-                                        roles: ["responsible"]
-                                    }
-                                ))} target="_blank" rel="noopener noreferrer">
-                                    <span className="info-box-number">{amountResponsibleTask}</span>
-                                </Link>
 
-                            </div>
+                            <Link to="/task-management" onClick={() => localStorage.setItem('stateFromTaskDashboard', JSON.stringify(
+                                {
+                                    fromTaskPersonalDashboard: true,
+                                    status: ["inprocess"],
+                                    startDate: this.INFO_SEARCH.startMonth,
+                                    endDate: this.INFO_SEARCH.endMonth,
+                                    roles: ["responsible", "accountable", "consulted", "creator", "informed"]
+                                }
+                            ))} target="_blank" rel="noopener noreferrer">
+                                <span style={{ fontSize: '21px' }} className="info-box-number">{totalTasks}</span>
+                            </Link>
                         </div>
                     </div>
-                </div>
-                <div className="row">
-                    <div className="col-md-4 col-sm-12 col-xs-12">
-                        <div className="info-box">
-                            <span className="info-box-icon bg-red"><i className="fa fa-check-square-o" /></span>
-                            <div className="info-box-content">
-                                <span className="info-box-text">{translate('task.task_management.dashboard_need_approve')}</span>
-                                <Link to="/task-management" onClick={() => localStorage.setItem('stateFromTaskDashboard', JSON.stringify(
-                                    {
-                                        fromTaskPersonalDashboard: true,
-                                        status: ["inprocess"],
-                                        startDate: this.INFO_SEARCH.startMonth,
-                                        endDate: this.INFO_SEARCH.endMonth,
-                                        roles: ["accountable"]
-                                    }
-                                ))} target="_blank" rel="noopener noreferrer">
-                                    <span className="info-box-number">{amountAccountableTasks}</span>
-                                </Link>
+
+                    <div className="col-md-2 col-sm-4 col-xs-4 statistical-item" >
+                        <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: "#fff", padding: '10px', borderRadius: '10px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                                <span style={{ marginRight: '10px', color: "#00c0ef" }} className="material-icons">
+                                    person_add
+                                </span>
+                                <span style={{ fontWeight: 'bold' }}>Bạn đã tạo</span>
                             </div>
+                            <Link to="/task-management" onClick={() => localStorage.setItem('stateFromTaskDashboard', JSON.stringify(
+                                {
+                                    fromTaskPersonalDashboard: true,
+                                    status: ["inprocess"],
+                                    startDate: this.INFO_SEARCH.startMonth,
+                                    endDate: this.INFO_SEARCH.endMonth,
+                                    roles: ["creator"]
+                                }
+                            ))} target="_blank" rel="noopener noreferrer">
+                                <span style={{ fontSize: '21px' }} className="info-box-number">{amountTaskCreated}</span>
+                            </Link>
                         </div>
                     </div>
-                    <div className="col-md-4 col-sm-12 col-xs-12">
-                        <div className="info-box">
-                            <span className="info-box-icon bg-yellow"><i className="fa fa-comments-o" /></span>
-                            <div className="info-box-content">
-                                <span className="info-box-text">{translate('task.task_management.dashboard_need_consult')}</span>
-                                <Link to="/task-management" onClick={() => localStorage.setItem('stateFromTaskDashboard', JSON.stringify(
-                                    {
-                                        fromTaskPersonalDashboard: true,
-                                        status: ["inprocess"],
-                                        startDate: this.INFO_SEARCH.startMonth,
-                                        endDate: this.INFO_SEARCH.endMonth,
-                                        roles: ["consulted"]
-                                    }
-                                ))} target="_blank" rel="noopener noreferrer">
-                                    <span className="info-box-number">{amountConsultedTasks}</span>
-                                </Link>
+
+                    <div className="col-md-2 col-sm-4 col-xs-4 statistical-item">
+                        <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: "#fff", padding: '10px', borderRadius: '10px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                                <span style={{ marginRight: '10px', color: "#289428" }} className="material-icons">
+                                    person
+                                </span>
+                                <span style={{ fontWeight: 'bold' }}>Bạn thực hiện</span>
                             </div>
+                            <Link to="/task-management" onClick={() => localStorage.setItem('stateFromTaskDashboard', JSON.stringify(
+                                {
+                                    fromTaskPersonalDashboard: true,
+                                    status: ["inprocess"],
+                                    startDate: this.INFO_SEARCH.startMonth,
+                                    endDate: this.INFO_SEARCH.endMonth,
+                                    roles: ["responsible"]
+                                }
+                            ))} target="_blank" rel="noopener noreferrer">
+                                <span style={{ fontSize: '21px' }} className="info-box-number">{amountResponsibleTask}</span>
+                            </Link>
                         </div>
                     </div>
-                    <div className="clearfix visible-sm-block" />
-                    <div className="col-md-4 col-sm-12 col-xs-12">
-                        <div className="info-box">
-                            <span className="info-box-icon bg-yellow"><i className="fa fa-comments-o" /></span>
-                            <div className="info-box-content">
-                                <span className="info-box-text">Bạn quan sát</span>
-                                <Link to="/task-management" onClick={() => localStorage.setItem('stateFromTaskDashboard', JSON.stringify(
-                                    {
-                                        fromTaskPersonalDashboard: true,
-                                        status: ["inprocess"],
-                                        startDate: this.INFO_SEARCH.startMonth,
-                                        endDate: this.INFO_SEARCH.endMonth,
-                                        roles: ["informed"]
-                                    }
-                                ))} target="_blank" rel="noopener noreferrer">
-                                    <span className="info-box-number">{amountInformedTasks}</span>
-                                </Link>
+
+                    <div className="col-md-2 col-sm-4 col-xs-4 statistical-item">
+                        <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: "#fff", padding: '10px', borderRadius: '10px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                                <span style={{ marginRight: '10px', color: "#f13c3c" }} className="material-icons">
+                                    person
+                                </span>
+                                <span style={{ fontWeight: 'bold' }}>Bạn phê duyệt</span>
                             </div>
+                            <Link to="/task-management" onClick={() => localStorage.setItem('stateFromTaskDashboard', JSON.stringify(
+                                {
+                                    fromTaskPersonalDashboard: true,
+                                    status: ["inprocess"],
+                                    startDate: this.INFO_SEARCH.startMonth,
+                                    endDate: this.INFO_SEARCH.endMonth,
+                                    roles: ["accountable"]
+                                }
+                            ))} target="_blank" rel="noopener noreferrer">
+                                <span style={{ fontSize: '21px' }} className="info-box-number">{amountAccountableTasks}</span>
+                            </Link>
+                        </div>
+                    </div>
+                    <div className="col-md-2 col-sm-4 col-xs-4 statistical-item">
+                        <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: "#fff", padding: '10px', borderRadius: '10px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                                <span style={{ marginRight: '10px', color: "#f39c12" }} className="material-icons">
+                                    people
+                                </span>
+
+                                <span style={{ fontWeight: 'bold' }}>Bạn tư vấn</span>
+                            </div>
+                            <Link to="/task-management" onClick={() => localStorage.setItem('stateFromTaskDashboard', JSON.stringify(
+                                {
+                                    fromTaskPersonalDashboard: true,
+                                    status: ["inprocess"],
+                                    startDate: this.INFO_SEARCH.startMonth,
+                                    endDate: this.INFO_SEARCH.endMonth,
+                                    roles: ["consulted"]
+                                }
+                            ))} target="_blank" rel="noopener noreferrer">
+                                <span style={{ fontSize: '21px' }} className="info-box-number">{amountConsultedTasks}</span>
+                            </Link>
+                        </div>
+                    </div>
+
+                    <div className="col-md-2 col-sm-4 col-xs-4 statistical-item">
+                        <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: "#fff", padding: '10px', borderRadius: '10px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                                <span style={{ marginRight: '10px', color: "#dcb67a" }} className="material-icons">
+                                    <span class="material-icons-outlined">
+                                        person_search
+                                    </span>
+                                </span>
+                                <span style={{ fontWeight: 'bold' }}>Bạn quan sát</span>
+                            </div>
+                            <Link to="/task-management" onClick={() => localStorage.setItem('stateFromTaskDashboard', JSON.stringify(
+                                {
+                                    fromTaskPersonalDashboard: true,
+                                    status: ["inprocess"],
+                                    startDate: this.INFO_SEARCH.startMonth,
+                                    endDate: this.INFO_SEARCH.endMonth,
+                                    roles: ["informed"]
+                                }
+                            ))} target="_blank" rel="noopener noreferrer">
+                                <span style={{ fontSize: '21px' }} className="info-box-number">{amountInformedTasks}</span>
+                            </Link>
                         </div>
                     </div>
                 </div>
