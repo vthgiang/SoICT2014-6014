@@ -46,14 +46,6 @@ function ArrangeOrdinalTransportOneVehicle(props) {
         } 
     }
 
-    useEffect(() => {
-        console.log(item, "day la item");
-    }, [item])
-
-    useEffect(() => {
-        console.log("thay doi nay");
-        console.log(routeOrdinal)
-    },[routeOrdinal])
     const handleUpdateMap = () =>{
         setActiveMapState(locationsOnMap);
     }

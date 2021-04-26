@@ -30,7 +30,7 @@ function TransportManageRouteMainPage(props) {
 
     const [currentVehicleRoute, setCurrentVehicleRoute] = useState({})
 
-
+    const [longestRoute, setLongestRoute] = useState();
     const handleShowDetailRoute = (route) => {
         setCurrentVehicleRoute(route);
         window.$(`#modal-detail-route`).modal('show')
@@ -46,7 +46,7 @@ function TransportManageRouteMainPage(props) {
         let listTransportPlans = [
             {
                 value: "0",
-                text: "Lịch trình",
+                text: "Kế hoạch",
             },
         ];        
         if (allTransportPlans) {
@@ -71,6 +71,21 @@ function TransportManageRouteMainPage(props) {
             setCurrentTransportPlan({_id: value[0], code: ""});
         }
     }
+    /**
+     * Tính chiều dài route hiện tại (so với các route khác trong cùng kế hoạch)
+     * @param {*} item 
+     */
+    const getBarWidth = (item) => {
+        let length = 0;
+        if (longestRoute && longestRoute!==0){
+            if (item.routeOrdinal && item.routeOrdinal.length!==0){
+                item.routeOrdinal.map(routeOrdinal => {
+                    length +=routeOrdinal.distance?routeOrdinal.distance:0;
+                })
+            }
+        }
+        return length/longestRoute * 100;
+    }
 
     // setInterval(()=>{     
     //     navigator.geolocation.getCurrentPosition(success);
@@ -93,6 +108,17 @@ function TransportManageRouteMainPage(props) {
 
     useEffect(() => {
         console.log(currentTransportSchedule, " allll")
+        if (currentTransportSchedule && currentTransportSchedule.route && currentTransportSchedule.route.length!==0){
+            currentTransportSchedule.route.map(r => {
+                if (r.routeOrdinal && r.routeOrdinal.length!==0){
+                    let length = 0;
+                    r.routeOrdinal.map(routeOrdinal => {
+                        length += routeOrdinal.distance?routeOrdinal.distance:0;
+                    })
+                    setLongestRoute(length);
+                }
+            })
+        }
     }, [currentTransportSchedule])
 
     const success = position => {
@@ -144,6 +170,31 @@ function TransportManageRouteMainPage(props) {
                             />
                         </div>
                 </div>
+                {
+                    (currentTransportSchedule && currentTransportSchedule.route && currentTransportSchedule.route.length !== 0)
+                    && currentTransportSchedule.route.map((item,index) =>(
+                        item &&
+                        <fieldset className="scheduler-border" style={{ height: "100%" }}>
+                            <legend className="scheduler-border">{item.transportVehicle?.name}</legend>
+                            <a className="edit text-green" 
+                                        style={{ width: '5px', cursor:"pointer" }} 
+                                        title={'manage_example.detail_info_example'} 
+                                        onClick={() => handleShowDetailRoute(item)}
+                                        >
+                                            <i className="material-icons">visibility</i>
+                                        </a>
+                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 container-time-line">
+                                <TransportManageVehicleProcess
+                                    route={item}
+                                    timelineBarWidth={getBarWidth(item)}
+                                />
+                            </div>
+                        </fieldset>
+                    ))
+                }
+                
+
+
                 <div className={"divTest2"}>
                     <table className="tableTest2 not-sort">
                         <thead>
@@ -168,7 +219,7 @@ function TransportManageRouteMainPage(props) {
                             (currentTransportSchedule && currentTransportSchedule.route && currentTransportSchedule.route.length !== 0)
                             && currentTransportSchedule.route.map((item, index) => (
                                 item &&
-                                <tr key={"route"+index}>
+                                <tr key={"route "+index}>
                                     <th>{index + 1}</th>
                                     <td>{item.transportVehicle.name}</td>
                                     <td>
@@ -180,12 +231,12 @@ function TransportManageRouteMainPage(props) {
                                             <i className="material-icons">visibility</i>
                                         </a>
                                     </td>
-                                    <td>
+                                    {/* <td>
                                         <TransportManageVehicleProcess
                                             route={item}
                                             timelineBarWidth={900}
                                         />
-                                    </td>
+                                    </td> */}
                                         
                                             {/* <div key={"1"} className={`timeline-item active`} >
                                                 <div className="timeline-contain">{"123131323"}</div>
@@ -214,6 +265,22 @@ function TransportManageRouteMainPage(props) {
                 loading="lazy" 
                 aria-hidden="false" 
                 tabindex="0"></iframe>    */}
+                <fieldset className="scheduler-border" style={{ height: "100%" }}>
+
+                    {/* <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6"> */}
+                    {/* <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <div className="form-group">
+                    <strong>{"Trọng tải: "+item.transportVehicle.payload}</strong>
+                    </div>
+                    </div>                                    
+                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <div className="form-group">
+                    <strong>{"Thể tích thùng chứa: "+item.transportVehicle.volume}</strong>
+                    </div>
+                    </div>
+                    </div> */}
+
+                </fieldset>
             </div>
     )
 }

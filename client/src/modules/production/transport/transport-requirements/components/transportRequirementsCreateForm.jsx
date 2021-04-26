@@ -326,7 +326,7 @@ function TransportRequirementsCreateForm(props) {
 
     const handleClickCreateCode = () => {
         setRequirementsForm({
-            ...requirementsForm,
+            // ...requirementsForm,
             code: generateCode("YCVC"),
         })
     }

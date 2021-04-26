@@ -18,9 +18,6 @@ function SortableComponent(props) {
 	// const [transportVehicle, setTransportVehicle] = useState();
 	// const [transportRequirements, setTransportRequirements] = useState();
 
-	useEffect(() => {
-		console.log(routeOrdinal, " routeOrdinal aaaaaaaaaaaaaaaaaaaaaaa")
-	}, [routeOrdinal])
 	const sleep = (ms) => {
 		return new Promise(resolve => setTimeout(resolve, ms));
 	}
@@ -99,7 +96,6 @@ function SortableComponent(props) {
 			})
 			setAddressList(addressData);
 			initializeDistanceAndDuration(addressData);
-			console.log("ok");
 		}
 	}, [transportRequirements])
 
@@ -158,7 +154,6 @@ function SortableComponent(props) {
 
 	const onSortEnd = async ({oldIndex, newIndex}) => {
 		let arrayAddress = [...addressList];
-		console.log(oldIndex, " ",newIndex)
 		arrayAddress = arrayMove(arrayAddress, oldIndex, newIndex);
 		let check = 0;
 		let flag = true;
@@ -250,8 +245,6 @@ function SortableComponent(props) {
 					arrayAddress[oldIndex].duration = 0;
 				}
 				else{
-					console.log(arrayAddress[newIndex-1].address);
-					console.log(arrayAddress[newIndex].address)
 					await getDistanceAndTime(arrayAddress[newIndex-1].geocodeAddress, arrayAddress[newIndex].geocodeAddress)
 					.then(
 						value => {

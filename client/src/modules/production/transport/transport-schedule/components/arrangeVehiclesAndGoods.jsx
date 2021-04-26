@@ -231,6 +231,7 @@ function ArrangeVehiclesAndGoods(props) {
                 data.push(singleData);
             })
         }
+        console.log(data);
         props.editTransportScheduleByPlanId(currentTransportPlan._id, {transportVehicles: data});
         reloadOrdinalTransport();
     }

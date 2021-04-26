@@ -108,7 +108,7 @@ function TransportVehicleManagementTable(props) {
         if (transportVehicle){
             if (transportVehicle.lists && transportVehicle.lists.length !==0){
                 let currentVehicle = transportVehicle.lists.filter(r => String(r.asset?._id) ===vehicle._id);
-                if (currentVehicle){
+                if (currentVehicle && currentVehicle.length!==0){
                     props.editTransportVehicle(currentVehicle[0]._id, {usable: 1})
                 }
                 else{
@@ -122,7 +122,7 @@ function TransportVehicleManagementTable(props) {
         if (transportVehicle){
             if (transportVehicle.lists && transportVehicle.lists.length !==0){
                 let currentVehicle = transportVehicle.lists.filter(r => String(r.asset?._id) ===vehicle._id);
-                if (currentVehicle){
+                if (currentVehicle && currentVehicle.length!==0){
                     props.editTransportVehicle(currentVehicle[0]._id, {usable: 0})
                 }
             }
@@ -143,7 +143,7 @@ function TransportVehicleManagementTable(props) {
         if (transportVehicle){
             if (transportVehicle.lists && transportVehicle.lists.length !==0){
                 let currentVehicle = transportVehicle.lists.filter(r => String(r.asset?._id) ===vehicle._id);
-                if (currentVehicle){
+                if (currentVehicle && currentVehicle.length!==0){
                     if (String(currentVehicle[0].usable) === "1") return "iconactive";
                 }
             }

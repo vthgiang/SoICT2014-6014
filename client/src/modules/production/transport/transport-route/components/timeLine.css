@@ -1,15 +1,15 @@
 .container-time-line {
-    overflow-x: auto;
+    width: 90%;
 }
 
 .timeline-transport {
-    margin: 4.5em auto 4em auto;
-    margin-left: 100px;
-    margin-right: 100px;
+    margin: 4.5em auto 4em 5%;
+    /* margin-left: 100px;
+    margin-right: 100px; */
     height: 5px;
     background-color: #ccc;
     /* width: 500px; */
-  
+    box-sizing: content-box;
   }
   
   .timeline-transport:before{ 

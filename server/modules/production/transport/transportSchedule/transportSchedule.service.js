@@ -88,9 +88,9 @@ exports.editTransportRouteByPlanId = async (portal, planId, data) => {
     if (!oldTransportSchedule) {
         return -1;
     }
-    // if (data.transportVehicles && data.transportVehicles.length!==0){
-    //     await TransportSchedule(connect(DB_CONNECTION, portal)).update({ _id: oldTransportSchedule._id }, { $set: {route: []} });
-    // }
+    if (data.transportVehicles && data.transportVehicles.length!==0){
+        await TransportSchedule(connect(DB_CONNECTION, portal)).update({ _id: oldTransportSchedule._id }, { $set: {route: []} });
+    }
     // Cach 2 de update
     await TransportSchedule(connect(DB_CONNECTION, portal)).update({ _id: oldTransportSchedule._id }, { $set: data });
     let newTransportSchedule = await TransportSchedule(connect(DB_CONNECTION, portal)).findById({ _id: oldTransportSchedule._id });

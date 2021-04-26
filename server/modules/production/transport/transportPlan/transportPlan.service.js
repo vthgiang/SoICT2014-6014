@@ -45,7 +45,11 @@ exports.createTransportPlan = async (portal, data) => {
         }
     }
     await TransportScheduleServices.planCreateTransportRoute(portal, {transportPlan: newTransportPlan._id,})
-    let transportPlan = await TransportPlan(connect(DB_CONNECTION, portal)).findById({ _id: newTransportPlan._id });;
+    let transportPlan = await TransportPlan(connect(DB_CONNECTION, portal)).findById({ _id: newTransportPlan._id })
+    .populate([
+        {path : "transportRequirements"}
+    ])
+    ;;
     return transportPlan;
 }
 

@@ -25,7 +25,7 @@ function TransportManageVehicleProcess(props) {
     const [timelineItemPos, setTimelineItemPos] = useState([])
     useEffect(() => {
         if (route){
-            let barWidth = timelineBarWidth?timelineBarWidth:600
+            let barWidth = timelineBarWidth?timelineBarWidth:100
             // Tính tổng khoảng cách xe phải di chuyển
             if (route.routeOrdinal && route.routeOrdinal.length!==0){
                 route.routeOrdinal.map(routeOrdinal => {
@@ -38,7 +38,7 @@ function TransportManageVehicleProcess(props) {
                 route.routeOrdinal.map(routeOrdinal => {
                     currentTimelineItemDistance+= routeOrdinal.distance;
                     // timelineItem.push((currentTimelineItemDistance/totalDistance)*barWidth);
-                    timelineItem.push((routeOrdinal.distance/totalDistance)*barWidth);
+                    timelineItem.push((routeOrdinal.distance/totalDistance)*100);
                 });
                 setTimelineItemPos(timelineItem)
             }
@@ -50,8 +50,8 @@ function TransportManageVehicleProcess(props) {
     }, [timelineItemPos])
 
    return (
-        <div className="timeline-transport" style={{width: timelineBarWidth+"px"}}>
-            <div className="timeline-progress" style={{ width: `0%` }}></div>
+        <div className="timeline-transport" style={{width: timelineBarWidth+"%"}}>
+            <div className="timeline-progress" style={{ width: `100%` }}></div>
             <div className="timeline-items-transport">
             {
                 (route && route.routeOrdinal && route.routeOrdinal.length !== 0)
@@ -59,7 +59,7 @@ function TransportManageVehicleProcess(props) {
                     <div key={"--"+ index} 
                         // className={`timeline-item ${o.active ? 'active' : ''}`}
                         className={`timeline-item-transport`}
-                        style={{marginLeft: timelineItemPos[index]-15+"px"}}
+                        style={{marginLeft: `calc( ${timelineItemPos[index]}% - ${index===0?"10":"20"}px)`}}
                     >
                         {/* <div className="timeline-contain-transport">{routeOrdinal._id}</div> */}
                     </div>

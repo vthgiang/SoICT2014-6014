@@ -98,8 +98,6 @@ function ArrangeOrdinalTransport(props) {
      * Submit state và lưu vào transportSchedule qua plan id, lưu lại lộ trình các xe
      */
     const handleSubmitRoute = () => {
-        console.log(transportOrdinalAddress, " trnasportordinal")
-        console.log(currentTransportPlan._id, "");
         if (transportOrdinalAddress && transportOrdinalAddress.length !==0){
             let data = [];
             transportOrdinalAddress.map((item, index) => {
@@ -119,7 +117,6 @@ function ArrangeOrdinalTransport(props) {
                     routeOrdinal: routeOrdinal,
                 })
             })
-            console.log(data);
             props.editTransportScheduleByPlanId(currentTransportPlan._id, {route: data})
             setTransportOrdinalAddress([]);
         }
@@ -144,10 +141,6 @@ function ArrangeOrdinalTransport(props) {
         }
     }, [currentTransportSchedule])
 
-    // useEffect(() => {
-    //     console.log(transportVehicles, " vhielss")
-    // }, [transportVehicles])
-
 
     /**
      * cập nhật lại trạng thái sau khi sắp xếp
@@ -155,8 +148,6 @@ function ArrangeOrdinalTransport(props) {
      * @param {*} vehicleId 
      */
     const callBackStateOrdinalAddress = (addressOrdinalList, vehicleId) => {
-        // console.log(vehicleId, " vehicleId")
-        console.log(addressOrdinalList, "aaaaaaaaaaaa");
         const transportOrdinal = [...transportOrdinalAddress];
         if (transportOrdinal && transportOrdinal.length !==0 ){
             let index = -1;
