@@ -85,7 +85,7 @@ function AdministrationDocumentArchives(props) {
             }
         })
         let exportData = {
-            fileName: "Mẫu import vị trí lưu trữ",
+            fileName: "Bảng thống kê lưu trữ",
             dataSheets: [{
                 sheetName: "Sheet1",
                 sheetTitle: "Danh sách vị trí lưu trữ",
