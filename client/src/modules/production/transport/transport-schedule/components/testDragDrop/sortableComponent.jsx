@@ -5,8 +5,9 @@ import { getDistanceAndTime } from '../../../transportHelper/getDistanceAndTimeG
 function SortableComponent(props) {
 
 	const {
-		transportRequirements, 
-		transportVehicle, 
+		transportVehicle,
+		transportRequirements,
+		routeOrdinal,
 		callBackStateOrdinalAddress,
 		callBackToSetLocationsOnMap
 		} = props
@@ -14,12 +15,21 @@ function SortableComponent(props) {
 	const [addressList, setAddressList] = useState([]);
 	const [distance, setDistance] = useState([]);
 	const [duration, setDuration] = useState([]);
+	// const [transportVehicle, setTransportVehicle] = useState();
+	// const [transportRequirements, setTransportRequirements] = useState();
 
+	useEffect(() => {
+		console.log(routeOrdinal, " routeOrdinal aaaaaaaaaaaaaaaaaaaaaaa")
+	}, [routeOrdinal])
+	const sleep = (ms) => {
+		return new Promise(resolve => setTimeout(resolve, ms));
+	}
 	const initializeDistanceAndDuration = async (addressList) => {
 		let distanceArr = [0];
 		let durationArr = [0];
 		if (addressList && addressList.length !==0){
 			for (let i=1;i<addressList.length;i++){
+				await sleep(500);
 				setTimeout(
 				await getDistanceAndTime(addressList[i-1].geocodeAddress, addressList[i].geocodeAddress)
 				.then(value => {
@@ -33,6 +43,38 @@ function SortableComponent(props) {
 	}
 
 	useEffect(() => {
+		// if (routeOrdinal && routeOrdinal.length!==0){
+		// 	let addressData = [];
+		// 	const FROM = "1";
+		// 	routeOrdinal.map(r => {
+		// 		if (String(r.type) === FROM){
+		// 			addressData.push({
+		// 				transportRequirement: r.transportRequirement,
+		// 				transportRequirementId: r.transportRequirement?._id,
+		// 				address: r.transportRequirement?.fromAddress,
+		// 				geocodeAddress: r.transportRequirement?.geocode.fromAddress,
+		// 				addressType: 1,
+		// 				payload: r.transportRequirement?.payload,
+		// 				volume: r.transportRequirement?.volume
+		// 			})
+		// 		}
+		// 		else {
+		// 			addressData.push({
+		// 				transportRequirement: r.transportRequirement,
+		// 				transportRequirementId: r.transportRequirement?._id,
+		// 				address: r.transportRequirement?.toAddress,
+		// 				geocodeAddress: r.transportRequirement?.geocode.toAddress,
+		// 				addressType: 2,
+		// 				payload: r.transportRequirement?.payload,
+		// 				volume: r.transportRequirement?.volume
+		// 			})
+		// 		}
+		// 	})
+			
+		// 	setAddressList(addressData);
+		// 	initializeDistanceAndDuration(addressData);
+		// }
+		// else
 		if (transportRequirements && transportRequirements.length !==0){
 			let addressData = [];
 			transportRequirements.map((item, index) => {
@@ -57,12 +99,49 @@ function SortableComponent(props) {
 			})
 			setAddressList(addressData);
 			initializeDistanceAndDuration(addressData);
+			console.log("ok");
 		}
 	}, [transportRequirements])
 
 	useEffect(() => {
-		callBackStateOrdinalAddress(addressList, transportVehicle._id);
-		callBackToSetLocationsOnMap(addressList);
+		if (routeOrdinal && routeOrdinal.length!==0){
+			let addressData = [];
+			const FROM = "1";
+			routeOrdinal.map(r => {
+				if (String(r.type) === FROM){
+					addressData.push({
+						transportRequirement: r.transportRequirement,
+						transportRequirementId: r.transportRequirement?._id,
+						address: r.transportRequirement?.fromAddress,
+						geocodeAddress: r.transportRequirement?.geocode.fromAddress,
+						addressType: 1,
+						payload: r.transportRequirement?.payload,
+						volume: r.transportRequirement?.volume
+					})
+				}
+				else {
+					addressData.push({
+						transportRequirement: r.transportRequirement,
+						transportRequirementId: r.transportRequirement?._id,
+						address: r.transportRequirement?.toAddress,
+						geocodeAddress: r.transportRequirement?.geocode.toAddress,
+						addressType: 2,
+						payload: r.transportRequirement?.payload,
+						volume: r.transportRequirement?.volume
+					})
+				}
+			})
+			
+			setAddressList(addressData);
+			initializeDistanceAndDuration(addressData);
+		}
+	}, [routeOrdinal])
+
+	useEffect(() => {
+		if (addressList && addressList.length!==0 && transportVehicle){
+			callBackStateOrdinalAddress(addressList, transportVehicle._id);
+			callBackToSetLocationsOnMap(addressList);
+		}
 	}, [addressList])
 
 	useEffect(() => {

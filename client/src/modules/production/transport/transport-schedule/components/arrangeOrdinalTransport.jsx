@@ -59,7 +59,30 @@ function ArrangeOrdinalTransport(props) {
         }
         return listTransportPlans;
     }
-
+    const getScheduleRouteOrdinal = (transportVehicles) => {
+        let routeOrdinal = []
+        if (transportVehicles){
+            if (transportVehicles.transportVehicle){
+                let vehicleId = transportVehicles.transportVehicle._id;
+                if (currentTransportSchedule){
+                    if(currentTransportSchedule.route && currentTransportSchedule.route.length!==0){
+                        let route = currentTransportSchedule.route.filter(route => {
+                            if (route.transportVehicle?._id){
+                                return route.transportVehicle._id === vehicleId;
+                            }
+                            else {
+                                return route.transportVehicle === vehicleId;
+                            }
+                        })
+                        if (route && route.length!==0){
+                            routeOrdinal = route[0].routeOrdinal;
+                        }
+                    }
+                }
+            }
+        }
+        return routeOrdinal;
+    }
     const handleTransportPlanChange = (value) => {
         if (value[0] !== "0" && allTransportPlans){
             let filterPlan = allTransportPlans.filter((r) => r._id === value[0]);
@@ -165,6 +188,7 @@ function ArrangeOrdinalTransport(props) {
     useEffect(() => {
         console.log(transportOrdinalAddress, " transportOrdinalAddress")
     }, [transportOrdinalAddress])
+
     return (
         <React.Fragment>
             <div className="box-body qlcv">
@@ -202,6 +226,7 @@ function ArrangeOrdinalTransport(props) {
                             item.transportRequirements && item.transportRequirements.length !==0 &&					
                             <ArrangeOrdinalTransportOneVehicle
                                 item={item}
+                                routeOrdinal={getScheduleRouteOrdinal(item)}
                                 callBackStateOrdinalAddress={callBackStateOrdinalAddress}
                             />
                         ))
