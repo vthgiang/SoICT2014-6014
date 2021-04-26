@@ -349,7 +349,20 @@ const EmployeeCreateForm = (props) => {
             }
         }))
 
-        let formData = convertJsonObjectToFormData(state.employee);
+        let formData = convertJsonObjectToFormData({
+            ...employee,
+            degrees: [...state.degrees],
+            certificates: [...state.certificates],
+            contracts: [...state.contracts],
+            files: [...state.files],
+            disciplines: [...state.disciplines],
+            commendations: [...state.commendations],
+            annualLeaves: [...state.annualLeaves],
+            courses: [...state.courses],
+            // career,
+            // major,
+            houseHold: { ...state.houseHold },
+        });
         degrees.forEach(x => {
             formData.append("fileDegree", x.fileUpload);
         })
@@ -386,118 +399,149 @@ const EmployeeCreateForm = (props) => {
     }
 
     const _fm_handleHeadHouseHoldName = (e) => {
-        setState(prev => ({
-            ...prev,
-            houseHold: {
-                ...state.houseHold,
-                headHouseHoldName: e.target.value
+        let headHouseHoldName = e.target.value;
+        setState(state => {
+            return {
+                ...state,
+                houseHold: {
+                    ...state.houseHold,
+                    headHouseHoldName
+                }
             }
-        }))
+        });
     }
 
     const _fm_handleDocumentType = (e) => {
-        setState(prev => ({
-            ...prev,
-            houseHold: {
-                ...state.houseHold,
-                documentType: e.target.value
+        let documentType = e.target.value
+        setState(state => {
+            return {
+                ...state,
+                houseHold: {
+                    ...state.houseHold,
+                    documentType
+                }
             }
-        }))
+        });
     }
 
     const _fm_handleHouseHoldNumber = (e) => {
-        setState(prev => ({
-            ...prev,
-            houseHold: {
-                ...state.houseHold,
-                houseHoldNumber: e.target.value
+        let houseHoldNumber = e.target.value
+        setState(state => {
+            return {
+                ...state,
+                houseHold: {
+                    ...state.houseHold,
+                    houseHoldNumber
+                }
             }
-        }))
+        })
     }
 
     const _fm_handleCity = (e) => {
-        setState(prev => ({
-            ...prev,
-            houseHold: {
-                ...state.houseHold,
-                city: e.target.value
+        let city = e.target.value
+        setState(state => {
+            return {
+                ...state,
+                houseHold: {
+                    ...state.houseHold,
+                    city
+                }
             }
-        }))
+        })
     }
 
     const _fm_handleDistrict = (e) => {
-        setState(prev => ({
-            ...prev,
-            houseHold: {
-                ...state.houseHold,
-                district: e.target.value
+        let district = e.target.value
+        setState(state => {
+            return {
+                ...state,
+                houseHold: {
+                    ...state.houseHold,
+                    district
+                }
             }
-        }))
+        });
     }
 
     const _fm_handleWard = (e) => {
-        setState(prev => ({
-            ...prev,
-            houseHold: {
-                ...state.houseHold,
-                ward: e.target.value
+        let ward = e.target.value
+        setState(state => {
+            return {
+                ...state,
+                houseHold: {
+                    ...state.houseHold,
+                    ward
+                }
             }
-        }))
+        });
     }
 
     const _fm_handleHouseHoldAddress = (e) => {
-        setState(prev => ({
-            ...prev,
-            houseHold: {
-                ...state.houseHold,
-                houseHoldAddress: e.target.value
+        let houseHoldAddress = e.target.value
+        setState(state => {
+            return {
+                ...state,
+                houseHold: {
+                    ...state.houseHold,
+                    houseHoldAddress
+                }
             }
-        }))
+        })
     }
 
     const _fm_handlePhone = (e) => {
-        setState(prev => ({
-            ...prev,
-            houseHold: {
-                ...state.houseHold,
-                phone: e.target.value
+        let phone = e.target.value
+        setState(state => {
+            return {
+                ...state,
+                houseHold: {
+                    ...state.houseHold,
+                    phone
+                }
             }
-        }))
+        });
     }
 
     const _fm_handleHouseHoldCode = (e) => {
-        setState(prev => ({
-            ...prev,
-            houseHold: {
-                ...state.houseHold,
-                houseHoldCode: e.target.value
+        let houseHoldCode = e.target.value
+        setState(state => {
+            return {
+                ...state,
+                houseHold: {
+                    ...state.houseHold,
+                    houseHoldCode
+                }
             }
-        }))
+        });
     }
 
+
     const _fm_editMember = (index, data) => {
-        console.log('index, data', index, data)
         let familyMembers = state.houseHold.familyMembers;
         familyMembers[index] = data;
-        setState(prev => ({
-            ...prev,
-            houseHold: {
-                ...state.houseHold,
-                familyMembers
+        setState(state => {
+            return {
+                ...state,
+                houseHold: {
+                    ...state.houseHold,
+                    familyMembers: familyMembers
+                }
             }
-        }))
+        })
     }
 
     const _fm_deleteMember = (index) => {
         let familyMembers = state.houseHold.familyMembers;
         familyMembers = familyMembers.filter((node, i) => i !== index);
-        setState(prev => ({
-            ...prev,
-            houseHold: {
-                ...state.houseHold,
-                familyMembers
+        setState(state => {
+            return {
+                ...state,
+                houseHold: {
+                    ...state.houseHold,
+                    familyMembers: familyMembers
+                }
             }
-        }))
+        })
     }
 
     const { translate, employeesManager } = props;
