@@ -87,6 +87,48 @@ function TransportManageRouteMainPage(props) {
         return length/longestRoute * 100;
     }
 
+    const getDriver = (vehicleId) => {
+        let driver = " ";
+        if (currentTransportPlan && currentTransportPlan.transportVehicles && currentTransportPlan.transportVehicles.length!==0){
+            let transportVehicles = currentTransportPlan.transportVehicles.filter(r => String(r.vehicle?._id) === String(vehicleId));
+            if (transportVehicles && transportVehicles.length!==0){
+                let carriers = transportVehicles[0]?.carriers;
+                if (carriers && carriers.length!==0){
+                    let carrier_driver = carriers.filter(c => String(c.pos) === "1");
+                    if (carrier_driver && carrier_driver.length!==0){
+                        driver = carrier_driver[0]?.carrier?.name;
+                    }
+                }
+            }
+        };
+        return driver;
+    }
+
+    const getCarriers = (vehicleId) => {
+        let carriers = "";
+        if (currentTransportPlan && currentTransportPlan.transportVehicles && currentTransportPlan.transportVehicles.length!==0){
+            let transportVehicles = currentTransportPlan.transportVehicles.filter(r => String(r.vehicle?._id) === String(vehicleId));
+            if (transportVehicles && transportVehicles.length!==0){
+                let carriers = transportVehicles[0]?.carriers;
+                if (carriers && carriers.length!==0){
+                    console.log(carriers)
+                    let carrier_driver = carriers.filter(c => String(c.pos) !== "1");
+                    console.log(carrier_driver, " abcdd")
+                    if (carrier_driver && carrier_driver.length!==0){
+                        carrier_driver.map((cd, indexcd) => {
+                            if (cd.carrier){
+                                if (indexcd !==0){
+                                    carriers = carriers.concat(", ")
+                                }
+                                carriers = carriers.concat(cd.carrier.name);
+                            }
+                        })
+                    }
+                }
+            }
+        };
+        return carriers;
+    }
     // setInterval(()=>{     
     //     navigator.geolocation.getCurrentPosition(success);
     // }, 50000)
@@ -95,14 +137,13 @@ function TransportManageRouteMainPage(props) {
         // socket.io.on("current position", data => {
         //     console.log(data);
         // })
-
-
         console.log(localStorage.getItem("userId"))
     }, [])
 
     useEffect(() => {
         if (currentTransportPlan && currentTransportPlan._id !== "0"){
             props.getTransportScheduleByPlanId(currentTransportPlan._id);
+            console.log(currentTransportPlan);
         }
     }, [currentTransportPlan])
 
@@ -176,14 +217,72 @@ function TransportManageRouteMainPage(props) {
                         item &&
                         <fieldset className="scheduler-border" style={{ height: "100%" }}>
                             <legend className="scheduler-border">{item.transportVehicle?.name}</legend>
-                            <a className="edit text-green" 
-                                        style={{ width: '5px', cursor:"pointer" }} 
-                                        title={'manage_example.detail_info_example'} 
-                                        onClick={() => handleShowDetailRoute(item)}
-                                        >
-                                            <i className="material-icons">visibility</i>
-                                        </a>
+                            <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                <table>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>Mã xe: </strong></td>
+                                            <td>{item.transportVehicle?.code}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Trọng tải xe: </strong></td>
+                                            <td>{item.transportVehicle?.payload}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Thể tích thùng chứa: </strong></td>
+                                            <td>{item.transportVehicle?.volume}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>                            
+                            </div>
+                            <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                <table>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>Tài xế: </strong></td>
+                                            <td>{getDriver(item.transportVehicle?._id)}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Đi cùng: </strong></td>
+                                            <td>{getCarriers(item.transportVehicle?._id)}</td>
+                                        </tr>                                        
+                                        <tr>
+                                            <td>
+                                                <a className="edit text-green" 
+                                                    style={{ width: '5px', cursor:"pointer" }} 
+                                                    title={'manage_example.detail_info_example'} 
+                                                    onClick={() => handleShowDetailRoute(item)}
+                                                    >
+                                                        <strong>{"Chi tiết nhiệm vụ "}</strong>
+                                                        <i className="material-icons">assignment</i>
+                                                </a>
+                                            </td>   
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <a className="edit text-green" 
+                                                    style={{ width: '5px', cursor:"pointer" }} 
+                                                    title={'manage_example.detail_info_example'} 
+                                                    onClick={() => handleShowDetailRoute(item)}
+                                                    >
+                                                        <strong>{"Bản đồ "}</strong>
+                                                        <i className="material-icons">location_on</i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>                            
+                            </div>
+                                        
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 container-time-line">
+                                {/* <table>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>Tiến độ vận chuyển:</strong></td>
+                                        </tr>
+                                    </tbody>
+                                </table> */}
+                                
                                 <TransportManageVehicleProcess
                                     route={item}
                                     timelineBarWidth={getBarWidth(item)}
@@ -289,6 +388,7 @@ function mapState(state) {
     const allTransportPlans = state.transportPlan.lists;
     const {currentTransportSchedule} = state.transportSchedule;
     const {socket} = state
+    console.log(allTransportPlans)
     return { allTransportPlans, currentTransportSchedule,socket }
 }
 

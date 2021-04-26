@@ -61,7 +61,7 @@ function TransportManageVehicleProcess(props) {
                         className={`timeline-item-transport`}
                         style={{marginLeft: `calc( ${timelineItemPos[index]}% - ${index===0?"10":"20"}px)`}}
                     >
-                        {/* <div className="timeline-contain-transport">{routeOrdinal._id}</div> */}
+                        {/* <div className="timeline-contain-transport">{String(routeOrdinal.type) === "1" ? routeOrdinal.transportRequirement?.fromAddress: routeOrdinal.transportRequirement?.toAddress}</div> */}
                     </div>
                 ))
             }

@@ -65,22 +65,22 @@ function TransportDetailRoute(props) {
                 hasNote={false}
             >
                 <form id={`modal-detail-route`}>
-                <div className="nav-tabs-custom">
+                {/* <div className="nav-tabs-custom">
                     <ul className="nav nav-tabs">
                         <li className="active"><a href="#list-route-mission" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Nhiệm vụ vận chuyển"}</a></li>
                         <li><a href="#list-route-map" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Bản đồ"}</a></li>
-                    </ul>
-                    <div className="tab-content">
-                        <div className="tab-pane active" id="list-route-mission">
+                    </ul> */}
+                    {/* <div className="tab-content">
+                        <div className="tab-pane active" id="list-route-mission"> */}
                             <TransportDetailRouteListMission
                                 currentVehicleRoute = {currentVehicleRoute}
                                 transportPlanId = {transportPlanId}
                             />
-                        </div>
+                        {/* </div>
                         <div className="tab-pane" id="list-route-map">
                         </div>
-                    </div>
-                </div>
+                    </div> */}
+                {/* </div> */}
                 </form>
             </DialogModal>
         </React.Fragment>

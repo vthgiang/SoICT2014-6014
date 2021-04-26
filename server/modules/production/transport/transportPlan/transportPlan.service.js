@@ -79,6 +79,9 @@ exports.getAllTransportPlans = async (portal, data) => {
         .populate([
             {
                 path: "transportRequirements transportVehicles.vehicle"
+            },
+            {
+                path: 'transportVehicles.carriers.carrier'
             }
         ])
         .skip((page - 1) * limit)
