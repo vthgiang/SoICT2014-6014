@@ -42,7 +42,11 @@ exports.createTransportVehicle = async (portal, data) => {
     else {
         newTransportVehicle = await TransportVehicle(connect(DB_CONNECTION, portal)).update({ _id: oldTransportVehicle._id }, { $set: {usable: 1} });
     }
-    return newTransportVehicle;
+    let transportVehicle = await TransportVehicle(connect(DB_CONNECTION, portal)).findById({ _id: newTransportVehicle._id })
+    .populate([{
+        path: "asset"
+    }])
+    return transportVehicle;
 }
 /**
  * Đổi trạng thái

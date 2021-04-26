@@ -95,6 +95,10 @@ function TransportVehicleManagementTable(props) {
 
     }, [currentTransportPlanId])
 
+    useEffect(() => {
+        console.log(transportVehicle, " chaneeee")
+    }, [transportVehicle])
+
     const handleChooseVehicle = (vehicle) => {
         const data = {
             id: vehicle._id,
@@ -140,7 +144,7 @@ function TransportVehicleManagementTable(props) {
         }
     }
     const getTickboxStatus = (vehicle) => {
-        if (transportVehicle){
+        if (transportVehicle && !transportVehicle.isLoading){
             if (transportVehicle.lists && transportVehicle.lists.length !==0){
                 let currentVehicle = transportVehicle.lists.filter(r => String(r.asset?._id) ===vehicle._id);
                 if (currentVehicle && currentVehicle.length!==0){
@@ -148,6 +152,7 @@ function TransportVehicleManagementTable(props) {
                 }
             }
         }
+        
         return "iconinactive";
     }
     return (
@@ -230,7 +235,7 @@ function mapState(state) {
     const { assetsManager } =state;
     const { currentTransportPlan } = state.transportPlan;
     const {transportVehicle} = state;
-    console.log(transportVehicle)
+    console.log(state)
     return { assetsManager,  currentTransportPlan, transportVehicle};
 }
 
