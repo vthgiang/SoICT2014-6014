@@ -274,7 +274,7 @@ function InsurranceTab(props) {
 
         let data = socialInsuranceDetails[index];
         socialInsuranceDetails.splice(index, 1);
-        console.log(socialInsuranceDetails);
+        // console.log(socialInsuranceDetails);
         await setState({
             ...state,
             socialInsuranceDetails: [...socialInsuranceDetails]

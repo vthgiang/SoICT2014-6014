@@ -35,7 +35,7 @@ function SocialInsuranceEditModal(props) {
         startDate: formatDate(Date.now()),
         endDate: formatDate(Date.now()),
         position: "",
-        money: null
+        money: ""
     })
 
     useEffect(() => {
@@ -43,7 +43,6 @@ function SocialInsuranceEditModal(props) {
             return {
                 ...state,
                 id: props.id,
-                _id: props._id,
                 company: props.company,
                 startDate: props.startDate,
                 endDate: props.endDate,
@@ -57,6 +56,14 @@ function SocialInsuranceEditModal(props) {
                 errorOnEndDate: undefined
             }
         })
+        if (props._id) {
+            setState(state => {
+                return {
+                    ...state,
+                    _id: props._id
+                }
+            })
+        }
     }, [props.id])
 
     const { translate } = props;
@@ -157,6 +164,7 @@ function SocialInsuranceEditModal(props) {
         }
 
         setState({
+            ...state,
             startDate: value,
             errorOnStartDate: errorOnStartDate,
             errorOnEndDate: errorOnEndDate
@@ -186,6 +194,7 @@ function SocialInsuranceEditModal(props) {
         }
 
         setState({
+            ...state,
             endDate: value,
             errorOnStartDate: errorOnStartDate,
             errorOnEndDate: errorOnEndDate

@@ -35,7 +35,7 @@ function SocialInsuranceAddModal(props) {
         startDate: formatDate(Date.now()),
         endDate: formatDate(Date.now()),
         position: "",
-        money: null
+        money: ""
     })
 
     const { translate } = props;

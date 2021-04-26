@@ -131,7 +131,7 @@ function DegreeAddModal(props) {
      * @param {*} value : id Ngành nghề lĩnh vực
      */
     const handleFieldChange = (value) => {
-        console.log(value);
+        // console.log(value);
         setState({
             ...state,
             field: value[0]
@@ -198,7 +198,7 @@ function DegreeAddModal(props) {
                         {/* Năm tốt nghiệp */}
                         <div className={`form-group col-sm-6 col-xs-12 ${errorOnYear && "has-error"}`}>
                             <label>{translate('human_resource.profile.graduation_year')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="year" value={year} onChange={handleYearChange} autoComplete="off" />
+                            <input type="number" className="form-control" name="year" value={year} onChange={handleYearChange} autoComplete="off" />
                             <ErrorLabel content={errorOnYear} />
                         </div>
                         {/* Loại bằng cấp */}
