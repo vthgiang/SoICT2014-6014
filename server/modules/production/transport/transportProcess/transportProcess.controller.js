@@ -67,3 +67,41 @@ exports.startLocate = async (req, res) => {
         });
     }
 }
+
+exports.sendCurrentLocate = async (req, res) => {
+    console.log("da gui du lieu")
+    try {
+        await TransportProcess.sendCurrentLocate(req.portal, req.query);
+        await Log.info(req.user.email, "SEND_CURRENT_LOCATE", req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ["request_success"],
+            // content: transportRequirement
+        });
+    } catch (error) {
+        await Log.error(req.user.email, "SEND_CURRENT_LOCATE", req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ["request_success"],
+            content: error.message
+        });
+    }
+}
+exports.stopLocate = async (req, res) => {
+    try {
+        await TransportProcess.stopLocate(req.portal, req.query);
+        await Log.info(req.user.email, "STOP_LOCATE", req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ["request_success"],
+            // content: transportRequirement
+        });
+    } catch (error) {
+        await Log.error(req.user.email, "STOP_LOCATE", req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ["request_success"],
+            content: error.message
+        });
+    }
+}

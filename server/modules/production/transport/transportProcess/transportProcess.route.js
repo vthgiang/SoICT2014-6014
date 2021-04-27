@@ -7,6 +7,8 @@ const { auth } = require(`../../../../middleware`);
 // router.get('/getOnlyExampleName', auth, ExampleController.getOnlyExampleName);
 // router.get('/:id', auth, TransportRequirementController.getTransportRequirementById);
 router.get('/start-locate', auth, TransportProcessController.startLocate);
+router.get('/send-current-locate', auth, TransportProcessController.sendCurrentLocate);
+router.get('/stop-locate', auth, TransportProcessController.stopLocate);
 // router.post('/', auth, TransportRequirementController.createTransportRequirement);
 // router.patch('/:id', auth, TransportRequirementController.editTransportRequirement);
 // router.delete('/:id', auth, TransportRequirementController.deleteTransportRequirement);

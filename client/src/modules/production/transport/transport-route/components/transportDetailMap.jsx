@@ -13,27 +13,39 @@ function TransportDetailMap(props) {
     let {currentVehicleRoute, transportPlanId, socket, getLocateOnMap, stopGetLocateOnMap} = props;
     const [ currentPosition, setCurrentPosition ] = useState({});
     
-    const [timer, setTimer] =useState()
+    // const [timer, setTimer] =useState()
     // useEffect(() => {
     //     console.log(currentVehicleRoute, " day la route")
     // }, [currentVehicleRoute])
-
     useEffect(() => {
-        if (getLocateOnMap){
-            setTimer(setInterval(() => {
-                // //     navigator.geolocation.getCurrentPosition(success);  
-                // if (getLocateOnMap){
-                    let date = new Date();
-                    console.log(date.toLocaleTimeString(), "   aaaaaaaa");
-                // }
-                // console.log((new Date().getTime())
-            }, 4000));
-            // return () => clearInterval(timer);
-        }
-        else{
-                clearInterval(timer)
-        }
-    }, [getLocateOnMap])
+        /**
+         * Nhận vị trí driver gửi lại
+         * data : location: {lat: , lng: }
+         * manager
+         */
+         socket.io.on("send current locate", data => {
+            if (data.location){
+                console.log(data.location, "  send current locate adminnnnnnnn ");
+                // setCurrentPosition(data.location);
+            }
+        })
+    }, [])
+    // useEffect(() => {
+    //     if (getLocateOnMap){
+    //         setTimer(setInterval(() => {
+    //             // //     navigator.geolocation.getCurrentPosition(success);  
+    //             // if (getLocateOnMap){
+    //                 let date = new Date();
+    //                 console.log(date.toLocaleTimeString(), "   aaaaaaaa");
+    //             // }
+    //             // console.log((new Date().getTime())
+    //         }, 4000));
+    //         // return () => clearInterval(timer);
+    //     }
+    //     else{
+    //             clearInterval(timer)
+    //     }
+    // }, [getLocateOnMap])
 
     // const success = position => {
     //     const currentPosition = {

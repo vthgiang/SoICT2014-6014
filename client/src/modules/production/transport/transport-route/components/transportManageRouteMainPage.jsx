@@ -36,12 +36,17 @@ function TransportManageRouteMainPage(props) {
     const [longestRoute, setLongestRoute] = useState();
     const [getLocateOnMap, setGetLocateOnMap] = useState(false);
 
+    const [sendCurrentLocateTimer, setSendCurrentLocateTimer] = useState([]);
 
     const handleShowDetailRoute = (route) => {
         setCurrentVehicleRoute(route);
         window.$(`#modal-detail-route`).modal('show')
     }
 
+    /**
+     * Show bản đồ => yêu cầu gửi vị trí hiện tại để show lên map
+     * @param {*} route 
+     */
     const handleShowDetailMap = (route) => {
         setCurrentVehicleRoute(route);
         setGetLocateOnMap(true);
@@ -148,21 +153,89 @@ function TransportManageRouteMainPage(props) {
 
     const stopGetLocateOnMap = () => {
         setGetLocateOnMap(false);
+        props.stopLocate({driverId: getDriver(currentVehicleRoute.transportVehicle?._id)?.id})
     }
 
     useEffect(() => {
         props.getAllTransportPlans({page:1, limit: 100})
-
+        let manageId;
+        // const sendCurrentPosition = position => {
+        //     const currentPosition = {
+        //       lat: position.coords.latitude,
+        //       lng: position.coords.longitude
+        //     }
+        //     // setCurrentPosition(currentPosition);
+        //     console.log(currentPosition)
+        //   };
+          const sendCurrentPosition = () => {
+            const currentPosition = {
+              lat: 13,
+              lng: 12,
+            }
+            // setCurrentPosition(currentPosition);
+            let data = {
+                manageId: manageId,
+                location: currentPosition
+            }
+            console.log(data, " haha")
+            setCurrentPosition(data)
+          };
         // socket.io.on("current position", data => {
         //     console.log(data);
         // })
         // console.log(localStorage.getItem("userId"))
-
+        /** Nhận được tín hiệu quản lý vào xem map => gửi lại vị trí hiện tại
+         * data: {manageId: manageId}
+         * driver
+         */
         socket.io.on("start locate", data => {
             console.log(data, " aaaaaaaaaaaaaaaaaaaa");
+            if (data?.manageId){
+                manageId = data.manageId;
+                // navigator.geolocation.getCurrentPosition(sendCurrentPosition);
+                
+                let interval = [...sendCurrentLocateTimer]
+                let k =setInterval(() => {
+                    sendCurrentPosition();
+                }, 5000)
+                console.log(k, " ooooooooooooooooooooooooooooooooooooooo");
+                
+                interval.push(k);
+                setSendCurrentLocateTimer(interval);
+            }
         })
-    }, [])
 
+        socket.io.on("stop locate", data => {
+            console.log(data, " stop locate");
+            // setCurrentPosition({});
+            // clearInterval(sendCurrentLocateTimer);
+            // for (let i = 1; i < 99999; i++)
+            //     clearInterval(i);
+            console.log(sendCurrentLocateTimer, " currenttimerr")
+            if (sendCurrentLocateTimer && sendCurrentLocateTimer.length!==0){
+                for (let i =0; i<sendCurrentLocateTimer.length;i++){
+                    console.log(sendCurrentLocateTimer[i], " xoassssssssssssss")
+                    clearInterval(sendCurrentLocateTimer[i]);
+                }
+            }
+
+            })
+            
+    }, [])
+    useEffect(() => {
+        // console.log(currentPosition, " currentPosition");
+        if (currentPosition){
+            // if (localStorage.getItem("userId") !== '607a98a6e57ad61670049a2c')
+            // props.driverSendMessage({
+            //     data: {
+            //         position: currentPosition,
+            //     }
+            // })
+            
+            props.sendCurrentLocate(currentPosition);
+            console.log("da gui")
+        }
+      }, [currentPosition])
     useEffect(() => {
         if (currentTransportPlan && currentTransportPlan._id !== "0"){
             props.getTransportScheduleByPlanId(currentTransportPlan._id);
@@ -185,13 +258,13 @@ function TransportManageRouteMainPage(props) {
         }
     }, [currentTransportSchedule])
 
-    const success = position => {
-        const currentPosition = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude
-        }
-        setCurrentPosition(currentPosition);
-      };
+    // const success = position => {
+    //     const currentPosition = {
+    //       lat: position.coords.latitude,
+    //       lng: position.coords.longitude
+    //     }
+    //     setCurrentPosition(currentPosition);
+    //   };
       
       useEffect(() => {
         // navigator.geolocation.getCurrentPosition(success);  
@@ -200,17 +273,7 @@ function TransportManageRouteMainPage(props) {
         // }, 5000);
         // return () => clearTimeout(timer);
         })
-      useEffect(() => {
-        // console.log(currentPosition, " currentPosition");
-        if (currentPosition){
-            if (localStorage.getItem("userId") !== '607a98a6e57ad61670049a2c')
-            props.driverSendMessage({
-                data: {
-                    position: currentPosition,
-                }
-            })
-        }
-      }, [currentPosition])
+
    return (
             <div className="box-body qlcv">
                 {
@@ -424,6 +487,8 @@ const actions = {
     getTransportScheduleByPlanId: transportScheduleActions.getTransportScheduleByPlanId,
     driverSendMessage: transportScheduleActions.driverSendMessage,    
     startLocate: transportProcessActions.startLocate,
+    sendCurrentLocate: transportProcessActions.sendCurrentLocate,
+    stopLocate: transportProcessActions.stopLocate,
 }
 
 const connectedTransportManageRouteMainPage = connect(mapState, actions)(withTranslate(TransportManageRouteMainPage));
