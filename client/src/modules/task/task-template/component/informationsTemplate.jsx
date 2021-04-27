@@ -5,6 +5,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { ErrorLabel, QuillEditor } from '../../../../common-components';
 import Sortable from 'sortablejs';
 import parse from 'html-react-parser';
+import { ReactSortable } from "react-sortablejs"
 import ValidationHelper from '../../../../helpers/validationHelper';
 
 function InformationForm(props) {
@@ -26,16 +27,17 @@ function InformationForm(props) {
     };
 
     const [state, setState] = useState({
-        EMPTY_INFORMATION: Object.assign({},EMPTY_INFORMATION),
-        information: Object.assign({},EMPTY_INFORMATION),
+        EMPTY_INFORMATION: Object.assign({}, EMPTY_INFORMATION),
+        information: Object.assign({}, EMPTY_INFORMATION),
         editInfo: false,
-        quillValueDefault: null
+        quillValueDefault: null,
+        taskInformations: []
     })
 
-    useEffect(() => {
-        // Load library for sort action table
-        handleSortable();
-    }, [])
+    // useEffect(() => {
+    //     // Load library for sort action table
+    //     handleSortable();
+    // }, [])
 
     useEffect(() => {
         //Trường hợp tạo ở form mẫu công việc
@@ -57,38 +59,38 @@ function InformationForm(props) {
 
 
     /**Sắp xếp các item trong bảng */
-    const handleSortable = () => {
-        var el2 = document.getElementById('informations');
-        Sortable.create(el2, {
-            chosenClass: 'chosen',
-            animation: 500,
-            onChange: async (evt) => {
-                window.$('#informations tr').each(function (index) {
-                    window.$(this).find('td:nth-child(1)').html("p" + (index + 1));
-                });
-            },
-            onEnd: async (evt) => {
-                let taskInformations = state.taskInformations;
-                const item = taskInformations[evt.oldIndex];
-                taskInformations.splice(evt.oldIndex, 1);
-                taskInformations.splice(evt.newIndex, 0, item);
-            }, store: {
-                /**
-                 * Khắc phục lỗi với thư viện Sortable. Chi tiết lỗi như sau:
-                 * Khi lưu thứ tự sắp xếp mới vào state, do state thay đổi, react render lại.
-                 * Sortable phát hiện cấu trúc DOM thay đổi nên tự động thay đổi trở lại thứ tự các phần tử
-                 * Kết quả: thứ tự trong State lưu một đằng, giao diện hiển thị thể hiện một nẻo
-                 **/
-                set: (sortable) => {
-                    setState({
-                        ...state,
-                        keyPrefix: Math.random(), // force react to destroy children
-                        order: sortable.toArray()
-                    })
-                }
-            }
-        });
-    }
+    // const handleSortable = () => {
+    //     var el2 = document.getElementById('informations');
+    //     Sortable.create(el2, {
+    //         chosenClass: 'chosen',
+    //         animation: 500,
+    //         onChange: async (evt) => {
+    //             window.$('#informations tr').each(function (index) {
+    //                 window.$(this).find('td:nth-child(1)').html("p" + (index + 1));
+    //             });
+    //         },
+    //         onEnd: async (evt) => {
+    //             let taskInformations = state.taskInformations;
+    //             const item = taskInformations[evt.oldIndex];
+    //             taskInformations.splice(evt.oldIndex, 1);
+    //             taskInformations.splice(evt.newIndex, 0, item);
+    //         }, store: {
+    //             /**
+    //              * Khắc phục lỗi với thư viện Sortable. Chi tiết lỗi như sau:
+    //              * Khi lưu thứ tự sắp xếp mới vào state, do state thay đổi, react render lại.
+    //              * Sortable phát hiện cấu trúc DOM thay đổi nên tự động thay đổi trở lại thứ tự các phần tử
+    //              * Kết quả: thứ tự trong State lưu một đằng, giao diện hiển thị thể hiện một nẻo
+    //              **/
+    //             set: (sortable) => {
+    //                 setState({
+    //                     ...state,
+    //                     keyPrefix: Math.random(), // force react to destroy children
+    //                     order: sortable.toArray()
+    //                 })
+    //             }
+    //         }
+    //     });
+    // }
 
     /**Sửa thông tin trong bảng danh sách các thông tin */
     const handleEditInformation = (information, indexInfo) => {
@@ -97,7 +99,7 @@ function InformationForm(props) {
             editInfo: true,
             warning: false,
             indexInfo,
-            information: {...information},
+            information: { ...information },
             quillValueDefault: information && information.description,
             oldType: information.type
         });
@@ -116,8 +118,7 @@ function InformationForm(props) {
             editInfo: false,
             information: { ...state.EMPTY_INFORMATION },
             quillValueDefault: state.EMPTY_INFORMATION.description
-        }) 
-        props.onDataChange(taskInformations)
+        }, () => props.onDataChange(taskInformations))
     }
 
     const handleCancelEditInformation = (event) => {
@@ -179,7 +180,7 @@ function InformationForm(props) {
         setState({
             ...state,
             taskInformations: newTaskInformations,
-            information: {...state.EMPTY_INFORMATION},
+            information: { ...state.EMPTY_INFORMATION },
             quillValueDefault: state.EMPTY_INFORMATION.description
         })
         props.onDataChange(newTaskInformations)
@@ -380,10 +381,11 @@ function InformationForm(props) {
                         <th>{translate('task_template.action')}</th>
                     </tr>
                 </thead>
-                <tbody id="informations">
-                    {
-                        (typeof taskInformations === 'undefined' || taskInformations.length === 0) ? <tr><td colSpan={6}><center>{translate('task_template.no_data')}</center></td></tr> :
-                            taskInformations.map((item, index) =>
+
+                {
+                    (typeof taskInformations === 'undefined' || taskInformations.length === 0) ? <tr><td colSpan={5}><center>{translate('task_template.no_data')}</center></td></tr> :
+                        <ReactSortable animation={500} tag="tbody" id="actions" list={taskInformations} setList={(newState) => setState({ ...state, taskInformations: newState })}>
+                            {taskInformations.map((item, index) =>
                                 <tr key={`${state.keyPrefix}_${index}`}>
                                     <td>p{index + 1}</td>
                                     <td>{item.name}</td>
@@ -395,9 +397,11 @@ function InformationForm(props) {
                                         <a href="#abc" className="delete" title={translate('general.delete')} onClick={() => handleDeleteInformation(index)}><i className="material-icons"></i></a>
                                     </td>
                                 </tr>
-                            )
-                    }
-                </tbody>
+                            )}
+                        </ReactSortable>
+
+                }
+
             </table>
         </fieldset>
     )
