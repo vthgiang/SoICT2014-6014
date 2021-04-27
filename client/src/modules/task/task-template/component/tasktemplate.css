@@ -2,16 +2,26 @@ tbody#actions td:not(:last-child) {
     cursor: move;
 }
 
-#actions tr.chosen {
+#actions .sortable-chosen{
+    background-color: rgba(41, 103, 182, 0.89) !important;
+    color: #FFF !important;
+}
+#actions tr:hover{
+    background-color: none !important;
+}
+/* #informations tr.chosen {
     background-color: rgba(41, 103, 182, 0.89);
     color: #FFF;
+} */
+
+#informations .sortable-chosen{
+    background-color: rgba(41, 103, 182, 0.89) !important;
+    color: #FFF !important;
 }
 
-#informations tr.chosen {
-    background-color: rgba(41, 103, 182, 0.89);
-    color: #FFF;
+#informations tr:hover{
+    background-color: none !important;
 }
-
 tbody#informations td:not(:last-child) {
     cursor: move;
 }
