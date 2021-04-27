@@ -275,6 +275,7 @@ app.use("/transport-requirement", require("./modules/production/transport/transp
 app.use("/transport-plan", require("./modules/production/transport/transportPlan/transportPlan.route"));
 app.use("/transport-vehicle", require("./modules/production/transport/transportVehicle/transportVehicle.route"));
 app.use("/transport-schedule", require("./modules/production/transport/transportSchedule/transportSchedule.route"));
+app.use("/transport-process", require("./modules/production/transport/transportProcess/transportProcess.route"))
 app.use("/transport-department", require("./modules/production/transport/transportDepartment/transportDepartment.route"));
 
 app.use(router);
