@@ -73,23 +73,34 @@ function EmployeeCreatePage(props) {
         img: './upload/human-resource/avatars/avatar5.png',
         avatar: "",
         employee: {
-            employeeNumber: generateCode("NV"),
-            employeeTimesheetId: generateCode("NV"),
-            fullName: "",
-            emailInCompany: "",
-            phoneNumber: "",
             avatar: '/upload/human-resource/avatars/avatar5.png',
             gender: "male",
             maritalStatus: "single",
             educationalLevel: "",
             professionalSkill: "unavailable",
             status: 'active',
-            identityCardNumber: "",
-            identityCardAddress: "",
             identityCardDate: formatDate2(Date.now()),
             birthdate: formatDate2(Date.now()),
+            employeeNumber: generateCode("NV"),
+            employeeTimesheetId: generateCode("NV"),
+            fullName: "",
+            emailInCompany: "",
+            identityCardNumber: "",
+            identityCardAddress: "",
+            phoneNumber: "",
             experiences: [],
             socialInsuranceDetails: [],
+            degrees: [],
+            certificates: [],
+            contracts: [],
+            files: [],
+            disciplines: [],
+            commendations: [],
+            annualLeaves: [],
+            courses: [],
+            // career:[],
+            // major:[],
+            houseHold: {}
         },
         courses: [],
         degrees: [],
@@ -116,7 +127,7 @@ function EmployeeCreatePage(props) {
         editMember: initMember,
     });
 
-    const { img, employee, degrees, certificates, contracts, courses, commendations, disciplines, annualLeaves, files, editMember } = state;
+    const { img, avatar, employee, degrees, certificates, contracts, courses, commendations, disciplines, annualLeaves, files, houseHold, editMember } = state;
 
     useEffect(() => {
         props.getDepartment();
@@ -180,10 +191,11 @@ function EmployeeCreatePage(props) {
                 ...state,
                 employee: {
                     ...employee,
-                    experiences: data
+                    experiences: [...data]
                 }
             }
         })
+        // console.log("exp", employee);
     }
 
     /**
@@ -198,6 +210,7 @@ function EmployeeCreatePage(props) {
                 degrees: data
             }
         })
+        // console.log('degrees', data)
     }
 
     /**
@@ -244,7 +257,6 @@ function EmployeeCreatePage(props) {
                 contracts: data
             }
         })
-        console.log(data);
     }
 
     /**
@@ -259,6 +271,7 @@ function EmployeeCreatePage(props) {
                 commendations: data
             }
         })
+        // console.log("commen", data);
     }
 
     /**
@@ -273,6 +286,7 @@ function EmployeeCreatePage(props) {
                 disciplines: data
             }
         })
+        // console.log("dis", data);
     }
 
     /**
@@ -348,30 +362,39 @@ function EmployeeCreatePage(props) {
      * Function thêm mới thông tin nhân viên
      */
     const handleSubmit = async () => {
-        let { employee, degrees, certificates, contracts, files, avatar,
-            disciplines, commendations, annualLeaves, courses, houseHold } = state;
-
-        await setState(state => {
-            return {
-                ...state,
-                employee: {
-                    ...employee,
-                    degrees,
-                    certificates,
-                    contracts,
-                    files,
-                    disciplines,
-                    commendations,
-                    annualLeaves,
-                    courses,
-                    // career,
-                    // major,
-                    houseHold,
-                }
+        setState({
+            ...state,
+            employee: {
+                ...employee,
+                degrees: [...state.degrees],
+                certificates: [...state.certificates],
+                contracts: [...state.contracts],
+                files: [...state.files],
+                disciplines: [...state.disciplines],
+                commendations: [...state.commendations],
+                annualLeaves: [...state.annualLeaves],
+                courses: [...state.courses],
+                // career,
+                // major,
+                houseHold: { ...state.houseHold },
             }
         })
 
-        let formData = convertJsonObjectToFormData({ ...state.employee });
+
+        let formData = convertJsonObjectToFormData({
+            ...employee,
+            degrees: [...state.degrees],
+            certificates: [...state.certificates],
+            contracts: [...state.contracts],
+            files: [...state.files],
+            disciplines: [...state.disciplines],
+            commendations: [...state.commendations],
+            annualLeaves: [...state.annualLeaves],
+            courses: [...state.courses],
+            // career,
+            // major,
+            houseHold: { ...state.houseHold },
+        });
         degrees.forEach(x => {
             formData.append("fileDegree", x.fileUpload);
         })
@@ -399,6 +422,8 @@ function EmployeeCreatePage(props) {
             formData.append('healthInsuranceAttachment', x.fileUpload)
         })
         props.addNewEmployee(formData);
+        // console.log(...formData);
+        // console.log(employee);
     }
 
     const _fm_saveMember = (data) => {

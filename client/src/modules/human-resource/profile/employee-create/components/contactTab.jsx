@@ -72,7 +72,7 @@ function ContactTab(props) {
 
     const validatePhone = (value, willUpdateState = true) => {
         const { translate } = props;
-        let { message } = ValidationHelper.validateEmpty(translate, value);
+        let { message } = ValidationHelper.validateEmpty(translate, value.toString());
 
         if (willUpdateState) {
             setState(state => {
@@ -147,7 +147,7 @@ function ContactTab(props) {
             setState(state => {
                 return {
                     ...state,
-                    errorOnEmergencyContactPersonEmail: message,
+                    errorOnEmergencyContactPersonEmail: (value && value.length !== 0) ? message : undefined,
                     emergencyContactPersonEmail: value,
                 }
             });

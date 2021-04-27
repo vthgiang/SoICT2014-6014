@@ -18,9 +18,9 @@ export const configArchive = {
         value: "Mô tả vị trí lưu trữ"
     },
     pathParent: {
-        columnName: "Đường dẫn vị trí lưu trữ cha",
-        description: "Đường dẫn tiêu đề ứng với tên vị trí lưu trữ cha",
-        value: "Đường dẫn vị trí lưu trữ cha"
+        columnName: "Đường dẫn vị trí lưu trữ",
+        description: "Đường dẫn tiêu đề ứng với tên vị trí lưu trữ",
+        value: "Đường dẫn vị trí lưu trữ"
     },
 }
 
@@ -34,7 +34,7 @@ export const exportArchive = {
             columns: [
                 { key: "name", value: "Tên vị trí lưu trữ" },
                 { key: "description", value: "Mô tả vị trí lưu trữ" },
-                { key: "pathParent", value: "Đường dẫn vị trí lưu trữ cha" },
+                { key: "pathParent", value: "Đường dẫn vị trí lưu trữ" },
             ],
             data: [
                 {
@@ -43,11 +43,11 @@ export const exportArchive = {
                 },
                 {
                     name: "Phòng 201",
-                    pathParent: "B4",
+                    pathParent: "B4 - Phòng 201",
                 },
                 {
                     name: "Ngăn 1",
-                    pathParent: "B4 - Phòng 201",
+                    pathParent: "B4 - Phòng 201 - Ngăn 1",
                 },
             ]
         }]

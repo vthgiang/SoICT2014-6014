@@ -273,7 +273,7 @@ function GeneralTab(props) {
 
     const validateCMND = (value, willUpdateState = true) => {
         const { translate } = props;
-        let { message } = ValidationHelper.validateEmpty(translate, value);
+        let { message } = ValidationHelper.validateEmpty(translate, value.toString());
 
         if (willUpdateState) {
 

@@ -53,13 +53,10 @@ function ContractTab(props) {
         return contract
     }
 
-
     useEffect(() => {
-        props.getListCourse({ organizationalUnits: state.organizationalUnits, positions: state.roles });
-    }, [])
-
-    useEffect(() => {
-        props.getListCourse({ organizationalUnits: props.organizationalUnits, positions: props.roles });
+        if (props.organizationalUnits && props.roles) {
+            props.getListCourse({ organizationalUnits: props.organizationalUnits, positions: props.roles });
+        }
     }, [props.id])
 
     useEffect(() => {
@@ -78,7 +75,7 @@ function ContractTab(props) {
         })
     }, [props.id])
 
-    const { translate, course, } = props;
+    const { translate, course } = props;
 
     const { id } = props;
 
@@ -152,7 +149,6 @@ function ContractTab(props) {
     const handleAddContract = async (data) => {
         const { translate } = props;
         let { contracts } = state;
-        console.log(data);
 
         let checkData = checkForDuplicate(data, contracts);
         if (checkData) {

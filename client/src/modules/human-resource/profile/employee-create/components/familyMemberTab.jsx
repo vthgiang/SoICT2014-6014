@@ -6,9 +6,7 @@ import FamilyMemberEdit from './familyMemberEdit';
 import FamilyMemberCreate from './familyMemberCreate';
 
 const FamilyMemberTab = ({
-    tabType = "create",
     houseHold,
-    editMember,
     _fm_deleteMember,
     id,
     translate,

@@ -101,7 +101,7 @@ function DegreeAddModal(props) {
 
     const validateYear = (value, willUpdateState = true) => {
         const { translate } = props;
-        let { message } = ValidationHelper.validateEmpty(translate, value);
+        let { message } = ValidationHelper.validateEmpty(translate, value.toString());
 
         if (willUpdateState) {
             setState(state => {
@@ -131,12 +131,11 @@ function DegreeAddModal(props) {
      * @param {*} value : id Ngành nghề lĩnh vực
      */
     const handleFieldChange = (value) => {
-        setState(state => {
-            return {
-                ...state,
-                field: value
-            }
-        })
+        // console.log(value);
+        setState({
+            ...state,
+            field: value[0]
+        });
     }
 
     /** Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form */
@@ -199,7 +198,7 @@ function DegreeAddModal(props) {
                         {/* Năm tốt nghiệp */}
                         <div className={`form-group col-sm-6 col-xs-12 ${errorOnYear && "has-error"}`}>
                             <label>{translate('human_resource.profile.graduation_year')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="year" value={year} onChange={handleYearChange} autoComplete="off" />
+                            <input type="number" className="form-control" name="year" value={year} onChange={handleYearChange} autoComplete="off" />
                             <ErrorLabel content={errorOnYear} />
                         </div>
                         {/* Loại bằng cấp */}
