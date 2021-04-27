@@ -290,6 +290,8 @@ function PurchaseRequest(props) {
 
                 {/* PaginateBar */}
                 <PaginateBar 
+                    display= {recommendProcure.listRecommendProcures?.length}
+                    total={recommendProcure.totalList}
                     pageTotal={pageTotal ? pageTotal : 0} 
                     currentPage={currentPage} 
                     func={setPage} 
