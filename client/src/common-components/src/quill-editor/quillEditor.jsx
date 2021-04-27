@@ -18,10 +18,15 @@ class QuillEditor extends Component {
     }
   
     componentDidMount = () => {
-        const { id, isText = false, quillValueDefault, fileDefault, toolbar = true, enableEdit = true, placeholder = null } = this.props;
+        const { id, isText = false, quillValueDefault, 
+            fileDefault, toolbar = true, 
+            enableEdit = true, placeholder = null,
+            enableDropImage = true
+        } = this.props;
+
         if (!isText) {
             // Khởi tạo Quill Editor trong thẻ có id = id truyền vào
-            const quill = window.initializationQuill(`#editor-container${id}`, configQuillEditor(id, toolbar, enableEdit, placeholder));
+            const quill = window.initializationQuill(`#editor-container${id}`, configQuillEditor(id, toolbar, enableEdit, placeholder, enableDropImage));
 
             // Insert value ban đầu
             if (quillValueDefault || quillValueDefault === '') {
@@ -149,7 +154,6 @@ class QuillEditor extends Component {
                 }
             })
         }
-        
     }
 
     componentDidUpdate = () => {

@@ -89,6 +89,13 @@ exports.getCompany = async (id) => {
  * @data dữ liệu để tạo thông tin về công ty (tên, mô tả, tên ngắn)
  */
 exports.createCompany = async (data) => {
+    if (data.shortName) {
+        let company = await Company(connect(DB_CONNECTION, process.env.DB_NAME))
+            .findOne({ shortName: data.shortName });
+        if (company)
+            throw ['company_already_exist']
+    }
+    
     return await Company(connect(DB_CONNECTION, process.env.DB_NAME)).create({
         name: data.name,
         description: data.description,

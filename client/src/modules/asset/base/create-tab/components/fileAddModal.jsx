@@ -1,4 +1,4 @@
-import React, { Component,useState } from 'react';
+import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -6,14 +6,14 @@ import { DialogModal, ButtonModal, ErrorLabel, UploadFile } from '../../../../..
 
 import ValidationHelper from '../../../../../helpers/validationHelper';
 
-function FileAddModal(props){
-    const [state, setState] =useState({
+function FileAddModal(props) {
+    const [state, setState] = useState({
         name: "",
         description: "",
         number: "",
         files: [],
     })
-    
+
 
     // Bắt sự kiện thay đổi file đính kèm
     const handleChangeFile = (file) => {
@@ -24,8 +24,8 @@ function FileAddModal(props){
                 fileUpload: x.fileUpload
             }
         })
-        setState(state =>{
-            return{
+        setState(state => {
+            return {
                 ...state,
                 files: file
             }
@@ -86,45 +86,45 @@ function FileAddModal(props){
         }
     }
 
-    
-        const { id } = props;
-        const { translate } = props;
-        const { name, description, number, status, errorOnNameFile, errorOnDiscFile, errorOnNumberFile, files } = state;
 
-        return (
-            <React.Fragment>
-                {/* Button thêm tài liệu đính kèm */}
-                <ButtonModal modalID={`modal-create-file-${id}`} button_name={translate('manage_asset.add_file')} title={translate('manage_asset.add_file')} />
-                <DialogModal
-                    size='50' modalID={`modal-create-file-${id}`} isLoading={false}
-                    formID={`form-create-file-${id}`}
-                    title={translate('manage_asset.add_file')}
-                    func={save}
-                    disableSubmit={!isFormValidated()}
-                >
-                    {/* Form thêm tài liệu đính kèm */}
-                    <form className="form-group" id={`form-create-file-${id}`}>
-                        {/* Tên tài liệu */}
-                        <div className={`form-group ${!errorOnNameFile ? "" : "has-error"}`}>
-                            <label>{translate('asset.general_information.file_name')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="name" value={name} onChange={handleNameFileChange} autoComplete="off" />
-                            <ErrorLabel content={errorOnNameFile} />
-                        </div>
+    const { id } = props;
+    const { translate } = props;
+    const { name, description, number, status, errorOnNameFile, errorOnDiscFile, errorOnNumberFile, files } = state;
 
-                        {/* Mô tả */}
-                        <div className={`form-group ${!errorOnDiscFile ? "" : "has-error"}`}>
-                            <label>{translate('asset.general_information.description')}<span className="text-red">*</span></label>
-                            <textarea className="form-control" rows="3" name="description" value={description} onChange={handleDiscFileChange} autoComplete="off"></textarea>
-                            <ErrorLabel content={errorOnDiscFile} />
-                        </div>
+    return (
+        <React.Fragment>
+            {/* Button thêm tài liệu đính kèm */}
+            <ButtonModal modalID={`modal-create-file-${id}`} button_name={translate('manage_asset.add_file')} title={translate('manage_asset.add_file')} />
+            <DialogModal
+                size='50' modalID={`modal-create-file-${id}`} isLoading={false}
+                formID={`form-create-file-${id}`}
+                title={translate('manage_asset.add_file')}
+                func={save}
+                disableSubmit={!isFormValidated()}
+            >
+                {/* Form thêm tài liệu đính kèm */}
+                <form className="form-group" id={`form-create-file-${id}`}>
+                    {/* Tên tài liệu */}
+                    <div className={`form-group ${!errorOnNameFile ? "" : "has-error"}`}>
+                        <label>{translate('asset.general_information.file_name')}<span className="text-red">*</span></label>
+                        <input type="text" className="form-control" name="name" value={name} onChange={handleNameFileChange} autoComplete="off" />
+                        <ErrorLabel content={errorOnNameFile} />
+                    </div>
 
-                        {/* File đính kèm */}
-                        <div className="form-group">
-                            <label htmlFor="">Chọn tài liệu</label>
-                            <UploadFile multiple={true} onChange={handleChangeFile} />
-                        </div>
+                    {/* Mô tả */}
+                    <div className={`form-group ${!errorOnDiscFile ? "" : "has-error"}`}>
+                        <label>{translate('asset.general_information.description')}<span className="text-red">*</span></label>
+                        <textarea className="form-control" rows="3" name="description" value={description} onChange={handleDiscFileChange} autoComplete="off"></textarea>
+                        <ErrorLabel content={errorOnDiscFile} />
+                    </div>
 
-                        {/* <div className="form-group">
+                    {/* File đính kèm */}
+                    <div className="form-group">
+                        <label htmlFor="">Chọn tài liệu</label>
+                        <UploadFile multiple={true} onChange={handleChangeFile} />
+                    </div>
+
+                    {/* <div className="form-group">
                             <label htmlFor="file">{translate('asset.general_information.attached_file')}</label>
                             <input type="file" style={{ height: 34, paddingTop: 2 }} className="form-control" name="file" onChange={handleChangeFile} />
                             <br />
@@ -134,7 +134,7 @@ function FileAddModal(props){
                                 <input className="upload" type="file" name="file" onChange={handleChangeFile} />
                             </div>
                         </div> */}
-                        {/* <ul style={{ listStyle: 'none' }}>
+                    {/* <ul style={{ listStyle: 'none' }}>
                             {files.map((child, index) => {
                                 return (
                                     <React.Fragment>
@@ -147,10 +147,10 @@ function FileAddModal(props){
                                 )
                             })}
                         </ul> */}
-                    </form>
-                </DialogModal>
-            </React.Fragment>
-        );
+                </form>
+            </DialogModal>
+        </React.Fragment>
+    );
 };
 
 const addModal = connect(null, null)(withTranslate(FileAddModal));

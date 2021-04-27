@@ -3,36 +3,24 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import moment from 'moment';
 
-import { SelectMulti } from '../../../common-components';
-
-import { performTaskAction } from './../../task/task-perform/redux/actions';
+import { performTaskAction } from '../../../task/task-perform/redux/actions';
 
 function CurrentTaskTimesheetLogInOrganizationalUnit(props) {
     const { translate, performtasks } = props;
-    const { listUnitSelect } = props;
+    const { listUnitSelect, organizationalUnitIds } = props;
 
-    const [organizationalUnitId, setOrganizationalUnitId] = useState(null);
     const [time, setTime] = useState(new Date());
 
     useEffect(() => {
-        if (!organizationalUnitId && listUnitSelect?.[0]?.value) {
-            setOrganizationalUnitId([listUnitSelect?.[0]?.value]);
-            props.getCurrentTaskTimesheetLogOfEmployeeInOrganizationalUnit({ organizationalUnitId: [listUnitSelect?.[0]?.value] });
+        if (organizationalUnitIds?.length > 0) {
+            props.getCurrentTaskTimesheetLogOfEmployeeInOrganizationalUnit({ organizationalUnitId: organizationalUnitIds });
         }
 
         const timer = setInterval(() => setTime(new Date()), 1000);
         return () => {
             clearInterval(timer);
         }
-    })
-
-    const handleSelectOrganizationalUnitForTimesheetLog = (value) => {
-        setOrganizationalUnitId(value)
-    }
-
-    const handleUpdateData = () => {
-        props.getCurrentTaskTimesheetLogOfEmployeeInOrganizationalUnit({ organizationalUnitId: organizationalUnitId });
-    }
+    }, [JSON.stringify(props.organizationalUnitIds)])
 
     const showTiming = (startedAt, currentTime) => {
         if (!startedAt || !currentTime) return 0;
@@ -58,15 +46,15 @@ function CurrentTaskTimesheetLogInOrganizationalUnit(props) {
                 <div className="box-title" >
                     {translate('dashboard_unit.list_employe_timing')}
                     {
-                        organizationalUnitId?.length < 2 ?
+                        organizationalUnitIds?.length < 2 ?
                             <>
                                 <span>{` ${translate('task.task_dashboard.of')}`}</span>
-                                <span style={{ fontWeight: "bold" }}>{` ${props.getUnitName(listUnitSelect, organizationalUnitId).map(o => o).join(", ")}`}</span>
+                                <span>{` ${props.getUnitName(listUnitSelect, organizationalUnitIds).map(o => o).join(", ")}`}</span>
                             </>
                             :
-                            <span onClick={() => props.showUnitTask(listUnitSelect, organizationalUnitId)} style={{ cursor: 'pointer' }}>
+                            <span onClick={() => props.showUnitTask(listUnitSelect, organizationalUnitIds)} style={{ cursor: 'pointer' }}>
                                 <span>{` ${translate('task.task_dashboard.of')}`}</span>
-                                <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {organizationalUnitId?.length}</a>
+                                <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {organizationalUnitIds?.length}</a>
                                 <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
                             </span>
                     }
@@ -76,23 +64,6 @@ function CurrentTaskTimesheetLogInOrganizationalUnit(props) {
             {/* Seach theo thời gian */}
             <div className="box-body" style={{ marginBottom: 15 }}>
                 <div className="qlcv">
-                    <div className="form-inline" style={{ marginBottom: '10px' }}>
-                        <div className="form-group">
-                            <label style={{ width: "auto" }}>{translate('kpi.organizational_unit.dashboard.organizational_unit')}</label>
-                            <SelectMulti id="multiSelectOrganizationalUnitTimesheet"
-                                items={listUnitSelect}
-                                options={{
-                                    nonSelectedText: translate('page.non_unit'),
-                                    allSelectedText: translate('page.all_unit'),
-                                }}
-                                onChange={(value) => handleSelectOrganizationalUnitForTimesheetLog(value)}
-                                value={organizationalUnitId}
-                            >
-                            </SelectMulti>
-                        </div>
-                        <button type="button" className="btn btn-success" onClick={() => handleUpdateData()}>{translate('general.search')}</button>
-                    </div>
-
                     <table className="table table-bordered table-striped table-hover">
                         <thead>
                             <tr>

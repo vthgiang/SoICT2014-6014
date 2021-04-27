@@ -26,7 +26,7 @@ function DocumentShow(props) {
         props.getAllDepartments();
         props.getAllDocuments(getStorage('currentRole'));
         props.getAllDocuments(getStorage('currentRole'), { page: state.page, limit: state.limit });
-        props.getUserDocumentStatistics(type, { page: state.page, limit: state.limit });
+        props.getUserDocumentStatistics(getStorage('currentRole'),type, { page: state.page, limit: state.limit });
     }, [])
     
     const toggleDocumentInformation = async (data) => {

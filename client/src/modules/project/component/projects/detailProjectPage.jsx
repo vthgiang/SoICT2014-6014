@@ -162,16 +162,17 @@ const ProjectDetailPage = (props) => {
                         <div className="dropdown pull-right" style={{ marginTop: 15, marginRight: 10 }}>
                             {currentProjectTasks && currentProjectTasks.length > 0 ? null : <ModalAddTaskSchedule />}
                             <TaskProjectAddModal onHandleReRender={onHandleReRender} currentProjectTasks={currentProjectTasks} parentTask={parentTask} />
-                            <ModalAddTaskSchedule />
+                            <ModalAddTaskSchedule onHandleReRender={onHandleReRender} />
                             <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true"
                                 title={translate('project.add_btn_task')}>
                                 {translate('project.add_btn_task')}
                             </button>
                             <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
-                                <li><a style={{ cursor: 'pointer' }} onClick={handleOpenCreateTask} title={translate('project.add_btn_normal')}>
-                                    {translate('project.add_btn_normal')}</a></li>
-                                {currentProjectTasks && currentProjectTasks.length > 0 ? null : <li><a style={{ cursor: 'pointer' }} onClick={onHandleOpenScheduleModal} title={translate('project.add_btn_scheduling')}>
-                                    {translate('project.add_btn_scheduling')}</a></li>}
+                                <li><a style={{ cursor: 'pointer' }} onClick={onHandleOpenScheduleModal} title={translate('project.add_btn_scheduling')}>
+                                    {translate('project.add_btn_scheduling')}</a></li>
+                                {currentProjectTasks && currentProjectTasks.length === 0 ? null :
+                                    <li><a style={{ cursor: 'pointer' }} onClick={handleOpenCreateTask} title={translate('project.add_btn_normal')}>
+                                        {translate('project.add_btn_normal')}</a></li>}
 
                             </ul>
                         </div>}

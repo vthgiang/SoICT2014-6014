@@ -37,6 +37,7 @@ export function project(state = initState, action) {
         case ProjectConstants.EDIT_PROJECTS_REQUEST:
         case ProjectConstants.GET_LIST_TASKS_EVAL:
         case ProjectConstants.GET_PROJECT_DETAILS_REQUEST:
+        case ProjectConstants.ADD_PROJECT_TASKS_CPM:
             return {
                 ...state,
                 isLoading: true,
@@ -48,6 +49,7 @@ export function project(state = initState, action) {
         case ProjectConstants.EDIT_PROJECTS_FAILE:
         case ProjectConstants.GET_LIST_TASKS_EVAL_FAILE:
         case ProjectConstants.GET_PROJECT_DETAILS_FAILE:
+        case ProjectConstants.ADD_PROJECT_TASKS_CPM_FAILE:
             return {
                 ...state,
                 isLoading: false,
@@ -119,7 +121,7 @@ export function project(state = initState, action) {
                 ...state,
                 isLoading: false
             };
-            
+
         case ProjectConstants.GET_LIST_TASKS_EVAL_SUCCESS:
             return {
                 ...state,

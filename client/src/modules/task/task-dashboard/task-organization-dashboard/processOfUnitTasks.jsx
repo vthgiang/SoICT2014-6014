@@ -84,9 +84,14 @@ const InprocessOfUnitTask = (props) => {
             axis: {
                 x: {
                     type: 'category',
-                    categories: unitNameSelected
+                    categories: unitNameSelected?.length > 0 ? unitNameSelected : []
                 },
                 rotated: true
+            },
+            bar: {
+                width: {
+                    ratio: unitNameSelected?.length < 4 ? 0.1 : 0.5 // this makes bar width 50% of length between ticks
+                }
             }
         });
     }

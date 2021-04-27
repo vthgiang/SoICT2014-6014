@@ -134,7 +134,7 @@ export default {
             dashboard_employee: "Bảng tin quản lý nhân sự",
             dashboard_personal: "Bảng tin cá nhân",
             dashboard_unit: "Bảng tin đơn vị",
-            dashboard_all_unit: "Bảng tin đơn vị toàn công ty",
+            dashboard_all_unit: "Bảng tin doanh nghiệp",
             employee_capacity: "Năng lực nhân viên",
             discipline: "Quản lý khen thưởng - kỷ luật",
             annual_leave: "Quản lý nghỉ phép",
@@ -556,6 +556,7 @@ export default {
                 update_company_component_success:
                     "Cập nhật component thành công",
                 update_company_component_faile: "Cập nhật component thất bại",
+                company_already_exist: "Tên công ty đã tồn tại"
             },
 
             system_setting: {

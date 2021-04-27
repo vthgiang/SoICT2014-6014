@@ -321,7 +321,12 @@ function UseRequest(props) {
                 }
 
                 {/* PaginateBar */}
-                <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={setPage} />
+                <PaginateBar 
+                    display={recommendDistribute.listRecommendDistributes?.length}
+                    total={recommendDistribute.totalList}
+                    pageTotal={pageTotal ? pageTotal : 0} 
+                    currentPage={currentPage} 
+                    func={setPage} />
             </div>
 
             {/* Form chỉnh sửa thông tin đăng ký sử dụng tài sản */}

@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState, useLayoutEffect } from 'react';
+import React, { useEffect, useState, useLayoutEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -46,6 +46,8 @@ const EmployeeManagement = (props) => {
         careerFields: null,
         page: 0,
         limit: _limit,
+        currentRow: {},
+        currentRowView: {}
     });
 
     useEffect(() => {

@@ -19,13 +19,20 @@ function CourseEditModal(props) {
             return {
                 ...state,
                 id: props.id,
-                _id: props._id,
                 index: props.index,
                 course: props.courseId,
                 result: props.result,
                 nameCourse: props.nameCourse,
             }
         })
+        if (props._id) {
+            setState(state => {
+                return {
+                    ...state,
+                    _id: props._id
+                }
+            })
+        }
     }, [props.id])
 
     // Bắt sự kiện thay đổi kết quả đào tạo

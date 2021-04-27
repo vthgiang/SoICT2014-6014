@@ -598,7 +598,6 @@ exports.importDocument = async (portal, data, company) => {
 exports.getDocumentCategories = async (portal, query, company) => {
     let page = query.page;
     let limit = query.limit;
-
     if (page === undefined && limit === undefined) {
         return await DocumentCategory(connect(DB_CONNECTION, portal)).find({
             company,
@@ -823,6 +822,10 @@ exports.getDocumentsThatRoleCanView = async (portal, query, id, company) => {
 };
 
 exports.getDocumentsUserStatistical = async (userId, query, portal) => {
+    let role = await Role(connect(DB_CONNECTION, portal)).findById(
+        query.roleId
+    );
+    let roleArr = [role._id].concat(role.parents);
     const roles = await UserRole(connect(DB_CONNECTION, portal))
         .find({ userId: userId })
         .populate({
@@ -924,7 +927,11 @@ exports.getDocumentsUserStatistical = async (userId, query, portal) => {
             };
             return listDownload;
         case "common": //những tài liệu phổ biến - được xem và tải nhiều nhất gần đây
-            condition = { ...condition, roles: { $in: userRole } };
+            condition = {$or: [
+                { roles: { $in: roleArr } },
+                { userCanView: userId }
+                ]
+             };
             let listCommon = await Document(
                 connect(DB_CONNECTION, portal)
             ).paginate(condition, {
@@ -953,10 +960,18 @@ exports.getDocumentsUserStatistical = async (userId, query, portal) => {
             return listCommon;
         case "latest": //những tài liệu văn bản mà người dùng chưa xem qua lần nào
             condition = {
-                ...condition,
-                roles: { $in: userRole },
+                $or: [
+                { roles: { $in: roleArr } },
+                { userCanView: userId }
+                ]
+             ,
                 "views.viewer": { $ne: userId },
             };
+            // condition = {$or: [
+            //     { roles: { $in: roleArr } },
+            //     { userCanView: userId }
+            //     ]
+            //  };
 
             let allDocsLast = await Document(connect(DB_CONNECTION, portal)).find(condition).populate([
                 { path: "category", select: "name id" },
@@ -1207,7 +1222,8 @@ exports.importDocumentArchive = async (portal, data, company) => {
                 .map((x) => {
                     return x.trim();
                 })
-                .join(" - ");
+            path.pop()
+            path=path.join(" - ");
             const parentArchive = await DocumentArchive(
                 connect(DB_CONNECTION, portal)
             ).findOne({ path: path });

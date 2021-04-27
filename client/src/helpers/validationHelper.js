@@ -13,7 +13,7 @@ export default class ValidationHelper {
      * @param {*} value giá trị cần xác thực
      */
     static validateEmpty = (translate, value) => {
-        if (!value || value.replace(/\s/g,"") === "")
+        if (!value || value?.toString()?.replace(/\s/g,"") === "")
             return { status: false, message: translate('general.validate.empty_error') };
         return { status: true };
     }
@@ -35,7 +35,7 @@ export default class ValidationHelper {
      * @param {*} max số ký tụ tối đa
      */
     static validateLength = (translate, value, min = 4, max = 1024) => {
-        if (value.length < min || value.length > max)
+        if (value?.length < min || value?.length > max)
             return { status: false, message: translate('general.validate.length_error', { min, max }) };
         return { status: true };
     }
@@ -46,7 +46,7 @@ export default class ValidationHelper {
      * @param {*} min số ký tự tối thiểu
      */
     static validateMinimumLength = (translate, value, min = 4) => {
-        if (value.length < min)
+        if (value?.length < min)
             return { status: false, message: translate('general.validate.minimum_length_error', { min }) };
         return { status: true };
     }
@@ -57,7 +57,7 @@ export default class ValidationHelper {
      * @param {*} max số ký tự tối đa
      */
     static validateMaximumLength = (translate, value, max = 1024) => {
-        if (value.length > max)
+        if (value?.length > max)
             return { status: false, message: translate('general.validate.maximum_length_error', { max }) };
         return { status: true };
     }
@@ -141,7 +141,7 @@ export default class ValidationHelper {
      * @param {*} max số ký tự tối đa
      */
     static validateArrayLength = (translate, value) => {
-        if (value.length === 0)
+        if (value?.length === 0)
             return { status: false, message: translate('general.validate.empty_error') };
         return { status: true };
     }
@@ -235,7 +235,7 @@ export default class ValidationHelper {
      * @param {*} value giá trị nhập vào
      */
     static validateNumericInputMandatory = (translate, value) => {
-        if (value.length === 0 || value.match(/.*[a-zA-Z]+.*/))
+        if (value?.length === 0 || value?.match(/.*[a-zA-Z]+.*/))
             return { status: false, message: "Không được bỏ trống và chỉ được điền số" };
         return { status: true };
     }
