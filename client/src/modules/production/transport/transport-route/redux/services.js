@@ -64,6 +64,7 @@ function stopLocate(queryData) {
                 
                 // manageId: queryData !== undefined ? queryData.manageId : null,
                 driverId: queryData !== undefined ? queryData.driverId : null,
+                interval: queryData !== undefined ? queryData.interval : null,
             }
         },
          false, // Nếu có truy vấn thành công thì không hiện thông báo
@@ -85,6 +86,7 @@ function sendCurrentLocate(queryData) {
                 
                 manageId: queryData !== undefined ? queryData.manageId : null,
                 location: queryData !== undefined ? queryData.location : null,
+                interval: queryData !== undefined ? queryData.interval : null,
             }
         },
          false, // Nếu có truy vấn thành công thì không hiện thông báo

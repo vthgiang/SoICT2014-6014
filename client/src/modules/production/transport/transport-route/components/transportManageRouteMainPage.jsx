@@ -24,6 +24,8 @@ function TransportManageRouteMainPage(props) {
 
     const {allTransportPlans, currentTransportSchedule, socket} = props
 
+
+    // Vị trí hiện tại
     const [ currentPosition, setCurrentPosition ] = useState({});
 
     const [currentTransportPlan, setCurrentTransportPlan] = useState({
@@ -153,24 +155,16 @@ function TransportManageRouteMainPage(props) {
 
     const stopGetLocateOnMap = () => {
         setGetLocateOnMap(false);
-        props.stopLocate({driverId: getDriver(currentVehicleRoute.transportVehicle?._id)?.id})
+        props.stopLocate({driverId: getDriver(currentVehicleRoute.transportVehicle?._id)?.id, interval: sendCurrentLocateTimer})
     }
 
     useEffect(() => {
         props.getAllTransportPlans({page:1, limit: 100})
         let manageId;
-        // const sendCurrentPosition = position => {
-        //     const currentPosition = {
-        //       lat: position.coords.latitude,
-        //       lng: position.coords.longitude
-        //     }
-        //     // setCurrentPosition(currentPosition);
-        //     console.log(currentPosition)
-        //   };
-          const sendCurrentPosition = () => {
+        const sendCurrentPosition = position => {
             const currentPosition = {
-              lat: 13,
-              lng: 12,
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
             }
             // setCurrentPosition(currentPosition);
             let data = {
@@ -180,6 +174,19 @@ function TransportManageRouteMainPage(props) {
             console.log(data, " haha")
             setCurrentPosition(data)
           };
+        //   const sendCurrentPosition = () => {
+        //     const currentPosition = {
+        //       lat: 13,
+        //       lng: 12,
+        //     }
+        //     // setCurrentPosition(currentPosition);
+        //     let data = {
+        //         manageId: manageId,
+        //         location: currentPosition
+        //     }
+        //     console.log(data, " haha")
+        //     setCurrentPosition(data)
+        //   };
         // socket.io.on("current position", data => {
         //     console.log(data);
         // })
@@ -194,48 +201,52 @@ function TransportManageRouteMainPage(props) {
                 manageId = data.manageId;
                 // navigator.geolocation.getCurrentPosition(sendCurrentPosition);
                 
-                let interval = [...sendCurrentLocateTimer]
-                let k =setInterval(() => {
-                    sendCurrentPosition();
-                }, 5000)
-                console.log(k, " ooooooooooooooooooooooooooooooooooooooo");
-                
-                interval.push(k);
+                let interval = setInterval(() => {
+                    // sendCurrentPosition();
+                    navigator.geolocation.getCurrentPosition(sendCurrentPosition);
+                }, 30000)
+                // let interval =1;
+                // Lưu lại id interval để stop locate => clearInterval
                 setSendCurrentLocateTimer(interval);
             }
         })
-
+        /**
+         * Nhận vị trí driver gửi lại
+         * data : location: {lat: , lng: }
+         * manager
+         */
+         socket.io.on("send current locate", data => {
+            if (data.location){
+                console.log(data.location, "  send current locate adminnnnnnnn ");
+                // setCurrentPosition(data.location);
+                setSendCurrentLocateTimer(data.interval);
+            }
+        })
+        /**
+         * Dừng gửi vị trí
+         * driver
+         */
         socket.io.on("stop locate", data => {
             console.log(data, " stop locate");
-            // setCurrentPosition({});
-            // clearInterval(sendCurrentLocateTimer);
-            // for (let i = 1; i < 99999; i++)
-            //     clearInterval(i);
-            console.log(sendCurrentLocateTimer, " currenttimerr")
-            if (sendCurrentLocateTimer && sendCurrentLocateTimer.length!==0){
-                for (let i =0; i<sendCurrentLocateTimer.length;i++){
-                    console.log(sendCurrentLocateTimer[i], " xoassssssssssssss")
-                    clearInterval(sendCurrentLocateTimer[i]);
-                }
-            }
-
+            console.log(data, " currenttimerr")
+                    clearInterval(data.interval);
             })
             
     }, [])
     useEffect(() => {
         // console.log(currentPosition, " currentPosition");
-        if (currentPosition){
+        if (currentPosition && sendCurrentLocateTimer){
             // if (localStorage.getItem("userId") !== '607a98a6e57ad61670049a2c')
             // props.driverSendMessage({
             //     data: {
             //         position: currentPosition,
             //     }
             // })
-            
-            props.sendCurrentLocate(currentPosition);
+            console.log({...currentPosition, interval: sendCurrentLocateTimer})
+            props.sendCurrentLocate({...currentPosition, interval: sendCurrentLocateTimer});
             console.log("da gui")
         }
-      }, [currentPosition])
+      }, [currentPosition, sendCurrentLocateTimer])
     useEffect(() => {
         if (currentTransportPlan && currentTransportPlan._id !== "0"){
             props.getTransportScheduleByPlanId(currentTransportPlan._id);

@@ -18,17 +18,7 @@ function TransportDetailMap(props) {
     //     console.log(currentVehicleRoute, " day la route")
     // }, [currentVehicleRoute])
     useEffect(() => {
-        /**
-         * Nhận vị trí driver gửi lại
-         * data : location: {lat: , lng: }
-         * manager
-         */
-         socket.io.on("send current locate", data => {
-            if (data.location){
-                console.log(data.location, "  send current locate adminnnnnnnn ");
-                // setCurrentPosition(data.location);
-            }
-        })
+
     }, [])
     // useEffect(() => {
     //     if (getLocateOnMap){
