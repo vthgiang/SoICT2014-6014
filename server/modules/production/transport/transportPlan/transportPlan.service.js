@@ -218,9 +218,12 @@ exports.editTransportPlan = async (portal, id, data) => {
     let transportPlan = await TransportPlan(connect(DB_CONNECTION, portal)).findById({ _id: oldTransportPlan._id })
     .populate([
         {
-            path: 'transportRequirements'
+            path: "transportRequirements transportVehicles.vehicle"
+        },
+        {
+            path: 'transportVehicles.carriers.carrier'
         }
-    ]);
+    ])
     return transportPlan;
 }
 /**
