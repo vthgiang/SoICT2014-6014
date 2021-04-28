@@ -639,44 +639,21 @@ class TaskOrganizationUnitDashboard extends Component {
                         {/*Dashboard tải công việc */}
                         <div className="row">
                             <div className="col-xs-12">
-                                <div className="box box-primary">
-                                    <div className="box-header with-border">
-                                        <div className="box-title">
-                                            {translate('task.task_management.load_task_chart_unit')} {startMonthTitle}<i className="fa fa-fw fa-caret-right"></i>{endMonthTitle}
-                                            {
-                                                idsUnit && idsUnit.length < 2 ?
-                                                    <>
-                                                        <spn>{` ${translate('task.task_dashboard.of')}`}</spn>
-                                                        <span>{` ${this.getUnitName(selectBoxUnit, idsUnit).map(o => o).join(", ")}`}</span>
-                                                    </>
-                                                    :
-                                                    <span onClick={() => this.showUnitGeneraTask(selectBoxUnit, idsUnit)} style={{ cursor: 'pointer' }}>
-                                                        <span>{` ${translate('task.task_dashboard.of')}`}</span>
-                                                        <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {idsUnit && idsUnit.length}</a>
-                                                        <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
-                                                    </span>
-                                            }
-                                        </div>
-                                        <a className="text-red" title={translate('task.task_management.explain')} onClick={() => this.showLoadTaskDoc()}>
-                                            <i className="fa fa-question-circle" style={{ cursor: 'pointer', color: '#dd4b39', marginLeft: '5px' }} />
-                                        </a>
-                                    </div>
-                                    <div className="box-body">
-                                        {tasks && tasks.organizationUnitTasks &&
-                                            <LazyLoadComponent once={true}>
-                                                <LoadTaskOrganizationChart
-                                                    tasks={tasks?.organizationUnitTasks}
-                                                    listEmployee={user && user.employees}
-                                                    units={selectBoxUnit}
-                                                    startMonth={startMonth}
-                                                    endMonth={endMonth}
-                                                    idsUnit={idsUnit}
-                                                    employeeLoading={user?.employeeLoading}
-                                                />
-                                            </LazyLoadComponent>
-                                        }
-                                    </div>
-                                </div>
+                                <LazyLoadComponent once={true}>
+                                    <LoadTaskOrganizationChart
+                                        tasks={tasks?.organizationUnitTasks}
+                                        listEmployee={user && user.employees}
+                                        units={selectBoxUnit}
+                                        startMonth={startMonth}
+                                        endMonth={endMonth}
+                                        startMonthTitle={startMonthTitle}
+                                        endMonthTitle={endMonthTitle}
+                                        idsUnit={idsUnit}
+                                        employeeLoading={user?.employeeLoading}
+                                        getUnitName={this.getUnitName}
+                                        showUnitTask={this.showUnitGeneraTask}
+                                    />
+                                </LazyLoadComponent>
                             </div>
                         </div>
 

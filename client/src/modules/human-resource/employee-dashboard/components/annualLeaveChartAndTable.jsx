@@ -129,8 +129,7 @@ const AnnualLeaveChartAndTable = (props) => {
             bindto: barChartAndTable.current,
             data: {
                 x: 'x',
-                columns: [],
-                hide: true,
+                columns: [["x", ...data.ratioX], ['data1', ...data.data1], ['data2', ...data.data2]],
                 type: 'bar',
                 names: {
                     data1: data.nameData1,
@@ -160,12 +159,6 @@ const AnnualLeaveChartAndTable = (props) => {
                 }
             },
         });
-
-        setTimeout(function () {
-            chart.load({
-                columns: [["x", ...data.ratioX], ['data1', ...data.data1], ['data2', ...data.data2]],
-            });
-        }, 100);
     }
 
     const getDays = () => {
