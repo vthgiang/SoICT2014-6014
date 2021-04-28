@@ -1,4 +1,4 @@
-// Tạo mới mảng Ví dụ
+// bắt đầu gửi vị trí
 exports.startLocate = async (portal, data) => {
     if (data){
         if(data?.manageId && data?.driverId && data?.manageId!==data?.driverId){
@@ -9,7 +9,6 @@ exports.startLocate = async (portal, data) => {
                 if (driverConnected && driverConnected.length!==0){
                     let driverSocket = driverConnected[0].socketId;
                     SOCKET_IO.to(driverSocket).emit("start locate", {manageId: manageId});
-                    console.log("ok baby")
                 }
             }
         }
@@ -21,8 +20,8 @@ exports.startLocate = async (portal, data) => {
     // console.log(CONNECTED_CLIENTS)
     // SOCKET_IO.to().emit("start locate", )
 }
+// gửi vị trí
 exports.sendCurrentLocate = async (portal, data) => {
-    console.log(data, " aaaaa")
     if (data){
         if(data?.manageId && data?.location){
             let manageId = data.manageId;
@@ -44,7 +43,7 @@ exports.sendCurrentLocate = async (portal, data) => {
     // console.log(CONNECTED_CLIENTS)
     // SOCKET_IO.to().emit("start locate", )
 }
-
+// dừng gửi
 exports.stopLocate = async (portal, data) => {
     if (data){
         if(data?.driverId){

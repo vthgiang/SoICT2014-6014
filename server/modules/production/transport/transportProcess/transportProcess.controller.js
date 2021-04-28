@@ -69,7 +69,6 @@ exports.startLocate = async (req, res) => {
 }
 
 exports.sendCurrentLocate = async (req, res) => {
-    console.log("da gui du lieu")
     try {
         await TransportProcess.sendCurrentLocate(req.portal, req.query);
         await Log.info(req.user.email, "SEND_CURRENT_LOCATE", req.portal);

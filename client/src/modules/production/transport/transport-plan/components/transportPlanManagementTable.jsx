@@ -2,12 +2,13 @@ import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 
-import { DataTableSetting, DeleteNotification, PaginateBar } from "../../../../../common-components";
+import { DataTableSetting, DeleteNotification, PaginateBar, forceCheckOrVisible } from "../../../../../common-components";
 
 import { formatDate } from "../../../../../helpers/formatDate"
 import { TransportPlanCreateForm } from "./transportPlanCreateForm"
 import { TransportPlanEditForm } from "./transportPlanEditForm"
 import { TransportPlanDetailInfo } from "./transportPlanDetailInfo"
+import { TransportVehicleAndCarrierListed } from "./transportVehicleAndCarrierListed"
 
 import { transportPlanActions } from "../redux/actions"
 // import { transportRequirementsActions } from "../redux/actions";
@@ -47,7 +48,14 @@ function TransportPlanManagementTable(props) {
         setReloadRequirementTable(value);
     }
     return (
-            <div className="box-body qlcv">
+        <div className="nav-tabs-custom">
+        <ul className="nav nav-tabs">
+            <li className="active"><a href="#list-transport-plan" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Kế hoạch vận chuyển"}</a></li>
+            <li><a href="#list-vehicle-carrier" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Thống kê phương tiện và nhân viên vận chuyển"}</a></li>
+        </ul>
+        <div className="tab-content">
+            <div className="tab-pane active" id="list-transport-plan">
+                <div className="box-body qlcv">
                 <TransportPlanCreateForm 
                     currentDateClient={getCurrentDate()}
                 />
@@ -81,43 +89,52 @@ function TransportPlanManagementTable(props) {
                     {
                     (transportPlan && transportPlan.lists && transportPlan.lists.length !== 0) &&
                     transportPlan.lists.map((x, index) => (
-                                x &&
-                                <tr key={index}>
-                                    <td>{index + 1}</td>
-                                    <td>{x.code}</td>
-                                    <td>{""}</td>
-                                    <td>{formatDate(x.startTime)+" - "+formatDate(x.endTime)}</td>
-                                    <td>{""}</td>
-                                    <td style={{ textAlign: "center" }}>
-                                        <a className="edit text-green" 
-                                            style={{ width: '5px' }} 
-                                            title={"Thông tin chi tiết kế hoạch"} 
-                                            onClick={() => handleShowDetailInfo(x)}
-                                        >
-                                            <i className="material-icons">visibility
-                                            </i>
-                                        </a>
-                                        <a className="edit text-yellow" style={{ width: '5px' }} 
-                                            title={"Chỉnh sửa kế hoạch"} 
-                                            onClick={() => handleEditPlan(x)}
-                                        >
-                                            <i className="material-icons">edit</i>
-                                        </a>
-                                        <DeleteNotification
-                                            content={"Xóa kế hoạch vận chuyển"}
-                                            data={{
-                                                id: x._id,
-                                                info: x.code
-                                            }}
-                                            func={handleDelete}
-                                        />
-                                    </td>
-                                </tr>
-                            ))
-                        }
+                            x &&
+                            <tr key={index}>
+                                <td>{index + 1}</td>
+                                <td>{x.code}</td>
+                                <td>{""}</td>
+                                <td>{formatDate(x.startTime)+" - "+formatDate(x.endTime)}</td>
+                                <td>{""}</td>
+                                <td style={{ textAlign: "center" }}>
+                                    <a className="edit text-green" 
+                                        style={{ width: '5px' }} 
+                                        title={"Thông tin chi tiết kế hoạch"} 
+                                        onClick={() => handleShowDetailInfo(x)}
+                                    >
+                                        <i className="material-icons">visibility
+                                        </i>
+                                    </a>
+                                    <a className="edit text-yellow" style={{ width: '5px' }} 
+                                        title={"Chỉnh sửa kế hoạch"} 
+                                        onClick={() => handleEditPlan(x)}
+                                    >
+                                        <i className="material-icons">edit</i>
+                                    </a>
+                                    <DeleteNotification
+                                        content={"Xóa kế hoạch vận chuyển"}
+                                        data={{
+                                            id: x._id,
+                                            info: x.code
+                                        }}
+                                        func={handleDelete}
+                                    />
+                                </td>
+                            </tr>
+                        ))
+                    }
                     </tbody>
                 </table>
             </div>
+            </div>
+            <div className="tab-pane" id="list-vehicle-carrier">
+                <TransportVehicleAndCarrierListed 
+                    transportPlan = {transportPlan}
+                />
+            </div>
+
+        </div>
+    </div>
     )
 }
 
