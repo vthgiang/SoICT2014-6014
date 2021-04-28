@@ -114,7 +114,7 @@ function TransportVehicleAndCarrierSelect(props) {
                                             if (transportVehicles.carriers && transportVehicles.carriers.length !==0){
                                                 transportVehicles.carriers.map(carriers => {
                                                     if(carriers.carrier){
-                                                        carriersList = carriersList.filter(r => String(r._id) !== String(carriers.carrier))
+                                                        carriersList = carriersList.filter(r => String(r._id) !== String(carriers.carrier._id?carriers.carrier._id:carriers.carrier))
                                                     }
                                                 })
                                             }

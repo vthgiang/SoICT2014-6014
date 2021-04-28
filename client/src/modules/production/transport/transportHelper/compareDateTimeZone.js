@@ -1,7 +1,11 @@
+/**
+ *  Kiểm tra xem date1 có trước date 2 không
+ *  Nếu date1 và date2 trong cùng 1 ngày => trả về false (vì không trước) bằng cách set time date 1 nhiều hơn date 2
+ */ 
 export const isTimeZoneDateSmaller = (date1, date2) => { //Ngày bắt đầu trước ngày kết thúc
     let startTimeZoneDate = new Date(date1);
     let endTimeZoneDate = new Date(date2);
-    startTimeZoneDate.setHours(10,0,1);
+    startTimeZoneDate.setHours(11,0,1);
     endTimeZoneDate.setHours(10,0,1);
     if (startTimeZoneDate.getTime() < endTimeZoneDate.getTime()) {
         return true

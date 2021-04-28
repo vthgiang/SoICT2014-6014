@@ -6,7 +6,12 @@ import c3 from 'c3';
 import 'c3/c3.css'
 function TransportVehicleCarrierListedChart(props) {
 
-    const { listDay, countVehicles, countCarriers } = props;
+    const columnClick = (event) => {
+        console.log(event, " aaaaaaaaaa");
+        setIndexClick(event.index)
+    }
+
+    const { listDay, countVehicles, countCarriers, setIndexClick } = props;
     // useDeepCompareEffect(() => {
     //     let lineBarChart = [
     //         [translate('asset.dashboard.amount')],
@@ -50,11 +55,11 @@ function TransportVehicleCarrierListedChart(props) {
         barLineChart(barChart);
     }, [countCarriers, countVehicles])
     const barLineChart = (data) => {
-        // const types = {
-        //     [amount]: 'line',
-        //     [value]: 'bar',
-        //     [lost]: 'bar'
-        // }
+        const types = {
+            // [amount]: 'line',
+            ["Phương tiện"]: 'bar',
+            ["Nhân viên"]: 'bar'
+        }
         // const category = [
         //     translate('asset.dashboard.building'),
         //     translate('asset.asset_info.vehicle'),
@@ -73,9 +78,10 @@ function TransportVehicleCarrierListedChart(props) {
 
             data: {
                 columns: data,
-                // types: types
-                types: 'bar',
+                types: types,
+                // types: 'bar',
                 // axes: customAxes
+                onclick: columnClick
             },
 
             padding: {

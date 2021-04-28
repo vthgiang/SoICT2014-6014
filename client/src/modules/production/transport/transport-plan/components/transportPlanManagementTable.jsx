@@ -130,6 +130,7 @@ function TransportPlanManagementTable(props) {
             <div className="tab-pane" id="list-vehicle-carrier">
                 <TransportVehicleAndCarrierListed 
                     transportPlan = {transportPlan}
+                    // key={transportPlan}
                 />
             </div>
 

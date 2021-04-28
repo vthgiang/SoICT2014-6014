@@ -102,13 +102,14 @@ function TransportVehicleAndCarrierSelect(props) {
                                 }
                                 // xét người đã sử dụng trong kế hoạch đó
                                 console.log(carriersList, " carrierList");
+                                console.log(plan.transportVehicles, " vehilelist")
                                 if (plan.transportVehicles && plan.transportVehicles.length!==0){
                                     plan.transportVehicles.map(transportVehicles => {
                                         if (transportVehicles.carriers && transportVehicles.carriers.length !==0){
                                             transportVehicles.carriers.map(carriers => {
-                                                console.log(carriers);
+                                                // console.log(carriers);
                                                 if(carriers.carrier){
-                                                    carriersList = carriersList.filter(r => String(r._id) !== String(carriers.carrier))
+                                                    carriersList = carriersList.filter(r => String(r._id) !== String(carriers.carrier._id))
                                                 }
                                             })
                                         }
@@ -120,6 +121,7 @@ function TransportVehicleAndCarrierSelect(props) {
                     } 
                 })
             }
+            console.log(carriersList, " test ne")
             setListVehiclesUsable(vehiclesList);
             setListCarriersUsable(carriersList);
         }
