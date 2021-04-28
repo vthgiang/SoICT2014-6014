@@ -4,6 +4,7 @@ import { getStorage } from "../../../../config";
 import { getNumsOfDaysWithoutGivenDay } from "../../../task/task-management/component/functionHelpers";
 
 export const MILISECS_TO_DAYS = 86400000;
+export const MILISECS_TO_HOURS = 3600000;
 
 export const checkIfAbleToCRUDProject = ({ project, user, currentProjectId }) => {
     const currentRole = getStorage("currentRole");
@@ -61,12 +62,12 @@ export const getAmountOfWeekDaysInMonth = (date) => {
 }
 
 // Lấy duration (theo timeMode) giua startDate va endDate (tru di thu 7 va chu nhat)
-export const getDurationDaysWithoutSatSun = (startDate, endDate, timeMode = 'days') => {
+export const getDurationDaysWithoutSatSun = (startDate, endDate, timeMode) => {
     const numsOfSaturdays = getNumsOfDaysWithoutGivenDay(new Date(startDate), new Date(endDate), 6)
     const numsOfSundays = getNumsOfDaysWithoutGivenDay(new Date(startDate), new Date(endDate), 0)
     let duration = 0
     if (timeMode === 'hours') {
-        duration = (moment(endDate).diff(moment(startDate), `milliseconds`) / MILISECS_TO_DAYS - numsOfSaturdays - numsOfSundays) * 24;
+        duration = (moment(endDate).diff(moment(startDate), `milliseconds`) / MILISECS_TO_DAYS - numsOfSaturdays - numsOfSundays) * 8;
         return duration;
     }
     duration = moment(endDate).diff(moment(startDate), `milliseconds`) / MILISECS_TO_DAYS - numsOfSaturdays - numsOfSundays;
@@ -81,4 +82,9 @@ export const convertDateTime = (date, time) => {
 // convert ISODate to String hh:mm AM/PM
 export const formatTime = (date) => {
     return dayjs(date).format("hh:mm A");
+}
+
+export const convertToMilliseconds = (duration, currentMode = 'days') => {
+    if ( currentMode === 'days') return duration * MILISECS_TO_DAYS;
+    return duration * MILISECS_TO_HOURS;
 }

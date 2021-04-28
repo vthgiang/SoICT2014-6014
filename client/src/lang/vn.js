@@ -5792,8 +5792,8 @@ export default {
             },
 
             unit: {
-                day: 'Ngày',
-                hour: 'Giờ',
+                days: 'Ngày',
+                hours: 'Giờ',
             },
             schedule: {
                 taskCode: 'Mã công việc',

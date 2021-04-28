@@ -6,6 +6,7 @@ import { UserActions } from '../../../super-admin/user/redux/actions';
 import moment from 'moment';
 import { ProjectGantt } from '../../../../common-components/src/gantt/projectGantt';
 import { getDurationDaysWithoutSatSun } from './functionHelper';
+import { numberWithCommas } from '../../../task/task-management/component/functionHelpers';
 
 const GanttTasksProject = (props) => {
     const currentProjectId = window.location.href.split('?id=')[1];
@@ -61,7 +62,7 @@ const GanttTasksProject = (props) => {
                 let now = moment(new Date());
                 let duration = 0;
                 if (currentMode === 'days') {
-                    duration = getDurationDaysWithoutSatSun(taskItem.startDate, taskItem.endDate)
+                    duration = getDurationDaysWithoutSatSun(taskItem.startDate, taskItem.endDate, 'days')
                 } else if (currentMode === 'hours') {
                     duration = getDurationDaysWithoutSatSun(taskItem.startDate, taskItem.endDate, 'hours')
                 } else {
@@ -96,7 +97,7 @@ const GanttTasksProject = (props) => {
                     text: taskItem.status == "inprocess" ? `${taskItem.name} - ${taskItem.progress}%` : taskItem.name,
                     taskName: `${taskItem.name}`,
                     responsible: `${taskItem.responsibleEmployees.map(resItem => resItem.name).join(', ')}`,
-                    customDuration: duration,
+                    customDuration: numberWithCommas(duration),
                     start_date: moment(taskItem.startDate).format("YYYY-MM-DD HH:mm"),
                     end_date: moment(taskItem.endDate).format("YYYY-MM-DD HH:mm"),
                     progress: taskItem.status === "inprocess" ? taskItem.progress / 100 : 0,

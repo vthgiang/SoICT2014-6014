@@ -49,7 +49,7 @@ const TabProjectReportCost = (props) => {
             }
         }
         for (let taskItem of currentTasks) {
-            budgets.push(taskItem.estimateMaxCost);
+            budgets.push(taskItem.estimateNormalCost);
             actualCost.push(taskItem.actualCost || getCurrentActualCostForTask(taskItem));
             categories.push(taskItem.name)
         }
@@ -116,7 +116,7 @@ const TabProjectReportCost = (props) => {
         if (!currentTasks) return [];
         return currentTasks.filter((taskItem, taskIndex) => {
             const currentActualCost = taskItem.actualCost || getCurrentActualCostForTask(taskItem);
-            if (taskItem.estimateMaxCost >= currentActualCost) return taskItem;
+            if (taskItem.estimateNormalCost >= currentActualCost) return taskItem;
         })
     }
 
@@ -125,7 +125,7 @@ const TabProjectReportCost = (props) => {
         if (!currentTasks) return [];
         return currentTasks.filter((taskItem, taskIndex) => {
             const currentActualCost = taskItem.actualCost || getCurrentActualCostForTask(taskItem);
-            if (taskItem.estimateMaxCost < currentActualCost) return taskItem;
+            if (taskItem.estimateNormalCost < currentActualCost) return taskItem;
         })
     }
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, SelectBox } from '../../../../common-components/index';
@@ -46,15 +46,15 @@ const ModalAddTaskSchedule = (props) => {
     const [currentModeImport, setCurrentModeImport] = useState('EXCEL');
     const [estDurationEndProject, setEstDurationEndProject] = useState(
         numberWithCommas(
-            getDurationDaysWithoutSatSun(projectDetail?.startDate, projectDetail?.endDate)
+            getDurationDaysWithoutSatSun(projectDetail?.startDate, projectDetail?.endDate, projectDetail?.unitTime)
         )
     )
     if (
-        numberWithCommas(getDurationDaysWithoutSatSun(projectDetail?.startDate, projectDetail?.endDate)) !== estDurationEndProject
+        numberWithCommas(getDurationDaysWithoutSatSun(projectDetail?.startDate, projectDetail?.endDate, projectDetail?.unitTime)) !== estDurationEndProject
     ) {
         setEstDurationEndProject(
             numberWithCommas(
-                getDurationDaysWithoutSatSun(projectDetail?.startDate, projectDetail?.endDate)
+                getDurationDaysWithoutSatSun(projectDetail?.startDate, projectDetail?.endDate, projectDetail?.unitTime)
             )
         )
     }
@@ -194,6 +194,13 @@ const ModalAddTaskSchedule = (props) => {
     }
 
     const handleSaveEditInfoRow = (newData, currentEditRowIndex) => {
+        state.listTasks = state.listTasks.map((taskItem) => {
+            return {
+                ...taskItem,
+                startDate: '',
+                endDate: '',
+            }
+        })
         state.listTasks[currentEditRowIndex] = newData;
         setState({
             ...state,
@@ -203,13 +210,18 @@ const ModalAddTaskSchedule = (props) => {
 
     const checkIfCanCalculateCPM = () => {
         for (let taskItem of state.listTasks) {
-            // if (checkIsNullUndefined(taskItem?.estimateNormalCost) || checkIsNullUndefined(taskItem?.estimateMaxCost)
-            //     || taskItem?.estimateNormalTime > 7 || taskItem?.estimateNormalTime < 1 / 6) {
-            //     return false;
-            // }
-            if (taskItem?.estimateNormalTime > 7 || taskItem?.estimateNormalTime < 1 / 6) return false
+            if (checkIsNullUndefined(taskItem?.estimateNormalCost) || checkIsNullUndefined(taskItem?.estimateMaxCost)
+                || isDurationNotSuitable(taskItem?.estimateNormalTime)) {
+                return false;
+            }
+            // if (isDurationNotSuitable(taskItem?.estimateNormalTime)) return false
         }
         return true;
+    }
+
+    const isDurationNotSuitable = (estimateNormalTime) => {
+        if (projectDetail?.unitTime === 'days') return estimateNormalTime > 7 || estimateNormalTime < 1 / 6
+        return estimateNormalTime < 4 || estimateNormalTime > 56
     }
 
     return (
@@ -245,8 +257,8 @@ const ModalAddTaskSchedule = (props) => {
                             <div>{moment(projectDetail?.endDate).format('HH:mm DD/MM/YYYY')}</div>
                         </div>
                         <div className={`form-group col-md-2`}>
-                            <label>Khoảng thời gian dự kiến hoàn thành dự án</label>
-                            <div>{estDurationEndProject} (ngày)</div>
+                            <label>Khoảng thời gian dự kiến hoàn thành dự án (không tính T7 CN)</label>
+                            <div>{estDurationEndProject} ({translate(`project.unit.${projectDetail?.unitTime}`)})</div>
                         </div>
                     </div>
                 </fieldset>
@@ -304,7 +316,7 @@ const ModalAddTaskSchedule = (props) => {
                             <th>{translate('project.schedule.taskCode')}</th>
                             <th>{translate('project.schedule.taskName')}</th>
                             <th>{translate('project.schedule.preceedingTasks')}</th>
-                            <th>{translate('project.schedule.estimatedTime')} (ngày)</th>
+                            <th>{translate('project.schedule.estimatedTime')} ({translate(`project.unit.${projectDetail?.unitTime}`)})</th>
                             {currentModeImport === 'HAND' && <th>{translate('project.schedule.estimatedTimeOptimistic')}</th>}
                             {currentModeImport === 'HAND' && <th>{translate('project.schedule.estimatedTimePessimistic')}</th>}
                             <th>{translate('project.schedule.estimatedCostNormal')} (VND)</th>
@@ -323,8 +335,8 @@ const ModalAddTaskSchedule = (props) => {
                                     <td>
                                         {taskItem?.estimateNormalTime}
                                         <strong style={{ color: 'red' }}>
-                                            {taskItem?.estimateNormalTime > 7 || taskItem?.estimateNormalTime < 1 / 6
-                                                ? ' - Thời gian không được lớn hơn 7 ngày và nhỏ hơn 4 tiếng'
+                                            {isDurationNotSuitable(taskItem?.estimateNormalTime)
+                                                ? ' - Thời gian không được lớn hơn 7 Ngày và nhỏ hơn 4 Giờ'
                                                 : null}
                                         </strong></td>
                                     {currentModeImport === 'HAND' && <td>{taskItem?.estimateOptimisticTime}</td>}

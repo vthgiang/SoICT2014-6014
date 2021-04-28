@@ -47,13 +47,6 @@ const ProjectEditForm = (props) => {
     const [startTime, setStartTime] = useState(formatTime(projectEdit?.startDate) || '08:00 AM');
     const [endTime, setEndTime] = useState(formatTime(projectEdit?.endDate) || '05:30 PM');
 
-    if (formatTime(projectEdit?.startDate) !== startTime) {
-        setStartTime(formatTime(projectEdit?.startDate))
-    }
-    if (formatTime(projectEdit?.endDate) !== endTime) {
-        setEndTime(formatTime(projectEdit?.endDate))
-    }
-
     const [responsibleEmployeesWithUnit, setResponsibleEmployeesWithUnit] = useState({
         list: [],
         currentUnitRow: '',
@@ -77,6 +70,8 @@ const ProjectEditForm = (props) => {
             unitTime: projectEdit?.unitTime || fakeUnitTimeList[0].text,
             estimatedCost: projectEdit?.estimatedCost || '',
         })
+        setStartTime(formatTime(projectEdit?.startDate) || '08:00 AM')
+        setEndTime(formatTime(projectEdit?.endDate) || '05:30 PM')
         setTimeout(() => {
             setResponsibleEmployeesWithUnit({
                 ...responsibleEmployeesWithUnit,
@@ -150,9 +145,11 @@ const ProjectEditForm = (props) => {
         if (isFormValidated()) {
             let partStartDate = convertDateTime(startDate, startTime).split('-');
             let start = new Date([partStartDate[2], partStartDate[1], partStartDate[0]].join('-'));
+            console.log('start', start)
 
             let partEndDate = convertDateTime(endDate, endTime).split('-');
             let end = new Date([partEndDate[2], partEndDate[1], partEndDate[0]].join('-'));
+            console.log('end', end)
 
             // Cái này để hiển thị danh sách ra - không quan tâm user nào thuộc unit nào
             let newEmployeesArr = [];

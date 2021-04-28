@@ -13,6 +13,7 @@ import { getAmountOfWeekDaysInMonth, getCurrentProjectDetails } from '../project
 
 const ModalEditRowCPMExcel = (props) => {
     const { currentRow, translate, project, currentEditRowIndex } = props;
+    const projectDetail = getCurrentProjectDetails(project);
     const userId = getStorage("userId");
     const [currentRowCode, setCurrentRowCode] = useState(undefined);
     const [currentRowIndex, setCurrentRowIndex] = useState(undefined);
@@ -67,16 +68,27 @@ const ModalEditRowCPMExcel = (props) => {
         const resWeight = 0.8, accWeight = 0.2;
         const currentMonthWorkDays = getAmountOfWeekDaysInMonth(moment());
         const projectDetail = getCurrentProjectDetails(project);
-        for (let resItem of currentResponsibleEmployees) {
-            result += resWeight * getSalaryFromUserId(projectDetail?.responsibleEmployeesWithUnit, resItem) / currentMonthWorkDays * currentEstimateNormalTime;
+        if (projectDetail?.unitTime === 'days') {
+            for (let resItem of currentResponsibleEmployees) {
+                result += resWeight * getSalaryFromUserId(projectDetail?.responsibleEmployeesWithUnit, resItem) / currentMonthWorkDays * currentEstimateNormalTime;
+            }
+            for (let accItem of currentAccountableEmployees) {
+                result += accWeight * getSalaryFromUserId(projectDetail?.responsibleEmployeesWithUnit, accItem) / currentMonthWorkDays * currentEstimateNormalTime;
+            }
         }
-        for (let accItem of currentAccountableEmployees) {
-            result += accWeight * getSalaryFromUserId(projectDetail?.responsibleEmployeesWithUnit, accItem) / currentMonthWorkDays * currentEstimateNormalTime;
+        if (projectDetail?.unitTime === 'hours') {
+            for (let resItem of currentResponsibleEmployees) {
+                result += resWeight * getSalaryFromUserId(projectDetail?.responsibleEmployeesWithUnit, resItem) / currentMonthWorkDays / 8 * currentEstimateNormalTime;
+            }
+            for (let accItem of currentAccountableEmployees) {
+                result += accWeight * getSalaryFromUserId(projectDetail?.responsibleEmployeesWithUnit, accItem) / currentMonthWorkDays / 8 * currentEstimateNormalTime;
+            }
         }
         setCurrentHumanCost(numberWithCommas(result));
         result += Number(currentAssetCost.replace(/,/g, ''));
         setCurrentEstimateNormalCost(numberWithCommas(result));
         setCurrentEstimateMaxCost(numberWithCommas(getNearestIntegerNumber(result)));
+
     }, [currentResponsibleEmployees, currentAccountableEmployees, currentAssetCost, currentEstimateNormalTime])
 
     // Hàm thay đổi responsible arr
@@ -200,8 +212,11 @@ const ModalEditRowCPMExcel = (props) => {
     }
     const validateNormalTime = (value, willUpdateState = true) => {
         let { translate } = props;
-        let { message } = ValidationHelper.validateNumericInputMandatory(translate, value);
-
+        let message = undefined;
+        if (value?.length === 0 || value?.match(/.*[a-zA-Z]+.*/) || isDurationNotSuitable(Number(value))) {
+            message = projectDetail?.unitTime === 'days' ? "Không được bỏ trống và chỉ được điền số <= 7 và >= 1/6"
+                : "Không được bỏ trống và chỉ được điền số <= 56 và >= 4"
+        }
         if (willUpdateState) {
             setCurrentEstimateNormalTime(value);
             setError({
@@ -235,6 +250,12 @@ const ModalEditRowCPMExcel = (props) => {
             && Number(currentEstimateMaxCost.replace(/,/g, '')) >= Number(currentEstimateNormalCost.replace(/,/g, ''))
             && currentEstimateNormalTime.toString().trim().length > 0;
     }, [currentAccountableEmployees, currentResponsibleEmployees, currentEstimateMaxCost, currentEstimateNormalCost, currentEstimateNormalTime])
+
+    // Hàm check xem duration có phù hợp không?
+    const isDurationNotSuitable = (estimateNormalTime) => {
+        if (projectDetail?.unitTime === 'days') return estimateNormalTime > 7 || estimateNormalTime < 1 / 6
+        return estimateNormalTime < 4 || estimateNormalTime > 56
+    }
 
     return (
         <React.Fragment>
@@ -287,12 +308,12 @@ const ModalEditRowCPMExcel = (props) => {
                             <div className="col-md-6">
                                 <div className="form-horizontal">
                                     <div className={`form-group  ${error.errorOnNormalTime === undefined ? "" : 'has-error'}`}>
-                                        <strong className="col-sm-4">Thời gian ước lượng (ngày)</strong>
+                                        <strong className="col-sm-4">Thời gian ước lượng ({translate(`project.unit.${projectDetail?.unitTime}`)})</strong>
                                         <div className="col-sm-8">
                                             <input
                                                 type="text"
                                                 className="form-control"
-                                                value={Number(currentEstimateNormalTime)}
+                                                value={currentEstimateNormalTime}
                                                 onChange={handleChangeNormalTime}
                                             />
                                             <ErrorLabel content={error.errorOnNormalTime} />
@@ -362,10 +383,10 @@ const ModalEditRowCPMExcel = (props) => {
                             </div>
                         </div>
 
-                        {/* Chi phí thoả hiệp tối đa - ngân sách (VND) */}
+                        {/* Chi phí thoả hiệp tối đa (VND) */}
                         <div className="row">
                             <div className="col-md-12 form-group">
-                                <label className="control-label">Chi phí thoả hiệp tối đa - ngân sách<span className="text-red">*</span> (VND)</label>
+                                <label className="control-label">Chi phí thoả hiệp tối đa<span className="text-red">*</span> (VND)</label>
                                 <input
                                     type="text"
                                     className="form-control"

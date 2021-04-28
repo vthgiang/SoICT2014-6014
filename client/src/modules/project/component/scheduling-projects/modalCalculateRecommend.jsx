@@ -1,10 +1,16 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { withTranslate } from 'react-redux-multilingual'
+import { DialogModal } from '../../../../common-components'
 import { UserActions } from '../../../super-admin/user/redux/actions'
 import { taskManagementActions } from '../../../task/task-management/redux/actions'
 import { ProjectActions } from '../../redux/actions'
 
 const ModalCalculateRecommend = (props) => {
+    const { processedData, tasksData, translate } = props;
+    const save = () => {
+
+    }
     return (
         <React.Fragment>
             <DialogModal
@@ -12,7 +18,7 @@ const ModalCalculateRecommend = (props) => {
                 formID={`form-modal-calculate-recommend`}
                 title={translate('project.schedule.calculateRecommend')}
                 func={save}
-                size={100}
+                size={50}
             >
                 <div>
                     Hellooooooooo
@@ -34,4 +40,4 @@ const mapDispatchToProps = {
     getTasksByProject: taskManagementActions.getTasksByProject,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ModalCalculateRecommend)
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ModalCalculateRecommend))

@@ -74,7 +74,7 @@ const TabProjectReportMember = (props) => {
                     weight = 0.2 / accountableEmployeesFlatten.length;  // Trọng số phải đi kèm với số người
                 }
                 // Tính ngân sách của nhân viên cho task đó
-                totalBudgetForMember += weight * tasksWithMemberItem.estimateMaxCost;
+                totalBudgetForMember += weight * tasksWithMemberItem.estimateNormalCost;
                 // Lấy salary của creator của timeLog đó
                 let currentSalary = tasksWithMemberItem?.actorsWithSalary.find(actorItem => String(actorItem.userId) === String(memberItem.id))?.salary;
                 // Tính số ngày công của tháng đó
@@ -90,7 +90,7 @@ const TabProjectReportMember = (props) => {
                     id: tasksWithMemberItem?._id,
                     code: tasksWithMemberItem?.code,
                     name: tasksWithMemberItem?.name,
-                    budgetEachTask: weight * tasksWithMemberItem.estimateMaxCost,
+                    budgetEachTask: weight * tasksWithMemberItem.estimateNormalCost,
                     actualCostEachTask,
                 })
                 // Push vào doingTasks
@@ -118,11 +118,11 @@ const TabProjectReportMember = (props) => {
                 }
                 // Push vào onBudgetTasks
                 let currentTaskActualCost = tasksWithMemberItem.actualCost || getCurrentActualCostForTask(tasksWithMemberItem);
-                if (currentTaskActualCost <= tasksWithMemberItem.estimateMaxCost) {
+                if (currentTaskActualCost <= tasksWithMemberItem.estimateNormalCost) {
                     onBudgetTasks.push(tasksWithMemberItem);
                 }
                 // Push vào behindBudgetTasks
-                if (currentTaskActualCost > tasksWithMemberItem.estimateMaxCost) {
+                if (currentTaskActualCost > tasksWithMemberItem.estimateNormalCost) {
                     behindBudgetTasks.push(tasksWithMemberItem);
                 }
             }
@@ -263,10 +263,10 @@ const TabProjectReportMember = (props) => {
                                             <td>{memberItem?.totalTimeLogs}</td>
                                             <td>{memberItem?.doingTasks.length}</td>
                                             <td>{memberItem?.notStartedYetTasks.length}</td>
-                                            <td>{memberItem?.behindScheduleTasks.length}</td>
-                                            <td>{memberItem?.overdueTasks.length}</td>
+                                            <td style={{ color: memberItem?.behindScheduleTasks.length === 0 ? 'black' : 'red' }}>{memberItem?.behindScheduleTasks.length}</td>
+                                            <td style={{ color: memberItem?.overdueTasks.length === 0 ? 'black' : 'red' }}>{memberItem?.overdueTasks.length}</td>
                                             <td>{memberItem?.onBudgetTasks.length}</td>
-                                            <td>{memberItem?.behindBudgetTasks.length}</td>
+                                            <td style={{ color: memberItem?.behindBudgetTasks.length === 0 ? 'black' : 'red' }}>{memberItem?.behindBudgetTasks.length}</td>
                                             <td>{numberWithCommas(memberItem?.totalBudgetForMember)}</td>
                                             <td style={{ color: memberItem?.totalActualCostForMember > memberItem?.totalBudgetForMember ? 'red' : 'black' }}>
                                                 {numberWithCommas(memberItem?.totalActualCostForMember)}
