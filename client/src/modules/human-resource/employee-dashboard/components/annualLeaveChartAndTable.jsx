@@ -14,6 +14,7 @@ import './employeeDashBoard.css';
 
 
 const AnnualLeaveChartAndTable = (props) => {
+    const { defaultUnit } = props
     const [state, setState] = useState({
         organizationalUnitsSearch: null,
         organizationalUnits: null,
@@ -24,8 +25,8 @@ const AnnualLeaveChartAndTable = (props) => {
 
     useEffect(() => {
         setState({
-            organizationalUnits: props.defaultUnit ? props.organizationalUnits : null,
-            organizationalUnitsShow: props.defaultUnit ? props.organizationalUnits : props?.childOrganizationalUnit?.map(x => x.id),
+            organizationalUnits: defaultUnit ? props.organizationalUnits : null,
+            organizationalUnitsShow: defaultUnit ? props.organizationalUnits : props?.childOrganizationalUnit?.map(x => x.id),
         })
 
         props.getAnnualLeave({ organizationalUnits: props.organizationalUnits, beforAndAfterOneWeek: true })
@@ -211,7 +212,7 @@ const AnnualLeaveChartAndTable = (props) => {
         }
     })
 
-    if (annualLeave.beforAndAfterOneWeeks.length) {
+    if (annualLeave?.beforAndAfterOneWeeks?.length > 0 && listAnnual) {
         listAnnual.map(x => {
             annualLeave.beforAndAfterOneWeeks.forEach(y => {
                 if (x.id.toString() === y.organizationalUnit.toString() && y.status === 'approved') {
@@ -285,24 +286,26 @@ const AnnualLeaveChartAndTable = (props) => {
                     </div>
                 </div>
                 <div className="box-body" >
-                    <div className="qlcv" style={{ marginBottom: 15 }}>
-                        <div className="form-inline">
-                            <div className="form-group">
-                                <label className="form-control-static">{translate('kpi.evaluation.dashboard.organizational_unit')}</label>
-                                <SelectMulti id="multiSelectUnitsChartAndTable"
-                                    items={childOrganizationalUnit?.map((p, i) => { return { value: p.id, text: p.name } })}
-                                    options={{
-                                        nonSelectedText: translate('page.non_unit'),
-                                        allSelectedText: translate('page.all_unit'),
-                                    }}
-                                    onChange={handleSelectOrganizationalUnit}
-                                    value={organizationalUnits}
-                                >
-                                </SelectMulti>
+                    { !defaultUnit 
+                        && <div className="qlcv" style={{ marginBottom: 15 }}>
+                            <div className="form-inline">
+                                <div className="form-group">
+                                    <label className="form-control-static">{translate('kpi.evaluation.dashboard.organizational_unit')}</label>
+                                    <SelectMulti id="multiSelectUnitsChartAndTable"
+                                        items={childOrganizationalUnit?.map((p, i) => { return { value: p.id, text: p.name } })}
+                                        options={{
+                                            nonSelectedText: translate('page.non_unit'),
+                                            allSelectedText: translate('page.all_unit'),
+                                        }}
+                                        onChange={handleSelectOrganizationalUnit}
+                                        value={organizationalUnits}
+                                    >
+                                    </SelectMulti>
+                                </div>
+                                <button type="button" className="btn btn-success" onClick={handleUpdateData}>{translate('general.search')}</button>
                             </div>
-                            <button type="button" className="btn btn-success" onClick={handleUpdateData}>{translate('general.search')}</button>
                         </div>
-                    </div>
+                    }
                     <div className="dashboard_box_body">
                         {!annualLeave.beforAndAfterOneWeeks.length &&
                             'Không có đơn xin nghỉ phép nào'}
