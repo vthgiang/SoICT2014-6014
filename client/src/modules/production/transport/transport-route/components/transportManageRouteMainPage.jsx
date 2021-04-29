@@ -22,8 +22,9 @@ import './timeLine.css';
 
 function TransportManageRouteMainPage(props) {
 
-    const {allTransportPlans, currentTransportSchedule, socket} = props
+    const {allTransportPlans, transportSchedule, socket} = props
 
+    const [currentTransportSchedule, setCurrentTransportSchedule] = useState()
 
     // Vị trí hiện tại
     const [ currentPosition, setCurrentPosition ] = useState({});
@@ -34,6 +35,7 @@ function TransportManageRouteMainPage(props) {
     });
 
     const [currentVehicleRoute, setCurrentVehicleRoute] = useState({})
+    const [currentVehicleRoute_transportVehicleId, setCurrentVehicleRoute_transportVehicleId] = useState();
 
     const [longestRoute, setLongestRoute] = useState();
     const [getLocateOnMap, setGetLocateOnMap] = useState(false);
@@ -41,7 +43,9 @@ function TransportManageRouteMainPage(props) {
     const [sendCurrentLocateTimer, setSendCurrentLocateTimer] = useState([]);
 
     const handleShowDetailRoute = (route) => {
-        setCurrentVehicleRoute(route);
+        console.log(route);
+        setCurrentVehicleRoute_transportVehicleId(route);
+        // setCurrentVehicleRoute(route);
         window.$(`#modal-detail-route`).modal('show')
     }
 
@@ -51,9 +55,11 @@ function TransportManageRouteMainPage(props) {
      */
     const handleShowDetailMap = (route) => {
         setCurrentVehicleRoute(route);
+        // setCurrentVehicleRoute_transportVehicleId(route);
         setGetLocateOnMap(true);
-        console.log(route);
+        // console.log(route);
         props.startLocate({manageId: localStorage.getItem("userId"), driverId: getDriver(route.transportVehicle?._id)?.id})
+        // props.startLocate({manageId: localStorage.getItem("userId"), driverId: getDriver(route)?.id})
         window.$(`#modal-detail-map`).modal('show');
     }
     // useEffect(() => {
@@ -242,9 +248,7 @@ function TransportManageRouteMainPage(props) {
             //         position: currentPosition,
             //     }
             // })
-            console.log({...currentPosition, interval: sendCurrentLocateTimer})
             props.sendCurrentLocate({...currentPosition, interval: sendCurrentLocateTimer});
-            console.log("da gui")
         }
       }, [currentPosition, sendCurrentLocateTimer])
     useEffect(() => {
@@ -253,6 +257,22 @@ function TransportManageRouteMainPage(props) {
             // console.log(currentTransportPlan);
         }
     }, [currentTransportPlan])
+
+    useEffect(() => {
+        if (transportSchedule) {
+            setCurrentTransportSchedule(transportSchedule.currentTransportSchedule);
+        }
+    }, [transportSchedule])
+
+    useEffect(() => {
+        if (currentVehicleRoute_transportVehicleId && currentTransportSchedule 
+            && currentTransportSchedule.route && currentTransportSchedule.route.length!==0){
+            let tmpCurrentRoute = currentTransportSchedule.route.filter(r => String(r.transportVehicle?._id) === String(currentVehicleRoute_transportVehicleId));
+            if (tmpCurrentRoute && tmpCurrentRoute.length!==0){
+                setCurrentVehicleRoute(tmpCurrentRoute[0]);
+            }
+        }
+    }, [currentTransportSchedule, currentVehicleRoute_transportVehicleId])
 
     useEffect(() => {
         // console.log(currentTransportSchedule, " allll")
@@ -353,7 +373,7 @@ function TransportManageRouteMainPage(props) {
                                                 <a className="edit text-green" 
                                                     style={{ width: '5px', cursor:"pointer" }} 
                                                     title={'manage_example.detail_info_example'} 
-                                                    onClick={() => handleShowDetailRoute(item)}
+                                                    onClick={() => handleShowDetailRoute(item.transportVehicle?._id)}
                                                     >
                                                         <strong>{"Chi tiết nhiệm vụ "}</strong>
                                                         <i className="material-icons">assignment</i>
@@ -488,9 +508,9 @@ function TransportManageRouteMainPage(props) {
 
 function mapState(state) {
     const allTransportPlans = state.transportPlan.lists;
-    const {currentTransportSchedule} = state.transportSchedule;
+    const {transportSchedule} = state;
     const {socket} = state
-    return { allTransportPlans, currentTransportSchedule,socket }
+    return { allTransportPlans, transportSchedule,socket }
 }
 
 const actions = {

@@ -109,7 +109,15 @@ const TransportRequirementSchema = new Schema({
                 type: Number,
             },
         },
-    }
+    },
+    transportStatus: { // Trạng thái vận chuyển, trạng thái
+        status: { // 1: đã lấy được hàng, 2: chưa lấy được hàng, 3: đã giao được hàng, 4: chưa giao được hàng
+            type: Number,
+        },
+        description: { // Lý do nếu chưa lấy, chưa giao được hàng
+            type: String,
+        }
+    },
 },{
     timestamps: true,
 });

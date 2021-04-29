@@ -45,9 +45,9 @@ function TransportManageVehicleProcess(props) {
         }
     }, [route, timelineBarWidth])
 
-    useEffect(() => {
-        console.log(timelineItemPos);
-    }, [timelineItemPos])
+    // useEffect(() => {
+    //     console.log(timelineItemPos);
+    // }, [timelineItemPos])
 
    return (
         <div className="timeline-transport" style={{width: timelineBarWidth+"%"}}>

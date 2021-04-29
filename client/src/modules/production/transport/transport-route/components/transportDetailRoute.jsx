@@ -57,7 +57,7 @@ function TransportDetailRoute(props) {
         <React.Fragment>
             <DialogModal
                 modalID={`modal-detail-route`}
-                title={"hanhf trinh xe"}
+                title={"Các nhiệm vụ cụ thể"}
                 formID={`modal-detail-route`}
                 size={100}
                 maxWidth={500}
