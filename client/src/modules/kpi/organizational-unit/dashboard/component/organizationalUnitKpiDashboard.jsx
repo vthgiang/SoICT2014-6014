@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
+import Swal from 'sweetalert2';
+import { Link } from 'react-router-dom';
 
 import { DashboardEvaluationEmployeeKpiSetAction } from '../../../evaluation/dashboard/redux/actions';
 
@@ -9,11 +12,10 @@ import { DistributionOfOrganizationalUnitKpiChart } from './distributionOfOrgani
 import { ResultsOfOrganizationalUnitKpiChart } from './resultsOfOrganizationalUnitKpiChart';
 import { ResultsOfAllOrganizationalUnitKpiChart } from './resultsOfAllOrganizationalUnitKpiChart';
 import { StatisticsOfOrganizationalUnitKpiResultsChart } from './statisticsOfOrganizationalUnitKpiResultsChart';
+import StatisticsKpiUnits from './statisticsKpiUnits';
 
 import { SelectBox, DatePicker, LazyLoadComponent, ExportExcel } from '../../../../../common-components/index';
 import { showListInSwal } from '../../../../../helpers/showListInSwal';
-import { withTranslate } from 'react-redux-multilingual';
-import StatisticsKpiUnits from './statisticsKpiUnits';
 
 function OrganizationalUnitKpiDashboard(props) {
     const today = new Date();
@@ -39,10 +41,6 @@ function OrganizationalUnitKpiDashboard(props) {
         childUnitChart: 1,
         monthStatistics: DATA_SEARCH.monthStatistics,
     });
-
-    let childOrganizationalUnit, childrenOrganizationalUnit, childrenOrganizationalUnitLoading;
-    let organizationalUnitSelectBox, typeChartSelectBox, currentOrganizationalUnit;
-    let organizationalUnitIds;
 
     useEffect(() => {
         props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
@@ -86,26 +84,6 @@ function OrganizationalUnitKpiDashboard(props) {
             ...state,
             childUnitChart: Number(value)
         })
-    };
-
-    function formatDate(date) {
-        let d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
-
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
-
-        return [month, year].join('-');
-    }
-
-    const checkPermisson = (managerCurrentUnit) => {
-        let currentRole = localStorage.getItem("currentRole");
-        return (currentRole === managerCurrentUnit);
-
     };
 
     const handleSelectOrganizationalUnitId = (value) => {
@@ -167,7 +145,22 @@ function OrganizationalUnitKpiDashboard(props) {
         })
     };
 
-    const { dashboardEvaluationEmployeeKpiSet, translate } = props;
+    const showDistributionOfOrganizationalUnitKpiDoc = () => {
+        Swal.fire({
+            icon: "question",
+
+            html: `<h3 style="color: red"><div>Xu hướng thực hiện mục tiêu của nhân viên</div> </h3>
+            <div style="font-size: 1.3em; text-align: left; margin-top: 15px; line-height: 1.7">
+            <p>Biểu đồ này cho biết xu hướng thực hiện mục tiêu của nhân viên. Biểu đồ có 5 đường: (1) số công việc, (2) thời gian thực hiện (ngày), (3) số người tham gia (4) số KPI nhân viên (5) trọng số. </b></p>
+            <p>Lưu ý: 5 đường trên càng song song với nhau thì xu hướng thực hiện mục tiêu của nhân viên đúng với xu hướng đã đề ra của đơn vị.</p>
+            <p>(3) = số người tham gia vào (1) và (4)</p>
+            <p>(2) = thời gian thực hiện các công việc trong (1)</p>
+            </div>`,
+            width: "50%",
+        })
+    }
+
+    const { dashboardEvaluationEmployeeKpiSet, managerKpiUnit, translate } = props;
     const { childUnitChart, organizationalUnitId,
         month, date, resultsOfOrganizationalUnitKpiChartData,
         resultsOfAllOrganizationalUnitsKpiChartData,
@@ -175,7 +168,10 @@ function OrganizationalUnitKpiDashboard(props) {
         organizationalUnitOfChartAllKpis,
         monthStatistics
     } = state;
-
+    let childOrganizationalUnit, childrenOrganizationalUnit, childrenOrganizationalUnitLoading;
+    let organizationalUnitSelectBox, typeChartSelectBox, currentOrganizationalUnit;
+    let organizationalUnitIds;
+    let listUnitKpi, organizationalUnitNotInitialKpi, settingUpKpi, activedKpi
 
     if (dashboardEvaluationEmployeeKpiSet) {
         childrenOrganizationalUnit = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
@@ -228,6 +224,22 @@ function OrganizationalUnitKpiDashboard(props) {
         { 'text': 'Đơn vị hiện tại và đơn vị con', 'value': 2 }
     ];
 
+    if (managerKpiUnit) {
+        listUnitKpi = managerKpiUnit.kpis;
+    }
+
+    // Lọc các đơn vị chưa khởi tạo KPI
+    if (listUnitKpi?.length > 0) {
+        let listUnitKpiInitialKpi = listUnitKpi.map(item => item?.organizationalUnit?._id)
+        organizationalUnitNotInitialKpi = organizationalUnitSelectBox?.filter(item => !listUnitKpiInitialKpi.includes(item?.value?.toString()))
+        settingUpKpi = listUnitKpi.filter(item => item?.status === 0).length
+        activedKpi = listUnitKpi.filter(item => item?.status === 1).length
+    } else {
+        organizationalUnitNotInitialKpi = organizationalUnitSelectBox
+    }
+
+
+
 
     let d = new Date(),
         monthDate = '' + (d.getMonth() + 1),
@@ -244,7 +256,7 @@ function OrganizationalUnitKpiDashboard(props) {
         <React.Fragment>
             { childrenOrganizationalUnit
                 ? <section>
-                    <div className="qlcv">
+                    <div className="qlcv" style={{ marginBottom: "10px" }}>
                         <div className="form-inline">
                             {childOrganizationalUnit &&
                             <div className="form-group">
@@ -275,7 +287,77 @@ function OrganizationalUnitKpiDashboard(props) {
                         </div>
                     </div>
 
-                    <div className="row " style={{ marginTop: '10px' }}>
+                    <div className="row">
+                        {/* Số đơn vị con */}
+                        <div className="col-md-3 col-sm-6 form-inline">
+                            <div className="info-box">
+                                <span className="info-box-icon bg-yellow"><i className="fa fa-university"/></span>
+                                <div className="info-box-content">
+                                    <span className="info-box-text">{currentOrganizationalUnit + " và " + translate('kpi.evaluation.dashboard.number_of_child_unit')}</span>
+                                    <a className="info-box-number" onClick={() => showListInSwal(organizationalUnitSelectBox?.map(item => item?.text), translate('general.list_employee'))} style={{ cursor: 'pointer', fontSize: '20px'}}>{organizationalUnitSelectBox?.length ?? 0}</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Chưa khởi tạo KPI */}
+                        <div className="col-md-3 col-sm-6 form-inline">
+                            <div className="info-box">
+                                <span className="info-box-icon bg-red"><i className="fa fa-exclamation-circle"/></span>
+                                <div className="info-box-content">
+                                    <span className="info-box-text">{translate('kpi.evaluation.dashboard.not_initial')}</span>
+                                    { listUnitKpi && <a className="info-box-number" onClick={() => showListInSwal(organizationalUnitNotInitialKpi?.map(item => item?.text), translate('general.list_employee'))} style={{ cursor: 'pointer', fontSize: '20px'}}>{organizationalUnitNotInitialKpi?.length ?? 0}</a>}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Đang thiết lập */}
+                        <div className="col-md-3 col-sm-6 form-inline">
+                            <div className="info-box">
+                                <span className="info-box-icon bg-aqua"><i className="fa fa-cogs"/></span>
+                                <div className="info-box-content">
+                                    <span className="info-box-text">{`${translate('kpi.evaluation.dashboard.setting_up')}`}</span>
+                                    <Link to="/kpi-units/manager" onClick={() => localStorage.setItem('stateFromOrganizationalUnitKpiDashboard', 
+                                        JSON.stringify({
+                                            organizationalUnit: organizationalUnitIds,
+                                            status: ["0"],
+                                            startDate: state.endMonth,
+                                            endDate: state.endMonth,
+                                            startDateDefault: [state?.endMonth?.slice(5), state?.endMonth?.slice(0, 4)].join('-'),
+                                            endDateDefault: [state?.endMonth?.slice(5), state?.endMonth?.slice(0, 4)].join('-')
+                                        }))} 
+                                        target="_blank" rel="noopener noreferrer"
+                                    >
+                                        { listUnitKpi && <span className="info-box-number" style={{fontSize: '20px'}}>{`${settingUpKpi ?? 0}`}</span>}
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Đã kích hoạt */}
+                        <div className="col-md-3 col-sm-6 form-inline">
+                            <div className="info-box">
+                                <span className="info-box-icon bg-green"><i className="fa fa-check-circle"/></span>
+                                <div className="info-box-content">
+                                    <span className="info-box-text">{`${translate('kpi.evaluation.dashboard.activated')}`}</span>
+                                    <Link to="/kpi-units/manager" onClick={() => localStorage.setItem('stateFromOrganizationalUnitKpiDashboard', 
+                                        JSON.stringify({
+                                            organizationalUnit: organizationalUnitIds,
+                                            status: ["1"],
+                                            startDate: state.endMonth,
+                                            endDate: state.endMonth,
+                                            startDateDefault: [state?.endMonth?.slice(5), state?.endMonth?.slice(0, 4)].join('-'),
+                                            endDateDefault: [state?.endMonth?.slice(5), state?.endMonth?.slice(0, 4)].join('-')
+                                        }))} 
+                                        target="_blank" rel="noopener noreferrer"
+                                    >
+                                        {listUnitKpi && <span className="info-box-number"  style={{fontSize: '20px'}}>{`${activedKpi ?? 0}`}</span>}
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="row">
                         <div className="col-md-12">
                             <div className="box box-primary">
                                 <div className="box-header with-border">
@@ -310,7 +392,12 @@ function OrganizationalUnitKpiDashboard(props) {
                         <div className="col-xs-12">
                             <div className="box box-primary">
                                 <div className="box-header with-border">
-                                    <div className="box-title">{translate('kpi.organizational_unit.dashboard.trend')} {currentOrganizationalUnit} {translate('general.month')} {date}</div>
+                                    <div className="box-title">
+                                        <span>{translate('kpi.organizational_unit.dashboard.trend')} {currentOrganizationalUnit} {translate('general.month')} {date}</span>
+                                        <a className="text-red" title={translate('task.task_management.explain')} onClick={() => showDistributionOfOrganizationalUnitKpiDoc()}>
+                                            <i className="fa fa-question-circle" style={{ color: '#dd4b39', cursor: 'pointer', marginLeft: '5px' }} />
+                                        </a>
+                                    </div>
                                 </div>
 
                                 <div className="box-body qlcv" style={{ minHeight: "420px" }}>
@@ -460,8 +547,8 @@ function OrganizationalUnitKpiDashboard(props) {
 }
 
 function mapState(state) {
-    const { dashboardEvaluationEmployeeKpiSet } = state;
-    return { dashboardEvaluationEmployeeKpiSet };
+    const { dashboardEvaluationEmployeeKpiSet, managerKpiUnit } = state;
+    return { dashboardEvaluationEmployeeKpiSet, managerKpiUnit };
 }
 
 const actionCreators = {

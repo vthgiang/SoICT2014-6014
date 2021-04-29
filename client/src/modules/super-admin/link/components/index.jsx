@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -8,30 +8,28 @@ import { ToolTip, SearchBar, DataTableSetting, PaginateBar } from '../../../../c
 
 import LinkInfoForm from './linkInfoForm';
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
-class ManageLink extends Component {
-    constructor(props) {
-        super(props);
-        const tableId = "table-manage-link";
+function ManageLink(props) {
+        const tableId_contructor = "table-manage-link";
         const defaultConfig = { limit: 10 }
-        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+        const limit = getTableConfiguration(tableId_contructor, defaultConfig).limit;
 
-        this.state = {
-            tableId,
+        const [state,setState] = useState({
+            tableId: tableId_contructor,
             limit: limit,
             page: 1,
             option: "url", // Mặc định tìm kiếm theo tên
             value: ""
-        }
-    }
+        })
 
-    setOption = (title, option) => {
-        this.setState({
+    const setOption = (title, option) => {
+        setState({
+            ...state,
             [title]: option
         });
     }
 
-    searchWithOption = () => {
-        let { option, value, limit } = this.state;
+    const searchWithOption = () => {
+        let { option, value, limit } = state;
         const params = {
             type: "active",
             limit,
@@ -39,12 +37,15 @@ class ManageLink extends Component {
             key: option,
             value
         };
-        this.props.getLinks(params);
+        props.getLinks(params);
     }
 
-    setPage = (page) => {
-        this.setState({ page });
-        let { limit, option, value } = this.state;
+    const setPage = (page) => {
+        setState({ 
+            ...state,
+            page 
+        });
+        let { limit, option, value } = state;
         const params = {
             type: "active",
             limit,
@@ -52,12 +53,15 @@ class ManageLink extends Component {
             key: option,
             value
         };
-        this.props.getLinks(params);
+        props.getLinks(params);
     }
 
-    setLimit = (number) => {
-        this.setState({ limit: number });
-        let { page, option, value } = this.state;
+    const setLimit = (number) => {
+        setState({ 
+            ...state,
+            limit: number 
+        });
+        let { page, option, value } = state;
         const params = {
             type: "active",
             limit: number,
@@ -65,25 +69,26 @@ class ManageLink extends Component {
             key: option,
             value
         };
-        this.props.getLinks(params);
+        props.getLinks(params);
     }
 
-    componentDidMount() {
-        let { page, limit } = this.state;
-        this.props.getLinks({ type: "active" });
-        this.props.getLinks({ type: "active", page, limit });
-    }
+    useEffect(() =>{
+        let { page, limit } = state;
+        props.getLinks({ type: "active" });
+        props.getLinks({ type: "active", page, limit });
+    },[])
 
     // Cac ham xu ly du lieu voi modal
-    handleEdit = (link) => {
-        this.setState({
+    const handleEdit = async (link) => {
+        await setState({
+            ...state,
             currentRow: link
-        }, () => window.$('#modal-edit-link').modal('show'));
+        });
+        window.$('#modal-edit-link').modal('show')
     }
 
-    render() {
-        const { translate, link } = this.props;
-        const { currentRow, tableId } = this.state;
+        const { translate, link } = props;
+        const { currentRow, tableId } = state;
 
         return (
             <div className="box" style={{ minHeight: '450px' }}>
@@ -107,9 +112,9 @@ class ManageLink extends Component {
                                 { title: translate('manage_link.category'), value: 'category' },
                                 { title: translate('manage_link.description'), value: 'description' },
                             ]}
-                            option={this.state.option}
-                            setOption={this.setOption}
-                            search={this.searchWithOption}
+                            option={state.option}
+                            setOption={setOption}
+                            search={searchWithOption}
                         />
 
                         {/* Bảng dữ liệu */}
@@ -129,7 +134,7 @@ class ManageLink extends Component {
                                                 translate('manage_link.description'),
                                                 translate('manage_link.roles')
                                             ]}
-                                            setLimit={this.setLimit}
+                                            setLimit={setLimit}
                                             tableId={tableId}
                                         />
                                     </th>
@@ -144,7 +149,7 @@ class ManageLink extends Component {
                                             <td>{link.description}</td>
                                             <td><ToolTip dataTooltip={link.roles.map(role => role && role.roleId ? role.roleId.name : "")} /></td>
                                             <td style={{ textAlign: 'center' }}>
-                                                <a className="edit" onClick={() => this.handleEdit(link)}><i className="material-icons">edit</i></a>
+                                                <a className="edit" onClick={() => handleEdit(link)}><i className="material-icons">edit</i></a>
                                             </td>
                                         </tr>
                                     )
@@ -157,12 +162,11 @@ class ManageLink extends Component {
                                 link.listPaginate && link.listPaginate.length === 0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                         {/* PaginateBar */}
-                        <PaginateBar display={link.listPaginate.length} total={link.totalDocs} pageTotal={link.totalPages} currentPage={link.page} func={this.setPage} />
+                        <PaginateBar display={link.listPaginate.length} total={link.totalDocs} pageTotal={link.totalPages} currentPage={link.page} func={setPage} />
                     </React.Fragment>
                 </div>
             </div>
         );
-    }
 }
 
 function mapState(state) {

@@ -164,9 +164,20 @@ td { /* Cho phép bảng hoạt động tốt với kích thước nhỏ, không
     word-break: break-word;
     white-space: normal;
 }
+.table, table {
+    margin-bottom: 0 !important;
+}
 .table>thead>tr>th { /* Hiện thông báo không có dữ liệu */
     vertical-align: top;
+    /* position: sticky;
+    top: 0;
+    background-color: #ffffff; */
 }
+
+
+
+
+
 
 
 

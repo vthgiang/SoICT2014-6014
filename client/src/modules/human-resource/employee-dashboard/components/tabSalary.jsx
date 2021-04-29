@@ -9,7 +9,10 @@ const TabSalary = (props) => {
     return (
         <React.Fragment>
             {/* Lương thưởng các đơn vị */}
-            <SalaryOfOrganizationalUnitsChart organizationalUnits={organizationalUnits} monthShow={monthShow} />
+            <SalaryOfOrganizationalUnitsChart 
+                organizationalUnits={organizationalUnits} 
+                monthShow={monthShow} 
+            />
 
             {/* Top 5 lương thưởng cao nhất */}
             <HighestSalaryChart childOrganizationalUnit={childOrganizationalUnit} organizationalUnits={organizationalUnits} monthShow={monthShow} />

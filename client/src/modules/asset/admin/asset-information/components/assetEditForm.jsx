@@ -11,21 +11,20 @@ import {
 
 import { AssetManagerActions } from '../redux/actions';
 import { UseRequestActions } from '../../use-request/redux/actions';
-
+import _isEqual from 'lodash/isEqual';
 function AssetEditForm(props) {
     const [state, setState] = useState({
         employeeId: props.employeeId ? props.employeeId : ''
     })
     const [prevProps, setPrevProps] = useState({
-        _id : null
+        _id: null
     })
 
     const { translate, assetsManager } = props;
     const { _id, img, code, assetName, serial, assetType, group, purchaseDate, warrantyExpirationDate, managedBy, assignedToUser, assignedToOrganizationalUnit, handoverFromDate,
-    handoverToDate, location, description, status, typeRegisterForUse, detailInfo, usageLogs, maintainanceLogs, cost, residualValue, startDepreciation,
-    usefulLife, depreciationType, incidentLogs, disposalDate, disposalType, unitsProducedDuringTheYears, disposalCost, disposalDesc, archivedRecordNumber,
-    files, estimatedTotalProduction, readByRoles } = state;
-
+        handoverToDate, location, description, status, typeRegisterForUse, detailInfo, usageLogs, maintainanceLogs, cost, residualValue, startDepreciation,
+        usefulLife, depreciationType, incidentLogs, disposalDate, disposalType, unitsProducedDuringTheYears, disposalCost, disposalDesc, archivedRecordNumber,
+        files, estimatedTotalProduction, readByRoles } = state;
     // Function upload avatar
     const handleUpload = (img, avatar) => {
         setState({
@@ -190,7 +189,6 @@ function AssetEditForm(props) {
 
     // Function thêm thông tin tài liệu đính kèm
     const handleCreateFile = (data) => {
-        console.log(data)
         setState({
             ...state,
             files: data
@@ -286,7 +284,6 @@ function AssetEditForm(props) {
             createFiles
         }
 
-        console.log(data)
         let formData = convertJsonObjectToFormData(data);
         files.forEach(x => {
             x.files.forEach(item => {
@@ -348,7 +345,7 @@ function AssetEditForm(props) {
         return formatDate(newDate);
     };
 
-    if(prevProps._id !== props._id){
+    if (prevProps._id !== props._id || (!_isEqual(prevProps.files, props.files))) {
         setState({
             ...state,
             _id: props._id,
@@ -357,7 +354,7 @@ function AssetEditForm(props) {
             code: props.code,
             assetName: props.assetName,
             serial: props.serial,
-            assetType: props.assetType && JSON.parse(props.assetType).map(o => o._id||o),
+            assetType: props.assetType && JSON.parse(props.assetType).map(o => o._id || o),
             group: props.group,
             purchaseDate: props.purchaseDate,
             warrantyExpirationDate: props.warrantyExpirationDate,
@@ -420,6 +417,7 @@ function AssetEditForm(props) {
         })
         setPrevProps(props)
     }
+
     return (
         <React.Fragment>
             <DialogModal
@@ -431,7 +429,7 @@ function AssetEditForm(props) {
             >
                 {/* Nav-tabs */}
                 <div className="nav-tabs-custom" style={{ marginTop: '-15px' }}>
-                    <ul className="nav nav-tabs" id = "nav-tabs">
+                    <ul className="nav nav-tabs" id="nav-tabs">
                         <li className="active"><a title={translate('asset.general_information.general_information')} data-toggle="tab" href={`#edit_general${_id}`}>{translate('asset.general_information.general_information')}</a></li>
                         <li><a title={translate('asset.general_information.depreciation_information')} data-toggle="tab" href={`#edit_depreciation${_id}`}>{translate('asset.general_information.depreciation_information')}</a></li>
                         <li><a title={translate('asset.general_information.usage_information')} data-toggle="tab" href={`#edit_usage${_id}`} onClick={() => { Scheduler.triggerOnActiveEvent(".asset-usage-scheduler") }}>{translate('asset.general_information.usage_information')}</a></li>

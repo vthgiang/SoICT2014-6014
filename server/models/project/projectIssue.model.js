@@ -4,14 +4,14 @@ const mongoosePaginate = require('mongoose-paginate-v2');
 
 const ProjectIssueSchema = new Schema(
     { 
-        codeName: {
+        code: {
             type: String,
         },
-        task: {
+        taskProject: {
             type: Schema.Types.ObjectId,
             ref: "ProjectTask",
         },
-        subject: {
+        name: {
             type: String,
         },
         issueType: {

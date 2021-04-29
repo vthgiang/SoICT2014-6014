@@ -51,7 +51,6 @@ function ContractEditModal(props) {
             return {
                 ...state,
                 id: props.id,
-                _id: props._id,
                 index: props.index,
                 name: props.name,
                 startDate: props.startDate,
@@ -66,6 +65,14 @@ function ContractEditModal(props) {
                 errorOnEndDate: undefined
             }
         })
+        if (props._id) {
+            setState(state => {
+                return {
+                    ...state,
+                    _id: props._id
+                }
+            })
+        }
     }, [props.id])
 
     let files;
@@ -118,7 +125,7 @@ function ContractEditModal(props) {
         return message === undefined;
     }
 
-    /** Bắt sự kiện thay đổi tên hợp đồng lao động */
+    /** Bắt sự kiện thay đổi loại hợp đồng lao động */
     const handleTypeContract = (e) => {
         let { value } = e.target;
         validateTypeContract(value, true);

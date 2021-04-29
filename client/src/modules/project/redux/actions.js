@@ -8,6 +8,7 @@ export const ProjectActions = {
     deleteProjectDispatch,
 
     getListTasksEvalDispatch,
+    createProjectTasksFromCPMDispatch,
 }
 
 function getProjectsDispatch(data = undefined) {
@@ -101,3 +102,18 @@ function getListTasksEvalDispatch(id, evalMonth) {
     };
 }
 
+function createProjectTasksFromCPMDispatch(tasksList) {
+    return (dispatch) => {
+        dispatch({ type: ProjectConstants.ADD_PROJECT_TASKS_CPM });
+        ProjectServices.createProjectTasksFromCPM(tasksList)
+            .then((res) => {
+                dispatch({
+                    type: ProjectConstants.ADD_PROJECT_TASKS_CPM_SUCCESS,
+                    // payload: res.data.content,
+                });
+            })
+            .catch((err) => {
+                dispatch({ type: ProjectConstants.ADD_PROJECT_TASKS_CPM_FAILE });
+            });
+    };
+}

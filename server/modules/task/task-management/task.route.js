@@ -20,4 +20,6 @@ router.get('/time-sheet', auth, TaskManagementController.getUserTimeSheet);
 
 router.get('/time-sheet/all', auth, TaskManagementController.getAllUserTimeSheet);
 
+router.post('/tasks/project-tasks/cpm', auth, TaskManagementController.createProjectTasksFromCPM);
+
 module.exports = router;

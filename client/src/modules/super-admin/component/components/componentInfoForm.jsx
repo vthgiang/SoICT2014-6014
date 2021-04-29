@@ -1,86 +1,83 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { ComponentActions } from '../redux/actions';
 import { DialogModal, ErrorLabel, SelectBox } from '../../../../common-components';
 import ValidationHelper from '../../../../helpers/validationHelper';
-class ComponentInfoForm extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {}
-    }
+function ComponentInfoForm(props) {
+    const [state, setState] = useState({})
 
-    handleComponentDescription = (e) => {
+    const handleComponentDescription = (e) => {
         let { value } = e.target;
-        let { translate } = this.props;
+        let { translate } = props;
         let { message } = ValidationHelper.validateDescription(translate, value);
-        this.setState({
+        setState({
+            ...state,
             componentDescription: value,
             componentDescriptionError: message
         });
     }
 
-    handleComponentLink = (value) => {
-        this.setState({
+    const handleComponentLink = (value) => {
+        setState({
+            ...state,
             componentLink: value[0]
         });
     }
 
-    handleComponentRoles = (value) => {
-        this.setState({
+    const handleComponentRoles = (value) => {
+        setState({
+            ...state,
             componentRoles: value
         });
     }
 
-    save = () => {
+    const save = () => {
         const component = {
-            name: this.state.componentName,
-            description: this.state.componentDescription,
-            roles: this.state.componentRoles
+            name: state.componentName,
+            description: state.componentDescription,
+            roles: state.componentRoles
         };
 
-        if (this.isFormValidated()) {
-            return this.props.editComponent(this.state.componentId, component);
+        if (isFormValidated()) {
+            return props.editComponent(state.componentId, component);
         }
     }
 
-    isFormValidated = () => {
-        let { componentDescription } = this.state;
-        let { translate } = this.props;
+    const isFormValidated = () => {
+        let { componentDescription } = state;
+        let { translate } = props;
         if (!ValidationHelper.validateDescription(translate, componentDescription).status) return false;
         return true;
     }
 
 
     // Thiet lap cac gia tri tu props vao state
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.componentId !== prevState.componentId) {
-            return {
-                ...prevState,
-                componentId: nextProps.componentId,
-                componentName: nextProps.componentName,
-                componentLink: nextProps.componentLink,
-                componentDescription: nextProps.componentDescription,
-                componentRoles: nextProps.componentRoles,
+    useEffect(() => {
+        if (props.componentId !== state.componentId) {
+            setState({
+                ...state,
+                componentId: props.componentId,
+                componentName: props.componentName,
+                componentLink: props.componentLink,
+                componentDescription: props.componentDescription,
+                componentRoles: props.componentRoles,
                 componentDescriptionError: undefined,
-            }
-        } else {
-            return null;
-        }
-    }
+            })
+        } 
+    },[props.componentId])
 
-    render() {
-        const { translate, role, link } = this.props;
-        const { componentId, componentName, componentDescription, componentLink, componentRoles, componentDescriptionError } = this.state;
+        const { translate, role, link } = props;
+        const { componentId, componentName, componentDescription, componentLink, componentRoles, componentDescriptionError } = state;
 
         return (
             <React.Fragment>
                 <DialogModal
-                    func={this.save}
+                    func={save}
                     modalID="modal-edit-component"
                     formID="form-edit-component"
                     title={translate('manage_component.edit')}
-                    disableSubmit={!this.isFormValidated()}
+                    disableSubmit={!isFormValidated()}
                 >
 
                     {/* Form chỉnh sửa thông tin về component */}
@@ -100,7 +97,7 @@ class ComponentInfoForm extends Component {
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={link.list.map(link => { return { value: link.id, text: link.url } })}
-                                onChange={this.handleComponentLink}
+                                onChange={handleComponentLink}
                                 value={componentLink}
                                 multiple={true}
                                 disabled={true}
@@ -110,7 +107,7 @@ class ComponentInfoForm extends Component {
                         {/* Mô tả về component	 */}
                         <div className={`form-group ${!componentDescriptionError ? "" : "has-error"}`}>
                             <label>{translate('table.description')}<span className="text-red"> * </span></label>
-                            <input type="text" className="form-control" value={componentDescription} onChange={this.handleComponentDescription} />
+                            <input type="text" className="form-control" value={componentDescription} onChange={handleComponentDescription} />
                             <ErrorLabel content={componentDescriptionError} />
                         </div>
 
@@ -122,7 +119,7 @@ class ComponentInfoForm extends Component {
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={role.list.map(role => { return { value: role ? role._id : null, text: role ? role.name : "" } })}
-                                onChange={this.handleComponentRoles}
+                                onChange={handleComponentRoles}
                                 value={componentRoles}
                                 multiple={true}
                             />
@@ -131,7 +128,6 @@ class ComponentInfoForm extends Component {
                 </DialogModal>
             </React.Fragment>
         );
-    }
 }
 
 function mapState(state) {

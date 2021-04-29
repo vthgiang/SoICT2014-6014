@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -7,18 +7,36 @@ import ServerResponseAlert from '../../../../alert/components/serverResponseAler
 
 import { ModalAddExperience, ModalEditExperience } from './combinedContent';
 
-class ExperienceTab extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {};
-    }
+function ExperienceTab(props) {
+    const [state, setState] = useState({
+
+    })
+
+    const { translate } = props;
+
+    const { id } = props;
+
+    const { educationalLevel, foreignLanguage, professionalSkill, experiences, currentRow } = state;
+
+    useEffect(() => {
+        setState(state => {
+            return {
+                ...state,
+                id: props.id,
+                experiences: props.employee ? props.employee.experiences : "",
+                professionalSkill: props.employee ? props.employee.professionalSkill : "",
+                foreignLanguage: props.employee ? props.employee.foreignLanguage : "",
+                educationalLevel: props.employee ? props.employee.educationalLevel : "",
+            }
+        })
+    }, [props.id])
 
     /**
      * Function format dữ liệu Date thành string
      * @param {*} date : Ngày muốn format
      * @param {*} monthYear : true trả về tháng năm, false trả về ngày tháng năm
      */
-    formatDate(date, monthYear = false) {
+    const formatDate = (date, monthYear = false) => {
         if (date) {
             let d = new Date(date),
                 month = '' + (d.getMonth() + 1),
@@ -42,8 +60,8 @@ class ExperienceTab extends Component {
      * @param {*} value : Kinh nghiệm làm việc cần chỉnh sửa
      * @param {*} index : Số thứ tự kinh nghiệm làm việc cần chỉnh sửa
      */
-    handleEdit = async (value, index) => {
-        await this.setState(state => {
+    const handleEdit = async (value, index) => {
+        await setState(state => {
             return {
                 ...state,
                 currentRow: { ...value, index: index }
@@ -53,12 +71,13 @@ class ExperienceTab extends Component {
     }
 
     /** Function lưu các trường thông tin vào state */
-    handleChange = (e) => {
+    const handleChange = (e) => {
         const { name, value } = e.target;
-        this.setState({
+        setState({
+            ...state,
             [name]: value,
         })
-        this.props.handleChange(name, value);
+        props.handleChange(name, value);
     }
 
     /**  */
@@ -68,7 +87,7 @@ class ExperienceTab extends Component {
      * @param {*} data : Dữ liệu kinh nghiệm làm việc muốn thêm, chỉnh sửa
      * @param {*} array : Danh sách kinh nghiệm làm việc
      */
-    checkForDuplicate = (data, array) => {
+    const checkForDuplicate = (data, array) => {
         let startDate = new Date(data.startDate);
         let endDate = new Date(data.endDate);
         let checkData = true;
@@ -88,19 +107,19 @@ class ExperienceTab extends Component {
      * Function thêm mới kinh nghiệm làm việc
      * @param {*} data : Dữ liệu thông tin kinh nghiệm làm việc
      */
-    handleAddExperience = async (data) => {
-        const { translate } = this.props;
-        let { experiences } = this.state;
+    const handleAddExperience = async (data) => {
+        const { translate } = props;
+        let { experiences } = state;
 
-        let checkData = this.checkForDuplicate(data, experiences);
+        let checkData = checkForDuplicate(data, experiences);
         if (checkData) {
-            await this.setState({
-                ...this.state,
+            await setState({
+                ...state,
                 experiences: [...experiences, {
                     ...data
                 }]
             })
-            this.props.handleAddExperience(this.state.experiences, data);
+            props.handleAddExperience([...experiences, data], data);
         } else {
             toast.error(
                 <ServerResponseAlert
@@ -117,19 +136,19 @@ class ExperienceTab extends Component {
      * Function chỉnh sửa kinh nghiệm làm việc
      * @param {*} data : Dữ liệu thông tin kinh nghiệm làm việc
      */
-    handleEditExperience = async (data) => {
-        const { translate } = this.props;
-        let { experiences } = this.state;
+    const handleEditExperience = async (data) => {
+        const { translate } = props;
+        let { experiences } = state;
 
         let experiencesNew = [...experiences];
-        let checkData = this.checkForDuplicate(data, experiencesNew.filter((x, index) => index !== data.index));
+        let checkData = checkForDuplicate(data, experiencesNew.filter((x, index) => index !== data.index));
         if (checkData) {
             experiences[data.index] = data;
-            await this.setState({
-                ...this.state,
+            await setState({
+                ...state,
                 experiences: experiences
             });
-            this.props.handleEditExperience(experiences, data);
+            props.handleEditExperience(experiences, data);
         } else {
             toast.error(
                 <ServerResponseAlert
@@ -146,136 +165,112 @@ class ExperienceTab extends Component {
      * Function xoá kinh nghiệm làm việc
      * @param {*} index : Số thứ tự kinh nghiệm làm việc muốn xoá
      */
-    delete = async (index) => {
-        let { experiences } = this.state;
+    const _delete = async (index) => {
+        let { experiences } = state;
 
         let data = experiences[index];
         experiences.splice(index, 1);
-        await this.setState({
-            ...this.state,
+        await setState({
+            ...state,
             experiences: [...experiences]
         })
-        this.props.handleDeleteExperience(experiences, data);
+        props.handleDeleteExperience([...experiences], data);
     }
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id) {
-            return {
-                ...prevState,
-                id: nextProps.id,
-                experiences: nextProps.employee ? nextProps.employee.experiences : "",
-                professionalSkill: nextProps.employee ? nextProps.employee.professionalSkill : "",
-                foreignLanguage: nextProps.employee ? nextProps.employee.foreignLanguage : "",
-                educationalLevel: nextProps.employee ? nextProps.employee.educationalLevel : "",
-            }
-        } else {
-            return null;
-        }
-    }
-
-
-    render() {
-        const { translate } = this.props;
-
-        const { id } = this.props;
-
-        const { educationalLevel, foreignLanguage, professionalSkill, experiences, currentRow } = this.state;
-
-        return (
-            <div id={id} className="tab-pane">
-                <div className="box-body">
-                    {/* Trình độ học vấn*/}
-                    <fieldset className="scheduler-border">
-                        <legend className="scheduler-border"><h4 className="box-title">{translate('human_resource.profile.academic_level')}</h4></legend>
-                        {/* Trình độ văn hoá */}
-                        {/* <div className="form-group">
+    return (
+        <div id={id} className="tab-pane">
+            <div className="box-body">
+                {/* Trình độ học vấn*/}
+                <fieldset className="scheduler-border">
+                    <legend className="scheduler-border"><h4 className="box-title">{translate('human_resource.profile.academic_level')}</h4></legend>
+                    {/* Trình độ văn hoá */}
+                    {/* <div className="form-group">
                             <label>{translate('human_resource.profile.educational_level')}<span className="text-red">&#42;</span></label>
-                            <select className="form-control" name="educationalLevel" value={educationalLevel} onChange={this.handleChange}>
+                            <select className="form-control" name="educationalLevel" value={educationalLevel} onChange={handleChange}>
                                 <option value="12/12">12/12</option>
                                 <option value="11/12">11/12</option>
                                 <option value="10/12">10/12</option>
                                 <option value="9/12">9/12</option>
                             </select>
                         </div> */}
-                        <div className="form-group">
-                            <label >{translate('human_resource.profile.educational_level')}</label>
-                            <input type="text" className="form-control" name="educationalLevel" value={educationalLevel ? educationalLevel : ''} onChange={this.handleChange}
-                                placeholder={translate('human_resource.profile.educational_level')} autoComplete="off" />
-                        </div>
+                    <div className="form-group">
+                        <label >{translate('human_resource.profile.educational_level')}</label>
+                        <input type="text" className="form-control" name="educationalLevel" value={educationalLevel ? educationalLevel : ''} onChange={handleChange}
+                            placeholder={translate('human_resource.profile.educational_level')} autoComplete="off" />
+                    </div>
 
-                        {/* Trình độ ngoại ngữ */}
-                        <div className="form-group">
-                            <label >{translate('human_resource.profile.language_level')}</label>
-                            <input type="text" className="form-control" name="foreignLanguage" value={foreignLanguage ? foreignLanguage : ''} onChange={this.handleChange} placeholder={translate('human_resource.profile.language_level')} autoComplete="off" />
-                        </div>
+                    {/* Trình độ ngoại ngữ */}
+                    <div className="form-group">
+                        <label >{translate('human_resource.profile.language_level')}</label>
+                        <input type="text" className="form-control" name="foreignLanguage" value={foreignLanguage ? foreignLanguage : ''} onChange={handleChange} placeholder={translate('human_resource.profile.language_level')} autoComplete="off" />
+                    </div>
 
-                        {/* Trình độ chuyên môn */}
-                        <div className="form-group">
-                            <label>{translate('human_resource.profile.qualification')}</label>
-                            <select className="form-control" name="professionalSkill" value={professionalSkill} onChange={this.handleChange}>
-                                <option value="intermediate_degree">{translate('human_resource.profile.intermediate_degree')}</option>
-                                <option value="colleges">{translate('human_resource.profile.colleges')}</option>
-                                <option value="university">{translate('human_resource.profile.university')}</option>
-                                <option value="bachelor">{translate('human_resource.profile.bachelor')}</option>
-                                <option value="engineer">{translate('human_resource.profile.engineer')}</option>
-                                <option value="master_degree">{translate('human_resource.profile.master_degree')}</option>
-                                <option value="phd">{translate('human_resource.profile.phd')}</option>
-                                <option value="unavailable">{translate('human_resource.profile.unavailable')}</option>
-                            </select>
-                        </div>
-                    </fieldset>
-                    {/* Kinh nghiệm làm việc */}
-                    <fieldset className="scheduler-border">
-                        <legend className="scheduler-border" ><h4 className="box-title">{translate('human_resource.profile.work_experience')}</h4></legend>
-                        <ModalAddExperience handleChange={this.handleAddExperience} id={`addExperience${id}`} />
-                        <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }} >
-                            <thead>
-                                <tr>
-                                    <th>{translate('human_resource.profile.from_month_year')}</th>
-                                    <th>{translate('human_resource.profile.to_month_year')}</th>
-                                    <th>{translate('human_resource.profile.unit')}</th>
-                                    <th>{translate('table.position')}</th>
-                                    <th style={{ width: '120px' }}>{translate('general.action')}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {experiences && experiences.length !== 0 &&
-                                    experiences.map((x, index) => (
-                                        <tr key={index}>
-                                            <td>{this.formatDate(x.startDate, true)}</td>
-                                            <td>{this.formatDate(x.endDate, true)}</td>
-                                            <td>{x.company}</td>
-                                            <td>{x.position}</td>
-                                            <td>
-                                                <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.profile.edit_experience')}><i className="material-icons">edit</i></a>
-                                                <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete(index)}><i className="material-icons"></i></a>
-                                            </td>
-                                        </tr>
-                                    ))}
-                            </tbody>
-                        </table>
-                        {
-                            (!experiences || experiences.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
-                        }
+                    {/* Trình độ chuyên môn */}
+                    <div className="form-group">
+                        <label>{translate('human_resource.profile.qualification')}</label>
+                        <select className="form-control" name="professionalSkill" value={professionalSkill} onChange={handleChange}>
+                            <option value="intermediate_degree">{translate('human_resource.profile.intermediate_degree')}</option>
+                            <option value="colleges">{translate('human_resource.profile.colleges')}</option>
+                            <option value="university">{translate('human_resource.profile.university')}</option>
+                            <option value="bachelor">{translate('human_resource.profile.bachelor')}</option>
+                            <option value="engineer">{translate('human_resource.profile.engineer')}</option>
+                            <option value="master_degree">{translate('human_resource.profile.master_degree')}</option>
+                            <option value="phd">{translate('human_resource.profile.phd')}</option>
+                            <option value="unavailable">{translate('human_resource.profile.unavailable')}</option>
+                        </select>
+                    </div>
+                </fieldset>
+                {/* Kinh nghiệm làm việc */}
+                <fieldset className="scheduler-border">
+                    <legend className="scheduler-border" ><h4 className="box-title">{translate('human_resource.profile.work_experience')}</h4></legend>
+                    <ModalAddExperience handleChange={handleAddExperience} id={`addExperience${id}`} />
+                    <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }} >
+                        <thead>
+                            <tr>
+                                <th>{translate('human_resource.profile.from_month_year')}</th>
+                                <th>{translate('human_resource.profile.to_month_year')}</th>
+                                <th>{translate('human_resource.profile.unit')}</th>
+                                <th>{translate('table.position')}</th>
+                                <th style={{ width: '120px' }}>{translate('general.action')}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {experiences && experiences.length !== 0 &&
+                                experiences.map((x, index) => (
+                                    <tr key={index}>
+                                        <td>{formatDate(x.startDate, true)}</td>
+                                        <td>{formatDate(x.endDate, true)}</td>
+                                        <td>{x.company}</td>
+                                        <td>{x.position}</td>
+                                        <td>
+                                            <a onClick={() => handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.profile.edit_experience')}><i className="material-icons">edit</i></a>
+                                            <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => _delete(index)}><i className="material-icons"></i></a>
+                                        </td>
+                                    </tr>
+                                ))}
+                        </tbody>
+                    </table>
+                    {
+                        (!experiences || experiences.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                    }
 
-                    </fieldset>
-                </div>
-                {   /** Form chỉnh sửa kinh nghiệm làm việc*/
-                    currentRow &&
-                    <ModalEditExperience
-                        id={`editExperience${currentRow.index}`}
-                        _id={currentRow._id}
-                        index={currentRow.index}
-                        company={currentRow.company}
-                        startDate={this.formatDate(currentRow.startDate, true)}
-                        endDate={this.formatDate(currentRow.endDate, true)}
-                        position={currentRow.position}
-                        handleChange={this.handleEditExperience}
-                    />
-                }
+                </fieldset>
             </div>
-        );
-    }
+            {   /** Form chỉnh sửa kinh nghiệm làm việc*/
+                currentRow &&
+                <ModalEditExperience
+                    id={`editExperience${currentRow.index}`}
+                    _id={currentRow._id}
+                    index={currentRow.index}
+                    company={currentRow.company}
+                    startDate={formatDate(currentRow.startDate, true)}
+                    endDate={formatDate(currentRow.endDate, true)}
+                    position={currentRow.position}
+                    handleChange={handleEditExperience}
+                />
+            }
+        </div>
+    );
 };
 
 const experienceTab = connect(null, null)(withTranslate(ExperienceTab));
