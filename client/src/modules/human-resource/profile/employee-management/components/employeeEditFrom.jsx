@@ -54,9 +54,9 @@ const EmployeeEditFrom = (props) => {
             identityCardAddress: "",
             identityCardDate: "",
             birthdate: "",
-            experiences: [],
-            socialInsuranceDetails: [],
         },
+        experiences: [],
+        socialInsuranceDetails: [],
         courses: [],
         degrees: [],
         certificates: [],
@@ -99,7 +99,7 @@ const EmployeeEditFrom = (props) => {
         deleteDisciplines: [],
         deleteSocialInsuranceDetails: [],
         deleteExperiences: [],
-        deleteFiles: [],
+        deleteFiles: []
     })
 
     const mountedRef = useRef(true)
@@ -176,6 +176,9 @@ const EmployeeEditFrom = (props) => {
 
     const { translate, employeesInfo } = props;
 
+    let { _id, img, employee, experiences, degrees, certificates, socialInsuranceDetails, contracts, courses,
+        organizationalUnits, roles, commendations, disciplines, annualLeaves, files, houseHold, editMember } = state;
+
 
 
     /**
@@ -198,7 +201,8 @@ const EmployeeEditFrom = (props) => {
      */
     const handleChange = (name, value) => {
         const { employee } = state;
-        if (name === 'startingDate' || name === 'leavingDate' || name === 'birthdate' || name === 'identityCardDate' || name === 'taxDateOfIssue' || name === 'healthInsuranceStartDate' || name === 'healthInsuranceEndDate') {
+        if (name === 'startingDate' || name === 'leavingDate' || name === 'birthdate' || name === 'identityCardDate' || name === 'taxDateOfIssue' || name === 'healthInsuranceStartDate' || name === 'healthInsuranceEndDate'
+            || name === 'contractEndDate') {
             if (value) {
                 let partValue = value.split('-');
                 value = [partValue[2], partValue[1], partValue[0]].join('-');
@@ -222,7 +226,7 @@ const EmployeeEditFrom = (props) => {
     const handleCreateExperiences = (data, addData) => {
         setState({
             ...state,
-            experiences: data
+            experiences: [...experiences, addData]
         })
     }
 
@@ -276,7 +280,7 @@ const EmployeeEditFrom = (props) => {
     const handleCreateDegree = (data, addData) => {
         setState({
             ...state,
-            degrees: data
+            degrees: [...degrees, addData]
         })
     }
 
@@ -436,7 +440,7 @@ const EmployeeEditFrom = (props) => {
     const handleCreateCertificate = (data, addData) => {
         setState({
             ...state,
-            certificates: data
+            certificates: [...certificates, addData]
         })
     }
 
@@ -490,7 +494,7 @@ const EmployeeEditFrom = (props) => {
     const handleCreateBHXH = (data, addData) => {
         setState({
             ...state,
-            socialInsuranceDetails: data
+            socialInsuranceDetails: [...socialInsuranceDetails, addData]
         })
     }
 
@@ -544,7 +548,7 @@ const EmployeeEditFrom = (props) => {
     const handleCreateContract = (data, addData) => {
         setState({
             ...state,
-            contracts: data
+            contracts: [...contracts, addData]
         })
     }
 
@@ -560,7 +564,8 @@ const EmployeeEditFrom = (props) => {
                 ...state,
                 editContracts: [...editContracts, editData]
             })
-        } else {
+        }
+        else {
             setState({
                 ...state,
                 contracts: data
@@ -598,7 +603,7 @@ const EmployeeEditFrom = (props) => {
     const handleCreateConmmendation = (data, addData) => {
         setState({
             ...state,
-            commendations: data
+            commendations: [...commendations, addData]
         })
     }
 
@@ -652,7 +657,7 @@ const EmployeeEditFrom = (props) => {
     const handleCreateDiscipline = (data, addData) => {
         setState({
             ...state,
-            disciplines: data
+            disciplines: [...disciplines, addData]
         })
     }
 
@@ -697,7 +702,6 @@ const EmployeeEditFrom = (props) => {
         }
     }
 
-
     /**
      * Function thêm thông tin nghỉ phép
      * @param {*} data : Dữ liệu thông tin nghỉ phép
@@ -706,7 +710,7 @@ const EmployeeEditFrom = (props) => {
     const handleCreateAnnualLeave = (data, addData) => {
         setState({
             ...state,
-            annualLeaves: data
+            annualLeaves: [...annualLeaves, addData]
         })
     }
 
@@ -760,7 +764,7 @@ const EmployeeEditFrom = (props) => {
     const handleCreateFile = (data, addData) => {
         setState({
             ...state,
-            files: data
+            files: [...files, addData]
         })
     }
 
@@ -814,7 +818,7 @@ const EmployeeEditFrom = (props) => {
     const handleCreateCourse = (data, addData) => {
         setState({
             ...state,
-            courses: data
+            courses: [...courses, addData]
         })
     }
 
@@ -959,7 +963,66 @@ const EmployeeEditFrom = (props) => {
         formData.append("fileAvatar", avatar);
 
         props.updateInformationEmployee(_id, formData);
-        console.log(state);
+        experiences.forEach(x => {
+            if (x._id === undefined) {
+                x._id = "0"
+            }
+        }
+        );
+        degrees.forEach(x => {
+            if (x._id === undefined) {
+                x._id = "0"
+            }
+        }
+        );
+        certificates.forEach(x => {
+            if (x._id === undefined) {
+                x._id = "0"
+            }
+        }
+        );
+        contracts.forEach(x => {
+            if (x._id === undefined) {
+                x._id = "0"
+            }
+        }
+        );
+        disciplines.forEach(x => {
+            if (x._id === undefined) {
+                x._id = "0"
+            }
+        }
+        );
+        commendations.forEach(x => {
+            if (x._id === undefined) {
+                x._id = "0"
+            }
+        }
+        );
+        annualLeaves.forEach(x => {
+            if (x._id === undefined) {
+                x._id = "0"
+            }
+        }
+        );
+        courses.forEach(x => {
+            if (x._id === undefined) {
+                x._id = "0"
+            }
+        }
+        );
+        socialInsuranceDetails.forEach(x => {
+            if (x._id === undefined) {
+                x._id = "0"
+            }
+        }
+        );
+        files.forEach(x => {
+            if (x._id === undefined) {
+                x._id = "0"
+            }
+        }
+        );
     }
 
     const _fm_saveMember = (data) => {
@@ -1120,9 +1183,6 @@ const EmployeeEditFrom = (props) => {
         })
     }
 
-    let { _id, img, employee, degrees, certificates, socialInsuranceDetails, contracts, courses,
-        organizationalUnits, roles, commendations, disciplines, annualLeaves, files, houseHold, editMember } = state;
-
     return (
         <React.Fragment>
             <DialogModal
@@ -1206,7 +1266,7 @@ const EmployeeEditFrom = (props) => {
                             {/* Tab hợp đồng - quá trình đào tạo*/}
                             <ContractTab
                                 id={`edit_contract${_id}`}
-                                pageCreate={false}
+                                // pageCreate={false}
                                 employee={employee}
                                 contracts={contracts}
                                 courses={courses}

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -15,19 +15,15 @@ import DepartmentCreateWithParent from './organizationalUnitCreateWithParent';
 import { DepartmentImportForm } from './organizationalUnitImportForm';
 
 
-class DepartmentTreeView extends Component {
-    constructor(props) {
-        super(props);
+function DepartmentTreeView(props) {
+    const departmentId = React.createRef();
 
-        this.departmentId = React.createRef();
-
-        this.state = {
-            zoom: 13,
-        }
-    }
+    const [state, setState] = useState({
+        zoom: 13,
+    })
 
     // Cac ham xu ly du lieu voi modal
-    convertDataToExportData = (data) => {
+    const convertDataToExportData = (data) => {
         // chuyen du lieu cay ve du lieu bang
         let listData = [];
         if (data) {
@@ -124,29 +120,33 @@ class DepartmentTreeView extends Component {
         return exportData
     }
 
-    handleCreate = (event) => {
+    const handleCreate = (event) => {
         event.preventDefault();
         window.$('#modal-create-department').modal('show');
     }
 
-    handImportFile = (event) => {
+    const handImportFile = (event) => {
         event.preventDefault();
         window.$('#modal_import_file').modal('show');
     }
 
-    handleEdit = (department) => {
-        this.setState({
+    const handleEdit = async (department) => {
+        await setState({
+            ...state,
             currentRow: department
-        }, () => window.$('#modal-edit-department').modal('show'));
+        });
+        window.$('#modal-edit-department').modal('show')
     }
 
-    handleCreateWithParent = (department) => {
-        this.setState({
+    const handleCreateWithParent = async (department) => {
+         await setState({
+            ...state,
             currentRow: department
-        }, () => window.$('#modal-create-department-with-parent').modal('show'));
+        });
+        window.$('#modal-create-department-with-parent').modal('show')
     }
 
-    toggleSetting = (id) => {
+    const toggleSetting = (id) => {
         if (document.getElementById(id).style.display === 'none') {
             document.getElementById(id).style.display = 'block';
         } else {
@@ -154,19 +154,25 @@ class DepartmentTreeView extends Component {
         }
     }
 
-    zoomIn = () => {
-        if (this.state.zoom < 72) {
-            this.setState({ zoom: this.state.zoom + 1 });
+    const zoomIn = () => {
+        if (state.zoom < 72) {
+            setState({
+                ...state,
+                zoom: state.zoom + 1
+             });
         }
     }
 
-    zoomOut = () => {
-        if (this.state.zoom > 0) {
-            this.setState({ zoom: this.state.zoom - 1 });
+    const zoomOut = () => {
+        if (state.zoom > 0) {
+            setState({ 
+                ...state,
+                zoom: state.zoom - 1 
+            });
         }
     }
 
-    showNodeContent = (data, translate) => {
+    const showNodeContent = (data, translate) => {
         return (
             <div className="tf-nc bg bg-primary" style={{
                 minWidth: '120px',
@@ -178,43 +184,43 @@ class DepartmentTreeView extends Component {
             }}>
                 <div style={{ padding: '8px' }}>
                     <span id={`department-${data.id}`} title={data.name} className="pull-right" style={{ paddingLeft: '5px' }}>
-                        <a href="#abc" style={{ color: 'white' }} title="Ẩn/hiện điều khiển" onClick={() => this.toggleSetting(`department-setting-${data.id}`)}><i className="fa fa-gears"></i></a>
+                        <a href="#abc" style={{ color: 'white' }} title="Ẩn/hiện điều khiển" onClick={() => toggleSetting(`department-setting-${data.id}`)}><i className="fa fa-gears"></i></a>
                     </span>
                     {`${data.name}`}
                 </div>
 
                 <div style={{ backgroundColor: '#fff', paddingTop: '2px', display: 'none', borderTop: '0.5px solid #c1c1c1' }} id={`department-setting-${data.id}`}>
-                    <a href="#setting-organizationalUnit" className="edit text-green" onClick={() => this.handleCreateWithParent(data)} title={translate('manage_department.add_title')}><i className="material-icons">library_add</i></a>
-                    <a href="#setting-organizationalUnit" className="edit text-yellow" onClick={() => this.handleEdit(data)} title={translate('manage_department.edit_title')}><i className="material-icons">ballot</i></a>
+                    <a href="#setting-organizationalUnit" className="edit text-green" onClick={() => handleCreateWithParent(data)} title={translate('manage_department.add_title')}><i className="material-icons">library_add</i></a>
+                    <a href="#setting-organizationalUnit" className="edit text-yellow" onClick={() => handleEdit(data)} title={translate('manage_department.edit_title')}><i className="material-icons">ballot</i></a>
                     <DeleteNotification
                         content={translate('manage_department.delete')}
                         data={{
                             id: data.id,
                             info: data.name
                         }}
-                        func={this.props.destroy}
+                        func={props.destroy}
                     />
                 </div>
             </div>
         )
     }
 
-    displayTreeView = (data, translate) => {
+    const displayTreeView = (data, translate) => {
         if (data) {
             if (!data.children) {
                 return (
                     <li key={data.id}>
-                        {this.showNodeContent(data, translate)}
+                        {showNodeContent(data, translate)}
                     </li>
                 )
             }
 
             return (
                 <li key={data.id}>
-                    {this.showNodeContent(data, translate)}
+                    {showNodeContent(data, translate)}
                     <ul>
                         {
-                            data.children.map(tag => this.displayTreeView(tag, translate))
+                            data.children.map(tag => displayTreeView(tag, translate))
                         }
                     </ul>
                 </li>
@@ -224,22 +230,23 @@ class DepartmentTreeView extends Component {
         }
     }
 
-    handleUploadImage = () => {
+    const handleUploadImage = () => {
         let formData = new FormData();
-        const { organizationalUnitImage } = this.state;
-        if (this.state.organizationalUnitImage) {
+        const { organizationalUnitImage } = state;
+        if (state.organizationalUnitImage) {
             formData.append('organizationalUnitImage', organizationalUnitImage);
         }
-        this.props.uploadOrganizationalUnitImage(formData);
+        props.uploadOrganizationalUnitImage(formData);
     }
 
-    handleUpload = (e) => {
+    const handleUpload = (e) => {
         const file = e.target.files[0];
         if (file) {
             let fileLoad = new FileReader();
             fileLoad.readAsDataURL(file);
             fileLoad.onload = () => {
-                this.setState({
+                setState({
+                    ...state,
                     organizationalUnitImagePreview: fileLoad.result,
                     organizationalUnitImage: file,
                 });
@@ -248,144 +255,140 @@ class DepartmentTreeView extends Component {
 
     }
 
-    static getDerivedStateFromProps(props, state) {
-        const { item } = props.company;
-        if (item.image != state.image) {
+    useEffect(() => {
+        //const { item } = props.company;
+        if (props.company.image != state.image) {
             return {
-                organizationalUnitImagePreview: item.image ? `.${item.image}` : null,
-                image: item.image
+                organizationalUnitImagePreview: props.company.image ? `.${props.company.image}` : null,
+                image: props.company.image
             }
-        } else {
-            return null
         }
+    }, [props.company.image])
+
+    useEffect(() => {
+        props.getCompanyInformation();
+    }, [])
+
+    const { translate, department, company } = props;
+    const { tree } = props.department;
+    const { currentRow, organizationalUnitImagePreview } = state;
+    let data = [];
+    if (tree) {
+        data = tree;
+    }
+    const organizationalUnitImageStyle = {
+        objectFit: "cover",
+        maxWidth: "100%",
+        maxHeight: "100%"
     }
 
-    componentDidMount() {
-        this.props.getCompanyInformation();
-    }
+    let exportData = convertDataToExportData(data);
 
-    render() {
-        const { translate, department, company } = this.props;
-        const { tree } = this.props.department;
-        const { currentRow, organizationalUnitImagePreview } = this.state;
-        let data = [];
-        if (tree) {
-            data = tree;
-        }
-        const organizationalUnitImageStyle = {
-            objectFit: "cover",
-            maxWidth: "100%",
-            maxHeight: "100%"
-        }
-
-        let exportData = this.convertDataToExportData(data);
-
-        return (
-            <React.Fragment>
-                {<ExportExcel id="export-organizationalUnit" exportData={exportData} style={{ marginLeft: 5 }} />}
-                {/* Button thêm mới một phòng ban */}
-                <DepartmentCreateForm />
-                <DepartmentImportForm />
-                <div className="form-inline">
-                    <div className="dropdown pull-right" >
-                        <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title='Thêm'>{translate('manage_department.add_title')}</button>
-                        <ul className="dropdown-menu pull-right">
-                            <li><a href="#modal-create-department" title={translate('manage_department.add_title')} onClick={(event) => { this.handleCreate(event) }}>{translate('manage_department.add_title')}</a></li>
-                            <li><a href="#modal_import_file" title="ImportForm" onClick={(event) => { this.handImportFile(event) }}>{translate('manage_department.import')}</a></li>
-                        </ul>
-                    </div>
+    return (
+        <React.Fragment>
+            {<ExportExcel id="export-organizationalUnit" exportData={exportData} style={{ marginLeft: 5 }} />}
+            {/* Button thêm mới một phòng ban */}
+            <DepartmentCreateForm />
+            <DepartmentImportForm />
+            <div className="form-inline">
+                <div className="dropdown pull-right" >
+                    <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title='Thêm'>{translate('manage_department.add_title')}</button>
+                    <ul className="dropdown-menu pull-right">
+                        <li><a href="#modal-create-department" title={translate('manage_department.add_title')} onClick={(event) => { handleCreate(event) }}>{translate('manage_department.add_title')}</a></li>
+                        <li><a href="#modal_import_file" title="ImportForm" onClick={(event) => { handImportFile(event) }}>{translate('manage_department.import')}</a></li>
+                    </ul>
                 </div>
+            </div>
 
-                {/* Kiểm tra có dữ liệu về các đơn vị, phòng ban hay không */}
-                {
-                    department.list && department.list.length > 0 ?
-                        <React.Fragment >
-                            <div className="pull-left">
-                                <i className="btn btn-sm btn-default fa fa-plus" onClick={this.zoomIn} title={translate('manage_department.zoom_in')}></i>
-                                <i className="btn btn-sm btn-default fa fa-minus" onClick={this.zoomOut} title={translate('manage_department.zoom_out')}></i>
+            {/* Kiểm tra có dữ liệu về các đơn vị, phòng ban hay không */}
+            {
+                department.list && department.list.length > 0 ?
+                    <React.Fragment >
+                        <div className="pull-left">
+                            <i className="btn btn-sm btn-default fa fa-plus" onClick={zoomIn} title={translate('manage_department.zoom_in')}></i>
+                            <i className="btn btn-sm btn-default fa fa-minus" onClick={zoomOut} title={translate('manage_department.zoom_out')}></i>
+                        </div>
+                    </React.Fragment>
+                    : department.isLoading ?
+                        <p className="text-center">{translate('confirm.loading')}</p> :
+                        <p className="text-center">{translate('confirm.no_data')}</p>
+            }
+
+            {/* Hiển thị cơ cấu tổ chức của công ty */}
+            <div className="row">
+                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    {
+                        tree &&
+                        tree.map((tree, index) =>
+                            <div key={index} className="tf-tree example" style={{ textAlign: 'left', fontSize: state.zoom, marginTop: '50px' }}>
+                                <ul>
+                                    {
+                                        displayTreeView(tree, translate)
+                                    }
+                                </ul>
                             </div>
-                        </React.Fragment>
-                        : department.isLoading ?
-                            <p className="text-center">{translate('confirm.loading')}</p> :
-                            <p className="text-center">{translate('confirm.no_data')}</p>
-                }
-
-                {/* Hiển thị cơ cấu tổ chức của công ty */}
-                <div className="row">
-                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                        {
-                            tree &&
-                            tree.map((tree, index) =>
-                                <div key={index} className="tf-tree example" style={{ textAlign: 'left', fontSize: this.state.zoom, marginTop: '50px' }}>
-                                    <ul>
-                                        {
-                                            this.displayTreeView(tree, translate)
-                                        }
-                                    </ul>
-                                </div>
-                            )
-                        }
-                    </div>
+                        )
+                    }
                 </div>
+            </div>
 
-                {
-                    company && company.isLoading === false &&
-                    <div className="row">
-                        <div className="col-md-12">
-                            <div className="organizationalUnitImageWrapper">
-                                <div className="organizationalUnitImageButton">
-                                    {/* <input className="custom-file-input" type="file" id="file" onChange={this.handleUpload} /> */}
-                                    <input type="file" id="files" onChange={this.handleUpload} style={{ display: 'none' }} />
-                                    {organizationalUnitImagePreview &&
-                                        <>
-                                            <label style={{ marginBottom: 0 }} className="custom-file-input" htmlFor="files">
-                                                <span className="material-icons icon_upload">
-                                                    cloud_upload
+            {
+                company && company.isLoading === false &&
+                <div className="row">
+                    <div className="col-md-12">
+                        <div className="organizationalUnitImageWrapper">
+                            <div className="organizationalUnitImageButton">
+                                {/* <input className="custom-file-input" type="file" id="file" onChange={handleUpload} /> */}
+                                <input type="file" id="files" onChange={handleUpload} style={{ display: 'none' }} />
+                                {organizationalUnitImagePreview &&
+                                    <>
+                                        <label style={{ marginBottom: 0 }} className="custom-file-input" htmlFor="files">
+                                            <span className="material-icons icon_upload">
+                                                cloud_upload
                                                 </span>
                                                 Cập nhật ảnh cơ cấu tổ chức
                                             </label>
-                                            <button style={{ marginLeft: '10px' }} type="button" className="btn btn-success pull-right" title='Thêm' onClick={this.handleUploadImage}>Lưu</button>
+                                        <button style={{ marginLeft: '10px' }} type="button" className="btn btn-success pull-right" title='Thêm' onClick={handleUploadImage}>Lưu</button>
+                                    </>
+                                }
+                            </div>
+                            <div style={{ height: '500px', textAlign: "center" }}>
+                                {
+                                    organizationalUnitImagePreview ?
+                                        <ApiImage style={organizationalUnitImageStyle} src={organizationalUnitImagePreview} alt={""} />
+                                        :
+                                        <>
+                                            <h4 style={{ fontWeight: 'bold' }}>Chưa có ảnh cơ cấu tổ chức</h4>
+                                            <label className="upload_now" style={{ cursor: 'pointer' }} htmlFor="files">Cập nhật ngay</label>
                                         </>
-                                    }
-                                </div>
-                                <div style={{ height: '500px', textAlign: "center" }}>
-                                    {
-                                        organizationalUnitImagePreview ?
-                                            <ApiImage style={organizationalUnitImageStyle} src={organizationalUnitImagePreview} alt={""} />
-                                            :
-                                            <>
-                                                <h4 style={{ fontWeight: 'bold' }}>Chưa có ảnh cơ cấu tổ chức</h4>
-                                                <label className="upload_now" style={{ cursor: 'pointer' }} htmlFor="files">Cập nhật ngay</label>
-                                            </>
-                                    }
-                                </div>
+                                }
                             </div>
                         </div>
                     </div>
-                }
+                </div>
+            }
 
-                {/* Các form edit và thêm mới một phòng ban mới với phòng ban cha được chọn */}
-                {
-                    currentRow &&
-                    <React.Fragment>
-                        <DepartmentCreateWithParent
-                            departmentId={currentRow.id}
-                            departmentParent={currentRow.id}
-                        />
-                        <DepartmentEditForm
-                            departmentId={currentRow.id}
-                            departmentName={currentRow.name}
-                            departmentDescription={currentRow.description}
-                            departmentParent={currentRow.parent_id}
-                            managers={currentRow.managers}
-                            deputyManagers={currentRow.deputyManagers}
-                            employees={currentRow.employees}
-                        />
-                    </React.Fragment>
-                }
-            </React.Fragment>
-        );
-    }
+            {/* Các form edit và thêm mới một phòng ban mới với phòng ban cha được chọn */}
+            {
+                currentRow &&
+                <React.Fragment>
+                    <DepartmentCreateWithParent
+                        departmentId={currentRow.id}
+                        departmentParent={currentRow.id}
+                    />
+                    <DepartmentEditForm
+                        departmentId={currentRow.id}
+                        departmentName={currentRow.name}
+                        departmentDescription={currentRow.description}
+                        departmentParent={currentRow.parent_id}
+                        managers={currentRow.managers}
+                        deputyManagers={currentRow.deputyManagers}
+                        employees={currentRow.employees}
+                    />
+                </React.Fragment>
+            }
+        </React.Fragment>
+    );
 }
 
 function mapState(state) {

@@ -190,7 +190,7 @@ function DegreeAddModal(props) {
                             className="form-control select2"
                             style={{ width: "100%" }}
                             value={field}
-                            items={listFields.map(y => { return { value: y._id, text: y.name } })}
+                            items={[...listFields.map(y => { return { value: y._id, text: y.name } }), { value: '', text: 'Chọn ngành nghề' }]}
                             onChange={handleFieldChange}
                         />
                     </div>
