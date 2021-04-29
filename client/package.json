@@ -36,6 +36,7 @@
     "lodash": "^4.17.21",
     "math-expression-evaluator": "^1.3.6",
     "moment": "^2.27.0",
+    "moment-duration-format": "^2.3.2",
     "quill": "^1.3.6",
     "quill-image-drop-and-paste": "^1.1.1",
     "quill-table": "^1.0.0",

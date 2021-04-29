@@ -39,7 +39,7 @@ const ModalProjectEvaluation = (props) => {
             <DialogModal
                 modalID={`modal-show-project-eval-${projectDetailId || projectDetail?._id}`} isLoading={false}
                 formID={`form-show-project-eval-${projectDetailId || projectDetail?._id}`}
-                title={`Chi tiết đánh giá dự án ${projectDetail?.name}`}
+                title={`Thống kê đánh giá dự án "${projectDetail?.name}"`}
                 hasSaveButton={false}
                 size={100}
                 resetOnClose={true}
@@ -51,7 +51,7 @@ const ModalProjectEvaluation = (props) => {
                         <li><a href="#eval-self" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Đánh giá cá nhân</a></li>
                     </ul>
                     <div className="tab-content">
-                        {/** Tab Đánh giá dự án */}
+                        {/** Thống kê điểm số công việc theo tháng */}
                         <div className="tab-pane active" id="eval-project">
                             <TabEvalProject currentTasks={currentTasks} listTasksEval={project.listTasksEval} currentMonth={currentMonth} handleChangeMonth={handleChangeMonth} />
                         </div>
