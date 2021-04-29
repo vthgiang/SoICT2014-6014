@@ -38,8 +38,11 @@ const ProjectDetailPage = (props) => {
     const currentProjectTasks = tasks?.tasksbyproject;
     const parentTask = [];
 
-    const onHandleReRender = async () => {
-        await props.getTasksByProject(currentProjectId);
+    const onHandleReRender = () => {
+        window.$('#modal-add-task-schedule').modal('hide');
+        setTimeout(() => {
+            props.getTasksByProject(currentProjectId);
+        }, 1000);
     }
 
     const onHandleOpenScheduleModal = () => {

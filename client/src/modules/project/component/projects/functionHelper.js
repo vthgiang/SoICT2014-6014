@@ -88,3 +88,16 @@ export const convertToMilliseconds = (duration, currentMode = 'days') => {
     if ( currentMode === 'days') return duration * MILISECS_TO_DAYS;
     return duration * MILISECS_TO_HOURS;
 }
+
+// value ở dạng number
+export const getNearestIntegerNumber = (value) => {
+    const beforeDecimalPart = value.toString().split('.')[0].replace(/,/g, '');
+    const beforeDecimalPartArr = beforeDecimalPart.split('');
+    const numberWithFirstSecondIndexArr = beforeDecimalPartArr.map((item, index) => {
+        if (index === 0 || index === 1) return item
+        else return "0";
+    })
+    const numberWithFirstSecondIndex = numberWithFirstSecondIndexArr.join('');
+    const result = Number(numberWithFirstSecondIndex) + Math.pow(10, beforeDecimalPart.length - 2);
+    return result;
+}

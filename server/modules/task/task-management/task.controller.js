@@ -3,7 +3,7 @@ const NotificationServices = require(`../../notification/notification.service`);
 const NewsFeed = require('../../news-feed/newsFeed.service');
 const { sendEmail } = require(`../../../helpers/emailHelper`);
 const Logger = require(`../../../logs`);
-const { Task } = require('../../../models');
+const { Task, Project } = require('../../../models');
 const { connect } = require(`../../../helpers/dbHelper`);
 // Điều hướng đến dịch vụ cơ sở dữ liệu của module quản lý công việc
 
@@ -603,6 +603,7 @@ exports.createProjectTask = async (req, res) => {
  */
 exports.createProjectTasksFromCPM = async (req, res) => {
     try {
+        let totalProjectBudget = 0;
         for (let currentTask of req.body) {
             console.log(currentTask.name)
             if (currentTask.preceedingTasks.length > 0) {
@@ -659,7 +660,12 @@ exports.createProjectTasksFromCPM = async (req, res) => {
             });
 
             await Logger.info(req.user.email, 'create_tasks_list_excel_cpm', req.portal)
+
+            totalProjectBudget += currentTask.estimateNormalCost;
         }
+        await Project(connect(DB_CONNECTION, req.portal)).updateOne({
+            "budget": totalProjectBudget,
+        });
         res.status(200).json({
             success: true,
             messages: ['create_tasks_list_excel_cpm_success'],

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, SelectBox } from '../../../../common-components/index';
@@ -171,6 +171,16 @@ const ModalAddTaskSchedule = (props) => {
             ...state,
             listTasks: data
         });
+        // setState({
+        //     ...state,
+        //     listTasks: data.map(item => {
+        //         return {
+        //             ...item,
+        //             estimateNormalCost: numberWithCommas(10000000),
+        //             estimateMaxCost: numberWithCommas(15000000),
+        //         }
+        //     })
+        // });
     }
 
     const handleSetModeCPM = async (event) => {
@@ -223,6 +233,14 @@ const ModalAddTaskSchedule = (props) => {
         if (projectDetail?.unitTime === 'days') return estimateNormalTime > 7 || estimateNormalTime < 1 / 6
         return estimateNormalTime < 4 || estimateNormalTime > 56
     }
+
+    const renderModalCalculateCPM = useCallback(
+        () => {
+            return state.listTasks && state.listTasks.length > 0 &&
+                <ModalCalculateCPM estDurationEndProject={Number(estDurationEndProject)} tasksData={state.listTasks} handleResetData={handleResetData} />
+        },
+        [state.listTasks],
+    )
 
     return (
         <React.Fragment>
@@ -425,6 +443,8 @@ const ModalAddTaskSchedule = (props) => {
                 {state.listTasks && state.listTasks.length > 0 &&
                     <ModalCalculateCPM estDurationEndProject={Number(estDurationEndProject)} tasksData={state.listTasks} handleResetData={handleResetData} />
                 }
+
+                {/* {renderModalCalculateCPM()} */}
             </DialogModal>
         </React.Fragment>
     )

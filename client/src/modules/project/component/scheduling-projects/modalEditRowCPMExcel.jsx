@@ -9,7 +9,7 @@ import { UserActions } from '../../../super-admin/user/redux/actions'
 import { checkIfHasCommonItems, getSalaryFromUserId, numberWithCommas } from '../../../task/task-management/component/functionHelpers'
 import { taskManagementActions } from '../../../task/task-management/redux/actions'
 import { ProjectActions } from '../../redux/actions'
-import { getAmountOfWeekDaysInMonth, getCurrentProjectDetails } from '../projects/functionHelper'
+import { getAmountOfWeekDaysInMonth, getCurrentProjectDetails, getNearestIntegerNumber } from '../projects/functionHelper'
 
 const ModalEditRowCPMExcel = (props) => {
     const { currentRow, translate, project, currentEditRowIndex } = props;
@@ -45,18 +45,6 @@ const ModalEditRowCPMExcel = (props) => {
         setCurrentRowIndex(currentEditRowIndex);
     }
 
-    // value ở dạng number
-    const getNearestIntegerNumber = (value) => {
-        const beforeDecimalPart = value.toString().split('.')[0].replace(/,/g, '');
-        const beforeDecimalPartArr = beforeDecimalPart.split('');
-        const numberWithFirstSecondIndexArr = beforeDecimalPartArr.map((item, index) => {
-            if (index === 0 || index === 1) return item
-            else return "0";
-        })
-        const numberWithFirstSecondIndex = numberWithFirstSecondIndexArr.join('');
-        const result = Number(numberWithFirstSecondIndex) + Math.pow(10, beforeDecimalPart.length - 2);
-        return result;
-    }
 
     useEffect(() => {
         props.getProjectsDispatch({ calledId: "all", userId });
@@ -68,6 +56,7 @@ const ModalEditRowCPMExcel = (props) => {
         const resWeight = 0.8, accWeight = 0.2;
         const currentMonthWorkDays = getAmountOfWeekDaysInMonth(moment());
         const projectDetail = getCurrentProjectDetails(project);
+        console.log('projectDetail?.unitTime', projectDetail?.unitTime)
         if (projectDetail?.unitTime === 'days') {
             for (let resItem of currentResponsibleEmployees) {
                 result += resWeight * getSalaryFromUserId(projectDetail?.responsibleEmployeesWithUnit, resItem) / currentMonthWorkDays * currentEstimateNormalTime;

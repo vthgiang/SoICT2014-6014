@@ -18,12 +18,19 @@ import { getStorage } from '../../../../config';
 import ModalCalculateRecommend from './modalCalculateRecommend';
 
 const ModalCalculateCPM = (props) => {
-    const { tasksData, translate, project, estDurationEndProject, user } = props;
+    const { tasksData, translate, project, user } = props;
+    const [currentTasksData, setCurrentTasksData] = useState(tasksData);
     const listUsers = user && user.usersInUnitsOfCompany ? getEmployeeSelectBoxItems(user.usersInUnitsOfCompany) : []
     const projectDetail = getCurrentProjectDetails(project);
     const [isTableShown, setIsTableShown] = useState(true);
     let formattedTasksData = {}
-    for (let item of tasksData) {
+
+    useEffect(() => {
+        console.log('tasksData co thay doi');
+        setCurrentTasksData(tasksData);
+    }, [tasksData]);
+
+    for (let item of currentTasksData) {
         formattedTasksData = {
             ...formattedTasksData,
             [item.code]: {
@@ -160,8 +167,8 @@ const ModalCalculateCPM = (props) => {
     }
 
     const processDataBeforeInserted = () => {
-        if (!tasksData || tasksData.length === 0) return [];
-        const tempTasksData = [...tasksData];
+        if (!currentTasksData || currentTasksData.length === 0) return [];
+        const tempTasksData = [...currentTasksData];
         // Lặp mảng tasks
         for (let taskItem of tempTasksData) {
             if ((!taskItem.startDate || !taskItem.endDate) && taskItem.preceedingTasks.length === 0) {
@@ -193,7 +200,7 @@ const ModalCalculateCPM = (props) => {
     }
 
     const processNodes = () => {
-        const resultNodes = tasksData.map((taskItem, taskIndex) => {
+        const resultNodes = currentTasksData.map((taskItem, taskIndex) => {
             // const resultNodes = fakeArr.map((taskItem, taskIndex) => {
             return ({
                 id: taskItem.code,
@@ -214,7 +221,7 @@ const ModalCalculateCPM = (props) => {
 
     const processEdges = () => {
         let resultEdges = [];
-        for (let taskItem of tasksData) {
+        for (let taskItem of currentTasksData) {
             // for (let taskItem of fakeArr) {
             for (let preceedingItem of taskItem.preceedingTasks) {
                 // console.log('taskItem.preceedingTasks', taskItem.preceedingTasks)
@@ -315,6 +322,10 @@ const ModalCalculateCPM = (props) => {
         }
     }
 
+    const handleApplyChange = (newData) => {
+        setCurrentTasksData(newData);
+    }
+
     return (
         <React.Fragment>
             <DialogModal
@@ -338,7 +349,7 @@ const ModalCalculateCPM = (props) => {
                         {moment(findLatestDate(processedData)).isAfter(moment(projectDetail?.endDate))
                             &&
                             <div className="dropdown pull-right" style={{ marginTop: 15, marginRight: 10 }}>
-                                <ModalCalculateRecommend processedData={processedData} tasksData={tasksData} />
+                                <ModalCalculateRecommend handleApplyChange={handleApplyChange} processedData={processedData} currentTasksData={currentTasksData} oldCPMEndDate={findLatestDate(processedData)} />
                                 <button
                                     onClick={handleCalculateRecommend}
                                     type="button" className="btn btn-warning dropdown-toggle" data-toggle="dropdown">
@@ -388,7 +399,7 @@ const ModalCalculateCPM = (props) => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {(tasksData && tasksData.length > 0) &&
+                                        {(currentTasksData && currentTasksData.length > 0) &&
                                             processedData.map((taskItem, index) => (
                                                 <tr key={index}>
                                                     <td style={renderRowTableStyle(pert.slack[taskItem?.code] === 0)}>{taskItem?.code}</td>
