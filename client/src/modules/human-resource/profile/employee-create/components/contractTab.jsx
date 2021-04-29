@@ -18,6 +18,12 @@ function ContractTab(props) {
 
     });
 
+    const { translate, course } = props;
+
+    const { id } = props;
+
+    const { contracts, contractEndDate, contractType, courses, pageCreate, roles, currentRow, currentCourseRow } = state;
+
     /**
      *  Function format dữ liệu Date thành string
      * @param {*} date : Ngày muốn format
@@ -44,13 +50,16 @@ function ContractTab(props) {
     };
 
     const getCurrentContract = (contracts) => {
-        let contract = contracts[0];
-        contracts.forEach(x => {
-            if (new Date(contract.startDate).getTime() < new Date(x.startDate).getTime()) {
-                contract = x
-            }
-        })
-        return contract
+        if (contracts && contracts.length !== 0) {
+            let contract = contracts[0]
+            contracts.forEach(x => {
+                if (new Date(contract.startDate).getTime() < new Date(x.startDate).getTime()) {
+                    contract = x
+                }
+            })
+            return contract;
+        }
+        else return {};
     }
 
     useEffect(() => {
@@ -75,11 +84,20 @@ function ContractTab(props) {
         })
     }, [props.id])
 
-    const { translate, course } = props;
-
-    const { id } = props;
-
-    const { contracts, contractEndDate, contractType, courses, pageCreate, roles, currentRow, currentCourseRow } = state;
+    useEffect(() => {
+        if (state.contracts && state.contracts?.length !== 0) {
+            let contract = getCurrentContract(state.contracts);
+            setState(state => {
+                return {
+                    ...state,
+                    contractEndDate: contract?.endDate ? contract.endDate : "",
+                    contractType: contract?.contractType ? contract.contractType : "",
+                }
+            });
+            props.handleChange('contractEndDate', contract?.endDate ? contract.endDate : "");
+            props.handleChange('contractType', contract?.contractType ? contract.contractType : "");
+        };
+    }, [state.contracts])
 
     // console.log(contractEndDate);
 
@@ -121,8 +139,8 @@ function ContractTab(props) {
 
     /**
      * Function kiểm tra trùng lặp thời gian hợp đồng lao động
-     * @param {*} data 
-     * @param {*} array 
+     * @param {*} data
+     * @param {*} array
      */
     const checkForDuplicate = (data, array) => {
         let checkData = true;
@@ -152,7 +170,7 @@ function ContractTab(props) {
 
         let checkData = checkForDuplicate(data, contracts);
         if (checkData) {
-            await setState(state => {
+            setState(state => {
                 return {
                     ...state,
                     contracts: [...contracts, {
@@ -165,17 +183,6 @@ function ContractTab(props) {
                     ...data
                 }], data
             );
-            let contract = getCurrentContract(state.contracts);
-
-            setState(state => {
-                return {
-                    ...state,
-                    contractEndDate: contract?.endDate ? contract.endDate : "",
-                    contractType: contract?.contractType
-                }
-            })
-            props.handleChange('contractEndDate', contract?.endDate ? contract.endDate : "");
-            props.handleChange('contractType', contract?.contractType);
 
         } else {
             toast.error(
@@ -207,19 +214,8 @@ function ContractTab(props) {
                     contracts: contracts
                 }
             })
-            props.handleEditContract(
-                contracts, data);
+            props.handleEditContract(contracts, data);
 
-            let contract = getCurrentContract(state.contracts);
-            setState(state => {
-                return {
-                    ...state,
-                    contractEndDate: contract?.endDate ? contract.endDate : "",
-                    contractType: contract?.contractType
-                }
-            })
-            props.handleChange('contractEndDate', contract?.endDate ? contract.endDate : "");
-            props.handleChange('contractType', contract?.contractType);
         } else {
             toast.error(
                 <ServerResponseAlert
@@ -240,7 +236,7 @@ function ContractTab(props) {
         let { contracts } = state;
         let data = contracts[index];
         contracts.splice(index, 1);
-        await setState(state => {
+        setState(state => {
             return {
                 ...state,
                 contracts: [...contracts]
@@ -249,21 +245,6 @@ function ContractTab(props) {
         props.handleDeleteContract(
             [...contracts]
             , data);
-        let contract = {};
-        if (contracts.length !== 0) {
-            contract = getCurrentContract(contracts)
-        };
-
-        await setState(state => {
-            return {
-                ...state,
-                contractEndDate: contract?.endDate ? contract.endDate : "",
-                contractType: contract?.contractType ? contract.contractType : "",
-            }
-        });
-
-        await props.handleChange('contractEndDate', contract?.endDate ? contract.endDate : "");
-        await props.handleChange('contractType', contract?.contractType ? contract.contractType : "");
     }
 
 
@@ -341,7 +322,7 @@ function ContractTab(props) {
 
     /**
      * function dowload file
-     * @param {*} e 
+     * @param {*} e
      * @param {*} path : Đường dẫn file
      * @param {*} fileName : Tên file dùng để lưu
      */

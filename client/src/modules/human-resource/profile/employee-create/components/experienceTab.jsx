@@ -119,9 +119,7 @@ function ExperienceTab(props) {
                     ...data
                 }]
             })
-            props.handleAddExperience([...experiences, {
-                ...data
-            }], data);
+            props.handleAddExperience([...experiences, data], data);
         } else {
             toast.error(
                 <ServerResponseAlert
