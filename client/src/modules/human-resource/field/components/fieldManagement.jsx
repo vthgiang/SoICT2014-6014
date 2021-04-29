@@ -27,7 +27,7 @@ const FieldManagement = (props) => {
 
     let listFields = field.listFields;
 
-    console.log(listFields);
+    // console.log(listFields);
 
     /**
      * Function bắt sự kiện chỉnh sửa thông tin ngành nghề, lĩnh vực
