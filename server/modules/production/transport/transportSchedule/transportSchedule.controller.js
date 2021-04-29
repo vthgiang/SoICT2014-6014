@@ -53,6 +53,33 @@ exports.editTransportScheduleByPlanId = async (req, res) => {
     }
 }
 
+exports.changeTransportRequirementProcess = async (req, res) => {
+    try {
+        console.log(req.body, " aaaaaaaaaaaaaaaaaa")
+        let data= req.body;
+        let transportRoute = await TransportScheduleServices.changeTransportRequirementProcess(req.portal, data);
+        if (transportRoute !== -1) {
+            await Log.info(req.user.email, "CHANGE_TRANPORT_REQUIREMENT_PROCESS", req.portal);
+            res.status(200).json({
+                success: true,
+                messages: ["change_transport_requirement_process_success"],
+                content: transportRoute
+            });
+        } else {
+            throw Error("plan is invalid")
+        }
+    } catch (error) {
+        await Log.error(req.user.email, "CHANGE_TRANPORT_REQUIREMENT_PROCESS", req.portal);
+
+        res.status(400).json({
+            success: false,
+            messages: ["change_transport_requirement_process_fail"],
+            content: error.message
+        });
+    }
+
+}
+
 exports.driverSendMessage = async (req, res) => {
     try {
         let {data, userId} = req.body;

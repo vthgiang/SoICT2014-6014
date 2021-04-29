@@ -4,6 +4,7 @@ import { transportScheduleServices } from './services';
 export const transportScheduleActions = {
     getTransportScheduleByPlanId,
     editTransportScheduleByPlanId,
+    changeTransportRequirementProcess,
     driverSendMessage,
 }
 
@@ -48,6 +49,28 @@ function editTransportScheduleByPlanId(planId, data) {
             .catch((error) => {
                 dispatch({
                     type: transportScheduleConstants.EDIT_TRANSPORT_SCHEDULE_BY_PLAN_ID_FAILURE,
+                    error
+                });
+            });
+    }
+}
+
+function changeTransportRequirementProcess(data){
+    return (dispatch) => {
+        dispatch({
+            type: transportScheduleConstants.CHANGE_TRANSPORT_REQUIREMENT_PROCESS_REQUEST
+        });
+        transportScheduleServices
+            .changeTransportRequirementProcess(data)
+            .then((res) => {
+                dispatch({
+                    type: transportScheduleConstants.CHANGE_TRANSPORT_REQUIREMENT_PROCESS_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch((error) => {
+                dispatch({
+                    type: transportScheduleConstants.CHANGE_TRANSPORT_REQUIREMENT_PROCESS_FAILURE,
                     error
                 });
             });

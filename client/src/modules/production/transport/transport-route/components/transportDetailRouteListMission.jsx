@@ -21,7 +21,13 @@ function TransportDetailRouteListMission(props) {
     const [driver, setDriver] = useState()
 
     const handleShowReportMission = (routeOrdinal_i) => {
-        props.getTransportScheduleByPlanId(transportPlanId);
+        let data = {
+            planId: transportPlanId,
+            requirementId: routeOrdinal_i.transportRequirement._id,
+            status: 1,
+            description: " "
+        }
+        props.changeTransportRequirementProcess(data);
         window.$(`#modal-report-process`).modal('show');
     }
 
@@ -137,6 +143,8 @@ function mapState(state) {
 
 const actions = {
     getTransportScheduleByPlanId: transportScheduleActions.getTransportScheduleByPlanId,
+    
+    changeTransportRequirementProcess: transportScheduleActions.changeTransportRequirementProcess,
     getDetailTransportPlan: transportPlanActions.getDetailTransportPlan,
 }
 

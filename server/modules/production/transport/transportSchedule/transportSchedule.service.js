@@ -5,6 +5,8 @@ const {
     connect
 } = require(`../../../../helpers/dbHelper`);
 
+const TransportRequirementServices = require('../transportRequirements/transportRequirements.service')
+
 /**
  * Tạo transportRoute mới với id = transportPlan._id
  * data = {transportPlan: _id}
@@ -184,6 +186,23 @@ exports.planDeleteTransportSchedule = async (portal, planId) => {
         await TransportSchedule(connect(DB_CONNECTION, portal)).findByIdAndDelete({ _id: transportSchedule._id });
     }
     // return transportPlan;
+}
+
+exports.changeTransportRequirementProcess = async (portal, data) => {
+
+    const status = data?.status;
+    const description = data?.description;
+    const planId = data?.planId;
+    const requirementId = data?.requirementId;
+    const value = {
+        transportStatus: {
+            status: status,
+            description: description,
+        }
+    }
+    await TransportRequirementServices.editTransportRequirement(portal, requirementId, value);
+    let transportRoute = await this.getTransportRouteByPlanId(portal, planId);
+    return transportRoute;
 }
 
 exports.driverSendMessage = async (portal, data, userId) => {

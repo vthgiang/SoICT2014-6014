@@ -14,7 +14,7 @@ router.post('/driver-send-message', auth, transportScheduleController.driverSend
 // router.get('/', auth, TransportVehicleController.getAllTransportVehicles);
 // router.post('/', auth, TransportVehicleController.createTransportVehicle);
 // router.post('/:id', auth, TransportVehicleController.editTransportVehicleToSetPlan);
-// router.patch('/:id', auth, ExampleController.editExample);
+router.patch('/change-transport-requirement-process', auth, transportScheduleController.changeTransportRequirementProcess);
 // router.delete('/:id', auth, ExampleController.deleteExample);
 
 module.exports = router;

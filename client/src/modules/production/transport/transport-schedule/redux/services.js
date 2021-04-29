@@ -2,6 +2,7 @@ import { sendRequest } from '../../../../../helpers/requestHelper';
 export const transportScheduleServices = {
     editTransportScheduleByPlanId,
     getTransportScheduleByPlanId,
+    changeTransportRequirementProcess,
     driverSendMessage,
 }
 
@@ -21,6 +22,26 @@ function editTransportScheduleByPlanId(planId, data) {
     return sendRequest(
         {
             url: `${process.env.REACT_APP_SERVER}/transport-schedule/edit-by-plan-id/${planId}`,
+            method: "PATCH",
+            data: data
+        },
+        true,
+        true,
+        "manage_transport"
+    )
+}
+
+
+/**
+ * data = {planId: , vehicleId, status, description}
+ * @param {*} id 
+ * @param {*} data 
+ * @returns 
+ */
+function changeTransportRequirementProcess(data) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/transport-schedule/change-transport-requirement-process`,
             method: "PATCH",
             data: data
         },
