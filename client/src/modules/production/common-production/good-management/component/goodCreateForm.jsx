@@ -251,7 +251,7 @@ class GoodCreateForm extends Component {
     isFormValidated = () => {
         let { name, code, baseUnit, category, materials, numberExpirationDate, type } = this.state;
         let result;
-        if (type === "material") {
+        if (!type || type === "material") {
             result = this.validateName(name, false) &&
                 this.validateCode(code, false) &&
                 this.validateBaseUnit(baseUnit, false) &&
