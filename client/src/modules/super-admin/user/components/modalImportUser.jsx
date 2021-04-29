@@ -55,8 +55,8 @@ const dataImportTemplate = (listRole) => {
                         data: [
                             {
                                 name: "Nguyễn Văn A",
-                                email: "nva.vnist@gmail.com",
-                                roles: "Nhân viên kỹ thuật",
+                                email: "nva_.vnist@gmail.com",
+                                roles: "Employee",
                             }
                         ]
                     }
