@@ -248,8 +248,6 @@ const EmployeeEditFrom = (props) => {
                 experiences: data
             })
         }
-        console.log(state.experiences);
-        console.log(data);
     }
 
     /**
@@ -452,7 +450,6 @@ const EmployeeEditFrom = (props) => {
      * @param {*} editData : Chứng chỉ muốn chỉnh sửa
      */
     const handleEditCertificate = (data, editData) => {
-        console.log(editData)
         const { editCertificates } = state;
         if (editData._id) {
             setState({
@@ -465,7 +462,6 @@ const EmployeeEditFrom = (props) => {
                 certificates: data
             })
         }
-        console.log(state);
     }
 
     /**
@@ -554,8 +550,6 @@ const EmployeeEditFrom = (props) => {
             ...state,
             contracts: [...contracts, addData]
         })
-        console.log(data, state.contracts);
-        console.log(addData);
     }
 
     /**
@@ -566,12 +560,10 @@ const EmployeeEditFrom = (props) => {
     const handleEditContract = (data, editData) => {
         const { editContracts } = state;
         if (editData._id) {
-            console.log(state.editContracts);
             setState({
                 ...state,
                 editContracts: [...editContracts, editData]
             })
-            console.log(state.editContracts);
         }
         else {
             setState({
@@ -579,8 +571,6 @@ const EmployeeEditFrom = (props) => {
                 contracts: data
             })
         }
-        console.log(state.contracts);
-        console.log(data)
     }
 
     /**
@@ -973,7 +963,6 @@ const EmployeeEditFrom = (props) => {
         formData.append("fileAvatar", avatar);
 
         props.updateInformationEmployee(_id, formData);
-        console.log(state);
         experiences.forEach(x => {
             if (x._id === undefined) {
                 x._id = "0"
