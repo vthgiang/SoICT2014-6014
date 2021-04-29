@@ -249,13 +249,22 @@ class GoodCreateForm extends Component {
     }
 
     isFormValidated = () => {
-        let result =
-            this.validateName(this.state.name, false) &&
-            this.validateCode(this.state.code, false) &&
-            this.validateBaseUnit(this.state.baseUnit, false) &&
-            this.validateCategory(this.state.category, false) &&
-            this.state.materials.length > 0 &&
-            this.validateNumberExpirationDate(this.state.numberExpirationDate, false)
+        let { name, code, baseUnit, category, materials, numberExpirationDate, type } = this.state;
+        let result;
+        if (type === "material") {
+            result = this.validateName(name, false) &&
+                this.validateCode(code, false) &&
+                this.validateBaseUnit(baseUnit, false) &&
+                this.validateCategory(category, false) &&
+                this.validateNumberExpirationDate(numberExpirationDate, false)
+        } else {
+            result = this.validateName(name, false) &&
+                this.validateCode(code, false) &&
+                this.validateBaseUnit(baseUnit, false) &&
+                this.validateCategory(category, false) &&
+                materials.length > 0 &&
+                this.validateNumberExpirationDate(numberExpirationDate, false)
+        }
         return result;
     };
 
@@ -300,6 +309,7 @@ class GoodCreateForm extends Component {
 
         if (units) listUnit = units;
         if (materials) listMaterial = materials;
+        console.log('state', this.state);
         return (
             <React.Fragment>
                 <ButtonModal
@@ -410,8 +420,8 @@ class GoodCreateForm extends Component {
                                         <InfoMillCreateForm onDataChange={this.handleListMillsChange} />
                                     </React.Fragment>
                                 ) : (
-                                        ""
-                                    )}
+                                    ""
+                                )}
                             </div>
                         </div>
                     </form>

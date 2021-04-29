@@ -3,17 +3,17 @@ const { connect } = require(`../../../../helpers/dbHelper`);
 
 exports.getGoodsByType = async (company, query, portal) => {
     var { page, limit, type } = query;
-    if (!company) throw ['company_invaild'];
+    // if (!company) throw ['company_invaild'];
     if (!page && !limit) {
         return await Good(connect(DB_CONNECTION, portal))
-            .find({ company, type })
+            .find({type })
             .populate([
                 { path: 'materials.good', select: 'id name' },
                 { path: 'manufacturingMills.manufacturingMill' }
             ])
     } else {
         let option = {
-            company: company,
+            // company: company,
             type: type
         }
 
@@ -53,7 +53,7 @@ exports.getAllGoodsByType = async (query, portal) => {
 
 exports.getAllGoodsByCategory = async (company, categoryId, portal) => {
     return await Good(connect(DB_CONNECTION, portal))
-        .find({ company, category: categoryId })
+        .find({category: categoryId })
         .populate([
             { path: 'materials.good', select: 'id name' }
         ])
@@ -61,7 +61,7 @@ exports.getAllGoodsByCategory = async (company, categoryId, portal) => {
 
 exports.createGoodByType = async (company, data, portal) => {
     let good = await Good(connect(DB_CONNECTION, portal)).create({
-        company: company,
+        // company: company,
         category: data.category,
         code: data.code,
         name: data.name,
@@ -76,19 +76,19 @@ exports.createGoodByType = async (company, data, portal) => {
                 description: item.description
             }
         }),
-        materials: data.materials.map(item => {
+        materials: data?.materials ? data.materials.map(item => {
             return {
                 good: item.good,
                 quantity: item.quantity
             }
-        }),
-        manufacturingMills: data.manufacturingMills.map(item => {
+        }):[],
+        manufacturingMills: data?.manufacturingMills ? data.manufacturingMills.map(item => {
             return {
                 manufacturingMill: item.manufacturingMill,
                 productivity: item.productivity,
                 personNumber: item.personNumber
             }
-        }),
+        }):[], // Trường hợp manufacturingMill ko có.. => data.manufacturingMills lỗi.. => không tạo được
         description: data.description,
         quantity: data.quantity ? data.quantity : 0,
         pricePerBaseUnit: data.pricePerBaseUnit,
@@ -143,7 +143,7 @@ exports.editGood = async (id, data, portal) => {
         }),
         good.description = data.description,
         good.quantity = data.quantity
-    good.pricePerBaseUnit = data.pricePerBaseUnit,
+        good.pricePerBaseUnit = data.pricePerBaseUnit,
         good.salesPriceVariance = data.salesPriceVariance
     await good.save();
 
@@ -163,7 +163,7 @@ exports.deleteGood = async (id, portal) => {
 
 exports.getAllGoods = async (company, portal) => {
     return await Good(connect(DB_CONNECTION, portal))
-        .find({ company })
+        .find({})
         .populate([
             { path: 'materials.good', select: 'id name' },
             { path: 'manufacturingMills.manufacturingMill' }
