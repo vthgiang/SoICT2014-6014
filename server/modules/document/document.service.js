@@ -1207,7 +1207,8 @@ exports.importDocumentArchive = async (portal, data, company) => {
                 .map((x) => {
                     return x.trim();
                 })
-                .join(" - ");
+            path.pop()
+            path=path.join(" - ");
             const parentArchive = await DocumentArchive(
                 connect(DB_CONNECTION, portal)
             ).findOne({ path: path });

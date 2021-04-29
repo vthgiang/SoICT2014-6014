@@ -77,11 +77,24 @@ function AdministrationDocumentDomains(props) {
     const convertDataToExportData = (data) => {
         let department = props.department.list;
         data = data ? data.map((x, index) => {
-            return {
-                STT: index + 1,
-                name: x.name,
-                description: x.description,
+            
+            if (x.parent!=="#"){
+                let parent=null
+                let index = data.findIndex(value=>value.id===x.parent)
+                if (index !== -1) parent = data[index].name
+                
+                return {
+                    name: x.name,
+                    description: x.description,
+                    parent:parent
+                }
+            } else {
+                return {
+                    name: x.name,
+                    description: x.description,
+                }
             }
+            
         }) : "";
         department = department ? department.map((x, index) => {
             return {
@@ -95,60 +108,33 @@ function AdministrationDocumentDomains(props) {
             dataSheets: [
                 {
                     sheetName: "Sheet1",
-                    tables: [
-                        {
-                            tableName: "Bảng thống kê lĩnh vực",
-                            rowHeader: 1,
-                            columns: [
-                                { key: "STT", value: "STT", vertical: 'middle', horizontal: 'center' },
-                                { key: "name", value: "Tên lĩnh vực", width: 40 },
-                                { key: "description", value: "Mô tả lĩnh vực", width: 60 },
-                            ],
-                            styleColumn: {
-                                STT: {                                  // Khoá tương ứng của tiêu đề bảng (key)
-                                    vertical: 'middle',
-                                    horizontal: 'center'
-                                },
-                                name: {                                  // Khoá tương ứng của tiêu đề bảng (key)
-                                    vertical: 'middle',
-                                    //horizontal: 'center'
-                                },
-                                description: {                                  // Khoá tương ứng của tiêu đề bảng (key)
-                                    vertical: 'middle',
-                                    //  horizontal: 'center'
-                                },
-
+                    sheetTitle: "Danh sách lĩnh vực",
+                    tables: [{
+                        rowHeader: 1,
+                        columns: [
+                            { key: "name", value: "Tên lĩnh vực", width: 40, vertical: 'middle', horizontal: 'center' },
+                            { key: "description", value: "Mô tả lĩnh vực", width: 60, vertical: 'middle', horizontal: 'center' },
+                            { key: "parent", value: "Tên lĩnh vực cha", width: 40, vertical: 'middle', horizontal: 'center' },
+                        ],
+                        styleColumn: {
+                            STT: {                                  // Khoá tương ứng của tiêu đề bảng (key)
+                                vertical: 'middle',
+                                horizontal: 'center'
                             },
-                            data: data
+                            name: {                                  // Khoá tương ứng của tiêu đề bảng (key)
+                                vertical: 'middle',
+                                //horizontal: 'center'
+                            },
+                            description: {                                  // Khoá tương ứng của tiêu đề bảng (key)
+                                vertical: 'middle',
+                                //  horizontal: 'center'
+                            },
+            
                         },
-                        {
-                            tableName: "Thông tin phòng ban người xuất báo cáo",
-                            rowHeader: 1,
-                            columns: [
-                                { key: "STT", value: "STT", vertical: 'middle', horizontal: 'center' },
-                                { key: "name", value: "Tên lĩnh vực", width: 40 },
-                                { key: "description", value: "Mô tả lĩnh vực", width: 60 },
-                            ],
-                            styleColumn: {
-                                STT: {                                  // Khoá tương ứng của tiêu đề bảng (key)
-                                    vertical: 'middle',
-                                    horizontal: 'center'
-                                },
-                                name: {                                  // Khoá tương ứng của tiêu đề bảng (key)
-                                    vertical: 'middle',
-                                    //horizontal: 'center'
-                                },
-                                description: {                                  // Khoá tương ứng của tiêu đề bảng (key)
-                                    vertical: 'middle',
-                                    //  horizontal: 'center'
-                                },
-
-                            },
-                            data: department,
-
-                        }
-                    ]
-                },
+                        data:data
+                    }]
+            
+                }
             ]
         }
         return exportData;
@@ -182,7 +168,7 @@ function AdministrationDocumentDomains(props) {
     }) : null
     let dataExport = [];
     if (documents.isLoading === false) {
-        dataExport = list;
+        dataExport = dataTree;
     }
     let exportData = convertDataToExportData(dataExport);
     let unChooseNode = currentDomain ? findChildrenNode(list, currentDomain) : [];
