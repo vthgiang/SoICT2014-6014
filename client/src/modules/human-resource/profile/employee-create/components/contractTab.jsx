@@ -97,7 +97,7 @@ function ContractTab(props) {
             props.handleChange('contractEndDate', contract?.endDate ? contract.endDate : "");
             props.handleChange('contractType', contract?.contractType ? contract.contractType : "");
         };
-    }, [state.contracts])
+    }, [JSON.stringify(state.contracts)])
 
     // console.log(contractEndDate);
 
