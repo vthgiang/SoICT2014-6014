@@ -1,98 +1,114 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DepartmentActions } from '../redux/actions';
 import { DialogModal, ErrorLabel, SelectBox } from '../../../../common-components';
 import ValidationHelper from '../../../../helpers/validationHelper';
 
-class DepartmentCreateWithParent extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            managers: [],
-            deputyManagers: [],
-            employees: []
-        }
-    }
+function DepartmentCreateWithParent(props) {
+    const [state, setState] = useState({
+        managers: [],
+        deputyManagers: [],
+        employees: []
+    })
 
-    handleAddManager = (e) => {
-        this.setState({
-            managers: [...this.state.managers, '']
+    const handleAddManager = (e) => {
+        setState({
+            ...state,
+            managers: [...state.managers, '']
         });
     }
 
-    handleChangeManager = (e, index) => {
-        let { managers } = this.state;
+    const handleChangeManager = (e, index) => {
+        let { managers } = state;
         managers[index] = e.target.value;
-        this.setState({ managers });
+        setState({
+            ...state,
+            managers
+        });
     }
 
-    handleRemoveManager = (index) => {
-        let { managers } = this.state;
+    const handleRemoveManager = (index) => {
+        let { managers } = state;
         managers.splice(index, 1);
-        this.setState({ managers });
-    }
-
-    handleAddDeputyManager = (e) => {
-        this.setState({
-            deputyManagers: [...this.state.deputyManagers, '']
+        setState({
+            ...state,
+            managers
         });
     }
 
-    handleChangeDeputyManager = (e, index) => {
-        let { deputyManagers } = this.state;
+    const handleAddDeputyManager = (e) => {
+        setState({
+            ...state,
+            deputyManagers: [...state.deputyManagers, '']
+        });
+    }
+
+    const handleChangeDeputyManager = (e, index) => {
+        let { deputyManagers } = state;
         deputyManagers[index] = e.target.value;
-        this.setState({ deputyManagers });
-    }
-
-    handleRemoveDeputyManager = (index) => {
-        let { deputyManagers } = this.state;
-        deputyManagers.splice(index, 1);
-        this.setState({ deputyManagers });
-    }
-
-    handleAddEmployee = (e) => {
-        this.setState({
-            employees: [...this.state.employees, '']
+        setState({
+            ...state,
+            deputyManagers
         });
     }
 
-    handleChangeEmployee = (e, index) => {
-        let { employees } = this.state;
-        employees[index] = e.target.value;
-        this.setState({ employees });
+    const handleRemoveDeputyManager = (index) => {
+        let { deputyManagers } = state;
+        deputyManagers.splice(index, 1);
+        setState({
+            ...state,
+            deputyManagers
+        });
     }
 
-    handleRemoveEmployee = (index) => {
-        let { employees } = this.state;
+    const handleAddEmployee = (e) => {
+        setState({
+            ...state,
+            employees: [...state.employees, '']
+        });
+    }
+
+    const handleChangeEmployee = (e, index) => {
+        let { employees } = state;
+        employees[index] = e.target.value;
+        setState({
+            ...state,
+            employees
+        });
+    }
+
+    const handleRemoveEmployee = (index) => {
+        let { employees } = state;
         employees.splice(index, 1);
-        this.setState({ employees });
+        setState({
+            ...state,
+            employees
+        });
     }
 
     // Thiet lap cac gia tri tu props vao state
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.departmentId !== prevState.departmentId) {
-            return {
-                ...prevState,
-                departmentId: nextProps.departmentId,
-                departmentParent: nextProps.departmentParent,
+    useEffect(() => {
+        if (props.departmentId !== state.departmentId) {
+            setState({
+                ...state,
+                departmentId: props.departmentId,
+                departmentParent: props.departmentParent,
                 departmentNameError: undefined,
                 departmentDescriptionError: undefined,
                 departmentManagerError: undefined,
                 departmentDeputyManagerError: undefined,
                 departmentEmployeeError: undefined,
-            }
-        } else {
-            return null;
+            })
         }
-    }
+    }, [props.departmentId])
 
     /**
      * Validate form
     */
-    isFormValidated = () => {
-        let { departmentName, departmentDescription } = this.state;
-        let { translate } = this.props;
+    const isFormValidated = () => {
+        let { departmentName, departmentDescription } = state;
+        let { translate } = props;
         if (!ValidationHelper.validateName(translate, departmentName).status || !ValidationHelper.validateDescription(translate, departmentDescription).status) return false;
         return true;
     }
@@ -100,217 +116,219 @@ class DepartmentCreateWithParent extends Component {
     /**
      * Thực hiện thêm đơn vị mới
     */
-    save = () => {
-        if (this.isFormValidated()) {
-            return this.props.create({
-                name: this.state.departmentName,
-                description: this.state.departmentDescription,
-                managers: this.state.managers,
-                deputyManagers: this.state.deputyManagers,
-                employees: this.state.employees,
-                parent: this.state.departmentParent
+    const save = () => {
+        if (isFormValidated()) {
+            return props.create({
+                name: state.departmentName,
+                description: state.departmentDescription,
+                managers: state.managers,
+                deputyManagers: state.deputyManagers,
+                employees: state.employees,
+                parent: state.departmentParent
             });
         }
     }
 
-    handleParent = (value) => {
-        this.setState({
+    const handleParent = (value) => {
+        console.log(value);
+        setState({
+            ...state,
             departmentParent: value[0]
         })
     }
 
-    handleName = (e) => {
+    const handleName = (e) => {
         let { value } = e.target;
-        let { translate } = this.props;
+        let { translate } = props;
         let { message } = ValidationHelper.validateName(translate, value, 4, 255);
-        this.setState({
+        setState({
+            ...state,
             departmentName: value,
             departmentNameError: message
         });
     }
 
-    handleDescription = (e) => {
+    const handleDescription = (e) => {
         let { value } = e.target;
-        let { translate } = this.props;
+        let { translate } = props;
         let { message } = ValidationHelper.validateDescription(translate, value);
-        this.setState({
+        setState({
+            ...state,
             departmentDescription: value,
             departmentDescriptionError: message
         });
     }
 
-    render() {
-        const { translate, department } = this.props;
+    const { translate, department } = props;
 
-        const { departmentId } = this.props;
-        const { departmentParent, departmentNameError, departmentDescriptionError } = this.state;
-        console.log("state create organ:", this.state)
+    const { departmentId } = props;
+    const { departmentParent, departmentNameError, departmentDescriptionError } = state;
+    console.log("state create organ:", state)
 
-        return (
-            <React.Fragment>
-                <DialogModal
-                    isLoading={department.isLoading}
-                    modalID="modal-create-department-with-parent"
-                    formID="form-create-department-with-parent"
-                    title={translate('manage_department.add_title')}
-                    func={this.save}
-                    disableSubmit={!this.isFormValidated()}
-                >
-                    {/* Form thêm đơn vị mới */}
-                    <form id="form-create-department-with-parent">
+    return (
+        <React.Fragment>
+            <DialogModal
+                isLoading={department.isLoading}
+                modalID="modal-create-department-with-parent"
+                formID="form-create-department-with-parent"
+                title={translate('manage_department.add_title')}
+                func={save}
+                disableSubmit={!isFormValidated()}
+            >
+                {/* Form thêm đơn vị mới */}
+                <form id="form-create-department-with-parent">
 
-                        {/* Thông tin về đơn vị */}
-                        <fieldset className="scheduler-border">
-                            <legend className="scheduler-border"><span>{translate('manage_department.info')}</span></legend>
+                    {/* Thông tin về đơn vị */}
+                    <fieldset className="scheduler-border">
+                        <legend className="scheduler-border"><span>{translate('manage_department.info')}</span></legend>
 
-                            {/* Tên đơn vị */}
-                            <div className={`form-group ${!departmentNameError ? "" : "has-error"}`}>
-                                <label>{translate('manage_department.name')}<span className="attention"> * </span></label>
-                                <input type="text" className="form-control" onChange={this.handleName} />
-                                <ErrorLabel content={departmentNameError} />
-                            </div>
+                        {/* Tên đơn vị */}
+                        <div className={`form-group ${!departmentNameError ? "" : "has-error"}`}>
+                            <label>{translate('manage_department.name')}<span className="attention"> * </span></label>
+                            <input type="text" className="form-control" onChange={handleName} />
+                            <ErrorLabel content={departmentNameError} />
+                        </div>
 
-                            {/* Mô tả về đơn vị */}
-                            <div className={`form-group ${!departmentDescriptionError ? "" : "has-error"}`}>
-                                <label>{translate('manage_department.description')}<span className="attention"> * </span></label>
-                                <textarea type="text" className="form-control" onChange={this.handleDescription} />
-                                <ErrorLabel content={departmentDescriptionError} />
-                            </div>
+                        {/* Mô tả về đơn vị */}
+                        <div className={`form-group ${!departmentDescriptionError ? "" : "has-error"}`}>
+                            <label>{translate('manage_department.description')}<span className="attention"> * </span></label>
+                            <textarea type="text" className="form-control" onChange={handleDescription} />
+                            <ErrorLabel content={departmentDescriptionError} />
+                        </div>
 
-                            {/* Đơn vị cha */}
-                            <div className="form-group">
-                                <label>{translate('manage_department.parent')}</label>
-                                <SelectBox
-                                    id={`cowp-${departmentId}`}
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    items={[
-                                        { text: "Không có phòng ban cha" }, ...department.list.map(department => { return { value: department ? department._id : null, text: department ? department.name : "" } })
-                                    ]}
-                                    onChange={this.handleParent}
-                                    value={departmentParent}
-                                    multiple={false}
-                                />
-                            </div>
-                        </fieldset>
+                        {/* Đơn vị cha */}
+                        <div className="form-group">
+                            <label>{translate('manage_department.parent')}</label>
+                            <SelectBox
+                                id={`cowp-${departmentId}`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                items={[
+                                    { text: "Không có phòng ban cha" }, ...department.list.map(department => { return { value: department ? department._id : null, text: department ? department.name : "" } })
+                                ]}
+                                onChange={handleParent}
+                                value={departmentParent}
+                                multiple={false}
+                            />
+                        </div>
+                    </fieldset>
 
-                        {/* Các chức danh của đơn vị */}
-                        <fieldset className="scheduler-border">
-                            <legend className="scheduler-border"><span>{translate('manage_department.roles_of_department')}</span></legend>
+                    {/* Các chức danh của đơn vị */}
+                    <fieldset className="scheduler-border">
+                        <legend className="scheduler-border"><span>{translate('manage_department.roles_of_department')}</span></legend>
 
-                            {/* Tên chức danh cho trưởng đơn vị */}
-                            <div className="form-group">
-                                <table className="table table-hover table-striped table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th><label>{translate('manage_department.manager_name')}</label></th>
-                                            <th style={{ width: '40px' }} className="text-center"><a href="#add-manager" className="text-green" onClick={this.handleAddManager}><i className="material-icons">add_box</i></a></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            this.state.managers.length > 0 &&
-                                            this.state.managers.map((manager, index) => {
-                                                return <tr key={index}>
-                                                    <td>
-                                                        <input type="text"
-                                                            className="form-control"
-                                                            placeholder={translate('manage_department.manager_example')}
-                                                            value={manager}
-                                                            onChange={(e) => this.handleChangeManager(e, index)}
-                                                        />
-                                                    </td>
-                                                    <td>
-                                                        <a href="#delete-manager"
-                                                            className="text-red"
-                                                            style={{ border: 'none' }}
-                                                            onClick={() => this.handleRemoveManager(index)}><i className="fa fa-trash"></i>
-                                                        </a>
-                                                    </td>
-                                                </tr>
-                                            })
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
+                        {/* Tên chức danh cho trưởng đơn vị */}
+                        <div className="form-group">
+                            <table className="table table-hover table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th><label>{translate('manage_department.manager_name')}</label></th>
+                                        <th style={{ width: '40px' }} className="text-center"><a href="#add-manager" className="text-green" onClick={handleAddManager}><i className="material-icons">add_box</i></a></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        state.managers.length > 0 &&
+                                        state.managers.map((manager, index) => {
+                                            return <tr key={index}>
+                                                <td>
+                                                    <input type="text"
+                                                        className="form-control"
+                                                        placeholder={translate('manage_department.manager_example')}
+                                                        value={manager}
+                                                        onChange={(e) => handleChangeManager(e, index)}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <a href="#delete-manager"
+                                                        className="text-red"
+                                                        style={{ border: 'none' }}
+                                                        onClick={() => handleRemoveManager(index)}><i className="fa fa-trash"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        })
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
 
-                            {/* Tên chức danh cho phó đơn vị */}
-                            <div className="form-group">
-                                <table className="table table-hover table-striped table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th><label>{translate('manage_department.deputy_manager_name')}</label></th>
-                                            <th style={{ width: '40px' }} className="text-center"><a href="#add-vicemanager" className="text-green" onClick={this.handleAddDeputyManager}><i className="material-icons">add_box</i></a></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            this.state.deputyManagers.length > 0 &&
-                                            this.state.deputyManagers.map((vicemanager, index) => {
-                                                return <tr key={index}>
-                                                    <td>
-                                                        <input type="text"
-                                                            className="form-control"
-                                                            placeholder={translate('manage_department.deputy_manager_example')}
-                                                            value={vicemanager}
-                                                            onChange={(e) => this.handleChangeDeputyManager(e, index)}
-                                                        />
-                                                    </td>
-                                                    <td>
-                                                        <a href="#delete-vice-manager"
-                                                            className="text-red"
-                                                            style={{ border: 'none' }}
-                                                            onClick={() => this.handleRemoveDeputyManager(index)}><i className="fa fa-trash"></i>
-                                                        </a>
-                                                    </td>
-                                                </tr>
-                                            })
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
+                        {/* Tên chức danh cho phó đơn vị */}
+                        <div className="form-group">
+                            <table className="table table-hover table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th><label>{translate('manage_department.deputy_manager_name')}</label></th>
+                                        <th style={{ width: '40px' }} className="text-center"><a href="#add-vicemanager" className="text-green" onClick={handleAddDeputyManager}><i className="material-icons">add_box</i></a></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        state.deputyManagers.length > 0 &&
+                                        state.deputyManagers.map((vicemanager, index) => {
+                                            return <tr key={index}>
+                                                <td>
+                                                    <input type="text"
+                                                        className="form-control"
+                                                        placeholder={translate('manage_department.deputy_manager_example')}
+                                                        value={vicemanager}
+                                                        onChange={(e) => handleChangeDeputyManager(e, index)}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <a href="#delete-vice-manager"
+                                                        className="text-red"
+                                                        style={{ border: 'none' }}
+                                                        onClick={() => handleRemoveDeputyManager(index)}><i className="fa fa-trash"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        })
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
 
-                            {/* Tên chức danh cho nhân viên đơn vị */}
-                            <div className="form-group">
-                                <table className="table table-hover table-striped table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th><label>{translate('manage_department.employee_name')}</label></th>
-                                            <th style={{ width: '40px' }} className="text-center"><a href="#add-employee" className="text-green" onClick={this.handleAddEmployee}><i className="material-icons">add_box</i></a></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            this.state.employees.length > 0 &&
-                                            this.state.employees.map((employee, index) => {
-                                                return <tr key={index}>
-                                                    <td>
-                                                        <input type="text"
-                                                            className="form-control"
-                                                            placeholder={translate('manage_department.employee_example')}
-                                                            value={employee}
-                                                            onChange={(e) => this.handleChangeEmployee(e, index)}
-                                                        />
-                                                    </td>
-                                                    <td>
-                                                        <a href="#delete-employee"
-                                                            className="text-red"
-                                                            style={{ border: 'none' }}
-                                                            onClick={() => this.handleRemoveEmployee(index)}><i className="fa fa-trash"></i>
-                                                        </a>
-                                                    </td>
-                                                </tr>
-                                            })
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
-                        </fieldset>
-                    </form>
-                </DialogModal>
-            </React.Fragment>
-        );
-    }
+                        {/* Tên chức danh cho nhân viên đơn vị */}
+                        <div className="form-group">
+                            <table className="table table-hover table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th><label>{translate('manage_department.employee_name')}</label></th>
+                                        <th style={{ width: '40px' }} className="text-center"><a href="#add-employee" className="text-green" onClick={handleAddEmployee}><i className="material-icons">add_box</i></a></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        state.employees.length > 0 &&
+                                        state.employees.map((employee, index) => {
+                                            return <tr key={index}>
+                                                <td>
+                                                    <input type="text"
+                                                        className="form-control"
+                                                        placeholder={translate('manage_department.employee_example')}
+                                                        value={employee}
+                                                        onChange={(e) => handleChangeEmployee(e, index)}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <a href="#delete-employee"
+                                                        className="text-red"
+                                                        style={{ border: 'none' }}
+                                                        onClick={() => handleRemoveEmployee(index)}><i className="fa fa-trash"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        })
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </fieldset>
+                </form>
+            </DialogModal>
+        </React.Fragment>
+    );
 }
 
 function mapState(state) {

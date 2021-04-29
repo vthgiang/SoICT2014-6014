@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -6,37 +6,35 @@ import { SelectBox } from '../../../../common-components';
 
 import { ConfigurationActions } from '../redux/actions';
 
-class HumanResourceConfiguration extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {}
-    }
+function HumanResourceConfiguration(props) {
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id) {
-            nextProps.getConfiguration();
-            return {
-                id: nextProps.id,
+    const [state, setState] = useState({})
+
+    useEffect(() => {
+        if (props.id !== state.id) {
+            props.getConfiguration();
+            setState({
+                ...state,
+                id: props.id,
                 dataStatus: 1
-            }
-        };
-        return null
-    };
+            })
+        }
+    }, [props.id]);
 
-    shouldComponentUpdate(nextProps, nextState) {
-        if (this.state.dataStatus === 1 && nextProps.modelConfiguration.humanResourceConfig) { // Dữ liệu đã về
-            this.setState(state => {
+    useMemo(() => {
+        if (state.dataStatus === 1 && props.modelConfiguration.humanResourceConfig) { // Dữ liệu đã về
+            setState(state => {
                 return {
                     ...state,
                     dataStatus: 2,
-                    humanResourceConfig: nextProps.modelConfiguration.humanResourceConfig
+                    humanResourceConfig: props.modelConfiguration.humanResourceConfig
                 }
             });
             return false;
         }
 
-        if (this.state.dataStatus === 2) {
-            this.setState(state => {
+        if (state.dataStatus === 2) {
+            setState(state => {
                 return {
                     ...state,
                     dataStatus: 3,
@@ -46,13 +44,15 @@ class HumanResourceConfiguration extends Component {
         };
 
         return true;
-    }
-    handleContractNoticeTimeChange = (e) => {
+    }, [props.modelConfiguration.humanResourceConfig])
+
+    const handleContractNoticeTimeChange = (e) => {
         const { value } = e.target;
-        let { humanResourceConfig } = this.state;
-        humanResourceConfig.contractNoticeTime = value;
-        this.setState({
-            humanResourceConfig: humanResourceConfig,
+        let { humanResourceConfig } = state;
+        props.modelConfiguration.humanResourceConfig.contractNoticeTime = value;
+        setState({
+            ...state,
+            humanResourceConfig: props.modelConfiguration.humanResourceConfig,
         })
     }
 
@@ -60,112 +60,114 @@ class HumanResourceConfiguration extends Component {
      * Function thay đổi kiểu chấm công
      * @param {*} value 
      */
-    handleTimekeepingTypeChange = (value) => {
-        let { humanResourceConfig } = this.state;
-        humanResourceConfig.timekeepingType = value[0];
-        this.setState({
-            humanResourceConfig: humanResourceConfig,
+    const handleTimekeepingTypeChange = (value) => {
+        //let { humanResourceConfig } = state;
+        //humanResourceConfig.timekeepingType = value[0];
+        props.modelConfiguration.humanResourceConfig.timekeepingType = value[0];
+        console.log(props.modelConfiguration.humanResourceConfig.timekeepingType);
+        setState({
+            ...state,
+            humanResourceConfig: props.modelConfiguration.humanResourceConfig,
         })
     }
 
     /** Function thay đổi giờ của các ca làm việc */
-    handleShiftTimeChange = (e) => {
+    const handleShiftTimeChange = (e) => {
         const { name, value } = e.target;
-        let { humanResourceConfig } = this.state;
-        humanResourceConfig.timekeepingByShift[name] = value;
-        this.setState({
-            humanResourceConfig: humanResourceConfig,
+        let { humanResourceConfig } = state;
+        props.modelConfiguration.humanResourceConfig.timekeepingByShift[name] = value;
+        setState({
+            ...state,
+            humanResourceConfig: props.modelConfiguration.humanResourceConfig,
         })
     }
 
-    save = () => {
-        const { humanResourceConfig } = this.state;
+    const save = () => {
+        const { humanResourceConfig } = state;
         console.log(humanResourceConfig);
-        this.props.editConfiguration({ humanResource: humanResourceConfig });
+        props.editConfiguration({ humanResource: humanResourceConfig });
     }
 
-    render() {
-        const { translate } = this.props;
+    const { translate } = props;
 
-        const { id, humanResourceConfig, showContract, showTimekeep } = this.state;
-        let contractNoticeTime = '', timekeepingType = '', timekeepingByShift = '', timekeepingByShiftAndHour = '';
-        if (humanResourceConfig) {
-            contractNoticeTime = humanResourceConfig.contractNoticeTime;
-            timekeepingType = humanResourceConfig.timekeepingType;
-            timekeepingByShift = humanResourceConfig.timekeepingByShift;
-            timekeepingByShiftAndHour = humanResourceConfig.timekeepingByShiftAndHour;
-        };
+    const { id, humanResourceConfig, showContract, showTimekeep } = state;
+    let contractNoticeTime = '', timekeepingType = '', timekeepingByShift = '', timekeepingByShiftAndHour = '';
+    if (humanResourceConfig) {
+        contractNoticeTime = humanResourceConfig.contractNoticeTime;
+        timekeepingType = humanResourceConfig.timekeepingType;
+        timekeepingByShift = humanResourceConfig.timekeepingByShift;
+        timekeepingByShiftAndHour = humanResourceConfig.timekeepingByShiftAndHour;
+    };
 
-        return (
-            <div id={id} className="tab-pane active">
-                <div className="row box-body">
+    return (
+        <div id={id} className="tab-pane active">
+            <div className="row box-body">
 
-                    <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                        <fieldset className="scheduler-border">
-                            <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">{translate('module_configuration.timekeeping')}</h4></legend>
-                            {/* Kiểu chấm công*/}
-                            <div className="form-group">
-                                <label >{translate('module_configuration.timekeeping_type')}</label>
-                                <SelectBox
-                                    id={`timekeeping-type`}
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    value={timekeepingType}
-                                    items={[{ value: 'shift', text: translate('module_configuration.shift') }, { value: 'hours', text: translate('module_configuration.hours') }]}
-                                    // items={[{ value: 'shift', text: translate('module_configuration.shift') }, { value: 'hours', text: translate('module_configuration.hours') }, { value: 'shift_and_hour', text: translate('module_configuration.shift_and_hour') }]}
-                                    onChange={this.handleTimekeepingTypeChange}
-                                />
-                            </div>
-                            {
-                                timekeepingType === 'shift' &&
-                                <div>
-                                    <div id="work_plan" className="description-box qlcv">
-                                        <h4>{translate('module_configuration.shift')}</h4>
-                                        {/* Số giờ ca 1 */}
-                                        <div className="form-inline">
-                                            <div className="form-group">
-                                                <label>{translate('module_configuration.shift1_time')}</label>
-                                                <input type="number" min='0' value={timekeepingByShift.shift1Time} className="form-control" name="shift1Time" onChange={this.handleShiftTimeChange} />
-                                            </div>
+                <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                    <fieldset className="scheduler-border">
+                        <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">{translate('module_configuration.timekeeping')}</h4></legend>
+                        {/* Kiểu chấm công*/}
+                        <div className="form-group">
+                            <label >{translate('module_configuration.timekeeping_type')}</label>
+                            <SelectBox
+                                id={`timekeeping-type`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                value={timekeepingType}
+                                items={[{ value: 'shift', text: translate('module_configuration.shift') }, { value: 'hours', text: translate('module_configuration.hours') }]}
+                                // items={[{ value: 'shift', text: translate('module_configuration.shift') }, { value: 'hours', text: translate('module_configuration.hours') }, { value: 'shift_and_hour', text: translate('module_configuration.shift_and_hour') }]}
+                                onChange={handleTimekeepingTypeChange}
+                            />
+                        </div>
+                        {
+                            timekeepingType === 'shift' &&
+                            <div>
+                                <div id="work_plan" className="description-box qlcv">
+                                    <h4>{translate('module_configuration.shift')}</h4>
+                                    {/* Số giờ ca 1 */}
+                                    <div className="form-inline">
+                                        <div className="form-group">
+                                            <label>{translate('module_configuration.shift1_time')}</label>
+                                            <input type="number" min='0' value={timekeepingByShift.shift1Time} className="form-control" name="shift1Time" onChange={handleShiftTimeChange} />
                                         </div>
+                                    </div>
 
-                                        {/* Số giờ ca 2 */}
-                                        <div className="form-inline">
-                                            <div className="form-group">
-                                                <label >{translate('module_configuration.shift2_time')}</label>
-                                                <input type="number" min='0' value={timekeepingByShift.shift2Time} className="form-control" name="shift2Time" onChange={this.handleShiftTimeChange} />
-                                            </div>
+                                    {/* Số giờ ca 2 */}
+                                    <div className="form-inline">
+                                        <div className="form-group">
+                                            <label >{translate('module_configuration.shift2_time')}</label>
+                                            <input type="number" min='0' value={timekeepingByShift.shift2Time} className="form-control" name="shift2Time" onChange={handleShiftTimeChange} />
                                         </div>
+                                    </div>
 
-                                        {/* Số giờ ca 3 */}
-                                        <div className="form-inline">
-                                            <div className="form-group">
-                                                <label >{translate('module_configuration.shift3_time')}</label>
-                                                <input type="number" min='0' value={timekeepingByShift.shift3Time} className="form-control" name="shift3Time" onChange={this.handleShiftTimeChange} />
-                                            </div>
+                                    {/* Số giờ ca 3 */}
+                                    <div className="form-inline">
+                                        <div className="form-group">
+                                            <label >{translate('module_configuration.shift3_time')}</label>
+                                            <input type="number" min='0' value={timekeepingByShift.shift3Time} className="form-control" name="shift3Time" onChange={handleShiftTimeChange} />
                                         </div>
                                     </div>
                                 </div>
-                            }
-                        </fieldset>
-                    </div>
-                    <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                        <fieldset className="scheduler-border">
-                            <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">{translate('human_resource.profile.labor_contract')}</h4></legend>
-                            {/* Báo hết hạn hợp đồng (ngày) */}
-                            <div className="form-group">
-                                <label>{translate('module_configuration.contract_notice_time')}</label>
-                                <input type="number" min='0' step='1' value={contractNoticeTime} className="form-control" name="contractNoticeTimes" onChange={this.handleContractNoticeTimeChange} placeholder={translate('module_configuration.contract_notice_time_title')} />
                             </div>
-                        </fieldset>
-                    </div>
-                    <div className=" col-md-12">
-                        <button type="button" className="btn pull-right btn-success" onClick={() => this.save()} >{translate('human_resource.work_plan.save_as')}</button>
-                    </div>
+                        }
+                    </fieldset>
+                </div>
+                <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                    <fieldset className="scheduler-border">
+                        <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">{translate('human_resource.profile.labor_contract')}</h4></legend>
+                        {/* Báo hết hạn hợp đồng (ngày) */}
+                        <div className="form-group">
+                            <label>{translate('module_configuration.contract_notice_time')}</label>
+                            <input type="number" min='0' step='1' value={contractNoticeTime} className="form-control" name="contractNoticeTimes" onChange={handleContractNoticeTimeChange} placeholder={translate('module_configuration.contract_notice_time_title')} />
+                        </div>
+                    </fieldset>
+                </div>
+                <div className=" col-md-12">
+                    <button type="button" className="btn pull-right btn-success" onClick={() => save()} >{translate('human_resource.work_plan.save_as')}</button>
                 </div>
             </div>
-        );
-    };
+        </div>
+    );
 }
 
 function mapState(state) {

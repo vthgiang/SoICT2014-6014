@@ -304,6 +304,7 @@ function getUserDocumentStatistics(params, data) {
     x = {
         ...data,
         option: params.option,
+        roleId:params.roleId || ""
     };
     return sendRequest(
         {

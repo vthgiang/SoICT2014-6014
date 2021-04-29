@@ -11,9 +11,9 @@ const {
     Notification,
     Timesheet,
     Company,
-    CareerAction,
-    CareerPosition,
-    CareerField,
+    // CareerAction,
+    // CareerPosition,
+    // CareerField,
 } = require('../../../models');
 
 const {
@@ -934,29 +934,29 @@ exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company)
         deleteSocialInsuranceDetails,
         houseHold // dữ liệu về hộ khẩu - thành viên hộ gia đình
     } = data;
-    console.log('\n\n\n\ndataatatatta', data.createCareer, data.editCareer, data.deleteCareer);
+    // console.log('\n\n\n\ndataatatatta', data.createCareer, data.editCareer, data.deleteCareer);
     
-    for(let i in data.createCareer) {
-        if(data.createCareer[i] && data.createCareer[i].position === "undefined") {
-            delete data.createCareer[i].position;
-        }
-    }
-    for(let i in data.editCareer) {
-        if(data.editCareer[i] && data.editCareer[i].position === "undefined") {
-            delete data.editCareer[i].position;
-        }
-    }
-    for(let i in data.deleteCareer) {
-        if(data.deleteCareer[i] && data.deleteCareer[i].position === "undefined") {
-            delete data.deleteCareer[i].position;
-        }
-    }
+    // for(let i in data.createCareer) {
+    //     if(data.createCareer[i] && data.createCareer[i].position === "undefined") {
+    //         delete data.createCareer[i].position;
+    //     }
+    // }
+    // for(let i in data.editCareer) {
+    //     if(data.editCareer[i] && data.editCareer[i].position === "undefined") {
+    //         delete data.editCareer[i].position;
+    //     }
+    // }
+    // for(let i in data.deleteCareer) {
+    //     if(data.deleteCareer[i] && data.deleteCareer[i].position === "undefined") {
+    //         delete data.deleteCareer[i].position;
+    //     }
+    // }
 
     let avatar = employee.avatar,
         fileDegree = fileInfor.fileDegree,
         fileCertificate = fileInfor.fileCertificate,
-        fileMajor = fileInfor.fileMajor,
-        fileCareer = fileInfor.fileCareer,
+        // fileMajor = fileInfor.fileMajor,
+        // fileCareer = fileInfor.fileCareer,
         fileContract = fileInfor.fileContract,
         file = fileInfor.file;
     if (fileInfor.avatar) {
@@ -1014,8 +1014,8 @@ exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company)
     oldEmployee.experiences = deleteEditCreateObjectInArrayObject(oldEmployee.experiences, deleteExperiences, editExperiences, createExperiences);
     oldEmployee.socialInsuranceDetails = deleteEditCreateObjectInArrayObject(oldEmployee.socialInsuranceDetails, deleteSocialInsuranceDetails, editSocialInsuranceDetails, createSocialInsuranceDetails);
 
-    oldEmployee.career = deleteEditCreateObjectInArrayObject(oldEmployee.career, deleteCareer, editCareer, createCareer, fileCareer);
-    oldEmployee.major = deleteEditCreateObjectInArrayObject(oldEmployee.major, deleteMajor, editMajor, createMajor, fileMajor);
+    // oldEmployee.career = deleteEditCreateObjectInArrayObject(oldEmployee.career, deleteCareer, editCareer, createCareer, fileCareer);
+    // oldEmployee.major = deleteEditCreateObjectInArrayObject(oldEmployee.major, deleteMajor, editMajor, createMajor, fileMajor);
     oldEmployee.degrees = deleteEditCreateObjectInArrayObject(oldEmployee.degrees, deleteDegrees, editDegrees, createDegrees, fileDegree);
     oldEmployee.certificates = deleteEditCreateObjectInArrayObject(oldEmployee.certificates, deleteCertificates, editCertificates, createCertificates, fileCertificate);
     oldEmployee.contracts = deleteEditCreateObjectInArrayObject(oldEmployee.contracts, deleteContracts, editContracts, createContracts, fileContract);
@@ -1031,7 +1031,7 @@ exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company)
     // }
 
     // oldEmployee.career = careerEdit;
-    console.log("\n\n==oldEmployee.career==", oldEmployee.career);
+    // console.log("\n\n==oldEmployee.career==", oldEmployee.career);
 
     oldEmployee.avatar = avatar;
     oldEmployee.fullName = employee.fullName;
@@ -1101,7 +1101,7 @@ exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company)
             return {
                 deleteOne: {
                     "filter": {
-                        "_id": x._id
+                        _id: x._id
                     }
                 }
             }
@@ -1110,7 +1110,7 @@ exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company)
             return {
                 updateOne: {
                     "filter": {
-                        "_id": x._id
+                        _id: x._id
                     },
                     "update": {
                         $set: x
@@ -1131,7 +1131,7 @@ exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company)
         }) : [];
         let query = [...queryDelete, ...queryEdit, ...queryCrete];
         if (query.length !== 0) {
-            await collection.bulkWrite(query);
+            await collection(connect(DB_CONNECTION, portal)).bulkWrite(query);
         }
     };
     queryEditCreateDeleteDocumentInCollection(oldEmployee._id, company, Discipline, deleteDisciplines, editDisciplines, createDisciplines);

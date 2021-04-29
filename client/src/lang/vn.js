@@ -556,6 +556,7 @@ export default {
                 update_company_component_success:
                     "Cập nhật component thành công",
                 update_company_component_faile: "Cập nhật component thất bại",
+                company_already_exist: "Tên công ty đã tồn tại"
             },
 
             system_setting: {
