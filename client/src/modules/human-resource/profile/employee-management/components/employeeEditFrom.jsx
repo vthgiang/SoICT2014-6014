@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { convertJsonObjectToFormData } from '../../../../../helpers/jsonObjectToFormDataObjectConverter';
@@ -54,9 +54,9 @@ const EmployeeEditFrom = (props) => {
             identityCardAddress: "",
             identityCardDate: "",
             birthdate: "",
-            experiences: [],
-            socialInsuranceDetails: [],
         },
+        experiences: [],
+        socialInsuranceDetails: [],
         courses: [],
         degrees: [],
         certificates: [],
@@ -90,12 +90,96 @@ const EmployeeEditFrom = (props) => {
         editSocialInsuranceDetails: [],
         editExperiences: [],
         editFiles: [],
+        deleteAnnualLeaves: [],
+        deleteCertificates: [],
+        deleteConmmendations: [],
+        deleteContracts: [],
+        deleteCourses: [],
+        deleteDegrees: [],
+        deleteDisciplines: [],
+        deleteSocialInsuranceDetails: [],
+        deleteExperiences: [],
+        deleteFiles: []
     })
+
+    const mountedRef = useRef(true)
+
+    useEffect(() => {
+        const shouldUpdate = async () => {
+            if (props._id !== state._id && !props.employeesInfo.isLoading) {
+                await props.getEmployeeProfile({ id: props._id, callAPIByUser: false });
+                setState({
+                    ...state,
+                    _id: props?._id,
+                    dataStatus: DATA_STATUS.QUERYING,
+                    img: undefined,
+                    avatar: "",
+                    employee: '',
+                    experiences: [],
+                    degrees: [],
+                    certificates: [],
+                    // career: [],
+                    // major: [],
+                    contracts: [],
+                    files: [],
+                    socialInsuranceDetails: [],
+                    annualLeaves: [],
+                    commendations: [],
+                    disciplines: [],
+                    courses: [],
+                    roles: [],
+                    houseHold: {
+                        headHouseHoldName: '',
+                        documentType: '',
+                        houseHoldNumber: '',
+                        city: '',
+                        district: '',
+                        ward: '',
+                        houseHoldAddress: '',
+                        phone: '',
+                        houseHoldCode: '',
+                        familyMembers: []
+                    }
+                })
+            };
+            if (state.dataStatus === DATA_STATUS.QUERYING && !props.employeesInfo.isLoading) {
+                setState({
+                    ...state,
+                    dataStatus: DATA_STATUS.AVAILABLE,
+                    img: `.${props.employeesInfo?.employees?.[0]?.avatar}`,
+                    avatar: "",
+                    employee: props.employeesInfo.employees?.[0],
+                    experiences: props.employeesInfo.employees?.[0]?.experiences,
+                    degrees: props.employeesInfo.employees?.[0]?.degrees,
+                    certificates: props.employeesInfo.employees?.[0]?.certificates,
+                    // career: props.employeesInfo.employees?.[0]?.career,
+                    // major: props.employeesInfo.employees?.[0]?.major,
+                    contracts: props.employeesInfo?.employees?.[0]?.contracts,
+                    files: props.employeesInfo?.employees?.[0]?.files,
+                    socialInsuranceDetails: props.employeesInfo?.employees?.[0]?.socialInsuranceDetails,
+                    annualLeaves: props.employeesInfo?.annualLeaves,
+                    commendations: props.employeesInfo?.commendations,
+                    disciplines: props.employeesInfo?.disciplines,
+                    courses: props.employeesInfo?.courses,
+                    roles: props.employeesInfo?.roles?.length > 0 && props.employeesInfo?.roles.map(x => x?.roleId?.id),
+                    organizationalUnits: props.employeesInfo?.organizationalUnits?.length > 0 && props.employeesInfo?.organizationalUnits.map(x => x._id),
+                    houseHold: props.employeesInfo?.employees?.[0]?.houseHold
+                });
+            };
+        }
+
+        shouldUpdate()
+        return () => {
+            mountedRef.current = false;
+        }
+    }, [props._id, props.employeesInfo.isLoading, state.dataStatus]);
 
     const { translate, employeesInfo } = props;
 
-    let { _id, img, employee, degrees, certificates, socialInsuranceDetails, contracts, courses,
+    let { _id, img, employee, experiences, degrees, certificates, socialInsuranceDetails, contracts, courses,
         organizationalUnits, roles, commendations, disciplines, annualLeaves, files, houseHold, editMember } = state;
+
+
 
     /**
      * Function upload avatar 
@@ -117,7 +201,8 @@ const EmployeeEditFrom = (props) => {
      */
     const handleChange = (name, value) => {
         const { employee } = state;
-        if (name === 'startingDate' || name === 'leavingDate' || name === 'birthdate' || name === 'identityCardDate' || name === 'taxDateOfIssue' || name === 'healthInsuranceStartDate' || name === 'healthInsuranceEndDate') {
+        if (name === 'startingDate' || name === 'leavingDate' || name === 'birthdate' || name === 'identityCardDate' || name === 'taxDateOfIssue' || name === 'healthInsuranceStartDate' || name === 'healthInsuranceEndDate'
+            || name === 'contractEndDate') {
             if (value) {
                 let partValue = value.split('-');
                 value = [partValue[2], partValue[1], partValue[0]].join('-');
@@ -141,7 +226,7 @@ const EmployeeEditFrom = (props) => {
     const handleCreateExperiences = (data, addData) => {
         setState({
             ...state,
-            experiences: data
+            experiences: [...experiences, addData]
         })
     }
 
@@ -195,7 +280,7 @@ const EmployeeEditFrom = (props) => {
     const handleCreateDegree = (data, addData) => {
         setState({
             ...state,
-            degrees: data
+            degrees: [...degrees, addData]
         })
     }
 
@@ -355,7 +440,7 @@ const EmployeeEditFrom = (props) => {
     const handleCreateCertificate = (data, addData) => {
         setState({
             ...state,
-            certificates: data
+            certificates: [...certificates, addData]
         })
     }
 
@@ -409,7 +494,7 @@ const EmployeeEditFrom = (props) => {
     const handleCreateBHXH = (data, addData) => {
         setState({
             ...state,
-            socialInsuranceDetails: data
+            socialInsuranceDetails: [...socialInsuranceDetails, addData]
         })
     }
 
@@ -463,7 +548,7 @@ const EmployeeEditFrom = (props) => {
     const handleCreateContract = (data, addData) => {
         setState({
             ...state,
-            contracts: data
+            contracts: [...contracts, addData]
         })
     }
 
@@ -479,7 +564,8 @@ const EmployeeEditFrom = (props) => {
                 ...state,
                 editContracts: [...editContracts, editData]
             })
-        } else {
+        }
+        else {
             setState({
                 ...state,
                 contracts: data
@@ -517,7 +603,7 @@ const EmployeeEditFrom = (props) => {
     const handleCreateConmmendation = (data, addData) => {
         setState({
             ...state,
-            commendations: data
+            commendations: [...commendations, addData]
         })
     }
 
@@ -571,7 +657,7 @@ const EmployeeEditFrom = (props) => {
     const handleCreateDiscipline = (data, addData) => {
         setState({
             ...state,
-            disciplines: data
+            disciplines: [...disciplines, addData]
         })
     }
 
@@ -616,7 +702,6 @@ const EmployeeEditFrom = (props) => {
         }
     }
 
-
     /**
      * Function thêm thông tin nghỉ phép
      * @param {*} data : Dữ liệu thông tin nghỉ phép
@@ -625,7 +710,7 @@ const EmployeeEditFrom = (props) => {
     const handleCreateAnnualLeave = (data, addData) => {
         setState({
             ...state,
-            annualLeaves: data
+            annualLeaves: [...annualLeaves, addData]
         })
     }
 
@@ -679,7 +764,7 @@ const EmployeeEditFrom = (props) => {
     const handleCreateFile = (data, addData) => {
         setState({
             ...state,
-            files: data
+            files: [...files, addData]
         })
     }
 
@@ -733,7 +818,7 @@ const EmployeeEditFrom = (props) => {
     const handleCreateCourse = (data, addData) => {
         setState({
             ...state,
-            courses: data
+            courses: [...courses, addData]
         })
     }
 
@@ -820,8 +905,6 @@ const EmployeeEditFrom = (props) => {
         return result;
     }
 
-    console.log(state);
-
     const save = async () => {
         let { _id, experiences, degrees, certificates, contracts, files, avatar,
             disciplines, commendations, annualLeaves, socialInsuranceDetails, courses } = state;
@@ -844,7 +927,21 @@ const EmployeeEditFrom = (props) => {
             }
         });
 
-        let formData = convertJsonObjectToFormData(state);
+        let formData = convertJsonObjectToFormData({
+            ...state,
+            createExperiences: experiences.filter(x => x._id === undefined),
+            createDegrees: degrees.filter(x => x._id === undefined),
+            createCertificates: certificates.filter(x => x._id === undefined),
+            // createCareer: career.filter(x => x._id === undefined),
+            // createMajor: major.filter(x => x._id === undefined),
+            createContracts: contracts.filter(x => x._id === undefined),
+            createDisciplines: disciplines.filter(x => x._id === undefined),
+            createCommendations: commendations.filter(x => x._id === undefined),
+            createAnnualLeaves: annualLeaves.filter(x => x._id === undefined),
+            createCourses: courses.filter(x => x._id === undefined),
+            createSocialInsuranceDetails: socialInsuranceDetails.filter(x => x._id === undefined),
+            createFiles: files.filter(x => x._id === undefined),
+        });
         degrees.forEach(x => {
             formData.append("fileDegree", x.fileUpload);
         })
@@ -866,124 +963,67 @@ const EmployeeEditFrom = (props) => {
         formData.append("fileAvatar", avatar);
 
         props.updateInformationEmployee(_id, formData);
-    }
-
-    /**
-     * Function format dữ liệu Date thành string
-     * @param {*} date : Ngày muốn format
-     * @param {*} monthYear : true trả về tháng năm, false trả về ngày tháng năm
-     */
-    const formatDate = (date, monthYear = false) => {
-        if (date) {
-            let d = new Date(date),
-                month = '' + (d.getMonth() + 1),
-                day = '' + d.getDate(),
-                year = d.getFullYear();
-
-            if (month.length < 2)
-                month = '0' + month;
-            if (day.length < 2)
-                day = '0' + day;
-
-            if (monthYear === true) {
-                return [month, year].join('-');
-            } else return [day, month, year].join('-');
+        experiences.forEach(x => {
+            if (x._id === undefined) {
+                x._id = "0"
+            }
         }
-        return date;
-
-    }
-
-    // useEffect(() => {
-    //     if (props._id != state._id) {
-    //         setState({
-    //             ...state,
-    //             _id: props._id,
-    //             dataStatus: 0,
-    //             editExperiences: [],
-    //             deleteExperiences: [],
-    //             editDegrees: [],
-    //             deleteDegrees: [],
-    //             editMajor: [],
-    //             deleteMajor: [],
-    //             editCareer: [],
-    //             deleteCareer: [],
-    //             editCertificates: [],
-    //             deleteCertificates: [],
-    //             editSocialInsuranceDetails: [],
-    //             deleteSocialInsuranceDetails: [],
-    //             editContracts: [],
-    //             deleteContracts: [],
-    //             editConmmendations: [],
-    //             deleteConmmendations: [],
-    //             editDisciplines: [],
-    //             deleteDisciplines: [],
-    //             editAnnualLeaves: [],
-    //             deleteAnnualLeaves: [],
-    //             editCourses: [],
-    //             deleteCourses: [],
-    //             editFiles: [],
-    //             deleteFiles: [],
-    //         })
-    //     }
-    // }, [props._id, state._id])
-
-    useEffect(() => {
-        const shouldUpdate = async () => {
-            if (props._id !== state._id && !props.employeesInfo.isLoading) {
-                await props.getEmployeeProfile({ id: props._id, callAPIByUser: false });
-
-                setState({
-                    ...state,
-                    _id: props?._id,
-                    dataStatus: DATA_STATUS.QUERYING,
-                    img: undefined,
-                    avatar: "",
-                    employee: '',
-                    experiences: [],
-                    degrees: [],
-                    certificates: [],
-                    // career: [],
-                    // major: [],
-                    contracts: [],
-                    files: [],
-                    socialInsuranceDetails: [],
-                    annualLeaves: [],
-                    commendations: [],
-                    disciplines: [],
-                    courses: [],
-                    roles: [],
-                    houseHold: {}
-                })
-            };
-
-            if (state.dataStatus === DATA_STATUS.QUERYING && !props.employeesInfo.isLoading) {
-                await setState({
-                    ...state,
-                    dataStatus: DATA_STATUS.AVAILABLE,
-                    img: `.${props.employeesInfo?.employees?.[0]?.avatar}`,
-                    avatar: "",
-                    employee: props.employeesInfo.employees?.[0],
-                    experiences: props.employeesInfo.employees?.[0]?.experiences,
-                    degrees: props.employeesInfo.employees?.[0]?.degrees,
-                    certificates: props.employeesInfo.employees?.[0]?.certificates,
-                    // career: props.employeesInfo.employees?.[0]?.career,
-                    // major: props.employeesInfo.employees?.[0]?.major,
-                    contracts: props.employeesInfo.employees?.[0]?.contracts,
-                    files: props.employeesInfo.employees?.[0]?.files,
-                    socialInsuranceDetails: props.employeesInfo.employees?.[0]?.socialInsuranceDetails,
-                    annualLeaves: props.employeesInfo?.annualLeaves,
-                    commendations: props.employeesInfo?.commendations,
-                    disciplines: props.employeesInfo?.disciplines,
-                    courses: props.employeesInfo?.courses,
-                    roles: props.employeesInfo.roles?.map(x => x.roleId.id),
-                    organizationalUnits: props.employeesInfo.organizationalUnits?.map(x => x._id),
-                    houseHold: props.employeesInfo.employees?.[0]?.houseHold,
-                });
-            };
+        );
+        degrees.forEach(x => {
+            if (x._id === undefined) {
+                x._id = "0"
+            }
         }
-        shouldUpdate();
-    });
-
+        );
+        certificates.forEach(x => {
+            if (x._id === undefined) {
+                x._id = "0"
+            }
+        }
+        );
+        contracts.forEach(x => {
+            if (x._id === undefined) {
+                x._id = "0"
+            }
+        }
+        );
+        disciplines.forEach(x => {
+            if (x._id === undefined) {
+                x._id = "0"
+            }
+        }
+        );
+        commendations.forEach(x => {
+            if (x._id === undefined) {
+                x._id = "0"
+            }
+        }
+        );
+        annualLeaves.forEach(x => {
+            if (x._id === undefined) {
+                x._id = "0"
+            }
+        }
+        );
+        courses.forEach(x => {
+            if (x._id === undefined) {
+                x._id = "0"
+            }
+        }
+        );
+        socialInsuranceDetails.forEach(x => {
+            if (x._id === undefined) {
+                x._id = "0"
+            }
+        }
+        );
+        files.forEach(x => {
+            if (x._id === undefined) {
+                x._id = "0"
+            }
+        }
+        );
+    }
 
     const _fm_saveMember = (data) => {
         setState(state => {
@@ -1226,7 +1266,7 @@ const EmployeeEditFrom = (props) => {
                             {/* Tab hợp đồng - quá trình đào tạo*/}
                             <ContractTab
                                 id={`edit_contract${_id}`}
-                                pageCreate={false}
+                                // pageCreate={false}
                                 employee={employee}
                                 contracts={contracts}
                                 courses={courses}

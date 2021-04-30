@@ -40,7 +40,7 @@ class GoodIssueReceiptByTime extends Component {
                     ['Nhập kho', 300, 150, 140, 200, 500, 228, 290, 200, 130],
                     ['Tồn kho', 400, 100, 540, 100, 200, 328, 190, 100, 700],
                 ],
-                type: barAndLineChart ? 'bar' : 'spline',
+                type: barAndLineChart ? 'bar' : '',
             },
             axis: {
                 x: {
@@ -124,7 +124,7 @@ class GoodIssueReceiptByTime extends Component {
                             <p className="pull-left" style={{ marginBottom: 0 }}><b>ĐV tính: Hộp</b></p>
                             <div className="box-tools pull-right">
                                 <div className="btn-group pull-rigth">
-                                    <button type="button" className={`btn btn-xs ${barAndLineChart ? "active" : "btn-danger"}`} onClick={() => this.handleChangeViewChart(false)}>Spline chart</button>
+                                    <button type="button" className={`btn btn-xs ${barAndLineChart ? "active" : "btn-danger"}`} onClick={() => this.handleChangeViewChart(false)}>Line chart</button>
                                     <button type="button" className={`btn btn-xs ${barAndLineChart ? 'btn-danger' : "active"}`} onClick={() => this.handleChangeViewChart(true)}>Bar chart</button>
                                 </div>
                             </div>

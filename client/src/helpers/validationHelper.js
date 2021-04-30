@@ -1,6 +1,6 @@
 export const REGEX = {
-    EMAIL: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/ ,
-    SPECIAL_CHARACTER: /^[^~`!@#$%^&*()+=/*';\\<>?:",]*$/ ,
+    EMAIL: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+    SPECIAL_CHARACTER: /^[^~`!@#$%^&*()+=/*';\\<>?:",]*$/,
 }
 
 export default class ValidationHelper {
@@ -8,12 +8,12 @@ export default class ValidationHelper {
      * CÁC PHƯƠNG THỨC CẤP 1
      */
 
-     /**
-      * Xác thực xem giá trị nhập vào có rỗng không?
-      * @param {*} value giá trị cần xác thực
-      */
+    /**
+     * Xác thực xem giá trị nhập vào có rỗng không?
+     * @param {*} value giá trị cần xác thực
+     */
     static validateEmpty = (translate, value) => {
-        if(!value)
+        if (!value || value?.toString()?.replace(/\s/g,"") === "")
             return { status: false, message: translate('general.validate.empty_error') };
         return { status: true };
     }
@@ -23,7 +23,7 @@ export default class ValidationHelper {
      * @param {*} value giá trị cần xác thực
      */
     static validateInvalidCharacter = (translate, value) => {
-        if(!REGEX.SPECIAL_CHARACTER.test(value))
+        if (!REGEX.SPECIAL_CHARACTER.test(value))
             return { status: false, message: translate('general.validate.invalid_character_error') };
         return { status: true };
     }
@@ -34,9 +34,9 @@ export default class ValidationHelper {
      * @param {*} min số ký tự tối thiểu
      * @param {*} max số ký tụ tối đa
      */
-    static validateLength = (translate, value, min=4, max=1024) => {
-        if(value.length < min || value.length > max )
-            return { status: false, message: translate('general.validate.length_error', {min, max}) };
+    static validateLength = (translate, value, min = 4, max = 1024) => {
+        if (value?.length < min || value?.length > max)
+            return { status: false, message: translate('general.validate.length_error', { min, max }) };
         return { status: true };
     }
 
@@ -45,20 +45,20 @@ export default class ValidationHelper {
      * @param {*} value giá trị nhập vào
      * @param {*} min số ký tự tối thiểu
      */
-    static validateMinimumLength = (translate, value, min=4) => {
-        if(value.length < min)
-            return { status: false, message: translate('general.validate.minimum_length_error', {min}) };
+    static validateMinimumLength = (translate, value, min = 4) => {
+        if (value?.length < min)
+            return { status: false, message: translate('general.validate.minimum_length_error', { min }) };
         return { status: true };
     }
-    
+
     /**
      * Kiểm tra giá trị phải có số ký tự tối đa
      * @param {*} value giá trị nhập vào
      * @param {*} max số ký tự tối đa
      */
-    static validateMaximumLength = (translate, value, max=1024) => {
-        if(value.length > max)
-            return { status: false, message: translate('general.validate.maximum_length_error', {max}) };
+    static validateMaximumLength = (translate, value, max = 1024) => {
+        if (value?.length > max)
+            return { status: false, message: translate('general.validate.maximum_length_error', { max }) };
         return { status: true };
     }
 
@@ -73,15 +73,15 @@ export default class ValidationHelper {
         if (!validation.status) {
             return validation;
         }
-        
-        if(value >= min){
+
+        if (value >= min) {
             return {
                 status: true
             };
         } else {
             return {
                 status: false,
-                message: translate('general.validate.number_input_error_min', {min})
+                message: translate('general.validate.number_input_error_min', { min })
             };
         }
     }
@@ -91,21 +91,21 @@ export default class ValidationHelper {
      * @param {*} value giá trị nhập vào
      * @param {*} max giá trị max
      */
-     static validateNumberInputMax = (translate, value, max = 100) => {
+    static validateNumberInputMax = (translate, value, max = 100) => {
         let validation = this.validateEmpty(translate, value);
 
         if (!validation.status) {
             return validation;
         }
-        
-        if(value <= max){
+
+        if (value <= max) {
             return {
                 status: true
             };
         } else {
             return {
                 status: false,
-                message: translate('general.validate.number_input_error_max', {max})
+                message: translate('general.validate.number_input_error_max', { max })
             };
         }
     }
@@ -122,15 +122,15 @@ export default class ValidationHelper {
         if (!validation.status) {
             return validation;
         }
-        
-        if(value <= max && value >= min){
+
+        if (value <= max && value >= min) {
             return {
                 status: true
             };
         } else {
             return {
                 status: false,
-                message: translate('general.validate.number_input_error', {min, max})
+                message: translate('general.validate.number_input_error', { min, max })
             };
         }
     }
@@ -140,8 +140,8 @@ export default class ValidationHelper {
      * @param {*} value giá trị nhập vào
      * @param {*} max số ký tự tối đa
      */
-     static validateArrayLength = (translate, value) => {
-        if(value.length === 0)
+    static validateArrayLength = (translate, value) => {
+        if (value?.length === 0)
             return { status: false, message: translate('general.validate.empty_error') };
         return { status: true };
     }
@@ -156,15 +156,15 @@ export default class ValidationHelper {
      * @param {*} min số ký tự tối thiểu
      * @param {*} max số ký tự tối đa
      */
-    static validateName = (translate, name, min=4, max=255) => {
+    static validateName = (translate, name, min = 4, max = 255) => {
         let result = this.validateEmpty(translate, name);
-        if(!result.status)
+        if (!result.status)
             return result;
 
         result = this.validateLength(translate, name, min, max);
-        if(!result.status)
+        if (!result.status)
             return result;
-        
+
         return { status: true };
     }
 
@@ -174,9 +174,9 @@ export default class ValidationHelper {
      */
     static validateDescription = (translate, description) => {
         let result = this.validateEmpty(translate, description);
-        if(!result.status)
+        if (!result.status)
             return result;
-        
+
         return { status: true };
     }
 
@@ -186,10 +186,10 @@ export default class ValidationHelper {
      */
     static validateEmail = (translate, email) => {
         let result = this.validateEmpty(translate, email);
-        if(!result.status)
+        if (!result.status)
             return result;
 
-        if(!REGEX.EMAIL.test(email))
+        if (!REGEX.EMAIL.test(email))
             return { status: false, message: translate('general.validate.invalid_error') };
 
         return { status: true };
@@ -201,32 +201,55 @@ export default class ValidationHelper {
      * @param {*} min số ký tự tối thiểu
      * @param {*} max số ký tự tối đa
      */
-    static validatePassword = (translate, password, min=6, max=30) => {
+    static validatePassword = (translate, password, min = 6, max = 30) => {
         let result = this.validateEmpty(translate, password);
-        if(!result.status)
+        if (!result.status)
             return result;
-        
+
         result = this.validateLength(translate, password, min, max)
-        if(!result.status)
+        if (!result.status)
             return result;
 
         return { status: true };
     }
 
-    
+
     /**
      * Kiểm tra mã không chứa ký tự đặc biệt
      * @param {*} code mã
      */
     static validateCode = (translate, code) => {
         let result = this.validateEmpty(translate, code);
-        if(!result.status)
-            return result;
-        
-        result = this.validateInvalidCharacter(translate, code)
-        if(!result.status)
+        if (!result.status)
             return result;
 
+        result = this.validateInvalidCharacter(translate, code)
+        if (!result.status)
+            return result;
+
+        return { status: true };
+    }
+
+    /**
+     * Kiểm tra giá trị ô input chỉ nhập số và không được bỏ trống
+     * @param {*} value giá trị nhập vào
+     */
+    static validateNumericInputMandatory = (translate, value) => {
+        if (value?.length === 0 || value?.match(/.*[a-zA-Z]+.*/))
+            return { status: false, message: "Không được bỏ trống và chỉ được điền số" };
+        return { status: true };
+    }
+
+    /**
+     * Kiểm tra tên công việc có bị trùng với những công việc đã có không và không được bỏ trống
+     * @param {*} value giá trị nhập vào
+     */
+    static validateTaskName = (translate, value, listTasks) => {
+        if (!value)
+            return { status: false, message: "Không được bỏ trống" };
+        const findTaskItem = listTasks?.find(item => item.name === value.trim());
+        if (findTaskItem)
+            return { status: false, message: "Không được trùng tên công việc đã có" };
         return { status: true };
     }
 }

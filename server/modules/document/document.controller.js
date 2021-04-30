@@ -308,7 +308,6 @@ exports.getDocumentCategories = async (req, res) => {
             req.query,
             req.user.company._id
         );
-
         await Logger.info(
             req.user.email,
             "get_document_categories",

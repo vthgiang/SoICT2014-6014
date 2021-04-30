@@ -84,79 +84,79 @@ const SalaryOfOrganizationalUnitsChart = (props) => {
 
     const { translate, salary, department } = props;
 
-        const { monthShow } = props;
-        const { unit } = state;
+    const { monthShow } = props;
+    const { unit } = state;
 
-        let organizationalUnitsName = department.list.map(x => { return { _id: x._id, name: x.name, salary: 0 } });
-        let data = salary.listSalaryByMonth;
-        if (data.length !== 0) {
-            data = data.map(x => {
-                let total = parseInt(x.mainSalary);
-                if (x.bonus.length !== 0) {
-                    for (let count in x.bonus) {
-                        total = total + parseInt(x.bonus[count].number)
-                    }
-                };
-                return { ...x, total: unit ? total / 1000000000 : total / 1000000 }
-            })
-        };
-
-        organizationalUnitsName = organizationalUnitsName.map(x => {
-            data.forEach(y => {
-                if (x._id === y.organizationalUnit) {
-                    x.salary = x.salary + y.total
+    let organizationalUnitsName = department.list.map(x => { return { _id: x._id, name: x.name, salary: 0 } });
+    let data = salary.listSalaryByMonth;
+    if (data.length !== 0) {
+        data = data.map(x => {
+            let total = parseInt(x.mainSalary);
+            if (x.bonus.length !== 0) {
+                for (let count in x.bonus) {
+                    total = total + parseInt(x.bonus[count].number)
                 }
-            })
-            return x;
+            };
+            return { ...x, total: unit ? total / 1000000000 : total / 1000000 }
         })
+    };
 
-        let ratioX = organizationalUnitsName.map(x => x.name);
-        let data1 = organizationalUnitsName.map(x => x.salary);
-        let dataChart = {
-            nameData: 'Thu nhập',
-            ratioX: ratioX,
-            data1: ['data1', ...data1],
-        }
+    organizationalUnitsName = organizationalUnitsName.map(x => {
+        data.forEach(y => {
+            if (x._id === y.organizationalUnit) {
+                x.salary = x.salary + y.total
+            }
+        })
+        return x;
+    })
+
+    let ratioX = organizationalUnitsName.map(x => x.name);
+    let data1 = organizationalUnitsName.map(x => x.salary);
+    let dataChart = {
+        nameData: 'Thu nhập',
+        ratioX: ratioX,
+        data1: ['data1', ...data1],
+    }
 
 
-        renderChart(dataChart);
+    renderChart(dataChart);
 
-        return (
-            <React.Fragment>
-                <div className="box box-solid" style={{ paddingBottom: 20 }}>
-                    <div className="box-header with-border">
-                        <div className="box-title">
-                            {`Biểu đồ thu nhập `}
-                            {
-                                organizationalUnitsName && organizationalUnitsName.length < 2 ?
-                                    <>
-                                        <span>{` ${translate('task.task_dashboard.of_unit')}`}</span>
-                                        <span>{` ${organizationalUnitsName?.[0]?.name}`}</span>
-                                    </>
-                                    :
-                                    <span onClick={() => showListInSwal(organizationalUnitsName.map(item => item?.name), translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
-                                        <span>{` ${translate('task.task_dashboard.of')}`}</span>
-                                        <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {organizationalUnitsName?.length}</a>
-                                        <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
-                                    </span>
-                            }
-                            {` tháng ${monthShow}`}
-                        </div>
-                    </div>
-                    <div className="box-body">
-                        <div className="box-tools pull-right" >
-
-                            <div className="btn-group pull-right">
-                                <button type="button" className={`btn btn-xs ${unit ? "active" : "btn-danger"}`} onClick={() => handleChangeUnitChart(false)}>Triệu</button>
-                                <button type="button" className={`btn btn-xs ${unit ? 'btn-danger' : "active"}`} onClick={() => handleChangeUnitChart(true)}>Tỷ</button>
-                            </div>
-                            <p className="pull-right" style={{ marginBottom: 0, marginRight: 10 }} > < b > ĐV tính</b></p >
-                        </div>
-                        <div ref={salaryChart}></div>
+    return (
+        <React.Fragment>
+            <div className="box box-solid" style={{ paddingBottom: 20 }}>
+                <div className="box-header with-border">
+                    <div className="box-title">
+                        {`Biểu đồ thu nhập `}
+                        {
+                            organizationalUnitsName && organizationalUnitsName.length < 2 ?
+                                <>
+                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
+                                    <span>{` ${organizationalUnitsName?.[0]?.name ? organizationalUnitsName?.[0]?.name : ""}`}</span>
+                                </>
+                                :
+                                <span onClick={() => showListInSwal(organizationalUnitsName.map(item => item?.name), translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
+                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
+                                    <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {organizationalUnitsName?.length}</a>
+                                    <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                </span>
+                        }
+                        {` tháng ${monthShow}`}
                     </div>
                 </div>
-            </React.Fragment>
-        )
+                <div className="box-body">
+                    <div className="box-tools pull-right" >
+
+                        <div className="btn-group pull-right">
+                            <button type="button" className={`btn btn-xs ${unit ? "active" : "btn-danger"}`} onClick={() => handleChangeUnitChart(false)}>Triệu</button>
+                            <button type="button" className={`btn btn-xs ${unit ? 'btn-danger' : "active"}`} onClick={() => handleChangeUnitChart(true)}>Tỷ</button>
+                        </div>
+                        <p className="pull-right" style={{ marginBottom: 0, marginRight: 10 }} > < b > ĐV tính</b></p >
+                    </div>
+                    <div ref={salaryChart}></div>
+                </div>
+            </div>
+        </React.Fragment>
+    )
 }
 
 function mapState(state) {

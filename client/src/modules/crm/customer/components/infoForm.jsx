@@ -9,8 +9,10 @@ import FileTabInfoForm from './fileTabInfoForm';
 import PurchaseHistoriesInfoForm from './purchaseHistoriesInfoForm';
 import './customer.css'
 import CareHistoriesInfoForm from './careHistoriesInfoForm';
+import { SalesOrderActions } from '../../../production/order/sales-order/redux/actions';
 
 class CrmCustomerInformation extends Component {
+     
     constructor(props) {
         super(props);
         this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
@@ -23,6 +25,7 @@ class CrmCustomerInformation extends Component {
     static getDerivedStateFromProps(props, state) {
         if (props.customerId != state.customerId) {
             props.getCustomer(props.customerId);
+            props.getAllSalesOrders({ page :1 , limit:5, currentRole:localStorage.getItem('currentRole'),customer: props.customerId });
             return {
                 dataStatus: 1,
                 customerId: props.customerId,
@@ -89,12 +92,13 @@ class CrmCustomerInformation extends Component {
     }
 
     render() {
-        const { translate, crm } = this.props;
+        const { translate, crm,salesOrders } = this.props;
         const { customerInfomation, dataStatus, customerId } = this.state;
+        console.log('sale',salesOrders);
         return (
             <React.Fragment>
                 <DialogModal
-                    modalID="modal-crm-customer-info" isLoading={crm.customers.isLoading}
+                    modalID={`modal-crm-customer-info-${customerId}`} isLoading={crm.customers.isLoading}
                     formID={`form-crm-customer-info-${customerId}`}
                     title="Thông tin chi tiết khách hàng"
                     func={this.save} size={100}
@@ -182,6 +186,7 @@ class CrmCustomerInformation extends Component {
                                         {/* Tab lịch sử mua hàng */}
                                         <PurchaseHistoriesInfoForm
                                             id={`purchaseHistories-${customerId}`}
+                                            customerId={customerId}
                                         />
 
                                         {/* Tab lịch sử chăm sóc khách hàng */}
@@ -209,8 +214,6 @@ class CrmCustomerInformation extends Component {
                                                 customerId={customerId}
                                             />
                                         }
-
-
                                     </div>
                                 </div>
                             </div>
@@ -223,13 +226,15 @@ class CrmCustomerInformation extends Component {
 }
 
 function mapStateToProps(state) {
-    const { crm } = state;
-    return { crm };
+    const { crm,salesOrders } = state;
+    return { crm,salesOrders };
 }
 
 const mapDispatchToProps = {
     getCustomer: CrmCustomerActions.getCustomer,
     editCustomer: CrmCustomerActions.editCustomer,
+    getAllSalesOrders: SalesOrderActions.getAllSalesOrders,
+    
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CrmCustomerInformation));

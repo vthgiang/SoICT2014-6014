@@ -26,17 +26,24 @@ function HistoryOfStateTransitionsTabInfoForm  (props) {
                                         <time>{formatFunction.formatDateTime(o.createdAt)}</time>
                                         <p style={{ fontSize: '14px' }}>
                                             {(o.oldValue._id === o.newValue._id)
-                                                ? `${o.createdBy.name} đã tạo khách hàng với trạng thái là ${o.newValue.name}`
-                                                : `${o.createdBy.name} đã chuyển trạng thái khách hàng từ ${o.oldValue.name} thành ${o.newValue.name}`
+                                                ? (<div>
+                                                    <strong>{o.createdBy.name}</strong> đã tạo khách hàng với trạng thái là  <strong>{o.newValue.name}</strong>
+                                                    </div>
+                                                    )
+
+                                                :(  <div>
+                                                     <strong>{o.createdBy.name}</strong> đã chuyển trạng thái khách hàng từ <strong>{o.oldValue.name}</strong> thành <strong>{o.newValue.name}</strong>
+                                                     </div>
+                                                     )
                                             }
                                         </p>
                                         {detailStatus[index] && (
                                         <div >
-                                            <label>Nội dung thay đổi :</label>
-                                            <p>Khách hài long với tư vấn và xác định muốn xem báo giá</p>
+                                            <p  style={{ fontSize: '14px' }}> <strong>Nội dung thay đổi : </strong>
+                                            {o.description}</p>
                                         </div>
                                         )}
-                                        <p className='pointer' onClick ={()=>handleSeeDetail(index)}>{detailStatus[index]==false ? '>> xem chi tiết': '<< đóng'}</p>
+                                        <p  style={{ fontSize: '14px' }} className='pointer' onClick ={()=>handleSeeDetail(index)}>{detailStatus[index]==false ? '>> xem chi tiết': '<< đóng'}</p>
                                        
                                         <span className="circle" />
                                     </div>

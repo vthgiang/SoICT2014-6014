@@ -3,12 +3,14 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal } from '../../../../common-components';
 import { getStorage } from '../../../../config';
+import { getCurrentProjectDetails } from '../../../project/component/projects/functionHelper';
+import { ProjectActions } from '../../../project/redux/actions';
 import { taskManagementActions } from '../redux/actions';
+import { AddProjectTaskForm } from './addProjectTaskForm';
 import { AddTaskForm } from './addTaskForm';
 import ValidationHelper from '../../../../helpers/validationHelper';
 
 class TaskAddModal extends Component {
-
     constructor(props) {
         super(props);
         this.state = {
@@ -62,6 +64,16 @@ class TaskAddModal extends Component {
         });
     }
 
+    componentDidMount() {
+        const userId = getStorage("userId");
+        this.props.getProjectsDispatch({ calledId: "all", userId });
+    }
+
+    componentDidMount() {
+        const userId = getStorage("userId");
+        this.props.getProjectsDispatch({ calledId: "all", userId });
+    }
+
     isFormValidated = () => {
         const { name, startDate, endDate, responsibleEmployees, accountableEmployees } = this.state.newTask;
         const { translate } = this.props;
@@ -76,8 +88,7 @@ class TaskAddModal extends Component {
     }
 
     render() {
-        const { translate } = this.props;
-        const { task, id, parentTask, currentTasks } = this.props;
+        const { translate, task, id, parentTask, currentTasks, currentProjectTasks, isProjectForm = false } = this.props;
         return (
             <React.Fragment>
                 <DialogModal
@@ -103,9 +114,17 @@ class TaskAddModal extends Component {
     }
 }
 
+function mapStateToProps(state) {
+    const { project } = state;
+    return { project }
+}
+
 const actionCreators = {
     addTask: taskManagementActions.addTask,
+    addProjectTask: taskManagementActions.addProjectTask,
+    getProjectsDispatch: ProjectActions.getProjectsDispatch,
+    getTasksByProject: taskManagementActions.getTasksByProject,
 };
 
-const connectedModalAddTask = connect(null, actionCreators)(withTranslate(TaskAddModal));
+const connectedModalAddTask = connect(mapStateToProps, actionCreators)(withTranslate(TaskAddModal));
 export { connectedModalAddTask as TaskAddModal };

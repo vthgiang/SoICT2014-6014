@@ -15,10 +15,11 @@ class DialogModal extends Component {
     }
 
     closeModal = (reset) => {
+        const { modalID } = this.props;
         this.setState({
             reload: this.state.reload + 1
         });
-        if (reset) document.getElementById(this.props.formID).reset();
+        if (reset && document.getElementById(modalID)) document.getElementById(modalID).value = "";
         window.$(`#${this.props.modalID}`).modal("hide");
 
         if (this.props.afterClose !== undefined) {

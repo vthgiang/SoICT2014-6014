@@ -87,8 +87,8 @@ function CreatePassword2(props) {
         >
             <div style={{ padding: '10px 20px 10px 20px' }}>
                 <div className={`form-group ${!oldPasswordError ? "" : "has-error"}`}>
-                    <label>{translate('auth.security.old_password')}<span className="text-red">*</span></label>
-                    <input className="form-control" type="password" onChange={handleChangeOldPassword} placeholder="Nhập mật khẩu cũ" />
+                    <label>{translate('auth.security.password')}<span className="text-red">*</span></label>
+                    <input className="form-control" type="password" onChange={handleChangeOldPassword} placeholder="Nhập mật khẩu" />
                     <ErrorLabel content={oldPasswordError} />
                 </div>
                 <div className={`form-group ${!password2NewError ? "" : "has-error"}`}>

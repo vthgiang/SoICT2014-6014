@@ -54,7 +54,6 @@ function FormCreateTaskByProcess(props) {
         const { taskItem } = state;
         if (props.isProcess && props.id !== state.id) {
             let { info, listOrganizationalUnit } = props;
-
             setState(state => {
                 return {
                     ...state,
@@ -121,7 +120,7 @@ function FormCreateTaskByProcess(props) {
                 props.getChildrenOfOrganizationalUnits(defaultUnit._id);
             }
         }
-    }, [props.isProcess])
+    }, [props.isProcess,props.id])
     // static getDerivedStateFromProps = (props, prevState) => {
     //     if (props.taskTemplateId !== prevState.taskTemplateId) {
     //         return {

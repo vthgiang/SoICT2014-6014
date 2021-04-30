@@ -19,6 +19,7 @@ export const AuthService = {
     changePassword,
     downloadFile,
     createPassword2,
+    deletePassword2,
 };
 
 async function login(data) {
@@ -137,5 +138,16 @@ function createPassword2(data) {
         url: `${process.env.REACT_APP_SERVER}/auth/profile/create-password2`,
         method: 'PATCH',
         data
+    }, true, true, 'auth');
+}
+
+function deletePassword2(data) {
+    const userId = getStorage("userId");
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/auth/profile/${userId}/delete-password2`,
+        method: 'DELETE',
+        data: {
+            pwd2: data
+        }
     }, true, true, 'auth');
 }

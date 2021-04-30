@@ -74,7 +74,7 @@ function EmployeeKpiManagement(props) {
     const { user, kpimembers, dashboardEvaluationEmployeeKpiSet } = props;
     const { translate } = props;
     const { status, kpiId, employeeKpiSet, startDate, endDate,
-        perPage, userId, startDateDefault, 
+        perPage, userId, startDateDefault, employeeKpiSetApprove,
         endDateDefault, organizationalUnit, 
         approver, infosearch, organizationalUnitSelectBox
     } = state;
@@ -290,10 +290,11 @@ function EmployeeKpiManagement(props) {
         }
     };
 
-    const handleShowApproveModal = async (id) => {
+    const handleShowApproveModal = async (item) => {
         await setState({
             ...state,
-            kpiId: id
+            kpiId: item?._id,
+            employeeKpiSetApprove: item
         })
         window.$(`modal-approve-KPI-member`).modal('show');
     };
@@ -846,7 +847,7 @@ function EmployeeKpiManagement(props) {
         <React.Fragment>
             <div className="box">
                 <div className="box-body">
-                    <EmployeeKpiApproveModal id={kpiId} />
+                    <EmployeeKpiApproveModal id={kpiId} employeeKpiSet={employeeKpiSetApprove}/>
                     <EmployeeKpiEvaluateModal employeeKpiSet={employeeKpiSet} />
 
                     <div className="qlcv">
@@ -1001,7 +1002,7 @@ function EmployeeKpiManagement(props) {
                                             <td>{item.employeePoint === null ? translate('kpi.evaluation.employee_evaluation.not_evaluated_yet') : item.employeePoint}</td>
                                             <td>{item.approvedPoint === null ? translate('kpi.evaluation.employee_evaluation.not_evaluated_yet') : item.approvedPoint}</td>
                                             <td style={{ textAlign: "center" }}>
-                                                <a data-target={`#modal-approve-KPI-member`} onClick={() => handleShowApproveModal(item._id)} data-toggle="modal" className="approve"
+                                                <a data-target={`#modal-approve-KPI-member`} onClick={() => handleShowApproveModal(item)} data-toggle="modal" className="approve"
                                                     title={translate('kpi.evaluation.employee_evaluation.approve_this_kpi')}><i className="fa fa-bullseye"></i></a>
                                             </td>
                                             <td>

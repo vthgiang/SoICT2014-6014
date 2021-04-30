@@ -419,7 +419,12 @@ function ListAsset(props) {
                 }
 
                 {/* PaginateBar */}
-                <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={setPage} />
+                <PaginateBar 
+                    display={assetsManager.listAssets?.length}
+                    total={assetsManager.totalList}
+                    pageTotal={pageTotal ? pageTotal : 0} 
+                    currentPage={currentPage} 
+                    func={setPage} />
             </div>
 
             {/* Form xem chi tiết thông tin tài sản */}

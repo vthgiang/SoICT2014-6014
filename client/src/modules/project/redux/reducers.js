@@ -24,7 +24,7 @@ const initState = {
         prevPage: 0,
         nextPage: 0,
     },
-
+    listTasksEval: [],
 }
 
 export function project(state = initState, action) {
@@ -35,6 +35,9 @@ export function project(state = initState, action) {
         case ProjectConstants.CREATE_PROJECTS_REQUEST:
         case ProjectConstants.DELETE_PROJECTS_REQUEST:
         case ProjectConstants.EDIT_PROJECTS_REQUEST:
+        case ProjectConstants.GET_LIST_TASKS_EVAL:
+        case ProjectConstants.GET_PROJECT_DETAILS_REQUEST:
+        case ProjectConstants.ADD_PROJECT_TASKS_CPM:
             return {
                 ...state,
                 isLoading: true,
@@ -44,6 +47,9 @@ export function project(state = initState, action) {
         case ProjectConstants.CREATE_PROJECTS_FAILE:
         case ProjectConstants.DELETE_PROJECTS_FAILE:
         case ProjectConstants.EDIT_PROJECTS_FAILE:
+        case ProjectConstants.GET_LIST_TASKS_EVAL_FAILE:
+        case ProjectConstants.GET_PROJECT_DETAILS_FAILE:
+        case ProjectConstants.ADD_PROJECT_TASKS_CPM_FAILE:
             return {
                 ...state,
                 isLoading: false,
@@ -105,7 +111,7 @@ export function project(state = initState, action) {
                 ...state,
                 isLoading: false
             };
-        
+
         case ProjectConstants.EDIT_PROJECTS_SUCCESS:
             index = findIndex(state.data.list, action.payload._id);
             if (index !== -1) state.data.list[index] = action.payload;
@@ -114,6 +120,13 @@ export function project(state = initState, action) {
             return {
                 ...state,
                 isLoading: false
+            };
+
+        case ProjectConstants.GET_LIST_TASKS_EVAL_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                listTasksEval: action.payload,
             };
 
         default:

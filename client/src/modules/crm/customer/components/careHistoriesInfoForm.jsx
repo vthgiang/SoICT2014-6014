@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { translate } from 'react-redux-multilingual/lib/utils';
@@ -18,26 +18,36 @@ CareHistoriesInfoForm.propTypes = {
 
 function CareHistoriesInfoForm(props) {
 
+    const { customerId, customerInfomation, crm, user, translate } = props;
+    const [searchState, setSearchState] = useState({
+        limit: 5,
+        page: 0,
+        customerId: customerId,
+    });
     const { id } = props;
     let unitMembers;
-    useEffect(() => {
-        props.getCareTypes({});
-        props.getCares({
-            limit: 5,
-            page: 0,
-        })
-    }, [])
+    let listCareType;
 
-    const { customerId, customerInfomation, crm, user, translate } = props;
+    useEffect(() => {
+
+
+        console.log('ID', customerId)
+        const newSearchState = { ...searchState, customerId: customerId }
+        setSearchState(newSearchState);
+        console.log('State', searchState)
+        props.getCareTypes({});
+        props.getCares({ ...searchState, customerId: customerId })
+    }, [customerId])
+
     const { cares } = crm;
     // lấy danh sách loại hình CSKH
-    let listCareType;
+
     if (crm.careTypes) {
         listCareType = crm.careTypes.list.map((item) => {
             return { value: item._id, text: item.name }
         })
     }
-    console.log("CRM", crm)
+    console.log("CRM", crm);
     //lấy danh sách người quản lý
     if (user.usersOfChildrenOrganizationalUnit) {
         unitMembers =
@@ -61,7 +71,26 @@ function CareHistoriesInfoForm(props) {
         })
         return text;
     }
-console.log('Care',cares)
+    /**hàm xử lý tìm kiếm theo trạng thái */
+    const handleSearchByCareStatus = async (value) => {
+        const newState = { ...searchState, status: value };
+        await setSearchState(newState);
+    }
+    /**hàm xử lý tìm kiếm theo loại hoạt động  */
+    const handleSearchByCareTypes = async (value) => {
+        const newState = { ...searchState, customerCareTypes: value }
+        await setSearchState(newState);
+    }
+    /**hàm xử lý tìm kiếm theo nguoi phu trach  */
+    const handleSearchByCustomerCareStaffs = async (value) => {
+        const newState = { ...searchState, customerCareStaffs: value[0] }
+        await setSearchState(newState);
+    }
+
+    const search = async () => {
+        await props.getCares(searchState);
+    }
+
     return (
         <div className="tab-pane purchaseHistories" id={id}>
             <div className="box">
@@ -72,20 +101,21 @@ console.log('Care',cares)
                         <div className="form-group" >
                             <label>{'Loại hoạt động'}</label>
                             {listCareType &&
-                                <SelectMulti id="multiSelectUnit12"
+                                <SelectMulti id="multiSelectUnit-care-history"
                                     items={listCareType}
-                                    //   onChange={this.handleSelectOrganizationalUnit}
+                                    onChange={handleSearchByCareTypes}
                                     options={{ nonSelectedText: "Loại hoạt động", allSelectedText: 'Chọn tất cả' }}
                                 >
                                 </SelectMulti>
                             }
                         </div>
+                        {/* tìm kiếm theo trang thai */}
                         <div className="form-group">
                             <label>{'Trạng thái '}</label>
                             {
-                                <SelectMulti id="multiSelectUnit13"
+                                <SelectMulti id="multiSelectUnit-care-status-customer-info"
                                     items={listStatus}
-                                    //   onChange={this.handleSelectOrganizationalUnit}
+                                    onChange={handleSearchByCareStatus}
                                     options={{ nonSelectedText: "Trạng thái ", allSelectedText: 'Chọn tất cả' }}
                                 >
                                 </SelectMulti>
@@ -94,7 +124,7 @@ console.log('Care',cares)
                         </div>
                         <div className="form-group" >
                             <button type="button" className="btn btn-success"
-                            //onClick={this.search} 
+                                onClick={search}
                             >{'Tìm kiếm'}</button>
                         </div>
                     </div>
@@ -111,7 +141,7 @@ console.log('Care',cares)
                                     items={
                                         unitMembers
                                     }
-                                    // onChange={handleSearchByOwner}
+                                    onChange={handleSearchByCustomerCareStaffs}
                                     multiple={false}
                                 />
                             }
@@ -124,9 +154,9 @@ console.log('Care',cares)
 
                                 <th>{translate('crm.care.name')}</th>
                                 <th>{translate('crm.care.careType')}</th>
-                                <th>{translate('crm.care.customer')}</th>
+
                                 <th>{translate('crm.care.description')}</th>
-                                <th>{translate('crm.care.priority')}</th>
+
                                 <th>{translate('crm.care.caregiver')}</th>
                                 <th>{translate('crm.care.status')}</th>
                                 <th>{translate('crm.care.startDate')}</th>
@@ -155,26 +185,13 @@ console.log('Care',cares)
 
                                         <td>{o.name ? o.name : ''}</td>
                                         <td>{o.customerCareTypes ? o.customerCareTypes.map(cr => cr.name).join(', ') : ''}</td>
-                                        <td>{o.customer ? o.customer.name : ''}</td>
                                         <td>{o.description}</td>
-                                        <td>ưu tiên cao</td>
                                         <td>{o.customerCareStaffs ? o.customerCareStaffs.map(cg => cg.name).join(', ') : ''}</td>
-
                                         <td>{getStatusText(o.status)}</td>
                                         <td>{o.startDate ? formatFunction.formatDate(o.startDate) : ''}</td>
                                         <td>{o.endDate ? formatFunction.formatDate(o.endDate) : ''}</td>
                                         <td style={{ textAlign: 'center' }}>
-                                            {/* <a className="text-green" onClick={() => this.handleInfo(o._id)}><i className="material-icons">visibility</i></a>
-                                            <a className="text-yellow" onClick={() => this.handleEdit(o._id)}><i className="material-icons">edit</i></a>
-                                            <a className="text-green" onClick={() => this.handleComplete(o._id)}><i className="material-icons">add_task</i></a> */}
-                                            <ConfirmNotification
-                                                icon="question"
-                                                title="Xóa thông tin về khách hàng"
-                                                content="<h3>Xóa thông tin khách hàng</h3>"
-                                                name="delete"
-                                                className="text-red"
-                                                func={() => this.props.deleteCare(o._id)}
-                                            />
+                                            <a className="text-green" onClick={() => { return null; }}><i className="material-icons">visibility</i></a>
                                         </td>
                                     </tr>
                                 )) : null

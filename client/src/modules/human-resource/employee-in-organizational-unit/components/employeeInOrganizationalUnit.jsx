@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -9,36 +9,34 @@ import { EmployeeInOrganizationalUnitEditForm } from './employeeInOrganizational
 import { RoleActions } from '../../../super-admin/role/redux/actions';
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
 import _cloneDeep from 'lodash/cloneDeep';
-class DepartmentManage extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {}
-    }
+const DepartmentManage = (props) => {
+    
+    const [state, setState] = useState({});
 
-    componentDidMount() {
-        this.props.getDepartment();
-        this.props.getRole();
-    }
+    useEffect(() => {
+        props.getDepartment();
+        props.getRole();
+    }, []);
 
     /**
      * Function bắt sự kiện chỉnh sửa nhân sự các đơn vị
      * @param {*} id : Id đơn vị cần sửa
      */
-    handleShowEdit = async (id) => {
-        await this.setState({
-            ...this.state,
+    const handleShowEdit = async (id) => {
+        await setState({
+            ...state,
             currentRow: id
         })
         window.$(`#modal-edit-unit${id}`).modal('show');
     }
 
-    componentDidUpdate() {
+    useEffect(() => {
         window.$('#employee-tree-table').css({ "border": "1px solid #9E9E9E", 'backgroundColor': 'whitesmoke' });
         window.$('#employee-tree-table th').css({ "border": "1px solid #9E9E9E" });
         window.$('#employee-tree-table td').css({ "border": "1px solid #9E9E9E" });
-    }
+    })
 
-    getRoleNameOfDepartment = (data) => {
+    const getRoleNameOfDepartment = (data) => {
         if (data && data.length > 0) {
             let result = [];
             data.forEach(obj => {
@@ -50,7 +48,7 @@ class DepartmentManage extends Component {
         }
     }
 
-    getTotalEmployeeInUnit = (data) => {
+    const getTotalEmployeeInUnit = (data) => {
         if (data) {
             let result = [];
             if (data.managers && data.managers.length > 0) {
@@ -96,57 +94,55 @@ class DepartmentManage extends Component {
 
     }
 
-    render() {
-        const { translate, department } = this.props;
+    const { translate, department } = props;
 
-        let data = [];
-        if (department.list.length !== 0) {
-            data = _cloneDeep(department.list); // Sao chép ra mảng mới để không làm ảnh hưởng tới state department.list trong redux
-            for (let n in data) {
-                data[n] = {
-                    ...data[n],
-                    name: data[n].name,
-                    manager: this.getRoleNameOfDepartment(data[n].managers),
-                    deputyManager: this.getRoleNameOfDepartment(data[n].deputyManagers),
-                    employees: this.getRoleNameOfDepartment(data[n].employees),
-                    totalEmployee: this.getTotalEmployeeInUnit(data[n]),
-                    action: ["edit"]
-                }
+    let data = [];
+    if (department.list.length !== 0) {
+        data = _cloneDeep(department.list); // Sao chép ra mảng mới để không làm ảnh hưởng tới state department.list trong redux
+        for (let n in data) {
+            data[n] = {
+                ...data[n],
+                name: data[n].name,
+                manager: getRoleNameOfDepartment(data[n].managers),
+                deputyManager: getRoleNameOfDepartment(data[n].deputyManagers),
+                employees: getRoleNameOfDepartment(data[n].employees),
+                totalEmployee: getTotalEmployeeInUnit(data[n]),
+                action: ["edit"]
             }
         }
-        let column = [
-            { name: translate('manage_department.name'), key: "name" },
-            { name: translate('manage_department.manager_name'), key: "manager" },
-            { name: translate('manage_department.deputy_manager_name'), key: "deputyManager" },
-            { name: translate('manage_department.employee_name'), key: "employees" },
-            { name: translate('manage_department.total_employee'), key: "totalEmployee" },
-        ];
+    }
+    let column = [
+        { name: translate('manage_department.name'), key: "name" },
+        { name: translate('manage_department.manager_name'), key: "manager" },
+        { name: translate('manage_department.deputy_manager_name'), key: "deputyManager" },
+        { name: translate('manage_department.employee_name'), key: "employees" },
+        { name: translate('manage_department.total_employee'), key: "totalEmployee" },
+    ];
 
-        return (
-            <div>
-                <div className="qlcv">
-                    <TreeTable
-                        behaviour="show-children"
-                        tableId='employee-tree-table'
-                        column={column}
-                        data={data}
-                        titleAction={{
-                            edit: translate('human_resource.manage_department.edit_unit'),
-                        }}
-                        funcEdit={this.handleShowEdit}
-                    />
-                </div>
+    return (
+        <div>
+            <div className="qlcv">
+                <TreeTable
+                    behaviour="show-children"
+                    tableId='employee-tree-table'
+                    column={column}
+                    data={data}
+                    titleAction={{
+                        edit: translate('human_resource.manage_department.edit_unit'),
+                    }}
+                    funcEdit={handleShowEdit}
+                />
+            </div>
 
-                { /** Form chỉnh sửa nhân sự các đơn vị */
-                    this.state.currentRow !== undefined &&
-                    <EmployeeInOrganizationalUnitEditForm
-                        _id={this.state.currentRow}
-                        department={department.list.filter(x => x._id === this.state.currentRow)}
-                        role={this.props.role.list} />
-                }
-            </div >
-        );
-    };
+            { /** Form chỉnh sửa nhân sự các đơn vị */
+                state.currentRow !== undefined &&
+                <EmployeeInOrganizationalUnitEditForm
+                    _id={state.currentRow}
+                    department={department.list.filter(x => x._id === state.currentRow)}
+                    role={props.role.list} />
+            }
+        </div >
+    );
 }
 
 function mapState(state) {

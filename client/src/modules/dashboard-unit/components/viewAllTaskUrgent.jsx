@@ -7,7 +7,7 @@ import { DialogModal } from '../../../common-components';
 const ViewAllTaskUrgent = (props) => {
     let taskUrgent = props.data;
 
-    taskUrgent = taskUrgent.reduce((groups, item) => {
+    taskUrgent = taskUrgent?.length > 0 && taskUrgent.reduce((groups, item) => {
         if (item?.organizationalUnit?.name) {
             groups[item.organizationalUnit.name] = [...groups[item.organizationalUnit.name] || [], item];
         }
@@ -17,10 +17,9 @@ const ViewAllTaskUrgent = (props) => {
 
     let unit = null, taskUrgentUnit = [];
     if (props.clickUrgentChart) {
-        unit = props.clickUrgentChart.id;
+        unit = props.clickUrgentChart;
         taskUrgentUnit = taskUrgent[unit]
     }
-
 
     return (
         <React.Fragment>

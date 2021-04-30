@@ -130,6 +130,7 @@ export default {
             dashboard_employee: "DashBoard Manage Staffs ",
             dashboard_personal: "DashBoard personal",
             dashboard_unit: "DashBoard unit",
+            dashboard_all_unit: "DashBoard all unit in company",
             employee_capacity: "Employee capacity",
             discipline: "Manage Commendation And Discipline",
             annual_leave: "Manage Annual Leave",
@@ -245,7 +246,16 @@ export default {
                 "Analysis manufacturing performance",
             manage_manufacturing_works: "Manage manufacturing works",
             manage_manufacturing_mill: "Manage manufacturing mill",
+
+            // Quản lý dự án
             manage_project: "Manage Project",
+            projects_list: 'Projects list',
+            project_details: 'Projects details',
+            tasks_list: 'Tasks list',
+            phases_list: 'Phases list',
+            issues_list: 'Issues list',
+            project_report: 'Project report',
+            project_evaluation: 'Evaluation',
 
             // Quản lý vận chuyển
             manage_transport: "Manage transport",
@@ -4188,16 +4198,97 @@ export default {
         manage_transport: {
             add_requirements: "Add a new requirement",
         },
+
         // Quản lý dự án
         project: {
             code: "Project code",
             name: "Project name",
             startDate: "Start date",
             endDate: "End date",
-            parent: "Dự án cha",
+            parent: "Parent project",
             manager: "Manager",
+            member: 'Members',
+            detail_link: 'Link of project',
+            estimatedTime: 'Estimated time to finish',
+            estimatedCost: 'Estimated cost for project',
+            unitTime: 'Unit of time',
+            unitCost: 'Unit of cost',
             description: "Description",
-            add_title: "Add new project"
-        }
+            add_title: "Add new project",
+            detail_title: "Project details",
+            edit_title: "Project edit",
+            add_btn_from_excel: "Choose from excel file",
+            add_btn_new: "Add new project",
+            add_btn_normal: "Add by hand",
+            add_btn_scheduling: "Add by scheduling",
+            add_btn_task: 'Add new task',
+            delete: 'Delete this project',
+            list_tasks: 'List of tasks',
+            role: 'Project role',
+            creator: 'Project creator',
+
+            task_management:  {
+                estimate: "Estimating",
+                add_err_time_cost: "Time & Cost must be numeric and greater or equal than 0",
+                end_date: "Estimated end date",
+
+                // unit time and cost
+                timeAndCost: "Time & Cost for Project scheduling",
+                estimatedTime: "Estimated time",
+                estimatedTimeNormal: "Normal",
+                estimatedTimePessimistic: "Worst",
+                estimatedTimeOptimistic: "Best",
+                estimatedCost: "Estimated cost",
+                estimatedCostNormal: "Normal",
+                estimatedCostMaximum: "Maximum",
+                
+                preceedingTask: "Preceeding task",
+            },
+
+            unit: {
+                days: 'Ngày',
+                hours: 'Giờ',
+            },
+
+            schedule: {
+                taskCode: 'Task code',
+                taskName: 'Task name',
+                preceedingTasks: "Preceeding tasks",
+                estimatedTime: "Estimated time",
+                estimatedTimePessimistic: "Worst estimated time",
+                estimatedTimeOptimistic: "Best estimated time",
+                estimatedCostNormal: "Estimated cost",
+                estimatedCostMaximum: "Maximum estimated cost",
+                slack: 'Slack time',
+                criticalPath: 'Critical path',
+                calculateCPM: 'Calculate CPM',
+                showTableCPM: 'Show table CPM',
+                hideTableCPM: 'Hide table CPM',
+                insertListTasksToDB: 'Insert tasks list to database',
+                calculateRecommend: 'Calculate recommendation',
+                percentFinishTask: 'Percentage of finishing project in',
+            },
+            eval: {
+                undefined: 'Nếu costPerformanceIndex không tính được (mẫu số actualCost = 0 HOẶC costPerformanceIndex = Infinity): Điểm = Chưa tính được',
+                level1: 'Nếu realDuration = 0 HOẶC costPerformanceIndex < 0.5: Điểm = 0',
+                level2: 'Nếu 0.5 <= costPerformanceIndex < 0.75: Điểm = 40',
+                level3: 'Nếu 0.75 <= costPerformanceIndex < 1: Điểm = 60',
+                level4: 'Nếu 1 <= costPerformanceIndex < 1.25: Điểm = 80',
+                level5: 'Nếu 1.25 <= costPerformanceIndex < 1.5: Điểm = 90',
+                level6: 'Nếu 1.5 <= costPerformanceIndex: Điểm = 100',
+            },
+
+            report: {
+                title: 'Detailed project report'
+            }
+        },
+        phase: {
+            projectCodeName: 'Project codename',
+            fullName: 'Phase name',
+            progress: 'Progress',
+            listTasks: 'List of tasks',
+            duration: 'Duration',
+            add_btn_new: "Add new phase",
+        },
     },
 };

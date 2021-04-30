@@ -230,7 +230,7 @@ exports.changeInformation = async (
     // validate email
     if (!email)
         throw ['email_empty']
-    
+
     if (!validateEmailValid(email))
         throw ['email_invalid']
     
@@ -241,10 +241,19 @@ exports.changeInformation = async (
         .findById(id)
         .select('-password')
         .populate([{ path: "roles", populate: { path: "roleId" } }]);
-    
-    const validPass = await bcrypt.compare(password2, user.password2);
-    if (!validPass) {
-        throw ['password2_invalid'];
+
+    // Check nếu email mới trùng với 1 email nào đó có sẵn trong hệ thống thì không cho đổi
+    if (email.toString() !== user.email.toString()) {
+        let checkEmailExist = await User(connect(DB_CONNECTION, portal)).findOne({ email: email });
+        if (checkEmailExist)
+            throw ['email_exist']
+    }
+
+    if (user.password2) {
+        const validPass = await bcrypt.compare(password2, user.password2);
+        if (!validPass) {
+            throw ['password2_invalid'];
+        }
     }
 
     let deleteAvatar = "." + user.avatar;
@@ -445,6 +454,26 @@ exports.createPassword2 = async (portal, userId, data) => {
     delete user['password'];
 
     return user;
+}
+
+exports.deletePassword2 = async (portal, data, userId) => {
+    const { pwd2 } = data;
+    if (!pwd2)
+        throw ['password2_empty']
+    
+    let user = await User(connect(DB_CONNECTION, portal))
+        .findById(userId)
+        .populate([{ path: "roles", populate: { path: "roleId" } }]);
+
+    const validPwd2 = await bcrypt.compare(pwd2, user.password2);
+    if (!validPwd2) {
+        throw ['password2_invalid'];
+    }
+
+    let userUpdate = await User(connect(DB_CONNECTION, portal)).findOneAndUpdate({_id: userId},{ $unset: { password2: ""}}, {new: true})
+    userUpdate = userUpdate.toObject();
+    userUpdate['password2Exists'] = false;
+    return userUpdate;
 }
 
 exports.checkPassword2Exists = async (portal, userId) => {

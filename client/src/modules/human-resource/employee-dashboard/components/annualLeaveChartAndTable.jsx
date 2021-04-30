@@ -1,4 +1,3 @@
-/* Biểu đồ xu hướng nghỉ phép của nhân viên */
 import React, { Component, useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
@@ -12,14 +11,34 @@ import c3 from 'c3';
 import 'c3/c3.css';
 import * as d3 from 'd3';
 import './employeeDashBoard.css';
-const AnnualLeaveChartAndTable = (props) => {
-    
-    const [state, setState] = useState({
-        organizationalUnits: props.defaultUnit ? props.organizationalUnits : null,
-        organizationalUnitsShow: props.defaultUnit ? props.organizationalUnits : props.childOrganizationalUnit.map(x => x.id),
-    });
 
+
+const AnnualLeaveChartAndTable = (props) => {
+    const { defaultUnit } = props
+    const [state, setState] = useState({
+        organizationalUnitsSearch: null,
+        organizationalUnits: null,
+        organizationalUnitsShow: null,
+    });
+    const { organizationalUnits, organizationalUnitsShow, organizationalUnitsSearch } = state
     const barChartAndTable = useRef(null);
+
+    useEffect(() => {
+        setState({
+            organizationalUnits: defaultUnit ? props.organizationalUnits : null,
+            organizationalUnitsShow: defaultUnit ? props.organizationalUnits : props?.childOrganizationalUnit?.map(x => x.id),
+        })
+
+        props.getAnnualLeave({ organizationalUnits: props.organizationalUnits, beforAndAfterOneWeek: true })
+    }, [JSON.stringify(props.organizationalUnits)])
+
+    useEffect(() => {
+        if (!isEqual(props.annualLeave.beforAndAfterOneWeeks, state.beforAndAfterOneWeeks)) {
+            setState({
+                ...state
+            })
+        }
+    }, [props.annualLeave.beforAndAfterOneWeeks, state.beforAndAfterOneWeeks]);
 
     /**
      * Function format dữ liệu Date thành string
@@ -50,24 +69,24 @@ const AnnualLeaveChartAndTable = (props) => {
     * @param {*} value : Array id đơn vị
     */
     const handleSelectOrganizationalUnit = (value) => {
-        if (value.length === 0) {
-            value = null
-        };
         setState({
             ...state,
-            organizationalUnits: value,
-            organizationalUnitsShow: value ? value : props.childOrganizationalUnit.map(x => x.id)
+            organizationalUnitsSearch: value,
         })
-        props.getAnnualLeave({ organizationalUnits: value, beforAndAfterOneWeek: true })
     };
 
-    useEffect(() => {
-        const { organizationalUnits } = state;
+    const handleUpdateData = () => {
+        if (organizationalUnitsSearch?.length > 0) {
+            setState({
+                ...state,
+                organizationalUnits: organizationalUnitsSearch,
+                organizationalUnitsShow: organizationalUnitsSearch
+            })
+            props.getAnnualLeave({ organizationalUnits: organizationalUnitsSearch, beforAndAfterOneWeek: true })
+        }
+    }
 
-        props.getAnnualLeave({ organizationalUnits: organizationalUnits, beforAndAfterOneWeek: true })
-    }, [])
-
-    const isEqual = (items1, items2) => {
+    function isEqual (items1, items2) {
         if (!items1 || !items2) {
             return false;
         }
@@ -88,14 +107,6 @@ const AnnualLeaveChartAndTable = (props) => {
             beforAndAfterOneWeeks: props.annualLeave.beforAndAfterOneWeeks
         })
     }
-
-    useEffect(() => {
-        if (!isEqual(props.annualLeave.beforAndAfterOneWeeks, state.beforAndAfterOneWeeks)) {
-            setState({
-                ...state
-            })
-        }
-    }, [props.annualLeave.beforAndAfterOneWeeks, state.beforAndAfterOneWeeks]);
 
 
     /** Xóa các chart đã render khi chưa đủ dữ liệu */
@@ -118,8 +129,7 @@ const AnnualLeaveChartAndTable = (props) => {
             bindto: barChartAndTable.current,
             data: {
                 x: 'x',
-                columns: [],
-                hide: true,
+                columns: [["x", ...data.ratioX], ['data1', ...data.data1], ['data2', ...data.data2]],
                 type: 'bar',
                 names: {
                     data1: data.nameData1,
@@ -149,12 +159,6 @@ const AnnualLeaveChartAndTable = (props) => {
                 }
             },
         });
-
-        setTimeout(function () {
-            chart.load({
-                columns: [["x", ...data.ratioX], ['data1', ...data.data1], ['data2', ...data.data2]],
-            });
-        }, 100);
     }
 
     const getDays = () => {
@@ -190,9 +194,8 @@ const AnnualLeaveChartAndTable = (props) => {
     const handleSunmitSearch = async () => { }
 
     const { annualLeave, translate, childOrganizationalUnit, department } = props;
-    const { organizationalUnits, organizationalUnitsShow } = state;
-    const listAnnual = organizationalUnitsShow.map(x => {
-        const unit = childOrganizationalUnit.find(y => y.id.toString() === x.toString())
+    const listAnnual = organizationalUnitsShow?.map(x => {
+        const unit = childOrganizationalUnit?.find(y => y.id.toString() === x.toString())
         return {
             id: unit.id,
             name: unit.name,
@@ -202,7 +205,7 @@ const AnnualLeaveChartAndTable = (props) => {
         }
     })
 
-    if (annualLeave.beforAndAfterOneWeeks.length) {
+    if (annualLeave?.beforAndAfterOneWeeks?.length > 0 && listAnnual) {
         listAnnual.map(x => {
             annualLeave.beforAndAfterOneWeeks.forEach(y => {
                 if (x.id.toString() === y.organizationalUnit.toString() && y.status === 'approved') {
@@ -253,6 +256,7 @@ const AnnualLeaveChartAndTable = (props) => {
         organizationalUnitsName = department.list.filter(x => organizationalUnits.includes(x._id));
         organizationalUnitsName = organizationalUnitsName.map(x => x.name);
     }
+
     return (
         <React.Fragment>
             <div className="box box-solid">
@@ -262,8 +266,8 @@ const AnnualLeaveChartAndTable = (props) => {
                         {
                             organizationalUnitsName && organizationalUnitsName.length < 2 ?
                                 <>
-                                    <span>{` ${translate('task.task_dashboard.of_unit')}`}</span>
-                                    <span>{` ${organizationalUnitsName?.[0]}`}</span>
+                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
+                                    <span>{` ${organizationalUnitsName?.[0] ? organizationalUnitsName?.[0] : ""}`}</span>
                                 </>
                                 :
                                 <span onClick={() => showListInSwal(organizationalUnitsName, translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
@@ -275,23 +279,26 @@ const AnnualLeaveChartAndTable = (props) => {
                     </div>
                 </div>
                 <div className="box-body" >
-                    <div className="qlcv" style={{ marginBottom: 15 }}>
-                        <div className="form-inline">
-                            <div className="form-group">
-                                <label className="form-control-static">{translate('kpi.evaluation.dashboard.organizational_unit')}</label>
-                                <SelectMulti id="multiSelectUnitsChartAndTable"
-                                    items={childOrganizationalUnit.map((p, i) => { return { value: p.id, text: p.name } })}
-                                    options={{
-                                        nonSelectedText: translate('page.non_unit'),
-                                        allSelectedText: translate('page.all_unit'),
-                                    }}
-                                    onChange={handleSelectOrganizationalUnit}
-                                    value={organizationalUnits}
-                                >
-                                </SelectMulti>
+                    { !defaultUnit 
+                        && <div className="qlcv" style={{ marginBottom: 15 }}>
+                            <div className="form-inline">
+                                <div className="form-group">
+                                    <label className="form-control-static">{translate('kpi.evaluation.dashboard.organizational_unit')}</label>
+                                    <SelectMulti id="multiSelectUnitsChartAndTable"
+                                        items={childOrganizationalUnit?.map((p, i) => { return { value: p.id, text: p.name } })}
+                                        options={{
+                                            nonSelectedText: translate('page.non_unit'),
+                                            allSelectedText: translate('page.all_unit'),
+                                        }}
+                                        onChange={handleSelectOrganizationalUnit}
+                                        value={organizationalUnits}
+                                    >
+                                    </SelectMulti>
+                                </div>
+                                <button type="button" className="btn btn-success" onClick={handleUpdateData}>{translate('general.search')}</button>
                             </div>
                         </div>
-                    </div>
+                    }
                     <div className="dashboard_box_body">
                         {!annualLeave.beforAndAfterOneWeeks.length &&
                             'Không có đơn xin nghỉ phép nào'}

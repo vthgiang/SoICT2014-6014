@@ -142,7 +142,7 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
                 x: 'x',
                 columns: [],
                 hide: true,
-                type: data.lineChart === true ? 'spline' : 'bar',
+                type: data.lineChart === true ? '' : 'bar',
                 names: {
                     data1: data.nameData1,
                     data2: data.nameData2,
@@ -260,8 +260,8 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
                     {
                         organizationalUnitsName && organizationalUnitsName.length < 2 ?
                             <>
-                                <span>{` ${translate('task.task_dashboard.of_unit')}`}</span>
-                                <span>{` ${organizationalUnitsName?.[0]}`}</span>
+                                <span>{` ${translate('task.task_dashboard.of')}`}</span>
+                                <span>{` ${organizationalUnitsName?.[0] ? organizationalUnitsName?.[0] : ""}`}</span>
                             </>
                             :
                             <span onClick={() => showListInSwal(organizationalUnitsName, translate('general.list_unit'))} style={{ cursor: 'pointer' }}>

@@ -493,7 +493,7 @@ function getDocumentsUserCanView(roleId, data = undefined) {
     };
 }
 
-function getUserDocumentStatistics(option, data) {
+function getUserDocumentStatistics(roleId,option, data) {
     switch (option) {
         case "downloaded":
             return (dispatch) => {
@@ -501,7 +501,7 @@ function getUserDocumentStatistics(option, data) {
                     type:
                         DocumentConstants.GET_DOCUMENT_STATISTICS_DOWNLOADED_REQUEST,
                 });
-                DocumentServices.getUserDocumentStatistics({ option }, data)
+                DocumentServices.getUserDocumentStatistics({roleId, option }, data)
                     .then((res) => {
                         dispatch({
                             type:
@@ -522,7 +522,7 @@ function getUserDocumentStatistics(option, data) {
                     type:
                         DocumentConstants.GET_DOCUMENT_STATISTICS_COMMON_REQUEST,
                 });
-                DocumentServices.getUserDocumentStatistics({ option }, data)
+                DocumentServices.getUserDocumentStatistics({ roleId,option }, data)
                     .then((res) => {
                         dispatch({
                             type:
@@ -543,7 +543,7 @@ function getUserDocumentStatistics(option, data) {
                     type:
                         DocumentConstants.GET_DOCUMENT_STATISTICS_LATEST_REQUEST,
                 });
-                DocumentServices.getUserDocumentStatistics({ option }, data)
+                DocumentServices.getUserDocumentStatistics({roleId, option }, data)
                     .then((res) => {
                         dispatch({
                             type:

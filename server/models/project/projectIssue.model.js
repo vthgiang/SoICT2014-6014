@@ -4,14 +4,14 @@ const mongoosePaginate = require('mongoose-paginate-v2');
 
 const ProjectIssueSchema = new Schema(
     { 
-        codeName: {
+        code: {
             type: String,
         },
-        task: {
+        taskProject: {
             type: Schema.Types.ObjectId,
             ref: "ProjectTask",
         },
-        subject: {
+        name: {
             type: String,
         },
         issueType: {
@@ -20,14 +20,6 @@ const ProjectIssueSchema = new Schema(
         },
         description: {
             type: String,
-        },
-        createdAt: {
-            type: Date,
-            default: Date.now,
-        },
-        updatedAt: {
-            type: Date,
-            default: Date.now,
         },
         startDate: {
             type: Date,

@@ -50,7 +50,7 @@ const BarAndLineChart = (props) => {
                 columns: [],
                 hide: true,
                 types: {
-                    data1: data.lineBar === true ? 'bar' : 'spline',
+                    data1: data.lineBar === true ? 'bar' : '',
                 },
                 names: {
                     data1: data.nameData1,

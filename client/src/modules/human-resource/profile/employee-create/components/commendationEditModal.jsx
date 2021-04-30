@@ -50,14 +50,12 @@ function CommendationEditModal(props) {
             return {
                 ...state,
                 id: props.id,
-                _id: props._id,
                 index: props.index,
                 decisionNumber: props.decisionNumber,
                 organizationalUnit: props.organizationalUnit,
                 startDate: props.startDate,
                 type: props.type,
                 reason: props.reason,
-
                 errorOnNumber: undefined,
                 errorOnUnit: undefined,
                 errorOnType: undefined,
@@ -66,6 +64,14 @@ function CommendationEditModal(props) {
 
             }
         })
+        if (props._id) {
+            setState(state => {
+                return {
+                    ...state,
+                    _id: props._id
+                }
+            })
+        }
     }, [props.id])
 
     /** Bắt sự kiện thay đổi số quyết định */

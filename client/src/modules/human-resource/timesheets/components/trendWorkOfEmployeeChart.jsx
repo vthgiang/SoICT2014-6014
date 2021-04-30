@@ -149,7 +149,7 @@ const TrendWorkOfEmployeeChart = (props) => {
                 x: 'x',
                 columns: [],
                 hide: true,
-                type: data.lineChart === true ? 'spline' : 'bar',
+                type: data.lineChart === true ? '' : 'bar',
                 names: {
                     data1: data.nameData1,
                     data2: data.nameData2,

@@ -13,18 +13,21 @@ import { PurchaseRequestEditForm } from './PurchaseRequestEditForm';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 import { formatDate } from '../../../../../helpers/assetHelper.js';
 function PurchaseRequest(props) {
+    const { translate, recommendProcure, auth } = props;
+
     const tableId_constructor = "table-purchase-request";
     const defaultConfig = { limit: 5 }
     const limit_constructor = getTableConfiguration(tableId_constructor, defaultConfig).limit;
-    const [state, setState] =useState({
+    const [state, setState] = useState({
         tableId: tableId_constructor,
         recommendNumber: "",
         month: formatDate(Date.now()),
         status: ["approved", "waiting_for_approval", "disapproved"],
         page: 0,
         limit: limit_constructor,
+        proponent: auth.user.email
     })
-    const { translate, recommendProcure, auth } = props;
+    
     const { page, limit, currentRowView, currentRow, tableId, month, status } = state;
 
     var listRecommendProcures = "";
@@ -38,7 +41,6 @@ function PurchaseRequest(props) {
         parseInt((recommendProcure.totalList / limit) + 1);
 
     var currentPage = parseInt((page / limit) + 1);
-
 
     useEffect(() => {
         props.searchRecommendProcures(state);
@@ -151,7 +153,7 @@ function PurchaseRequest(props) {
             page: parseInt(page),
         });
 
-        props.searchRecommendProcures({ ...state, page });
+        props.searchRecommendProcures({ ...state, page: parseInt(page) });
     }
 
     const formatStatus = (status) => {
@@ -288,11 +290,11 @@ function PurchaseRequest(props) {
 
                 {/* PaginateBar */}
                 <PaginateBar 
-                    // display={recommendProcure.listRecommendProcures ? recommendProcure.listRecommendProcures.length : null}
-                    // total={recommendProcure.totalList ? recommendProcure.totalList : null}
-                    // pageTotal={pageTotal ? pageTotal : 0} 
-                    // currentPage={currentPage} 
-                    // func={setPage} 
+                    display= {recommendProcure.listRecommendProcures?.length}
+                    total={recommendProcure.totalList}
+                    pageTotal={pageTotal ? pageTotal : 0} 
+                    currentPage={currentPage} 
+                    func={setPage} 
                 />
             </div>
 

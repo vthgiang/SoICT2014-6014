@@ -215,12 +215,13 @@ function UseRequestCreateForm(props) {
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     const isFormValidated = () => {
-        let { recommendNumber, dateCreate, reqContent, dateStartUse, dateEndUse } = state;
+        let { recommendNumber, dateCreate, reqContent, dateStartUse, dateEndUse, errorOnReqContent } = state;
         let { translate } = props;
         if (
             // !ValidationHelper.validateEmpty(translate, recommendNumber).status ||
             !ValidationHelper.validateEmpty(translate, dateCreate).status ||
             !ValidationHelper.validateEmpty(translate, reqContent).status ||
+            !ValidationHelper.validateName(translate, reqContent, 4, 255).status ||
             !ValidationHelper.validateEmpty(translate, dateStartUse).status ||
             (props.typeRegisterForUse != 3 && !ValidationHelper.validateName(translate, dateEndUse).status)
         ) return false;

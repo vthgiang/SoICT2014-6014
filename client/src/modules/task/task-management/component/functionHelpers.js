@@ -6,7 +6,7 @@ export const convertDataToExportData = (translate, currentTasks, fileName) => {
 
     if (data?.length > 0) {
         data = data.map((item, index) => {
-            let responsibleEmployees = "", accountableEmployees = "", responsibleEmployeesaEmail= "", accountableEmployeesEmail = "";
+            let responsibleEmployees = "", accountableEmployees = "", responsibleEmployeesaEmail = "", accountableEmployeesEmail = "";
             item.responsibleEmployees?.length > 0 && item.responsibleEmployees.map((employee, index) => {
                 if (index > 0) {
                     responsibleEmployees = responsibleEmployees + ", ";
@@ -138,3 +138,42 @@ export const formatStatusCode = (translate, data) => {
     else if (data === "delayed") return "DELAYED";
     else if (data === "canceled") return "CANCELED";
 }
+
+export const getSalaryFromUserId = (responsibleEmployeesWithUnit, userId) => {
+    if (responsibleEmployeesWithUnit)
+        for (let unitItem of responsibleEmployeesWithUnit) {
+            for (let userItem of unitItem.listUsers) {
+                if (userId === userItem.userId) return userItem.salary;
+            }
+        }
+    return 0;
+}
+
+export const numberWithCommas = (resultToComma) => {
+    if (resultToComma === null || resultToComma === undefined) return '';
+    const parts = resultToComma.toString().split('.')
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+    if (parts.length > 1 && parts[1].length > 2) parts[1] = parts[1].substring(0, 2);
+    return parts.join('.')
+}
+
+export const checkIsNullUndefined = (x) => {
+    return x === null || x === undefined;
+}
+
+export const checkIfHasCommonItems = (arr1, arr2) => {
+    return arr1.some(item => {
+        return arr2.includes(item);
+    })
+}
+
+export const getNumsOfDaysWithoutGivenDay = (startDate, endDate, givenDay) => {
+    let numberOfDates = 0
+    while (startDate < endDate) {
+        if (startDate.getDay() === givenDay) {
+            numberOfDates++
+        }
+        startDate.setDate(startDate.getDate() + 1)
+    }
+    return numberOfDates
+} 

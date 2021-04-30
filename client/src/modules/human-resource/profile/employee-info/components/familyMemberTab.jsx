@@ -36,17 +36,17 @@ const FamilyMemberTabInfo = ({
                         {/* Tên chủ hộ*/}
                         <div className="form-group col-lg-4 col-md-4 col-ms-4 col-xs-4">
                             <strong>{translate('human_resource.profile.house_hold.appendix.head_house_hold_name')}&emsp; </strong>
-                            {houseHold.headHouseHoldName}
+                            {houseHold?.headHouseHoldName}
                         </div>
                         {/* Loại giấy tờ */}
                         <div className="form-group col-lg-4 col-md-4 col-ms-4 col-xs-4">
                             <strong>{translate('human_resource.profile.house_hold.appendix.document_type')}&emsp; </strong>
-                            {houseHold.documentType}
+                            {houseHold?.documentType}
                         </div>
                         {/* Số sổ hộ khẩu */}
                         <div className="form-group col-lg-4 col-md-4 col-ms-4 col-xs-4">
                             <strong>{translate('human_resource.profile.house_hold.appendix.house_hold_number')}&emsp; </strong>
-                            {houseHold.houseHoldNumber}
+                            {houseHold?.houseHoldNumber}
                         </div>
                     </div>
 
@@ -54,17 +54,17 @@ const FamilyMemberTabInfo = ({
                         {/* Tỉnh/Thành phố*/}
                         <div className="form-group col-lg-4 col-md-4 col-ms-4 col-xs-4">
                             <strong>{translate('human_resource.profile.house_hold.appendix.city')}&emsp; </strong>
-                            {houseHold.city}
+                            {houseHold?.city}
                         </div>
                         {/* Quận/Huyện */}
                         <div className="form-group col-lg-4 col-md-4 col-ms-4 col-xs-4">
                             <strong>{translate('human_resource.profile.house_hold.appendix.district')}&emsp; </strong>
-                            {houseHold.district}
+                            {houseHold?.district}
                         </div>
                         {/* Phường/Xã*/}
                         <div className="form-group col-lg-4 col-md-4 col-ms-4 col-xs-4">
                             <strong>{translate('human_resource.profile.house_hold.appendix.ward')}&emsp; </strong>
-                            {houseHold.ward}
+                            {houseHold?.ward}
                         </div>
                     </div>
 
@@ -72,17 +72,17 @@ const FamilyMemberTabInfo = ({
                         {/* Địa chỉ hộ khẩu*/}
                         <div className="form-group col-lg-4 col-md-4 col-ms-4 col-xs-4">
                             <strong>{translate('human_resource.profile.house_hold.appendix.house_hold_address')}&emsp; </strong>
-                            {houseHold.houseHoldAddress}
+                            {houseHold?.houseHoldAddress}
                         </div>
                         {/* Số điện thoại */}
                         <div className="form-group col-lg-4 col-md-4 col-ms-4 col-xs-4">
                             <strong>{translate('human_resource.profile.house_hold.appendix.phone')}&emsp; </strong>
-                            {houseHold.phone}
+                            {houseHold?.phone}
                         </div>
                         {/* Mã số hộ gia đình*/}
                         <div className="form-group col-lg-4 col-md-4 col-ms-4 col-xs-4">
                             <strong>{translate('human_resource.profile.house_hold.appendix.house_hold_code')}&emsp; </strong>
-                            {houseHold.houseHoldCode}
+                            {houseHold?.houseHoldCode}
                         </div>
                     </div>
                 </fieldset>
@@ -122,7 +122,7 @@ const FamilyMemberTabInfo = ({
                             </thead>
                             <tbody>
                                 {
-                                    houseHold.familyMembers && houseHold.familyMembers.map((member, index) => (
+                                    houseHold?.familyMembers && houseHold?.familyMembers.map((member, index) => (
                                         <tr key={index}>
                                             <td>{index + 1}</td>
                                             <td>{member.name}</td>
@@ -144,7 +144,7 @@ const FamilyMemberTabInfo = ({
                             </tbody>
                         </table>
                         {
-                            houseHold.familyMembers.length === 0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                            houseHold?.familyMembers.length === 0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                     </div>
                 </fieldset>

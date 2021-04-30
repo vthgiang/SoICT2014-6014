@@ -79,7 +79,14 @@ class SideBar extends Component {
                                     icon: "fa fa-newspaper-o",
                                 }}
                             />
-
+                            {/* Bảng tin đơn vị toàn công ty */}
+                            <Item
+                                item={{
+                                    name: "menu.dashboard_all_unit",
+                                    path: "/dashboard-all-unit",
+                                    icon: "fa fa-newspaper-o",
+                                }}
+                            />
                             {/* Bảng tin đơn vị */}
                             <Item
                                 item={{
@@ -327,11 +334,15 @@ class SideBar extends Component {
 
 
                             {/* Quản lý dự án */}
-                            <Item
-                                item={{
+                            <GroupItem
+                                groupItem={{
                                     name: "menu.manage_project",
                                     icon: "fa fa-folder-open",
-                                    path: "/projects-management",
+                                    list: [
+                                        { name: "menu.projects_list", icon: "fa fa-dashboard", path: "/project/projects-list" },
+                                        { name: "menu.project_report", icon: "fa fa-sitemap", path: "/project/project-report" },
+                                        { name: "menu.project_evaluation", icon: "fa fa-user-plus", path: "/project/project-evaluation" },
+                                    ],
                                 }}
                             />
 

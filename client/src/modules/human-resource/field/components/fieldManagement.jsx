@@ -8,17 +8,26 @@ import { FieldCreateForm, FieldEditForm } from './combinedContent';
 import { FieldsActions } from '../redux/actions';
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
 const FieldManagement = (props) => {
-    
-    const tableId = "table-field-management";
+
+    const _tableId = "table-field-management";
     const defaultConfig = { limit: 5 }
-    const _limit = getTableConfiguration(tableId, defaultConfig).limit;
+    const _limit = getTableConfiguration(_tableId, defaultConfig).limit;
+    let currentPage = 1, pageTotal = 1;
 
     const [state, setState] = useState({
-        tableId,
+        tableId: _tableId,
         page: 0,
         limit: _limit,
         name: "",
     })
+
+    const { translate, field } = props;
+
+    const { limit, page, currentRow, tableId } = state;
+
+    let listFields = field.listFields;
+
+    // console.log(listFields);
 
     /**
      * Function bắt sự kiện chỉnh sửa thông tin ngành nghề, lĩnh vực
@@ -33,9 +42,12 @@ const FieldManagement = (props) => {
     }
 
     useEffect(() => {
-        const { getListFields } = props;
-        getListFields(state);
+        props.getListFields({ page: 0, limit: 1000 });
     }, []);
+
+    useEffect(() => {
+        props.getListFields(state);
+    }, [limit, page]);
 
     /** Bắt sự kiện thay đổi tên ngành nghề, lĩnh vực tím kiếm */
     const handleChange = (e) => {
@@ -47,9 +59,8 @@ const FieldManagement = (props) => {
     }
 
     /** Bắt sự kiện tiềm kiếm  */
-    const handleSunmitSearch = () => {
-        const { getListFields } = props;
-        getListFields(state)
+    const handleSunmitSearch = async () => {
+        props.getListFields(state)
     }
 
     /**
@@ -57,52 +68,49 @@ const FieldManagement = (props) => {
     * @param {*} number : Số dòng hiện thị
     */
     const setLimit = async (number) => {
-        await setState(state => ({
+
+        setState(state => ({
             ...state,
             limit: parseInt(number),
         }));
-        
+        props.getListFields({
+            ...state,
+            limit: parseInt(number),
+        })
     }
 
     /**
      * Bắt sự kiện chuyển trang
-     * @param {*} pageNumber : Số trạng hiện tại cần hiện thị
+     * @param {*} pageNumber : Số trang hiện tại cần hiện thị
      */
     const setPage = async (pageNumber) => {
-        let { limit } = state;
-        let page = (pageNumber - 1) * limit;
         await setState(state => ({
             ...state,
-            page: parseInt(page)
+            page: (pageNumber - 1) * limit
         }))
+        props.getListFields({
+            ...state,
+            page: (pageNumber - 1) * limit
+        })
     }
 
-    useEffect(() => {
-        const { getListFields } = props;
-        getListFields(state);
-    }, [state.limit, state.page]);
-
-    const { translate, field, deleteFields } = props;
-
-    const { limit, page, currentRow } = state;
-
-    let listFields = field.listFields;
-
-    let pageTotal = ((field.totalList % limit) === 0) ?
+    pageTotal = ((field.totalList % limit) === 0) ?
         parseInt(field.totalList / limit) :
         parseInt((field.totalList / limit) + 1);
-    let currentPage = parseInt((page / limit) + 1);
+    currentPage = parseInt((page / limit) + 1);
+    console.log(currentPage);
+    console.log(page);
 
     return (
         <div className="box" >
             <div className="box-body qlcv">
                 <FieldCreateForm />
                 <div className="form-inline" style={{ marginBottom: 10 }}>
-                    {/* Mã số nhân viên */}
+                    {/* Tên ngành nghề/lĩnh vực */}
                     <div className="form-group">
                         <label style={{ width: 'auto' }}>{translate('human_resource.field.table.name')}</label>
                         <input type="text" className="form-control" name="name" onChange={handleChange} placeholder={translate('human_resource.field.table.name')} autoComplete="off" />
-                        <button type="button" className="btn btn-success" title={translate('general.search')} onClick={() => handleSunmitSearch()} >{translate('general.search')}</button>
+                        <button type="submit" className="btn btn-success" title={translate('general.search')} onClick={() => handleSunmitSearch()} >{translate('general.search')}</button>
                     </div>
                 </div>
 
@@ -137,7 +145,7 @@ const FieldManagement = (props) => {
                                                 id: x._id,
                                                 info: x.name
                                             }}
-                                            func={deleteFields}
+                                            func={props.deleteFields}
                                         />
                                     </td>
                                 </tr>)
@@ -148,7 +156,12 @@ const FieldManagement = (props) => {
                     <div className="table-info-panel">{translate('confirm.loading')}</div> :
                     (!listFields || listFields.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                 }
-                <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={setPage} />
+                <PaginateBar
+                    pageTotal={pageTotal ? pageTotal : 0}
+                    currentPage={currentPage}
+                    display={listField && listFields.length !== 0 && listFields.length}
+                    total={field && field.totalList}
+                    func={setPage} />
             </div>
             {currentRow &&
                 <FieldEditForm

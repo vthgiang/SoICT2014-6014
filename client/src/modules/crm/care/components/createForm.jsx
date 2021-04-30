@@ -167,7 +167,7 @@ const handleChangePriority = (value) =>{
         console.log('Caretype',careTypes);
         return (
             <React.Fragment>
-                <ButtonModal modalID="modal-crm-care-create" button_name={translate('general.add')} title={translate('crm.care.add')} />
+                <ButtonModal modalID="modal-crm-care-create" button_name={'Thêm mới hoạt động'} title={translate('crm.care.add')} />
                 <DialogModal
                     modalID="modal-crm-care-create"
                     formID="form-crm-care-create"
@@ -248,7 +248,7 @@ const handleChangePriority = (value) =>{
                                     items={
                                         listCareTypes
                                     }
-                                    value={newCare.careType ? newCare.careType : []}
+                                    // value={newCare.careType ? newCare.careType : []}
                                     onChange={handleChangeCareType}
                                     multiple={true}
                                     options={{ placeholder: translate('crm.care.careType') }}

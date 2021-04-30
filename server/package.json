@@ -19,7 +19,10 @@
     "init-sample-company": "node seed/initSampleCompanyDB.js",
     "init-sample-organizational-unit-kpi": "node seed/initOrganizationalUnitKPIData.js",
     "init-human-resource-data": "node seed/initHumanResourceData.js",
-    "init": "node seed/initDB.js; node seed/initSampleCompanyDB.js; node seed/initOrganizationalUnitKPIData.js; node seed/initHumanResourceData.js"
+    "init": "node seed/initDB.js; node seed/initSampleCompanyDB.js; node seed/initOrganizationalUnitKPIData.js; node seed/initHumanResourceData.js",
+    "y-init": "yarn db && yarn sc",
+    "y-init-full": "yarn db && yarn sc && yarn sp && yarn shr",
+    "y-init-quoc": "yarn db && yarn sc && node seed/initQuocData.js"
   },
   "keywords": [],
   "author": "",
@@ -65,7 +68,8 @@
     "uuid": "^8.3.2",
     "webpack": "^5.9.0",
     "webpack-node-externals": "^2.5.2",
-    "winston": "^3.2.1"
+    "winston": "^3.2.1",
+    "react-google-maps":"^9.4.5"
   },
   "devDependencies": {
     "raw-loader": "^4.0.2",

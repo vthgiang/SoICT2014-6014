@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ButtonModal, ErrorLabel, SelectBox } from '../../../../common-components';
@@ -6,110 +6,108 @@ import { UserActions } from '../redux/actions';
 import { RoleActions } from '../../role/redux/actions';
 import ValidationHelper from '../../../../helpers/validationHelper';
 
-class UserCreateForm extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {}
-    }
+function UserCreateForm(props) {
+    const [state, setState] = useState({})
 
-    save = () => {
-        if (this.isFormValidated()) {
-            return this.props.create({
-                name: this.state.userName,
-                email: this.state.userEmail,
-                roles: this.state.userRoles
+    const save = () => {
+        if (isFormValidated()) {
+            return props.create({
+                name: state.userName,
+                email: state.userEmail,
+                roles: state.userRoles
             });
         }
     }
 
-    isFormValidated = () => {
-        let { userName, userEmail } = this.state;
-        let { translate } = this.props;
+    const isFormValidated = () => {
+        let { userName, userEmail } = state;
+        let { translate } = props;
         if (!ValidationHelper.validateName(translate, userName, 6, 255).status || !ValidationHelper.validateEmail(translate, userEmail).status) return false;
         return true;
     }
 
-    handleUserName = (e) => {
+    const handleUserName = (e) => {
         let { value } = e.target;
-        let { translate } = this.props;
+        let { translate } = props;
         let { message } = ValidationHelper.validateName(translate, value, 6, 255);
-        this.setState({
+        setState({
+            ...state,
             userName: value,
             userNameError: message
         });
     }
 
-    handleUserEmail = (e) => {
+    const handleUserEmail = (e) => {
         let { value } = e.target;
-        let { translate } = this.props;
+        let { translate } = props;
         let { message } = ValidationHelper.validateEmail(translate, value);
-        this.setState({
+        setState({
+            ...state,
             userEmail: value,
             userEmailError: message
         });
     }
 
-    handleRolesChange = (value) => {
-        this.setState({
+    const handleRolesChange = (value) => {
+        setState({
+            ...state,
             userRoles: value
         });
     }
 
-    componentDidMount() {
-        this.props.getRoles();
-    }
+    useEffect(() => {
+        props.getRoles();
+    }, [])
 
-    render() {
-        const { translate, role, user } = this.props;
-        const { userEmailError, userNameError } = this.state;
+    const { translate, role, user } = props;
+    const { userEmailError, userNameError } = state;
 
-        const items = role.list.filter(role => {
-            return role && role.name !== 'Super Admin'
-        }).map(role => { return { value: role ? role._id : null, text: role ? role.name : "" } })
+    const items = role.list.filter(role => {
+        return role && role.name !== 'Super Admin'
+    }).map(role => { return { value: role ? role._id : null, text: role ? role.name : "" } })
 
-        return (
-            <DialogModal
-                modalID="modal-create-user" isLoading={user.isLoading}
-                formID="form-create-user"
-                title={translate('manage_user.add_title')}
-                func={this.save}
-                disableSubmit={!this.isFormValidated()}
-            >
-                {/* Form thêm tài khoản người dùng mới */}
-                <form id="form-create-user" onSubmit={() => this.save(translate('manage_user.add_success'))}>
+    return (
+        <DialogModal
+            modalID="modal-create-user" isLoading={user.isLoading}
+            formID="form-create-user"
+            title={translate('manage_user.add_title')}
+            func={save}
+            disableSubmit={!isFormValidated()}
+        >
+            {/* Form thêm tài khoản người dùng mới */}
+            <form id="form-create-user" onSubmit={() => save(translate('manage_user.add_success'))}>
 
-                    {/* Tên người dùng */}
-                    <div className={`form-group ${!userNameError ? "" : "has-error"}`}>
-                        <label>{translate('table.name')}<span className="text-red">*</span></label>
-                        <input type="text" className="form-control" onChange={this.handleUserName} />
-                        <ErrorLabel content={userNameError} />
-                    </div>
+                {/* Tên người dùng */}
+                <div className={`form-group ${!userNameError ? "" : "has-error"}`}>
+                    <label>{translate('table.name')}<span className="text-red">*</span></label>
+                    <input type="text" className="form-control" onChange={handleUserName} />
+                    <ErrorLabel content={userNameError} />
+                </div>
 
-                    {/* Email */}
-                    <div className={`form-group ${!userEmailError ? "" : "has-error"}`}>
-                        <label>{translate('table.email')}<span className="text-red">*</span></label>
-                        <input type="email" className="form-control" onChange={this.handleUserEmail} />
-                        <ErrorLabel content={userEmailError} />
-                    </div>
+                {/* Email */}
+                <div className={`form-group ${!userEmailError ? "" : "has-error"}`}>
+                    <label>{translate('table.email')}<span className="text-red">*</span></label>
+                    <input type="email" className="form-control" onChange={handleUserEmail} />
+                    <ErrorLabel content={userEmailError} />
+                </div>
 
-                    {/* Phân quyền được cấp */}
-                    <div className="form-group">
-                        <label>{translate('manage_user.roles')}</label>
-                        {items.length !== 0 &&
-                            <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                                id={`user-role-form-create`}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                items={items}
-                                onChange={this.handleRolesChange}
-                                multiple={true}
-                            />
-                        }
-                    </div>
-                </form>
-            </DialogModal>
-        );
-    }
+                {/* Phân quyền được cấp */}
+                <div className="form-group">
+                    <label>{translate('manage_user.roles')}</label>
+                    {items.length !== 0 &&
+                        <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                            id={`user-role-form-create`}
+                            className="form-control select2"
+                            style={{ width: "100%" }}
+                            items={items}
+                            onChange={handleRolesChange}
+                            multiple={true}
+                        />
+                    }
+                </div>
+            </form>
+        </DialogModal>
+    );
 }
 
 function mapStateToProps(state) {
