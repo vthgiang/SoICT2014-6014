@@ -14,9 +14,10 @@ import { getTableConfiguration } from '../../../../../helpers/tableConfiguration
 import { convertJsonObjectToFormData } from '../../../../../helpers/jsonObjectToFormDataObjectConverter'
 
 function CarrierMissionManagementTable(props) {
-    let {currentVehicleRoute, transportPlanId, transportPlan, transportSchedule} = props;
+    let {transportPlanId, transportPlan, transportSchedule} = props;
     const [transportScheduleByCarrierId, setTransportScheduleByCarrierId] = useState()
     const [currentDate, setCurrentDate] = useState(new Date())
+    const [currentVehicleRoute, setCurrentVehicleRoute] = useState();
     // const [currentVehicle, setCurrentVehicle] = useState([])
     // const [driver, setDriver] = useState()
 
@@ -78,20 +79,39 @@ function CarrierMissionManagementTable(props) {
     // useEffect(() => {
     //     console.log(currentVehicleRoute, " day la currentVehicleRoute");
     // }, [currentVehicleRoute])
+    useEffect(() => {
+        if (currentDate && transportScheduleByCarrierId && transportScheduleByCarrierId.length!==0){
+            transportScheduleByCarrierId.map(item => {
+                if (item.transportPlan && item.transportPlan.endTime && item.transportPlan.startTime){
+                    if (formatDate(item.transportPlan.endTime)===formatDate(currentDate)
+                        && formatDate(item.transportPlan.startTime)===formatDate(currentDate)
+                    ){
+                        setCurrentVehicleRoute(item.route);
+                    }
+
+                }
+            })
+        }
+    }, [currentDate, transportScheduleByCarrierId])
     return (
         <React.Fragment>
             <div className="box-body qlcv">
             <h1>Tessssssssssssssssssss</h1>
             {/* <TransportDialogMissionReport /> */}
-                <DatePicker
-                    id={`carrier_day`}
-                    value={formatDate(currentDate)}
-                    onChange={handleCarrierDateChange}
-                    disabled={false}
-                />
-            <div>
-                {/* <div>Tài xế: {driver?.carrier?.name}</div> */}
-            </div>
+                <div className="form-inline">
+                    <div className="form-group">
+
+                        <DatePicker
+                            id={`carrier_day`}
+                            value={formatDate(currentDate)}
+                            onChange={handleCarrierDateChange}
+                            disabled={false}
+                        />
+                    </div>
+                </div>
+                <div>
+                    {/* <div>Tài xế: {driver?.carrier?.name}</div> */}
+                </div>
             <table id={currentVehicleRoute?currentVehicleRoute.transportVehicle:"route"} 
                 className="table table-striped table-bordered table-hover">
                 <thead>
