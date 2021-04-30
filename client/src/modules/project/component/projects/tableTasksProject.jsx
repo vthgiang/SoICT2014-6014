@@ -10,6 +10,8 @@ import { taskManagementActions } from '../../../task/task-management/redux/actio
 import { ModalPerformProject } from '../../../task/task-perform/component/modalPerformProject';
 import { getStorage } from '../../../../config';
 import { getCurrentProjectDetails } from './functionHelper';
+import { performTaskAction } from '../../../task/task-perform/redux/actions';
+import Swal from 'sweetalert2';
 
 const TableTasksProject = (props) => {
     const [state, setState] = useState({
@@ -19,7 +21,8 @@ const TableTasksProject = (props) => {
         currentTaskId: null,
     })
     const currentProjectId = window.location.href.split('?id=')[1];
-    const { translate, currentProjectTasks, user, project } = props;
+    const userId = getStorage('userId');
+    const { translate, currentProjectTasks, user, project, performtasks } = props;
     const { page, limit, taskName, currentTaskId } = state;
     let units = []
     if (user) units = user.organizationalUnitsOfUser;
@@ -126,6 +129,53 @@ const TableTasksProject = (props) => {
 
     // const totalPage = project && project.data.totalPage;
 
+    const funcStartTimer = async (taskId, overrideTSLog = 'no') => {
+        let timer = {
+            creator: userId,
+            overrideTSLog
+        };
+        props.startTimer(taskId, timer).catch(err => {
+            let warning = Array.isArray(err.response.data.messages) ? err.response.data.messages : [err.response.data.messages];
+            if (warning[0] === 'time_overlapping') {
+                Swal.fire({
+                    title: `Bạn đã hẹn tắt bấm giờ cho công việc [ ${warning[1]} ]`,
+                    html: `<h4 class="text-red">Lưu lại những giờ đã bấm được cho công việc [ ${warning[1]} ] và bấm giờ công việc mới</h4>`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Bấm giờ mới',
+                    cancelButtonText: 'Hủy'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        let timer = {
+                            creator: userId,
+                            overrideTSLog: 'yes'
+                        };
+                        this.props.startTimer(taskId, timer)
+                    }
+                })
+            }
+        })
+    }
+
+    const renderTimerButton = (taskItem) => {
+        const resArrFlatten = taskItem?.responsibleEmployees.map(o => String(o.id))
+        const accArrFlatten = taskItem?.accountableEmployees.map(o => String(o.id))
+        if (resArrFlatten.includes(String(userId)) || accArrFlatten.includes(String(userId))) {
+            return <a
+                style={{ cursor: 'pointer' }}
+                onClick={() => !performtasks.currentTimer && funcStartTimer(taskItem._id)}
+                className={`timer ${performtasks.currentTimer ? performtasks.currentTimer._id === taskItem._id ? 'text-orange' : 'text-gray' : 'text-black'}`}
+            >
+                <i className="material-icons">timer</i>
+            </a>
+            // return <a className="timer text-yellow" style={{ width: '5px' }} onClick={() => handleShowDetailInfo(taskItem?._id)}>
+            //     <i className="material-icons">timer</i>
+            // </a>
+        }
+        return null;
+    }
 
     return (
         <React.Fragment>
@@ -176,6 +226,7 @@ const TableTasksProject = (props) => {
                                 <td>{taskItem?.progress}%</td>
                                 <td style={{ textAlign: "center" }}>
                                     <a className="edit text-yellow" style={{ width: '5px' }} onClick={() => handleShowDetailInfo(taskItem?._id)}><i className="material-icons">edit</i></a>
+                                    {renderTimerButton(taskItem)}
                                     <DeleteNotification
                                         content={translate('task.task_management.action_delete')}
                                         data={{
@@ -195,8 +246,8 @@ const TableTasksProject = (props) => {
 }
 
 function mapStateToProps(state) {
-    const { project, user, tasks } = state;
-    return { project, user, tasks }
+    const { project, user, tasks, performtasks } = state;
+    return { project, user, tasks, performtasks }
 }
 
 const mapDispatchToProps = {
@@ -204,5 +255,6 @@ const mapDispatchToProps = {
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
     getTasksByProject: taskManagementActions.getTasksByProject,
     deleteTaskById: taskManagementActions._delete,
+    startTimer: performTaskAction.startTimerTask,
 }
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(TableTasksProject));

@@ -166,3 +166,14 @@ export const checkIfHasCommonItems = (arr1, arr2) => {
         return arr2.includes(item);
     })
 }
+
+export const getNumsOfDaysWithoutGivenDay = (startDate, endDate, givenDay) => {
+    let numberOfDates = 0
+    while (startDate < endDate) {
+        if (startDate.getDay() === givenDay) {
+            numberOfDates++
+        }
+        startDate.setDate(startDate.getDate() + 1)
+    }
+    return numberOfDates
+} 

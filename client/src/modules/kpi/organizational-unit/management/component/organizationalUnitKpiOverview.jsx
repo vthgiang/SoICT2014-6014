@@ -37,50 +37,54 @@ function KPIUnitManager(props) {
     var tableId = "table-org-kpi-management";
     const defaultConfig = { limit: 20 }
     const limit = getTableConfiguration(tableId, defaultConfig).limit;
+    const stateFromOrganizationalUnitKpiDashboard = JSON.parse(localStorage.getItem("stateFromOrganizationalUnitKpiDashboard"));
+    localStorage.removeItem("stateFromOrganizationalUnitKpiDashboard");
+
+    const { user, managerKpiUnit, dashboardEvaluationEmployeeKpiSet, translate } = props;
 
     const [state, setState] = useState({
         tableId,
         showModalCopy: "",
         currentRole: localStorage.getItem("currentRole"),
-        status: -1,
-        organizationalUnit: [],
-        startDate: new Date([startYear, startMonth].join('-')),
-        endDate: new Date([year, endMonth].join('-')),
+        status: stateFromOrganizationalUnitKpiDashboard?.status ?? -1,
+        organizationalUnit: stateFromOrganizationalUnitKpiDashboard?.organizationalUnit ?? [],
+        startDate: stateFromOrganizationalUnitKpiDashboard?.startDate ?? new Date([startYear, startMonth].join('-')),
+        endDate: stateFromOrganizationalUnitKpiDashboard?.endDate ?? new Date([year, endMonth].join('-')),
         infosearch: {
             role: localStorage.getItem("currentRole"),
-            status: -1,
-            startDate: new Date([startYear, startMonth].join('-')),
-            endDate: new Date([year, endMonth].join('-')),
-            organizationalUnit: [],
+            status: stateFromOrganizationalUnitKpiDashboard?.status ?? -1,
+            startDate: stateFromOrganizationalUnitKpiDashboard?.startDate ?? new Date([startYear, startMonth].join('-')),
+            endDate: stateFromOrganizationalUnitKpiDashboard?.endDate ?? new Date([year, endMonth].join('-')),
+            organizationalUnit: stateFromOrganizationalUnitKpiDashboard?.organizationalUnit ?? [],
             perPage: limit,
             page: 1
         },
-        defaultStartDate: [startMonth, startYear].join('-'),
-        defaultEndDate: [endMonth, year].join('-'),
+        defaultStartDate: stateFromOrganizationalUnitKpiDashboard?.defaultStartDate ?? [startMonth, startYear].join('-'),
+        defaultEndDate: stateFromOrganizationalUnitKpiDashboard?.defaultEndDate ?? [endMonth, year].join('-'),
     });
+    const { startDate, endDate, status, 
+        errorOnDate, infosearch, organizationalUnit, 
+        defaultStartDate, defaultEndDate, currentRole
+    } = state;
 
     useEffect(()=>{
         props.getDepartment();
         props.getAllKPIUnit(state.infosearch);
         props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
         props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
-    },[])
+    }, [])
 
     useEffect(()=>{
-        const { user } = props;
-        let { organizationalUnit } = state;
-        if (organizationalUnit && organizationalUnit.length === 0 && user && user.userdepartments) {
+        if (organizationalUnit?.length === 0 && user && user.userdepartments) {
             const unit = [user.userdepartments._id];
             setState ({
                 ...state,
                 organizationalUnit: unit,
             })
         }
-    },[state.organizationalUnit, props.user, props.user.userdepartments])
+    }, [state.organizationalUnit, props.user, props.user.userdepartments])
 
     useEffect(()=>{
-        const { currentRole, infosearch, startDate, endDate, status, organizationalUnit } = state;
-
         if (currentRole !== localStorage.getItem('currentRole')) {
             props.getAllKPIUnit({
                 ...infosearch,
@@ -95,17 +99,6 @@ function KPIUnitManager(props) {
             });
 
         }
-
-        // // Không re-render khi lựa chọn tháng ở DatePiker
-        // if (state.startDate !== startDate
-        //     || state.endDate !== endDate
-        //     || state.status !== status
-        //     || state.organizationalUnit !== organizationalUnit
-        // ) {
-        //     return false;
-        // }
-        //
-        // return true;
     })
 
     const handleStartDateChange = (value) => {
@@ -123,7 +116,6 @@ function KPIUnitManager(props) {
     }
 
     const checkStatusKPI = (status) => {
-        const { translate } = props
         if (status === 0) {
             return translate('kpi.organizational_unit.management.over_view.setting_up');
         } else if (status === 1) {
@@ -143,13 +135,6 @@ function KPIUnitManager(props) {
             ...state,
             endDate: month
         });
-    }
-
-    const handleUser = (value) => {
-        setState( {
-            ...state,
-            userkpi: value,
-        })
     }
 
     const handleStatus = async (value) => {
@@ -210,8 +195,6 @@ function KPIUnitManager(props) {
             endDate: state.endDate,
             organizationalUnit: state.organizationalUnit
         }
-        const { startDate, endDate } = state;
-        const { translate } = props;
 
         let startDateIso, endDateIso;
 
@@ -340,9 +323,6 @@ function KPIUnitManager(props) {
         }
         return exportData;
     }
-
-    const { user, managerKpiUnit, dashboardEvaluationEmployeeKpiSet, translate } = props;
-    const { startDate, endDate, status, errorOnDate, infosearch, organizationalUnit, defaultStartDate, defaultEndDate } = state;
 
     let listkpi, currentKPI, kpiApproved, datachat1, targetA, targetC, targetOther, misspoint, organizationalUnitsOfUserLoading;
     let unitList, currentUnit, userdepartments, exportData;

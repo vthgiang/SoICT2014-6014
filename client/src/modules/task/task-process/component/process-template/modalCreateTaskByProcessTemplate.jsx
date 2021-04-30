@@ -383,6 +383,7 @@ function ModalCreateTaskByProcessTemplate(props) {
                         organizationalUnit: props.listOrganizationalUnit[0]?._id,
                     }
                 }
+
                 return {
                     ...state,
                     showInfo: true,
@@ -393,6 +394,7 @@ function ModalCreateTaskByProcessTemplate(props) {
                 }
             }
             else {
+
                 return { ...state, showInfo: false, type: element.type, name: '', id: element.businessObject.id, }
             }
 
@@ -633,7 +635,6 @@ function ModalCreateTaskByProcessTemplate(props) {
 
     let allUnitsMember = getEmployeeSelectBoxItems(usersInUnitsOfCompany);
     let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
-    // console.log(state);
     return (
         <React.Fragment>
             <DialogModal

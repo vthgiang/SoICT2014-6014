@@ -26,7 +26,7 @@ function DegreeEditModal(props) {
                 index: props.index,
                 name: props.name,
                 issuedBy: props.issuedBy,
-                field: props.field[1],
+                field: props.fieldId,
                 year: props.year,
                 degreeType: props.degreeType,
                 file: props.file,
@@ -51,13 +51,15 @@ function DegreeEditModal(props) {
 
     const { id } = props;
 
-    const { name, issuedBy, year, degreeType, file, urlFile, fileUpload, errorOnName, errorOnIssuedBy, errorOnYear, field } = state;
+    const { index, name, issuedBy, year, degreeType, file, urlFile, fileUpload, errorOnName, errorOnIssuedBy, errorOnYear, field } = state;
 
     let files;
     let listFields = props.field.listFields;
     if (file) {
         files = [{ fileName: file, urlFile: urlFile, fileUpload: fileUpload }]
     }
+
+    console.log(state.field)
 
     /** Bắt sự kiện thay đổi file đính kèm */
     const handleChangeFile = (value) => {
@@ -184,7 +186,6 @@ function DegreeEditModal(props) {
             }
             return props.handleChange({ ...state, field: field });
         }
-        // console.log(state);
     }
 
     return (
@@ -213,11 +214,11 @@ function DegreeEditModal(props) {
                     <div className="form-group">
                         <label>{translate('human_resource.profile.career_fields')}</label>
                         <SelectBox
-                            id={`edit-degree-field${id}`}
+                            id={`edit-degree-field${index}`}
                             className="form-control select2"
                             style={{ width: "100%" }}
                             value={field}
-                            items={listFields.map(y => { return { value: y._id, text: y.name } })}
+                            items={[...listFields.map(y => { return { value: y._id, text: y.name } }), { value: '', text: 'Chọn ngành nghề' }]}
                             onChange={handleFieldChange}
                         />
                     </div>

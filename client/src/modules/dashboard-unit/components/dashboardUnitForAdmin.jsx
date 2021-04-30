@@ -10,6 +10,7 @@ import { EmployeeManagerActions } from '../../human-resource/profile/employee-ma
 import { taskManagementActions } from '../../task/task-management/redux/actions';
 import { UserActions } from '../../super-admin/user/redux/actions';
 import { DepartmentActions } from '../../super-admin/organizational-unit/redux/actions';
+import { AnnualLeaveActions } from '../../human-resource/annual-leave/redux/actions';
 
 import { AnnualLeaveChartAndTable } from '../../human-resource/employee-dashboard/components/combinedContent';
 import ViewAllTaskUrgent from './viewAllTaskUrgent';
@@ -25,7 +26,9 @@ function DashboardUnitForAdmin(props) {
     const [state, setState] = useState({
         month: formatDate(Date.now(), true),
         organizationalUnits: null,
-
+        infoSearch: {
+            organizationalUnits: null,
+        },
         // Biểu đồ khẩn cấp / cần làm
         currentDate: formatDate(Date.now(), false),
         listUnit: null,
@@ -36,7 +39,7 @@ function DashboardUnitForAdmin(props) {
     const { listUnit, urgent, taskNeedToDo, 
         organizationalUnits, month, 
         currentDate, clickUrgentChart, clickNeedTodoChart,
-        listUnitSelect
+        listUnitSelect, infoSearch
     } = state
     
     if (tasks && tasks.organizationUnitTasksChart && props.childOrganizationalUnit
@@ -57,12 +60,16 @@ function DashboardUnitForAdmin(props) {
     useEffect(() => {
         setState({
             ...state,
-            organizationalUnits: null
+            organizationalUnits: null,
+            infoSearch: {
+                ...state.infoSearch,
+                organizationalUnits: null,
+            },
         })
     }, [department.list])
 
     useEffect(() => {
-        if (!organizationalUnits && department?.list) {
+        if (!infoSearch?.organizationalUnits && department?.list) {
             let unit = department.list.map(item => item?._id)
             let partMonth = month.split('-');
             let newMonth = [partMonth[1], partMonth[0]].join('-');
@@ -81,10 +88,15 @@ function DashboardUnitForAdmin(props) {
             let partDate = currentDate.split('-');
             let newDate = [partDate[2], partDate[1], partDate[0]].join('-');
             props.getTaskInOrganizationUnitByDateNow(unit, newDate)
+            props.getAnnualLeave({ organizationalUnits: unit, beforAndAfterOneWeek: true })
 
             setState({
                 ...state,
                 organizationalUnits: unit,
+                infoSearch: {
+                    ...state.infoSearch,
+                    organizationalUnits: unit,
+                },
                 listUnitSelect: department.list.map(item => {
                     return { text: item?.name, value: item?._id }
                 })
@@ -177,6 +189,12 @@ function DashboardUnitForAdmin(props) {
                 }
             },
 
+            bar: {
+                width: {
+                    ratio: chartUrgentDataTmp?.length < 5 ? 0.3 : 1 // this makes bar width 50% of length between ticks
+                }
+            },
+
             tooltip: {
                 format: {
                     title: function (d) {
@@ -238,6 +256,12 @@ function DashboardUnitForAdmin(props) {
                 }
             },
 
+            bar: {
+                width: {
+                    ratio: chartTaskNeedToDoDataTmp?.length < 5 ? 0.3 : 1 // this makes bar width 50% of length between ticks
+                }
+            },
+
             tooltip: {
                 format: {
                     title: function (d) {
@@ -252,7 +276,10 @@ function DashboardUnitForAdmin(props) {
     const handleSelectOrganizationalUnitUrgent = (value) => {
         setState({
             ...state,
-            organizationalUnits: value,
+            infoSearch: {
+                ...state.infoSearch,
+                organizationalUnits: value,
+            }
         });
     }
 
@@ -307,7 +334,12 @@ function DashboardUnitForAdmin(props) {
         let partDate = currentDate.split('-');
         let newDate = [partDate[2], partDate[1], partDate[0]].join('-');
 
-        props.getTaskInOrganizationUnitByDateNow(organizationalUnits, newDate);
+        setState({
+            ...state,
+            organizationalUnits: state.infoSearch?.organizationalUnits,
+        })
+        props.getTaskInOrganizationUnitByDateNow(infoSearch?.organizationalUnits, newDate);
+        props.getAnnualLeave({ organizationalUnits: infoSearch?.organizationalUnits, beforAndAfterOneWeek: true })
     }
     
     const handleClickshowTaskUrgent = () => {
@@ -451,6 +483,25 @@ function DashboardUnitForAdmin(props) {
 
         return (
             <React.Fragment>
+                <div className="qlcv" style={{ marginBottom: "10px" }}>
+                    <div className="form-inline">
+                        <div className="form-group">
+                            <label style={{ width: "auto" }}>{translate('kpi.organizational_unit.dashboard.organizational_unit')}</label>
+                            <SelectMulti id="multiSelectOrganizationalUnitInpriority"
+                                items={listUnitSelect}
+                                options={{
+                                    nonSelectedText: translate('page.non_unit'),
+                                    allSelectedText: translate('page.all_unit'),
+                                }}
+                                onChange={handleSelectOrganizationalUnitUrgent}
+                                value={infoSearch?.organizationalUnits}
+                            >
+                            </SelectMulti>
+                        </div>
+                        <button type="button" className="btn btn-success" onClick={handleUpdateDataUrgent}>{translate('general.search')}</button>
+                    </div>
+                </div>
+
                 <div className="qlcv">
                     <ViewAllTaskUrgent data={tasks?.organizationUnitTasksChart?.urgent} clickUrgentChart={clickUrgentChart} />
                     <ViewAllTaskNeedToDo data={tasks?.organizationUnitTasksChart?.taskNeedToDo} clickNeedTodoChart={clickNeedTodoChart} />
@@ -479,26 +530,6 @@ function DashboardUnitForAdmin(props) {
                                 </div>
 
                                 <div className="box-body" style={{ marginBottom: 15 }}>
-                                    {/* Seach theo thời gian */}
-                                    <div className="qlcv">
-                                        <div className="form-inline" >
-                                            <div className="form-group">
-                                                <label style={{ width: "auto" }}>{translate('kpi.organizational_unit.dashboard.organizational_unit')}</label>
-                                                <SelectMulti id="multiSelectOrganizationalUnitInpriority"
-                                                    items={listUnitSelect}
-                                                    options={{
-                                                        nonSelectedText: translate('page.non_unit'),
-                                                        allSelectedText: translate('page.all_unit'),
-                                                    }}
-                                                    onChange={handleSelectOrganizationalUnitUrgent}
-                                                    value={organizationalUnits}
-                                                >
-                                                </SelectMulti>
-                                            </div>
-                                            <button type="button" className="btn btn-success" onClick={handleUpdateDataUrgent}>{translate('general.search')}</button>
-                                        </div>
-                                    </div>
-
                                     <div className="row " >
                                         <div className="">
                                             <div className="col-md-12">
@@ -547,7 +578,7 @@ function DashboardUnitForAdmin(props) {
                     <LazyLoadComponent>
                         <AnnualLeaveChartAndTable
                             defaultUnit={true} 
-                            organizationalUnits={listUnitSelect?.map(item => item?.value)}
+                            organizationalUnits={organizationalUnits}
                             childOrganizationalUnit={listUnitSelect?.map(item => {
                                 return {
                                     id: item?.value,
@@ -576,6 +607,7 @@ const actionCreators = {
     getTaskByUser: taskManagementActions.getTasksByUser,
     getTaskInOrganizationUnitByMonth: taskManagementActions.getTaskInOrganizationUnitByMonth,
     getTaskInOrganizationUnitByDateNow: taskManagementActions.getTaskByPriorityInOrganizationUnit,
+    getAnnualLeave: AnnualLeaveActions.searchAnnualLeaves,
 };
 
 const connectedDashboardUnitForAdmin = connect(mapState, actionCreators)(withTranslate(DashboardUnitForAdmin));
