@@ -4245,8 +4245,8 @@ export default {
             },
 
             unit: {
-                day: 'Day',
-                hour: 'Hour',
+                days: 'Ngày',
+                hours: 'Giờ',
             },
 
             schedule: {

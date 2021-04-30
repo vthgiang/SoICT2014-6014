@@ -1107,7 +1107,7 @@ class DetailProjectTaskTab extends Component {
                                 }
 
                                 {/* Mô tả công việc */}
-                                <div>
+                                {/* <div>
                                     <strong>{translate('task.task_management.detail_description')}:</strong>
                                     <ShowMoreShowLess
                                         id={"task-description"}
@@ -1116,7 +1116,7 @@ class DetailProjectTaskTab extends Component {
                                     >
                                         {task && parse(task.description)}
                                     </ShowMoreShowLess>
-                                </div>
+                                </div> */}
                             </div>
                         }
 

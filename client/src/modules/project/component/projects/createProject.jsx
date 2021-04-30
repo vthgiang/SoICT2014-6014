@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { ButtonModal, DialogModal, ErrorLabel, TreeSelect, DatePicker, SelectBox } from '../../../../common-components';
+import { ButtonModal, DialogModal, ErrorLabel, TreeSelect, DatePicker, SelectBox, TimePicker } from '../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
 import ValidationHelper from '../../../../helpers/validationHelper';
 import { ProjectActions } from '../../redux/actions';
 import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
 import { getStorage } from '../../../../config';
-import { convertDepartmentIdToDepartmentName, convertUserIdToUserName, getListDepartments } from './functionHelper';
+import { convertDateTime, convertDepartmentIdToDepartmentName, convertUserIdToUserName, getListDepartments } from './functionHelper';
 
 const ProjectCreateForm = (props) => {
     const { translate, project, user } = props;
@@ -37,13 +37,16 @@ const ProjectCreateForm = (props) => {
         estimatedCost: ''
     });
 
+    const [startTime, setStartTime] = useState('08:00 AM');
+    const [endTime, setEndTime] = useState('05:30 PM');
+
     const [responsibleEmployeesWithUnit, setResponsibleEmployeesWithUnit] = useState({
         list: [],
         currentUnitRow: '',
         currentEmployeeRow: [],
     })
 
-    const { projectName, projectNameError,codeError, description, code, startDate, endDate, projectManager, responsibleEmployees, unitCost, unitTime, estimatedCost } = form;
+    const { projectName, projectNameError, codeError, description, code, startDate, endDate, projectManager, responsibleEmployees, unitCost, unitTime, estimatedCost } = form;
 
     const handleChangeForm = (event, currentKey) => {
         if (currentKey === 'projectName') {
@@ -97,21 +100,21 @@ const ProjectCreateForm = (props) => {
 
     const isFormValidated = () => {
         let { translate } = props;
-        if (!ValidationHelper.validateName(translate, projectName, 6, 255).status) {
-            return false;
-        }
-        if (!ValidationHelper.validateName(translate, code, 6, 6).status) {
-            return false;
-        }
+        if (!ValidationHelper.validateName(translate, projectName, 6, 255).status) return false;
+        if (!ValidationHelper.validateName(translate, code, 6, 6).status) return false;
+        if (projectManager.length === 0) return false;
+        if (responsibleEmployees.length === 0) return false;
+        if (startDate.length === 0) return false;
+        if (endDate.length === 0) return false;
         return true;
     }
 
     const save = () => {
         if (isFormValidated()) {
-            let partStartDate = startDate.split('-');
+            let partStartDate = convertDateTime(startDate, startTime).split('-');
             let start = new Date([partStartDate[2], partStartDate[1], partStartDate[0]].join('-'));
 
-            let partEndDate = endDate.split('-');
+            let partEndDate = convertDateTime(endDate, endTime).split('-');
             let end = new Date([partEndDate[2], partEndDate[1], partEndDate[0]].join('-'));
 
             // Cái này để hiển thị danh sách ra - không quan tâm user nào thuộc unit nào
@@ -132,7 +135,7 @@ const ProjectCreateForm = (props) => {
                         salary: 0,
                     }))
                 })
-            } 
+            }
 
             props.createProjectDispatch({
                 name: projectName,
@@ -210,24 +213,48 @@ const ProjectCreateForm = (props) => {
                                     <ErrorLabel content={codeError} />
                                 </div>
 
-                                <div className="form-group">
-                                    <label>{translate('project.startDate')}<span className="text-red">*</span></label>
-                                    <DatePicker
-                                        id={`create-project-state-date`}
-                                        value={startDate}
-                                        onChange={(e) => handleChangeForm(e, 'startDate')}
-                                        disabled={false}
-                                    />
+                                <div className="row">
+                                    <div className="form-group col-md-6">
+                                        <label>{translate('project.startDate')}<span className="text-red">*</span></label>
+                                        <DatePicker
+                                            id={`create-project-start-date`}
+                                            value={startDate}
+                                            onChange={(e) => handleChangeForm(e, 'startDate')}
+                                            dateFormat="day-month-year"
+                                            disabled={false}
+                                        />
+                                    </div>
+                                    <div className="form-group col-md-6">
+                                        <label>Thời gian bắt đầu dự án<span className="text-red">*</span></label>
+                                        <TimePicker
+                                            id={`create-project-start-time`}
+                                            value={startTime}
+                                            onChange={(e) => setStartTime(e)}
+                                            disabled={false}
+                                        />
+                                    </div>
                                 </div>
 
-                                <div className="form-group">
-                                    <label>{translate('project.endDate')}<span className="text-red">*</span></label>
-                                    <DatePicker
-                                        id={`create-project-end-date`}
-                                        value={endDate}
-                                        onChange={(e) => handleChangeForm(e, 'endDate')}
-                                        disabled={false}
-                                    />
+                                <div className="row">
+                                    <div className="form-group col-md-6">
+                                        <label>{translate('project.endDate')}<span className="text-red">*</span></label>
+                                        <DatePicker
+                                            id={`create-project-end-date`}
+                                            value={endDate}
+                                            onChange={(e) => handleChangeForm(e, 'endDate')}
+                                            dateFormat="day-month-year"
+                                            disabled={false}
+                                        />
+                                    </div>
+                                    <div className="form-group col-md-6">
+                                        <label>Thời gian dự kiến kết thúc dự án<span className="text-red">*</span></label>
+                                        <TimePicker
+                                            id={`create-project-end-time`}
+                                            value={endTime}
+                                            onChange={(e) => setEndTime(e)}
+                                            disabled={false}
+                                        />
+                                    </div>
                                 </div>
 
                                 <div className="form-group">
