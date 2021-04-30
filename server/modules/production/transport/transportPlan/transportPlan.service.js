@@ -354,3 +354,10 @@ exports.onlyDeleteTransportRequirementFromPlan = async (portal, planId, requirem
     }
     await TransportRequirementServices.editTransportRequirement(portal, requirementId, {transportPlan: null})
 }
+
+exports.findPlansHaveCarrierId = async (portal, carrierId) => {
+    let listPlan = await TransportPlan(connect(DB_CONNECTION, portal)).find({
+        "transportVehicles.carriers.carrier": carrierId,
+    })
+    return listPlan;
+}

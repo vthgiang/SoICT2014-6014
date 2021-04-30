@@ -3,6 +3,7 @@ export const transportScheduleServices = {
     editTransportScheduleByPlanId,
     getTransportScheduleByPlanId,
     changeTransportRequirementProcess,
+    getTransportScheduleByCarrierId,
     driverSendMessage,
 }
 
@@ -74,4 +75,16 @@ function driverSendMessage(data) {
         true,
         "manage_transport"
     )  
+}
+
+function getTransportScheduleByCarrierId(carrierId) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/transport-schedule/get-schedule-route-by-carrier-id/${carrierId}`,
+            method: "GET"
+        },
+        false,
+        true,
+        'manage_transport'
+    )
 }

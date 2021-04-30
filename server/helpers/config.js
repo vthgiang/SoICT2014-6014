@@ -1439,7 +1439,7 @@ const LINKS = [{
 },
 {
     url: "/manage-transport-route",
-    description: "Lộ trình vận chuyển",
+    description: "Hành trình vận chuyển",
     category: LINK_CATEGORY.TRANSPORT.name,
     roles: [
         ROOT_ROLES.SUPER_ADMIN.name,
@@ -1449,6 +1449,24 @@ const LINKS = [{
 {
     url: "/manage-transport-department",
     description: "Phân vai trò đơn vị vận chuyển",
+    category: LINK_CATEGORY.TRANSPORT.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name
+    ]
+},
+{
+    url: "/carrier-today-transport-mission",
+    description: "Nhiệm vụ vận chuyển ngày hôm nay",
+    category: LINK_CATEGORY.TRANSPORT.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name
+    ]
+},
+{
+    url: "/carrier-all-times-transport-mission",
+    description: "Nhiệm vụ vận chuyển mỗi ngày",
     category: LINK_CATEGORY.TRANSPORT.name,
     roles: [
         ROOT_ROLES.SUPER_ADMIN.name,

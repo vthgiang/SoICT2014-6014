@@ -119,6 +119,12 @@ function TransportVehicleManagementTable(props) {
                     props.createTransportVehicle(data);
                 }
             }
+            else {
+                props.createTransportVehicle(data);
+            }
+        }
+        else {
+            props.createTransportVehicle(data);
         }
     }
     const handleDeleteVehicle = (vehicle) => {
@@ -134,9 +140,11 @@ function TransportVehicleManagementTable(props) {
     }
     const selectVehicle = (index, vehicle) => {
         let value;
+        console.log("vvvvvv")
         if (getTickboxStatus(vehicle)==="iconactive"){
             value = "iconinactive";
             handleDeleteVehicle(vehicle);
+            console.log("aaaaa");
         }
         else {
             value = "iconactive";
@@ -144,7 +152,7 @@ function TransportVehicleManagementTable(props) {
         }
     }
     const getTickboxStatus = (vehicle) => {
-        if (transportVehicle && !transportVehicle.isLoading){
+        if (transportVehicle){
             if (transportVehicle.lists && transportVehicle.lists.length !==0){
                 let currentVehicle = transportVehicle.lists.filter(r => String(r.asset?._id) ===vehicle._id);
                 if (currentVehicle && currentVehicle.length!==0){
@@ -152,7 +160,7 @@ function TransportVehicleManagementTable(props) {
                 }
             }
         }
-        
+        console.log("asd")
         return "iconinactive";
     }
     return (

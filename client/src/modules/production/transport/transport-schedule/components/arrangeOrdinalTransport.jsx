@@ -46,7 +46,7 @@ function ArrangeOrdinalTransport(props) {
         let listTransportPlans = [
             {
                 value: "0",
-                text: "Lịch trình",
+                text: "Kế hoạch",
             },
         ];        
         if (allTransportPlans) {
@@ -185,7 +185,7 @@ function ArrangeOrdinalTransport(props) {
             <div className="box-body qlcv">
                 <div className="form-inline">
                     <div className="form-group">
-                        <label className="form-control-static">Chọn lịch trình</label>
+                        <label className="form-control-static">Chọn kế hoạch</label>
                         <SelectBox
                             id={`select-filter-plan-2`}
                             className="form-control select2"

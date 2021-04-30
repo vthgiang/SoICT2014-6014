@@ -69,7 +69,7 @@
     "webpack": "^5.9.0",
     "webpack-node-externals": "^2.5.2",
     "winston": "^3.2.1",
-    "react-google-maps":"^9.4.5"
+    "react-google-maps": "^9.4.5"
   },
   "devDependencies": {
     "raw-loader": "^4.0.2",

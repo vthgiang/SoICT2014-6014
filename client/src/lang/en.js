@@ -266,6 +266,8 @@ export default {
             manage_transport_human: "Manage transport human",
             manage_transport_route: "Manage transport route",
             manage_transport_department: "Manage transport department",
+            carrier_today_transport_mission: "Transporting missions today",
+            carrier_all_times_transport_mission: "List of transporting missions all times",
 
             user_guide: "User guide",
             user_guide_detail: "User guide detail",

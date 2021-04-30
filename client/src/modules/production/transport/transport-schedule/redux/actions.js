@@ -5,6 +5,7 @@ export const transportScheduleActions = {
     getTransportScheduleByPlanId,
     editTransportScheduleByPlanId,
     changeTransportRequirementProcess,
+    getTransportScheduleByCarrierId,
     driverSendMessage,
 }
 
@@ -95,5 +96,25 @@ function driverSendMessage(data){
                 error
             });
         });
+    }
+}
+
+function getTransportScheduleByCarrierId(carrierId) {
+    return dispatch => {
+        dispatch({
+            type: transportScheduleConstants.GET_ALL_TRANSOPRT_SCHEDULE_ROUTE_BY_CARRIER_ID_REQUEST
+        });
+        transportScheduleServices.getTransportScheduleByCarrierId(carrierId)
+            .then((res) => {
+                dispatch({
+                    type: transportScheduleConstants.GET_ALL_TRANSOPRT_SCHEDULE_ROUTE_BY_CARRIER_ID_SUCCESS,
+                    payload: res.data.content
+                });
+            }).catch((error) => {
+                dispatch({
+                    type: transportScheduleConstants.GET_ALL_TRANSOPRT_SCHEDULE_ROUTE_BY_CARRIER_ID_FAILURE,
+                    error
+                });
+            });
     }
 }

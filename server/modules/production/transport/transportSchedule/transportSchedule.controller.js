@@ -105,3 +105,29 @@ exports.driverSendMessage = async (req, res) => {
         });
     }
 }
+
+exports.getAllTransportScheduleRouteByCarrierId = async (req, res) => {
+    try {
+        console.log(req.params, " params")
+        let { carrierId } = req.params;
+        let transportRoute = await TransportScheduleServices.getAllTransportScheduleRouteByCarrierId(req.portal, carrierId);
+        if (transportRoute !== -1) {
+            await Log.info(req.user.email, "GET_TRANPORT_ROUTE_BY_PLAN_ID", req.portal);
+            res.status(200).json({
+                success: true,
+                messages: ["get_transport_route_by_plan_id_success"],
+                content: transportRoute
+            });
+        } else {
+            throw Error("transport requirement is invalid")
+        }
+    } catch (error) {
+        await Log.error(req.user.email, "GET_TRANPORT_ROUTE_BY_PLAN_ID", req.portal);
+
+        res.status(400).json({
+            success: false,
+            messages: ["get_transport_route_by_plan_id_fail"],
+            content: error.message
+        });
+    }
+}

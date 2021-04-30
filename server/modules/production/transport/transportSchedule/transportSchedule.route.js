@@ -10,6 +10,8 @@ const { auth } = require(`../../../../middleware`);
 router.get('/get-by-plan-id/:id', auth, transportScheduleController.getTransportRouteByPlanId);
 router.patch('/edit-by-plan-id/:planId', auth, transportScheduleController.editTransportScheduleByPlanId);
 router.post('/driver-send-message', auth, transportScheduleController.driverSendMessage);
+
+router.get('/get-schedule-route-by-carrier-id/:carrierId', auth, transportScheduleController.getAllTransportScheduleRouteByCarrierId);
 // router.get('/', auth, TransportRequirementController.getAllTransportRequirements);
 // router.get('/', auth, TransportVehicleController.getAllTransportVehicles);
 // router.post('/', auth, TransportVehicleController.createTransportVehicle);

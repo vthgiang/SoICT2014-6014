@@ -5,7 +5,8 @@ const {
     connect
 } = require(`../../../../helpers/dbHelper`);
 
-const TransportRequirementServices = require('../transportRequirements/transportRequirements.service')
+const TransportRequirementServices = require('../transportRequirements/transportRequirements.service');
+const TransportPlanServices = require('../transportPlan/transportPlan.service')
 
 /**
  * Tạo transportRoute mới với id = transportPlan._id
@@ -34,7 +35,7 @@ exports.getTransportRouteByPlanId = async (portal, id) => {
     .populate([
         {
             path: 'transportPlan',
-            select: 'transportVehicles transportRequirements',
+            select: 'transportVehicles transportRequirements code startTime endTime',
             populate: [
                 {
                     path: 'transportRequirements',
@@ -203,6 +204,45 @@ exports.changeTransportRequirementProcess = async (portal, data) => {
     await TransportRequirementServices.editTransportRequirement(portal, requirementId, value);
     let transportRoute = await this.getTransportRouteByPlanId(portal, planId);
     return transportRoute;
+}
+
+exports.getAllTransportScheduleRouteByCarrierId = async (portal, carrierId) => {
+    console.log(carrierId)
+    let planHaveCarrierId = await TransportPlanServices.findPlansHaveCarrierId(portal, carrierId);
+    let listSchedule = []
+    let schedule;
+    if (planHaveCarrierId && planHaveCarrierId.length!==0){
+        for (let i=0;i<planHaveCarrierId.length;i++){
+            schedule = await this.getTransportRouteByPlanId(portal, planHaveCarrierId[i]._id);
+            if (schedule.route && schedule.route.length!==0){
+                let vehicleId;
+                schedule.transportPlan?.transportVehicles?.map(r => {
+                    if (r.carriers && r.carriers.length!==0){
+                        r.carriers.map(carrier => {
+                            if (String(carrier.carrier) === String(carrierId)){
+                                vehicleId = r.vehicle._id;
+                            }
+                        })
+                    }
+                })
+                console.log(vehicleId);
+                for (let j=0;j<schedule.route.length;j++){
+                    if (String(schedule.route[j].transportVehicle._id) === String(vehicleId)){
+                        listSchedule.push({
+                            route: schedule.route[j],
+                            transportPlan: {
+                                startTime: schedule.transportPlan?.startTime,
+                                endTime: schedule.transportPlan?.endTime,
+                                code: schedule.transportPlan?.code,
+                            }
+                        })
+                    }
+                }
+                // listSchedule.push(schedule);
+            }
+        }
+    }
+    return listSchedule;
 }
 
 exports.driverSendMessage = async (portal, data, userId) => {

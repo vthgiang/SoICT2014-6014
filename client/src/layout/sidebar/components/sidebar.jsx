@@ -768,6 +768,16 @@ class SideBar extends Component {
                                             icon: "fa fa-sitemap",
                                             path: "/manage-transport-department",
                                         },
+                                        {
+                                            name: "menu.carrier_today_transport_mission",
+                                            icon: "fa fa-calendar-o",
+                                            path: "/carrier-today-transport-mission", 
+                                        },
+                                        {
+                                            name: "menu.carrier_all_times_transport_mission",
+                                            icon: "fa fa-calendar-o",
+                                            path: "/carrier-all-times-transport-mission", 
+                                        },                                        
                                         // {
                                         //     name: "menu.manage_transport_human",
                                         //     icon: "fa fa-calendar-o",
