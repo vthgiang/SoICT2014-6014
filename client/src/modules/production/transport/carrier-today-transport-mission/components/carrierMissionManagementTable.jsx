@@ -80,23 +80,24 @@ function CarrierMissionManagementTable(props) {
     //     console.log(currentVehicleRoute, " day la currentVehicleRoute");
     // }, [currentVehicleRoute])
     useEffect(() => {
+        let flag = false;
         if (currentDate && transportScheduleByCarrierId && transportScheduleByCarrierId.length!==0){
             transportScheduleByCarrierId.map(item => {
                 if (item.transportPlan && item.transportPlan.endTime && item.transportPlan.startTime){
                     if (formatDate(item.transportPlan.endTime)===formatDate(currentDate)
                         && formatDate(item.transportPlan.startTime)===formatDate(currentDate)
                     ){
+                        flag = true;
                         setCurrentVehicleRoute(item.route);
                     }
-
                 }
             })
         }
+        if (!flag) setCurrentVehicleRoute({})
     }, [currentDate, transportScheduleByCarrierId])
     return (
         <React.Fragment>
             <div className="box-body qlcv">
-            <h1>Tessssssssssssssssssss</h1>
             {/* <TransportDialogMissionReport /> */}
                 <div className="form-inline">
                     <div className="form-group">
