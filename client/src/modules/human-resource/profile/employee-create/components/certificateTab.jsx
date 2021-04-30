@@ -321,7 +321,7 @@ function CertificateTab(props) {
                     index={currentRow.index}
                     name={currentRow.name}
                     issuedBy={currentRow.issuedBy}
-                    field={currentRow.field}
+                    fieldId={currentRow.field}
                     year={currentRow.year}
                     degreeType={currentRow.degreeType}
                     file={currentRow.file}

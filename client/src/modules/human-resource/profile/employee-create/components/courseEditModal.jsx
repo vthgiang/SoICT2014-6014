@@ -7,7 +7,9 @@ import { CourseFormValidator } from '../../../../training/course/components/cour
 function CourseEditModal(props) {
 
     const [state, setState] = useState({
-
+        result: 'failed',
+        course: '',
+        nameCourse: ''
     })
 
     const { listCourses } = props.course;

@@ -125,7 +125,7 @@ function ContractEditModal(props) {
         return message === undefined;
     }
 
-    /** Bắt sự kiện thay đổi tên hợp đồng lao động */
+    /** Bắt sự kiện thay đổi loại hợp đồng lao động */
     const handleTypeContract = (e) => {
         let { value } = e.target;
         validateTypeContract(value, true);

@@ -44,10 +44,10 @@ const ProjectSchema = new Schema(
         unitTime: {
             // có 2 đơn vị thời gian: Giờ, Ngày
             type: String,
-            default: "hour",
+            default: "hours",
             enum: [
-                "hour",
-                "day",
+                "hours",
+                "days",
             ],
         },
         // Đơn vị tiền tệ của project

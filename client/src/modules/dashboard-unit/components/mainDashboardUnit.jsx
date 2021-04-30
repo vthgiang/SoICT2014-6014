@@ -371,7 +371,7 @@ class MainDashboardUnit extends Component {
 
                             {/* Tab nghỉ phép tăng ca*/}
                             <div className="tab-pane" id="annualLeave">
-                                <TabAnualLeave childOrganizationalUnit={childOrganizationalUnit} defaultUnit={true} />
+                                <TabAnualLeave childOrganizationalUnit={childOrganizationalUnit} defaultUnit={true} organizationalUnits={organizationalUnits}/>
                             </div>
 
                             {/* Tab lương thưởng*/}
