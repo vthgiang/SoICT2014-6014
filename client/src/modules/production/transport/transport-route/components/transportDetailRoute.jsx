@@ -56,15 +56,16 @@ function TransportDetailRoute(props) {
     return (
         <React.Fragment>
             <DialogModal
-                modalID={`modal-detail-route`}
+                modalID={`modal-detail-route-manage`}
                 title={"Các nhiệm vụ cụ thể"}
-                formID={`modal-detail-route`}
+                formID={`modal-detail-route-manage`}
                 size={100}
                 maxWidth={500}
                 hasSaveButton={false}
                 hasNote={false}
             >
-                <form id={`modal-detail-route`}>
+                <form id={`modal-detail-route-manage`}>
+                    <h1>"123"</h1>
                 {/* <div className="nav-tabs-custom">
                     <ul className="nav nav-tabs">
                         <li className="active"><a href="#list-route-mission" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Nhiệm vụ vận chuyển"}</a></li>

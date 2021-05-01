@@ -10,25 +10,81 @@ import { formatDate, formatToTimeZoneDate } from "../../../../../helpers/formatD
 
 import { transportPlanActions } from "../../transport-plan/redux/actions"
 import { transportScheduleActions } from "../../transport-schedule/redux/actions";
+
+import { transportProcessActions } from "../../transport-route/redux/actions"
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 import { convertJsonObjectToFormData } from '../../../../../helpers/jsonObjectToFormDataObjectConverter'
 
 function CarrierMissionManagementTable(props) {
-    let {transportPlanId, transportPlan, transportSchedule} = props;
+    let {transportPlanId, transportPlan, transportSchedule, socket, sendCurrentLocate} = props;
     const [transportScheduleByCarrierId, setTransportScheduleByCarrierId] = useState()
     const [currentDate, setCurrentDate] = useState(new Date())
     const [currentVehicleRoute, setCurrentVehicleRoute] = useState();
     // const [currentVehicle, setCurrentVehicle] = useState([])
     // const [driver, setDriver] = useState()
 
+    
+    const [sendCurrentLocateTimer, setSendCurrentLocateTimer] = useState([]);
+    const [ currentPosition, setCurrentPosition ] = useState({});
+
     const handleCarrierDateChange = (value) => {
         setCurrentDate(formatToTimeZoneDate(value));
     }
 
     useEffect(() => {
-        props.getTransportScheduleByCarrierId("608b8a3ead08cb0d4874efbe");
-    }, [])
+        props.getTransportScheduleByCarrierId(localStorage.getItem("userId"));
 
+        let manageId;
+        const sendCurrentPosition = position => {
+            const currentPosition = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            }
+            // setCurrentPosition(currentPosition);
+            let data = {
+                manageId: manageId,
+                location: currentPosition
+            }
+            console.log(data, " haha")
+            setCurrentPosition(data)
+          };
+        /** Nhận được tín hiệu quản lý vào xem map => gửi lại vị trí hiện tại
+         * data: {manageId: manageId}
+         * driver
+         */
+        socket.io.on("start locate", data => {
+            console.log(data, " aaaaaaaaaaaaaaaaaaaa");
+            if (data?.manageId){
+                manageId = data.manageId;
+                // navigator.geolocation.getCurrentPosition(sendCurrentPosition);
+                
+                let interval = setInterval(() => {
+                    // sendCurrentPosition();
+                    navigator.geolocation.getCurrentPosition(sendCurrentPosition);
+                }, 30000)
+                // let interval =1;
+                // Lưu lại id interval để stop locate => clearInterval
+                setSendCurrentLocateTimer(interval);
+            }
+        })
+
+        /**
+         * Dừng gửi vị trí
+         * driver
+         */
+         socket.io.on("stop locate", data => {
+            console.log(data, " stop locate");
+            console.log(data, " currenttimerr")
+                    clearInterval(data.interval);
+            })
+
+    }, [])
+    useEffect(() => {
+        // console.log(currentPosition, " currentPosition");
+        if (currentPosition && sendCurrentLocateTimer){
+            props.sendCurrentLocate({...currentPosition, interval: sendCurrentLocateTimer});
+        }
+      }, [currentPosition, sendCurrentLocateTimer])
     useEffect(() => {
         if (transportSchedule){
             setTransportScheduleByCarrierId(transportSchedule.transportScheduleByCarrierId)
@@ -191,7 +247,8 @@ function mapState(state) {
 
 const actions = {
     // getTransportScheduleByPlanId: transportScheduleActions.getTransportScheduleByPlanId,
-    getTransportScheduleByCarrierId: transportScheduleActions.getTransportScheduleByCarrierId
+    getTransportScheduleByCarrierId: transportScheduleActions.getTransportScheduleByCarrierId,
+    sendCurrentLocate: transportProcessActions.sendCurrentLocate,
     // changeTransportRequirementProcess: transportScheduleActions.changeTransportRequirementProcess,
     // getDetailTransportPlan: transportPlanActions.getDetailTransportPlan,
 }

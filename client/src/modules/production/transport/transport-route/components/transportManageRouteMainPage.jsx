@@ -46,7 +46,7 @@ function TransportManageRouteMainPage(props) {
         console.log(route);
         setCurrentVehicleRoute_transportVehicleId(route);
         // setCurrentVehicleRoute(route);
-        window.$(`#modal-detail-route`).modal('show')
+        window.$(`#modal-detail-route-manage`).modal('show')
     }
 
     /**
@@ -416,65 +416,7 @@ function TransportManageRouteMainPage(props) {
                 
 
 
-                <div className={"divTest2"}>
-                    <table className="tableTest2 not-sort">
-                        <thead>
-                            <tr>
-                                <th>
-                                    STT
-                                </th>
-                                <th>
-                                    Tên xe
-                                </th>
-                                <th>
-                                    Hành động
-                                </th>
-                                <th>
-                                    Tiến độ vận chuyển
-                                </th>
-                                
-                            </tr>
-                        </thead>
-                        <tbody>
-                        {
-                            (currentTransportSchedule && currentTransportSchedule.route && currentTransportSchedule.route.length !== 0)
-                            && currentTransportSchedule.route.map((item, index) => (
-                                item &&
-                                <tr key={"route "+index}>
-                                    <th>{index + 1}</th>
-                                    <td>{item.transportVehicle.name}</td>
-                                    <td>
-                                        <a className="edit text-green" 
-                                        style={{ width: '5px', cursor:"pointer" }} 
-                                        title={'manage_example.detail_info_example'} 
-                                        onClick={() => handleShowDetailRoute(item)}
-                                        >
-                                            <i className="material-icons">visibility</i>
-                                        </a>
-                                    </td>
-                                    {/* <td>
-                                        <TransportManageVehicleProcess
-                                            route={item}
-                                            timelineBarWidth={900}
-                                        />
-                                    </td> */}
-                                        
-                                            {/* <div key={"1"} className={`timeline-item active`} >
-                                                <div className="timeline-contain">{"123131323"}</div>
-                                            </div>
-                                            <div key={"2"} className={`timeline-item`} >
-                                                <div className="timeline-contain" 
-                                                // onClick={(e) => this.setCurrentStep(e, index)}
-                                                >{"123131323"}</div>
-                                                
-                                            </div> */}
-                                </tr>
-    
-                            ))
-                        }
-                        </tbody>
-                    </table>
-                </div>
+                
 
 
                 {/* <iframe src={"https://www.google.com/maps/embed/v1/place?key=AIzaSyCkVQAqCoJU79mTctNsNmQLy9ME7qiTlfs&q=21.0058354500001,105.842277338"} 
@@ -486,7 +428,7 @@ function TransportManageRouteMainPage(props) {
                 loading="lazy" 
                 aria-hidden="false" 
                 tabindex="0"></iframe>    */}
-                <fieldset className="scheduler-border" style={{ height: "100%" }}>
+                {/* <fieldset className="scheduler-border" style={{ height: "100%" }}> */}
 
                     {/* <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6"> */}
                     {/* <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -501,7 +443,7 @@ function TransportManageRouteMainPage(props) {
                     </div>
                     </div> */}
 
-                </fieldset>
+                {/* </fieldset> */}
             </div>
     )
 }
