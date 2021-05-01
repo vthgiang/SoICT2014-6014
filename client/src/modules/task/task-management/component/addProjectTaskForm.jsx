@@ -75,11 +75,6 @@ class AddProjectTaskForm extends Component {
         return dayjs(strDateTime).format('YYYY/MM/DD HH:mm:ss');
     }
 
-    // convert ISODate to String hh:mm AM/PM
-    formatTime(date) {
-        return dayjs(date).format("hh:mm A");
-    }
-
     handleChangeTaskName = (event) => {
         let value = event.target.value;
         this.validateTaskName(value, true);

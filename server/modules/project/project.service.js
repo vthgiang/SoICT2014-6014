@@ -204,7 +204,7 @@ exports.edit = async (portal, id, data) => {
             name: data.name,
             parent: data.parent,
             startDate: data.startDate,
-            endDate: data.startDate,
+            endDate: data.endDate,
             description: data.description,
             projectManager: data.projectManager,
             responsibleEmployeesWithUnit: newResponsibleEmployeesWithUnit,

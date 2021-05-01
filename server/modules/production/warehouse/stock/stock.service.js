@@ -4,7 +4,7 @@ const { connect } = require(`../../../../helpers/dbHelper`);
 exports.getAllStocks = async (company, query, portal) => {
     var { page, limit, managementLocation } = query;
     
-    if(!company) throw['company_invalid'];
+    // if(!company) throw['company_invalid'];
     if(!page || !limit){
         let options = {};
         if(managementLocation) {
@@ -21,8 +21,8 @@ exports.getAllStocks = async (company, query, portal) => {
         if (!managementLocation) {
             throw Error("Role is not defined")
         }
-        let option = { managementLocation: { $elemMatch: { role: managementLocation }} }
-
+        // let option = { managementLocation: { $elemMatch: { role: managementLocation }} } // bên client comment trường này khi tạo, khi lọc thêm điều kiện này thì làm sao lấy dc dữ liệu ???
+        let option = {}
         if(query.code){
             option.code = new RegExp(query.code, "i")
         }
@@ -35,6 +35,7 @@ exports.getAllStocks = async (company, query, portal) => {
             option.status = query.status
         }
 
+        console.log('option', option);
         return await Stock(connect(DB_CONNECTION, portal))
             .paginate(option, {
                 page,

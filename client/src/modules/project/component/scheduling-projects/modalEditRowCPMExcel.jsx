@@ -9,15 +9,17 @@ import { UserActions } from '../../../super-admin/user/redux/actions'
 import { checkIfHasCommonItems, getSalaryFromUserId, numberWithCommas } from '../../../task/task-management/component/functionHelpers'
 import { taskManagementActions } from '../../../task/task-management/redux/actions'
 import { ProjectActions } from '../../redux/actions'
-import { getCurrentProjectDetails } from '../projects/functionHelper'
+import { getAmountOfWeekDaysInMonth, getCurrentProjectDetails, getNearestIntegerNumber } from '../projects/functionHelper'
 
 const ModalEditRowCPMExcel = (props) => {
     const { currentRow, translate, project, currentEditRowIndex } = props;
+    const projectDetail = getCurrentProjectDetails(project);
     const userId = getStorage("userId");
     const [currentRowCode, setCurrentRowCode] = useState(undefined);
     const [currentRowIndex, setCurrentRowIndex] = useState(undefined);
     const [currentEstimateNormalCost, setCurrentEstimateNormalCost] = useState(numberWithCommas(currentRow?.estimateNormalCost));
     const [currentEstimateMaxCost, setCurrentEstimateMaxCost] = useState(numberWithCommas(currentRow?.estimateMaxCost));
+    const [currentEstimateNormalTime, setCurrentEstimateNormalTime] = useState(numberWithCommas(currentRow?.estimateNormalTime));
     const [currentAssetCost, setCurrentAssetCost] = useState('');
     const [currentHumanCost, setCurrentHumanCost] = useState('');
     const [currentResponsibleEmployees, setCurrentResponsibleEmployees] = useState([]);
@@ -27,19 +29,22 @@ const ModalEditRowCPMExcel = (props) => {
         errorOnAccountableEmployees: undefined,
         errorOnAssetCode: undefined,
         errorOnBudget: undefined,
+        errorOnNormalTime: undefined,
     })
     // Điều kiện để rerender lại modal khi thay đổi id của row
     if (currentRow.code !== currentRowCode) {
         setCurrentRowCode(currentRow.code);
-        setCurrentAssetCost(currentRow?.currentAssetCost || '');
+        setCurrentAssetCost(currentRow?.currentAssetCost || '1,000,000');
         setCurrentHumanCost(currentRow?.currentHumanCost || '');
-        setCurrentEstimateMaxCost(currentRow?.estimateMaxCost || '')
+        setCurrentEstimateMaxCost(currentRow?.estimateMaxCost || '');
+        setCurrentEstimateNormalTime(currentRow?.estimateNormalTime || '');
         setCurrentResponsibleEmployees(currentRow?.currentResponsibleEmployees || []);
         setCurrentAccountableEmployees(currentRow?.currentAccountableEmployees || []);
     }
     if (currentEditRowIndex !== currentRowIndex) {
         setCurrentRowIndex(currentEditRowIndex);
     }
+
 
     useEffect(() => {
         props.getProjectsDispatch({ calledId: "all", userId });
@@ -51,16 +56,29 @@ const ModalEditRowCPMExcel = (props) => {
         const resWeight = 0.8, accWeight = 0.2;
         const currentMonthWorkDays = getAmountOfWeekDaysInMonth(moment());
         const projectDetail = getCurrentProjectDetails(project);
-        for (let resItem of currentResponsibleEmployees) {
-            result += resWeight * getSalaryFromUserId(projectDetail?.responsibleEmployeesWithUnit, resItem) / currentMonthWorkDays * currentRow?.estimateNormalTime;
+        console.log('projectDetail?.unitTime', projectDetail?.unitTime)
+        if (projectDetail?.unitTime === 'days') {
+            for (let resItem of currentResponsibleEmployees) {
+                result += resWeight * getSalaryFromUserId(projectDetail?.responsibleEmployeesWithUnit, resItem) / currentMonthWorkDays * currentEstimateNormalTime;
+            }
+            for (let accItem of currentAccountableEmployees) {
+                result += accWeight * getSalaryFromUserId(projectDetail?.responsibleEmployeesWithUnit, accItem) / currentMonthWorkDays * currentEstimateNormalTime;
+            }
         }
-        for (let accItem of currentAccountableEmployees) {
-            result += accWeight * getSalaryFromUserId(projectDetail?.responsibleEmployeesWithUnit, accItem) / currentMonthWorkDays * currentRow?.estimateNormalTime;
+        if (projectDetail?.unitTime === 'hours') {
+            for (let resItem of currentResponsibleEmployees) {
+                result += resWeight * getSalaryFromUserId(projectDetail?.responsibleEmployeesWithUnit, resItem) / currentMonthWorkDays / 8 * currentEstimateNormalTime;
+            }
+            for (let accItem of currentAccountableEmployees) {
+                result += accWeight * getSalaryFromUserId(projectDetail?.responsibleEmployeesWithUnit, accItem) / currentMonthWorkDays / 8 * currentEstimateNormalTime;
+            }
         }
         setCurrentHumanCost(numberWithCommas(result));
         result += Number(currentAssetCost.replace(/,/g, ''));
         setCurrentEstimateNormalCost(numberWithCommas(result));
-    }, [currentResponsibleEmployees, currentAccountableEmployees, currentAssetCost])
+        setCurrentEstimateMaxCost(numberWithCommas(getNearestIntegerNumber(result)));
+
+    }, [currentResponsibleEmployees, currentAccountableEmployees, currentAssetCost, currentEstimateNormalTime])
 
     // Hàm thay đổi responsible arr
     const handleChangeTaskResponsibleEmployees = (value) => {
@@ -176,15 +194,26 @@ const ModalEditRowCPMExcel = (props) => {
         return message === undefined;
     }
 
-    // Lấy số ngày công trong tháng
-    const getAmountOfWeekDaysInMonth = (date) => {
-        let result = 0;
-        for (var i = 1; i < 6; i++) {
-            date.date(1);
-            var dif = (7 + (i - date.weekday())) % 7 + 1;
-            result += Math.floor((date.daysInMonth() - dif) / 7) + 1;
+    // Hàm thay đổi thời gian ước lượng
+    const handleChangeNormalTime = (event) => {
+        let value = event.target.value;
+        validateNormalTime(value, true);
+    }
+    const validateNormalTime = (value, willUpdateState = true) => {
+        let { translate } = props;
+        let message = undefined;
+        if (value?.length === 0 || value?.match(/.*[a-zA-Z]+.*/) || isDurationNotSuitable(Number(value))) {
+            message = projectDetail?.unitTime === 'days' ? "Không được bỏ trống và chỉ được điền số <= 7 và >= 1/6"
+                : "Không được bỏ trống và chỉ được điền số <= 56 và >= 4"
         }
-        return result;
+        if (willUpdateState) {
+            setCurrentEstimateNormalTime(value);
+            setError({
+                ...error,
+                errorOnNormalTime: message,
+            });
+        }
+        return message === undefined;
     }
 
     const save = () => {
@@ -192,7 +221,7 @@ const ModalEditRowCPMExcel = (props) => {
             code: currentRow?.code,
             name: currentRow?.name,
             preceedingTasks: currentRow?.preceedingTasks,
-            estimateNormalTime: currentRow?.estimateNormalTime,
+            estimateNormalTime: currentEstimateNormalTime,
             estimateOptimisticTime: currentRow?.estimateOptimisticTime,
             estimatePessimisticTime: currentRow?.estimatePessimisticTime,
             estimateNormalCost: currentEstimateNormalCost,
@@ -207,8 +236,15 @@ const ModalEditRowCPMExcel = (props) => {
 
     const isFormValidated = useMemo(() => {
         return !checkIfHasCommonItems(currentAccountableEmployees, currentResponsibleEmployees) && currentAccountableEmployees.length > 0 && currentResponsibleEmployees.length > 0
-            && Number(currentEstimateMaxCost.replace(/,/g, '')) >= Number(currentEstimateNormalCost.replace(/,/g, ''));
-    }, [currentAccountableEmployees, currentResponsibleEmployees, currentEstimateMaxCost, currentEstimateNormalCost])
+            && Number(currentEstimateMaxCost.replace(/,/g, '')) >= Number(currentEstimateNormalCost.replace(/,/g, ''))
+            && currentEstimateNormalTime.toString().trim().length > 0;
+    }, [currentAccountableEmployees, currentResponsibleEmployees, currentEstimateMaxCost, currentEstimateNormalCost, currentEstimateNormalTime])
+
+    // Hàm check xem duration có phù hợp không?
+    const isDurationNotSuitable = (estimateNormalTime) => {
+        if (projectDetail?.unitTime === 'days') return estimateNormalTime > 7 || estimateNormalTime < 1 / 6
+        return estimateNormalTime < 4 || estimateNormalTime > 56
+    }
 
     return (
         <React.Fragment>
@@ -260,10 +296,16 @@ const ModalEditRowCPMExcel = (props) => {
                             </div>
                             <div className="col-md-6">
                                 <div className="form-horizontal">
-                                    <div className="form-group">
-                                        <strong className="col-sm-4">Thời gian ước lượng (ngày)</strong>
+                                    <div className={`form-group  ${error.errorOnNormalTime === undefined ? "" : 'has-error'}`}>
+                                        <strong className="col-sm-4">Thời gian ước lượng ({translate(`project.unit.${projectDetail?.unitTime}`)})</strong>
                                         <div className="col-sm-8">
-                                            <span>{currentRow?.estimateNormalTime}</span>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                value={currentEstimateNormalTime}
+                                                onChange={handleChangeNormalTime}
+                                            />
+                                            <ErrorLabel content={error.errorOnNormalTime} />
                                         </div>
                                     </div>
                                 </div>
@@ -330,10 +372,10 @@ const ModalEditRowCPMExcel = (props) => {
                             </div>
                         </div>
 
-                        {/* Chi phí thoả hiệp tối đa - ngân sách (VND) */}
+                        {/* Chi phí thoả hiệp tối đa (VND) */}
                         <div className="row">
                             <div className="col-md-12 form-group">
-                                <label className="control-label">Chi phí thoả hiệp tối đa - ngân sách<span className="text-red">*</span> (VND)</label>
+                                <label className="control-label">Chi phí thoả hiệp tối đa<span className="text-red">*</span> (VND)</label>
                                 <input
                                     type="text"
                                     className="form-control"

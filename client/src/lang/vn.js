@@ -273,7 +273,7 @@ export default {
             phases_list: 'Danh sách giai đoạn',
             issues_list: 'Danh sách vấn đề',
             project_report: 'Báo cáo dự án',
-            project_evaluation: 'Đánh giá',
+            project_evaluation: 'Thống kê đánh giá',
             
             // Quản lý vận chuyển
             manage_transport: "Quản lý vận chuyển",
@@ -3939,7 +3939,9 @@ export default {
                     setting_up: "Đang thiết lập",
                     awaiting_approval: "Chờ phê duyệt",
                     activated: "Đã kích hoạt",
+                    not_initial: "Chưa khởi tạo",
                     number_of_employee: "Số nhân viên",
+                    number_of_child_unit: "Đơn vị con",
                     excellent_employee: "Nhân viên ưu tú",
                     best_employee: "Nhân viên xuất sắc nhất",
                     month: "Tháng",
@@ -5791,8 +5793,8 @@ export default {
             },
 
             unit: {
-                day: 'Ngày',
-                hour: 'Giờ',
+                days: 'Ngày',
+                hours: 'Giờ',
             },
             schedule: {
                 taskCode: 'Mã công việc',
