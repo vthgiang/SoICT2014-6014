@@ -57,7 +57,7 @@ function CarrierMissionManagementTable(props) {
             if (data?.manageId){
                 manageId = data.manageId;
                 // navigator.geolocation.getCurrentPosition(sendCurrentPosition);
-                
+                navigator.geolocation.getCurrentPosition(sendCurrentPosition);
                 let interval = setInterval(() => {
                     // sendCurrentPosition();
                     navigator.geolocation.getCurrentPosition(sendCurrentPosition);

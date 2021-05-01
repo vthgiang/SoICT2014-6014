@@ -42,6 +42,9 @@ function TransportManageRouteMainPage(props) {
 
     const [sendCurrentLocateTimer, setSendCurrentLocateTimer] = useState([]);
 
+    // manage
+    const [currentLocationOnMap, setCurrentLocationOnMap] = useState([])
+
     const handleShowDetailRoute = (route) => {
         console.log(route);
         setCurrentVehicleRoute_transportVehicleId(route);
@@ -226,6 +229,7 @@ function TransportManageRouteMainPage(props) {
                 console.log(data.location, "  send current locate adminnnnnnnn ");
                 // setCurrentPosition(data.location);
                 setSendCurrentLocateTimer(data.interval);
+                setCurrentLocationOnMap(data.location);
             }
         })
         /**
@@ -319,6 +323,7 @@ function TransportManageRouteMainPage(props) {
                     currentVehicleRoute = {currentVehicleRoute}
                     getLocateOnMap={getLocateOnMap}
                     stopGetLocateOnMap = {stopGetLocateOnMap}
+                    currentLocationOnMap = {currentLocationOnMap}
                 />
                 <div className="form-inline">
                         <div className="form-group">

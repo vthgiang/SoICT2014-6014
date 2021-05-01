@@ -8,18 +8,37 @@ import { transportPlanActions } from "../../transport-plan/redux/actions"
 import { transportScheduleActions } from "../../transport-schedule/redux/actions";
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 import { convertJsonObjectToFormData } from '../../../../../helpers/jsonObjectToFormDataObjectConverter'
+import { MapContainer } from "../../transport-schedule/components/googleReactMap/maphook"
 
 function TransportDetailMap(props) {
-    let {currentVehicleRoute, transportPlanId, socket, getLocateOnMap, stopGetLocateOnMap} = props;
+    let {currentVehicleRoute, transportPlanId, socket, getLocateOnMap, stopGetLocateOnMap, currentLocationOnMap} = props;
     const [ currentPosition, setCurrentPosition ] = useState({});
     
+    const [currentMarker, setCurrentMarker] = useState([])
     // const [timer, setTimer] =useState()
     // useEffect(() => {
     //     console.log(currentVehicleRoute, " day la route")
     // }, [currentVehicleRoute])
     useEffect(() => {
-
-    }, [])
+        if (currentLocationOnMap){
+            console.log(currentLocationOnMap);
+            console.log(typeof currentLocationOnMap);
+            let a1 = currentLocationOnMap.indexOf("lat");
+            let a2 = currentLocationOnMap.indexOf(",");
+            let b1 = currentLocationOnMap.indexOf("lng");
+            let b2 = currentLocationOnMap.indexOf("}");
+            console.log(currentLocationOnMap.slice(a1+5,a2));
+            console.log(currentLocationOnMap.slice(b1+5,b2));
+            // console.log(location)
+            setCurrentMarker([{
+                name: "c",
+                location: {
+                    lat: parseInt(currentLocationOnMap.slice(a1+5,a2)),
+                    lng: parseInt(currentLocationOnMap.slice(b1+5,b2))
+                }
+            }])
+        }
+    }, [currentLocationOnMap])
     // useEffect(() => {
     //     if (getLocateOnMap){
     //         setTimer(setInterval(() => {
@@ -81,7 +100,9 @@ function TransportDetailMap(props) {
                 afterClose={stopGetLocateOnMap}
             >
                 <form id={`modal-detail-map`}>
-                    <h1>sssssssssssssssss</h1>
+                    <MapContainer
+                        locations={currentMarker}
+                    />
                 </form>
             </DialogModal>
         </React.Fragment>
