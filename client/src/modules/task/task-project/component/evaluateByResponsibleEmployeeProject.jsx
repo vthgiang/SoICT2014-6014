@@ -13,16 +13,17 @@ import "../../task-perform/component/scrollBar.css";
 import { getCurrentProjectDetails } from '../../../project/component/projects/functionHelper';
 import { checkIsNullUndefined } from '../../task-management/component/functionHelpers';
 import { ProjectActions } from '../../../project/redux/actions';
+import { ModalShowAutoPointInfoProjectMember } from './modalShowAutoPointInfoProjectMember';
 
 const EvaluateByResponsibleEmployeeProject = (props) => {
     const { role, task, project } = props;
-    // console.log('task', task)
+    console.log('task', task)
     const projectDetail = getCurrentProjectDetails(project, String(task?.taskProject));
     const userId = getStorage('userId');
     const [currentProgress, setCurrentProgress] = useState(task?.progress || 0);
     const currentTaskAutomaticPointInDB = task.overallEvaluation?.automaticPoint;
-    const currentUserAutomaticPointInDB = task.overallEvaluation?.responsibleEmployee?.find((item) => String(item.employee) === userId)?.automaticPoint;
-    const currentUserHandPointInDb = task.overallEvaluation?.responsibleEmployee?.find((item) => String(item.employee) === userId)?.employeePoint;
+    const currentUserAutomaticPointInDB = task.overallEvaluation?.responsibleEmployees?.find((item) => String(item.employee?._id) === userId)?.automaticPoint;
+    const currentUserHandPointInDb = task.overallEvaluation?.responsibleEmployees?.find((item) => String(item.employee?._id) === userId)?.employeePoint;
     const [currentUserHandPoint, setCurrentUserHandPoint] = useState(currentUserHandPointInDb || 0);
 
     useEffect(() => {
@@ -59,11 +60,19 @@ const EvaluateByResponsibleEmployeeProject = (props) => {
         return calcAutomaticPoint('task')
     }, [currentProgress]);
 
-    let currentUserAutomaticPoint = 80;
+    let currentUserAutomaticPoint = useMemo(() => {
+        return calcAutomaticPoint('member')
+    }, [currentProgress]);;
 
     const openModalTaskCalculation = () => {
         setTimeout(() => {
             window.$(`#modal-automatic-point-info-project-task-${task?._id}`).modal('show');
+        }, 10);
+    }
+
+    const openModalMemberCalculation = () => {
+        setTimeout(() => {
+            window.$(`#modal-automatic-point-info-project-member-${task?._id}`).modal('show');
         }, 10);
     }
 
@@ -85,6 +94,13 @@ const EvaluateByResponsibleEmployeeProject = (props) => {
                     progress={currentProgress}
                     projectDetail={projectDetail}
                 />
+                <ModalShowAutoPointInfoProjectMember
+                    task={task}
+                    progress={currentProgress}
+                    projectDetail={projectDetail}
+                    userId={userId}
+                />
+
                 <fieldset className="scheduler-border">
                     <div className="row">
                         <button className="btn btn-success pull-right" style={{ marginRight: 10 }} onClick={() => handleSaveEvalResult()}>Lưu kết quả đánh giá</button>
@@ -138,8 +154,8 @@ const EvaluateByResponsibleEmployeeProject = (props) => {
                     <div className="row">
                         <div className="col-md-12">
                             <strong>Điểm tự động:</strong>{'  '}
-                            <a style={{ cursor: "pointer" }}>
-                                {currentUserAutomaticPoint}
+                            <a style={{ cursor: "pointer" }} onClick={openModalMemberCalculation}>
+                                {checkIsNullUndefined(currentUserAutomaticPoint) ? 'Chưa tính được' : currentUserAutomaticPoint}
                             </a>
                         </div>
                     </div>

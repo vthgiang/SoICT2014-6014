@@ -137,6 +137,8 @@ exports.getTaskById = async (portal, id, userId) => {
                     ],
                 },
             },
+            { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
+            { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
         ]);
     if (!task) {
         return {
@@ -810,6 +812,8 @@ exports.stopTimesheetLog = async (portal, params, body, user) => {
                     ],
                 },
             },
+            { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
+            { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
         ]);
     newTask.evaluations.reverse();
 
@@ -1020,6 +1024,8 @@ exports.createCommentOfTaskAction = async (portal, params, body, files, user) =>
                 ],
             },
         },
+        { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
+        { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
     ]);
 
     const { taskActions } = commentOfTaskAction;
@@ -1319,6 +1325,8 @@ exports.createTaskAction = async (portal, params, body, files) => {
                     ],
                 },
             },
+            { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
+            { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
         ]);
 
     let getUser, accEmployees;
@@ -1550,6 +1558,8 @@ exports.createTaskComment = async (portal, params, body, files, user) => {
                     ],
                 },
             },
+            { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
+            { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
         ]);
 
     const resEmployees = taskComment.responsibleEmployees && taskComment.responsibleEmployees.map(o => o._id);
@@ -1792,6 +1802,8 @@ exports.createCommentOfTaskComment = async (portal, params, body, files, user) =
                     ],
                 },
             },
+            { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
+            { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
         ]);
 
     const { taskComments } = taskcomment;
@@ -2727,6 +2739,8 @@ exports.editTaskByResponsibleEmployees = async (portal, data, taskId) => {
                     ],
                 },
             },
+            { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
+            { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
         ]);
 
     //xu ly gui email
@@ -3331,6 +3345,8 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
                     ],
                 },
             },
+            { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
+            { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
         ]);
 
     //xu ly gui email
@@ -3602,6 +3618,8 @@ exports.editEmployeeCollaboratedWithOrganizationalUnits = async (portal, taskId,
                     ],
                 },
             },
+            { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
+            { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
         ]);
     newTask.evaluations.reverse();
 
@@ -3890,6 +3908,8 @@ exports.evaluateTaskByConsultedEmployees = async (portal, data, taskId) => {
                     ],
                 },
             },
+            { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
+            { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
         ]);
     newTask.evaluations.reverse();
 
@@ -4243,6 +4263,8 @@ exports.evaluateTaskByResponsibleEmployees = async (portal, data, taskId) => {
                     ],
                 },
             },
+            { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
+            { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
         ]);
     newTask.evaluations.reverse();
 
@@ -4748,6 +4770,8 @@ exports.evaluateTaskByAccountableEmployees = async (portal, data, taskId) => {
                     ],
                 },
             },
+            { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
+            { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
         ]);
     newTask.evaluations.reverse();
 
@@ -4932,6 +4956,8 @@ exports.editHoursSpentInEvaluate = async (portal, data, taskId) => {
                     ],
                 },
             },
+            { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
+            { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
         ]);
     newTask.evaluations.reverse();
 
@@ -5069,6 +5095,8 @@ exports.deleteEvaluation = async (portal, params) => {
                     ],
                 },
             },
+            { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
+            { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
         ]);
     newTask.evaluations.reverse();
 
@@ -5495,6 +5523,8 @@ exports.editActivateOfTask = async (portal, taskID, body) => {
                     ],
                 },
             },
+            { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
+            { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
         ]);
     task.evaluations.reverse();
 
@@ -6052,6 +6082,8 @@ exports.createComment = async (portal, params, body, files) => {
                     ],
                 },
             },
+            { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
+            { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
         ]);
     return task;
 };
@@ -6194,6 +6226,8 @@ exports.editComment = async (portal, params, body, files) => {
                     ],
                 },
             },
+            { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
+            { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
         ]);
     return comment;
 };
@@ -6378,6 +6412,8 @@ exports.createChildComment = async (portal, params, body, files) => {
                     ],
                 },
             },
+            { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
+            { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
         ]);
     return comment;
 };
@@ -6546,6 +6582,8 @@ exports.editChildComment = async (portal, params, body, files) => {
                     ],
                 },
             },
+            { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
+            { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
         ]);
     return comment;
 };
@@ -6752,6 +6790,7 @@ exports.evaluateTaskByResponsibleEmployeesProject = async (portal, data, taskId)
         taskAutomaticPoint,
         automaticPoint,
         employeePoint,
+        accountablePoint,
         checkSave,
         progress,
         info,
@@ -6777,14 +6816,15 @@ exports.evaluateTaskByResponsibleEmployeesProject = async (portal, data, taskId)
     if (!currentOverallEvaluation) {
         let overallObject = {
             automaticPoint: taskAutomaticPoint,
-            responsibleEmployee: [
+            responsibleEmployees: [
                 {
                     employee: userId,
                     automaticPoint,
                     employeePoint,
+                    accountablePoint: accountablePoint === undefined ? null : accountablePoint,
                 }
             ],
-            accountableEmployee: [],
+            accountableEmployees: [],
         };
         await Task(connect(DB_CONNECTION, portal)).updateOne(
             {
@@ -6803,18 +6843,20 @@ exports.evaluateTaskByResponsibleEmployeesProject = async (portal, data, taskId)
     }
     // Nếu đã được đánh giá rồi
     else {
-        const currentUserEval = currentOverallEvaluation.responsibleEmployee.find(item => String(item.employee) === String(userId));
+        const currentUserEval = currentOverallEvaluation.responsibleEmployees.find(item => String(item.employee) === String(userId));
         // Nếu đã có userId này trong array đánh giá
         if (currentUserEval) {
             await Task(connect(DB_CONNECTION, portal)).updateOne(
                 {
                     _id: taskId,
-                    'overallEvaluation.responsibleEmployee.employee': userId,
+                    'overallEvaluation.responsibleEmployees.employee': userId,
                 },
                 {
                     $set: {
-                        "overallEvaluation.responsibleEmployee.$.employeePoint": employeePoint,
-                        "overallEvaluation.responsibleEmployee.$.automaticPoint": automaticPoint,
+                        "overallEvaluation.automaticPoint": taskAutomaticPoint,
+                        "overallEvaluation.responsibleEmployees.$.employeePoint": employeePoint,
+                        "overallEvaluation.responsibleEmployees.$.automaticPoint": automaticPoint,
+                        "overallEvaluation.responsibleEmployees.$.accountablePoint": accountablePoint === undefined ? null : accountablePoint,
                         progress,
                     },
                 },
@@ -6828,7 +6870,384 @@ exports.evaluateTaskByResponsibleEmployeesProject = async (portal, data, taskId)
                 },
                 {
                     $set: {
-                        "overallEvaluation.responsibleEmployee": [currentOverallEvaluation.responsibleEmployee, {
+                        "overallEvaluation.automaticPoint": taskAutomaticPoint,
+                        "overallEvaluation.responsibleEmployees": [currentOverallEvaluation.responsibleEmployees, {
+                            employee: userId,
+                            automaticPoint,
+                            employeePoint,
+                            accountablePoint: accountablePoint === undefined ? null : accountablePoint,
+                        }],
+                        progress,
+                    },
+                },
+            );
+        }
+    }
+    // let evaluateId = await checkEvaluations(portal, evaluatingMonth, taskId, evaluatingMonth);
+
+    // // chuẩn hóa dữ liệu info
+    // for (let i in info) {
+    //     if (info[i].value) {
+    //         if (info[i].type === "number")
+    //             info[i].value = parseInt(info[i].value);
+    //         else if (info[i].type === "set_of_values")
+    //             info[i].value = info[i].value[0];
+    //         else if (info[i].type === "date") {
+    //             let splitter = info[i].value.split("-");
+    //             let infoDate = new Date(
+    //                 splitter[2],
+    //                 splitter[1] - 1,
+    //                 splitter[0]
+    //             );
+    //             info[i].value = infoDate;
+    //         }
+    //     }
+    // }
+
+    // checkSave &&
+    //     (await Task(connect(DB_CONNECTION, portal)).updateOne(
+    //         { _id: taskId },
+    //         { $set: { progress: progress } },
+    //         { $new: true }
+    //     ));
+
+    // await Task(connect(DB_CONNECTION, portal)).updateOne(
+    //     {
+    //         _id: taskId,
+    //         "evaluations._id": evaluateId,
+    //     },
+    //     {
+    //         $set: {
+    //             "evaluations.$.progress": progress,
+    //         },
+    //     },
+    //     {
+    //         $new: true,
+    //     }
+    // );
+
+    // let task = await Task(connect(DB_CONNECTION, portal)).findById(taskId);
+
+    // let resultObject = task.evaluations.find(
+    //     (e) => String(e._id) === String(evaluateId)
+    // ).resultsForProject;
+
+    // if (resultObject === undefined || JSON.stringify(resultObject) === '{}') {
+    //     await Task(connect(DB_CONNECTION, portal)).updateOne(
+    //         {
+    //             _id: taskId,
+    //             "evaluations._id": evaluateId,
+    //             "evaluations.$.resultsForProject": resultItem,
+    //         },
+    //         { $new: true }
+    //     );
+    // } else {
+    //     await Task(connect(DB_CONNECTION, portal)).updateOne(
+    //         {
+    //             _id: taskId,
+    //             "evaluations._id": evaluateId,
+    //         },
+    //         {
+    //             $set: {
+    //                 "evaluations.$.resultsForProject.employeePoint": employeePoint,
+    //                 "evaluations.$.resultsForProject.organizationalUnit": unit,
+    //             },
+    //         },
+    //         // {
+    //         //     arrayFilters: [
+    //         //         {
+    //         //             "elem.employee": user,
+    //         //             "elem.role": role,
+    //         //         },
+    //         //     ],
+    //         // }
+    //     );
+    // }
+
+    // // update Info task
+    // let dateISO = new Date(endDate)
+    // let monthOfParams = dateISO.getMonth();
+    // let yearOfParams = dateISO.getFullYear();
+    // let now = new Date();
+
+    // let cloneInfo = task.taskInformations;
+    // for (let item in info) {
+    //     for (let i in cloneInfo) {
+    //         if (info[item].code === cloneInfo[i].code) {
+    //             cloneInfo[i] = {
+    //                 filledByAccountableEmployeesOnly:
+    //                     cloneInfo[i].filledByAccountableEmployeesOnly,
+    //                 _id: cloneInfo[i]._id,
+    //                 code: cloneInfo[i].code,
+    //                 name: cloneInfo[i].name,
+    //                 description: cloneInfo[i].description,
+    //                 type: cloneInfo[i].type,
+    //                 extra: cloneInfo[i].extra,
+    //                 value: info[item].value,
+    //             };
+    //             // quangdz
+    //             if (
+    //                 yearOfParams > now.getFullYear() ||
+    //                 (yearOfParams <= now.getFullYear() &&
+    //                     monthOfParams >= now.getMonth())
+    //             ) {
+    //                 checkSave &&
+    //                     (await Task(connect(DB_CONNECTION, portal)).updateOne(
+    //                         {
+    //                             _id: taskId,
+    //                             "taskInformations._id": cloneInfo[i]._id,
+    //                         },
+    //                         {
+    //                             $set: {
+    //                                 "taskInformations.$.value":
+    //                                     cloneInfo[i].value,
+    //                             },
+    //                         },
+    //                         {
+    //                             $new: true,
+    //                         }
+    //                     ));
+    //             }
+
+    //             await Task(connect(DB_CONNECTION, portal)).updateOne(
+    //                 {
+    //                     _id: taskId,
+    //                     "evaluations._id": evaluateId,
+    //                 },
+    //                 {
+    //                     $set: {
+    //                         "evaluations.$.taskInformations.$[elem].value":
+    //                             cloneInfo[i].value,
+    //                     },
+    //                 },
+    //                 {
+    //                     arrayFilters: [
+    //                         {
+    //                             "elem._id": cloneInfo[i]._id,
+    //                         },
+    //                     ],
+    //                 }
+    //             );
+    //         }
+    //     }
+    // }
+
+    let newTask = await Task(connect(DB_CONNECTION, portal))
+        .findById(taskId)
+        .populate([
+            { path: "parent", select: "name" },
+            { path: "taskTemplate", select: "formula" },
+            { path: "organizationalUnit" },
+            { path: "collaboratedWithOrganizationalUnits.organizationalUnit" },
+            {
+                path:
+                    "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator inactiveEmployees",
+                select: "name email _id active avatar",
+            },
+            {
+                path: "evaluations.results.employee",
+                select: "name email _id active",
+            },
+            {
+                path: "evaluations.results.organizationalUnit",
+                select: "name _id",
+            },
+            { path: "evaluations.results.kpis" },
+            { path: "taskActions.creator", select: "name email avatar" },
+            {
+                path: "taskActions.comments.creator",
+                select: "name email avatar",
+            },
+            { path: "commentsInProcess.creator", select: "name email avatar" },
+            {
+                path: "commentsInProcess.comments.creator",
+                select: "name email avatar",
+            },
+            {
+                path: "taskActions.evaluations.creator",
+                select: "name email avatar ",
+            },
+            { path: "taskComments.creator", select: "name email avatar" },
+            {
+                path: "taskComments.comments.creator",
+                select: "name email avatar",
+            },
+            { path: "documents.creator", select: "name email avatar" },
+            { path: "followingTasks.task" },
+            {
+                path: "preceedingTasks.task",
+                populate: [
+                    {
+                        path: "commentsInProcess.creator",
+                        select: "name email avatar",
+                    },
+                    {
+                        path: "commentsInProcess.comments.creator",
+                        select: "name email avatar",
+                    },
+                ],
+            },
+            { path: "timesheetLogs.creator", select: "name avatar _id email" },
+            { path: "hoursSpentOnTask.contributions.employee", select: "name" },
+            {
+                path: "process",
+                populate: {
+                    path: "tasks",
+                    populate: [
+                        { path: "parent", select: "name" },
+                        { path: "taskTemplate", select: "formula" },
+                        { path: "organizationalUnit" },
+                        {
+                            path:
+                                "collaboratedWithOrganizationalUnits.organizationalUnit",
+                        },
+                        {
+                            path:
+                                "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator inactiveEmployees",
+                            select: "name email _id active avatar",
+                        },
+                        {
+                            path: "evaluations.results.employee",
+                            select: "name email _id active",
+                        },
+                        {
+                            path: "evaluations.results.organizationalUnit",
+                            select: "name _id",
+                        },
+                        { path: "evaluations.results.kpis" },
+                        {
+                            path: "taskActions.creator",
+                            select: "name email avatar",
+                        },
+                        {
+                            path: "taskActions.comments.creator",
+                            select: "name email avatar",
+                        },
+                        {
+                            path: "taskActions.evaluations.creator",
+                            select: "name email avatar ",
+                        },
+                        {
+                            path: "taskComments.creator",
+                            select: "name email avatar",
+                        },
+                        {
+                            path: "taskComments.comments.creator",
+                            select: "name email avatar",
+                        },
+                        {
+                            path: "documents.creator",
+                            select: "name email avatar",
+                        },
+                        { path: "process" },
+                        {
+                            path: "commentsInProcess.creator",
+                            select: "name email avatar",
+                        },
+                        {
+                            path: "commentsInProcess.comments.creator",
+                            select: "name email avatar",
+                        },
+                    ],
+                },
+            },
+            { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
+            { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
+        ]);
+    newTask.evaluations.reverse();
+
+    return newTask;
+};
+
+
+/**
+ * evaluate PROJECT task by Accountable
+ */
+exports.evaluateTaskByAccountableEmployeesProject = async (portal, data, taskId) => {
+    let {
+        userId,
+        taskAutomaticPoint,
+        automaticPoint,
+        employeePoint,
+        checkSave,
+        progress,
+        info,
+    } = data;
+    console.log('data', data)
+    // let startEval = new Date(startDate);
+
+    // let endEval = new Date(endDate);
+
+    // let resultItem = {
+    //     automaticPoint: taskAutomaticPoint,
+    //     responsibleEmployee: {
+    //         employee: userId,
+    //         automaticPoint,
+    //         employeePoint,
+    //     },
+    // };
+
+    const currentTask = await Task(connect(DB_CONNECTION, portal))
+        .findOne({ _id: taskId });
+    const currentOverallEvaluation = currentTask.overallEvaluation;
+    // Nếu task này chưa được đánh giá overall lần nào
+    if (!currentOverallEvaluation) {
+        let overallObject = {
+            automaticPoint: taskAutomaticPoint,
+            responsibleEmployees: [],
+            accountableEmployees: [
+                {
+                    employee: userId,
+                    automaticPoint,
+                    employeePoint,
+                }
+            ],
+        };
+        await Task(connect(DB_CONNECTION, portal)).updateOne(
+            {
+                _id: taskId,
+            },
+            {
+                $set: {
+                    "overallEvaluation": overallObject,
+                    progress,
+                },
+            },
+            {
+                $new: true,
+            }
+        );
+    }
+    // Nếu đã được đánh giá rồi
+    else {
+        const currentUserEval = currentOverallEvaluation.accountableEmployees.find(item => String(item.employee) === String(userId));
+        // Nếu đã có userId này trong array đánh giá
+        if (currentUserEval) {
+            await Task(connect(DB_CONNECTION, portal)).updateOne(
+                {
+                    _id: taskId,
+                    'overallEvaluation.accountableEmployees.employee': userId,
+                },
+                {
+                    $set: {
+                        "overallEvaluation.automaticPoint": taskAutomaticPoint,
+                        "overallEvaluation.accountableEmployees.$.employeePoint": employeePoint,
+                        "overallEvaluation.accountableEmployees.$.automaticPoint": automaticPoint,
+                        progress,
+                    },
+                },
+            );
+        }
+        // Nếu chưa có userId này trong array đánh giá
+        else {
+            await Task(connect(DB_CONNECTION, portal)).updateOne(
+                {
+                    _id: taskId,
+                },
+                {
+                    $set: {
+                        "overallEvaluation.automaticPoint": taskAutomaticPoint,
+                        "overallEvaluation.accountableEmployees": [currentOverallEvaluation.accountableEmployees, {
                             employee: userId,
                             automaticPoint,
                             employeePoint,
@@ -7107,338 +7526,8 @@ exports.evaluateTaskByResponsibleEmployeesProject = async (portal, data, taskId)
                     ],
                 },
             },
-        ]);
-    newTask.evaluations.reverse();
-
-    return newTask;
-};
-
-
-/**
- * evaluate PROJECT task by Accountable
- */
-exports.evaluateTaskByAccountableEmployeesProject = async (portal, data, taskId) => {
-    console.log('ACCOUNTABLE PROJECT')
-    let {
-        user,
-        unit,
-        checkSave,
-        progress,
-        approvedPoint,
-        automaticPoint,
-        role,
-        evaluatingMonth,
-        startDate,
-        endDate,
-        info,
-        hasAccountable,
-    } = data;
-
-    let splitter = evaluatingMonth.split("-");
-    let evaluateDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
-    let dateFormat = evaluateDate;
-
-    let startEval = new Date(startDate);
-
-    let endEval = new Date(endDate);
-
-    let resultItem = {
-        employee: user,
-        organizationalUnit: unit,
-        automaticPoint,
-        approvedPoint,
-        role: hasAccountable ? 'accountable' : 'responsible',
-    };
-
-    let evaluateId = await checkEvaluations(portal, evaluatingMonth, taskId, evaluatingMonth);
-
-    // chuẩn hóa dữ liệu info
-    for (let i in info) {
-        if (info[i].value) {
-            if (info[i].type === "number")
-                info[i].value = parseInt(info[i].value);
-            else if (info[i].type === "set_of_values")
-                info[i].value = info[i].value[0];
-            else if (info[i].type === "date") {
-                let splitter = info[i].value.split("-");
-                let infoDate = new Date(
-                    splitter[2],
-                    splitter[1] - 1,
-                    splitter[0]
-                );
-                info[i].value = infoDate;
-            }
-        }
-    }
-
-    checkSave &&
-        (await Task(connect(DB_CONNECTION, portal)).updateOne(
-            { _id: taskId },
-            { $set: { progress: progress } },
-            { $new: true }
-        ));
-
-    await Task(connect(DB_CONNECTION, portal)).updateOne(
-        {
-            _id: taskId,
-            "evaluations._id": evaluateId,
-        },
-        {
-            $set: {
-                "evaluations.$.progress": progress,
-            },
-        },
-        {
-            $new: true,
-        }
-    );
-
-    let task = await Task(connect(DB_CONNECTION, portal)).findById(taskId);
-
-    let resultObject = task.evaluations.find(
-        (e) => String(e._id) === String(evaluateId)
-    ).resultsForProject;
-
-    if (resultObject === undefined || JSON.stringify(resultObject) === '{}') {
-        await Task(connect(DB_CONNECTION, portal)).updateOne(
-            {
-                _id: taskId,
-                "evaluations._id": evaluateId,
-                "evaluations.$.resultsForProject": resultItem,
-            },
-            { $new: true }
-        );
-    } else {
-        await Task(connect(DB_CONNECTION, portal)).updateOne(
-            {
-                _id: taskId,
-                "evaluations._id": evaluateId,
-            },
-            {
-                $set: {
-                    "evaluations.$.resultsForProject.automaticPoint": automaticPoint,
-                    "evaluations.$.resultsForProject.approvedPoint": approvedPoint,
-                    "evaluations.$.resultsForProject.organizationalUnit": unit,
-                },
-            },
-            // {
-            //     arrayFilters: [
-            //         {
-            //             "elem.employee": user,
-            //             "elem.role": role,
-            //         },
-            //     ],
-            // }
-        );
-    }
-
-    // update Info task
-    let dateISO = new Date(endDate)
-    let monthOfParams = dateISO.getMonth();
-    let yearOfParams = dateISO.getFullYear();
-    let now = new Date();
-
-    let cloneInfo = task.taskInformations;
-    for (let item in info) {
-        for (let i in cloneInfo) {
-            if (info[item].code === cloneInfo[i].code) {
-                cloneInfo[i] = {
-                    filledByAccountableEmployeesOnly:
-                        cloneInfo[i].filledByAccountableEmployeesOnly,
-                    _id: cloneInfo[i]._id,
-                    code: cloneInfo[i].code,
-                    name: cloneInfo[i].name,
-                    description: cloneInfo[i].description,
-                    type: cloneInfo[i].type,
-                    extra: cloneInfo[i].extra,
-                    value: info[item].value,
-                };
-                // quangdz
-                if (
-                    yearOfParams > now.getFullYear() ||
-                    (yearOfParams <= now.getFullYear() &&
-                        monthOfParams >= now.getMonth())
-                ) {
-                    checkSave &&
-                        (await Task(connect(DB_CONNECTION, portal)).updateOne(
-                            {
-                                _id: taskId,
-                                "taskInformations._id": cloneInfo[i]._id,
-                            },
-                            {
-                                $set: {
-                                    "taskInformations.$.value":
-                                        cloneInfo[i].value,
-                                },
-                            },
-                            {
-                                $new: true,
-                            }
-                        ));
-                }
-
-                await Task(connect(DB_CONNECTION, portal)).updateOne(
-                    {
-                        _id: taskId,
-                        "evaluations._id": evaluateId,
-                    },
-                    {
-                        $set: {
-                            "evaluations.$.taskInformations.$[elem].value":
-                                cloneInfo[i].value,
-                        },
-                    },
-                    {
-                        arrayFilters: [
-                            {
-                                "elem._id": cloneInfo[i]._id,
-                            },
-                        ],
-                    }
-                );
-            }
-        }
-    }
-
-    // update date of evaluation
-
-    await Task(connect(DB_CONNECTION, portal)).updateOne(
-        {
-            _id: taskId,
-            "evaluations._id": evaluateId,
-        },
-        {
-            $set: {
-                "evaluations.$.evaluatingMonth": dateFormat,
-                "evaluations.$.startDate": startEval,
-                "evaluations.$.endDate": endEval,
-            },
-        },
-        {
-            $new: true,
-        }
-    );
-
-    // let newTask = await Task(connect(DB_CONNECTION, portal)).findById(taskId);
-    let newTask = await Task(connect(DB_CONNECTION, portal))
-        .findById(taskId)
-        .populate([
-            { path: "parent", select: "name" },
-            { path: "taskTemplate", select: "formula" },
-            { path: "organizationalUnit" },
-            { path: "collaboratedWithOrganizationalUnits.organizationalUnit" },
-            {
-                path:
-                    "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creatorinactiveEmployees",
-                select: "name email _id active avatar",
-            },
-            {
-                path: "evaluations.results.employee",
-                select: "name email _id active",
-            },
-            {
-                path: "evaluations.results.organizationalUnit",
-                select: "name _id",
-            },
-            { path: "evaluations.results.kpis" },
-            { path: "taskActions.creator", select: "name email avatar" },
-            {
-                path: "taskActions.comments.creator",
-                select: "name email avatar",
-            },
-            { path: "commentsInProcess.creator", select: "name email avatar" },
-            {
-                path: "commentsInProcess.comments.creator",
-                select: "name email avatar",
-            },
-            {
-                path: "taskActions.evaluations.creator",
-                select: "name email avatar ",
-            },
-            { path: "taskComments.creator", select: "name email avatar" },
-            {
-                path: "taskComments.comments.creator",
-                select: "name email avatar",
-            },
-            { path: "documents.creator", select: "name email avatar" },
-            { path: "followingTasks.task" },
-            {
-                path: "preceedingTasks.task",
-                populate: [
-                    {
-                        path: "commentsInProcess.creator",
-                        select: "name email avatar",
-                    },
-                    {
-                        path: "commentsInProcess.comments.creator",
-                        select: "name email avatar",
-                    },
-                ],
-            },
-            { path: "timesheetLogs.creator", select: "name avatar _id email" },
-            { path: "hoursSpentOnTask.contributions.employee", select: "name" },
-            {
-                path: "process",
-                populate: {
-                    path: "tasks",
-                    populate: [
-                        { path: "parent", select: "name" },
-                        { path: "taskTemplate", select: "formula" },
-                        { path: "organizationalUnit" },
-                        {
-                            path:
-                                "collaboratedWithOrganizationalUnits.organizationalUnit",
-                        },
-                        {
-                            path:
-                                "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator inactiveEmployees",
-                            select: "name email _id active avatar",
-                        },
-                        {
-                            path: "evaluations.results.employee",
-                            select: "name email _id active",
-                        },
-                        {
-                            path: "evaluations.results.organizationalUnit",
-                            select: "name _id",
-                        },
-                        { path: "evaluations.results.kpis" },
-                        {
-                            path: "taskActions.creator",
-                            select: "name email avatar",
-                        },
-                        {
-                            path: "taskActions.comments.creator",
-                            select: "name email avatar",
-                        },
-                        {
-                            path: "taskActions.evaluations.creator",
-                            select: "name email avatar ",
-                        },
-                        {
-                            path: "taskComments.creator",
-                            select: "name email avatar",
-                        },
-                        {
-                            path: "taskComments.comments.creator",
-                            select: "name email avatar",
-                        },
-                        {
-                            path: "documents.creator",
-                            select: "name email avatar",
-                        },
-                        { path: "process" },
-                        {
-                            path: "commentsInProcess.creator",
-                            select: "name email avatar",
-                        },
-                        {
-                            path: "commentsInProcess.comments.creator",
-                            select: "name email avatar",
-                        },
-                    ],
-                },
-            },
+            { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
+            { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
         ]);
     newTask.evaluations.reverse();
 

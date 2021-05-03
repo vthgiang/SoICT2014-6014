@@ -388,7 +388,7 @@ const TaskSchema = new Schema(
                 type: Number,
                 default: 0,
             },
-            responsibleEmployee: [
+            responsibleEmployees: [
                 {
                     employee: {
                         // Người đánh giá
@@ -419,7 +419,7 @@ const TaskSchema = new Schema(
                     },
                 }
             ],
-            accountableEmployee: [
+            accountableEmployees: [
                 {
                     employee: {
                         // Người đánh giá

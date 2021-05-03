@@ -3,21 +3,20 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal } from '../../../../common-components';
 import { AutomaticTaskPointCalculator } from '../../task-perform/component/automaticTaskPointCalculator';
-import moment from 'moment'
 import { checkIsNullUndefined, numberWithCommas } from '../../task-management/component/functionHelpers';
 
-const ModalShowAutoPointInfoProjectTask = (props) => {
-    const { task, translate, progress, projectDetail } = props;
+const ModalShowAutoPointInfoProjectMember = (props) => {
+    const { task, translate, progress, projectDetail, userId } = props;
     const { budget } = task;
 
     const data = {
         task,
         progress,
         projectDetail,
+        userId,
     }
 
     const {
-        estimateAssetCost,
         estCost,
         estDuration,
         realCost,
@@ -28,14 +27,14 @@ const ModalShowAutoPointInfoProjectTask = (props) => {
         actualCost,
         costPerformanceIndex,
         autoCalPointProject,
-    } = AutomaticTaskPointCalculator.calcProjectAutoPoint(data, false);
+    } = AutomaticTaskPointCalculator.calcProjectTaskMemberAutoPoint(data, false);
 
     return (
         <React.Fragment>
             <DialogModal
-                modalID={`modal-automatic-point-info-project-task-${task?._id}`}
-                formID={`form-automatic-point-info-project-task-${task?._id}`}
-                title={`${translate('task.task_management.calc_form')} cho công việc`}
+                modalID={`modal-automatic-point-info-project-member-${task?._id}`}
+                formID={`form-automatic-point-info-project-member-${task?._id}`}
+                title={`${translate('task.task_management.calc_form')} cho nhân viên dự án`}
                 hasSaveButton={false}
                 hasNote={false}
                 size={100}
@@ -43,13 +42,12 @@ const ModalShowAutoPointInfoProjectTask = (props) => {
                 <div>
                     <p><strong>Các thông số: </strong></p>
                     <ul style={{ lineHeight: 2.3 }}>
-                        <li>progressTask - Tiến độ của công việc (%): <strong>{progressTask}%</strong></li>
-                        <li>budget - Ngân sách cho công việc (VND): <strong>{numberWithCommas(estCost)} VND</strong></li>
-                        <li>estDuration - Thời gian ước lượng cho công việc ({translate(`project.unit.${projectDetail?.unitTime}`)}): <strong>{numberWithCommas(estDuration)} ngày</strong></li>
-                        <li>realDuration - Thời gian thực tế bấm giờ cho công việc ({translate(`project.unit.${projectDetail?.unitTime}`)}): <strong>{numberWithCommas(realDuration)} ngày</strong></li>
-                        <li>assetCost - Chi phí tài sản (VND): <strong>{numberWithCommas(estimateAssetCost)} VND</strong></li>
-                        <li>actualCost - Chi phí thực tế cho công việc (VND): <strong>{numberWithCommas(actualCost)} VND</strong></li>
-                        <li>earnedValue = progressTask * budget - Giá trị thu được từ công việc (VND): <strong>{numberWithCommas(earnedValue)} VND</strong></li>
+                        <li>progressTask - Tiến độ của nhân viên (%): <strong>{progressTask}%</strong></li>
+                        <li>budget - Ngân sách cho nhân viên (VND): <strong>{numberWithCommas(estCost)} VND</strong></li>
+                        <li>estDuration - Thời gian ước lượng của nhân viên cho công việc ({translate(`project.unit.${projectDetail?.unitTime}`)}): <strong>{numberWithCommas(estDuration)} ngày</strong></li>
+                        <li>realDuration - Thời gian thực tế nhân viên bấm giờ cho công việc ({translate(`project.unit.${projectDetail?.unitTime}`)}): <strong>{numberWithCommas(realDuration)} ngày</strong></li>
+                        <li>actualCost - Chi phí thực tế nhân viên sử dụng cho công việc (VND): <strong>{numberWithCommas(actualCost)} VND</strong></li>
+                        <li>earnedValue = progressTask * budget - Giá trị thu được từ công việc của nhân viên (VND): <strong>{numberWithCommas(earnedValue)} VND</strong></li>
                         <li>costPerformanceIndex = earnedValue / actualCost - Chỉ số đánh giá chi phí cho công việc: <strong>{costPerformanceIndex.toFixed(2)}</strong></li>
                     </ul>
                     <p><strong>{translate('task.task_management.calc_formula')}: </strong>
@@ -80,7 +78,7 @@ function mapState(state) {
     return { tasks };
 }
 
-const modalShowAutoPointInfoProjectTask = connect(mapState, null)(withTranslate(ModalShowAutoPointInfoProjectTask));
-export { modalShowAutoPointInfoProjectTask as ModalShowAutoPointInfoProjectTask }
+const Modal = connect(mapState, null)(withTranslate(ModalShowAutoPointInfoProjectMember));
+export { Modal as ModalShowAutoPointInfoProjectMember }
 
 
