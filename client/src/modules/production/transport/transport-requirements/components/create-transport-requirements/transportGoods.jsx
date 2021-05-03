@@ -145,8 +145,8 @@ function TransportGoods(props) {
                     code: good?.good.code ? good.good.code : "",
                     name: good?.good.name ? good?.good.name : "",
                     quantity: good?.quantity,
-                    volume: good?.volume,
-                    payload: good?.payload,  
+                    volume: good.volume?good.volume:10,
+                    payload: good.payload?good.payload:10,  
                 })
             })
             setListGoodsChosen(goodList);

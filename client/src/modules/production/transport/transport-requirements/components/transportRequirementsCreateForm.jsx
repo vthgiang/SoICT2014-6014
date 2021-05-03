@@ -29,7 +29,7 @@ function TransportRequirementsCreateForm(props) {
 
     // const { translate, example, page, perPage } = props;
     // const { exampleName, description, exampleNameError } = state1;
-
+    const {bills} = props
     // /**
     //  * Hàm dùng để kiểm tra xem form đã được validate hay chưa
     //  */
@@ -45,7 +45,7 @@ function TransportRequirementsCreateForm(props) {
         {
             value: "1",
             text: "Giao hàng",
-            billType: "3",
+            billType: "4",
             billGroup: "2",
         },
         {
@@ -63,7 +63,7 @@ function TransportRequirementsCreateForm(props) {
         {
             value: "4",
             text: "Giao nguyên vật liệu",
-            billType: "4",
+            billType: "3",
             billGroup: "2"
         },
         {
@@ -86,23 +86,27 @@ function TransportRequirementsCreateForm(props) {
         timeRequests: [],
     });
 
-
-    const [billId, setBillId] = useState({
-        id: "",
-    });
+    const [listBills, setListBills] = useState([])
+    const [currentBill, setCurrentBill] = useState({
+        id: "0",
+    })
+    // const [bill, setBill] = useState({
+    //     id: "title",
+    //     bill: "",
+    // });
 
     const [billDetail, setBillDetail] = useState({})
 
-    const [importGoodsDetails, setImportGoodsDetails] = useState({
-        addressStock: "",
-        nameStock: ""
-    })
+    // const [importGoodsDetails, setImportGoodsDetails] = useState({
+    //     addressStock: "",
+    //     nameStock: ""
+    // })
 
     const [goodsTransport, setGoodsTransport] = useState([])
 
-    const [goodDetails, setGoodDetails] = useState({
-        good: [],
-    })
+    // const [goodDetails, setGoodDetails] = useState({
+    //     good: [],
+    // })
 
     const { translate, example, page, perPage } = props;
 
@@ -221,26 +225,26 @@ function TransportRequirementsCreateForm(props) {
     }
 
     const getBills = () => {
-        let listBills = [
+        let listBillsSelectBox = [
             {
                 value: "0",
                 text: "Chọn phiếu",
             },
         ];
-        const listAllBills = props.bills;        
-        if (listAllBills) {
-            listAllBills.map((item) => {
-                listBills.push({
+        console.log(listBills, " aaaaaaa")
+        if (listBills && listBills.length!==0){
+            listBills.map(item => {
+                listBillsSelectBox.push({
                     value: item._id,
                     text: item.code,
-                });
-            });
+                })
+            })
         }
-        return listBills;
+        return listBillsSelectBox;
     }
 
     useEffect(() => {
-        props.getCustomers();
+        // props.getCustomers();
         props.getBillsByType({ page:1, limit:30, group: parseInt(state.billGroup), managementLocation: localStorage.getItem("currentRole") });
     },[state])
 
@@ -252,47 +256,81 @@ function TransportRequirementsCreateForm(props) {
     // }, [state, billId])
 
     const handleTypeBillChange = (value) => {
-        console.log(value[0]);
+        // console.log(value[0]);
         if (value[0] !== "0") {
-            setBillId({
-                ...billId,
+            // setBillId({
+            //     ...billId,
+            //     id: value[0],
+            // });
+            let curBill = listBills.filter(r => String(r._id) === value[0]);
+            if (curBill && curBill.length!==0){
+                setCurrentBill({
+                    id: value[0],
+                    bill: curBill[0]
+                })
+            }
+        }
+        else {
+            setCurrentBill({
                 id: value[0],
-            });
+            })
         }
     }
 
-    useEffect(() => {
-        let currentBill = props.bills.filter(r => r._id === billId.id);
-        setBillDetail({
-            ...billDetail,
-            currentBill: currentBill[0]
-        })
+    // useEffect(() => {
+    //     let currentBill = bills.filter(r => r._id === billId.id);
+    //     setBillDetail({
+    //         ...billDetail,
+    //         currentBill: currentBill[0]
+    //     })
         
-    }, [billId])
+    // }, [billId])
 
     useEffect(() => {
-        let nameStock = "", 
-            addressStock = "", 
-            goods=[];
-        if (state.value==="3" && billId.id !==""){
-            if (billDetail.currentBill) {
-                if (billDetail.currentBill.fromStock){
-                    nameStock = billDetail.currentBill.fromStock.name;
-                    addressStock = billDetail.currentBill.fromStock.address;
-                }
-                if (billDetail.currentBill.goods){
-                    goods = billDetail.currentBill.goods;
-                }
-            }
-            setImportGoodsDetails({
-                ...importGoodsDetails,
-                nameStock: nameStock,
-                addressStock: addressStock,
-            })
-            setGoodsTransport(goods)
+        if (bills && bills.listPaginate){
+            let lists = bills.listPaginate.filter(r => 
+                (String(r.type) === String(state.billType) 
+                && String(r.group)===String(state.billGroup)))
+            setListBills(lists)
         }
+    }, [bills])
 
-    }, [billDetail]);
+    useEffect(() => {
+        console.log(currentBill?.bill, " bbbb")
+        if (currentBill && currentBill.bill && currentBill.bill.goods && currentBill.bill.goods.length!==0){
+            let listGood = [];
+            currentBill.bill.goods.map(item => {
+                if (item.good){
+                    listGood.push(item);
+                }
+            })
+            setGoodsTransport(listGood)
+        }
+    }, [currentBill])
+
+    // useEffect(() => {
+    //     let nameStock = "", 
+    //         addressStock = "", 
+    //         goods=[];
+    //     if (state.value==="3" && billId.id !==""){
+    //         if (billDetail.currentBill) {
+    //             if (billDetail.currentBill.fromStock){
+    //                 nameStock = billDetail.currentBill.fromStock.name;
+    //                 addressStock = billDetail.currentBill.fromStock.address;
+    //             }
+    //             if (billDetail.currentBill.goods){
+    //                 goods = billDetail.currentBill.goods;
+    //             }
+    //         }
+    //         setImportGoodsDetails({
+    //             ...importGoodsDetails,
+    //             nameStock: nameStock,
+    //             addressStock: addressStock,
+    //         })
+    //         setGoodsTransport(goods)
+    //     }
+
+    // }, [billDetail]);
 
     /**
      * Hàm lấy dữ liệu hàng hóa từ component con
@@ -399,7 +437,7 @@ function TransportRequirementsCreateForm(props) {
                                             id={`select-bills`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
-                                            value={"0"}
+                                            value={currentBill.id}
                                             items={getBills()}
                                             onChange={handleTypeBillChange}
                                             multiple={false}
@@ -416,6 +454,7 @@ function TransportRequirementsCreateForm(props) {
                             <TransportGeneralInfoShip 
                                 // billId = {billInfo.value}
                                 // curBill = {billDetail.curBill}   
+                                currentBill = {currentBill?.bill}
                             />
                         )
                     }
@@ -428,8 +467,8 @@ function TransportRequirementsCreateForm(props) {
                     {
                         state.value === "3" && (
                             < TransportImportGoods
-                                nameStock = {importGoodsDetails.nameStock}
-                                addressStock ={importGoodsDetails.addressStock}
+                                // nameStock = {importGoodsDetails.nameStock}
+                                // addressStock ={importGoodsDetails.addressStock}
                             />
                         )
                     }
@@ -462,8 +501,8 @@ function TransportRequirementsCreateForm(props) {
 function mapState(state) {
     // const example = state.example1;
     // return { example }  
-    console.log(state, " day la state");    
-    const bills = state.bills.listPaginate;
+    // console.log(state, " day la state");    
+    const {bills} = state;
     // const listAllGoods = state.goods.listALLGoods;
     return { bills }
 }
