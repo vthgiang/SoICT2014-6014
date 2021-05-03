@@ -5,7 +5,7 @@ import { DialogModal, SelectBox } from '../../../../common-components/index';
 import { ProjectActions } from '../../redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { taskManagementActions } from '../../../task/task-management/redux/actions';
-import { getCurrentProjectDetails, getDurationDaysWithoutSatSun } from '../projects/functionHelper';
+import { getCurrentProjectDetails, getDurationWithoutSatSun } from '../projects/functionHelper';
 import ModalCalculateCPM from './modalCalculateCPM';
 import ModalExcelImport from './modalExcelImport';
 import ModalEditRowCPMExcel from './modalEditRowCPMExcel';
@@ -46,15 +46,15 @@ const ModalAddTaskSchedule = (props) => {
     const [currentModeImport, setCurrentModeImport] = useState('EXCEL');
     const [estDurationEndProject, setEstDurationEndProject] = useState(
         numberWithCommas(
-            getDurationDaysWithoutSatSun(projectDetail?.startDate, projectDetail?.endDate, projectDetail?.unitTime)
+            getDurationWithoutSatSun(projectDetail?.startDate, projectDetail?.endDate, projectDetail?.unitTime)
         )
     )
     if (
-        numberWithCommas(getDurationDaysWithoutSatSun(projectDetail?.startDate, projectDetail?.endDate, projectDetail?.unitTime)) !== estDurationEndProject
+        numberWithCommas(getDurationWithoutSatSun(projectDetail?.startDate, projectDetail?.endDate, projectDetail?.unitTime)) !== estDurationEndProject
     ) {
         setEstDurationEndProject(
             numberWithCommas(
-                getDurationDaysWithoutSatSun(projectDetail?.startDate, projectDetail?.endDate, projectDetail?.unitTime)
+                getDurationWithoutSatSun(projectDetail?.startDate, projectDetail?.endDate, projectDetail?.unitTime)
             )
         )
     }
@@ -80,10 +80,6 @@ const ModalAddTaskSchedule = (props) => {
                 endDate: '',
             },
         })
-    }
-
-    const handleResetData = () => {
-        props.onHandleReRender();
     }
 
     const handleChangeForm = (value, type) => {
@@ -234,13 +230,12 @@ const ModalAddTaskSchedule = (props) => {
         return estimateNormalTime < 4 || estimateNormalTime > 56
     }
 
-    const renderModalCalculateCPM = useCallback(
-        () => {
-            return state.listTasks && state.listTasks.length > 0 &&
-                <ModalCalculateCPM estDurationEndProject={Number(estDurationEndProject)} tasksData={state.listTasks} handleResetData={handleResetData} />
-        },
-        [state.listTasks],
-    )
+    const handleHideModal = () => {
+        setTimeout(() => {
+            window.$(`#modal-show-info-calculate-cpm`).modal('hide');
+            props.onHandleReRender();
+        }, 10);
+    }
 
     return (
         <React.Fragment>
@@ -441,7 +436,7 @@ const ModalAddTaskSchedule = (props) => {
 
                 {/* Phần tính toán CPM từ danh sách tasks */}
                 {state.listTasks && state.listTasks.length > 0 &&
-                    <ModalCalculateCPM estDurationEndProject={Number(estDurationEndProject)} tasksData={state.listTasks} handleResetData={handleResetData} />
+                    <ModalCalculateCPM estDurationEndProject={Number(estDurationEndProject)} tasksData={state.listTasks} handleHideModal={handleHideModal} />
                 }
 
                 {/* {renderModalCalculateCPM()} */}

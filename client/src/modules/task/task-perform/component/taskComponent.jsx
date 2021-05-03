@@ -12,6 +12,7 @@ import qs from 'qs';
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
 import { ProjectActions } from '../../../project/redux/actions';
 import { getStorage } from '../../../../config';
+import { DetailProjectTaskTab } from '../../task-project/component/detailProjectTaskTab';
 
 class TaskComponent extends Component {
     constructor(props) {
@@ -90,13 +91,19 @@ class TaskComponent extends Component {
         return (
             <div className="row row-equal-height" style={{ margin: "0px", height: "100%", backgroundColor: "#fff" }}>
                 <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{ paddingTop: "10px" }}>
-
-                    <DetailTaskTab
-                        id={taskId}
-                        onChangeTaskRole={this.onChangeTaskRole}
-                        task={task && task}
-                        showToolbar={true}
-                    />
+                    {task?.taskProject ?
+                        <DetailProjectTaskTab
+                            id={taskId}
+                            onChangeTaskRole={this.onChangeTaskRole}
+                            task={task && task}
+                            showToolbar={true}
+                        />
+                        : <DetailTaskTab
+                            id={taskId}
+                            onChangeTaskRole={this.onChangeTaskRole}
+                            task={task && task}
+                            showToolbar={true}
+                        />}
                 </div>
 
                 <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{ padding: "10px 0 10px 0", borderLeft: "1px solid #f4f4f4" }}>

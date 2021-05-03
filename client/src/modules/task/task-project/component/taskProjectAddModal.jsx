@@ -8,7 +8,7 @@ import { getCurrentProjectDetails } from '../../../project/component/projects/fu
 import { ProjectActions } from '../../../project/redux/actions';
 import { RoleActions } from '../../../super-admin/role/redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
-import { taskManagementActions } from '../redux/actions';
+import { taskManagementActions } from '../../task-management/redux/actions';
 import { AddProjectTaskForm } from './addProjectTaskForm';
 
 class TaskProjectAddModal extends Component {

@@ -304,7 +304,7 @@ const ModalCalculateCPM = (props) => {
 
                 console.log('newTasksList', newTasksList);
                 await props.createProjectTasksFromCPMDispatch(newTasksList);
-                props.handleResetData();
+                props.handleHideModal();
             }
         })
     }

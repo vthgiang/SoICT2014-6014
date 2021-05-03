@@ -6,7 +6,6 @@ import { getStorage } from '../../../../config';
 import { getCurrentProjectDetails } from '../../../project/component/projects/functionHelper';
 import { ProjectActions } from '../../../project/redux/actions';
 import { taskManagementActions } from '../redux/actions';
-import { AddProjectTaskForm } from './addProjectTaskForm';
 import { AddTaskForm } from './addTaskForm';
 import ValidationHelper from '../../../../helpers/validationHelper';
 

@@ -7,17 +7,17 @@ import ValidationHelper from '../../../../helpers/validationHelper';
 
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { taskTemplateActions } from '../../task-template/redux/actions';
-import { taskManagementActions } from '../redux/actions';
+import { taskManagementActions } from '../../task-management/redux/actions';
 
 import { DatePicker, TimePicker, SelectBox, ErrorLabel, ToolTip, TreeSelect, QuillEditor } from '../../../../common-components';
-import { TaskFormValidator } from './taskFormValidator';
+import { TaskFormValidator } from '../../task-management/component/taskFormValidator';
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import { RoleActions } from '../../../super-admin/role/redux/actions';
 import { ROOT_ROLE } from '../../../../helpers/constants';
 import dayjs from "dayjs";
 import { getCurrentProjectDetails } from '../../../project/component/projects/functionHelper';
 import moment from 'moment';
-import { getSalaryFromUserId, numberWithCommas } from './functionHelpers';
+import { getSalaryFromUserId, numberWithCommas } from '../../task-management/component/functionHelpers';
 import { AutomaticTaskPointCalculator } from '../../task-perform/component/automaticTaskPointCalculator';
 
 const MILISECS_TO_DAYS = 86400000;
