@@ -12,6 +12,7 @@ router.patch('/edit-by-plan-id/:planId', auth, transportScheduleController.editT
 router.post('/driver-send-message', auth, transportScheduleController.driverSendMessage);
 
 router.get('/get-schedule-route-by-carrier-id/:carrierId', auth, transportScheduleController.getAllTransportScheduleRouteByCarrierId);
+router.patch('/change-transport-status-by-carrier-id/:carrierId', auth, transportScheduleController.changeTransportStatusByCarrierId);
 // router.get('/', auth, TransportRequirementController.getAllTransportRequirements);
 // router.get('/', auth, TransportVehicleController.getAllTransportVehicles);
 // router.post('/', auth, TransportVehicleController.createTransportVehicle);

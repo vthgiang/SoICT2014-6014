@@ -110,14 +110,32 @@ const TransportRequirementSchema = new Schema({
             },
         },
     },
-    transportStatus: { // Trạng thái vận chuyển, trạng thái
+    transportStatus: { // Trạng thái vận chuyển -  1: đã lấy được hàng, 2: chưa lấy được hàng, 3: đã giao được hàng, 4: chưa giao được hàng (đang vận chuyển)
+        type: Number,
+    },
+    historyTransport: [{ // Trạng thái vận chuyển, trạng thái
         status: { // 1: đã lấy được hàng, 2: chưa lấy được hàng, 3: đã giao được hàng, 4: chưa giao được hàng
             type: Number,
         },
-        description: { // Lý do nếu chưa lấy, chưa giao được hàng
+        detail: { // Lý do nếu chưa lấy, chưa giao được hàng, chi tiết thêm
             type: String,
+        },
+        time: {
+            type: Date,
+        },
+        locate: { // Vị trí hiện tại người báo cáo
+            lat: {
+                type: Number,
+            },
+            lng: {
+                type: Number,
+            }
+        },
+        carrier: {
+            type: Schema.Types.ObjectId,
+            ref: 'User'
         }
-    },
+    }],
 },{
     timestamps: true,
 });

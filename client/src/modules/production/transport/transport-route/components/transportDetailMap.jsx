@@ -8,7 +8,7 @@ import { transportPlanActions } from "../../transport-plan/redux/actions"
 import { transportScheduleActions } from "../../transport-schedule/redux/actions";
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 import { convertJsonObjectToFormData } from '../../../../../helpers/jsonObjectToFormDataObjectConverter'
-import { MapContainer } from "../../transport-schedule/components/googleReactMap/maphook"
+import { MapContainer } from "../../transportHelper/googleReactMapRoute/maphook"
 
 function TransportDetailMap(props) {
     let {currentVehicleRoute, transportPlanId, socket, getLocateOnMap, stopGetLocateOnMap, currentLocationOnMap} = props;
@@ -33,8 +33,8 @@ function TransportDetailMap(props) {
             setCurrentMarker([{
                 name: "c",
                 location: {
-                    lat: parseInt(currentLocationOnMap.slice(a1+5,a2)),
-                    lng: parseInt(currentLocationOnMap.slice(b1+5,b2))
+                    lat: parseFloat(currentLocationOnMap.slice(a1+5,a2)),
+                    lng: parseFloat(currentLocationOnMap.slice(b1+5,b2))
                 }
             }])
         }
@@ -100,9 +100,13 @@ function TransportDetailMap(props) {
                 afterClose={stopGetLocateOnMap}
             >
                 <form id={`modal-detail-map`}>
-                    <MapContainer
-                        locations={currentMarker}
-                    />
+                    <div style={{height: "600px"}}>
+
+                        <MapContainer
+                            locations={currentMarker}
+                            // defaultCenter = {currentMarker?currentMarker[0]?.location:undefined}
+                        />
+                    </div>
                 </form>
             </DialogModal>
         </React.Fragment>

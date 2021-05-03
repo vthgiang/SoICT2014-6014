@@ -7,6 +7,7 @@ export const transportScheduleActions = {
     changeTransportRequirementProcess,
     getTransportScheduleByCarrierId,
     driverSendMessage,
+    changeTransportStatusByCarrierId,
 }
 
 function getTransportScheduleByPlanId(id) {
@@ -113,6 +114,26 @@ function getTransportScheduleByCarrierId(carrierId) {
             }).catch((error) => {
                 dispatch({
                     type: transportScheduleConstants.GET_ALL_TRANSOPRT_SCHEDULE_ROUTE_BY_CARRIER_ID_FAILURE,
+                    error
+                });
+            });
+    }
+}
+
+function changeTransportStatusByCarrierId(carrierId, data) {
+    return dispatch => {
+        dispatch({
+            type: transportScheduleConstants.CHANGE_TRANSPORT_STATUS_BY_CARRIER_ID_REQUEST
+        });
+        transportScheduleServices.changeTransportStatusByCarrierId(carrierId, data)
+            .then((res) => {
+                dispatch({
+                    type: transportScheduleConstants.CHANGE_TRANSPORT_STATUS_BY_CARRIER_ID_SUCCESS,
+                    payload: res.data.content
+                });
+            }).catch((error) => {
+                dispatch({
+                    type: transportScheduleConstants.CHANGE_TRANSPORT_STATUS_BY_CARRIER_ID_FAILURE,
                     error
                 });
             });

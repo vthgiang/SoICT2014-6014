@@ -245,6 +245,27 @@ exports.getAllTransportScheduleRouteByCarrierId = async (portal, carrierId) => {
     return listSchedule;
 }
 
+exports.changeTransportStatusByCarrierId = async (portal, carrierId, data) => {
+    let status = data.status;
+    let detail = data.detail;
+    let locate = data.locate;
+    let requirementId= data.requirementId;
+    console.log(data);
+    if (status) {
+    //     let newHistoryTransport = {
+    //         status: status,
+    //         detail: detail,
+    //         time: new Date(),
+    //         locate: locate,
+    //         carrier: carrierId,
+    //     }
+        await TransportRequirementServices.editTransportRequirement(portal, requirementId, {transportStatus: status})
+        let listSchedule = this.getAllTransportScheduleRouteByCarrierId(portal, carrierId);
+        return listSchedule;
+    }
+    return -1;
+}
+
 exports.driverSendMessage = async (portal, data, userId) => {
     if (data.position){
         SOCKET_IO.emit("current position", data.position); 

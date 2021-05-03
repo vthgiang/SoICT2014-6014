@@ -108,7 +108,6 @@ exports.driverSendMessage = async (req, res) => {
 
 exports.getAllTransportScheduleRouteByCarrierId = async (req, res) => {
     try {
-        console.log(req.params, " params")
         let { carrierId } = req.params;
         let transportRoute = await TransportScheduleServices.getAllTransportScheduleRouteByCarrierId(req.portal, carrierId);
         if (transportRoute !== -1) {
@@ -127,6 +126,32 @@ exports.getAllTransportScheduleRouteByCarrierId = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: ["get_transport_route_by_plan_id_fail"],
+            content: error.message
+        });
+    }
+}
+
+exports.changeTransportStatusByCarrierId = async (req, res) => {
+    try {
+        let { carrierId } = req.params;
+        let data = req.body;
+        let listSchedule = await TransportScheduleServices.changeTransportStatusByCarrierId(req.portal, carrierId, data);
+        if (listSchedule !== -1) {
+            await Log.info(req.user.email, "CHANGE_TRANSPORT_STATUS_BY_CARRIER_ID", req.portal);
+            res.status(200).json({
+                success: true,
+                messages: ["change_transport_status_by_carrier_id_success"],
+                content: listSchedule
+            });
+        } else {
+            throw Error("transport requirement is invalid")
+        }
+    } catch (error) {
+        await Log.error(req.user.email, "CHANGE_TRANSPORT_STATUS_BY_CARRIER_ID", req.portal);
+
+        res.status(400).json({
+            success: false,
+            messages: ["change_transport_status_by_carrier_id_fail"],
             content: error.message
         });
     }
