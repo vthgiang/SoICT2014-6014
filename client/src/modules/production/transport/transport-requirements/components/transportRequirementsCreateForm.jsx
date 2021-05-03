@@ -203,13 +203,15 @@ function TransportRequirementsCreateForm(props) {
      * chuẩn hóa dữ liệu time request để lưu vào db
      */
     const formatTimeForSubmit = (time) => {
-        let timeMap = time.map((item) => {
-            return {
-                timeRequest: formatToTimeZoneDate(item.time),
-                description: item.detail,
-            }
-        })
-        return timeMap;
+        if (time && time.length!==0){
+            let timeMap = time.map((item) => {
+                return {
+                    timeRequest: formatToTimeZoneDate(item.time),
+                    description: item.detail,
+                }
+            })
+            return timeMap;
+        }
     }
 
     const handleTypeRequirementChange = (value) => {        
@@ -455,6 +457,7 @@ function TransportRequirementsCreateForm(props) {
                                 // billId = {billInfo.value}
                                 // curBill = {billDetail.curBill}   
                                 currentBill = {currentBill?.bill}
+                                callBackGeneralInfo={callBackGeneralInfo}
                             />
                         )
                     }

@@ -7,7 +7,7 @@ import ValidationHelper from '../../../../../../helpers/validationHelper';
 
 function TransportGeneralInfoShip(props) {
 
-    let {currentBill} = props
+    let {currentBill, callBackGeneralInfo} = props
 
     const [formValue, setFormValue] = useState({
         stockCode: "",
@@ -53,10 +53,20 @@ function TransportGeneralInfoShip(props) {
         console.log(currentBill, " llllllllllllll")
     }, [currentBill])
 
+    useEffect(() => {
+        if (formValue){
+            let data = {
+                customer1AddressTransport: formValue.stockAddress,
+                customer2AddressTransport: formValue.customerAddress,
+            }
+            callBackGeneralInfo(data);
+        }
+    }, [formValue])
+
     return (
         <React.Fragment>
             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6" style={{ padding: 10 }}>
+                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6" style={{ padding: 10, height: "100%" }}>
                         <fieldset className="scheduler-border" style={{ height: "100%" }}>
                             <legend className="scheduler-border">Thông tin kho</legend>
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ padding: 0 }}>
