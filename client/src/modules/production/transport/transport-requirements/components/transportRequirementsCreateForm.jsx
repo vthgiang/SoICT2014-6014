@@ -51,7 +51,7 @@ function TransportRequirementsCreateForm(props) {
         {
             value: "2",
             text: "Trả hàng",
-            billType: "5",
+            billType: "7",
             billGroup: "3",
         },
         {
@@ -247,7 +247,8 @@ function TransportRequirementsCreateForm(props) {
 
     useEffect(() => {
         // props.getCustomers();
-        props.getBillsByType({ page:1, limit:30, group: parseInt(state.billGroup), managementLocation: localStorage.getItem("currentRole") });
+        // props.getBillsByType({ page:1, limit:30, group: parseInt(state.billGroup), managementLocation: localStorage.getItem("currentRole") });
+        props.getBillsByType({ group: parseInt(state.billGroup), managementLocation: localStorage.getItem("currentRole") });
     },[state])
 
     // useEffect(() => {
@@ -289,8 +290,8 @@ function TransportRequirementsCreateForm(props) {
     // }, [billId])
 
     useEffect(() => {
-        if (bills && bills.listPaginate){
-            let lists = bills.listPaginate.filter(r => 
+        if (bills && bills.listBills){
+            let lists = bills.listBills.filter(r => 
                 (String(r.type) === String(state.billType) 
                 && String(r.group)===String(state.billGroup)))
             setListBills(lists)
@@ -506,6 +507,7 @@ function mapState(state) {
     // return { example }  
     // console.log(state, " day la state");    
     const {bills} = state;
+    console.log(bills)
     // const listAllGoods = state.goods.listALLGoods;
     return { bills }
 }
