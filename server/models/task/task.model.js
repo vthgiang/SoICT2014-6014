@@ -307,10 +307,6 @@ const TaskSchema = new Schema(
                             type: Number, // Suggest tự động dựa theo lần đánh giá trước đó (nếu có), theo thời gian thực hiện, độ quan trọng của công việc, % đóng góp
                             default: -1,
                         },
-                        isProject: {
-                            // Check xem task co phai cua project khong hay task doc lap
-                            type: Boolean,
-                        }
                     },
                 ],
                 resultsForProject: {
@@ -392,33 +388,95 @@ const TaskSchema = new Schema(
                 type: Number,
                 default: 0,
             },
-            responsibleEmployee: {
-                automaticPoint: {
-                    // Điểm hệ thống đánh giá cho người thực hiện
-                    type: Number,
-                    default: 0,
+            responsibleEmployee: [
+                {
+                    employee: {
+                        // Người đánh giá
+                        type: Schema.Types.ObjectId,
+                        ref: "User",
+                    },
+                    automaticPoint: {
+                        // Điểm hệ thống đánh giá cho người thực hiện
+                        type: Number,
+                        default: 0,
+                    },
+                    employeePoint: {
+                        // Điểm người thực hiện tự đánh giá bản thân
+                        type: Number,
+                        default: 0,
+                    },
+                    accountablePoint: {
+                        // Điểm người phê duyệt đánh giá cho người thực hiện
+                        type: Number,
+                        default: 0,
+                    },
+                    contribution: {
+                        // % Đóng góp: 0->100
+                        type: Number,
+                    },
+                    hoursSpent: {
+                        type: Number,
+                    },
+                }
+            ],
+            accountableEmployee: [
+                {
+                    employee: {
+                        // Người đánh giá
+                        type: Schema.Types.ObjectId,
+                        ref: "User",
+                    },
+                    automaticPoint: {
+                        // Điểm hệ thống đánh giá cho người phê duyệt
+                        type: Number,
+                        default: 0,
+                    },
+                    employeePoint: {
+                        // Điểm người phê duyệt tự đánh giá bản thân
+                        type: Number,
+                        default: 0,
+                    },
+                    contribution: {
+                        // % Đóng góp: 0->100
+                        type: Number,
+                    },
+                    hoursSpent: {
+                        type: Number,
+                    },
+                }
+            ],
+            taskInformations: {
+                // Lưu lại lịch sử các giá trị của thuộc tính công việc trong mỗi lần đánh giá
+                code: {
+                    // Mã thuộc tính công việc dùng trong công thức (nếu công việc theo mẫu)
+                    type: String,
                 },
-                employeePoint: {
-                    // Điểm người thực hiện tự đánh giá bản thân
-                    type: Number,
-                    default: 0,
+                name: {
+                    // Tên thuộc tính công việc (bao gồm progress + point + các thuộc tính khác nếu như đây là công việc theo mẫu)
+                    type: String,
                 },
-                accountablePoint: {
-                    // Điểm người phê duyệt đánh giá cho người thực hiện
-                    type: Number,
-                    default: 0,
+                filledByAccountableEmployeesOnly: {
+                    // Chỉ người phê duyệt được điền?
+                    type: Boolean,
+                    default: true,
                 },
-            },
-            accountableEmployee: {
-                automaticPoint: {
-                    // Điểm hệ thống đánh giá cho người phê duyệt
-                    type: Number,
-                    default: 0,
+                extra: {
+                    // Cho kiểu dữ liệu tập giá trị, lưu lại các tập giá trị
+                    type: String,
                 },
-                employeePoint: {
-                    // Điểm người phê duyệt tự đánh giá bản thân
-                    type: Number,
-                    default: 0,
+                type: {
+                    type: String,
+                    enum: [
+                        "text",
+                        "boolean",
+                        "date",
+                        "number",
+                        "set_of_values",
+                    ],
+                },
+                value: {
+                    // Giá trị tương ứng của các thuộc tính (tại thời điểm đánh giá)
+                    type: Schema.Types.Mixed,
                 },
             },
         },

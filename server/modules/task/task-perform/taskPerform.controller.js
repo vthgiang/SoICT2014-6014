@@ -1934,6 +1934,7 @@ exports.evaluateTaskProject = async (req, res) => {
             }
         })
     } catch (error) {
+        console.log('evaluate_task_fail', error)
         await Logger.error(req.user.email, ` edit task `, req.portal);
         res.status(400).json({
             success: false,

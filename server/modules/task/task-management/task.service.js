@@ -2176,7 +2176,7 @@ exports.createProjectTask = async (portal, task) => {
         collaboratedWithOrganizationalUnits: task.collaboratedWithOrganizationalUnits,
         creator: task.creator, //id của người tạo
         name: task.name,
-        description: task.description,
+        description: task.description || '',
         startDate: startDate,
         endDate: endDate,
         priority: task.priority,

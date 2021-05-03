@@ -3,11 +3,11 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { getStorage } from '../../../../config';
 import { ErrorLabel, DatePicker, SelectBox, QuillEditor, TimePicker } from '../../../../common-components/index';
-import { performTaskAction } from '../redux/actions';
+import { performTaskAction } from '../../task-perform/redux/actions';
 import { managerKpiActions } from '../../../kpi/employee/management/redux/actions';
-import { TaskInformationForm } from './taskInformationForm';
-import { AutomaticTaskPointCalculator } from './automaticTaskPointCalculator';
-import { ModalShowAutoPointInfoProject } from './modalShowAutoPointInfoProject';
+import { TaskInformationForm } from '../../task-perform/component/taskInformationForm';
+import { AutomaticTaskPointCalculator } from '../../task-perform/component/automaticTaskPointCalculator';
+import { ModalShowAutoPointInfoProjectTask } from './modalShowAutoPointInfoProjectTask';
 import moment from 'moment';
 import Swal from 'sweetalert2';
 
@@ -1654,7 +1654,7 @@ class EvaluateByAccountableEmployeeProject extends Component {
                                     </div>
                                     { // modal thông tin điểm tự động
                                         showAutoPointInfo === 1 &&
-                                        <ModalShowAutoPointInfoProject
+                                        <ModalShowAutoPointInfoProjectTask
                                             task={task}
                                             progress={progress}
                                             date={endDate}

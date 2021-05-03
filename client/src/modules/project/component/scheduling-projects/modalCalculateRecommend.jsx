@@ -3,6 +3,7 @@ import moment from 'moment'
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
+import Swal from 'sweetalert2'
 import { DialogModal } from '../../../../common-components'
 import { UserActions } from '../../../super-admin/user/redux/actions'
 import { numberWithCommas } from '../../../task/task-management/component/functionHelpers'
@@ -287,7 +288,19 @@ const ModalCalculateRecommend = (props) => {
     }
 
     const save = () => {
-        props.handleApplyChange(content.currentProcessedData);
+        Swal.fire({
+            html: `<h4 style="color: red"><div>Chấp nhận những thay đổi này và tiếp tục?</div></h4>`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            cancelButtonText: translate('general.no'),
+            confirmButtonText: translate('general.yes'),
+        }).then((result) => {
+            if (result.value) {
+                props.handleApplyChange(content.currentProcessedData);
+            }
+        })
     }
 
     return (

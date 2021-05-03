@@ -46,9 +46,9 @@ const TabProjectReportTime = (props) => {
                     <div className="box-body qlcv">
                         <h4><strong>Tổng quan tiến độ dự án công việc</strong></h4>
                         <div>Tổng số công việc: <strong>{currentTasks?.length}</strong></div>
-                        <div>Số task kịp tiến độ: <strong>{getOnScheduleTasks().length}</strong></div>
-                        <div>Số task trễ tiến độ: <strong>{getBehindScheduleTasks().length}</strong></div>
-                        <div>Số task quá hạn: <strong>{getOverdueScheduleTasks().length}</strong></div>
+                        <div>Số công việc kịp tiến độ: <strong>{getOnScheduleTasks().length}</strong></div>
+                        <div>Số công việc trễ tiến độ: <strong>{getBehindScheduleTasks().length}</strong></div>
+                        <div>Số công việc quá hạn: <strong>{getOverdueScheduleTasks().length}</strong></div>
                     </div>
                 </div>
             </div>

@@ -6747,204 +6747,246 @@ exports.sortActions = async (portal, params, body) => {
  * evaluate PROJECT task by Responsible
  */
 exports.evaluateTaskByResponsibleEmployeesProject = async (portal, data, taskId) => {
-    console.log('RESPONSIBLE PROJECT')
     let {
-        user,
-        unit,
+        userId,
+        taskAutomaticPoint,
+        automaticPoint,
+        employeePoint,
         checkSave,
         progress,
-        employeePoint,
-        role,
-        evaluatingMonth,
-        startDate,
-        endDate,
         info,
     } = data;
+    console.log('data', data)
+    // let startEval = new Date(startDate);
 
-    let splitter = evaluatingMonth.split("-");
-    let evaluateDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
-    let dateFormat = evaluateDate;
+    // let endEval = new Date(endDate);
 
-    let startEval = new Date(startDate);
+    // let resultItem = {
+    //     automaticPoint: taskAutomaticPoint,
+    //     responsibleEmployee: {
+    //         employee: userId,
+    //         automaticPoint,
+    //         employeePoint,
+    //     },
+    // };
 
-    let endEval = new Date(endDate);
-
-    let resultItem = {
-        employee: user,
-        organizationalUnit: unit,
-        employeePoint: employeePoint,
-        automaticPoint: undefined,
-        approvedPoint: undefined,
-        role,
-    };
-
-    let evaluateId = await checkEvaluations(portal, evaluatingMonth, taskId, evaluatingMonth);
-
-    // chuẩn hóa dữ liệu info
-    for (let i in info) {
-        if (info[i].value) {
-            if (info[i].type === "number")
-                info[i].value = parseInt(info[i].value);
-            else if (info[i].type === "set_of_values")
-                info[i].value = info[i].value[0];
-            else if (info[i].type === "date") {
-                let splitter = info[i].value.split("-");
-                let infoDate = new Date(
-                    splitter[2],
-                    splitter[1] - 1,
-                    splitter[0]
-                );
-                info[i].value = infoDate;
-            }
-        }
-    }
-
-    checkSave &&
-        (await Task(connect(DB_CONNECTION, portal)).updateOne(
-            { _id: taskId },
-            { $set: { progress: progress } },
-            { $new: true }
-        ));
-
-    await Task(connect(DB_CONNECTION, portal)).updateOne(
-        {
-            _id: taskId,
-            "evaluations._id": evaluateId,
-        },
-        {
-            $set: {
-                "evaluations.$.progress": progress,
-            },
-        },
-        {
-            $new: true,
-        }
-    );
-
-    let task = await Task(connect(DB_CONNECTION, portal)).findById(taskId);
-
-    let resultObject = task.evaluations.find(
-        (e) => String(e._id) === String(evaluateId)
-    ).resultsForProject;
-
-    if (resultObject === undefined || JSON.stringify(resultObject) === '{}') {
+    const currentTask = await Task(connect(DB_CONNECTION, portal))
+        .findOne({ _id: taskId });
+    const currentOverallEvaluation = currentTask.overallEvaluation;
+    // Nếu task này chưa được đánh giá overall lần nào
+    if (!currentOverallEvaluation) {
+        let overallObject = {
+            automaticPoint: taskAutomaticPoint,
+            responsibleEmployee: [
+                {
+                    employee: userId,
+                    automaticPoint,
+                    employeePoint,
+                }
+            ],
+            accountableEmployee: [],
+        };
         await Task(connect(DB_CONNECTION, portal)).updateOne(
             {
                 _id: taskId,
-                "evaluations._id": evaluateId,
-                "evaluations.$.resultsForProject": resultItem,
-            },
-            { $new: true }
-        );
-    } else {
-        await Task(connect(DB_CONNECTION, portal)).updateOne(
-            {
-                _id: taskId,
-                "evaluations._id": evaluateId,
             },
             {
                 $set: {
-                    "evaluations.$.resultsForProject.employeePoint": employeePoint,
-                    "evaluations.$.resultsForProject.organizationalUnit": unit,
+                    "overallEvaluation": overallObject,
+                    progress,
                 },
             },
-            // {
-            //     arrayFilters: [
-            //         {
-            //             "elem.employee": user,
-            //             "elem.role": role,
-            //         },
-            //     ],
-            // }
+            {
+                $new: true,
+            }
         );
     }
-
-    // update Info task
-    let dateISO = new Date(endDate)
-    let monthOfParams = dateISO.getMonth();
-    let yearOfParams = dateISO.getFullYear();
-    let now = new Date();
-
-    let cloneInfo = task.taskInformations;
-    for (let item in info) {
-        for (let i in cloneInfo) {
-            if (info[item].code === cloneInfo[i].code) {
-                cloneInfo[i] = {
-                    filledByAccountableEmployeesOnly:
-                        cloneInfo[i].filledByAccountableEmployeesOnly,
-                    _id: cloneInfo[i]._id,
-                    code: cloneInfo[i].code,
-                    name: cloneInfo[i].name,
-                    description: cloneInfo[i].description,
-                    type: cloneInfo[i].type,
-                    extra: cloneInfo[i].extra,
-                    value: info[item].value,
-                };
-                // quangdz
-                if (
-                    yearOfParams > now.getFullYear() ||
-                    (yearOfParams <= now.getFullYear() &&
-                        monthOfParams >= now.getMonth())
-                ) {
-                    checkSave &&
-                        (await Task(connect(DB_CONNECTION, portal)).updateOne(
-                            {
-                                _id: taskId,
-                                "taskInformations._id": cloneInfo[i]._id,
-                            },
-                            {
-                                $set: {
-                                    "taskInformations.$.value":
-                                        cloneInfo[i].value,
-                                },
-                            },
-                            {
-                                $new: true,
-                            }
-                        ));
-                }
-
-                await Task(connect(DB_CONNECTION, portal)).updateOne(
-                    {
-                        _id: taskId,
-                        "evaluations._id": evaluateId,
+    // Nếu đã được đánh giá rồi
+    else {
+        const currentUserEval = currentOverallEvaluation.responsibleEmployee.find(item => String(item.employee) === String(userId));
+        // Nếu đã có userId này trong array đánh giá
+        if (currentUserEval) {
+            await Task(connect(DB_CONNECTION, portal)).updateOne(
+                {
+                    _id: taskId,
+                    'overallEvaluation.responsibleEmployee.employee': userId,
+                },
+                {
+                    $set: {
+                        "overallEvaluation.responsibleEmployee.$.employeePoint": employeePoint,
+                        "overallEvaluation.responsibleEmployee.$.automaticPoint": automaticPoint,
+                        progress,
                     },
-                    {
-                        $set: {
-                            "evaluations.$.taskInformations.$[elem].value":
-                                cloneInfo[i].value,
-                        },
+                },
+            );
+        }
+        // Nếu chưa có userId này trong array đánh giá
+        else {
+            await Task(connect(DB_CONNECTION, portal)).updateOne(
+                {
+                    _id: taskId,
+                },
+                {
+                    $set: {
+                        "overallEvaluation.responsibleEmployee": [currentOverallEvaluation.responsibleEmployee, {
+                            employee: userId,
+                            automaticPoint,
+                            employeePoint,
+                        }],
+                        progress,
                     },
-                    {
-                        arrayFilters: [
-                            {
-                                "elem._id": cloneInfo[i]._id,
-                            },
-                        ],
-                    }
-                );
-            }
+                },
+            );
         }
     }
+    // let evaluateId = await checkEvaluations(portal, evaluatingMonth, taskId, evaluatingMonth);
 
-    // update date of evaluation
+    // // chuẩn hóa dữ liệu info
+    // for (let i in info) {
+    //     if (info[i].value) {
+    //         if (info[i].type === "number")
+    //             info[i].value = parseInt(info[i].value);
+    //         else if (info[i].type === "set_of_values")
+    //             info[i].value = info[i].value[0];
+    //         else if (info[i].type === "date") {
+    //             let splitter = info[i].value.split("-");
+    //             let infoDate = new Date(
+    //                 splitter[2],
+    //                 splitter[1] - 1,
+    //                 splitter[0]
+    //             );
+    //             info[i].value = infoDate;
+    //         }
+    //     }
+    // }
 
-    await Task(connect(DB_CONNECTION, portal)).updateOne(
-        {
-            _id: taskId,
-            "evaluations._id": evaluateId,
-        },
-        {
-            $set: {
-                "evaluations.$.evaluatingMonth": dateFormat,
-                "evaluations.$.startDate": startEval,
-                "evaluations.$.endDate": endEval,
-            },
-        },
-        {
-            $new: true,
-        }
-    );
+    // checkSave &&
+    //     (await Task(connect(DB_CONNECTION, portal)).updateOne(
+    //         { _id: taskId },
+    //         { $set: { progress: progress } },
+    //         { $new: true }
+    //     ));
+
+    // await Task(connect(DB_CONNECTION, portal)).updateOne(
+    //     {
+    //         _id: taskId,
+    //         "evaluations._id": evaluateId,
+    //     },
+    //     {
+    //         $set: {
+    //             "evaluations.$.progress": progress,
+    //         },
+    //     },
+    //     {
+    //         $new: true,
+    //     }
+    // );
+
+    // let task = await Task(connect(DB_CONNECTION, portal)).findById(taskId);
+
+    // let resultObject = task.evaluations.find(
+    //     (e) => String(e._id) === String(evaluateId)
+    // ).resultsForProject;
+
+    // if (resultObject === undefined || JSON.stringify(resultObject) === '{}') {
+    //     await Task(connect(DB_CONNECTION, portal)).updateOne(
+    //         {
+    //             _id: taskId,
+    //             "evaluations._id": evaluateId,
+    //             "evaluations.$.resultsForProject": resultItem,
+    //         },
+    //         { $new: true }
+    //     );
+    // } else {
+    //     await Task(connect(DB_CONNECTION, portal)).updateOne(
+    //         {
+    //             _id: taskId,
+    //             "evaluations._id": evaluateId,
+    //         },
+    //         {
+    //             $set: {
+    //                 "evaluations.$.resultsForProject.employeePoint": employeePoint,
+    //                 "evaluations.$.resultsForProject.organizationalUnit": unit,
+    //             },
+    //         },
+    //         // {
+    //         //     arrayFilters: [
+    //         //         {
+    //         //             "elem.employee": user,
+    //         //             "elem.role": role,
+    //         //         },
+    //         //     ],
+    //         // }
+    //     );
+    // }
+
+    // // update Info task
+    // let dateISO = new Date(endDate)
+    // let monthOfParams = dateISO.getMonth();
+    // let yearOfParams = dateISO.getFullYear();
+    // let now = new Date();
+
+    // let cloneInfo = task.taskInformations;
+    // for (let item in info) {
+    //     for (let i in cloneInfo) {
+    //         if (info[item].code === cloneInfo[i].code) {
+    //             cloneInfo[i] = {
+    //                 filledByAccountableEmployeesOnly:
+    //                     cloneInfo[i].filledByAccountableEmployeesOnly,
+    //                 _id: cloneInfo[i]._id,
+    //                 code: cloneInfo[i].code,
+    //                 name: cloneInfo[i].name,
+    //                 description: cloneInfo[i].description,
+    //                 type: cloneInfo[i].type,
+    //                 extra: cloneInfo[i].extra,
+    //                 value: info[item].value,
+    //             };
+    //             // quangdz
+    //             if (
+    //                 yearOfParams > now.getFullYear() ||
+    //                 (yearOfParams <= now.getFullYear() &&
+    //                     monthOfParams >= now.getMonth())
+    //             ) {
+    //                 checkSave &&
+    //                     (await Task(connect(DB_CONNECTION, portal)).updateOne(
+    //                         {
+    //                             _id: taskId,
+    //                             "taskInformations._id": cloneInfo[i]._id,
+    //                         },
+    //                         {
+    //                             $set: {
+    //                                 "taskInformations.$.value":
+    //                                     cloneInfo[i].value,
+    //                             },
+    //                         },
+    //                         {
+    //                             $new: true,
+    //                         }
+    //                     ));
+    //             }
+
+    //             await Task(connect(DB_CONNECTION, portal)).updateOne(
+    //                 {
+    //                     _id: taskId,
+    //                     "evaluations._id": evaluateId,
+    //                 },
+    //                 {
+    //                     $set: {
+    //                         "evaluations.$.taskInformations.$[elem].value":
+    //                             cloneInfo[i].value,
+    //                     },
+    //                 },
+    //                 {
+    //                     arrayFilters: [
+    //                         {
+    //                             "elem._id": cloneInfo[i]._id,
+    //                         },
+    //                     ],
+    //                 }
+    //             );
+    //         }
+    //     }
+    // }
 
     let newTask = await Task(connect(DB_CONNECTION, portal))
         .findById(taskId)
