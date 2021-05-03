@@ -16,7 +16,7 @@ exports.searchPurchaseRequests = async (portal, company, query) => {
         status,
         page,
         limit,
-        month,
+        month
     } = query; // tại sao check theo tháng mà lại ko khai báo month
 
     var keySearch = {};
@@ -101,7 +101,9 @@ exports.searchPurchaseRequests = async (portal, company, query) => {
 
     var totalList = await RecommendProcure(
         connect(DB_CONNECTION, portal)
-    ).countDocuments(keySearch);
+    )
+        .countDocuments(keySearch);
+
     var listRecommendProcures = await RecommendProcure(
         connect(DB_CONNECTION, portal)
     )
@@ -110,7 +112,8 @@ exports.searchPurchaseRequests = async (portal, company, query) => {
         .sort({ createdAt: "desc" })
         .skip(page ? parseInt(page) : 0)
         .limit(limit ? parseInt(limit) : 0);
-
+    
+    console.log("total List phake", totalList)
     return { totalList, listRecommendProcures };
 };
 
