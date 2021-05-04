@@ -13,10 +13,10 @@ import { getStorage } from '../../../../config';
 import { TaskAddModal } from '../../../task/task-management/component/taskAddModal';
 import { checkIfAbleToCRUDProject, getCurrentProjectDetails } from './functionHelper';
 import { taskManagementActions } from '../../../task/task-management/redux/actions';
-import { TaskProjectAddModal } from '../../../task/task-management/component/taskProjectAddModal';
 import ModalAddTaskSchedule from '../scheduling-projects/modalAddTaskSchedule';
 import ProjectEditForm from './editProject';
 import moment from 'moment';
+import { TaskProjectAddModal } from '../../../task/task-project/component/taskProjectAddModal';
 
 const ProjectDetailPage = (props) => {
     const { translate, project, user, tasks } = props;
@@ -39,7 +39,9 @@ const ProjectDetailPage = (props) => {
     const parentTask = [];
 
     const onHandleReRender = () => {
-        window.$('#modal-add-task-schedule').modal('hide');
+        setTimeout(() => {
+            window.$('#modal-add-task-schedule').modal('hide');
+        }, 10);
         setTimeout(() => {
             props.getTasksByProject(currentProjectId);
         }, 1000);
@@ -72,7 +74,7 @@ const ProjectDetailPage = (props) => {
                         projectEdit={projectDetail}
                         handleAfterCreateProject={handleAfterCreateProject}
                     />
-                    <button style={{paddingTop: 8}} onClick={handleOpenEditProject}>
+                    <button style={{ paddingTop: 8 }} onClick={handleOpenEditProject}>
                         <span className="material-icons">edit</span>
                     </button>
                 </div>
@@ -174,33 +176,45 @@ const ProjectDetailPage = (props) => {
                 <div style={{ flexDirection: 'row', display: 'flex', width: '100%', justifyContent: 'space-between' }}>
                     {/* Danh sách công việc dự án */}
                     <h3>{translate('project.list_tasks')}</h3>
-                    {/* Button thêm mới */}
-                    {checkIfAbleToCRUDProject({ project, user, currentProjectId }) &&
-                        <div className="dropdown pull-right" style={{ marginTop: 15, marginRight: 10 }}>
-                            {currentProjectTasks && currentProjectTasks.length > 0 ? null : <ModalAddTaskSchedule projectDetail={projectDetail} onHandleReRender={onHandleReRender} />}
-                            {currentProjectTasks && currentProjectTasks.length > 0
-                                &&
-                                <TaskProjectAddModal onHandleReRender={onHandleReRender} currentProjectTasks={currentProjectTasks} parentTask={parentTask} />}
-
-                            <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true"
-                                title={translate('project.add_btn_task')}>
-                                {translate('project.add_btn_task')}
+                    <div style={{ flexDirection: 'row', display: 'flex', alignItems: 'flex-end' }}>
+                        {/* Button refresh danh sách tasks */}
+                        <div className="pull-right" style={{ marginTop: 15, marginRight: 10 }}>
+                            <button title="Tải lại danh sách công việc" type="button" className="pull-right"
+                                style={{ display: 'flex', height: 35, justifyContent: 'center', alignItems: 'center' }}
+                                onClick={() => props.getTasksByProject(currentProjectId)}
+                            >
+                                <span className="material-icons">refresh</span>
                             </button>
-                            <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
-                                {
-                                    currentProjectTasks && currentProjectTasks.length === 0
+                        </div>
+                        {/* Button thêm mới */}
+                        {checkIfAbleToCRUDProject({ project, user, currentProjectId }) &&
+                            <div className="dropdown pull-right" style={{ marginTop: 15, marginRight: 10 }}>
+                                {currentProjectTasks && currentProjectTasks.length > 0 ? null : <ModalAddTaskSchedule projectDetail={projectDetail} onHandleReRender={onHandleReRender} />}
+                                {currentProjectTasks && currentProjectTasks.length > 0
                                     &&
-                                    <li><a style={{ cursor: 'pointer' }} onClick={onHandleOpenScheduleModal} title={translate('project.add_btn_scheduling')}>
-                                        {translate('project.add_btn_scheduling')}</a></li>
-                                }
-                                {
-                                    currentProjectTasks && currentProjectTasks.length === 0 ? null :
-                                        <li><a style={{ cursor: 'pointer' }} onClick={handleOpenCreateTask} title={translate('project.add_btn_normal')}>
-                                            {translate('project.add_btn_normal')}</a></li>
-                                }
+                                    <TaskProjectAddModal onHandleReRender={onHandleReRender} currentProjectTasks={currentProjectTasks} parentTask={parentTask} />}
 
-                            </ul>
-                        </div>}
+                                <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true"
+                                    title={translate('project.add_btn_task')}>
+                                    {translate('project.add_btn_task')}
+                                </button>
+                                <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
+                                    {
+                                        currentProjectTasks && currentProjectTasks.length === 0
+                                        &&
+                                        <li><a style={{ cursor: 'pointer' }} onClick={onHandleOpenScheduleModal} title={translate('project.add_btn_scheduling')}>
+                                            {translate('project.add_btn_scheduling')}</a></li>
+                                    }
+                                    {
+                                        currentProjectTasks && currentProjectTasks.length === 0 ? null :
+                                            <li><a style={{ cursor: 'pointer' }} onClick={handleOpenCreateTask} title={translate('project.add_btn_normal')}>
+                                                {translate('project.add_btn_normal')}</a></li>
+                                    }
+
+                                </ul>
+                            </div>
+                        }
+                    </div>
                 </div>
                 <ul className="nav nav-tabs">
                     <li className="active"><a href="#project-tasks-table" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Bảng</a></li>

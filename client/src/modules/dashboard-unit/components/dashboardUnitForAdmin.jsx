@@ -13,6 +13,7 @@ import { DepartmentActions } from '../../super-admin/organizational-unit/redux/a
 import { AnnualLeaveActions } from '../../human-resource/annual-leave/redux/actions';
 
 import { AnnualLeaveChartAndTable } from '../../human-resource/employee-dashboard/components/combinedContent';
+import { LoadTaskOrganizationChart } from '../../task/task-dashboard/task-organization-dashboard/loadTaskOrganizationChart'
 import ViewAllTaskUrgent from './viewAllTaskUrgent';
 import ViewAllTaskNeedToDo from './viewAllTaskNeedToDo';
 
@@ -24,7 +25,8 @@ function DashboardUnitForAdmin(props) {
     const { translate, department, employeesManager, user, tasks } = props;
 
     const [state, setState] = useState({
-        month: formatDate(Date.now(), true),
+        monthTitle: formatDate(Date.now(), true),
+        month: formatDate(Date.now(), true, true),
         organizationalUnits: null,
         infoSearch: {
             organizationalUnits: null,
@@ -37,7 +39,7 @@ function DashboardUnitForAdmin(props) {
         listUnitSelect: []
     })
     const { listUnit, urgent, taskNeedToDo, 
-        organizationalUnits, month, 
+        organizationalUnits, monthTitle, month,
         currentDate, clickUrgentChart, clickNeedTodoChart,
         listUnitSelect, infoSearch
     } = state
@@ -71,24 +73,20 @@ function DashboardUnitForAdmin(props) {
     useEffect(() => {
         if (!infoSearch?.organizationalUnits && department?.list) {
             let unit = department.list.map(item => item?._id)
-            let partMonth = month.split('-');
-            let newMonth = [partMonth[1], partMonth[0]].join('-');
     
             /* Lấy danh sách nhân viên  */
             props.getAllEmployee({ organizationalUnits: unit, status: ["active", 'maternity_leave', 'unpaid_leave', 'probationary', 'sick_leave'] });
     
             /* Lấy dữ liệu công việc của nhân viên trong đơn vị */
             props.getAllEmployeeOfUnitByIds({ organizationalUnitIds: unit });
-            props.getTaskInOrganizationUnitByMonth(unit, newMonth, newMonth, "in_month");
+            props.getTaskInOrganizationUnitByMonth(unit, month, month, "in_month");
     
             /** Lấy dữ liệu công việc sắp hết hạn */
-            props.getTaskByUser({ organizationUnitId: unit, type: "organizationUnit", })
-    
+            props.getTaskByUser({ organizationUnitId: unit, type: "organizationUnit" })
     
             let partDate = currentDate.split('-');
             let newDate = [partDate[2], partDate[1], partDate[0]].join('-');
             props.getTaskInOrganizationUnitByDateNow(unit, newDate)
-            props.getAnnualLeave({ organizationalUnits: unit, beforAndAfterOneWeek: true })
 
             setState({
                 ...state,
@@ -115,7 +113,7 @@ function DashboardUnitForAdmin(props) {
      * @param {*} date : Ngày muốn format
      * @param {*} monthYear : true trả về tháng năm, false trả về ngày tháng năm
      */
-    function formatDate (date, monthYear = false) {
+    function formatDate (date, monthYear = false, yearMonth = false) {
         if (date) {
             let d = new Date(date),
                 month = '' + (d.getMonth() + 1),
@@ -127,7 +125,9 @@ function DashboardUnitForAdmin(props) {
             if (day.length < 2)
                 day = '0' + day;
 
-            if (monthYear === true) {
+            if (yearMonth) {
+                return [year, month].join('-');
+            } else if (monthYear === true) {
                 return [month, year].join('-');
             } else return [day, month, year].join('-');
         }
@@ -191,7 +191,7 @@ function DashboardUnitForAdmin(props) {
 
             bar: {
                 width: {
-                    ratio: chartUrgentDataTmp?.length < 5 ? 0.3 : 1 // this makes bar width 50% of length between ticks
+                    ratio: chartUrgentDataTmp?.length < 5 ? 0.3 : 0.7 // this makes bar width 50% of length between ticks
                 }
             },
 
@@ -258,7 +258,7 @@ function DashboardUnitForAdmin(props) {
 
             bar: {
                 width: {
-                    ratio: chartTaskNeedToDoDataTmp?.length < 5 ? 0.3 : 1 // this makes bar width 50% of length between ticks
+                    ratio: chartTaskNeedToDoDataTmp?.length < 5 ? 0.3 : 0.7 // this makes bar width 50% of length between ticks
                 }
             },
 
@@ -339,7 +339,6 @@ function DashboardUnitForAdmin(props) {
             organizationalUnits: state.infoSearch?.organizationalUnits,
         })
         props.getTaskInOrganizationUnitByDateNow(infoSearch?.organizationalUnits, newDate);
-        props.getAnnualLeave({ organizationalUnits: infoSearch?.organizationalUnits, beforAndAfterOneWeek: true })
     }
     
     const handleClickshowTaskUrgent = () => {
@@ -587,6 +586,27 @@ function DashboardUnitForAdmin(props) {
                             })}
                         />
                     </LazyLoadComponent>
+
+                     {/*Dashboard tải công việc */}
+                     <div className="row">
+                        <div className="col-xs-12">
+                            <LazyLoadComponent once={true}>
+                                <LoadTaskOrganizationChart
+                                    getUnitName={getUnitName}
+                                    showUnitTask={showUnitTask}
+                                    tasks={tasks?.organizationUnitTasks}
+                                    listEmployee={user && user.employees}
+                                    units={listUnitSelect.map(item => { return { id: item?.value, name: item?.text } })}
+                                    startMonth={month}
+                                    endMonth={month}
+                                    startMonthTitle={monthTitle}
+                                    idsUnit={organizationalUnits}
+                                    employeeLoading={user?.employeeLoading}
+                                    typeChart={"followUnit"}
+                                />
+                            </LazyLoadComponent>
+                        </div>
+                    </div>
                 </div>
             </React.Fragment>
         );
@@ -607,7 +627,6 @@ const actionCreators = {
     getTaskByUser: taskManagementActions.getTasksByUser,
     getTaskInOrganizationUnitByMonth: taskManagementActions.getTaskInOrganizationUnitByMonth,
     getTaskInOrganizationUnitByDateNow: taskManagementActions.getTaskByPriorityInOrganizationUnit,
-    getAnnualLeave: AnnualLeaveActions.searchAnnualLeaves,
 };
 
 const connectedDashboardUnitForAdmin = connect(mapState, actionCreators)(withTranslate(DashboardUnitForAdmin));
