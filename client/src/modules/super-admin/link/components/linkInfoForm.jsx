@@ -36,6 +36,7 @@ function LinkInfoForm(props) {
 
     const handleLinkRoles = (value) => {
         setState({
+            ...state,
             linkRoles: value
         });
     }

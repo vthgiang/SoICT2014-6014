@@ -1,19 +1,19 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { performTaskAction } from './../redux/actions';
-import { taskManagementActions } from './../../task-management/redux/actions';
+import { performTaskAction } from '../../task-perform/redux/actions';
+import { taskManagementActions } from '../../task-management/redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { RoleActions } from '../../../super-admin/role/redux/actions';
 
-import { ModalEditTaskByResponsibleEmployee } from './modalEditTaskByResponsibleEmployee';
-import { ModalEditTaskByAccountableEmployee } from './modalEditTaskByAccountableEmployee';
-import { HoursSpentOfEmployeeChart } from './hourSpentOfEmployeeChart';
-import { CollaboratedWithOrganizationalUnits } from './collaboratedWithOrganizationalUnits';
+import { ModalEditTaskByResponsibleEmployee } from '../../task-perform/component/modalEditTaskByResponsibleEmployee';
+import { ModalEditTaskByAccountableEmployee } from '../../task-perform/component/modalEditTaskByAccountableEmployee';
+import { HoursSpentOfEmployeeChart } from '../../task-perform/component/hourSpentOfEmployeeChart';
+import { CollaboratedWithOrganizationalUnits } from '../../task-perform/component/collaboratedWithOrganizationalUnits';
 
 import { EvaluationProjectModal } from './evaluationProjectModal';
 import { getStorage } from '../../../../config';
-import { SelectFollowingTaskModal } from './selectFollowingTaskModal';
+import { SelectFollowingTaskModal } from '../../task-perform/component/selectFollowingTaskModal';
 import { withTranslate } from 'react-redux-multilingual';
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import { ShowMoreShowLess } from '../../../../common-components';
@@ -23,7 +23,7 @@ import parse from 'html-react-parser';
 
 import { TaskAddModal } from '../../task-management/component/taskAddModal';
 import { ModalAddTaskTemplate } from '../../task-template/component/addTaskTemplateModal';
-import { RequestToCloseTaskModal } from './requestToCloseTaskModal';
+import { RequestToCloseTaskModal } from '../../task-perform/component/requestToCloseTaskModal';
 
 import { ProjectActions } from "../../../project/redux/actions";
 import { ROOT_ROLE } from '../../../../helpers/constants';
@@ -876,13 +876,13 @@ class DetailProjectTaskTab extends Component {
                             </React.Fragment>
                         }
 
-                        {((currentRole === "consulted" || currentRole === "responsible" || currentRole === "accountable") && checkInactive) &&
+                        {/* {((currentRole === "consulted" || currentRole === "responsible" || currentRole === "accountable") && checkInactive) &&
                             <React.Fragment>
                                 <a className="btn btn-app" onClick={() => this.handleShowEvaluate(id, currentRole)} title="Đánh giá theo dự án">
                                     <i className="fa fa-calendar-check-o" style={{ fontSize: "16px" }}></i>Đánh giá theo dự án
                                 </a>
                             </React.Fragment>
-                        }
+                        } */}
                         {/* {((currentRole === "responsible" || currentRole === "accountable") && checkInactive) &&
                             <React.Fragment>
                                 <a className="btn btn-app" onClick={() => this.handleCopyTask(id, currentRole)} title={translate('task.task_management.detail_copy_task')}>
@@ -898,11 +898,17 @@ class DetailProjectTaskTab extends Component {
                             </React.Fragment>
                         } */}
 
-                        {task && statusTask !== "finished" && (((currentRole === "responsible" && task?.requestToCloseTask?.requestStatus !== 3) || (currentRole === "accountable" && task?.requestToCloseTask?.requestStatus === 1)) && checkInactive) && checkHasAccountable
-                            && <a className="btn btn-app" onClick={() => this.handleShowRequestCloseTask(id)} title={currentRole === "responsible" ? translate('task.task_perform.request_close_task') : translate('task.task_perform.approval_close_task')}>
-                                <i className="fa fa-external-link-square" style={{ fontSize: "16px" }}></i>{currentRole === "responsible" ? translate('task.task_perform.request_close_task') : translate('task.task_perform.approval_close_task')}
+                        {task && statusTask !== "finished" && ((currentRole === "responsible" || currentRole === "accountable") && checkInactive) && checkHasAccountable
+                            && <a className="btn btn-app" onClick={() => this.handleShowRequestCloseTask(id)} title={'Kết thúc công việc'}>
+                                <i className="fa fa-external-link-square" style={{ fontSize: "16px" }}></i>{'Kết thúc công việc'}
                             </a>
                         }
+
+                        {/* {task && statusTask !== "finished" && (((currentRole === "responsible" && task?.requestToCloseTask?.requestStatus !== 3) || (currentRole === "accountable" && task?.requestToCloseTask?.requestStatus === 1)) && checkInactive) && checkHasAccountable
+                            && <a className="btn btn-app" onClick={() => this.handleShowRequestCloseTask(id)} title={'Kết thúc công việc'}>
+                                <i className="fa fa-external-link-square" style={{ fontSize: "16px" }}></i>{'Kết thúc công việc'}
+                            </a>
+                        } */}
                         {task && statusTask !== "inprocess" && statusTask !== "wait_for_approval" && checkInactive
                             && <a className="btn btn-app" onClick={() => this.handleOpenTaskAgain(id)} title={translate('task.task_perform.open_task_again')}>
                                 <i className="fa fa-rocket" style={{ fontSize: "16px" }}></i>{translate('task.task_perform.open_task_again')}
@@ -926,7 +932,7 @@ class DetailProjectTaskTab extends Component {
                                 </a>
                                 <ul className="dropdown-menu">
                                     {roles.map(
-                                        (item, index) => { return <li className={item.value === currentRole ? "active" : undefined} key={index}><a href="#" onClick={() => this.changeRole(item.value)}>{item.name}</a></li> }
+                                        (item, index) => { return <li className={item.value === currentRole ? "active" : undefined} key={index}><a onClick={() => this.changeRole(item.value)}>{item.name}</a></li> }
                                     )}
                                 </ul>
                             </div>
@@ -1107,7 +1113,7 @@ class DetailProjectTaskTab extends Component {
                                 }
 
                                 {/* Mô tả công việc */}
-                                {/* <div>
+                                <div>
                                     <strong>{translate('task.task_management.detail_description')}:</strong>
                                     <ShowMoreShowLess
                                         id={"task-description"}
@@ -1116,7 +1122,7 @@ class DetailProjectTaskTab extends Component {
                                     >
                                         {task && parse(task.description)}
                                     </ShowMoreShowLess>
-                                </div> */}
+                                </div>
                             </div>
                         }
 
@@ -1350,7 +1356,7 @@ class DetailProjectTaskTab extends Component {
                     />
                 }
 
-                {
+                {/* {
                     (id && showEvaluate === id) &&
                     <EvaluationProjectModal
                         id={id}
@@ -1360,7 +1366,7 @@ class DetailProjectTaskTab extends Component {
                         title={translate('task.task_management.detail_cons_eval')}
                         perform='evaluate'
                     />
-                }
+                } */}
                 {
                     (id && showEndTask === id) &&
                     <SelectFollowingTaskModal
@@ -1389,6 +1395,7 @@ class DetailProjectTaskTab extends Component {
                         id={id}
                         task={task && task}
                         role={currentRole}
+                        hasAccountable={checkHasAccountable}
                     />
                 }
             </React.Fragment>

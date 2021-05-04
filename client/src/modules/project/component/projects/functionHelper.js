@@ -17,8 +17,8 @@ export const checkIfAbleToCRUDProject = ({ project, user, currentProjectId }) =>
     return checkIfCurrentRoleIsUnitManager || checkIfCurrentIdIsProjectManagerOrCreator;
 }
 
-export const getCurrentProjectDetails = (project) => {
-    const currentProjectId = window.location.href.split('?id=')[1];
+export const getCurrentProjectDetails = (project, projectId = undefined) => {
+    const currentProjectId = projectId || window.location.href.split('?id=')[1];
     const projectDetail = project?.data?.list?.filter(item => item._id === currentProjectId)?.[0];
     return projectDetail;
 }
@@ -62,7 +62,7 @@ export const getAmountOfWeekDaysInMonth = (date) => {
 }
 
 // Lấy duration (theo timeMode) giua startDate va endDate (tru di thu 7 va chu nhat)
-export const getDurationDaysWithoutSatSun = (startDate, endDate, timeMode) => {
+export const getDurationWithoutSatSun = (startDate, endDate, timeMode) => {
     const numsOfSaturdays = getNumsOfDaysWithoutGivenDay(new Date(startDate), new Date(endDate), 6)
     const numsOfSundays = getNumsOfDaysWithoutGivenDay(new Date(startDate), new Date(endDate), 0)
     let duration = 0

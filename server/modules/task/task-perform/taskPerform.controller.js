@@ -1907,7 +1907,7 @@ exports.evaluateTaskProject = async (req, res) => {
         let log = {
             createdAt: Date.now(),
             creator: req.user._id,
-            title: "Chỉnh sửa thông tin đánh giá công việc tháng " + data?.evaluatingMonth?.slice(3) + " theo vai trò người thực hiện",
+            title: "Chỉnh sửa thông tin đánh giá công việc dự án theo vai trò người thực hiện",
             description: description
         }
         let taskLog = await PerformTaskService.addTaskLog(req.portal, req.params.taskId, log);
@@ -1934,6 +1934,7 @@ exports.evaluateTaskProject = async (req, res) => {
             }
         })
     } catch (error) {
+        console.log('evaluate_task_fail', error)
         await Logger.error(req.user.email, ` edit task `, req.portal);
         res.status(400).json({
             success: false,
@@ -1957,7 +1958,7 @@ evaluateTaskByAccountableEmployeesProject = async (req, res) => {
         let log = {
             createdAt: Date.now(),
             creator: req.user._id,
-            title: "Chỉnh sửa thông tin đánh giá công việc tháng " + data?.evaluatingMonth?.slice(3) + " theo vai trò người phê duyệt",
+            title: "Chỉnh sửa thông tin đánh giá công việc dự án theo vai trò người phê duyệt",
             description: description
         }
         let taskLog = await PerformTaskService.addTaskLog(req.portal, req.params.taskId, log);
