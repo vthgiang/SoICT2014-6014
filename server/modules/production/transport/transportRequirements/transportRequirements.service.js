@@ -32,7 +32,7 @@ exports.createTransportRequirement = async (portal, data, userId) => {
                 })
             })
         }
-        newTransportRequirement = await TransportRequirement(connect(DB_CONNECTION, portal)).create({
+        let newTransportRequirementData = {
             status: data.status,
             code: data.code,
             type: data.type,
@@ -53,7 +53,12 @@ exports.createTransportRequirement = async (portal, data, userId) => {
                     lng: data.toLng,
                 },
             }
-        });
+
+        }
+        if (data.bill){
+            newTransportRequirementData.bill = data.bill;
+        }
+        newTransportRequirement = await TransportRequirement(connect(DB_CONNECTION, portal)).create(newTransportRequirementData);
         
     }
 

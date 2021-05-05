@@ -84,12 +84,41 @@ function TransportRequirementsManagementTable(props) {
         window.$(`#modal-detail-info-example-hooks`).modal('show')
     }
 
+    const setLimit = (number) => {
+        setState({
+            ...state,
+            page: 1,
+            perPage: parseInt(number)
+        })
+    }
+
+    const setPage = (pageNumber) => {
+        setState({
+            ...state,
+            page: parseInt(pageNumber)
+        })
+    }
+    
+    const getDisplayLength = () => {
+        let res = 0;
+        if (allTransportRequirements && allTransportRequirements.length!==0){
+            allTransportRequirements.map((item, index) => {
+                if ((index+1>(page-1)*perPage) && (index+1<=page*perPage)){
+                    res++;
+                }
+            })
+        }
+        return res;
+    }
+
     let lists = [];
     if (example) {
         lists = example.lists
     }
 
-    const totalPage = example && Math.ceil(example.totalList / perPage);
+    // const totalPage = example && Math.ceil(example.totalList / perPage);
+    const totalPage = allTransportRequirements && Math.ceil(allTransportRequirements.length / perPage);
+
     return (
         <React.Fragment>
             <TransportRequirementsCreateForm />
@@ -123,26 +152,34 @@ function TransportRequirementsManagementTable(props) {
                             <th>{"Địa chỉ giao hàng"}</th>
                             <th>{"Người tạo"}</th>
                             <th>{"Trạng thái"}</th>
-                            <th>{"Hành động"}</th>
-                            {/* <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
+                            <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
                                 <DataTableSetting
                                     tableId={tableId}
                                     columnArr={[
+                                        // translate('manage_example.index'),
+                                        // translate('manage_example.exampleName'),
+                                        // translate('manage_example.description'),
                                         translate('manage_example.index'),
-                                        translate('manage_example.exampleName'),
-                                        translate('manage_example.description'),
+                                        "Mã yêu cầu",
+                                        "Loại yêu cầu",
+                                        "Địa chỉ nhận hàng",
+                                        "Địa chỉ giao hàng",
+                                        "Người tạo",
+                                        "Trạng thái",
                                     ]}
                                     setLimit={setLimit}
                                 />
-                            </th> */}
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
                         {(allTransportRequirements && allTransportRequirements.length !== 0) &&
                             allTransportRequirements.map((x, index) => (
-                                x &&
+                                x && (index+1>(page-1)*perPage) && (index+1<=page*perPage)
+                                &&
                                 <tr key={index}>
-                                    <td>{index + 1 + (page - 1) * perPage}</td>
+                                    {/* <td>{index + 1 + (page - 1) * perPage}</td> */}
+                                    <td>{index+1}</td>
                                     <td>{x.code}</td>
                                     <td>{x.type}</td>
                                     <td>{x.fromAddress}</td>
@@ -196,7 +233,7 @@ function TransportRequirementsManagementTable(props) {
                     </tbody>
                 </table>
                 {/* PaginateBar */}
-                {example && example.isLoading ?
+                {transportRequirements && transportRequirements.isLoading ?
                     <div className="table-info-panel">{translate('confirm.loading')}</div> :
                     (typeof allTransportRequirements === 'undefined' || allTransportRequirements.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                 }
@@ -205,13 +242,15 @@ function TransportRequirementsManagementTable(props) {
                     <div className="table-info-panel">{translate('confirm.loading')}</div> :
                     (typeof lists === 'undefined' || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                 } */}
-                {/* <PaginateBar
+                <PaginateBar
                     pageTotal={totalPage ? totalPage : 0}
                     currentPage={page}
-                    display={lists && lists.length !== 0 && lists.length}
-                    total={example && example.totalList}
+                    // display={allTransportRequirements && allTransportRequirements.length !== 0 && allTransportRequirements.length}
+                    display={getDisplayLength()}
+                    // total={example && example.totalList}
+                    total = {allTransportRequirements&&allTransportRequirements.length}
                     func={setPage}
-                /> */}
+                />
             </div>
         </React.Fragment>
     )
@@ -219,6 +258,7 @@ function TransportRequirementsManagementTable(props) {
 
 function mapState(state) {
     const {transportRequirements} = state;
+    console.log(transportRequirements, " oooooo")
     return { transportRequirements }
 }
 

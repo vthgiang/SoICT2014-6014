@@ -87,6 +87,8 @@ function TransportRequirementsCreateForm(props) {
     });
 
     const [listBills, setListBills] = useState([])
+
+    // Bill hien tai: {id: id cua bill, bill: Object bill}
     const [currentBill, setCurrentBill] = useState({
         id: "0",
     })
@@ -167,6 +169,9 @@ function TransportRequirementsCreateForm(props) {
             fromLng: fromLng,
             toLat: toLat,
             toLng: toLng,
+        }
+        if (state.value !== "5"){
+            data.bill = currentBill.id;
         }
         props.createTransportRequirement(data)
     }
@@ -311,30 +316,6 @@ function TransportRequirementsCreateForm(props) {
         }
     }, [currentBill])
 
-    // useEffect(() => {
-    //     let nameStock = "", 
-    //         addressStock = "", 
-    //         goods=[];
-    //     if (state.value==="3" && billId.id !==""){
-    //         if (billDetail.currentBill) {
-    //             if (billDetail.currentBill.fromStock){
-    //                 nameStock = billDetail.currentBill.fromStock.name;
-    //                 addressStock = billDetail.currentBill.fromStock.address;
-    //             }
-    //             if (billDetail.currentBill.goods){
-    //                 goods = billDetail.currentBill.goods;
-    //             }
-    //         }
-    //         setImportGoodsDetails({
-    //             ...importGoodsDetails,
-    //             nameStock: nameStock,
-    //             addressStock: addressStock,
-    //         })
-    //         setGoodsTransport(goods)
-    //     }
-
-    // }, [billDetail]);
-
     /**
      * Hàm lấy dữ liệu hàng hóa từ component con
      */
@@ -465,6 +446,8 @@ function TransportRequirementsCreateForm(props) {
                     {
                         state.value === "2" && (
                             < TransportReturn
+                                currentBill = {currentBill?.bill}
+                                callBackGeneralInfo={callBackGeneralInfo}
                             />
                         )
                     }
@@ -507,7 +490,7 @@ function mapState(state) {
     // return { example }  
     // console.log(state, " day la state");    
     const {bills} = state;
-    console.log(bills)
+    // console.log(bills)
     // const listAllGoods = state.goods.listALLGoods;
     return { bills }
 }
