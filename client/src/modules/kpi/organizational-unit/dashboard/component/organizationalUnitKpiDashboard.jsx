@@ -293,8 +293,8 @@ function OrganizationalUnitKpiDashboard(props) {
                             <div className="info-box">
                                 <span className="info-box-icon bg-yellow"><i className="fa fa-university"/></span>
                                 <div className="info-box-content">
-                                    <span className="info-box-text">{currentOrganizationalUnit + " và " + translate('kpi.evaluation.dashboard.number_of_child_unit')}</span>
-                                    <a className="info-box-number" onClick={() => showListInSwal(organizationalUnitSelectBox?.map(item => item?.text), translate('general.list_employee'))} style={{ cursor: 'pointer', fontSize: '20px'}}>{organizationalUnitSelectBox?.length ?? 0}</a>
+                                    <span className="info-box-text">{translate('general.list_unit')}</span>
+                                    <a className="info-box-number" onClick={() => showListInSwal(organizationalUnitSelectBox?.map(item => item?.text), translate('general.list_unit'))} style={{ cursor: 'pointer', fontSize: '20px'}}>{organizationalUnitSelectBox?.length ?? 0}</a>
                                 </div>
                             </div>
                         </div>
@@ -361,7 +361,7 @@ function OrganizationalUnitKpiDashboard(props) {
                         <div className="col-md-12">
                             <div className="box box-primary">
                                 <div className="box-header with-border">
-                                    <div className="box-title">Biểu đồ thống kê điểm kpi giữa các đơn vị</div>
+                                    <div className="box-title">Biểu đồ thống kê điểm KPI giữa các đơn vị</div>
                                 </div>
                                 <div className="box-body">
                                     <div className="form-inline" >
@@ -517,9 +517,9 @@ function OrganizationalUnitKpiDashboard(props) {
                                         <div className="box-title">
                                             {translate('kpi.organizational_unit.dashboard.result_kpi_unit')}
                                             {organizationalUnitOfChartAllKpis?.length > 1
-                                                ? <span onClick={() => showListInSwal(organizationalUnitOfChartAllKpis, translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
-                                                            <a style={{ fontWeight: 'bold' }}> {organizationalUnitOfChartAllKpis.length} </a>{translate('kpi.organizational_unit.dashboard.organizational_unit_low_case')}
-                                                        </span>
+                                                ? <span onClick={() => showListInSwal(organizationalUnitOfChartAllKpis.filter((item, index) => index > 0), translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
+                                                    <span> {organizationalUnitOfChartAllKpis?.[0]} </span> {translate('human_resource.profile.employee_management.and')} <a style={{ fontWeight: 'bold' }}> {organizationalUnitOfChartAllKpis.length - 1} </a>{translate('kpi.evaluation.dashboard.number_of_child_unit')}
+                                                </span>
                                                 : organizationalUnitOfChartAllKpis?.[0] && ` ${organizationalUnitOfChartAllKpis?.[0]}`
                                             }
                                         </div>
