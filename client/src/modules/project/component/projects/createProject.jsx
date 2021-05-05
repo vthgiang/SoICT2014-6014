@@ -14,6 +14,7 @@ const ProjectCreateForm = (props) => {
     const userId = getStorage('userId');
     const listUsers = user && user.usersInUnitsOfCompany ? getEmployeeSelectBoxItems(user.usersInUnitsOfCompany) : []
     const listDepartments = user && user.usersInUnitsOfCompany ? getListDepartments(user.usersInUnitsOfCompany) : []
+    const [currentSalaryMembers, setCurrentSalaryMembers] = useState(undefined);
     // console.log('listUsers', listUsers)
     const fakeUnitCostList = [
         { text: 'VND', value: 'VND' },
@@ -126,18 +127,6 @@ const ProjectCreateForm = (props) => {
                 }
             }
 
-            // Cái này để hiển thị danh sách ra - có quan tâm user và unit và salary của user đó
-            let newResponsibleEmployeesWithUnit = [];
-            for (let employeeItem of responsibleEmployeesWithUnit.list) {
-                newResponsibleEmployeesWithUnit.push({
-                    unitId: employeeItem.unitId,
-                    listUsers: employeeItem.listUsers.map(item => ({
-                        userId: item,
-                        salary: 0,
-                    }))
-                })
-            }
-
             props.createProjectDispatch({
                 name: projectName,
                 code,
@@ -150,7 +139,7 @@ const ProjectCreateForm = (props) => {
                 unitTime,
                 estimatedCost,
                 creator: userId,
-                responsibleEmployeesWithUnit: newResponsibleEmployeesWithUnit,
+                responsibleEmployeesWithUnit: currentSalaryMembers,
             });
 
             setTimeout(() => {
@@ -161,11 +150,12 @@ const ProjectCreateForm = (props) => {
 
     const handleDelete = (index) => {
         if (responsibleEmployeesWithUnit.list && responsibleEmployeesWithUnit.list.length > 0) {
-            responsibleEmployeesWithUnit.list.splice(index, 1);
+            const cloneArr = [...responsibleEmployeesWithUnit.list];
+            cloneArr.splice(index, 1);
             // responsibleEmployeesWithUnit.list.splice(responsibleEmployeesWithUnit.list.length - 1, 1);
             setResponsibleEmployeesWithUnit({
                 ...responsibleEmployeesWithUnit,
-                list: responsibleEmployeesWithUnit.list,
+                list: cloneArr,
                 currentUnitRow: '',
                 currentEmployeeRow: [],
             })
@@ -174,24 +164,74 @@ const ProjectCreateForm = (props) => {
 
     const handleAddRow = () => {
         if (responsibleEmployeesWithUnit.currentEmployeeRow.length > 0) {
-            const oldListRow = responsibleEmployeesWithUnit.list;
-            const newListRow = [...oldListRow, {
-                unitId: responsibleEmployeesWithUnit.currentUnitRow || listDepartments[0]?.value,
-                listUsers: responsibleEmployeesWithUnit.currentEmployeeRow,
-            }];
-            setResponsibleEmployeesWithUnit({
-                ...responsibleEmployeesWithUnit,
-                list: newListRow,
-                currentUnitRow: '',
-                currentEmployeeRow: [],
+            // Đề phòng user không chọn gì thì lấy default là Ban giám đốc
+            const currentChoosenUnitRow = responsibleEmployeesWithUnit.currentUnitRow || listDepartments[0]?.value;
+            const isUnitAlreadyExistedInArr = responsibleEmployeesWithUnit.list.find((item) => {
+                return currentChoosenUnitRow === item.unitId
             })
+            const oldListRow = responsibleEmployeesWithUnit.list;
+            // Nếu unit đã có trong array rồi
+            if (isUnitAlreadyExistedInArr) {
+                let newListRow = oldListRow.map((oldListRowItem) => {
+                    if (String(oldListRowItem.unitId) === String(isUnitAlreadyExistedInArr.unitId)) {
+                        let currentListUsers = oldListRowItem.listUsers;
+                        for (let currentEmployeeRowItem of responsibleEmployeesWithUnit.currentEmployeeRow) {
+                            if (!currentListUsers.includes(currentEmployeeRowItem)) {
+                                currentListUsers.push(currentEmployeeRowItem)
+                            }
+                        }
+                        return {
+                            unitId: oldListRowItem.unitId,
+                            listUsers: currentListUsers,
+                        }
+                    }
+                    return oldListRowItem;
+                })
+                setResponsibleEmployeesWithUnit({
+                    ...responsibleEmployeesWithUnit,
+                    list: newListRow,
+                    currentUnitRow: '',
+                    currentEmployeeRow: [],
+                })
+            }
+            else {
+                const newListRow = [...oldListRow, {
+                    unitId: currentChoosenUnitRow,
+                    listUsers: responsibleEmployeesWithUnit.currentEmployeeRow,
+                }];
+                setResponsibleEmployeesWithUnit({
+                    ...responsibleEmployeesWithUnit,
+                    list: newListRow,
+                    currentUnitRow: '',
+                    currentEmployeeRow: [],
+                })
+            }
         }
     }
+
+    useEffect(() => {
+        let newResponsibleEmployeesWithUnit = [];
+        // console.log('currentSalaryMembers create project', currentSalaryMembers)
+        for (let i = 0; i < responsibleEmployeesWithUnit.list.length; i++) {
+            newResponsibleEmployeesWithUnit.push({
+                unitId: responsibleEmployeesWithUnit.list[i].unitId,
+                listUsers: responsibleEmployeesWithUnit.list[i].listUsers.map((item, index) => ({
+                    userId: item,
+                    salary: currentSalaryMembers?.[i]?.listUsers?.[index]?.salary,
+                }))
+            })
+        }
+        setCurrentSalaryMembers(newResponsibleEmployeesWithUnit)
+    }, [responsibleEmployeesWithUnit.list])
 
     const handleOpenModalSalaryMembers = () => {
         setTimeout(() => {
             window.$("#modal-salary-members").modal("show");
         }, 10);
+    }
+
+    const handleSaveCurrentSalaryMember = (data) => {
+        setCurrentSalaryMembers(data);
     }
 
     return (
@@ -204,7 +244,11 @@ const ProjectCreateForm = (props) => {
                 disableSubmit={!isFormValidated()}
                 size={100}
             >
-                <ModalSalaryMembers responsibleEmployeesWithUnit={responsibleEmployeesWithUnit} />
+                <ModalSalaryMembers
+                    createProjectCurrentSalaryMember={currentSalaryMembers}
+                    responsibleEmployeesWithUnit={responsibleEmployeesWithUnit}
+                    handleSaveCurrentSalaryMember={handleSaveCurrentSalaryMember}
+                />
                 <div className="row">
                     <div className={"col-sm-6"}>
                         <fieldset className="scheduler-border">

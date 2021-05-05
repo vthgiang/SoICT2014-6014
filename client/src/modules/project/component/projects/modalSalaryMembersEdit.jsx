@@ -12,28 +12,31 @@ import moment from 'moment';
 import { convertDepartmentIdToDepartmentName, convertUserIdToUserName, getListDepartments } from './functionHelper';
 import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
 import { numberWithCommas } from '../../../task/task-management/component/functionHelpers';
+import { taskManagementActions } from '../../../task/task-management/redux/actions';
 
-const ModalSalaryMembers = (props) => {
-    const { translate, responsibleEmployeesWithUnit, project, user, createProjectCurrentSalaryMember } = props;
+const ModalSalaryMembersEdit = (props) => {
+    const { translate, responsibleEmployeesWithUnit, project, user, createProjectCurrentSalaryMember, projectDetail, projectDetailId, currentTasks, currentProjectTasks } = props;
     const listUsers = user && user.usersInUnitsOfCompany ? getEmployeeSelectBoxItems(user.usersInUnitsOfCompany) : []
     const [currentSalaryMembers, setCurrentSalaryMembers] = useState(project.salaries || []);
 
     useEffect(() => {
         let newResponsibleEmployeesWithUnit = [];
-        for (let employeeItem of responsibleEmployeesWithUnit.list) {
-            newResponsibleEmployeesWithUnit.push({
-                unitId: employeeItem.unitId,
-                listUsers: employeeItem.listUsers.map(item => ({
-                    userId: item,
-                    salary: undefined,
-                }))
+        if (responsibleEmployeesWithUnit.list) {
+            for (let employeeItem of responsibleEmployeesWithUnit.list) {
+                newResponsibleEmployeesWithUnit.push({
+                    unitId: employeeItem.unitId,
+                    listUsers: employeeItem.listUsers.map(item => ({
+                        userId: item,
+                        salary: undefined,
+                    }))
+                })
+            }
+            props.getSalaryMembersDispatch({
+                data: {
+                    responsibleEmployeesWithUnit: createProjectCurrentSalaryMember || newResponsibleEmployeesWithUnit,
+                }
             })
         }
-        props.getSalaryMembersDispatch({
-            data: {
-                responsibleEmployeesWithUnit: createProjectCurrentSalaryMember || newResponsibleEmployeesWithUnit,
-            }
-        })
     }, [createProjectCurrentSalaryMember])
 
     useEffect(() => {
@@ -48,17 +51,20 @@ const ModalSalaryMembers = (props) => {
         return currentSalaryMembers.length > 0;
     }
 
+    const isTasksListNotEmpty = (currentTasks && currentTasks.length > 0) || (currentProjectTasks &&  currentProjectTasks.length > 0);
+
     return (
         <React.Fragment>
             <DialogModal
-                modalID={`modal-salary-members`} isLoading={false}
-                formID={`form-salary-members`}
+                modalID={`modal-salary-members-edit-${projectDetail?._id || projectDetailId}`} isLoading={false}
+                formID={`form-salary-members-edit-${projectDetail?._id || projectDetailId}`}
                 title={`Bảng lương thành viên trong dự án`}
                 size={75}
                 func={save}
                 disableSubmit={!isAbleToSave}
             >
                 <div>
+                    <p style={{ color: 'red' }}>*Nếu dự án đã có công việc thì không được sửa lương</p>
                     <div className="box">
                         <div className="box-body qlcv">
                             <h3><strong>Bảng lương các thành viên trong dự án</strong></h3>
@@ -80,27 +86,32 @@ const ModalSalaryMembers = (props) => {
                                                         <td>{userIndex === 0 ? convertDepartmentIdToDepartmentName(user.usersInUnitsOfCompany, unitItem.unitId) : ''}</td>
                                                         <td>{convertUserIdToUserName(listUsers, userItem.userId)}</td>
                                                         <td>
-                                                            <input
-                                                                type="number"
-                                                                value={currentSalaryMembers[unitIndex].listUsers[userIndex].salary}
-                                                                onChange={e => {
-                                                                    const newCurrentSalaryMembers = currentSalaryMembers.map((unItem, unIndex) => {
-                                                                        return {
-                                                                            unitId: unItem.unitId,
-                                                                            listUsers: unItem?.listUsers?.map((usItem, usIndex) => {
-                                                                                if (unitIndex === unIndex && userIndex === usIndex) {
-                                                                                    return {
-                                                                                        ...usItem,
-                                                                                        salary: Number(e.target.value),
-                                                                                    };
+                                                            {
+                                                                isTasksListNotEmpty
+                                                                    ?
+                                                                    <input
+                                                                        type="number"
+                                                                        value={currentSalaryMembers[unitIndex].listUsers[userIndex].salary}
+                                                                        onChange={e => {
+                                                                            const newCurrentSalaryMembers = currentSalaryMembers.map((unItem, unIndex) => {
+                                                                                return {
+                                                                                    unitId: unItem.unitId,
+                                                                                    listUsers: unItem?.listUsers?.map((usItem, usIndex) => {
+                                                                                        if (unitIndex === unIndex && userIndex === usIndex) {
+                                                                                            return {
+                                                                                                ...usItem,
+                                                                                                salary: Number(e.target.value),
+                                                                                            };
+                                                                                        }
+                                                                                        return usItem;
+                                                                                    })
                                                                                 }
-                                                                                return usItem;
                                                                             })
-                                                                        }
-                                                                    })
-                                                                    setCurrentSalaryMembers(newCurrentSalaryMembers);
-                                                                }}
-                                                            />
+                                                                            setCurrentSalaryMembers(newCurrentSalaryMembers);
+                                                                        }}
+                                                                    />
+                                                                    : currentSalaryMembers[unitIndex].listUsers[userIndex].salary
+                                                            }
                                                         </td>
                                                         {/* <td>{numberWithCommas(userItem.salary)}</td> */}
                                                     </tr>
@@ -119,12 +130,12 @@ const ModalSalaryMembers = (props) => {
 }
 
 function mapStateToProps(state) {
-    const { project, user } = state;
-    return { project, user }
+    const { project, user, tasks } = state;
+    return { project, user, tasks }
 }
 
 const mapDispatchToProps = {
     editProjectDispatch: ProjectActions.editProjectDispatch,
     getSalaryMembersDispatch: ProjectActions.getSalaryMembersDispatch,
 }
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ModalSalaryMembers));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ModalSalaryMembersEdit));

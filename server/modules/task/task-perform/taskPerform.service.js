@@ -6911,59 +6911,6 @@ exports.evaluateTaskByResponsibleEmployeesProject = async (portal, data, taskId)
     //         { $new: true }
     //     ));
 
-    // await Task(connect(DB_CONNECTION, portal)).updateOne(
-    //     {
-    //         _id: taskId,
-    //         "evaluations._id": evaluateId,
-    //     },
-    //     {
-    //         $set: {
-    //             "evaluations.$.progress": progress,
-    //         },
-    //     },
-    //     {
-    //         $new: true,
-    //     }
-    // );
-
-    // let task = await Task(connect(DB_CONNECTION, portal)).findById(taskId);
-
-    // let resultObject = task.evaluations.find(
-    //     (e) => String(e._id) === String(evaluateId)
-    // ).resultsForProject;
-
-    // if (resultObject === undefined || JSON.stringify(resultObject) === '{}') {
-    //     await Task(connect(DB_CONNECTION, portal)).updateOne(
-    //         {
-    //             _id: taskId,
-    //             "evaluations._id": evaluateId,
-    //             "evaluations.$.resultsForProject": resultItem,
-    //         },
-    //         { $new: true }
-    //     );
-    // } else {
-    //     await Task(connect(DB_CONNECTION, portal)).updateOne(
-    //         {
-    //             _id: taskId,
-    //             "evaluations._id": evaluateId,
-    //         },
-    //         {
-    //             $set: {
-    //                 "evaluations.$.resultsForProject.employeePoint": employeePoint,
-    //                 "evaluations.$.resultsForProject.organizationalUnit": unit,
-    //             },
-    //         },
-    //         // {
-    //         //     arrayFilters: [
-    //         //         {
-    //         //             "elem.employee": user,
-    //         //             "elem.role": role,
-    //         //         },
-    //         //     ],
-    //         // }
-    //     );
-    // }
-
     // // update Info task
     // let dateISO = new Date(endDate)
     // let monthOfParams = dateISO.getMonth();
@@ -7285,59 +7232,6 @@ exports.evaluateTaskByAccountableEmployeesProject = async (portal, data, taskId)
     //         { $set: { progress: progress } },
     //         { $new: true }
     //     ));
-
-    // await Task(connect(DB_CONNECTION, portal)).updateOne(
-    //     {
-    //         _id: taskId,
-    //         "evaluations._id": evaluateId,
-    //     },
-    //     {
-    //         $set: {
-    //             "evaluations.$.progress": progress,
-    //         },
-    //     },
-    //     {
-    //         $new: true,
-    //     }
-    // );
-
-    // let task = await Task(connect(DB_CONNECTION, portal)).findById(taskId);
-
-    // let resultObject = task.evaluations.find(
-    //     (e) => String(e._id) === String(evaluateId)
-    // ).resultsForProject;
-
-    // if (resultObject === undefined || JSON.stringify(resultObject) === '{}') {
-    //     await Task(connect(DB_CONNECTION, portal)).updateOne(
-    //         {
-    //             _id: taskId,
-    //             "evaluations._id": evaluateId,
-    //             "evaluations.$.resultsForProject": resultItem,
-    //         },
-    //         { $new: true }
-    //     );
-    // } else {
-    //     await Task(connect(DB_CONNECTION, portal)).updateOne(
-    //         {
-    //             _id: taskId,
-    //             "evaluations._id": evaluateId,
-    //         },
-    //         {
-    //             $set: {
-    //                 "evaluations.$.resultsForProject.employeePoint": employeePoint,
-    //                 "evaluations.$.resultsForProject.organizationalUnit": unit,
-    //             },
-    //         },
-    //         // {
-    //         //     arrayFilters: [
-    //         //         {
-    //         //             "elem.employee": user,
-    //         //             "elem.role": role,
-    //         //         },
-    //         //     ],
-    //         // }
-    //     );
-    // }
 
     // // update Info task
     // let dateISO = new Date(endDate)

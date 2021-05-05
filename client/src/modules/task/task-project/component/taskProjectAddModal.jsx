@@ -33,7 +33,6 @@ class TaskProjectAddModal extends Component {
                 taskProject: "",
                 estimateNormalTime: '',
                 estimateOptimisticTime: '',
-                estimatePessimisticTime: '',
                 estimateNormalCost: '',
                 estimateMaxCost: '',
                 preceedingTasks: [],
@@ -72,7 +71,6 @@ class TaskProjectAddModal extends Component {
 
         let estimateNormalTime = moment(endDateTask).diff(moment(startDateTask), `milliseconds`) || null;
         let estimateOptimisticTime = typeof estimateNormalTime === 'number' ? estimateNormalTime - 20000 : null;
-        let estimatePessimisticTime = typeof estimateNormalTime === 'number' ? estimateNormalTime + 20000 : null;
         let preceedingTasks = newTask.preceedingTasks?.map(item => ({
             task: item,
             link: ''
@@ -83,7 +81,6 @@ class TaskProjectAddModal extends Component {
             organizationalUnit: user?.roledepartments?._id,
             estimateNormalTime,
             estimateOptimisticTime,
-            estimatePessimisticTime,
             estimateNormalCost: Number(newTask.estimateNormalCost.replace(/,/g, '')),
             estimateMaxCost: Number(newTask.estimateMaxCost),
             preceedingTasks,
