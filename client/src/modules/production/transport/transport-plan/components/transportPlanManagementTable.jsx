@@ -93,7 +93,7 @@ function TransportPlanManagementTable(props) {
                             <tr key={index}>
                                 <td>{index + 1}</td>
                                 <td>{x.code}</td>
-                                <td>{""}</td>
+                                <td>{x.status}</td>
                                 <td>{formatDate(x.startTime)+" - "+formatDate(x.endTime)}</td>
                                 <td>{""}</td>
                                 <td style={{ textAlign: "center" }}>

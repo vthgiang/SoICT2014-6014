@@ -91,13 +91,33 @@ exports.editTransportRouteByPlanId = async (portal, planId, data) => {
     if (!oldTransportSchedule) {
         return -1;
     }
+    // Nếu có data.transportVehicles -> xếp lại hàng hóa -> clear route
     if (data.transportVehicles && data.transportVehicles.length!==0){
         await TransportSchedule(connect(DB_CONNECTION, portal)).update({ _id: oldTransportSchedule._id }, { $set: {route: []} });
+        await TransportPlanServices.editTransportPlanStatus(portal, planId, 1);
     }
     // Cach 2 de update
     await TransportSchedule(connect(DB_CONNECTION, portal)).update({ _id: oldTransportSchedule._id }, { $set: data });
-    let newTransportSchedule = await TransportSchedule(connect(DB_CONNECTION, portal)).findById({ _id: oldTransportSchedule._id });
-
+    let newTransportSchedule = await TransportSchedule(connect(DB_CONNECTION, portal)).findById({ _id: oldTransportSchedule._id })
+    .populate([
+        {
+            path: 'transportPlan',
+        }
+    ]);
+    // Đếm số lượng requirement trong route
+    if (newTransportSchedule && newTransportSchedule.route && newTransportSchedule.route.length!==0
+        && newTransportSchedule.transportPlan && newTransportSchedule.transportPlan.transportRequirements && newTransportSchedule.transportPlan.transportRequirements.length!==0){
+        let countRequirement = 0;
+        newTransportSchedule.route.map(item => {
+            if (item && item.routeOrdinal){
+                countRequirement += item.routeOrdinal.length;
+            }
+        })
+        console.log(countRequirement, newTransportSchedule.transportPlan.transportRequirements.length)
+        if (countRequirement === 2*newTransportSchedule.transportPlan.transportRequirements.length){
+            await TransportPlanServices.editTransportPlanStatus(portal, planId, 2); 
+        }
+    }
     return newTransportSchedule;
 }
 

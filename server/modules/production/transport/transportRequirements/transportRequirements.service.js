@@ -88,18 +88,34 @@ exports.getAllTransportRequirements = async (portal, data) => {
     let page, limit;
     page = data?.page ? Number(data.page) : 1;
     limit = data?.limit ? Number(data.limit) : 20;
+    let totalList;
+    let requirements;
+    if (data?.page && data?.limit){    
+        totalList = await TransportRequirement(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
+        requirements = await TransportRequirement(connect(DB_CONNECTION, portal)).find(keySearch)
+            .populate({path:'transportPlan'})
+            .populate({
+                path: 'creator'
+            })
+            .populate({
+                path: 'goods.good'
+            })
+            .skip((page - 1) * limit)
+            .limit(limit);
+    }
+    else {
+        totalList = await TransportRequirement(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
+        requirements = await TransportRequirement(connect(DB_CONNECTION, portal)).find(keySearch)
+            .populate({path:'transportPlan'})
+            .populate({
+                path: 'creator'
+            })
+            .populate({
+                path: 'goods.good'
+            })
+    }
 
-    let totalList = await TransportRequirement(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
-    let requirements = await TransportRequirement(connect(DB_CONNECTION, portal)).find(keySearch)
-        .populate({path:'transportPlan'})
-        .populate({
-            path: 'creator'
-        })
-        .populate({
-            path: 'goods.good'
-        })
-        .skip((page - 1) * limit)
-        .limit(limit);
+
         // .populate('TransportPlan');
     return { 
         data: requirements, 

@@ -68,12 +68,12 @@ function ArrangeOrdinalTransportOneVehicle(props) {
             <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                 <div className = "transport-map">
                     {
-                        // (activeMapState && activeMapState.length!==0)
-                        // &&
+                        (activeMapState && activeMapState.length!==0)
+                        &&
                         <MapContainer 
-                            locations={locationsOnMap}
+                        //     locations={locationsOnMap}
 
-                            // locations={activeMapState}
+                            locations={activeMapState}
                         />
                     }
                 </div>

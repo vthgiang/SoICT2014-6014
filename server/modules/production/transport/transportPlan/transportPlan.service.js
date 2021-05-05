@@ -21,6 +21,7 @@ exports.createTransportPlan = async (portal, data) => {
     if (data && data.length !== 0) {        
         newTransportPlan = await TransportPlan(connect(DB_CONNECTION, portal)).create({
         code: data.code,
+        status: 1,
         startTime: data.startDate,
         endTime: data.endDate,
         transportRequirements: data.transportRequirements,
@@ -214,6 +215,7 @@ exports.editTransportPlan = async (portal, id, data) => {
             }
     }
     // Cach 2 de update
+    data.status = 1
     await TransportPlan(connect(DB_CONNECTION, portal)).update({ _id: id }, { $set: data });
     let transportPlan = await TransportPlan(connect(DB_CONNECTION, portal)).findById({ _id: oldTransportPlan._id })
     .populate([
@@ -225,6 +227,25 @@ exports.editTransportPlan = async (portal, id, data) => {
         }
     ])
     return transportPlan;
+}
+exports.editTransportPlanStatus = async (portal, id, value) => {
+    let oldTransportPlan = await TransportPlan(connect(DB_CONNECTION, portal)).findById(id);
+
+    if (!oldTransportPlan) {
+        return -1;
+    }
+    // Cach 2 de update
+    await TransportPlan(connect(DB_CONNECTION, portal)).update({ _id: id }, { $set: {status: value} });
+    let transportPlan = await TransportPlan(connect(DB_CONNECTION, portal)).findById({ _id: oldTransportPlan._id })
+    .populate([
+        {
+            path: "transportRequirements transportVehicles.vehicle"
+        },
+        {
+            path: 'transportVehicles.carriers.carrier'
+        }
+    ])
+    return transportPlan;    
 }
 /**
  * push requirement vào plan

@@ -135,14 +135,26 @@ function ArrangeVehiclesAndGoods(props) {
         let newDistribution = [];
         
         if (distributionList && distributionList.length!==0){
+
             /**
              * Lọc bỏ requirement đc xếp ở xe cũ
              */
+            let isDelete = false;
             for ( let i=0; i< distributionList.length; i++){
                 let distribution = distributionList[i];
                 if (distribution.transportRequirements && distribution.transportRequirements.length !== 0){
+                    let trace = distribution.transportRequirements.filter(r => String(r) === requirementId);
+                    if (trace && trace.length!==0){
+                        if (distribution.vehicle === vehicleId){
+                            isDelete = true;
+                        }
+                    };
                     distribution.transportRequirements = distribution.transportRequirements.filter(r => String(r) !== requirementId);
                 }
+            }
+            if (isDelete){
+                setDistributionState(distributionList);
+                return;
             }
             /**
              * Thêm requirement vào xe

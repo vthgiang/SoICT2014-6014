@@ -270,15 +270,20 @@ function TransportRequirementsManagementTable(props) {
                                                 visibility
                                             </i>
                                         </a>
-                                        <a className="edit text-yellow" 
-                                            style={{ width: '5px' }} 
-                                            // title={translate('manage_example.edit')} 
-                                            onClick={() => handleEdit(x)}
-                                        >
-                                            <i className="material-icons">
-                                                edit
-                                            </i>
-                                        </a>
+                                        {
+                                            (String(x.status)==="1")
+                                            && (
+                                            <a className="edit text-yellow" 
+                                                style={{ width: '5px' }} 
+                                                // title={translate('manage_example.edit')} 
+                                                onClick={() => handleEdit(x)}
+                                            >
+                                                <i className="material-icons">
+                                                    edit
+                                                </i>
+                                            </a>
+                                            )
+                                        }
                                         {
                                         // this.checkUserForApprove(item) === 1 && 
                                         String(x.status) === "1" && (

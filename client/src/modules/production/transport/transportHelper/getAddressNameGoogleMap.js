@@ -5,6 +5,7 @@ export async function getAddressName(lat, lng){
 	const url =  "https://maps.googleapis.com/maps/api/geocode/json?"
                 +"address="+lat+","+lng
                 +"&key="+process.env.REACT_APP_API_KEY
+  try {
     const response = await axios.get(url)
     if(response.data){
         if (response.data.status === "OK"){
@@ -15,5 +16,10 @@ export async function getAddressName(lat, lng){
           }
         }
       };
+      return "Không có tên địa chỉ";
+  } catch (error) {
+    
 	return "Không có tên địa chỉ";
+  }
+
 }

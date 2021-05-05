@@ -12,23 +12,30 @@ export async function getDistanceAndTime(origin, destination){
                 + "api_key=" + api_key
                 + "&origins=" + latOrigin +"," + lngOrigin
                 + "&destinations=" + latDestination + "," + lngDestination;
-    const response = await axios.get(url)
-    
-    if(response.data){
-        if (response.data.rows && response.data.rows.length !== 0 ){
-            if (response.data.rows[0].elements){
-                if (response.data.rows[0].elements[0].duration){
-                    if (response.data.rows[0].elements[0].duration.text){
-                        duration = response.data.rows[0].elements[0].duration.text;
+    try {
+        
+        const response = await axios.get(url)
+        
+        if(response.data){
+            if (response.data.rows && response.data.rows.length !== 0 ){
+                if (response.data.rows[0].elements){
+                    if (response.data.rows[0].elements[0].duration){
+                        if (response.data.rows[0].elements[0].duration.text){
+                            duration = response.data.rows[0].elements[0].duration.text;
+                        }
                     }
-                }
-                if (response.data.rows[0].elements[0].duration){
-                    if (response.data.rows[0].elements[0].distance.text){
-                        distance = response.data.rows[0].elements[0].distance.text;
+                    if (response.data.rows[0].elements[0].duration){
+                        if (response.data.rows[0].elements[0].distance.text){
+                            distance = response.data.rows[0].elements[0].distance.text;
+                        }
                     }
                 }
             }
-        }
-    };
+        };
+    } catch (error) {
+        console.log(error);
+        distance = "0";
+        duration = "0";
+    }
 	return {distance, duration};
 }
