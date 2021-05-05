@@ -33,7 +33,15 @@ function TransportReturn(props) {
             })
         }
     }, [currentBill])
-
+    useEffect(() => {
+        if (formValue){
+            let data = {
+                customer1AddressTransport: formValue.stockAddress,
+                customer2AddressTransport: formValue.customerAddress,
+            }
+            callBackGeneralInfo(data);
+        }
+    }, [formValue])
     return (
         <React.Fragment>
             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">

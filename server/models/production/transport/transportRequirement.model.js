@@ -136,6 +136,10 @@ const TransportRequirementSchema = new Schema({
             ref: 'User'
         }
     }],
+    approver: {
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    }
 },{
     timestamps: true,
 });

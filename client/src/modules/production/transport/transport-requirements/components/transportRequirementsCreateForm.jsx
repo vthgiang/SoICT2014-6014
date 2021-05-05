@@ -23,13 +23,14 @@ import { BillActions } from '../../../warehouse/bill-management/redux/actions';
 import { CrmCustomerActions } from "../../../../crm/customer/redux/actions";
 import { GoodActions} from '../../../common-production/good-management/redux/actions';
 import { transportRequirementsActions } from '../redux/actions'
+import { transportDepartment, transportDepartmentActions } from '../../transport-department/redux/actions'
 import { getGeocode } from '../../transportHelper/getGeocodeGoong'
 
 function TransportRequirementsCreateForm(props) {
 
     // const { translate, example, page, perPage } = props;
     // const { exampleName, description, exampleNameError } = state1;
-    const {bills} = props
+    const {requirements, bills, transportDepartment} = props
     // /**
     //  * Hàm dùng để kiểm tra xem form đã được validate hay chưa
     //  */
@@ -40,37 +41,6 @@ function TransportRequirementsCreateForm(props) {
     //     return true;
     // }
 
-
-    const requirements = [
-        {
-            value: "1",
-            text: "Giao hàng",
-            billType: "4",
-            billGroup: "2",
-        },
-        {
-            value: "2",
-            text: "Trả hàng",
-            billType: "7",
-            billGroup: "3",
-        },
-        {
-            value: "3",
-            text: "Chuyển thành phẩm tới kho",
-            billType: "1",
-            billGroup: "1",
-        },
-        {
-            value: "4",
-            text: "Giao nguyên vật liệu",
-            billType: "3",
-            billGroup: "2"
-        },
-        {
-            value: "5",
-            text: "Khác",
-        }
-    ];
     // Khởi tạo state
     const [state, setState] = useState({
         value: "5",
@@ -84,6 +54,7 @@ function TransportRequirementsCreateForm(props) {
     const [requirementsForm, setRequirementsForm] = useState({
         goods: [],
         timeRequests: [],
+        approver: "title"
     });
 
     const [listBills, setListBills] = useState([])
@@ -92,12 +63,14 @@ function TransportRequirementsCreateForm(props) {
     const [currentBill, setCurrentBill] = useState({
         id: "0",
     })
-    // const [bill, setBill] = useState({
-    //     id: "title",
-    //     bill: "",
-    // });
 
-    const [billDetail, setBillDetail] = useState({})
+    //
+    const [approverList, setApproverList] = useState([
+        {
+            value: "title",
+            text: "--Chọn người phê duyệt--"
+        }
+    ])
 
     // const [importGoodsDetails, setImportGoodsDetails] = useState({
     //     addressStock: "",
@@ -169,6 +142,7 @@ function TransportRequirementsCreateForm(props) {
             fromLng: fromLng,
             toLat: toLat,
             toLng: toLng,
+            approver: requirementsForm.approver,
         }
         if (state.value !== "5"){
             data.bill = currentBill.id;
@@ -238,7 +212,6 @@ function TransportRequirementsCreateForm(props) {
                 text: "Chọn phiếu",
             },
         ];
-        console.log(listBills, " aaaaaaa")
         if (listBills && listBills.length!==0){
             listBills.map(item => {
                 listBillsSelectBox.push({
@@ -285,6 +258,13 @@ function TransportRequirementsCreateForm(props) {
         }
     }
 
+    const handleApproverChange = (value) => {
+        setRequirementsForm({
+            ...requirementsForm,
+            approver: value[0],
+        })
+    }
+
     // useEffect(() => {
     //     let currentBill = bills.filter(r => r._id === billId.id);
     //     setBillDetail({
@@ -293,6 +273,46 @@ function TransportRequirementsCreateForm(props) {
     //     })
         
     // }, [billId])
+    useEffect(() => {
+        props.getAllTransportDepartments();
+    }, [])
+
+    useEffect(() => {
+        console.log(transportDepartment, " transportDepartment")
+        let newApproverList = [...approverList];
+        if (transportDepartment && transportDepartment.lists && transportDepartment.lists.length!==0){
+            // role vận chuyển === 2
+            let lists = transportDepartment.lists.filter(r => String(r.role) === "2") 
+                console.log(lists, " unit")
+                if (lists && lists.length !==0){
+                    lists.map(item =>{
+                        if (item.organizationalUnit){
+                            let organizationalUnit = item.organizationalUnit;
+                            organizationalUnit.managers && organizationalUnit.managers.length !==0
+                            && organizationalUnit.managers.map(managers => {
+                                managers.users && managers.users.length !== 0
+                                && managers.users.map(users => {
+                                    if (users.userId){
+                                        if (users.userId._id){
+                                            let check = newApproverList.filter(r =>
+                                                    String(r.value) ===  String(users.userId._id)
+                                                )
+                                            if (!(check && check.length!==0)){
+                                                newApproverList.push({
+                                                    value: users.userId._id,
+                                                    text: users.userId.name
+                                                })
+                                            }
+                                        }
+                                    }
+                                })
+                            })
+                        }
+                    })
+                } 
+        }
+        setApproverList(newApproverList)
+    }, [transportDepartment])
 
     useEffect(() => {
         if (bills && bills.listBills){
@@ -390,6 +410,22 @@ function TransportRequirementsCreateForm(props) {
                                     />
                                 </div>
                             </div>
+                            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                <div className={`form-group`}>
+                                    <label>
+                                        Người phê duyệt
+                                    </label>
+                                    <SelectBox
+                                        id={`select-approver`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        value={requirementsForm.approver}
+                                        items={approverList}
+                                        onChange={handleApproverChange}
+                                        multiple={false}
+                                    />
+                                </div>
+                            </div>
                         </div>
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
@@ -402,7 +438,7 @@ function TransportRequirementsCreateForm(props) {
                                         id={`select-type-requirement`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
-                                        value={"5"}
+                                        value={state.value}
                                         items={requirements}
                                         onChange={handleTypeRequirementChange}
                                         multiple={false}
@@ -454,6 +490,8 @@ function TransportRequirementsCreateForm(props) {
                     {
                         state.value === "3" && (
                             < TransportImportGoods
+                                currentBill = {currentBill?.bill}
+                                callBackGeneralInfo={callBackGeneralInfo}
                                 // nameStock = {importGoodsDetails.nameStock}
                                 // addressStock ={importGoodsDetails.addressStock}
                             />
@@ -489,16 +527,17 @@ function mapState(state) {
     // const example = state.example1;
     // return { example }  
     // console.log(state, " day la state");    
-    const {bills} = state;
+    const {bills, transportDepartment} = state;
     // console.log(bills)
     // const listAllGoods = state.goods.listALLGoods;
-    return { bills }
+    return { bills, transportDepartment }
 }
 
 const actions = {
     getBillsByType: BillActions.getBillsByType,
     getCustomers: CrmCustomerActions.getCustomers,
     createTransportRequirement: transportRequirementsActions.createTransportRequirement,
+    getAllTransportDepartments: transportDepartmentActions.getAllTransportDepartments,
 }
 
 const connectedTransportRequirementsCreateForm = connect(mapState, actions)(withTranslate(TransportRequirementsCreateForm));

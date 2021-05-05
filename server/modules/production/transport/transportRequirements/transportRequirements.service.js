@@ -52,7 +52,8 @@ exports.createTransportRequirement = async (portal, data, userId) => {
                     lat: data.toLat,
                     lng: data.toLng,
                 },
-            }
+            },
+            approver: data.approver,
 
         }
         if (data.bill){

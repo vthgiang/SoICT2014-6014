@@ -16,6 +16,53 @@ function TransportRequirementsManagementTable(props) {
     const defaultConfig = { limit: 5 }
     const getLimit = getTableConfiguration(getTableId, defaultConfig).limit;
 
+    const requirements = [
+        {
+            value: "1",
+            text: "Giao hàng",
+            billType: "4",
+            billGroup: "2",
+        },
+        {
+            value: "2",
+            text: "Trả hàng",
+            billType: "7",
+            billGroup: "3",
+        },
+        {
+            value: "3",
+            text: "Chuyển thành phẩm tới kho",
+            billType: "2",
+            billGroup: "1",
+        },
+        {
+            value: "4",
+            text: "Giao nguyên vật liệu",
+            billType: "3",
+            billGroup: "2"
+        },
+        {
+            value: "5",
+            text: "Khác",
+        }
+    ];
+    const statusTransport = [
+        {
+            value: "1", text: "Chờ phê duyệt"
+        },
+        {
+            value: "2", text: "Chờ xếp lịch"
+        },
+        {
+            value: "3", text: "Chờ vận chuyển"
+        },
+        {
+            value: "4", text: "Đang vận chuyển"
+        },
+        {
+            value: "5", text: "Đã vận chuyển"
+        }
+    ]
     // Khởi tạo state
     const [state, setState] = useState({
         exampleName: "",
@@ -98,7 +145,32 @@ function TransportRequirementsManagementTable(props) {
             page: parseInt(pageNumber)
         })
     }
-    
+    const getValueTypeRequirement = (type) => {
+        let res="";
+        if (type && requirements){
+            requirements.map(item => {
+                if (item.value === String(type)){
+                    res = item.text;
+                }
+            });
+        }
+        if (String(type)==="5"){
+            res="Vận chuyển";
+        }
+        return res;
+    }
+    const getStatusTransport = (status) => {
+        let res="";
+        if (status && statusTransport){
+            statusTransport.map(item => {
+                if (item.value === String(status)){
+                    res = item.text;
+                }
+            })
+        }
+        return res;
+    }
+
     const getDisplayLength = () => {
         let res = 0;
         if (allTransportRequirements && allTransportRequirements.length!==0){
@@ -121,7 +193,9 @@ function TransportRequirementsManagementTable(props) {
 
     return (
         <React.Fragment>
-            <TransportRequirementsCreateForm />
+            <TransportRequirementsCreateForm 
+                requirements={requirements}
+            />
             <TransportRequirementsViewDetails
                 curentTransportRequirementDetail={curentTransportRequirementDetail}
             />
@@ -181,11 +255,11 @@ function TransportRequirementsManagementTable(props) {
                                     {/* <td>{index + 1 + (page - 1) * perPage}</td> */}
                                     <td>{index+1}</td>
                                     <td>{x.code}</td>
-                                    <td>{x.type}</td>
+                                    <td>{getValueTypeRequirement(x.type)}</td>
                                     <td>{x.fromAddress}</td>
                                     <td>{x.toAddress}</td>
                                     <td>{x.creator ? x.creator.name : ""}</td>
-                                    <td>{x.status}</td>
+                                    <td>{getStatusTransport(x.status)}</td>
                                     <td style={{ textAlign: "center" }}>
                                         <a className="edit text-green" style={{ width: '5px' }} 
                                             // title={translate('manage_example.detail_info_example')} 

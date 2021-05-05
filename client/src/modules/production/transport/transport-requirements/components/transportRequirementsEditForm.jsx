@@ -195,7 +195,7 @@ function TransportRequirementsEditForm(props) {
                 <ul className="nav nav-tabs">
                     <li className="active"><a href="#list-transport-plan" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Thông tin chung"}</a></li>
                     <li><a href="#list-arrange-plan" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Địa chỉ điểm giao và nhận hàng"}</a></li>
-                    <li><a href="#list-arrange-plan2" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Kế hoạch vận chuyển"}</a></li>
+                    {/* <li><a href="#list-arrange-plan2" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Kế hoạch vận chuyển"}</a></li> */}
                 </ul>
                 <div className="tab-content">
                     <div className="tab-pane active" id="list-transport-plan">
@@ -273,15 +273,15 @@ function TransportRequirementsEditForm(props) {
                                     />
                                 </LazyLoadComponent>
                             </div>
-                            <div className="tab-pane" id="list-arrange-plan2">
+                            {/* <div className="tab-pane" id="list-arrange-plan2">
                                 <LazyLoadComponent
-                                >
+                                > */}
                                     {/* <LocateTransportRequirement 
                                         curentTransportRequirementDetail={curentTransportRequirementDetail}
                                         callBackLocate={callBackLocate}
                                     /> */}
-                                </LazyLoadComponent>
-                            </div>
+                                {/* </LazyLoadComponent>
+                            </div> */}
                         </div>
                     </div>
                     

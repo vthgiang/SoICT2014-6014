@@ -151,7 +151,6 @@ function SortableComponent(props) {
 		}
 	}, [duration, distance])
 
-
 	const onSortEnd = async ({oldIndex, newIndex}) => {
 		let arrayAddress = [...addressList];
 		arrayAddress = arrayMove(arrayAddress, oldIndex, newIndex);
@@ -190,7 +189,7 @@ function SortableComponent(props) {
 							arrayAddress[newIndex].duration = value.duration;
 						}
 					)
-				
+				sleep(500);
 				// Update sau nó
 				if (newIndex<addressList.length - 1){
 					await getDistanceAndTime(arrayAddress[newIndex].geocodeAddress, arrayAddress[newIndex+1].geocodeAddress)
@@ -200,6 +199,7 @@ function SortableComponent(props) {
 								arrayAddress[newIndex+1].duration = value.duration;
 							}
 						)
+					sleep(500);
 				}
 
 			}
@@ -219,6 +219,7 @@ function SortableComponent(props) {
 							arrayAddress[newIndex].duration = value.duration;
 						}
 					)
+					sleep(500);
 				}
 				// update sau nó
 				await getDistanceAndTime(arrayAddress[newIndex].geocodeAddress, arrayAddress[newIndex+1].geocodeAddress)
@@ -228,6 +229,7 @@ function SortableComponent(props) {
 						arrayAddress[newIndex+1].duration = value.duration;
 					}
 				)
+				sleep(500);
 			}
 			if (oldIndex < (arrayAddress.length - 1) && oldIndex > 0 && newIndex !== oldIndex){
 				//update vị trí cũ
@@ -237,12 +239,14 @@ function SortableComponent(props) {
 						arrayAddress[oldIndex].distance = value.distance;
 						arrayAddress[oldIndex].duration = value.duration;
 					}
-				)			
+				)		
+				sleep(500);	
 				// update vị trí mới
 				// update chính nó
 				if (newIndex === 0 ){
-					arrayAddress[oldIndex].distance = 0;
-					arrayAddress[oldIndex].duration = 0;
+					arrayAddress[0].distance = 0;
+					arrayAddress[0].duration = 0;
+					// console.log("ooooooooooooooooolpsdadoo")
 				}
 				else{
 					await getDistanceAndTime(arrayAddress[newIndex-1].geocodeAddress, arrayAddress[newIndex].geocodeAddress)
@@ -252,6 +256,7 @@ function SortableComponent(props) {
 							arrayAddress[newIndex].duration = value.duration;
 						}
 					)
+					sleep(500);
 				}	
 				// update sau nó
 				if (newIndex !==arrayAddress.length - 1){
@@ -262,6 +267,7 @@ function SortableComponent(props) {
 							arrayAddress[newIndex+1].duration = value.duration;
 						}
 					)
+					sleep(500);
 				}
 				
 			}
