@@ -102,5 +102,5 @@ function getSalaryMembersAPI(data) {
         url: `${process.env.REACT_APP_SERVER}/projects/project/salary-members`,
         method: 'POST',
         data,
-    }, true, true, 'project');
+    }, false, true, 'project');
 }

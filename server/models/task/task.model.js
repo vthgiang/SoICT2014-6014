@@ -309,41 +309,6 @@ const TaskSchema = new Schema(
                         },
                     },
                 ],
-                resultsForProject: {
-                    // Kết quả thực hiện công việc CỦA DỰ ÁN
-                    employee: {
-                        // Người đánh giá
-                        type: Schema.Types.ObjectId,
-                        ref: "User",
-                    },
-                    organizationalUnit: {
-                        type: Schema.Types.ObjectId,
-                        ref: "OrganizationalUnit",
-                    },
-                    role: {
-                        // người thực hiện: responsible, người tư vấn: consulted, người phê duyệt: accountable
-                        type: String,
-                        enum: ["responsible", "consulted", "accountable"],
-                    },
-                    automaticPoint: {
-                        // Điểm hệ thống đánh giá
-                        type: Number,
-                        default: 0,
-                    },
-                    employeePoint: {
-                        // Điểm tự đánh giá
-                        type: Number,
-                        default: 0,
-                    },
-                    approvedPoint: {
-                        // Điểm được phê duyệt
-                        type: Number,
-                        default: 0,
-                    },
-                    hoursSpent: {
-                        type: Number,
-                    },
-                },
                 taskInformations: [
                     {
                         // Lưu lại lịch sử các giá trị của thuộc tính công việc trong mỗi lần đánh giá
@@ -852,10 +817,6 @@ const TaskSchema = new Schema(
         },
         //thời gian ước lượng ít nhất để hoàn thành task
         estimateOptimisticTime: {
-            type: Number,
-        },
-        //thời gian ước lượng nhiều nhất có thể cho phép để hoàn thành task
-        estimatePessimisticTime: {
             type: Number,
         },
         //chi phí ước lượng thông thường của task

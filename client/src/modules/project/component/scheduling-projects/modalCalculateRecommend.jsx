@@ -189,7 +189,7 @@ const ModalCalculateRecommend = (props) => {
                     id: item.code,
                     optimisticTime: Number(item.estimateOptimisticTime),
                     mostLikelyTime: Number(item.estimateNormalTime),
-                    pessimisticTime: Number(item.estimatePessimisticTime),
+                    pessimisticTime: Number(item.estimateNormalTime) + 2,
                     predecessors: item.preceedingTasks,
                 }
             }
