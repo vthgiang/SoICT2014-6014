@@ -11,6 +11,8 @@ import { TransportRequirementsEditForm } from './transportRequirementsEditForm'
 import { transportRequirementsActions } from "../redux/actions";
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 
+import {getTypeRequirement} from '../../transportHelper/getTextFromValue'
+
 function TransportRequirementsManagementTable(props) {
     const getTableId = "table-manage-transport-requirements-hooks";
     const defaultConfig = { limit: 5 }
@@ -145,20 +147,7 @@ function TransportRequirementsManagementTable(props) {
             page: parseInt(pageNumber)
         })
     }
-    const getValueTypeRequirement = (type) => {
-        let res="";
-        if (type && requirements){
-            requirements.map(item => {
-                if (item.value === String(type)){
-                    res = item.text;
-                }
-            });
-        }
-        if (String(type)==="5"){
-            res="Vận chuyển";
-        }
-        return res;
-    }
+
     const getStatusTransport = (status) => {
         let res="";
         if (status && statusTransport){
@@ -255,7 +244,7 @@ function TransportRequirementsManagementTable(props) {
                                     {/* <td>{index + 1 + (page - 1) * perPage}</td> */}
                                     <td>{index+1}</td>
                                     <td>{x.code}</td>
-                                    <td>{getValueTypeRequirement(x.type)}</td>
+                                    <td>{getTypeRequirement(x.type)}</td>
                                     <td>{x.fromAddress}</td>
                                     <td>{x.toAddress}</td>
                                     <td>{x.creator ? x.creator.name : ""}</td>

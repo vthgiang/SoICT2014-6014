@@ -22,6 +22,26 @@ function TransportPlanManagementTable(props) {
     let { allTransportPlans, transportPlan } = props;
     const [currentTransportPlan, setCurrentTransportPlan] = useState()
     const [reloadRequirementTable, setReloadRequirementTable] = useState()
+
+    const planStatus = [
+        {
+            value: "1",
+            text: "Cần phân công phương tiện, xếp lộ trình di chuyển"
+        },
+        {
+            value: "2",
+            text: "Sẵn sàng vận chuyển"
+        },
+        {
+            value: "3",
+            text: "Đang tiến hành vận chuyển"
+        },
+        {
+            value: "4",
+            text: "Hoàn thành"
+        },
+    ]
+
     useEffect(() => {
         props.getAllTransportPlans({page: 1, limit: 500});
     }, [])
@@ -46,6 +66,15 @@ function TransportPlanManagementTable(props) {
 
     const reloadOtherEditForm = (value) => {
         setReloadRequirementTable(value);
+    }
+
+    const getPlanStatus = (value) => {
+        let res = "";
+        let tmp = planStatus.filter(r => String(r.value)===String(value));
+        if (tmp && tmp.length!==0){
+            res = tmp[0].text;
+        }
+        return res;
     }
     return (
         <div className="nav-tabs-custom">
@@ -93,7 +122,7 @@ function TransportPlanManagementTable(props) {
                             <tr key={index}>
                                 <td>{index + 1}</td>
                                 <td>{x.code}</td>
-                                <td>{x.status}</td>
+                                <td>{getPlanStatus(x.status)}</td>
                                 <td>{formatDate(x.startTime)+" - "+formatDate(x.endTime)}</td>
                                 <td>{""}</td>
                                 <td style={{ textAlign: "center" }}>

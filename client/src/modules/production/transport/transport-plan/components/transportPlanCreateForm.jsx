@@ -11,6 +11,7 @@ import { TransportVehicleAndCarrierSelect } from './transport-plan-create/transp
 
 import { transportPlanActions } from '../redux/actions';
 import { transportRequirementsActions } from '../../transport-requirements/redux/actions'
+import { getTypeRequirement } from '../../transportHelper/getTextFromValue'
 
 import {} from './transport-plan.css'
 
@@ -313,7 +314,7 @@ function TransportPlanCreateForm(props) {
                                         <th>{"Địa chỉ giao hàng"}</th>
                                         <th>{"Ngày tạo"}</th>
                                         <th>{"Ngày mong muốn vận chuyển"}</th>
-                                        <th>{"Trạng thái"}</th>
+                                        {/* <th>{"Trạng thái"}</th> */}
                                         <th>{"Hành động"}</th>
                                         {/* <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
                                             <DataTableSetting
@@ -335,7 +336,7 @@ function TransportPlanCreateForm(props) {
                                             <tr key={index}>
                                                 <td>{index+1}</td>
                                                 <td>{x.code}</td>
-                                                <td>{x.type}</td>
+                                                <td>{getTypeRequirement(x.type)}</td>
                                                 <td>{x.fromAddress}</td>
                                                 <td>{x.toAddress}</td>
                                                 <td>{x.createdAt ? formatDate(x.createdAt) : ""}</td>
@@ -349,7 +350,7 @@ function TransportPlanCreateForm(props) {
                                                         ))
                                                     }
                                                 </td>
-                                                <td>{x.status}</td>
+                                                {/* <td>{x.status}</td> */}
                                                 <td style={{ textAlign: "center" }} className="tooltip-checkbox">
                                                     <span className={"icon "
                                                     +getStatusTickBox(x)

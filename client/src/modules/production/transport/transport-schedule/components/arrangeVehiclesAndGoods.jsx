@@ -143,6 +143,7 @@ function ArrangeVehiclesAndGoods(props) {
             for ( let i=0; i< distributionList.length; i++){
                 let distribution = distributionList[i];
                 if (distribution.transportRequirements && distribution.transportRequirements.length !== 0){
+                    // Kiểm tra có phaỉ click lại xe hiện tại ko, đúng === xóa bỏ phân phối
                     let trace = distribution.transportRequirements.filter(r => String(r) === requirementId);
                     if (trace && trace.length!==0){
                         if (distribution.vehicle === vehicleId){
