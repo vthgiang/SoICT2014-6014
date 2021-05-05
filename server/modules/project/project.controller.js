@@ -146,3 +146,23 @@ exports.getListTasksEval = async (req, res) => {
         })
     }
 }
+
+exports.getSalaryMembers = async (req, res) => {
+    try {
+        let tp = await ProjectService.getSalaryMembers(req.portal, req.body.data);
+
+        res.status(200).json({
+            success: true,
+            messages: ['get_salary_members_success'],
+            content: tp
+        });
+    } catch (error) {
+        console.log('get_salary_members', error);
+        await Logger.error(req.user.email, 'ge_salary_members', req.portal)
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['get_salary_members_faile'],
+            content: error
+        })
+    }
+}

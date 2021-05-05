@@ -263,7 +263,11 @@ function calcProjectAutoPoint(data, getCalcPointsOnly = true) {
         }
     }
     const earnedValue = Number(progressTask) / 100 * Number(estimateNormalCost);
-    const plannedValue = Number(estDuration) / Number(realDuration) * 100 * Number(estimateNormalCost);
+    // Tính plannedValue dựa vào thời gian đã trôi qua
+    const diffFromStartToEnd = getDurationWithoutSatSun(startDate, endDate, projectDetail?.unitTime);
+    const diffFromStartToNow = getDurationWithoutSatSun(startDate, moment().format(), projectDetail?.unitTime) < 0 ? 0 : getDurationWithoutSatSun(startDate, moment().format(), projectDetail?.unitTime);
+    const plannedValue = (diffFromStartToNow / diffFromStartToEnd > 1 ? 1 : diffFromStartToNow / diffFromStartToEnd) * Number(estimateNormalCost);
+
     const actualCost = realCost;
     const costPerformanceIndex = earnedValue / actualCost;
 
@@ -331,7 +335,11 @@ function calcProjectTaskMemberAutoPoint(data, getCalcPointsOnly = true) {
     }
     // console.log('realCost', realCost)
     const earnedValue = Number(progressTask) / 100 * Number(estCost);
-    const plannedValue = Number(estDuration) / Number(realDuration) * 100 * Number(estCost);
+    // Tính plannedValue dựa vào thời gian đã trôi qua
+    const diffFromStartToEnd = getDurationWithoutSatSun(startDate, endDate, projectDetail?.unitTime);
+    const diffFromStartToNow = getDurationWithoutSatSun(startDate, moment().format(), projectDetail?.unitTime) < 0 ? 0 : getDurationWithoutSatSun(startDate, moment().format(), projectDetail?.unitTime);
+    const plannedValue = (diffFromStartToNow / diffFromStartToEnd > 1 ? 1 : diffFromStartToNow / diffFromStartToEnd) * Number(estCost);
+
     const actualCost = realCost;
     const costPerformanceIndex = earnedValue / actualCost;
 

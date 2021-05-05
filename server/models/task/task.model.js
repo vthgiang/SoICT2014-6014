@@ -386,7 +386,7 @@ const TaskSchema = new Schema(
             automaticPoint: {
                 // Điểm hệ thống đánh giá cho task
                 type: Number,
-                default: 0,
+                default: null,
             },
             responsibleEmployees: [
                 {
@@ -398,17 +398,17 @@ const TaskSchema = new Schema(
                     automaticPoint: {
                         // Điểm hệ thống đánh giá cho người thực hiện
                         type: Number,
-                        default: 0,
+                        default: null,
                     },
                     employeePoint: {
                         // Điểm người thực hiện tự đánh giá bản thân
                         type: Number,
-                        default: 0,
+                        default: null,
                     },
                     accountablePoint: {
                         // Điểm người phê duyệt đánh giá cho người thực hiện
                         type: Number,
-                        default: 0,
+                        default: null,
                     },
                     contribution: {
                         // % Đóng góp: 0->100
@@ -429,12 +429,12 @@ const TaskSchema = new Schema(
                     automaticPoint: {
                         // Điểm hệ thống đánh giá cho người phê duyệt
                         type: Number,
-                        default: 0,
+                        default: null,
                     },
                     employeePoint: {
                         // Điểm người phê duyệt tự đánh giá bản thân
                         type: Number,
-                        default: 0,
+                        default: null,
                     },
                     contribution: {
                         // % Đóng góp: 0->100

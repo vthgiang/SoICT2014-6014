@@ -10,5 +10,6 @@ router.post('/project', auth, ProjectController.create);
 router.patch('/project/:id', auth, ProjectController.edit);
 router.delete('/project/:id', auth, ProjectController.delete);
 router.get('/project/:id/getListTasksEval/:evalMonth', auth, ProjectController.getListTasksEval);
+router.post('/project/salary-members', auth, ProjectController.getSalaryMembers);
 
 module.exports = router;
