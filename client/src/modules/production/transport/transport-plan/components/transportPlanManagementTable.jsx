@@ -9,7 +9,7 @@ import { TransportPlanCreateForm } from "./transportPlanCreateForm"
 import { TransportPlanEditForm } from "./transportPlanEditForm"
 import { TransportPlanDetailInfo } from "./transportPlanDetailInfo"
 import { TransportVehicleAndCarrierListed } from "./transportVehicleAndCarrierListed"
-
+import { TransportVehicleCarrier2 } from "./transportVehicleCarrier2"
 import { transportPlanActions } from "../redux/actions"
 // import { transportRequirementsActions } from "../redux/actions";
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
@@ -81,6 +81,7 @@ function TransportPlanManagementTable(props) {
         <ul className="nav nav-tabs">
             <li className="active"><a href="#list-transport-plan" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Kế hoạch vận chuyển"}</a></li>
             <li><a href="#list-vehicle-carrier" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Thống kê phương tiện và nhân viên vận chuyển"}</a></li>
+            <li><a href="#list-vehicle-carrier2" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Thống kê phương tiện và nhân viên vận chuyển"}</a></li>
         </ul>
         <div className="tab-content">
             <div className="tab-pane active" id="list-transport-plan">
@@ -157,7 +158,13 @@ function TransportPlanManagementTable(props) {
             </div>
             </div>
             <div className="tab-pane" id="list-vehicle-carrier">
-                <TransportVehicleAndCarrierListed 
+                {/* <TransportVehicleAndCarrierListed 
+                    transportPlan = {transportPlan}
+                    // key={transportPlan}
+                /> */}
+            </div>
+            <div className="tab-pane" id="list-vehicle-carrier2">
+                <TransportVehicleCarrier2 
                     transportPlan = {transportPlan}
                     // key={transportPlan}
                 />

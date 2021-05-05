@@ -63,3 +63,34 @@
 .tooltiptext:hover a {
     text-decoration: underline;
 }
+div.divTest {
+    overflow-x:auto;
+}
+
+table.tableTest {
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+    border: 1px solid #ddd;
+    word-break: keep-all !important;
+  }
+  
+table.tableTest th, td {
+    text-align: left;
+    padding: 8px;
+    word-break: keep-all;
+    white-space: nowrap;
+  }
+table.tableTest th.first-column {
+    min-width: 100px;
+}
+.word-no-break td {
+    word-break: keep-all;
+}
+.word-no-break th {
+    word-break: keep-all;
+}
+.transport-special-row tr:nth-child(2n):not(2) {
+    /* border-bottom: 2px solid rgb(0, 162, 255); */
+    background: #a7cde4;
+}

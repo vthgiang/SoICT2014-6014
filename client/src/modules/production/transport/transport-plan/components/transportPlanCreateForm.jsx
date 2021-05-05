@@ -16,8 +16,8 @@ import { getTypeRequirement } from '../../transportHelper/getTextFromValue'
 import {} from './transport-plan.css'
 
 function TransportPlanCreateForm(props) {
-    let allTransportRequirements;
-    let {transportRequirements, currentDateClient} = props;
+    // let allTransportRequirements;
+    let {transportRequirements} = props;
     const [formSchedule, setFormSchedule] = useState({
         code: "",
         startDate: "",

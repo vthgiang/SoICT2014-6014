@@ -1,3 +1,4 @@
+// ko dung
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';

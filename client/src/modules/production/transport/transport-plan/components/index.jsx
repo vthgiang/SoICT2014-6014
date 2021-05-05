@@ -8,6 +8,7 @@ import { TransportArrangePlan } from './transportArrangePlan';
 import { TransportVehicleManagementTable } from '../../transport-vehicle/components/transportVehicleManagementTable';
 import { TransportVehicle } from '../../transport-vehicle/components/transportVehicle'
 import { TransportEmployee } from '../../transport-vehicle/components/transportEmployee'
+import "./transport-plan.css"
 class TransportPlan extends Component {
     constructor(props) {
         super(props);
