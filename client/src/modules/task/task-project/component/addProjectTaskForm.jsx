@@ -854,8 +854,6 @@ class AddProjectTaskForm extends Component {
                                 </div>
                             </div>
 
-
-
                             {/* Công việc tiền nhiệm */}
                             {listPreceedTasks.length > 0 && <div className="form-group">
                                 <label>{translate('project.task_management.preceedingTask')}</label>

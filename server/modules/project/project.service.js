@@ -49,17 +49,17 @@ exports.get = async (portal, query) => {
         ).paginate(options, {
             page, limit,
             populate: [
-                { path: "responsibleEmployees", select: "_id name" },
-                { path: "projectManager", select: "_id name" },
-                { path: "creator", select: "_id name" }
+                { path: "responsibleEmployees", select: "_id name email" },
+                { path: "projectManager", select: "_id name email" },
+                { path: "creator", select: "_id name email" }
             ]
         });
     }
     else {
         project = await Project(connect(DB_CONNECTION, portal)).find(options)
-            .populate({ path: "responsibleEmployees", select: "_id name" })
-            .populate({ path: "projectManager", select: "_id name" })
-            .populate({ path: "creator", select: "_id name" })
+            .populate({ path: "responsibleEmployees", select: "_id name email" })
+            .populate({ path: "projectManager", select: "_id name email" })
+            .populate({ path: "creator", select: "_id name email" })
     }
     return project;
 }
@@ -290,43 +290,68 @@ exports.getListTasksEval = async (portal, id, evalMonth) => {
         .find({
             taskProject: id,
         })
+        .populate({ path: "responsibleEmployees", select: "_id name" })
+        .populate({ path: "accountableEmployees", select: "_id name" })
+        .populate({ path: "consultedEmployees", select: "_id name" })
+        .populate({ path: "informedEmployees", select: "_id name" })
+        .populate({ path: "creator", select: "_id name" })
+        .populate({ path: "preceedingTasks", select: "_id name" });
+    // .populate([
+    //     { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
+    //     { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
+    // ]);
     let currentTasksWithinEvalMonth = []
-    // Chỉ lấy những task mà có startDate nhỏ hơn hoặc bằng evalMonth && endDate bằng hoặc lớn hơn evalMonth
+    // Chỉ lấy những task mà có endDate trong khoảng đầu cuối của evalMonth
     currentTasks.forEach((currentTaskItem) => {
-        const startMonth = Number(moment(currentTaskItem.startDate).format('M'));
-        const endMonth = Number(moment(currentTaskItem.endDate).format('M'));
-        const evalMonthNumber = Number(moment(evalMonth).format('M'));
-        if (startMonth <= evalMonthNumber && evalMonthNumber <= endMonth) {
+        const startOfCurrentMonthMoment = moment(evalMonth).startOf('month');
+        const endOfCurrentMonthMoment = moment(evalMonth).endOf('month');
+        if (moment(currentTaskItem.endDate).isSameOrAfter(startOfCurrentMonthMoment) &&
+            moment(currentTaskItem.endDate).isSameOrBefore(endOfCurrentMonthMoment)) {
             currentTasksWithinEvalMonth.push(currentTaskItem);
         }
     })
     if (currentTasksWithinEvalMonth.length === 0) return [];
     return currentTasksWithinEvalMonth.map((item) => {
-        // Nếu task đấy chưa có đánh giá tháng này
-        if (item.evaluations.length === 0 || !item.evaluations) {
-            return {
-                code: item.code,
-                name: item.name,
-                evalMonth,
-                automaticPoint: undefined,
-                employeePoint: undefined,
-                approvedPoint: undefined,
-            }
-        }
-        // Lấy Eval của tháng đang đánh giá
-        const currentEvalution = item.evaluations.find((evaluationItem) => {
-            const evalMonthNumber = Number(moment(evalMonth).format('M'));
-            const currentItemEvalMonthNumber = Number(moment(evaluationItem.evaluatingMonth).format('M'));
-            return evalMonthNumber === currentItemEvalMonthNumber
-        });
-        return {
-            code: item.code,
-            name: item.name,
-            evalMonth,
-            automaticPoint: currentEvalution.resultsForProject.automaticPoint,
-            employeePoint: currentEvalution.resultsForProject.employeePoint,
-            approvedPoint: currentEvalution.resultsForProject.approvedPoint,
-        }
+        return item;
     })
 }
 
+exports.getSalaryMembers = async (portal, data) => {
+    console.log(data)
+    let newResponsibleEmployeesWithUnit = [];
+    for (let employeeItem of data.responsibleEmployeesWithUnit) {
+        let newListUsers = [];
+        for (let userItem of employeeItem.listUsers) {
+            let currentUser = await User(connect(DB_CONNECTION, portal)).findById(userItem.userId);
+            // Tìm employee từ user email
+            let currentEmployee = await Employee(connect(DB_CONNECTION, portal)).find({
+                'emailInCompany': currentUser.email
+            })
+            // Nếu user này không phải là nhân viên => Không có lương
+            if (!currentEmployee || currentEmployee.length === 0) {
+                newListUsers.push({
+                    userId: userItem.userId,
+                    salary: 0
+                })
+                continue;
+            }
+            // Tra cứu bảng lương
+            let currentSalary = await Salary(connect(DB_CONNECTION, portal)).find({
+                $and: [
+                    { 'organizationalUnit': employeeItem.unitId },
+                    { 'employee': currentEmployee[0]._id },
+                ]
+            });
+            newListUsers.push({
+                userId: userItem.userId,
+                salary: currentSalary && currentSalary.length > 0 ? Number(currentSalary[0].mainSalary) : 0,
+            })
+        }
+        // Add vào mảng cuối cùng
+        newResponsibleEmployeesWithUnit.push({
+            unitId: employeeItem.unitId,
+            listUsers: newListUsers,
+        })
+    }
+    return newResponsibleEmployeesWithUnit;
+}

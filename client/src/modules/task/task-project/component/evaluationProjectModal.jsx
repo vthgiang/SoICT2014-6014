@@ -35,20 +35,6 @@ const EvaluationProjectModal = (props) => {
         >
             <div className="col-md-12 qlcv">
                 {role === "responsible" &&
-                    // <EvaluateByResponsibleEmployeeProject
-                    //     id={content}
-                    //     handleChangeDataStatus={this.handleChangeDataStatus}
-                    //     task={task}
-                    //     role={role}
-                    //     title={title}
-                    //     perform='evaluate'
-                    //     evaluation={evaluation}
-                    //     date={evaluation ? this.formatDate(evaluation.evaluatingMonth) : (checkEvaluationOfMonth ? dateParam[content] : (dateParam[content] ? dateParam[content] : this.TODAY))}
-                    //     handleChangeMonthEval={this.handleChangeMonthEval}
-                    //     isEval={isEval}
-                    //     handleChangeShowEval={this.handleChangeShowEval}
-                    //     handleChangeEnableAddItem={this.handleChangeEnableAddItem}
-                    // />
                     <EvaluateByResponsibleEmployeeProject role={role} task={task} />
                 }
             </div>

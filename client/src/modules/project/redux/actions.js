@@ -9,6 +9,7 @@ export const ProjectActions = {
 
     getListTasksEvalDispatch,
     createProjectTasksFromCPMDispatch,
+    getSalaryMembersDispatch,
 }
 
 function getProjectsDispatch(data = undefined) {
@@ -114,6 +115,22 @@ function createProjectTasksFromCPMDispatch(tasksList) {
             })
             .catch((err) => {
                 dispatch({ type: ProjectConstants.ADD_PROJECT_TASKS_CPM_FAILE });
+            });
+    };
+}
+
+function getSalaryMembersDispatch(data) {
+    return (dispatch) => {
+        dispatch({ type: ProjectConstants.GET_SALARY_MEMBER });
+        ProjectServices.getSalaryMembersAPI(data)
+            .then((res) => {
+                dispatch({
+                    type: ProjectConstants.GET_SALARY_MEMBER_SUCCESS,
+                    payload: res.data.content,
+                });
+            })
+            .catch((err) => {
+                dispatch({ type: ProjectConstants.GET_SALARY_MEMBER_FAILE });
             });
     };
 }

@@ -383,7 +383,7 @@ const ModalCalculateCPM = (props) => {
                                 {translate(isTableShown ? 'project.schedule.hideTableCPM' : 'project.schedule.showTableCPM')}
                             </button>
                             <Collapse in={isTableShown}>
-                                <table id="cpm-task-table" className="table table-striped table-bordered table-hover">
+                                <table id="cpm-task-table" className="table table-bordered table-hover">
                                     <thead>
                                         <tr>
                                             <th>{translate('project.schedule.taskCode')}</th>

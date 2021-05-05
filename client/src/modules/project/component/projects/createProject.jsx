@@ -7,6 +7,7 @@ import { ProjectActions } from '../../redux/actions';
 import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
 import { getStorage } from '../../../../config';
 import { convertDateTime, convertDepartmentIdToDepartmentName, convertUserIdToUserName, getListDepartments } from './functionHelper';
+import ModalSalaryMembers from './modalSalaryMembers';
 
 const ProjectCreateForm = (props) => {
     const { translate, project, user } = props;
@@ -172,213 +173,224 @@ const ProjectCreateForm = (props) => {
     }
 
     const handleAddRow = () => {
-        const oldListRow = responsibleEmployeesWithUnit.list;
-        const newListRow = [...oldListRow, {
-            unitId: responsibleEmployeesWithUnit.currentUnitRow || listDepartments[0]?.value,
-            listUsers: responsibleEmployeesWithUnit.currentEmployeeRow,
-        }];
-        setResponsibleEmployeesWithUnit({
-            ...responsibleEmployeesWithUnit,
-            list: newListRow,
-            currentUnitRow: '',
-            currentEmployeeRow: [],
-        })
+        if (responsibleEmployeesWithUnit.currentEmployeeRow.length > 0) {
+            const oldListRow = responsibleEmployeesWithUnit.list;
+            const newListRow = [...oldListRow, {
+                unitId: responsibleEmployeesWithUnit.currentUnitRow || listDepartments[0]?.value,
+                listUsers: responsibleEmployeesWithUnit.currentEmployeeRow,
+            }];
+            setResponsibleEmployeesWithUnit({
+                ...responsibleEmployeesWithUnit,
+                list: newListRow,
+                currentUnitRow: '',
+                currentEmployeeRow: [],
+            })
+        }
+    }
+
+    const handleOpenModalSalaryMembers = () => {
+        setTimeout(() => {
+            window.$("#modal-salary-members").modal("show");
+        }, 10);
     }
 
     return (
         <React.Fragment>
             <DialogModal
-                modalID="modal-create-project" isLoading={project.isLoading}
+                modalID="modal-create-project" isLoading={false}
                 formID="form-create-project"
                 title={translate('project.add_title')}
                 func={save}
                 disableSubmit={!isFormValidated()}
                 size={100}
             >
-                <form id="form-create-project">
-                    <div className="row">
-                        <div className={"col-sm-6"}>
-                            <fieldset className="scheduler-border">
-                                <legend className="scheduler-border">Thông số dự án</legend>
+                <ModalSalaryMembers responsibleEmployeesWithUnit={responsibleEmployeesWithUnit} />
+                <div className="row">
+                    <div className={"col-sm-6"}>
+                        <fieldset className="scheduler-border">
+                            <legend className="scheduler-border">Thông số dự án</legend>
 
-                                <div className={`form-group ${!projectNameError ? "" : "has-error"}`}>
-                                    <label>{translate('project.name')}<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" value={projectName} onChange={(e) => handleChangeForm(e, 'projectName')}></input>
-                                    <ErrorLabel content={projectNameError} />
-                                </div>
+                            <div className={`form-group ${!projectNameError ? "" : "has-error"}`}>
+                                <label>{translate('project.name')}<span className="text-red">*</span></label>
+                                <input type="text" className="form-control" value={projectName} onChange={(e) => handleChangeForm(e, 'projectName')}></input>
+                                <ErrorLabel content={projectNameError} />
+                            </div>
 
-                                <div className={`form-group ${!codeError ? "" : "has-error"}`}>
-                                    <label>{translate('project.code')}<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" maxLength={6} value={code} onChange={(e) => handleChangeForm(e, 'code')}></input>
-                                    <ErrorLabel content={codeError} />
-                                </div>
+                            <div className={`form-group ${!codeError ? "" : "has-error"}`}>
+                                <label>{translate('project.code')}<span className="text-red">*</span></label>
+                                <input type="text" className="form-control" maxLength={6} value={code} onChange={(e) => handleChangeForm(e, 'code')}></input>
+                                <ErrorLabel content={codeError} />
+                            </div>
 
-                                <div className="row">
-                                    <div className="form-group col-md-6">
-                                        <label>{translate('project.startDate')}<span className="text-red">*</span></label>
-                                        <DatePicker
-                                            id={`create-project-start-date`}
-                                            value={startDate}
-                                            onChange={(e) => handleChangeForm(e, 'startDate')}
-                                            dateFormat="day-month-year"
-                                            disabled={false}
-                                        />
-                                    </div>
-                                    <div className="form-group col-md-6">
-                                        <label>Thời gian bắt đầu dự án<span className="text-red">*</span></label>
-                                        <TimePicker
-                                            id={`create-project-start-time`}
-                                            value={startTime}
-                                            onChange={(e) => setStartTime(e)}
-                                            disabled={false}
-                                        />
-                                    </div>
+                            <div className="row">
+                                <div className="form-group col-md-6">
+                                    <label>{translate('project.startDate')}<span className="text-red">*</span></label>
+                                    <DatePicker
+                                        id={`create-project-start-date`}
+                                        value={startDate}
+                                        onChange={(e) => handleChangeForm(e, 'startDate')}
+                                        dateFormat="day-month-year"
+                                        disabled={false}
+                                    />
                                 </div>
+                                <div className="form-group col-md-6">
+                                    <label>Thời gian bắt đầu dự án<span className="text-red">*</span></label>
+                                    <TimePicker
+                                        id={`create-project-start-time`}
+                                        value={startTime}
+                                        onChange={(e) => setStartTime(e)}
+                                        disabled={false}
+                                    />
+                                </div>
+                            </div>
 
-                                <div className="row">
-                                    <div className="form-group col-md-6">
-                                        <label>{translate('project.endDate')}<span className="text-red">*</span></label>
-                                        <DatePicker
-                                            id={`create-project-end-date`}
-                                            value={endDate}
-                                            onChange={(e) => handleChangeForm(e, 'endDate')}
-                                            dateFormat="day-month-year"
-                                            disabled={false}
-                                        />
-                                    </div>
-                                    <div className="form-group col-md-6">
-                                        <label>Thời gian dự kiến kết thúc dự án<span className="text-red">*</span></label>
-                                        <TimePicker
-                                            id={`create-project-end-time`}
-                                            value={endTime}
-                                            onChange={(e) => setEndTime(e)}
-                                            disabled={false}
-                                        />
-                                    </div>
+                            <div className="row">
+                                <div className="form-group col-md-6">
+                                    <label>{translate('project.endDate')}<span className="text-red">*</span></label>
+                                    <DatePicker
+                                        id={`create-project-end-date`}
+                                        value={endDate}
+                                        onChange={(e) => handleChangeForm(e, 'endDate')}
+                                        dateFormat="day-month-year"
+                                        disabled={false}
+                                    />
                                 </div>
+                                <div className="form-group col-md-6">
+                                    <label>Thời gian dự kiến kết thúc dự án<span className="text-red">*</span></label>
+                                    <TimePicker
+                                        id={`create-project-end-time`}
+                                        value={endTime}
+                                        onChange={(e) => setEndTime(e)}
+                                        disabled={false}
+                                    />
+                                </div>
+                            </div>
 
-                                <div className="form-group">
-                                    <label>{translate('project.unitTime')}</label>
-                                    <div className="form-control">Ngày</div>
-                                </div>
-                                <div className="form-group">
-                                    <label>{translate('project.unitCost')}</label>
-                                    <div className="form-control">VND</div>
-                                </div>
+                            <div className="form-group">
+                                <label>{translate('project.unitTime')}</label>
+                                <div className="form-control">Ngày</div>
+                            </div>
+                            <div className="form-group">
+                                <label>{translate('project.unitCost')}</label>
+                                <div className="form-control">VND</div>
+                            </div>
 
-                                <div className={`form-group`}>
-                                    <label>{translate('project.description')}</label>
-                                    <textarea type="text" className="form-control" value={description} onChange={(e) => handleChangeForm(e, 'description')} />
-                                </div>
-                            </fieldset>
-                        </div>
-                        <div className={"col-sm-6"}>
-                            <fieldset className="scheduler-border">
-                                <legend className="scheduler-border">Nhân lực</legend>
-                                <div className="form-group">
-                                    <label>{translate('project.manager')}<span className="text-red">*</span></label>
-                                    {listUsers &&
-                                        <SelectBox
-                                            id={`select-project-manager`}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            items={listUsers}
-                                            onChange={(e) => handleChangeForm(e, 'projectManager')}
-                                            value={projectManager}
-                                            multiple={true}
-                                        />
-                                    }
-                                </div>
-                                <div className="form-group">
-                                    <label>{translate('project.member')}<span className="text-red">*</span></label>
-                                    <table id="project-table" className="table table-striped table-bordered table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th>Thuộc đơn vị</th>
-                                                <th>Thành viên tham gia</th>
-                                                <th>{translate('task_template.action')}</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {responsibleEmployeesWithUnit.list && responsibleEmployeesWithUnit.list.length > 0 &&
-                                                responsibleEmployeesWithUnit.list.map((item, index) => (
-                                                    <tr key={index}>
-                                                        <td>{convertDepartmentIdToDepartmentName(user.usersInUnitsOfCompany, item?.unitId)}</td>
-                                                        <td>
-                                                            {item?.listUsers.map(userItem =>
-                                                                convertUserIdToUserName(listUsers, userItem))
-                                                                .join(', ')
-                                                            }
-                                                        </td>
-                                                        <td>
-                                                            <a className="delete" title={translate('general.delete')} onClick={() => handleDelete(index)}><i className="material-icons">delete</i></a>
-                                                        </td>
-                                                    </tr>
-                                                ))
-                                            }
-                                            <tr key={`add-task-input-${responsibleEmployeesWithUnit.list.length}`}>
-                                                <td>
-                                                    <div className={`form-group`}>
-                                                        {listDepartments && listDepartments.length > 0 &&
-                                                            <SelectBox
-                                                                id={`create-project-${responsibleEmployeesWithUnit.list.length}`}
-                                                                className="form-control select2"
-                                                                style={{ width: "100%" }}
-                                                                items={listDepartments}
-                                                                onChange={(e) => {
-                                                                    setTimeout(() => {
-                                                                        setResponsibleEmployeesWithUnit({
-                                                                            ...responsibleEmployeesWithUnit,
-                                                                            currentUnitRow: e[0],
-                                                                        })
-                                                                    }, 10);
-                                                                }}
-                                                                value={responsibleEmployeesWithUnit.currentUnitRow}
-                                                                multiple={false}
-                                                            />}
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <div className={`form-group`}>
-                                                        {listDepartments && listDepartments.length > 0 &&
-                                                            <SelectBox
-                                                                id={`select-project-members`}
-                                                                className="form-control select2"
-                                                                style={{ width: "100%" }}
-                                                                items={listUsers.filter(item =>
-                                                                    item.text === convertDepartmentIdToDepartmentName(user.usersInUnitsOfCompany,
-                                                                        responsibleEmployeesWithUnit.currentUnitRow || listDepartments[0]?.value)
-                                                                )}
-                                                                onChange={(e) => {
-                                                                    setTimeout(() => {
-                                                                        setResponsibleEmployeesWithUnit({
-                                                                            ...responsibleEmployeesWithUnit,
-                                                                            currentEmployeeRow: e,
-                                                                        })
-                                                                    }, 10);
-                                                                }}
-                                                                value={responsibleEmployeesWithUnit.currentEmployeeRow}
-                                                                multiple={true}
-                                                            />}
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <a className="save text-green" title={translate('general.save')} onClick={handleAddRow}><i className="material-icons">add_circle</i></a>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-
-
-                            </fieldset>
-                        </div>
+                            <div className={`form-group`}>
+                                <label>{translate('project.description')}</label>
+                                <textarea type="text" className="form-control" value={description} onChange={(e) => handleChangeForm(e, 'description')} />
+                            </div>
+                        </fieldset>
                     </div>
-                    {/* <div className="form-group">
+                    <div className={"col-sm-6"}>
+                        <fieldset className="scheduler-border">
+                            <legend className="scheduler-border">Nhân lực</legend>
+                            <div className="form-group">
+                                <label>{translate('project.manager')}<span className="text-red">*</span></label>
+                                {listUsers &&
+                                    <SelectBox
+                                        id={`select-project-manager`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={listUsers}
+                                        onChange={(e) => handleChangeForm(e, 'projectManager')}
+                                        value={projectManager}
+                                        multiple={true}
+                                    />
+                                }
+                            </div>
+                            <div className="form-group">
+                                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+                                    <label>{translate('project.member')}<span className="text-red">*</span></label>
+                                    <button className="btn-link" onClick={handleOpenModalSalaryMembers}>Xem chi tiết lương nhân viên</button>
+                                </div>
+                                <table id="project-table" className="table table-striped table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Thuộc đơn vị</th>
+                                            <th>Thành viên tham gia</th>
+                                            <th>{translate('task_template.action')}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {responsibleEmployeesWithUnit.list && responsibleEmployeesWithUnit.list.length > 0 &&
+                                            responsibleEmployeesWithUnit.list.map((item, index) => (
+                                                <tr key={index}>
+                                                    <td>{convertDepartmentIdToDepartmentName(user.usersInUnitsOfCompany, item?.unitId)}</td>
+                                                    <td>
+                                                        {item?.listUsers.map(userItem =>
+                                                            convertUserIdToUserName(listUsers, userItem))
+                                                            .join(', ')
+                                                        }
+                                                    </td>
+                                                    <td>
+                                                        <a className="delete" title={translate('general.delete')} onClick={() => handleDelete(index)}><i className="material-icons">delete</i></a>
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        }
+                                        <tr key={`add-task-input-${responsibleEmployeesWithUnit.list.length}`}>
+                                            <td>
+                                                <div className={`form-group`}>
+                                                    {listDepartments && listDepartments.length > 0 &&
+                                                        <SelectBox
+                                                            id={`create-project-${responsibleEmployeesWithUnit.list.length}`}
+                                                            className="form-control select2"
+                                                            style={{ width: "100%" }}
+                                                            items={listDepartments}
+                                                            onChange={(e) => {
+                                                                setTimeout(() => {
+                                                                    setResponsibleEmployeesWithUnit({
+                                                                        ...responsibleEmployeesWithUnit,
+                                                                        currentUnitRow: e[0],
+                                                                    })
+                                                                }, 10);
+                                                            }}
+                                                            value={responsibleEmployeesWithUnit.currentUnitRow}
+                                                            multiple={false}
+                                                        />}
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div className={`form-group`}>
+                                                    {listDepartments && listDepartments.length > 0 &&
+                                                        <SelectBox
+                                                            id={`select-project-members`}
+                                                            className="form-control select2"
+                                                            style={{ width: "100%" }}
+                                                            items={listUsers.filter(item =>
+                                                                item.text === convertDepartmentIdToDepartmentName(user.usersInUnitsOfCompany,
+                                                                    responsibleEmployeesWithUnit.currentUnitRow || listDepartments[0]?.value)
+                                                            )}
+                                                            onChange={(e) => {
+                                                                setTimeout(() => {
+                                                                    setResponsibleEmployeesWithUnit({
+                                                                        ...responsibleEmployeesWithUnit,
+                                                                        currentEmployeeRow: e,
+                                                                    })
+                                                                }, 10);
+                                                            }}
+                                                            value={responsibleEmployeesWithUnit.currentEmployeeRow}
+                                                            multiple={true}
+                                                        />}
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <a className="save text-green" title={translate('general.save')} onClick={handleAddRow}><i className="material-icons">add_circle</i></a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+
+                        </fieldset>
+                    </div>
+                </div>
+                {/* <div className="form-group">
                         <label>{translate('project.parent')}</label>
                         <TreeSelect data={list} value={projectParent} handleChange={handleParent} mode="radioSelect" />
                     </div> */}
-                    {/* <div className={`form-group`}>
+                {/* <div className={`form-group`}>
                         <label>{translate('project.estimatedCost')}</label>
                         <input
                             type="number"
@@ -387,7 +399,6 @@ const ProjectCreateForm = (props) => {
                             onChange={(e) => handleChangeForm(e, 'estimatedCost')}
                         />
                     </div> */}
-                </form>
             </DialogModal>
         </React.Fragment>
     );
