@@ -136,7 +136,7 @@ function TransportManageRouteMainPage(props) {
     }
 
     const getCarriers = (vehicleId) => {
-        let carriers = "";
+        let listCarriers = "";
         if (currentTransportPlan && currentTransportPlan.transportVehicles && currentTransportPlan.transportVehicles.length!==0){
             let transportVehicles = currentTransportPlan.transportVehicles.filter(r => String(r.vehicle?._id) === String(vehicleId));
             if (transportVehicles && transportVehicles.length!==0){
@@ -145,18 +145,18 @@ function TransportManageRouteMainPage(props) {
                     let carrier_driver = carriers.filter(c => String(c.pos) !== "1");
                     if (carrier_driver && carrier_driver.length!==0){
                         carrier_driver.map((cd, indexcd) => {
-                            if (cd.carrier){
+                            if (cd.carrier && cd.carrier.name){
                                 if (indexcd !==0){
-                                    carriers = carriers.concat(", ")
+                                    listCarriers = listCarriers.concat(", ")
                                 }
-                                carriers = carriers.concat(cd.carrier.name);
+                                listCarriers = listCarriers.concat(cd.carrier.name);
                             }
                         })
                     }
                 }
             }
         };
-        return carriers;
+        return listCarriers;
     }
     // setInterval(()=>{     
     //     navigator.geolocation.getCurrentPosition(success);

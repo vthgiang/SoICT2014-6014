@@ -64,9 +64,14 @@ exports.createTransportRequirement = async (portal, data, userId) => {
     }
 
     let requirement = await TransportRequirement(connect(DB_CONNECTION, portal)).findById({ _id: newTransportRequirement._id })
-                            .populate({
-                                path: 'creator'
-                            });
+                            .populate([
+                                {
+                                    path: 'creator'
+                                },
+                                {
+                                    path: 'approver'
+                                }
+                            ]);
     return requirement;
 }
 
@@ -112,6 +117,9 @@ exports.getAllTransportRequirements = async (portal, data) => {
             })
             .populate({
                 path: 'goods.good'
+            })
+            .populate({
+                path: 'approver'
             })
     }
 

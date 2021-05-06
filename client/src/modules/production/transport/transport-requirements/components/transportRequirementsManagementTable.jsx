@@ -121,6 +121,13 @@ function TransportRequirementsManagementTable(props) {
     const handleShowApprove = (requirement) => {
         props.editTransportRequirement(requirement._id, {status: 2})
     }
+    const checkApprover = (requirement) => {
+        if (String(localStorage.getItem("userId") === requirement.approver?._id)){
+            return true;
+        }
+        console.log("false")
+        return false;
+    }
     /**
      * Hàm xử lý khi click xem chi tiết một ví dụ
      * @param {*} example thông tin của ví dụ cần xem
@@ -275,7 +282,8 @@ function TransportRequirementsManagementTable(props) {
                                         }
                                         {
                                         // this.checkUserForApprove(item) === 1 && 
-                                        String(x.status) === "1" && (
+                                        (String(x.status)==="1"&&checkApprover(x) === true)
+                                        &&(
                                             <a
                                                 onClick={() => handleShowApprove(x)}
                                                 className="add text-success"
