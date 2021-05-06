@@ -139,6 +139,7 @@ exports.getTaskById = async (portal, id, userId) => {
             },
             { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
             { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
+            { path: "logs.creator", select: "_id name"}
         ]);
     if (!task) {
         return {
