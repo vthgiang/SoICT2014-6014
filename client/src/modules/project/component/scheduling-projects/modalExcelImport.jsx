@@ -15,15 +15,15 @@ const ModalExcelImport = (props) => {
 
     const getEmailMembers = () => {
         let resultArr = [];
-        resultArr.push(projectDetail.creator.email);
-        for (let managerItem of projectDetail.projectManager) {
-            if (!resultArr.includes(managerItem.email)) {
-                resultArr.push(managerItem.email)
+        resultArr.push(projectDetail?.creator?.email);
+        for (let managerItem of projectDetail?.projectManager) {
+            if (!resultArr.includes(managerItem?.email)) {
+                resultArr.push(managerItem?.email)
             }
         }
-        for (let employeeItem of projectDetail.responsibleEmployees) {
-            if (!resultArr.includes(employeeItem.email)) {
-                resultArr.push(employeeItem.email)
+        for (let employeeItem of projectDetail?.responsibleEmployees) {
+            if (!resultArr.includes(employeeItem?.email)) {
+                resultArr.push(employeeItem?.email)
             }
         }
         return resultArr;
@@ -107,8 +107,8 @@ const ModalExcelImport = (props) => {
                                         estimateOptimisticTime: 2,
                                         estimateNormalTime: 5,
                                         predecessors: '',
-                                        responsibleEmployees: 'abc.vnist@gmail.com',
-                                        accountableEmployees: 'xyz.vnist@gmail.com',
+                                        emailResponsibleEmployees: 'abc.vnist@gmail.com',
+                                        emailAccountableEmployees: 'xyz.vnist@gmail.com',
                                         emailProjectMembers: emailItem,
                                     }
                                 }
@@ -119,8 +119,8 @@ const ModalExcelImport = (props) => {
                                         estimateOptimisticTime: 5,
                                         estimateNormalTime: 8,
                                         predecessors: 'A',
-                                        responsibleEmployees: 'abc.vnist@gmail.com, abc2.vnist@gmail.com',
-                                        accountableEmployees: 'xyz.vnist@gmail.com, xyz2.vnist@gmail.com',
+                                        emailResponsibleEmployees: 'abc.vnist@gmail.com, abc2.vnist@gmail.com',
+                                        emailAccountableEmployees: 'xyz.vnist@gmail.com, xyz2.vnist@gmail.com',
                                         emailProjectMembers: emailItem,
                                     }
                                 }
@@ -130,8 +130,8 @@ const ModalExcelImport = (props) => {
                                     estimateOptimisticTime: '',
                                     estimateNormalTime: '',
                                     predecessors: '',
-                                    responsibleEmployees: '',
-                                    accountableEmployees: '',
+                                    emailResponsibleEmployees: '',
+                                    emailAccountableEmployees: '',
                                     emailProjectMembers: emailItem,
                                 }
                             })

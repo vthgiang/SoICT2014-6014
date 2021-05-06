@@ -15,7 +15,7 @@ import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import { RoleActions } from '../../../super-admin/role/redux/actions';
 import { ROOT_ROLE } from '../../../../helpers/constants';
 import dayjs from "dayjs";
-import { getCurrentProjectDetails, getDurationWithoutSatSun, getEstimateHumanCostFromParams } from '../../../project/component/projects/functionHelper';
+import { getCurrentProjectDetails, getDurationWithoutSatSun, getEstimateHumanCostFromParams, handleWeekendAndWorkTime } from '../../../project/component/projects/functionHelper';
 import moment from 'moment';
 import { getSalaryFromUserId, numberWithCommas } from '../../task-management/component/functionHelpers';
 import { AutomaticTaskPointCalculator } from '../../task-perform/component/automaticTaskPointCalculator';
@@ -29,7 +29,7 @@ class AddProjectTaskForm extends Component {
                 name: "",
                 description: "",
                 quillDescriptionDefault: "",
-                startDate: "",
+                startDate: moment().format('DD-MM-YYYY'),
                 endDate: "",
                 priority: 3,
                 responsibleEmployees: [],
@@ -137,59 +137,63 @@ class AddProjectTaskForm extends Component {
         this.validateTaskStartDate(value, true);
     }
     validateTaskStartDate = (value, willUpdateState = true) => {
-        let { translate } = this.props;
-        let msg = TaskFormValidator.validateTaskStartDate(value, this.state.newTask.endDate, translate);
+        console.log('value', value)
+        let { translate, project } = this.props;
         let { newTask } = this.state;
-        let startDate = this.convertDateTime(value, this.state.startTime);
-        let endDate = this.convertDateTime(this.state.newTask.endDate, this.state.endTime);
-        if (startDate > endDate) {
-            msg = translate('task.task_management.add_err_end_date');
+        let msg = TaskFormValidator.validateTaskStartDate(value, newTask.endDate, translate);
+        const projectDetail = getCurrentProjectDetails(project);
+        const curStartDateTime = this.convertDateTime(value, this.state.startTime);
+        const taskItem = curStartDateTime && newTask.estimateNormalTime && {
+            startDate: curStartDateTime,
+            endDate: undefined,
+            estimateNormalTime: Number(newTask.estimateNormalTime),
         }
+        const curEndDateTime = taskItem ? handleWeekendAndWorkTime(projectDetail, taskItem).endDate : '';
+        const curEndDate = curEndDateTime ? moment(curEndDateTime).format('DD-MM-YYYY') : this.state.newTask.endDate;
+        const curEndTime = curEndDateTime ? moment(curEndDateTime).format('H:mm A') : this.state.endTime;
+
         if (willUpdateState) {
             newTask.startDate = value;
-            const numsOfSaturdays = this.getNumsOfDaysWithoutGivenDay(new Date(startDate), new Date(endDate), 6)
-            const numsOfSundays = this.getNumsOfDaysWithoutGivenDay(new Date(startDate), new Date(endDate), 0)
-            // newTask.estimateNormalTime = (moment(endDate).diff(moment(startDate), 'milliseconds') - numsOfSaturdays * MILISECS_TO_DAYS - numsOfSundays * MILISECS_TO_DAYS)
-            newTask.estimateNormalTime = (moment(endDate).diff(moment(startDate), 'milliseconds'))
-                .toString()
-            newTask.errorOnStartDate = msg;
-            if (!msg && newTask.endDate) newTask.errorOnEndDate = msg;
+            newTask.endDate = curEndDate;
             this.setState(state => {
                 return {
                     ...state,
+                    endTime: curEndTime,
                     newTask
                 };
+            }, () => {
+                this.props.handleChangeEndTime(this.state.endTime);
+                this.props.handleChangeTaskData(this.state.newTask)
             });
-            this.props.handleChangeTaskData(this.state.newTask)
         }
         return msg === undefined;
     }
 
     handleStartTimeChange = (value) => {
-        let { translate } = this.props;
-        let startDate = this.convertDateTime(this.state.newTask.startDate, value);
-        let endDate = this.convertDateTime(this.state.newTask.endDate, this.state.endTime);
-        let err, resetErr;
+        const { project } = this.props;
+        let { newTask } = this.state;
+        const projectDetail = getCurrentProjectDetails(project);
+        const curStartDateTime = this.convertDateTime(this.state.newTask.startDate, value);
+        const taskItem = curStartDateTime && newTask.estimateNormalTime && {
+            startDate: curStartDateTime,
+            endDate: undefined,
+            estimateNormalTime: Number(newTask.estimateNormalTime),
+        }
+        const curEndDateTime = taskItem ? handleWeekendAndWorkTime(projectDetail, taskItem).endDate : '';
+        const curEndDate = curEndDateTime ? moment(curEndDateTime).format('DD-MM-YYYY') : this.state.newTask.endDate;
+        const curEndTime = curEndDateTime ? moment(curEndDateTime).format('H:mm A') : this.state.endTime;
 
-        if (value.trim() === "") {
-            err = translate('task.task_management.add_err_empty_end_date');
-        }
-        else if (startDate > endDate) {
-            err = translate('task.task_management.add_err_end_date');
-            resetErr = undefined;
-        }
+        newTask.endDate = curEndDate;
         this.setState(state => {
             return {
                 ...state,
                 startTime: value,
-                newTask: {
-                    ...state.newTask,
-                    errorOnStartDate: err,
-                    errorOnEndDate: resetErr,
-                }
+                endTime: curEndTime,
+                newTask,
             }
         }, () => {
             this.props.handleChangeStartTime(this.state.startTime);
+            this.props.handleChangeEndTime(this.state.endTime);
             this.props.handleChangeTaskData(this.state.newTask)
         });
     }
@@ -372,19 +376,6 @@ class AddProjectTaskForm extends Component {
 
     }
 
-    onSearch = async (txt) => {
-
-        await this.props.getPaginateTasksByUser([], "1", "5", [], [], [], txt, null, null, null, null, false, "listSearch");
-
-        this.setState(state => {
-            state.newTask.parent = "";
-            return {
-                ...state,
-            }
-        });
-        this.props.handleChangeTaskData(this.state.newTask)
-    }
-
     handleChangeTaskResponsibleEmployees = (value) => {
         this.validateTaskResponsibleEmployees(value, true);
     }
@@ -519,22 +510,45 @@ class AddProjectTaskForm extends Component {
     }
 
     handleChangeEstTimeTask = (value, timeType) => {
+        const { newTask } = this.state;
+        const projectDetail = getCurrentProjectDetails(this.props.project);
         if (timeType === 'estimateNormalTime') {
-            this.setState({
-                newTask: {
-                    ...this.state.newTask,
-                    estimateNormalTime: value,
-                    estimateOptimisticTime: value || Number(value) < 0 ? (Number(value) - 200).toString() : '',
-                    errorOnTimeEst: TaskFormValidator.validateTimeEst(value, this.props.translate),
+            const curStartDateTime = this.state.newTask.startDate ? this.convertDateTime(this.state.newTask.startDate, this.state.startTime) : undefined;
+            const currentEstimateNormalTime = String(Number(value)) === 'NaN' ? 0 : Number(value);
+            const taskItem = curStartDateTime && {
+                startDate: curStartDateTime,
+                endDate: undefined,
+                estimateNormalTime: currentEstimateNormalTime,
+            }
+            const curEndDateTime = taskItem ? handleWeekendAndWorkTime(projectDetail, taskItem).endDate : '';
+            const curEndDate = curEndDateTime ? moment(curEndDateTime).format('DD-MM-YYYY') : this.state.newTask.endDate;
+            const curEndTime = curEndDateTime ? moment(curEndDateTime).format('H:mm A') : this.state.endTime;
+
+            const predictEstimateOptimisticTime = String(Number(value)) === 'NaN' || Number(value) === 0 || Number(value) === 1
+                ? '0' : Number(value) === 2 ? '1' : (Number(value) - 2).toString()
+            this.setState(state => {
+                return {
+                    ...state,
+                    endTime: curEndTime,
+                    newTask: {
+                        ...this.state.newTask,
+                        estimateNormalTime: value,
+                        estimateOptimisticTime: predictEstimateOptimisticTime,
+                        errorOnTimeEst: TaskFormValidator.validateTimeEst(value, this.props.translate),
+                        endDate: curEndDate,
+                    },
                 }
-            }, () => this.props.handleChangeTaskData(this.state.newTask))
+            }, () => {
+                this.props.handleChangeEndTime(this.state.endTime);
+                this.props.handleChangeTaskData(this.state.newTask)
+            })
             return;
         }
         this.setState({
             newTask: {
                 ...this.state.newTask,
                 [timeType]: value,
-                errorOnTimeEst: TaskFormValidator.validateTimeEst(value, this.props.translate),
+                errorOnMaxTimeEst: TaskFormValidator.validateTimeEst(value, this.props.translate, true, Number(newTask.estimateNormalTime)),
             }
         }, () => this.props.handleChangeTaskData(this.state.newTask))
     }
@@ -559,8 +573,6 @@ class AddProjectTaskForm extends Component {
             }
         }, () => this.props.handleChangeTaskData(this.state.newTask))
     }
-
-
 
     // convert ISODate to String dd-mm-yyyy
     formatDate(date) {
@@ -628,40 +640,6 @@ class AddProjectTaskForm extends Component {
             startDate.setDate(startDate.getDate() + 1)
         }
         return numberOfDates
-    }
-
-    getEstHumanCost = () => {
-        const { newTask, endTime, startTime } = this.state;
-        const { responsibleEmployees, accountableEmployees, endDate, startDate } = newTask;
-        const projectDetail = getCurrentProjectDetails(this.props.project);
-        const startDateTask = this.convertDateTime(startDate, startTime);
-        const endDateTask = this.convertDateTime(endDate, endTime);
-        // Cần phải có biện pháp trừ đi ngày thứ 7 chủ nhật
-        const numsOfSaturdays = this.getNumsOfDaysWithoutGivenDay(new Date(startDateTask), new Date(endDateTask), 6)
-        const numsOfSundays = this.getNumsOfDaysWithoutGivenDay(new Date(startDateTask), new Date(endDateTask), 0)
-        // const duration = moment(endDateTask).diff(moment(startDateTask), `milliseconds`) / MILISECS_TO_DAYS - numsOfSaturdays - numsOfSundays;
-        const duration = moment(endDateTask).diff(moment(startDateTask), `milliseconds`) / MILISECS_TO_DAYS;
-        console.log('duration-------', duration)
-
-        // Tính số ngày công của tháng
-        const weekDays = AutomaticTaskPointCalculator.getAmountOfWeekDaysInMonth(moment(startDateTask));
-
-        let sum = 0;
-        for (let responsibleItem of responsibleEmployees) {
-            // 0.8 là trọng số của Responsible
-            // Chia cho length đề phòng có nhiều người trong array này
-            const resWeight = 0.8 / responsibleEmployees.length
-            // Chia weekDays là số ngày công
-            sum += getSalaryFromUserId(projectDetail?.responsibleEmployeesWithUnit, responsibleItem) / weekDays * duration * resWeight;
-        }
-        for (let accountableItem of accountableEmployees) {
-            // 0.2 là trọng số của Accountable
-            // Chia cho length đề phòng có nhiều người trong array này
-            const accWeight = 0.2 / accountableEmployees.length
-            // Chia weekDays là số ngày công
-            sum += getSalaryFromUserId(projectDetail?.responsibleEmployeesWithUnit, accountableItem) / weekDays * duration * accWeight;
-        }
-        return numberWithCommas(sum);
     }
 
     handleChangeAssetCost = (event) => {
@@ -943,10 +921,10 @@ class AddProjectTaskForm extends Component {
                         {/* Thời gian */}
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border">Ước lượng thời gian</legend>
-                            {/* Ngày bắt đầu, dự kiến kết thúc công việc */}
+                            {/* Ngày bắt đầu công việc, kết thúc công việc */}
                             <div className="row form-group">
                                 <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${newTask.errorOnStartDate === undefined ? "" : "has-error"}`}>
-                                    <label className="control-label">{translate('task.task_management.start_date')}<span className="text-red">*</span></label>
+                                    <label className="control-label">Thời điểm bắt đầu<span className="text-red">*</span></label>
                                     <DatePicker
                                         id={`datepicker1-${id}-${this.props.id}`}
                                         dateFormat="day-month-year"
@@ -962,19 +940,44 @@ class AddProjectTaskForm extends Component {
                                     <ErrorLabel content={newTask.errorOnStartDate} />
                                 </div>
                                 <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${newTask.errorOnEndDate === undefined ? "" : "has-error"}`}>
-                                    <label className="control-label">{translate('project.task_management.end_date')}<span className="text-red">*</span></label>
-                                    <DatePicker
-                                        id={`datepicker2-${id}-${this.props.id}`}
-                                        value={newTask.endDate}
-                                        onChange={this.handleChangeTaskEndDate}
-                                    />
-                                    < TimePicker
-                                        id={`time-picker-2-${id}-${this.props.id}`}
-                                        ref={`time-picker-2-${id}-${this.props.id}`}
-                                        value={endTime}
-                                        onChange={this.handleEndTimeChange}
-                                    />
+                                    <label className="control-label">Thời điểm kết thúc<span className="text-red">*</span></label>
+                                    <div>
+                                        {this.state.newTask.endDate && this.state.newTask.estimateNormalTime && `${this.state.newTask.endDate} ${this.state.endTime}`}
+                                    </div>
                                     <ErrorLabel content={newTask.errorOnEndDate} />
+                                </div>
+                            </div>
+                            {/* Thời gian ước lượng công việc */}
+                            <div className="row form-group">
+                                <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${newTask.errorOnTimeEst === undefined ? "" : "has-error"}`}>
+                                    <label className="control-label">
+                                        Thời gian ước lượng ({translate(`project.unit.${getCurrentProjectDetails(this.props.project).unitTime}`)})
+                                        <span className="text-red">*</span>
+                                    </label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        value={estimateNormalTime}
+                                        onChange={(e) => {
+                                            this.handleChangeEstTimeTask(e.target.value, 'estimateNormalTime')
+                                        }}
+                                    />
+                                    <ErrorLabel content={newTask.errorOnTimeEst} />
+                                </div>
+                                <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${newTask.errorOnMaxTimeEst === undefined ? "" : "has-error"}`}>
+                                    <label className="control-label">
+                                        Thời gian ước lượng thoả hiệp ({translate(`project.unit.${getCurrentProjectDetails(this.props.project).unitTime}`)})
+                                        <span className="text-red">*</span>
+                                    </label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        value={estimateOptimisticTime}
+                                        onChange={(e) => {
+                                            this.handleChangeEstTimeTask(e.target.value, 'estimateOptimisticTime')
+                                        }}
+                                    />
+                                    <ErrorLabel content={newTask.errorOnMaxTimeEst} />
                                 </div>
                             </div>
                         </fieldset>
