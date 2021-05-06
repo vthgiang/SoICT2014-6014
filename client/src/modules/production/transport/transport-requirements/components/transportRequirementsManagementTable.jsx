@@ -6,15 +6,65 @@ import { DataTableSetting, DeleteNotification, PaginateBar } from "../../../../.
 
 import { TransportRequirementsCreateForm } from "./transportRequirementsCreateForm"
 import { TransportRequirementsViewDetails } from "./transportRequirementsViewDetails"
+import { TransportRequirementsEditForm } from './transportRequirementsEditForm'
 
 import { transportRequirementsActions } from "../redux/actions";
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
+
+import {getTypeRequirement} from '../../transportHelper/getTextFromValue'
 
 function TransportRequirementsManagementTable(props) {
     const getTableId = "table-manage-transport-requirements-hooks";
     const defaultConfig = { limit: 5 }
     const getLimit = getTableConfiguration(getTableId, defaultConfig).limit;
 
+    const requirements = [
+        {
+            value: "1",
+            text: "Giao hàng",
+            billType: "4",
+            billGroup: "2",
+        },
+        {
+            value: "2",
+            text: "Trả hàng",
+            billType: "7",
+            billGroup: "3",
+        },
+        {
+            value: "3",
+            text: "Chuyển thành phẩm tới kho",
+            billType: "2",
+            billGroup: "1",
+        },
+        {
+            value: "4",
+            text: "Giao nguyên vật liệu",
+            billType: "3",
+            billGroup: "2"
+        },
+        {
+            value: "5",
+            text: "Khác",
+        }
+    ];
+    const statusTransport = [
+        {
+            value: "1", text: "Chờ phê duyệt"
+        },
+        {
+            value: "2", text: "Chờ xếp lịch"
+        },
+        {
+            value: "3", text: "Chờ vận chuyển"
+        },
+        {
+            value: "4", text: "Đang vận chuyển"
+        },
+        {
+            value: "5", text: "Đã vận chuyển"
+        }
+    ]
     // Khởi tạo state
     const [state, setState] = useState({
         exampleName: "",
@@ -22,77 +72,23 @@ function TransportRequirementsManagementTable(props) {
         perPage: getLimit,
         tableId: getTableId,
     })
-    const { example, translate, allTransportRequirements } = props;
-    const { exampleName, page, perPage, currentRow, curentRowDetail, tableId, curentTransportRequirementDetail } = state;
 
+    const [allTransportRequirements, setAllTransportRequirements] = useState()
+    const { example, translate, transportRequirements } = props;
+    const { exampleName, page, perPage, currentRow, curentRowDetail, tableId, curentTransportRequirementDetail } = state;
+    
     useEffect(() => {
         props.getAllTransportRequirements({ page : 1, perPage : 100 });
     }, [])
-    /**
-     * Hàm xử lý khi tên ví dụ thay đổi
-     * @param {*} e 
-     */
-    
-    const handleChangeExampleName = (e) => {
-        const { value } = e.target;
-        setState({
-            ...state,
-            exampleName: value
-        });
-    }
 
-
-    /**
-     * Hàm xử lý khi click nút tìm kiếm
-     */
-    const handleSubmitSearch = () => {
-        props.getExamples({
-            exampleName,
-            perPage,
-            page: 1
-        });
-        setState({
-            ...state,
-            page: 1
-        });
-    }
-
-
-    /**
-     * Hàm xử lý khi click chuyển trang
-     * @param {*} pageNumber Số trang định chuyển
-     */
-    const setPage = (pageNumber) => {
-        setState({
-            ...state,
-            page: parseInt(pageNumber)
-        });
-
-        props.getExamples({
-            exampleName,
-            perPage,
-            page: parseInt(pageNumber)
-        });
-    }
-
-
-    /**
-     * Hàm xử lý thiết lập giới hạn hiển thị số bản ghi
-     * @param {*} number số bản ghi sẽ hiển thị
-     */
-    const setLimit = (number) => {
-        setState({
-            ...state,
-            perPage: parseInt(number),
-            page: 1
-        });
-        props.getExamples({
-            exampleName,
-            perPage: parseInt(number),
-            page: 1
-        });
-    }
-
+    useEffect(() => {
+        if(transportRequirements){
+            if(transportRequirements.lists){
+                setAllTransportRequirements(transportRequirements.lists)
+            }
+        }
+        console.log(transportRequirements)
+    }, [transportRequirements])
 
     /**
      * Hàm xử lý khi click xóa 1 ví dụ
@@ -112,14 +108,19 @@ function TransportRequirementsManagementTable(props) {
      * Hàm xử lý khi click edit một ví vụ
      * @param {*} example thông tin của ví dụ cần chỉnh sửa
      */
-    const handleEdit = (example) => {
+    const handleEdit = (transportRequirement) => {
         setState({
             ...state,
-            currentRow: example
+            curentTransportRequirementDetail: transportRequirement,
         });
         window.$('#modal-edit-example-hooks').modal('show');
     }
-
+    const editTransportRequirement = (requirementId, data) => {
+        props.editTransportRequirement(requirementId, data);
+    }
+    const handleShowApprove = (requirement) => {
+        props.editTransportRequirement(requirement._id, {status: 2})
+    }
     /**
      * Hàm xử lý khi click xem chi tiết một ví dụ
      * @param {*} example thông tin của ví dụ cần xem
@@ -132,17 +133,64 @@ function TransportRequirementsManagementTable(props) {
         window.$(`#modal-detail-info-example-hooks`).modal('show')
     }
 
+    const setLimit = (number) => {
+        setState({
+            ...state,
+            page: 1,
+            perPage: parseInt(number)
+        })
+    }
+
+    const setPage = (pageNumber) => {
+        setState({
+            ...state,
+            page: parseInt(pageNumber)
+        })
+    }
+
+    const getStatusTransport = (status) => {
+        let res="";
+        if (status && statusTransport){
+            statusTransport.map(item => {
+                if (item.value === String(status)){
+                    res = item.text;
+                }
+            })
+        }
+        return res;
+    }
+
+    const getDisplayLength = () => {
+        let res = 0;
+        if (allTransportRequirements && allTransportRequirements.length!==0){
+            allTransportRequirements.map((item, index) => {
+                if ((index+1>(page-1)*perPage) && (index+1<=page*perPage)){
+                    res++;
+                }
+            })
+        }
+        return res;
+    }
+
     let lists = [];
     if (example) {
         lists = example.lists
     }
 
-    const totalPage = example && Math.ceil(example.totalList / perPage);
+    // const totalPage = example && Math.ceil(example.totalList / perPage);
+    const totalPage = allTransportRequirements && Math.ceil(allTransportRequirements.length / perPage);
+
     return (
         <React.Fragment>
-            <TransportRequirementsCreateForm />
+            <TransportRequirementsCreateForm 
+                requirements={requirements}
+            />
             <TransportRequirementsViewDetails
                 curentTransportRequirementDetail={curentTransportRequirementDetail}
+            />
+            <TransportRequirementsEditForm
+                curentTransportRequirementDetail={curentTransportRequirementDetail}
+                editTransportRequirement={editTransportRequirement}
             />
             <div className="box-body qlcv">
                 {/* <div className="form-inline"> */}
@@ -167,32 +215,40 @@ function TransportRequirementsManagementTable(props) {
                             <th>{"Địa chỉ giao hàng"}</th>
                             <th>{"Người tạo"}</th>
                             <th>{"Trạng thái"}</th>
-                            <th>{"Hành động"}</th>
-                            {/* <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
+                            <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
                                 <DataTableSetting
                                     tableId={tableId}
                                     columnArr={[
+                                        // translate('manage_example.index'),
+                                        // translate('manage_example.exampleName'),
+                                        // translate('manage_example.description'),
                                         translate('manage_example.index'),
-                                        translate('manage_example.exampleName'),
-                                        translate('manage_example.description'),
+                                        "Mã yêu cầu",
+                                        "Loại yêu cầu",
+                                        "Địa chỉ nhận hàng",
+                                        "Địa chỉ giao hàng",
+                                        "Người tạo",
+                                        "Trạng thái",
                                     ]}
                                     setLimit={setLimit}
                                 />
-                            </th> */}
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
                         {(allTransportRequirements && allTransportRequirements.length !== 0) &&
                             allTransportRequirements.map((x, index) => (
-                                x &&
+                                x && (index+1>(page-1)*perPage) && (index+1<=page*perPage)
+                                &&
                                 <tr key={index}>
-                                    <td>{index + 1 + (page - 1) * perPage}</td>
+                                    {/* <td>{index + 1 + (page - 1) * perPage}</td> */}
+                                    <td>{index+1}</td>
                                     <td>{x.code}</td>
-                                    <td>{x.type}</td>
+                                    <td>{getTypeRequirement(x.type)}</td>
                                     <td>{x.fromAddress}</td>
                                     <td>{x.toAddress}</td>
                                     <td>{x.creator ? x.creator.name : ""}</td>
-                                    <td>{x.status}</td>
+                                    <td>{getStatusTransport(x.status)}</td>
                                     <td style={{ textAlign: "center" }}>
                                         <a className="edit text-green" style={{ width: '5px' }} 
                                             // title={translate('manage_example.detail_info_example')} 
@@ -203,7 +259,32 @@ function TransportRequirementsManagementTable(props) {
                                                 visibility
                                             </i>
                                         </a>
-                                        {/* <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_example.edit')} onClick={() => handleEdit(example)}><i className="material-icons">edit</i></a> */}
+                                        {
+                                            (String(x.status)==="1")
+                                            && (
+                                            <a className="edit text-yellow" 
+                                                style={{ width: '5px' }} 
+                                                // title={translate('manage_example.edit')} 
+                                                onClick={() => handleEdit(x)}
+                                            >
+                                                <i className="material-icons">
+                                                    edit
+                                                </i>
+                                            </a>
+                                            )
+                                        }
+                                        {
+                                        // this.checkUserForApprove(item) === 1 && 
+                                        String(x.status) === "1" && (
+                                            <a
+                                                onClick={() => handleShowApprove(x)}
+                                                className="add text-success"
+                                                style={{ width: "5px" }}
+                                                title="Phê duyệt yêu cầu vận chuyển"
+                                            >
+                                                <i className="material-icons">check_circle_outline</i>
+                                            </a>
+                                        )}
                                         <DeleteNotification
                                             // content={translate('manage_example.delete')}
                                             content={"Xóa yêu cầu vận chuyển "}
@@ -220,7 +301,7 @@ function TransportRequirementsManagementTable(props) {
                     </tbody>
                 </table>
                 {/* PaginateBar */}
-                {example && example.isLoading ?
+                {transportRequirements && transportRequirements.isLoading ?
                     <div className="table-info-panel">{translate('confirm.loading')}</div> :
                     (typeof allTransportRequirements === 'undefined' || allTransportRequirements.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                 }
@@ -232,8 +313,10 @@ function TransportRequirementsManagementTable(props) {
                 <PaginateBar
                     pageTotal={totalPage ? totalPage : 0}
                     currentPage={page}
-                    display={lists && lists.length !== 0 && lists.length}
-                    total={example && example.totalList}
+                    // display={allTransportRequirements && allTransportRequirements.length !== 0 && allTransportRequirements.length}
+                    display={getDisplayLength()}
+                    // total={example && example.totalList}
+                    total = {allTransportRequirements&&allTransportRequirements.length}
                     func={setPage}
                 />
             </div>
@@ -242,13 +325,15 @@ function TransportRequirementsManagementTable(props) {
 }
 
 function mapState(state) {
-    const allTransportRequirements = state.transportRequirements.lists;
-    return { allTransportRequirements }
+    const {transportRequirements} = state;
+    console.log(transportRequirements, " oooooo")
+    return { transportRequirements }
 }
 
 const actions = {
     getAllTransportRequirements: transportRequirementsActions.getAllTransportRequirements,
     deleteTransportRequirement: transportRequirementsActions.deleteTransportRequirement,
+    editTransportRequirement: transportRequirementsActions.editTransportRequirement,
 }
 
 const connectedTransportRequirementsManagementTable = connect(mapState, actions)(withTranslate(TransportRequirementsManagementTable));

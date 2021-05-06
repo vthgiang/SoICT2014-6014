@@ -11,6 +11,8 @@ import { ArrangeOrdinalTransportOneVehicle } from './testDragDrop/arrangeOrdinal
 import { transportPlanActions } from "../../transport-plan/redux/actions";
 import { transportScheduleActions } from "../redux/actions";
 
+import { convertDistanceToKm, convertTimeToMinutes } from "../../transportHelper/convertDistanceAndDuration"
+
 import { MapContainer } from "./googleReactMap/maphook"
 
 import './arrangeOrdinalTransport.css'
@@ -44,7 +46,7 @@ function ArrangeOrdinalTransport(props) {
         let listTransportPlans = [
             {
                 value: "0",
-                text: "Lịch trình",
+                text: "Kế hoạch",
             },
         ];        
         if (allTransportPlans) {
@@ -57,7 +59,30 @@ function ArrangeOrdinalTransport(props) {
         }
         return listTransportPlans;
     }
-
+    const getScheduleRouteOrdinal = (transportVehicles) => {
+        let routeOrdinal = []
+        if (transportVehicles){
+            if (transportVehicles.transportVehicle){
+                let vehicleId = transportVehicles.transportVehicle._id;
+                if (currentTransportSchedule){
+                    if(currentTransportSchedule.route && currentTransportSchedule.route.length!==0){
+                        let route = currentTransportSchedule.route.filter(route => {
+                            if (route.transportVehicle?._id){
+                                return route.transportVehicle._id === vehicleId;
+                            }
+                            else {
+                                return route.transportVehicle === vehicleId;
+                            }
+                        })
+                        if (route && route.length!==0){
+                            routeOrdinal = route[0].routeOrdinal;
+                        }
+                    }
+                }
+            }
+        }
+        return routeOrdinal;
+    }
     const handleTransportPlanChange = (value) => {
         if (value[0] !== "0" && allTransportPlans){
             let filterPlan = allTransportPlans.filter((r) => r._id === value[0]);
@@ -73,8 +98,6 @@ function ArrangeOrdinalTransport(props) {
      * Submit state và lưu vào transportSchedule qua plan id, lưu lại lộ trình các xe
      */
     const handleSubmitRoute = () => {
-        console.log(transportOrdinalAddress, " trnasportordinal")
-        console.log(currentTransportPlan._id, "");
         if (transportOrdinalAddress && transportOrdinalAddress.length !==0){
             let data = [];
             transportOrdinalAddress.map((item, index) => {
@@ -84,6 +107,8 @@ function ArrangeOrdinalTransport(props) {
                         routeOrdinal.push({
                             transportRequirement: item2.transportRequirementId,
                             type: item2.addressType,
+                            distance: convertDistanceToKm(item2.distance),
+                            duration: convertTimeToMinutes(item2.duration),
                         })
                     })
                 }
@@ -93,6 +118,7 @@ function ArrangeOrdinalTransport(props) {
                 })
             })
             props.editTransportScheduleByPlanId(currentTransportPlan._id, {route: data})
+            setTransportOrdinalAddress([]);
         }
     }
     useEffect(() => {
@@ -115,10 +141,6 @@ function ArrangeOrdinalTransport(props) {
         }
     }, [currentTransportSchedule])
 
-    // useEffect(() => {
-    //     console.log(transportVehicles, " vhielss")
-    // }, [transportVehicles])
-
 
     /**
      * cập nhật lại trạng thái sau khi sắp xếp
@@ -126,7 +148,6 @@ function ArrangeOrdinalTransport(props) {
      * @param {*} vehicleId 
      */
     const callBackStateOrdinalAddress = (addressOrdinalList, vehicleId) => {
-        console.log(vehicleId, " vehicleId")
         const transportOrdinal = [...transportOrdinalAddress];
         if (transportOrdinal && transportOrdinal.length !==0 ){
             let index = -1;
@@ -158,12 +179,13 @@ function ArrangeOrdinalTransport(props) {
     useEffect(() => {
         console.log(transportOrdinalAddress, " transportOrdinalAddress")
     }, [transportOrdinalAddress])
+
     return (
         <React.Fragment>
             <div className="box-body qlcv">
                 <div className="form-inline">
                     <div className="form-group">
-                        <label className="form-control-static">Chọn lịch trình</label>
+                        <label className="form-control-static">Chọn kế hoạch</label>
                         <SelectBox
                             id={`select-filter-plan-2`}
                             className="form-control select2"
@@ -191,9 +213,11 @@ function ArrangeOrdinalTransport(props) {
                 <div>                       
                     {
                         (transportVehicles && transportVehicles.length !==0 )
-                        && transportVehicles.map((item, index) => (					
+                        && transportVehicles.map((item, index) => (
+                            item.transportRequirements && item.transportRequirements.length !==0 &&					
                             <ArrangeOrdinalTransportOneVehicle
                                 item={item}
+                                routeOrdinal={getScheduleRouteOrdinal(item)}
                                 callBackStateOrdinalAddress={callBackStateOrdinalAddress}
                             />
                         ))
