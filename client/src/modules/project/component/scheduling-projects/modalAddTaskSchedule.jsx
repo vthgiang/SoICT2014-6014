@@ -175,6 +175,10 @@ const ModalAddTaskSchedule = (props) => {
                     }
                 }
             }
+            // Nếu email không được điền đầy đủ thì thôi ko cần tính toán chi phí
+            if (currentResMemberIdArr.length === 0 || currentAccMemberIdArr.length === 0) {
+                return dataItem;
+            }
             const estHumanCost = getEstimateHumanCostFromParams(
                 projectDetail,
                 dataItem.estimateNormalTime,

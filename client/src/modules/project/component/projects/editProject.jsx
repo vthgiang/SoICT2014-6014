@@ -9,10 +9,9 @@ import { formatDate } from '../../../../helpers/formatDate';
 import { convertDateTime, convertDepartmentIdToDepartmentName, convertUserIdToUserName, formatTime, getListDepartments } from './functionHelper';
 import { getStorage } from '../../../../config';
 import ModalSalaryMembersEdit from './modalSalaryMembersEdit';
-import { taskManagementActions } from '../../../task/task-management/redux/actions';
 
 const ProjectEditForm = (props) => {
-    const { translate, user, projectEdit, projectEditId, tasks, currentProjectTasks } = props;
+    const { translate, user, projectEdit, projectEditId, currentProjectTasks } = props;
     const userId = getStorage('userId');
     const listUsers = user && user.usersInUnitsOfCompany ? getEmployeeSelectBoxItems(user.usersInUnitsOfCompany) : []
     const listDepartments = user && user.usersInUnitsOfCompany ? getListDepartments(user.usersInUnitsOfCompany) : []
@@ -99,7 +98,6 @@ const ProjectEditForm = (props) => {
                 }),
             })
         }, 10);
-        // props.getTasksByProject(projectEditId);
     }
 
     const handleChangeForm = (event, currentKey) => {
@@ -292,13 +290,7 @@ const ProjectEditForm = (props) => {
         setCurrentSalaryMembers(data);
     }
 
-    const currentTasks = tasks && tasks?.tasksbyproject;
-
-    useEffect(() => {
-        props.getTasksByProject(projectEditId);
-    }, [])
-
-    const isTasksListNotEmpty = (currentTasks && currentTasks.length > 0) || (currentProjectTasks &&  currentProjectTasks.length > 0);
+    const isTasksListNotEmpty = (currentProjectTasks &&  currentProjectTasks.length > 0);
 
 
     return (
@@ -314,7 +306,6 @@ const ProjectEditForm = (props) => {
                 <ModalSalaryMembersEdit
                     projectDetail={projectEdit}
                     projectDetailId={projectId}
-                    currentTasks={currentTasks}
                     currentProjectTasks={currentProjectTasks}
                     createProjectCurrentSalaryMember={currentSalaryMembers}
                     responsibleEmployeesWithUnit={responsibleEmployeesWithUnit}
@@ -534,6 +525,5 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
     editProjectDispatch: ProjectActions.editProjectDispatch,
-    getTasksByProject: taskManagementActions.getTasksByProject,
 }
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ProjectEditForm));

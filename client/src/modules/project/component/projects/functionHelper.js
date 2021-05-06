@@ -119,3 +119,122 @@ export const getEstimateHumanCostFromParams = (projectDetail, duration, currentR
     }
     return cost;
 }
+
+export const handleWeekendAndWorkTime = (projectDetail, taskItem) => {
+    console.log ('taskItem be 4', taskItem)
+    // Nếu unitTime = 'days'
+    if (projectDetail?.unitTime === 'days') {
+        // Check xem startDate có phải thứ 7 hoặc chủ nhật không thì cộng thêm ngày để startDate vào ngày thứ 2 tuần sau
+        let dayOfStartDate = (new Date(taskItem.startDate)).getDay();
+        if (dayOfStartDate === 6) taskItem.startDate = moment(taskItem.startDate).add(2, 'days').format();
+        if (dayOfStartDate === 0) taskItem.startDate = moment(taskItem.startDate).add(1, 'days').format();
+        // Tách phần integer và phần decimal của estimateNormalTime
+        const estimateNormalTimeArr = taskItem.estimateNormalTime.toString().split('.');
+        const integerPart = Number(estimateNormalTimeArr[0]);
+        const decimalPart = estimateNormalTimeArr.length === 2 ? Number(`.${estimateNormalTimeArr[1]}`) : undefined;
+        let tempEndDate = '';
+        // Cộng phần nguyên
+        for (let i = 0; i < integerPart; i++) {
+            // Tính tempEndDate = + 1 ngày trước để kiểm tra
+            if (i === 0) {
+                tempEndDate = moment(taskItem.startDate).add(1, 'days').format();
+            } else {
+                tempEndDate = moment(taskItem.endDate).add(1, 'days').format();
+            }
+            // Nếu tempEndDate đang là thứ 7 thì công thêm 2 ngày
+            if ((new Date(tempEndDate)).getDay() === 6) {
+                taskItem.endDate = moment(tempEndDate).add(2, 'days').format();
+            }
+            // Nếu tempEndDate đang là chủ nhật thì công thêm 1 ngày
+            else if ((new Date(tempEndDate)).getDay() === 0) {
+                taskItem.endDate = moment(tempEndDate).add(1, 'days').format();
+            }
+            // Còn không thì không cộng gì
+            else {
+                taskItem.endDate = tempEndDate;
+            }
+        }
+        // Cộng phần thập phân (nếu có)
+        if (decimalPart) {
+            if (!taskItem.endDate) {
+                taskItem.endDate = moment(taskItem.startDate).add(decimalPart, 'days').format();
+            } else {
+                taskItem.endDate = moment(taskItem.endDate).add(decimalPart, 'days').format();
+            }
+            // Check xem endDate hiện tại là thứ mấy => Cộng tiếp để bỏ qua thứ 7 và chủ nhật (nếu có)
+            dayOfStartDate = (new Date(taskItem.endDate)).getDay();
+            if (dayOfStartDate === 6) taskItem.endDate = moment(taskItem.endDate).add(2, 'days').format();
+            if (dayOfStartDate === 0) taskItem.endDate = moment(taskItem.endDate).add(1, 'days').format();
+        }
+        console.log('taskItem', taskItem)
+        return taskItem;
+    }
+
+    // Nếu unitTime = 'hours'
+    const dailyMorningStartTime = moment('08:00', 'HH:mm');
+    const dailyMorningEndTime = moment('12:00', 'HH:mm');
+    const dailyAfternoonStartTime = moment('13:30', 'HH:mm');
+    const dailyAfternoonEndTime = moment('17:30', 'HH:mm');
+    // Check xem startDate có phải thứ 7 hoặc chủ nhật không thì cộng thêm ngày để startDate vào ngày thứ 2 tuần sau
+    let dayOfStartDate = (new Date(taskItem.startDate)).getDay();
+    if (dayOfStartDate === 6) taskItem.startDate = moment(taskItem.startDate).add(2, 'days').format();
+    if (dayOfStartDate === 0) taskItem.startDate = moment(taskItem.startDate).add(1, 'days').format();
+    // Tách phần integer và phần decimal của estimateNormalTime
+    const estimateNormalTimeArr = taskItem.estimateNormalTime.toString().split('.');
+    const integerPart = Number(estimateNormalTimeArr[0]);
+    const decimalPart = estimateNormalTimeArr.length === 2 ? Number(`.${estimateNormalTimeArr[1]}`) : undefined;
+    let tempEndDate = '';
+    // Cộng phần nguyên
+    for (let i = 0; i < integerPart; i++) {
+        // Tính tempEndDate = + 1 tiêng trước để kiểm tra
+        if (i === 0) {
+            tempEndDate = moment(taskItem.startDate).add(1, 'hours').format();
+        } else {
+            tempEndDate = moment(taskItem.endDate).add(1, 'hours').format();
+        }
+        const currentEndDateInMomentHourMinutes = moment(moment(tempEndDate).format('HH:mm'), 'HH:mm');
+        // Nếu đang ở giờ nghỉ trưa
+        if (currentEndDateInMomentHourMinutes.isAfter(dailyMorningEndTime) && currentEndDateInMomentHourMinutes.isBefore(dailyAfternoonStartTime)) {
+            tempEndDate = moment(tempEndDate).set({
+                hour: 13,
+                minute: 30,
+            });
+            tempEndDate = moment(tempEndDate).add(1, 'hours').format();
+        }
+        // Nếu quá 17:30
+        else if (currentEndDateInMomentHourMinutes.isAfter(dailyAfternoonEndTime)) {
+            tempEndDate = moment(tempEndDate).set({
+                hour: 8,
+                minute: 0,
+            });
+            tempEndDate = moment(tempEndDate).add(1, 'hours').format();
+            tempEndDate = moment(tempEndDate).add(1, 'days').format();
+        }
+        // Nếu tempEndDate đang là thứ 7 thì công thêm 2 ngày
+        if ((new Date(tempEndDate)).getDay() === 6) {
+            taskItem.endDate = moment(tempEndDate).add(2, 'days').format();
+        }
+        // Nếu tempEndDate đang là chủ nhật thì công thêm 1 ngày
+        else if ((new Date(tempEndDate)).getDay() === 0) {
+            taskItem.endDate = moment(tempEndDate).add(1, 'days').format();
+        }
+        // Còn không thì không cộng gì
+        else {
+            taskItem.endDate = tempEndDate;
+        }
+    }
+    // Cộng phần thập phân (nếu có)
+    if (decimalPart) {
+        if (!taskItem.endDate) {
+            taskItem.endDate = moment(taskItem.startDate).add(decimalPart, 'hours').format();
+        } else {
+            taskItem.endDate = moment(taskItem.endDate).add(decimalPart, 'hours').format();
+        }
+        // Check xem endDate hiện tại là thứ mấy => Cộng tiếp để bỏ qua thứ 7 và chủ nhật (nếu có)
+        dayOfStartDate = (new Date(taskItem.endDate)).getDay();
+        if (dayOfStartDate === 6) taskItem.endDate = moment(taskItem.endDate).add(2, 'days').format();
+        if (dayOfStartDate === 0) taskItem.endDate = moment(taskItem.endDate).add(1, 'days').format();
+    }
+    console.log('taskItem', taskItem)
+    return taskItem;
+}
