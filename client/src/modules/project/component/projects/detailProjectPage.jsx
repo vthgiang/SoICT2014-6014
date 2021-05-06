@@ -60,7 +60,7 @@ const ProjectDetailPage = (props) => {
     const handleAfterCreateProject = async () => {
         await props.getProjectsDispatch({ calledId: "all", userId });
         await props.getTasksByProject(currentProjectId);
-        console.log('project', project)
+        // console.log('project', project)
         projectDetail = getCurrentProjectDetails(project);
     }
 
@@ -70,6 +70,7 @@ const ProjectDetailPage = (props) => {
                 {/* Button để edit project */}
                 <div className="dropdown pull-right">
                     <ProjectEditForm
+                        currentProjectTasks={currentProjectTasks}
                         projectEditId={projectDetail && currentProjectId}
                         projectEdit={projectDetail}
                         handleAfterCreateProject={handleAfterCreateProject}

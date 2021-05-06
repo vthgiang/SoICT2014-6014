@@ -23,11 +23,11 @@ import parse from 'html-react-parser';
 
 import { TaskAddModal } from '../../task-management/component/taskAddModal';
 import { ModalAddTaskTemplate } from '../../task-template/component/addTaskTemplateModal';
-import { RequestToCloseTaskModal } from '../../task-perform/component/requestToCloseTaskModal';
 
 import { ProjectActions } from "../../../project/redux/actions";
 import { ROOT_ROLE } from '../../../../helpers/constants';
 import dayjs from 'dayjs';
+import { RequestToCloseProjectTaskModal } from './requestToCloseProjectTaskModal';
 class DetailProjectTaskTab extends Component {
 
     constructor(props) {
@@ -1391,7 +1391,7 @@ class DetailProjectTaskTab extends Component {
 
                 {
                     (id && showRequestClose === id) && (currentRole === "responsible" || currentRole === "accountable") && checkHasAccountable &&
-                    <RequestToCloseTaskModal
+                    <RequestToCloseProjectTaskModal
                         id={id}
                         task={task && task}
                         role={currentRole}

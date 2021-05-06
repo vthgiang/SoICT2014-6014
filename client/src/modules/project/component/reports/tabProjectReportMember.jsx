@@ -226,7 +226,7 @@ const TabProjectReportMember = (props) => {
         let membersWithPoint = [];
         membersData.forEach((item) => {
             const { id, name, tasksWithBudgetAndCostAndPointForMember, currentMemberPoint } = item;
-            if (currentMemberPoint >= 0) {
+            if (currentMemberPoint >= 85) {
                 membersWithPoint.push({
                     id,
                     name,

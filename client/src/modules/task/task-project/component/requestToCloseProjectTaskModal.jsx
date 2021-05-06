@@ -5,10 +5,12 @@ import parse from 'html-react-parser';
 import moment from 'moment';
 
 import { DialogModal, QuillEditor, SelectBox } from '../../../../common-components';
-import { performTaskAction } from '../redux/actions';
+import { performTaskAction } from '../../task-perform/redux/actions';
+import { EvaluateByResponsibleEmployeeProject } from './evaluateByResponsibleEmployeeProject';
+import { EvaluateByAccountableEmployeeProject } from './evaluateByAccountableEmployeeProject';
 
-function RequestToCloseTaskModal(props) {
-    const { id, role, task, translate } = props;
+function RequestToCloseProjectTaskModal(props) {
+    const { id, role, task, translate, performtasks } = props;
     const [status, setStatus] = useState(task?.requestToCloseTask?.taskStatus ? task.requestToCloseTask.taskStatus : 'finished');
     const [description, setDescription] = useState();
     const [descriptionDefault, setDescriptionDefault] = useState();
@@ -18,9 +20,16 @@ function RequestToCloseTaskModal(props) {
     })
 
     let requestToCloseTask;
-
     if (task) {
         requestToCloseTask = task.requestToCloseTask;
+    }
+
+    let roleName;
+    if (role === 'responsible') {
+        roleName = "người thực hiện";
+    }
+    else if (role === 'accountable') {
+        roleName = "người phê duyệt";
     }
 
     const handleChangeRequestDescription = (value, imgs) => {
@@ -66,14 +75,9 @@ function RequestToCloseTaskModal(props) {
         window.$(`#modal-request-close-task-${id}`).modal("hide");
     }
 
-    return (
-        <React.Fragment>
-            <DialogModal
-                modalID={`modal-request-close-task-${id}`} isLoading={false}
-                title={`Thông tin yêu cầu kết thúc công việc`}
-                hasSaveButton={false}
-                hasNote={false}
-            >
+    const renderRequestCloseTask = () => {
+        return (
+            <div>
                 {role === 'responsible' && requestToCloseTask
                     ? <div style={{ textAlign: 'right' }}>
                         {(requestToCloseTask.requestStatus === 0 || requestToCloseTask.requestStatus === 2)
@@ -103,7 +107,6 @@ function RequestToCloseTaskModal(props) {
                         disabled={requestToCloseTask?.requestStatus === 1 && role === 'responsible'}
                     />
                 </div>
-
                 <div className="form-group">
                     <label style={{ marginRight: '5px' }}>{translate('task.task_management.detail_description')}</label>
                     {role === 'responsible'
@@ -127,6 +130,56 @@ function RequestToCloseTaskModal(props) {
                         <span>{moment(requestToCloseTask?.createdAt).format("HH:mm:ss DD/MM/YYYY")}</span>
                     </div>
                 }
+            </div>
+        )
+    }
+
+    const renderNotRequestClostTaskYet = () => {
+        return (
+            <div>
+                <div style={{ textAlign: 'right' }}>
+                    <button className="btn btn-success" onClick={() => approvalRequestCloseTask()}>{translate('task.task_perform.approval_request_close_task')}</button>
+                </div>
+                <div className="form-group">
+                    <label style={{ marginRight: '5px' }}>{translate('task.task_perform.status_task_close')}</label>
+                    <SelectBox id="multiSelectStatusRequestClose"
+                        style={{ width: "100%" }}
+                        value={status}
+                        items={[
+                            { value: "wait_for_approval", text: translate('task.task_management.wait_for_approval') },
+                            { value: "finished", text: translate('task.task_management.finished') },
+                            { value: "delayed", text: translate('task.task_management.delayed') },
+                            { value: "canceled", text: translate('task.task_management.canceled') }
+                        ]}
+                        onChange={handleSelectStatus}
+                    />
+                </div>
+            </div>
+        )
+    }
+
+    return (
+        <React.Fragment>
+            <DialogModal
+                modalID={`modal-request-close-task-${id}`} isLoading={false}
+                title={`Kết thúc công việc với vai trò ${roleName}`}
+                hasSaveButton={false}
+                hasNote={false}
+                size={75}
+            >
+                {role === "responsible" &&
+                    <EvaluateByResponsibleEmployeeProject role={role} task={task} />
+                }
+                {role === "accountable" &&
+                    <EvaluateByAccountableEmployeeProject role={role} task={task} />
+                }
+
+                <fieldset className="scheduler-border">
+                    <legend className="scheduler-border">Yêu cầu kết thúc công việc</legend>
+                    {role === 'accountable' && requestToCloseTask?.requestStatus !== 1
+                        ? renderNotRequestClostTaskYet()
+                        : renderRequestCloseTask()}
+                </fieldset>
             </DialogModal>
         </React.Fragment>
     )
@@ -141,5 +194,5 @@ const actions = {
     requestAndApprovalCloseTask: performTaskAction.requestAndApprovalCloseTask
 }
 
-const connectedRequestToCloseTaskModal = connect(mapState, actions)(withTranslate(RequestToCloseTaskModal))
-export { connectedRequestToCloseTaskModal as RequestToCloseTaskModal }
+const connectedRequestToCloseTaskModal = connect(mapState, actions)(withTranslate(RequestToCloseProjectTaskModal))
+export { connectedRequestToCloseTaskModal as RequestToCloseProjectTaskModal }
