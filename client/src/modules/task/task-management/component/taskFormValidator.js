@@ -56,10 +56,13 @@ function _validateTaskDate(startDate, endDate, translate) {
  * Hàm tiện ích kiểm tra thời gian ước lượng
  * @param {*} value giá trị kiểm tra
  */
-function validateTimeEst(value, translate) {
+function validateTimeEst(value, translate, mustBeLower = true, compareNumber = Infinity) {
     let msg = undefined;
     if (!value || Number(value) < 0 || (Number(value) - 2) < 0 ) {
         msg = translate('project.task_management.add_err_time_cost');
+    } 
+    else if ((mustBeLower && Number(value) >= compareNumber)) {
+        msg = 'Thời gian ước lượng thoả hiệp phải bé hơn Thời gian ước lượng';
     }
     return msg;
 }
