@@ -246,9 +246,9 @@ class DetailProjectTaskTab extends Component {
             }
         });
 
-        let modalId = `#modal-edit-task-by-${role}-${id}`;
+        let modalId = `#modal-edit-project-task-by-${role}-${id}`;
         if (checkHasAccountable === false && role === "responsible") {
-            modalId = `#modal-edit-task-by-${role}-${id}-has-not-accountable`
+            modalId = `#modal-edit-project-task-by-${role}-${id}-has-not-accountable`
         }
         window.$(modalId).modal('show');
 

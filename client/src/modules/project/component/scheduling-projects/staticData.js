@@ -196,3 +196,15 @@ export const fakeObj = {
         ]
     }
 }
+
+export const fakeChangeRequestsList = [
+    {
+        name: 'Yêu cầu 1',
+        creator: {
+            name: 'Trương Anh Quốc'
+        },
+        createdAt: '2021-04-18T00:00:00.000+00:00',
+        description: 'Thêm thông tin cho công việc A. Thời gian sẽ tăng 1 ngày, chi phí sẽ tăng 100000 VND',
+        requestStatus: 1,
+    }
+]
