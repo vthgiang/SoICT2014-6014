@@ -10,14 +10,15 @@
     position: inherit;
 }
 
-.tooltip-checkbox {
+.tooltip-checkbox-transport {
     position: relative;
     border-bottom: 1px dotted black;
+    text-align: center;
 }
 
-.tooltip-checkbox .tooltiptext {
+.tooltip-checkbox-transport .tooltiptext {
     visibility: hidden;
-    width: 120px;
+    width: 150px;
     background-color: black;
     color: #fff;
     text-align: center;
@@ -27,10 +28,10 @@
     z-index: 1;
     bottom: 100%;
     left: 50%;
-    margin-left: -60px;
+    margin-left: -75px;
 }
 
-.tooltip-checkbox .tooltiptext::after {
+.tooltip-checkbox-transport .tooltiptext::after {
     content: "";
     position: absolute;
     top: 100%;
@@ -41,7 +42,7 @@
     border-color: #408e4d transparent transparent transparent;
 }
 
-.tooltip-checkbox:hover .tooltiptext {
+.tooltip-checkbox-transport:hover .tooltiptext {
     visibility: visible;
     background-color: #408e4d;
     z-index: 1;

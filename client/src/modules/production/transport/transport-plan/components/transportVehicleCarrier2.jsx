@@ -34,20 +34,19 @@ function TransportVehicleCarrier2(props) {
         endDate: getNext5Day(),
     })
 
-    const [listVehiclesUsable, setListVehiclesUsable] = useState();
-    const [listCarriersUsable, setListCarriersUsable] = useState();
-    // Số lượng xe và người => vẽ biểu đồ
-    const [countVehicles, setCountVehicles] = useState([]);
-    const [countCarriers, setCountCarriers] = useState([]);
     // Danh sách xe và người
-    const [listVehicles, setListVehicles] = useState([]);
-    const [listCarriers, setListCarriers] = useState([]);
     const [listAllVehicles, setListAllVehicles] = useState([]);
     const [listAllCarriers, setListAllCarriers] = useState([]);
-
+    /**
+     * Danh sách xe và người đã sử dụng
+     * [
+     *  date: đd-mm-yyyy
+     *  usedVehicles: [transportVehicle, ....]
+     *  usedCarriers: [user, user, ...]
+     *  transportPlan: transportPlan
+     * ]
+     */
     const [listUsedVehiclesCarriers, setListUsedVehiclesCarriers] = useState([]);
-    // Khi click trên biểu đồ, lưu lại index của cột để show danh sách người xe
-    const [indexListVehiclesCarriers, setIndexListVehiclesCarriers] = useState(0)
     const [listDay, setListDay] = useState([]);
     const handleStartDateChange = (value) => {
         setDate({
@@ -107,6 +106,7 @@ function TransportVehicleCarrier2(props) {
                 for (let i=0;i<lday.length;i++){      
                     let usedVehicles=[];
                     let usedCarriers=[];
+                    let currentPlan;
                     if (transportPlan && transportPlan.lists && transportPlan.lists.length!==0){
                         transportPlan.lists.map(plan => {
                             // nếu có kế hoạch khác bị trùng thời gian
@@ -118,6 +118,7 @@ function TransportVehicleCarrier2(props) {
                                             for (let j=0;j<allVehicles.length;j++){
                                                 if (String(allVehicles[j]._id) === String(transportVehicles.vehicle._id)){
                                                     usedVehicles.push(allVehicles[j]);
+                                                    currentPlan=plan;
                                                 }
                                             }
                                         }
@@ -131,6 +132,7 @@ function TransportVehicleCarrier2(props) {
                                                             for (let j =0;j<allCarriers.length;j++){
                                                                 if (String(allCarriers[j]._id) === String(carriers.carrier._id)){
                                                                     usedCarriers.push(allCarriers[j]);
+                                                                    currentPlan=plan;
                                                                 }
                                                             }                                                            
                                                         }
@@ -149,6 +151,7 @@ function TransportVehicleCarrier2(props) {
                         date: formatDate(lday[i]),
                         usedVehicles: usedVehicles,
                         usedCarriers: usedCarriers,
+                        transportPlan: currentPlan,
                     })
                     
                 }
@@ -161,6 +164,72 @@ function TransportVehicleCarrier2(props) {
         }
     }, [date, transportDepartment, transportVehicle])
 
+    const getStatusTickBox = (date, itemId) => {
+        let res = "iconinactive";
+        try {
+            let timeZoneDate = new Date(formatToTimeZoneDate(date));
+            if (listUsedVehiclesCarriers && listUsedVehiclesCarriers.length!==0){
+                listUsedVehiclesCarriers.map(item => {
+                    if (item.date){
+                        let itemDate = new Date(formatToTimeZoneDate(item.date));
+                        if (itemDate.getTime() === timeZoneDate.getTime()){
+                            if (item.usedVehicles && item.usedVehicles.length!==0){
+                                let k = item.usedVehicles.filter(r=> String(r._id)===String(itemId));
+                                if (k && k.length!==0){
+                                    res = "iconactive";
+                                }
+                            }
+                            if (item.usedCarriers && item.usedCarriers.length!==0){
+                                let k = item.usedCarriers.filter(r=> String(r._id)===String(itemId));
+                                if (k && k.length!==0){
+                                    res = "iconactive"
+                                }
+                            }
+                        }
+                    }
+                })
+            }
+        } catch (error) {
+            return res;
+        }
+        return res;
+    }
+
+    const getCurrentPlan = (date, itemId) => {
+        let res = undefined;
+        try {
+            let timeZoneDate = new Date(formatToTimeZoneDate(date));
+            if (listUsedVehiclesCarriers && listUsedVehiclesCarriers.length!==0){
+                listUsedVehiclesCarriers.map(item => {
+                    if (item.date){
+                        let itemDate = new Date(formatToTimeZoneDate(item.date));
+                        if (itemDate.getTime() === timeZoneDate.getTime()){
+                            if (item.usedVehicles && item.usedVehicles.length!==0){
+                                let k = item.usedVehicles.filter(r=> String(r._id)===String(itemId));
+                                if (k && k.length!==0){
+                                    res = item.transportPlan;
+                                }
+                            }
+                            if (item.usedCarriers && item.usedCarriers.length!==0){
+                                let k = item.usedCarriers.filter(r=> String(r._id)===String(itemId));
+                                if (k && k.length!==0){
+                                    res = item.transportPlan;
+                                }
+                            }
+                        }
+                    }
+                })
+            }
+        } catch (error) {
+            return res = undefined;
+        }
+        return res;
+    }
+
+    useEffect(() => {
+        console.log(listAllVehicles);
+        console.log(listAllCarriers);
+    }, [listAllVehicles])
 
     useEffect(() => {
         console.log(listUsedVehiclesCarriers, " okkkkkkkkkkkkkkkkkkkk")
@@ -188,128 +257,130 @@ function TransportVehicleCarrier2(props) {
                     />
                 </div>
             </div>
-            <div className="box box-solid">
-                <div className="box-header">
-                    <div className="box-title">{"Xe có thể sử dụng ngày: "+listDay[indexListVehiclesCarriers]}</div>
-                </div>
-            <div className="box-body qlcv">
-            {
-                !(listVehicles && listVehicles[indexListVehiclesCarriers] && listVehicles[indexListVehiclesCarriers].length!==0)
-                &&<div>{"Hiện không có phương tiện nào có thể tiếp tục phân công"}</div>
-            }
-            {
-                (listVehicles && listVehicles[indexListVehiclesCarriers] && listVehicles[indexListVehiclesCarriers].length!==0)
-                &&      
-
-                <table id={"1"} className="table table-striped table-bordered table-hover">
-                    <thead>
-                        <tr>
-                        <th className="col-fixed" style={{ width: 60 }}>{"STT"}</th>
-                        <th>{"Mã xe"}</th>
-                        <th>{"Tên xe"}</th>
-                        <th>{"Trọng tải"}</th>
-                        <th>{"Thể tích thùng"}</th>
-                            {/* <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
-                                <DataTableSetting
-                                    tableId={tableId}
-                                    columnArr={[
-                                        translate('manage_example.index'),
-                                        translate('manage_example.exampleName'),
-                                        translate('manage_example.description'),
-                                    ]}
-                                    setLimit={setLimit}
-                                />
-                            </th> */}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {(listVehicles[indexListVehiclesCarriers] && listVehicles[indexListVehiclesCarriers].length !== 0) &&
-                            listVehicles[indexListVehiclesCarriers].map((x, index) => (
-                                x &&
-                                <tr key={index}>
-                                    <td>{index+1}</td>
-                                    <td>{x.code}</td>
-                                    <td>{x.name}</td>
-                                    <td>{x.payload}</td>
-                                    <td>{x.volume}</td>
-                                </tr>
-                            ))
-                        }
-                    </tbody>
-                </table>
-            }                    
-                </div>
-            </div>
-            <div className="box box-solid">
-                <div className="box-header">
-                    <div className="box-title">{"Nhân viên chưa có lịch ngày: "+listDay[indexListVehiclesCarriers]}</div>
-                </div>
-                <div className="box-body qlcv">
-            {
-                !(listCarriers && listCarriers[indexListVehiclesCarriers] && listCarriers[indexListVehiclesCarriers].length!==0)
-                && <div>{"Hiện không có nhân viên nào có thể tiếp tục phân công"}</div>
-            }
-            {
-                (listCarriers && listCarriers[indexListVehiclesCarriers] && listCarriers[indexListVehiclesCarriers].length!==0)
-                &&      
-                <table id={"2"} className="table table-striped table-bordered table-hover">
-                                <thead>
-                                    <tr>
-                                    <th className="col-fixed" style={{ width: 60 }}>{"STT"}</th>
-                                    <th>{"Tên"}</th>
-                                    <th>{"Email"}</th>
-                                    <th>{"Id"}</th>
-                                        {/* <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
-                                            <DataTableSetting
-                                                tableId={tableId}
-                                                columnArr={[
-                                                    translate('manage_example.index'),
-                                                    translate('manage_example.exampleName'),
-                                                    translate('manage_example.description'),
-                                                ]}
-                                                setLimit={setLimit}
-                                            />
-                                        </th> */}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {(listCarriers[indexListVehiclesCarriers] && listCarriers[indexListVehiclesCarriers].length !== 0) &&
-                                        listCarriers[indexListVehiclesCarriers].map((x, index) => (
-                                            x &&
-                                            <tr key={index + " carriers"}>
-                                                <td>{index+1}</td>
-                                                <td>{x.name}</td>
-                                                <td>{x.mail}</td>
-                                                <td>{x.id}</td>
-                                            </tr>
-                                        ))
-                                    }
-                                </tbody>
-                            </table>
-            }
-                </div>
-            </div>
-            <div className={"divTest"}>
-                <table className={"tableTest table-bordered table-hover not-sort"}>
-                    <thead>
-                        <tr className="word-no-break">
-                            <th>{"STT"}</th>
-                            {/* <th>{"Yêu cầu vận chuyển"}</th> */}
-                            {
-                                listDay && listDay.length!==0
-                                &&
-                                listDay.map(item => (
-                                    <th>{item}</th>
-                                )) 
-                            }
-                        </tr>
-                    </thead>
-                    <tbody className="transport-special-row">
-                    
-                    </tbody>
-                </table>
-            </div>
             
+            <div className="box box-solid">
+                <div className="box-header">
+                    <div className="box-title">{"Danh sách sử dụng phuơng tiện theo ngày"}</div>
+                </div>
+
+                <div className="box-body qlcv">
+
+                    <div className={"divTest"}>
+                        <table className={"tableTest table-bordered table-hover not-sort"}>
+                            <thead>
+                                <tr className="word-no-break">
+                                    <th>{"STT"}</th>
+                                    <th>{"Mã xe"}</th>
+                                    <th>{"Tên xe"}</th>
+                                    <th>{"Chi tiết"}</th>
+                                    {
+                                        listDay && listDay.length!==0
+                                        &&
+                                        listDay.map(item => (
+                                            <th>{formatDate(item)}</th>
+                                        )) 
+                                    }
+                                </tr>
+                            </thead>
+                            <tbody className="transport-special-row">
+                            {
+                                listAllVehicles && listAllVehicles.length!==0
+                                &&
+                                listAllVehicles.map((vehicle, index1)=>(
+                                    vehicle &&
+                                    <tr key={vehicle._id} className="word-no-break">
+                                        <td>{index1+1}</td>
+                                        <td>{vehicle.code}</td>
+                                        <td>{vehicle.name}</td>
+                                        <td>
+                                            <p>{"Trọng tải: "+vehicle.payload}</p>
+                                            <p>{"Thể tích thùng: "+vehicle.volume}</p>
+                                        </td>
+                                        {
+                                            listDay && listDay.length!==0
+                                            && listDay.map((day, index2) => (
+                                                <td className="tooltip-checkbox-transport">
+                                                    <span className={"icon "+getStatusTickBox(formatDate(day), vehicle._id)}
+                                                    title={"ngay-xe"} 
+                                                    >
+
+                                                    </span>
+                                                    <span className="tooltiptext">
+                                                        <a style={{ color: "white" }} 
+                                                            // onClick={() => this.handleShowDetailManufacturingCommand(command)}
+                                                        >{getCurrentPlan(formatDate(day), vehicle._id)?.code}</a>
+                                                    </span>
+                                                </td>
+                                            ))
+                                        }
+                                    </tr>
+                                ))
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div className="box box-solid">
+                <div className="box-header">
+                    <div className="box-title">{"Danh sách công việc vận chuyển nhân viên theo ngày"}</div>
+                </div>
+
+                <div className="box-body qlcv">
+
+                    <div className={"divTest"}>
+                        <table id="vehicle-used-list" className={"tableTest table-bordered table-hover not-sort"}>
+                            <thead>
+                                <tr className="word-no-break">
+                                    <th>{"STT"}</th>
+                                    <th>{"Tên nhân viên"}</th>
+                                    <th>{"Email"}</th>
+                                    {
+                                        listDay && listDay.length!==0
+                                        &&
+                                        listDay.map(item => (
+                                            <th>{formatDate(item)}</th>
+                                        )) 
+                                    }
+                                </tr>
+                            </thead>
+                            <tbody className="transport-special-row">
+                            {
+                                listAllCarriers && listAllCarriers.length!==0
+                                &&
+                                listAllCarriers.map((carrier, index1)=>(
+                                    carrier &&
+                                    <tr key={carrier._id} className="word-no-break">
+                                        <td>{index1+1}</td>
+                                        <td>{carrier.name}</td>
+                                        <td>{carrier.email}</td>
+                                        {
+                                            listDay && listDay.length!==0
+                                            && listDay.map((day, index2) => (
+                                                <td className="tooltip-checkbox-transport">
+                                                    <span className={"icon "+getStatusTickBox(formatDate(day), carrier._id)}
+                                                    title={"ngay-nguoi"} 
+                                                    >
+
+                                                    </span>
+                                                    <span className="tooltiptext">
+                                                        <a style={{ color: "white" }} 
+                                                            // onClick={() => this.handleShowDetailManufacturingCommand(command)}
+                                                        >{getCurrentPlan(formatDate(day), carrier._id)?.code}</a>
+                                                    </span>
+                                                </td>
+                                            ))
+                                        }
+                                    </tr>
+                                ))
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+         
         </div>
     )
 }
