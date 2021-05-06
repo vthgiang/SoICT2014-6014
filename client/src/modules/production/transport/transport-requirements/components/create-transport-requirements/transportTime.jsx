@@ -12,7 +12,7 @@ import { GoodActions} from '../../../../common-production/good-management/redux/
 import { validate } from 'uuid';
 
 function TransportTime(props) {
-    const {callBackState, timeRequested} = props;
+    const {callBackState, timeRequested, translate} = props;
 
     const [currentTime, setCurrentTime] = useState({
         time: "",
@@ -35,13 +35,36 @@ function TransportTime(props) {
     }
     const handleAddTime = (e) => {
         e.preventDefault();
+        let listTimes = [...listTimeChosen]
         let time = {
             time: currentTime.time,
             detail: currentTime.detail,
         }
-        setListTimeChosen(listTimeChosen => [...listTimeChosen, time]);
+        if (listTimes && listTimes.length!==0){
+            let flag = false;
+            for (let i=0;i<listTimes.length;i++){
+                if (new String(listTimes[i].time).valueOf() == new String(time.time).valueOf()){
+                    flag=true;
+                    break;
+                }
+            }
+            if (!flag){
+                listTimes.push(time);
+            }
+            setListTimeChosen(listTimes);
+        }
+        else{
+            setListTimeChosen([time])
+        }
+        // setListTimeChosen(listTimeChosen => [...listTimeChosen, time]);
     }
-
+    const handleDeleteTime = (time) => {
+        let listTimes = [...listTimeChosen];
+        if (listTimes && listTimes.length!==0){
+            let k = listTimes.filter(r => new String(r.time).valueOf() != new String(time.time).valueOf())
+            setListTimeChosen(k);
+        }
+    }
     useEffect(() => {
         console.log(listTimeChosen, " danh sach thoi gian lua chon");
         callBackState(listTimeChosen);
@@ -134,6 +157,7 @@ function TransportTime(props) {
                                     <th>{translate("manufacturing.plan.quantity_good_inventory")}</th>
                                     <th>{translate("manufacturing.plan.quantity")}</th>
                                     <th>{translate("table.action")}</th> */}
+                                    <th>{"Hành động"}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -148,24 +172,24 @@ function TransportTime(props) {
                                                 <td>{index + 1}</td>
                                                 <td>{x.time}</td>
                                                 <td>{x.detail}</td>
-                                                {/* <td>
-                                                    <a
+                                                <td>
+                                                    {/* <a
                                                         href="#abc"
                                                         className="edit"
                                                         title={translate("general.edit")}
                                                         onClick={() => this.handleEditGood(x, index)}
                                                     >
                                                         <i className="material-icons"></i>
-                                                    </a>
+                                                    </a> */}
                                                     <a
                                                         href="#abc"
                                                         className="delete"
                                                         title={translate("general.delete")}
-                                                        onClick={() => this.handleDeleteGood(index)}
+                                                        onClick={() => handleDeleteTime(x)}
                                                     >
                                                         <i className="material-icons"></i>
                                                     </a>
-                                                </td> */}
+                                                </td>
                                             </tr>
                                         ))
                                     )}

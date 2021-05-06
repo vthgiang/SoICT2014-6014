@@ -216,7 +216,6 @@ function CarrierMissionManagementTable(props) {
                         <th>{"Địa chỉ"}</th>
                         <th>{"Nhiệm vụ"}</th>
                         <th>{"Trạng thái"}</th>
-                        <th>{"TransportStatus"}</th>
                         <th>{"Hành động"}</th>
                         {/* <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
                             <DataTableSetting
@@ -246,7 +245,7 @@ function CarrierMissionManagementTable(props) {
                                     {/* {routeOrdinal.transportRequirement?.transportStatus} */}
                                     {getTransportStatus(routeOrdinal)}
                                 </td>
-                                <td>{"Chưa hoàn thành"}</td>
+                                {/* <td>{"Chưa hoàn thành"}</td> */}
                                 <td style={{ textAlign: "center" }}>
                                     <a className="edit text-green" style={{ width: '5px' }} 
                                         // title={translate('manage_example.detail_info_example')} 
