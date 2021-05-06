@@ -122,11 +122,12 @@ function TransportRequirementsManagementTable(props) {
         props.editTransportRequirement(requirement._id, {status: 2})
     }
     const checkApprover = (requirement) => {
-        if (String(localStorage.getItem("userId") === requirement.approver?._id)){
-            return true;
+        console.log(String(localStorage.getItem("userId") === String(requirement.approver?._id)), " aaaaaaaaaaaaaaaaaaaaa")
+        if (String(localStorage.getItem("userId")) === String(requirement.approver?._id)){
+            return 1;
         }
-        console.log("false")
-        return false;
+        else
+        return 2;
     }
     /**
      * Hàm xử lý khi click xem chi tiết một ví dụ
@@ -282,7 +283,7 @@ function TransportRequirementsManagementTable(props) {
                                         }
                                         {
                                         // this.checkUserForApprove(item) === 1 && 
-                                        (String(x.status)==="1"&&checkApprover(x) === true)
+                                        (String(x.status)==="1"&&checkApprover(x) === 1)
                                         &&(
                                             <a
                                                 onClick={() => handleShowApprove(x)}
