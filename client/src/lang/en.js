@@ -1363,6 +1363,12 @@ export default {
                 file_export_name: "Annual leave statistics table",
                 type: "Annual leave by hours",
                 totalHours: "Total hours",
+                leaveOfAbsenceLetter: "Leave of absence letter",
+                waiting_for_approval_letter: "Waiting for appoval letter",
+                approved_letter: "Approved letter",
+                not_approved_letter: "Disapproved letter",
+                have: "Have",
+                this_month: "this month",
 
                 // Nhóm dành cho table
                 table: {

@@ -272,7 +272,7 @@ const AnnualLeaveManagement = (props) => {
     }
 
     /** Function bắt sự kiện tìm kiếm */
-    const handleSunmitSearch = async () => {
+    const handleSubmitSearch = async () => {
         await props.searchAnnualLeaves(state);
     }
 
@@ -384,8 +384,35 @@ const AnnualLeaveManagement = (props) => {
                     {/* Nút tìm kiếm */}
                     <div className="form-group">
                         <label></label>
-                        <button type="button" className="btn btn-success" title={translate('general.search')} onClick={() => handleSunmitSearch()} >{translate('general.search')}</button>
+                        <button type="button" className="btn btn-success" title={translate('general.search')} onClick={() => handleSubmitSearch()} >{translate('general.search')}</button>
                     </div>
+                </div>
+
+                <div className="form-group col-md-12 row" >
+                    {(Number(annualLeave.numberWaitForApproval) > 0 || Number(annualLeave.numberApproved) > 0 || Number(annualLeave.numberNotApproved) > 0) &&
+                        <React.Fragment>
+                            <span>{translate('human_resource.annual_leave.have')}&nbsp;</span>
+                            <span style={{ fontWeight: "bold" }}>{`${Number(annualLeave.numberWaitForApproval) + Number(annualLeave.numberApproved) + Number(annualLeave.numberNotApproved)} ${translate('human_resource.annual_leave.leaveOfAbsenceLetter')}`}</span>
+                        </React.Fragment>
+                    }
+                    
+                    {
+                        Number(annualLeave.numberWaitForApproval) > 0 &&
+                        <React.Fragment>
+                            <span className="text-warning" style={{ fontWeight: "bold" }}>,&nbsp;{`${annualLeave.numberWaitForApproval} ${translate('human_resource.annual_leave.waiting_for_approval_letter')}`}</span>
+                        </React.Fragment>
+                    }
+                    {
+                        Number(annualLeave.numberApproved) > 0 && 
+                        <span className="text-success" style={{ fontWeight: "bold" }}>,&nbsp;{`${annualLeave.numberApproved} ${translate('human_resource.annual_leave.approved_letter')}`}</span>
+                    }
+                    {
+                        Number(annualLeave.numberNotApproved) > 0 &&
+                        <span className="text-danger" style={{ fontWeight: "bold" }}>,&nbsp;{`${annualLeave.numberNotApproved} ${translate('human_resource.annual_leave.not_approved_letter')}`}</span>
+                    }
+                    {(Number(annualLeave.numberWaitForApproval) > 0 || Number(annualLeave.numberApproved) > 0 || Number(annualLeave.numberNotApproved) > 0) &&
+                        <span>&nbsp;{`${translate('human_resource.annual_leave.this_month')} (${formatDate(Date.now(), true)})`}</span>
+                    }
                 </div>
 
                 <table id={tableId} className="table table-striped table-bordered table-hover">

@@ -1541,6 +1541,12 @@ export default {
                 file_export_name: "Bảng thống kê nghỉ phép",
                 type: "Xin nghỉ theo giờ",
                 totalHours: "Tổng số giờ nghỉ",
+                leaveOfAbsenceLetter: "Đơn xin nghỉ phép",
+                waiting_for_approval_letter: "Đơn chờ phê duyệt",
+                approved_letter: "Đơn đã chấp nhận",
+                not_approved_letter: "Đơn không chấp nhận",
+                have: "Có",
+                this_month: "trong tháng này",
 
                 // Nhóm dành cho table
                 table: {

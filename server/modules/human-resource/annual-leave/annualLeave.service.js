@@ -192,7 +192,7 @@ exports.getTotalAnnualLeave = async (portal, company, organizationalUnits, month
     return {
         totalList: listAnnulLeave.length,
         totalListAnnulLeave: listAnnulLeave,
-        totalListOfYear
+        totalListOfYear,
     };
 }
 
@@ -347,6 +347,7 @@ exports.searchAnnualLeaves = async (portal, params, company) => {
             return {
                 totalList: 0,
                 listSalarys: [],
+                numberWaitForApproval: 0,
             }
         }
     }
@@ -400,9 +401,56 @@ exports.searchAnnualLeaves = async (portal, params, company) => {
         }).skip(params.page).limit(params.limit);
     let totalList = await AnnualLeave(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
 
+    
+    let currentMonth = new Date();
+    let firstDay = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
+    let lastDay = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1);
+
+    let numberWaitForApproval = await AnnualLeave(connect(DB_CONNECTION, portal)).countDocuments({
+        company,
+        status: "waiting_for_approval",
+        startDate: {
+            "$gte": firstDay,
+            "$lt":  lastDay
+        },
+        endDate: {
+            "$gte": firstDay,
+            "$lt": lastDay
+        }
+    })
+
+    let numberApproved = await AnnualLeave(connect(DB_CONNECTION, portal)).countDocuments({
+        company,
+        status: "approved",
+        startDate: {
+            "$gte": firstDay,
+            "$lt":  lastDay
+        },
+        endDate: {
+            "$gte": firstDay,
+            "$lt": lastDay
+        }
+    })
+
+    let numberNotApproved = await AnnualLeave(connect(DB_CONNECTION, portal)).countDocuments({
+        company,
+        status: "disapproved",
+        startDate: {
+            "$gte": firstDay,
+            "$lt":  lastDay
+        },
+        endDate: {
+            "$gte": firstDay,
+            "$lt": lastDay
+        }
+    })
+
     return {
         totalList,
-        listAnnualLeaves
+        listAnnualLeaves,
+        numberWaitForApproval: numberWaitForApproval,
+        numberApproved: numberApproved,
+        numberNotApproved: numberNotApproved
     }
 }
 
