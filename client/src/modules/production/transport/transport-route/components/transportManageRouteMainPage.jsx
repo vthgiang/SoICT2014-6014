@@ -81,10 +81,12 @@ function TransportManageRouteMainPage(props) {
         ];        
         if (allTransportPlans) {
             allTransportPlans.map((item) => {
-                listTransportPlans.push({
-                    value: item._id,
-                    text: item.code,
-                });
+                if(String(item.status)!=="1"){
+                    listTransportPlans.push({
+                        value: item._id,
+                        text: item.code,
+                    });
+                }
             });
         }
         return listTransportPlans;
@@ -339,7 +341,7 @@ function TransportManageRouteMainPage(props) {
                         </div>
                 </div>
                 {
-                    (currentTransportSchedule && currentTransportSchedule.route && currentTransportSchedule.route.length !== 0)
+                    (currentTransportPlan._id!=="0" && currentTransportSchedule && currentTransportSchedule.route && currentTransportSchedule.route.length !== 0)
                     && currentTransportSchedule.route.map((item,index) =>(
                         item &&
                         <fieldset className="scheduler-border" style={{ height: "100%" }}>

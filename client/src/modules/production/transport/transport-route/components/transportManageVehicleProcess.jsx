@@ -43,22 +43,45 @@ function TransportManageVehicleProcess(props) {
                 setTimelineItemPos(timelineItem)
             }
         }
+        console.log(route, " kkkkkkkkkkkkkkkkkkk")
     }, [route, timelineBarWidth])
 
     // useEffect(() => {
     //     console.log(timelineItemPos);
     // }, [timelineItemPos])
+    const getTimeLineItemStatus = (routeOrdinal, index) => {
+        let res = " ";
+        if (routeOrdinal && routeOrdinal.transportRequirement && routeOrdinal.transportRequirement.transportStatus) {
+            if (String(routeOrdinal.type) === "1"){
+                if (String(routeOrdinal.transportRequirement.transportStatus) !== "2"){
+                    res = "active";
+                }
+                // else {
+                //     return "Chưa lấy được hàng";
+                // }
+            }
+            else {
+                if (String(routeOrdinal.transportRequirement.transportStatus) === "3"){
+                    res =  "active";
+                }
+                // else {
+                //     return "Chưa giao được hàng";
+                // }
+            }
+        }
+        return res;
+    }
 
-   return (
+    return (
         <div className="timeline-transport" style={{width: timelineBarWidth+"%"}}>
-            <div className="timeline-progress" style={{ width: `100%` }}></div>
+            <div className="timeline-progress" style={{ width: `0%` }}></div>
             <div className="timeline-items-transport">
             {
                 (route && route.routeOrdinal && route.routeOrdinal.length !== 0)
                 && route.routeOrdinal.map((routeOrdinal, index) => (
                     <div key={"--"+ index} 
                         // className={`timeline-item ${o.active ? 'active' : ''}`}
-                        className={`timeline-item-transport`}
+                        className={`timeline-item-transport ` +getTimeLineItemStatus(routeOrdinal, index)}
                         style={{marginLeft: `calc( ${timelineItemPos[index]}% - ${index===0?"10":"20"}px)`}}
                     >
                         {/* <div className="timeline-contain-transport">{String(routeOrdinal.type) === "1" ? routeOrdinal.transportRequirement?.fromAddress: routeOrdinal.transportRequirement?.toAddress}</div> */}
