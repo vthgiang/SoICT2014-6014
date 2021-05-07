@@ -6,6 +6,8 @@ import { SortableComponent } from "./sortableComponent"
 
 import { MapContainer } from "../googleReactMap/maphook"
 
+import { reverseConvertDistanceToKm, convertDistanceToKm } from "../../../transportHelper/convertDistanceAndDuration"
+
 import '../arrangeOrdinalTransport.css'
 
 function ArrangeOrdinalTransportOneVehicle(props) {
@@ -25,6 +27,11 @@ function ArrangeOrdinalTransportOneVehicle(props) {
     const [locationsOnMap, setLocationOnMap] = useState();
 
     const [activeMapState, setActiveMapState] = useState();
+    /**
+     * addressList của component con
+     * sử dụng để kiểm tra đường đi hợp lệ hay ko, tổng quãng đường
+     */
+    const [addressList, setAddressList] = useState([]);
 
     /**
      * Sau khi sort, gửi lại component cha để update route trên map
@@ -46,8 +53,24 @@ function ArrangeOrdinalTransportOneVehicle(props) {
         } 
     }
 
+    const callBackAddressList = (addressList) => {
+        setAddressList(addressList);
+    }
+
     const handleUpdateMap = () =>{
         setActiveMapState(locationsOnMap);
+    }
+
+    const getTotalDistance = () => {
+        let res = 0;
+        if (addressList && addressList.length!==0){
+            addressList.map(address => {
+                if (address && address.distance){
+                    res += convertDistanceToKm(address.distance);
+                }
+            })
+        }
+        return reverseConvertDistanceToKm(res);
     }
     return (		
         <fieldset className="scheduler-border" style={{ height: "100%" }}>
@@ -56,12 +79,17 @@ function ArrangeOrdinalTransportOneVehicle(props) {
                 <legend className="scheduler-border">{item.transportVehicle.name}</legend>
                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <div className="form-group">
-                        <strong>{"Trọng tải: "+item.transportVehicle.payload}</strong>
+                        <strong>{"Trọng tải: "}</strong>{item.transportVehicle.payload}
                     </div>
                 </div>                                    
                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <div className="form-group">
-                        <strong>{"Thể tích thùng chứa: "+item.transportVehicle.volume}</strong>
+                        <strong>{"Thể tích thùng chứa: "}</strong>{item.transportVehicle.volume}
+                    </div>
+                </div>
+                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <div className="form-group">
+                        <strong>{"Tổng quãng đường di chuyển: "}</strong>{getTotalDistance()}
                     </div>
                 </div>
             </div>
@@ -96,6 +124,7 @@ function ArrangeOrdinalTransportOneVehicle(props) {
                     routeOrdinal = {routeOrdinal}
                     callBackStateOrdinalAddress = {callBackStateOrdinalAddress}
                     callBackToSetLocationsOnMap = {callBackToSetLocationsOnMap}
+                    callBackAddressList={callBackAddressList}
                 />
                 }
                 {
@@ -108,6 +137,7 @@ function ArrangeOrdinalTransportOneVehicle(props) {
                     // routeOrdinal = {routeOrdinal}
                     callBackStateOrdinalAddress = {callBackStateOrdinalAddress}
                     callBackToSetLocationsOnMap = {callBackToSetLocationsOnMap}
+                    callBackAddressList={callBackAddressList}
                 />
                 }
                 {/* <SortableComponent

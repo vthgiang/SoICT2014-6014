@@ -53,7 +53,7 @@ export const convertDistanceToKm = (distance) => {
     return distanceToKm;
 }
 
-const reverseConvertTimeToMinutes = (timeToMinutes) => {
+export const reverseConvertTimeToMinutes = (timeToMinutes) => {
     let result = ""
     if (!timeToMinutes || String(timeToMinutes) === "") return "0"
     if (timeToMinutes>=24*60){
@@ -69,6 +69,12 @@ const reverseConvertTimeToMinutes = (timeToMinutes) => {
 }
 
 export const reverseConvertDistanceToKm = (distance) => {
-    if (!distance || String(distance) === "0") return "0";
-    return distance+ " km";
+    let res;
+    if (!distance || String(distance) === "0") {
+        res= "0 km"
+    }
+    else{
+        res = distance+ " km"
+    }
+    return res;
 }

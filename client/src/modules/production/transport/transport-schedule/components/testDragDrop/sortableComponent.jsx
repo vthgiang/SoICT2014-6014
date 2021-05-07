@@ -9,9 +9,21 @@ function SortableComponent(props) {
 		transportRequirements,
 		routeOrdinal,
 		callBackStateOrdinalAddress,
-		callBackToSetLocationsOnMap
+		callBackToSetLocationsOnMap,
+		callBackAddressList
 		} = props
-
+	/**
+	 * [{
+	 * 	address: "",
+	 * 	addressType: "",
+	 * 	distance: 0,
+	 * 	duration: 0,
+	 * 	geocodeAddress: {lat: , lng: }
+	 * 	payload, volume
+	 * 	transportRequirement: {}
+	 * 	transportRequirementId
+	 * }]
+	 */
 	const [addressList, setAddressList] = useState([]);
 	const [distance, setDistance] = useState([]);
 	const [duration, setDuration] = useState([]);
@@ -137,6 +149,9 @@ function SortableComponent(props) {
 		if (addressList && addressList.length!==0 && transportVehicle){
 			callBackStateOrdinalAddress(addressList, transportVehicle._id);
 			callBackToSetLocationsOnMap(addressList);
+			if(callBackAddressList){
+				callBackAddressList([...addressList]);
+			}
 		}
 	}, [addressList])
 
