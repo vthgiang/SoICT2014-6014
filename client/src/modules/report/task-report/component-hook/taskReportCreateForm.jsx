@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { getStorage } from '../../../../config';
@@ -13,10 +13,11 @@ import { taskManagementActions } from '../../../task/task-management/redux/actio
 import { TaskReportActions } from '../redux/actions';
 
 import ValidationHelper from '../../../../helpers/validationHelper';
+import useDeepCompareEffect from 'use-deep-compare-effect';
 
 import './transferList.css';
 
-function TaskReportCreateForm(props) {
+const TaskReportCreateForm = (props) => {
     const [state, setState] = useState({
         newReport: {
             nameTaskReport: '',
@@ -35,14 +36,12 @@ function TaskReportCreateForm(props) {
                 { id: 2, name: 'Người thực hiện', checked: false },
                 { id: 3, name: 'Người phê duyệt', checked: false },
             ],
-            taskInformations: [],
             itemListBoxRight: [],
             itemListTempLeft: [],
             itemListTempRight: [],
         },
         currentRole: getStorage('currentRole'),
     })
-
 
     /**
     * Hàm bắt sự kiên thay đổi input NameTaskReport
@@ -52,16 +51,18 @@ function TaskReportCreateForm(props) {
         let { newReport } = state;
         const { translate } = props;
         let { value } = e.target;
+        let { message } = ValidationHelper.validateName(translate, value, 4, 255);
 
         setState({
+            ...state,
             newReport: {
                 ...newReport,
                 nameTaskReport: value,
             },
+            nameErrorCreateForm: message
         });
-        let { message } = ValidationHelper.validateName(translate, value, 4, 255);
-        setState({ nameErrorCreateForm: message });
     }
+
 
     /**
      * Bắt sự kiện thay đổi cho ô input mô tả báo cáo
@@ -71,18 +72,20 @@ function TaskReportCreateForm(props) {
         let { newReport } = state;
         const { translate } = props;
         let { value } = e.target;
+        let { message } = ValidationHelper.validateDescription(translate, value);
 
         setState({
+            ...state,
             newReport: {
                 ...newReport,
                 descriptionTaskReport: value,
             },
+            descriptionErrorCreateForm: message
         });
 
-        let { message } = ValidationHelper.validateDescription(translate, value);
-        setState({ descriptionErrorCreateForm: message });
 
     }
+
 
     /**
      * Hàm xử lý khi thay đổi đơn vị
@@ -95,6 +98,7 @@ function TaskReportCreateForm(props) {
             // this.props.getAllUserOfDepartment(value);
             props.getChildrenOfOrganizationalUnits(value);
             setState({
+                ...state,
                 newReport: {
                     ...newReport,
                     nameTaskReport: '',
@@ -113,6 +117,7 @@ function TaskReportCreateForm(props) {
         }
     }
 
+
     /**
      * Hàm xử lý khi thay đổi mẫu công việc
      * @param {*} e 
@@ -121,9 +126,11 @@ function TaskReportCreateForm(props) {
         let { newReport } = state;
         const { translate } = props;
         value = value[0];
+        let { message } = ValidationHelper.validateEmpty(translate, value);
 
         if (value === '') { // Reset các input nhận giá trị tự động khi mẫu công việc trống
             setState({
+                ...state,
                 newReport: {
                     ...newReport,
                     nameTaskReport: '',
@@ -139,6 +146,7 @@ function TaskReportCreateForm(props) {
                 startDateErrorCreateForm: undefined,
                 readByEmployeeErrorCreateForm: undefined,
                 taskTemplateErrorCreateForm: undefined,
+                taskTemplateErrorCreateForm: message
             });
         } else {
             let taskTemplate = props.tasktemplates.items.find((taskTemplate) =>
@@ -160,6 +168,7 @@ function TaskReportCreateForm(props) {
             }
 
             setState({
+                ...state,
                 newReport: {
                     ...newReport,
                     nameTaskReport: taskTemplate.name,
@@ -168,18 +177,18 @@ function TaskReportCreateForm(props) {
                     responsibleEmployees: taskTemplate.responsibleEmployees.map(item => item._id),
                     accountableEmployees: taskTemplate.accountableEmployees.map(item => item._id),
                     taskInformations: taskInformations,
-                }
+                },
+                taskTemplateErrorCreateForm: message
             })
         }
-        let { message } = ValidationHelper.validateEmpty(translate, value);
-        setState({ taskTemplateErrorCreateForm: message });
+        // setState({  });
     }
 
     useEffect(() => {
-        async function fetchData() {
+        async function fetData() {
             const { user } = props;
             let { newReport, currentRole } = state;
-
+            console.log("useEffect");
             if (newReport.organizationalUnit === '' && user.organizationalUnitsOfUser) {
                 let defaultUnit = await user.organizationalUnitsOfUser.find(item =>
                     item.managers.toString() === currentRole
@@ -190,8 +199,7 @@ function TaskReportCreateForm(props) {
                 if (defaultUnit) {
                     props.getChildrenOfOrganizationalUnits(defaultUnit._id);
                 }
-
-                setState({
+                await setState({
                     ...state,
                     newReport: {
                         ...newReport,
@@ -201,8 +209,9 @@ function TaskReportCreateForm(props) {
                 });
             }
         }
-        fetchData();
+        fetData();
     })
+    console.log("ngoai");
 
 
     /**
@@ -212,17 +221,19 @@ function TaskReportCreateForm(props) {
     const handleChangeStartDate = (value) => {
         let { newReport } = state;
         const { translate } = props;
+        let { message } = ValidationHelper.validateEmpty(translate, value);
 
         setState({
+            ...state,
             newReport: {
                 ...newReport,
                 startDate: value,
             },
+            startDateErrorCreateForm: message
         })
 
-        let { message } = ValidationHelper.validateEmpty(translate, value);
-        setState({ startDateErrorCreateForm: message });
     }
+
 
     /**
      * Hàm xử lý ngày kết thúc thay đổi
@@ -231,6 +242,7 @@ function TaskReportCreateForm(props) {
     const handleChangeEndDate = (value) => {
         let { newReport } = state;
         setState({
+            ...state,
             newReport: {
                 ...newReport,
                 endDate: value,
@@ -245,6 +257,7 @@ function TaskReportCreateForm(props) {
     const handleChangeStatus = (value) => {
         let { newReport } = state;
         setState({
+            ...state,
             newReport: {
                 ...newReport,
                 status: value[0],
@@ -260,6 +273,7 @@ function TaskReportCreateForm(props) {
     const handleChangeFrequency = (value) => {
         let { newReport } = state;
         setState({
+            ...state,
             newReport: {
                 ...newReport,
                 frequency: value[0],
@@ -281,6 +295,7 @@ function TaskReportCreateForm(props) {
 
         // set lại state với giá trị taskInformations mới
         setState({
+            ...state,
             newReport: {
                 ...newReport,
                 taskInformations: taskInformations,
@@ -300,6 +315,7 @@ function TaskReportCreateForm(props) {
         taskInformations[index] = { ...taskInformations[index], aggregationType: value.toString() }
 
         setState({
+            ...state,
             newReport: {
                 ...newReport,
                 taskInformations: taskInformations,
@@ -318,6 +334,7 @@ function TaskReportCreateForm(props) {
         taskInformations[index] = { ...taskInformations[index], chartType: value.toString() };
 
         setState({
+            ...state,
             newReport: {
                 ...newReport,
                 taskInformations: taskInformations,
@@ -337,6 +354,7 @@ function TaskReportCreateForm(props) {
         taskInformations[index] = { ...taskInformations[index], filter: value };
 
         setState({
+            ...state,
             newReport: {
                 ...newReport,
                 taskInformations: taskInformations,
@@ -356,6 +374,7 @@ function TaskReportCreateForm(props) {
         taskInformations[index] = { ...taskInformations[index], newName: value }
 
         setState({
+            ...state,
             newReport: {
                 ...newReport,
                 taskInformations: taskInformations,
@@ -371,6 +390,7 @@ function TaskReportCreateForm(props) {
     const handleChangeReportResponsibleEmployees = (value) => {
         let { newReport } = state;
         setState({
+            ...state,
             newReport: {
                 ...newReport,
                 responsibleEmployees: value,
@@ -386,6 +406,7 @@ function TaskReportCreateForm(props) {
     const handleChangeReportAccountableEmployees = (value) => {
         let { newReport } = state;
         setState({
+            ...state,
             newReport: {
                 ...newReport,
                 accountableEmployees: value,
@@ -395,16 +416,16 @@ function TaskReportCreateForm(props) {
 
     const handleTaskReportRead = value => {
         let { newReport } = state;
-        const { translate } = props;
+        let { message } = ValidationHelper.validateEmpty(props.translate, value);
         setState({
+            ...state,
             newReport: {
                 ...newReport,
                 readByEmployees: value,
-            }
+            },
+            readByEmployeeErrorCreateForm: message
         });
 
-        let { message } = ValidationHelper.validateEmpty(translate, value);
-        setState({ readByEmployeeErrorCreateForm: message });
     }
 
     /**
@@ -419,6 +440,7 @@ function TaskReportCreateForm(props) {
         taskInformations[index] = { ...taskInformations[index], showInReport: value };
 
         setState({
+            ...state,
             newReport: {
                 ...newReport,
                 taskInformations: taskInformations,
@@ -448,6 +470,7 @@ function TaskReportCreateForm(props) {
 
         // set lại giá trị cho State 
         setState({
+            ...state,
             newReport: {
                 ...newReport,
                 itemListBoxLeft,
@@ -468,6 +491,7 @@ function TaskReportCreateForm(props) {
         }
 
         setState({
+            ...state,
             newReport: {
                 ...newReport,
                 itemListTempLeft: itemListTempLeft,
@@ -499,6 +523,7 @@ function TaskReportCreateForm(props) {
 
         // 
         setState({
+            ...state,
             newReport: {
                 ...newReport,
                 itemListBoxLeft: checkId ? itemListBoxLeft
@@ -530,6 +555,7 @@ function TaskReportCreateForm(props) {
 
         // set lại giá trị cho State 
         setState({
+            ...state,
             newReport: {
                 ...newReport,
                 itemListBoxRight,
@@ -548,6 +574,7 @@ function TaskReportCreateForm(props) {
         }
 
         setState({
+            ...state,
             newReport: {
                 ...newReport,
                 itemListTempRight: itemListTempRight,
@@ -574,6 +601,7 @@ function TaskReportCreateForm(props) {
 
 
         setState({
+            ...state,
             newReport: {
                 ...newReport,
                 itemListBoxRight: checkId ? itemListBoxRight
@@ -644,8 +672,8 @@ function TaskReportCreateForm(props) {
         readByEmployeeErrorCreateForm,
         taskTemplateErrorCreateForm,
     } = state;
-    // let { itemListBoxLeft, itemListBoxRight } = state.newReport;
-    let listTaskTemplate, listRole, listRoles = [];
+    const { itemListBoxLeft, itemListBoxRight } = newReport;
+    let listTaskTemplate, taskInformations = newReport.taskInformations, listRole, listRoles = [];
 
     // Lấy ra list task template theo đơn vị
     if (tasktemplates.items && newReport.organizationalUnit) {
@@ -925,7 +953,7 @@ function TaskReportCreateForm(props) {
                                     </thead>
                                     <tbody>
                                         {
-                                            state.taskInformations ? state.taskInformations.map((item2, index) => (
+                                            taskInformations ? taskInformations.map((item2, index) => (
                                                 <tr key={index}>
                                                     <td>{item2.code}</td>
                                                     <td>{item2.name}</td>
@@ -1012,7 +1040,7 @@ function TaskReportCreateForm(props) {
                                                 <div className="box-body box-size">
                                                     <div className="listItem-left">
                                                         {
-                                                            state.itemListBoxLeft && state.itemListBoxLeft.map((x, index) => (
+                                                            itemListBoxLeft && itemListBoxLeft.map((x, index) => (
                                                                 <div className="item" key={index}>
                                                                     <input className="checkbox-input" type="checkbox" id={`myCheckBoxId${index}-left`} name={x.id} value={x.name} checked={!!x.checked} onChange={handleLeftListChange} />
                                                                     <div className=" checkbox-text">
@@ -1052,14 +1080,14 @@ function TaskReportCreateForm(props) {
                                             <div className="only-mobile">
                                                 <div className="listButton ">
                                                     <div className="item-button">
-                                                        <button type="button" ref="btn-down" className="btn btn-sm btn-default" onClick={handleClickTransferRightList}>
+                                                        <button type="button" className="btn btn-sm btn-default" onClick={handleClickTransferRightList}>
                                                             <span className="material-icons">
                                                                 keyboard_arrow_down
                                                             </span>
                                                         </button>
                                                     </div>
                                                     <div className="item-button">
-                                                        <button type="button" ref="btn-up" className="btn btn-sm btn-default" onClick={handleClickTransferLeftList}>
+                                                        <button type="button" className="btn btn-sm btn-default" onClick={handleClickTransferLeftList}>
                                                             <span className="material-icons">
                                                                 keyboard_arrow_up
                                                             </span>
@@ -1076,7 +1104,7 @@ function TaskReportCreateForm(props) {
                                                 <div className="box-body box-size">
                                                     <div className="listItem-left">
                                                         {
-                                                            state.itemListBoxRight && state.itemListBoxRight.map((x, index) => (
+                                                            itemListBoxRight && itemListBoxRight.map((x, index) => (
                                                                 <div className="item" key={index} >
                                                                     <input className="checkbox-input" type="checkbox" id={`myCheckBoxId${index}-right`} name={x.id} value={x.name} checked={!!x.checked} onChange={handleRightListChange} />
                                                                     <div className=" checkbox-text">

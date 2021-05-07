@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import Swal from 'sweetalert2';
@@ -138,6 +138,7 @@ function TaskReportManager(props) {
         let page = (pageNumber - 1) * (state.limit);
 
         await setState({
+            ...state,
             page: parseInt(page),
         });
         props.getTaskReports(state);
@@ -157,9 +158,10 @@ function TaskReportManager(props) {
      */
     const setLimit = async (number) => {
         await setState({
+            ...state,
             limit: parseInt(number),
         });
-        props.getTaskReports(state);
+        await props.getTaskReports(state);
     }
 
     const checkPermissonCreator = (creator) => {

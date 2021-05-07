@@ -7,11 +7,10 @@ import { taskManagementActions } from '../../../task/task-management/redux/actio
 import { chartFunction } from './chart';
 import { LineBarChartDetailForm } from './lineBarChartDetailForm';
 import { PieChartDetailForm } from './pieChartDetailForm';
+// import { Alert } from 'react-bootstrap';
 
 function TaskReportDetailForm(props) {
-    const DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
     const [state, setState] = useState({
-        dataStatus: DATA_STATUS.NOT_AVAILABLE,
     })
 
     const { reports, tasks } = props;
@@ -21,8 +20,9 @@ function TaskReportDetailForm(props) {
     let newlistTaskEvaluations, dataForAxisXInChart = [], results, output, pieChartDataConvert, barAndLineDataChartConvert;
 
     if (props.taskReportId !== state.taskReportId) {
+        console.log("detail");
         props.getTaskReportById(props.taskReportId);
-        setState ({
+        setState({
             ...state,
             dataStatus: 1, // 1 : QUERING
             taskReportId: props.taskReportId,
@@ -30,20 +30,14 @@ function TaskReportDetailForm(props) {
     }
 
     useEffect(() => {
-        if (state.dataStatus === DATA_STATUS.QUERYING && !props.reports.isLoading) {
-            setState({
-                dataStatus: DATA_STATUS.AVAILABLE,
-            })
-        }
-
-        if (state.dataStatus === DATA_STATUS.AVAILABLE) {
+        if (props.reports.listTaskReportById){
             let listTaskReport = props.reports.listTaskReportById;
             setState({
+                ...state,
                 listTaskReport: listTaskReport,
-                dataStatus: DATA_STATUS.FINISHED,
             });
         }
-    })
+    }, [JSON.stringify(props.reports.listTaskReportById)])
 
     const handleViewChart = async () => {
         let { listTaskReport } = state;
@@ -66,6 +60,7 @@ function TaskReportDetailForm(props) {
 
             await props.getTaskEvaluations(newData);
             setState({
+                ...state,
                 idLineBarChart: `detail-lineBarChart-${taskReportId}`,
                 idPieChart: `detail-pieChart-${taskReportId}`,
             })
@@ -149,7 +144,7 @@ function TaskReportDetailForm(props) {
             <div className="row">
                 <div className="col-md-12 col-lg-12" style={{ display: 'flex', justifyContent: 'flex-end' }}>
                     <div className="form-inline d-flex justify-content-end">
-                        <button id="exportButton" className="btn btn-sm btn-success " title="Xem biểu đồ" style={{ marginBottom: '6px' }} onClick={() => handleViewChart()} ><span className="fa fa-fw fa-line-chart" style={{ color: 'rgb(66 65 64)', fontSize: '15px', marginRight: '5px' }}></span></button>
+                        <button id="exportButton" className="btn btn-sm btn-success " title="Xem biểu đồ" style={{ marginBottom: '6px' }} onClick={handleViewChart} ><span className="fa fa-fw fa-line-chart" style={{ color: 'rgb(66 65 64)', fontSize: '15px', marginRight: '5px' }}></span></button>
                     </div>
                 </div>
             </div>
