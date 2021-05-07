@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import moment from "moment";
 import { getStorage } from "../../../../config";
-import { getNumsOfDaysWithoutGivenDay } from "../../../task/task-management/component/functionHelpers";
+import { getNumsOfDaysWithoutGivenDay, getSalaryFromUserId } from "../../../task/task-management/component/functionHelpers";
 
 export const MILISECS_TO_DAYS = 86400000;
 export const MILISECS_TO_HOURS = 3600000;
@@ -68,9 +68,11 @@ export const getDurationWithoutSatSun = (startDate, endDate, timeMode) => {
     let duration = 0
     if (timeMode === 'hours') {
         duration = (moment(endDate).diff(moment(startDate), `milliseconds`) / MILISECS_TO_DAYS - numsOfSaturdays - numsOfSundays) * 8;
+        // return theo don vi giờ - hours
         return duration;
     }
     duration = moment(endDate).diff(moment(startDate), `milliseconds`) / MILISECS_TO_DAYS - numsOfSaturdays - numsOfSundays;
+    // return theo don vi ngày - days
     return duration;
 }
 
@@ -85,7 +87,7 @@ export const formatTime = (date) => {
 }
 
 export const convertToMilliseconds = (duration, currentMode = 'days') => {
-    if ( currentMode === 'days') return duration * MILISECS_TO_DAYS;
+    if (currentMode === 'days') return duration * MILISECS_TO_DAYS;
     return duration * MILISECS_TO_HOURS;
 }
 
@@ -100,4 +102,20 @@ export const getNearestIntegerNumber = (value) => {
     const numberWithFirstSecondIndex = numberWithFirstSecondIndexArr.join('');
     const result = Number(numberWithFirstSecondIndex) + Math.pow(10, beforeDecimalPart.length - 2);
     return result;
+}
+
+export const getEstimateHumanCostFromParams = (projectDetail, duration, currentResponsibleEmployees, currentAccountableEmployees, timeMode) => {
+    // trọng số người thực hiện là 0.8, người phê duyệt là 0.2
+    const resWeight = 0.8, accWeight = 0.2;
+    let cost = 0;
+    const currentMonthWorkDays = getAmountOfWeekDaysInMonth(moment());
+    for (let resItem of currentResponsibleEmployees) {
+        cost += resWeight * getSalaryFromUserId(projectDetail?.responsibleEmployeesWithUnit, resItem) / currentMonthWorkDays / (timeMode === 'days' ? 1 : 8)
+            * duration;
+    }
+    for (let accItem of currentAccountableEmployees) {
+        cost += accWeight * getSalaryFromUserId(projectDetail?.responsibleEmployeesWithUnit, accItem) / currentMonthWorkDays / (timeMode === 'days' ? 1 : 8)
+        * duration;
+    }
+    return cost;
 }

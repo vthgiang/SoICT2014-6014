@@ -1006,6 +1006,18 @@ exports.links = [
         url: '/manage-transport-route',
         apis: ['@all']
     },
+    {
+        url: '/manage-transport-department',
+        apis: ['@all']
+    },
+    {
+        url: '/carrier-today-transport-mission',
+        apis: ['@all']
+    },
+    {
+        url: '/carrier-all-times-transport-mission',
+        apis: ['@all']
+    },
 
     {
         url: '/projects-management',

@@ -2194,7 +2194,6 @@ exports.createProjectTask = async (portal, task) => {
         taskProject,
         estimateNormalTime: task.estimateNormalTime,
         estimateOptimisticTime: task.estimateOptimisticTime,
-        estimatePessimisticTime: task.estimatePessimisticTime,
         estimateNormalCost: task.estimateNormalCost,
         estimateMaxCost: task.estimateMaxCost,
         preceedingTasks: task.preceedingTasks,

@@ -18,6 +18,7 @@ export function transportVehicle(state = initialState, action) {
         case transportVehicleConstants.GET_ALL_TRANSPORT_VEHICLES_REQUEST:
         case transportVehicleConstants.CREATE_TRANSPORT_VEHICLE_REQUEST:
         case transportVehicleConstants.CREATE_TRANSPORT_PLAN_VEHICLE_NOT_DUPLICATE_REQUEST:
+        case transportVehicleConstants.EDIT_TRANSPORT_VEHICLE_REQUEST:
 		return {
                 ...state,
                 isLoading: true
@@ -25,7 +26,8 @@ export function transportVehicle(state = initialState, action) {
 		
         case transportVehicleConstants.GET_ALL_TRANSPORT_VEHICLES_FAILURE:
         case transportVehicleConstants.CREATE_TRANSPORT_VEHICLE_FAILURE:    
-        case transportVehicleConstants.CREATE_TRANSPORT_PLAN_VEHICLE_NOT_DUPLICATE_FAILURE:    
+        case transportVehicleConstants.CREATE_TRANSPORT_PLAN_VEHICLE_NOT_DUPLICATE_FAILURE: 
+        case transportVehicleConstants.EDIT_TRANSPORT_VEHICLE_FAILURE:   
             return {
                     ...state,
                     isLoading: false,
@@ -44,6 +46,15 @@ export function transportVehicle(state = initialState, action) {
                     ...state.lists,
                     action.payload
                 ],
+                isLoading: false
+            }
+        case transportVehicleConstants.EDIT_TRANSPORT_VEHICLE_SUCCESS:
+            index = findIndex(state.lists, action.payload._id);
+            if (index !== -1) {
+                state.lists[index] = action.payload
+            }
+            return {
+                ...state,
                 isLoading: false
             }
         case transportVehicleConstants.CREATE_TRANSPORT_PLAN_VEHICLE_NOT_DUPLICATE_SUCCESS:

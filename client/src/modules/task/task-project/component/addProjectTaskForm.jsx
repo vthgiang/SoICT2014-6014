@@ -15,7 +15,7 @@ import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import { RoleActions } from '../../../super-admin/role/redux/actions';
 import { ROOT_ROLE } from '../../../../helpers/constants';
 import dayjs from "dayjs";
-import { getCurrentProjectDetails } from '../../../project/component/projects/functionHelper';
+import { getCurrentProjectDetails, getDurationWithoutSatSun, getEstimateHumanCostFromParams } from '../../../project/component/projects/functionHelper';
 import moment from 'moment';
 import { getSalaryFromUserId, numberWithCommas } from '../../task-management/component/functionHelpers';
 import { AutomaticTaskPointCalculator } from '../../task-perform/component/automaticTaskPointCalculator';
@@ -44,7 +44,6 @@ class AddProjectTaskForm extends Component {
                 taskProject: "",
                 estimateNormalTime: '',
                 estimateOptimisticTime: '',
-                estimatePessimisticTime: '',
                 estimateNormalCost: '',
                 estimateMaxCost: '',
                 parent: '',
@@ -526,7 +525,6 @@ class AddProjectTaskForm extends Component {
                     ...this.state.newTask,
                     estimateNormalTime: value,
                     estimateOptimisticTime: value || Number(value) < 0 ? (Number(value) - 200).toString() : '',
-                    estimatePessimisticTime: value || Number(value) < 0 ? (Number(value) + 200).toString() : '',
                     errorOnTimeEst: TaskFormValidator.validateTimeEst(value, this.props.translate),
                 }
             }, () => this.props.handleChangeTaskData(this.state.newTask))
@@ -700,20 +698,17 @@ class AddProjectTaskForm extends Component {
         const projectDetail = getCurrentProjectDetails(this.props.project);
         const startDateTask = this.convertDateTime(startDate, startTime);
         const endDateTask = this.convertDateTime(endDate, endTime);
-        const duration = moment(endDateTask).diff(moment(startDateTask), `${projectDetail?.unitTime}s`);
-        // Cần phải có biện pháp trừ đi ngày thứ 7 chủ nhật
+
+        const duration = getDurationWithoutSatSun(startDateTask, endDateTask, `${projectDetail?.unitTime}s`)
 
         let sum = 0;
-        for (let responsibleItem of responsibleEmployees) {
-            // 0.8 là trọng số của Responsible
-            // Chia 20 là số ngày công
-            sum += getSalaryFromUserId(projectDetail?.responsibleEmployeesWithUnit, responsibleItem) / 20 * duration * 0.8;
-        }
-        for (let accountableItem of accountableEmployees) {
-            // 0.2 là trọng số của Accountable
-            // Chia 20 là số ngày công
-            sum += getSalaryFromUserId(projectDetail?.responsibleEmployeesWithUnit, accountableItem) / 20 * duration * 0.2;
-        }
+        sum += getEstimateHumanCostFromParams(
+            projectDetail,
+            duration,
+            responsibleEmployees,
+            accountableEmployees,
+            `${projectDetail?.unitTime}s`
+        );
         return numberWithCommas(sum);
     }
 
@@ -741,7 +736,7 @@ class AddProjectTaskForm extends Component {
 
     render() {
         const { id, newTask, startTime, endTime } = this.state;
-        const { estimateNormalTime, estimateOptimisticTime, estimatePessimisticTime, estimateNormalCost, estimateMaxCost, estimateAssetCost } = newTask;
+        const { estimateNormalTime, estimateOptimisticTime, estimateNormalCost, estimateMaxCost, estimateAssetCost } = newTask;
         const { tasktemplates, user, translate, tasks, department, project, isProcess, info, role } = this.props;
         let listTaskTemplate;
         let listDepartment = department?.list;

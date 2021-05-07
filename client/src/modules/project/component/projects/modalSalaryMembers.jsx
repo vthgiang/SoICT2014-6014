@@ -14,11 +14,8 @@ import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
 import { numberWithCommas } from '../../../task/task-management/component/functionHelpers';
 
 const ModalSalaryMembers = (props) => {
-    const { translate, responsibleEmployeesWithUnit, project, user } = props;
+    const { translate, responsibleEmployeesWithUnit, project, user, createProjectCurrentSalaryMember } = props;
     const listUsers = user && user.usersInUnitsOfCompany ? getEmployeeSelectBoxItems(user.usersInUnitsOfCompany) : []
-    const listDepartments = user && user.usersInUnitsOfCompany ? getListDepartments(user.usersInUnitsOfCompany) : []
-    // console.log('responsibleEmployeesWithUnit', responsibleEmployeesWithUnit)
-    // console.log('project.salaries', project.salaries)
     const [currentSalaryMembers, setCurrentSalaryMembers] = useState(project.salaries || []);
 
     useEffect(() => {
@@ -28,34 +25,38 @@ const ModalSalaryMembers = (props) => {
                 unitId: employeeItem.unitId,
                 listUsers: employeeItem.listUsers.map(item => ({
                     userId: item,
-                    salary: 0,
+                    salary: undefined,
                 }))
             })
         }
         props.getSalaryMembersDispatch({
             data: {
-                responsibleEmployeesWithUnit: newResponsibleEmployeesWithUnit,
+                responsibleEmployeesWithUnit: createProjectCurrentSalaryMember || newResponsibleEmployeesWithUnit,
             }
         })
-    }, [responsibleEmployeesWithUnit.list])
+    }, [createProjectCurrentSalaryMember])
 
     useEffect(() => {
         setCurrentSalaryMembers(project.salaries);
     }, [project.salaries])
 
     const save = () => {
+        props.handleSaveCurrentSalaryMember(currentSalaryMembers);
+    }
 
+    const isAbleToSave = () => {
+        return currentSalaryMembers.length > 0;
     }
 
     return (
         <React.Fragment>
-            {/* <ButtonModal modalID="modal-create-example" button_name={translate('manage_example.add')} title={translate('manage_example.add_title')} /> */}
             <DialogModal
                 modalID={`modal-salary-members`} isLoading={false}
                 formID={`form-salary-members`}
                 title={`Bảng lương thành viên trong dự án`}
                 size={75}
                 func={save}
+                disableSubmit={!isAbleToSave}
             >
                 <div>
                     <div className="box">
@@ -73,7 +74,6 @@ const ModalSalaryMembers = (props) => {
                                     &&
                                     <tbody>
                                         {currentSalaryMembers.map((unitItem, unitIndex) => {
-                                            console.log('DUMADUMA', unitItem)
                                             return unitItem?.listUsers?.map((userItem, userIndex) => {
                                                 return (
                                                     <tr key={`${unitItem.id}-${userItem.userId}`}>
@@ -82,7 +82,7 @@ const ModalSalaryMembers = (props) => {
                                                         <td>
                                                             <input
                                                                 type="number"
-                                                                value={Number(currentSalaryMembers[unitIndex].listUsers[userIndex].salary)}
+                                                                value={currentSalaryMembers[unitIndex].listUsers[userIndex].salary}
                                                                 onChange={e => {
                                                                     const newCurrentSalaryMembers = currentSalaryMembers.map((unItem, unIndex) => {
                                                                         return {
@@ -91,7 +91,7 @@ const ModalSalaryMembers = (props) => {
                                                                                 if (unitIndex === unIndex && userIndex === usIndex) {
                                                                                     return {
                                                                                         ...usItem,
-                                                                                        salary: e.target.value,
+                                                                                        salary: Number(e.target.value),
                                                                                     };
                                                                                 }
                                                                                 return usItem;

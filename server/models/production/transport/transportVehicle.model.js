@@ -7,10 +7,6 @@ const TransportVehicleSchema = new Schema({ // Phương tiện vận tải (lấ
         ref: 'Asset',
         required: true
     },
-    transportPlan: { // Kế hoạch có sử dụng phương tiện
-        type: Schema.Types.ObjectId,
-        ref: 'TransportPlan',
-    },
     code: { // Mã phương tiện
         type: String,
         required: true
@@ -19,16 +15,14 @@ const TransportVehicleSchema = new Schema({ // Phương tiện vận tải (lấ
         type: String,
         required: true,
     },
-    useStatuses: [{ // Trang thai ngay nay co the su dung khong
-        status: {
-            type: Number,
-            required: true,
-        },
-        time: {
-            type: Date,
-            required: true,
-        }
+    useInTransportPlan: [{ // Kế hoạch có sử dụng phương tiện
+        type: Schema.Types.ObjectId,
+        ref: 'TransportPlan'
     }],
+    usable: { // Đơn vị được sử dụng hay ko, 0 không, 1 có
+        type: Number,
+        required: true,
+    },
     // carriers: [{ // Người vận chuyển trên xe
     //     pos: { // Tài xế hay người đi cùng
     //         type: Number,
