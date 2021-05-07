@@ -79,7 +79,14 @@ class SideBar extends Component {
                                     icon: "fa fa-newspaper-o",
                                 }}
                             />
-
+                            {/* Bảng tin đơn vị toàn công ty */}
+                            <Item
+                                item={{
+                                    name: "menu.dashboard_all_unit",
+                                    path: "/dashboard-all-unit",
+                                    icon: "fa fa-newspaper-o",
+                                }}
+                            />
                             {/* Bảng tin đơn vị */}
                             <Item
                                 item={{
@@ -745,22 +752,37 @@ class SideBar extends Component {
                                             name: "menu.manage_transport_schedule",
                                             icon: "fa fa-calendar-o",
                                             path: "/manage-transport-schedule",
+                                        },                                        
+                                        {
+                                            name: "menu.manage_transport_route",
+                                            icon: "fa fa-calendar-o",
+                                            path: "/manage-transport-route",
                                         },
                                         {
                                             name: "menu.manage_transport_vehicle",
                                             icon: "fa fa-calendar-o",
                                             path: "/manage-transport-vehicle",
                                         },
+                                        {
+                                            name: "menu.manage_transport_department",
+                                            icon: "fa fa-sitemap",
+                                            path: "/manage-transport-department",
+                                        },
+                                        {
+                                            name: "menu.carrier_today_transport_mission",
+                                            icon: "fa fa-calendar-o",
+                                            path: "/carrier-today-transport-mission", 
+                                        },
+                                        {
+                                            name: "menu.carrier_all_times_transport_mission",
+                                            icon: "fa fa-calendar-o",
+                                            path: "/carrier-all-times-transport-mission", 
+                                        },                                        
                                         // {
                                         //     name: "menu.manage_transport_human",
                                         //     icon: "fa fa-calendar-o",
                                         //     path: "/manage-transport-human",
                                         // },
-                                        {
-                                            name: "menu.manage_transport_route",
-                                            icon: "fa fa-calendar-o",
-                                            path: "/manage-transport-route",
-                                        },
                                     ]
                                 }}
                             />

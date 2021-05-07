@@ -72,6 +72,7 @@ class ContentMaker extends Component {
                         getTextData={onTextChange}
                         quillValueDefault={text}
                         placeholder={placeholder}
+                        enableDropImage={false}
                     />
                     {this.state.showDropFileHere &&
                         <div style={{ fontSize: "2em", pointerEvents: "none", width: "100%", height: "100%", border: "2px dashed black", backgroundColor: "rgba(255, 255, 255, 0.3)", top: "0", left: 0, position: "absolute", textAlign: "center" }}>

@@ -10,7 +10,7 @@ import '../arrangeOrdinalTransport.css'
 
 function ArrangeOrdinalTransportOneVehicle(props) {
 
-    let {item, callBackStateOrdinalAddress} = props;
+    let {item, routeOrdinal, callBackStateOrdinalAddress} = props;
     
     /**
      * Lưu vị trí tọa độ các điểm hiện tại, chờ cập nhật bản đồ
@@ -69,10 +69,12 @@ function ArrangeOrdinalTransportOneVehicle(props) {
                 <div className = "transport-map">
                     {
                         (activeMapState && activeMapState.length!==0)
-                        // &&
-                        // <MapContainer 
-                        //     locations={activeMapState}
-                        // />
+                        &&
+                        <MapContainer 
+                        //     locations={locationsOnMap}
+
+                            locations={activeMapState}
+                        />
                     }
                 </div>
                 <div className="form-group">
@@ -84,12 +86,38 @@ function ArrangeOrdinalTransportOneVehicle(props) {
                 </div>
             </div>
             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <SortableComponent
-                    transportRequirements = {item.transportRequirements}
+                {
+                    routeOrdinal && routeOrdinal.length!==0
+                    && 
+                    <SortableComponent
+                    // currentTransportSchedule = {item}
+                    // transportRequirements = {item.transportRequirements}
                     transportVehicle = {item.transportVehicle}
+                    routeOrdinal = {routeOrdinal}
                     callBackStateOrdinalAddress = {callBackStateOrdinalAddress}
                     callBackToSetLocationsOnMap = {callBackToSetLocationsOnMap}
                 />
+                }
+                {
+                    !(routeOrdinal && routeOrdinal.length!==0)
+                    && 
+                    <SortableComponent
+                    // currentTransportSchedule = {item}
+                    transportRequirements = {item.transportRequirements}
+                    transportVehicle = {item.transportVehicle}
+                    // routeOrdinal = {routeOrdinal}
+                    callBackStateOrdinalAddress = {callBackStateOrdinalAddress}
+                    callBackToSetLocationsOnMap = {callBackToSetLocationsOnMap}
+                />
+                }
+                {/* <SortableComponent
+                    currentTransportSchedule = {item}
+                    // transportRequirements = {item.transportRequirements}
+                    // transportVehicle = {item.transportVehicle}
+                    routeOrdinal = {routeOrdinal}
+                    callBackStateOrdinalAddress = {callBackStateOrdinalAddress}
+                    callBackToSetLocationsOnMap = {callBackToSetLocationsOnMap}
+                /> */}
             </div>
         </fieldset>
                        

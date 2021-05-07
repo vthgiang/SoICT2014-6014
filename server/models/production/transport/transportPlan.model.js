@@ -6,6 +6,9 @@ const TransportPlanSchema = new Schema({
         type: String,
         required: true,
     },
+    status: { // Trạng thái kế hoạch hiện tại 1: Cần xếp hàng, xếp lộ trình, 2: Có thể tiến hành, 3: Đang tiến hành, 4: Đã hoàn thành
+        type: Number,
+    },
     transportRequirements: [{
             type: Schema.Types.ObjectId,
             ref: 'TransportRequirement',
@@ -15,6 +18,10 @@ const TransportPlanSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: 'Asset',
             // required: true
+        },
+        vehicle: {
+            type: Schema.Types.ObjectId,
+            ref: 'TransportVehicle',
         },
         volume: { // Thể tích thùng của xe
             type: Number,
@@ -28,6 +35,9 @@ const TransportPlanSchema = new Schema({
                 type: Schema.Types.ObjectId,
                 ref: 'User',
                 // required: true
+            },
+            pos: {
+                type: Number, // Là lái xe => ==1 hay không
             }
         }]
     }],

@@ -18,7 +18,7 @@ const ViewAllTaskNeedToDo = (props) => {
 
     let unit = null, taskNeedTodoUnit = [];
     if (props.clickNeedTodoChart) {
-        unit = props.clickNeedTodoChart.id;
+        unit = props.clickNeedTodoChart;
         taskNeedTodoUnit = taskNeedTodo[unit]
     }
     return (

@@ -137,6 +137,9 @@ exports.getTaskById = async (portal, id, userId) => {
                     ],
                 },
             },
+            { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
+            { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
+            { path: "logs.creator", select: "_id name"}
         ]);
     if (!task) {
         return {
@@ -272,19 +275,7 @@ exports.getTaskById = async (portal, id, userId) => {
         };
     }
     task.evaluations.reverse();
-    task.taskActions.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-    task.taskActions.map(o => {
-        if (o.comments && o.comments.length > 0)
-            o.comments.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        return o;
-    })
 
-    task.taskComments.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-    task.taskComments.map(o => {
-        if (o.comments && o.comments.length > 0)
-            o.comments.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        return o;
-    })
     return task;
 };
 
@@ -822,6 +813,8 @@ exports.stopTimesheetLog = async (portal, params, body, user) => {
                     ],
                 },
             },
+            { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
+            { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
         ]);
     newTask.evaluations.reverse();
 
@@ -904,9 +897,13 @@ exports.createCommentOfTaskAction = async (portal, params, body, files, user) =>
         {
             $push: {
                 "taskActions.$.comments": {
-                    creator: body.creator,
-                    description: body.description,
-                    files: files,
+                    $each: [{
+                        creator: body.creator,
+                        description: body.description,
+                        files: files,
+                    }],
+                    $position: 0
+
                 },
             },
         }, { new: true }
@@ -1028,6 +1025,8 @@ exports.createCommentOfTaskAction = async (portal, params, body, files, user) =>
                 ],
             },
         },
+        { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
+        { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
     ]);
 
     const { taskActions } = commentOfTaskAction;
@@ -1047,9 +1046,6 @@ exports.createCommentOfTaskAction = async (portal, params, body, files, user) =>
 
     // Lấy người liên quan đến trong subcomment 
     const subCommentOfTaskActionsLength = getTaskAction[0].comments.length;
-
-    // sắp xết comment của haotj động theo chiều giảm dàn cua thời gian tạo
-    getTaskAction[0].comments.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
     for (let index = 0; index < subCommentOfTaskActionsLength; index++) {
         userReceive = [...userReceive, getTaskAction[0].comments[index].creator._id];
@@ -1208,6 +1204,7 @@ exports.createTaskAction = async (portal, params, body, files) => {
                 $push: {
                     taskActions: {
                         $each: [actionInformation],
+                        $position: 0
                     },
                 },
             }, { new: true })
@@ -1329,13 +1326,13 @@ exports.createTaskAction = async (portal, params, body, files) => {
                     ],
                 },
             },
+            { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
+            { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
         ]);
 
-    // let user = await User(connect(DB_CONNECTION, portal)).findOne({ _id: body.creator }); // Thừa 
     let getUser, accEmployees;
     if (task) {
-        const length = task.taskActions.length;
-        getUser = task.taskActions[length - 1].creator;
+        getUser = task.taskActions[0].creator;// action vừa thêm nằm ở đầu mảng
 
         accEmployees = task.accountableEmployees.map(o => o._id);
     }
@@ -1343,8 +1340,6 @@ exports.createTaskAction = async (portal, params, body, files) => {
     // Danh sách người phê duyệt được gửi mail
     let userEmail = await User(connect(DB_CONNECTION, portal)).find({ _id: { $in: accEmployees } });
     let email = userEmail.map(item => item.email);
-
-    task.taskActions.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     return { taskActions: task.taskActions, tasks: task, userCreator: getUser, email: email };
 }
 /**
@@ -1440,7 +1435,10 @@ exports.createTaskComment = async (portal, params, body, files, user) => {
         params.taskId,
         {
             $push: {
-                taskComments: commentInformation,
+                taskComments: {
+                    $each: [commentInformation],
+                    $position: 0
+                },
             },
         }, { new: true })
         .populate([
@@ -1561,6 +1559,8 @@ exports.createTaskComment = async (portal, params, body, files, user) => {
                     ],
                 },
             },
+            { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
+            { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
         ]);
 
     const resEmployees = taskComment.responsibleEmployees && taskComment.responsibleEmployees.map(o => o._id);
@@ -1589,7 +1589,6 @@ exports.createTaskComment = async (portal, params, body, files, user) => {
     if (userReceive && userReceive.length > 0)
         NotificationServices.createNotification(portal, user.company._id, data)
 
-    taskComment.taskComments.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     return taskComment.taskComments;
 };
 /**
@@ -1677,9 +1676,12 @@ exports.createCommentOfTaskComment = async (portal, params, body, files, user) =
         {
             $push: {
                 "taskComments.$.comments": {
-                    creator: body.creator,
-                    description: body.description,
-                    files: files,
+                    $each: [{
+                        creator: body.creator,
+                        description: body.description,
+                        files: files
+                    }],
+                    $position: 0
                 },
             },
         }, { new: true })
@@ -1801,6 +1803,8 @@ exports.createCommentOfTaskComment = async (portal, params, body, files, user) =
                     ],
                 },
             },
+            { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
+            { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
         ]);
 
     const { taskComments } = taskcomment;
@@ -1819,7 +1823,6 @@ exports.createCommentOfTaskComment = async (portal, params, body, files, user) =
 
     // Lấy người liên quan đến trong subcomment
     const subCommentLength = getTaskComment[0].comments.length;
-    getTaskComment[0].comments.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     for (let index = 0; index < subCommentLength; index++) {
         userReceive = [...userReceive, getTaskComment[0].comments[index].creator._id];
     }
@@ -1984,7 +1987,8 @@ exports.evaluationAction = async (portal, params, body) => {
                     "taskActions.$.evaluations": {
                         creator: body.creator,
                         rating: body.rating,
-                        role: body.role
+                        role: body.role,
+                        actionImportanceLevel: body.actionImportanceLevel
                     },
                 },
             }
@@ -1995,10 +1999,11 @@ exports.evaluationAction = async (portal, params, body) => {
                 _id: params.taskId,
                 "taskActions._id": params.actionId,
                 "taskActions.evaluations.creator": body.creator,
-                "taskActions.evaluations.role": body.role
+                "taskActions.evaluations.role": body.role,
             }, {
             $set: {
-                "taskActions.$[item].evaluations.$[elem].rating": body.rating
+                "taskActions.$[item].evaluations.$[elem].rating": body.rating,
+                "taskActions.$[item].evaluations.$[elem].actionImportanceLevel": body.actionImportanceLevel
             }
         }, {
             arrayFilters: [
@@ -2020,17 +2025,25 @@ exports.evaluationAction = async (portal, params, body) => {
     ]);
 
     //Lấy điểm đánh giá của người phê duyệt trong danh sách các danh sách các đánh giá của hoạt động
-    let rating = [];
+    let rating = [], actionImportanceLevel = [];
     for (let i = 0; i < evaluations.length; i++) {
         let evaluation = evaluations[i];
-        if (evaluation.role === 'accountable') rating.push(evaluation.rating);
+        if (evaluation.role === 'accountable') {
+            rating.push(evaluation.rating);
+            actionImportanceLevel.push(evaluation.actionImportanceLevel);
+        }
     }
 
     //tính điểm trung bình
-    let accountableRating;
+    let accountableRating, accountableActionImportanceLevel;
     if (rating.length > 0) {
         accountableRating =
             rating.reduce((accumulator, currentValue) => {
+                return accumulator + currentValue;
+            }, 0) / rating.length;
+
+        accountableActionImportanceLevel =
+            actionImportanceLevel.reduce((accumulator, currentValue) => {
                 return accumulator + currentValue;
             }, 0) / rating.length;
     }
@@ -2040,6 +2053,7 @@ exports.evaluationAction = async (portal, params, body) => {
         {
             $set: {
                 "taskActions.$.rating": accountableRating,
+                "taskActions.$.actionImportanceLevel": accountableActionImportanceLevel
             },
         },
         { $new: true }
@@ -2091,6 +2105,7 @@ exports.evaluationAllAction = async (portal, params, body, userId) => {
                         "taskActions.$.evaluations": {
                             creator: userId,
                             rating: body[i].rating,
+                            actionImportanceLevel: body[i].actionImportanceLevel,
                             role: body[i].role
                         },
                     },
@@ -2105,7 +2120,8 @@ exports.evaluationAllAction = async (portal, params, body, userId) => {
                     "taskActions.evaluations.role": body[i].role
                 }, {
                 $set: {
-                    "taskActions.$[item].evaluations.$[elem].rating": body[i].rating
+                    "taskActions.$[item].evaluations.$[elem].rating": body[i].rating,
+                    "taskActions.$[item].evaluations.$[elem].actionImportanceLevel": body[i].actionImportanceLevel
                 }
             }, {
                 arrayFilters: [
@@ -2127,17 +2143,26 @@ exports.evaluationAllAction = async (portal, params, body, userId) => {
         ]);
 
         //Lấy điểm đánh giá của người phê duyệt trong danh sách các danh sách các đánh giá của hoạt động
-        let rating = [];
+        let rating = [], actionImportanceLevel = [];
         for (let i = 0; i < evaluations.length; i++) {
             let evaluation = evaluations[i];
-            if (evaluation.role === 'accountable') rating.push(evaluation.rating);
+            if (evaluation.role === 'accountable') {
+                rating.push(evaluation.rating);
+                actionImportanceLevel.push(evaluation.actionImportanceLevel)
+            }
         }
 
         //tính điểm trung bình
-        let accountableRating;
+        let accountableRating, accountableActionImportanceLevel;
         if (rating.length > 0) {
             accountableRating =
                 rating.reduce((accumulator, currentValue) => {
+                    return accumulator + currentValue;
+                }, 0) / rating.length;
+        }
+        if (actionImportanceLevel.length > 0) {
+            accountableActionImportanceLevel =
+                actionImportanceLevel.reduce((accumulator, currentValue) => {
                     return accumulator + currentValue;
                 }, 0) / rating.length;
         }
@@ -2148,6 +2173,7 @@ exports.evaluationAllAction = async (portal, params, body, userId) => {
             {
                 $set: {
                     "taskActions.$.rating": accountableRating,
+                    "taskActions.$.actionImportanceLevel": accountableActionImportanceLevel,
                 },
             }, { $new: true }
         );
@@ -2737,6 +2763,8 @@ exports.editTaskByResponsibleEmployees = async (portal, data, taskId) => {
                     ],
                 },
             },
+            { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
+            { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
         ]);
 
     //xu ly gui email
@@ -3341,6 +3369,8 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
                     ],
                 },
             },
+            { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
+            { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
         ]);
 
     //xu ly gui email
@@ -3612,6 +3642,8 @@ exports.editEmployeeCollaboratedWithOrganizationalUnits = async (portal, taskId,
                     ],
                 },
             },
+            { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
+            { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
         ]);
     newTask.evaluations.reverse();
 
@@ -3900,6 +3932,8 @@ exports.evaluateTaskByConsultedEmployees = async (portal, data, taskId) => {
                     ],
                 },
             },
+            { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
+            { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
         ]);
     newTask.evaluations.reverse();
 
@@ -4253,6 +4287,8 @@ exports.evaluateTaskByResponsibleEmployees = async (portal, data, taskId) => {
                     ],
                 },
             },
+            { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
+            { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
         ]);
     newTask.evaluations.reverse();
 
@@ -4758,6 +4794,8 @@ exports.evaluateTaskByAccountableEmployees = async (portal, data, taskId) => {
                     ],
                 },
             },
+            { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
+            { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
         ]);
     newTask.evaluations.reverse();
 
@@ -4942,6 +4980,8 @@ exports.editHoursSpentInEvaluate = async (portal, data, taskId) => {
                     ],
                 },
             },
+            { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
+            { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
         ]);
     newTask.evaluations.reverse();
 
@@ -5079,6 +5119,8 @@ exports.deleteEvaluation = async (portal, params) => {
                     ],
                 },
             },
+            { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
+            { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
         ]);
     newTask.evaluations.reverse();
 
@@ -5505,6 +5547,8 @@ exports.editActivateOfTask = async (portal, taskID, body) => {
                     ],
                 },
             },
+            { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
+            { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
         ]);
     task.evaluations.reverse();
 
@@ -6062,6 +6106,8 @@ exports.createComment = async (portal, params, body, files) => {
                     ],
                 },
             },
+            { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
+            { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
         ]);
     return task;
 };
@@ -6204,6 +6250,8 @@ exports.editComment = async (portal, params, body, files) => {
                     ],
                 },
             },
+            { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
+            { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
         ]);
     return comment;
 };
@@ -6388,6 +6436,8 @@ exports.createChildComment = async (portal, params, body, files) => {
                     ],
                 },
             },
+            { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
+            { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
         ]);
     return comment;
 };
@@ -6556,6 +6606,8 @@ exports.editChildComment = async (portal, params, body, files) => {
                     ],
                 },
             },
+            { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
+            { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
         ]);
     return comment;
 };
@@ -6757,204 +6809,198 @@ exports.sortActions = async (portal, params, body) => {
  * evaluate PROJECT task by Responsible
  */
 exports.evaluateTaskByResponsibleEmployeesProject = async (portal, data, taskId) => {
-    console.log('RESPONSIBLE PROJECT')
     let {
-        user,
-        unit,
+        userId,
+        taskAutomaticPoint,
+        automaticPoint,
+        employeePoint,
+        accountablePoint,
         checkSave,
         progress,
-        employeePoint,
-        role,
-        evaluatingMonth,
-        startDate,
-        endDate,
         info,
     } = data;
+    // let startEval = new Date(startDate);
 
-    let splitter = evaluatingMonth.split("-");
-    let evaluateDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
-    let dateFormat = evaluateDate;
+    // let endEval = new Date(endDate);
 
-    let startEval = new Date(startDate);
+    // let resultItem = {
+    //     automaticPoint: taskAutomaticPoint,
+    //     responsibleEmployee: {
+    //         employee: userId,
+    //         automaticPoint,
+    //         employeePoint,
+    //     },
+    // };
 
-    let endEval = new Date(endDate);
-
-    let resultItem = {
-        employee: user,
-        organizationalUnit: unit,
-        employeePoint: employeePoint,
-        automaticPoint: undefined,
-        approvedPoint: undefined,
-        role,
-    };
-
-    let evaluateId = await checkEvaluations(portal, evaluatingMonth, taskId, evaluatingMonth);
-
-    // chuẩn hóa dữ liệu info
-    for (let i in info) {
-        if (info[i].value) {
-            if (info[i].type === "number")
-                info[i].value = parseInt(info[i].value);
-            else if (info[i].type === "set_of_values")
-                info[i].value = info[i].value[0];
-            else if (info[i].type === "date") {
-                let splitter = info[i].value.split("-");
-                let infoDate = new Date(
-                    splitter[2],
-                    splitter[1] - 1,
-                    splitter[0]
-                );
-                info[i].value = infoDate;
-            }
-        }
-    }
-
-    checkSave &&
-        (await Task(connect(DB_CONNECTION, portal)).updateOne(
-            { _id: taskId },
-            { $set: { progress: progress } },
-            { $new: true }
-        ));
-
-    await Task(connect(DB_CONNECTION, portal)).updateOne(
-        {
-            _id: taskId,
-            "evaluations._id": evaluateId,
-        },
-        {
-            $set: {
-                "evaluations.$.progress": progress,
-            },
-        },
-        {
-            $new: true,
-        }
-    );
-
-    let task = await Task(connect(DB_CONNECTION, portal)).findById(taskId);
-
-    let resultObject = task.evaluations.find(
-        (e) => String(e._id) === String(evaluateId)
-    ).resultsForProject;
-
-    if (resultObject === undefined || JSON.stringify(resultObject) === '{}') {
+    const currentTask = await Task(connect(DB_CONNECTION, portal))
+        .findOne({ _id: taskId });
+    const currentOverallEvaluation = currentTask.overallEvaluation;
+    // Nếu task này chưa được đánh giá overall lần nào
+    if (!currentOverallEvaluation) {
+        let overallObject = {
+            automaticPoint: taskAutomaticPoint,
+            responsibleEmployees: [
+                {
+                    employee: userId,
+                    automaticPoint,
+                    employeePoint,
+                    accountablePoint: accountablePoint === undefined ? null : accountablePoint,
+                }
+            ],
+            accountableEmployees: [],
+        };
         await Task(connect(DB_CONNECTION, portal)).updateOne(
             {
                 _id: taskId,
-                "evaluations._id": evaluateId,
-                "evaluations.$.resultsForProject": resultItem,
-            },
-            { $new: true }
-        );
-    } else {
-        await Task(connect(DB_CONNECTION, portal)).updateOne(
-            {
-                _id: taskId,
-                "evaluations._id": evaluateId,
             },
             {
                 $set: {
-                    "evaluations.$.resultsForProject.employeePoint": employeePoint,
-                    "evaluations.$.resultsForProject.organizationalUnit": unit,
+                    "overallEvaluation": overallObject,
+                    progress,
                 },
             },
-            // {
-            //     arrayFilters: [
-            //         {
-            //             "elem.employee": user,
-            //             "elem.role": role,
-            //         },
-            //     ],
-            // }
+            {
+                $new: true,
+            }
         );
     }
-
-    // update Info task
-    let dateISO = new Date(endDate)
-    let monthOfParams = dateISO.getMonth();
-    let yearOfParams = dateISO.getFullYear();
-    let now = new Date();
-
-    let cloneInfo = task.taskInformations;
-    for (let item in info) {
-        for (let i in cloneInfo) {
-            if (info[item].code === cloneInfo[i].code) {
-                cloneInfo[i] = {
-                    filledByAccountableEmployeesOnly:
-                        cloneInfo[i].filledByAccountableEmployeesOnly,
-                    _id: cloneInfo[i]._id,
-                    code: cloneInfo[i].code,
-                    name: cloneInfo[i].name,
-                    description: cloneInfo[i].description,
-                    type: cloneInfo[i].type,
-                    extra: cloneInfo[i].extra,
-                    value: info[item].value,
-                };
-                // quangdz
-                if (
-                    yearOfParams > now.getFullYear() ||
-                    (yearOfParams <= now.getFullYear() &&
-                        monthOfParams >= now.getMonth())
-                ) {
-                    checkSave &&
-                        (await Task(connect(DB_CONNECTION, portal)).updateOne(
-                            {
-                                _id: taskId,
-                                "taskInformations._id": cloneInfo[i]._id,
-                            },
-                            {
-                                $set: {
-                                    "taskInformations.$.value":
-                                        cloneInfo[i].value,
-                                },
-                            },
-                            {
-                                $new: true,
-                            }
-                        ));
-                }
-
-                await Task(connect(DB_CONNECTION, portal)).updateOne(
-                    {
-                        _id: taskId,
-                        "evaluations._id": evaluateId,
+    // Nếu đã được đánh giá rồi
+    else {
+        const currentUserEval = currentOverallEvaluation.responsibleEmployees.find(item => String(item.employee) === String(userId));
+        // Nếu đã có userId này trong array đánh giá
+        if (currentUserEval) {
+            await Task(connect(DB_CONNECTION, portal)).updateOne(
+                {
+                    _id: taskId,
+                    'overallEvaluation.responsibleEmployees.employee': userId,
+                },
+                {
+                    $set: {
+                        "overallEvaluation.automaticPoint": taskAutomaticPoint,
+                        "overallEvaluation.responsibleEmployees.$.employeePoint": employeePoint,
+                        "overallEvaluation.responsibleEmployees.$.automaticPoint": automaticPoint,
+                        "overallEvaluation.responsibleEmployees.$.accountablePoint": accountablePoint === undefined ? null : accountablePoint,
+                        progress,
                     },
-                    {
-                        $set: {
-                            "evaluations.$.taskInformations.$[elem].value":
-                                cloneInfo[i].value,
-                        },
+                },
+            );
+        }
+        // Nếu chưa có userId này trong array đánh giá
+        else {
+            await Task(connect(DB_CONNECTION, portal)).updateOne(
+                {
+                    _id: taskId,
+                },
+                {
+                    $set: {
+                        "overallEvaluation.automaticPoint": taskAutomaticPoint,
+                        "overallEvaluation.responsibleEmployees": [currentOverallEvaluation.responsibleEmployees, {
+                            employee: userId,
+                            automaticPoint,
+                            employeePoint,
+                            accountablePoint: accountablePoint === undefined ? null : accountablePoint,
+                        }],
+                        progress,
                     },
-                    {
-                        arrayFilters: [
-                            {
-                                "elem._id": cloneInfo[i]._id,
-                            },
-                        ],
-                    }
-                );
-            }
+                },
+            );
         }
     }
+    // let evaluateId = await checkEvaluations(portal, evaluatingMonth, taskId, evaluatingMonth);
 
-    // update date of evaluation
+    // // chuẩn hóa dữ liệu info
+    // for (let i in info) {
+    //     if (info[i].value) {
+    //         if (info[i].type === "number")
+    //             info[i].value = parseInt(info[i].value);
+    //         else if (info[i].type === "set_of_values")
+    //             info[i].value = info[i].value[0];
+    //         else if (info[i].type === "date") {
+    //             let splitter = info[i].value.split("-");
+    //             let infoDate = new Date(
+    //                 splitter[2],
+    //                 splitter[1] - 1,
+    //                 splitter[0]
+    //             );
+    //             info[i].value = infoDate;
+    //         }
+    //     }
+    // }
 
-    await Task(connect(DB_CONNECTION, portal)).updateOne(
-        {
-            _id: taskId,
-            "evaluations._id": evaluateId,
-        },
-        {
-            $set: {
-                "evaluations.$.evaluatingMonth": dateFormat,
-                "evaluations.$.startDate": startEval,
-                "evaluations.$.endDate": endEval,
-            },
-        },
-        {
-            $new: true,
-        }
-    );
+    // checkSave &&
+    //     (await Task(connect(DB_CONNECTION, portal)).updateOne(
+    //         { _id: taskId },
+    //         { $set: { progress: progress } },
+    //         { $new: true }
+    //     ));
+
+    // // update Info task
+    // let dateISO = new Date(endDate)
+    // let monthOfParams = dateISO.getMonth();
+    // let yearOfParams = dateISO.getFullYear();
+    // let now = new Date();
+
+    // let cloneInfo = task.taskInformations;
+    // for (let item in info) {
+    //     for (let i in cloneInfo) {
+    //         if (info[item].code === cloneInfo[i].code) {
+    //             cloneInfo[i] = {
+    //                 filledByAccountableEmployeesOnly:
+    //                     cloneInfo[i].filledByAccountableEmployeesOnly,
+    //                 _id: cloneInfo[i]._id,
+    //                 code: cloneInfo[i].code,
+    //                 name: cloneInfo[i].name,
+    //                 description: cloneInfo[i].description,
+    //                 type: cloneInfo[i].type,
+    //                 extra: cloneInfo[i].extra,
+    //                 value: info[item].value,
+    //             };
+    //             // quangdz
+    //             if (
+    //                 yearOfParams > now.getFullYear() ||
+    //                 (yearOfParams <= now.getFullYear() &&
+    //                     monthOfParams >= now.getMonth())
+    //             ) {
+    //                 checkSave &&
+    //                     (await Task(connect(DB_CONNECTION, portal)).updateOne(
+    //                         {
+    //                             _id: taskId,
+    //                             "taskInformations._id": cloneInfo[i]._id,
+    //                         },
+    //                         {
+    //                             $set: {
+    //                                 "taskInformations.$.value":
+    //                                     cloneInfo[i].value,
+    //                             },
+    //                         },
+    //                         {
+    //                             $new: true,
+    //                         }
+    //                     ));
+    //             }
+
+    //             await Task(connect(DB_CONNECTION, portal)).updateOne(
+    //                 {
+    //                     _id: taskId,
+    //                     "evaluations._id": evaluateId,
+    //                 },
+    //                 {
+    //                     $set: {
+    //                         "evaluations.$.taskInformations.$[elem].value":
+    //                             cloneInfo[i].value,
+    //                     },
+    //                 },
+    //                 {
+    //                     arrayFilters: [
+    //                         {
+    //                             "elem._id": cloneInfo[i]._id,
+    //                         },
+    //                     ],
+    //                 }
+    //             );
+    //         }
+    //     }
+    // }
 
     let newTask = await Task(connect(DB_CONNECTION, portal))
         .findById(taskId)
@@ -7075,6 +7121,8 @@ exports.evaluateTaskByResponsibleEmployeesProject = async (portal, data, taskId)
                     ],
                 },
             },
+            { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
+            { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
         ]);
     newTask.evaluations.reverse();
 
@@ -7086,208 +7134,195 @@ exports.evaluateTaskByResponsibleEmployeesProject = async (portal, data, taskId)
  * evaluate PROJECT task by Accountable
  */
 exports.evaluateTaskByAccountableEmployeesProject = async (portal, data, taskId) => {
-    console.log('ACCOUNTABLE PROJECT')
     let {
-        user,
-        unit,
+        userId,
+        taskAutomaticPoint,
+        automaticPoint,
+        employeePoint,
         checkSave,
         progress,
-        approvedPoint,
-        automaticPoint,
-        role,
-        evaluatingMonth,
-        startDate,
-        endDate,
         info,
-        hasAccountable,
     } = data;
+    // let startEval = new Date(startDate);
 
-    let splitter = evaluatingMonth.split("-");
-    let evaluateDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
-    let dateFormat = evaluateDate;
+    // let endEval = new Date(endDate);
 
-    let startEval = new Date(startDate);
+    // let resultItem = {
+    //     automaticPoint: taskAutomaticPoint,
+    //     responsibleEmployee: {
+    //         employee: userId,
+    //         automaticPoint,
+    //         employeePoint,
+    //     },
+    // };
 
-    let endEval = new Date(endDate);
-
-    let resultItem = {
-        employee: user,
-        organizationalUnit: unit,
-        automaticPoint,
-        approvedPoint,
-        role: hasAccountable ? 'accountable' : 'responsible',
-    };
-
-    let evaluateId = await checkEvaluations(portal, evaluatingMonth, taskId, evaluatingMonth);
-
-    // chuẩn hóa dữ liệu info
-    for (let i in info) {
-        if (info[i].value) {
-            if (info[i].type === "number")
-                info[i].value = parseInt(info[i].value);
-            else if (info[i].type === "set_of_values")
-                info[i].value = info[i].value[0];
-            else if (info[i].type === "date") {
-                let splitter = info[i].value.split("-");
-                let infoDate = new Date(
-                    splitter[2],
-                    splitter[1] - 1,
-                    splitter[0]
-                );
-                info[i].value = infoDate;
-            }
-        }
-    }
-
-    checkSave &&
-        (await Task(connect(DB_CONNECTION, portal)).updateOne(
-            { _id: taskId },
-            { $set: { progress: progress } },
-            { $new: true }
-        ));
-
-    await Task(connect(DB_CONNECTION, portal)).updateOne(
-        {
-            _id: taskId,
-            "evaluations._id": evaluateId,
-        },
-        {
-            $set: {
-                "evaluations.$.progress": progress,
-            },
-        },
-        {
-            $new: true,
-        }
-    );
-
-    let task = await Task(connect(DB_CONNECTION, portal)).findById(taskId);
-
-    let resultObject = task.evaluations.find(
-        (e) => String(e._id) === String(evaluateId)
-    ).resultsForProject;
-
-    if (resultObject === undefined || JSON.stringify(resultObject) === '{}') {
+    const currentTask = await Task(connect(DB_CONNECTION, portal))
+        .findOne({ _id: taskId });
+    const currentOverallEvaluation = currentTask.overallEvaluation;
+    // Nếu task này chưa được đánh giá overall lần nào
+    if (!currentOverallEvaluation) {
+        let overallObject = {
+            automaticPoint: taskAutomaticPoint,
+            responsibleEmployees: [],
+            accountableEmployees: [
+                {
+                    employee: userId,
+                    automaticPoint,
+                    employeePoint,
+                }
+            ],
+        };
         await Task(connect(DB_CONNECTION, portal)).updateOne(
             {
                 _id: taskId,
-                "evaluations._id": evaluateId,
-                "evaluations.$.resultsForProject": resultItem,
-            },
-            { $new: true }
-        );
-    } else {
-        await Task(connect(DB_CONNECTION, portal)).updateOne(
-            {
-                _id: taskId,
-                "evaluations._id": evaluateId,
             },
             {
                 $set: {
-                    "evaluations.$.resultsForProject.automaticPoint": automaticPoint,
-                    "evaluations.$.resultsForProject.approvedPoint": approvedPoint,
-                    "evaluations.$.resultsForProject.organizationalUnit": unit,
+                    "overallEvaluation": overallObject,
+                    progress,
                 },
             },
-            // {
-            //     arrayFilters: [
-            //         {
-            //             "elem.employee": user,
-            //             "elem.role": role,
-            //         },
-            //     ],
-            // }
+            {
+                $new: true,
+            }
         );
     }
-
-    // update Info task
-    let dateISO = new Date(endDate)
-    let monthOfParams = dateISO.getMonth();
-    let yearOfParams = dateISO.getFullYear();
-    let now = new Date();
-
-    let cloneInfo = task.taskInformations;
-    for (let item in info) {
-        for (let i in cloneInfo) {
-            if (info[item].code === cloneInfo[i].code) {
-                cloneInfo[i] = {
-                    filledByAccountableEmployeesOnly:
-                        cloneInfo[i].filledByAccountableEmployeesOnly,
-                    _id: cloneInfo[i]._id,
-                    code: cloneInfo[i].code,
-                    name: cloneInfo[i].name,
-                    description: cloneInfo[i].description,
-                    type: cloneInfo[i].type,
-                    extra: cloneInfo[i].extra,
-                    value: info[item].value,
-                };
-                // quangdz
-                if (
-                    yearOfParams > now.getFullYear() ||
-                    (yearOfParams <= now.getFullYear() &&
-                        monthOfParams >= now.getMonth())
-                ) {
-                    checkSave &&
-                        (await Task(connect(DB_CONNECTION, portal)).updateOne(
-                            {
-                                _id: taskId,
-                                "taskInformations._id": cloneInfo[i]._id,
-                            },
-                            {
-                                $set: {
-                                    "taskInformations.$.value":
-                                        cloneInfo[i].value,
-                                },
-                            },
-                            {
-                                $new: true,
-                            }
-                        ));
-                }
-
-                await Task(connect(DB_CONNECTION, portal)).updateOne(
-                    {
-                        _id: taskId,
-                        "evaluations._id": evaluateId,
+    // Nếu đã được đánh giá rồi
+    else {
+        const currentUserEval = currentOverallEvaluation.accountableEmployees.find(item => String(item.employee) === String(userId));
+        // Nếu đã có userId này trong array đánh giá
+        if (currentUserEval) {
+            await Task(connect(DB_CONNECTION, portal)).updateOne(
+                {
+                    _id: taskId,
+                    'overallEvaluation.accountableEmployees.employee': userId,
+                },
+                {
+                    $set: {
+                        "overallEvaluation.automaticPoint": taskAutomaticPoint,
+                        "overallEvaluation.accountableEmployees.$.employeePoint": employeePoint,
+                        "overallEvaluation.accountableEmployees.$.automaticPoint": automaticPoint,
+                        progress,
                     },
-                    {
-                        $set: {
-                            "evaluations.$.taskInformations.$[elem].value":
-                                cloneInfo[i].value,
-                        },
+                },
+            );
+        }
+        // Nếu chưa có userId này trong array đánh giá
+        else {
+            await Task(connect(DB_CONNECTION, portal)).updateOne(
+                {
+                    _id: taskId,
+                },
+                {
+                    $set: {
+                        "overallEvaluation.automaticPoint": taskAutomaticPoint,
+                        "overallEvaluation.accountableEmployees": [currentOverallEvaluation.accountableEmployees, {
+                            employee: userId,
+                            automaticPoint,
+                            employeePoint,
+                        }],
+                        progress,
                     },
-                    {
-                        arrayFilters: [
-                            {
-                                "elem._id": cloneInfo[i]._id,
-                            },
-                        ],
-                    }
-                );
-            }
+                },
+            );
         }
     }
+    // let evaluateId = await checkEvaluations(portal, evaluatingMonth, taskId, evaluatingMonth);
 
-    // update date of evaluation
+    // // chuẩn hóa dữ liệu info
+    // for (let i in info) {
+    //     if (info[i].value) {
+    //         if (info[i].type === "number")
+    //             info[i].value = parseInt(info[i].value);
+    //         else if (info[i].type === "set_of_values")
+    //             info[i].value = info[i].value[0];
+    //         else if (info[i].type === "date") {
+    //             let splitter = info[i].value.split("-");
+    //             let infoDate = new Date(
+    //                 splitter[2],
+    //                 splitter[1] - 1,
+    //                 splitter[0]
+    //             );
+    //             info[i].value = infoDate;
+    //         }
+    //     }
+    // }
 
-    await Task(connect(DB_CONNECTION, portal)).updateOne(
-        {
-            _id: taskId,
-            "evaluations._id": evaluateId,
-        },
-        {
-            $set: {
-                "evaluations.$.evaluatingMonth": dateFormat,
-                "evaluations.$.startDate": startEval,
-                "evaluations.$.endDate": endEval,
-            },
-        },
-        {
-            $new: true,
-        }
-    );
+    // checkSave &&
+    //     (await Task(connect(DB_CONNECTION, portal)).updateOne(
+    //         { _id: taskId },
+    //         { $set: { progress: progress } },
+    //         { $new: true }
+    //     ));
 
-    // let newTask = await Task(connect(DB_CONNECTION, portal)).findById(taskId);
+    // // update Info task
+    // let dateISO = new Date(endDate)
+    // let monthOfParams = dateISO.getMonth();
+    // let yearOfParams = dateISO.getFullYear();
+    // let now = new Date();
+
+    // let cloneInfo = task.taskInformations;
+    // for (let item in info) {
+    //     for (let i in cloneInfo) {
+    //         if (info[item].code === cloneInfo[i].code) {
+    //             cloneInfo[i] = {
+    //                 filledByAccountableEmployeesOnly:
+    //                     cloneInfo[i].filledByAccountableEmployeesOnly,
+    //                 _id: cloneInfo[i]._id,
+    //                 code: cloneInfo[i].code,
+    //                 name: cloneInfo[i].name,
+    //                 description: cloneInfo[i].description,
+    //                 type: cloneInfo[i].type,
+    //                 extra: cloneInfo[i].extra,
+    //                 value: info[item].value,
+    //             };
+    //             // quangdz
+    //             if (
+    //                 yearOfParams > now.getFullYear() ||
+    //                 (yearOfParams <= now.getFullYear() &&
+    //                     monthOfParams >= now.getMonth())
+    //             ) {
+    //                 checkSave &&
+    //                     (await Task(connect(DB_CONNECTION, portal)).updateOne(
+    //                         {
+    //                             _id: taskId,
+    //                             "taskInformations._id": cloneInfo[i]._id,
+    //                         },
+    //                         {
+    //                             $set: {
+    //                                 "taskInformations.$.value":
+    //                                     cloneInfo[i].value,
+    //                             },
+    //                         },
+    //                         {
+    //                             $new: true,
+    //                         }
+    //                     ));
+    //             }
+
+    //             await Task(connect(DB_CONNECTION, portal)).updateOne(
+    //                 {
+    //                     _id: taskId,
+    //                     "evaluations._id": evaluateId,
+    //                 },
+    //                 {
+    //                     $set: {
+    //                         "evaluations.$.taskInformations.$[elem].value":
+    //                             cloneInfo[i].value,
+    //                     },
+    //                 },
+    //                 {
+    //                     arrayFilters: [
+    //                         {
+    //                             "elem._id": cloneInfo[i]._id,
+    //                         },
+    //                     ],
+    //                 }
+    //             );
+    //         }
+    //     }
+    // }
+
     let newTask = await Task(connect(DB_CONNECTION, portal))
         .findById(taskId)
         .populate([
@@ -7297,7 +7332,7 @@ exports.evaluateTaskByAccountableEmployeesProject = async (portal, data, taskId)
             { path: "collaboratedWithOrganizationalUnits.organizationalUnit" },
             {
                 path:
-                    "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creatorinactiveEmployees",
+                    "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator inactiveEmployees",
                 select: "name email _id active avatar",
             },
             {
@@ -7407,6 +7442,8 @@ exports.evaluateTaskByAccountableEmployeesProject = async (portal, data, taskId)
                     ],
                 },
             },
+            { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
+            { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
         ]);
     newTask.evaluations.reverse();
 

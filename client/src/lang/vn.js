@@ -134,7 +134,7 @@ export default {
             dashboard_employee: "Bảng tin quản lý nhân sự",
             dashboard_personal: "Bảng tin cá nhân",
             dashboard_unit: "Bảng tin đơn vị",
-            dashboard_all_unit: "Bảng tin đơn vị toàn công ty",
+            dashboard_all_unit: "Bảng tin doanh nghiệp",
             employee_capacity: "Năng lực nhân viên",
             discipline: "Quản lý khen thưởng - kỷ luật",
             annual_leave: "Quản lý nghỉ phép",
@@ -273,16 +273,19 @@ export default {
             phases_list: 'Danh sách giai đoạn',
             issues_list: 'Danh sách vấn đề',
             project_report: 'Báo cáo dự án',
-            project_evaluation: 'Đánh giá',
+            project_evaluation: 'Thống kê đánh giá',
             
             // Quản lý vận chuyển
             manage_transport: "Quản lý vận chuyển",
             manage_transport_requirements: "Yêu cầu vận chuyển",
             manage_transport_plan: "Kế hoạch vận chuyển",
-            manage_transport_schedule: "Lịch vận chuyển",
+            manage_transport_schedule: "Lệnh vận chuyển",
             manage_transport_vehicle: "Phương tiện vận chuyển",
             manage_transport_human: "Nhân viên vận chuyển",
             manage_transport_route: "Hành trình vận chuyển",
+            manage_transport_department: "Phân vai trò đơn vị vận chuyển",
+            carrier_today_transport_mission: "Nhiệm vụ vận chuyển hôm nay",
+            carrier_all_times_transport_mission: "Nhiệm vụ vận chuyển mỗi ngày",
 
 
 
@@ -556,6 +559,7 @@ export default {
                 update_company_component_success:
                     "Cập nhật component thành công",
                 update_company_component_faile: "Cập nhật component thất bại",
+                company_already_exist: "Tên công ty đã tồn tại"
             },
 
             system_setting: {
@@ -1238,7 +1242,7 @@ export default {
             total_salary: "Tổng lương",
             month: "Tháng",
             unit: "Đơn vị",
-            position: "Chức vụ",
+            position: "Chức danh",
             no_data: "Không có dữ liệu",
             start_date: "Từ ngày",
             end_date: "Đến ngày",
@@ -1258,7 +1262,7 @@ export default {
 
         page: {
             unit: "Đơn vị",
-            position: "Chức vụ",
+            position: "Chức danh",
             month: "Tháng",
             status: "Trạng thái",
             staff_number: "Mã nhân viên",
@@ -1445,7 +1449,7 @@ export default {
             // Nhóm dùng chung cho module quản lý nhân sự
             stt: "STT",
             unit: "Đơn vị",
-            position: "Chức vụ",
+            position: "Chức danh",
             month: "Tháng",
             status: "Trạng thái",
             staff_number: "Mã nhân viên",
@@ -1540,6 +1544,12 @@ export default {
                 file_export_name: "Bảng thống kê nghỉ phép",
                 type: "Xin nghỉ theo giờ",
                 totalHours: "Tổng số giờ nghỉ",
+                leaveOfAbsenceLetter: "Đơn xin nghỉ phép",
+                waiting_for_approval_letter: "Đơn chờ phê duyệt",
+                approved_letter: "Đơn đã chấp nhận",
+                not_approved_letter: "Đơn không chấp nhận",
+                have: "Có",
+                this_month: "trong tháng này",
 
                 // Nhóm dành cho table
                 table: {
@@ -1829,7 +1839,7 @@ export default {
                 district: "Huyện/Quận",
                 province: "Tỉnh/Thành phố",
                 nation: "Quốc gia",
-
+                roles: "Chức danh",
                 academic_level: "Trình độ học vấn",
                 educational_level: "Trình độ văn hoá",
                 language_level: "Trình độ ngoại ngữ",
@@ -3938,7 +3948,9 @@ export default {
                     setting_up: "Đang thiết lập",
                     awaiting_approval: "Chờ phê duyệt",
                     activated: "Đã kích hoạt",
+                    not_initial: "Chưa khởi tạo",
                     number_of_employee: "Số nhân viên",
+                    number_of_child_unit: "Đơn vị con",
                     excellent_employee: "Nhân viên ưu tú",
                     best_employee: "Nhân viên xuất sắc nhất",
                     month: "Tháng",
@@ -5790,8 +5802,8 @@ export default {
             },
 
             unit: {
-                day: 'Ngày',
-                hour: 'Giờ',
+                days: 'Ngày',
+                hours: 'Giờ',
             },
             schedule: {
                 taskCode: 'Mã công việc',

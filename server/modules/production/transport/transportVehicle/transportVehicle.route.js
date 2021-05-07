@@ -10,7 +10,7 @@ const { auth } = require(`../../../../middleware`);
 router.get('/', auth, TransportVehicleController.getAllTransportVehicles);
 router.post('/', auth, TransportVehicleController.createTransportVehicle);
 router.post('/:id', auth, TransportVehicleController.editTransportVehicleToSetPlan);
-// router.patch('/:id', auth, ExampleController.editExample);
+router.patch('/:id', auth, TransportVehicleController.editTransportVehicle);
 // router.delete('/:id', auth, ExampleController.deleteExample);
 
 module.exports = router;

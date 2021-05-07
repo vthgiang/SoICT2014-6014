@@ -1,19 +1,22 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { DialogModal, ErrorLabel, DatePicker, SelectBox } from '../../../../common-components';
+import { DialogModal, ErrorLabel, DatePicker, SelectBox, TimePicker } from '../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
 import ValidationHelper from '../../../../helpers/validationHelper';
 import { ProjectActions } from '../../redux/actions';
 import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
 import { formatDate } from '../../../../helpers/formatDate';
-import { convertDepartmentIdToDepartmentName, convertUserIdToUserName, getListDepartments } from './functionHelper';
+import { convertDateTime, convertDepartmentIdToDepartmentName, convertUserIdToUserName, formatTime, getListDepartments } from './functionHelper';
 import { getStorage } from '../../../../config';
+import ModalSalaryMembersEdit from './modalSalaryMembersEdit';
+import { taskManagementActions } from '../../../task/task-management/redux/actions';
 
 const ProjectEditForm = (props) => {
-    const { translate, user, projectEdit, projectEditId } = props;
+    const { translate, user, projectEdit, projectEditId, tasks, currentProjectTasks } = props;
     const userId = getStorage('userId');
     const listUsers = user && user.usersInUnitsOfCompany ? getEmployeeSelectBoxItems(user.usersInUnitsOfCompany) : []
     const listDepartments = user && user.usersInUnitsOfCompany ? getListDepartments(user.usersInUnitsOfCompany) : []
+    const [currentSalaryMembers, setCurrentSalaryMembers] = useState(undefined);
     const fakeUnitCostList = [
         { text: 'VND', value: 'VND' },
         { text: 'USD', value: 'USD' },
@@ -44,13 +47,16 @@ const ProjectEditForm = (props) => {
         estimatedCost: projectEdit?.estimatedCost || '',
     })
 
+    const [startTime, setStartTime] = useState(formatTime(projectEdit?.startDate) || '08:00 AM');
+    const [endTime, setEndTime] = useState(formatTime(projectEdit?.endDate) || '05:30 PM');
+
     const [responsibleEmployeesWithUnit, setResponsibleEmployeesWithUnit] = useState({
         list: [],
         currentUnitRow: '',
         currentEmployeeRow: [],
     })
 
-    const { projectName, projectNameError,codeError, description, code, startDate, endDate, projectManager, responsibleEmployees, unitCost, unitTime, estimatedCost, projectId } = form;
+    const { projectName, projectNameError, codeError, description, code, startDate, endDate, projectManager, responsibleEmployees, unitCost, unitTime, estimatedCost, projectId } = form;
 
     if (projectEditId !== projectId) {
         setForm({
@@ -67,12 +73,33 @@ const ProjectEditForm = (props) => {
             unitTime: projectEdit?.unitTime || fakeUnitTimeList[0].text,
             estimatedCost: projectEdit?.estimatedCost || '',
         })
+        setStartTime(formatTime(projectEdit?.startDate) || '08:00 AM')
+        setEndTime(formatTime(projectEdit?.endDate) || '05:30 PM')
+        let newResponsibleEmployeesWithUnit = [];
+        for (let i = 0; i < projectEdit?.responsibleEmployeesWithUnit.length; i++) {
+            newResponsibleEmployeesWithUnit.push({
+                unitId: projectEdit?.responsibleEmployeesWithUnit[i].unitId,
+                listUsers: projectEdit?.responsibleEmployeesWithUnit[i].listUsers.map((item, index) => ({
+                    userId: item.userId,
+                    salary: item.salary,
+                }))
+            })
+        }
+        setCurrentSalaryMembers(newResponsibleEmployeesWithUnit)
         setTimeout(() => {
             setResponsibleEmployeesWithUnit({
                 ...responsibleEmployeesWithUnit,
-                list: projectEdit?.responsibleEmployeesWithUnit,
+                list: projectEdit?.responsibleEmployeesWithUnit?.map((unitItem) => {
+                    return {
+                        unitId: unitItem.unitId,
+                        listUsers: unitItem?.listUsers?.map((userItem) => {
+                            return userItem.userId
+                        })
+                    }
+                }),
             })
         }, 10);
+        // props.getTasksByProject(projectEditId);
     }
 
     const handleChangeForm = (event, currentKey) => {
@@ -127,42 +154,33 @@ const ProjectEditForm = (props) => {
 
     const isFormValidated = () => {
         let { translate } = props;
-        if (!ValidationHelper.validateName(translate, projectName, 6, 255).status) {
-            return false;
-        }
+        if (!ValidationHelper.validateName(translate, projectName, 6, 255).status) return false;
+        if (!ValidationHelper.validateName(translate, code, 6, 6).status) return false;
+        if (projectManager.length === 0) return false;
+        if (responsibleEmployees.length === 0) return false;
+        if (startDate.length === 0) return false;
+        if (endDate.length === 0) return false;
         return true;
     }
 
     const save = async () => {
         if (isFormValidated()) {
-            let partStartDate = startDate.split('-');
+            let partStartDate = convertDateTime(startDate, startTime).split('-');
             let start = new Date([partStartDate[2], partStartDate[1], partStartDate[0]].join('-'));
+            console.log('start', start)
 
-            let partEndDate = endDate.split('-');
+            let partEndDate = convertDateTime(endDate, endTime).split('-');
             let end = new Date([partEndDate[2], partEndDate[1], partEndDate[0]].join('-'));
+            console.log('end', end)
 
             // Cái này để hiển thị danh sách ra - không quan tâm user nào thuộc unit nào
             let newEmployeesArr = [];
             for (let unitItem of responsibleEmployeesWithUnit.list) {
                 for (let userItem of unitItem.listUsers) {
-                    console.log(userItem.userId || userItem);
+                    // console.log(userItem.userId || userItem);
                     newEmployeesArr.push(userItem.userId || userItem)
                 }
-            }            
-            
-            // Cái này để hiển thị danh sách ra - có quan tâm user và unit và salary của user đó
-            let newResponsibleEmployeesWithUnit = [];
-            for (let employeeItem of responsibleEmployeesWithUnit.list) {
-                newResponsibleEmployeesWithUnit.push({
-                    unitId: employeeItem.unitId,
-                    listUsers: employeeItem.listUsers.map(item => {
-                        return ({
-                            userId: item.userId || item,
-                            salary: item.salary || 0,
-                        })
-                    })
-                })
-            } 
+            }
 
             await props.editProjectDispatch(projectEdit?._id, {
                 name: projectName,
@@ -176,7 +194,7 @@ const ProjectEditForm = (props) => {
                 unitTime,
                 estimatedCost,
                 creator: userId,
-                responsibleEmployeesWithUnit: newResponsibleEmployeesWithUnit,
+                responsibleEmployeesWithUnit: currentSalaryMembers,
             });
 
             setTimeout(() => {
@@ -187,11 +205,12 @@ const ProjectEditForm = (props) => {
 
     const handleDelete = (index) => {
         if (responsibleEmployeesWithUnit.list && responsibleEmployeesWithUnit.list.length > 0) {
-            responsibleEmployeesWithUnit.list.splice(index, 1);
+            const cloneArr = [...responsibleEmployeesWithUnit.list];
+            cloneArr.splice(index, 1);
             // responsibleEmployeesWithUnit.list.splice(responsibleEmployeesWithUnit.list.length - 1, 1);
             setResponsibleEmployeesWithUnit({
                 ...responsibleEmployeesWithUnit,
-                list: responsibleEmployeesWithUnit.list,
+                list: cloneArr,
                 currentUnitRow: '',
                 currentEmployeeRow: [],
             })
@@ -199,18 +218,88 @@ const ProjectEditForm = (props) => {
     }
 
     const handleAddRow = () => {
-        const oldListRow = responsibleEmployeesWithUnit.list;
-        const newListRow = [...oldListRow, {
-            unitId: responsibleEmployeesWithUnit.currentUnitRow || listDepartments[0]?.value,
-            listUsers: responsibleEmployeesWithUnit.currentEmployeeRow,
-        }];
-        setResponsibleEmployeesWithUnit({
-            ...responsibleEmployeesWithUnit,
-            list: newListRow,
-            currentUnitRow: '',
-            currentEmployeeRow: [],
-        })
+        if (responsibleEmployeesWithUnit.currentEmployeeRow.length > 0) {
+            // Đề phòng user không chọn gì thì lấy default là Ban giám đốc
+            const currentChoosenUnitRow = responsibleEmployeesWithUnit.currentUnitRow || listDepartments[0]?.value;
+            const isUnitAlreadyExistedInArr = responsibleEmployeesWithUnit.list.find((item) => {
+                return currentChoosenUnitRow === item.unitId
+            })
+            const oldListRow = responsibleEmployeesWithUnit.list;
+            // Nếu unit đã có trong array rồi
+            if (isUnitAlreadyExistedInArr) {
+                let newListRow = oldListRow.map((oldListRowItem) => {
+                    if (String(oldListRowItem.unitId) === String(isUnitAlreadyExistedInArr.unitId)) {
+                        let currentListUsers = oldListRowItem.listUsers;
+                        for (let currentEmployeeRowItem of responsibleEmployeesWithUnit.currentEmployeeRow) {
+                            if (!currentListUsers.includes(currentEmployeeRowItem)) {
+                                currentListUsers.push(currentEmployeeRowItem)
+                            }
+                        }
+                        return {
+                            unitId: oldListRowItem.unitId,
+                            listUsers: currentListUsers,
+                        }
+                    }
+                    return oldListRowItem;
+                })
+                setResponsibleEmployeesWithUnit({
+                    ...responsibleEmployeesWithUnit,
+                    list: newListRow,
+                    currentUnitRow: '',
+                    currentEmployeeRow: [],
+                })
+            }
+            else {
+                const newListRow = [...oldListRow, {
+                    unitId: currentChoosenUnitRow,
+                    listUsers: responsibleEmployeesWithUnit.currentEmployeeRow,
+                }];
+                setResponsibleEmployeesWithUnit({
+                    ...responsibleEmployeesWithUnit,
+                    list: newListRow,
+                    currentUnitRow: '',
+                    currentEmployeeRow: [],
+                })
+            }
+        }
     }
+
+    useEffect(() => {
+        let newResponsibleEmployeesWithUnit = [];
+        console.log('responsibleEmployeesWithUnit.list', responsibleEmployeesWithUnit.list)
+        // console.log('currentSalaryMembers create project', currentSalaryMembers)
+        if (responsibleEmployeesWithUnit.list) {
+            for (let i = 0; i < responsibleEmployeesWithUnit.list.length; i++) {
+                newResponsibleEmployeesWithUnit.push({
+                    unitId: responsibleEmployeesWithUnit.list[i].unitId,
+                    listUsers: responsibleEmployeesWithUnit.list[i].listUsers.map((item, index) => ({
+                        userId: item,
+                        salary: currentSalaryMembers?.[i]?.listUsers?.[index]?.salary,
+                    }))
+                })
+            }
+            setCurrentSalaryMembers(newResponsibleEmployeesWithUnit)
+        }
+    }, [responsibleEmployeesWithUnit.list])
+
+    const handleOpenModalSalaryMembers = () => {
+        setTimeout(() => {
+            window.$(`#modal-salary-members-edit-${projectId}`).modal("show");
+        }, 10);
+    }
+
+    const handleSaveCurrentSalaryMember = (data) => {
+        setCurrentSalaryMembers(data);
+    }
+
+    const currentTasks = tasks && tasks?.tasksbyproject;
+
+    useEffect(() => {
+        props.getTasksByProject(projectEditId);
+    }, [])
+
+    const isTasksListNotEmpty = (currentTasks && currentTasks.length > 0) || (currentProjectTasks &&  currentProjectTasks.length > 0);
+
 
     return (
         <React.Fragment>
@@ -222,103 +311,145 @@ const ProjectEditForm = (props) => {
                 disableSubmit={!isFormValidated()}
                 size={100}
             >
-                <form id={`form-edit-project-${projectEdit?._id && projectEditId}`}>
-                    <div className="row">
-                        <div className={"col-sm-6"}>
-                            <fieldset className="scheduler-border">
-                                <legend className="scheduler-border">Thông số dự án</legend>
+                <ModalSalaryMembersEdit
+                    projectDetail={projectEdit}
+                    projectDetailId={projectId}
+                    currentTasks={currentTasks}
+                    currentProjectTasks={currentProjectTasks}
+                    createProjectCurrentSalaryMember={currentSalaryMembers}
+                    responsibleEmployeesWithUnit={responsibleEmployeesWithUnit}
+                    handleSaveCurrentSalaryMember={handleSaveCurrentSalaryMember}
+                />
+                <div className="row">
+                    <div className={"col-sm-6"}>
+                        <fieldset className="scheduler-border">
+                            <legend className="scheduler-border">Thông số dự án</legend>
 
-                                <div className={`form-group ${!projectNameError ? "" : "has-error"}`}>
-                                    <label>{translate('project.name')}<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" value={projectName} onChange={(e) => handleChangeForm(e, 'projectName')}></input>
-                                    <ErrorLabel content={projectNameError} />
-                                </div>
+                            <div className={`form-group ${!projectNameError ? "" : "has-error"}`}>
+                                <label>{translate('project.name')}<span className="text-red">*</span></label>
+                                <input type="text" className="form-control" value={projectName} onChange={(e) => handleChangeForm(e, 'projectName')}></input>
+                                <ErrorLabel content={projectNameError} />
+                            </div>
 
-                                <div className={`form-group ${!codeError ? "" : "has-error"}`}>
-                                    <label>{translate('project.code')}<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" value={code} onChange={(e) => handleChangeForm(e, 'code')}></input>
-                                    <ErrorLabel content={codeError} />
-                                </div>
+                            <div className={`form-group ${!codeError ? "" : "has-error"}`}>
+                                <label>{translate('project.code')}<span className="text-red">*</span></label>
+                                <input type="text" className="form-control" value={code} onChange={(e) => handleChangeForm(e, 'code')}></input>
+                                <ErrorLabel content={codeError} />
+                            </div>
 
-                                <div className="form-group">
+                            <div className="row">
+                                <div className="form-group col-md-6">
                                     <label>{translate('project.startDate')}<span className="text-red">*</span></label>
                                     <DatePicker
-                                        id={`edit-project-state-date`}
+                                        id={`edit-project-start-date`}
                                         value={startDate}
                                         onChange={(e) => handleChangeForm(e, 'startDate')}
+                                        dateFormat="day-month-year"
                                         disabled={false}
                                     />
                                 </div>
+                                <div className="form-group col-md-6">
+                                    <label>Thời gian bắt đầu dự án<span className="text-red">*</span></label>
+                                    <TimePicker
+                                        id={`edit-project-start-time`}
+                                        value={startTime}
+                                        onChange={(e) => setStartTime(e)}
+                                        disabled={false}
+                                    />
+                                </div>
+                            </div>
 
-                                <div className="form-group">
+                            <div className="row">
+                                <div className="form-group col-md-6">
                                     <label>{translate('project.endDate')}<span className="text-red">*</span></label>
                                     <DatePicker
                                         id={`edit-project-end-date`}
                                         value={endDate}
                                         onChange={(e) => handleChangeForm(e, 'endDate')}
+                                        dateFormat="day-month-year"
                                         disabled={false}
                                     />
                                 </div>
+                                <div className="form-group col-md-6">
+                                    <label>Thời gian dự kiến kết thúc dự án<span className="text-red">*</span></label>
+                                    <TimePicker
+                                        id={`edit-project-end-time`}
+                                        value={endTime}
+                                        onChange={(e) => setEndTime(e)}
+                                        disabled={false}
+                                    />
+                                </div>
+                            </div>
 
-                                <div className="form-group">
-                                    <label>{translate('project.unitTime')}</label>
-                                    <div className="form-control">Ngày</div>
-                                </div>
-                                <div className="form-group">
-                                    <label>{translate('project.unitCost')}</label>
-                                    <div className="form-control">VND</div>
-                                </div>
+                            <div className="form-group">
+                                <label>{translate('project.unitTime')}</label>
+                                <div className="form-control">{translate(`project.unit.${unitTime}`)}</div>
+                            </div>
+                            <div className="form-group">
+                                <label>{translate('project.unitCost')}</label>
+                                <div className="form-control">{unitCost}</div>
+                            </div>
 
-                                <div className={`form-group`}>
-                                    <label>{translate('project.description')}</label>
-                                    <textarea type="text" className="form-control" value={description} onChange={(e) => handleChangeForm(e, 'description')} />
-                                </div>
-                            </fieldset>
-                        </div>
-                        <div className={"col-sm-6"}>
-                            <fieldset className="scheduler-border">
-                                <legend className="scheduler-border">Nhân lực</legend>
-                                <div className="form-group">
-                                    <label>{translate('project.manager')}<span className="text-red">*</span></label>
-                                    {listUsers &&
-                                        <SelectBox
-                                            id={`edit-select-project-manager-${projectEdit?._id && projectEditId}`}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            items={listUsers}
-                                            onChange={(e) => handleChangeForm(e, 'projectManager')}
-                                            value={projectManager}
-                                            multiple={true}
-                                        />
-                                    }
-                                </div>
-                                <div className="form-group">
+                            <div className={`form-group`}>
+                                <label>{translate('project.description')}</label>
+                                <textarea type="text" className="form-control" value={description} onChange={(e) => handleChangeForm(e, 'description')} />
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div className={"col-sm-6"}>
+                        <fieldset className="scheduler-border">
+                            <legend className="scheduler-border">Nhân lực</legend>
+                            <div className="form-group">
+                                <label>{translate('project.manager')}<span className="text-red">*</span></label>
+                                {listUsers &&
+                                    <SelectBox
+                                        id={`edit-select-project-manager-${projectEdit?._id && projectEditId}`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={listUsers}
+                                        onChange={(e) => handleChangeForm(e, 'projectManager')}
+                                        value={projectManager}
+                                        multiple={true}
+                                    />
+                                }
+                            </div>
+                            <div className="form-group">
+                                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
                                     <label>{translate('project.member')}<span className="text-red">*</span></label>
-                                    <table id="project-table" className="table table-striped table-bordered table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th>Thuộc đơn vị</th>
-                                                <th>Thành viên tham gia</th>
-                                                <th>{translate('task_template.action')}</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {responsibleEmployeesWithUnit.list && responsibleEmployeesWithUnit.list.length > 0 &&
-                                                responsibleEmployeesWithUnit.list.map((item, index) => (
-                                                    <tr key={index}>
-                                                        <td>{convertDepartmentIdToDepartmentName(user.usersInUnitsOfCompany, item?.unitId)}</td>
-                                                        <td>
-                                                            {item?.listUsers.map(userItem =>
-                                                                convertUserIdToUserName(listUsers, userItem.userId || userItem))
-                                                                .join(', ')
-                                                            }
-                                                        </td>
+                                    <button className="btn-link" onClick={handleOpenModalSalaryMembers}>Xem chi tiết lương nhân viên</button>
+                                </div>
+                                <table id="project-table" className="table table-striped table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Thuộc đơn vị</th>
+                                            <th>Thành viên tham gia</th>
+                                            {!isTasksListNotEmpty && <th>{translate('task_template.action')}</th>}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {responsibleEmployeesWithUnit.list && responsibleEmployeesWithUnit.list.length > 0 &&
+                                            responsibleEmployeesWithUnit.list.map((item, index) => (
+                                                <tr key={index}>
+                                                    <td>{convertDepartmentIdToDepartmentName(user.usersInUnitsOfCompany, item?.unitId)}</td>
+                                                    <td>
+                                                        {item?.listUsers.map(userItem =>
+                                                            convertUserIdToUserName(listUsers, userItem.userId || userItem))
+                                                            .join(', ')
+                                                        }
+                                                    </td>
+                                                    {
+                                                        !isTasksListNotEmpty
+                                                        &&
                                                         <td>
                                                             <a className="delete" title={translate('general.delete')} onClick={() => handleDelete(index)}><i className="material-icons">delete</i></a>
                                                         </td>
-                                                    </tr>
-                                                ))
-                                            }
+                                                    }
+                                                </tr>
+                                            ))
+                                        }
+                                        {
+                                            !isTasksListNotEmpty
+                                            &&
                                             <tr key={`add-task-input-${responsibleEmployeesWithUnit?.list?.length}`}>
                                                 <td>
                                                     <div className={`form-group`}>
@@ -369,19 +500,20 @@ const ProjectEditForm = (props) => {
                                                     <a className="save text-green" title={translate('general.save')} onClick={handleAddRow}><i className="material-icons">add_circle</i></a>
                                                 </td>
                                             </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
 
 
-                            </fieldset>
-                        </div>
+                        </fieldset>
                     </div>
-                    {/* <div className="form-group">
+                </div>
+                {/* <div className="form-group">
                         <label>{translate('project.parent')}</label>
                         <TreeSelect data={list} value={projectParent} handleChange={handleParent} mode="radioSelect" />
                     </div> */}
-                    {/* <div className={`form-group`}>
+                {/* <div className={`form-group`}>
                         <label>{translate('project.estimatedCost')}</label>
                         <input
                             type="number"
@@ -390,7 +522,6 @@ const ProjectEditForm = (props) => {
                             onChange={(e) => handleChangeForm(e, 'estimatedCost')}
                         />
                     </div> */}
-                </form>
             </DialogModal>
         </React.Fragment>
     );
@@ -403,5 +534,6 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
     editProjectDispatch: ProjectActions.editProjectDispatch,
+    getTasksByProject: taskManagementActions.getTasksByProject,
 }
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ProjectEditForm));

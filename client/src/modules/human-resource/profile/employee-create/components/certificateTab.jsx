@@ -21,11 +21,11 @@ function CertificateTab(props) {
             return {
                 ...state,
                 id: props.id,
-                degrees: props.degrees,
-                certificates: props.certificates,
+                degrees: props.employee ? props.employee.degrees : [],
+                certificates: props.employee ? props.employee.certificates : []
             }
         })
-    }, [props.id])
+    }, [props.id, props.employee?.degrees, props.employee?.certificates])
 
     const { translate, field } = props;
 
@@ -71,6 +71,7 @@ function CertificateTab(props) {
                 currentRow: { ...value, index: index }
             }
         });
+        console.log(state.degrees)
         window.$(`#modal-edit-certificate-editCertificate${index}`).modal('show');
     }
 
@@ -321,7 +322,7 @@ function CertificateTab(props) {
                     index={currentRow.index}
                     name={currentRow.name}
                     issuedBy={currentRow.issuedBy}
-                    field={currentRow.field}
+                    fieldId={currentRow.field}
                     year={currentRow.year}
                     degreeType={currentRow.degreeType}
                     file={currentRow.file}

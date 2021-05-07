@@ -6,8 +6,15 @@ import { DataTableSetting, DeleteNotification, PaginateBar, SelectBox } from "..
 
 import { formatDate } from "../../../../../helpers/formatDate"
 
+import { TransportManageVehicleProcess } from "./transportManageVehicleProcess"
+
+import { TransportDetailRoute } from "./transportDetailRoute"
+import { TransportDetailMap } from "./transportDetailMap"
+
 import { transportPlanActions } from "../../transport-plan/redux/actions"
 import { transportScheduleActions } from "../../transport-schedule/redux/actions";
+import { transportProcessActions } from "../redux/actions"
+
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 import { convertJsonObjectToFormData } from '../../../../../helpers/jsonObjectToFormDataObjectConverter'
 
@@ -15,8 +22,11 @@ import './timeLine.css';
 
 function TransportManageRouteMainPage(props) {
 
-    const {allTransportPlans, currentTransportSchedule} = props
+    const {allTransportPlans, transportSchedule, socket} = props
 
+    const [currentTransportSchedule, setCurrentTransportSchedule] = useState()
+
+    // Vị trí hiện tại
     const [ currentPosition, setCurrentPosition ] = useState({});
 
     const [currentTransportPlan, setCurrentTransportPlan] = useState({
@@ -24,11 +34,49 @@ function TransportManageRouteMainPage(props) {
         code: "",
     });
 
+    const [currentVehicleRoute, setCurrentVehicleRoute] = useState({})
+    const [currentVehicleRoute_transportVehicleId, setCurrentVehicleRoute_transportVehicleId] = useState();
+
+    const [longestRoute, setLongestRoute] = useState();
+    const [getLocateOnMap, setGetLocateOnMap] = useState(false);
+
+    const [sendCurrentLocateTimer, setSendCurrentLocateTimer] = useState([]);
+
+    // manage
+    const [currentLocationOnMap, setCurrentLocationOnMap] = useState([])
+
+    const handleShowDetailRoute = (route) => {
+        console.log(route);
+        setCurrentVehicleRoute_transportVehicleId(route);
+        // setCurrentVehicleRoute(route);
+        window.$(`#modal-detail-route-manage`).modal('show')
+    }
+
+    /**
+     * Show bản đồ => yêu cầu gửi vị trí hiện tại để show lên map
+     * @param {*} route 
+     */
+    const handleShowDetailMap = (route) => {
+        setCurrentVehicleRoute(route);
+        // setCurrentVehicleRoute_transportVehicleId(route);
+        setGetLocateOnMap(true);
+        // console.log(route);
+        props.startLocate({manageId: localStorage.getItem("userId"), driverId: getDriver(route.transportVehicle?._id)?.id})
+        // props.startLocate({manageId: localStorage.getItem("userId"), driverId: getDriver(route)?.id})
+        window.$(`#modal-detail-map`).modal('show');
+    }
+    // useEffect(() => {
+    //     if (props.socket){
+    //         props.socket.io.on("hihi", data => {
+    //             console.log(data);
+    //         });
+    //     }
+    // }, [])
     const getListTransportPlans = () => {
         let listTransportPlans = [
             {
                 value: "0",
-                text: "Lịch trình",
+                text: "Kế hoạch",
             },
         ];        
         if (allTransportPlans) {
@@ -53,26 +101,205 @@ function TransportManageRouteMainPage(props) {
             setCurrentTransportPlan({_id: value[0], code: ""});
         }
     }
+    /**
+     * Tính chiều dài route hiện tại (so với các route khác trong cùng kế hoạch)
+     * @param {*} item 
+     */
+    const getBarWidth = (item) => {
+        let length = 0;
+        if (longestRoute && longestRoute!==0){
+            if (item.routeOrdinal && item.routeOrdinal.length!==0){
+                item.routeOrdinal.map(routeOrdinal => {
+                    length +=routeOrdinal.distance?routeOrdinal.distance:0;
+                })
+            }
+        }
+        return length/longestRoute * 100;
+    }
+
+    const getDriver = (vehicleId) => {
+        let driver = {id: " ", name: " "};
+        if (currentTransportPlan && currentTransportPlan.transportVehicles && currentTransportPlan.transportVehicles.length!==0){
+            let transportVehicles = currentTransportPlan.transportVehicles.filter(r => String(r.vehicle?._id) === String(vehicleId));
+            if (transportVehicles && transportVehicles.length!==0){
+                let carriers = transportVehicles[0]?.carriers;
+                if (carriers && carriers.length!==0){
+                    let carrier_driver = carriers.filter(c => String(c.pos) === "1");
+                    if (carrier_driver && carrier_driver.length!==0){
+                        driver.name = carrier_driver[0]?.carrier?.name;
+                        driver.id = carrier_driver[0]?.carrier?._id;
+                    }
+                }
+            }
+        };
+        return driver;
+    }
+
+    const getCarriers = (vehicleId) => {
+        let carriers = "";
+        if (currentTransportPlan && currentTransportPlan.transportVehicles && currentTransportPlan.transportVehicles.length!==0){
+            let transportVehicles = currentTransportPlan.transportVehicles.filter(r => String(r.vehicle?._id) === String(vehicleId));
+            if (transportVehicles && transportVehicles.length!==0){
+                let carriers = transportVehicles[0]?.carriers;
+                if (carriers && carriers.length!==0){
+                    let carrier_driver = carriers.filter(c => String(c.pos) !== "1");
+                    if (carrier_driver && carrier_driver.length!==0){
+                        carrier_driver.map((cd, indexcd) => {
+                            if (cd.carrier){
+                                if (indexcd !==0){
+                                    carriers = carriers.concat(", ")
+                                }
+                                carriers = carriers.concat(cd.carrier.name);
+                            }
+                        })
+                    }
+                }
+            }
+        };
+        return carriers;
+    }
+    // setInterval(()=>{     
+    //     navigator.geolocation.getCurrentPosition(success);
+    // }, 50000)
+
+    const stopGetLocateOnMap = () => {
+        setGetLocateOnMap(false);
+        props.stopLocate({driverId: getDriver(currentVehicleRoute.transportVehicle?._id)?.id, interval: sendCurrentLocateTimer})
+    }
 
     useEffect(() => {
         props.getAllTransportPlans({page:1, limit: 100})
+        let manageId;
+        const sendCurrentPosition = position => {
+            const currentPosition = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            }
+            // setCurrentPosition(currentPosition);
+            let data = {
+                manageId: manageId,
+                location: currentPosition
+            }
+            console.log(data, " haha")
+            setCurrentPosition(data)
+          };
+        //   const sendCurrentPosition = () => {
+        //     const currentPosition = {
+        //       lat: 13,
+        //       lng: 12,
+        //     }
+        //     // setCurrentPosition(currentPosition);
+        //     let data = {
+        //         manageId: manageId,
+        //         location: currentPosition
+        //     }
+        //     console.log(data, " haha")
+        //     setCurrentPosition(data)
+        //   };
+        // socket.io.on("current position", data => {
+        //     console.log(data);
+        // })
+        // console.log(localStorage.getItem("userId"))
+        /** Nhận được tín hiệu quản lý vào xem map => gửi lại vị trí hiện tại
+         * data: {manageId: manageId}
+         * driver
+         */
+        socket.io.on("start locate", data => {
+            console.log(data, " aaaaaaaaaaaaaaaaaaaa");
+            if (data?.manageId){
+                manageId = data.manageId;
+                // navigator.geolocation.getCurrentPosition(sendCurrentPosition);
+                
+                let interval = setInterval(() => {
+                    // sendCurrentPosition();
+                    navigator.geolocation.getCurrentPosition(sendCurrentPosition);
+                }, 30000)
+                // let interval =1;
+                // Lưu lại id interval để stop locate => clearInterval
+                setSendCurrentLocateTimer(interval);
+            }
+        })
+        /**
+         * Nhận vị trí driver gửi lại
+         * data : location: {lat: , lng: }
+         * manager
+         */
+         socket.io.on("send current locate", data => {
+            if (data.location){
+                console.log(data.location, "  send current locate adminnnnnnnn ");
+                // setCurrentPosition(data.location);
+                setSendCurrentLocateTimer(data.interval);
+                setCurrentLocationOnMap(data.location);
+            }
+        })
+        /**
+         * Dừng gửi vị trí
+         * driver
+         */
+        socket.io.on("stop locate", data => {
+            console.log(data, " stop locate");
+            console.log(data, " currenttimerr")
+                    clearInterval(data.interval);
+            })
+            
     }, [])
-
     useEffect(() => {
-        props.getTransportScheduleByPlanId(currentTransportPlan._id);
+        // console.log(currentPosition, " currentPosition");
+        if (currentPosition && sendCurrentLocateTimer){
+            // if (localStorage.getItem("userId") !== '607a98a6e57ad61670049a2c')
+            // props.driverSendMessage({
+            //     data: {
+            //         position: currentPosition,
+            //     }
+            // })
+            props.sendCurrentLocate({...currentPosition, interval: sendCurrentLocateTimer});
+        }
+      }, [currentPosition, sendCurrentLocateTimer])
+    useEffect(() => {
+        if (currentTransportPlan && currentTransportPlan._id !== "0"){
+            props.getTransportScheduleByPlanId(currentTransportPlan._id);
+            // console.log(currentTransportPlan);
+        }
     }, [currentTransportPlan])
 
     useEffect(() => {
-        console.log(currentTransportSchedule, " allll")
+        if (transportSchedule) {
+            setCurrentTransportSchedule(transportSchedule.currentTransportSchedule);
+        }
+    }, [transportSchedule])
+
+    useEffect(() => {
+        if (currentVehicleRoute_transportVehicleId && currentTransportSchedule 
+            && currentTransportSchedule.route && currentTransportSchedule.route.length!==0){
+            let tmpCurrentRoute = currentTransportSchedule.route.filter(r => String(r.transportVehicle?._id) === String(currentVehicleRoute_transportVehicleId));
+            if (tmpCurrentRoute && tmpCurrentRoute.length!==0){
+                setCurrentVehicleRoute(tmpCurrentRoute[0]);
+            }
+        }
+    }, [currentTransportSchedule, currentVehicleRoute_transportVehicleId])
+
+    useEffect(() => {
+        // console.log(currentTransportSchedule, " allll")
+        if (currentTransportSchedule && currentTransportSchedule.route && currentTransportSchedule.route.length!==0){
+            currentTransportSchedule.route.map(r => {
+                if (r.routeOrdinal && r.routeOrdinal.length!==0){
+                    let length = 0;
+                    r.routeOrdinal.map(routeOrdinal => {
+                        length += routeOrdinal.distance?routeOrdinal.distance:0;
+                    })
+                    setLongestRoute(length);
+                }
+            })
+        }
     }, [currentTransportSchedule])
 
-    const success = position => {
-        const currentPosition = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude
-        }
-        setCurrentPosition(currentPosition);
-      };
+    // const success = position => {
+    //     const currentPosition = {
+    //       lat: position.coords.latitude,
+    //       lng: position.coords.longitude
+    //     }
+    //     setCurrentPosition(currentPosition);
+    //   };
       
       useEffect(() => {
         // navigator.geolocation.getCurrentPosition(success);  
@@ -81,11 +308,23 @@ function TransportManageRouteMainPage(props) {
         // }, 5000);
         // return () => clearTimeout(timer);
         })
-      useEffect(() => {
-        console.log(currentPosition, " currentPosition");
-      }, [currentPosition])
+
    return (
             <div className="box-body qlcv">
+                {
+                    currentTransportPlan && currentTransportPlan._id !== "0"
+                    &&
+                    <TransportDetailRoute 
+                        currentVehicleRoute = {currentVehicleRoute}
+                        transportPlanId = {currentTransportPlan._id}
+                    />
+                }
+                <TransportDetailMap
+                    currentVehicleRoute = {currentVehicleRoute}
+                    getLocateOnMap={getLocateOnMap}
+                    stopGetLocateOnMap = {stopGetLocateOnMap}
+                    currentLocationOnMap = {currentLocationOnMap}
+                />
                 <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">Chọn kế hoạch</label>
@@ -99,125 +338,92 @@ function TransportManageRouteMainPage(props) {
                             />
                         </div>
                 </div>
-                <div className={"divTest2"}>
-                    <table className="tableTest2 not-sort">
-                        <tr>
-                            <th>
-                                STT
-                            </th>
-                            <th>
-                                Tên xe
-                            </th>
-                            <th>
-                                Hành động
-                            </th>
-                            <th>
-                                Tiến độ vận chuyển
-                            </th>
-                            
-                        </tr>
-                        {
-                            (currentTransportSchedule && currentTransportSchedule.route && currentTransportSchedule.route.length !== 0)
-                            && currentTransportSchedule.route.map((item, index) => (
-                                item &&
-                                <tr>
-                                    <th>{index + 1}</th>
-                                    <td>{item.transportVehicle.name}</td>
-                                    <td>
-                                        <a className="edit text-green" 
-                                        style={{ width: '5px' }} 
-                                        title={'manage_example.detail_info_example'} 
-                                        // onClick={() => handleShowDetailInfo(example)}
-                                        >
-                                            <i className="material-icons">visibility</i>
-                                            </a>
-                                    </td>
-                                    <td>
-                                        <div className="timeline">
-                                        <div className="timeline-progress" style={{ width: `10%` }}></div>
-                                        <div className="timeline-items">
-                                            {
-                                                (item.routeOrdinal && item.routeOrdinal.length !== 0)
-                                                && item.routeOrdinal.map((item2, index2) => (
-                                                    <div key={item + "-"+ index2} 
-                                                        // className={`timeline-item ${o.active ? 'active' : ''}`}
-                                                        className={`timeline-item`}
-                                                    >
-                                                        <div className="timeline-contain">{"1"}</div>
-                                                    </div>
-                                                ))
-                                            }
-                                            {/* <div key={"1"} className={`timeline-item active`} >
-                                                <div className="timeline-contain">{"123131323"}</div>
-                                            </div>
-                                            <div key={"2"} className={`timeline-item`} >
-                                                <div className="timeline-contain" 
-                                                // onClick={(e) => this.setCurrentStep(e, index)}
-                                                >{"123131323"}</div>
-                                                
-                                            </div> */}
-                                        </div>
-                                        </div>
-                                    </td>
-                                </tr>
-    
-                            ))
-                        }
-                    </table>
-                </div>
-                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{marginTop: '20px'}}>
-                    <div className='col-xs-12 col-sm-12 col-md-4 col-lg-4'>
-
-                    <table id={"123"} className="table table-striped table-bordered table-hover">
-                    <thead>
-                        <tr>
-                            <th className="col-fixed" style={{ width: 60 }}>{"STT"}</th>
-                            <th>{"Loại yêu cầu"}</th>
-                            <th>{"Địa chỉ bắt đầu"}</th>
-                            <th>{"Địa chỉ kết thúc"}</th>
-                            <th>{"Người tạo"}</th>
-                            <th>{"Trạng thái"}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr key={"1"}>
-                            <td>{1}</td>
-                            <td>{"123"}</td>
-                            <td>{"123"}</td>
-                            <td>{"123"}</td>
-                            <td>{"123"}</td>
-                            <td>{"Chờ phê duyệt"}</td>
-                        </tr>
-                    </tbody>
-                </table>
-
-
-                    </div>
-                    <div className="col-md-12 col-sm-12 col-md-8 col-lg-8 container-time-line">
-                        <div className="timeline">
-                            <div className="timeline-progress" style={{ width: `10%` }}></div>
-                            <div className="timeline-items">
-                                {/* {
-                                    listStatus && listStatus.length > 0 &&
-                                    listStatus.map((o, index) => (
-                                        <div key={index} className={`timeline-item ${o.active ? 'active' : ''}`} >
-                                            <div className="timeline-contain">{o.name}</div>
-                                        </div>
-                                    ))
-                                } */}
-                                <div key={"1"} className={`timeline-item active`} >
-                                    <div className="timeline-contain">{"123131323"}</div>
-                                </div>
-                                <div key={"2"} className={`timeline-item`} >
-                                    <div className="timeline-contain" 
-                                    // onClick={(e) => this.setCurrentStep(e, index)}
-                                    >{"123131323"}</div>
-                                    
-                                </div>
+                {
+                    (currentTransportSchedule && currentTransportSchedule.route && currentTransportSchedule.route.length !== 0)
+                    && currentTransportSchedule.route.map((item,index) =>(
+                        item &&
+                        <fieldset className="scheduler-border" style={{ height: "100%" }}>
+                            <legend className="scheduler-border">{item.transportVehicle?.name}</legend>
+                            <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                <table>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>Mã xe: </strong></td>
+                                            <td>{item.transportVehicle?.code}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Trọng tải xe: </strong></td>
+                                            <td>{item.transportVehicle?.payload}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Thể tích thùng chứa: </strong></td>
+                                            <td>{item.transportVehicle?.volume}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>                            
                             </div>
-                        </div>
-                    </div>
-                </div>
+                            <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                <table>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>Tài xế: </strong></td>
+                                            <td>{getDriver(item.transportVehicle?._id)?.name}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Đi cùng: </strong></td>
+                                            <td>{getCarriers(item.transportVehicle?._id)}</td>
+                                        </tr>                                        
+                                        <tr>
+                                            <td>
+                                                <a className="edit text-green" 
+                                                    style={{ width: '5px', cursor:"pointer" }} 
+                                                    title={'manage_example.detail_info_example'} 
+                                                    onClick={() => handleShowDetailRoute(item.transportVehicle?._id)}
+                                                    >
+                                                        <strong>{"Chi tiết nhiệm vụ "}</strong>
+                                                        <i className="material-icons">assignment</i>
+                                                </a>
+                                            </td>   
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <a className="edit text-green" 
+                                                    style={{ width: '5px', cursor:"pointer" }} 
+                                                    title={'Bản đồ chi tiết'} 
+                                                    onClick={() => handleShowDetailMap(item)}
+                                                    >
+                                                        <strong>{"Bản đồ "}</strong>
+                                                        <i className="material-icons">location_on</i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>                            
+                            </div>
+                                        
+                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 container-time-line">
+                                <table>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>Tiến độ vận chuyển:</strong></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                
+                                <TransportManageVehicleProcess
+                                    route={item}
+                                    timelineBarWidth={getBarWidth(item)}
+                                />
+                            </div>
+                        </fieldset>
+                    ))
+                }
+                
+
+
+                
+
+
                 {/* <iframe src={"https://www.google.com/maps/embed/v1/place?key=AIzaSyCkVQAqCoJU79mTctNsNmQLy9ME7qiTlfs&q=21.0058354500001,105.842277338"} 
                 width="600" 
                 height="450" 
@@ -227,20 +433,40 @@ function TransportManageRouteMainPage(props) {
                 loading="lazy" 
                 aria-hidden="false" 
                 tabindex="0"></iframe>    */}
+                {/* <fieldset className="scheduler-border" style={{ height: "100%" }}> */}
+
+                    {/* <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6"> */}
+                    {/* <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <div className="form-group">
+                    <strong>{"Trọng tải: "+item.transportVehicle.payload}</strong>
+                    </div>
+                    </div>                                    
+                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <div className="form-group">
+                    <strong>{"Thể tích thùng chứa: "+item.transportVehicle.volume}</strong>
+                    </div>
+                    </div>
+                    </div> */}
+
+                {/* </fieldset> */}
             </div>
     )
 }
 
 function mapState(state) {
     const allTransportPlans = state.transportPlan.lists;
-    const {currentTransportSchedule} = state.transportSchedule;
-    return { allTransportPlans, currentTransportSchedule }
+    const {transportSchedule} = state;
+    const {socket} = state
+    return { allTransportPlans, transportSchedule,socket }
 }
 
 const actions = {
     getAllTransportPlans: transportPlanActions.getAllTransportPlans,
     getTransportScheduleByPlanId: transportScheduleActions.getTransportScheduleByPlanId,
-    
+    driverSendMessage: transportScheduleActions.driverSendMessage,    
+    startLocate: transportProcessActions.startLocate,
+    sendCurrentLocate: transportProcessActions.sendCurrentLocate,
+    stopLocate: transportProcessActions.stopLocate,
 }
 
 const connectedTransportManageRouteMainPage = connect(mapState, actions)(withTranslate(TransportManageRouteMainPage));

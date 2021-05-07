@@ -17,10 +17,9 @@ const ViewAllTaskUrgent = (props) => {
 
     let unit = null, taskUrgentUnit = [];
     if (props.clickUrgentChart) {
-        unit = props.clickUrgentChart.id;
+        unit = props.clickUrgentChart;
         taskUrgentUnit = taskUrgent[unit]
     }
-
 
     return (
         <React.Fragment>

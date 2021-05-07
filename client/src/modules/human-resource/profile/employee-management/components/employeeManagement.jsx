@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState, useLayoutEffect } from 'react';
+import React, { useEffect, useState, useLayoutEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -46,12 +46,18 @@ const EmployeeManagement = (props) => {
         careerFields: null,
         page: 0,
         limit: _limit,
+        currentRow: {},
+        currentRowView: {}
     });
 
     useEffect(() => {
         props.getListFields({ page: 0, limit: 10000 })
         props.getDepartment();
     }, [])
+
+    useEffect(() => {
+        props.getAllEmployee(state);
+    }, [state.limit, state.page]);
 
     /**
      * Function format dữ liệu Date thành string
@@ -271,10 +277,6 @@ const EmployeeManagement = (props) => {
             page: parseInt(page)
         }))
     }
-
-    useEffect(() => {
-        props.getAllEmployee(state);
-    }, [state.limit, state.page]);
 
     const handleExportExcel = async () => {
         const { employeesManager } = props;
@@ -584,9 +586,9 @@ const EmployeeManagement = (props) => {
                             columns: [
                                 { key: "STT", value: translate(`human_resource.stt`), width: 7 },
                                 { key: "employeeNumber", value: translate(`human_resource.profile.staff_number`) },
+                                { key: "position", value: translate(`human_resource.position`), width: 25 },
                                 { key: "fullName", value: translate(`human_resource.profile.full_name`), width: 20 },
                                 { key: "organizationalUnits", value: translate(`human_resource.unit`), width: 25 },
-                                { key: "position", value: translate(`human_resource.position`), width: 25 },
                                 { key: "birthdate", value: translate(`human_resource.profile.date_birth`) },
                                 { key: "gender", value: translate(`human_resource.profile.gender`) },
                                 { key: "employeeTimesheetId", value: translate(`human_resource.profile.attendance_code`) },

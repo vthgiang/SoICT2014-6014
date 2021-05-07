@@ -1,32 +1,30 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { DepartmentActions } from '../redux/actions';
 import { DialogModal, ImportFileExcel, ShowImportData, ConFigImportFile, ExportExcel } from '../../../../common-components';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { configDepartment, templateImportDepartment } from './fileConfigurationImportOrganizationalUnit';
 
-class DepartmentImportForm extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            configData: configDepartment,
-            checkFileImport: true,
-            rowError: [],
-            importData: [],
-            importDataShow: [],
-            limit: 100,
-            page: 0
-        };
-    };
+function DepartmentImportForm(props) {
+    const [state, setState] = useState({
+        configData: configDepartment,
+        checkFileImport: true,
+        rowError: [],
+        importData: [],
+        importDataShow: [],
+        limit: 100,
+        page: 0
+    })
 
-    handleChangeConfig = (value) => {
-        this.setState({
+    const handleChangeConfig = (value) => {
+        setState({
+            ...state,
             configData: value,
             importData: [],
         })
     }
 
-    handleImportExcel = (value, checkFileImport) => {
+    const handleImportExcel = (value, checkFileImport) => {
         let values = [];
         let valueShow = [];
         let k = -1;
@@ -105,7 +103,8 @@ class DepartmentImportForm extends Component {
                 x = { ...x, errorAlert: errorAlert };
                 return x;
             });
-            this.setState({
+            setState({
+                ...state,
                 importData: values,
                 importDataShow: value
                 ,
@@ -113,19 +112,20 @@ class DepartmentImportForm extends Component {
                 checkFileImport: checkFileImport,
             })
         } else {
-            this.setState({
+            setState({
+                ...state,
                 checkFileImport: checkFileImport,
             })
         }
     }
 
-    save = () => {
-        let { importData } = this.state;
+    const save = () => {
+        let { importData } = state;
         console.log(importData);
-        this.props.importDepartment(importData);
+        props.importDepartment(importData);
     }
 
-    convertExportData = (dataExport) => {
+    const convertExportData = (dataExport) => {
         for (let va = 0; va < dataExport.dataSheets.length; va++) {
             for (let val = 0; val < dataExport.dataSheets[va].tables.length; val++) {
                 let datas = [];
@@ -173,59 +173,57 @@ class DepartmentImportForm extends Component {
         return dataExport;
     }
 
-    render() {
-        const { translate } = this.props;
-        let { limit, page, configData, checkFileImport, rowError, importDataShow } = this.state;
-        let templateImportDepartment2 = this.convertExportData(templateImportDepartment);
-        return (
-            <React.Fragment>
-                <DialogModal
-                    modalID={`modal_import_file`} isLoading={false}
-                    formID={`form_import_file`}
-                    title="Thêm cơ cấu tổ chức bằng import file excel"
-                    func={this.save}
-                    disableSubmit={false}
-                    size={75}
-                >
-                    <form className="form-group" id={`form_import_file`}>
-                        <ConFigImportFile
-                            id="import_organizationalUnit_config"
-                            configData={configData}
-                            // textareaRow={8}
-                            scrollTable={false}
-                            handleChangeConfig={this.handleChangeConfig}
-                        />
-                        <div className="row">
-                            <div className="form-group col-md-4 col-xs-12">
-                                <label>{translate('human_resource.choose_file')}</label>
-                                <ImportFileExcel
-                                    configData={configData}
-                                    handleImportExcel={this.handleImportExcel}
-                                />
-                            </div>
-                            <div className="form-group col-md-4 col-xs-12">
-                                <label></label>
-                                <ExportExcel id="download_template_organizationalUnit" type='link' exportData={templateImportDepartment2}
-                                    buttonName='Download file import mẫu' />
-                            </div>
-                            <div className="form-group col-md-12 col-xs-12">
-                                <ShowImportData
-                                    id="import_department_show_data"
-                                    configData={configData}
-                                    importData={importDataShow}
-                                    rowError={rowError}
-                                    scrollTable={false}
-                                    checkFileImport={checkFileImport}
-                                    limit={limit}
-                                    page={page}
-                                />
-                            </div>
+    const { translate } = props;
+    let { limit, page, configData, checkFileImport, rowError, importDataShow } = state;
+    let templateImportDepartment2 = convertExportData(templateImportDepartment);
+    return (
+        <React.Fragment>
+            <DialogModal
+                modalID={`modal_import_file`} isLoading={false}
+                formID={`form_import_file`}
+                title="Thêm cơ cấu tổ chức bằng import file excel"
+                func={save}
+                disableSubmit={false}
+                size={75}
+            >
+                <form className="form-group" id={`form_import_file`}>
+                    <ConFigImportFile
+                        id="import_organizationalUnit_config"
+                        configData={configData}
+                        // textareaRow={8}
+                        scrollTable={false}
+                        handleChangeConfig={handleChangeConfig}
+                    />
+                    <div className="row">
+                        <div className="form-group col-md-4 col-xs-12">
+                            <label>{translate('human_resource.choose_file')}</label>
+                            <ImportFileExcel
+                                configData={configData}
+                                handleImportExcel={handleImportExcel}
+                            />
                         </div>
-                    </form>
-                </DialogModal>
-            </React.Fragment>
-        )
-    }
+                        <div className="form-group col-md-4 col-xs-12">
+                            <label></label>
+                            <ExportExcel id="download_template_organizationalUnit" type='link' exportData={templateImportDepartment2}
+                                buttonName='Download file import mẫu' />
+                        </div>
+                        <div className="form-group col-md-12 col-xs-12">
+                            <ShowImportData
+                                id="import_department_show_data"
+                                configData={configData}
+                                importData={importDataShow}
+                                rowError={rowError}
+                                scrollTable={false}
+                                checkFileImport={checkFileImport}
+                                limit={limit}
+                                page={page}
+                            />
+                        </div>
+                    </div>
+                </form>
+            </DialogModal>
+        </React.Fragment>
+    )
 }
 function mapState(state) {
     const { department } = state;

@@ -554,7 +554,7 @@ class TaskManagementOfUnit extends Component {
             currentOrganizationalUnitLoading = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnitLoading;
         }
 
-        let exportData = convertDataToExportData(translate, currentTasks, translate("menu.task_management_of_unit"));
+        let exportData = convertDataToExportData(translate, currentTasks, translate("menu.task_management_of"));
 
         return (
             <React.Fragment>

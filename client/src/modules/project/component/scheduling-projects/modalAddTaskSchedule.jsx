@@ -1,19 +1,21 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, SelectBox } from '../../../../common-components/index';
 import { ProjectActions } from '../../redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { taskManagementActions } from '../../../task/task-management/redux/actions';
-import { getCurrentProjectDetails } from '../projects/functionHelper';
+import { getCurrentProjectDetails, getDurationWithoutSatSun, getEstimateHumanCostFromParams, getNearestIntegerNumber } from '../projects/functionHelper';
 import ModalCalculateCPM from './modalCalculateCPM';
 import ModalExcelImport from './modalExcelImport';
 import ModalEditRowCPMExcel from './modalEditRowCPMExcel';
-import { checkIsNullUndefined } from '../../../task/task-management/component/functionHelpers';
+import { checkIsNullUndefined, numberWithCommas } from '../../../task/task-management/component/functionHelpers';
+import moment from 'moment';
 
 const ModalAddTaskSchedule = (props) => {
-    const { translate, project } = props;
-    const projectDetail = getCurrentProjectDetails(project);
+    const { translate, project, projectDetail } = props;
+    // console.log('projectDetail', projectDetail)
+    // const projectDetail = getCurrentProjectDetails(project);
     const [state, setState] = useState({
         taskInit: {
             taskProject: projectDetail?._id,
@@ -22,7 +24,6 @@ const ModalAddTaskSchedule = (props) => {
             preceedingTasks: [],
             estimateNormalTime: '',
             estimateOptimisticTime: '',
-            estimatePessimisticTime: '',
             estimateNormalCost: '',
             estimateMaxCost: '',
             startDate: '',
@@ -43,7 +44,20 @@ const ModalAddTaskSchedule = (props) => {
         },
     ]
     const [currentModeImport, setCurrentModeImport] = useState('EXCEL');
-    const [estDurationEndProject, setEstDurationEndProject] = useState(0)
+    const [estDurationEndProject, setEstDurationEndProject] = useState(
+        numberWithCommas(
+            getDurationWithoutSatSun(projectDetail?.startDate, projectDetail?.endDate, projectDetail?.unitTime)
+        )
+    )
+    if (
+        numberWithCommas(getDurationWithoutSatSun(projectDetail?.startDate, projectDetail?.endDate, projectDetail?.unitTime)) !== estDurationEndProject
+    ) {
+        setEstDurationEndProject(
+            numberWithCommas(
+                getDurationWithoutSatSun(projectDetail?.startDate, projectDetail?.endDate, projectDetail?.unitTime)
+            )
+        )
+    }
     const { listTasks } = state;
 
     const handleAddRow = () => {
@@ -59,7 +73,6 @@ const ModalAddTaskSchedule = (props) => {
                 preceedingTasks: [],
                 estimateNormalTime: '',
                 estimateOptimisticTime: '',
-                estimatePessimisticTime: '',
                 estimateNormalCost: '',
                 estimateMaxCost: '',
                 startDate: '',
@@ -86,7 +99,6 @@ const ModalAddTaskSchedule = (props) => {
                     ...state.taskInit,
                     estimateNormalTime: value,
                     estimateOptimisticTime: (Number(value) - 2).toString(),
-                    estimatePessimisticTime: (Number(value) + 2).toString(),
                 }
             })
             return;
@@ -149,10 +161,60 @@ const ModalAddTaskSchedule = (props) => {
     }
 
     const handleImportCPM = (data) => {
+        const formattedData = data.map((dataItem) => {
+            let currentResMemberIdArr = [], currentAccMemberIdArr = [];
+            for (let empItem of projectDetail?.responsibleEmployees) {
+                for (let resEmailItem of dataItem.emailResponsibleEmployees) {
+                    if (String(empItem.email) === String(resEmailItem)) {
+                        currentResMemberIdArr.push(empItem._id);
+                    }
+                }
+                for (let accEmailItem of dataItem.emailAccountableEmployees) {
+                    if (String(empItem.email) === String(accEmailItem)) {
+                        currentAccMemberIdArr.push(empItem._id);
+                    }
+                }
+            }
+            const estHumanCost = getEstimateHumanCostFromParams(
+                projectDetail,
+                dataItem.estimateNormalTime,
+                currentResMemberIdArr,
+                currentAccMemberIdArr,
+                `${projectDetail?.unitTime}s`
+            )
+            const estAssetCode = 1000000;
+            const estNormalCost = estHumanCost + estAssetCode;
+            const estMaxCost = getNearestIntegerNumber(estNormalCost);
+            return {
+                ...dataItem,
+                currentResponsibleEmployees: currentResMemberIdArr,
+                currentAccountableEmployees: currentAccMemberIdArr,
+                currentAssetCost: numberWithCommas(estAssetCode),
+                currentHumanCost: numberWithCommas(estHumanCost),
+                estimateNormalCost: numberWithCommas(estNormalCost),
+                estimateMaxCost: numberWithCommas(estMaxCost),
+            }
+        })
+        console.log('formattedData', formattedData)
         setState({
             ...state,
-            listTasks: data
+            listTasks: formattedData
         });
+        // console.log('data', data)
+        // setState({
+        //     ...state,
+        //     listTasks: data
+        // });
+        // setState({
+        //     ...state,
+        //     listTasks: data.map(item => {
+        //         return {
+        //             ...item,
+        //             estimateNormalCost: numberWithCommas(10000000),
+        //             estimateMaxCost: numberWithCommas(15000000),
+        //         }
+        //     })
+        // });
     }
 
     const handleSetModeCPM = async (event) => {
@@ -165,7 +227,6 @@ const ModalAddTaskSchedule = (props) => {
                 preceedingTasks: [],
                 estimateNormalTime: '',
                 estimateOptimisticTime: '',
-                estimatePessimisticTime: '',
                 estimateNormalCost: '',
                 estimateMaxCost: '',
                 startDate: '',
@@ -176,21 +237,41 @@ const ModalAddTaskSchedule = (props) => {
     }
 
     const handleSaveEditInfoRow = (newData, currentEditRowIndex) => {
+        state.listTasks = state.listTasks.map((taskItem) => {
+            return {
+                ...taskItem,
+                startDate: '',
+                endDate: '',
+            }
+        })
         state.listTasks[currentEditRowIndex] = newData;
         setState({
             ...state,
             listTasks: state.listTasks,
         })
-        console.log('state.listTasks', state.listTasks)
     }
 
     const checkIfCanCalculateCPM = () => {
         for (let taskItem of state.listTasks) {
-            if (checkIsNullUndefined(taskItem?.estimateNormalCost) || checkIsNullUndefined(taskItem?.estimateMaxCost)) {
+            if (checkIsNullUndefined(taskItem?.estimateNormalCost) || checkIsNullUndefined(taskItem?.estimateMaxCost)
+                || isDurationNotSuitable(taskItem?.estimateNormalTime)) {
                 return false;
             }
+            // if (isDurationNotSuitable(taskItem?.estimateNormalTime)) return false
         }
         return true;
+    }
+
+    const isDurationNotSuitable = (estimateNormalTime) => {
+        if (projectDetail?.unitTime === 'days') return estimateNormalTime > 7 || estimateNormalTime < 1 / 6
+        return estimateNormalTime < 4 || estimateNormalTime > 56
+    }
+
+    const handleHideModal = () => {
+        setTimeout(() => {
+            window.$(`#modal-show-info-calculate-cpm`).modal('hide');
+            props.onHandleReRender();
+        }, 10);
     }
 
     return (
@@ -205,25 +286,29 @@ const ModalAddTaskSchedule = (props) => {
                 <fieldset className="scheduler-border">
                     <legend className="scheduler-border">Thông số dự án</legend>
                     <div className="row md-12">
-                        <div className={`form-group col-md-3`}>
+                        <div className={`form-group col-md-2`}>
                             <label>{translate('project.code')}</label>
                             <div>{projectDetail?.code}</div>
                         </div>
-                        <div className={`form-group col-md-3`}>
+                        <div className={`form-group col-md-2`}>
                             <label>{translate('project.unitTime')}</label>
                             <div>{translate(`project.unit.${projectDetail?.unitTime}`)}</div>
                         </div>
-                        <div className={`form-group col-md-3`}>
+                        <div className={`form-group col-md-2`}>
                             <label>{translate('project.unitCost')}</label>
                             <div>{projectDetail?.unitCost}</div>
                         </div>
-                        <div className={`form-group col-md-3`}>
-                            <label>Khoảng thời gian dự kiến hoàn thành dự án</label>
-                            <input
-                                type="number"
-                                value={estDurationEndProject}
-                                onChange={(event) => setEstDurationEndProject(event?.target?.value)}
-                                className="form-control" />
+                        <div className={`form-group col-md-2`}>
+                            <label>Thời gian bắt đầu dự án</label>
+                            <div>{moment(projectDetail?.startDate).format('HH:mm DD/MM/YYYY')}</div>
+                        </div>
+                        <div className={`form-group col-md-2`}>
+                            <label>Thời gian dự kiến kết thúc dự án</label>
+                            <div>{moment(projectDetail?.endDate).format('HH:mm DD/MM/YYYY')}</div>
+                        </div>
+                        <div className={`form-group col-md-2`}>
+                            <label>Khoảng thời gian dự kiến hoàn thành dự án (không tính T7 CN)</label>
+                            <div>{estDurationEndProject} ({translate(`project.unit.${projectDetail?.unitTime}`)})</div>
                         </div>
                     </div>
                 </fieldset>
@@ -262,15 +347,27 @@ const ModalAddTaskSchedule = (props) => {
                     </button>
                 </div> : null}
 
+                {/* Button tính toán CPM */}
+                {state.listTasks && state.listTasks.length > 0 &&
+                    <div className="dropdown pull-right" style={{ marginTop: 20, marginRight: 10 }}>
+                        <button
+                            disabled={!checkIfCanCalculateCPM()}
+                            onClick={handleOpenCalculateCPM}
+                            type="button" className="btn btn-warning dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true"
+                            title={translate('project.schedule.calculateCPM')}>
+                            {translate('project.schedule.calculateCPM')}
+                        </button>
+                    </div>
+                }
+
                 <table id="project-table" className="table table-striped table-bordered table-hover">
                     <thead>
                         <tr>
                             <th>{translate('project.schedule.taskCode')}</th>
                             <th>{translate('project.schedule.taskName')}</th>
                             <th>{translate('project.schedule.preceedingTasks')}</th>
-                            <th>{translate('project.schedule.estimatedTime')} (ngày)</th>
+                            <th>{translate('project.schedule.estimatedTime')} ({translate(`project.unit.${projectDetail?.unitTime}`)})</th>
                             {currentModeImport === 'HAND' && <th>{translate('project.schedule.estimatedTimeOptimistic')}</th>}
-                            {currentModeImport === 'HAND' && <th>{translate('project.schedule.estimatedTimePessimistic')}</th>}
                             <th>{translate('project.schedule.estimatedCostNormal')} (VND)</th>
                             <th>{translate('project.schedule.estimatedCostMaximum')} (VND)</th>
                             <th>{translate('task_template.action')}</th>
@@ -284,9 +381,14 @@ const ModalAddTaskSchedule = (props) => {
                                     <td>{taskItem?.code}</td>
                                     <td>{taskItem?.name}</td>
                                     <td>{taskItem?.preceedingTasks?.join(', ')}</td>
-                                    <td>{taskItem?.estimateNormalTime}</td>
+                                    <td>
+                                        {taskItem?.estimateNormalTime}
+                                        <strong style={{ color: 'red' }}>
+                                            {isDurationNotSuitable(taskItem?.estimateNormalTime)
+                                                ? ' - Thời gian không được lớn hơn 7 Ngày và nhỏ hơn 4 Giờ'
+                                                : null}
+                                        </strong></td>
                                     {currentModeImport === 'HAND' && <td>{taskItem?.estimateOptimisticTime}</td>}
-                                    {currentModeImport === 'HAND' && <td>{taskItem?.estimatePessimisticTime}</td>}
                                     <td>{checkIsNullUndefined(taskItem?.estimateNormalCost) ? 'Chưa tính được' : taskItem?.estimateNormalCost}</td>
                                     <td>{checkIsNullUndefined(taskItem?.estimateMaxCost) ? 'Chưa tính được' : taskItem?.estimateMaxCost}</td>
                                     {currentModeImport === 'HAND' &&
@@ -339,12 +441,6 @@ const ModalAddTaskSchedule = (props) => {
                                         <input className="form-control" value={state.taskInit.estimateOptimisticTime}
                                             type="number" placeholder="Enter best time" onChange={(event) => handleChangeForm(event.target.value, 'estimateOptimisticTime')} />
                                     </div>
-                                </td>
-                                <td>
-                                    <div className={`form-group`}>
-                                        <input className="form-control" value={state.taskInit.estimatePessimisticTime}
-                                            type="number" placeholder="Enter worst time" onChange={(event) => handleChangeForm(event.target.value, 'estimatePessimisticTime')} />
-                                    </div>
                                 </td> */}
                                 <td>
                                     <div className={`form-group`}>
@@ -369,21 +465,10 @@ const ModalAddTaskSchedule = (props) => {
 
                 {/* Phần tính toán CPM từ danh sách tasks */}
                 {state.listTasks && state.listTasks.length > 0 &&
-                    <ModalCalculateCPM estDurationEndProject={Number(estDurationEndProject)} tasksData={state.listTasks} />
+                    <ModalCalculateCPM estDurationEndProject={Number(estDurationEndProject)} tasksData={state.listTasks} handleHideModal={handleHideModal} />
                 }
 
-                {/* Button tính toán CPM */}
-                {state.listTasks && state.listTasks.length > 0 &&
-                    <div className="dropdown pull-right" style={{ marginTop: 15, marginRight: 10 }}>
-                        <button
-                            disabled={!checkIfCanCalculateCPM()}
-                            onClick={handleOpenCalculateCPM}
-                            type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true"
-                            title={translate('project.schedule.calculateCPM')}>
-                            {translate('project.schedule.calculateCPM')}
-                        </button>
-                    </div>
-                }
+                {/* {renderModalCalculateCPM()} */}
             </DialogModal>
         </React.Fragment>
     )

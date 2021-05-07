@@ -5,7 +5,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { FileAddModal, FileEditModal } from './combinedContent';
 
 import { AuthActions } from '../../../../auth/redux/actions';
-
+import _isEqual from 'lodash/isEqual';
 class FileTab extends Component {
     constructor(props) {
         super(props);
@@ -43,27 +43,25 @@ class FileTab extends Component {
         await this.setState({
             files: [...this.state.files, ...defaulteFile]
         })
-        this.props.handleAddFile(this.state.files,defaulteFile[0])
-        this.props.handleAddFile(this.state.files,defaulteFile[1])
-        this.props.handleAddFile(this.state.files,defaulteFile[2])
+        this.props.handleAddFile(this.state.files, defaulteFile[0])
+        this.props.handleAddFile(this.state.files, defaulteFile[1])
+        this.props.handleAddFile(this.state.files, defaulteFile[2])
     }
 
     // Function thêm thông tin tài liệu đính kèm
-    handleAddFile = async (data) => {
+    handleAddFile = (data) => {
         let { files } = this.state;
         if (!files) {
             files = [];
         }
 
-        await this.setState(state => {
+        this.setState(state => {
             return {
                 ...state,
-                files: [...files, {
-                    ...data
-                }]
+                files: [...files, data]
             }
         })
-        this.props.handleAddFile(this.state.files, data)
+        this.props.handleAddFile([...files, data])
     }
 
     // Function chỉnh sửa thông tin tài liệu đính kèm
@@ -93,8 +91,9 @@ class FileTab extends Component {
         this.props.downloadFile(path, fileName);
     }
 
+
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id) {
+        if ((nextProps.id !== prevState.id) || _isEqual(prevState.files, nextProps.files) === false) {
             return {
                 ...prevState,
                 id: nextProps.id,
@@ -106,10 +105,10 @@ class FileTab extends Component {
         }
     }
 
+
     render() {
         const { id, translate } = this.props;
         const { files, archivedRecordNumber, currentRow } = this.state;
-
         return (
             <div id={id} className="tab-pane">
                 <div className=" row box-body">

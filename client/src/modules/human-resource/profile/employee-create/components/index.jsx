@@ -1,22 +1,19 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { EmployeeCreatePage } from './combinedContent';
 
-class EmployeeCreate extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {}
-    }
+function EmployeeCreate(props) {
+    const [state, setState] = useState({
 
-    render() {
-        return (
-            <React.Fragment>
-                <EmployeeCreatePage />
-            </React.Fragment>
-        );
-    }
+    })
+
+    return (
+        <React.Fragment>
+            <EmployeeCreatePage />
+        </React.Fragment>
+    );
 }
 
-export default connect(null, null)(withTranslate(EmployeeCreate)); 
+export default connect(null, null)(withTranslate(EmployeeCreate));

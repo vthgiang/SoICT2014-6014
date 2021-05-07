@@ -576,7 +576,11 @@ exports.deleteCommentOfTaskComment = async (req, res) => {
  */
 evaluationAction = async (req, res) => {
     try {
-        let taskAction = await PerformTaskService.evaluationAction(req.portal, req.params, req.body);
+        let data = {
+            ...req.body,
+            creator: req.user._id
+        }
+        let taskAction = await PerformTaskService.evaluationAction(req.portal, req.params, data);
         await Logger.info(req.user.email, ` evaluation action  `, req.portal)
         res.status(200).json({
             success: true,
@@ -1907,7 +1911,7 @@ exports.evaluateTaskProject = async (req, res) => {
         let log = {
             createdAt: Date.now(),
             creator: req.user._id,
-            title: "Chỉnh sửa thông tin đánh giá công việc tháng " + data?.evaluatingMonth?.slice(3) + " theo vai trò người thực hiện",
+            title: "Chỉnh sửa thông tin đánh giá công việc dự án theo vai trò người thực hiện",
             description: description
         }
         let taskLog = await PerformTaskService.addTaskLog(req.portal, req.params.taskId, log);
@@ -1957,7 +1961,7 @@ evaluateTaskByAccountableEmployeesProject = async (req, res) => {
         let log = {
             createdAt: Date.now(),
             creator: req.user._id,
-            title: "Chỉnh sửa thông tin đánh giá công việc tháng " + data?.evaluatingMonth?.slice(3) + " theo vai trò người phê duyệt",
+            title: "Chỉnh sửa thông tin đánh giá công việc dự án theo vai trò người phê duyệt",
             description: description
         }
         let taskLog = await PerformTaskService.addTaskLog(req.portal, req.params.taskId, log);

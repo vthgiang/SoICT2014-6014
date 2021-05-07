@@ -14,7 +14,7 @@ import { getTableConfiguration } from '../../../../../helpers/tableConfiguration
 
 function ArrangeVehiclesAndGoods(props) {
 
-    let { allTransportPlans, currentTransportSchedule} = props;
+    let { allTransportPlans, currentTransportSchedule, reloadOrdinalTransport} = props;
 
     const [currentTransportPlan, setCurrentTransportPlan] = useState({
         _id: "0",
@@ -22,6 +22,16 @@ function ArrangeVehiclesAndGoods(props) {
     });    
 
     const [transportArrangeRequirements, setAransportArrangeRequirements] = useState([]);
+
+    /**
+     * = transportPlan.transportVehicles
+     * [
+     *  carriers: [],
+     *  transportVehicle: {
+     *      _id, payload, volume, asset....
+     * }
+     * ] 
+     */
     const [allTransportVehicle, setAllTransportVehicle] = useState([]);
     
     /**
@@ -40,7 +50,7 @@ function ArrangeVehiclesAndGoods(props) {
         let listTransportPlans = [
             {
                 value: "0",
-                text: "Lịch trình",
+                text: "Kế hoạch",
             },
         ];        
         if (allTransportPlans) {
@@ -70,6 +80,7 @@ function ArrangeVehiclesAndGoods(props) {
         console.log(currentTransportSchedule, " currentTransportSchedule")
         if (currentTransportSchedule){
             if (currentTransportSchedule.transportPlan){
+                console.log(currentTransportSchedule.transportPlan);
                 setAransportArrangeRequirements(currentTransportSchedule.transportPlan.transportRequirements);
                 setAllTransportVehicle(currentTransportSchedule.transportPlan.transportVehicles);
                 if (currentTransportSchedule.transportVehicles){
@@ -120,18 +131,31 @@ function ArrangeVehiclesAndGoods(props) {
         let distributionList = [...distributionState];
 
         const requirementId = String(transportRequirement._id);
-        const vehicleId = String(transportVehicle.transportVehicle._id);
+        const vehicleId = String(transportVehicle.vehicle._id);
         let newDistribution = [];
         
         if (distributionList && distributionList.length!==0){
+
             /**
              * Lọc bỏ requirement đc xếp ở xe cũ
              */
+            let isDelete = false;
             for ( let i=0; i< distributionList.length; i++){
                 let distribution = distributionList[i];
                 if (distribution.transportRequirements && distribution.transportRequirements.length !== 0){
+                    // Kiểm tra có phaỉ click lại xe hiện tại ko, đúng === xóa bỏ phân phối
+                    let trace = distribution.transportRequirements.filter(r => String(r) === requirementId);
+                    if (trace && trace.length!==0){
+                        if (distribution.vehicle === vehicleId){
+                            isDelete = true;
+                        }
+                    };
                     distribution.transportRequirements = distribution.transportRequirements.filter(r => String(r) !== requirementId);
                 }
+            }
+            if (isDelete){
+                setDistributionState(distributionList);
+                return;
             }
             /**
              * Thêm requirement vào xe
@@ -180,15 +204,15 @@ function ArrangeVehiclesAndGoods(props) {
                     return "iconactive";
                 }
                 else{
-                    return "iconunactive";
+                    return "iconinactive";
                 }
             }
             else{
-                return "iconunactive";
+                return "iconinactive";
             }
         }
         else{
-            return "iconunactive";
+            return "iconinactive";
         }
     }
 
@@ -220,7 +244,9 @@ function ArrangeVehiclesAndGoods(props) {
                 data.push(singleData);
             })
         }
+        console.log(data);
         props.editTransportScheduleByPlanId(currentTransportPlan._id, {transportVehicles: data});
+        reloadOrdinalTransport();
     }
 
     return (
@@ -228,7 +254,7 @@ function ArrangeVehiclesAndGoods(props) {
         <div className="box-body qlcv">
             <div className="form-inline">
                 <div className="form-group">
-                    <label className="form-control-static">Chọn lịch trình</label>
+                    <label className="form-control-static">Chọn kế hoạch</label>
                     <SelectBox
                         id={`select-filter-status-discounts`}
                         className="form-control select2"
@@ -280,9 +306,15 @@ function ArrangeVehiclesAndGoods(props) {
             //         // },
             //     ]}
             // />
+        }
+        {
+            (!allTransportVehicle || !(allTransportVehicle.length!==0))
+            &&
+            <h1>Kế hoạch chưa có phương tiện vận chuyển</h1>
         }               
         {
-            currentTransportPlan && (currentTransportPlan._id !== "0")
+            currentTransportPlan && (currentTransportPlan._id !== "0") 
+            && allTransportVehicle && allTransportVehicle.length!==0
             &&
             <div className={"divTest"}>
                 <table className={"tableTest table-bordered table-hover not-sort"}>
@@ -294,35 +326,27 @@ function ArrangeVehiclesAndGoods(props) {
                                 (allTransportVehicle && allTransportVehicle.length !== 0) &&
                                 allTransportVehicle.map((item, index) => (
                                     item &&
-                                    <th key={"v" + index}>{item.transportVehicle.name}</th>
+                                    <th key={"v" + index}>{item.vehicle.name}</th>
                                 ))
                             }
-                            {/* <th colSpan={2}>{"Xe 1"}</th>
-                            <th colSpan={2}>{"Xe 1"}</th>
-                            <th colSpan={2}>{"Xe 1"}</th> */}
                         </tr>
                         <tr className="word-no-break">
                             {
                                 (allTransportVehicle && allTransportVehicle.length !== 0) &&
                                 allTransportVehicle.map((item, index) => (
                                     item &&
-                                    <td>{"Payload: " + item.transportVehicle.payload}</td>
+                                    <td>{"Payload: " + item.vehicle.payload}</td>
                                 ))
                             }
-                            {/* <td>{"Trọng tải"}</td>
-                            <td>{"Thể tích"}</td>
-                            <td>{"Trọng tải"}</td>
-                            <td>{"Thể tích"}</td> */}
                         </tr>
                         <tr className="word-no-break">
                             {
                                 (allTransportVehicle && allTransportVehicle.length !== 0) &&
                                 allTransportVehicle.map((item, index) => (
                                     item &&
-                                    <td>{"Volume: " + item.transportVehicle.volume}</td>
+                                    <td>{"Volume: " + item.vehicle.volume}</td>
                                 ))
                             }
-                            {/* <td>{"1000"}</td> */}
                         </tr>
                     </thead>
                     <tbody className="transport-special-row">
@@ -393,8 +417,8 @@ function ArrangeVehiclesAndGoods(props) {
                                     (allTransportVehicle && allTransportVehicle.length !== 0) &&
                                     allTransportVehicle.map((item1, index1) => (
                                         item1 &&
-                                        <td key={"vehicle "+index1} className="tooltip-checkbox">
-                                            <span className={"icon "+getStatusTickBox(item1.transportVehicle._id, item._id, distributionState)}
+                                        <td key={"vehicle "+index+" "+index1} className="tooltip-checkbox">
+                                            <span className={"icon "+getStatusTickBox(item1.vehicle._id, item._id, distributionState)}
                                             title={"alo"} 
                                             onClick={() => handleSelectVehicle(item, item1, index, index1)}
                                             >

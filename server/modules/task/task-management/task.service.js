@@ -377,7 +377,7 @@ exports.getPaginatedTasks = async (portal, task) => {
             ]
         })
 
-        const getIdResponsible = responsible && responsible.length > 0 ? responsible.map(o => o._id): [];
+        const getIdResponsible = responsible && responsible.length > 0 ? responsible.map(o => o._id) : [];
 
         keySearch = {
             ...keySearch,
@@ -404,7 +404,7 @@ exports.getPaginatedTasks = async (portal, task) => {
                 }
             ]
         })
-        const getIdAccountable = accountable && accountable.length > 0 ? accountable.map(o => o._id): [];
+        const getIdAccountable = accountable && accountable.length > 0 ? accountable.map(o => o._id) : [];
     }
 
     // Tìm kiếm theo người thiết lập
@@ -425,7 +425,7 @@ exports.getPaginatedTasks = async (portal, task) => {
             ]
         })
 
-        const getIdCreator = creator && creator.length > 0 ? creator.map(o => o._id): [];
+        const getIdCreator = creator && creator.length > 0 ? creator.map(o => o._id) : [];
 
         keySearch = {
             ...keySearch,
@@ -1375,8 +1375,8 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (portal, task) => {
  * Lấy công việc quan sát theo id người dùng
  */
 exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by_user") => {
-    var { perPage, page, user, organizationalUnit, status, priority, special, name, 
-        startDate, endDate, responsibleEmployees, 
+    var { perPage, page, user, organizationalUnit, status, priority, special, name,
+        startDate, endDate, responsibleEmployees,
         accountableEmployees, creatorEmployees, organizationalUnitRole
     } = task;
     var tasks;
@@ -1420,7 +1420,7 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
             ]
         })
 
-        const getIdResponsible = responsible && responsible.length > 0 ? responsible.map(o => o._id): [];
+        const getIdResponsible = responsible && responsible.length > 0 ? responsible.map(o => o._id) : [];
 
         keySearch = {
             ...keySearch,
@@ -1448,7 +1448,7 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
             ]
         })
 
-        const getIdAccountable = accountable && accountable.length > 0 ? accountable.map(o => o._id): [];
+        const getIdAccountable = accountable && accountable.length > 0 ? accountable.map(o => o._id) : [];
 
         keySearch = {
             ...keySearch,
@@ -1476,7 +1476,7 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
             ]
         })
 
-        const getIdCreator = creator && creator.length > 0 ? creator.map(o => o._id): [];
+        const getIdCreator = creator && creator.length > 0 ? creator.map(o => o._id) : [];
 
         keySearch = {
             ...keySearch,
@@ -2176,7 +2176,7 @@ exports.createProjectTask = async (portal, task) => {
         collaboratedWithOrganizationalUnits: task.collaboratedWithOrganizationalUnits,
         creator: task.creator, //id của người tạo
         name: task.name,
-        description: task.description,
+        description: task.description || '',
         startDate: startDate,
         endDate: endDate,
         priority: task.priority,
@@ -2194,138 +2194,6 @@ exports.createProjectTask = async (portal, task) => {
         taskProject,
         estimateNormalTime: task.estimateNormalTime,
         estimateOptimisticTime: task.estimateOptimisticTime,
-        estimatePessimisticTime: task.estimatePessimisticTime,
-        estimateNormalCost: task.estimateNormalCost,
-        estimateMaxCost: task.estimateMaxCost,
-        preceedingTasks: task.preceedingTasks,
-        budget: task.budget,
-        actorsWithSalary: task.actorsWithSalary,
-        estimateAssetCost: task.estimateAssetCost,
-    });
-
-    if (newTask.taskTemplate !== null) {
-        await TaskTemplate(connect(DB_CONNECTION, portal)).findByIdAndUpdate(
-            newTask.taskTemplate, { $inc: { 'numberOfUse': 1 } }, { new: true }
-        );
-    }
-
-    let mail = await this.sendEmailForCreateTask(portal, newTask);
-
-    return {
-        task: newTask,
-        user: mail.user, email: mail.email, html: mail.html,
-        managersOfOrganizationalUnitThatHasCollaborated: mail.managersOfOrganizationalUnitThatHasCollaborated,
-        collaboratedEmail: mail.collaboratedEmail, collaboratedHtml: mail.collaboratedHtml
-    };
-}
-
-/**
- * Tạo công việc mới của dự án
- */
-exports.createProjectTask = async (portal, task) => {
-    // // Lấy thông tin công việc liên quan
-    // var level = 1;
-    // if (mongoose.Types.ObjectId.isValid(task.parent)) {
-    //     var parent = await Task(connect(DB_CONNECTION, portal)).findById(task.parent);
-    //     if (parent) level = parent.level + 1;
-    // }
-
-    var startDate, endDate;
-    if (Date.parse(task.startDate)) startDate = new Date(task.startDate);
-    else {
-        var splitter = task.startDate.split("-");
-        startDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
-    }
-
-    if (Date.parse(task.endDate)) endDate = new Date(task.endDate);
-    else {
-        var splitter = task.endDate.split("-");
-        endDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
-    }
-
-    let taskTemplate, cloneActions = [];
-    if (task.taskTemplate) {
-        taskTemplate = await TaskTemplate(connect(DB_CONNECTION, portal)).findById(task.taskTemplate);
-        let taskActions = taskTemplate.taskActions;
-
-        for (let i in taskActions) {
-            cloneActions[i] = {
-                mandatory: taskActions[i].mandatory,
-                name: taskActions[i].name,
-                description: taskActions[i].description,
-            }
-        }
-    }
-
-    let formula;
-    if (task.formula) {
-        formula = task.formula;
-    } else {
-        if (taskTemplate) {
-            formula = taskTemplate.formula;
-        } else if (task.formula) {
-            formula = "progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100"
-        }
-    }
-
-    let getValidObjectId = (value) => {
-        return mongoose.Types.ObjectId.isValid(value) ? value : undefined;
-    }
-    let taskProject = (taskTemplate && taskTemplate.taskProject) ? getValidObjectId(taskTemplate.taskProject) : getValidObjectId(task.taskProject);
-
-    let taskActions = [];
-    if (task.taskActions) {
-        taskActions = task.taskActions.map(e => {
-            return {
-                mandatory: e.mandatory,
-                name: e.name,
-                description: e.description,
-            }
-        });
-    } else {
-        taskActions = taskTemplate ? cloneActions : [];
-    }
-
-    let taskInformations = [];
-    if (task.taskInformations) {
-        taskInformations = task.taskInformations.map(e => {
-            return {
-                filledByAccountableEmployeesOnly: e.filledByAccountableEmployeesOnly,
-                code: e.code,
-                name: e.name,
-                description: e.description,
-                type: e.type,
-                extra: e.extra,
-            }
-        });
-    } else {
-        taskInformations = taskTemplate ? taskTemplate.taskInformations : [];
-    }
-
-    var newTask = await Task(connect(DB_CONNECTION, portal)).create({ //Tạo dữ liệu mẫu công việc
-        organizationalUnit: task.organizationalUnit,
-        collaboratedWithOrganizationalUnits: task.collaboratedWithOrganizationalUnits,
-        creator: task.creator, //id của người tạo
-        name: task.name,
-        description: task.description,
-        startDate: startDate,
-        endDate: endDate,
-        priority: task.priority,
-        formula: formula,
-        taskTemplate: taskTemplate ? taskTemplate : null,
-        taskInformations: taskInformations,
-        taskActions: taskActions,
-        // parent: (task.parent === "") ? null : task.parent,
-        // level: level,
-        responsibleEmployees: task.responsibleEmployees,
-        accountableEmployees: task.accountableEmployees,
-        consultedEmployees: task.consultedEmployees,
-        informedEmployees: task.informedEmployees,
-        confirmedByEmployees: task.responsibleEmployees.concat(task.accountableEmployees).concat(task.consultedEmployees).includes(task.creator) ? task.creator : [],
-        taskProject,
-        estimateNormalTime: task.estimateNormalTime,
-        estimateOptimisticTime: task.estimateOptimisticTime,
-        estimatePessimisticTime: task.estimatePessimisticTime,
         estimateNormalCost: task.estimateNormalCost,
         estimateMaxCost: task.estimateMaxCost,
         preceedingTasks: task.preceedingTasks,
@@ -2838,7 +2706,7 @@ exports.getTaskAnalysOfUser = async (portal, userId, type, date) => {
     if (firstDay && lastDay) {
         lastDay = new Date(lastDay);
         lastDay.setMonth(lastDay.getMonth() + 1);
-        
+
         keySeachDateTime = {
             ...keySeachDateTime,
             $or: [
@@ -2855,13 +2723,13 @@ exports.getTaskAnalysOfUser = async (portal, userId, type, date) => {
             ...keySeachDateTime,
             "$and": [
                 {
-                    "$expr": { 
-                        "$eq": [ { "$month": "$startDate" }, firstDay.getMonth() + 1 ]
+                    "$expr": {
+                        "$eq": [{ "$month": "$startDate" }, firstDay.getMonth() + 1]
                     }
                 },
                 {
-                    "$expr": { 
-                        "$eq": [ { "$year": "$startDate" }, firstDay.getFullYear() ]
+                    "$expr": {
+                        "$eq": [{ "$year": "$startDate" }, firstDay.getFullYear()]
                     }
                 }
             ]
@@ -2874,13 +2742,13 @@ exports.getTaskAnalysOfUser = async (portal, userId, type, date) => {
             ...keySeachDateTime,
             "$and": [
                 {
-                    "$expr": { 
-                        "$eq": [ { "$month": "$endDate" }, lastDay.getMonth() + 1 ]
+                    "$expr": {
+                        "$eq": [{ "$month": "$endDate" }, lastDay.getMonth() + 1]
                     }
                 },
                 {
-                    "$expr": { 
-                        "$eq": [ { "$year": "$endDate" }, lastDay.getFullYear() ]
+                    "$expr": {
+                        "$eq": [{ "$year": "$endDate" }, lastDay.getFullYear()]
                     }
                 }
             ]
@@ -2892,7 +2760,7 @@ exports.getTaskAnalysOfUser = async (portal, userId, type, date) => {
             keySeachDateTime
         ]
     });
-    
+
     switch (type) {
         case 'priority':
             let urgent = tasks.filter(task => task.priority === 5); // các cv khẩn cấp
@@ -3030,6 +2898,8 @@ exports.getTasksByProject = async (portal, projectId) => {
         .populate({ path: "consultedEmployees", select: "_id name" })
         .populate({ path: "informedEmployees", select: "_id name" })
         .populate({ path: "creator", select: "_id name" })
-        .populate({ path: "preceedingTasks", select: "_id name" });
+        .populate({ path: "preceedingTasks", select: "_id name" })
+        .populate({ path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" })
+        .populate({ path: "overallEvaluation.accountableEmployees.employee", select: "_id name" });
     return tasks;
 }

@@ -1,4 +1,10 @@
+import dayjs from "dayjs";
+import moment from "moment";
 import { getStorage } from "../../../../config";
+import { getNumsOfDaysWithoutGivenDay, getSalaryFromUserId } from "../../../task/task-management/component/functionHelpers";
+
+export const MILISECS_TO_DAYS = 86400000;
+export const MILISECS_TO_HOURS = 3600000;
 
 export const checkIfAbleToCRUDProject = ({ project, user, currentProjectId }) => {
     const currentRole = getStorage("currentRole");
@@ -11,8 +17,8 @@ export const checkIfAbleToCRUDProject = ({ project, user, currentProjectId }) =>
     return checkIfCurrentRoleIsUnitManager || checkIfCurrentIdIsProjectManagerOrCreator;
 }
 
-export const getCurrentProjectDetails = (project) => {
-    const currentProjectId = window.location.href.split('?id=')[1];
+export const getCurrentProjectDetails = (project, projectId = undefined) => {
+    const currentProjectId = projectId || window.location.href.split('?id=')[1];
     const projectDetail = project?.data?.list?.filter(item => item._id === currentProjectId)?.[0];
     return projectDetail;
 }
@@ -25,11 +31,13 @@ export const getListDepartments = (usersInUnitsOfCompany) => {
 }
 
 export const convertDepartmentIdToDepartmentName = (usersInUnitsOfCompany, departmentId) => {
+    if (!usersInUnitsOfCompany) return [];
     const result = usersInUnitsOfCompany.filter(item => item.id === departmentId)?.[0]?.department;
     return result
 }
 
 export const convertUserIdToUserName = (listUsers, userId) => {
+    if (!listUsers) return [];
     for (let department of listUsers) {
         const userList = department.value;
         for (let user of userList) {
@@ -40,4 +48,74 @@ export const convertUserIdToUserName = (listUsers, userId) => {
             }
         }
     }
+}
+
+// Lấy số ngày công trong tháng
+export const getAmountOfWeekDaysInMonth = (date) => {
+    let result = 0;
+    for (var i = 1; i < 6; i++) {
+        date.date(1);
+        var dif = (7 + (i - date.weekday())) % 7 + 1;
+        result += Math.floor((date.daysInMonth() - dif) / 7) + 1;
+    }
+    return result;
+}
+
+// Lấy duration (theo timeMode) giua startDate va endDate (tru di thu 7 va chu nhat)
+export const getDurationWithoutSatSun = (startDate, endDate, timeMode) => {
+    const numsOfSaturdays = getNumsOfDaysWithoutGivenDay(new Date(startDate), new Date(endDate), 6)
+    const numsOfSundays = getNumsOfDaysWithoutGivenDay(new Date(startDate), new Date(endDate), 0)
+    let duration = 0
+    if (timeMode === 'hours') {
+        duration = (moment(endDate).diff(moment(startDate), `milliseconds`) / MILISECS_TO_DAYS - numsOfSaturdays - numsOfSundays) * 8;
+        // return theo don vi giờ - hours
+        return duration;
+    }
+    duration = moment(endDate).diff(moment(startDate), `milliseconds`) / MILISECS_TO_DAYS - numsOfSaturdays - numsOfSundays;
+    // return theo don vi ngày - days
+    return duration;
+}
+
+export const convertDateTime = (date, time) => {
+    let splitter = date.split("-");
+    let strDateTime = `${splitter[2]}/${splitter[1]}/${splitter[0]} ${time}`;
+    return dayjs(strDateTime).format('YYYY/MM/DD HH:mm:ss');
+}
+// convert ISODate to String hh:mm AM/PM
+export const formatTime = (date) => {
+    return dayjs(date).format("hh:mm A");
+}
+
+export const convertToMilliseconds = (duration, currentMode = 'days') => {
+    if (currentMode === 'days') return duration * MILISECS_TO_DAYS;
+    return duration * MILISECS_TO_HOURS;
+}
+
+// value ở dạng number
+export const getNearestIntegerNumber = (value) => {
+    const beforeDecimalPart = value.toString().split('.')[0].replace(/,/g, '');
+    const beforeDecimalPartArr = beforeDecimalPart.split('');
+    const numberWithFirstSecondIndexArr = beforeDecimalPartArr.map((item, index) => {
+        if (index === 0 || index === 1) return item
+        else return "0";
+    })
+    const numberWithFirstSecondIndex = numberWithFirstSecondIndexArr.join('');
+    const result = Number(numberWithFirstSecondIndex) + Math.pow(10, beforeDecimalPart.length - 2);
+    return result;
+}
+
+export const getEstimateHumanCostFromParams = (projectDetail, duration, currentResponsibleEmployees, currentAccountableEmployees, timeMode) => {
+    // trọng số người thực hiện là 0.8, người phê duyệt là 0.2
+    const resWeight = 0.8, accWeight = 0.2;
+    let cost = 0;
+    const currentMonthWorkDays = getAmountOfWeekDaysInMonth(moment());
+    for (let resItem of currentResponsibleEmployees) {
+        cost += resWeight * getSalaryFromUserId(projectDetail?.responsibleEmployeesWithUnit, resItem) / currentMonthWorkDays / (timeMode === 'days' ? 1 : 8)
+            * duration;
+    }
+    for (let accItem of currentAccountableEmployees) {
+        cost += accWeight * getSalaryFromUserId(projectDetail?.responsibleEmployeesWithUnit, accItem) / currentMonthWorkDays / (timeMode === 'days' ? 1 : 8)
+        * duration;
+    }
+    return cost;
 }

@@ -63,7 +63,7 @@ class TaskManagement extends Component {
         this.props.getDepartment();
         this.props.getAllDepartment();
         this.props.getPaginateTasks(this.state.currentTab, [], currentPage, perPage, this.state.status, null, null, null, null, null, null, null, null, null, null);
-        this.props.getProjectsDispatch({ calledId: "all", userId });
+        this.props.getProjectsDispatch({ calledId: "" });
     }
 
     shouldComponentUpdate(nextProps, nextState) {

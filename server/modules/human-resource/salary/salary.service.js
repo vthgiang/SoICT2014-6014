@@ -86,7 +86,7 @@ exports.searchSalaries = async (portal, params, company) => {
             select: 'emailInCompany fullName employeeNumber birthdate gender status'
         })
         .sort({
-            'createAt': 'desc'
+            'createdAt': 'desc'
         }).skip(params.page).limit(params.limit);
 
     let totalList = await Salary(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
