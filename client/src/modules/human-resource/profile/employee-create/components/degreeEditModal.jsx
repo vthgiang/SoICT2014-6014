@@ -59,8 +59,6 @@ function DegreeEditModal(props) {
         files = [{ fileName: file, urlFile: urlFile, fileUpload: fileUpload }]
     }
 
-    console.log(state.field)
-
     /** Bắt sự kiện thay đổi file đính kèm */
     const handleChangeFile = (value) => {
         if (value.length !== 0) {

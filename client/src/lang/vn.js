@@ -1242,7 +1242,7 @@ export default {
             total_salary: "Tổng lương",
             month: "Tháng",
             unit: "Đơn vị",
-            position: "Chức vụ",
+            position: "Chức danh",
             no_data: "Không có dữ liệu",
             start_date: "Từ ngày",
             end_date: "Đến ngày",
@@ -1262,7 +1262,7 @@ export default {
 
         page: {
             unit: "Đơn vị",
-            position: "Chức vụ",
+            position: "Chức danh",
             month: "Tháng",
             status: "Trạng thái",
             staff_number: "Mã nhân viên",
@@ -1449,7 +1449,7 @@ export default {
             // Nhóm dùng chung cho module quản lý nhân sự
             stt: "STT",
             unit: "Đơn vị",
-            position: "Chức vụ",
+            position: "Chức danh",
             month: "Tháng",
             status: "Trạng thái",
             staff_number: "Mã nhân viên",
@@ -1839,7 +1839,7 @@ export default {
                 district: "Huyện/Quận",
                 province: "Tỉnh/Thành phố",
                 nation: "Quốc gia",
-
+                roles: "Chức danh",
                 academic_level: "Trình độ học vấn",
                 educational_level: "Trình độ văn hoá",
                 language_level: "Trình độ ngoại ngữ",

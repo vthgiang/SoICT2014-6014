@@ -178,7 +178,6 @@ function FileTab(props) {
         } else if (employee?.leavingDate && !employee?.startingDate) {
             return false;
         }
-
         return result;
     }
 
