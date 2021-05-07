@@ -8,6 +8,7 @@ export const ProjectServices = {
 
     getListTasksEvalDispatchAPI,
     createProjectTasksFromCPM,
+    getSalaryMembersAPI,
 }
 
 function getProjectsAPI(params = undefined) {
@@ -90,4 +91,16 @@ function createProjectTasksFromCPM(tasksList) {
         method: 'POST',
         data: tasksList
     }, true, true, 'task.task_management');
+}
+
+/**
+ * lấy lương của danh sách thành viên hiện tại
+ * @param {*} data list thành viên 
+ */
+function getSalaryMembersAPI(data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/projects/project/salary-members`,
+        method: 'POST',
+        data,
+    }, false, true, 'project');
 }

@@ -162,6 +162,9 @@ import TransportSchedule from '../modules/production/transport/transport-schedul
 import TransportVehicle from '../modules/production/transport/transport-vehicle/components';
 import TransportHuman from '../modules/production/transport/transport-human/components';
 import TransportRoute from '../modules/production/transport/transport-route/components';
+import TransportDepartment from '../modules/production/transport/transport-department/components'
+import CarrierTodayTransportMission from '../modules/production/transport/carrier-today-transport-mission/components'
+import CarrierAllTimesTransportMission from '../modules/production/transport/carrier-all-times-transport-mission/components'
 
 // import AnswerAuthQuestionPage from '../modules/auth/components/answerAuthQuestion';
 
@@ -2534,7 +2537,65 @@ class Routes extends Component {
                         pageName={"manage_transport_route"}
                         layout={Layout}
                         component={TransportRoute} // component ứng với trang, tạo ở bước 1
+                    />                    
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"manage-transport-department"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-transport-department", // url trang
+                                name: "manage_transport_department", // tên trang
+                                icon: " fa fa-address-card ",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-transport-department"}
+                        path={"/manage-transport-department"}
+                        pageName={"manage_transport_department"}
+                        layout={Layout}
+                        component={TransportDepartment} // component ứng với trang, tạo ở bước 1
                     />
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"carrier-today-transport-mission"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/carrier-today-transport-mission", // url trang
+                                name: "manage_transport_route", // tên trang
+                                icon: " fa fa-calendar-o ",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/carrier-today-transport-mission"}
+                        path={"/carrier-today-transport-mission"}
+                        pageName={"carrier_today_transport_mission"}
+                        layout={Layout}
+                        component={CarrierTodayTransportMission} // component ứng với trang, tạo ở bước 1
+                    /> 
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"carrier-all-times-transport-mission"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/carrier-all-times-transport-mission", // url trang
+                                name: "carrier_all_times_transport_mission", // tên trang
+                                icon: " fa fa-calendar-o ",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/carrier-all-times-transport-mission"}
+                        path={"/carrier-all-times-transport-mission"}
+                        pageName={"carrier_all_times_transport_mission"}
+                        layout={Layout}
+                        component={CarrierAllTimesTransportMission} // component ứng với trang, tạo ở bước 1
+                    /> 
+
 
                     {/* Quản lý dự án */}
                     <PrivateRoute

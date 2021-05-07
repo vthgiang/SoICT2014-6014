@@ -7,35 +7,70 @@ import ValidationHelper from '../../../../../../helpers/validationHelper';
 
 function TransportImportGoods(props) {
 
-    let addressStock= props.addressStock;
-    let nameStock = props.nameStock;
+    let {currentBill, callBackGeneralInfo} = props;
+    const [formValue, setFormValue] = useState({
+        stockCode: "",
+        stockName: "",
+        stockAddress: "",
+        billCreator:"",
+        millCode: "",
+        millName: "",
+        customerPhone: "",
+        customerEmail: "",
+        customerAddress: "",
+    })
+    useEffect(() => {
+        if (currentBill){
+            setFormValue({
+                stockCode: currentBill.fromStock?.code,
+                billCreator: currentBill.creator?.name,
+                stockName: currentBill.fromStock?.name,
+                stockAddress: currentBill.fromStock?.address,
+                millCode: currentBill.manufacturingMill?.code,
+                millName: currentBill.manufacturingMill?.name,
+                customerPhone: currentBill.customer?.mobilephoneNumber,
+                customerEmail: currentBill.customer?.email,
+                customerAddress: currentBill.customer?.address,
+            })
+        }
+    },[currentBill])
 
-    useEffect(() => {})
+    // useEffect(() => {
+    //     if (formValue){
+    //         let data = {
+    //             customer1AddressTransport: formValue.stockAddress,
+    //             customer2AddressTransport: formValue.customerAddress,
+    //         }
+    //         callBackGeneralInfo(data);
+    //     }
+    // }, [formValue])
 
     return (
         <React.Fragment>
             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6" style={{ padding: 10, height: "100%" }}>
                     <fieldset className="scheduler-border" style={{ height: "100%" }}>
-                        <legend className="scheduler-border">Thông tin kho xưởng</legend>
+                        <legend className="scheduler-border">Thông tin xưởng sản xuất</legend>
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ padding: 0 }}>
                             <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
                                 <div className={`form-group`}>
                                     <label>
-                                        Khách hàng
+                                        Xưởng
                                         <span className="attention"> * </span>
                                     </label>
                                     <input type="text" className="form-control" disabled={false} 
-                                            // value={address}
+                                            value={formValue.millCode}
                                     />
                                 </div>
                             </div>
                             <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8">
                                 <div className="form-group">
                                     <label>
-                                        Tên khách hàng <span className="attention"> </span>
+                                        Tên xưởng<span className="attention"> </span>
                                     </label>
-                                    <input type="text" className="form-control" disabled={false} />
+                                    <input type="text" className="form-control" disabled={false} 
+                                            value={formValue.millName}
+                                    />
                                 </div>
                             </div>
                         </div>
@@ -82,16 +117,18 @@ function TransportImportGoods(props) {
                                             <span className="attention"> * </span>
                                         </label>
                                         <input type="text" className="form-control" disabled={false}
-                                                value={nameStock}
+                                                value={formValue.stockCode}
                                         />
                                     </div>
                                 </div>
                                 <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8">
                                     <div className="form-group">
                                         <label>
-                                            Người tạo phiếu <span className="attention"> </span>
+                                            Tên kho <span className="attention"> </span>
                                         </label>
-                                        <input type="text" className="form-control" disabled={false} />
+                                        <input type="text" className="form-control" disabled={false} 
+                                                value={formValue.stockName}
+                                        />
                                     </div>
                                 </div>
                             </div>
@@ -102,7 +139,7 @@ function TransportImportGoods(props) {
                                         <span className="attention"> * </span>
                                     </label>
                                     <textarea type="text" className="form-control" disabled={false}
-                                        value={addressStock}
+                                        value={formValue.stockAddress}
                                     />
                                 </div>
                             </div>

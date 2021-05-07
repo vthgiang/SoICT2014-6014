@@ -57,7 +57,7 @@
 .iconactive {
     background-color: green;
 }
-.iconunactive {
+.iconinactive {
     background-color: white;
 }
 .tooltiptext:hover a {

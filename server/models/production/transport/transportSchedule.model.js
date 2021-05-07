@@ -14,10 +14,6 @@ const TransportScheduleSchema = new Schema({
             required: true,
         },
         routeOrdinal: [{
-            ordinal: { // Thứ tự
-                type: Number,
-                required: true,
-            },
             transportRequirement: { // Yêu cầu vận chuyển
                 type: Schema.Types.ObjectId,
                 ref: 'TransportRequirement',
@@ -26,7 +22,13 @@ const TransportScheduleSchema = new Schema({
             type: { // Giao hay nhận hàng
                 type: Number,
                 required: true
-            }
+            },
+            distance: { // Khoảng cách với điểm trước đó km
+                type: Number,
+            },
+            duration: { // Thời gian với điểm trước đó phút
+                type: Number,
+            },
         }]
     }],
     transportVehicles: [{ // Xep nguoi, hang hoa

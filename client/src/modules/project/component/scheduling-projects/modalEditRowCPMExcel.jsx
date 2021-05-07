@@ -9,7 +9,7 @@ import { UserActions } from '../../../super-admin/user/redux/actions'
 import { checkIfHasCommonItems, getSalaryFromUserId, numberWithCommas } from '../../../task/task-management/component/functionHelpers'
 import { taskManagementActions } from '../../../task/task-management/redux/actions'
 import { ProjectActions } from '../../redux/actions'
-import { getAmountOfWeekDaysInMonth, getCurrentProjectDetails, getNearestIntegerNumber } from '../projects/functionHelper'
+import { getAmountOfWeekDaysInMonth, getCurrentProjectDetails, getEstimateHumanCostFromParams, getNearestIntegerNumber } from '../projects/functionHelper'
 
 const ModalEditRowCPMExcel = (props) => {
     const { currentRow, translate, project, currentEditRowIndex } = props;
@@ -53,31 +53,33 @@ const ModalEditRowCPMExcel = (props) => {
 
     useEffect(() => {
         let result = 0;
-        const resWeight = 0.8, accWeight = 0.2;
-        const currentMonthWorkDays = getAmountOfWeekDaysInMonth(moment());
         const projectDetail = getCurrentProjectDetails(project);
         console.log('projectDetail?.unitTime', projectDetail?.unitTime)
-        if (projectDetail?.unitTime === 'days') {
-            for (let resItem of currentResponsibleEmployees) {
-                result += resWeight * getSalaryFromUserId(projectDetail?.responsibleEmployeesWithUnit, resItem) / currentMonthWorkDays * currentEstimateNormalTime;
-            }
-            for (let accItem of currentAccountableEmployees) {
-                result += accWeight * getSalaryFromUserId(projectDetail?.responsibleEmployeesWithUnit, accItem) / currentMonthWorkDays * currentEstimateNormalTime;
-            }
-        }
-        if (projectDetail?.unitTime === 'hours') {
-            for (let resItem of currentResponsibleEmployees) {
-                result += resWeight * getSalaryFromUserId(projectDetail?.responsibleEmployeesWithUnit, resItem) / currentMonthWorkDays / 8 * currentEstimateNormalTime;
-            }
-            for (let accItem of currentAccountableEmployees) {
-                result += accWeight * getSalaryFromUserId(projectDetail?.responsibleEmployeesWithUnit, accItem) / currentMonthWorkDays / 8 * currentEstimateNormalTime;
-            }
-        }
+
+        result += getEstimateHumanCostFromParams(
+            projectDetail,
+            currentEstimateNormalTime,
+            currentResponsibleEmployees,
+            currentAccountableEmployees,
+            `${projectDetail?.unitTime}s`
+        );
         setCurrentHumanCost(numberWithCommas(result));
         result += Number(currentAssetCost.replace(/,/g, ''));
         setCurrentEstimateNormalCost(numberWithCommas(result));
         setCurrentEstimateMaxCost(numberWithCommas(getNearestIntegerNumber(result)));
 
+        let messageNormalTime;
+        if (currentEstimateNormalTime.toString()?.length === 0
+            || currentEstimateNormalTime.toString()?.match(/.*[a-zA-Z]+.*/)
+            || isDurationNotSuitable(Number(currentEstimateNormalTime))) {
+            messageNormalTime = projectDetail?.unitTime === 'days'
+                ? "Không được bỏ trống và chỉ được điền số <= 7 và >= 1/6"
+                : "Không được bỏ trống và chỉ được điền số <= 56 và >= 4"
+        }
+        setError({
+            ...error,
+            errorOnNormalTime: messageNormalTime,
+        })
     }, [currentResponsibleEmployees, currentAccountableEmployees, currentAssetCost, currentEstimateNormalTime])
 
     // Hàm thay đổi responsible arr
@@ -223,7 +225,6 @@ const ModalEditRowCPMExcel = (props) => {
             preceedingTasks: currentRow?.preceedingTasks,
             estimateNormalTime: currentEstimateNormalTime,
             estimateOptimisticTime: currentRow?.estimateOptimisticTime,
-            estimatePessimisticTime: currentRow?.estimatePessimisticTime,
             estimateNormalCost: currentEstimateNormalCost,
             estimateMaxCost: currentEstimateMaxCost,
             currentResponsibleEmployees,

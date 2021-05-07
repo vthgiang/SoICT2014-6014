@@ -50,7 +50,8 @@ function MapDirectionsRenderer(props) {
                     suppressMarkers: true,
                     polylineOptions: {
                         strokeColor: '#'+Math.floor(Math.random()*16777215).toString(16),
-                    }
+                    },
+                    preserveViewport: true,
                 }
             
             }/>

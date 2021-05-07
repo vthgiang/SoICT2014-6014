@@ -279,10 +279,13 @@ export default {
             manage_transport: "Quản lý vận chuyển",
             manage_transport_requirements: "Yêu cầu vận chuyển",
             manage_transport_plan: "Kế hoạch vận chuyển",
-            manage_transport_schedule: "Lịch vận chuyển",
+            manage_transport_schedule: "Lệnh vận chuyển",
             manage_transport_vehicle: "Phương tiện vận chuyển",
             manage_transport_human: "Nhân viên vận chuyển",
             manage_transport_route: "Hành trình vận chuyển",
+            manage_transport_department: "Phân vai trò đơn vị vận chuyển",
+            carrier_today_transport_mission: "Nhiệm vụ vận chuyển hôm nay",
+            carrier_all_times_transport_mission: "Nhiệm vụ vận chuyển mỗi ngày",
 
 
 
@@ -1541,6 +1544,12 @@ export default {
                 file_export_name: "Bảng thống kê nghỉ phép",
                 type: "Xin nghỉ theo giờ",
                 totalHours: "Tổng số giờ nghỉ",
+                leaveOfAbsenceLetter: "Đơn xin nghỉ phép",
+                waiting_for_approval_letter: "Đơn chờ phê duyệt",
+                approved_letter: "Đơn đã chấp nhận",
+                not_approved_letter: "Đơn không chấp nhận",
+                have: "Có",
+                this_month: "trong tháng này",
 
                 // Nhóm dành cho table
                 table: {

@@ -7,6 +7,18 @@ import ValidationHelper from '../../../../../../helpers/validationHelper';
 
 function TransportGeneralInfoShip(props) {
 
+    let {currentBill, callBackGeneralInfo} = props
+
+    const [formValue, setFormValue] = useState({
+        stockCode: "",
+        billCreator: "",
+        stockAddress: "",
+        customerCode: "",
+        customerName: "",
+        customerPhone: "",
+        customerEmail: "",
+        customerAddress: "",
+    })
     // const [transportInfo, setTransportInfo] = useState({
     //     // billId: props.billId,
     //     curBill: props.curBill,
@@ -25,6 +37,31 @@ function TransportGeneralInfoShip(props) {
     // useEffect(() => {
     //     console.log(props);
     // })
+    useEffect(() => {
+        if (currentBill){
+            setFormValue({
+                stockCode: currentBill.fromStock?.code,
+                billCreator: currentBill.creator?.name,
+                stockAddress: currentBill.fromStock?.address,
+                customerCode: currentBill.customer?.code,
+                customerName: currentBill.customer?.name,
+                customerPhone: currentBill.customer?.mobilephoneNumber,
+                customerEmail: currentBill.customer?.email,
+                customerAddress: currentBill.customer?.address,
+            })
+        }
+        console.log(currentBill, " llllllllllllll")
+    }, [currentBill])
+
+    useEffect(() => {
+        if (formValue){
+            let data = {
+                customer1AddressTransport: formValue.stockAddress,
+                customer2AddressTransport: formValue.customerAddress,
+            }
+            callBackGeneralInfo(data);
+        }
+    }, [formValue])
 
     return (
         <React.Fragment>
@@ -39,7 +76,11 @@ function TransportGeneralInfoShip(props) {
                                             Kho
                                             <span className="attention"> * </span>
                                         </label>
-                                        <input type="text" className="form-control" disabled={false} />
+                                        <input type="text" 
+                                            className="form-control" 
+                                            disabled={false} 
+                                            value={formValue.stockCode}
+                                        />
                                     </div>
                                 </div>
                                 <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8">
@@ -47,7 +88,11 @@ function TransportGeneralInfoShip(props) {
                                         <label>
                                             Người tạo phiếu <span className="attention"> </span>
                                         </label>
-                                        <input type="text" className="form-control" disabled={false} />
+                                        <input type="text" 
+                                            className="form-control" 
+                                            disabled={false} 
+                                            value={formValue.billCreator}
+                                        />
                                     </div>
                                 </div>
                             </div>
@@ -57,7 +102,9 @@ function TransportGeneralInfoShip(props) {
                                         Địa chỉ kho hàng
                                         <span className="attention"> * </span>
                                     </label>
-                                    <textarea type="text" className="form-control" disabled={false}/>
+                                    <textarea type="text" className="form-control" disabled={false}
+                                        value={formValue.stockAddress}
+                                    />
                                 </div>
                             </div>
 
@@ -77,7 +124,7 @@ function TransportGeneralInfoShip(props) {
                                             <span className="attention"> * </span>
                                         </label>
                                         <input type="text" className="form-control" disabled={false} 
-                                                // value={address}
+                                                value={formValue.customerCode}
                                         />
                                     </div>
                                 </div>
@@ -86,7 +133,9 @@ function TransportGeneralInfoShip(props) {
                                         <label>
                                             Tên khách hàng <span className="attention"> </span>
                                         </label>
-                                        <input type="text" className="form-control" disabled={false} />
+                                        <input type="text" className="form-control" disabled={false} 
+                                            value={formValue.customerName}
+                                        />
                                     </div>
                                 </div>
                             </div>
@@ -96,8 +145,9 @@ function TransportGeneralInfoShip(props) {
                                         Số điện thoại
                                         <span className="attention"> * </span>
                                     </label>
-                                    <input type="text" className="form-control"/>
-                            
+                                    <input type="text" className="form-control"
+                                        value={formValue.customerPhone}
+                                    />                            
                                 </div>
                             </div>
                             <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8">
@@ -105,7 +155,9 @@ function TransportGeneralInfoShip(props) {
                                     <label>
                                         Email <span className="attention"> </span>
                                     </label>
-                                    <input type="text" className="form-control" disabled={false} />
+                                    <input type="text" className="form-control" disabled={false} 
+                                        value={formValue.customerEmail}
+                                    />
                                 </div>
                             </div>
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -114,7 +166,9 @@ function TransportGeneralInfoShip(props) {
                                         Địa chỉ nhận hàng
                                         <span className="attention"> * </span>
                                     </label>
-                                    <textarea type="text" className="form-control" />
+                                    <textarea type="text" className="form-control" 
+                                        value={formValue.customerAddress}
+                                    />
                                 </div>
                             </div>
                         </fieldset>
