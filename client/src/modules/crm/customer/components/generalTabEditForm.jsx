@@ -398,10 +398,10 @@ function GeneralTabEditForm(props) {
                     <div className="row">
                         {/* Loại khách hàng */}
                         <div className="col-md-6">
-                            <div className={`form-group`} >
+                            <div className={`form-group-${customerIdEdit}`} >
                                 <label className="control-label">{translate('crm.customer.customerType')}<span className="text-red">*</span></label>
                                 <SelectBox
-                                    id={`customerType-edit-form`}
+                                    id={`customerType-edit-form-${customerIdEdit}`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     items={[
@@ -423,7 +423,7 @@ function GeneralTabEditForm(props) {
                                 {
                                     listGroups &&
                                     <SelectBox
-                                        id={`customer-group-edit-form`}
+                                        id={`customer-group-edit-form${customerIdEdit}`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
                                         items={
@@ -456,7 +456,7 @@ function GeneralTabEditForm(props) {
                                 <div className="form-group">
                                     <label>{translate('crm.customer.companyEstablishmentDate')}</label>
                                     <DatePicker
-                                        id="companyEstablishmentDate-edit-form"
+                                        id={`companyEstablishmentDate-edit-form-${customerIdEdit}`}
                                         value={companyEstablishmentDate ? companyEstablishmentDate : ''}
                                         onChange={handleChangeCompanyEstablishmentDate}
                                         disabled={false}
@@ -470,7 +470,7 @@ function GeneralTabEditForm(props) {
                                 <div className={`form-group`}>
                                     <label>{translate('crm.customer.gender')}</label>
                                     <SelectBox
-                                        id={`customer-gender-edit-form`}
+                                        id={`customer-gender-edit-form-${customerIdEdit}`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
                                         items={
@@ -492,7 +492,7 @@ function GeneralTabEditForm(props) {
                                 <div className={`form-group`}>
                                     <label>{translate('crm.customer.birth')}</label>
                                     <DatePicker
-                                        id="birth-date-edit-form"
+                                        id={`birth-date-edit-form-${customerIdEdit}`}
                                         value={birthDate ? birthDate : ''}
                                         onChange={handleChangeCustomerBirth}
                                         disabled={false}
@@ -627,7 +627,7 @@ function GeneralTabEditForm(props) {
                                 <label className="control-label">{'Trạng thái khách hàng'}<span className="text-red">*</span></label>
                                 {
                                     <SelectBox
-                                        id={`customer-status-edit-form`}
+                                        id={`customer-status-edit-form-${customerIdEdit}`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
                                         items={listStatus}

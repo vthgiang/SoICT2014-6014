@@ -9,7 +9,8 @@ export const CrmCustomerActions = {
     editCustomer,
     deleteCustomer,
     getCustomerPoint,
-    editCustomerPoint
+    editCustomerPoint, 
+    addPromotion
 };
 
 function getCustomers(data) {
@@ -122,5 +123,18 @@ function editCustomerPoint(id, data) {
                 })
             })
             .catch(err => { dispatch({ type: CrmCustomerConstants.EDIT_CRM_CUSTOMER_POINT_FAILE }) })
+    }
+}
+function addPromotion(id, data) {
+    return dispatch => {
+        dispatch({ type: CrmCustomerConstants.ADD_CRM_CUSTOMER_PROMOTION_REQUEST });
+        CrmCustomerServices.addPromotion(id, data)
+            .then(res => {
+                dispatch({
+                    type: CrmCustomerConstants.ADD_CRM_CUSTOMER_PROMOTION_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => { dispatch({ type: CrmCustomerConstants.ADD_CRM_CUSTOMER_PROMOTION_FAILE }) })
     }
 }

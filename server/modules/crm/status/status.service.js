@@ -8,7 +8,8 @@ exports.getStatus = async (portal, companyId, query) => {
 
     const listStatusTotal = await Status(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
 
-    const listStatus = await Status(connect(DB_CONNECTION, portal)).find(keySearch) .populate({path: 'creator',select: '_id name'})
+    const listStatus = await Status(connect(DB_CONNECTION, portal)).find(keySearch)
+        .populate({ path: 'creator', select: '_id name' })
 
     // .skip(parseInt(page)).limit(parseInt(limit));
     return { listStatusTotal, listStatus };
@@ -27,7 +28,9 @@ exports.createStatus = async (portal, companyId, userId, data) => {
         description: description ? description : '',
     })
 
-    const getNewStatus = await Status(connect(DB_CONNECTION, portal)).findById(newStatus._id);
+    const getNewStatus = await Status(connect(DB_CONNECTION, portal)).findById(newStatus._id)
+        .populate({ path: 'creator', select: '_id name' })
+        ;
     return getNewStatus;
 }
 
@@ -42,7 +45,7 @@ exports.editStatus = async (portal, companyId, id, data, userId) => {
         }
     }, { new: true });
 
-    return await Status(connect(DB_CONNECTION, portal)).findOne({ _id: id });
+    return await Status(connect(DB_CONNECTION, portal)).findOne({ _id: id }).populate({ path: 'creator', select: '_id name' });
 }
 
 exports.deleteStatus = async (portal, companyId, id) => {

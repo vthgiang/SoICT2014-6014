@@ -3,57 +3,56 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { CrmStatusActions } from '../../status/redux/actions';
 import { DialogModal, ErrorLabel } from '../../../../common-components';
+import { CrmCareTypeActions } from '../../careType/redux/action';
 
-function CustomerStatusEditForm(props) {
+function CustomerCareTypeEditEditForm(props) {
 
 
     const { translate, data } = props;
     const { name, description, _id } = data;
-    const [statusEdit, setStatusEdit] = useState({id:_id, name, description });
-    if (statusEdit.id != data._id) {
-        setStatusEdit({ id: data._id, name: data.name, description: data.description })
+    const [careTypeEdit, setCareTypeEdit] = useState({id:_id, name, description });
+    if (careTypeEdit.id != data._id) {
+        setCareTypeEdit({ id: data._id, name: data.name, description: data.description })
     }
 
-    const handleChangeStatusName = async (e) => {
+    const handleChangeName = async (e) => {
         const { value } = e.target;
-        const newStatus = { ...statusEdit, name: value }
-        await setStatusEdit(newStatus);
+        await setCareTypeEdit( { ...careTypeEdit, name: value });
     }
 
-    const handleChangeStatusDescription = async (e) => {
+    const handleChangeDescription = async (e) => {
         const { value } = e.target;
-        const newStatus = { ...statusEdit, description: value, }
-        await setStatusEdit(newStatus);
+        await setCareTypeEdit( { ...careTypeEdit, description: value });
     }
 
     const save = () => {
-        props.editStatus(statusEdit.id, statusEdit);
+        props.editCareType(careTypeEdit.id, careTypeEdit);
     }
 
 
     return (
         <React.Fragment>
             <DialogModal
-                modalID={`modal-crm-customer-status-edit`}
+                modalID={`modal-crm-customer-care-type-edit`}
                 isLoading={false}
-                formID="form-crm-status-edit"
+                formID="form-crm-care-type-edit"
                 title="Chỉnh sửa nhóm khách hàng"
                 func={save} size={50}
             // disableSubmit={!this.isFormValidated()}
             >
                 {/* Form chỉnh sửa trạng thái khách hàng */}
-                <form id="form-crm-status-edit">
+                <form id="form-crm-care-type-edit">
                     {/* Tên trạng thái khách hàng */}
                     <div className={`form-group`}>
                         <label>{translate('crm.status.name')}<span className="attention"> * </span></label>
-                        <input type="text" className="form-control" value={statusEdit.name ? statusEdit.name : ''} onChange={handleChangeStatusName} />
+                        <input type="text" className="form-control" value={careTypeEdit.name ? careTypeEdit.name : ''} onChange={handleChangeName} />
                         {/* <ErrorLabel content={groupCodeEditFormError} /> */}
                     </div>
 
                     {/* Mô tả trạng thái khách hàng */}
                     <div className={`form-group`}>
                         <label>{translate('crm.status.description')}<span className="attention"> * </span></label>
-                        <input type="text" className="form-control" value={statusEdit.description ? statusEdit.description : ''} onChange={handleChangeStatusDescription} />
+                        <input type="text" className="form-control" value={careTypeEdit.description ? careTypeEdit.description : ''} onChange={handleChangeName} />
                         {/* <ErrorLabel content={groupNameEditFormError} /> */}
                     </div>
                 </form>
@@ -63,13 +62,8 @@ function CustomerStatusEditForm(props) {
 }
 
 
-// function mapStateToProps(state) {
-//     const { crm } = state;
-//     return { crm };
-// }
-
 const mapDispatchToProps = {
-    editStatus: CrmStatusActions.editStatus,
+    editCareType: CrmCareTypeActions.editCareType,
 }
 
-export default connect(null, mapDispatchToProps)(withTranslate(CustomerStatusEditForm));
+export default connect(null, mapDispatchToProps)(withTranslate(CustomerCareTypeEditEditForm));
