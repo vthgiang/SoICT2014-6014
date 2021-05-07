@@ -139,7 +139,7 @@ exports.getTaskById = async (portal, id, userId) => {
             },
             { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
             { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
-            { path: "logs.creator", select: "_id name"}
+            { path: "logs.creator", select: "_id name" }
         ]);
     if (!task) {
         return {
@@ -5567,59 +5567,94 @@ exports.confirmTask = async (portal, taskId, userId) => {
 
 /** Yêu cầu kết thúc công việc */
 exports.requestAndApprovalCloseTask = async (portal, taskId, data) => {
-    const { userId, taskStatus, description, type } = data;
+    const { userId, taskStatus, description, type, role } = data;
+    let task = await this.getTaskById(portal, taskId, userId);
+    // console.log('role', role)
+    const requestStatusNumber = type === 'request' ? 1
+        : type === 'cancel_request' ? 0
+            : type === 'approval' ? 3
+                : type === 'approval' ? 4
+                    : 1;
+    const currentStatus = type === 'approval' ? taskStatus : 'inprocess';
+    const currentResponsibleUpdatedAt = role === 'responsible' ? moment().format() : task.requestToCloseTask.responsibleUpdatedAt;
+    const currentAccountableUpdatedAt = role === 'accountable' ? moment().format() : task.requestToCloseTask.accountableUpdatedAt;
 
-    let keyUpdate = {};
+    const keyUpdateAsNumber0 = {
+        "requestToCloseTask": {
+            "requestedBy": userId,
+            "taskStatus": taskStatus,
+            "description": description,
+            "requestStatus": requestStatusNumber,
+            "responsibleUpdatedAt": currentResponsibleUpdatedAt,
+            "accountableUpdatedAt": currentAccountableUpdatedAt,
+        },
+    };
 
-    if (type === 'request') {
-        keyUpdate = {
-            "requestToCloseTask": {
-                "requestedBy": userId,
-                "taskStatus": taskStatus,
-                "description": description,
-                "requestStatus": 1
-            },
-        }
-    }
-    else if (type === 'cancel_request') {
-        keyUpdate = {
-            "requestToCloseTask": {
-                "requestedBy": userId,
-                "taskStatus": taskStatus,
-                "description": description,
-                "requestStatus": 0
-            },
-            "status": 'inprocess'
-        }
-    }
-    else if (type === 'approval') {
-        keyUpdate = {
-            "requestToCloseTask": {
-                "requestedBy": userId,
-                "taskStatus": taskStatus,
-                "description": description,
-                "requestStatus": 3
-            },
-            "status": taskStatus
-        }
-    }
-    else if (type === 'decline') {
-        keyUpdate = {
-            "requestToCloseTask": {
-                "requestedBy": userId,
-                "taskStatus": taskStatus,
-                "description": description,
-                "requestStatus": 2
-            },
-            "status": 'inprocess'
-        }
-    }
+    const keyUpdateAsNumberOtherThan0 = {
+        "requestToCloseTask": {
+            "requestedBy": userId,
+            "taskStatus": taskStatus,
+            "description": description,
+            "requestStatus": requestStatusNumber,
+            "responsibleUpdatedAt": currentResponsibleUpdatedAt,
+            "accountableUpdatedAt": currentAccountableUpdatedAt,
+        },
+        "status": currentStatus,
+    };
 
-    let requestCloseByEmployee = await Task(connect(DB_CONNECTION, portal))
+    const keyUpdate = requestStatusNumber === 0 ? keyUpdateAsNumber0 : keyUpdateAsNumberOtherThan0;
+    console.log(keyUpdate)
+    console.log(requestStatusNumber)
+
+    // if (type === 'request') {
+    //     keyUpdate = {
+    //         "requestToCloseTask": {
+    //             "requestedBy": userId,
+    //             "taskStatus": taskStatus,
+    //             "description": description,
+    //             "requestStatus": 1
+    //         },
+    //     }
+    // }
+    // else if (type === 'cancel_request') {
+    //     keyUpdate = {
+    //         "requestToCloseTask": {
+    //             "requestedBy": userId,
+    //             "taskStatus": taskStatus,
+    //             "description": description,
+    //             "requestStatus": 0
+    //         },
+    //         "status": 'inprocess'
+    //     }
+    // }
+    // else if (type === 'approval') {
+    //     keyUpdate = {
+    //         "requestToCloseTask": {
+    //             "requestedBy": userId,
+    //             "taskStatus": taskStatus,
+    //             "description": description,
+    //             "requestStatus": 3
+    //         },
+    //         "status": taskStatus
+    //     }
+    // }
+    // else if (type === 'decline') {
+    //     keyUpdate = {
+    //         "requestToCloseTask": {
+    //             "requestedBy": userId,
+    //             "taskStatus": taskStatus,
+    //             "description": description,
+    //             "requestStatus": 2
+    //         },
+    //         "status": 'inprocess'
+    //     }
+    // }
+
+    await Task(connect(DB_CONNECTION, portal))
         .findByIdAndUpdate(taskId, keyUpdate, { new: true });
 
-    let task = await this.getTaskById(portal, taskId, userId);
-    return task;
+    let newTask = await this.getTaskById(portal, taskId, userId);
+    return newTask;
 };
 
 /** Mở lại công việc đã kết thúc */

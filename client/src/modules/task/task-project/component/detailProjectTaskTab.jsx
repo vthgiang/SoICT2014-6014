@@ -6,11 +6,11 @@ import { taskManagementActions } from '../../task-management/redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { RoleActions } from '../../../super-admin/role/redux/actions';
 
-import { ModalEditTaskByResponsibleEmployee } from '../../task-perform/component/modalEditTaskByResponsibleEmployee';
-import { ModalEditTaskByAccountableEmployee } from '../../task-perform/component/modalEditTaskByAccountableEmployee';
 import { HoursSpentOfEmployeeChart } from '../../task-perform/component/hourSpentOfEmployeeChart';
 import { CollaboratedWithOrganizationalUnits } from '../../task-perform/component/collaboratedWithOrganizationalUnits';
 
+import { ModalEditTaskByResponsibleEmployeeProject } from './modalEditTaskByResponsibleEmployeeProject';
+import { ModalEditTaskByAccountableEmployeeProject } from './modalEditTaskByAccountableEmployeeProject';
 import { EvaluationProjectModal } from './evaluationProjectModal';
 import { getStorage } from '../../../../config';
 import { SelectFollowingTaskModal } from '../../task-perform/component/selectFollowingTaskModal';
@@ -704,7 +704,7 @@ class DetailProjectTaskTab extends Component {
     }
 
     render() {
-        const { tasks, performtasks, user, translate, role } = this.props;
+        const { tasks, performtasks, user, translate, role, project } = this.props;
         const { showToolbar, id, isProcess } = this.props; // props form parent component ( task, id, showToolbar, onChangeTaskRole() )
         const { currentUser, roles, currentRole, collapseInfo,
             showEdit, showEndTask, showEvaluate, showRequestClose,
@@ -797,12 +797,11 @@ class DetailProjectTaskTab extends Component {
         checkEvaluationTaskAndKpiLink = this.checkEvaluationTaskAndKpiLink(task);
         checkDeadlineForEvaluation = this.checkDeadlineForEvaluation(task);
         checkConfirmAssginOfOrganizationalUnit = this.checkConfirmAssginOfOrganizationalUnit(task);
-        warning = (statusTask === "inprocess") && ((checkEvaluate) || (checkConfirmTask && checkConfirmTask.checkConfirm)
-            || (checkEvaluationTaskAction && checkEvaluationTaskAction.checkEvaluationTaskAction)
-            || (checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkEvaluationTask)
-            || (checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkKpiLink)
-            || (checkDeadlineForEvaluation && checkDeadlineForEvaluation.checkDeadlineForEvaluation)
-            || (checkInactive && codeInProcess && (currentRole === "accountable" || (currentRole === "responsible" && checkHasAccountable === false))))
+        warning = (statusTask === "inprocess") &&
+            ((checkConfirmTask && checkConfirmTask.checkConfirm)
+                || (checkEvaluationTaskAction && checkEvaluationTaskAction.checkEvaluationTaskAction)
+                || (checkDeadlineForEvaluation && checkDeadlineForEvaluation.checkDeadlineForEvaluation)
+                || (checkInactive && codeInProcess && (currentRole === "accountable" || (currentRole === "responsible" && checkHasAccountable === false))))
             || (checkConfirmAssginOfOrganizationalUnit.checkConfirm)
             || (currentRole === "accountable" && task?.requestToCloseTask?.requestStatus === 1);
 
@@ -998,18 +997,19 @@ class DetailProjectTaskTab extends Component {
                                 }
 
                                 {/* Chưa có đánh giá */}
-                                {
+                                {/* {
                                     task.status === "inprocess" && checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkEvaluationTask
                                     && <div><strong>{translate('task.task_management.not_have_evaluation')}</strong></div>
-                                }
+                                } */}
 
-                                {/* Nhắc nhở đánh giá */
+                                {/* Nhắc nhở đánh giá */}
+                                {/* {
                                     task.status === "inprocess" && checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkEvaluationTask && checkEvaluate
                                     && <div><strong>{translate("task.task_management.warning_evaluate")}</strong></div>
-                                }
+                                } */}
 
                                 {/* Chưa liên kết KPI */}
-                                {
+                                {/* {
                                     task.status === "inprocess" && checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkKpiLink
                                     && <div>
                                         <strong>{translate('task.task_management.detail_not_kpi')}:</strong>
@@ -1021,7 +1021,7 @@ class DetailProjectTaskTab extends Component {
                                             })
                                         }
                                     </div>
-                                }
+                                } */}
 
                                 {/* Chưa đánh giá hoạt động */}
                                 {
@@ -1075,9 +1075,12 @@ class DetailProjectTaskTab extends Component {
                                 <h4>{translate('task.task_management.detail_general_info')}</h4>
 
                                 <div><strong>{translate('task.task_management.detail_link')}:</strong> <a href={`/task?taskId=${task._id}`} target="_blank">{task.name}</a></div>
+                                <div><strong>Dự án:</strong> {task && task.taskProject && this.props.project.data.list.length !== 0 &&
+                                    this.props.project.data.list.find(projectItem => String(projectItem._id) === String(task.taskProject)).name}
+                                </div>
                                 <div><strong>{translate('task.task_management.detail_time')}:</strong> {this.formatTime(task && task.startDate)} <i className="fa fa-fw fa-caret-right"></i> {this.formatTime(task && task.endDate)} </div>
-                                <div><strong>{translate('task.task_management.unit_manage_task')}:</strong> {task && task.organizationalUnit ? task.organizationalUnit.name : translate('task.task_management.err_organizational_unit')}</div>
-                                <div>
+                                {/* <div><strong>{translate('task.task_management.unit_manage_task')}:</strong> {task && task.organizationalUnit ? task.organizationalUnit.name : translate('task.task_management.err_organizational_unit')}</div> */}
+                                {/* <div>
                                     <strong>{translate('task.task_management.collaborated_with_organizational_units')}: </strong>
                                     <span>
                                         {task.collaboratedWithOrganizationalUnits.length !== 0
@@ -1092,8 +1095,8 @@ class DetailProjectTaskTab extends Component {
                                             : <span>{translate('task.task_management.not_collaborated_with_organizational_units')}</span>
                                         }
                                     </span>
-                                </div>
-                                <div><strong>{translate('task.task_management.detail_priority')}:</strong> {task && this.formatPriority(task.priority)}</div>
+                                </div> */}
+                                {/* <div><strong>{translate('task.task_management.detail_priority')}:</strong> {task && this.formatPriority(task.priority)}</div> */}
                                 <div><strong>{translate('task.task_management.detail_status')}:</strong> {task && this.formatStatus(task.status)}</div>
                                 <div><strong>{translate('task.task_management.detail_progress')}:</strong> {task && task.progress}%</div>
                                 {
@@ -1272,7 +1275,7 @@ class DetailProjectTaskTab extends Component {
                                                         </div>
 
                                                         {/* KPI */}
-                                                        {(eva.results.length !== 0) ?
+                                                        {/* {(eva.results.length !== 0) ?
                                                             (
                                                                 eva.results.map((item, key) => {
                                                                     return (
@@ -1291,7 +1294,7 @@ class DetailProjectTaskTab extends Component {
                                                                         </div>)
                                                                 })
                                                             ) : <div><strong>{translate('task.task_management.detail_all_not_kpi')}</strong></div>
-                                                        }
+                                                        } */}
 
 
                                                         {/* Thời gian bấm giờ */}
@@ -1323,7 +1326,7 @@ class DetailProjectTaskTab extends Component {
                 </div>
                 {
                     (id && showEdit === id) && currentRole === "responsible" && checkHasAccountable === true &&
-                    <ModalEditTaskByResponsibleEmployee
+                    <ModalEditTaskByResponsibleEmployeeProject
                         id={id}
                         task={task && task}
                         role={currentRole}
@@ -1334,7 +1337,7 @@ class DetailProjectTaskTab extends Component {
 
                 {
                     (id && showEdit === id) && currentRole === "responsible" && checkHasAccountable === false &&
-                    <ModalEditTaskByAccountableEmployee
+                    <ModalEditTaskByAccountableEmployeeProject
                         id={id}
                         task={task && task}
                         role={currentRole}
@@ -1346,7 +1349,7 @@ class DetailProjectTaskTab extends Component {
 
                 {
                     (id && showEdit === id) && currentRole === "accountable" &&
-                    <ModalEditTaskByAccountableEmployee
+                    <ModalEditTaskByAccountableEmployeeProject
                         id={id}
                         task={task && task}
                         hasAccountable={true}
@@ -1405,8 +1408,8 @@ class DetailProjectTaskTab extends Component {
 
 
 function mapStateToProps(state) {
-    const { tasks, performtasks, user, role } = state;
-    return { tasks, performtasks, user, role };
+    const { tasks, performtasks, user, role, project } = state;
+    return { tasks, performtasks, user, role, project };
 
 }
 

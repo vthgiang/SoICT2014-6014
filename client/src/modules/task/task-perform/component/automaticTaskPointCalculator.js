@@ -254,11 +254,10 @@ function calcProjectAutoPoint(data, getCalcPointsOnly = true) {
     // console.log('estDuration---------------------', estDuration)
     let realCost = estimateAssetCost;
     for (let actorItem of actorsWithSalary) {
-        const weight = responsibleEmployees.find(responsibleItem => responsibleItem.id === actorItem.userId) ? 0.8 : 0.2;
         for (let timeSheetItem of timesheetLogs) {
             if (actorItem.userId === timeSheetItem.creator.id) {
-                realCost += timeSheetItem.duration / MILISECS_TO_DAYS * (projectDetail?.unitTime === 'hours' ? 8 : 1) * weight
-                    * actorItem.salary / weekDays / (projectDetail?.unitTime === 'hours' ? 8 : 1);
+                realCost += timeSheetItem.duration / MILISECS_TO_DAYS * (projectDetail?.unitTime === 'hours' ? 8 : 1)
+                    * actorItem.salary / weekDays * (projectDetail?.unitTime === 'hours' ? 8 : 1);
             }
         }
     }
@@ -297,7 +296,7 @@ function calcProjectAutoPoint(data, getCalcPointsOnly = true) {
 
 function calcProjectTaskMemberAutoPoint(data, getCalcPointsOnly = true) {
     const { task, progress, projectDetail, userId } = data;
-    const { timesheetLogs, startDate, endDate, actorsWithSalary, responsibleEmployees, estimateAssetCost, accountableEmployees } = task;
+    const { timesheetLogs, startDate, endDate, actorsWithSalary, responsibleEmployees, estimateAssetCost, accountableEmployees, estimateNormalTime, estimateNormalCost } = task;
     const weekDays = getAmountOfWeekDaysInMonth(moment(startDate));
     // Tính trọng số của userId trong task đó
     let weight = 0;
@@ -315,8 +314,10 @@ function calcProjectTaskMemberAutoPoint(data, getCalcPointsOnly = true) {
     // console.log('estDuration', estDuration)
     // console.log('currentActor.salary', currentActor.salary)
     // console.log('weekDays', weekDays)
-    // console.log(projectDetail?.unitTime === 'hours' ? 8 : 1)
-    const estCost = estDuration * currentActor.salary / weekDays / (projectDetail?.unitTime === 'hours' ? 8 : 1);
+
+    // const estCost = estDuration * currentActor.salary / weekDays * (projectDetail?.unitTime === 'hours' ? 8 : 1);
+    const estCost = estimateNormalCost * weight - estimateAssetCost;
+
     // console.log('estCost', estCost)
     const progressTask = progress;
     let realDuration = 0;
@@ -329,8 +330,8 @@ function calcProjectTaskMemberAutoPoint(data, getCalcPointsOnly = true) {
     let realCost = 0;
     for (let timeSheetItem of timesheetLogs) {
         if (userId === timeSheetItem.creator.id) {
-            realCost += timeSheetItem.duration / MILISECS_TO_DAYS * (projectDetail?.unitTime === 'hours' ? 8 : 1) * weight
-                * currentActor.salary / weekDays / (projectDetail?.unitTime === 'hours' ? 8 : 1);
+            realCost += timeSheetItem.duration / MILISECS_TO_DAYS * (projectDetail?.unitTime === 'hours' ? 8 : 1)
+                * currentActor.salary / weekDays * (projectDetail?.unitTime === 'hours' ? 8 : 1);
         }
     }
     // console.log('realCost', realCost)

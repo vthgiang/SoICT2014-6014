@@ -6,8 +6,8 @@ import { DialogModal, ErrorLabel, SelectBox, DatePicker, QuillEditor, TreeSelect
 import { getStorage } from "../../../../config";
 
 import { UserActions } from "../../../super-admin/user/redux/actions";
-import { TaskInformationForm } from './taskInformationForm';
-import { performTaskAction } from '../redux/actions';
+import { TaskInformationForm } from '../../task-perform/component/taskInformationForm';
+import { performTaskAction } from '../../task-perform/redux/actions';
 import { taskManagementActions } from '../../task-management/redux/actions';
 
 import { TaskFormValidator } from '../../task-management/component/taskFormValidator';
@@ -1000,14 +1000,6 @@ class ModalEditTaskByAccountableEmployeeProject extends Component {
             }
         }
 
-
-        let priorityArr = [
-            { value: 1, text: translate('task.task_management.low') },
-            { value: 2, text: translate('task.task_management.average') },
-            { value: 3, text: translate('task.task_management.standard') },
-            { value: 4, text: translate('task.task_management.high') },
-            { value: 5, text: translate('task.task_management.urgent') },
-        ];
         let statusArr = [
             { value: "inprocess", text: translate('task.task_management.inprocess') },
             { value: "wait_for_approval", text: translate('task.task_management.wait_for_approval') },
@@ -1021,7 +1013,6 @@ class ModalEditTaskByAccountableEmployeeProject extends Component {
             usersOfChildrenOrganizationalUnit = user.usersOfChildrenOrganizationalUnit;
         }
         let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
-        let listDepartment = department?.list;
 
         return (
             <div>
@@ -1062,7 +1053,7 @@ class ModalEditTaskByAccountableEmployeeProject extends Component {
                                         />
                                         <ErrorLabel content={errorTaskDescription} />
                                     </div>
-                                    <div className="form-group">
+                                    {/* <div className="form-group">
                                         <label>{translate('task.task_management.add_parent_task')}</label>
                                         <SelectBox
                                             id={`select-parent-${perform}-${role}`}
@@ -1074,7 +1065,7 @@ class ModalEditTaskByAccountableEmployeeProject extends Component {
                                             onChange={this.handleSelectedParent}
                                             onSearch={this.onSearch}
                                         />
-                                    </div>
+                                    </div> */}
 
                                     <div className="form-group">
                                         <label>
@@ -1096,25 +1087,6 @@ class ModalEditTaskByAccountableEmployeeProject extends Component {
                                 <legend className="scheduler-border">{translate('task.task_management.edit_detail_info')}</legend>
                                 {/* <div> */}
 
-                                {/* Đơn vị phối hợp thực hiện công việc */}
-                                {listDepartment &&
-                                    <div className="form-group">
-                                        <label>{translate('task.task_management.collaborated_with_organizational_units')}</label>
-                                        <SelectBox
-                                            id={`editMultiSelectUnitThatHaveCollaborated-${perform}-${role}`}
-                                            lassName="form-control select2"
-                                            style={{ width: "100%" }}
-                                            items={listDepartment.filter(item => item._id !== organizationalUnit).map(x => {
-                                                return { text: x.name, value: x._id }
-                                            })}
-                                            options={{ placeholder: translate('kpi.evaluation.dashboard.select_units') }}
-                                            onChange={this.handleChangeCollaboratedWithOrganizationalUnits}
-                                            value={collaboratedWithOrganizationalUnits}
-                                            multiple={true}
-                                        />
-                                    </div>
-                                }
-
                                 <div className="row form-group">
                                     <div className="col-lg-6 col-md-6 col-ms-12 col-xs-12">
                                         <label>{translate('task.task_management.detail_status')}</label>
@@ -1132,7 +1104,7 @@ class ModalEditTaskByAccountableEmployeeProject extends Component {
                                     </div>
 
                                     {/*Mức ưu tiên*/}
-                                    <div className="col-lg-6 col-md-6 col-ms-12 col-xs-12">
+                                    {/* <div className="col-lg-6 col-md-6 col-ms-12 col-xs-12">
                                         <label>{translate('task.task_management.detail_priority')}</label>
                                         {
                                             <SelectBox
@@ -1145,7 +1117,7 @@ class ModalEditTaskByAccountableEmployeeProject extends Component {
                                                 onChange={this.handleSelectedPriority}
                                             />
                                         }
-                                    </div>
+                                    </div> */}
                                 </div>
 
 

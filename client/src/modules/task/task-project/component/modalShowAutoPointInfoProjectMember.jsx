@@ -44,13 +44,13 @@ const ModalShowAutoPointInfoProjectMember = (props) => {
                     <ul style={{ lineHeight: 2.3 }}>
                         <li>progressTask - Tiến độ của nhân viên (%): <strong>{progressTask}%</strong></li>
                         <li>budget - Ngân sách cho nhân viên (VND): <strong>{numberWithCommas(estCost)} VND</strong></li>
-                        <li>estDuration - Thời gian ước lượng của nhân viên cho công việc ({translate(`project.unit.${projectDetail?.unitTime}`)}): <strong>{numberWithCommas(estDuration)} ngày</strong></li>
-                        <li>realDuration - Thời gian thực tế nhân viên bấm giờ cho công việc ({translate(`project.unit.${projectDetail?.unitTime}`)}): <strong>{numberWithCommas(realDuration)} ngày</strong></li>
+                        <li>estDuration - Thời gian ước lượng của nhân viên cho công việc ({translate(`project.unit.${projectDetail?.unitTime}`)}): <strong>{numberWithCommas(estDuration)}</strong></li>
+                        <li>realDuration - Thời gian thực tế nhân viên bấm giờ cho công việc ({translate(`project.unit.${projectDetail?.unitTime}`)}): <strong>{numberWithCommas(realDuration)}</strong></li>
                         <li>actualCost - Chi phí thực tế nhân viên sử dụng cho công việc (VND): <strong>{numberWithCommas(actualCost)} VND</strong></li>
                         <li>earnedValue = progressTask * budget - Giá trị thu được từ công việc của nhân viên (VND): <strong>{numberWithCommas(earnedValue)} VND</strong></li>
                         <li>costPerformanceIndex = earnedValue / actualCost - Chỉ số đánh giá chi phí cho công việc: <strong>{costPerformanceIndex.toFixed(2)}</strong></li>
                     </ul>
-                    <p><strong>{translate('task.task_management.calc_formula')}: </strong>
+                    <p><strong>Công thức quy đổi: </strong>
                         <ul style={{ lineHeight: 2.3 }}>
                             <li>{translate('project.eval.undefined')}</li>
                             <li>{translate('project.eval.level1')}</li>
