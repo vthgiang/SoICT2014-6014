@@ -35,7 +35,6 @@ function EmployeeKpiEvaluateModal(props) {
         tableId,
         listKpiId: "list-kpi",
         detailKpiId: "detail-kpi",
-        tableTaskId: "table-task"
     })
 
     const { kpimembers } = props;
@@ -43,7 +42,7 @@ function EmployeeKpiEvaluateModal(props) {
     const { taskId, content, contentName, 
         perPage, points, tasks, 
         taskImportanceDetail, listKpiId, 
-        detailKpiId, tableTaskId
+        detailKpiId
     } = state;
     let list, myTask, exportData, currentKpi;
 
@@ -60,9 +59,6 @@ function EmployeeKpiEvaluateModal(props) {
 
         SlimScroll.removeVerticalScrollStyleCSS(detailKpiId)
         SlimScroll.addVerticalScrollStyleCSS(detailKpiId, 500, true)
-
-        SlimScroll.removeVerticalScrollStyleCSS(tableTaskId)
-        SlimScroll.addVerticalScrollStyleCSS(tableTaskId, 350, true)
     })
 
     useEffect( () => {
@@ -208,9 +204,6 @@ function EmployeeKpiEvaluateModal(props) {
 
         SlimScroll.removeVerticalScrollStyleCSS(detailKpiId)
         SlimScroll.addVerticalScrollStyleCSS(detailKpiId, 500, true)
-
-        SlimScroll.removeVerticalScrollStyleCSS(tableTaskId)
-        SlimScroll.addVerticalScrollStyleCSS(tableTaskId, 350, true)
     }
 
     /**Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
@@ -402,7 +395,7 @@ function EmployeeKpiEvaluateModal(props) {
                                         <h4>
                                             {translate('kpi.evaluation.employee_evaluation.task_list')} ({kpimembers?.tasks?.length})
                                         </h4>
-                                        <div id={tableTaskId}>
+                                        <div>
                                             <table id={tableId} className="table table-hover table-bordered  table-striped mb-0" >
                                                 <thead>
                                                     <tr>
