@@ -611,6 +611,11 @@ const TaskSchema = new Schema(
                     type: Number,
                     default: -1,
                 },
+                actionImportanceLevel: {
+                    // 0-10: tùy mức độ quan trọng
+                    type: Number,
+                    default: 10,
+                },
                 files: [
                     {
                         // Các files đi kèm actions
@@ -644,6 +649,11 @@ const TaskSchema = new Schema(
                             // -1: chưa đánh giá, 0-10: tùy mức độ tốt
                             type: Number,
                             default: -1,
+                        },
+                        actionImportanceLevel: {
+                            // 0-10: tùy mức độ quan trọng
+                            type: Number,
+                            default: 10,
                         },
                     },
                 ],
