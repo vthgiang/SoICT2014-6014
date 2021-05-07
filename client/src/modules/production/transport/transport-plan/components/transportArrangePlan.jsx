@@ -4,8 +4,6 @@ import { withTranslate } from "react-redux-multilingual";
 
 import { DataTableSetting, DeleteNotification, PaginateBar, SelectBox } from "../../../../../common-components";
 import { formatToTimeZoneDate } from "../../../../../helpers/formatDate"
-import { Chart } from './chart'
-import { DatePickerId } from './datePickerId'
 
 import { TransportPlanChosenEdit } from './transportPlanChosenEdit'
 

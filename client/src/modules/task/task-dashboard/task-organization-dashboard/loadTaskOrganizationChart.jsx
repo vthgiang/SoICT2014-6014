@@ -7,10 +7,11 @@ import c3 from 'c3';
 import 'c3/c3.css';
 
 import { CustomLegendC3js } from '../../../../common-components';
+import { customAxisC3js } from '../../../../helpers/customAxisC3js';
 
 const LoadTaskOrganizationChart = (props) => {
     const { translate, tasks } = props
-    const { startMonth, endMonth, startMonthTitle, endMonthTitle, units, idsUnit } = props;
+    const { startMonth, endMonth, startMonthTitle, endMonthTitle, units, idsUnit, typeChart = "followTime" } = props;
 
     const [dataChart, setDataChart] = useState();
     const ref = useRef({
@@ -21,12 +22,16 @@ const LoadTaskOrganizationChart = (props) => {
     useEffect(() => {
         let dataChart = setDateBarChart()
 
-        barChart(dataChart?.data, dataChart?.category);
+        if (typeChart === "followTime") {
+            barChartFollowTime(dataChart?.data, dataChart?.category);
+        } else {
+            barChartFollowUnit(dataChart?.data);
+        }
     })
 
     function setDateBarChart() {
         let data = [], category = []
-        let taskList = tasks?.organizationUnitTasks?.tasks;
+        let taskList = typeChart === "followTime" ? tasks?.organizationUnitTasks?.tasks : tasks?.organizationUnitTasksInMonth?.tasks;
         if (taskList?.length > 0) {
             let selectedUnit = idsUnit;
 
@@ -50,7 +55,7 @@ const LoadTaskOrganizationChart = (props) => {
                 array.fill(0, 0);
                 let findUnit = units.find(elem => elem.id === selectedUnit[i])
                 if (findUnit) {
-                    data[i].push(`tải công việc - ${findUnit.name}`);
+                    data[i].push(findUnit.name);
                 }
 
                 for (let k in improcessTask) {
@@ -123,7 +128,7 @@ const LoadTaskOrganizationChart = (props) => {
         }
     }
 
-    const barChart = (data, category) => {
+    const barChartFollowTime = (data, category) => {
         ref.current.chart = c3.generate({
             bindto: document.getElementById("weightTaskOrganization"),
 
@@ -159,6 +164,71 @@ const LoadTaskOrganizationChart = (props) => {
         });
     }
 
+    const barChartFollowUnit = (data) => {
+        let dataChart = [translate('task.task_management.load_task')]
+        let titleX = ["x"]
+
+        if (data?.length > 0) {
+            data.map(item => {
+                titleX.push(item?.[0])
+                dataChart.push(item?.[1])
+            })
+        }
+
+        ref.current.chart = c3.generate({
+            bindto: document.getElementById("weightTaskOrganization"),
+
+            data: {
+                x: "x",
+                columns: [
+                    titleX,
+                    dataChart
+                ],
+                type: 'bar'
+            },
+
+            padding: {
+                top: 20,
+                bottom: 50,
+                right: 20
+            },
+            
+            axis: {
+                x: {
+                    type: 'category',
+                    tick: {
+                        format: function (index) {
+                            let result = customAxisC3js('trendsInUnitChart', titleX.filter((item, i) => i > 0), index);
+                            return result;
+                        }
+                    }
+                },
+                y: {
+                    label: {
+                        text: translate('task.task_management.load_task'),
+                        position: 'outer-top',
+                    },
+
+                }
+            },
+
+            bar: {
+                width: {
+                    ratio: titleX?.length < 5 ? 0.3 : 0.7 // this makes bar width 50% of length between ticks
+                }
+            },
+
+            tooltip: {
+                format: {
+                    title: function (d) {
+                        if (titleX?.length > 1)
+                            return titleX?.[d + 1];
+                    }
+                }
+            }
+        });
+    }
+
     const showLoadTaskDoc = () => {
         Swal.fire({
             icon: "question",
@@ -186,7 +256,7 @@ const LoadTaskOrganizationChart = (props) => {
             <div className="box box-primary">
                 <div className="box-header with-border">
                     <div className="box-title" >
-                        {translate('task.task_management.load_task_chart_unit')} {startMonthTitle}<i className="fa fa-fw fa-caret-right"></i>{endMonthTitle}
+                        {translate('task.task_management.load_task_chart_unit')} {typeChart === "followTime" ? <>{startMonthTitle}<i className="fa fa-fw fa-caret-right"></i>{endMonthTitle}</> : <>{startMonthTitle}</>}
                         {
                             idsUnit && idsUnit.length < 2 ?
                                 <>
@@ -206,16 +276,18 @@ const LoadTaskOrganizationChart = (props) => {
                     </div>
                 </div>
                 <div className="box-body">
-                    { tasks && tasks.organizationUnitTasks 
+                    { (tasks?.organizationUnitTasks && typeChart === "followTime") || tasks?.organizationUnitTasksInMonth
                         ? <section id={"weightTaskOrganizationChart"} className="c3-chart-container enable-pointer">
                             <div id="weightTaskOrganization"></div>
-                            <CustomLegendC3js
-                                chart={ref.current.chart}
-                                chartId={"weightTaskOrganizationChart"}
-                                legendId={"weightTaskOrganizationChartLegend"}
-                                title={`${translate('general.list_unit')} (${dataChart?.length > 0 ? dataChart?.length : 0})`}
-                                dataChartLegend={dataChart && dataChart.map(item => item[0])}
-                            />
+                            { typeChart === "followTime" 
+                                && <CustomLegendC3js
+                                    chart={ref.current.chart}
+                                    chartId={"weightTaskOrganizationChart"}
+                                    legendId={"weightTaskOrganizationChartLegend"}
+                                    title={`${translate('general.list_unit')} (${dataChart?.length > 0 ? dataChart?.length : 0})`}
+                                    dataChartLegend={dataChart && dataChart.map(item => item[0])}
+                                />
+                            }
                         </section>  
                         : <section>{translate('kpi.organizational_unit.dashboard.no_data')}</section>
                     }   

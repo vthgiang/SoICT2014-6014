@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { ProjectActions } from "../../redux/actions";
@@ -6,7 +6,10 @@ import { UserActions } from '../../../super-admin/user/redux/actions';
 import moment from 'moment';
 import momentDurationFormatSetup from 'moment-duration-format';
 import { getAmountOfWeekDaysInMonth } from '../projects/functionHelper';
-import { numberWithCommas } from '../../../task/task-management/component/functionHelpers';
+import { checkIsNullUndefined, numberWithCommas } from '../../../task/task-management/component/functionHelpers';
+import { CircularProgressbar } from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
+import { Collapse } from 'react-bootstrap';
 
 momentDurationFormatSetup(moment);
 const MILISECS_TO_DAYS = 86400000;
@@ -52,13 +55,38 @@ const TabProjectReportMember = (props) => {
                     return currentTaskItem;
                 }
             })
+            let currentMemberPointSum = 0;
+            let taskWithMemberItemForPoints = 0;
             let doingTasks = [], notStartedYetTasks = [];
             let onScheduleTasks = [], onBudgetTasks = [];
             let overdueTasks = [], behindScheduleTasks = [], behindBudgetTasks = []
             let totalTimeLogsMilliseconds = 0, totalActualCostForMember = 0, totalBudgetForMember = 0;
-            let tasksWithBudgetAndCost = [];
+            let tasksWithBudgetAndCostAndPointForMember = [];
             // Lấy tất cả thông số trên qua vòng lặp tasksWithMemberArr
             for (let tasksWithMemberItem of tasksWithMemberArr) {
+                // console.log('tasksWithMemberItem', tasksWithMemberItem)
+                // Tính điểm số của nhân viên trong task
+                let currentMemberCurrentTaskPoint = 0;
+                const resEvalItem = tasksWithMemberItem.overallEvaluation?.responsibleEmployees?.find(resItem => String(resItem.employee?._id) === String(memberItem.id));
+                const accEvalItem = tasksWithMemberItem.overallEvaluation?.accountableEmployees?.find(accItem => String(accItem.employee?._id) === String(memberItem.id));
+                // Nếu task hiện tại mà endDate <= now thì tiếp tục, còn không bỏ qua
+                if (moment(tasksWithMemberItem.endDate).isSameOrBefore(moment())) {
+                    // console.log('resEvalItem', memberItem.name, resEvalItem)
+                    // console.log('accEvalItem', memberItem.name, accEvalItem)
+                    if (resEvalItem) {
+                        let curAutomaticPoint = checkIsNullUndefined(resEvalItem.automaticPoint) ? 0 : resEvalItem.automaticPoint;
+                        let curEmployeePoint = checkIsNullUndefined(resEvalItem.employeePoint) ? 0 : resEvalItem.employeePoint;
+                        let curAccountablePoint = checkIsNullUndefined(resEvalItem.accountablePoint) ? 0 : resEvalItem.accountablePoint;
+                        currentMemberCurrentTaskPoint = (curAutomaticPoint + curEmployeePoint + curAccountablePoint) / 3;
+                    }
+                    if (accEvalItem) {
+                        let curAutomaticPoint = checkIsNullUndefined(accEvalItem.automaticPoint) ? 0 : accEvalItem.automaticPoint;
+                        let curEmployeePoint = checkIsNullUndefined(accEvalItem.employeePoint) ? 0 : accEvalItem.employeePoint;
+                        currentMemberCurrentTaskPoint = (curAutomaticPoint + curEmployeePoint) / 2;
+                    }
+                }
+                taskWithMemberItemForPoints++;
+                currentMemberPointSum += currentMemberCurrentTaskPoint;
                 // Tính tổng số giờ của nhân viên dành cho task đó
                 const currentTimeLogMember = tasksWithMemberItem.timesheetLogs.filter(item => String(item.creator) === String(memberItem.id));
                 for (let currentTimeLogMemberItem of currentTimeLogMember) {
@@ -85,13 +113,16 @@ const TabProjectReportMember = (props) => {
                     actualCostEachTask += weight * (currentSalary / currentMonthWorkDays) * currentTimeLogMemberItem.duration / MILISECS_TO_DAYS;
                     totalActualCostForMember += actualCostEachTask;
                 }
-                // Push vào tasksWithBudgetAndCost
-                tasksWithBudgetAndCost.push({
+                // Push vào tasksWithBudgetAndCostAndPointForMember
+                tasksWithBudgetAndCostAndPointForMember.push({
                     id: tasksWithMemberItem?._id,
                     code: tasksWithMemberItem?.code,
                     name: tasksWithMemberItem?.name,
                     budgetEachTask: weight * tasksWithMemberItem.estimateNormalCost,
                     actualCostEachTask,
+                    currentMemberCurrentTaskPoint,
+                    startDate: tasksWithMemberItem?.startDate,
+                    endDate: tasksWithMemberItem?.endDate,
                 })
                 // Push vào doingTasks
                 if (moment().isSameOrAfter(moment(tasksWithMemberItem.startDate)) && moment().isBefore(moment(tasksWithMemberItem.endDate))
@@ -130,7 +161,7 @@ const TabProjectReportMember = (props) => {
                 id: memberItem.id,
                 totalTasks: tasksWithMemberArr,
                 name: memberItem.name,
-                tasksWithBudgetAndCost,
+                tasksWithBudgetAndCostAndPointForMember,
                 totalTimeLogs: totalTimeLogsMilliseconds === 0 ? '00:00:00' : moment.duration(totalTimeLogsMilliseconds, 'milliseconds').format('HH:mm:ss'),
                 totalBudgetForMember,
                 totalActualCostForMember,
@@ -141,6 +172,7 @@ const TabProjectReportMember = (props) => {
                 overdueTasks,
                 onBudgetTasks,
                 behindBudgetTasks,
+                currentMemberPoint: currentMemberPointSum / (taskWithMemberItemForPoints === 0 ? 1 : taskWithMemberItemForPoints),
             })
         }
         console.log('result', result);
@@ -189,6 +221,26 @@ const TabProjectReportMember = (props) => {
         return sortedArr;
     }
 
+    // Function để lấy danh sách những nhân viên điểm cao (>= 85)
+    const getMembersWithPoint = (membersData) => {
+        let membersWithPoint = [];
+        membersData.forEach((item) => {
+            const { id, name, tasksWithBudgetAndCostAndPointForMember, currentMemberPoint } = item;
+            if (currentMemberPoint >= 85) {
+                membersWithPoint.push({
+                    id,
+                    name,
+                    tasksWithBudgetAndCostAndPointForMember,
+                    currentMemberPoint,
+                })
+            }
+        });
+        const sortedArr = membersWithPoint.sort((a, b) => {
+            return b.currentMemberPoint - a.currentMemberPoint;
+        });
+        return sortedArr;
+    }
+
     const membersData = preprocessMembersData();
 
     const renderData = (data, paramText) => {
@@ -212,13 +264,77 @@ const TabProjectReportMember = (props) => {
         })
     }
 
+    const [isTableShownArr, setIsTableShownArr] = useState(
+        getMembersWithPoint(membersData)?.map(memberItem => false)
+    )
+
+    const renderHightPointMembers = (data) => {
+        if (data.length === 0) return <div className="col-md-4 statistical-item">Không có thành viên nào</div>
+        return data.map((item, index) => {
+            return (
+                <div key={item?.id} className="col-md-12" style={{ marginBottom: 8 }}>
+                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', backgroundColor: "#fafafa", padding: '10px', borderRadius: '10px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column', marginTop: isTableShownArr[index] ? 10 : 0 }}>
+                            <span style={{ fontWeight: 'bold', fontSize: '20px' }}>{item?.name}</span>
+                            <div style={{ width: '40%', aspectRatio: 1 }}>
+                                <CircularProgressbar value={item?.currentMemberPoint} text={`${item?.currentMemberPoint} / 100`} />
+                            </div>
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column' }}>
+                            <button
+                                onClick={() => {
+                                    const newIsTableShownArr = isTableShownArr.map((isTableItem, isTableIndex) => {
+                                        if (isTableIndex === index) {
+                                            return !isTableItem;
+                                        }
+                                        return isTableItem;
+                                    })
+                                    setIsTableShownArr(newIsTableShownArr);
+                                }}
+                                style={{ alignSelf: 'flex-end' }}
+                                type="button" className="btn btn-link dropdown-toggle" data-toggle="dropdown"
+                                aria-controls="high-points-members-table"
+                                aria-expanded={isTableShownArr[index]}>Hiển thị danh sách công việc
+                            </button>
+                            <Collapse in={isTableShownArr[index]}>
+                                <table id="high-points-members-table" className="table table-striped table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Tên công việc</th>
+                                            <th>Mã công việc</th>
+                                            <th>Thời gian bắt đầu</th>
+                                            <th>Thời gian kết thúc</th>
+                                            <th>Điểm số của nhân viên</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {item?.tasksWithBudgetAndCostAndPointForMember?.map((taskItem, index) => (
+                                            <tr key={index}>
+                                                <td>{taskItem?.name}</td>
+                                                <td>{taskItem?.id}</td>
+                                                <td>{moment(taskItem?.startDate).format('HH:mm DD/MM/YYYY')}</td>
+                                                <td>{moment(taskItem?.endDate).format('HH:mm DD/MM/YYYY')}</td>
+                                                <td>{taskItem?.currentMemberCurrentTaskPoint} / 100</td>
+                                            </tr>
+                                        ))
+                                        }
+                                    </tbody>
+                                </table>
+                            </Collapse>
+                        </div>
+                    </div>
+                </div>
+            )
+        })
+    }
+
     return (
         <React.Fragment>
             <div>
                 <div className="box">
                     <div className="box-body qlcv">
-                        <h4><strong>Các thành viên điểm số cao</strong></h4>
-
+                        <h4><strong>Các thành viên điểm số cao (điểm trung bình lớn hơn hoặc bằng 85)</strong></h4>
+                        {renderHightPointMembers(getMembersWithPoint(membersData))}
                     </div>
                 </div>
                 <div className="box">

@@ -7,11 +7,11 @@ import { ProjectActions } from "../../redux/actions";
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { formatDate } from '../../../../helpers/formatDate';
 import { taskManagementActions } from '../../../task/task-management/redux/actions';
-import { ModalPerformProject } from '../../../task/task-perform/component/modalPerformProject';
 import { getStorage } from '../../../../config';
 import { getCurrentProjectDetails } from './functionHelper';
 import { performTaskAction } from '../../../task/task-perform/redux/actions';
 import Swal from 'sweetalert2';
+import { ModalPerform } from '../../../task/task-perform/component/modalPerform';
 
 const TableTasksProject = (props) => {
     const [state, setState] = useState({
@@ -111,7 +111,7 @@ const TableTasksProject = (props) => {
             currentTaskId: id
         })
         setTimeout(() => {
-            window.$(`#modelPerformProjectTask${id}`).modal('show');
+            window.$(`#modelPerformTask${id}`).modal('show');
         }, 10);
     }
 
@@ -180,7 +180,7 @@ const TableTasksProject = (props) => {
     return (
         <React.Fragment>
             {
-                currentTaskId ? <ModalPerformProject
+                currentTaskId ? <ModalPerform
                     units={units}
                     id={currentTaskId}
                 /> : null

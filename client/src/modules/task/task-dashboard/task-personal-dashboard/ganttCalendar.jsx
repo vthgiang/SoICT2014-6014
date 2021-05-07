@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment'
 import { withTranslate } from 'react-redux-multilingual';
@@ -9,48 +9,40 @@ import { ModalDetailTask } from './modalDetailTask';
 
 import { SelectMulti, Gantt } from '../../../../common-components';
 
-class GanttCalendar extends Component {
-  constructor(props) {
-    super(props);
+function GanttCalendar(props) {
+  const [state, setState] = useState({
+    currentZoom: props.translate('system_admin.system_setting.backup.date'),
+    messages: [],
+    taskStatus: ["inprocess"],
+  })
 
-    this.SEARCH_INFO = {
-      taskStatus: ["inprocess"],
-    }
-    this.state = {
-      currentZoom: this.props.translate('system_admin.system_setting.backup.date'),
-      messages: [],
-      taskStatus: this.SEARCH_INFO.taskStatus,
-
-    };
-  }
-  handleZoomChange = (zoom) => {
-    this.setState({
+  const handleZoomChange = (zoom) => {
+    setState({
+      ...state,
       currentZoom: zoom
     });
   }
-  handleSelectStatus = async (taskStatus) => {
+  const handleSelectStatus = (taskStatus) => {
     if (taskStatus.length === 0) {
       taskStatus = ["inprocess"];
     }
-
-    this.SEARCH_INFO.taskStatus = taskStatus;
+    setState({
+      ...state,
+      taskStatus: taskStatus,
+    });
   }
-  handleSearchData = async () => {
-    let status = this.SEARCH_INFO.taskStatus;
-
-    await this.setState(state => {
-      return {
-        ...state,
-        taskStatus: status
-      }
+  const handleSearchData = () => {
+    let { taskStatus } = state;
+    setState({
+      ...state,
+      taskStatus: taskStatus
     })
-    this.forceUpdate();
   }
 
   // Phân nhóm công việc cá nhân
-  getDataGroupByRole = (data, group, groupName, label, count, line) => {
+  const getDataGroupByRole = (data, group, groupName, label, count, line) => {
     let taskFilter = [];
-    let status = this.state.taskStatus;
+    let status = state.taskStatus;
     let parentCount = 0, currentParent = -1;
     let splitTask = {};
 
@@ -170,8 +162,8 @@ class GanttCalendar extends Component {
   }
 
   // Xử lý công việc cá nhân
-  getdataTask = () => {
-    const { tasks, translate } = this.props;
+  const getdataTask = () => {
+    const { tasks, translate } = props;
     let data = [], line = 0;
     let count = { delay: 0, intime: 0, notAchived: 0 };
 
@@ -180,22 +172,22 @@ class GanttCalendar extends Component {
     let con = tasks && tasks.consultedTasks;
     let inf = tasks && tasks.informedTasks;
 
-    let resData = this.getDataGroupByRole(data, res, 'res', translate('task.task_management.responsible_role'), count, line);
+    let resData = getDataGroupByRole(data, res, 'res', translate('task.task_management.responsible_role'), count, line);
     let data1 = resData.data;
     let count1 = resData.count;
     let line1 = resData.line;
 
-    let accData = this.getDataGroupByRole(data1, acc, 'acc', translate('task.task_management.accountable_role'), count1, line1);
+    let accData = getDataGroupByRole(data1, acc, 'acc', translate('task.task_management.accountable_role'), count1, line1);
     let data2 = accData.data;
     let count2 = accData.count;
     let line2 = accData.line;
 
-    let conData = this.getDataGroupByRole(data2, con, 'con', translate('task.task_management.consulted_role'), count2, line2);
+    let conData = getDataGroupByRole(data2, con, 'con', translate('task.task_management.consulted_role'), count2, line2);
     let data3 = conData.data;
     let count3 = conData.count;
     let line3 = conData.line;
 
-    let infData = this.getDataGroupByRole(data3, inf, 'inf', translate('task.task_management.informed_role'), count3, line3);
+    let infData = getDataGroupByRole(data3, inf, 'inf', translate('task.task_management.informed_role'), count3, line3);
     let dataAllTask = infData.data;
     let countAllTask = infData.count;
     let lineAllTask = infData.line;
@@ -208,8 +200,8 @@ class GanttCalendar extends Component {
   }
 
   // Xử lý công việc đơn vị
-  getdataTaskUnit = () => {
-    const { tasks, unitSelected } = this.props;
+  const getdataTaskUnit = () => {
+    const { tasks, unitSelected } = props;
     const { organizationUnitTasks } = tasks;
     const listtask = organizationUnitTasks && organizationUnitTasks.tasks;
     const tasksOfSelectedUnit = listtask?.filter(x =>
@@ -219,7 +211,7 @@ class GanttCalendar extends Component {
     let data = [];
     let count = { delay: 0, intime: 0, notAchived: 0 };
     let taskFilter = [];
-    let status = this.state.taskStatus;
+    let status = state.taskStatus;
 
     // Lọc công việc theo trạng thái
     for (let i in status) {
@@ -256,7 +248,7 @@ class GanttCalendar extends Component {
       if (groupName == "multipleEmployee") {
         label = "Nhiều người thực hiện";
       }
-      dataEmployee = this.getDataGroupByRole(data, sortTaskObj[groupName], groupName, label, count, line)
+      dataEmployee = getDataGroupByRole(data, sortTaskObj[groupName], groupName, label, count, line)
       data = dataEmployee.data;
       count = dataEmployee.count;
       line = dataEmployee.line;
@@ -417,80 +409,79 @@ class GanttCalendar extends Component {
   //   return { data, count, line };
   // }
 
-  attachEvent = (id) => {
+  const attachEvent = (id) => {
     const taskId = id.split('-')[1];
-    this.props.getTaskById(taskId);
+    props.getTaskById(taskId);
     window.$(`#modal-detail-task-Employee`).modal('show')
   }
 
-  render() {
-    const { translate, unit, tasks } = this.props;
-    const { currentZoom, taskStatus } = this.state;
-    const dataTask = {};
-    const dataCalendar = unit ? this.getdataTaskUnit() : this.getdataTask();
-    dataTask.data = dataCalendar.dataAllTask;
-    const count = dataCalendar.countAllTask;
-    const task = tasks && tasks.task;
+  const { translate, unit, tasks } = props;
+  const { currentZoom, taskStatus } = state;
+  const dataTask = {};
+  const dataCalendar = unit ? getdataTaskUnit() : getdataTask();
+  dataTask.data = dataCalendar.dataAllTask;
+  const count = dataCalendar.countAllTask;
+  const task = tasks && tasks.task;
 
-    console.log('dataCalendar', dataCalendar)
-    console.log('dataTask', dataTask)
+  console.log('dataCalendar', dataCalendar)
+  console.log('dataTask', dataTask)
 
-    return (
-      <div className="gantt qlcv" >
-        <section className="form-inline" style={{ textAlign: "right", marginBottom: "10px" }}>
-          {/* Chọn trạng thái công việc */}
-          <div className="form-group">
-            <label style={{ minWidth: "150px" }}>{translate('task.task_management.task_status')}</label>
+  return (
+    <div className="gantt qlcv" >
+      <section className="form-inline" style={{ textAlign: "right", marginBottom: "10px" }}>
+        {/* Chọn trạng thái công việc */}
+        <div className="form-group">
+          <label style={{ minWidth: "150px" }}>{translate('task.task_management.task_status')}</label>
 
-            <SelectMulti id="multiSelectStatusInCalendar"
-              items={[
-                { value: "inprocess", text: translate('task.task_management.inprocess') },
-                { value: "wait_for_approval", text: translate('task.task_management.wait_for_approval') },
-                { value: "finished", text: translate('task.task_management.finished') },
-                { value: "delayed", text: translate('task.task_management.delayed') },
-                { value: "canceled", text: translate('task.task_management.canceled') },
-              ]}
-              onChange={this.handleSelectStatus}
-              options={{ nonSelectedText: translate('task.task_management.inprocess'), allSelectedText: translate('task.task_management.select_all_status') }}
-              value={taskStatus}>
-            </SelectMulti>
+          <SelectMulti id="multiSelectStatusInCalendar"
+            items={[
+              { value: "inprocess", text: translate('task.task_management.inprocess') },
+              { value: "wait_for_approval", text: translate('task.task_management.wait_for_approval') },
+              { value: "finished", text: translate('task.task_management.finished') },
+              { value: "delayed", text: translate('task.task_management.delayed') },
+              { value: "canceled", text: translate('task.task_management.canceled') },
+            ]}
+            onChange={handleSelectStatus}
+            options={{ nonSelectedText: translate('task.task_management.inprocess'), allSelectedText: translate('task.task_management.select_all_status') }}
+            value={taskStatus}>
+          </SelectMulti>
 
-          </div>
-          <div className="form-group">
-            <button className="btn btn-success" onClick={this.handleSearchData}>{translate('task.task_management.filter')}</button>
-          </div>
-        </section>
+        </div>
+        <div className="form-group">
+          <button className="btn btn-success" onClick={handleSearchData}>{translate('task.task_management.filter')}</button>
+        </div>
+      </section>
 
-        {<ModalDetailTask action={'Employee'} task={task} />}
-        <Gantt
-          ganttData={dataTask}
-          zoom={currentZoom}
-          status={taskStatus}
-          count={dataCalendar.countAllTask}
-          line={dataCalendar.lineAllTask}
-          unit={unit}
-          onZoomChange={this.handleZoomChange}
-          attachEvent={this.attachEvent}
-        />
+      {<ModalDetailTask action={'Employee'} task={task} />}
+      <Gantt
+        ganttData={dataTask}
+        zoom={currentZoom}
+        status={taskStatus}
+        count={dataCalendar.countAllTask}
+        line={dataCalendar.lineAllTask}
+        unit={unit}
+        onZoomChange={handleZoomChange}
+        attachEvent={attachEvent}
+      />
 
-        <div className="form-inline" style={{ textAlign: 'center' }}>
-          <div className="form-group">
-            <div id="in-time"></div>
-            <label id="label-for-calendar">{translate('task.task_management.in_time')}({count && count.intime ? count.intime : 0})</label>
-          </div>
-          <div className="form-group">
-            <div id="delay"></div>
-            <label id="label-for-calendar">{translate('task.task_management.delayed_time')}({count && count.delay ? count.delay : 0})</label>
-          </div>
-          <div className="form-group">
-            <div id="not-achieved"></div>
-            <label id="label-for-calendar">{translate('task.task_management.not_achieved')}({count && count.notAchived ? count.notAchived : 0})</label>
-          </div>
+      <div className="form-inline" style={{ textAlign: 'center' }}>
+        <div className="form-group">
+          <div id="in-time"></div>
+          <label id="label-for-calendar">{translate('task.task_management.in_time')}({count && count.intime ? count.intime : 0})</label>
+        </div>
+        <div className="form-group">
+          <div id="delay"></div>
+          <label id="label-for-calendar">{translate('task.task_management.delayed_time')}({count && count.delay ? count.delay : 0})</label>
+        </div>
+        <div className="form-group">
+          <div id="not-achieved"></div>
+          <label id="label-for-calendar">{translate('task.task_management.not_achieved')}({count && count.notAchived ? count.notAchived : 0})</label>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
 }
+
 
 function mapState(state) {
   const { tasks } = state;

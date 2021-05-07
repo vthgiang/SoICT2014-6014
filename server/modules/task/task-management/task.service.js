@@ -377,7 +377,7 @@ exports.getPaginatedTasks = async (portal, task) => {
             ]
         })
 
-        const getIdResponsible = responsible && responsible.length > 0 ? responsible.map(o => o._id): [];
+        const getIdResponsible = responsible && responsible.length > 0 ? responsible.map(o => o._id) : [];
 
         keySearch = {
             ...keySearch,
@@ -404,7 +404,7 @@ exports.getPaginatedTasks = async (portal, task) => {
                 }
             ]
         })
-        const getIdAccountable = accountable && accountable.length > 0 ? accountable.map(o => o._id): [];
+        const getIdAccountable = accountable && accountable.length > 0 ? accountable.map(o => o._id) : [];
     }
 
     // Tìm kiếm theo người thiết lập
@@ -425,7 +425,7 @@ exports.getPaginatedTasks = async (portal, task) => {
             ]
         })
 
-        const getIdCreator = creator && creator.length > 0 ? creator.map(o => o._id): [];
+        const getIdCreator = creator && creator.length > 0 ? creator.map(o => o._id) : [];
 
         keySearch = {
             ...keySearch,
@@ -1375,8 +1375,8 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (portal, task) => {
  * Lấy công việc quan sát theo id người dùng
  */
 exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by_user") => {
-    var { perPage, page, user, organizationalUnit, status, priority, special, name, 
-        startDate, endDate, responsibleEmployees, 
+    var { perPage, page, user, organizationalUnit, status, priority, special, name,
+        startDate, endDate, responsibleEmployees,
         accountableEmployees, creatorEmployees, organizationalUnitRole
     } = task;
     var tasks;
@@ -1420,7 +1420,7 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
             ]
         })
 
-        const getIdResponsible = responsible && responsible.length > 0 ? responsible.map(o => o._id): [];
+        const getIdResponsible = responsible && responsible.length > 0 ? responsible.map(o => o._id) : [];
 
         keySearch = {
             ...keySearch,
@@ -1448,7 +1448,7 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
             ]
         })
 
-        const getIdAccountable = accountable && accountable.length > 0 ? accountable.map(o => o._id): [];
+        const getIdAccountable = accountable && accountable.length > 0 ? accountable.map(o => o._id) : [];
 
         keySearch = {
             ...keySearch,
@@ -1476,7 +1476,7 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
             ]
         })
 
-        const getIdCreator = creator && creator.length > 0 ? creator.map(o => o._id): [];
+        const getIdCreator = creator && creator.length > 0 ? creator.map(o => o._id) : [];
 
         keySearch = {
             ...keySearch,
@@ -2176,7 +2176,7 @@ exports.createProjectTask = async (portal, task) => {
         collaboratedWithOrganizationalUnits: task.collaboratedWithOrganizationalUnits,
         creator: task.creator, //id của người tạo
         name: task.name,
-        description: task.description,
+        description: task.description || '',
         startDate: startDate,
         endDate: endDate,
         priority: task.priority,
@@ -2194,7 +2194,6 @@ exports.createProjectTask = async (portal, task) => {
         taskProject,
         estimateNormalTime: task.estimateNormalTime,
         estimateOptimisticTime: task.estimateOptimisticTime,
-        estimatePessimisticTime: task.estimatePessimisticTime,
         estimateNormalCost: task.estimateNormalCost,
         estimateMaxCost: task.estimateMaxCost,
         preceedingTasks: task.preceedingTasks,
@@ -2707,7 +2706,7 @@ exports.getTaskAnalysOfUser = async (portal, userId, type, date) => {
     if (firstDay && lastDay) {
         lastDay = new Date(lastDay);
         lastDay.setMonth(lastDay.getMonth() + 1);
-        
+
         keySeachDateTime = {
             ...keySeachDateTime,
             $or: [
@@ -2724,13 +2723,13 @@ exports.getTaskAnalysOfUser = async (portal, userId, type, date) => {
             ...keySeachDateTime,
             "$and": [
                 {
-                    "$expr": { 
-                        "$eq": [ { "$month": "$startDate" }, firstDay.getMonth() + 1 ]
+                    "$expr": {
+                        "$eq": [{ "$month": "$startDate" }, firstDay.getMonth() + 1]
                     }
                 },
                 {
-                    "$expr": { 
-                        "$eq": [ { "$year": "$startDate" }, firstDay.getFullYear() ]
+                    "$expr": {
+                        "$eq": [{ "$year": "$startDate" }, firstDay.getFullYear()]
                     }
                 }
             ]
@@ -2743,13 +2742,13 @@ exports.getTaskAnalysOfUser = async (portal, userId, type, date) => {
             ...keySeachDateTime,
             "$and": [
                 {
-                    "$expr": { 
-                        "$eq": [ { "$month": "$endDate" }, lastDay.getMonth() + 1 ]
+                    "$expr": {
+                        "$eq": [{ "$month": "$endDate" }, lastDay.getMonth() + 1]
                     }
                 },
                 {
-                    "$expr": { 
-                        "$eq": [ { "$year": "$endDate" }, lastDay.getFullYear() ]
+                    "$expr": {
+                        "$eq": [{ "$year": "$endDate" }, lastDay.getFullYear()]
                     }
                 }
             ]
@@ -2761,7 +2760,7 @@ exports.getTaskAnalysOfUser = async (portal, userId, type, date) => {
             keySeachDateTime
         ]
     });
-    
+
     switch (type) {
         case 'priority':
             let urgent = tasks.filter(task => task.priority === 5); // các cv khẩn cấp
@@ -2899,6 +2898,8 @@ exports.getTasksByProject = async (portal, projectId) => {
         .populate({ path: "consultedEmployees", select: "_id name" })
         .populate({ path: "informedEmployees", select: "_id name" })
         .populate({ path: "creator", select: "_id name" })
-        .populate({ path: "preceedingTasks", select: "_id name" });
+        .populate({ path: "preceedingTasks", select: "_id name" })
+        .populate({ path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" })
+        .populate({ path: "overallEvaluation.accountableEmployees.employee", select: "_id name" });
     return tasks;
 }

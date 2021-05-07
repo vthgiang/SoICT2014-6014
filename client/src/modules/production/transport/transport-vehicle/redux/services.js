@@ -3,6 +3,7 @@ export const transportVehicleServices = {
     getAllTransportVehicles,
     createTransportVehicle,
     createTransportPlanVehicleNotDuplicate,
+    editTransportVehicle,
 }
 
 function getAllTransportVehicles(queryData) {
@@ -47,4 +48,18 @@ function createTransportPlanVehicleNotDuplicate(id, data) {
         true,
         "manage_transport"
     )    
+}
+
+function editTransportVehicle(id, data) {
+    console.log(id, data, " aaaaaaaaaaaaaaaaaaaaaa")
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/transport-vehicle/${id}`,
+            method: "PATCH",
+            data: data
+        },
+        true,
+        true,
+        "manage_transport"
+    )     
 }

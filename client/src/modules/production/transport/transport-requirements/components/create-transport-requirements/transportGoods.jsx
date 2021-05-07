@@ -136,7 +136,22 @@ function TransportGoods(props) {
         }
         setListGoodsChosen(listGoodsChosen => [...listGoodsChosen, good]);
     }
-
+    useEffect(() => {
+        if(goods && goods.length!==0){
+            let goodList = [];
+            goods.map(good => {
+                goodList.push({
+                    _id: good?.good?._id,
+                    code: good?.good.code ? good.good.code : "",
+                    name: good?.good.name ? good?.good.name : "",
+                    quantity: good?.quantity,
+                    volume: good.volume?good.volume:10,
+                    payload: good.payload?good.payload:10,  
+                })
+            })
+            setListGoodsChosen(goodList);
+        }
+    }, [goods])
     useEffect(() => {
         console.log(listGoodsChosen, " danh sach hang hoa chon");
         callBackState(listGoodsChosen);

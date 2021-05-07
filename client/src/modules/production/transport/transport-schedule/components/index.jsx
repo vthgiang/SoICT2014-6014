@@ -9,7 +9,15 @@ import { ArrangeOrdinalTransport } from './arrangeOrdinalTransport';
 class TransportSchedule extends Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            data: ''
+        };
+        // this.reloadOrdinalTransport=this.reloadOrdinalTransport.bind(this);
+    }
+    reloadOrdinalTransport = () => {
+        this.setState({
+            data: new Date()
+        });
     }
     render() {
         return (
@@ -22,13 +30,17 @@ class TransportSchedule extends Component {
                     <div className="tab-pane active" id="arrange-vehicles-and-goods">
                         <LazyLoadComponent
                         >
-                            <ArrangeVehiclesAndGoods />
+                            <ArrangeVehiclesAndGoods
+                                reloadOrdinalTransport={this.reloadOrdinalTransport}
+                            />
                         </LazyLoadComponent>
                     </div>
                     <div className="tab-pane" id="arrange-ordinal-transport">
                         <LazyLoadComponent
                         >
-                            <ArrangeOrdinalTransport />
+                            <ArrangeOrdinalTransport
+                                key={this.state.data}
+                            />
                         </LazyLoadComponent>
                     </div>
                 </div>

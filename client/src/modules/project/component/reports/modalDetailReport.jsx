@@ -8,13 +8,13 @@ import { UserActions } from '../../../super-admin/user/redux/actions';
 import { taskManagementActions } from '../../../task/task-management/redux/actions';
 import moment from 'moment';
 import { getStorage } from '../../../../config';
-import { getCurrentProjectDetails } from '../projects/functionHelper';
+import { checkIfAbleToCRUDProject, getCurrentProjectDetails } from '../projects/functionHelper';
 import TabProjectReportTime from './tabProjectReportTime';
 import TabProjectReportCost from './tabProjectReportCost';
 import TabProjectReportMember from './tabProjectReportMember';
 
 const ModalDetailReport = (props) => {
-    const { projectDetailId, projectDetail, translate, project, tasks } = props;
+    const { projectDetailId, projectDetail, translate, project, tasks, user } = props;
     const userId = getStorage("userId");
     const [currentProjectId, setCurrentProjectId] = useState('');
     const currentTasks = tasks?.tasksbyproject;
@@ -43,7 +43,10 @@ const ModalDetailReport = (props) => {
                     <ul className="nav nav-tabs">
                         <li className="active"><a href="#project-report-time" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Tiến độ dự án</a></li>
                         <li><a href="#project-report-cost" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Chi phí dự án</a></li>
-                        <li><a href="#project-report-member" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Thành viên dự án</a></li>
+                        {
+                            checkIfAbleToCRUDProject({ project, user, projectDetailId }) &&
+                            <li><a href="#project-report-member" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Thành viên dự án</a></li>
+                        }
                     </ul>
                     <div className="tab-content">
                         {/** Tab báo cáo tiến độ */}
@@ -59,13 +62,17 @@ const ModalDetailReport = (props) => {
                             </LazyLoadComponent>
                         </div>
                         {/** Tab báo cáo thành viên */}
-                        <div className="tab-pane" id="project-report-member">
-                            <LazyLoadComponent
-                                key="TabProjectReportMember"
-                            >
-                                <TabProjectReportMember currentTasks={currentTasks} projectDetail={projectDetail} />
-                            </LazyLoadComponent>
-                        </div>
+                        {
+                            checkIfAbleToCRUDProject({ project, user, projectDetailId }) &&
+                            <div className="tab-pane" id="project-report-member">
+                                <LazyLoadComponent
+                                    key="TabProjectReportMember"
+                                >
+                                    <TabProjectReportMember currentTasks={currentTasks} projectDetail={projectDetail} />
+                                </LazyLoadComponent>
+                            </div>
+                        }
+
                     </div>
                 </div>
             </DialogModal>

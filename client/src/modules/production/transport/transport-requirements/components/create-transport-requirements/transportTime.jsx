@@ -12,7 +12,7 @@ import { GoodActions} from '../../../../common-production/good-management/redux/
 import { validate } from 'uuid';
 
 function TransportTime(props) {
-    const {callBackState} = props;
+    const {callBackState, timeRequested} = props;
 
     const [currentTime, setCurrentTime] = useState({
         time: "",
@@ -46,6 +46,19 @@ function TransportTime(props) {
         console.log(listTimeChosen, " danh sach thoi gian lua chon");
         callBackState(listTimeChosen);
     }, [listTimeChosen])
+
+    useEffect(() => {
+        if(timeRequested && timeRequested.length!==0){
+            let list = [];
+            timeRequested.map(time => {
+                list.push({
+                    time: time.timeRequest,
+                    detail: time.description,
+                })
+            })
+            setListTimeChosen(list);
+        }
+    }, [timeRequested])
     return (
         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <fieldset className="scheduler-border">

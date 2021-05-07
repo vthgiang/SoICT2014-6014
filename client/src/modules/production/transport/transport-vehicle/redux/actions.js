@@ -5,6 +5,7 @@ export const transportVehicleActions = {
     createTransportVehicle,
     getAllTransportVehicles,
     createTransportPlanVehicleNotDuplicate,
+    editTransportVehicle
 }
 
 function getAllTransportVehicles(queryData) {
@@ -74,6 +75,28 @@ function createTransportPlanVehicleNotDuplicate(id, data) {
             .catch((error) => {
                 dispatch({
                     type: transportVehicleConstants.CREATE_TRANSPORT_PLAN_VEHICLE_NOT_DUPLICATE_FAILURE,
+                    error
+                });
+            });
+    }
+}
+
+function editTransportVehicle(id, data) {
+    return (dispatch) => {
+        dispatch({
+            type: transportVehicleConstants.EDIT_TRANSPORT_VEHICLE_REQUEST
+        });
+        transportVehicleServices
+            .editTransportVehicle(id, data)
+            .then((res) => {
+                dispatch({
+                    type: transportVehicleConstants.EDIT_TRANSPORT_VEHICLE_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch((error) => {
+                dispatch({
+                    type: transportVehicleConstants.EDIT_TRANSPORT_VEHICLE_FAILURE,
                     error
                 });
             });

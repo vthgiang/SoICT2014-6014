@@ -5,10 +5,30 @@ import { DialogModal, ExportExcel, ImportFileExcel } from '../../../../common-co
 import { UserActions } from '../../../super-admin/user/redux/actions'
 import { taskManagementActions } from '../../../task/task-management/redux/actions'
 import { ProjectActions } from '../../redux/actions'
+import { getCurrentProjectDetails } from '../projects/functionHelper'
 
 const ModalExcelImport = (props) => {
     const [state, setState] = useState({});
-    const { translate } = props;
+    const { translate, project } = props;
+    const projectDetail = getCurrentProjectDetails(project);
+    // console.log(projectDetail)
+
+    const getEmailMembers = () => {
+        let resultArr = [];
+        resultArr.push(projectDetail.creator.email);
+        for (let managerItem of projectDetail.projectManager) {
+            if (!resultArr.includes(managerItem.email)) {
+                resultArr.push(managerItem.email)
+            }
+        }
+        for (let employeeItem of projectDetail.responsibleEmployees) {
+            if (!resultArr.includes(employeeItem.email)) {
+                resultArr.push(employeeItem.email)
+            }
+        }
+        return resultArr;
+    }
+
     const configData = {
         sheets: {
             description: "Tên các sheet",
@@ -39,14 +59,24 @@ const ModalExcelImport = (props) => {
             value: "Thời gian ước lượng"
         },
         estimateOptimisticTime: {
-            columnName: "Thời gian ước lượng lạc quan",
-            description: "Thời gian ước lượng lạc quan",
-            value: "Thời gian ước lượng lạc quan"
+            columnName: "Thời gian ước lượng thoả hiệp",
+            description: "Thời gian ước lượng thoả hiệp",
+            value: "Thời gian ước lượng thoả hiệp"
         },
-        estimatePessimisticTime: {
-            columnName: "Thời gian ước lượng bi quan",
-            description: "Thời gian ước lượng bi quan",
-            value: "Thời gian ước lượng bi quan"
+        emailResponsibleEmployees: {
+            columnName: "Email thành viên thực hiện",
+            description: "Email thành viên thực hiện",
+            value: "Email thành viên thực hiện"
+        },
+        emailAccountableEmployees: {
+            columnName: 'Email thành viên phê duyệt',
+            description: 'Email thành viên phê duyệt',
+            value: 'Email thành viên phê duyệt'
+        },
+        emailProjectMembers: {
+            columnName: "Danh sách email thành viên dự án",
+            description: "Danh sách email thành viên dự án",
+            value: "Danh sách email thành viên dự án",
         },
     }
 
@@ -64,27 +94,47 @@ const ModalExcelImport = (props) => {
                                 { key: "name", value: "Tên công việc" },
                                 { key: 'predecessors', value: 'Công việc tiền nhiệm' },
                                 { key: "estimateNormalTime", value: "Thời gian ước lượng" },
-                                { key: 'estimateOptimisticTime', value: 'Thời gian ước lượng lạc quan' },
-                                { key: "estimatePessimisticTime", value: "Thời gian ước lượng bi quan" },
+                                { key: 'estimateOptimisticTime', value: 'Thời gian ước lượng thoả hiệp' },
+                                { key: 'emailResponsibleEmployees', value: 'Email thành viên thực hiện' },
+                                { key: 'emailAccountableEmployees', value: 'Email thành viên phê duyệt' },
+                                { key: 'emailProjectMembers', value: 'Danh sách email thành viên dự án' },
                             ],
-                            data: [
-                                {
-                                    code: 'A',
-                                    name: "Công việc A",
-                                    estimateOptimisticTime: 2,
-                                    estimateNormalTime: 5,
-                                    estimatePessimisticTime: 8,
-                                    predecessors: '',
-                                },
-                                {
-                                    code: 'B',
-                                    name: "Công việc B",
-                                    estimateOptimisticTime: 5,
-                                    estimateNormalTime: 8,
-                                    estimatePessimisticTime: 10,
-                                    predecessors: 'A',
+                            data: getEmailMembers().map((emailItem, emailIndex) => {
+                                if (emailIndex === 0) {
+                                    return {
+                                        code: 'A',
+                                        name: "Công việc A",
+                                        estimateOptimisticTime: 2,
+                                        estimateNormalTime: 5,
+                                        predecessors: '',
+                                        responsibleEmployees: 'abc.vnist@gmail.com',
+                                        accountableEmployees: 'xyz.vnist@gmail.com',
+                                        emailProjectMembers: emailItem,
+                                    }
                                 }
-                            ]
+                                if (emailIndex === 1) {
+                                    return {
+                                        code: 'B',
+                                        name: "Công việc B",
+                                        estimateOptimisticTime: 5,
+                                        estimateNormalTime: 8,
+                                        predecessors: 'A',
+                                        responsibleEmployees: 'abc.vnist@gmail.com, abc2.vnist@gmail.com',
+                                        accountableEmployees: 'xyz.vnist@gmail.com, xyz2.vnist@gmail.com',
+                                        emailProjectMembers: emailItem,
+                                    }
+                                }
+                                return {
+                                    code: '',
+                                    name: "",
+                                    estimateOptimisticTime: '',
+                                    estimateNormalTime: '',
+                                    predecessors: '',
+                                    responsibleEmployees: '',
+                                    accountableEmployees: '',
+                                    emailProjectMembers: emailItem,
+                                }
+                            })
                         }
                     ]
                 },
@@ -97,7 +147,6 @@ const ModalExcelImport = (props) => {
         let data = state.data; // mảng các công việc cpm tương ứng
         // let params = { limit }
         // props.importCPM({ data }, params);
-        // console.log('last data', data);
         props.importCPM(data);
     }
 
@@ -111,16 +160,19 @@ const ModalExcelImport = (props) => {
 
     const getDataImportCPM = (data) => {
         let newData = data.map(u => {
-            const {code, name, predecessors, estimateNormalTime, estimateOptimisticTime, estimatePessimisticTime} = u;
+            const { code, name, predecessors, estimateNormalTime, estimateOptimisticTime, emailResponsibleEmployees, emailAccountableEmployees } = u;
             // console.log('predecessors', predecessors)
             let preceedingTasks = predecessors === null || predecessors === '' || predecessors === undefined ? [] : predecessors.split(',');
+            let formatEmailResponsibleEmployees = emailResponsibleEmployees === null || emailResponsibleEmployees === '' || emailResponsibleEmployees === undefined ? [] : emailResponsibleEmployees.split(',');
+            let formatEmailAccountableEmployees = emailAccountableEmployees === null || emailAccountableEmployees === '' || emailAccountableEmployees === undefined ? [] : emailAccountableEmployees.split(',');
             return {
                 code: code.trim(),
                 name: name.trim(),
                 preceedingTasks,
                 estimateNormalTime,
                 estimateOptimisticTime,
-                estimatePessimisticTime,
+                emailResponsibleEmployees: formatEmailResponsibleEmployees,
+                emailAccountableEmployees: formatEmailAccountableEmployees,
             }
         });
         return newData;

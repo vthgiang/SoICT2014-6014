@@ -1,16 +1,14 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-class ServerResponseAlert extends Component {
+const ServerResponseAlert = (props) => {
+    const { translate} = props;
+    const {type = null, title = null,content = []} = props;
+ 
 
-    constructor(props) {
-        super(props);
-        this.state = {};
-    }
+    const checkTranslateExist = (code) => {
 
-    checkTranslateExist = (code) => {
-        const { translate } = this.props;
         const subCode = code.split('.');
 
         if (subCode.length === 1) {
@@ -34,23 +32,17 @@ class ServerResponseAlert extends Component {
         }
     }
 
-    render() {
-        const { translate } = this.props;
-        const { type = null, title = null, content = [] } = this.props;
-
-        return (
-            <React.Fragment>
-                <div className="notification-title"><i></i> {translate(title)}</div>
-                {
-                    content.map((message, i) => {
-                        return this.checkTranslateExist(message) ?
-                            <p key={message}>{content.length > 1 ? `${i + 1}. ` : null}{translate(message)}</p> :
-                            <p key={message}>{content.length > 1 ? `${i + 1}. ` : null}{message}</p>;
-                    })
-                }
-            </React.Fragment>
-        );
-    }
+    return (
+        <React.Fragment>
+            <div className="notification-title"><i></i> {translate(title)}</div>
+            {
+                content.map((message, i) => {
+                    return checkTranslateExist(message) ?
+                        <p key={message}>{content.length > 1 ? `${i + 1}. ` : null}{translate(message)}</p> :
+                        <p key={message}>{content.length > 1 ? `${i + 1}. ` : null}{message}</p>;
+                })
+            }
+        </React.Fragment>
+    );
 }
-
 export default connect(null, null)(withTranslate(ServerResponseAlert));

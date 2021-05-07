@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import parse from 'html-react-parser';
@@ -8,23 +8,22 @@ import './actionTab.css';
 import { taskManagementActions } from "../../task-management/redux/actions";
 
 import { performTaskAction } from '../redux/actions';
-class SubTaskTab extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {};
-    }
 
-    componentDidMount = () => {
-        if (this.props.location) { // Nếu là trang trực tiếp (trong Route)
-            const { taskId } = qs.parse(this.props.location.search, { ignoreQueryPrefix: true });
+function SubTaskTab(props) {
+
+    const [state, setState] = useState({});
+
+    useEffect(() => {
+        if (props.location) { // Nếu là trang trực tiếp (trong Route)
+            const { taskId } = qs.parse(props.location.search, { ignoreQueryPrefix: true });
             if (taskId) {
-                this.props.getTaskById(taskId);
-                this.props.getSubTask(taskId);
+                props.getTaskById(taskId);
+                props.getSubTask(taskId);
             }
         }
-    }
+    })
 
-    formatDate(date) {
+    const formatDate = (date) => {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -38,32 +37,31 @@ class SubTaskTab extends Component {
         return [day, month, year].join('/');
     }
 
-    render() {
-        const { translate, tasks } = this.props;
-        var subtasks = tasks.subtasks;
+    const { translate, tasks } = props;
+    var subtasks = tasks.subtasks;
 
-        return (
-            <div>
-                {subtasks && subtasks.length > 0 &&
-                    subtasks.map(item => {
-                        return (
-                            <div className="item-box" key={item._id}>
-                                <strong><a href={`/task?taskId=${item._id}`} target="_blank" >{item.name} </a></strong>
-                                <span>{item.status}, </span>
-                                <span>{item.progress}%, </span>
-                                <span>{this.formatDate(item.startDate)} - {this.formatDate(item.endDate)}</span>
-                                <div>
-                                    {parse(item.description)}
-                                </div>
+    return (
+        <div>
+            {subtasks && subtasks.length > 0 &&
+                subtasks.map(item => {
+                    return (
+                        <div className="item-box" key={item._id}>
+                            <strong><a href={`/task?taskId=${item._id}`} target="_blank" >{item.name} </a></strong>
+                            <span>{item.status}, </span>
+                            <span>{item.progress}%, </span>
+                            <span>{formatDate(item.startDate)} - {formatDate(item.endDate)}</span>
+                            <div>
+                                {parse(item.description)}
                             </div>
-                        )
-                    })}
+                        </div>
+                    )
+                })}
 
-                {subtasks && subtasks.length == 0 && <strong>{translate("task.task_perform.none_subtask")}</strong>}
-            </div>
-        )
-    }
+            {subtasks && subtasks.length == 0 && <strong>{translate("task.task_perform.none_subtask")}</strong>}
+        </div>
+    )
 }
+
 
 function mapState(state) {
     const { tasks, performtasks, user, auth } = state;
