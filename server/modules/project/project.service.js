@@ -34,14 +34,14 @@ exports.get = async (portal, query) => {
         //     page: query.page
         // }
     }
-    options = {
+    options = userId ? {
         ...options,
         $or: [
             { 'projectManager': userId },
             { 'responsibleEmployees': userId },
             { 'creator': userId }
         ]
-    }
+    } : {};
     let project;
     if (query.calledId === "paginate") {
         project = await Project(

@@ -76,15 +76,25 @@ const EvaluateByResponsibleEmployeeProject = (props) => {
         }, 10);
     }
 
-    const handleSaveEvalResult = () => {
-        props.evaluateTaskByResponsibleEmployeesProject({
+    // const handleSaveEvalResult = () => {
+    //     props.evaluateTaskByResponsibleEmployeesProject({
+    //         userId,
+    //         taskAutomaticPoint: Number(currentTaskAutomaticPoint),
+    //         automaticPoint: Number(currentUserAutomaticPoint),
+    //         employeePoint: Number(currentUserHandPoint),
+    //         progress: currentProgress,
+    //     }, task._id)
+    // }
+
+    useEffect(() => {
+        props.handleSaveResponsibleData({
             userId,
             taskAutomaticPoint: Number(currentTaskAutomaticPoint),
             automaticPoint: Number(currentUserAutomaticPoint),
             employeePoint: Number(currentUserHandPoint),
             progress: currentProgress,
-        }, task._id)
-    }
+        })
+    }, [currentProgress, currentUserHandPoint])
 
     return (
         <React.Fragment>
@@ -102,9 +112,9 @@ const EvaluateByResponsibleEmployeeProject = (props) => {
                 />
 
                 <fieldset className="scheduler-border">
-                    <div className="row">
+                    {/* <div className="row">
                         <button className="btn btn-success pull-right" style={{ marginRight: 10 }} onClick={() => handleSaveEvalResult()}>Lưu kết quả đánh giá</button>
-                    </div>
+                    </div> */}
 
                     <legend className="scheduler-border">Thông tin công việc</legend>
                     <div className="row">

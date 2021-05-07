@@ -14,6 +14,8 @@ function RequestToCloseProjectTaskModal(props) {
     const [status, setStatus] = useState(task?.requestToCloseTask?.taskStatus ? task.requestToCloseTask.taskStatus : 'finished');
     const [description, setDescription] = useState();
     const [descriptionDefault, setDescriptionDefault] = useState();
+    const [resData, setResData] = useState();
+    const [accData, setAccData] = useState();
 
     useEffect(() => {
         setDescriptionDefault(task?.requestToCloseTask?.description);
@@ -41,23 +43,33 @@ function RequestToCloseProjectTaskModal(props) {
     }
 
     const sendRequestCloseTask = () => {
+        props.evaluateTaskByResponsibleEmployeesProject(resData, task._id);
         props.requestAndApprovalCloseTask(id, {
             taskStatus: status,
             description: description,
-            type: 'request'
+            type: 'request',
+            role,
         })
     }
 
     const cancelRequestCloseTask = () => {
-        props.requestAndApprovalCloseTask(id, { type: 'cancel_request' })
+        props.requestAndApprovalCloseTask(id, {
+            type: 'cancel_request',
+            role,
+        })
     }
 
-    const approvalRequestCloseTask = () => {
-        props.requestAndApprovalCloseTask(id, {
+    const approvalRequestCloseTask = async () => {
+        for (let i = 0; i < accData.resEvalArr.length; i++) {
+            await props.evaluateTaskByResponsibleEmployeesProject(accData.resEvalArr[i], task._id);
+        }
+        await props.evaluateTaskByAccountableEmployeesProject(accData.accData, task._id)
+        await props.requestAndApprovalCloseTask(id, {
             requestedBy: requestToCloseTask && requestToCloseTask.requestedBy,
             taskStatus: status,
             description: requestToCloseTask && requestToCloseTask.description,
-            type: 'approval'
+            type: 'approval',
+            role,
         })
 
         window.$(`#modal-request-close-task-${id}`).modal("hide");
@@ -68,7 +80,8 @@ function RequestToCloseProjectTaskModal(props) {
             requestedBy: requestToCloseTask && requestToCloseTask.requestedBy,
             taskStatus: requestToCloseTask && requestToCloseTask.taskStatus,
             description: requestToCloseTask && requestToCloseTask.description,
-            type: 'decline'
+            type: 'decline',
+            role,
         })
 
         setDescriptionDefault(null);
@@ -158,6 +171,14 @@ function RequestToCloseProjectTaskModal(props) {
         )
     }
 
+    const handleSaveResponsibleData = (data) => {
+        setResData(data)
+    }
+
+    const handleSaveAccountableData = (data) => {
+        setAccData(data)
+    }
+
     return (
         <React.Fragment>
             <DialogModal
@@ -168,10 +189,10 @@ function RequestToCloseProjectTaskModal(props) {
                 size={75}
             >
                 {role === "responsible" &&
-                    <EvaluateByResponsibleEmployeeProject role={role} task={task} />
+                    <EvaluateByResponsibleEmployeeProject role={role} task={task} handleSaveResponsibleData={handleSaveResponsibleData} />
                 }
                 {role === "accountable" &&
-                    <EvaluateByAccountableEmployeeProject role={role} task={task} />
+                    <EvaluateByAccountableEmployeeProject role={role} task={task} handleSaveAccountableData={handleSaveAccountableData} handleSaveResponsibleData={handleSaveResponsibleData} />
                 }
 
                 <fieldset className="scheduler-border">
@@ -191,7 +212,9 @@ function mapState(state) {
 
 }
 const actions = {
-    requestAndApprovalCloseTask: performTaskAction.requestAndApprovalCloseTask
+    requestAndApprovalCloseTask: performTaskAction.requestAndApprovalCloseTask,
+    evaluateTaskByResponsibleEmployeesProject: performTaskAction.evaluateTaskByResponsibleEmployeesProject,
+    evaluateTaskByAccountableEmployeesProject: performTaskAction.evaluateTaskByAccountableEmployeesProject,
 }
 
 const connectedRequestToCloseTaskModal = connect(mapState, actions)(withTranslate(RequestToCloseProjectTaskModal))

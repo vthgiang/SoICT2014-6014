@@ -5,10 +5,11 @@ import { withTranslate } from "react-redux-multilingual";
 import { DialogModal, ErrorLabel, QuillEditor, TreeSelect } from '../../../../common-components';
 import { getStorage } from "../../../../config";
 
-import { TaskInformationForm } from './taskInformationForm';
+import { TaskInformationForm } from '../../task-perform/component/taskInformationForm';
 
 import { managerKpiActions } from '../../../kpi/employee/management/redux/actions';
-import { performTaskAction } from '../redux/actions';
+import { performTaskAction } from '../../task-perform/redux/actions';
+import { ProjectActions } from '../../../project/redux/actions';
 
 class ModalEditTaskByResponsibleEmployeeProject extends Component {
 
@@ -40,6 +41,7 @@ class ModalEditTaskByResponsibleEmployeeProject extends Component {
         let department = task.organizationalUnit ? task.organizationalUnit._id : '';
 
         this.props.getAllKpiSetsOrganizationalUnitByMonth(userId, department, date);
+        this.props.getProjectsDispatch({ calledId: "all" });
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -65,7 +67,6 @@ class ModalEditTaskByResponsibleEmployeeProject extends Component {
     getData = (dateParam) => {
         let idUser = getStorage("userId");
         let { task } = this.props;
-
         let evaluations;
 
         let splitter = dateParam.split("-");
@@ -524,6 +525,7 @@ function mapStateToProps(state) {
 const actionGetState = { //dispatchActionToProps
     getAllKpiSetsOrganizationalUnitByMonth: managerKpiActions.getAllKpiSetsOrganizationalUnitByMonth,
     editTaskByResponsibleEmployees: performTaskAction.editTaskByResponsibleEmployees,
+    getProjectsDispatch: ProjectActions.getProjectsDispatch,
 }
 
 const modalEditTaskByResponsibleEmployee = connect(mapStateToProps, actionGetState)(withTranslate(ModalEditTaskByResponsibleEmployeeProject));
