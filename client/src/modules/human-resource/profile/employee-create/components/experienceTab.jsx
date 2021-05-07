@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-
 import { toast } from 'react-toastify';
 import ServerResponseAlert from '../../../../alert/components/serverResponseAlert';
 
@@ -23,13 +22,13 @@ function ExperienceTab(props) {
             return {
                 ...state,
                 id: props.id,
-                experiences: props.employee ? props.employee.experiences : "",
+                experiences: props.employee ? props.employee.experiences : [],
                 professionalSkill: props.employee ? props.employee.professionalSkill : "",
                 foreignLanguage: props.employee ? props.employee.foreignLanguage : "",
                 educationalLevel: props.employee ? props.employee.educationalLevel : "",
             }
         })
-    }, [props.id])
+    }, [props.id, props.employee?.experiences])
 
     /**
      * Function format dữ liệu Date thành string

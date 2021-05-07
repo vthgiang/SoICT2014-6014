@@ -72,6 +72,7 @@ const EmployeeCreateForm = (props) => {
             identityCardAddress: "",
             identityCardDate: formatDate2(Date.now()),
             birthdate: formatDate2(Date.now()),
+            roles: [],
             experiences: [],
             socialInsuranceDetails: [],
         },
@@ -135,6 +136,20 @@ const EmployeeCreateForm = (props) => {
                 [name]: value
             }
         }));
+    }
+
+    /**
+    * Function lưu thông tin chức danh vào state
+    * @param {*} data : dữ liệu về chức danh
+    */
+    const handleChangeRole = (data) => {
+        setState({
+            ...state,
+            employee: {
+                ...employee,
+                roles: [...data]
+            }
+        })
     }
 
     /**
@@ -578,6 +593,7 @@ const EmployeeCreateForm = (props) => {
                             img={img}
                             handleChange={handleChange}
                             handleUpload={handleUpload}
+                            handleChangeRole={handleChangeRole}
                             employee={employee}
                         />
                         {/* Tab thông tin liên hệ */}

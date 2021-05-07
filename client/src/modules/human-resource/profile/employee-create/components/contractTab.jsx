@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -19,7 +19,6 @@ function ContractTab(props) {
     });
 
     const { translate, course } = props;
-
     const { id } = props;
 
     const { contracts, contractEndDate, contractType, courses, pageCreate, roles, currentRow, currentCourseRow } = state;
@@ -73,16 +72,16 @@ function ContractTab(props) {
             return {
                 ...state,
                 id: props.id,
-                contracts: props.contracts,
+                contracts: props.employee ? props.employee.contracts : [],
                 contractEndDate: props.employee ? props.employee.contractEndDate : '',
                 contractType: props.employee ? props.employee.contractType : '',
-                courses: props.courses,
+                courses: props.employee ? props.employee.courses : [],
                 pageCreate: props.pageCreate,
                 organizationalUnits: props.organizationalUnits,
                 roles: props.roles
             }
         })
-    }, [props.id])
+    }, [props.id, props.employee?.contracts, props.employee?.courses])
 
     useEffect(() => {
         if (state.contracts && state.contracts?.length !== 0) {
@@ -97,7 +96,7 @@ function ContractTab(props) {
             props.handleChange('contractEndDate', contract?.endDate ? contract.endDate : "");
             props.handleChange('contractType', contract?.contractType ? contract.contractType : "");
         };
-    }, [JSON.stringify(state.contracts)])
+    }, [contracts])
 
     // console.log(contractEndDate);
 

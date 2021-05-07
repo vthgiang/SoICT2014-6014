@@ -6,6 +6,7 @@ import { DatePicker, ErrorLabel, SelectBox, ApiImage } from '../../../../../comm
 
 import ValidationHelper from '../../../../../helpers/validationHelper';
 import "./addEmployee.css";
+import { RoleActions } from '../../../../super-admin/role/redux/actions';
 
 function GeneralTab(props) {
 
@@ -18,15 +19,16 @@ function GeneralTab(props) {
         emailInCompany: "",
         errorOnEmailCompany: undefined,
         identityCardNumber: "",
-        identityCardAddress: ""
+        identityCardAddress: "",
+        roles: []
     });
 
-    const { translate } = props;
+    const { translate, role } = props;
 
     const { id, birthdate, identityCardDate, img, employeeNumber, employeeTimesheetId, fullName, gender, birthplace, status,
         startingDate, leavingDate, emailInCompany, maritalStatus, identityCardNumber, identityCardAddress, ethnic, religion, nationality,
         errorOnBrithdate, errorOnDateCMND, errorOnEmployeeNumber, errorOnMSCC, errorOnFullName, errorOnEmailCompany, errorOnStartingDate,
-        errorOnCMND, errorOnAddressCMND, errorOnLeavingDate } = state;
+        errorOnCMND, errorOnAddressCMND, errorOnLeavingDate, roles } = state;
     // console.log('employeeNumber', employeeNumber)
 
     useEffect(() => {
@@ -73,10 +75,17 @@ function GeneralTab(props) {
                     errorOnAddressCMND: undefined,
                     errorOnStartingDate: undefined,
                     errorOnLeavingDate: undefined,
+                    roles: props.roles ? props.roles : []
                 }
             });
         }
     }, [props.id])
+
+    useEffect(() => {
+        props.getAllRoles();
+    }, [])
+
+    let listRoles = role?.list.filter(x => x.type.name !== "Root");
 
     /**
      * Function format dữ liệu Date thành string
@@ -460,6 +469,18 @@ function GeneralTab(props) {
         }
         return message === undefined;
     }
+    /**
+     * Function bắt sự kiện thay đổi chức danh
+     * @param {*} value : danh sách các chức danh
+     */
+
+    const handleEmployeeRolesChange = (value) => {
+        setState({
+            ...state,
+            roles: value
+        });
+        props.handleChangeRole(value);
+    }
 
     return (
         <div id={id} className="tab-pane active">
@@ -646,11 +667,35 @@ function GeneralTab(props) {
                             <input type="text" className="form-control" name="nationality" value={nationality ? nationality : ""} onChange={handleChange} placeholder={translate('human_resource.profile.nationality')} autoComplete="off" />
                         </div>
                     </div>
+                    <div className="row">
+                        {/* Những role của nhân viên này */}
+                        <div className="form-group col-lg-4 col-md-4 col-ms-12 col-xs-12">
+                            <label>{translate('human_resource.profile.roles')}</label>
+                            <SelectBox
+                                id={`roles${id}`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                items={listRoles.map(role => { return { value: role ? role._id : null, text: role ? role.name : "" } })}
+                                onChange={handleEmployeeRolesChange}
+                                value={roles}
+                                multiple={true}
+                            />
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     );
 };
 
-const generalTab = connect(null, null)(withTranslate(GeneralTab));
+function mapState(state) {
+    const { role } = state;
+    return { role };
+};
+
+const actionCreators = {
+    getAllRoles: RoleActions.get
+};
+
+const generalTab = connect(mapState, actionCreators)(withTranslate(GeneralTab));
 export { generalTab as GeneralTab };

@@ -56,7 +56,7 @@ function AnnualLeaveCreateForm(props) {
     });
     const { employee, organizationalUnit, startDate, endDate, reason, status, errorOnOrganizationalUnit,
         errorOnEmployee, errorOnReason, errorOnStartDate, errorOnEndDate, totalHours, errorOnTotalHours, type,
-        listAllEmployees, listDepartments, startTime,  endTime 
+        listAllEmployees, listDepartments, startTime, endTime
     } = state;
 
     useEffect(() => {
@@ -71,7 +71,7 @@ function AnnualLeaveCreateForm(props) {
             if (department?.departmentsThatUserIsManager) {
                 unit = department.departmentsThatUserIsManager.map(item => item?._id)
             }
-    
+
             if (unit?.length > 0) {
                 props.getAllEmployeeOfUnitByIds({
                     organizationalUnitIds: unit,
@@ -88,10 +88,10 @@ function AnnualLeaveCreateForm(props) {
             if (user?.employeesOfUnitsUserIsManager) {
                 listAllEmployees = user.employeesOfUnitsUserIsManager;
                 if (listAllEmployees?.length > 0) {
-                    listAllEmployees = listAllEmployees.map(item => { 
+                    listAllEmployees = listAllEmployees.map(item => {
                         return {
-                            text: item?.userId?.name, 
-                            value: item?.userId?.email 
+                            text: item?.userId?.name,
+                            value: item?.userId?.email
                         }
                     })
                 }
@@ -100,10 +100,10 @@ function AnnualLeaveCreateForm(props) {
             if (user?.usercompanys) {
                 listAllEmployees = user.usercompanys;
                 if (listAllEmployees?.length > 0) {
-                    listAllEmployees = listAllEmployees.map(item => { 
+                    listAllEmployees = listAllEmployees.map(item => {
                         return {
-                            text: item?.name, 
-                            value: item?.email 
+                            text: item?.name,
+                            value: item?.email
                         }
                     })
                 }
@@ -137,7 +137,7 @@ function AnnualLeaveCreateForm(props) {
             })
         }
     }, [user.organizationalUnitsOfUserByEmail])
-    
+
 
     const validateEmployeeNumber = (value, willUpdateState = true) => {
         let msg = AnnualLeaveFormValidator.validateEmployeeNumber(value, translate);
@@ -415,7 +415,7 @@ function AnnualLeaveCreateForm(props) {
                                 value={startDate}
                                 onChange={handleStartDateChange}
                             />
-                            {type && 
+                            {type &&
                                 < TimePicker
                                     id="create_start_time"
                                     ref={createStartTime}
