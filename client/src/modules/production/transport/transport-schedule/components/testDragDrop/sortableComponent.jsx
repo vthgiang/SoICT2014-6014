@@ -301,12 +301,14 @@ function SortableComponent(props) {
 export {SortableComponent}
 
 const SortableList = SortableContainer(({items}) => {
+	console.log(items, " day la itemmmmmmmmmmmmmm")
   return (
     <div className={"test1"}>
       {items.map((item, index) => (
 		<SortableItem 
 			key={`item-${index}`} 
-			index={index} 
+			index={index}
+			stt={index} 
 			value={item} 
 		/>
       ))}
@@ -314,8 +316,14 @@ const SortableList = SortableContainer(({items}) => {
   );
 });
 
-const SortableItem = SortableElement(({value}) =>
+const SortableItem = SortableElement((props) =>
+{
+let {value, index, stt} = props
+return(
     <div class="address-element" style={{margin: "10px", cursor: "pointer"}}>
+		<div>
+			{"STT: "+ stt}
+		</div>
 		<div>
 			{"Địa chỉ: "+ value.address}
 		</div>		
@@ -332,5 +340,6 @@ const SortableItem = SortableElement(({value}) =>
 			{"Thời gian: " + value.duration}
 		</div>
 	</div>
-
+)
+}
 );

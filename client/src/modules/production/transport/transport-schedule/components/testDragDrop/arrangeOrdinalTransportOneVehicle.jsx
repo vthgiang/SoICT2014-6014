@@ -6,7 +6,7 @@ import { SortableComponent } from "./sortableComponent"
 
 import { MapContainer } from "../googleReactMap/maphook"
 
-import { reverseConvertDistanceToKm, convertDistanceToKm } from "../../../transportHelper/convertDistanceAndDuration"
+import { reverseConvertDistanceToKm, convertDistanceToKm, reverseConvertTimeToMinutes, convertTimeToMinutes } from "../../../transportHelper/convertDistanceAndDuration"
 
 import '../arrangeOrdinalTransport.css'
 
@@ -72,10 +72,21 @@ function ArrangeOrdinalTransportOneVehicle(props) {
         }
         return reverseConvertDistanceToKm(res);
     }
+    const getTotalTime = () => {
+        let res = 0;
+        if (addressList && addressList.length!==0){
+            addressList.map(address => {
+                if (address && address.duration){
+                    res += convertTimeToMinutes(address.duration);
+                }
+            })
+        }
+        return reverseConvertTimeToMinutes(res);    
+    }
     return (		
         <fieldset className="scheduler-border" style={{ height: "100%" }}>
 
-            <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+            <div className="col-xs-12 col-sm-12 col-md-5 col-lg-5">
                 <legend className="scheduler-border">{item.transportVehicle.name}</legend>
                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <div className="form-group">
@@ -92,26 +103,32 @@ function ArrangeOrdinalTransportOneVehicle(props) {
                         <strong>{"Tổng quãng đường di chuyển: "}</strong>{getTotalDistance()}
                     </div>
                 </div>
+                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <div className="form-group">
+                        <strong>{"Tổng thời gian di chuyển: "}</strong>{getTotalTime()}
+                    </div>
+                </div>
             </div>
-            <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+            <div className="col-xs-12 col-sm-12 col-md-7 col-lg-7">
                 <div className = "transport-map">
                     {
-                        (activeMapState && activeMapState.length!==0)
+                        // (activeMapState && activeMapState.length!==0)
+                        (locationsOnMap && locationsOnMap.length!==0 && locationsOnMap.length>=2)
                         &&
                         <MapContainer 
-                        //     locations={locationsOnMap}
+                            locations={locationsOnMap}
 
-                            locations={activeMapState}
+                            // locations={activeMapState}
                         />
                     }
                 </div>
-                <div className="form-group">
+                {/* <div className="form-group">
                     <button type="button" className="btn btn-success" title="Cập nhật bản đồ" 
                         onClick={handleUpdateMap}
                     >
                         Cập nhật bản đồ
                     </button>
-                </div>
+                </div> */}
             </div>
             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 {
