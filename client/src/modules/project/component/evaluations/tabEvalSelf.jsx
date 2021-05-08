@@ -66,7 +66,7 @@ const TabEvalSelf = (props) => {
             let sumPoint = 0, totalPV = 0, totalAC = 0, totalEV = 0;
             let counter = 0;
             for (let taskPointRoleEVMItem of tasksWithPointAndRoleAndEVM) {
-                console.log(taskPointRoleEVMItem.currentMemberCurrentTaskPoint, taskPointRoleEVMItem.plannedValue, taskPointRoleEVMItem.actualCost, taskPointRoleEVMItem.earnedValue)
+                // console.log(taskPointRoleEVMItem.currentMemberCurrentTaskPoint, taskPointRoleEVMItem.plannedValue, taskPointRoleEVMItem.actualCost, taskPointRoleEVMItem.earnedValue)
                 sumPoint += taskPointRoleEVMItem.currentMemberCurrentTaskPoint;
                 totalPV += taskPointRoleEVMItem.plannedValue;
                 totalAC += taskPointRoleEVMItem.actualCost;
@@ -126,7 +126,7 @@ const TabEvalSelf = (props) => {
                                         if (memberTaskIndex === processedSelfData?.tasksWithPointAndRoleAndEVM.length - 1) {
                                             return (
                                                 <>
-                                                    <tr key={`${userId}-${memberTaskIndex}`}>
+                                                    <tr key={`${userId}-${memberTaskIndex}-0`}>
                                                         <td><strong>{memberTaskIndex === 0 ? processedSelfData?.name : ''}</strong></td>
                                                         <td>{moment(currentMonth).format('M')}</td>
                                                         <td>{memberTaskItem?.tasksWithMemberItem.name}</td>
@@ -141,7 +141,7 @@ const TabEvalSelf = (props) => {
                                                     {
                                                         processedSelfData.tasksWithPointAndRoleAndEVM.length > 1
                                                         &&
-                                                        <tr key={`${userId}-${memberTaskIndex}`}>
+                                                        <tr key={`${userId}-${memberTaskIndex}-1`}>
                                                             <td></td>
                                                             <td></td>
                                                             <td></td>
@@ -158,7 +158,7 @@ const TabEvalSelf = (props) => {
                                             )
                                         }
                                         return (
-                                            <tr key={`${userId}-${memberTaskIndex}`}>
+                                            <tr key={`${userId}-${memberTaskIndex}-2`}>
                                                 <td><strong>{memberTaskIndex === 0 ? processedSelfData?.name : ''}</strong></td>
                                                 <td>{moment(currentMonth).format('M')}</td>
                                                 <td>{memberTaskItem?.tasksWithMemberItem.name}</td>

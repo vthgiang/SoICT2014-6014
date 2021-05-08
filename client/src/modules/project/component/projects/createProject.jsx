@@ -102,10 +102,17 @@ const ProjectCreateForm = (props) => {
 
     const isFormValidated = () => {
         let { translate } = props;
+        // console.log('\n----------------')
+        // console.log(!ValidationHelper.validateName(translate, projectName, 6, 255).status)
+        // console.log(!ValidationHelper.validateName(translate, code, 6, 6).status)
+        // console.log(projectManager.length === 0)
+        // console.log(responsibleEmployeesWithUnit.list.length === 0)
+        // console.log(startDate.length === 0)
+        // console.log(endDate.length === 0)
         if (!ValidationHelper.validateName(translate, projectName, 6, 255).status) return false;
         if (!ValidationHelper.validateName(translate, code, 6, 6).status) return false;
         if (projectManager.length === 0) return false;
-        if (responsibleEmployees.length === 0) return false;
+        if (responsibleEmployeesWithUnit.list.length === 0) return false;
         if (startDate.length === 0) return false;
         if (endDate.length === 0) return false;
         return true;

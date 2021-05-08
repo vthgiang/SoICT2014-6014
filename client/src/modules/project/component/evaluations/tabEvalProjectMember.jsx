@@ -67,7 +67,7 @@ const TabEvalProjectMember = (props) => {
                 let sumPoint = 0, totalPV = 0, totalAC = 0, totalEV = 0;
                 let counter = 0;
                 for (let taskPointRoleEVMItem of tasksWithPointAndRoleAndEVM) {
-                    console.log(taskPointRoleEVMItem.currentMemberCurrentTaskPoint, taskPointRoleEVMItem.plannedValue, taskPointRoleEVMItem.actualCost, taskPointRoleEVMItem.earnedValue)
+                    // console.log(taskPointRoleEVMItem.currentMemberCurrentTaskPoint, taskPointRoleEVMItem.plannedValue, taskPointRoleEVMItem.actualCost, taskPointRoleEVMItem.earnedValue)
                     sumPoint += taskPointRoleEVMItem.currentMemberCurrentTaskPoint;
                     totalPV += taskPointRoleEVMItem.plannedValue;
                     totalAC += taskPointRoleEVMItem.actualCost;
@@ -85,7 +85,7 @@ const TabEvalProjectMember = (props) => {
                 })
             }
         }
-        console.log('membersData', membersData)
+        // console.log('membersData', membersData)
         return membersData;
     }
 
@@ -130,7 +130,7 @@ const TabEvalProjectMember = (props) => {
                                             if (memberTaskIndex === memberItem?.tasksWithPointAndRoleAndEVM.length - 1) {
                                                 return (
                                                     <>
-                                                        <tr key={`${memberItem.id}-${memberIndex}-${memberTaskIndex}`}>
+                                                        <tr key={`${memberItem.id}-${memberTaskItem?.tasksWithMemberItem.name}-${memberIndex}-${memberTaskIndex}-0`}>
                                                             <td><strong>{memberTaskIndex === 0 ? memberItem?.name : ''}</strong></td>
                                                             <td>{moment(currentMonth).format('M')}</td>
                                                             <td>{memberTaskItem?.tasksWithMemberItem.name}</td>
@@ -145,7 +145,7 @@ const TabEvalProjectMember = (props) => {
                                                         {
                                                             memberItem.tasksWithPointAndRoleAndEVM.length > 1
                                                             &&
-                                                            <tr key={`${memberItem.id}-${memberIndex}-${memberTaskIndex}`}>
+                                                            <tr key={`${memberItem.id}-${memberTaskItem?.tasksWithMemberItem.name}-${memberIndex}-${memberTaskIndex}-1`}>
                                                                 <td></td>
                                                                 <td></td>
                                                                 <td></td>
@@ -162,7 +162,7 @@ const TabEvalProjectMember = (props) => {
                                                 )
                                             }
                                             return (
-                                                <tr key={`${memberItem.id}-${memberIndex}-${memberTaskIndex}`}>
+                                                <tr key={`${memberItem.id}-${memberTaskItem?.tasksWithMemberItem.name}-${memberIndex}-${memberTaskIndex}-2`}>
                                                     <td><strong>{memberTaskIndex === 0 ? memberItem?.name : ''}</strong></td>
                                                     <td>{moment(currentMonth).format('M')}</td>
                                                     <td>{memberTaskItem?.tasksWithMemberItem.name}</td>

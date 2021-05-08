@@ -121,7 +121,7 @@ function ListProjectEvaluation(props) {
 
                     </div>
 
-                    <table id="project-table" className="table table-striped table-bordered table-hover">
+                    <table id="project-table" className="table table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th>{translate('project.name')}</th>
@@ -129,36 +129,17 @@ function ListProjectEvaluation(props) {
                                 <th>{translate('project.creator')}</th>
                                 <th>{translate('project.manager')}</th>
                                 <th>{translate('project.member')}</th>
-                                <th style={{ width: "120px", textAlign: "center" }}>
-                                    {translate('table.action')}
-                                    <DataTableSetting
-                                        tableId="example-table"
-                                        columnArr={[
-                                            translate('manage_example.index'),
-                                            translate('manage_example.exampleName'),
-                                            translate('manage_example.description'),
-                                            "Mã số",
-                                        ]}
-                                        limit={limit}
-                                        hideColumnOption={true}
-                                        setLimit={setLimit}
-                                    />
-                                </th>
                             </tr>
                         </thead>
                         <tbody>
                             {(lists && lists.length !== 0) &&
                                 lists.map((projectItem, index) => (
-                                    <tr key={index}>
+                                    <tr key={index} style={{ cursor: 'pointer' }} onClick={() => handleShowDetailInfo(projectItem)}>
                                         <td>{projectItem?.name}</td>
                                         <td>{projectItem?.code}</td>
                                         <td>{projectItem?.creator?.name}</td>
                                         <td>{projectItem?.projectManager.map(o => o.name).join(", ")}</td>
                                         <td>{projectItem?.responsibleEmployees.map(o => o.name).join(", ")}</td>
-                                        <td style={{ textAlign: "center" }}>
-                                            <a className="edit text-green" style={{ width: '5px' }} onClick={() => handleShowDetailInfo(projectItem)}><i className="material-icons">visibility</i></a>
-
-                                        </td>
                                     </tr>
                                 ))
                             }
