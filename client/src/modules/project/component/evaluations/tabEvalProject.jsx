@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { ProjectActions } from "../../redux/actions";
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import moment from 'moment';
-import { DatePicker } from '../../../../common-components';
+import { DatePicker, SelectBox } from '../../../../common-components';
 import { numberWithCommas } from '../../../task/task-management/component/functionHelpers';
 import { AutomaticTaskPointCalculator } from '../../../task/task-perform/component/automaticTaskPointCalculator';
 import c3 from 'c3';
@@ -14,38 +14,23 @@ import ModalEVMData from './modalEVMData';
 const TabEvalProject = (props) => {
     const { currentTasks, translate, listTasksEval, project, currentMonth, projectDetailId, projectDetail, handleChangeMonth } = props;
     const chartRef = useRef(null);
+    const [currentTimeMode, setCurrentTimeMode] = useState('');
+    const currentTimeModeArr = [
+        { text: 'Tuần', value: 'weeks' },
+        { text: 'Tháng', value: 'months' },
+    ]
+    const [currentGraphData, setCurrentGraphData] = useState(undefined);
 
     const checkUndefinedNull = (value) => {
         return value === undefined || value === null;
     }
 
-    const handleProcessData = (listData, listDataForEvalMonth) => {
-        const timeMode = 'weeks';
-        let plannedValues = ['Planned Value'], actualCosts = ['Actual Cost'], earnedValues = ['Earned Value'];
+    const getGraphTasksDataOfTimeMode = (listData, timeMode) => {
         let categories = [];
         let modalEVMData = [];
-        if (!listData || listData.length === 0 || !listDataForEvalMonth || listDataForEvalMonth.length === 0) return {
-            tableData: [],
-            graphData: [plannedValues, actualCosts, earnedValues],
-            categories: [],
-        };
-        // Lấy data từ listTasksEval cho tableData
-        const tableTimeModeData = listDataForEvalMonth.map(listItem => {
-            console.log('listItem', listItem)
-            const data = {
-                task: listItem,
-                progress: listItem.progress,
-                projectDetail,
-            }
-            const resultCalculate = AutomaticTaskPointCalculator.calcProjectAutoPoint(data, false);
-            return {
-                ...listItem,
-                ...resultCalculate,
-            }
-        });
-        // Lấy data từ currentTasks cho graphData (đành phải đặt tên là tableData)
+        let plannedValues = ['Planned Value'], actualCosts = ['Actual Cost'], earnedValues = ['Earned Value'];
         const tableData = listData.map(listItem => {
-            console.log('listItem', listItem)
+            // console.log('listItem', listItem)
             const data = {
                 task: listItem,
                 progress: listItem.progress,
@@ -57,7 +42,7 @@ const TabEvalProject = (props) => {
                 ...resultCalculate,
             }
         });
-        console.log('tableData', tableData)
+        // console.log('tableData', tableData)
         let earliestStart = tableData[0].startDate;
         let latestEnd = tableData[0].endDate;
         for (let tableItem of tableData) {
@@ -68,56 +53,75 @@ const TabEvalProject = (props) => {
                 latestEnd = tableItem.endDate;
             }
         }
-        console.log('earliestStart', earliestStart, 'latestEnd', latestEnd);
         const diffInDuration = moment(latestEnd).diff(moment(earliestStart), timeMode);
-        console.log('diffInDuration', diffInDuration)
-        let currentCounterMoment = earliestStart;
-        // Tính toán các thông số theo từng khoảng timemode một
-        for (let i = 0; i < diffInDuration; i++) {
-            const startOfCurrentMoment = moment(currentCounterMoment).startOf(timeMode.substring(0, timeMode.length - 1));
-            const endOfCurrentMoment = moment(currentCounterMoment).endOf(timeMode.substring(0, timeMode.length - 1));
-            // Tập hợp các task của khoảng timemode đó và tính toán các thông số
-            let totalPVEachMoment = 0, totalACEachMoment = 0, totalEVEachMoment = 0;
-            let listTasksEachMoment = []
-            for (let tableItem of tableData) {
-                if (moment(tableItem.endDate).isSameOrAfter(startOfCurrentMoment) &&
-                    moment(tableItem.endDate).isSameOrBefore(endOfCurrentMoment)) {
-                    console.log(tableItem.name, tableItem.plannedValue, tableItem.actualCost, tableItem.earnedValue)
-                    totalPVEachMoment += tableItem.plannedValue === Infinity ? 0 : tableItem.plannedValue;
-                    totalACEachMoment += tableItem.actualCost;
-                    totalEVEachMoment += tableItem.earnedValue;
-                    listTasksEachMoment.push(tableItem)
+        if (diffInDuration > 1) {
+            let currentCounterMoment = earliestStart;
+            // Tính toán các thông số theo từng khoảng timemode một
+            for (let i = 0; i < diffInDuration; i++) {
+                const startOfCurrentMoment = moment(currentCounterMoment).startOf(timeMode.substring(0, timeMode.length - 1));
+                const endOfCurrentMoment = moment(currentCounterMoment).endOf(timeMode.substring(0, timeMode.length - 1));
+                // Tập hợp các task của khoảng timemode đó và tính toán các thông số
+                let totalPVEachMoment = 0, totalACEachMoment = 0, totalEVEachMoment = 0;
+                let listTasksEachMoment = []
+                for (let tableItem of tableData) {
+                    if (moment(tableItem.endDate).isSameOrAfter(startOfCurrentMoment) &&
+                        moment(tableItem.endDate).isSameOrBefore(endOfCurrentMoment)) {
+                        // console.log(tableItem.name, tableItem.plannedValue, tableItem.actualCost, tableItem.earnedValue)
+                        totalPVEachMoment += tableItem.plannedValue === Infinity ? 0 : tableItem.plannedValue;
+                        totalACEachMoment += tableItem.actualCost;
+                        totalEVEachMoment += tableItem.earnedValue;
+                        listTasksEachMoment.push(tableItem)
+                    }
                 }
+                plannedValues.push(totalPVEachMoment);
+                actualCosts.push(totalACEachMoment);
+                earnedValues.push(totalEVEachMoment);
+                const currentCategoryTitle = timeMode === 'weeks'
+                    ? `Tuần ${Math.ceil(moment(currentCounterMoment).date() / 7)} T${moment(currentCounterMoment).format('M-YYYY')}`
+                    : `T${moment(currentCounterMoment).format('M-YYYY')}`;
+                // Push vào categories để làm thành trục Oy
+                categories.push(currentCategoryTitle);
+                // Sau mỗi lần lặp thì tăng currentCounterMoment thêm 1 đơn vị nhỏ nhất của timeMode
+                currentCounterMoment = moment(currentCounterMoment).add(1, timeMode).format();
+                // Push vào modalEVMData để show bên modal details
+                modalEVMData.push({
+                    category: currentCategoryTitle,
+                    listTasksEachMoment,
+                    startOfCurrentMoment,
+                    endOfCurrentMoment,
+                    totalPVEachMoment,
+                    totalACEachMoment,
+                    totalEVEachMoment,
+                })
             }
-            plannedValues.push(totalPVEachMoment);
-            actualCosts.push(totalACEachMoment);
-            earnedValues.push(totalEVEachMoment);
-            const currentCategoryTitle = `Tuần ${Math.ceil(moment(currentCounterMoment).date() / 7)} T${moment(currentCounterMoment).format('M-YYYY')}`;
-            // Push vào categories để làm thành trục Oy
-            categories.push(currentCategoryTitle);
-            // Sau mỗi lần lặp thì tăng currentCounterMoment thêm 1 đơn vị nhỏ nhất của timeMode
-            currentCounterMoment = moment(currentCounterMoment).add(1, timeMode).format();
-            // Push vào modalEVMData để show bên modal details
-            modalEVMData.push({
-                category: currentCategoryTitle,
-                listTasksEachMoment,
-                startOfCurrentMoment,
-                endOfCurrentMoment,
-                totalPVEachMoment,
-                totalACEachMoment,
-                totalEVEachMoment,
-            })
+            return {
+                graphData: [plannedValues, actualCosts, earnedValues],
+                modalEVMData,
+                categories,
+            };
         }
-        let graphData = [plannedValues, actualCosts, earnedValues];
-        return {
-            tableData: tableTimeModeData,
-            graphData,
-            categories,
-            modalEVMData,
-        }
+        return undefined;
     }
 
-    const processedData = handleProcessData(currentTasks, listTasksEval);
+    const handleProcessTableData = (listData, listDataForEvalMonth) => {
+        if (!listData || listData.length === 0 || !listDataForEvalMonth || listDataForEvalMonth.length === 0) return [];
+        // Lấy data từ listTasksEval cho tableData
+        const tableTimeModeData = listDataForEvalMonth.map(listItem => {
+            const data = {
+                task: listItem,
+                progress: listItem.progress,
+                projectDetail,
+            }
+            const resultCalculate = AutomaticTaskPointCalculator.calcProjectAutoPoint(data, false);
+            return {
+                ...listItem,
+                ...resultCalculate,
+            }
+        });
+        return tableTimeModeData
+    }
+
+    const processedTableData = handleProcessTableData(currentTasks, listTasksEval);
 
     // Xóa các chart đã render khi chưa đủ dữ liệu
     const removePreviousChart = () => {
@@ -132,13 +136,13 @@ const TabEvalProject = (props) => {
         let chart = c3.generate({
             bindto: chartRef.current,
             data: {
-                columns: processedData.graphData,
+                columns: currentGraphData.graphData,
                 type: 'line',
             },
             axis: {
                 x: {
                     type: 'category',
-                    categories: processedData.categories,
+                    categories: currentGraphData.categories,
                 },
                 y: {
                     tick: {
@@ -162,8 +166,21 @@ const TabEvalProject = (props) => {
     }
 
     useEffect(() => {
-        renderChart();
+        if (currentGraphData) {
+            renderChart();
+        }
     });
+
+    useEffect(() => {
+        if (currentTasks) {
+            // Lấy graph tasks data theo tuần
+            const graphDataWeeks = getGraphTasksDataOfTimeMode(currentTasks, 'weeks');
+            // Lấy graph tasks data theo tháng
+            const graphDataMonths = getGraphTasksDataOfTimeMode(currentTasks, 'months');
+            setCurrentTimeMode(graphDataMonths ? 'months' : 'weeks');
+            setCurrentGraphData(graphDataMonths || graphDataWeeks);
+        }
+    }, [currentTasks])
 
     const showModalDetails = () => {
         setTimeout(() => {
@@ -171,18 +188,47 @@ const TabEvalProject = (props) => {
         }, 10);
     }
 
+    useEffect(() => {
+        console.log('currentTimeMode', currentTimeMode)
+    }, [currentTimeMode])
+
     // console.log('currentTasks', currentTasks)
     return (
         <React.Fragment>
             <div>
                 <div className="box">
                     <div className="box-body qlcv">
-                        <ModalEVMData projectDetailId={projectDetailId} projectDetail={projectDetail} evmData={processedData.modalEVMData} />
+                        {
+                            currentGraphData &&
+                            <ModalEVMData
+                                projectDetailId={projectDetailId}
+                                projectDetail={projectDetail}
+                                evmData={currentGraphData.modalEVMData}
+                            />
+                        }
                         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <h4><strong>Biểu đồ trực quan EVM dự án</strong></h4>
+                            <div className="col-md-8 col-xs-8 col-ms-8" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                                <h4><strong>Biểu đồ trực quan EVM dự án</strong></h4>
+                                <div className="col-md-3 col-xs-3 col-ms-3">
+                                    <SelectBox
+                                        id={`tab-eval-project-time-mode`}
+                                        className="form-control select2"
+                                        value={currentTimeMode}
+                                        items={currentTimeModeArr}
+                                        onChange={(e) => {
+                                            setCurrentTimeMode(e[0]);
+                                            setCurrentGraphData(getGraphTasksDataOfTimeMode(currentTasks, e[0]))
+                                        }}
+                                        multiple={false}
+                                    />
+                                </div>
+                            </div>
+
                             <button className="btn-link" onClick={showModalDetails}>Xem chi tiết</button>
                         </div>
-                        <div ref={chartRef} />
+                        {currentGraphData
+                            ? <div ref={chartRef} />
+                            : `Không thể biểu diễn biểu đồ dưới dạng ${currentTimeModeArr.find(item => item.value === currentTimeMode)?.text}`}
                     </div>
                 </div>
                 <div className="box">
@@ -212,7 +258,7 @@ const TabEvalProject = (props) => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {processedData.tableData.map((taskItem, index) => {
+                                {processedTableData.map((taskItem, index) => {
                                     return (
                                         <tr key={index}>
                                             <td>{taskItem?.name}</td>
@@ -231,7 +277,7 @@ const TabEvalProject = (props) => {
                     </div>
                 </div>
             </div>
-        </React.Fragment>
+        </React.Fragment >
     );
 }
 
