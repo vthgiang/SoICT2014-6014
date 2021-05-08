@@ -21,8 +21,8 @@ const ProjectCreateForm = (props) => {
         { text: 'USD', value: 'USD' },
     ]
     const fakeUnitTimeList = [
-        { text: 'day', value: 'day' },
-        { text: 'hour', value: 'hour' },
+        { text: 'Ngày', value: 'days' },
+        { text: 'Giờ', value: 'hours' },
     ]
     const [form, setForm] = useState({
         projectNameError: undefined,
@@ -34,8 +34,8 @@ const ProjectCreateForm = (props) => {
         endDate: '',
         projectManager: [],
         responsibleEmployees: [],
-        unitCost: fakeUnitCostList[0].text,
-        unitTime: fakeUnitTimeList[0].text,
+        unitCost: fakeUnitCostList[0].value,
+        unitTime: '',
         estimatedCost: ''
     });
 
@@ -319,7 +319,15 @@ const ProjectCreateForm = (props) => {
 
                             <div className="form-group">
                                 <label>{translate('project.unitTime')}</label>
-                                <div className="form-control">Ngày</div>
+                                <SelectBox
+                                    id={`select-project-unitTime`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    items={fakeUnitTimeList}
+                                    onChange={(e) => handleChangeForm(e, 'unitTime')}
+                                    value={unitTime}
+                                    multiple={false}
+                                />
                             </div>
                             <div className="form-group">
                                 <label>{translate('project.unitCost')}</label>
