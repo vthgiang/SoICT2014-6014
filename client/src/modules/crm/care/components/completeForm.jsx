@@ -48,8 +48,9 @@ function CompleteForm(props) {
         await setCareCompleteState(newState);
     }
     const save = () => {
-        const newState = { ...careCompleteState, completeDate: new Date() , status : 3}
-        console.log(newState)
+       
+        let  newState = { ...careCompleteState, completeDate: new Date() , status : 3};
+        if(newState.evaluation&&!newState.evaluation.result) newState = {...newState,evaluation: { ...careCompleteState.evaluation, result: 1 }}
         props.editCare(careCompleteId, newState)
     }
     return (
@@ -80,9 +81,9 @@ function CompleteForm(props) {
                     <div className="" >
                         <div className="form-group unitSearch">
                             <label>{"Kết quả hoạt động :"}</label>
-                            <SelectBox id="SelectUnit"
+                            <SelectBox id={`SelectUnit-result-${careCompleteId}`}
                                 defaultValue={''}
-                                items={[{ value: '0', text: 'Thành công' }, { value: '1', text: 'Thất bại' },]}
+                                items={[{ value: '1', text: 'Thành công' }, { value: '2', text: 'Thất bại' },]}
                                 onChange={handleChangeResult}
                                 style={{ width: '100%' }}
                             >
@@ -95,7 +96,7 @@ function CompleteForm(props) {
                         <div className="form-group">
                             <label className="form-control-static">{'Nội dung đánh giá :'}</label>
                             <QuillEditor
-                                id={'complete'}
+                                id={`complete-comment-${careCompleteId}`}
                                 getTextData={handleChangeComment}
                                 // quillValueDefault={quillValueDefault}
                                 table={false}

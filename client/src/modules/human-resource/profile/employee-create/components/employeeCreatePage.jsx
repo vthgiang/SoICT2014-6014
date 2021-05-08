@@ -87,6 +87,7 @@ function EmployeeCreatePage(props) {
             emailInCompany: "",
             identityCardNumber: "",
             identityCardAddress: "",
+            roles: [],
             phoneNumber: "",
             experiences: [],
             socialInsuranceDetails: [],
@@ -177,6 +178,21 @@ function EmployeeCreatePage(props) {
                 }
             }
         });
+        console.log(state.employee);
+    }
+
+    /**
+    * Function lưu thông tin chức danh vào state
+    * @param {*} data : dữ liệu về chức danh
+    */
+    const handleChangeRole = (data) => {
+        setState({
+            ...state,
+            employee: {
+                ...employee,
+                roles: [...data]
+            }
+        })
     }
 
     /**
@@ -609,6 +625,7 @@ function EmployeeCreatePage(props) {
                         img={img}
                         handleChange={handleChange}
                         handleUpload={handleUpload}
+                        handleChangeRole={handleChangeRole}
                         employee={employee}
                     />
                     {/* Tab thông tin liên hệ */}

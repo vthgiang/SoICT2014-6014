@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { Group } = require('../../../models');
+const { Group, Customer } = require('../../../models');
 const { connect } = require(`../../../helpers/dbHelper`);
 
 exports.createGroup = async (portal, companyId, userId, data) => {
@@ -16,8 +16,11 @@ exports.createGroup = async (portal, companyId, userId, data) => {
 }
 
 exports.getGroups = async (portal, companyId, query) => {
-    const { limit, page } = query;
+    const { limit, page, code } = query;
     let keySearch = {};
+    if(code){
+        keySearch = {...keySearch, code: { $regex: code, $options: "i" }}
+    }
 
     const listGroupTotal = await Group(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
 
@@ -27,8 +30,13 @@ exports.getGroups = async (portal, companyId, query) => {
 }
 
 exports.getGroupById = async (portal, companyId, id) => {
-    const groupById = await Group(connect(DB_CONNECTION, portal)).findById(id);
-    return groupById;
+
+    let groupById = await Group(connect(DB_CONNECTION, portal)).findById(id)
+        .populate({ path: 'creator', select: '_id name' })
+        .populate({ path: 'updatedBy', select: '_id name' });
+        const numberOfUsers = await Customer(connect(DB_CONNECTION, portal)).countDocuments({group : id });
+        
+    return {groupById,numberOfUsers: numberOfUsers};
 }
 
 
@@ -37,7 +45,7 @@ exports.editGroup = async (portal, companyId, id, data, userId) => {
 
     await Group(connect(DB_CONNECTION, portal)).findByIdAndUpdate(id, {
         $set: {
-            creator: userId,
+            updatedBy: userId,
             code: code,
             name: name,
             description: description ? description : '',

@@ -8,7 +8,8 @@ export const CrmCustomerServices = {
     deleteCustomer,
     importCustomers,
     getCustomerPoint,
-    editCustomerPoint
+    editCustomerPoint,
+    addPromotion
 };
 
 function getCustomers(params) {
@@ -68,6 +69,14 @@ function getCustomerPoint(id) {
 function editCustomerPoint(id, data) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/crm/customers/${id}/point`,
+        method: 'PATCH',
+        data
+    }, false, true, 'crm.customer');
+}
+
+function addPromotion(id, data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/crm/customers/${id}/promotion`,
         method: 'PATCH',
         data
     }, false, true, 'crm.customer');

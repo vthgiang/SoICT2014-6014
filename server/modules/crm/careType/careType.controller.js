@@ -83,7 +83,7 @@ exports.editCareType = async (req, res) => {
 
 exports.deleteCareType = async (req, res) => {
     try {
-        const deleteCare = CareTypeService.deleteCare(req.portal, req.user.company._id, req.params.id);
+        const deleteCare = CareTypeService.deleteCareType(req.portal, req.user.company._id, req.params.id);
         await Logger.info(req.user.email, ' delete_careType_success ', req.portal);
         res.status(200).json({
             success: true,

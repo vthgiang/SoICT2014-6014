@@ -27,6 +27,11 @@ function configurationEmployeeInfo(translate) {
             description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.staff_number`).toLowerCase()}`,
             value: translate(`human_resource.profile.staff_number`)
         },
+        position: { // Chức danh
+            columnName: translate(`human_resource.profile.roles`),
+            description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.roles`).toLowerCase()}`,
+            value: translate(`human_resource.profile.roles`)
+        },
         fullName: { // Họ và tên
             columnName: translate(`human_resource.profile.full_name`),
             description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.full_name').toLowerCase()}`,
@@ -334,7 +339,7 @@ function configurationExperience(translate) {
             description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.unit`).toLowerCase()}`,
             value: translate(`human_resource.profile.unit`)
         },
-        position: { // Chức vụ
+        position: { // Chức danh
             columnName: translate(`human_resource.position`),
             description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.position`).toLowerCase()}`,
             value: translate(`human_resource.position`)
@@ -525,7 +530,7 @@ function configurationSocialInsuranceDetails(translate) {
             description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.unit`).toLowerCase()}`,
             value: translate(`human_resource.profile.unit`)
         },
-        position: { // Chức vụ
+        position: { // Chức danh
             columnName: translate(`human_resource.position`),
             description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.position`).toLowerCase()}`,
             value: translate(`human_resource.position`)
@@ -680,9 +685,9 @@ function templateImport(translate) {
                             columns: [
                                 { key: "STT", value: translate(`human_resource.stt`), width: 7 },
                                 { key: "employeeNumber", value: translate(`human_resource.profile.staff_number`) },
+                                { key: "position", value: translate(`human_resource.position`), width: 25 },
                                 { key: "fullName", value: translate(`human_resource.profile.full_name`), width: 20 },
                                 // { key: "organizationalUnits", value: translate(`human_resource.unit`), width: 25 },
-                                // { key: "position", value: translate(`human_resource.position`), width: 25 },
                                 { key: "birthdate", value: translate(`human_resource.profile.date_birth`) },
                                 { key: "gender", value: translate(`human_resource.profile.gender`) },
                                 { key: "employeeTimesheetId", value: translate(`human_resource.profile.attendance_code`) },
@@ -775,7 +780,7 @@ function templateImport(translate) {
                                     personalEmail2: "hungkaratedo03101998@gmail.com",
                                     phoneNumber: 962586290,
                                     phoneNumber2: 9625845,
-                                    // position: "Giám đốc",
+                                    position: "Giám đốc",
                                     professionalSkill: translate(`human_resource.profile.university`),
                                     relationWithEmergencyContactPerson: "Em trai",
                                     religion: "Không",
@@ -835,7 +840,7 @@ function templateImport(translate) {
                                     personalEmail2: "hungkaratedo03101998@gmail.com",
                                     phoneNumber: 962586290,
                                     phoneNumber2: 9625845,
-                                    // position: "Phó giám đốc",
+                                    position: "Phó giám đốc",
                                     professionalSkill: translate(`human_resource.profile.university`),
                                     relationWithEmergencyContactPerson: "Em trai",
                                     religion: "Không",

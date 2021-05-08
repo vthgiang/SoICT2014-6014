@@ -6,7 +6,7 @@ EvaluationTabInfoForm.propTypes = {
 };
 
 function EvaluationTabInfoForm(props) {
-    const { id } = props
+    const { id,evaluationInfo } = props
     return (
         <div className="tab-pane active " id={id}>
             <div className="box-body qlcv">
@@ -15,55 +15,55 @@ function EvaluationTabInfoForm(props) {
                     <div className="form-group row">
                         <strong className="col-sm-4">{'Mã nhân viên'}</strong>
                         <div className="col-sm-8">
-                            <span>NV1402</span>
+                            <span>{evaluationInfo.staffCode}</span>
                         </div>
                     </div>
                     <div className="form-group row">
                         <strong className="col-sm-4">{'Tên nhân viên'}</strong>
                         <div className="col-sm-8">
-                            <span>Nguyễn Văn Thái</span>
+                            <span>{evaluationInfo.staffName}</span>
                         </div>
                     </div>
                     <div className="form-group row">
                         <strong className="col-sm-4">{'Số khách hàng đang quản lý'}</strong>
                         <div className="col-sm-8">
-                            <span>1402</span>
+                            <span>{evaluationInfo.numberOfCustomers}</span>
                         </div>
                     </div>
                     <div className="form-group row">
                         <strong className="col-sm-4">{'Tổng số hoạt động'}</strong>
                         <div className="col-sm-8">
-                            <span>150</span>
+                            <span>{evaluationInfo.totalCare}</span>
                         </div>
                     </div>
                     <div className="form-group row">
                         <strong className="col-sm-4">{'Số hoạt động đã hoàn thành'}</strong>
                         <div className="col-sm-8">
-                            <span>100</span>
+                            <span>{evaluationInfo.numberOfCompletedCares}</span>
                         </div>
                     </div>
                     <div className="form-group row">
                         <strong className="col-sm-4">{'Số hoạt động đang thực hiện'}</strong>
                         <div className="col-sm-8">
-                            <span>25</span>
+                            <span>{evaluationInfo.numberOfProcessingCares}</span>
                         </div>
                     </div>
                     <div className="form-group row">
                         <strong className="col-sm-4">{'Số hoạt động quá hạn'}</strong>
                         <div className="col-sm-8">
-                            <span>25</span>
+                            <span>{evaluationInfo.numberOfExpiredCares}</span>
                         </div>
                     </div>
                     <div className="form-group row">
                         <strong className="col-sm-4">{'Tỉ lệ thành công'}</strong>
                         <div className="col-sm-8">
-                            <span>60.2%</span>
+                            <span>{`${evaluationInfo.successRate*100} %`}</span>
                         </div>
                     </div>
                     <div className="form-group row">
                         <strong className="col-sm-4">{'Đánh giá trung bình'}</strong>
                         <div className="col-sm-8">
-                            <span>66.7/100</span>
+                            <span>{`${evaluationInfo.averagePoint} /10`}</span>
                         </div>
                     </div>
 

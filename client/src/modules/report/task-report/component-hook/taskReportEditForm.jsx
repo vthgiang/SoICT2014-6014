@@ -39,6 +39,7 @@ function TaskReportEditForm(props) {
             // this.props.getAllUserOfDepartment(value);
             props.getChildrenOfOrganizationalUnits(value);
             setState({
+                ...state,
                 editingReport: {
                     ...editingReport,
                     organizationalUnit: value,
@@ -65,15 +66,16 @@ function TaskReportEditForm(props) {
         let { editingReport } = state;
         const { translate } = props;
         let { value } = e.target;
+        let { message } = ValidationHelper.validateName(translate, value, 4, 255);
 
         setState({
+            ...state,
             editingReport: {
                 ...editingReport,
                 name: value,
-            }
+            },
+            nameErrorEditForm: message
         })
-        let { message } = ValidationHelper.validateName(translate, value, 4, 255);
-        setState({ nameErrorEditForm: message });
     }
 
 
@@ -85,15 +87,16 @@ function TaskReportEditForm(props) {
         let { editingReport } = state;
         const { translate } = props;
         let value = e.target.value;
+        let { message } = ValidationHelper.validateDescription(translate, value);
 
         setState({
+            ...state,
             editingReport: {
                 ...editingReport,
                 description: value,
-            }
+            },
+            descriptionErrorEditForm: message
         });
-        let { message } = ValidationHelper.validateDescription(translate, value);
-        setState({ descriptionErrorEditForm: message });
     }
 
 
@@ -122,6 +125,7 @@ function TaskReportEditForm(props) {
             }
 
             setState({
+                ...state,
                 editingReport: {
                     ...editingReport,
                     taskTemplate: taskTemplate._id,
@@ -146,6 +150,7 @@ function TaskReportEditForm(props) {
     const handleStatusChangeEditForm = (value) => {
         let { editingReport } = state;
         setState({
+            ...state,
             editingReport: {
                 ...editingReport,
                 status: value,
@@ -160,6 +165,7 @@ function TaskReportEditForm(props) {
     const handleFrequencyChangeEditForm = (value) => {
         let { editingReport } = state;
         setState({
+            ...state,
             editingReport: {
                 ...editingReport,
                 frequency: value[0],
@@ -174,6 +180,7 @@ function TaskReportEditForm(props) {
     const handleResponsibleEmployeesChangeEditForm = (value) => {
         let { editingReport } = state;
         setState({
+            ...state,
             editingReport: {
                 ...editingReport,
                 responsibleEmployees: value,
@@ -188,6 +195,7 @@ function TaskReportEditForm(props) {
     const handleAccountableEmployeesChangeEditForm = (value) => {
         let { editingReport } = state;
         setState({
+            ...state,
             editingReport: {
                 ...editingReport,
                 accountableEmployees: value,
@@ -199,16 +207,17 @@ function TaskReportEditForm(props) {
     const handleTaskReportReadChangeEditForm = (value) => {
         let { editingReport } = state;
         const { translate } = props;
+        let { message } = ValidationHelper.validateEmpty(translate, value.toString());
 
         setState({
+            ...state,
             editingReport: {
                 ...editingReport,
                 readByEmployees: value
-            }
+            },
+            readByEmployeeErrorCreateForm: message
         })
 
-        let { message } = ValidationHelper.validateEmpty(translate, value.toString());
-        setState({ readByEmployeeErrorCreateForm: message })
     }
     /**
      * Hàm bắt sự kiện thay đổi ngày bắt đầu
@@ -217,9 +226,11 @@ function TaskReportEditForm(props) {
     const handleStartDateChangeEditForm = (value) => {
         let { editingReport } = state;
         const { translate } = props;
+        let { message } = ValidationHelper.validateEmpty(translate, value);
 
         if (typeof value === 'undefined') {
             setState({
+                ...state,
                 editingReport: {
                     ...editingReport,
                     startDate: '',
@@ -227,15 +238,15 @@ function TaskReportEditForm(props) {
             });
         } else {
             setState({
+                ...state,
                 editingReport: {
                     ...editingReport,
                     startDate: value,
-                }
+                },
+                startDateErrorEditForm: message
             })
         }
 
-        let { message } = ValidationHelper.validateEmpty(translate, value);
-        setState({ startDateErrorEditForm: message });
     }
 
 
@@ -247,6 +258,7 @@ function TaskReportEditForm(props) {
         let { editingReport } = state
         if (typeof value === 'undefined') {
             setState({
+                ...state,
                 editingReport: {
                     ...editingReport,
                     endDate: '',
@@ -254,6 +266,7 @@ function TaskReportEditForm(props) {
             });
         } else {
             setState({
+                ...state,
                 editingReport: {
                     ...editingReport,
                     endDate: value,
@@ -276,6 +289,7 @@ function TaskReportEditForm(props) {
         taskInformations[index] = { ...taskInformations[index], filter: value };
 
         setState({
+            ...state,
             editingReport: {
                 ...editingReport,
                 taskInformations: taskInformations,
@@ -296,6 +310,7 @@ function TaskReportEditForm(props) {
 
         taskInformations[index] = { ...taskInformations[index], showInReport: value };
         setState({
+            ...state,
             editingReport: {
                 ...editingReport,
                 taskInformations: taskInformations,
@@ -316,6 +331,7 @@ function TaskReportEditForm(props) {
         taskInformations[index] = { ...taskInformations[index], newName: value }
 
         setState({
+            ...state,
             editingReport: {
                 ...editingReport,
                 taskInformations: taskInformations,
@@ -335,6 +351,7 @@ function TaskReportEditForm(props) {
         taskInformations[index] = { ...taskInformations[index], aggregationType: value.toString() }
 
         setState({
+            ...state,
             editingReport: {
                 ...editingReport,
                 taskInformations: taskInformations,
@@ -354,6 +371,7 @@ function TaskReportEditForm(props) {
 
         taskInformations[index] = { ...taskInformations[index], charType: value.toString() };
         setState({
+            ...state,
             editingReport: {
                 ...editingReport,
                 taskInformations: taskInformations,
@@ -390,8 +408,10 @@ function TaskReportEditForm(props) {
 
 
     if (props.taskReportId !== state.taskReportEditId) {
+        console.log("edit form");
         props.getTaskReportById(props.taskReportId);
         setState({
+            ...state,
             dataStatus: 1,
             taskReportEditId: props.taskReportId,
         })
@@ -415,6 +435,7 @@ function TaskReportEditForm(props) {
                 taskInformations: listTaskReport && listTaskReport.configurations,
             }
             setState({
+                ...state,
                 dataStatus: DATA_STATUS.AVAILABLE,
                 editingReport,
             });
@@ -422,6 +443,7 @@ function TaskReportEditForm(props) {
 
         if (state.dataStatus === DATA_STATUS.AVAILABLE) {
             setState({
+                ...state,
                 dataStatus: DATA_STATUS.FINISHED,
             });
         }
@@ -476,6 +498,7 @@ function TaskReportEditForm(props) {
 
         // set lại giá trị cho State 
         setState({
+            ...state,
             editingReport: {
                 ...editingReport,
                 listDataChart,
@@ -496,6 +519,7 @@ function TaskReportEditForm(props) {
         }
 
         setState({
+            ...state,
             editingReport: {
                 ...editingReport,
                 itemListTempLeft: itemListTempLeft,
@@ -527,6 +551,7 @@ function TaskReportEditForm(props) {
 
         // 
         setState({
+            ...state,
             editingReport: {
                 ...editingReport,
                 listDataChart: checkId ? listDataChart
@@ -558,6 +583,7 @@ function TaskReportEditForm(props) {
 
         // set lại giá trị cho State 
         setState({
+            ...state,
             editingReport: {
                 ...editingReport,
                 dataForAxisXInChart,
@@ -576,6 +602,7 @@ function TaskReportEditForm(props) {
         }
 
         setState({
+            ...state,
             editingReport: {
                 ...editingReport,
                 itemListTempRight: itemListTempRight,
@@ -601,6 +628,7 @@ function TaskReportEditForm(props) {
 
 
         setState({
+            ...state,
             editingReport: {
                 ...editingReport,
                 dataForAxisXInChart: checkId ? dataForAxisXInChart
@@ -1027,14 +1055,14 @@ function TaskReportEditForm(props) {
                                             <div className="only-mobile">
                                                 <div className="listButton ">
                                                     <div className="item-button">
-                                                        <button type="button" ref="btn-down" className="btn btn-sm btn-default" onClick={handleClickTransferRightList}>
+                                                        <button type="button" className="btn btn-sm btn-default" onClick={handleClickTransferRightList}>
                                                             <span className="material-icons">
                                                                 keyboard_arrow_down
                                                             </span>
                                                         </button>
                                                     </div>
                                                     <div className="item-button">
-                                                        <button type="button" ref="btn-up" className="btn btn-sm btn-default" onClick={handleClickTransferLeftList}>
+                                                        <button type="button" className="btn btn-sm btn-default" onClick={handleClickTransferLeftList}>
                                                             <span className="material-icons">
                                                                 keyboard_arrow_up
                                                             </span>

@@ -48,7 +48,7 @@ function TaskReportViewForm(props) {
         })
     }
 
-
+console.log("view screen");
     if (listTaskEvaluations && listTaskEvaluations.length > 0 && modal === 'view') {
         // Lọc lấy các trường cần thiết cho việc liên quanfig dữ liệu biểu đồ.
         results = chartFunction.filterFieldInListTask(listTaskEvaluations);

@@ -1,6 +1,12 @@
 const { Care } = require('../../../models');
 const { connect } = require(`../../../helpers/dbHelper`);
-
+const STATUS_VALUE = {
+    unfulfilled: 1,
+    processing: 2,
+    accomplished: 3,
+    expired: 4,
+    completedOverdue: 5
+};
 exports.createCare = async (portal, companyId, data, userId) => {
     let { startDate, endDate } = data;
     if (startDate) {
@@ -18,6 +24,13 @@ exports.createCare = async (portal, companyId, data, userId) => {
     if (userId) {
         data = { ...data, creator: userId };
     }
+    //xu ly trang thai cua hoat dong
+    const now = new Date();
+    if(data.startDate>now) data = {...data,status:STATUS_VALUE.unfulfilled};
+    else if(data.endDate>now) data = {...data,status:STATUS_VALUE.processing};
+    else data = {...data,status:STATUS_VALUE.expired};
+    
+    //------------
 
     const newCare = await Care(connect(DB_CONNECTION, portal)).create(data);
     const getNewCare = await Care(connect(DB_CONNECTION, portal)).findById(newCare._id)
@@ -28,9 +41,15 @@ exports.createCare = async (portal, companyId, data, userId) => {
     return getNewCare;
 }
 
+const updateCareStatus = async (id, status,portal)=>{
+    await Care(connect(DB_CONNECTION, portal)).findByIdAndUpdate(id, {
+        $set: { status: status }
+    }, { new: true });
+}
+
 exports.getCares = async (portal, companyId, query) => {
     const { page, limit, customerId, status, customerCareTypes, customerCareStaffs } = query;
-    console.log('query',query)
+    console.log('query', query)
     let keySearch = {};
     if (customerId) {
         keySearch =
@@ -43,7 +62,7 @@ exports.getCares = async (portal, companyId, query) => {
         keySearch =
         {
             ...keySearch,
-            status: {$in : status}
+            status: { $in: status }
         }
     }
     if (customerCareTypes) {
@@ -53,22 +72,32 @@ exports.getCares = async (portal, companyId, query) => {
             customerCareTypes: { $in: customerCareTypes }
         }
     }
-    if(customerCareStaffs&&customerCareStaffs!=[]) {
-    keySearch =
+    if (customerCareStaffs && customerCareStaffs != []) {
+        keySearch =
         {
             ...keySearch,
             customerCareStaffs: { $in: customerCareStaffs }
         }
     }
-    if(customerId){
-        keySearch = 
+    if (customerId) {
+        keySearch =
         {
             ...keySearch,
-            customer : customerId
+            customer: customerId
         }
     }
 
     const listDocsTotal = await Care(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
+
+
+    const listCare = await Care(connect(DB_CONNECTION, portal)).find({});
+    listCare.forEach(care => {
+        if (care.status == 3 || care.status == 5) return;
+        let now = new Date();
+        if (care.startDate > now) updateCareStatus(care._id,STATUS_VALUE.unfulfilled,portal)
+        else if (care.endDate > now) updateCareStatus(care._id,STATUS_VALUE.processing,portal)
+        else updateCareStatus(care._id,STATUS_VALUE.expired,portal)
+    });
 
     const cares = await Care(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 'desc' })
         .skip(parseInt(page)).limit(parseInt(limit))
@@ -76,7 +105,6 @@ exports.getCares = async (portal, companyId, query) => {
         .populate({ path: 'customer', select: '_id name' })
         .populate({ path: 'customerCareStaffs', select: '_id name' })
         .populate({ path: 'customerCareTypes', select: '_id name' })
-        console.log(cares)
     return { listDocsTotal, cares };
 }
 
@@ -117,8 +145,8 @@ exports.editCare = async (portal, companyId, id, data, userId) => {
     return await Care(connect(DB_CONNECTION, portal)).findOne({ _id: id })
         .populate({ path: 'creator', select: '_id name' })
         .populate({ path: 'customer', select: '_id name' })
-        .populate({ path: 'caregiver', select: '_id name' })
-        .populate({ path: 'careType', select: '_id name' })
+        .populate({ path: 'customerCareStaffs', select: '_id name' })
+        .populate({ path: 'customerCareTypes', select: '_id name' })
 }
 
 exports.deleteCare = async (portal, companyId, id) => {

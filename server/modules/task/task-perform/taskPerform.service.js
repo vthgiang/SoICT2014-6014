@@ -1987,7 +1987,8 @@ exports.evaluationAction = async (portal, params, body) => {
                     "taskActions.$.evaluations": {
                         creator: body.creator,
                         rating: body.rating,
-                        role: body.role
+                        role: body.role,
+                        actionImportanceLevel: body.actionImportanceLevel
                     },
                 },
             }
@@ -1998,10 +1999,11 @@ exports.evaluationAction = async (portal, params, body) => {
                 _id: params.taskId,
                 "taskActions._id": params.actionId,
                 "taskActions.evaluations.creator": body.creator,
-                "taskActions.evaluations.role": body.role
+                "taskActions.evaluations.role": body.role,
             }, {
             $set: {
-                "taskActions.$[item].evaluations.$[elem].rating": body.rating
+                "taskActions.$[item].evaluations.$[elem].rating": body.rating,
+                "taskActions.$[item].evaluations.$[elem].actionImportanceLevel": body.actionImportanceLevel
             }
         }, {
             arrayFilters: [
@@ -2023,17 +2025,25 @@ exports.evaluationAction = async (portal, params, body) => {
     ]);
 
     //Lấy điểm đánh giá của người phê duyệt trong danh sách các danh sách các đánh giá của hoạt động
-    let rating = [];
+    let rating = [], actionImportanceLevel = [];
     for (let i = 0; i < evaluations.length; i++) {
         let evaluation = evaluations[i];
-        if (evaluation.role === 'accountable') rating.push(evaluation.rating);
+        if (evaluation.role === 'accountable') {
+            rating.push(evaluation.rating);
+            actionImportanceLevel.push(evaluation.actionImportanceLevel);
+        }
     }
 
     //tính điểm trung bình
-    let accountableRating;
+    let accountableRating, accountableActionImportanceLevel;
     if (rating.length > 0) {
         accountableRating =
             rating.reduce((accumulator, currentValue) => {
+                return accumulator + currentValue;
+            }, 0) / rating.length;
+
+        accountableActionImportanceLevel =
+            actionImportanceLevel.reduce((accumulator, currentValue) => {
                 return accumulator + currentValue;
             }, 0) / rating.length;
     }
@@ -2043,6 +2053,7 @@ exports.evaluationAction = async (portal, params, body) => {
         {
             $set: {
                 "taskActions.$.rating": accountableRating,
+                "taskActions.$.actionImportanceLevel": accountableActionImportanceLevel
             },
         },
         { $new: true }
@@ -2094,6 +2105,7 @@ exports.evaluationAllAction = async (portal, params, body, userId) => {
                         "taskActions.$.evaluations": {
                             creator: userId,
                             rating: body[i].rating,
+                            actionImportanceLevel: body[i].actionImportanceLevel,
                             role: body[i].role
                         },
                     },
@@ -2108,7 +2120,8 @@ exports.evaluationAllAction = async (portal, params, body, userId) => {
                     "taskActions.evaluations.role": body[i].role
                 }, {
                 $set: {
-                    "taskActions.$[item].evaluations.$[elem].rating": body[i].rating
+                    "taskActions.$[item].evaluations.$[elem].rating": body[i].rating,
+                    "taskActions.$[item].evaluations.$[elem].actionImportanceLevel": body[i].actionImportanceLevel
                 }
             }, {
                 arrayFilters: [
@@ -2130,17 +2143,26 @@ exports.evaluationAllAction = async (portal, params, body, userId) => {
         ]);
 
         //Lấy điểm đánh giá của người phê duyệt trong danh sách các danh sách các đánh giá của hoạt động
-        let rating = [];
+        let rating = [], actionImportanceLevel = [];
         for (let i = 0; i < evaluations.length; i++) {
             let evaluation = evaluations[i];
-            if (evaluation.role === 'accountable') rating.push(evaluation.rating);
+            if (evaluation.role === 'accountable') {
+                rating.push(evaluation.rating);
+                actionImportanceLevel.push(evaluation.actionImportanceLevel)
+            }
         }
 
         //tính điểm trung bình
-        let accountableRating;
+        let accountableRating, accountableActionImportanceLevel;
         if (rating.length > 0) {
             accountableRating =
                 rating.reduce((accumulator, currentValue) => {
+                    return accumulator + currentValue;
+                }, 0) / rating.length;
+        }
+        if (actionImportanceLevel.length > 0) {
+            accountableActionImportanceLevel =
+                actionImportanceLevel.reduce((accumulator, currentValue) => {
                     return accumulator + currentValue;
                 }, 0) / rating.length;
         }
@@ -2151,6 +2173,7 @@ exports.evaluationAllAction = async (portal, params, body, userId) => {
             {
                 $set: {
                     "taskActions.$.rating": accountableRating,
+                    "taskActions.$.actionImportanceLevel": accountableActionImportanceLevel,
                 },
             }, { $new: true }
         );
@@ -6796,7 +6819,6 @@ exports.evaluateTaskByResponsibleEmployeesProject = async (portal, data, taskId)
         progress,
         info,
     } = data;
-    console.log('data', data)
     // let startEval = new Date(startDate);
 
     // let endEval = new Date(endDate);
@@ -7121,7 +7143,6 @@ exports.evaluateTaskByAccountableEmployeesProject = async (portal, data, taskId)
         progress,
         info,
     } = data;
-    console.log('data', data)
     // let startEval = new Date(startDate);
 
     // let endEval = new Date(endDate);
