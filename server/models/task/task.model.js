@@ -860,6 +860,9 @@ const TaskSchema = new Schema(
                 salary: {
                     type: Number,
                 },
+                weight: {
+                    type: Number,
+                },
             },
         ],
         estimateAssetCost: {
