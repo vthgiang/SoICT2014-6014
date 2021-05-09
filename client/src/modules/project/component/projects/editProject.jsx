@@ -9,10 +9,9 @@ import { formatDate } from '../../../../helpers/formatDate';
 import { convertDateTime, convertDepartmentIdToDepartmentName, convertUserIdToUserName, formatTime, getListDepartments } from './functionHelper';
 import { getStorage } from '../../../../config';
 import ModalSalaryMembersEdit from './modalSalaryMembersEdit';
-import { taskManagementActions } from '../../../task/task-management/redux/actions';
 
 const ProjectEditForm = (props) => {
-    const { translate, user, projectEdit, projectEditId, tasks, currentProjectTasks } = props;
+    const { translate, user, projectEdit, projectEditId, currentProjectTasks } = props;
     const userId = getStorage('userId');
     const listUsers = user && user.usersInUnitsOfCompany ? getEmployeeSelectBoxItems(user.usersInUnitsOfCompany) : []
     const listDepartments = user && user.usersInUnitsOfCompany ? getListDepartments(user.usersInUnitsOfCompany) : []
@@ -22,8 +21,8 @@ const ProjectEditForm = (props) => {
         { text: 'USD', value: 'USD' },
     ]
     const fakeUnitTimeList = [
-        { text: 'day', value: 'day' },
-        { text: 'hour', value: 'hour' },
+        { text: 'Ngày', value: 'days' },
+        { text: 'Giờ', value: 'hours' },
     ]
     const preprocessUsersList = useCallback((currentObject) => {
         if (typeof currentObject?.[0] === 'string') {
@@ -99,7 +98,6 @@ const ProjectEditForm = (props) => {
                 }),
             })
         }, 10);
-        // props.getTasksByProject(projectEditId);
     }
 
     const handleChangeForm = (event, currentKey) => {
@@ -292,14 +290,7 @@ const ProjectEditForm = (props) => {
         setCurrentSalaryMembers(data);
     }
 
-    const currentTasks = tasks && tasks?.tasksbyproject;
-
-    useEffect(() => {
-        props.getTasksByProject(projectEditId);
-    }, [])
-
-    const isTasksListNotEmpty = (currentTasks && currentTasks.length > 0) || (currentProjectTasks &&  currentProjectTasks.length > 0);
-
+    const isTasksListEmpty = (!currentProjectTasks || currentProjectTasks.length === 0);
 
     return (
         <React.Fragment>
@@ -314,8 +305,7 @@ const ProjectEditForm = (props) => {
                 <ModalSalaryMembersEdit
                     projectDetail={projectEdit}
                     projectDetailId={projectId}
-                    currentTasks={currentTasks}
-                    currentProjectTasks={currentProjectTasks}
+                    isTasksListEmpty={isTasksListEmpty}
                     createProjectCurrentSalaryMember={currentSalaryMembers}
                     responsibleEmployeesWithUnit={responsibleEmployeesWithUnit}
                     handleSaveCurrentSalaryMember={handleSaveCurrentSalaryMember}
@@ -383,7 +373,16 @@ const ProjectEditForm = (props) => {
 
                             <div className="form-group">
                                 <label>{translate('project.unitTime')}</label>
-                                <div className="form-control">{translate(`project.unit.${unitTime}`)}</div>
+                                <SelectBox
+                                    id={`select-edit-project-unitTime`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    items={fakeUnitTimeList}
+                                    onChange={(e) => handleChangeForm(e, 'unitTime')}
+                                    value={unitTime}
+                                    multiple={false}
+                                    disabled={!isTasksListEmpty}
+                                />
                             </div>
                             <div className="form-group">
                                 <label>{translate('project.unitCost')}</label>
@@ -423,7 +422,7 @@ const ProjectEditForm = (props) => {
                                         <tr>
                                             <th>Thuộc đơn vị</th>
                                             <th>Thành viên tham gia</th>
-                                            {!isTasksListNotEmpty && <th>{translate('task_template.action')}</th>}
+                                            {isTasksListEmpty && <th>{translate('task_template.action')}</th>}
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -438,7 +437,7 @@ const ProjectEditForm = (props) => {
                                                         }
                                                     </td>
                                                     {
-                                                        !isTasksListNotEmpty
+                                                        isTasksListEmpty
                                                         &&
                                                         <td>
                                                             <a className="delete" title={translate('general.delete')} onClick={() => handleDelete(index)}><i className="material-icons">delete</i></a>
@@ -448,7 +447,7 @@ const ProjectEditForm = (props) => {
                                             ))
                                         }
                                         {
-                                            !isTasksListNotEmpty
+                                            isTasksListEmpty
                                             &&
                                             <tr key={`add-task-input-${responsibleEmployeesWithUnit?.list?.length}`}>
                                                 <td>
@@ -534,6 +533,5 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
     editProjectDispatch: ProjectActions.editProjectDispatch,
-    getTasksByProject: taskManagementActions.getTasksByProject,
 }
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ProjectEditForm));

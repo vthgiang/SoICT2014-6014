@@ -43,7 +43,6 @@ class ImportFileExcel extends Component {
 
                 let checkFileImport = false;
                 sheet_lists.length !== 0 && sheet_lists.forEach(x => {
-                    // console.log(XLSX.utils.decode_col("A"));
                     let data = XLSX.utils.sheet_to_json(workbook.Sheets[x], { header: 1, blankrows: false, defval: null });
                     // Lấy index của các tiều đề cột mà người dùng muốn import
                     for (let i = 0; i < data.length - rowHeader; i++) {

@@ -227,6 +227,7 @@ const TabProjectReportMember = (props) => {
         membersData.forEach((item) => {
             const { id, name, tasksWithBudgetAndCostAndPointForMember, currentMemberPoint } = item;
             if (currentMemberPoint >= 85) {
+            // if (currentMemberPoint >= 0) {
                 membersWithPoint.push({
                     id,
                     name,
@@ -277,7 +278,7 @@ const TabProjectReportMember = (props) => {
                         <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column', marginTop: isTableShownArr[index] ? 10 : 0 }}>
                             <span style={{ fontWeight: 'bold', fontSize: '20px' }}>{item?.name}</span>
                             <div style={{ width: '40%', aspectRatio: 1 }}>
-                                <CircularProgressbar value={item?.currentMemberPoint} text={`${item?.currentMemberPoint} / 100`} />
+                                <CircularProgressbar value={item?.currentMemberPoint} text={`${Math.round(item?.currentMemberPoint)} / 100`} />
                             </div>
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -314,7 +315,7 @@ const TabProjectReportMember = (props) => {
                                                 <td>{taskItem?.id}</td>
                                                 <td>{moment(taskItem?.startDate).format('HH:mm DD/MM/YYYY')}</td>
                                                 <td>{moment(taskItem?.endDate).format('HH:mm DD/MM/YYYY')}</td>
-                                                <td>{taskItem?.currentMemberCurrentTaskPoint} / 100</td>
+                                                <td>{Math.round(taskItem?.currentMemberCurrentTaskPoint)} / 100</td>
                                             </tr>
                                         ))
                                         }

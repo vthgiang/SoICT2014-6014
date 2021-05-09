@@ -21,8 +21,8 @@ const ProjectCreateForm = (props) => {
         { text: 'USD', value: 'USD' },
     ]
     const fakeUnitTimeList = [
-        { text: 'day', value: 'day' },
-        { text: 'hour', value: 'hour' },
+        { text: 'Ngày', value: 'days' },
+        { text: 'Giờ', value: 'hours' },
     ]
     const [form, setForm] = useState({
         projectNameError: undefined,
@@ -34,8 +34,8 @@ const ProjectCreateForm = (props) => {
         endDate: '',
         projectManager: [],
         responsibleEmployees: [],
-        unitCost: fakeUnitCostList[0].text,
-        unitTime: fakeUnitTimeList[0].text,
+        unitCost: fakeUnitCostList[0].value,
+        unitTime: fakeUnitTimeList[0].value,
         estimatedCost: ''
     });
 
@@ -102,10 +102,17 @@ const ProjectCreateForm = (props) => {
 
     const isFormValidated = () => {
         let { translate } = props;
+        // console.log('\n----------------')
+        // console.log(!ValidationHelper.validateName(translate, projectName, 6, 255).status)
+        // console.log(!ValidationHelper.validateName(translate, code, 6, 6).status)
+        // console.log(projectManager.length === 0)
+        // console.log(responsibleEmployeesWithUnit.list.length === 0)
+        // console.log(startDate.length === 0)
+        // console.log(endDate.length === 0)
         if (!ValidationHelper.validateName(translate, projectName, 6, 255).status) return false;
         if (!ValidationHelper.validateName(translate, code, 6, 6).status) return false;
         if (projectManager.length === 0) return false;
-        if (responsibleEmployees.length === 0) return false;
+        if (responsibleEmployeesWithUnit.list.length === 0) return false;
         if (startDate.length === 0) return false;
         if (endDate.length === 0) return false;
         return true;
@@ -312,7 +319,15 @@ const ProjectCreateForm = (props) => {
 
                             <div className="form-group">
                                 <label>{translate('project.unitTime')}</label>
-                                <div className="form-control">Ngày</div>
+                                <SelectBox
+                                    id={`select-project-unitTime`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    items={fakeUnitTimeList}
+                                    onChange={(e) => handleChangeForm(e, 'unitTime')}
+                                    value={unitTime}
+                                    multiple={false}
+                                />
                             </div>
                             <div className="form-group">
                                 <label>{translate('project.unitCost')}</label>
