@@ -7,7 +7,7 @@ import { convertDepartmentIdToDepartmentName, convertUserIdToUserName, getListDe
 import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
 
 const ModalSalaryMembersEdit = (props) => {
-    const { translate, responsibleEmployeesWithUnit, project, user, createProjectCurrentSalaryMember, projectDetail, projectDetailId, currentProjectTasks } = props;
+    const { translate, responsibleEmployeesWithUnit, project, user, createProjectCurrentSalaryMember, projectDetail, projectDetailId, isTasksListEmpty } = props;
     const listUsers = user && user.usersInUnitsOfCompany ? getEmployeeSelectBoxItems(user.usersInUnitsOfCompany) : []
     const [currentSalaryMembers, setCurrentSalaryMembers] = useState(project.salaries || []);
 
@@ -43,8 +43,6 @@ const ModalSalaryMembersEdit = (props) => {
         return currentSalaryMembers.length > 0;
     }
 
-    const isTasksListNotEmpty = (currentProjectTasks && currentProjectTasks.length > 0);
-
     return (
         <React.Fragment>
             <DialogModal
@@ -79,7 +77,7 @@ const ModalSalaryMembersEdit = (props) => {
                                                         <td>{convertUserIdToUserName(listUsers, userItem.userId)}</td>
                                                         <td>
                                                             {
-                                                                isTasksListNotEmpty
+                                                                isTasksListEmpty
                                                                     ?
                                                                     <input
                                                                         type="number"

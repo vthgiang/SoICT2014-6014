@@ -21,8 +21,8 @@ const ProjectEditForm = (props) => {
         { text: 'USD', value: 'USD' },
     ]
     const fakeUnitTimeList = [
-        { text: 'day', value: 'day' },
-        { text: 'hour', value: 'hour' },
+        { text: 'Ngày', value: 'days' },
+        { text: 'Giờ', value: 'hours' },
     ]
     const preprocessUsersList = useCallback((currentObject) => {
         if (typeof currentObject?.[0] === 'string') {
@@ -290,8 +290,7 @@ const ProjectEditForm = (props) => {
         setCurrentSalaryMembers(data);
     }
 
-    const isTasksListNotEmpty = (currentProjectTasks &&  currentProjectTasks.length > 0);
-
+    const isTasksListEmpty = (!currentProjectTasks || currentProjectTasks.length === 0);
 
     return (
         <React.Fragment>
@@ -306,7 +305,7 @@ const ProjectEditForm = (props) => {
                 <ModalSalaryMembersEdit
                     projectDetail={projectEdit}
                     projectDetailId={projectId}
-                    currentProjectTasks={currentProjectTasks}
+                    isTasksListEmpty={isTasksListEmpty}
                     createProjectCurrentSalaryMember={currentSalaryMembers}
                     responsibleEmployeesWithUnit={responsibleEmployeesWithUnit}
                     handleSaveCurrentSalaryMember={handleSaveCurrentSalaryMember}
@@ -374,7 +373,16 @@ const ProjectEditForm = (props) => {
 
                             <div className="form-group">
                                 <label>{translate('project.unitTime')}</label>
-                                <div className="form-control">{translate(`project.unit.${unitTime}`)}</div>
+                                <SelectBox
+                                    id={`select-edit-project-unitTime`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    items={fakeUnitTimeList}
+                                    onChange={(e) => handleChangeForm(e, 'unitTime')}
+                                    value={unitTime}
+                                    multiple={false}
+                                    disabled={!isTasksListEmpty}
+                                />
                             </div>
                             <div className="form-group">
                                 <label>{translate('project.unitCost')}</label>
@@ -414,7 +422,7 @@ const ProjectEditForm = (props) => {
                                         <tr>
                                             <th>Thuộc đơn vị</th>
                                             <th>Thành viên tham gia</th>
-                                            {!isTasksListNotEmpty && <th>{translate('task_template.action')}</th>}
+                                            {isTasksListEmpty && <th>{translate('task_template.action')}</th>}
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -429,7 +437,7 @@ const ProjectEditForm = (props) => {
                                                         }
                                                     </td>
                                                     {
-                                                        !isTasksListNotEmpty
+                                                        isTasksListEmpty
                                                         &&
                                                         <td>
                                                             <a className="delete" title={translate('general.delete')} onClick={() => handleDelete(index)}><i className="material-icons">delete</i></a>
@@ -439,7 +447,7 @@ const ProjectEditForm = (props) => {
                                             ))
                                         }
                                         {
-                                            !isTasksListNotEmpty
+                                            isTasksListEmpty
                                             &&
                                             <tr key={`add-task-input-${responsibleEmployeesWithUnit?.list?.length}`}>
                                                 <td>

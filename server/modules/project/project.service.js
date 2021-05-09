@@ -73,6 +73,7 @@ exports.show = async (portal, id) => {
 exports.create = async (portal, data) => {
     let newData = {};
     let newResponsibleEmployeesWithUnit = [];
+    console.log(data)
 
     if (data) {
         for (let i in data) {
@@ -193,6 +194,7 @@ exports.edit = async (portal, id, data) => {
             projectManager: data.projectManager,
             responsibleEmployeesWithUnit: newResponsibleEmployeesWithUnit,
             responsibleEmployees: data.responsibleEmployees,
+            unitTime: data.unitTime,
         }
     }, { new: true });
     return await Project(connect(DB_CONNECTION, portal)).findOne({ _id: id })

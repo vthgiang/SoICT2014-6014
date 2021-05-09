@@ -35,7 +35,7 @@ const ProjectCreateForm = (props) => {
         projectManager: [],
         responsibleEmployees: [],
         unitCost: fakeUnitCostList[0].value,
-        unitTime: '',
+        unitTime: fakeUnitTimeList[0].value,
         estimatedCost: ''
     });
 

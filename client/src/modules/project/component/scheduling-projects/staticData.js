@@ -208,3 +208,54 @@ export const fakeChangeRequestsList = [
         requestStatus: 1,
     }
 ]
+
+export const configImportCPMData = {
+    sheets: {
+        description: "Tên các sheet",
+        value: ["Danh sách công việc"]
+    },
+    rowHeader: {
+        description: "Số tiêu đề của bảng",
+        value: 2
+    },
+    code: {
+        columnName: "Mã công việc",
+        description: "Mã công việc",
+        value: "Mã công việc"
+    },
+    name: {
+        columnName: "Tên công việc",
+        description: "Tên công việc",
+        value: "Tên công việc"
+    },
+    predecessors: {
+        columnName: "Công việc tiền nhiệm",
+        description: "Công việc tiền nhiệm",
+        value: "Công việc tiền nhiệm"
+    },
+    estimateNormalTime: {
+        columnName: "Thời gian ước lượng",
+        description: "Thời gian ước lượng",
+        value: "Thời gian ước lượng"
+    },
+    estimateOptimisticTime: {
+        columnName: "Thời gian ước lượng thoả hiệp",
+        description: "Thời gian ước lượng thoả hiệp",
+        value: "Thời gian ước lượng thoả hiệp"
+    },
+    emailResponsibleEmployees: {
+        columnName: "Email thành viên thực hiện",
+        description: "Email thành viên thực hiện",
+        value: "Email thành viên thực hiện"
+    },
+    emailAccountableEmployees: {
+        columnName: 'Email thành viên phê duyệt',
+        description: 'Email thành viên phê duyệt',
+        value: 'Email thành viên phê duyệt'
+    },
+    totalResWeight: {
+        columnName: 'Trọng số thành viên thực hiện (%)',
+        description: 'Trọng số thành viên thực hiện (%)',
+        value: 'Trọng số thành viên thực hiện (%)'
+    },
+}

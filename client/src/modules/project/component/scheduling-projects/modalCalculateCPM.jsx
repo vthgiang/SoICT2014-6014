@@ -264,17 +264,19 @@ const ModalCalculateCPM = (props) => {
             confirmButtonText: translate('general.yes'),
         }).then(async (result) => {
             if (result.value) {
-                const newTasksList = processedData.map(processDataItem => {
+                const newTasksList = processedData.map((processDataItem, processDataIndex) => {
                     const responsiblesWithSalaryArr = processDataItem.currentResponsibleEmployees?.map(resItem => {
                         return ({
                             userId: resItem,
-                            salary: getSalaryFromUserId(projectDetail?.responsibleEmployeesWithUnit, resItem)
+                            salary: getSalaryFromUserId(projectDetail?.responsibleEmployeesWithUnit, resItem),
+                            weight: processDataItem.currentResWeightArr[processDataIndex].weight,
                         })
                     })
                     const accountablesWithSalaryArr = processDataItem.currentAccountableEmployees?.map(accItem => {
                         return ({
                             userId: accItem,
-                            salary: getSalaryFromUserId(projectDetail?.responsibleEmployeesWithUnit, accItem)
+                            salary: getSalaryFromUserId(projectDetail?.responsibleEmployeesWithUnit, accItem),
+                            weight: processDataItem.currentAccWeightArr[processDataIndex].weight,
                         })
                     })
                     const newActorsWithSalary = [...responsiblesWithSalaryArr, ...accountablesWithSalaryArr];

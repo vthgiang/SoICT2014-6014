@@ -104,24 +104,35 @@ export const getNearestIntegerNumber = (value) => {
     return result;
 }
 
-export const getEstimateHumanCostFromParams = (projectDetail, duration, currentResponsibleEmployees, currentAccountableEmployees, timeMode) => {
-    // trọng số người thực hiện là 0.8, người phê duyệt là 0.2
-    const resWeight = 0.8, accWeight = 0.2;
+export const getEstimateHumanCostFromParams = (projectDetail, duration, currentResponsibleEmployees, currentAccountableEmployees, timeMode, currentResWeightArr, currentAccWeightArr) => {
+    // trọng số default người thực hiện là 0.8, người phê duyệt là 0.2
     let cost = 0;
     const currentMonthWorkDays = getAmountOfWeekDaysInMonth(moment());
     for (let resItem of currentResponsibleEmployees) {
-        cost += resWeight * getSalaryFromUserId(projectDetail?.responsibleEmployeesWithUnit, resItem) / currentMonthWorkDays / (timeMode === 'days' ? 1 : 8)
+        const resWeightNotInDecimal = currentResWeightArr?.find(resWeightItem => String(resWeightItem.userId) === String(resItem))?.weight
+        cost += (resWeightNotInDecimal ? (resWeightNotInDecimal / 100) : (0.8 / currentResponsibleEmployees.length))
+            * getSalaryFromUserId(projectDetail?.responsibleEmployeesWithUnit, resItem) / currentMonthWorkDays * (timeMode === 'days' ? 1 : 8)
             * duration;
     }
     for (let accItem of currentAccountableEmployees) {
-        cost += accWeight * getSalaryFromUserId(projectDetail?.responsibleEmployeesWithUnit, accItem) / currentMonthWorkDays / (timeMode === 'days' ? 1 : 8)
-        * duration;
+        const accWeightNotInDecimal = currentAccWeightArr?.find(accWeightItem => String(accWeightItem.userId) === String(accItem))?.weight
+        cost += (accWeightNotInDecimal ? (accWeightNotInDecimal / 100) : (0.2 / currentAccountableEmployees.length))
+            * getSalaryFromUserId(projectDetail?.responsibleEmployeesWithUnit, accItem) / currentMonthWorkDays * (timeMode === 'days' ? 1 : 8)
+            * duration;
     }
     return cost;
 }
 
+export const getEstimateMemberCost = (projectDetail, userId, duration, timeMode, weight) => {
+    const currentMonthWorkDays = getAmountOfWeekDaysInMonth(moment());
+    let cost = 0;
+    cost = (weight / 100)
+        * getSalaryFromUserId(projectDetail?.responsibleEmployeesWithUnit, userId) / currentMonthWorkDays * (timeMode === 'days' ? 1 : 8)
+        * duration
+    return cost;
+}
+
 export const handleWeekendAndWorkTime = (projectDetail, taskItem) => {
-    console.log ('taskItem be 4', taskItem)
     // Nếu unitTime = 'days'
     if (projectDetail?.unitTime === 'days') {
         // Check xem startDate có phải thứ 7 hoặc chủ nhật không thì cộng thêm ngày để startDate vào ngày thứ 2 tuần sau
@@ -166,7 +177,6 @@ export const handleWeekendAndWorkTime = (projectDetail, taskItem) => {
             if (dayOfStartDate === 6) taskItem.endDate = moment(taskItem.endDate).add(2, 'days').format();
             if (dayOfStartDate === 0) taskItem.endDate = moment(taskItem.endDate).add(1, 'days').format();
         }
-        console.log('taskItem', taskItem)
         return taskItem;
     }
 
@@ -235,6 +245,64 @@ export const handleWeekendAndWorkTime = (projectDetail, taskItem) => {
         if (dayOfStartDate === 6) taskItem.endDate = moment(taskItem.endDate).add(2, 'days').format();
         if (dayOfStartDate === 0) taskItem.endDate = moment(taskItem.endDate).add(1, 'days').format();
     }
-    console.log('taskItem', taskItem)
     return taskItem;
+}
+
+export const getProjectParticipants = (projectDetail, hasManagerAndCreator = false) => {
+    let projectParticipants = [];
+    if (hasManagerAndCreator) {
+        const formattedManagerArr = projectDetail?.projectManager?.map(item => {
+            return ({
+                text: item.name,
+                value: item._id
+            })
+        })
+        let formattedEmployeeArr = [];
+        if (Array.isArray(projectDetail?.responsibleEmployees)) {
+            for (let item of projectDetail?.responsibleEmployees) {
+                if (!projectDetail?.projectManager.find(managerItem => managerItem.name === item.name)) {
+                    formattedEmployeeArr.push({
+                        text: item.name,
+                        value: item._id
+                    })
+                }
+            }
+        }
+    
+        if (!projectParticipants || !formattedManagerArr || !formattedEmployeeArr) {
+            return []
+        }
+        projectParticipants = formattedManagerArr.concat(formattedEmployeeArr)
+        if (projectParticipants.find(item => String(item.value) === String(projectDetail?.creator?._id))) {
+            return projectParticipants;
+        }
+        projectParticipants.push({
+            text: projectDetail?.creator?.name,
+            value: projectDetail?.creator?._id
+        })
+        return projectParticipants;
+    }
+    projectParticipants = projectDetail?.responsibleEmployees?.map(item => {
+        return ({
+            text: item.name,
+            value: item._id
+        })
+    });
+    return projectParticipants;
+}
+
+export const getEmailMembers = (projectDetail) => {
+    let resultArr = [];
+    resultArr.push(projectDetail?.creator?.email);
+    for (let managerItem of projectDetail?.projectManager) {
+        if (!resultArr.includes(managerItem?.email)) {
+            resultArr.push(managerItem?.email)
+        }
+    }
+    for (let employeeItem of projectDetail?.responsibleEmployees) {
+        if (!resultArr.includes(employeeItem?.email)) {
+            resultArr.push(employeeItem?.email)
+        }
+    }
+    return resultArr;
 }
