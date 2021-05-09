@@ -95,3 +95,7 @@ table.tableTest th.first-column {
     /* border-bottom: 2px solid rgb(0, 162, 255); */
     background: #a7cde4;
 }
+
+.transport-table-carrier-vehicle-label {
+    font-size: 18px;
+}

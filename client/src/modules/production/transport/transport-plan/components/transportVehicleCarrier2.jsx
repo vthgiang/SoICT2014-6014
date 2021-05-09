@@ -259,15 +259,20 @@ function TransportVehicleCarrier2(props) {
             </div>
             
             <div className="box box-solid">
-                <div className="box-header">
-                    <div className="box-title">{"Danh sách sử dụng phuơng tiện theo ngày"}</div>
-                </div>
+                {/* <div className="box-header"> */}
+                    {/* <div className="box-title">{"Danh sách sử dụng phuơng tiện theo ngày"}</div> */}
+                {/* </div> */}
 
                 <div className="box-body qlcv">
 
                     <div className={"divTest"}>
                         <table className={"tableTest table-bordered table-hover not-sort"}>
                             <thead>
+                                <tr key={"vehicle-label"}>
+                                    <td colSpan={listDay?listDay.length + 4:4}>
+                                        <div className="transport-table-carrier-vehicle-label"> {"Danh sách sử dụng phương tiện theo ngày"}</div>
+                                    </td>
+                                </tr>
                                 <tr className="word-no-break">
                                     <th>{"STT"}</th>
                                     <th>{"Mã xe"}</th>
@@ -309,6 +314,62 @@ function TransportVehicleCarrier2(props) {
                                                         <a style={{ color: "white" }} 
                                                             // onClick={() => this.handleShowDetailManufacturingCommand(command)}
                                                         >{getCurrentPlan(formatDate(day), vehicle._id)?.code}</a>
+                                                    </span>
+                                                </td>
+                                            ))
+                                        }
+                                    </tr>
+                                ))
+                            }
+                            <tr key="page-nav-vehicle">
+                                <td colSpan={listDay?listDay.length+4:4}>
+                                    { }
+                                </td>
+                            </tr>
+                            </tbody>
+                            
+                            <thead>
+                                <tr key="carrier-label">
+                                    <td colSpan={listDay?listDay.length + 4:4}>
+                                        <div className="transport-table-carrier-vehicle-label"> {"Danh sách công việc vận chuyển nhân viên theo ngày"}</div>
+                                    </td>
+                                </tr>
+                                <tr className="word-no-break">
+                                    <th>{"STT"}</th>
+                                    <th>{"Tên nhân viên"}</th>
+                                    <th colSpan={2}>{"Email"}</th>
+                                    {
+                                        listDay && listDay.length!==0
+                                        &&
+                                        listDay.map(item => (
+                                            <th>{formatDate(item)}</th>
+                                        )) 
+                                    }
+                                </tr>
+                            </thead>
+                            <tbody className="transport-special-row">
+                            {
+                                listAllCarriers && listAllCarriers.length!==0
+                                &&
+                                listAllCarriers.map((carrier, index1)=>(
+                                    carrier &&
+                                    <tr key={carrier._id} className="word-no-break">
+                                        <td>{index1+1}</td>
+                                        <td>{carrier.name}</td>
+                                        <td colSpan={2}>{carrier.email}</td>
+                                        {
+                                            listDay && listDay.length!==0
+                                            && listDay.map((day, index2) => (
+                                                <td className="tooltip-checkbox-transport">
+                                                    <span className={"icon "+getStatusTickBox(formatDate(day), carrier._id)}
+                                                    title={"ngay-nguoi"} 
+                                                    >
+
+                                                    </span>
+                                                    <span className="tooltiptext">
+                                                        <a style={{ color: "white" }} 
+                                                            // onClick={() => this.handleShowDetailManufacturingCommand(command)}
+                                                        >{getCurrentPlan(formatDate(day), carrier._id)?.code}</a>
                                                     </span>
                                                 </td>
                                             ))
