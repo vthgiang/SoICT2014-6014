@@ -8,6 +8,8 @@ import { transportPlanActions } from "../../transport-plan/redux/actions"
 import { transportScheduleActions } from "../../transport-schedule/redux/actions";
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 import { convertJsonObjectToFormData } from '../../../../../helpers/jsonObjectToFormDataObjectConverter'
+
+import { convertStringNavigatorGeocode } from '../../transportHelper/convertDistanceAndDuration'
 import { MapContainer } from "../../transportHelper/googleReactMap/mapContainer"
 
 function TransportDetailMap(props) {
@@ -23,18 +25,19 @@ function TransportDetailMap(props) {
         if (currentLocationOnMap){
             console.log(currentLocationOnMap);
             console.log(typeof currentLocationOnMap);
-            let a1 = currentLocationOnMap.indexOf("lat");
-            let a2 = currentLocationOnMap.indexOf(",");
-            let b1 = currentLocationOnMap.indexOf("lng");
-            let b2 = currentLocationOnMap.indexOf("}");
-            console.log(currentLocationOnMap.slice(a1+5,a2));
-            console.log(currentLocationOnMap.slice(b1+5,b2));
-            // console.log(location)
+            let {lat, lng} = convertStringNavigatorGeocode(currentLocationOnMap);
+            // setCurrentMarker([{
+            //     name: "c",
+            //     location: {
+            //         lat: parseFloat(currentLocationOnMap.slice(a1+5,a2)),
+            //         lng: parseFloat(currentLocationOnMap.slice(b1+5,b2))
+            //     }
+            // }])
             setCurrentMarker([{
                 name: "c",
                 location: {
-                    lat: parseFloat(currentLocationOnMap.slice(a1+5,a2)),
-                    lng: parseFloat(currentLocationOnMap.slice(b1+5,b2))
+                    lat: lat,
+                    lng: lng
                 }
             }])
         }

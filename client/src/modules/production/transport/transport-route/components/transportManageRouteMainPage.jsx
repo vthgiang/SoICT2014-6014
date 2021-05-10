@@ -8,7 +8,7 @@ import { formatDate } from "../../../../../helpers/formatDate"
 
 import { TransportManageVehicleProcess } from "./transportManageVehicleProcess"
 
-import { TransportDetailRoute } from "./transportDetailRoute"
+import { TransportDetailRoute } from "./transportListMissionProcess"
 import { TransportDetailMap } from "./transportDetailMap"
 
 import { transportPlanActions } from "../../transport-plan/redux/actions"
