@@ -551,7 +551,7 @@ function AddTaskTemplate (props) {
                             table={false}
                             embeds={false}
                             getTextData={handleTaskTemplateDesc}
-                            height={80}
+                            maxHeight={80}
                             quillValueDefault={newTemplate.quillDescriptionDefault}
                             placeholder={translate('task_template.description')}
                         />

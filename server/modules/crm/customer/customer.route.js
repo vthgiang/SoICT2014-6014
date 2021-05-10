@@ -17,6 +17,7 @@ router.post('/', auth, uploadFile([{ name: 'file', path: '/crm/customer-files' }
 router.post('/imports', auth, CustomerController.importCustomers);
 router.patch('/:id', auth, uploadFile(data, 'fields'), CustomerController.editCustomer);
 router.patch('/:id/point', auth, CustomerController.editCustomerPoint);
+router.patch('/:id/promotion', auth, CustomerController.addPromotion);
 router.delete('/:id', auth, CustomerController.deleteCustomer);
 
 module.exports = router;

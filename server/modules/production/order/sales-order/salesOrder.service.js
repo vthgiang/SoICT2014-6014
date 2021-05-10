@@ -165,7 +165,7 @@ exports.getAllSalesOrders = async (userId, query, portal) => {
     if (status) {
         option = {
             ...option,
-            status: { $in: status.map((item)=> parseInt(item)) }
+            status: { $in: status.map((item) => parseInt(item)) }
         }
     }
     if (customer) {
@@ -174,7 +174,6 @@ exports.getAllSalesOrders = async (userId, query, portal) => {
 
     page = Number(page);
     limit = Number(limit);
-    console.log(option)
     if (!page || !limit) {
         let allSalesOrders = await SalesOrder(connect(DB_CONNECTION, portal)).find(option)
             .populate([{

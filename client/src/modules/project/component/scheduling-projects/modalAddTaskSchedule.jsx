@@ -5,15 +5,17 @@ import { DialogModal, SelectBox } from '../../../../common-components/index';
 import { ProjectActions } from '../../redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { taskManagementActions } from '../../../task/task-management/redux/actions';
-import { getCurrentProjectDetails, getDurationWithoutSatSun, getEstimateHumanCostFromParams, getNearestIntegerNumber } from '../projects/functionHelper';
+import { convertUserIdToUserName, getCurrentProjectDetails, getDurationWithoutSatSun, getEstimateHumanCostFromParams, getNearestIntegerNumber } from '../projects/functionHelper';
 import ModalCalculateCPM from './modalCalculateCPM';
 import ModalExcelImport from './modalExcelImport';
 import ModalEditRowCPMExcel from './modalEditRowCPMExcel';
 import { checkIsNullUndefined, numberWithCommas } from '../../../task/task-management/component/functionHelpers';
 import moment from 'moment';
+import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
 
 const ModalAddTaskSchedule = (props) => {
-    const { translate, project, projectDetail } = props;
+    const { translate, project, projectDetail, user } = props;
+    const listUsers = user && user.usersInUnitsOfCompany ? getEmployeeSelectBoxItems(user.usersInUnitsOfCompany) : []
     // console.log('projectDetail', projectDetail)
     // const projectDetail = getCurrentProjectDetails(project);
     const [state, setState] = useState({
@@ -166,21 +168,39 @@ const ModalAddTaskSchedule = (props) => {
             for (let empItem of projectDetail?.responsibleEmployees) {
                 for (let resEmailItem of dataItem.emailResponsibleEmployees) {
                     if (String(empItem.email) === String(resEmailItem)) {
+                        console.log('dataItem', dataItem.code, '(String(empItem.email)', (String(empItem.email)), 'String(resEmailItem)', String(resEmailItem))
                         currentResMemberIdArr.push(empItem._id);
                     }
                 }
                 for (let accEmailItem of dataItem.emailAccountableEmployees) {
                     if (String(empItem.email) === String(accEmailItem)) {
+                        console.log('dataItem', dataItem.code, '(String(empItem.email)', (String(empItem.email)), 'String(accEmailItem)', String(accEmailItem))
                         currentAccMemberIdArr.push(empItem._id);
                     }
                 }
+            }
+            // Nếu email không được điền đầy đủ thì thôi ko cần tính toán chi phí
+            if (currentResMemberIdArr.length === 0 || currentAccMemberIdArr.length === 0) {
+                return dataItem;
             }
             const estHumanCost = getEstimateHumanCostFromParams(
                 projectDetail,
                 dataItem.estimateNormalTime,
                 currentResMemberIdArr,
                 currentAccMemberIdArr,
-                `${projectDetail?.unitTime}s`
+                projectDetail?.unitTime,
+                currentResMemberIdArr.map((resItem, resIndex) => {
+                    return {
+                        userId: resItem,
+                        weight: Number(dataItem.totalResWeight) / currentResMemberIdArr.length,
+                    }
+                }),
+                currentAccMemberIdArr.map((accItem, accIndex) => {
+                    return {
+                        userId: accItem,
+                        weight: (100 - Number(dataItem.totalResWeight)) / currentAccMemberIdArr.length,
+                    }
+                }),
             )
             const estAssetCode = 1000000;
             const estNormalCost = estHumanCost + estAssetCode;
@@ -196,10 +216,12 @@ const ModalAddTaskSchedule = (props) => {
             }
         })
         console.log('formattedData', formattedData)
-        setState({
-            ...state,
-            listTasks: formattedData
-        });
+        setTimeout(() => {
+            setState({
+                ...state,
+                listTasks: formattedData
+            });
+        }, 100);
         // console.log('data', data)
         // setState({
         //     ...state,
@@ -367,7 +389,11 @@ const ModalAddTaskSchedule = (props) => {
                             <th>{translate('project.schedule.taskName')}</th>
                             <th>{translate('project.schedule.preceedingTasks')}</th>
                             <th>{translate('project.schedule.estimatedTime')} ({translate(`project.unit.${projectDetail?.unitTime}`)})</th>
-                            {currentModeImport === 'HAND' && <th>{translate('project.schedule.estimatedTimeOptimistic')}</th>}
+                            <th>{translate('project.schedule.estimatedTimeOptimistic')} ({translate(`project.unit.${projectDetail?.unitTime}`)})</th>
+                            <th>Người thực hiện</th>
+                            <th>Người phê duyệt</th>
+                            <th>Trọng số tổng thực hiện (%)</th>
+                            <th>Trọng số tổng phê duyệt (%)</th>
                             <th>{translate('project.schedule.estimatedCostNormal')} (VND)</th>
                             <th>{translate('project.schedule.estimatedCostMaximum')} (VND)</th>
                             <th>{translate('task_template.action')}</th>
@@ -377,7 +403,7 @@ const ModalAddTaskSchedule = (props) => {
                         {
                             (state.listTasks && state.listTasks !== 0) &&
                             state.listTasks.map((taskItem, index) => (
-                                <tr key={index}>
+                                <tr style={{ cursor: 'pointer' }} onClick={() => handleEditRow(index)} key={index}>
                                     <td>{taskItem?.code}</td>
                                     <td>{taskItem?.name}</td>
                                     <td>{taskItem?.preceedingTasks?.join(', ')}</td>
@@ -388,7 +414,17 @@ const ModalAddTaskSchedule = (props) => {
                                                 ? ' - Thời gian không được lớn hơn 7 Ngày và nhỏ hơn 4 Giờ'
                                                 : null}
                                         </strong></td>
-                                    {currentModeImport === 'HAND' && <td>{taskItem?.estimateOptimisticTime}</td>}
+                                    <td>
+                                        {taskItem?.estimateOptimisticTime}
+                                        <strong style={{ color: 'red' }}>
+                                            {isDurationNotSuitable(taskItem?.estimateOptimisticTime)
+                                                ? ' - Thời gian không được lớn hơn 7 Ngày và nhỏ hơn 4 Giờ'
+                                                : null}
+                                        </strong></td>
+                                    <td>{taskItem?.currentResponsibleEmployees?.map(resItem => convertUserIdToUserName(listUsers, resItem)).join(', ')}</td>
+                                    <td>{taskItem?.currentAccountableEmployees?.map(accItem => convertUserIdToUserName(listUsers, accItem)).join(', ')}</td>
+                                    <td>{taskItem?.totalResWeight}</td>
+                                    <td>{taskItem?.totalResWeight ? 100 - Number(taskItem?.totalResWeight) : ''}</td>
                                     <td>{checkIsNullUndefined(taskItem?.estimateNormalCost) ? 'Chưa tính được' : taskItem?.estimateNormalCost}</td>
                                     <td>{checkIsNullUndefined(taskItem?.estimateMaxCost) ? 'Chưa tính được' : taskItem?.estimateMaxCost}</td>
                                     {currentModeImport === 'HAND' &&
@@ -398,7 +434,7 @@ const ModalAddTaskSchedule = (props) => {
                                     }
                                     {currentModeImport === 'EXCEL' &&
                                         <td>
-                                            <a className="edit" title={translate('general.edit')} onClick={() => handleEditRow(index)}><i className="material-icons">edit</i></a>
+                                            <a className="edit" title={translate('general.edit')}><i className="material-icons">edit</i></a>
                                         </td>
                                     }
                                 </tr>

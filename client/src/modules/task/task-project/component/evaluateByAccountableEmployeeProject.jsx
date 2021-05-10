@@ -100,26 +100,48 @@ const EvaluateByAccountableEmployeeProject = (props) => {
         }, 10);
     }
 
-    const handleSaveEvalResult = async () => {
-        // console.log('resEvalArr', currentResHandPointFromAccArr)
-        for (let i = 0; i < resEvalArr.length; i++) {
-            await props.evaluateTaskByResponsibleEmployeesProject({
-                userId: resEvalArr[i].id,
+    // const handleSaveEvalResult = async () => {
+    //     // console.log('resEvalArr', currentResHandPointFromAccArr)
+    //     for (let i = 0; i < resEvalArr.length; i++) {
+    //         await props.evaluateTaskByResponsibleEmployeesProject({
+    //             userId: resEvalArr[i].id,
+    //             taskAutomaticPoint: Number(currentTaskAutomaticPoint),
+    //             automaticPoint: Number(resEvalArr[i].automaticPoint),
+    //             employeePoint: Number(resEvalArr[i].employeePoint),
+    //             accountablePoint: Number(currentResHandPointFromAccArr[i]),
+    //             progress: currentProgress,
+    //         }, task._id)
+    //     }
+    //     await props.evaluateTaskByAccountableEmployeesProject({
+    //         userId,
+    //         taskAutomaticPoint: Number(currentTaskAutomaticPoint),
+    //         automaticPoint: Number(currentAccUserAutomaticPoint),
+    //         employeePoint: Number(currentAccUserHandPoint),
+    //         progress: currentProgress,
+    //     }, task._id)
+    // }
+
+    useEffect(() => {
+        props.handleSaveAccountableData({
+            resEvalArr: resEvalArr.map((resItem, resIndex)=>{
+                return{
+                    userId: resItem.id,
+                    taskAutomaticPoint: Number(currentTaskAutomaticPoint),
+                    automaticPoint: Number(resItem.automaticPoint),
+                    employeePoint: Number(resItem.employeePoint),
+                    accountablePoint: Number(currentResHandPointFromAccArr[resIndex]),
+                    progress: currentProgress,
+                }
+            }),
+            accData: {
+                userId,
                 taskAutomaticPoint: Number(currentTaskAutomaticPoint),
-                automaticPoint: Number(resEvalArr[i].automaticPoint),
-                employeePoint: Number(resEvalArr[i].employeePoint),
-                accountablePoint: Number(currentResHandPointFromAccArr[i]),
+                automaticPoint: Number(currentAccUserAutomaticPoint),
+                employeePoint: Number(currentAccUserHandPoint),
                 progress: currentProgress,
-            }, task._id)
-        }
-        await props.evaluateTaskByAccountableEmployeesProject({
-            userId,
-            taskAutomaticPoint: Number(currentTaskAutomaticPoint),
-            automaticPoint: Number(currentAccUserAutomaticPoint),
-            employeePoint: Number(currentAccUserHandPoint),
-            progress: currentProgress,
-        }, task._id)
-    }
+            },
+        })
+    }, [currentProgress, currentAccUserHandPoint, currentResHandPointFromAccArr])
 
     return (
         <React.Fragment>
@@ -137,9 +159,9 @@ const EvaluateByAccountableEmployeeProject = (props) => {
                 />
                 {/* Thông tin chung */}
                 <fieldset className="scheduler-border">
-                    <div className="row">
+                    {/* <div className="row">
                         <button className="btn btn-success pull-right" style={{ marginRight: 10 }} onClick={() => handleSaveEvalResult()}>Lưu kết quả đánh giá</button>
-                    </div>
+                    </div> */}
                     <legend className="scheduler-border">Thông tin công việc</legend>
                     <div className="row">
                         <div className="col-md-6">

@@ -22,14 +22,6 @@ function CrmCare(props) {
     const [careInfoId, setCareInfoId] = useState();
     const [careEditId, setCareEditId] = useState();
     const [careCompleteId, setCareCompleteId] = useState();
-    function formatCareStatus(input) {
-        input = parseInt(input);
-        if (input === 0) return 'Chưa thực hiện';
-        if (input === 1) return 'Đang thực hiện';
-        if (input === 2) return 'Đang tạm hoãn';
-        if (input === 3) return 'Đã hoàn thành';
-    }
-
     const handleInfo = async (id) => {
         await setCareInfoId(id);
         window.$('#modal-crm-care-info').modal('show')
@@ -146,9 +138,9 @@ function CrmCare(props) {
                 customerCareTypes: o.customerCareTypes ? o.customerCareTypes.map(cr => cr.name).join(', ') : '',
                 name: o.name,
                 customer: o.customer.name,
-                status: formatCareStatus(o.status),
+                status: formatFunction.formatCareStatus(o.status),
                 customerCareStaffs: o.customerCareStaffs ? o.customerCareStaffs.map(cg => cg.name).join(', ') : '',
-                prioriry: 'Ưu tiên cao',
+                priority: 'Ưu tiên cao',
                 startDate: o.startDate ? formatFunction.formatDate(o.startDate) : '',
                 endDate: o.endDate ? formatFunction.formatDate(o.endDate) : '',
 
@@ -168,7 +160,7 @@ function CrmCare(props) {
                                 { key: "customerCareTypes", value: 'Loại hoạt động CSKH' },
                                 { key: "name", value: "Tên hoạt động CSKH" },
                                 { key: "customer", value: "Tên khách hàng", width: 25 },
-                                { key: "prioriry", value: "Độ ưu tiên" },
+                                { key: "priority", value: "Độ ưu tiên" },
                                 { key: "customerCareStaffs", value: "Nhân viên phụ trách" },
                                 { key: "status", value: "Trạng thái" },
                                 { key: "startDate", value: "Ngày bắt đầu", width: 25 },
@@ -309,15 +301,15 @@ function CrmCare(props) {
                                     <td>{o.customerCareTypes ? o.customerCareTypes.map(cr => cr.name).join(', ') : ''}</td>
                                     <td>{o.customer ? o.customer.name : ''}</td>
                                     {/* <td>{o.description}</td> */}
-                                    <td>ưu tiên cao</td>
+                                    <td>{o.priority?formatFunction.formatCarePriority(o.priority):''}</td>
                                     <td>{o.customerCareStaffs ? o.customerCareStaffs.map(cg => cg.name).join(', ') : ''}</td>
-                                    <td>{formatCareStatus(o.status)}</td>
+                                    <td>{formatFunction.formatCareStatus(o.status)}</td>
                                     <td>{o.startDate ? formatFunction.formatDate(o.startDate) : ''}</td>
                                     <td>{o.endDate ? formatFunction.formatDate(o.endDate) : ''}</td>
                                     <td style={{ textAlign: 'center' }}>
                                         <a className="text-green" onClick={() => handleInfo(o._id)}><i className="material-icons">visibility</i></a>
                                         <a className="text-yellow" onClick={() => handleEdit(o._id)}><i className="material-icons">edit</i></a>
-                                        <a className="text-green" onClick={() => handleComplete(o._id)}><i className="material-icons">add_task</i></a>
+                                        <a className="text-green" onClick={() => handleComplete(o._id)}><i className="material-icons">assignment_turned_in</i></a>
                                         <ConfirmNotification
                                             icon="question"
                                             title="Xóa thông tin về khách hàng"

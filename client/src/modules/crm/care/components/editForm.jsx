@@ -6,7 +6,7 @@ import { CrmCareActions } from '../redux/action';
 import { formatFunction } from '../../common/index';
 import ValidationHelper from '../../../../helpers/validationHelper';
 function EditCareForm(props) {
- 
+
     const { crm, user, careEditId, translate } = props
     useEffect(() => {
         props.getCare(careEditId);
@@ -37,71 +37,25 @@ function EditCareForm(props) {
         ))
     }
 
-    //     return {
-    //         dataStatus: 1,
-    //         careEditId: props.careEditId,
-    //         employees,
-    //         listCareTypes,
-    //         listCustomers,
-    //     }
-    // } else {
-    //     return null;
-    // }
-
-
-
-    // shouldComponentUpdate = (nextProps, nextState) => {
-    //     let { careEditting, dataStatus } = this.state;
-    //     if (dataStatus === this.DATA_STATUS.QUERYING && !nextProps.crm.cares.isLoading) {
-    //         let care = nextProps.crm.cares.careById;
-    //         careEditting = {
-    //             customerCareStaffs: care.customerCareStaffs ? care.customerCareStaffs.map(o => o._id) : [],
-    //             customer: care.customer ? [care.customer._id] : '',
-    //             name: care.name ? care.name : '',
-    //             description: care.description ? care.description : '',
-    //             customerCareTypes: care.customerCareTypes ? care.customerCareTypes.map(o => o._id) : [],
-    //             status: care.status ? care.status : '',
-    //             startDate: care.startDate ? formatFunction.formatDate(care.startDate) : '',
-    //             endDate: care.endDate ? formatFunction.formatDate(care.endDate) : ''
-    //quillValueDefault: care.description ? care.description : '',
-    //         }
-
-    //         this.setState({
-    //             dataStatus: this.DATA_STATUS.AVAILABLE,
-    //             quillValueDefault: care.description ? care.description : '',
-    //             careEditting,
-    //         })
-    //         return false;
-    //     }
-
-    //     if (dataStatus === this.DATA_STATUS.AVAILABLE) {
-    //         this.setState({
-    //             dataStatus: this.DATA_STATUS.FINISHED,
-    //         });
-    //         return false;
-    //     }
-    //     return true;
-    // }
-    
-    const [careEditting, setCareEditting] = useState({id:undefined});
-    if (!crm.cares.isLoading  && crm.cares.careById && (careEditting.id !== crm.cares.careById._id) ) {
-        console.log('careEditting.id',careEditting.id)
-        console.log('careEditId',careEditId)
-        const care = crm.cares.careById;
-        const newCareEditting = {
-            id: care._id,
-            customerCareStaffs: care.customerCareStaffs ? care.customerCareStaffs.map(o => o._id) : [],
-            customer: care.customer ? [care.customer._id] : '',
-            name: care.name ? care.name : '',
-            description: care.description ? care.description : '',
-            customerCareTypes: care.customerCareTypes ? care.customerCareTypes.map(o => o._id) : [],
-            status: care.status ? care.status : '',
-            startDate: care.startDate ? formatFunction.formatDate(care.startDate) : '',
-            endDate: care.endDate ? formatFunction.formatDate(care.endDate) : '',
-            quillValueDefault: care.description ? care.description : '',
+    const [careEditting, setCareEditting] = useState({ id: undefined });
+    if (!crm.cares.isLoading && crm.cares.careById && (careEditting.id != crm.cares.careById._id)) {
+        async function getData() {
+            const care = crm.cares.careById;
+            const newCareEditting = {
+                id: care._id,
+                customerCareStaffs: care.customerCareStaffs ? care.customerCareStaffs.map(o => o._id) : [],
+                customer: care.customer ? [care.customer._id] : '',
+                name: care.name ? care.name : '',
+                description: care.description ? care.description : '',
+                customerCareTypes: care.customerCareTypes ? care.customerCareTypes.map(o => o._id) : [],
+                status: care.status ? care.status : '',
+                startDate: care.startDate ? formatFunction.formatDate(care.startDate) : '',
+                endDate: care.endDate ? formatFunction.formatDate(care.endDate) : '',
+                quillValueDefault: care.description ? care.description : '',
+            }
+            await setCareEditting(newCareEditting);
         }
-        setCareEditting(newCareEditting)
-        // initData();
+        getData();
     }
 
     /**
@@ -116,12 +70,12 @@ function EditCareForm(props) {
         }
 
         await setCareEditting(newCareEditting);
-        let { message } = ValidationHelper.validateEmpty(translate, value);
-        newCareEditting = {
-            ...careEditting,
-            caregiverError: message
-        }
-        await setCareEditting(newCareEditting);
+        // let { message } = ValidationHelper.validateEmpty(translate, value);
+        // newCareEditting = {
+        //     ...careEditting,
+        //     caregiverError: message
+        // }
+        // await setCareEditting(newCareEditting);
     }
 
 
@@ -137,12 +91,12 @@ function EditCareForm(props) {
         }
 
         await setCareEditting(newCareEditting);
-        let { message } = ValidationHelper.validateEmpty(translate, value);
-        newCareEditting = {
-            ...careEditting,
-            customerError: message
-        }
-        await setCareEditting(newCareEditting);
+        // let { message } = ValidationHelper.validateEmpty(translate, value);
+        // newCareEditting = {
+        //     ...careEditting,
+        //     customerError: message
+        // }
+        // await setCareEditting(newCareEditting);
     }
 
 
@@ -158,12 +112,12 @@ function EditCareForm(props) {
         }
 
         await setCareEditting(newCareEditting);
-        let { message } = ValidationHelper.validateName(translate, value, 4, 255);
-        newCareEditting = {
-            ...careEditting,
-            nameError: message
-        }
-        await setCareEditting(newCareEditting);
+        // let { message } = ValidationHelper.validateName(translate, value, 4, 255);
+        // newCareEditting = {
+        //     ...careEditting,
+        //     nameError: message
+        // }
+        // await setCareEditting(newCareEditting);
     }
 
 
@@ -181,12 +135,6 @@ function EditCareForm(props) {
         }
 
         await setCareEditting(newCareEditting);
-        let { message } = ValidationHelper.validateEmpty(translate, data);
-        newCareEditting = {
-            ...careEditting,
-            descriptionError: message
-        }
-        await setCareEditting(newCareEditting);
     }
 
 
@@ -202,12 +150,6 @@ function EditCareForm(props) {
             customerCareTypes: value,
         }
 
-        await setCareEditting(newCareEditting);
-        let { message } = ValidationHelper.validateEmpty(translate, value);
-        newCareEditting = {
-            ...careEditting,
-            careTypeError: message
-        }
         await setCareEditting(newCareEditting);
     }
 
@@ -226,12 +168,6 @@ function EditCareForm(props) {
         }
 
         await setCareEditting(newCareEditting);
-        let { message } = ValidationHelper.validateEmpty(translate, value);
-        newCareEditting = {
-            ...careEditting,
-            startDateError: message
-        }
-        await setCareEditting(newCareEditting);
     }
 
 
@@ -247,35 +183,15 @@ function EditCareForm(props) {
             ...careEditting,
             endDate: parseInt(value[0]),
         }
-
         await setCareEditting(newCareEditting);
 
     }
 
-
-
-
-
-    const isFormValidated = () => {
-        const { caregiver, customer, name, description, careType, status, startDate } = careEditting;
-
-        if (!ValidationHelper.validateEmpty(translate, caregiver).status
-            || !ValidationHelper.validateEmpty(translate, customer).status
-            || !ValidationHelper.validateName(translate, name).status
-            || !ValidationHelper.validateEmpty(translate, description).status
-            || !ValidationHelper.validateEmpty(translate, careType).status
-            || !ValidationHelper.validateEmpty(translate, status).status
-            || !ValidationHelper.validateEmpty(translate, startDate).status)
-            return false;
-        return true;
-    }
-
-
     const save = () => {
 
-        if (isFormValidated) {
-            props.editCare(careEditId, careEditting);
-        }
+        props.editCare(careEditId, careEditting);
+        // props.getCares({limit:10,page:0});
+
     }
 
 
@@ -288,14 +204,14 @@ function EditCareForm(props) {
         [
             'Chưa thưc hiện',
             'Đang thực hiện',
-            'Đang trì hoãn',
             'Đã hoàn thành',
+            'Đã quá hạn',
+            'Hoàn thành quá hạn',
         ]
-    console.log('Statew', careEditting)
     return (
         <React.Fragment>
             <DialogModal
-                modalID="modal-crm-care-edit" isLoading={crm.cares.isLoading}
+                modalID={`modal-crm-care-edit`} isLoading={crm.cares.isLoading}
                 formID="modal-crm-care-edit"
                 title={translate("crm.care.edit")}
                 size={75}
@@ -304,14 +220,14 @@ function EditCareForm(props) {
             >
                 {careEditting && <div>
                     {/* Form chỉnh sửa khách hàng mới */}
-                    <form id="modal-crm-care-edit">
+                    <form id={`modal-crm-care-edit-${careEditId}`}>
                         {/* Nhân viên phụ trách */}
                         <div className={`form-group ${!caregiverError ? "" : "has-error"}`}>
                             <label>{translate('crm.care.caregiver')}<span className="text-red">*</span></label>
                             {
                                 careEditting.customerCareStaffs && employees &&
                                 <SelectBox
-                                    id={`caregiver-care-edit`}
+                                    id={`caregiver-care-edit-care-staff-${careEditId}`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     items={
@@ -329,15 +245,15 @@ function EditCareForm(props) {
                         <div className={`form-group ${!customerError ? "" : "has-error"}`}>
                             <label>{translate('crm.care.customer')}<span className="text-red">*</span></label>
                             {
-                                careEditting.customer && listCustomers &&
+                                listCustomers &&
                                 <SelectBox
-                                    id={`customer-care-edit`}
+                                    id={`customer-care-edit-customer-${careEditId}`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     items={
                                         listCustomers
                                     }
-                                    value={careEditting.customer}
+                                    value={[careEditting.customer]}
                                     onChange={handleChangeCustomer}
                                     multiple={true}
                                 />
@@ -370,7 +286,7 @@ function EditCareForm(props) {
                             {
                                 careEditting.customerCareTypes && listCareTypes &&
                                 <SelectBox
-                                    id={`customer-careType-edit`}
+                                    id={`customer-careType-edit-care-type-${careEditId}`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     items={
@@ -399,7 +315,7 @@ function EditCareForm(props) {
                         <div className={`form-group ${!startDateError ? "" : "has-error"}`}>
                             <label>{translate('crm.care.startDate')}<span className="text-red">*</span></label>
                             <DatePicker
-                                id="startDate-care-edit"
+                                id={`startDate-care-edit-start-date-${careEditId}`}
                                 value={careEditting.startDate ? careEditting.startDate : ''}
                                 onChange={handleChangeStartDate}
                                 disabled={false}
@@ -411,7 +327,7 @@ function EditCareForm(props) {
                         <div className="form-group">
                             <label>{translate('crm.care.endDate')}</label>
                             <DatePicker
-                                id="endDate-care-edit"
+                                id={`endDate-care-edit-end-date${careEditId}`}
                                 value={careEditting.endDate ? careEditting.endDate : ''}
                                 onChange={handleChangeEndDate}
                                 disabled={false}
@@ -433,6 +349,7 @@ function mapStateToProps(state) {
 const mapDispatchToProps = {
     getCare: CrmCareActions.getCare,
     editCare: CrmCareActions.editCare,
+    getCares: CrmCareActions.getCares,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(EditCareForm));

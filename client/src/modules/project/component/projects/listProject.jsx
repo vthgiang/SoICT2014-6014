@@ -9,6 +9,7 @@ import { ProjectActions } from "../../redux/actions";
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { getStorage } from "../../../../config";
 import { checkIfAbleToCRUDProject } from "./functionHelper";
+import { taskManagementActions } from "../../../task/task-management/redux/actions";
 
 function ListProject(props) {
     // Khởi tạo state
@@ -19,7 +20,7 @@ function ListProject(props) {
         currentRow: null,
         projectDetail: null,
     })
-    const { project, translate, user } = props;
+    const { project, translate, user, tasks } = props;
     const userId = getStorage("userId");
     const { projectName, page, limit, currentRow, projectDetail } = state;
 
@@ -87,6 +88,7 @@ function ListProject(props) {
             ...state,
             projectDetail: projectItem
         });
+        props.getTasksByProject(projectItem?._id);
         setTimeout(() => {
             window.$(`#modal-detail-project-${projectItem?._id}`).modal('show');
         }, 10);
@@ -131,6 +133,7 @@ function ListProject(props) {
             />
 
             <ProjectEditForm
+                currentProjectTasks={tasks && tasks.tasksbyproject}
                 projectEditId={currentRow && currentRow._id}
                 projectEdit={currentRow}
                 handleAfterCreateProject={handleAfterCreateProject}
@@ -241,14 +244,15 @@ function ListProject(props) {
 }
 
 function mapState(state) {
-    const { project, user } = state;
-    return { project, user }
+    const { project, user, tasks } = state;
+    return { project, user, tasks }
 }
 const actions = {
     getProjectsDispatch: ProjectActions.getProjectsDispatch,
     deleteProjectDispatch: ProjectActions.deleteProjectDispatch,
     createProjectDispatch: ProjectActions.createProjectDispatch,
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
+    getTasksByProject: taskManagementActions.getTasksByProject,
 }
 
 const connectedExampleManagementTable = connect(mapState, actions)(withTranslate(ListProject));

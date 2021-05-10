@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 
 import parse from 'html-react-parser';
@@ -6,49 +6,59 @@ import parse from 'html-react-parser';
 import { configQuillEditor } from './configQuillEditor';
 import { ToolbarQuillEditor } from './toolbarQuillEditor';
 
+import { AuthActions } from '../../../modules/auth/redux/actions'
+
 import './quillEditor.css';
-class QuillEditor extends Component {
-    constructor(props) {
-        super(props);
 
-        this.state = {
-            quill: null
-        }
+function QuillEditor (props) {
+    const { auth } = props
+    const { id, isText = false, quillValueDefault, 
+        fileDefault, toolbar = true, maxHeight = 200,
+        enableEdit = true, placeholder = null,
+        enableDropImage = true, inputCssClass = "",
+        font = true, header = true, typography = true, fontColor = true, 
+        alignAndList = true, embeds = true, table = true
+    } = props;
 
-    }
-  
-    componentDidMount = () => {
-        const { id, isText = false, quillValueDefault, 
-            fileDefault, toolbar = true, 
-            enableEdit = true, placeholder = null,
-            enableDropImage = true
-        } = this.props;
+    const [quill, setQuill] = useState(null)
 
-        if (!isText) {
-            // Khởi tạo Quill Editor trong thẻ có id = id truyền vào
-            const quill = window.initializationQuill(`#editor-container${id}`, configQuillEditor(id, toolbar, enableEdit, placeholder, enableDropImage));
+    useEffect(() => {
+        // Khởi tạo Quill Editor trong thẻ có id = id truyền vào
+        const quill = window.initializationQuill(`#editor-container${id}`, configQuillEditor(id, toolbar, enableEdit, placeholder, enableDropImage));
 
-            // Insert value ban đầu
-            if (quillValueDefault || quillValueDefault === '') {
-                if (quill && quill.container && quill.container.firstChild) {
-                    quill.container.firstChild.innerHTML = quillValueDefault;
-                } 
-                if (fileDefault) {
-                    let imgs = Array.from(
-                        quill.container.querySelectorAll('img[src]')
-                    );
-                    if (imgs && imgs.length !== 0) {
-                        imgs = imgs.map((item, index) => {
-                            item.src = fileDefault[index];
-                            return item;
-                        })
-                    }
+        // Insert value ban đầu
+        if (quillValueDefault || quillValueDefault === '') {
+            if (quill && quill.container && quill.container.firstChild) {
+                quill.container.firstChild.innerHTML = quillValueDefault;
+            } 
+            let imgs = Array.from(quill.container.querySelectorAll('img[src^="upload/private"]'))
+            if (imgs?.length > 0) {
+                imgs.map((item) => {
+                    props.downloadFile(item.getAttribute("src"), item.getAttribute("src"), false)
+                })
+            }
+            
+            if (fileDefault) {
+                let imgs = Array.from(
+                    quill.container.querySelectorAll('img[src]')
+                );
+                if (imgs && imgs.length !== 0) {
+                    imgs = imgs.map((item, index) => {
+                        item.src = fileDefault[index];
+                        return item;
+                    })
                 }
             }
 
+            setHeightContainer(id, maxHeight)
+        }
+
+        if (!isText) {
             if (enableEdit && !isText) {
                 // Bắt sự kiện text-change
                 quill.on('text-change', (e) => {
+                    setHeightContainer(id, maxHeight)
+
                     let imgs, imageSources = [];
                     let selection = quill.getSelection()?.index;
 
@@ -59,7 +69,10 @@ class QuillEditor extends Component {
                     // Lọc base64 ảnh
                     if (imgs && imgs.length !== 0) {
                         imgs = imgs.map((item, index) => {
-                            imageSources.push(item.getAttribute("src"));
+                            imageSources.push({
+                                originalName: "image" + index,
+                                url: item.getAttribute("src")
+                            });
                             item.src = "image" + index;
                             return item;
                         })
@@ -125,13 +138,13 @@ class QuillEditor extends Component {
                     
                     // Trả về html quill
                     if (quill && quill.root) {
-                        this.props.getTextData(quill.root.innerHTML, imageSources);
+                        props.getTextData(quill.root.innerHTML, imageSources);
                     }
 
                     // Add lại base64 ảnh
                     if (imgs && imgs.length !== 0) {
                         imgs = imgs.map((item, index) => {
-                            item.src = imageSources[index];
+                            item.src = imageSources?.[index]?.url;
                             return item;
                         })
                     }
@@ -147,25 +160,22 @@ class QuillEditor extends Component {
                 quill.enable(enableEdit);
             }
 
-            this.setState(state => {
-                return {
-                    ...state,
-                    quill: quill
-                }
-            })
+            setQuill(quill)
         }
-    }
+    }, [])
 
-    componentDidUpdate = () => {
-        const { quillValueDefault, fileDefault, enableEdit = true } = this.props;
-        const { quill } = this.state;
+    useEffect(() => {
+        quill && quill.enable(enableEdit);
+    }, [enableEdit])
 
+    useEffect(() => {
         // Insert value ban đầu
         // Lưu ý: quillValueDefault phải được truyền vào 1 giá trị cố định, không thayđô
         if (quillValueDefault || quillValueDefault === '') {
             if (quill && quill.container && quill.container.firstChild) {
                 quill.container.firstChild.innerHTML = quillValueDefault;
             }  
+
             if (fileDefault) {
                 let imgs = Array.from(
                     quill.container.querySelectorAll('img[src]')
@@ -177,42 +187,87 @@ class QuillEditor extends Component {
                     })
                 }
             }
-        }
 
-        quill.enable(enableEdit);
+            setHeightContainer(id, maxHeight)
+        }
+    }, [quillValueDefault])
+
+    useEffect(() => {
+        if (quill) {
+            // Add lại base64 ảnh download từ server
+            let imgs = Array.from(quill.container.querySelectorAll('img[src^="upload/private"]'))
+
+            if (imgs?.length > 0) {
+                imgs = imgs.map((img) => {
+                    if (auth?.showFiles?.length > 0) {
+                        let image = auth.showFiles.filter(item => item.fileName === img.getAttribute("src"))
+                        if (image?.[0]?.file) {
+                            img.src = image[0].file;
+                        }
+                    }
+                    return img;
+                })
+            }
+
+            setHeightContainer(id, maxHeight)
+        }
+    }, [JSON.stringify(auth.showFiles)])
+
+    function setHeightContainer (id, maxHeight) {
+        window.$(`#editor-container${id}`).height("")
+        let heightCurrent = window.$(`#editor-container${id}`).height()
+        if (heightCurrent > maxHeight) {
+            window.$(`#editor-container${id}`).height(maxHeight)
+        } else {
+            window.$(`#editor-container${id}`).height("")
+        }
     }
 
-    shouldComponentUpdate = (nextProps, nextState) => {
-        const { enableEdit, quillValueDefault } = this.props;
-
-        if (nextProps.enableEdit !== enableEdit) {
-            return true;
-        }
-        if (nextProps.quillValueDefault === quillValueDefault) {
-            return false;
-        }
-        
-        return true;
-    }
+    return (
+        <React.Fragment>
+            {
+                !isText
+                    ? <React.Fragment>
+                        {
+                            toolbar &&
+                            <ToolbarQuillEditor
+                                id={`toolbar${id}`}
+                                font={font}
+                                header={header}
+                                typography={typography}
+                                fontColor={fontColor}
+                                alignAndList={alignAndList}
+                                embeds={embeds}
+                                table={table}
+                                inputCssClass={inputCssClass}
+                            />
+                        }
+                        <div id={`editor-container${id}`} className={`quill-editor ${inputCssClass}`}/>
+                    </React.Fragment>
+                    : parse(quillValueDefault)
+            }
+        </React.Fragment>
+    )
+}
 
     /** 
      * Chuyển đổi dữ liệu ảnh base64 sang FIle để upload lên server
      * @imgs mảng hình ảnh dạng base64
      * @names mảng tên các ảnh tương ứng
      * */ 
-    static convertImageBase64ToFile = (imgs, sliceSize=512) => {
+    QuillEditor.convertImageBase64ToFile = (imgs, sliceSize=512) => {
         let imageFile;
         if (imgs && imgs.length !== 0) {
             imageFile = imgs.map((item) => {
                 let block, contentType, realData;
                 // Split the base64 string in data and contentType
-                block = item.split(";");
+                block = item?.url?.split(";");
                 if (block && block.length !== 0) {
                     contentType = block[0].split(":")[1];
                     realData = block[1].split(",")[1];
                 }
                 contentType = contentType || '';
-            
+
                 let byteCharacters = atob(realData);
                 let byteArrays = [];
 
@@ -229,44 +284,19 @@ class QuillEditor extends Component {
                 }
 
                 const blob = new Blob(byteArrays, {type: ""});
-                return new File([blob], "png");
+                return new File([blob], item?.originalName + ".png");
             })
         }
         return imageFile;
     }
 
-    render() {
-        const { id, isText = false, quillValueDefault, height = 200, toolbar = true, inputCssClass = "",
-            font = true, header = true, typography = true, fontColor = true, alignAndList = true, embeds = true, table = true
-        } = this.props;
-
-        return (
-            <React.Fragment>
-                {
-                    !isText
-                        ? <React.Fragment>
-                            {
-                                toolbar &&
-                                <ToolbarQuillEditor
-                                    id={`toolbar${id}`}
-                                    font={font}
-                                    header={header}
-                                    typography={typography}
-                                    fontColor={fontColor}
-                                    alignAndList={alignAndList}
-                                    embeds={embeds}
-                                    table={table}
-                                    inputCssClass={inputCssClass}
-                                />
-                            }
-                            <div id={`editor-container${id}`} style={{ height: height }} className={`quill-editor ${inputCssClass}`}/>
-                        </React.Fragment>
-                        : parse(quillValueDefault)
-                }
-            </React.Fragment>
-        )
-    }
+function mapState (state) {
+    const { auth } = state
+    return { auth }
+}
+const actions = {
+    downloadFile: AuthActions.downloadFile
 }
 
-const connectedQuillEditor = connect(null, null)(QuillEditor);
+const connectedQuillEditor = connect(mapState, actions)(QuillEditor);
 export { connectedQuillEditor as QuillEditor }

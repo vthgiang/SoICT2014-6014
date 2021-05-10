@@ -932,7 +932,8 @@ exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company)
         createSocialInsuranceDetails,
         editSocialInsuranceDetails,
         deleteSocialInsuranceDetails,
-        houseHold // dữ liệu về hộ khẩu - thành viên hộ gia đình
+        houseHold, // dữ liệu về hộ khẩu - thành viên hộ gia đình
+        roles // dữ liệu về chức danh
     } = data;
     // console.log('\n\n\n\ndataatatatta', data.createCareer, data.editCareer, data.deleteCareer);
     
@@ -1138,7 +1139,27 @@ exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company)
     queryEditCreateDeleteDocumentInCollection(oldEmployee._id, company, Commendation, deleteConmmendations, editConmmendations, createCommendations);
     queryEditCreateDeleteDocumentInCollection(oldEmployee._id, company, AnnualLeave, deleteAnnualLeaves, editAnnualLeaves, createAnnualLeaves);
     queryEditCreateDeleteDocumentInCollection(oldEmployee._id, company, EmployeeCourse, deleteCourses, editCourses, createCourses);
+    let userId = await User(connect(DB_CONNECTION,portal)).findOne({
+        email : employee.emailInCompany,
+        company : company
+    },{
+        _id : 1
+    })
 
+    if(userId){
+        await UserRole(connect(DB_CONNECTION, portal)).deleteMany({
+            userId : userId
+        });
+        let dataRoles = await roles.map((roleId) => {
+            return {
+                userId : userId,
+                roleId : roleId
+            };
+        });
+        await UserRole(
+            connect(DB_CONNECTION, portal)
+        ).insertMany(dataRoles);
+    }
 
     // Lấy thông tin nhân viên vừa chỉnh sửa
     return await Employee(connect(DB_CONNECTION, portal)).findOne({

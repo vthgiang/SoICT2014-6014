@@ -101,7 +101,7 @@ function InfoCareForm(props) {
                                             <div className="form-group">
                                                 <strong className="col-sm-4">{'Độ ưu tiên'}</strong>
                                                 <div className="col-sm-8">
-                                                    <span>Ưu tiên cao</span>
+                                                    <span>{careInfomation.priority?formatFunction.formatCarePriority(careInfomation.priority):''}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -113,7 +113,7 @@ function InfoCareForm(props) {
                                             <div className="form-group">
                                                 <strong className="col-sm-4">{translate('crm.care.status')}</strong>
                                                 <div className="col-sm-8">
-                                                    <span>{careInfomation.status ? formatCareStatus(careInfomation.status) : ''}</span>
+                                                    <span>{careInfomation.status ? formatFunction.formatCareStatus(careInfomation.status) : ''}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -200,7 +200,7 @@ function InfoCareForm(props) {
                                             <div className="form-group">
                                                 <strong className="col-sm-4">{"Kết quả hoạt động"}</strong>
                                                 <div className="col-sm-8">
-                                                    <span>{careInfomation.evaluation ? careInfomation.evaluation.result : ''}</span>
+                                                    <span>{careInfomation.evaluation ? careInfomation.evaluation.result==0?'Thành công':'Thất bại' : ''}</span>
                                                 </div>
                                             </div>
                                         </div>

@@ -13,13 +13,12 @@ function ModalDetailKPI(props) {
     const [state, setState] = useState({
         content: "",
         listKpiId: "list-kpi",
-        detailKpiId: "detail-kpi",
-        tableChildKpiId: "table-child-kpi"
+        detailKpiId: "detail-kpi"
     });
 
     let listchildtarget, detailExportData;
     const { managerKpiUnit, translate } = props;
-    const { content, listKpiId, detailKpiId, tableChildKpiId } = state;
+    const { content, listKpiId, detailKpiId } = state;
 
     useEffect(() => {
         SlimScroll.removeVerticalScrollStyleCSS(listKpiId)
@@ -27,9 +26,6 @@ function ModalDetailKPI(props) {
 
         SlimScroll.removeVerticalScrollStyleCSS(detailKpiId)
         SlimScroll.addVerticalScrollStyleCSS(detailKpiId, 550, true)
-
-        SlimScroll.removeVerticalScrollStyleCSS(tableChildKpiId)
-        SlimScroll.addVerticalScrollStyleCSS(tableChildKpiId, 350, true)
     })
 
     useEffect(()=>{
@@ -238,7 +234,7 @@ function ModalDetailKPI(props) {
                                 <br />
                                 {/* Danh sách các mục tiêu con của mục tiêu KPI đơn vị được chọn */}
                                 <h4>{translate('kpi.organizational_unit.management.detail_modal.list_child_kpi')}</h4>
-                                <div id={tableChildKpiId}>
+                                <div>
                                     <table id="example1" className="table table-bordered table-striped">
                                         <thead>
                                         <tr>

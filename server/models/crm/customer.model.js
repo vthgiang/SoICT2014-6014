@@ -26,7 +26,7 @@ const CustomerSchema = new Schema({
         type: String,
     },
     customerType: { // 1: Cá nhân, 2: Công ty/tổ chức
-        type: Number,  
+        type: Number,
     },
     company: { // Tên công ty
         type: String,
@@ -90,6 +90,18 @@ const CustomerSchema = new Schema({
         // required: true,
         default: false,
     },
+    // diem xep hang khach hang
+    rankPoint: [
+        {
+            point: {
+                type: Number
+            },
+            expirationDate: {
+                type: Date
+            }
+        }
+    ]
+    ,
     files: [{ // Tài liệu liên quan tới khách hàng
         creator: {
             type: Schema.Types.ObjectId,
@@ -127,11 +139,11 @@ const CustomerSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: 'User'
         },
-        description :{
+        description: {
             type: String
         }
     }],
-    
+
     updatedAt: { // ngày cập nhật
         type: Date,
     },
@@ -142,7 +154,14 @@ const CustomerSchema = new Schema({
     note: { // ghi chú
         type: String,
     }
-   
+    ,
+    promotion: [{// danh sach khuyen mai cua khach hang 
+        value: { type: Number },
+        description: { type: String },
+        minimumOrderValue: { type: Number },
+        promotionalValueMax: { type: Number },
+        expirationDate:{type:Date}
+    }]
 
 }, {
     timestamps: true,

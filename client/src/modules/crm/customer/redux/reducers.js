@@ -1,3 +1,4 @@
+import { CrmEvaluationConstants } from "../../evaluation/redux/constants";
 import { CrmCustomerConstants } from "./constants";
 
 var findIndex = (array, id) => {
@@ -27,6 +28,7 @@ export function customers(state = initState, action) {
         case CrmCustomerConstants.IMPORT_CRM_CUSTOMER_REQUEST:
         case CrmCustomerConstants.GET_CRM_CUSTOMER_POINT_REQUEST:
         case CrmCustomerConstants.EDIT_CRM_CUSTOMER_POINT_REQUEST:
+        case CrmCustomerConstants.ADD_CRM_CUSTOMER_PROMOTION_REQUEST:
             return {
                 ...state,
                 isLoading: true
@@ -40,6 +42,7 @@ export function customers(state = initState, action) {
         case CrmCustomerConstants.IMPORT_CRM_CUSTOMER_FAILE:
         case CrmCustomerConstants.GET_CRM_CUSTOMER_POINT_FAILE:
         case CrmCustomerConstants.EDIT_CRM_CUSTOMER_POINT_FAILE:
+        case CrmCustomerConstants.ADD_CRM_CUSTOMER_PROMOTION_FAILE:
             return {
                 ...state,
                 isLoading: false
@@ -59,7 +62,7 @@ export function customers(state = initState, action) {
                 customerById: action.payload,
                 isLoading: false,
             };
-        case CrmCustomerConstants.GET_CRM_CUSTOMER_POINT_SUCCESS: 
+        case CrmCustomerConstants.GET_CRM_CUSTOMER_POINT_SUCCESS:
             return {
                 ...state,
                 customerPoint: action.payload,
@@ -72,7 +75,7 @@ export function customers(state = initState, action) {
                 list: [action.payload, ...state.list],
                 isLoading: false
             };
-        
+
         case CrmCustomerConstants.IMPORT_CRM_CUSTOMER_SUCCESS:
             return {
                 ...state,
@@ -86,12 +89,19 @@ export function customers(state = initState, action) {
                 list: state.list.map(cus => ((cus._id === action.payload._id) ? action.payload : cus)),
                 isLoading: false
             };
-        
+
         case CrmCustomerConstants.EDIT_CRM_CUSTOMER_POINT_SUCCESS:
             return {
                 ...state,
                 isLoading: false
             };
+
+        case CrmCustomerConstants.ADD_CRM_CUSTOMER_PROMOTION_SUCCESS:
+            return {
+                ...state,
+                isLoading: false
+            };
+
 
         case CrmCustomerConstants.DELETE_CRM_CUSTOMER_SUCCESS:
             return {
