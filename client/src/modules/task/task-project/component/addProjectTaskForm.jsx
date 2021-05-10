@@ -849,7 +849,7 @@ class AddProjectTaskForm extends Component {
                                     table={false}
                                     embeds={false}
                                     getTextData={this.handleChangeTaskDescription}
-                                    height={150}
+                                    maxHeight={150}
                                     quillValueDefault={newTask.quillDescriptionDefault}
                                     placeholder={translate('task.task_management.detail_description')}
                                 />

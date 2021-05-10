@@ -458,7 +458,7 @@ class ModalEditTaskByResponsibleEmployeeProject extends Component {
                                             embeds={false}
                                             quillValueDefault={taskDescriptionDefault}
                                             getTextData={this.handleTaskDescriptionChange}
-                                            height={150}
+                                            maxHeight={150}
                                             placeholder={"Mô tả công việc"}
                                         />
                                         <ErrorLabel content={errorTaskDescription} />

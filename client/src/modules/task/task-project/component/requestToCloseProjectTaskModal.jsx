@@ -127,7 +127,7 @@ function RequestToCloseProjectTaskModal(props) {
                             id={`quill-request-close-task-by-${role}-${id}`}
                             toolbar={false}
                             getTextData={handleChangeRequestDescription}
-                            height={150}
+                            maxHeight={150}
                             placeholder={translate('task.task_management.detail_description')}
                             enableEdit={requestToCloseTask && requestToCloseTask.requestStatus !== 1}
                             quillValueDefault={descriptionDefault}
