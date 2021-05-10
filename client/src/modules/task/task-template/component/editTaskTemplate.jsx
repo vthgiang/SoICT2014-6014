@@ -596,7 +596,7 @@ const EditTaskTemplate = (props) => {
                                 table={false}
                                 embeds={false}
                                 getTextData={handleTaskTemplateDesc}
-                                height={80}
+                                maxHeight={80}
                                 quillValueDefault={editingTemplate.quillDescriptionDefault}
                                 placeholder={translate('task_template.description')}
                             />

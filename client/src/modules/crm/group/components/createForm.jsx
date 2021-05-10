@@ -106,7 +106,7 @@ class CreateGroupForm extends Component {
 
         return (
             <React.Fragment>
-                <ButtonModal modalID="modal-crm-group-create" button_name={"Thêm mói nhóm khách hàng"} title={translate('crm.group.add')} />
+                <ButtonModal modalID="modal-crm-group-create" button_name={"Thêm mới nhóm khách hàng"} title={translate('crm.group.add')} />
                 <DialogModal
                     modalID="modal-crm-group-create" isLoading={groups.isLoading}
                     formID="form-crm-group-create"

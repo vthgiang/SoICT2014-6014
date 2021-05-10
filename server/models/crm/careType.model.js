@@ -13,7 +13,7 @@ const CareTypeSchema = new Schema({
     createdAt: { // ngày tạo loại CSKH
         type: Date,
     },
-    createdBy: {// người tạo loại CSKH
+    creator: {// người tạo loại CSKH
         type: Schema.Types.ObjectId,
         ref: 'User'
     },

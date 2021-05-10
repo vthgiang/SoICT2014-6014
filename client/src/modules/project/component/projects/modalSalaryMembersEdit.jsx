@@ -3,19 +3,11 @@ import { connect } from 'react-redux';
 import { LazyLoadComponent, forceCheckOrVisible, DialogModal } from '../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
 import { ProjectActions } from '../../redux/actions';
-import { formatDate, formatFullDate } from '../../../../helpers/formatDate';
-import TableTasksProject from './tableTasksProject';
-import GanttTasksProject from './ganttTasksProject';
-import KanbanTasksProject from './kanbanTasksProject';
-import CpmTasksProject from './cpmTasksProject';
-import moment from 'moment';
 import { convertDepartmentIdToDepartmentName, convertUserIdToUserName, getListDepartments } from './functionHelper';
 import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
-import { numberWithCommas } from '../../../task/task-management/component/functionHelpers';
-import { taskManagementActions } from '../../../task/task-management/redux/actions';
 
 const ModalSalaryMembersEdit = (props) => {
-    const { translate, responsibleEmployeesWithUnit, project, user, createProjectCurrentSalaryMember, projectDetail, projectDetailId, currentTasks, currentProjectTasks } = props;
+    const { translate, responsibleEmployeesWithUnit, project, user, createProjectCurrentSalaryMember, projectDetail, projectDetailId, isTasksListEmpty } = props;
     const listUsers = user && user.usersInUnitsOfCompany ? getEmployeeSelectBoxItems(user.usersInUnitsOfCompany) : []
     const [currentSalaryMembers, setCurrentSalaryMembers] = useState(project.salaries || []);
 
@@ -51,8 +43,6 @@ const ModalSalaryMembersEdit = (props) => {
         return currentSalaryMembers.length > 0;
     }
 
-    const isTasksListNotEmpty = (currentTasks && currentTasks.length > 0) || (currentProjectTasks &&  currentProjectTasks.length > 0);
-
     return (
         <React.Fragment>
             <DialogModal
@@ -87,7 +77,7 @@ const ModalSalaryMembersEdit = (props) => {
                                                         <td>{convertUserIdToUserName(listUsers, userItem.userId)}</td>
                                                         <td>
                                                             {
-                                                                isTasksListNotEmpty
+                                                                isTasksListEmpty
                                                                     ?
                                                                     <input
                                                                         type="number"

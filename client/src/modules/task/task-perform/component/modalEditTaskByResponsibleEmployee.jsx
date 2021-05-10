@@ -72,7 +72,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
         let dateOfEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
         let monthOfEval = dateOfEval.getMonth();
         let yearOfEval = dateOfEval.getFullYear();
-        evaluations = task.evaluations.find(e => (monthOfEval === new Date(e.date).getMonth() && yearOfEval === new Date(e.date).getFullYear()));
+        evaluations = task?.evaluations?.find(e => (monthOfEval === new Date(e?.date)?.getMonth() && yearOfEval === new Date(e?.date)?.getFullYear()));
 
         let automaticPoint = (evaluations && evaluations.results.length !== 0) ? evaluations.results[0].automaticPoint : 0;
 
@@ -457,7 +457,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                                             embeds={false}
                                             quillValueDefault={taskDescriptionDefault}
                                             getTextData={this.handleTaskDescriptionChange}
-                                            height={150}
+                                            maxHeight={180}
                                             placeholder={"Mô tả công việc"}
                                         />
                                         <ErrorLabel content={errorTaskDescription} />

@@ -1,6 +1,7 @@
 const EmployeeService = require('./profile.service');
 const UserService = require(`../../super-admin/user/user.service`);
 const CompanyServices = require(`../../system-admin/company/company.service`);
+const RoleService = require(`../../super-admin/role/role.service`);
 
 const Log = require(`../../../logs`);
 
@@ -290,7 +291,10 @@ exports.createEmployee = async (req, res) => {
                             email: req.body.emailInCompany,
                             name: req.body.fullName
                         }
-                        await UserService.createUser(req.portal, userInfo, req.user.company._id);
+                        let user = await UserService.createUser(req.portal, userInfo, req.user.company._id);
+                        for(let x in req.body.roles){
+                            await RoleService.createRelationshipUserRole(req.portal,user._id,req.body.roles[x])
+                        };
                     }
                     await Log.info(req.user.email, 'CREATE_EMPLOYEE', req.portal);
                     res.status(200).json({
@@ -473,7 +477,10 @@ exports.updateEmployeeInformation = async (req, res) => {
                     email: req.body.employee.emailInCompany,
                     name: req.body.employee.fullName
                 }
-                await UserService.createUser(req.portal, userInfo, req.user.company._id);
+                let user = await UserService.createUser(req.portal, userInfo, req.user.company._id);
+                for(let x in req.body.roles){
+                    await RoleService.createRelationshipUserRole(req.portal,user._id,req.body.roles[x]);
+                };
             }
             await Log.info(req.user.email, 'EDIT_EMPLOYEE', req.portal);
             res.status(200).json({

@@ -576,7 +576,11 @@ exports.deleteCommentOfTaskComment = async (req, res) => {
  */
 evaluationAction = async (req, res) => {
     try {
-        let taskAction = await PerformTaskService.evaluationAction(req.portal, req.params, req.body);
+        let data = {
+            ...req.body,
+            creator: req.user._id
+        }
+        let taskAction = await PerformTaskService.evaluationAction(req.portal, req.params, data);
         await Logger.info(req.user.email, ` evaluation action  `, req.portal)
         res.status(200).json({
             success: true,
@@ -1934,7 +1938,6 @@ exports.evaluateTaskProject = async (req, res) => {
             }
         })
     } catch (error) {
-        console.log('evaluate_task_fail', error)
         await Logger.error(req.user.email, ` edit task `, req.portal);
         res.status(400).json({
             success: false,

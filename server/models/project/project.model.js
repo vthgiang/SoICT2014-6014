@@ -106,6 +106,10 @@ const ProjectSchema = new Schema(
                 }
             }],
         }],
+        // Ngân sách cho dự án sau khi 1 change request được accept
+        budgetChangeRequest: {
+            type: Number,
+        }
     },
     {
         timestamps: true,

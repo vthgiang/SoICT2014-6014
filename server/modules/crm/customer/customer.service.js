@@ -267,6 +267,21 @@ exports.editCustomerPoint = async (portal, companyId, id, data, userId) => {
     }, { new: true });
 }
 
+exports.addPromotion = async (portal, companyId, id, data, userId) => {
+    let { value, description, minimumOrderValue, promotionalValueMax, expirationDate } = data;
+
+
+    let promotion = [];
+    let getCustomer = await Customer(connect(DB_CONNECTION, portal)).findById(id);
+    if (getCustomer.promotion) promotion = getCustomer.promotion;
+    promotion = await [...promotion, { value, description, minimumOrderValue, promotionalValueMax, expirationDate: this.formatDate(expirationDate) }]
+    getCustomer = await { getCustomer, promotion };
+    return await Customer(connect(DB_CONNECTION, portal)).findByIdAndUpdate(id, {
+        $set: getCustomer
+    }, { new: true });
+}
+
+
 
 exports.deleteCustomer = async (portal, companyId, id) => {
     let delCustomer = await Customer(connect(DB_CONNECTION, portal)).findOneAndDelete({ _id: id });
