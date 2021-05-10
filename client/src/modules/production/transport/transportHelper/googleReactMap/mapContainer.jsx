@@ -62,9 +62,10 @@
         locations={locations}
         //   loadingElement={loadingElement || <div style={{height: `100%`}}/>}
         loadingElement={loadingElement || <div style={{height: `400px`}}/>}
-        containerElement={containerElement || <div style={{height: "80vh"}}/>}
-        //   mapElement={mapElement || <div style={{height: `100%`}}/>}
-        mapElement={mapElement || <div style={{height: `400px`}}/>}
+        // containerElement={containerElement || <div style={{height: "80vh"}}/>}
+        containerElement={containerElement || <div style={{height: "100%"}}/>}
+        mapElement={mapElement || <div style={{height: `100%`}}/>}
+        // mapElement={mapElement || <div style={{height: `400px`}}/>}
         defaultCenter={defaultCenter || {lat: 21.078017641, lng: 105.70710958}}
         defaultZoom={defaultZoom || 11}
         />

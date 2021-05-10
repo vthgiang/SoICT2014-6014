@@ -8,7 +8,7 @@ import { transportPlanActions } from "../../transport-plan/redux/actions"
 import { transportScheduleActions } from "../../transport-schedule/redux/actions";
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 import { convertJsonObjectToFormData } from '../../../../../helpers/jsonObjectToFormDataObjectConverter'
-import { MapContainer } from "../../transportHelper/googleReactMapRoute/maphook"
+import { MapContainer } from "../../transportHelper/googleReactMap/mapContainer"
 
 function TransportDetailMap(props) {
     let {currentVehicleRoute, transportPlanId, socket, getLocateOnMap, stopGetLocateOnMap, currentLocationOnMap} = props;
