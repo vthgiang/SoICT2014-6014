@@ -53,20 +53,51 @@ function TransportManageVehicleProcess(props) {
         let res = " ";
         if (routeOrdinal && routeOrdinal.transportRequirement && routeOrdinal.transportRequirement.transportStatus) {
             if (String(routeOrdinal.type) === "1"){
-                if (String(routeOrdinal.transportRequirement.transportStatus) !== "2"){
+                if (String(routeOrdinal.transportRequirement.transportStatus.fromAddress?.status) === "1"){
                     res = "active";
                 }
-                // else {
-                //     return "Chưa lấy được hàng";
-                // }
+                else
+                    if (String(routeOrdinal.transportRequirement.transportStatus.fromAddress?.status) === "2"){
+                        res = "active2";
+                    }
+                    else res = " "
             }
             else {
-                if (String(routeOrdinal.transportRequirement.transportStatus) === "3"){
+                if (String(routeOrdinal.transportRequirement.transportStatus.toAddress?.status) === "1"){
                     res =  "active";
                 }
-                // else {
-                //     return "Chưa giao được hàng";
-                // }
+                else
+                    if (String(routeOrdinal.transportRequirement.transportStatus.toAddress?.status) === "2"){
+                        res =  "active2";
+                    }
+                    else res = " "
+            }
+        }
+        return res;
+    }
+
+    const getTimeTransport = (routeOrdinal, index) => {
+        let res = " ";
+        if (routeOrdinal && routeOrdinal.transportRequirement && routeOrdinal.transportRequirement.transportStatus) {
+            if (String(routeOrdinal.type) === "1"){
+                if (routeOrdinal.transportRequirement.transportStatus.fromAddress?.time){
+                    try {
+                        let t = new Date(routeOrdinal.transportRequirement.transportStatus.fromAddress.time);
+                        res = t.getHours()+":"+t.getMinutes()+"p";
+                    } catch (error) {
+                        res = routeOrdinal.transportRequirement.transportStatus.fromAddress.time;
+                    }
+                }
+            }
+            else {
+                if (routeOrdinal.transportRequirement.transportStatus.toAddress?.time){
+                    try {
+                        let t = new Date(routeOrdinal.transportRequirement.transportStatus.toAddress.time);
+                        res = t.getHours()+":"+t.getMinutes()+"p";
+                    } catch (error) {
+                        res = routeOrdinal.transportRequirement.transportStatus.toAddress.time;
+                    }
+                }
             }
         }
         return res;
@@ -84,7 +115,11 @@ function TransportManageVehicleProcess(props) {
                         className={`timeline-item-transport ` +getTimeLineItemStatus(routeOrdinal, index)}
                         style={{marginLeft: `calc( ${timelineItemPos[index]}% - ${index===0?"10":"20"}px)`}}
                     >
-                        {/* <div className="timeline-contain-transport">{String(routeOrdinal.type) === "1" ? routeOrdinal.transportRequirement?.fromAddress: routeOrdinal.transportRequirement?.toAddress}</div> */}
+                        {
+                            getTimeLineItemStatus(routeOrdinal, index) !== " "
+                            && 
+                            <div className="timeline-contain-transport">{getTimeTransport(routeOrdinal, index)}</div>
+                        }
                     </div>
                 ))
             }

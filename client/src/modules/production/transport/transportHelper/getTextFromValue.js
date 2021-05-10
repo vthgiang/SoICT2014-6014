@@ -42,3 +42,25 @@ exports.getTypeRequirement = (value)=>{
     }
     return res;
 }
+
+exports.getTransportStatus = (routeOrdinal) => {
+    if (routeOrdinal && routeOrdinal.transportRequirement && routeOrdinal.transportRequirement.transportStatus) {
+        if (String(routeOrdinal.type) === "1"){
+            if (String(routeOrdinal.transportRequirement.transportStatus.fromAddress?.status) === "1"){
+                return "Đã lấy được hàng";
+            }
+            else {
+                return "Chưa lấy được hàng";
+            }
+        }
+        else {
+            if (String(routeOrdinal.transportRequirement.transportStatus.toAddress?.status) === "1"){
+                return "Đã giao hàng";
+            }
+            else {
+                return "Chưa giao được hàng";
+            }
+        }
+    }
+    return "Chưa tiến hành";
+}

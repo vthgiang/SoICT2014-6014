@@ -110,27 +110,31 @@ const TransportRequirementSchema = new Schema({
             },
         },
     },
-    transportStatus: { // Trạng thái vận chuyển -  1: đã lấy được hàng, 2: chưa lấy được hàng, 3: đã giao được hàng, 4: chưa giao được hàng (đang vận chuyển)
-        fromAddress: {
-            status: {
+    transportStatus: { // Trạng thái vận chuyển (khi đang thực hiện)
+        fromAddress: { // Điểm lấy hàng
+            status: { // Trạng thái: 1- đã lấy, 2- không lấy được hàng
                 type: Number,
             },
-            detail: {
+            detail: { // Mô tả chi tiết
                 type: String,
             }, 
-            locate: {
-                lat: {
+            locate: { // Vị trí lái xe khi gửi báo cáo
+                lat: { // Vĩ độ
                     type: Number,
                 },
-                lng: {
+                lng: { // Kinh độ
                     type: Number,
                 },
             },
-            time: {
+            time: { // Thời gian khi gửi báo cáo
                 type: Date
+            },
+            carrier: { // Id tài xế
+                type: Schema.Types.ObjectId,
+                ref: 'User'
             }
         },
-        toAddress: {
+        toAddress: { // Điểm giao hàng
             status: {
                 type: Number,
             },
@@ -147,7 +151,11 @@ const TransportRequirementSchema = new Schema({
             },
             time: {
                 type: Date
-            }
+            },
+            carrier: {
+                type: Schema.Types.ObjectId,
+                ref: 'User'
+            }            
         }
     },
     historyTransport: [{ // Trạng thái vận chuyển, trạng thái

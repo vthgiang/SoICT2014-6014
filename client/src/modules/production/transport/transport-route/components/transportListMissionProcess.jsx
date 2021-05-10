@@ -11,7 +11,7 @@ import { transportScheduleActions } from "../../transport-schedule/redux/actions
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 import { convertJsonObjectToFormData } from '../../../../../helpers/jsonObjectToFormDataObjectConverter'
 
-import './timeLine.css';
+import { getTypeRequirement, getTransportStatus } from '../../transportHelper/getTextFromValue'
 
 function TransportDetailRoute(props) {
     let {currentVehicleRoute, transportPlanId, transportPlan} = props;
@@ -73,7 +73,6 @@ function TransportDetailRoute(props) {
                         <th>{"Địa chỉ"}</th>
                         <th>{"Nhiệm vụ"}</th>
                         <th>{"Trạng thái"}</th>
-                        <th>{"TransportStatus"}</th>
                         <th>{"Hành động"}</th>
                         {/* <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
                             <DataTableSetting
@@ -96,13 +95,12 @@ function TransportDetailRoute(props) {
                             <tr key={index}>
                                 <td>{index+1}</td>
                                 <td>{routeOrdinal.transportRequirement?.code}</td>
-                                <td>{routeOrdinal.transportRequirement?.type}</td>
+                                <td>{routeOrdinal.transportRequirement?.type ? getTypeRequirement(routeOrdinal.transportRequirement.type):" "}</td>
                                 <td>{(String(routeOrdinal.type)==="1")?routeOrdinal.transportRequirement?.fromAddress:routeOrdinal.transportRequirement?.toAddress}</td>
                                 <td>{(String(routeOrdinal.type)==="1")?"Nhận hàng":"Trả hàng"}</td>
                                 <td>
-                                    {routeOrdinal.transportRequirement?.transportStatus?.status}
+                                    {getTransportStatus(routeOrdinal)}
                                 </td>
-                                <td>{"Chưa hoàn thành"}</td>
                                 <td style={{ textAlign: "center" }}>
                                     <a className="edit text-green" style={{ width: '5px' }} 
                                         // title={translate('manage_example.detail_info_example')} 

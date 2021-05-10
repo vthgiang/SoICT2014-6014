@@ -266,20 +266,21 @@ exports.getAllTransportScheduleRouteByCarrierId = async (portal, carrierId) => {
 }
 
 exports.changeTransportStatusByCarrierId = async (portal, carrierId, data) => {
-    let status = data.status;
-    let detail = data.detail;
-    let locate = data.locate;
-    let requirementId= data.requirementId;
-    console.log(data);
-    if (status) {
-    //     let newHistoryTransport = {
-    //         status: status,
-    //         detail: detail,
-    //         time: new Date(),
-    //         locate: locate,
-    //         carrier: carrierId,
-    //     }
-        await TransportRequirementServices.editTransportRequirement(portal, requirementId, {transportStatus: status})
+    if (data) {
+        let requirementId= data.requirementId;
+        let transportStatus = {
+            status: data.status,
+            detail: data.detail,
+            locate: data.locate,
+            carrier: data.carrierId,
+            time: data.time
+        }
+        if (String(data.type) === "1"){
+            await TransportRequirementServices.editTransportRequirement(portal, requirementId, {"transportStatus.fromAddress": transportStatus})
+        }
+        else {
+            await TransportRequirementServices.editTransportRequirement(portal, requirementId, {"transportStatus.toAddress": transportStatus})
+        }
         let listSchedule = this.getAllTransportScheduleRouteByCarrierId(portal, carrierId);
         return listSchedule;
     }

@@ -26,14 +26,34 @@ function CarrierMissionReport(props) {
             detail: value,
         })
     }
-
     const save = () => {
         let data = {
             status: state.status,
             detail: state.detail,
             requirementId: currentMission?.transportRequirement?._id,
+            carrierId: localStorage.getItem("userId"),
+            time: new Date(),
+            type: currentMission?.type,
         }
-        props.changeTransportStatusByCarrierId(localStorage.getItem("userId"), data)
+        let getPosition = function (options) {
+            return new Promise(function (resolve, reject) {
+              navigator.geolocation.getCurrentPosition(resolve, reject, options);
+            });
+          }
+          
+        getPosition()
+        .then((position) => {
+            let locate = {
+                lat: position?.coords?.latitude,
+                lng: position?.coords?.longitude
+            }
+            data.locate = locate;
+            props.changeTransportStatusByCarrierId(localStorage.getItem("userId"), data);
+        })
+        .catch((err) => {
+            console.error(err.message);
+            // props.changeTransportStatusByCarrierId(localStorage.getItem("userId"), data);
+        });
     }
 
     useEffect(() => {
@@ -86,8 +106,8 @@ function CarrierMissionReport(props) {
                             value={state.status}
                             items={[
                                 { value: "title", text: "---Chọn trạng thái nhiệm vụ---" },
-                                { value: 3, text: "Đã giao hàng" },
-                                { value: 4, text: "Không giao được hàng" },
+                                { value: 1, text: "Đã giao hàng" },
+                                { value: 2, text: "Không giao được hàng" },
                             ]}
                             onChange={handleStatusChange}
                             multiple={false}
