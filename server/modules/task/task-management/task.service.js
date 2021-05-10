@@ -33,7 +33,6 @@ exports.getTaskEvaluations = async (portal, data) => {
     // Convert endDate từ string sang date
     endTime = endDate.split("-");
     end = new Date(endTime[2], endTime[1] - 1, endTime[0]);
-
     if (responsibleEmployees) {
         responsibleEmployees = data.responsibleEmployees;
     }
@@ -54,7 +53,7 @@ exports.getTaskEvaluations = async (portal, data) => {
     if (startDate && endDate) {
         filterDate = {
             $match: {
-                date: { $gte: start, $lte: end }
+                evaluatingMonth: { $gte: start, $lte: end }
             }
         }
     }
@@ -63,7 +62,7 @@ exports.getTaskEvaluations = async (portal, data) => {
     if (startDate && !endDate) {
         filterDate = {
             $match: {
-                date: { $gte: start }
+                evaluatingMonth: { $gte: start }
             }
         }
     }
@@ -173,7 +172,6 @@ exports.getTaskEvaluations = async (portal, data) => {
 
 
     let result = await Task(connect(DB_CONNECTION, portal)).aggregate(condition); // kết quả sau khi truy vấn mongodb
-
     // lấy danh sachs điều kiện lọc của trường thông tin của công việc, vì dữ liệu gửi trong query là dạng string nên phải parse sang đối tượng
     if (data.taskInformations) { // Bắt lỗi trường hợp chọn mẫu công việc, nhưng mãu đấy không có các trường thông tin và ấn nút xem biểu đồ
         let taskInformations = data.taskInformations, listDataChart = [], configurations = [];
@@ -205,22 +203,22 @@ exports.getTaskEvaluations = async (portal, data) => {
              * Mục đích để đính kèm các điều kiện lọc của các trường thông tin vào taskInfomation để tính toán
              */
             let taskMerge = taskInformations.map((item, index) => Object.assign({}, item, configurations[index]))
-            taskMerge.map(item => {
-                if (item.filter) {
-                    let replacer = new RegExp(item.code, 'g')
-                    item.filter = eval(item.filter.replace(replacer, item.value));
-                } else {
-                    item.filter = true;
-                }
-                return item;
-            })
+            // taskMerge.map(item => {
+            //     if (item.filter) {
+            //         let replacer = new RegExp(item.code, 'g')
+            //         item.filter = eval(item.filter.replace(replacer, item.value));
+            //     } else {
+            //         item.filter = true;
+            //     }
+            //     return item;
+            // })
             return { // Lấy các trường cần thiết
                 _id: item._id,
                 name: item.name,
                 accountableEmployees: item.accountableEmployees,
                 responsibleEmployees: item.responsibleEmployees,
                 status: item.status,
-                date: item.date,
+                date:item.evaluatingMonth,
                 startDate: item.startDate,
                 endDate: item.endDate,
                 priority: item.priority,
@@ -231,14 +229,14 @@ exports.getTaskEvaluations = async (portal, data) => {
             };
         });
 
-
-        newResult.map(o => {
-            if (o.taskInformations.some(item => (item.filter === true))) {
-                return o;
-            } else {
-                newResult = [];
-            }
-        })
+// console.log("newResult",newResult);
+        // newResult.map(o => {
+        //     if (o.taskInformations.some(item => (item.filter === true))) {
+        //         return o;
+        //     } else {
+        //         newResult = [];
+        //     }
+        // })
         return newResult;
     } else {
         return result;

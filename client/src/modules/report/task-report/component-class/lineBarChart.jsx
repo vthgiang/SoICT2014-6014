@@ -1,4 +1,4 @@
-import React, { Component, createRef } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import c3 from 'c3';
@@ -7,45 +7,45 @@ import * as d3 from "d3";
 import './transferList.css';
 import { chartFunction } from './chart';
 
-function LineBarChart(props) {
-    const [state, setstate] = useState({
+class LineBarChart extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+        }
+    }
 
-    })
-    const { dataForAxisXInChart, startDate, endDate } = state;
-
-    const refLineBarChart = createRef();
-
-    useEffect(() => {
-        if (props.dataForAxisXInChart && props.barLineChartData) {
+    static getDerivedStateFromProps(props, state) {
+        if (props.dataForAxisXInChart) {
             let { dataConvert } = props.barLineChartData;
             dataConvert = dataConvert[0];
-            setstate({
+            return {
                 ...state,
                 startDate: dataConvert[1].slice(0, 6),
                 endDate: dataConvert[dataConvert.length - 1].slice(0, 6),
                 dataForAxisXInChart: props.dataForAxisXInChart.length > 0 && props.dataForAxisXInChart.map((x, index) => ((index ? '-> ' : '') + chartFunction.formatDataForAxisXInChart(x))),
             }
-            )
         }
-    }, [JSON.stringify(props.barLineChartData)])
+        return null;
+    }
 
-    useEffect(() => {
-        if (props.barLineChartData) {
-            renderBarAndLineChart(props.barLineChartData);
+    shouldComponentUpdate(nextProps, nextState) {
+        if (nextProps.barLineChartData) {
+            this.renderBarAndLineChart(nextProps.barLineChartData);
         }
-    })
+        return true;
+    }
 
-    useEffect(() => {
-        const chart = refLineBarChart.current;
-        if (chart) {
-            while (chart.hasChildNodes()) {
-                chart.removeChild(chart.lastChild);
-            }
+
+    componentDidMount() {
+        if (this.props.barLineChartData) {
+            this.renderBarAndLineChart(this.props.barLineChartData);
         }
-    }, [])
+    }
 
-    function removePrceviousPieChart() {
-        const chart = refLineBarChart.pieChart;
+
+    // Xóa các barchart đã render khi chưa đủ dữ liệu
+    removePreviousBarChart() {
+        const chart = this.refs.barChart;
         if (chart) {
             while (chart.hasChildNodes()) {
                 chart.removeChild(chart.lastChild);
@@ -54,8 +54,19 @@ function LineBarChart(props) {
     }
 
 
-    const renderBarAndLineChart = (data) => {
-        removePreviousBarChart();
+    // Xóa các Piechart đã render khi chưa đủ dữ liệu
+    removePrceviousPieChart() {
+        const chart = this.refs.pieChart;
+        if (chart) {
+            while (chart.hasChildNodes()) {
+                chart.removeChild(chart.lastChild);
+            }
+        }
+    }
+
+
+    renderBarAndLineChart = (data) => {
+        this.removePreviousBarChart();
         let newData = data.dataConvert;
 
         // set height cho biểu đồ
@@ -63,8 +74,8 @@ function LineBarChart(props) {
         let setHeightChart = (getLenghtData * 40) < 320 ? 320 : (getLenghtData * 60);
         let typeChart = data.typeChart;
 
-        let chart = c3.generate({
-            bindto: refLineBarChart.current,
+        this.chart = c3.generate({
+            bindto: this.refs.barChart,
             padding: {
                 top: 20,
                 bottom: 20,
@@ -109,23 +120,24 @@ function LineBarChart(props) {
         });
     }
 
-    return (
-        <div className="row" style={{ marginBottom: '10px' }}>
-            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <div className="box box-primary" >
-                    <div className="box-header with-border">
-                        <h4 className="box-title report-title"><span style={{ marginRight: '7px' }}>Thống kê công việc từ:</span> {`${startDate}`} đến {`${endDate}`}</h4> <br />
-                        <h4 className="box-title report-title" style={{ marginTop: '5px' }}><span style={{ marginRight: '7px' }}>Chiều dữ liệu:</span> {`${dataForAxisXInChart && dataForAxisXInChart.length > 0 ? dataForAxisXInChart.join(' ') : 'Thời gian'}`}</h4>
-                    </div>
-                    <div className="box-body lineBarChart ">
-                        <div ref={refLineBarChart}></div>
-                    </div>
-                </div >
+    render() {
+        const { dataForAxisXInChart, startDate, endDate } = this.state;
+        return (
+            <div className="row" style={{ marginBottom: '10px' }}>
+                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <div className="box box-primary" >
+                        <div className="box-header with-border">
+                            <h4 className="box-title report-title"><span style={{ marginRight: '7px' }}>Thống kê công việc từ:</span> {`${startDate}`} đến {`${endDate}`}</h4> <br />
+                            <h4 className="box-title report-title" style={{ marginTop: '5px' }}><span style={{ marginRight: '7px' }}>Chiều dữ liệu:</span> {`${dataForAxisXInChart && dataForAxisXInChart.length > 0 ? dataForAxisXInChart.join(' ') : 'Thời gian'}`}</h4>
+                        </div>
+                        <div className="box-body lineBarChart ">
+                            <div ref="barChart"></div>
+                        </div>
+                    </div >
+                </div>
             </div>
-        </div>
-    )
-
-
+        )
+    }
 }
 
 const lineBarChart = connect(null, null)(withTranslate(LineBarChart));

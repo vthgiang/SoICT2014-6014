@@ -1,0 +1,40 @@
+2021-05-10T01:48:35.506Z |show_profile_success| info nvd.vnist@gmail.com
+2021-05-10T01:48:35.529Z |get_links_of_role_success| info nvd.vnist@gmail.com
+2021-05-10T01:48:35.732Z |show_profile_success| info nvd.vnist@gmail.com
+2021-05-10T01:48:35.742Z |get_links_of_role_success| info nvd.vnist@gmail.com
+2021-05-10T01:48:39.150Z |paginated_task_that_user_has_responsible_role| info nvd.vnist@gmail.com
+2021-05-10T01:48:39.658Z |get timer status| info nvd.vnist@gmail.com
+2021-05-10T01:48:39.862Z |get_all_task_templates| info nvd.vnist@gmail.com
+2021-05-10T01:48:39.885Z |show_role_success| info nvd.vnist@gmail.com
+2021-05-10T01:48:40.190Z | get task informed by user | info nvd.vnist@gmail.com
+2021-05-10T01:48:40.340Z |get_task_project_success| info nvd.vnist@gmail.com
+2021-05-10T01:48:40.490Z |get_all_user_time_sheet_success| info nvd.vnist@gmail.com
+2021-05-10T01:48:40.572Z |GET_MANUAL_NOTIFICATIONS| info nvd.vnist@gmail.com
+2021-05-10T01:48:40.624Z |GET_ALL_NOTIFICATIONS| info nvd.vnist@gmail.com
+2021-05-10T01:48:40.726Z |get_users_success| info nvd.vnist@gmail.com
+2021-05-10T01:48:40.891Z |paginated_tasks_that_user_has_account_table_role| info nvd.vnist@gmail.com
+2021-05-10T01:48:41.127Z |get_components_success| info nvd.vnist@gmail.com
+2021-05-10T01:48:41.137Z |show_role_success| info nvd.vnist@gmail.com
+2021-05-10T01:48:41.334Z |paginated_task_that_user_has_consulted_role| info nvd.vnist@gmail.com
+2021-05-10T01:48:41.481Z |paginated_task_that_user_has_informed_role| info nvd.vnist@gmail.com
+2021-05-10T01:48:41.535Z |paginated_tasks_created_by_user| info nvd.vnist@gmail.com
+2021-05-10T01:48:41.631Z |get_task_project_success| info nvd.vnist@gmail.com
+2021-05-10T01:48:41.691Z |get_components_success| info nvd.vnist@gmail.com
+2021-05-10T01:48:41.777Z |get_users_success| info nvd.vnist@gmail.com
+2021-05-10T01:48:48.515Z |GET_MANUAL_NOTIFICATIONS| info nvd.vnist@gmail.com
+2021-05-10T01:48:48.721Z |GET_ALL_NOTIFICATIONS| info nvd.vnist@gmail.com
+2021-05-10T01:48:48.820Z |show_profile_success| info nvd.vnist@gmail.com
+2021-05-10T01:48:48.876Z |get_links_of_role_success| info nvd.vnist@gmail.com
+2021-05-10T01:48:48.964Z |get_all_task_templates| info nvd.vnist@gmail.com
+2021-05-10T01:48:49.016Z |get_roles_success| info nvd.vnist@gmail.com
+2021-05-10T01:48:49.025Z | get_report_success | info nvd.vnist@gmail.com
+2021-05-10T01:48:49.069Z |get_departments_success| info nvd.vnist@gmail.com
+2021-05-10T01:48:49.123Z |get_users_success| info nvd.vnist@gmail.com
+2021-05-10T01:48:49.822Z |get_all_task_templates| info nvd.vnist@gmail.com
+2021-05-10T01:48:49.920Z |get_roles_success| info nvd.vnist@gmail.com
+2021-05-10T01:48:49.926Z | get_report_success | info nvd.vnist@gmail.com
+2021-05-10T01:48:49.933Z |get_departments_success| info nvd.vnist@gmail.com
+2021-05-10T01:48:49.994Z |get_components_success| info nvd.vnist@gmail.com
+2021-05-10T01:48:50.066Z |get_users_success| info nvd.vnist@gmail.com
+2021-05-10T01:48:50.124Z |get_users_success| info nvd.vnist@gmail.com
+2021-05-10T01:48:50.186Z |get_users_success| info nvd.vnist@gmail.com

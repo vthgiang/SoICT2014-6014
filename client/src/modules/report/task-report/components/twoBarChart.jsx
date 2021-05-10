@@ -1,19 +1,21 @@
-import React, { Component } from 'react';
+import React, { Component, createRef } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import c3 from 'c3';
 import 'c3/c3.css';
 
-class TwoBarChart extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            barAndLineChart: false,
-            pieChart: false,
-        }
-    }
+function TwoBarChart(props) {
+    const [state, setstate] = useState({
+        barAndLineChart: false,
+        pieChart: false,
+    })
+    const refBarAndLineChart = createRef();
+    const refPieChart = createRef();
 
-    setDataMultiChart = (data) => {
+    const { nameChart } = state;
+    const { charType, data } = props;
+
+    const setDataMultiChart = (data) => {
         let dataConvert = [], dateConvert = [], valueConvert = [], chartType = [], showInReport;
         if (data) {
             data.forEach(x => {
@@ -53,19 +55,18 @@ class TwoBarChart extends Component {
     }
 
 
-    shouldComponentUpdate = (nextProps, nextState) => {
-        if (nextProps.pieChartData && nextProps.pieChartData.length > 0) {
-            this.renderPieChart(nextProps.pieChartData);
+    useEffect(() => {
+        if (props.pieChartData && props.pieChartData.length > 0) {
+            renderPieChart(props.pieChartData);
         }
-        if (nextProps.barLineChartData && nextProps.barLineChartData.length > 0) {
-            this.renderBarAndLineChart(nextProps.barLineChartData);
+        if (props.barLineChartData && props.barLineChartData.length > 0) {
+            renderBarAndLineChart(props.barLineChartData);
         }
-        return true;
-    }
+    })
 
     // Xóa các  barchart đã render khi chưa đủ dữ liệu
-    removePreviousBarChart() {
-        const chart = this.refs.barChart;
+    function removePreviousBarChart() {
+        const chart = refBarAndLineChart.barChart;
         if (chart) {
             while (chart.hasChildNodes()) {
                 chart.removeChild(chart.lastChild);
@@ -74,8 +75,8 @@ class TwoBarChart extends Component {
     }
 
     // Xóa các  Piechart đã render khi chưa đủ dữ liệu
-    removePrceviousPieChart() {
-        const chart = this.refs.pieChart;
+    function removePrceviousPieChart() {
+        const chart = refPieChart.pieChart;
         if (chart) {
             while (chart.hasChildNodes()) {
                 chart.removeChild(chart.lastChild);
@@ -83,9 +84,9 @@ class TwoBarChart extends Component {
         }
     }
 
-    renderBarAndLineChart = (data) => {
-        this.removePreviousBarChart();
-        data = this.setDataMultiChart(data);
+    const renderBarAndLineChart = (data) => {
+        removePreviousBarChart();
+        data = setDataMultiChart(data);
 
         let newData = data.dataConvert;
         let chartType = data.chartType;
@@ -102,8 +103,8 @@ class TwoBarChart extends Component {
         }
 
 
-        this.chart = c3.generate({
-            bindto: this.refs.barChart,
+        let chart = c3.generate({
+            bindto: refBarAndLineChart.current,
             data: {
                 x: 'x',
                 columns: newData,
@@ -129,9 +130,9 @@ class TwoBarChart extends Component {
     }
 
 
-    renderPieChart = (data) => {
-        this.removePrceviousPieChart();
-        data = this.setDataMultiChart(data);
+    const renderPieChart = (data) => {
+        removePrceviousPieChart();
+        data = setDataMultiChart(data);
         let newData = data.dataConvert;
         // let newPiedata = [...newData];
         let newPiedata = [
@@ -140,8 +141,8 @@ class TwoBarChart extends Component {
             ["9-2020", 224775049500]
         ]
         // newPiedata.shift();
-        this.chart = c3.generate({
-            bindto: this.refs.pieChart,
+        chart = c3.generate({
+            bindto: refPieChart.current,
             // Căn lề biểu đồ
             padding: {
                 top: 20,
@@ -156,40 +157,37 @@ class TwoBarChart extends Component {
             }
         })
     }
-    render() {
-        const { nameChart } = this.state;
-        const { charType, data } = this.props;
 
-        return (
-            <React.Fragment>
-                <div className="row">
-                    <div className="col-xs-6">
-                        <div className="box box-primary">
-                            <div className="box-header with-border">
-                                <h3 className="box-title">Báo cáo công việc</h3>
-                            </div>
-                            <div className="box-body dashboard_box_body">
-                                <p className="pull-left" style={{ marginBottom: 0 }}><b>Thành tiền: Vnđ</b></p>
-                                <div ref="barChart"></div>
-                            </div>
+
+    return (
+        <React.Fragment>
+            <div className="row">
+                <div className="col-xs-6">
+                    <div className="box box-primary">
+                        <div className="box-header with-border">
+                            <h3 className="box-title">Báo cáo công việc</h3>
                         </div>
-                    </div>
-
-                    <div className="col-xs-6">
-                        <div className="box box-primary">
-                            <div className="box-header with-border">
-                                <h3 className="box-title">{}</h3>
-                            </div>
-                            <div className="box-body dashboard_box_body">
-                                <p className="pull-left" style={{ marginBottom: 0 }}><b>Thành tiền: Vnđ</b></p>
-                                <div ref="pieChart"></div>
-                            </div>
+                        <div className="box-body dashboard_box_body">
+                            <p className="pull-left" style={{ marginBottom: 0 }}><b>Thành tiền: Vnđ</b></p>
+                            <div ref="barChart"></div>
                         </div>
                     </div>
                 </div>
-            </React.Fragment>
-        )
-    }
+
+                <div className="col-xs-6">
+                    <div className="box box-primary">
+                        <div className="box-header with-border">
+                            <h3 className="box-title">{ }</h3>
+                        </div>
+                        <div className="box-body dashboard_box_body">
+                            <p className="pull-left" style={{ marginBottom: 0 }}><b>Thành tiền: Vnđ</b></p>
+                            <div ref="pieChart"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </React.Fragment>
+    )
 }
 
 const twoBarChart = connect(null, null)(withTranslate(TwoBarChart));
