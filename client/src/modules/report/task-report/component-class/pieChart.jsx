@@ -1,4 +1,4 @@
-import React, { Component, createRef } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import c3 from 'c3';
@@ -6,39 +6,45 @@ import 'c3/c3.css';
 import './transferList.css';
 import { chartFunction } from './chart';
 
-function PieChart(props) {
-    const [state, setstate] = useState({
-        pieChart: false,
-    })
-
-    const refPieChart = createRef();
-
-    if (props.dataForAxisXInChart && props.namePieChart) {
-        let { pieChartData } = props;
-        setstate({
-            ...state,
-            startDate: pieChartData[0][0].slice(0, 6),
-            endDate: pieChartData[pieChartData.length - 1][0].slice(0, 6),
-            namePieChart: props.namePieChart,
-            dataForAxisXInChart: props.dataForAxisXInChart.length > 0 && props.dataForAxisXInChart.map((x, index) => ((index ? '-> ' : '') + chartFunction.formatDataForAxisXInChart(x))),
-        })
+class PieChart extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            pieChart: false,
+        }
     }
 
-    useEffect(() => {
+    static getDerivedStateFromProps(props, state) {
+        if (props.dataForAxisXInChart && props.namePieChart) {
+            let { pieChartData } = props;
+            return {
+                ...state,
+                startDate: pieChartData[0][0].slice(0, 6),
+                endDate: pieChartData[pieChartData.length - 1][0].slice(0, 6),
+                namePieChart: props.namePieChart,
+                dataForAxisXInChart: props.dataForAxisXInChart.length > 0 && props.dataForAxisXInChart.map((x, index) => ((index ? '-> ' : '') + chartFunction.formatDataForAxisXInChart(x))),
+            }
+        }
+        return null;
+    }
+
+
+    shouldComponentUpdate = (nextProps, nextState) => {
         if (nextProps.pieChartData) {
-            renderPieChart(nextProps.pieChartData)
+            this.renderPieChart(nextProps.pieChartData)
         }
-    })
+        return true;
+    }
 
-    useEffect(() => {
-        if (props.pieChartData) {
-            renderPieChart(props.pieChartData)
+
+    componentDidMount() {
+        if (this.props.pieChartData) {
+            this.renderPieChart(this.props.pieChartData)
         }
-    }, [])
-
+    }
     // Xóa các  Piechart đã render khi chưa đủ dữ liệu
-    function removePrceviousPieChart() {
-        const chart = refPieChart.current;
+    removePrceviousPieChart() {
+        const chart = this.refs.pieChart;
         if (chart) {
             while (chart.hasChildNodes()) {
                 chart.removeChild(chart.lastChild);
@@ -46,10 +52,11 @@ function PieChart(props) {
         }
     }
 
+
     renderPieChart = (data) => {
-        removePrceviousPieChart();
-        let chart = c3.generate({
-            bindto: refPieChart.current,
+        this.removePrceviousPieChart();
+        this.chart = c3.generate({
+            bindto: this.refs.pieChart,
             // Căn lề biểu đồ
 
             size: {
@@ -67,8 +74,8 @@ function PieChart(props) {
             }
         })
     }
-
-    const { namePieChart, startDate, endDate, dataForAxisXInChart } = state;
+    render() {
+        const { namePieChart, startDate, endDate, dataForAxisXInChart } = this.state;
         return (
             <React.Fragment>
                 <div className="box box-primary" >
@@ -78,11 +85,12 @@ function PieChart(props) {
                         <h4 className="box-title report-title" style={{ marginTop: '5px' }}><span style={{ marginRight: '7px' }}>Chiều dữ liệu:</span> {`${dataForAxisXInChart && dataForAxisXInChart.length > 0 ? dataForAxisXInChart.join(' ') : 'Thời gian'}`}</h4>
                     </div>
                     <div className="box-body report-box">
-                        <div ref={refPieChart}></div>
+                        <div ref="pieChart"></div>
                     </div>
                 </div >
             </React.Fragment>
         );
+    }
 }
 
 const pieChart = connect(null, null)(withTranslate(PieChart));

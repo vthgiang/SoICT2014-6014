@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useEffect, createRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import c3 from 'c3';
@@ -6,50 +6,46 @@ import 'c3/c3.css';
 import './transferList.css';
 import { chartFunction } from './chart';
 
-class LineBarChartViewForm extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-        }
-    }
+function LineBarChartViewForm(props) {
+    const [state, setstate] = useState({
 
-    static getDerivedStateFromProps(props, state) {
-        let { id } = props;
-        if (props.dataForAxisXInChart) {
+    })
+
+    let { id } = props;
+    const refBarChart = createRef();
+    useEffect(() => {
+        if (props.dataForAxisXInChart && props.barLineChartData) {
             let { dataConvert } = props.barLineChartData;
             dataConvert = dataConvert[0];
-            return {
+            setstate({
                 ...state,
                 id,
                 barLineChartData: props.barLineChartData,
                 startDate: dataConvert[1].slice(0, 6),
                 endDate: dataConvert[dataConvert.length - 1].slice(0, 6),
                 dataForAxisXInChart: props.dataForAxisXInChart.length > 0 && props.dataForAxisXInChart.map((x, index) => ((index ? '-> ' : '') + chartFunction.formatDataForAxisXInChart(x))),
-            }
+            })
         }
-        return null;
-    }
+    }, [JSON.stringify(props.barLineChartData)])
 
-    shouldComponentUpdate(nextProps, nextState) {
-        const { barLineChartData, id } = nextProps;
-        if (nextProps.barLineChartData) {
-            this.renderBarAndLineChart(id, barLineChartData);
+
+    useEffect(() => {
+        const { barLineChartData, id } = props;
+        if (props.barLineChartData) {
+            renderBarAndLineChart(id, barLineChartData);
         }
-        return true;
-    }
+    }, [JSON.stringify(props.barLineChartData)])
 
-
-    componentDidMount() {
-        const { barLineChartData, id } = this.props;
+    useEffect(() => {
+        const { barLineChartData, id } = props;
         if (barLineChartData) {
-            this.renderBarAndLineChart(id, barLineChartData);
+            renderBarAndLineChart(id, barLineChartData);
         }
-    }
-
+    }, [])
 
     // Xóa các barchart đã render khi chưa đủ dữ liệu
-    removePreviousBarChart(id) {
-        const chart = this.refs[id];
+    function removePreviousBarChart(id) {
+        const chart = refBarChart[id];
         if (chart) {
             while (chart.hasChildNodes()) {
                 chart.removeChild(chart.lastChild);
@@ -57,8 +53,8 @@ class LineBarChartViewForm extends Component {
         }
     }
 
-    renderBarAndLineChart = (id, data) => {
-        this.removePreviousBarChart(id);
+    const renderBarAndLineChart = (id, data) => {
+        removePreviousBarChart(id);
         let newData = data.dataConvert;
 
         // set height cho biểu đồ
@@ -66,7 +62,7 @@ class LineBarChartViewForm extends Component {
         let setHeightChart = (getLenghtData * 40) < 320 ? 320 : (getLenghtData * 60);
         let typeChart = data.typeChart;
 
-        this.chart = c3.generate({
+        let chart = c3.generate({
             bindto: document.getElementById(id),
             padding: {
                 top: 20,
@@ -104,36 +100,37 @@ class LineBarChartViewForm extends Component {
             },
         });
     }
-
-    render() {
-        const { dataForAxisXInChart, startDate, endDate, id, barLineChartData } = this.state;
-        let { typeChart } = barLineChartData;
-        let checkType = '';
-
-        if (Object.values(typeChart).includes("bar") && Object.values(typeChart).includes("line")) {
-            checkType = 'Biểu đồ cột và đường thống kê các trường thông tin của các công việc từ: ';
-        } else if (Object.values(typeChart).includes("bar") && !Object.values(typeChart).includes("line")) {
-            checkType = 'Biểu đồ cột thống kê các trường thông tin của các công việc từ: ';
-        } else if (!Object.values(typeChart).includes("bar") && Object.values(typeChart).includes("line")) {
-            checkType = 'Biểu đồ đường thống kê các trường thông tin của các công việc từ: ';
-        }
-
-        return (
-            <div className="row" style={{ marginBottom: '10px' }}>
-                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                    <div className="box" >
-                        <div className="box-header with-border">
-                            <h4 className="box-title report-title"><span style={{ marginRight: '7px' }}>{checkType != '' && checkType} {`${startDate}`} đến {`${endDate}`}</span></h4>
-                        </div>
-                        <div className="box-body lineBarChart ">
-                            <p className="box-body" ><span style={{ marginRight: '7px' }}>Chiều dữ liệu:</span> {`${dataForAxisXInChart && dataForAxisXInChart.length > 0 ? dataForAxisXInChart.join(' ') : 'Thời gian'}`}</p>
-                            <div id={id}></div>
-                        </div>
-                    </div >
-                </div>
-            </div>
-        )
+    const { dataForAxisXInChart, startDate, endDate, barLineChartData } = state;
+    let typeChart = '';
+    if (barLineChartData) {
+        typeChart = barLineChartData.typeChart;
     }
+    let checkType = '';
+
+    if (Object.values(typeChart).includes("bar") && Object.values(typeChart).includes("line")) {
+        checkType = 'Biểu đồ cột và đường thống kê các trường thông tin của các công việc từ: ';
+    } else if (Object.values(typeChart).includes("bar") && !Object.values(typeChart).includes("line")) {
+        checkType = 'Biểu đồ cột thống kê các trường thông tin của các công việc từ: ';
+    } else if (!Object.values(typeChart).includes("bar") && Object.values(typeChart).includes("line")) {
+        checkType = 'Biểu đồ đường thống kê các trường thông tin của các công việc từ: ';
+    }
+
+    return (
+        <div className="row" style={{ marginBottom: '10px' }}>
+            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div className="box" >
+                    <div className="box-header with-border">
+                        <h4 className="box-title report-title"><span style={{ marginRight: '7px' }}>{checkType != '' && checkType} {`${startDate}`} đến {`${endDate}`}</span></h4>
+                    </div>
+                    <div className="box-body lineBarChart ">
+                        <p className="box-body" ><span style={{ marginRight: '7px' }}>Chiều dữ liệu:</span> {`${dataForAxisXInChart && dataForAxisXInChart.length > 0 ? dataForAxisXInChart.join(' ') : 'Thời gian'}`}</p>
+                        <div id={id}></div>
+                    </div>
+                </div >
+            </div>
+        </div>
+    )
+
 }
 
 const lineBarChart = connect(null, null)(withTranslate(LineBarChartViewForm));

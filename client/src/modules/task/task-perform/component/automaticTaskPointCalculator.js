@@ -42,11 +42,8 @@ const calculateExpression = (expression) => {
                     return f1 / f2;
             }
         }
-        // console.log( "m-exp", mexp.eval("2+5/ 0 ", [token1]));
-        // console.log( "m-exp", mexp.eval(expression, [token1]));
-        let point = mexp.eval(expression, [token1]);
-        console.log('point-calculateExpression', point);
 
+        let point = mexp.eval(expression, [token1]);
         return point;
     } catch (err) {
         return null;
@@ -97,28 +94,27 @@ function calcAutoPoint(data) {
         && new Date(item.createdAt).getFullYear() === evaluationsDate.getFullYear()
     ))
 
-    let actionRating = actions.map(action => action.rating);
-
     let numberOfPassedActions = actions.filter(act => act.rating >= 5).length;
     let numberOfFailedActions = actions.filter(act => act.rating < 5).length;
 
     // Tổng số hoạt động
     let a = 0;
-    a = actionRating.length;
+    a = actions.length;
 
-    // if ((numberOfPassedActions === 0 && numberOfFailedActions === 0) || a === 0) {
-    //     numberOfPassedActions = 1;
-    //     numberOfFailedActions = 0;
-    // }
+    // Tổng số điểm của các hoạt động * độ quan trọng từng hoạt động
+    let reduceAction = {
+        rating: 0,
+        actionImportanceLevel: 0
+    }
+    actions.map((item) => {
+        reduceAction.rating = reduceAction?.rating + item?.rating * item?.actionImportanceLevel
+        reduceAction.actionImportanceLevel = reduceAction?.actionImportanceLevel + item?.actionImportanceLevel
+    });
 
-    let pen = 0;
-    pen = !a ? 0 : (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions));
+    reduceAction.rating = reduceAction?.rating > 0 ? reduceAction.rating : 0;
+    reduceAction.actionImportanceLevel = reduceAction?.actionImportanceLevel > 0 ? reduceAction.actionImportanceLevel : 10 * a;
 
-    // Tổng số điểm của các hoạt động
-    let reduceAction = actionRating.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-    reduceAction = reduceAction > 0 ? reduceAction : 0;
-
-    let averageActionRating = !a ? 10 : reduceAction / a; // a = 0 thì avg mặc định là 10
+    let averageActionRating = !a ? 10 : reduceAction.rating / reduceAction.actionImportanceLevel; // a = 0 thì avg mặc định là 10
     let autoHasActionInfo = progress / (daysUsed / totalDays) - 0.5 * (10 - (averageActionRating)) * 10;
     let automaticPoint = 0;
 
@@ -251,14 +247,13 @@ function calcProjectAutoPoint(data, getCalcPointsOnly = true) {
             realDuration += timeSheetItem.duration / MILISECS_TO_DAYS * (projectDetail?.unitTime === 'hours' ? 8 : 1);
         }
     }
-    // console.log('estDuration---------------------', estDuration)
+
     let realCost = estimateAssetCost;
     for (let actorItem of actorsWithSalary) {
-        const weight = responsibleEmployees.find(responsibleItem => responsibleItem.id === actorItem.userId) ? 0.8 : 0.2;
         for (let timeSheetItem of timesheetLogs) {
             if (actorItem.userId === timeSheetItem.creator.id) {
-                realCost += timeSheetItem.duration / MILISECS_TO_DAYS * (projectDetail?.unitTime === 'hours' ? 8 : 1) * weight
-                    * actorItem.salary / weekDays / (projectDetail?.unitTime === 'hours' ? 8 : 1);
+                realCost += timeSheetItem.duration / MILISECS_TO_DAYS * (projectDetail?.unitTime === 'hours' ? 8 : 1)
+                    * actorItem.salary / weekDays * (projectDetail?.unitTime === 'hours' ? 8 : 1);
             }
         }
     }
@@ -297,7 +292,7 @@ function calcProjectAutoPoint(data, getCalcPointsOnly = true) {
 
 function calcProjectTaskMemberAutoPoint(data, getCalcPointsOnly = true) {
     const { task, progress, projectDetail, userId } = data;
-    const { timesheetLogs, startDate, endDate, actorsWithSalary, responsibleEmployees, estimateAssetCost, accountableEmployees } = task;
+    const { timesheetLogs, startDate, endDate, actorsWithSalary, responsibleEmployees, estimateAssetCost, accountableEmployees, estimateNormalTime, estimateNormalCost } = task;
     const weekDays = getAmountOfWeekDaysInMonth(moment(startDate));
     // Tính trọng số của userId trong task đó
     let weight = 0;
@@ -312,12 +307,7 @@ function calcProjectTaskMemberAutoPoint(data, getCalcPointsOnly = true) {
     let estDuration = getDurationWithoutSatSun(startDate, endDate, projectDetail?.unitTime) * weight;
     const currentActor = actorsWithSalary.find(item => String(userId) === String(item.userId));
     // estCost là ngân sách - chi phí ước lượng cho task
-    // console.log('estDuration', estDuration)
-    // console.log('currentActor.salary', currentActor.salary)
-    // console.log('weekDays', weekDays)
-    // console.log(projectDetail?.unitTime === 'hours' ? 8 : 1)
     const estCost = estDuration * currentActor.salary / weekDays / (projectDetail?.unitTime === 'hours' ? 8 : 1);
-    // console.log('estCost', estCost)
     const progressTask = progress;
     let realDuration = 0;
     if (timesheetLogs && timesheetLogs.length > 0) {
@@ -325,15 +315,15 @@ function calcProjectTaskMemberAutoPoint(data, getCalcPointsOnly = true) {
             realDuration += timeSheetItem.duration / MILISECS_TO_DAYS * (projectDetail?.unitTime === 'hours' ? 8 : 1);
         }
     }
-    // console.log('realDuration', realDuration)
+
     let realCost = 0;
     for (let timeSheetItem of timesheetLogs) {
         if (userId === timeSheetItem.creator.id) {
-            realCost += timeSheetItem.duration / MILISECS_TO_DAYS * (projectDetail?.unitTime === 'hours' ? 8 : 1) * weight
-                * currentActor.salary / weekDays / (projectDetail?.unitTime === 'hours' ? 8 : 1);
+            realCost += timeSheetItem.duration / MILISECS_TO_DAYS * (projectDetail?.unitTime === 'hours' ? 8 : 1)
+                * currentActor.salary / weekDays * (projectDetail?.unitTime === 'hours' ? 8 : 1);
         }
     }
-    // console.log('realCost', realCost)
+
     const earnedValue = Number(progressTask) / 100 * Number(estCost);
     // Tính plannedValue dựa vào thời gian đã trôi qua
     const diffFromStartToEnd = getDurationWithoutSatSun(startDate, endDate, projectDetail?.unitTime);

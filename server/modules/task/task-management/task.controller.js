@@ -66,7 +66,7 @@ exports.getTasks = async (req, res) => {
 exports.getTaskEvaluations = async (req, res) => {
     try {
         let taskEvaluation = await TaskManagementService.getTaskEvaluations(req.portal, req.query);
-
+        
         await Logger.info(req.user.email, 'get_task_evaluattions', req.portal);
         res.status(200).json({
             success: true,

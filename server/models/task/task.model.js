@@ -234,7 +234,13 @@ const TaskSchema = new Schema(
             requestStatus: { // 0: chưa yêu cầu, 1: đang yêu cầu, 2: từ chối, 3: đồng ý
                 type: Number,
                 default: 0,
-            }
+            },
+            responsibleUpdatedAt: {
+                type: Date,
+            },
+            accountableUpdatedAt: {
+                type: Date,
+            },
         },
         evaluations: [
             {
@@ -852,6 +858,9 @@ const TaskSchema = new Schema(
                     ref: 'User',
                 },
                 salary: {
+                    type: Number,
+                },
+                weight: {
                     type: Number,
                 },
             },
