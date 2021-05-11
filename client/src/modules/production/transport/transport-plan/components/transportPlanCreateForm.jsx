@@ -22,6 +22,7 @@ function TransportPlanCreateForm(props) {
         code: "",
         startDate: "",
         endDate: "",
+        name: "Kế hoạch vận chuyển",
     });
 
     /**
@@ -42,6 +43,13 @@ function TransportPlanCreateForm(props) {
     const handleClickCreateCode = () => {
         setFormSchedule({
             code: generateCode("KHVC"),
+        })
+    }
+
+    const handlePlanNameChange = (e) => {
+        setFormSchedule({
+            ...formSchedule,
+            name: e.target.value,
         })
     }
 
@@ -232,10 +240,21 @@ function TransportPlanCreateForm(props) {
                                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                             <div className="form-group">
                                                 <label>
-                                                    Mã lịch trình <span className="attention"> </span>
+                                                    Mã kế hoạch <span className="attention"> </span>
                                                 </label>
                                                 <input type="text" className="form-control" disabled={true} 
                                                     value={formSchedule.code}
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                            <div className="form-group">
+                                                <label>
+                                                    Tên kế hoạch <span className="attention"> </span>
+                                                </label>
+                                                <input type="text" className="form-control" disabled={false} 
+                                                    value={formSchedule.name}
+                                                    onChange={handlePlanNameChange}
                                                 />
                                             </div>
                                         </div>
@@ -265,8 +284,8 @@ function TransportPlanCreateForm(props) {
                                                     Ngày bắt đầu <span className="attention"> * </span>
                                                 </label>
                                                 <DatePicker
-                                                    id={`start_date`}
-                                                    value={formSchedule.startDate}
+                                                    id={`start_date1`}
+                                                    value={formatDate(formSchedule.startDate)}
                                                     onChange={handleStartDateChange}
                                                     disabled={false}
                                                 />
@@ -279,8 +298,8 @@ function TransportPlanCreateForm(props) {
                                                     <span className="attention"> * </span>
                                                 </label>
                                                 <DatePicker
-                                                    id={`end_date`}
-                                                    value={formSchedule.endDate}
+                                                    id={`end_date1`}
+                                                    value={formatDate(formSchedule.endDate)}
                                                     onChange={handleEndDateChange}
                                                     disabled={false}
                                                 />
@@ -295,8 +314,9 @@ function TransportPlanCreateForm(props) {
                                         <LocationMap 
                                             locations = {listSelectedRequirementsLocation}
                                             loadingElement={<div style={{height: `100%`}}/>}
-                                            containerElement={<div style={{height: "40vh"}}/>}
+                                            containerElement={<div style={{height: "50vh"}}/>}
                                             mapElement={<div style={{height: `100%`}}/>}
+                                            defaultZoom={11}
                                         />
                                     }
                                 </div>

@@ -21,6 +21,7 @@ exports.createTransportPlan = async (portal, data) => {
     if (data && data.length !== 0) {        
         newTransportPlan = await TransportPlan(connect(DB_CONNECTION, portal)).create({
         code: data.code,
+        name: data.name,
         status: 1,
         startTime: data.startDate,
         endTime: data.endDate,
@@ -48,7 +49,12 @@ exports.createTransportPlan = async (portal, data) => {
     await TransportScheduleServices.planCreateTransportRoute(portal, {transportPlan: newTransportPlan._id,})
     let transportPlan = await TransportPlan(connect(DB_CONNECTION, portal)).findById({ _id: newTransportPlan._id })
     .populate([
-        {path : "transportRequirements"}
+        {
+            path : "transportRequirements transportVehicles.vehicle"
+        },
+        {
+            path: 'transportVehicles.carriers.carrier'
+        }
     ])
     ;;
     return transportPlan;

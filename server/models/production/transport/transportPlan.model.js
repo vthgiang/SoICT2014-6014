@@ -6,6 +6,9 @@ const TransportPlanSchema = new Schema({
         type: String,
         required: true,
     },
+    name: {
+        type: String,
+    },
     status: { // Trạng thái kế hoạch hiện tại 1: Cần xếp hàng, xếp lộ trình, 2: Có thể tiến hành, 3: Đang tiến hành, 4: Đã hoàn thành
         type: Number,
     },

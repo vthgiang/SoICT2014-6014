@@ -11,6 +11,7 @@ import { TransportVehicleAndCarrierSelect } from "./transport-plan-detail/transp
 
 import { transportPlanActions } from '../redux/actions';
 import { transportRequirementsActions } from '../../transport-requirements/redux/actions'
+import { getTypeRequirement } from '../../transportHelper/getTextFromValue'
 
 import {} from './transport-plan.css'
 
@@ -21,6 +22,7 @@ function TransportPlanDetailInfo(props) {
         code: "",
         startDate: "",
         endDate: "",
+        name: "",
     });
 
     /**
@@ -47,6 +49,7 @@ function TransportPlanDetailInfo(props) {
                 startDate: currentTransportPlan.startTime,
                 endDate: currentTransportPlan.endTime,
                 code: currentTransportPlan.code,
+                name: currentTransportPlan.name,
             });
 
             let idArr = []
@@ -86,7 +89,7 @@ function TransportPlanDetailInfo(props) {
                     }
                 })
             }
-            setListChosenVehicleCarrier(chosenVehicleCarrier)            
+            setListChosenVehicleCarrier(chosenVehicleCarrier)      
         }
     }, [currentTransportPlan])
 
@@ -151,7 +154,7 @@ function TransportPlanDetailInfo(props) {
                                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                     <div className="form-group">
                                         <label>
-                                            Mã lịch trình <span className="attention"> </span>
+                                            Mã kế hoạch <span className="attention"> </span>
                                         </label>
                                         <input type="text" className="form-control" disabled={true} 
                                             value={formSchedule.code}
@@ -159,10 +162,20 @@ function TransportPlanDetailInfo(props) {
                                     </div>
                                 </div>
                                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <div className="form-group">
+                                        <label>
+                                            Tên kế hoạch <span className="attention"> </span>
+                                        </label>
+                                        <input type="text" className="form-control" disabled={true} 
+                                            value={formSchedule.name}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                     <div className={`form-group`}>
                                         <label>
                                             Người phụ trách
-                                            <span className="attention"> * </span>
+                                            {/* <span className="attention"> * </span> */}
                                         </label>
                                         <input type="text" className="form-control" disabled={false} 
                                         />
@@ -181,7 +194,8 @@ function TransportPlanDetailInfo(props) {
                                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                     <div className="form-group">
                                         <label>
-                                            Ngày bắt đầu <span className="attention"> * </span>
+                                            Ngày bắt đầu 
+                                            {/* <span className="attention"> * </span> */}
                                         </label>
                                         <DatePicker
                                             id={`start_date_edit`}
@@ -195,7 +209,7 @@ function TransportPlanDetailInfo(props) {
                                     <div className={`form-group`}>
                                         <label>
                                             Ngày kết thúc
-                                            <span className="attention"> * </span>
+                                            {/* <span className="attention"> * </span> */}
                                         </label>
                                         <DatePicker
                                             id={`end_date_edit`}
@@ -234,7 +248,6 @@ function TransportPlanDetailInfo(props) {
                                 <th>{"Ngày tạo"}</th>
                                 <th>{"Ngày mong muốn vận chuyển"}</th>
                                 <th>{"Trạng thái"}</th>
-                                <th>{"Hành động"}</th>
                                 {/* <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
                                     <DataTableSetting
                                         tableId={tableId}
@@ -255,7 +268,7 @@ function TransportPlanDetailInfo(props) {
                                     <tr key={index}>
                                         <td>{index+1}</td>
                                         <td>{x.code}</td>
-                                        <td>{x.type}</td>
+                                        <td>{getTypeRequirement(x.type)}</td>
                                         <td>{x.fromAddress}</td>
                                         <td>{x.toAddress}</td>
                                         <td>{x.createdAt ? formatDate(x.createdAt) : ""}</td>
@@ -279,12 +292,7 @@ function TransportPlanDetailInfo(props) {
                 </div>
             
                 <TransportVehicleAndCarrierSelect
-                    key={formSchedule.transportRequirements}
-                    startTime={formSchedule.startDate}
-                    endTime={formSchedule.endDate}
-                    callBackVehicleAndCarrier={callBackVehicleAndCarrier}
-                    chosenVehicleCarrier={listChosenVehicleCarrier}
-                    currentTransportPlanId = {currentTransportPlan?._id}
+                    currentTransportPlan={currentTransportPlan}
                 />
             </form>
             </DialogModal>

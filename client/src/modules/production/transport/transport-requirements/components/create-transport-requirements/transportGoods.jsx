@@ -291,7 +291,8 @@ function TransportGoods(props) {
                                     <th>{"Mã sản phẩm"}</th>
                                     <th>{"Tên sản phẩm"}</th>
                                     <th>{"Số lượng"}</th>
-                                    <th>{"Khối lượng vận chuyển"}</th>
+                                    <th>{"Khối lượng"}</th>
+                                    <th>{"Thể tích"}</th>
                                     <th>{"Hành động"}</th>
                                     {/* <th>{translate("manufacturing.plan.base_unit")}</th>
                                     <th>{translate("manufacturing.plan.quantity_good_inventory")}</th>
@@ -303,7 +304,7 @@ function TransportGoods(props) {
                                 {listGoodsChosen && listGoodsChosen.length === 0 ? (
                                     <tr>
                                         {/* <td colSpan={7}>{translate("general.no_data")}</td> */}
-                                        <td colSpan={5}>{"Không có dữ liệu"}</td>
+                                        <td colSpan={6}>{"Không có dữ liệu"}</td>
                                     </tr>
                                 ) : (
                                     listGoodsChosen.map((x, index) => (
@@ -313,15 +314,8 @@ function TransportGoods(props) {
                                                 <td>{x.name}</td>
                                                 <td>{x.quantity}</td>
                                                 <td>{x.volume}</td>
+                                                <td>{x.payload}</td>
                                                 <td>
-                                                    {/* <a
-                                                        href="#abc"
-                                                        className="edit"
-                                                        title={translate("general.edit")}
-                                                        onClick={() => this.handleEditGood(x, index)}
-                                                    >
-                                                        <i className="material-icons"></i>
-                                                    </a> */}
                                                     <a
                                                         href="#abc"
                                                         className="delete"

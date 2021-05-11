@@ -227,12 +227,12 @@ function TransportVehicleCarrier2(props) {
     }
 
     useEffect(() => {
-        console.log(listAllVehicles);
-        console.log(listAllCarriers);
+        // console.log(listAllVehicles);
+        // console.log(listAllCarriers);
     }, [listAllVehicles])
 
     useEffect(() => {
-        console.log(listUsedVehiclesCarriers, " okkkkkkkkkkkkkkkkkkkk")
+        // console.log(listUsedVehiclesCarriers, " okkkkkkkkkkkkkkkkkkkk")
     }, [listUsedVehiclesCarriers])
 
     return (
