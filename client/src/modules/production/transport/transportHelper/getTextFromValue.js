@@ -64,3 +64,32 @@ exports.getTransportStatus = (routeOrdinal) => {
     }
     return "Chưa tiến hành";
 }
+
+const transportRequirementStatus = [
+    {
+        value: "1", text: "Chờ phê duyệt"
+    },
+    {
+        value: "2", text: "Chờ xếp lịch"
+    },
+    {
+        value: "3", text: "Chờ vận chuyển"
+    },
+    {
+        value: "4", text: "Đang vận chuyển"
+    },
+    {
+        value: "5", text: "Đã vận chuyển"
+    },
+    {
+        value: "6", text: "Vận chuyển thất bại"
+    }
+]
+exports.getTransportRequirementStatus = (value) => {
+    let res = "";
+    let k = transportRequirementStatus.filter(r => String(r.value) === String(value));
+    if (k && k.length!==0){
+        res = k[0].text;
+    }
+    return res;
+}

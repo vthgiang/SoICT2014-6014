@@ -11,7 +11,7 @@ import { TransportRequirementsEditForm } from './transportRequirementsEditForm'
 import { transportRequirementsActions } from "../redux/actions";
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 
-import {getTypeRequirement} from '../../transportHelper/getTextFromValue'
+import {getTypeRequirement, getTransportRequirementStatus} from '../../transportHelper/getTextFromValue'
 
 function TransportRequirementsManagementTable(props) {
     const getTableId = "table-manage-transport-requirements-hooks";
@@ -48,23 +48,6 @@ function TransportRequirementsManagementTable(props) {
             text: "Khác",
         }
     ];
-    const statusTransport = [
-        {
-            value: "1", text: "Chờ phê duyệt"
-        },
-        {
-            value: "2", text: "Chờ xếp lịch"
-        },
-        {
-            value: "3", text: "Chờ vận chuyển"
-        },
-        {
-            value: "4", text: "Đang vận chuyển"
-        },
-        {
-            value: "5", text: "Đã vận chuyển"
-        }
-    ]
     // Khởi tạo state
     const [state, setState] = useState({
         exampleName: "",
@@ -156,18 +139,6 @@ function TransportRequirementsManagementTable(props) {
         })
     }
 
-    const getStatusTransport = (status) => {
-        let res="";
-        if (status && statusTransport){
-            statusTransport.map(item => {
-                if (item.value === String(status)){
-                    res = item.text;
-                }
-            })
-        }
-        return res;
-    }
-
     const getDisplayLength = () => {
         let res = 0;
         if (allTransportRequirements && allTransportRequirements.length!==0){
@@ -256,7 +227,7 @@ function TransportRequirementsManagementTable(props) {
                                     <td>{x.fromAddress}</td>
                                     <td>{x.toAddress}</td>
                                     <td>{x.creator ? x.creator.name : ""}</td>
-                                    <td>{getStatusTransport(x.status)}</td>
+                                    <td>{getTransportRequirementStatus(x.status)}</td>
                                     <td style={{ textAlign: "center" }}>
                                         <a className="edit text-green" style={{ width: '5px' }} 
                                             // title={translate('manage_example.detail_info_example')} 

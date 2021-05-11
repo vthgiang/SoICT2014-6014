@@ -108,7 +108,8 @@ function TransportPlanManagementTable(props) {
                     <thead>
                         <tr>
                             <th className="col-fixed" style={{ width: 60 }}>{"Số thứ tự"}</th>
-                            <th>{"Mã lịch trình"}</th>
+                            <th>{"Mã kế hoạch"}</th>
+                            <th>{"Tên kế hoạch"}</th>
                             <th>{"Trạng thái"}</th>
                             <th>{"Thời gian"}</th>
                             <th>{"Người phụ trách"}</th>
@@ -123,6 +124,7 @@ function TransportPlanManagementTable(props) {
                             <tr key={index}>
                                 <td>{index + 1}</td>
                                 <td>{x.code}</td>
+                                <td>{x.name}</td>
                                 <td>{getPlanStatus(x.status)}</td>
                                 <td>{formatDate(x.startTime)+" - "+formatDate(x.endTime)}</td>
                                 <td>{""}</td>

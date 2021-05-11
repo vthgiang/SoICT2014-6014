@@ -275,11 +275,22 @@ exports.changeTransportStatusByCarrierId = async (portal, carrierId, data) => {
             carrier: data.carrierId,
             time: data.time
         }
+        let requirementStatus = 4;
+        // Khi không nhận được hàng hoặc giao được hàng => cập nhật trạng thái yêu cầu vận chuyển thất bại
+        if (String(data.status)==="2"){
+            requirementStatus = 6; 
+        }
         if (String(data.type) === "1"){
-            await TransportRequirementServices.editTransportRequirement(portal, requirementId, {"transportStatus.fromAddress": transportStatus})
+            if (String(data.status)!=="2"){
+                requirementStatus = 4;
+            }
+            await TransportRequirementServices.editTransportRequirement(portal, requirementId, {"transportStatus.fromAddress": transportStatus, status: requirementStatus})
         }
         else {
-            await TransportRequirementServices.editTransportRequirement(portal, requirementId, {"transportStatus.toAddress": transportStatus})
+            if (String(data.status)!=="2"){
+                requirementStatus = 5;
+            }
+            await TransportRequirementServices.editTransportRequirement(portal, requirementId, {"transportStatus.toAddress": transportStatus, status: requirementStatus})
         }
         let listSchedule = this.getAllTransportScheduleRouteByCarrierId(portal, carrierId);
         return listSchedule;
