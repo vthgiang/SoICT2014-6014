@@ -8,8 +8,8 @@ import { formatDate } from "../../../../../helpers/formatDate"
 
 import { transportPlanActions } from "../../transport-plan/redux/actions";
 import { transportScheduleActions } from "../redux/actions";
-import { ArrangeVehiclesAndGoods } from './arrangeVehiclesAndGoods';
-import { ArrangeOrdinalTransport } from './arrangeOrdinalTransport';
+import { ArrangeVehiclesAndGoods } from './arrangeVehiclesAndGoods2';
+import { ArrangeOrdinalTransport } from './arrangeOrdinalTransport2';
 
 import { convertDistanceToKm, convertTimeToMinutes } from "../../transportHelper/convertDistanceAndDuration"
 
@@ -73,6 +73,7 @@ function ArrangeDialog(props) {
                         {/* <LazyLoadComponent
                         > */}
                             <ArrangeOrdinalTransport
+                                currentTransportSchedule={currentTransportSchedule}
                             />
                         {/* </LazyLoadComponent> */}
                     </div>
@@ -85,8 +86,8 @@ function ArrangeDialog(props) {
 }
 
 function mapState(state) {
-    const {transportPlan} = state;
-    return { transportPlan };
+    const {transportPlan, transportSchedule} = state;
+    return { transportPlan, transportSchedule };
 }
 
 const actions = {

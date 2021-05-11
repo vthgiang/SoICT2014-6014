@@ -89,12 +89,12 @@ function SortableComponent(props) {
 			transportRequirements.map((item, index) => {
 				addressData.push({
 					transportRequirement: item,
-					transportRequirementId: item._id,
-					address: item.fromAddress,
-					geocodeAddress: item.geocode.fromAddress,
+					transportRequirementId: item?._id,
+					address: item?.fromAddress,
+					geocodeAddress: item?.geocode?.fromAddress,
 					addressType: 1,
-					payload: item.payload,
-					volume: item.volume
+					payload: item?.payload,
+					volume: item?.volume
 				},
 				{
 					transportRequirement: item,
@@ -320,7 +320,7 @@ const SortableItem = SortableElement((props) =>
 {
 let {value, index, stt} = props
 return(
-    <div class="address-element" style={{margin: "10px", cursor: "pointer"}}>
+    <div className="address-element" style={{margin: "10px", cursor: "pointer"}}>
 		<div>
 			{"STT: "+ stt}
 		</div>

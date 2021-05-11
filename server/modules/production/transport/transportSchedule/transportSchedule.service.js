@@ -102,6 +102,41 @@ exports.editTransportRouteByPlanId = async (portal, planId, data) => {
     .populate([
         {
             path: 'transportPlan',
+            select: 'transportVehicles transportRequirements code startTime endTime',
+            populate: [
+                {
+                    path: 'transportRequirements',
+                    model: 'TransportRequirement'
+                },
+                {
+                    path: 'transportVehicles.transportVehicle',
+                    model: 'TransportVehicle'
+                },
+                {
+                    path: 'transportVehicles.vehicle',
+                    populate: [
+                        {
+                            path: 'asset'
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            path: 'transportVehicles.transportVehicle',
+            model: 'TransportVehicle',
+        },
+        {
+            path: 'transportVehicles.transportRequirements',
+            model: 'TransportRequirement'
+        },
+        {
+            path: 'route.transportVehicle',
+            model: 'TransportVehicle'
+        },
+        {
+            path: 'route.routeOrdinal.transportRequirement',
+            model: 'TransportRequirement'       
         }
     ]);
     // Đếm số lượng requirement trong route

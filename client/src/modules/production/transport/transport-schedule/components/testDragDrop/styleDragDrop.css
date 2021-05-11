@@ -3,6 +3,7 @@
     flex-direction: row;
     justify-content: flex-start;
     overflow-x: auto;
+    z-index: 100000000000;
 }
 .address-element {
     display: inline-block;
@@ -10,7 +11,9 @@
     background-color: white;
     padding: 10px;
     border: green solid 1px;
+    z-index: 100000000000;
 }
 .address-element:hover {
     background-color: whitesmoke;
+    z-index: 100000000000;
 }
