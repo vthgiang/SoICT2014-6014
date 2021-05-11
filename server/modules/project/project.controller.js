@@ -158,10 +158,90 @@ exports.getSalaryMembers = async (req, res) => {
         });
     } catch (error) {
         console.log('get_salary_members', error);
-        await Logger.error(req.user.email, 'ge_salary_members', req.portal)
+        await Logger.error(req.user.email, 'get_salary_members', req.portal)
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['get_salary_members_faile'],
+            content: error
+        })
+    }
+}
+
+exports.createProjectChangeRequest = async (req, res) => {
+    try {
+        let tp = await ProjectService.createProjectChangeRequest(req.portal, req.body);
+
+        res.status(200).json({
+            success: true,
+            messages: ['create_project_change_request_success'],
+            content: tp
+        });
+    } catch (error) {
+        console.log('create_project_change_request', error);
+        await Logger.error(req.user.email, 'create_project_change_request', req.portal)
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['create_project_change_request_faile'],
+            content: error
+        })
+    }
+}
+
+exports.getListProjectChangeRequests = async (req, res) => {
+    try {
+        let tp = await ProjectService.getListProjectChangeRequests(req.portal, req.query);
+
+        res.status(200).json({
+            success: true,
+            messages: ['get_list_project_change_requests_success'],
+            content: tp
+        });
+    } catch (error) {
+        console.log('get_list_project_change_requests', error);
+        await Logger.error(req.user.email, 'get_list_project_change_requests', req.portal)
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['get_list_project_change_requests_faile'],
+            content: error
+        })
+    }
+}
+
+exports.updateStatusProjectChangeRequest = async (req, res) => {
+    try {
+        let tp = await ProjectService.updateStatusProjectChangeRequest(req.portal, req.query.id, req.query.status);
+
+        res.status(200).json({
+            success: true,
+            messages: ['update_status_project_change_request_success'],
+            content: tp
+        });
+    } catch (error) {
+        console.log('update_status_project_change_request', error);
+        await Logger.error(req.user.email, 'update_status_project_change_request', req.portal)
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['update_status_project_change_request_faile'],
+            content: error
+        })
+    }
+}
+
+exports.updateListProjectChangeRequests = async (req, res) => {
+    try {
+        let tp = await ProjectService.updateListProjectChangeRequests(req.portal, req.body);
+
+        res.status(200).json({
+            success: true,
+            messages: ['update_list_project_change_requests_success'],
+            content: tp
+        });
+    } catch (error) {
+        console.log('update_list_project_change_requests', error);
+        await Logger.error(req.user.email, 'update_list_project_change_requests', req.portal)
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['update_list_project_change_requests_faile'],
             content: error
         })
     }

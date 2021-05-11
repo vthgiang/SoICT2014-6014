@@ -144,6 +144,7 @@ const TaskSchema = new Schema(
             // 1: Thấp, 2: Trung Bình, 3: Tiêu chuẩn, 4: Cao, 5: Khẩn cấp
             // Low, Average, Standard, High, Urgent
             type: Number,
+            default: 3,
         },
         isArchived: {
             // Lưu kho hay không. Task lưu kho sẽ mặc định ẩn đi cho gọn giao diện, vì số task có thể rất lớn. Khi cần xem lại, phải chọn filter phù hợp và search
@@ -847,10 +848,11 @@ const TaskSchema = new Schema(
         actualCost: {
             type: Number,
         },
-        // ngân sách để chi trả cho task đó
-        budget: {
-            type: Number,
+        //thời điểm thực kết thúc task đó
+        actualEndDate: {
+            type: Date,
         },
+        // Danh sách thành viên tham gia công việc + lương tháng + trọng số thành viên trong công việc
         actorsWithSalary: [
             {
                 userId: {
@@ -865,8 +867,16 @@ const TaskSchema = new Schema(
                 },
             },
         ],
+        // Ước lượng chi phí tài sản
         estimateAssetCost: {
             type: Number,
+        },
+        // Trọng số tổng dành cho Thành viên Thực hiện
+        totalResWeight: {
+            type: Number,
+        },
+        isFromCPM: {
+            type: Boolean,
         }
     },
     {

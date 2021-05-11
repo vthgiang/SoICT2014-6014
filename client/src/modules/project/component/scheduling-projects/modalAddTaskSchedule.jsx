@@ -168,13 +168,13 @@ const ModalAddTaskSchedule = (props) => {
             for (let empItem of projectDetail?.responsibleEmployees) {
                 for (let resEmailItem of dataItem.emailResponsibleEmployees) {
                     if (String(empItem.email) === String(resEmailItem)) {
-                        console.log('dataItem', dataItem.code, '(String(empItem.email)', (String(empItem.email)), 'String(resEmailItem)', String(resEmailItem))
+                        // console.log('dataItem', dataItem.code, '(String(empItem.email)', (String(empItem.email)), 'String(resEmailItem)', String(resEmailItem))
                         currentResMemberIdArr.push(empItem._id);
                     }
                 }
                 for (let accEmailItem of dataItem.emailAccountableEmployees) {
                     if (String(empItem.email) === String(accEmailItem)) {
-                        console.log('dataItem', dataItem.code, '(String(empItem.email)', (String(empItem.email)), 'String(accEmailItem)', String(accEmailItem))
+                        // console.log('dataItem', dataItem.code, '(String(empItem.email)', (String(empItem.email)), 'String(accEmailItem)', String(accEmailItem))
                         currentAccMemberIdArr.push(empItem._id);
                     }
                 }
@@ -183,24 +183,27 @@ const ModalAddTaskSchedule = (props) => {
             if (currentResMemberIdArr.length === 0 || currentAccMemberIdArr.length === 0) {
                 return dataItem;
             }
+            // Nếu email đầy đủ thì tính tiếp
+            const currentResWeightArr = currentResMemberIdArr.map((resItem, resIndex) => {
+                return {
+                    userId: resItem,
+                    weight: Number(dataItem.totalResWeight) / currentResMemberIdArr.length,
+                }
+            });
+            const currentAccWeightArr = currentAccMemberIdArr.map((accItem, accIndex) => {
+                return {
+                    userId: accItem,
+                    weight: (100 - Number(dataItem.totalResWeight)) / currentAccMemberIdArr.length,
+                }
+            });
             const estHumanCost = getEstimateHumanCostFromParams(
                 projectDetail,
                 dataItem.estimateNormalTime,
                 currentResMemberIdArr,
                 currentAccMemberIdArr,
                 projectDetail?.unitTime,
-                currentResMemberIdArr.map((resItem, resIndex) => {
-                    return {
-                        userId: resItem,
-                        weight: Number(dataItem.totalResWeight) / currentResMemberIdArr.length,
-                    }
-                }),
-                currentAccMemberIdArr.map((accItem, accIndex) => {
-                    return {
-                        userId: accItem,
-                        weight: (100 - Number(dataItem.totalResWeight)) / currentAccMemberIdArr.length,
-                    }
-                }),
+                currentResWeightArr,
+                currentAccWeightArr,
             )
             const estAssetCode = 1000000;
             const estNormalCost = estHumanCost + estAssetCode;
@@ -213,6 +216,9 @@ const ModalAddTaskSchedule = (props) => {
                 currentHumanCost: numberWithCommas(estHumanCost),
                 estimateNormalCost: numberWithCommas(estNormalCost),
                 estimateMaxCost: numberWithCommas(estMaxCost),
+                currentResWeightArr,
+                currentAccWeightArr,
+                totalResWeight: Number(dataItem.totalResWeight),
             }
         })
         console.log('formattedData', formattedData)
@@ -258,18 +264,44 @@ const ModalAddTaskSchedule = (props) => {
         })
     }
 
-    const handleSaveEditInfoRow = (newData, currentEditRowIndex) => {
-        state.listTasks = state.listTasks.map((taskItem) => {
+    const resetForm = () => {
+        setState({
+            taskInit: {
+                taskProject: projectDetail?._id,
+                code: `DXT${projectDetail?._id.substring(0, 6)}-0`,
+                name: '',
+                preceedingTasks: [],
+                estimateNormalTime: '',
+                estimateOptimisticTime: '',
+                estimateNormalCost: '',
+                estimateMaxCost: '',
+                startDate: '',
+                endDate: '',
+            },
+            listTasks: [],
+        })
+    }
+
+    const handleSaveEditInfoRow = (newRowData, currentEditRowIndex) => {
+        console.log('newRowData', newRowData)
+        const newListTasks = state.listTasks.map((taskItem, taskIndex) => {
+            if (currentEditRowIndex === taskIndex) {
+                return {
+                    ...newRowData,
+                    startDate: '',
+                    endDate: '',
+                }
+            }
             return {
                 ...taskItem,
                 startDate: '',
                 endDate: '',
             }
         })
-        state.listTasks[currentEditRowIndex] = newData;
+        console.log('newListTasks', newListTasks)
         setState({
             ...state,
-            listTasks: state.listTasks,
+            listTasks: newListTasks,
         })
     }
 
@@ -345,19 +377,13 @@ const ModalAddTaskSchedule = (props) => {
                         handleSave={handleSaveEditInfoRow} />
                 }
 
-                {/* Chọn chế độ import task cpm */}
-                <div className="form-group pull-right">
-                    <label>Chọn chế độ thêm công việc</label>
-                    <SelectBox
-                        id={`select-mode-import-cpm`}
-                        className="form-control select2"
-                        style={{ width: "100%" }}
-                        items={modeImportCPM}
-                        onChange={handleSetModeCPM}
-                        value={currentModeImport}
-                        multiple={false}
-                    />
-                </div>
+                {/* Button refresh form dữ liệu */}
+                <button className="form-group pull-right" title="Làm mới form"
+                    style={{ marginTop: 20, marginRight: 10 }}
+                    onClick={resetForm}
+                >
+                    <span className="material-icons">refresh</span>
+                </button>
 
                 {/* Button open modal import excel */}
                 {currentModeImport === 'EXCEL' ? <div className="dropdown pull-right" style={{ marginTop: 20, marginRight: 10 }}>

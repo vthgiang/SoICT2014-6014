@@ -1,5 +1,7 @@
+import { isArraysEqual } from "@fullcalendar/common";
 import dayjs from "dayjs";
 import moment from "moment";
+import React from 'react';
 import { getStorage } from "../../../../config";
 import { getNumsOfDaysWithoutGivenDay, getSalaryFromUserId } from "../../../task/task-management/component/functionHelpers";
 
@@ -132,6 +134,84 @@ export const getEstimateMemberCost = (projectDetail, userId, duration, timeMode,
     return cost;
 }
 
+export const getProjectParticipants = (projectDetail, hasManagerAndCreator = false) => {
+    let projectParticipants = [];
+    if (hasManagerAndCreator) {
+        const formattedManagerArr = projectDetail?.projectManager?.map(item => {
+            return ({
+                text: item.name,
+                value: item._id
+            })
+        })
+        let formattedEmployeeArr = [];
+        if (Array.isArray(projectDetail?.responsibleEmployees)) {
+            for (let item of projectDetail?.responsibleEmployees) {
+                if (!projectDetail?.projectManager.find(managerItem => managerItem.name === item.name)) {
+                    formattedEmployeeArr.push({
+                        text: item.name,
+                        value: item._id
+                    })
+                }
+            }
+        }
+
+        if (!projectParticipants || !formattedManagerArr || !formattedEmployeeArr) {
+            return []
+        }
+        projectParticipants = formattedManagerArr.concat(formattedEmployeeArr)
+        if (projectParticipants.find(item => String(item.value) === String(projectDetail?.creator?._id))) {
+            return projectParticipants;
+        }
+        projectParticipants.push({
+            text: projectDetail?.creator?.name,
+            value: projectDetail?.creator?._id
+        })
+        return projectParticipants;
+    }
+    projectParticipants = projectDetail?.responsibleEmployees?.map(item => {
+        return ({
+            text: item.name,
+            value: item._id
+        })
+    });
+    return projectParticipants;
+}
+
+export const getEmailMembers = (projectDetail) => {
+    let resultArr = [];
+    // resultArr.push(projectDetail?.creator?.email);
+    // for (let managerItem of projectDetail?.projectManager) {
+    //     if (!resultArr.includes(managerItem?.email)) {
+    //         resultArr.push(managerItem?.email)
+    //     }
+    // }
+    for (let employeeItem of projectDetail?.responsibleEmployees) {
+        if (!resultArr.includes(employeeItem?.email)) {
+            resultArr.push(employeeItem?.email)
+        }
+    }
+    return resultArr;
+}
+
+export const getMaxMinDateInArr = (dateArr, mode = 'max') => {
+    let result = dateArr[0];
+    if (mode === 'max') {
+        for (let dateItem of dateArr) {
+            if (moment(dateItem).isAfter(moment(result))) {
+                result = dateItem;
+            }
+        }
+        return result;
+    }
+    for (let dateItem of dateArr) {
+        if (moment(dateItem).isBefore(moment(result))) {
+            result = dateItem;
+        }
+    }
+    return result;
+}
+
+// Xử lý phần cộng thêm estimateNormalTime cho task hiện tại
 export const handleWeekendAndWorkTime = (projectDetail, taskItem) => {
     // Nếu unitTime = 'days'
     if (projectDetail?.unitTime === 'days') {
@@ -248,61 +328,205 @@ export const handleWeekendAndWorkTime = (projectDetail, taskItem) => {
     return taskItem;
 }
 
-export const getProjectParticipants = (projectDetail, hasManagerAndCreator = false) => {
-    let projectParticipants = [];
-    if (hasManagerAndCreator) {
-        const formattedManagerArr = projectDetail?.projectManager?.map(item => {
-            return ({
-                text: item.name,
-                value: item._id
-            })
-        })
-        let formattedEmployeeArr = [];
-        if (Array.isArray(projectDetail?.responsibleEmployees)) {
-            for (let item of projectDetail?.responsibleEmployees) {
-                if (!projectDetail?.projectManager.find(managerItem => managerItem.name === item.name)) {
-                    formattedEmployeeArr.push({
-                        text: item.name,
-                        value: item._id
-                    })
+// Xử lý cả mảng task từ estimateNormalTime ra startDate và endDate từng task
+export const processDataTasksStartEnd = (projectDetail, currentTasksData, currentProjectTasks = undefined) => {
+    if (!currentTasksData || currentTasksData.length === 0) return [];
+    const tempTasksData = [...currentTasksData];
+    // console.log('tempTasksData', tempTasksData)
+    // Lặp mảng tasks
+    for (let taskItem of tempTasksData) {
+        console.log(taskItem.name, taskItem.startDate, taskItem.endDate)
+        if (taskItem.estimateNormalTime > 20) {
+            console.error('Estimate normal time đang quá lớn: ', taskItem.estimateNormalTime);
+        }
+        if (taskItem.preceedingTasks.length === 0 && (!taskItem.startDate || !taskItem.endDate)) {
+            taskItem.startDate = taskItem.startDate || projectDetail?.startDate;
+            taskItem = handleWeekendAndWorkTime(projectDetail, taskItem);
+        }
+        else {
+            // Lặp mảng preceedingTasks của taskItem hiện tại
+            for (let preceedingItem of taskItem.preceedingTasks) {
+                const currentPreceedingTaskItem = tempTasksData.find(item => {
+                    // chỗ này quan trọng nhất là .code
+                    if (typeof preceedingItem === 'string') {
+                        return String(item.code) === String(preceedingItem).trim();
+                    }
+                    return String(item.code) === String(preceedingItem.task);
+                }) || (currentProjectTasks && currentProjectTasks.find(item => {
+                    // chỗ này quan trọng nhất là .code
+                    if (typeof preceedingItem === 'string') {
+                        return String(item._id) === String(preceedingItem).trim();
+                    }
+                    return String(item._id) === String(preceedingItem.task);
+                }));
+                if (currentPreceedingTaskItem && (
+                    !taskItem.startDate ||
+                    moment(taskItem.startDate)
+                        .isBefore(moment(currentPreceedingTaskItem.endDate))
+                )) {
+                    taskItem.startDate = currentPreceedingTaskItem.endDate;
                 }
+                taskItem = handleWeekendAndWorkTime(projectDetail, taskItem);
             }
         }
-    
-        if (!projectParticipants || !formattedManagerArr || !formattedEmployeeArr) {
-            return []
-        }
-        projectParticipants = formattedManagerArr.concat(formattedEmployeeArr)
-        if (projectParticipants.find(item => String(item.value) === String(projectDetail?.creator?._id))) {
-            return projectParticipants;
-        }
-        projectParticipants.push({
-            text: projectDetail?.creator?.name,
-            value: projectDetail?.creator?._id
-        })
-        return projectParticipants;
     }
-    projectParticipants = projectDetail?.responsibleEmployees?.map(item => {
-        return ({
-            text: item.name,
-            value: item._id
-        })
-    });
-    return projectParticipants;
+    console.log('tempTasksData 33333333', tempTasksData);
+    return tempTasksData;
 }
 
-export const getEmailMembers = (projectDetail) => {
-    let resultArr = [];
-    resultArr.push(projectDetail?.creator?.email);
-    for (let managerItem of projectDetail?.projectManager) {
-        if (!resultArr.includes(managerItem?.email)) {
-            resultArr.push(managerItem?.email)
+// render item ở phần thông tin
+export const renderItemLabelContent = (label, content, customTextStyle = {}, customContainerStyle = {}) => {
+    return (
+        <div className="col-md-6">
+            <div className="form-horizontal">
+                <div style={{ ...customContainerStyle }} className="form-group">
+                    <strong className="col-sm-4">{label}</strong>
+                    <div className="col-sm-8">
+                        <span style={{ ...customTextStyle }}>{content}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+export const processAffectedTasksChangeRequest = (projectDetail, tasksList, currentTask) => {
+    console.log('currentTask', currentTask)
+    console.log('tasksList', tasksList)
+    // Với taskList lấy từ DB xuống phải chia cho unitTIme
+    // Với curentTask thì có thể không cần vì mình làm ở local
+    const initTasksList = tasksList.map((taskItem, taskIndex) => {
+        return {
+            ...taskItem,
+            estimateNormalTime: Number(taskItem.estimateNormalTime) / (projectDetail.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS),
+            estimateOptimisticTime: Number(taskItem.estimateOptimisticTime) / (projectDetail.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS),
+            preceedingTasks: taskItem.preceedingTasks,
+            code: taskItem._id,
+        }
+    });
+    let tempTasksList = initTasksList.map((taskItem, taskIndex) => {
+        // Nếu là dạng edit task thì thay the item trong array luon
+        if (String(taskItem._id) === String(currentTask?._id) || String(taskItem._id) === String(currentTask?.task)
+            || String(taskItem.name) === String(currentTask?.name)) {
+            return {
+                ...currentTask,
+                code: taskItem._id,
+            }
+        }
+        return {
+            ...taskItem,
+            code: taskItem._id,
+            startDate: '',
+            endDate: '',
+        }
+    });
+    console.log('tempTasksList', tempTasksList)
+    console.log('currentTask?.task', currentTask?.task, 'currentTask?._id', currentTask?._id)
+
+    const newTasksList = processDataTasksStartEnd(projectDetail, tempTasksList);
+    console.log('newTasksList -----', newTasksList)
+    let affectedTasks = [];
+    for (let i = 0; i < newTasksList.length; i++) {
+        if (!initTasksList[i]) {
+            affectedTasks.push({
+                task: undefined,
+                taskProject: newTasksList[i].taskProject,
+                old: undefined,
+                new: {
+                    ...newTasksList[i],
+                },
+            })
+        }
+        else if (!(
+            isArraysEqual(newTasksList[i].preceedingTasks, initTasksList[i].preceedingTasks) && newTasksList[i].estimateNormalTime === initTasksList[i].estimateNormalTime
+            && newTasksList[i].estimateOptimisticTime === initTasksList[i].estimateOptimisticTime
+            && newTasksList[i].estimateNormalCost === initTasksList[i].estimateNormalCost && newTasksList[i].estimateMaxCost === initTasksList[i].estimateMaxCost
+            && moment(newTasksList[i].startDate).isSame(moment(initTasksList[i].startDate)) && moment(newTasksList[i].endDate).isSame(moment(initTasksList[i].endDate))
+            && isArraysEqual(newTasksList[i].responsibleEmployees, initTasksList[i].responsibleEmployees)
+            && isArraysEqual(newTasksList[i].accountableEmployees, initTasksList[i].accountableEmployees)
+        )) {
+            console.log(newTasksList[i].name, initTasksList[i].name)
+            console.log(newTasksList[i].estimateNormalTime, initTasksList[i].estimateNormalTime, newTasksList[i].estimateNormalTime === initTasksList[i].estimateNormalTime);
+            console.log(newTasksList[i].estimateOptimisticTime, initTasksList[i].estimateOptimisticTime, newTasksList[i].estimateOptimisticTime === initTasksList[i].estimateOptimisticTime);
+            console.log(newTasksList[i].estimateNormalCost, initTasksList[i].estimateNormalCost, newTasksList[i].estimateNormalCost === initTasksList[i].estimateNormalCost);
+            console.log(newTasksList[i].estimateMaxCost, initTasksList[i].estimateMaxCost, newTasksList[i].estimateMaxCost === initTasksList[i].estimateMaxCost);
+            console.log(newTasksList[i].preceedingTasks, initTasksList[i].preceedingTasks, isArraysEqual(newTasksList[i].preceedingTasks, initTasksList[i].preceedingTasks));
+            console.log(newTasksList[i].startDate, initTasksList[i].startDate, moment(newTasksList[i].startDate).isSame(moment(initTasksList[i].startDate)));
+            console.log(newTasksList[i].endDate, initTasksList[i].endDate, moment(newTasksList[i].endDate).isSame(moment(initTasksList[i].endDate)));
+            affectedTasks.push({
+                task: newTasksList[i]?._id || newTasksList[i]?.task,
+                taskProject: newTasksList[i].taskProject,
+                old: {
+                    ...initTasksList[i],
+                },
+                new: {
+                    ...newTasksList[i],
+                },
+            })
+        }
+        // console.log('----------------------------------------');
+    }
+
+    console.log('affectedTasks', affectedTasks);
+    return {
+        affectedTasks,
+        newTasksList,
+    };
+}
+
+export const getNewTasksListAfterCR = (projectDetail, tasksList, currentTask) => {
+    // Với taskList lấy từ DB xuống phải chia cho unitTIme
+    // Với curentTask thì có thể không cần vì mình làm ở local
+    const initTasksList = tasksList.map((taskItem, taskIndex) => {
+        return {
+            ...taskItem,
+            estimateNormalTime: Number(taskItem.estimateNormalTime) / (projectDetail.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS),
+            estimateOptimisticTime: Number(taskItem.estimateOptimisticTime) / (projectDetail.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS),
+            preceedingTasks: taskItem.preceedingTasks.map((preItem) => preItem.task),
+            code: taskItem._id,
+        }
+    });
+    let tempTasksList = initTasksList.map((taskItem, taskIndex) => {
+        if (String(taskItem._id) === String(currentTask?._id) || String(taskItem._id) === String(currentTask?.task)) {
+            return {
+                ...currentTask,
+                startDate: '',
+                endDate: '',
+            }
+        }
+        return {
+            ...taskItem,
+            startDate: '',
+            endDate: '',
+        }
+    });
+    // Nếu là dạng tạo mới task thì push vào cuối mảng hoặc là curentTask.task undefined
+    if (!currentTask?.task && !currentTask?._id) {
+        tempTasksList.push(currentTask);
+        tempTasksList[tempTasksList.length - 1].startDate = currentTask.startDate;
+        tempTasksList[tempTasksList.length - 1].endDate = '';
+    }
+    const newTasksList = processDataTasksStartEnd(projectDetail, tempTasksList);
+    // console.log(newTasksList)
+    return newTasksList;
+}
+
+export const getEndDateOfProject = (currentProjectTasks, needCustomFormat = true) => {
+    if (!currentProjectTasks || currentProjectTasks.length === 0) return undefined;
+    let currentEndDate = currentProjectTasks[0].endDate;
+    for (let taskItem of currentProjectTasks) {
+        if (moment(taskItem.endDate).isAfter(moment(currentEndDate))) {
+            currentEndDate = taskItem.endDate;
         }
     }
-    for (let employeeItem of projectDetail?.responsibleEmployees) {
-        if (!resultArr.includes(employeeItem?.email)) {
-            resultArr.push(employeeItem?.email)
-        }
+    return needCustomFormat ? moment(currentEndDate).format('HH:mm DD/MM/YYYY') : moment(currentEndDate).format();
+}
+
+export const getEstimateCostOfProject = (currentProjectTasks) => {
+    if (!currentProjectTasks || currentProjectTasks.length === 0) return 0;
+    let estCost = 0;
+    for (let taskItem of currentProjectTasks) {
+        estCost += Number(taskItem.estimateNormalCost)
     }
-    return resultArr;
+    return estCost;
 }

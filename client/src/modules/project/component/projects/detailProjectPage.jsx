@@ -31,6 +31,7 @@ const ProjectDetailPage = (props) => {
         props.getProjectsDispatch({ calledId: "all", userId });
         props.getAllUserInAllUnitsOfCompany();
         props.getTasksByProject(currentProjectId);
+        props.getListProjectChangeRequestsDispatch(currentProjectId);
     }, [])
 
     const handleOpenCreateTask = () => {
@@ -77,8 +78,19 @@ const ProjectDetailPage = (props) => {
                         projectEdit={projectDetail}
                         handleAfterCreateProject={handleAfterCreateProject}
                     />
-                    <button style={{ paddingTop: 8 }} onClick={handleOpenEditProject}>
+                    {/* Button chỉnh sửa thông tin dự án */}
+                    <button title="Chỉnh sửa thông tin dự án" style={{ paddingTop: 8 }} onClick={handleOpenEditProject}>
                         <span className="material-icons">edit</span>
+                    </button>
+                    {/* Button refresh thông tin dự án */}
+                    <button title="Tải lại thông tin"
+                        style={{ paddingTop: 8, marginRight: 8 }}
+                        onClick={() => {
+                            props.getTasksByProject(currentProjectId);
+                            props.getListProjectChangeRequestsDispatch(currentProjectId);
+                        }}
+                    >
+                        <span className="material-icons">refresh</span>
                     </button>
                 </div>
                 <ul className="nav nav-tabs">
@@ -91,7 +103,7 @@ const ProjectDetailPage = (props) => {
                         <LazyLoadComponent
                             key="TabProjectInfo"
                         >
-                            <TabProjectInfo projectDetail={projectDetail} />
+                            <TabProjectInfo projectDetail={projectDetail} currentProjectTasks={currentProjectTasks} />
                         </LazyLoadComponent>
                     </div>
                     {/** Yêu cầu thay đổi */}
@@ -99,7 +111,7 @@ const ProjectDetailPage = (props) => {
                         <LazyLoadComponent
                             key="TabChangeRequestProject"
                         >
-                            <TabChangeRequestProject />
+                            <TabChangeRequestProject currentProjectTasks={currentProjectTasks} />
                         </LazyLoadComponent>
                     </div>
 
@@ -192,6 +204,7 @@ function mapStateToProps(state) {
 const mapDispatchToProps = {
     getProjectsDispatch: ProjectActions.getProjectsDispatch,
     deleteProjectDispatch: ProjectActions.deleteProjectDispatch,
+    getListProjectChangeRequestsDispatch: ProjectActions.getListProjectChangeRequestsDispatch,
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
     getTasksByProject: taskManagementActions.getTasksByProject,
 }

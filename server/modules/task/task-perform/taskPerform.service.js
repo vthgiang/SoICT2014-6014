@@ -5571,10 +5571,9 @@ exports.requestAndApprovalCloseTask = async (portal, taskId, data) => {
     let task = await this.getTaskById(portal, taskId, userId);
     // console.log('role', role)
     const requestStatusNumber = type === 'request' ? 1
-        : type === 'cancel_request' ? 0
+        : type === 'cancel_request' ? 2
             : type === 'approval' ? 3
-                : type === 'approval' ? 4
-                    : 1;
+                : 0;
     const currentStatus = type === 'approval' ? taskStatus : 'inprocess';
     const currentResponsibleUpdatedAt = role === 'responsible' ? moment().format() : task.requestToCloseTask.responsibleUpdatedAt;
     const currentAccountableUpdatedAt = role === 'accountable' ? moment().format() : task.requestToCloseTask.accountableUpdatedAt;
@@ -5651,7 +5650,10 @@ exports.requestAndApprovalCloseTask = async (portal, taskId, data) => {
     // }
 
     await Task(connect(DB_CONNECTION, portal))
-        .findByIdAndUpdate(taskId, keyUpdate, { new: true });
+        .findByIdAndUpdate(taskId, {
+            ...keyUpdate,
+            actualEndDate: requestStatus === 'approval' ? new Date() : undefined,
+        }, { new: true });
 
     let newTask = await this.getTaskById(portal, taskId, userId);
     return newTask;

@@ -12,6 +12,8 @@ import { getCurrentProjectDetails } from './functionHelper';
 import { performTaskAction } from '../../../task/task-perform/redux/actions';
 import Swal from 'sweetalert2';
 import { ModalPerform } from '../../../task/task-perform/component/modalPerform';
+import moment from 'moment';
+import { getTotalTimeSheetLogs } from '../../../task/task-management/component/functionHelpers';
 
 const TableTasksProject = (props) => {
     const [state, setState] = useState({
@@ -193,8 +195,11 @@ const TableTasksProject = (props) => {
                         <th>{translate('project.task_management.preceedingTask')}</th>
                         <th>{translate('task.task_management.responsible')}</th>
                         <th>{translate('task.task_management.accountable')}</th>
-                        <th>{translate('task.task_management.creator')}</th>
                         <th>{translate('task.task_management.col_status')}</th>
+                        <th>Thời điểm bắt đầu</th>
+                        <th>Thời điểm kết thúc dự kiến</th>
+                        <th>Thời điểm kết thúc thực tế</th>
+                        <th>Tổng thời gian bấm giờ</th>
                         <th>{translate('task.task_management.col_progress')}</th>
                         <th style={{ width: "120px", textAlign: "center" }}>
                             {translate('table.action')}
@@ -206,9 +211,6 @@ const TableTasksProject = (props) => {
                                     translate('manage_example.description'),
                                     "Mã số",
                                 ]}
-                            // limit={limit}
-                            // hideColumnOption={true}
-                            // setLimit={setLimit}
                             />
                         </th>
                     </tr>
@@ -221,20 +223,23 @@ const TableTasksProject = (props) => {
                                 <td>{processPreceedingTasks(taskItem?.preceedingTasks)}</td>
                                 <td>{taskItem?.responsibleEmployees.map(o => o.name).join(", ")}</td>
                                 <td>{taskItem?.accountableEmployees?.map(o => o.name).join(", ")}</td>
-                                <td>{taskItem?.creator?.name}</td>
                                 <td>{formatTaskStatus(translate, taskItem?.status)}</td>
+                                <td>{moment(taskItem?.startDate).format('HH:mm DD/MM/YYYY')}</td>
+                                <td>{moment(taskItem?.endDate).format('HH:mm DD/MM/YYYY')}</td>
+                                <td>{taskItem?.actualEndDate && moment(taskItem?.actualEndDate).format('HH:mm DD/MM/YYYY')}</td>
+                                <td>{getTotalTimeSheetLogs(taskItem?.timesheetLogs)}</td>
                                 <td>{taskItem?.progress}%</td>
                                 <td style={{ textAlign: "center" }}>
                                     <a className="edit text-yellow" style={{ width: '5px' }} onClick={() => handleShowDetailInfo(taskItem?._id)}><i className="material-icons">edit</i></a>
                                     {renderTimerButton(taskItem)}
-                                    <DeleteNotification
+                                    {/* <DeleteNotification
                                         content={translate('task.task_management.action_delete')}
                                         data={{
                                             id: taskItem?._id,
                                             info: taskItem?.name
                                         }}
                                         func={handleDelete}
-                                    />
+                                    /> */}
                                 </td>
                             </tr>
                         ))

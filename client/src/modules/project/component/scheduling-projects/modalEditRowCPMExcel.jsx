@@ -221,6 +221,7 @@ const ModalEditRowCPMExcel = (props) => {
     }
 
     const save = () => {
+        console.log('currentResWeightArr', currentResWeightArr, 'currentAccWeightArr', currentAccWeightArr)
         const newRowData = {
             code: currentRow?.code,
             name: currentRow?.name,
@@ -235,8 +236,8 @@ const ModalEditRowCPMExcel = (props) => {
             currentHumanCost,
             currentResWeightArr,
             currentAccWeightArr,
-            currentTotalResWeight,
-            currentTotalAccWeight,
+            totalResWeight: currentTotalResWeight,
+            totalAccWeight: currentTotalAccWeight,
         }
         props.handleSave(newRowData, currentEditRowIndex);
     }
@@ -489,7 +490,7 @@ const ModalEditRowCPMExcel = (props) => {
                         <fieldset className="scheduler-border" style={{ lineHeight: 1.5 }}>
                             <legend className="scheduler-border">Trọng số thành viên công việc</legend>
                             <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                                <h4><strong>Thành viên thực hiện (%)</strong></h4>
+                                <h4 style={{ width: '50%' }}><strong>Thành viên thực hiện (%)</strong></h4>
                                 <div className={`col-md-12 ${error.errorOnTotalWeight === undefined ? "" : "has-error"}`}
                                     style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                                     <input
@@ -497,7 +498,7 @@ const ModalEditRowCPMExcel = (props) => {
                                         className="form-control"
                                         onChange={handleChangeTotalResWeight}
                                         value={`${currentTotalResWeight}`}
-                                        style={{ width: '20%', marginRight: 10 }}
+                                        style={{ width: '20%' }}
                                     />
                                     <ErrorLabel content={error.errorOnTotalWeight} />
                                 </div>
@@ -533,7 +534,7 @@ const ModalEditRowCPMExcel = (props) => {
                                 </tbody>
                             </table>
                             <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                                <h4><strong>Thành viên phê duyệt (%)</strong></h4>
+                                <h4 style={{ width: '50%' }}><strong>Thành viên phê duyệt (%)</strong></h4>
                                 <div className={`col-md-12 ${error.errorOnTotalWeight === undefined ? "" : "has-error"}`}
                                     style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                                     <input
@@ -541,7 +542,7 @@ const ModalEditRowCPMExcel = (props) => {
                                         className="form-control"
                                         onChange={handleChangeTotalAccWeight}
                                         value={`${currentTotalAccWeight}`}
-                                        style={{ width: '20%', marginRight: 10 }}
+                                        style={{ width: '20%' }}
                                     />
                                     <ErrorLabel content={error.errorOnTotalWeight} />
                                 </div>
