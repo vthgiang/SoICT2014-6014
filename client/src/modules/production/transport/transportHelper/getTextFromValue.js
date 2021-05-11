@@ -93,3 +93,30 @@ exports.getTransportRequirementStatus = (value) => {
     }
     return res;
 }
+
+const planStatus = [
+    {
+        value: "1",
+        text: "Cần phân công phương tiện, xếp lộ trình di chuyển"
+    },
+    {
+        value: "2",
+        text: "Sẵn sàng vận chuyển"
+    },
+    {
+        value: "3",
+        text: "Đang tiến hành vận chuyển"
+    },
+    {
+        value: "4",
+        text: "Hoàn thành"
+    },
+]
+exports.getPlanStatus = (value) => {
+    let res = "";
+    let tmp = planStatus.filter(r => String(r.value)===String(value));
+    if (tmp && tmp.length!==0){
+        res = tmp[0].text;
+    }
+    return res;
+}

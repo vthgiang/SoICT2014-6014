@@ -8,7 +8,7 @@ function MapDirectionsRenderer(props) {
   
     const { places, travelMode, stt } = props;
     useEffect(() => {
-        let timeDelay = (typeof stt == 'number')?stt*1000:1000;
+        let timeDelay = (typeof stt == 'number')?stt*2000:2000;
         setTimeout(()=>{
             if (places && travelMode){
                 let waypoints = []
