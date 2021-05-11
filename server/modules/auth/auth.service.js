@@ -2,7 +2,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const generator = require("generate-password");
 const Models = require('../../models');
-const { Privilege, Role, User, Company } = Models;
+const { Privilege, Role, User, Company, Employee } = Models;
 const fs = require("fs");
 const { connect, initModels } = require(`../../helpers/dbHelper`);
 const { sendEmail } = require("../../helpers/emailHelper");
@@ -256,6 +256,7 @@ exports.changeInformation = async (
         }
     }
 
+    const oldEmail = user.email;
     let deleteAvatar = "." + user.avatar;
     user.email = email;
     user.name = name;
@@ -274,6 +275,12 @@ exports.changeInformation = async (
     user['password2Exists'] = password2Exists;
     delete user['password2'];
 
+    // Tìm user trong bảng employees và cập nhật lại email
+    // Trước khi cập nhật, kiểm tra email mới có trùng với nhân viên nào chưa
+    const employees = await Employee(connect(DB_CONNECTION, portal)).findOne({ emailInCompany: email });
+    if (!employees)
+        await Employee(connect(DB_CONNECTION, portal)).findOneAndUpdate({ emailInCompany: oldEmail }, { $set: { emailInCompany: email } });
+    
     return user;
 };
 

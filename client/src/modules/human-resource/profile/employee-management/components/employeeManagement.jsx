@@ -2,7 +2,7 @@ import React, { useEffect, useState, useLayoutEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DataTableSetting, DeleteNotification, PaginateBar, SelectMulti, ExportExcel, DatePicker } from '../../../../../common-components';
+import { DataTableSetting, DeleteNotification, ConfirmNotification, PaginateBar, SelectMulti, ExportExcel, DatePicker } from '../../../../../common-components';
 
 import { EmployeeCreateForm, EmployeeDetailForm, EmployeeEditFrom, EmployeeImportForm } from './combinedContent';
 
@@ -1090,13 +1090,13 @@ const EmployeeManagement = (props) => {
                                     <td>
                                         <a onClick={() => handleView(x)} style={{ width: '5px' }} title={translate('human_resource.profile.employee_management.view_employee')}><i className="material-icons">view_list</i></a>
                                         <a onClick={() => handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.profile.employee_management.edit_employee')}><i className="material-icons">edit</i></a>
-                                        <DeleteNotification
-                                            content={translate('human_resource.profile.employee_management.delete_employee')}
-                                            data={{
-                                                id: x._id,
-                                                info: x.fullName + " - " + x.employeeNumber
-                                            }}
-                                            func={props.deleteEmployee}
+                                        <ConfirmNotification
+                                            icon="question"
+                                            title="Xóa thông tin nhân viên"
+                                            name="delete"
+                                            className="text-red"
+                                            content={`<h4>${translate('human_resource.profile.employee_management.delete_employee')} ${x.fullName + " - " + x.employeeNumber}</h4>`}
+                                            func={() => props.deleteEmployee(x._id, x.emailInCompany)}
                                         />
                                     </td>
                                 </tr>

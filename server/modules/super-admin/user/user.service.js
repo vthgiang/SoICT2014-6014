@@ -5,6 +5,7 @@ const {
     UserRole,
     Role,
     Company,
+    Employee
 } = require(`../../../models`);
 const bcrypt = require("bcryptjs");
 const generator = require("generate-password");
@@ -613,9 +614,16 @@ exports.editUser = async (portal, id, data) => {
         user.tokens = [];
     }
 
+    const oldEmail = user.email;
     user.email = data.email;
     await user.save();
 
+    // Tìm user trong bảng employees và cập nhật lại email
+    // Kiểm tra email mới đã có trong bảng Employees hay chưa.
+    const employees = await Employee(connect(DB_CONNECTION, portal)).findOne({ emailInCompany: data.email });
+    if (!employees)
+        await Employee(connect(DB_CONNECTION, portal)).findOneAndUpdate({ emailInCompany: oldEmail }, { $set: { emailInCompany: data.email } });
+    
     return user;
 };
 
@@ -652,6 +660,23 @@ exports.deleteUser = async (portal, id) => {
     await UserRole(connect(DB_CONNECTION, portal)).deleteOne({
         userId: id,
     });
+
+    return deleteUser;
+};
+
+/**
+ * Xóa tài khoản người dùng theo email
+ * @email email tài khoản người dùng
+ */
+exports.deleteUserByEmail = async (portal, email) => {
+    var deleteUser = await User(connect(DB_CONNECTION, portal)).findOneAndDelete({
+        email: email,
+    }, { $new: true });
+
+    if (deleteUser)
+        await UserRole(connect(DB_CONNECTION, portal)).deleteOne({
+            userId: deleteUser._id,
+        });
 
     return deleteUser;
 };

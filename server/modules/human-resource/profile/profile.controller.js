@@ -507,6 +507,7 @@ exports.updateEmployeeInformation = async (req, res) => {
 exports.deleteEmployee = async (req, res) => {
     try {
         let data = await EmployeeService.deleteEmployee(req.portal, req.params.id);
+        await UserService.deleteUserByEmail(req.portal, req.query.emailInCompany);
         res.status(200).json({
             success: true,
             messages: ["delete_employee_success"],
