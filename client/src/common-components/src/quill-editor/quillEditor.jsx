@@ -13,7 +13,7 @@ import './quillEditor.css';
 function QuillEditor (props) {
     const { auth } = props
     const { id, isText = false, quillValueDefault, 
-        fileDefault, toolbar = true, maxHeight = 200,
+        toolbar = true, maxHeight = 200,
         enableEdit = true, placeholder = null,
         enableDropImage = true, inputCssClass = "",
         font = true, header = true, typography = true, fontColor = true, 
@@ -36,18 +36,6 @@ function QuillEditor (props) {
                 imgs.map((item) => {
                     props.downloadFile(item.getAttribute("src"), item.getAttribute("src"), false)
                 })
-            }
-            
-            if (fileDefault) {
-                let imgs = Array.from(
-                    quill.container.querySelectorAll('img[src]')
-                );
-                if (imgs && imgs.length !== 0) {
-                    imgs = imgs.map((item, index) => {
-                        item.src = fileDefault[index];
-                        return item;
-                    })
-                }
             }
 
             setHeightContainer(id, maxHeight)
@@ -166,6 +154,8 @@ function QuillEditor (props) {
 
     useEffect(() => {
         quill && quill.enable(enableEdit);
+
+        setHeightContainer(id, maxHeight)
     }, [enableEdit])
 
     useEffect(() => {
@@ -175,21 +165,9 @@ function QuillEditor (props) {
             if (quill && quill.container && quill.container.firstChild) {
                 quill.container.firstChild.innerHTML = quillValueDefault;
             }  
-
-            if (fileDefault) {
-                let imgs = Array.from(
-                    quill.container.querySelectorAll('img[src]')
-                );
-                if (imgs && imgs.length !== 0) {
-                    imgs = imgs.map((item, index) => {
-                        item.src = fileDefault[index];
-                        return item;
-                    })
-                }
-            }
-
-            setHeightContainer(id, maxHeight)
         }
+
+        setHeightContainer(id, maxHeight)
     }, [quillValueDefault])
 
     useEffect(() => {
@@ -208,9 +186,9 @@ function QuillEditor (props) {
                     return img;
                 })
             }
-
-            setHeightContainer(id, maxHeight)
         }
+
+        setHeightContainer(id, maxHeight)
     }, [JSON.stringify(auth.showFiles)])
 
     function setHeightContainer (id, maxHeight) {

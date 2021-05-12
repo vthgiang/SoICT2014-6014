@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal } from '../../../../common-components';
+import { DialogModal, QuillEditor } from '../../../../common-components';
 import { getStorage } from '../../../../config';
 import { getCurrentProjectDetails } from '../../../project/component/projects/functionHelper';
 import { ProjectActions } from '../../../project/redux/actions';
@@ -64,11 +64,30 @@ function TaskAddModal(props) {
         const { newTask, startTime, endTime } = state;
         let startDateTask = convertDateTime(newTask.startDate, startTime);
         let endDateTask = convertDateTime(newTask.endDate, endTime);
-        props.addTask({
+        let imageDescriptions = QuillEditor.convertImageBase64ToFile(newTask?.imgs)
+        
+        let data = {
             ...newTask,
             startDate: startDateTask,
             endDate: endDateTask,
-        });
+            imgs: null
+        }
+        let formData = new FormData();
+
+        for (let key in data) {
+            if (data?.[key] && Array.isArray(data[key])) {
+                data[key].forEach(x => {
+                    formData.append(key, x);
+                })
+            } else {
+                formData.append(key, data?.[key]);
+            }
+        }
+        imageDescriptions && imageDescriptions.forEach(x => {
+            formData.append("files", x);
+        })
+
+        props.addTask(formData);
     }
 
     useEffect(() => {
