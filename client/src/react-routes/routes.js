@@ -10,7 +10,7 @@ import Layout from "../layout/layout";
 import { NotFound } from "../modules/not-found/components";
 
 import Login from "../modules/auth/components/login";
-import ResetPassword from "../modules/auth/components/resetPassword";
+import ResetPassword from "../modules/auth/components/resetPasswordNew";
 import { Introduction } from "../modules/intro/components";
 import ManageDocument from "../modules/document/components/administration";
 import Document from "../modules/document/components/user";

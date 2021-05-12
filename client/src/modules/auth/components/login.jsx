@@ -1,4 +1,4 @@
-import React, { useEffect,useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { AuthActions } from '../redux/actions';
 import { withTranslate } from 'react-redux-multilingual';
@@ -7,15 +7,15 @@ import { clearStorage, getStorage } from '../../../config';
 import './login.css';
 
 const Login = (props) => {
-    const [state,setState] = useState({
-        
-            emailForgot: null,
-            newPassword: null,
-            confirmNewPassword: null,
-            portal: getStorage('portal')
-        
+    const [state, setState] = useState({
+
+        emailForgot: null,
+        newPassword: null,
+        confirmNewPassword: null,
+        portal: getStorage('portal')
+
     });
-    const {translate,auth} = props;
+    const { translate, auth } = props;
     const handleChange = (e) => {
         const target = e.target;
         const name = target.name;
@@ -31,8 +31,8 @@ const Login = (props) => {
         console.log(state)
         props.login({ email, password, portal });
     }
-    
-    
+
+
     return (
         <div className="dx-login-page">
             <div className="dx-login-box">
@@ -72,8 +72,8 @@ const Login = (props) => {
                     </button>
                 </form>
                 <div>
-                    <a data-toggle="modal" href='#modal-reset-password'>{translate('form.forgot_password')}</a><br />
-                    <ForgotPassword />
+                    <a data-toggle="modal" href='/reset-password'>{translate('form.forgot_password')}</a><br />
+                    {/* <ForgotPassword /> */}
                 </div>
             </div>
         </div>

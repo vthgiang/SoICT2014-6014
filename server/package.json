@@ -44,6 +44,7 @@
     "express": "^4.17.1",
     "express-formidable": "^1.2.0",
     "express-list-endpoints": "^4.0.1",
+    "express-rate-limit": "^5.2.6",
     "firebase-admin": "^9.4.1",
     "fs": "0.0.1-security",
     "generate-password": "^1.4.2",
@@ -62,14 +63,14 @@
     "nodemon": "^2.0.4",
     "nvm": "0.0.4",
     "path": "^0.12.7",
+    "react-google-maps": "^9.4.5",
     "socket.io": "^2.4.1",
     "swagger-ui-express": "^4.1.4",
     "unique-random": "^2.1.0",
     "uuid": "^8.3.2",
     "webpack": "^5.9.0",
     "webpack-node-externals": "^2.5.2",
-    "winston": "^3.2.1",
-    "react-google-maps": "^9.4.5"
+    "winston": "^3.2.1"
   },
   "devDependencies": {
     "raw-loader": "^4.0.2",

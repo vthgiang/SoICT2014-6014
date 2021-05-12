@@ -152,30 +152,40 @@ exports.forgetPassword = async (portal, email, password2) => {
         if (!validPass) throw ["password2_invalid"];
     }
     
-    var code = await generator.generate({ length: 6, numbers: true });
+    var code = await generator.generate({ length: 10, numbers: true });
+    const token = jwt.sign({ email: email, code: code, portal: portal }, process.env.TOKEN_SECRET, { expiresIn: '30m' })
+    
+    console.log("=================================================")
+    console.log('token', `${process.env.WEBSITE}/reset-password?token=${token}`);
+    console.log("=================================================")
     user.resetPasswordToken = code;
     await user.save();
     
     let subject = `${process.env.WEB_NAME} : Thay đổi mật khẩu - Change password`;
     let html = `
-        <div style="
-            background-color:azure;
-            padding: 100px;
-            text-align: center;
-        ">
-            <h3>
-                Yêu cầu xác thực thay đổi mật khẩu
-            </h3>
-            <p>Mã xác thực: <b style="color: red">${code}</b></p>
-                <a 
-                    style="
-                        margin-top: "10px"
-                        " 
-                    href="${process.env.WEBSITE}/reset-password?portal=${portal}&otp=${code}&email=${email}"
-                >
-                    Nhấn vào link để thay đổi mật khẩu
-                </a>
-        </div>
+                <div style="
+                    background-color:azure;
+                    padding: 100px;
+                    text-align: center;
+                    display: flex;
+                    justify-content: center;
+                ">
+                    <div style="max-width: 500px">
+                        <h2>
+                                    Yêu cầu xác thực thay đổi mật khẩu
+                                </h2>
+                                <p>Mã xác thực: <b style="color: red">${code}</b></p>
+                                    <a 
+                                        style="
+                                            margin-top: "5px"
+                                            " 
+                                        href="${process.env.WEBSITE}/reset-password?token=${token}"
+                                    >
+                                        Nhấn vào link để thay đổi mật khẩu
+                                    </a>
+                                    <p style="text-align: left;margin-top: 20px;">Nếu bạn không sử dụng liên kết này trong vòng 30 phút, liên kết này sẽ hết hạn. Để có liên kết đặt lại mật khẩu mới, hãy truy cập ${process.env.WEBSITE}/reset-password</p>
+                    </div>       
+                </div>
         `
     await sendEmail(email, subject,'',html )
     return {
@@ -190,12 +200,31 @@ exports.forgetPassword = async (portal, email, password2) => {
  * @param {*} email
  * @param {*} password
  */
-exports.resetPassword = async (portal, otp, email, password) => {
-    var user = await User(connect(DB_CONNECTION, portal)).findOne({
-        email,
+exports.resetPassword = async (data) => {
+    const { otp, token, password } = data;
+    if (!token)
+        throw ["token_empty"];
+    if (!otp)
+        throw ["otp_empty"];
+    
+    // Giải mã token
+    const secret = jwt.verify(token, process.env.TOKEN_SECRET);
+
+    // validate dữ liêu
+    if (!secret.portal)
+        throw ['portal_empty']
+    
+    if (!secret.email)
+        throw ["email_empty"];
+        
+    if (secret.code !== otp)
+        throw ["otp_invalid"];
+    
+    var user = await User(connect(DB_CONNECTION, secret.portal)).findOne({
+        email: secret.email,
         resetPasswordToken: otp,
     });
-    if (user === null) throw ["otp_invalid"];
+    if (user === null) throw ["reset_password_invalid"];
     var salt = bcrypt.genSaltSync(10);
     var hash = bcrypt.hashSync(password, salt);
     user.password = hash;
@@ -204,6 +233,21 @@ exports.resetPassword = async (portal, otp, email, password) => {
 
     return user;
 };
+
+
+exports.checkLinkValid = async (query) => {
+    const { token } = query;
+    const secret = jwt.verify(token, process.env.TOKEN_SECRET);
+    if (!token)
+        throw ['token_reset_password_empty']; // token trống
+    
+    const findUser = await User(connect(DB_CONNECTION, secret.portal)).findOne({
+            email: secret.email,
+            resetPasswordToken: secret.code,
+    });
+    if (!findUser)
+        throw ['link_reset_password_invalid']// link reset không hợp lệ
+}
 
 /**
  * Thay đổi thông tin người dùng

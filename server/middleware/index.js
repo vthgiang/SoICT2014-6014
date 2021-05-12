@@ -8,6 +8,8 @@ const fs = require("fs");
 const CryptoJS = require("crypto-js");
 const { initModels, connect } = require(`../helpers/dbHelper`);
 const { decryptMessage } = require('../helpers/functionHelper');
+const rateLimit = require("express-rate-limit");
+
 /**
  * ****************************************
  * Middleware xác thực truy cập người dùng
@@ -302,4 +304,24 @@ exports.authCUIP = async (req, res, next) => {
             messages: err,
         });
     }
+}
+
+/**
+ * Giới hạn số request tới api trong 1 khoang thời gian
+ * @param {*} windowMs khoản thời gian (phút)
+ * @param {*} maxRequest Số request tối đa
+ * @param {*} message 
+ * @returns 
+ */
+exports.rateLimitRequest = (windowMs = 60, maxRequest = 100, message) => { // mặc định trong vòng 1 tiếng chỉ cho phép tối đa 100 request tới api
+     const createAccountLimiter = rateLimit({
+            windowMs: windowMs * 60 * 1000, //  hour window
+            max: maxRequest, // start blocking after maxRequest requests
+            message: "Too many accounts created from this IP, please try again after an hour",
+            handler: (req, res, next) => res.status(429).json({
+                    success: false,
+                    messages: message?[message]:["Too many accounts created from this IP, please try again after an hour"]
+                }),
+        });
+        return createAccountLimiter;
 }

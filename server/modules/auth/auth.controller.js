@@ -1,6 +1,7 @@
 const AuthService = require('./auth.service');
 const Logger = require(`../../logs`);
-const {decryptMessage} = require('../../helpers/functionHelper');
+const { decryptMessage } = require('../../helpers/functionHelper');
+
 exports.login = async (req, res) => {
     try {
         const fingerprint = decryptMessage(req.header('fgp'));
@@ -89,8 +90,8 @@ exports.forgetPassword = async (req, res) => {
 
 exports.resetPassword = async (req, res) => {
     try {
-        const resetPassword = await AuthService.resetPassword(req.body.portal, req.body.otp, req.body.email, req.body.password);
-
+        console.log('req', req.rateLimit)
+        const resetPassword = await AuthService.resetPassword(req.body);
         await Logger.info(req.body.email, 'reset_password_success');
         res.status(200).json({
             success: true,
@@ -103,6 +104,26 @@ exports.resetPassword = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['reset_password_faile'],
+            content: error
+        });
+    }
+};
+
+exports.checkLinkValid = async (req, res) => {
+    try {
+        await AuthService.checkLinkValid(req.query);
+        await Logger.info(req.body.email, 'check_url_reset_password_success');
+        res.status(200).json({
+            success: true,
+            messages: ['check_url_reset_password_success'],
+            content: ""
+        });
+    } catch (error) {
+        console.log('errorCheckURL', error)
+        await Logger.error(req.body.email, 'check_url_reset_password_faile');
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['check_url_reset_password_faile'],
             content: error
         });
     }

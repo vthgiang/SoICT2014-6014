@@ -470,7 +470,8 @@ export default {
             request_forgot_password_success:
                 "Yêu cầu thay đổi mật khẩu thành công. Hệ thống đã gửi yêu cầu xác nhận thay đổi mật khẩu vào email của bạn",
             reset_password_success: "Thiết lập mật khẩu thành công",
-            otp_invalid: "Yêu cầu thiết lập lại mật khẩu không hợp lệ",
+            otp_invalid: "Mã xác thức không chính xác",
+            reset_password_invalid: "Yêu cầu thiết lập lại mật khẩu không hợp lệ",
             portal_invalid: "Portal không hợp lệ",
             create_password2_success: 'Thêm mật khẩu cấp 2 thành công',
             create_password2_faile: 'Thêm mật khẩu cấp 2 thất bại',

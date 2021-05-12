@@ -18,6 +18,7 @@ export const AuthActions = {
     downloadFile,
     createPassword2,
     deletePassword2,
+    checkLinkValid
 }
 
 function login(user) {
@@ -268,6 +269,22 @@ function deletePassword2(data) {
             })
             .catch(err => {
                 dispatch({ type: AuthConstants.DELETE_PASSWORD2_FAILE });
+            })
+    }
+}
+
+function checkLinkValid(data) {
+    return dispatch => {
+        dispatch({ type: AuthConstants.CHECK_URL_RESET_PASSWORD_VALID_REQUEST });
+        AuthService.checkLinkValid(data)
+            .then(res => {
+                dispatch({
+                    type: AuthConstants.CHECK_URL_RESET_PASSWORD_VALID_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({ type: AuthConstants.CHECK_URL_RESET_PASSWORD_VALID_FAILE });
             })
     }
 }
