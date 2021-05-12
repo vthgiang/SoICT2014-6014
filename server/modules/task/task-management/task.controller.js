@@ -431,6 +431,16 @@ getTasksThatUserHasResponsibleRoleByDate = async (req, res) => {
  */
 exports.createTask = async (req, res) => {
     try {
+        if (req?.files?.length > 0) {
+            req.files.map(item => {
+                if (req.body?.description) {
+                    let src = `<img src="${item?.originalname?.split(".")?.[0]}">`.toString()
+                    let newSrc = `<img src="${item?.path}">`.toString()
+
+                    req.body.description = req.body.description.toString().replace(src, newSrc)
+                }
+            })
+        }
         var tasks = await TaskManagementService.createTask(req.portal, req.body);
         var task = tasks.task;
         var user = tasks.user.filter(user => user !== req.user._id); //lọc thông tin người tạo ra khỏi danh sách sẽ gửi thông báo
@@ -501,7 +511,6 @@ exports.createTask = async (req, res) => {
             content: task
         });
     } catch (error) {
-        console.log('CREATE TASK ERROR', error)
         await Logger.error(req.user.email, 'create_task', req.portal)
         res.status(400).json({
             success: false,
@@ -588,7 +597,6 @@ exports.createProjectTask = async (req, res) => {
             content: task
         });
     } catch (error) {
-        console.log('CREATE TASK ERROR', error)
         await Logger.error(req.user.email, 'create_task', req.portal)
         res.status(400).json({
             success: false,
@@ -605,9 +613,7 @@ exports.createProjectTasksFromCPM = async (req, res) => {
     try {
         let totalProjectBudget = 0;
         for (let currentTask of req.body) {
-            console.log(currentTask.name)
             if (currentTask.preceedingTasks.length > 0) {
-                console.log('currentTask.preceedingTasks', currentTask.preceedingTasks)
                 for (let currentPreceedingItem of currentTask.preceedingTasks) {
                     const localPreceedingItem = req.body.find(item => item.code === currentPreceedingItem.task);
                     const remotePreceedingItem = await Task(connect(DB_CONNECTION, req.portal)).findOne({
@@ -623,7 +629,6 @@ exports.createProjectTasksFromCPM = async (req, res) => {
                     }
                 }
             }
-            console.log(currentTask)
             var tasks = await TaskManagementService.createProjectTask(req.portal, currentTask);
             var task = tasks.task;
             var user = tasks.user.filter(user => user !== req.user._id); // Lọc thông tin người tạo ra khỏi danh sách sẽ gửi thông báo
@@ -672,7 +677,6 @@ exports.createProjectTasksFromCPM = async (req, res) => {
             content: null
         });
     } catch (error) {
-        console.log('CREATE TASK ERROR', error)
         await Logger.error(req.user.email, 'create_tasks_list_excel_cpm', req.portal)
         res.status(400).json({
             success: false,
@@ -733,6 +737,7 @@ exports.getSubTask = async (req, res) => {
  */
 exports.editTaskByResponsibleEmployees = async (req, res) => {
     try {
+        console.log(req.body.description)
         var task = await TaskManagementService.editTaskByResponsibleEmployees(req.portal, req.body, req.params.id);
         var user = task.user;
         var tasks = task.tasks;

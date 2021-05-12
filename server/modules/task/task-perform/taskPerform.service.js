@@ -11,6 +11,7 @@ const NotificationServices = require(`../../notification/notification.service`);
 const UserService = require('../../super-admin/user/user.service');
 
 const { connect } = require(`../../../helpers/dbHelper`);
+const { filterImageUrlInString } = require('../../../helpers/functionHelper')
 
 /*
  * Lấy công việc theo Id
@@ -2606,6 +2607,14 @@ exports.editTaskByResponsibleEmployees = async (portal, data, taskId) => {
         { $new: true }
     );
 
+    // Xóa ảnh trong description cũ trên server
+    let imageUrls = filterImageUrlInString(task?.description)
+    if (imageUrls?.length > 0) {
+        imageUrls?.length > 0 && imageUrls.forEach((filepath) => {
+            fs.unlinkSync(SERVER_DIR + "/" + filepath.toString());
+        })
+    }
+
     // cập nhật giá trị info
     for (let item in info) {
         for (let i in task.taskInformations) {
@@ -2855,7 +2864,7 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
             })
         }
     }
-
+    
     // cập nhật thông tin cơ bản
     await Task(connect(DB_CONNECTION, portal)).updateOne(
         { _id: taskId },
@@ -2885,6 +2894,14 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
         },
         { $new: true }
     );
+    // Xóa ảnh trong description cũ trên server
+    let imageUrls = filterImageUrlInString(taskItem?.description)
+    if (imageUrls?.length > 0) {
+        imageUrls?.length > 0 && imageUrls.forEach((filepath) => {
+            fs.unlinkSync(SERVER_DIR + "/" + filepath.toString());
+        })
+    }
+    
     let task = await Task(connect(DB_CONNECTION, portal)).findById(taskId);
 
     // list info
@@ -5569,7 +5586,6 @@ exports.confirmTask = async (portal, taskId, userId) => {
 exports.requestAndApprovalCloseTask = async (portal, taskId, data) => {
     const { userId, taskStatus, description, type, role } = data;
     let task = await this.getTaskById(portal, taskId, userId);
-    // console.log('role', role)
     const requestStatusNumber = type === 'request' ? 1
         : type === 'cancel_request' ? 0
             : type === 'approval' ? 3
@@ -5603,8 +5619,6 @@ exports.requestAndApprovalCloseTask = async (portal, taskId, data) => {
     };
 
     const keyUpdate = requestStatusNumber === 0 ? keyUpdateAsNumber0 : keyUpdateAsNumberOtherThan0;
-    console.log(keyUpdate)
-    console.log(requestStatusNumber)
 
     // if (type === 'request') {
     //     keyUpdate = {

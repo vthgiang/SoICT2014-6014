@@ -612,10 +612,10 @@ class ModalEditTaskByAccountableEmployee extends Component {
     }
 
     handleTaskDescriptionChange = (value, imgs) => {
-        this.validateTaskDescription(value, true);
+        this.validateTaskDescription(value, imgs, true);
     }
 
-    validateTaskDescription = (value, willUpdateState) => {
+    validateTaskDescription = (value, imgs, willUpdateState) => {
         let { translate } = this.props;
         let errorMessage = undefined;
         // if (value === "") {
@@ -626,6 +626,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                 return {
                     ...state,
                     taskDescription: value,
+                    taskDescriptionImages: imgs,
                     errorTaskDescription: errorMessage,
                 }
             })
@@ -854,11 +855,14 @@ class ModalEditTaskByAccountableEmployee extends Component {
         }
         let startDateTask = this.convertDateTime(this.state.startDate, this.state.startTime);
         let endDateTask = this.convertDateTime(this.state.endDate, this.state.endTime);
+        let imageDescriptions = QuillEditor.convertImageBase64ToFile(this.state.taskDescriptionImages)
+        
         let data = {
             listInfo: this.state.listInfo,
 
             name: this.state.taskName,
             description: this.state.taskDescription,
+            imageDescriptions: imageDescriptions,
             status: this.state.statusOptions,
             priority: this.state.priorityOptions,
             formula: this.state.formula,

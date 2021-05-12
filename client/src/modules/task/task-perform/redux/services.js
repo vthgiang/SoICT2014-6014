@@ -525,14 +525,31 @@ function editActivateOfTask(taskId, typeOfTask, listSelected) {
  * @param {*} taskId id cua task muon cap nhat
  */
 function editTaskByResponsibleEmployees(data, taskId) {
+    let formData = new FormData();
+    formData.append("type", "all")
+    formData.append("role", "responsible")
+
+    // append image
+    data.imageDescriptions && data.imageDescriptions.forEach(x => {
+        formData.append("files", x);
+    })
+    data.imageDescriptions = null
+
+    for (let key in data) {
+        console.log(key, data[key])
+        if (data?.[key] && Array.isArray(data[key])) {
+            data[key].forEach(x => {
+                formData.append(key, x);
+            })
+        } else {
+            formData.append(key, data?.[key]);
+        }
+    }
+
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}`,
         method: 'POST',
-        data: {
-            data: data,
-            type: 'all',
-            role: 'responsible',
-        }
+        data: formData
     }, true, true, 'task.task_management');
 }
 
@@ -542,14 +559,31 @@ function editTaskByResponsibleEmployees(data, taskId) {
  * @param {*} taskId id cua task muon cap nhat
  */
 function editTaskByAccountableEmployees(data, taskId) {
+    let formData = new FormData();
+    formData.append("type", "all")
+    formData.append("role", "responsaccountableible")
+
+    // append image
+    data.imageDescriptions && data.imageDescriptions.forEach(x => {
+        formData.append("files", x);
+    })
+    data.imageDescriptions = null
+
+    for (let key in data) {
+        console.log(key, data[key])
+        if (data?.[key] && Array.isArray(data[key])) {
+            data[key].forEach(x => {
+                formData.append(key, x);
+            })
+        } else {
+            formData.append(key, data?.[key]);
+        }
+    }
+    
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}`,
         method: 'POST',
-        data: {
-            data: data,
-            type: 'all',
-            role: 'accountable',
-        }
+        data: formData
     }, true, true, 'task.task_management');
 }
 
