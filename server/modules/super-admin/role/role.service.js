@@ -140,7 +140,7 @@ exports.createRootRole = async(portal, data) => {
  * @companyID id công ty
  * @data dữ liệu tạo
  */
-exports.createRolesForOrganizationalUnit = async(portal, data) => {
+exports.createRolesForOrganizationalUnit = async (portal, data) => {
     const filterValidRoleArray = async (array) => {
         let resArray= [];
         if (array.length > 0) {
