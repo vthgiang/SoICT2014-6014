@@ -234,7 +234,8 @@ function ActionForm(props) {
 
                     {
                         (typeof taskActions === 'undefined' || taskActions.length === 0) ? <tr><td colSpan={5}><center>{translate('task_template.no_data')}</center></td></tr> :
-                            <ReactSortable animation={500} tag="tbody" id="actions" list={taskActions} setList={(newState) => setState({...state, taskActions: newState })}>
+                            // <ReactSortable animation={500} tag="tbody" id="actions" list={taskActions} setList={(newState) => setState({...state, taskActions: newState })}>
+                            <ReactSortable animation={500} tag="tbody" id="actions" list={taskActions} setList={(newState) => {props.onDataChange(newState);setState({...state, taskActions: newState })}}>
                                 {taskActions.map((item, index) =>
                                 <tr className="" key={`${state.keyPrefix}_${index}`}>
                                     <td >{index + 1}</td>

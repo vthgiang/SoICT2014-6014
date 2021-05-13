@@ -406,8 +406,14 @@ exports.createUser = async (portal, data, company) => {
     });
     var hash = bcrypt.hashSync(password, salt);
 
+    if (!data.email)
+        throw ['email_empty'];
+    
+    if (!data.name)
+        throw ['username_empty'];
+    
     var checkUser = await User(connect(DB_CONNECTION, portal)).findOne({
-        email: data.email,
+        email: data.email.trim(),
     });
 
     if (checkUser) {
@@ -415,8 +421,8 @@ exports.createUser = async (portal, data, company) => {
     }
 
     var user = await User(connect(DB_CONNECTION, portal)).create({
-        name: data.name,
-        email: data.email,
+        name: data.name.trim(),
+        email: data.email.trim(),
         password: hash,
         company: company,
     });
@@ -569,6 +575,10 @@ exports.checkUserExited = async (portal, email) => {
  * @data dữ liệu chỉnh sửa
  */
 exports.editUser = async (portal, id, data) => {
+    if (!data.email)
+        throw ['email_empty'];
+    if (!data.name)
+        throw ['username_empty'];
     var user = await User(connect(DB_CONNECTION, portal))
         .findById(id)
         .select("-password -password2 -status -deleteSoft")
@@ -584,11 +594,13 @@ exports.editUser = async (portal, id, data) => {
             },
         ]);
 
+    const name = data.name.trim();
+    const email = data.email.trim();
     if (!user) {
         throw ["user_not_found"];
     }
 
-    if (user.email !== data.email) {
+    if (user.email !== email) {
         const checkEmail = await User(connect(DB_CONNECTION, portal)).findOne({
             email: data.email,
         });
@@ -598,7 +610,7 @@ exports.editUser = async (portal, id, data) => {
             data.email
         );
     }
-    user.name = data.name;
+    user.name = name;
 
     if (data.password) {
         var salt = bcrypt.genSaltSync(10);
@@ -615,7 +627,7 @@ exports.editUser = async (portal, id, data) => {
     }
 
     const oldEmail = user.email;
-    user.email = data.email;
+    user.email = email;
     await user.save();
 
     // Tìm user trong bảng employees và cập nhật lại email
