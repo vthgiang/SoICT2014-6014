@@ -1,7 +1,20 @@
 import { isTimeZoneDateSmaller } from './compareDateTimeZone'
-getBusyday = (date, listPlan, listCarriers, listVehicles) => { // date timezone
+const calMinDistance = require('./generatePlan/calMinDistanceOneDay')
+
+const getNextDay = (n)=> {
+    let currentDay = new Date();
+    let date = currentDay.getDate();
+    currentDay.setDate(date+n);
+    currentDay.setHours(0,0,0);
+    return new Date(currentDay);
+}
+
+// Trả về danh sách người, xe có thể sử dụng
+const getVehicleCarrierUsable = (date, listPlan, listCarriers, listVehicles) => { // date timezone
         let usedVehicles=[];
         let usedCarriers=[];
+        let usableVehicles = listVehicles;
+        let usableCarriers = listCarriers;
         let currentPlan;
         if (listPlan && listPlan.length!==0){
             listPlan.map(plan => {
@@ -14,6 +27,7 @@ getBusyday = (date, listPlan, listCarriers, listVehicles) => { // date timezone
                                 for (let j=0;j<listVehicles.length;j++){
                                     if (String(listVehicles[j]._id) === String(transportVehicles.vehicle._id)){
                                         usedVehicles.push(listVehicles[j]);
+                                        usableVehicles = usableVehicles.filter(r => String(r._id) === String(transportVehicles.vehicle._id))
                                         currentPlan=plan;
                                     }
                                 }
@@ -27,6 +41,7 @@ getBusyday = (date, listPlan, listCarriers, listVehicles) => { // date timezone
                                                 for (let j =0;j<allCarriers.length;j++){
                                                     if (String(listCarriers[j]._id) === String(carriers.carrier._id)){
                                                         usedCarriers.push(listCarriers[j]);
+                                                        usableCarriers = usableCarriers.filter(r => String(r._id) === String(carriers.carrier._id))
                                                         currentPlan=plan;
                                                     }
                                                 }                                                            
@@ -47,14 +62,46 @@ getBusyday = (date, listPlan, listCarriers, listVehicles) => { // date timezone
             usedVehicles: usedVehicles,
             usedCarriers: usedCarriers,
             transportPlan: currentPlan,
+            usableCarriers: usableCarriers,
+            usableVehicles: usableVehicles,
         })
         
 }
-const calDistanceGeocode = (lat1, lng1, lat2, lng2) => {
-    return Math.sqrt((lat2- lat1)*(lat2- lat1) + (lng2-lng1)*(lng2-lng1));
+
+// Trả về xe có thể sử dụng sau khi phân công người
+let totalDistance = 99999999;
+let day = new Array(99999);
+let selectedRequirement = new Array(99999);
+let saveArr = [];
+const generatePlanShortestDistance = (listRequirement, countDay, listVehiclesDays, numVehiclesDays, k) => {
+    if (k >= listRequirement-1){
+        let distance = 0;
+        for (let i = 0; i< countDay; i++){
+            if (day[i] && day[i].length!==0){
+                distance+=calMinDistance.calMinDistanceOneDay(day[i], listVehiclesDays[i], numVehiclesDays[i])
+            }
+        }
+        if (distance<totalDistance){
+            saveArr = day;
+            totalDistance = distance;
+        }
+        return;
+    }
+    for (let i=0; i<listRequirement.length;i++) {
+        if (!selectedRequirement[i]){
+            for (let j=0; j< countDay; j++){
+                selectedRequirement[i] = true;
+                day[i].push(selectedRequirement);
+                generatePlanShortestDistance(listRequirement, countDay, listVehiclesDays, numVehiclesDays, k+1);
+                day[i].pop();
+                selectedRequirement[i] = false;
+            }
+        }
+    }
 }
-exports.generatePlan = (listRequirement, listPlan, listVehicle, listCarriers) => {
-    const CURRENT_DAY = new Date();
+
+exports.generatePlan = (listRequirement, listPlan, listVehicles, listCarriers) => {
+    let res = [];
     let flag = true;
     let nextDay = 0;
     let listRequirementCal = []
@@ -64,7 +111,11 @@ exports.generatePlan = (listRequirement, listPlan, listVehicle, listCarriers) =>
             plan: null,
         })
     }
+
     while (flag){
+        nextDay++;
+        if (nextDay > 10) break;
+        let date = getNextDay(nextDay);
         let result = [];
         let calArr = [];
         let needArrangeRequirement = listRequirementCal.filter(r=> r.plan === null);
@@ -75,7 +126,7 @@ exports.generatePlan = (listRequirement, listPlan, listVehicle, listCarriers) =>
                     requirement.timeRequests.map(time => {
                         let timeRequest = new Date(time.timeRequest);
                         if(timeRequest.getTime() === date.getTime()){
-                            mark = 5*86400000;
+                            mark = 10*86400000;
                         }
                     })
                 }
@@ -97,5 +148,8 @@ exports.generatePlan = (listRequirement, listPlan, listVehicle, listCarriers) =>
             flag = false;
             break;
         }
+        let {usableVehicles, usableCarriers} = getVehicleCarrierUsable(date, listPlan, listCarriers, listVehicles);
+
+        
     }
 }
