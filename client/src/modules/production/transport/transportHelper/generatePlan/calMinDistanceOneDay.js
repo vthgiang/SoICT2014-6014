@@ -26,7 +26,7 @@ let selected = new Array(999999);
 let vehicleUsed = new Array(99999);
 let countVehicleUsed=0;
 const minRouteInDay = (listRequirements, listVehicles, numVehicles, k) => {
-    if (k>=listRequirements.length-1){
+    if (k>=listRequirements.length){
         let tmpDistance = 0;
         for (let i=0;i<listVehicles.length;i++){
             if (vehicleUsed[i] && vehicleUsed[i].length!==0){
@@ -62,7 +62,7 @@ const minRouteInDay = (listRequirements, listVehicles, numVehicles, k) => {
     }
 }
 
-exports.calMinDistanceOneDay = async (listRequirements, listVehicles, numVehicles) => {
+exports.calMinDistanceOneDay = (listRequirements, listVehicles, numVehicles) => {
     minR = 9999999;
     for (let i =0; i< listRequirements.length ;i++){
         selected[i] = false;
@@ -70,6 +70,6 @@ exports.calMinDistanceOneDay = async (listRequirements, listVehicles, numVehicle
     for (let i=0; i< listVehicles.length;i++){
         vehicleUsed[i] = [];
     }
-    await minRouteInDay(listRequirements, listVehicles, numVehicles);
+    minRouteInDay(listRequirements, listVehicles, numVehicles, 0);
     return minR;
 }

@@ -53,7 +53,7 @@ const checkValid = (i, listRequirementsGeocode) => {
 }
 
 const minRouteVehicle = (listRequirementsGeocode, beforeGeocode, currentDistance, k, len) => {
-    if (k >=len-1) {
+    if (k >=len) {
         if (currentDistance < minR) minR = currentDistance;
         return;
     }
@@ -62,8 +62,10 @@ const minRouteVehicle = (listRequirementsGeocode, beforeGeocode, currentDistance
         if (checkValid(i, listRequirementsGeocode) && !went[i]) {
             ordinal.push(listRequirementsGeocode);
             went[i] = true;
+            if (beforeGeocode)
             currentDistance += calDistanceGeocode(listRequirementsGeocode[i].geocode.lat, listRequirementsGeocode[i].geocode.lng, beforeGeocode.geocode.lat, beforeGeocode.geocode.lng);
             minRouteVehicle(listRequirementsGeocode, listRequirementsGeocode[i], currentDistance, k+1, len);
+            if (beforeGeocode)
             currentDistance -= calDistanceGeocode(listRequirementsGeocode[i].geocode.lat, listRequirementsGeocode[i].geocode.lng, beforeGeocode.geocode.lat, beforeGeocode.geocode.lng);
             went[i] = false;
             ordinal.pop();
@@ -71,11 +73,12 @@ const minRouteVehicle = (listRequirementsGeocode, beforeGeocode, currentDistance
     }
 }
 
-exports.calMinDistanceVehicleGo = async (listRequirementsGeocode) => {
+exports.calMinDistanceVehicleGo = (listRequirementsGeocode) => {
     minR = 99999;
     for (let i = 0 ; i< listRequirementsGeocode.length; i++){
         went[i] = false;
     }
-    await minRouteVehicle(listRequirementsGeocode, null, 0, 0, listRequirementsGeocode.length);
+    console.log(listRequirementsGeocode, " aaaaaaaaaaa")
+    minRouteVehicle(listRequirementsGeocode, null, 0, 0, listRequirementsGeocode.length);
     return minR;
 }

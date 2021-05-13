@@ -8,13 +8,15 @@ import ValidationHelper from '../../../../../../helpers/validationHelper';
 
 // import { LocationMap } from './map/locationMap'
 
-import { transportPlanActions } from '../redux/actions';
-import { transportRequirementsActions } from '../../transport-requirements/redux/actions'
+import { transportPlanActions } from '../../redux/actions';
+import { transportRequirementsActions } from '../../../transport-requirements/redux/actions'
+import { transportVehicleActions } from '../../../transport-vehicle/redux/actions'
+import { transportDepartmentActions } from "../../../transport-department/redux/actions"
 
 
 function TransportPlanGenerate(props) {
     // let allTransportRequirements;
-    let {transportRequirements} = props;
+    let {transportRequirements, transportVehicle, transportDepartment} = props;
     const [formSchedule, setFormSchedule] = useState({
         code: "",
         startDate: "",
@@ -73,8 +75,44 @@ function TransportPlanGenerate(props) {
     // }, [formSchedule])
     useEffect(() => {
         props.getAllTransportRequirements({page: 1, limit: 100, status: "2"})
-    }, [formSchedule.startDate, formSchedule.endDate])
+        props.getAllTransportDepartments();
+        props.getAllTransportVehicles();
+    }, [])
 
+    useEffect(() => {
+        let allVehicles=[];
+        let allCarriers=[];
+        if (transportVehicle && transportVehicle.lists && transportVehicle.lists.length!==0){
+            transportVehicle.lists.map(vehicle => {
+                allVehicles.push(vehicle);
+            })
+        }
+        if (transportDepartment && transportDepartment.lists && transportDepartment.lists.length !==0){
+            let lists = transportDepartment.lists;
+            let carrierOrganizationalUnit = [];
+            carrierOrganizationalUnit = lists.filter(r => r.role === 2) // role nhân viên vận chuyển
+            if (carrierOrganizationalUnit && carrierOrganizationalUnit.length !==0){
+                carrierOrganizationalUnit.map(item =>{
+                    if (item.organizationalUnit){
+                        let organizationalUnit = item.organizationalUnit;
+                        organizationalUnit.employees && organizationalUnit.employees.length !==0
+                        && organizationalUnit.employees.map(employees => {
+                            employees.users && employees.users.length !== 0
+                            && employees.users.map(users => {
+                                if (users.userId){
+                                    if (users.userId.name){
+                                        allCarriers.push(users.userId)
+                                    }
+                                }
+                            })
+                        })
+                    }
+                })
+            } 
+        }
+        console.log(allCarriers);
+        console.log(allVehicles);
+    }, [transportDepartment, transportVehicle])
 
     return (
         <React.Fragment>
@@ -182,14 +220,16 @@ function TransportPlanGenerate(props) {
 }
 
 function mapState(state) {
-    const {transportRequirements} = state;
+    const {transportRequirements, transportVehicle, transportDepartment} = state;
     console.log(transportRequirements?.lists);
-    return {transportRequirements}
+    return {transportRequirements, transportVehicle, transportDepartment}
 }
 
 const actions = {
     getAllTransportRequirements: transportRequirementsActions.getAllTransportRequirements,
     createTransportPlan: transportPlanActions.createTransportPlan,
+    getAllTransportDepartments: transportDepartmentActions.getAllTransportDepartments,
+    getAllTransportVehicles: transportVehicleActions.getAllTransportVehicles,
 }
 
 const connectedTransportPlanGenerate = connect(mapState, actions)(withTranslate(TransportPlanGenerate));
