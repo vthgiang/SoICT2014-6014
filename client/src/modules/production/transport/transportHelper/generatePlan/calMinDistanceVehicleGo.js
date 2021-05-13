@@ -16,9 +16,42 @@
 
 let minR = 99999;
 let went = new Array(999999);
+let ordinal = [];
+let payload, volume;
 const calDistanceGeocode = (lat1, lng1, lat2, lng2) => {
     return Math.sqrt((lat2- lat1)*(lat2- lat1) + (lng2-lng1)*(lng2-lng1));
 }
+const checkValid = (i, listRequirementsGeocode) => {
+    let currentPayload=0;
+    let currentVolume=0;
+    if (i===0) {
+        if (listRequirementsGeocode[i].type===1){
+            return true;
+        }
+        else return false;
+    }
+    if (listRequirementsGeocode[i].type === 2){
+        if (went[i-1]){
+            return true;
+        }
+        else return false;
+    }
+    if (ordinal && ordinal.length!==0){
+        for (let i = 0;i<ordinal.length;i++){
+            if(ordinal[i].type===1){
+                currentVolume+=ordinal[i].volume;
+                currentPayload+=ordinal[i].payload;
+                if (currentPayload>payload || currentVolume>volume) return false;
+            }
+            else {
+                currentVolume-=ordinal[i].volume;
+                currentPayload-=ordinal[i].payload;
+            }
+        }
+    }
+    return true;
+}
+
 const minRouteVehicle = (listRequirementsGeocode, beforeGeocode, currentDistance, k, len) => {
     if (k >=len-1) {
         if (currentDistance < minR) minR = currentDistance;
@@ -26,12 +59,14 @@ const minRouteVehicle = (listRequirementsGeocode, beforeGeocode, currentDistance
     }
     if (currentDistance > minR) return;
     for (let i = 0; i< listRequirementsGeocode.length; i++){
-        if (checkValid(i)) {
+        if (checkValid(i, listRequirementsGeocode) && !went[i]) {
+            ordinal.push(listRequirementsGeocode);
             went[i] = true;
             currentDistance += calDistanceGeocode(listRequirementsGeocode[i].geocode.lat, listRequirementsGeocode[i].geocode.lng, beforeGeocode.geocode.lat, beforeGeocode.geocode.lng);
             minRouteVehicle(listRequirementsGeocode, listRequirementsGeocode[i], currentDistance, k+1, len);
             currentDistance -= calDistanceGeocode(listRequirementsGeocode[i].geocode.lat, listRequirementsGeocode[i].geocode.lng, beforeGeocode.geocode.lat, beforeGeocode.geocode.lng);
             went[i] = false;
+            ordinal.pop();
         }
     }
 }

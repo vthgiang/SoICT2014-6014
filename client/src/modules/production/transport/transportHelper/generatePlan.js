@@ -99,6 +99,25 @@ const generatePlanShortestDistance = (listRequirement, countDay, listVehiclesDay
         }
     }
 }
+exports.generatePlanFastestMove = (listRequirement, listPlan, allVehicles, allCarriers, inDay) => {
+    let listVehiclesDays = [];
+    let numVehiclesDays = [];
+    let usableCarriers, usableVehicles;
+    for (let i=1;i<=inDay;i++){
+        let resultVehicleCarrierUsable = getVehicleCarrierUsable(getNextDay(i), listPlan, allCarriers, allVehicles);
+        usableCarriers = resultVehicleCarrierUsable.usableCarriers;
+        usableVehicles = resultVehicleCarrierUsable.usableVehicles;
+        listVehiclesDays.push(usableVehicles);
+        if (usableVehicles.length > Math.floor(usedCarriers.length / 2)){
+            numVehiclesDays.push(Math.floor(usedCarriers.length / 2));
+        }
+        else {
+            numVehiclesDays.push(usableVehicles.length);
+        }
+    }
+    generatePlanShortestDistance(listRequirement, inDay, listVehiclesDays, numVehiclesDays, 0);
+    return saveArr;
+}
 
 exports.generatePlan = (listRequirement, listPlan, listVehicles, listCarriers) => {
     let res = [];

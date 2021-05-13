@@ -5,6 +5,7 @@ import { withTranslate } from "react-redux-multilingual";
 import { DataTableSetting, DeleteNotification, PaginateBar, forceCheckOrVisible } from "../../../../../common-components";
 
 import { formatDate } from "../../../../../helpers/formatDate"
+import { TransportPlanGenerate } from "./transport-plan-auto-generate/transportPlanGenerate"
 import { TransportPlanCreateForm } from "./transportPlanCreateForm"
 import { TransportPlanEditForm } from "./transportPlanEditForm"
 import { TransportPlanDetailInfo } from "./transportPlanDetailInfo"
@@ -86,6 +87,7 @@ function TransportPlanManagementTable(props) {
         <div className="tab-content">
             <div className="tab-pane active" id="list-transport-plan">
                 <div className="box-body qlcv">
+                <TransportPlanGenerate />
                 <TransportPlanCreateForm 
                     currentDateClient={getCurrentDate()}
                 />
