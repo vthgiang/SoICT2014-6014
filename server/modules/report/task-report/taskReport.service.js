@@ -192,7 +192,9 @@ exports.createTaskReport = async (portal, data, user) => {
 
     })
 
-    let getNewTaskReport = await TaskReport(connect(DB_CONNECTION, portal)).findById(newTaskReport._id).populate({ path: 'creator', select: "_id name" });
+    let getNewTaskReport = await TaskReport(connect(DB_CONNECTION, portal)).findById(newTaskReport._id)
+    .populate({ path: 'creator', select: "_id name" })
+    .populate({ path: 'organizationalUnit', select: "_id name manager" });
     return getNewTaskReport;
 }
 

@@ -28,7 +28,7 @@ function TaskReportManager(props) {
     })
 
     const { reports, translate, user } = props;
-    const {  page, currentEditRow, currentViewRow } = state;
+    const { page, currentEditRow, currentViewRow } = state;
 
     useEffect(() => {
         props.getTaskReports(state);
@@ -165,13 +165,22 @@ function TaskReportManager(props) {
     }
 
     const checkPermissonCreator = (creator) => {
+        let item;
+
         const { currentRole } = state;
-        if (currentRole === creator.toString()) {
+        if (creator) {
+            if (Array.isArray(creator))
+                item = creator.map(o => o._id)[0];
+            else item = creator._id
+        }
+        else
+            item = null;
+
+        if (currentRole === item) {
             return true;
         }
         return false;
     }
-
 
     const checkPermissonManager = (manager) => {
         let currentRole = localStorage.getItem("currentRole");
@@ -328,14 +337,14 @@ function TaskReportManager(props) {
                                 <tr key={item._id}>
                                     <td>{item.name} </td>
                                     <td>{item.description}</td>
-                                    <td>{(item.creator && item.creator.length > 0) ? item.creator.map(o => o.name) : null}</td>
+                                    <td>{item.creator ? Array.isArray(item.creator) ? item.creator.map(o => o.name) : item.creator.name : null}</td>
                                     <td>{item.createdAt.slice(0, 10)}</td>
                                     <td style={{ textAlign: 'center' }}>
                                         <a onClick={() => handleView(item._id)}><i className="material-icons">visibility</i></a>
 
                                         {/* Check nếu là người tạo thì có thể sửa, xóa báo cáo */}
                                         {
-                                            (checkPermissonManager(item.organizationalUnit.managers) || checkPermissonCreator(item.creator && item.creator.length > 0 && item.creator.map(o => o._id))) &&
+                                            (checkPermissonManager(item.organizationalUnit.managers) || checkPermissonCreator(item.creator)) &&
                                             <React.Fragment>
                                                 <a onClick={() => handleEdit(item._id)} className="edit text-yellow" style={{ width: '5px' }} title={translate('report_manager.edit')}><i className="material-icons">edit</i></a>
                                                 <a onClick={() => handleDelete(item._id, item.name)} className="delete" title={translate('report_manager.title_delete')}>
