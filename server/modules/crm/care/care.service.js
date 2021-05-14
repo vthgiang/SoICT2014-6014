@@ -25,7 +25,7 @@ exports.createCare = async (portal, companyId, data, userId) => {
     }
 
     if (userId) {
-        data = { ...data, creator: userId };
+        data = { ...data, creator: userId ,updatedBy:userId };
     }
     //------------
 
