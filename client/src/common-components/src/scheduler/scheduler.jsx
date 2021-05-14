@@ -37,6 +37,8 @@ class Scheduler extends Component {
                 this.updateSize();
             })
         });
+        window.$("table").addClass("not-sort")
+
     }
 
     render() {

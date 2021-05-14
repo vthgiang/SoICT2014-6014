@@ -237,21 +237,21 @@ function UseRequestCreateForm(props) {
         partCreate = dateCreate.split('-');
 
         if (startTime) {
-            date = [partStart[2], partStart[1], partStart[0]].join('-') + ' ' + startTime;
+            date = [partStart[2], partStart[1], partStart[0]].join('/') + ' ' + startTime;
             dateStartUse = new Date(date);
         } else {
-            date = [partStart[2], partStart[1], partStart[0]].join('-')
+            date = [partStart[2], partStart[1], partStart[0]].join('/')
             dateStartUse = new Date(date);
         }
         if (stopTime) {
-            date = [partEnd[2], partEnd[1], partEnd[0]].join('-') + ' ' + stopTime;
+            date = [partEnd[2], partEnd[1], partEnd[0]].join('/') + ' ' + stopTime;
             dateEndUse = new Date(date);
         } else {
-            date = [partEnd[2], partEnd[1], partEnd[0]].join('-');
+            date = [partEnd[2], partEnd[1], partEnd[0]].join('/');
             dateEndUse = new Date(date);
         }
 
-        date = [partCreate[2], partCreate[1], partCreate[0]].join('-');
+        date = [partCreate[2], partCreate[1], partCreate[0]].join('/');
         dateCreate = new Date(date);
 
         let dataToSubmit = { ...state, dateCreate, dateStartUse, dateEndUse, proponent: props.auth.user._id }
@@ -260,9 +260,9 @@ function UseRequestCreateForm(props) {
             let dateStartUse, date;
 
             date = state.dateStartUse.split("-");
-            date = [date[2], date[1], date[0]].join('-')
+            date = [date[2], date[1], date[0]].join('/')
             dateStartUse = new Date(date)
-
+            console.log('dataToSubmitdataToSubmit',dataToSubmit)
             if (compareTime(nowDate, dateStartUse) === 1) {
                 Swal.fire({
                     title: 'Ngày đã qua không thể tạo đăng ký sử dụng',
