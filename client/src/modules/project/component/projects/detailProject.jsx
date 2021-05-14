@@ -9,9 +9,10 @@ import GanttTasksProject from './ganttTasksProject';
 import KanbanTasksProject from './kanbanTasksProject';
 import CpmTasksProject from './cpmTasksProject';
 import moment from 'moment';
+import { getEndDateOfProject } from './functionHelper';
 
 const ProjectDetailForm = (props) => {
-    const { translate, projectDetail, projectDetailId } = props;
+    const { translate, projectDetail, projectDetailId, currentProjectTasks } = props;
 
     return (
         <React.Fragment>
@@ -64,7 +65,7 @@ const ProjectDetailForm = (props) => {
                                     <div className="form-group">
                                         <strong className="col-sm-4">{translate('project.endDate')}</strong>
                                         <div className="col-sm-8">
-                                            <span>{projectDetail ? moment(projectDetail?.endDate).format('HH:mm DD/MM/YYYY') : null}</span>
+                                            <span>{currentProjectTasks ? moment(projectDetail?.endDate).format('HH:mm DD/MM/YYYY') : null}</span>
                                         </div>
                                     </div>
                                 </div>

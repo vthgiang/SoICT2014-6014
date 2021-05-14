@@ -9,128 +9,13 @@ import { UserActions } from '../../../super-admin/user/redux/actions'
 import { numberWithCommas } from '../../../task/task-management/component/functionHelpers'
 import { taskManagementActions } from '../../../task/task-management/redux/actions'
 import { ProjectActions } from '../../redux/actions'
-import { getCurrentProjectDetails } from '../projects/functionHelper'
+import { getCurrentProjectDetails, processDataTasksStartEnd } from '../projects/functionHelper'
 
 const NUMS_OF_REDUCTION = 4;
 
 const ModalCalculateRecommend = (props) => {
     const { processedData, tasksData, translate, project, oldCPMEndDate } = props;
     const projectDetail = getCurrentProjectDetails(project);
-    const handleWeekendAndWorkTime = (taskItem) => {
-        // Nếu unitTime = 'days'
-        if (projectDetail?.unitTime === 'days') {
-            // Check xem startDate có phải thứ 7 hoặc chủ nhật không thì cộng thêm ngày để startDate vào ngày thứ 2 tuần sau
-            let dayOfStartDate = (new Date(taskItem.startDate)).getDay();
-            if (dayOfStartDate === 6) taskItem.startDate = moment(taskItem.startDate).add(2, 'days').format();
-            if (dayOfStartDate === 0) taskItem.startDate = moment(taskItem.startDate).add(1, 'days').format();
-            // Tách phần integer và phần decimal của estimateNormalTime
-            const estimateNormalTimeArr = taskItem.estimateNormalTime.toString().split('.');
-            const integerPart = Number(estimateNormalTimeArr[0]);
-            const decimalPart = estimateNormalTimeArr.length === 2 ? Number(`.${estimateNormalTimeArr[1]}`) : undefined;
-            let tempEndDate = '';
-            // Cộng phần nguyên
-            for (let i = 0; i < integerPart; i++) {
-                // Tính tempEndDate = + 1 ngày trước để kiểm tra
-                if (i === 0) {
-                    tempEndDate = moment(taskItem.startDate).add(1, 'days').format();
-                } else {
-                    tempEndDate = moment(taskItem.endDate).add(1, 'days').format();
-                }
-                // Nếu tempEndDate đang là thứ 7 thì công thêm 2 ngày
-                if ((new Date(tempEndDate)).getDay() === 6) {
-                    taskItem.endDate = moment(tempEndDate).add(2, 'days').format();
-                }
-                // Nếu tempEndDate đang là chủ nhật thì công thêm 1 ngày
-                else if ((new Date(tempEndDate)).getDay() === 0) {
-                    taskItem.endDate = moment(tempEndDate).add(1, 'days').format();
-                }
-                // Còn không thì không cộng gì
-                else {
-                    taskItem.endDate = tempEndDate;
-                }
-            }
-            // Cộng phần thập phân (nếu có)
-            if (decimalPart) {
-                if (!taskItem.endDate) {
-                    taskItem.endDate = moment(taskItem.startDate).add(decimalPart, 'days').format();
-                } else {
-                    taskItem.endDate = moment(taskItem.endDate).add(decimalPart, 'days').format();
-                }
-                // Check xem endDate hiện tại là thứ mấy => Cộng tiếp để bỏ qua thứ 7 và chủ nhật (nếu có)
-                dayOfStartDate = (new Date(taskItem.endDate)).getDay();
-                if (dayOfStartDate === 6) taskItem.endDate = moment(taskItem.endDate).add(2, 'days').format();
-                if (dayOfStartDate === 0) taskItem.endDate = moment(taskItem.endDate).add(1, 'days').format();
-            }
-            return taskItem;
-        }
-
-        // Nếu unitTime = 'hours'
-        const dailyMorningStartTime = moment('08:00', 'HH:mm');
-        const dailyMorningEndTime = moment('12:00', 'HH:mm');
-        const dailyAfternoonStartTime = moment('13:30', 'HH:mm');
-        const dailyAfternoonEndTime = moment('17:30', 'HH:mm');
-        // Check xem startDate có phải thứ 7 hoặc chủ nhật không thì cộng thêm ngày để startDate vào ngày thứ 2 tuần sau
-        let dayOfStartDate = (new Date(taskItem.startDate)).getDay();
-        if (dayOfStartDate === 6) taskItem.startDate = moment(taskItem.startDate).add(2, 'days').format();
-        if (dayOfStartDate === 0) taskItem.startDate = moment(taskItem.startDate).add(1, 'days').format();
-        // Tách phần integer và phần decimal của estimateNormalTime
-        const estimateNormalTimeArr = taskItem.estimateNormalTime.toString().split('.');
-        const integerPart = Number(estimateNormalTimeArr[0]);
-        const decimalPart = estimateNormalTimeArr.length === 2 ? Number(`.${estimateNormalTimeArr[1]}`) : undefined;
-        let tempEndDate = '';
-        // Cộng phần nguyên
-        for (let i = 0; i < integerPart; i++) {
-            // Tính tempEndDate = + 1 tiêng trước để kiểm tra
-            if (i === 0) {
-                tempEndDate = moment(taskItem.startDate).add(1, 'hours').format();
-            } else {
-                tempEndDate = moment(taskItem.endDate).add(1, 'hours').format();
-            }
-            const currentEndDateInMomentHourMinutes = moment(moment(tempEndDate).format('HH:mm'), 'HH:mm');
-            // Nếu đang ở giờ nghỉ trưa
-            if (currentEndDateInMomentHourMinutes.isAfter(dailyMorningEndTime) && currentEndDateInMomentHourMinutes.isBefore(dailyAfternoonStartTime)) {
-                tempEndDate = moment(tempEndDate).set({
-                    hour: 13,
-                    minute: 30,
-                });
-                tempEndDate = moment(tempEndDate).add(1, 'hours').format();
-            }
-            // Nếu quá 17:30
-            else if (currentEndDateInMomentHourMinutes.isAfter(dailyAfternoonEndTime)) {
-                tempEndDate = moment(tempEndDate).set({
-                    hour: 8,
-                    minute: 0,
-                });
-                tempEndDate = moment(tempEndDate).add(1, 'hours').format();
-                tempEndDate = moment(tempEndDate).add(1, 'days').format();
-            }
-            // Nếu tempEndDate đang là thứ 7 thì công thêm 2 ngày
-            if ((new Date(tempEndDate)).getDay() === 6) {
-                taskItem.endDate = moment(tempEndDate).add(2, 'days').format();
-            }
-            // Nếu tempEndDate đang là chủ nhật thì công thêm 1 ngày
-            else if ((new Date(tempEndDate)).getDay() === 0) {
-                taskItem.endDate = moment(tempEndDate).add(1, 'days').format();
-            }
-            // Còn không thì không cộng gì
-            else {
-                taskItem.endDate = tempEndDate;
-            }
-        }
-        // Cộng phần thập phân (nếu có)
-        if (decimalPart) {
-            if (!taskItem.endDate) {
-                taskItem.endDate = moment(taskItem.startDate).add(decimalPart, 'hours').format();
-            } else {
-                taskItem.endDate = moment(taskItem.endDate).add(decimalPart, 'hours').format();
-            }
-            // Check xem endDate hiện tại là thứ mấy => Cộng tiếp để bỏ qua thứ 7 và chủ nhật (nếu có)
-            dayOfStartDate = (new Date(taskItem.endDate)).getDay();
-            if (dayOfStartDate === 6) taskItem.endDate = moment(taskItem.endDate).add(2, 'days').format();
-            if (dayOfStartDate === 0) taskItem.endDate = moment(taskItem.endDate).add(1, 'days').format();
-        }
-        return taskItem;
-    }
 
     const [currentNumOfReduction, setCurrentNumOfReduction] = useState(NUMS_OF_REDUCTION);
     const [displayNumOfReduction, setDisplayNumOfReduction] = useState(NUMS_OF_REDUCTION);
@@ -140,32 +25,6 @@ const ModalCalculateRecommend = (props) => {
         currentCPMEndDate: '',
         currentProcessedData: [],
     })
-
-    const processDataBeforeInserted = (tempTasksData) => {
-        if (!tempTasksData || tempTasksData.length === 0) return [];
-        // Lặp mảng tasks
-        for (let taskItem of tempTasksData) {
-            if ((!taskItem.startDate || !taskItem.endDate) && taskItem.preceedingTasks.length === 0) {
-                taskItem.startDate = projectDetail?.startDate;
-                taskItem = handleWeekendAndWorkTime(taskItem);
-            } else {
-                // Lặp mảng preceedingTasks của taskItem hiện tại
-                for (let preceedingItem of taskItem.preceedingTasks) {
-                    const currentPreceedingTaskItem = tempTasksData.find(item => {
-                        return String(item.code) === String(preceedingItem.trim());
-                    });
-                    if (!taskItem.startDate ||
-                        moment(taskItem.startDate)
-                            .isBefore(moment(currentPreceedingTaskItem.endDate))) {
-                        taskItem.startDate = currentPreceedingTaskItem.endDate;
-                    }
-                    taskItem = handleWeekendAndWorkTime(taskItem);
-                }
-            }
-        }
-        // console.log('tempTasksData', tempTasksData);
-        return tempTasksData;
-    }
 
     const findLatestDate = (data) => {
         if (data.length === 0) return null;
@@ -268,8 +127,8 @@ const ModalCalculateRecommend = (props) => {
                 timeToDecrease,
                 costToIncrease,
             })
-            const newProcessedData = processDataBeforeInserted(newData);
-            // console.log('newProcessedData', newProcessedData)
+            const newProcessedData = processDataTasksStartEnd(projectDetail, newData);
+            console.log('newProcessedData', newProcessedData)
             // console.log(moment(findLatestDate(newProcessedData)).format(), moment(projectDetail?.endDate).format());
             if (moment(findLatestDate(newProcessedData)).isSameOrBefore(moment(projectDetail?.endDate))) {
                 currentProcessedData = newProcessedData;
@@ -312,11 +171,12 @@ const ModalCalculateRecommend = (props) => {
                 func={save}
                 size={50}
                 hasSaveButton={content.status}
+                resetOnClose={true}
             >
                 <div>
                     <div className="row">
                         <div className="form-group col-md-6">
-                            <label className="form-control-static">Số bước giảm chi phí</label>
+                            <label className="form-control-static">Số bước giảm thời gian</label>
                             <input type="number" className="form-control" value={currentNumOfReduction} onChange={e => setCurrentNumOfReduction(e.target.value)} />
                         </div>
                         <button style={{ marginRight: 20, marginTop: 20 }} className="btn-success pull-right" onClick={calculateRecommend}>Tính toán</button>

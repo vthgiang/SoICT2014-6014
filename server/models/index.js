@@ -121,6 +121,7 @@ module.exports = {
     
     // project
     Project: require('./project/project.model'),
+    ProjectChangeRequest: require('./project/projectChangeRequest.model'),
 
     // news feed
     NewsFeed: require('./news-feed/newsFeed.model')
