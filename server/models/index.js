@@ -79,6 +79,7 @@ module.exports = {
     CareType: require('./crm/careType.model'),
     Group: require('./crm/group.model'),
     Status: require('./crm/status.model'),
+    CustomerRankPoint: require('./crm/customerRankPoint.model'),
     Product: require('./crm/product.model'),
     ProductCategory: require('./crm/productCategory.model'),
     ProductDiscount: require('./crm/productDiscount.model'),

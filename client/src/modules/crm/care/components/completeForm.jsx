@@ -9,12 +9,13 @@ import { formatFunction } from '../../common';
 function CompleteForm(props) {
 
     const { crm, user, careCompleteId, translate } = props
+    const [careCompleteState, setCareCompleteState] = useState({ id: undefined });
     useEffect(() => {
         props.getCare(careCompleteId);
-        console.log('EFFECT', careCompleteId)
+        setCareCompleteState({ id: undefined });
     }, [careCompleteId])
 
-    const [careCompleteState, setCareCompleteState] = useState({ id: undefined });
+   
     if (!crm.cares.isLoading && crm.cares.careById && (careCompleteState.id !== crm.cares.careById._id)) {
         const care = crm.cares.careById;
         const newCare = {
@@ -48,16 +49,16 @@ function CompleteForm(props) {
         await setCareCompleteState(newState);
     }
     const save = () => {
-       
-        let  newState = { ...careCompleteState, completeDate: new Date() , status : 3};
-        if(newState.evaluation&&!newState.evaluation.result) newState = {...newState,evaluation: { ...careCompleteState.evaluation, result: 1 }}
+
+        let newState = { ...careCompleteState, completeDate: new Date(), status: careCompleteState.status==4?5:3 };
+        if (newState.evaluation && !newState.evaluation.result) newState = { ...newState, evaluation: { ...careCompleteState.evaluation, result: 1 } }
         props.editCare(careCompleteId, newState)
     }
     return (
         <React.Fragment>
             <DialogModal
-                modalID="modal-crm-care-complete"
-                formID="modal-crm-care-complete"
+                modalID={`modal-crm-care-complete${careCompleteId}`}
+                formID={`form-crm-care-complete${careCompleteId}`}
                 title={"Xác nhận hoàn thành hoạt động"}
                 size={75}
                 func={save}
@@ -75,7 +76,7 @@ function CompleteForm(props) {
 
                 </div>
                 {/* Form đánh giá hoạt động*/}
-                <form id="modal-crm-care-complete">
+                <form id={`modal-crm-care-complete${careCompleteId}`}>
                     <h4>Đánh giá hoạt động</h4>
                     {/* Kết quả hoạt động */}
                     <div className="" >

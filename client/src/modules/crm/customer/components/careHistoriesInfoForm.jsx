@@ -11,7 +11,7 @@ import { formatFunction } from '../../common';
 import { CrmGroupActions } from '../../group/redux/actions';
 import { CrmStatusActions } from '../../status/redux/actions';
 import { CrmCustomerActions } from '../redux/actions';
-
+import InfoCareForm from '../../care/components/infoForm'
 CareHistoriesInfoForm.propTypes = {
 
 };
@@ -25,6 +25,7 @@ function CareHistoriesInfoForm(props) {
         customerId: customerId,
     });
     const { id } = props;
+    const [careInfoId,setCareInfoId] = useState();
     let unitMembers;
     let listCareType;
 
@@ -90,11 +91,21 @@ function CareHistoriesInfoForm(props) {
     const search = async () => {
         await props.getCares(searchState);
     }
-
+    /**
+     * ham xu ly xem thong tin
+     */
+    const handleInfo = async (id) => {
+        await setCareInfoId(id);
+        window.$('#modal-crm-care-info').modal('show')
+    }
     return (
         <div className="tab-pane purchaseHistories" id={id}>
             <div className="box">
                 <div className="box-body qlcv">
+                     {/* form xem chi tieets */}
+                {
+                    careInfoId && <InfoCareForm careInfoId={careInfoId} />
+                }
                     {/* search form */}
                     {/* tìm kiếm theo loại hoạt động */}
                     <div className="form-inline" style={{ marginBottom: '2px' }}>
@@ -134,15 +145,16 @@ function CareHistoriesInfoForm(props) {
                             <label>{'Người phụ trách'}</label>
                             {
                                 unitMembers &&
-                                <SelectBox
+                                <SelectMulti
                                     id={`customer-group-edit-form`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     items={
-                                        unitMembers
+                                        unitMembers[0].value
                                     }
                                     onChange={handleSearchByCustomerCareStaffs}
                                     multiple={false}
+                                    options={{ nonSelectedText: "Nhân viên phụ trách ", allSelectedText: 'Chọn tất cả' }}
                                 />
                             }
                         </div>
@@ -191,7 +203,7 @@ function CareHistoriesInfoForm(props) {
                                         <td>{o.startDate ? formatFunction.formatDate(o.startDate) : ''}</td>
                                         <td>{o.endDate ? formatFunction.formatDate(o.endDate) : ''}</td>
                                         <td style={{ textAlign: 'center' }}>
-                                            <a className="text-green" onClick={() => { return null; }}><i className="material-icons">visibility</i></a>
+                                             <a className="text-green" onClick={() => handleInfo(o._id)}><i className="material-icons">visibility</i></a>
                                         </td>
                                     </tr>
                                 )) : null

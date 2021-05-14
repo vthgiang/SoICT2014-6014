@@ -217,6 +217,7 @@ app.use("/crm/groups", require("./modules/crm/group/group.route"));
 app.use("/crm/status", require("./modules/crm/status/status.route"));
 app.use("/crm/evaluations", require("./modules/crm/evaluation/evaluation.route"));
 app.use("/crm/loyalCustomers", require("./modules/crm/loyalCustomer/loyalCustomer.route"));
+app.use("/crm/customerRankPoints", require("./modules/crm/rankPoint/customerRankPoint.route"));
 
 // production - manufaturing
 app.use(

@@ -66,10 +66,7 @@ function PurchaseHistoriesInfoForm(props) {
     const { id } = props;
     const [modalID, setModalID] = useState(1);
     const [searchState, setSearchState] = useState({
-        limit: 10,
-        page: 1,
-        customer: customerId,
-        currentRole: localStorage.getItem('currentRole')
+
 
     });
     const handleSearchByStatus = async (value) => {
@@ -83,12 +80,18 @@ function PurchaseHistoriesInfoForm(props) {
     }
     const search = async () => {
         console.log('STATE', searchState)
-        props.getAllSalesOrders(searchState);
+        props.getAllSalesOrders({
+            ...searchState,
+            limit: 10,
+            page: 1,
+            customer: customerId,
+            currentRole: localStorage.getItem('currentRole')
+        });
     }
     const handleShowDetailInfo = async (salesOrder) => {
         await props.getPaymentForOrder({ orderId: salesOrder._id, orderType: 1 });
         await props.getSalesOrderDetail(salesOrder._id);
-         window.$(`#modal-detail-sales-order-${modalID}`).modal("show");
+        window.$(`#modal-detail-sales-order-${modalID}`).modal("show");
     };
     console.log(salesOrders)
     return (
@@ -156,7 +159,7 @@ function PurchaseHistoriesInfoForm(props) {
                                     <td>{item.paymentAmount}</td>
                                     <td className={dataStatus[item.status].className}>{dataStatus[item.status].text}</td>
                                     <td style={{ textAlign: 'center' }}>
-                                        <a className="text-green" onClick ={()=> handleShowDetailInfo(item)}  ><i className="material-icons">visibility</i></a>
+                                        <a className="text-green" onClick={() => handleShowDetailInfo(item)}  ><i className="material-icons">visibility</i></a>
                                     </td>
                                 </tr>
                             ))}

@@ -41,13 +41,13 @@ function PromotionAddForm(props) {
         })
     }
 
-    const save = () => {
-        if (promotion){ 
-            props.addPromotion(customerId, promotion);
-            props.getLoyalCustomers();
-        
+    const save = async () => {
+        if (promotion) {
+            await props.addPromotion(customerId, promotion);
+            await props.getLoyalCustomers();
+
         }
-        
+
     }
 
     return (
@@ -145,7 +145,7 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
     getCustomer: CrmCustomerActions.getCustomer,
-    addPromotion : CrmCustomerActions.addPromotion,
+    addPromotion: CrmCustomerActions.addPromotion,
     getLoyalCustomers: CrmLoyalCustomerActions.getLoyalCustomers,
 
 }

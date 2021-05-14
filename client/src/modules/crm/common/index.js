@@ -14,6 +14,10 @@ export const formatFunction = {
     formatCareStatus
 
 }
+export const getData = {
+    getRole
+}
+
 
 function formatDate(date, monthYear = false) {
     if (date) {
@@ -185,4 +189,14 @@ function formatCareStatus(value){
     if (value === 3) return 'Đã hoàn thành';
     if (value === 4) return 'Đã quá hạn';
     if (value === 5) return 'Hoàn thành quá hạn';
+}
+
+
+function getRole (role){
+   if(!role||!role.item||!role.item.parents) return null;
+   const listParent = role.item.parents;
+   for(let i = 0;i<listParent.length;i++){
+       if(listParent[i].name =='Manager') return 'manager'
+   }
+   return 'employee'
 }

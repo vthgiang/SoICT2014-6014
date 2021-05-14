@@ -27,7 +27,7 @@ function GroupInfoForm(props) {
                 formID={`form-info-group`}
                 isLoading={groups.isLoading}
                 size={75}
-                // disableSubmit={true}
+                disableSubmit={true}
             >
                 
                 {groupById &&

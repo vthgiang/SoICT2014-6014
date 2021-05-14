@@ -38,7 +38,7 @@ function HistoryOfStateTransitionsTabInfoForm  (props) {
                                             }
                                         </p>
                                         {detailStatus[index] && (
-                                        <div >
+                                        <div key={index} >
                                             <p  style={{ fontSize: '14px' }}> <strong>Nội dung thay đổi : </strong>
                                             {o.description}</p>
                                         </div>

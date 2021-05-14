@@ -8,13 +8,14 @@ import { UserActions } from '../../super-admin/user/redux/actions';
 import { connect } from 'react-redux';
 import getEmployeeSelectBoxItems from '../../task/organizationalUnitHelper';
 import { CrmCareActions } from '../care/redux/action';
+import { getData } from '.';
 
 CreateCareCommonForm.propTypes = {
 
 };
 
 function CreateCareCommonForm(props) {
-    const { translate, type, customerId, crm, user } = props;
+    const { translate, type, customerId, crm, user ,role,auth } = props;
     const { careTypes } = crm;
     const [customer, setCustomer] = useState();
     const [newCustomerCare, setNewCustomerCare] = useState({});
@@ -33,6 +34,9 @@ function CreateCareCommonForm(props) {
         unitMembers = getEmployeeSelectBoxItems(user.usersOfChildrenOrganizationalUnit);
     }
 
+    //lay thong tin nguoi dung hien tai cho selectbox
+    let userSelectBox ;
+    if(auth && auth.user) userSelectBox ={value:auth.user._id,text:auth.user.name};
 
     let listCareTypes;
     // Lấy hình thức chắm sóc khách hàng
@@ -121,12 +125,12 @@ function CreateCareCommonForm(props) {
                     <div className={`form-group`}>
                         <label>{translate('crm.care.caregiver')}</label>
                         {
-                            unitMembers &&
+                            unitMembers && userSelectBox && 
                             <SelectBox
                                 id={`caregiver-care`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
-                                items={unitMembers[0].value}
+                                items={getData.getRole(role)=='employee'?[userSelectBox]: unitMembers[0].value}
                                 onChange={handleChangeCustomerCareStaff}
                                 multiple={true}
                                 options={{ placeholder: translate('crm.care.caregiver') }}
@@ -241,8 +245,8 @@ function CreateCareCommonForm(props) {
     );
 }
 function mapStateToProps(state) {
-    const { crm, auth, user } = state;
-    return { crm, auth, user };
+    const { crm, auth, user,role } = state;
+    return { crm, auth, user,role };
 }
 
 const mapDispatchToProps = {
