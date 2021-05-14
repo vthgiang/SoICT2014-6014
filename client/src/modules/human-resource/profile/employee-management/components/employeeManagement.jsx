@@ -31,7 +31,7 @@ const EmployeeManagement = (props) => {
     }, [search])
 
     const tableId = "table-employee-management";
-    const defaultConfig = { limit: 5 }
+    const defaultConfig = { limit: 10 }
     const _limit = getTableConfiguration(tableId, defaultConfig).limit;
 
     const [state, setState] = useState({

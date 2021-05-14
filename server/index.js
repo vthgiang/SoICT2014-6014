@@ -13,8 +13,8 @@ require("dotenv").config();
 require("./global")(server);
 
 app.use(require("cors")());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false,limit: '50mb',parameterLimit:50000 }));
+app.use(bodyParser.json({limit: '50mb'}));
 app.use(cookieParser());
 
 app.use("/upload/avatars", express.static("upload/avatars"));

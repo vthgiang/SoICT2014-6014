@@ -17,7 +17,6 @@ function GeneralTab(props) {
         fullName: "",
         errorOnFullName: "",
         emailInCompany: "",
-        errorOnEmailCompany: undefined,
         identityCardNumber: "",
         identityCardAddress: "",
         roles: []
@@ -27,9 +26,7 @@ function GeneralTab(props) {
 
     const { id, birthdate, identityCardDate, img, employeeNumber, employeeTimesheetId, fullName, gender, birthplace, status,
         startingDate, leavingDate, emailInCompany, maritalStatus, identityCardNumber, identityCardAddress, ethnic, religion, nationality,
-        errorOnBrithdate, errorOnDateCMND, errorOnEmployeeNumber, errorOnMSCC, errorOnFullName, errorOnEmailCompany, errorOnStartingDate,
-        errorOnCMND, errorOnAddressCMND, errorOnLeavingDate, roles } = state;
-    // console.log('employeeNumber', employeeNumber)
+        errorOnEmployeeNumber, errorOnFullName, errorOnStartingDate, errorOnLeavingDate, roles } = state;
 
     useEffect(() => {
         if ((props.id === "general" || props.id === "page_general") && !state.employeeNumber && !state.employeeTimesheetId && props.employee && props.employee.employeeNumber && props.employee.employeeTimesheetId) {
@@ -43,6 +40,7 @@ function GeneralTab(props) {
         }
 
         if (props.employee) {
+            console.log('props.employee', props.employee)
             setState(state => {
                 return {
                     ...state,
@@ -65,14 +63,8 @@ function GeneralTab(props) {
                     status: props.employee ? props.employee.status : "",
                     startingDate: formatDate(props.employee ? props.employee.startingDate : ''),
                     leavingDate: formatDate(props.employee ? props.employee.leavingDate : ''),
-                    errorOnBrithdate: undefined,
-                    errorOnDateCMND: undefined,
                     errorOnEmployeeNumber: undefined,
-                    errorOnMSCC: undefined,
                     errorOnFullName: undefined,
-                    errorOnEmailCompany: undefined,
-                    errorOnCMND: undefined,
-                    errorOnAddressCMND: undefined,
                     errorOnStartingDate: undefined,
                     errorOnLeavingDate: undefined,
                     roles: props.roles ? props.roles : []
@@ -206,25 +198,13 @@ function GeneralTab(props) {
     /** Function bắt sự kiện thay đổi mã chấm công */
     const handleMSCCChange = (e) => {
         const { value } = e.target;
-        validateMSCC(value, true);
-    }
-
-    const validateMSCC = (value, willUpdateState = true) => {
-        const { translate } = props;
-        let { message } = ValidationHelper.validateEmpty(translate, value);
-
-        if (willUpdateState) {
-
-            setState(state => {
-                return {
-                    ...state,
-                    errorOnMSCC: message,
-                    employeeTimesheetId: value,
-                }
-            });
-            props.handleChange("employeeTimesheetId", value);
-        }
-        return message === undefined;
+        setState(state => {
+            return {
+                ...state,
+                employeeTimesheetId: value,
+            }
+        });
+        props.handleChange("employeeTimesheetId", value);
     }
 
     /** Function bắt sự kiện thay đổi Họ và tên */
@@ -254,72 +234,37 @@ function GeneralTab(props) {
     /** Function bắt sự kiện thay đổi Email công ty */
     const handleEmailCompanyChange = (e) => {
         const { value } = e.target;
-        validateEmailCompany(value, true);
-    }
-
-    const validateEmailCompany = (value, willUpdateState = true) => {
-        const { translate } = props;
-        let { message } = ValidationHelper.validateEmail(translate, value);
-        if (willUpdateState) {
-
-            setState(state => {
-                return {
-                    ...state,
-                    errorOnEmailCompany: message,
-                    emailInCompany: value,
-                }
-            });
-            props.handleChange("emailInCompany", value);
-        }
-        return message === undefined;
+        setState(state => {
+            return {
+                ...state,
+                emailInCompany: value,
+            }
+        });
+        props.handleChange("emailInCompany", value);
     }
 
     /** Function bắt sự kiện thay đổi số CMND */
     const handleCMNDChange = (e) => {
         const { value } = e.target;
-        validateCMND(value, true);
-    }
-
-    const validateCMND = (value, willUpdateState = true) => {
-        const { translate } = props;
-        let { message } = ValidationHelper.validateEmpty(translate, value.toString());
-
-        if (willUpdateState) {
-
-            setState(state => {
-                return {
-                    ...state,
-                    errorOnCMND: message,
-                    identityCardNumber: value,
-                }
-            });
-            props.handleChange("identityCardNumber", value);
-        }
-        return message === undefined;
+        setState(state => {
+            return {
+                ...state,
+                identityCardNumber: value,
+            }
+        });
+        props.handleChange("identityCardNumber", value);
     }
 
     /** Function bắt sự kiện thay đổi nơi cấp */
     const handleAddressCMNDChange = (e) => {
         const { value } = e.target;
-        validateAddressCMND(value, true);
-    }
-
-    const validateAddressCMND = (value, willUpdateState = true) => {
-        const { translate } = props;
-        let { message } = ValidationHelper.validateEmpty(props.translate, value);
-
-        if (willUpdateState) {
-
-            setState(state => {
-                return {
-                    ...state,
-                    errorOnAddressCMND: message,
-                    identityCardAddress: value,
-                }
-            });
-            props.handleChange("identityCardAddress", value);
-        }
-        return message === undefined;
+        setState(state => {
+            return {
+                ...state,
+                identityCardAddress: value,
+            }
+        });
+        props.handleChange("identityCardAddress", value);
     }
 
     /**
@@ -327,25 +272,13 @@ function GeneralTab(props) {
      * @param {*} value : Ngày sinh
      */
     const handleBrithdayChange = (value) => {
-        validateBrithday(value, true)
-    }
-
-    const validateBrithday = (value, willUpdateState = true) => {
-        const { translate } = props;
-        let { message } = ValidationHelper.validateEmpty(translate, value);
-
-        if (willUpdateState) {
-
-            setState(state => {
-                return {
-                    ...state,
-                    errorOnBrithdate: message,
-                    birthdate: value,
-                }
-            });
-            props.handleChange("birthdate", value);
-        }
-        return message === undefined;
+        setState(state => {
+            return {
+                ...state,
+                birthdate: value,
+            }
+        });
+        props.handleChange("birthdate", value);
     }
 
     /**
@@ -449,26 +382,15 @@ function GeneralTab(props) {
      * @param {*} value : Ngày cấp CMND
      */
     const handleDateCMNDChange = (value) => {
-        validateCMNDDate(value, true);
+        setState(state => {
+            return {
+                ...state,
+                identityCardDate: value,
+            }
+        });
+        props.handleChange("identityCardDate", value);
     }
 
-    const validateCMNDDate = (value, willUpdateState = true) => {
-        const { translate } = props;
-        let { message } = ValidationHelper.validateEmpty(props.translate, value);
-
-        if (willUpdateState) {
-
-            setState(state => {
-                return {
-                    ...state,
-                    errorOnDateCMND: message,
-                    identityCardDate: value,
-                }
-            });
-            props.handleChange("identityCardDate", value);
-        }
-        return message === undefined;
-    }
     /**
      * Function bắt sự kiện thay đổi chức danh
      * @param {*} value : danh sách các chức danh
@@ -508,14 +430,13 @@ function GeneralTab(props) {
                         {/* Mã số nhân viên */}
                         <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnEmployeeNumber && "has-error"}`}>
                             <label>{translate('human_resource.profile.staff_number')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="employeeNumber" value={employeeNumber} placeholder={translate('human_resource.profile.staff_number')} onChange={handleMSNVChange} />
+                            <input type="text" className="form-control" name="employeeNumber" value={employeeNumber ? employeeNumber : ''} placeholder={translate('human_resource.profile.staff_number')} onChange={handleMSNVChange} />
                             <ErrorLabel content={errorOnEmployeeNumber} />
                         </div>
                         {/* Mã số chấm công */}
-                        <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnMSCC && "has-error"}`}>
-                            <label htmlFor="MSCC">{translate('human_resource.profile.attendance_code')}<span className="text-red">*</span></label>
+                        <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12`}>
+                            <label htmlFor="MSCC">{translate('human_resource.profile.attendance_code')}</label>
                             <input type="text" className="form-control" placeholder={translate('human_resource.profile.attendance_code')} name="employeeTimesheetId" value={employeeTimesheetId} onChange={handleMSCCChange} autoComplete="off" />
-                            <ErrorLabel content={errorOnMSCC} />
                         </div>
                     </div>
                     <div className="row">
@@ -544,14 +465,13 @@ function GeneralTab(props) {
                     </div>
                     <div className="row">
                         {/* Ngày sinh */}
-                        <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnBrithdate && "has-error"}`}>
-                            <label >{translate('human_resource.profile.date_birth')}<span className="text-red">*</span></label>
+                        <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12 `}>
+                            <label >{translate('human_resource.profile.date_birth')}</label>
                             <DatePicker
                                 id={`brithday${id}`}
                                 value={birthdate}
                                 onChange={handleBrithdayChange}
                             />
-                            <ErrorLabel content={errorOnBrithdate} />
                         </div>
                         {/* Nơi sinh */}
                         <div className="form-group col-lg-6 col-md-6 col-ms-12 col-xs-12">
@@ -599,10 +519,9 @@ function GeneralTab(props) {
                 <div className="form-group col-lg-12 col-md-12 col-ms-12 col-xs-12">
                     <div className="row">
                         {/* Email công ty */}
-                        <div className={`form-group col-lg-4 col-md-4 col-ms-12 col-xs-12 ${errorOnEmailCompany && "has-error"}`}>
-                            <label htmlFor="emailCompany">{translate('human_resource.profile.email')}<span className="text-red">*</span></label>
+                        <div className={`form-group col-lg-4 col-md-4 col-ms-12 col-xs-12`}>
+                            <label htmlFor="emailCompany">{translate('human_resource.profile.email')}</label>
                             <input type="email" className="form-control" placeholder={translate('human_resource.profile.email_company')} name="emailInCompany" value={emailInCompany} onChange={handleEmailCompanyChange} autoComplete="off" />
-                            <ErrorLabel content={errorOnEmailCompany} />
                         </div>
                         {/* Ngày bắt đầu làm việc */}
                         <div className={`form-group col-lg-4 col-md-4 col-ms-12 col-xs-12 ${errorOnStartingDate && "has-error"}`}>
@@ -628,26 +547,23 @@ function GeneralTab(props) {
                     </div>
                     <div className="row">
                         {/* Số CMND */}
-                        <div className={`form-group col-lg-4 col-md-4 col-ms-12 col-xs-12 ${errorOnCMND && "has-error"}`}>
-                            <label htmlFor="CMND">{translate('human_resource.profile.id_card')}<span className="text-red">*</span></label>
+                        <div className={`form-group col-lg-4 col-md-4 col-ms-12 col-xs-12`}>
+                            <label htmlFor="CMND">{translate('human_resource.profile.id_card')}</label>
                             <input type="number" className="form-control" name="identityCardNumber" value={identityCardNumber} onChange={handleCMNDChange} placeholder={translate('human_resource.profile.id_card')} autoComplete="off" />
-                            <ErrorLabel content={errorOnCMND} />
                         </div>
                         {/* Ngày cấp */}
-                        <div className={`form-group col-lg-4 col-md-4 col-ms-12 col-xs-12 ${errorOnDateCMND && "has-error"}`}>
-                            <label >{translate('human_resource.profile.date_issued')}<span className="text-red">*</span></label>
+                        <div className={`form-group col-lg-4 col-md-4 col-ms-12 col-xs-12`}>
+                            <label >{translate('human_resource.profile.date_issued')}</label>
                             <DatePicker
                                 id={`dateCMND${id}`}
                                 value={identityCardDate}
                                 onChange={handleDateCMNDChange}
                             />
-                            <ErrorLabel content={errorOnDateCMND} />
                         </div>
                         {/* Nơi cấp */}
-                        <div className={`form-group col-lg-4 col-md-4 col-ms-12 col-xs-12 ${errorOnAddressCMND && "has-error"}`}>
-                            <label htmlFor="addressCMND">{translate('human_resource.profile.issued_by')}<span className="text-red">*</span></label>
+                        <div className={`form-group col-lg-4 col-md-4 col-ms-12 col-xs-12`}>
+                            <label htmlFor="addressCMND">{translate('human_resource.profile.issued_by')}</label>
                             <input type="text" className="form-control" name="identityCardAddress" value={identityCardAddress} onChange={handleAddressCMNDChange} placeholder={translate('human_resource.profile.issued_by')} autoComplete="off" />
-                            <ErrorLabel content={errorOnAddressCMND} />
                         </div>
                     </div>
                     <div className="row">

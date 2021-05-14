@@ -2,11 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { ErrorLabel } from '../../../../../common-components';
-
-import ValidationHelper from '../../../../../helpers/validationHelper';
 function ContactTab(props) {
-
     const [state, setState] = useState({
         phoneNumber: ""
     });
@@ -37,11 +33,6 @@ function ContactTab(props) {
                 temporaryResidenceCity: props.employee ? props.employee.temporaryResidenceCity : "",
                 temporaryResidenceDistrict: props.employee ? props.employee.temporaryResidenceDistrict : "",
                 temporaryResidenceWard: props.employee ? props.employee.temporaryResidenceWard : "",
-
-                errorOnPhoneNumber: undefined,
-                errorOnTemporaryResidence: undefined,
-                errorOnPersonalEmail: undefined,
-                errorOnPersonalEmail2: undefined
             }
         })
     }, [props.id])
@@ -49,8 +40,8 @@ function ContactTab(props) {
     const { translate } = props;
     const { id, phoneNumber2, phoneNumber, personalEmail, personalEmail2, homePhone, emergencyContactPerson,
         relationWithEmergencyContactPerson, emergencyContactPersonAddress, emergencyContactPersonPhoneNumber, emergencyContactPersonHomePhone, emergencyContactPersonEmail, permanentResidence,
-        permanentResidenceWard, permanentResidenceDistrict, permanentResidenceCity, permanentResidenceCountry, temporaryResidence, temporaryResidenceWard, errorOnEmergencyContactPersonEmail,
-        temporaryResidenceDistrict, temporaryResidenceCity, temporaryResidenceCountry, errorOnPhoneNumber, errorOnTemporaryResidence, errorOnPersonalEmail, errorOnPersonalEmail2 } = state;
+        permanentResidenceWard, permanentResidenceDistrict, permanentResidenceCity, permanentResidenceCountry, temporaryResidence, temporaryResidenceWard,
+        temporaryResidenceDistrict, temporaryResidenceCity, temporaryResidenceCountry } = state;
 
     /** Function lưu các trường thông tin vào state */
     const handleChange = (e) => {
@@ -67,116 +58,61 @@ function ContactTab(props) {
     /** Function bắt sự kiện thay đổi điện thoại đi động 1 */
     const handlePhoneChange = (e) => {
         const { value } = e.target;
-        validatePhone(value, true);
-    }
-
-    const validatePhone = (value, willUpdateState = true) => {
-        const { translate } = props;
-        let { message } = ValidationHelper.validateEmpty(translate, value.toString());
-
-        if (willUpdateState) {
-            setState(state => {
-                return {
-                    ...state,
-                    errorOnPhoneNumber: message,
-                    phoneNumber: value,
-                }
-            });
-            props.handleChange("phoneNumber", value);
-        }
-        return message === undefined;
+        setState(state => {
+            return {
+                ...state,
+                phoneNumber: value,
+            }
+        });
+        props.handleChange("phoneNumber", value);
     }
 
     /** Function bắt sự kiện thay đổi emailPersonal 1  */
     const handleEmail1Change = (e) => {
         const { value } = e.target;
-        validateEmail1(value, true);
-    }
-
-    const validateEmail1 = (value, willUpdateState = true) => {
-        const { translate } = props;
-        let { message } = ValidationHelper.validateEmail(translate, value);
-
-        if (willUpdateState) {
-            setState(state => {
-                return {
-                    ...state,
-                    errorOnPersonalEmail: (value && value.length !== 0) ? message : undefined,
-                    personalEmail: value,
-                }
-            });
-            props.handleChange("personalEmail", value);
-        }
-        return message === undefined;
+        setState(state => {
+            return {
+                ...state,
+                personalEmail: value,
+            }
+        });
+        props.handleChange("personalEmail", value);
     }
 
     /** Function bắt sự kiện thay đổi emailPersonal 2 */
     const handleEmail2Change = (e) => {
         const { value } = e.target;
-        validateEmail2(value, true);
-    }
-
-    const validateEmail2 = (value, willUpdateState = true) => {
-        const { translate } = props;
-        let { message } = ValidationHelper.validateEmail(translate, value);
-
-        if (willUpdateState) {
-            setState(state => {
-                return {
-                    ...state,
-                    errorOnPersonalEmail2: (value && value.length !== 0) ? message : undefined,
-                    personalEmail2: value,
-                }
-            });
-            props.handleChange("personalEmail2", value);
-        }
-        return message === undefined;
+        setState(state => {
+            return {
+                ...state,
+                personalEmail2: value,
+            }
+        });
+        props.handleChange("personalEmail2", value);
     }
 
     /** Function bắt sự kiện thay đổi email người liên hệ  */
     const handleEmergencyContactPersonEmailChange = (e) => {
         const { value } = e.target;
-        validateEmergencyContactPersonEmail(value, true);
-    }
-
-    const validateEmergencyContactPersonEmail = (value, willUpdateState = true) => {
-        const { translate } = props;
-        let { message } = ValidationHelper.validateEmail(translate, value);
-
-        if (willUpdateState) {
-            setState(state => {
-                return {
-                    ...state,
-                    errorOnEmergencyContactPersonEmail: (value && value.length !== 0) ? message : undefined,
-                    emergencyContactPersonEmail: value,
-                }
-            });
-            props.handleChange("emergencyContactPersonEmail", value);
-        }
-        return message === undefined;
+        setState(state => {
+            return {
+                ...state,
+                emergencyContactPersonEmail: value,
+            }
+        });
+        props.handleChange("emergencyContactPersonEmail", value);
     }
 
     /** Function bắt sự kiện thay đổi địa chỉ chỗ ở hiện tại */
     const handleNowAddressChange = (e) => {
         const { value } = e.target;
-        validateAddress(value, true);
-    }
-
-    const validateAddress = (value, willUpdateState = true) => {
-        const { translate } = props;
-        let { message } = ValidationHelper.validateEmpty(translate, value);
-
-        if (willUpdateState) {
-            setState(state => {
-                return {
-                    ...state,
-                    errorOnTemporaryResidence: message,
-                    temporaryResidence: value,
-                }
-            });
-            props.handleChange("temporaryResidence", value);
-        }
-        return message === undefined;
+        setState(state => {
+            return {
+                ...state,
+                temporaryResidence: value,
+            }
+        });
+        props.handleChange("temporaryResidence", value);
     }
 
     return (
@@ -184,10 +120,9 @@ function ContactTab(props) {
             <div className="box-body">
                 <div className="row">
                     {/* Điện thoại cá nhân 1 */}
-                    <div className={`form-group col-md-4 ${errorOnPhoneNumber && "has-error"}`}>
-                        <label >{translate('human_resource.profile.mobile_phone_1')}<span className="text-red">*</span></label>
+                    <div className={`form-group col-md-4`}>
+                        <label >{translate('human_resource.profile.mobile_phone_1')}</label>
                         <input type="number" className="form-control" name="phoneNumber" value={phoneNumber} onChange={handlePhoneChange} placeholder={translate('human_resource.profile.mobile_phone_1')} autoComplete="off" />
-                        <ErrorLabel content={errorOnPhoneNumber} />
                     </div>
                     {/* Điện thoại cá nhân 2 */}
                     <div className="form-group col-md-4">
@@ -197,16 +132,14 @@ function ContactTab(props) {
                 </div>
                 <div className="row">
                     {/* Email cá nhân 1 */}
-                    <div className={`form-group col-md-4 ${errorOnPersonalEmail && "has-error"}`}>
+                    <div className={`form-group col-md-4 `}>
                         <label >{translate('human_resource.profile.personal_email_1')}</label>
                         <input type="text" className="form-control" name="personalEmail" value={personalEmail ? personalEmail : ''} onChange={handleEmail1Change} placeholder={translate('human_resource.profile.personal_email_1')} autoComplete="off" />
-                        <ErrorLabel content={errorOnPersonalEmail} />
                     </div>
                     {/* Email cá nhân 2 */}
-                    <div className={`form-group col-md-4 ${errorOnPersonalEmail2 && "has-error"}`}>
+                    <div className={`form-group col-md-4`}>
                         <label >{translate('human_resource.profile.personal_email_2')}</label>
                         <input type="text" className="form-control" name="personalEmail2" value={personalEmail2 ? personalEmail2 : ''} onChange={handleEmail2Change} placeholder={translate('human_resource.profile.personal_email_2')} autoComplete="off" />
-                        <ErrorLabel content={errorOnPersonalEmail2} />
                     </div>
                     {/* Điện thoại cố định */}
                     <div className="form-group col-md-4">
@@ -248,10 +181,9 @@ function ContactTab(props) {
                             <input type="text" className="form-control" name="emergencyContactPersonHomePhone" value={emergencyContactPersonHomePhone ? emergencyContactPersonHomePhone : ''} onChange={handleChange} placeholder={translate('human_resource.profile.home_phone')} autoComplete="off" />
                         </div>
                         {/* Email */}
-                        <div className={`form-group col-md-4 ${errorOnEmergencyContactPersonEmail && "has-error"}`}>
+                        <div className={`form-group col-md-4`}>
                             <label >{translate('human_resource.profile.email')}</label>
                             <input type="text" className="form-control" name="emergencyContactPersonEmail" value={emergencyContactPersonEmail ? emergencyContactPersonEmail : ''} onChange={handleEmergencyContactPersonEmailChange} placeholder={translate('human_resource.profile.email')} autoComplete="off" />
-                            <ErrorLabel content={errorOnEmergencyContactPersonEmail} />
                         </div>
                     </div>
                 </fieldset>
@@ -292,10 +224,9 @@ function ContactTab(props) {
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border"><h4 className="box-title"> {translate('human_resource.profile.current_residence')}</h4></legend>
                             {/* Địa chỉ hiện tại */}
-                            <div className={`form-group ${errorOnTemporaryResidence && "has-error"}`}>
-                                <label >{translate('human_resource.profile.address')}<span className="text-red">*</span></label>
+                            <div className={`form-group`}>
+                                <label >{translate('human_resource.profile.address')}</label>
                                 <input type="text" className="form-control " name="temporaryResidence" value={temporaryResidence ? temporaryResidence : ''} onChange={handleNowAddressChange} placeholder={translate('human_resource.profile.address')} autoComplete="off" />
-                                <ErrorLabel content={errorOnTemporaryResidence} />
                             </div>
                             {/* Xã/Phường */}
                             <div className="form-group">
