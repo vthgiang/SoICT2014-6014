@@ -72,7 +72,6 @@
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
     "socket.io-client": "^2.3.1",
-    "sortablejs": "^1.10.2",
     "sweetalert2": "^9.15.2",
     "use-deep-compare-effect": "^1.6.1",
     "xlsx": "^0.16.3"
