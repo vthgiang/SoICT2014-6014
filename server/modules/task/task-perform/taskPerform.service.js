@@ -2601,7 +2601,7 @@ exports.editTaskByResponsibleEmployees = async (portal, data, taskId) => {
                 name: name,
                 description: description,
                 progress: progress,
-                taskProject: taskProject,
+                taskProject: taskProject ?? undefined,
             },
         },
         { $new: true }
@@ -2877,7 +2877,7 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
                 status: status[0],
                 formula: formula,
                 parent: parent,
-                taskProject: taskProject,
+                taskProject: taskProject ?? undefined,
 
                 startDate: new Date(startDate),
                 endDate: new Date(endDate),
@@ -2917,7 +2917,7 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
 
     // tìm ra info ở thông tin chung bị xóa
     let deletedInfoItems = task.taskInformations.filter(x =>
-        listInfoTask.find(e => String(e._id) === String(x._id)) === undefined // không tìm được phần tử nào có id giống với x._id, tức là x là deleted info 
+        listInfoTask?.length > 0 && listInfoTask.find(e => String(e._id) === String(x._id)) === undefined // không tìm được phần tử nào có id giống với x._id, tức là x là deleted info 
     ).map(el => el._id);
 
     let evaluation = task.evaluations.find(e => String(e._id) === String(evaluateId));
