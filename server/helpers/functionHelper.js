@@ -72,3 +72,22 @@ exports.decryptMessage = (encryptedMessage) => {
 
     return decryptedMessage.toString('utf-8');
 }
+
+/** Hàm lọc url image trong mô tả công việc */
+exports.filterImageUrlInString = (text) => {
+    let imgRegex = /(<img src="upload\/private\/[^\s]+>)/g;
+    let urlRegex = /(upload\/private\/[^\s]+).png/g;
+    let imgs = text?.match(imgRegex);
+    let urls = [];
+
+    if (imgs?.length > 0) {
+        imgs.map((item) => {
+            let url = item.match(urlRegex);
+            if (url?.[0]) {
+                urls.push(url[0]);
+            }
+        });
+    }
+
+    return urls
+}

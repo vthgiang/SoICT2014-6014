@@ -9,6 +9,7 @@ import { formatDate } from '../../../../helpers/formatDate';
 import { convertDateTime, convertDepartmentIdToDepartmentName, convertUserIdToUserName, formatTime, getListDepartments } from './functionHelper';
 import { getStorage } from '../../../../config';
 import ModalSalaryMembersEdit from './modalSalaryMembersEdit';
+import moment from 'moment';
 
 const ProjectEditForm = (props) => {
     const { translate, user, projectEdit, projectEditId, currentProjectTasks } = props;
@@ -329,45 +330,60 @@ const ProjectEditForm = (props) => {
 
                             <div className="row">
                                 <div className="form-group col-md-6">
-                                    <label>{translate('project.startDate')}<span className="text-red">*</span></label>
-                                    <DatePicker
-                                        id={`edit-project-start-date`}
-                                        value={startDate}
-                                        onChange={(e) => handleChangeForm(e, 'startDate')}
-                                        dateFormat="day-month-year"
-                                        disabled={false}
-                                    />
+                                    <label>{translate('project.startDate')}<span className="text-red">* </span></label>
+                                    {
+                                        isTasksListEmpty ?
+                                            <DatePicker
+                                                id={`edit-project-start-date`}
+                                                value={startDate}
+                                                onChange={(e) => handleChangeForm(e, 'startDate')}
+                                                dateFormat="day-month-year"
+                                            />
+                                            : startDate
+                                    }
                                 </div>
                                 <div className="form-group col-md-6">
-                                    <label>Thời gian bắt đầu dự án<span className="text-red">*</span></label>
-                                    <TimePicker
-                                        id={`edit-project-start-time`}
-                                        value={startTime}
-                                        onChange={(e) => setStartTime(e)}
-                                        disabled={false}
-                                    />
+                                    <label>Thời gian bắt đầu dự án<span className="text-red">* </span></label>
+                                    {
+                                        isTasksListEmpty ?
+                                            <TimePicker
+                                                id={`edit-project-start-time`}
+                                                value={startTime}
+                                                onChange={(e) => setStartTime(e)}
+                                                disabled={!isTasksListEmpty}
+                                            />
+                                            : startTime
+                                    }
                                 </div>
                             </div>
 
                             <div className="row">
                                 <div className="form-group col-md-6">
-                                    <label>{translate('project.endDate')}<span className="text-red">*</span></label>
-                                    <DatePicker
-                                        id={`edit-project-end-date`}
-                                        value={endDate}
-                                        onChange={(e) => handleChangeForm(e, 'endDate')}
-                                        dateFormat="day-month-year"
-                                        disabled={false}
-                                    />
+                                    <label>{translate('project.endDate')}<span className="text-red">* </span></label>
+                                    {
+                                        isTasksListEmpty ?
+                                            <DatePicker
+                                                id={`edit-project-end-date`}
+                                                value={endDate}
+                                                onChange={(e) => handleChangeForm(e, 'endDate')}
+                                                dateFormat="day-month-year"
+                                                disabled={!isTasksListEmpty}
+                                            />
+                                            : endDate
+                                    }
                                 </div>
                                 <div className="form-group col-md-6">
-                                    <label>Thời gian dự kiến kết thúc dự án<span className="text-red">*</span></label>
-                                    <TimePicker
-                                        id={`edit-project-end-time`}
-                                        value={endTime}
-                                        onChange={(e) => setEndTime(e)}
-                                        disabled={false}
-                                    />
+                                    <label>Thời gian dự kiến kết thúc dự án<span className="text-red">* </span></label>
+                                    {
+                                        isTasksListEmpty ?
+                                            <TimePicker
+                                                id={`edit-project-end-time`}
+                                                value={endTime}
+                                                onChange={(e) => setEndTime(e)}
+                                                disabled={!isTasksListEmpty}
+                                            />
+                                            : endTime
+                                    }
                                 </div>
                             </div>
 

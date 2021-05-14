@@ -91,17 +91,20 @@ const CustomerSchema = new Schema({
         default: false,
     },
     // diem xep hang khach hang
-    rankPoint: [
+    rankPoints: [
         {
             point: {
                 type: Number
             },
             expirationDate: {
                 type: Date
-            }
+            },
+            
+          
         }
-    ]
-    ,
+    ],
+
+    
     files: [{ // Tài liệu liên quan tới khách hàng
         creator: {
             type: Schema.Types.ObjectId,
@@ -155,7 +158,7 @@ const CustomerSchema = new Schema({
         type: String,
     }
     ,
-    promotion: [{// danh sach khuyen mai cua khach hang 
+    promotions: [{// danh sach khuyen mai cua khach hang 
         value: { type: Number },
         description: { type: String },
         minimumOrderValue: { type: Number },

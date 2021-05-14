@@ -12,6 +12,7 @@ const ModalExcelImport = (props) => {
     const [state, setState] = useState({});
     const { translate, project } = props;
     const projectDetail = getCurrentProjectDetails(project);
+    const [currentMessageError, setCurrentMessageError] = useState('');
 
     const dataImportTemplate = {
         fileName: 'Thông tin công việc dự án',
@@ -145,6 +146,30 @@ const ModalExcelImport = (props) => {
         });
     }
 
+    const handleCheckDataSuitable = (data) => {
+        for (let dataItem of data) {
+            for (let preItem of dataItem.preceedingTasks) {
+                if (dataItem.preceedingTasks.filter((dataItemPreceedingItem => preItem === dataItemPreceedingItem)).length > 1) {
+                    setCurrentMessageError(`Danh sách công việc tiền nhiệm đang có sự trùng nhau: ${dataItem.preceedingTasks.join(', ')}`);
+                    return;
+                }
+            }
+            for (let resItem of dataItem.emailResponsibleEmployees) {
+                if (dataItem.emailResponsibleEmployees.filter((dataItemEmailResItem => resItem === dataItemEmailResItem)).length > 1) {
+                    setCurrentMessageError(`Danh sách email responsbile đang có sự trùng nhau: ${dataItem.emailResponsibleEmployees.join(', ')}`);
+                    return;
+                }
+            }
+            for (let accItem of dataItem.emailAccountableEmployees) {
+                if (dataItem.emailAccountableEmployees.filter((dataItemEmailAccItem => accItem === dataItemEmailAccItem)).length > 1) {
+                    setCurrentMessageError(`Danh sách email accountable đang có sự trùng nhau: ${dataItem.emailAccountableEmployees.join(', ')}`);
+                    return;
+                }
+            }
+        }
+        setCurrentMessageError(``);
+    }
+
     const getDataImportCPM = (data) => {
         // console.log('data', data)
         let resultData = [];
@@ -152,7 +177,6 @@ const ModalExcelImport = (props) => {
 
         let dataIndex = 0;
         while (dataIndex < data.length) {
-            console.log('dataIndex', dataIndex, data[dataIndex], resultData)
             const { code, name, predecessors, estimateNormalTime, estimateOptimisticTime, emailResponsibleEmployees, emailAccountableEmployees, totalResWeight } = data[dataIndex];
             if (!code && !name && !estimateOptimisticTime && !estimateNormalTime && !totalResWeight) {
                 // dataIndex hiện tại sẽ làm bộ đếm để lưu lại index hiện tại của task mình đang xét
@@ -164,7 +188,7 @@ const ModalExcelImport = (props) => {
                     // Nếu các thành phần trên rỗng thì mảng nào push mảng nấy
                     if (!(!data[dataAdditionRowIndex].code && !data[dataAdditionRowIndex].name
                         && !data[dataAdditionRowIndex].estimateOptimisticTime && !data[dataAdditionRowIndex].estimateNormalTime &&
-                        !data[dataAdditionRowIndex].totalResWeight)) {
+                        !data[dataAdditionRowIndex].totalResWeight && !data[dataAdditionRowIndex].name)) {
                         break;
                     }
                     predecessors && formatPreceedingTasks.push(predecessors);
@@ -195,6 +219,8 @@ const ModalExcelImport = (props) => {
                 dataIndex++;
             }
         }
+
+        handleCheckDataSuitable(resultData);
         return resultData;
     }
 
@@ -205,8 +231,9 @@ const ModalExcelImport = (props) => {
                 formID="form-import-cpm-data"
                 title={translate('manage_user.import_title')}
                 func={importCPM}
-                hasSaveButton={state.data && state.data.length > 0}
+                disableSubmit={!(state.data && state.data.length > 0 && !currentMessageError)}
                 size={75}
+                resetOnClose={true}
             >
                 <div className="row">
                     <div className="col-md-6">
@@ -243,6 +270,11 @@ const ModalExcelImport = (props) => {
                                 handleImportExcel={handleImport}
                             />
                         </div>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-md-6">
+                        <span style={{ color: 'red' }}>{currentMessageError}</span>
                     </div>
                 </div>
             </DialogModal>

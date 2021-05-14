@@ -9,6 +9,7 @@ import { UserActions } from '../../../super-admin/user/redux/actions';
 import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
 import { getStorage } from '../../../../config';
 import PromotionAddForm from './promotionAddForm';
+import { formatFunction } from '../../common';
 
 
 
@@ -50,7 +51,78 @@ function LoyalCustomerHomePage(props) {
     const search = () => {
         props.getLoyalCustomers({ customerCode });
     }
+    let listCustomerRankPoints;
+    if (crm && crm.customerRankPoints) listCustomerRankPoints = crm.customerRankPoints.list;
 
+    const formatRankPoint = (point) => {
+        if (!listCustomerRankPoints) return 'Chưa có phân hạng khách hàng';
+        let index;
+        for (let i = 0; i < listCustomerRankPoints.length; i++) {
+            if (point >= listCustomerRankPoints[i].point) {
+                index = i;
+                break;
+
+            }
+
+        }
+        if (index != undefined) return listCustomerRankPoints[index].name
+        else return 'Chưa có phân hạng khách hàng'
+    }
+
+    //xu ly xuat bao cao
+
+    const convertDataToExportData = (data) => {
+        if (data) {
+            data = data.map((o, index) => ({
+                STT: index + 1,
+                customerCode: o.customer ? o.customer.code : '',
+                customerName: o.customer? o.customer.name:'',
+                customerRank: formatRankPoint(o.rankPoint),
+                customerPoint: o.rankPoint,
+                totalOrder: o.totalOrder ? o.totalOrder : '',
+                totalOrderValue: o.totalOrderValue ? `${o.totalOrderValue} VND` : '0 VND',
+                totalPromotion: o.totalPromotion ? o.totalPromotion : '',
+                
+
+            }))
+        }
+
+        let exportData = {
+            fileName: 'Thông tin khách hàng thân thiết',
+            dataSheets: [
+                {
+                    sheetName: 'sheet1',
+                    sheetTitle: 'Thông tin khách hàng thân thiết',
+                    tables: [
+                        {
+                            columns: [
+                                { key: "STT", value: 'STT', width: 7 },
+                                { key: "customerCode", value: 'Mã khách hàng' },
+                                { key: "customerName", value: "Tên khách hàng" },
+                                { key: "customerRank", value: "Xếp hạng khách hàng", width: 25 },
+                                { key: "customerPoint", value: "Điểm tích lúy" },
+                                { key: "totalOrder", value: "Tổng số đơn hàng" },
+                                { key: "totalOrderValue", value: "Tổng giá trị đơn hàng " },
+                                { key: "totalPromotion", value: "Số khuyến mãi hiện có", width: 25 },
+                               
+
+                            ],
+                            data: data,
+                        }
+                    ]
+                }
+            ]
+        }
+        return exportData;
+
+    }
+
+   
+    let exportData = [];
+    if (loyalCustomers && loyalCustomers.list && loyalCustomers.list.length > 0) {
+        exportData = convertDataToExportData(loyalCustomers.list);
+
+    }
 
     return (
         <div className="box">
@@ -60,7 +132,7 @@ function LoyalCustomerHomePage(props) {
                 <div className="form-inline">
                     {/* export excel danh sách khách hàng */}
                     <ExportExcel id="export-customer" buttonName={translate('human_resource.name_button_export')}
-                        //exportData={exportData}
+                        exportData={exportData}
                         style={{ marginTop: 0 }} />
 
                 </div>
@@ -68,12 +140,12 @@ function LoyalCustomerHomePage(props) {
                 <div className="form-inline" >
                     <div className="form-group">
                         <label className="form-control-static">{'Mã khách hàng'}</label>
-                        <input className="form-control" type="text" name="customerCode" placeholder={`Mã khách hàng`} onChange ={handleSearchByCustomerCode} />
+                        <input className="form-control" type="text" name="customerCode" placeholder={`Mã khách hàng`} onChange={handleSearchByCustomerCode} />
                     </div>
                     <div className="form-group" >
                         <label></label>
                         <button type="button" className="btn btn-success"
-                             onClick={search} 
+                            onClick={search}
                             title={'Tìm kiếm'}>{'Tìm kiếm'}</button>
                     </div>
                 </div>
@@ -86,6 +158,7 @@ function LoyalCustomerHomePage(props) {
                             <th>{"Số thứ tự"}</th>
                             <th>{"Mã khách hàng"}</th>
                             <th>{"Tên khách hàng"}</th>
+                            <th>{"Xếp hạng khách hàng"}</th>
                             <th>{"Điểm số"}</th>
                             <th>{"Tổng số đơn hàng"}</th>
                             <th>{"Tổng giá trị đơn hàng"}</th>
@@ -117,7 +190,7 @@ function LoyalCustomerHomePage(props) {
                                     <td>{index + 1}</td>
                                     <td>{o.customer.code}</td>
                                     <td>{o.customer.name}</td>
-
+                                    <td>{formatRankPoint(o.rankPoint)}</td>
                                     <td>{o.rankPoint}</td>
                                     <td>{o.totalOrder}</td>
                                     <td>{`${o.totalOrderValue} VND`}</td>

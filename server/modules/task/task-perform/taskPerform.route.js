@@ -5,7 +5,7 @@ const PerformTaskController = require("./taskPerform.controller");
 
 
 router.get('/tasks/:taskId', auth, PerformTaskController.getTaskById);
-router.post('/tasks/:taskId', auth, PerformTaskController.editTask);
+router.post('/tasks/:taskId', auth, uploadFile([{ name: 'files', path: '/files/task-description' }], 'array'), PerformTaskController.editTask);
 
 
 router.get('/task-timesheet-logs', auth, PerformTaskController.getTaskTimesheetLog);

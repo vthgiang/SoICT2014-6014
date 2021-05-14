@@ -16,7 +16,7 @@ exports.getEmployeeProfile = async (req, res) => {
             inforEmployee = await EmployeeService.getEmployeeProfile(req.portal, user.email);
         } else { // Theo employeeId
             let employee = await EmployeeService.getEmployeeInforById(req.portal, req.params.id);
-            inforEmployee = await EmployeeService.getEmployeeProfile(req.portal, employee.emailInCompany);
+            inforEmployee = await EmployeeService.getEmployeeProfile(req.portal, null, employee._id);
         };
         await Log.info(req.user.email, 'GET_INFOR_PERSONAL', req.portal);
         res.status(200).json({
@@ -170,132 +170,35 @@ exports.createEmployee = async (req, res) => {
 
         // Kiểm tra dữ liệu truyền vào
         if (req.body.employeeNumber === undefined || req.body.employeeNumber.trim() === "") {
-            await Log.error(req.user.email, 'CREATE_EMPLOYEE', req.portal);
-            res.status(400).json({
-                success: false,
-                messages: ["employee_number_required"],
-                content: {
-                    inputData: req.body
-                }
-            });
-        } else if (req.body.emailInCompany === undefined || req.body.emailInCompany.trim() === "") {
-            await Log.error(req.user.email, 'CREATE_EMPLOYEE', req.portal);
-            res.status(400).json({
-                success: false,
-                messages: ["email_in_company_required"],
-                content: {
-                    inputData: req.body
-                }
-            });
-        } else if (req.body.employeeTimesheetId === undefined || req.body.employeeTimesheetId.trim() === "") {
-            await Log.error(req.user.email, 'CREATE_EMPLOYEE', req.portal);
-            res.status(400).json({
-                success: false,
-                messages: ["employee_timesheet_id_required"],
-                content: {
-                    inputData: req.body
-                }
-            });
+            throw ["employee_number_required"];
         } else if (req.body.fullName === undefined || req.body.fullName.trim() === "") {
-            await Log.error(req.user.email, 'CREATE_EMPLOYEE', req.portal);
-            res.status(400).json({
-                success: false,
-                messages: ["full_name_required"],
-                content: {
-                    inputData: req.body
-                }
-            });
-        } else if (req.body.birthdate === undefined || req.body.birthdate.trim() === "") {
-            await Log.error(req.user.email, 'CREATE_EMPLOYEE', req.portal);
-            res.status(400).json({
-                success: false,
-                messages: ["birthdate_required"],
-                content: {
-                    inputData: req.body
-                }
-            });
-        } else if (req.body.identityCardNumber === undefined || req.body.identityCardNumber.trim() === "") {
-            await Log.error(req.user.email, 'CREATE_EMPLOYEE', req.portal);
-            res.status(400).json({
-                success: false,
-                messages: ["identity_card_number_required"],
-                content: {
-                    inputData: req.body
-                }
-            });
-        } else if (req.body.identityCardDate === undefined || req.body.identityCardDate.trim() === "") {
-            await Log.error(req.user.email, 'CREATE_EMPLOYEE', req.portal);
-            res.status(400).json({
-                success: false,
-                messages: ["identity_card_date_required"],
-                content: {
-                    inputData: req.body
-                }
-            });
-        } else if (req.body.identityCardAddress === undefined || req.body.identityCardAddress.trim() === "") {
-            await Log.error(req.user.email, 'CREATE_EMPLOYEE', req.portal);
-            res.status(400).json({
-                success: false,
-                messages: ["identity_card_address_required"],
-                content: {
-                    inputData: req.body
-                }
-            });
-        } else if (req.body.phoneNumber === undefined || req.body.phoneNumber.trim() === "") {
-            await Log.error(req.user.email, 'CREATE_EMPLOYEE', req.portal);
-            res.status(400).json({
-                success: false,
-                messages: ["phone_number_required"],
-                content: {
-                    inputData: req.body
-                }
-            });
-        } else if (req.body.temporaryResidence === undefined || req.body.temporaryResidence.trim() === "") {
-            await Log.error(req.user.email, 'CREATE_EMPLOYEE', req.portal);
-            res.status(400).json({
-                success: false,
-                messages: ["temporary_residence_required"],
-                content: {
-                    inputData: req.body
-                }
-            });
+            throw ["full_name_required"]
         } else {
             // Kiểm tra sự tồn tại của mã nhân viên
             let checkMSNV = await EmployeeService.checkEmployeeExisted(req.portal, req.body.employeeNumber, req.user.company._id);
             if (checkMSNV === true) {
-                await Log.error(req.user.email, 'CREATE_EMPLOYEE', req.portal);
-                res.status(400).json({
-                    success: false,
-                    messages: ["employee_number_have_exist"],
-                    content: {
-                        inputData: req.body
-                    }
-                });
+                throw ["employee_number_have_exist"];
             } else {
                 // Kiểm tra sự tồn tại của email công ty nhân viên
                 let checkEmail = await EmployeeService.checkEmployeeCompanyEmailExisted(req.portal, req.body.emailInCompany);
                 if (checkEmail === true) {
-                    await Log.error(req.user.email, 'CREATE_EMPLOYEE', req.portal);
-                    res.status(400).json({
-                        success: false,
-                        messages: ["email_in_company_have_exist"],
-                        content: {
-                            inputData: req.body
-                        }
-                    });
+                    throw ["email_in_company_have_exist"];
                 } else {
                     let data = await EmployeeService.createEmployee(req.portal, req.body, req.user.company._id, fileInfor);
-                    let checkUser = await UserService.checkUserExited(req.portal, req.body.emailInCompany);
-                    if (checkUser === false) {
-                        let userInfo = {
-                            email: req.body.emailInCompany,
-                            name: req.body.fullName
+                    if (req.body.emailInCompany) {
+                        let checkUser = await UserService.checkUserExited(req.portal, req.body.emailInCompany);
+                        if (checkUser === false) {
+                            let userInfo = {
+                                email: req.body.emailInCompany,
+                                name: req.body.fullName
+                            }
+                            let user = await UserService.createUser(req.portal, userInfo, req.user.company._id);
+                            for(let x in req.body.roles){
+                                await RoleService.createRelationshipUserRole(req.portal,user._id,req.body.roles[x])
+                            };
                         }
-                        let user = await UserService.createUser(req.portal, userInfo, req.user.company._id);
-                        for(let x in req.body.roles){
-                            await RoleService.createRelationshipUserRole(req.portal,user._id,req.body.roles[x])
-                        };
                     }
+                    
                     await Log.info(req.user.email, 'CREATE_EMPLOYEE', req.portal);
                     res.status(200).json({
                         success: true,
@@ -351,137 +254,42 @@ exports.updateEmployeeInformation = async (req, res) => {
         };
         // Kiểm tra dữ liệu truyền vào
         if (req.body.employee.employeeNumber === undefined || req.body.employee.employeeNumber.trim() === "") {
-            await Log.error(req.user.email, 'EDIT_EMPLOYEE', req.portal);
-            res.status(400).json({
-                success: false,
-                messages: ["employee_number_required"],
-                content: {
-                    inputData: req.body
-                }
-            });
-        } else if (req.body.employee.emailInCompany === undefined || req.body.employee.emailInCompany.trim() === "") {
-            await Log.error(req.user.email, 'EDIT_EMPLOYEE', req.portal);
-            res.status(400).json({
-                success: false,
-                messages: ["email_in_company_required"],
-                content: {
-                    inputData: req.body
-                }
-            });
-        } else if (req.body.employee.employeeTimesheetId === undefined || req.body.employee.employeeTimesheetId.trim() === "") {
-            await Log.error(req.user.email, 'EDIT_EMPLOYEE', req.portal);
-            res.status(400).json({
-                success: false,
-                messages: ["employee_timesheet_id_required"],
-                content: {
-                    inputData: req.body
-                }
-            });
-        } else if (req.body.employee.fullName === undefined || req.body.employee.fullName.trim() === "") {
-            await Log.error(req.user.email, 'EDIT_EMPLOYEE', req.portal);
-            res.status(400).json({
-                success: false,
-                messages: ["full_name_required"],
-                content: {
-                    inputData: req.body
-                }
-            });
-        } else if (req.body.employee.birthdate === undefined || req.body.employee.birthdate.trim() === "") {
-            await Log.error(req.user.email, 'EDIT_EMPLOYEE', req.portal);
-            res.status(400).json({
-                success: false,
-                messages: ["birthdate_required"],
-                content: {
-                    inputData: req.body
-                }
-            });
-        } else if (req.body.employee.identityCardNumber.toString() === undefined || req.body.employee.identityCardNumber.toString().trim() === "") {
-            await Log.error(req.user.email, 'EDIT_EMPLOYEE', req.portal);
-            res.status(400).json({
-                success: false,
-                messages: ["identity_card_number_required"],
-                content: {
-                    inputData: req.body
-                }
-            });
-        } else if (req.body.employee.identityCardDate === undefined || req.body.employee.identityCardDate.trim() === "") {
-            await Log.error(req.user.email, 'EDIT_EMPLOYEE', req.portal);
-            res.status(400).json({
-                success: false,
-                messages: ["identity_card_date_required"],
-                content: {
-                    inputData: req.body
-                }
-            });
-        } else if (req.body.employee.identityCardAddress === undefined || req.body.employee.identityCardAddress.trim() === "") {
-            await Log.error(req.user.email, 'EDIT_EMPLOYEE', req.portal);
-            res.status(400).json({
-                success: false,
-                messages: ["identity_card_address_required"],
-                content: {
-                    inputData: req.body
-                }
-            });
-        } else if (req.body.employee.phoneNumber.toString() === undefined || req.body.employee.phoneNumber.toString().trim() === "") {
-            await Log.error(req.user.email, 'EDIT_EMPLOYEE', req.portal);
-            res.status(400).json({
-                success: false,
-                messages: ["phone_number_required"],
-                content: {
-                    inputData: req.body
-                }
-            });
-        } else if (req.body.employee.temporaryResidence === undefined || req.body.employee.temporaryResidence.trim() === "") {
-            await Log.error(req.user.email, 'EDIT_EMPLOYEE', req.portal);
-            res.status(400).json({
-                success: false,
-                messages: ["temporary_residence_required"],
-                content: {
-                    inputData: req.body
-                }
-            });
+            throw ["employee_number_required"];
+
+        }else if (req.body.employee.fullName === undefined || req.body.employee.fullName.trim() === "") {
+            throw ["full_name_required"];
         } else {
             let oldEmployee = await EmployeeService.getEmployeeInforById(req.portal, req.params.id);
             if (req.body.employee.employeeNumber !== oldEmployee.employeeNumber) {
                 // Kiểm tra sự tồn tại của mã nhân viên
                 let checkMSNV = await EmployeeService.checkEmployeeExisted(req.portal, req.body.employee.employeeNumber, req.user.company._id);
                 if (checkMSNV === true) {
-                    await Log.error(req.user.email, 'EDIT_EMPLOYEE', req.portal);
-                    res.status(400).json({
-                        success: false,
-                        messages: ["employee_number_have_exist"],
-                        content: {
-                            inputData: req.body
-                        }
-                    });
+                    throw ["employee_number_have_exist"]
                 }
             }
-            if (req.body.employee.emailInCompany !== oldEmployee.emailInCompany) {
+            if (req.body.employee.emailInCompany && req.body.employee.emailInCompany !== oldEmployee.emailInCompany) {
                 // Kiểm tra sự tồn tại của email công ty nhân viên
                 let checkEmail = await EmployeeService.checkEmployeeCompanyEmailExisted(req.portal, req.body.employee.emailInCompany);
                 if (checkEmail === true) {
-                    await Log.error(req.user.email, 'EDIT_EMPLOYEE', req.portal);
-                    res.status(400).json({
-                        success: false,
-                        messages: ["email_in_company_have_exist"],
-                        content: {
-                            inputData: req.body
-                        }
-                    });
+                    throw ["email_in_company_have_exist"];
                 }
             }
             let data = await EmployeeService.updateEmployeeInformation(req.portal, req.params.id, req.body, fileInfor, req.user.company._id);
-            let checkUser = await UserService.checkUserExited(req.portal, req.body.employee.emailInCompany);
-            if (checkUser === false) {
-                let userInfo = {
-                    email: req.body.employee.emailInCompany,
-                    name: req.body.employee.fullName
-                }
-                let user = await UserService.createUser(req.portal, userInfo, req.user.company._id);
-                for(let x in req.body.roles){
-                    await RoleService.createRelationshipUserRole(req.portal,user._id,req.body.roles[x]);
-                };
-            }
+            // if (req.body.employee.emailInCompany) {
+            //     let checkUser = await UserService.checkUserExited(req.portal, req.body.employee.emailInCompany);
+            //     console.log('checkUser', checkUser);
+            //     if (checkUser === false) {
+            //         let userInfo = {
+            //             email: req.body.employee.emailInCompany,
+            //             name: req.body.employee.fullName
+            //         }
+            //         let user = await UserService.createUser(req.portal, userInfo, req.user.company._id);
+            //         for(let x in req.body.roles){
+            //             await RoleService.createRelationshipUserRole(req.portal,user._id,req.body.roles[x]);
+            //         };
+            //     }
+            // }
+            
             await Log.info(req.user.email, 'EDIT_EMPLOYEE', req.portal);
             res.status(200).json({
                 success: true,
@@ -490,10 +298,11 @@ exports.updateEmployeeInformation = async (req, res) => {
             });
         }
     } catch (error) {
+        console.log('error', error)
         await Log.error(req.user.email, 'EDIT_EMPLOYEE', req.portal);
         res.status(400).json({
             success: false,
-            messages: ["edit_employee_faile"],
+            messages: Array.isArray(error) ? error : ["edit_employee_faile"],
             content: {
                 error: error
             }
@@ -507,7 +316,9 @@ exports.updateEmployeeInformation = async (req, res) => {
 exports.deleteEmployee = async (req, res) => {
     try {
         let data = await EmployeeService.deleteEmployee(req.portal, req.params.id);
-        await UserService.deleteUserByEmail(req.portal, req.query.emailInCompany);
+        if (req.query.emailInCompany)
+            await UserService.deleteUserByEmail(req.portal, req.query.emailInCompany);
+        
         res.status(200).json({
             success: true,
             messages: ["delete_employee_success"],
@@ -554,6 +365,7 @@ exports.importEmployees = async (req, res) => {
         if (req.body.importType === 'FamilyMembers') {
             data = await EmployeeService.importFamily(req.portal, req.user.company._id, req.body.importData);
         };
+        //  console.log('data', data);
         if (data.errorStatus === true) {
             await Log.error(req.user.email, 'IMPORT_EMPLOYEE', req.portal);
             res.status(400).json({
@@ -565,15 +377,31 @@ exports.importEmployees = async (req, res) => {
             if (req.body.importType === 'Employee_Infor') {
                 let users = await UserService.getUsers(req.portal, req.user.company._id, req.query);
                 let newUsers = data;
+                // lọc trong danh sach import những người nào có email ko trùng trong bảng user trên hệ thông
                 newUsers = newUsers.filter(x => !users.some(y => y.email === x.emailInCompany));
+
                 for (let x of newUsers) {
-                    let checkUser = await UserService.checkUserExited(req.portal, x.emailInCompany);
-                    if (checkUser === false) {
-                        let userInfo = {
-                            email: x.emailInCompany,
-                            name: x.fullName
+                    // Nếu nhân viên nào đó có email thì tạo user. Không có thì bỏ qua
+                    if (x.emailInCompany) {
+                        let checkUser = await UserService.checkUserExited(req.portal, x.emailInCompany);
+                        if (checkUser === false) {
+                            let userInfo = {
+                                email: x.emailInCompany,
+                                name: x.fullName
+                            }
+                            const userCreated = await UserService.createUser(req.portal, userInfo, req.user.company._id);
+                            // import roles nhân viên
+                            const importDataLength = req.body.importData.length;
+                            let importData = req.body.importData;
+                            for (let i = 0; i < importDataLength; i++){
+                                if (importData[i].positionId && importData[i].positionId.length > 0 && importData[i].employeeNumber.toString() === x.employeeNumber.toString()) {
+                                    for (let k in importData[i].positionId) {
+                                        await RoleService.createRelationshipUserRole(req.portal, userCreated._id, importData[i].positionId[k])
+                                    };
+                                    break;
+                                }
+                            }
                         }
-                        await UserService.createUser(req.portal, userInfo, req.user.company._id);
                     }
                 }
             }
@@ -585,6 +413,7 @@ exports.importEmployees = async (req, res) => {
             });
         }
     } catch (error) {
+        console.log('error', error)
         await Log.error(req.user.email, 'IMPORT_EMPLOYEE', req.portal);
         res.status(400).json({
             success: false,

@@ -11,6 +11,7 @@ const NotificationServices = require(`../../notification/notification.service`);
 const UserService = require('../../super-admin/user/user.service');
 
 const { connect } = require(`../../../helpers/dbHelper`);
+const { filterImageUrlInString } = require('../../../helpers/functionHelper')
 
 /*
  * Lấy công việc theo Id
@@ -2600,11 +2601,19 @@ exports.editTaskByResponsibleEmployees = async (portal, data, taskId) => {
                 name: name,
                 description: description,
                 progress: progress,
-                taskProject: taskProject,
+                taskProject: taskProject ?? undefined,
             },
         },
         { $new: true }
     );
+
+    // Xóa ảnh trong description cũ trên server
+    let imageUrls = filterImageUrlInString(task?.description)
+    if (imageUrls?.length > 0) {
+        imageUrls?.length > 0 && imageUrls.forEach((filepath) => {
+            fs.unlinkSync(SERVER_DIR + "/" + filepath.toString());
+        })
+    }
 
     // cập nhật giá trị info
     for (let item in info) {
@@ -2855,7 +2864,7 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
             })
         }
     }
-
+    
     // cập nhật thông tin cơ bản
     await Task(connect(DB_CONNECTION, portal)).updateOne(
         { _id: taskId },
@@ -2868,7 +2877,7 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
                 status: status[0],
                 formula: formula,
                 parent: parent,
-                taskProject: taskProject,
+                taskProject: taskProject ?? undefined,
 
                 startDate: new Date(startDate),
                 endDate: new Date(endDate),
@@ -2885,6 +2894,14 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
         },
         { $new: true }
     );
+    // Xóa ảnh trong description cũ trên server
+    let imageUrls = filterImageUrlInString(taskItem?.description)
+    if (imageUrls?.length > 0) {
+        imageUrls?.length > 0 && imageUrls.forEach((filepath) => {
+            fs.unlinkSync(SERVER_DIR + "/" + filepath.toString());
+        })
+    }
+    
     let task = await Task(connect(DB_CONNECTION, portal)).findById(taskId);
 
     // list info
@@ -2900,7 +2917,7 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
 
     // tìm ra info ở thông tin chung bị xóa
     let deletedInfoItems = task.taskInformations.filter(x =>
-        listInfoTask.find(e => String(e._id) === String(x._id)) === undefined // không tìm được phần tử nào có id giống với x._id, tức là x là deleted info 
+        listInfoTask?.length > 0 && listInfoTask.find(e => String(e._id) === String(x._id)) === undefined // không tìm được phần tử nào có id giống với x._id, tức là x là deleted info 
     ).map(el => el._id);
 
     let evaluation = task.evaluations.find(e => String(e._id) === String(evaluateId));
@@ -5569,12 +5586,10 @@ exports.confirmTask = async (portal, taskId, userId) => {
 exports.requestAndApprovalCloseTask = async (portal, taskId, data) => {
     const { userId, taskStatus, description, type, role } = data;
     let task = await this.getTaskById(portal, taskId, userId);
-    // console.log('role', role)
     const requestStatusNumber = type === 'request' ? 1
-        : type === 'cancel_request' ? 0
+        : type === 'cancel_request' ? 2
             : type === 'approval' ? 3
-                : type === 'approval' ? 4
-                    : 1;
+                : 0;
     const currentStatus = type === 'approval' ? taskStatus : 'inprocess';
     const currentResponsibleUpdatedAt = role === 'responsible' ? moment().format() : task.requestToCloseTask.responsibleUpdatedAt;
     const currentAccountableUpdatedAt = role === 'accountable' ? moment().format() : task.requestToCloseTask.accountableUpdatedAt;
@@ -5603,8 +5618,6 @@ exports.requestAndApprovalCloseTask = async (portal, taskId, data) => {
     };
 
     const keyUpdate = requestStatusNumber === 0 ? keyUpdateAsNumber0 : keyUpdateAsNumberOtherThan0;
-    console.log(keyUpdate)
-    console.log(requestStatusNumber)
 
     // if (type === 'request') {
     //     keyUpdate = {
@@ -5651,7 +5664,10 @@ exports.requestAndApprovalCloseTask = async (portal, taskId, data) => {
     // }
 
     await Task(connect(DB_CONNECTION, portal))
-        .findByIdAndUpdate(taskId, keyUpdate, { new: true });
+        .findByIdAndUpdate(taskId, {
+            ...keyUpdate,
+            actualEndDate: requestStatus === 'approval' ? new Date() : undefined,
+        }, { new: true });
 
     let newTask = await this.getTaskById(portal, taskId, userId);
     return newTask;

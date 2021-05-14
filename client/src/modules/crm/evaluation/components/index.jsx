@@ -19,15 +19,19 @@ function Evaluation(props) {
         await setEvaluationInfo(evaluation);
         window.$('#modal-crm-evaluation-info').modal('show');
     }
-
-    //lay list danh gia nhan vien
-    useEffect(() => {
-        props.getEvaluations({});
-    }, [])
     //lay thoi gian hien tai
     const date = new Date();
     const month = date.getMonth();
     const year = date.getFullYear();
+    //lay list danh gia nhan vien theo thang hien tai
+    useEffect(() => {
+        const date = new Date();
+        const month = date.getMonth()+1;
+        const year = date.getFullYear();
+        props.getEvaluations({ month, year });
+       
+    }, [])
+
 
     //-------------------
     const [evaluationInfo, setEvaluationInfo] = useState();
@@ -39,6 +43,7 @@ function Evaluation(props) {
             let dataTime = value.split("-");
             let month = dataTime[0];
             let year = dataTime[1];
+            console.log('ham handle', month, year)
             props.getEvaluations({ month, year });
         }
     }

@@ -119,14 +119,26 @@ exports.getEmployeeEmailsByOrganizationalUnitsAndPositions = async (portal, orga
  * Lấy thông tin cá nhân của nhân viên theo emailInCompany
  * @userId : Id người dùng(tài khoản)
  */
-exports.getEmployeeProfile = async (portal, email) => {
-    let employees = await Employee(connect(DB_CONNECTION, portal)).find({
-        emailInCompany: email
-    }).populate([
-        { path: "career.field" },
-        { path: "career.position" },
-        { path: "career.action" },
-    ]);
+exports.getEmployeeProfile = async (portal, email, employeesId) => {
+    let employees;
+    if (email)
+        employees = await Employee(connect(DB_CONNECTION, portal)).find({
+            emailInCompany: email
+        }).populate([
+            { path: "career.field" },
+            { path: "career.position" },
+            { path: "career.action" },
+        ]);
+    
+    if (employeesId)
+        employees = await Employee(connect(DB_CONNECTION, portal)).find({
+            _id: employeesId
+        }).populate([
+            { path: "career.field" },
+            { path: "career.position" },
+            { path: "career.action" },
+        ]);
+    
     if (employees.length === 0) {
         return {
             employees: employees
@@ -968,6 +980,7 @@ exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company)
         }
     }
     let oldEmployee = await Employee(connect(DB_CONNECTION, portal)).findById(id);
+    const oldMailInCompany = oldEmployee.emailInCompany;
 
     deleteEditCreateObjectInArrayObject = (arrObject, arrDelete, arrEdit, arrCreate, fileInfor = undefined) => {
         if (arrDelete !== undefined) {
@@ -1139,20 +1152,31 @@ exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company)
     queryEditCreateDeleteDocumentInCollection(oldEmployee._id, company, Commendation, deleteConmmendations, editConmmendations, createCommendations);
     queryEditCreateDeleteDocumentInCollection(oldEmployee._id, company, AnnualLeave, deleteAnnualLeaves, editAnnualLeaves, createAnnualLeaves);
     queryEditCreateDeleteDocumentInCollection(oldEmployee._id, company, EmployeeCourse, deleteCourses, editCourses, createCourses);
-    let userId = await User(connect(DB_CONNECTION,portal)).findOne({
-        email : employee.emailInCompany,
-        company : company
-    },{
-        _id : 1
-    })
+   
+    let user;
+    if (employee.emailInCompany) {
+        // Kiểm tra xem email mới của nhân viên có tồn tại trong bảng user hay chưa
+        user = await User(connect(DB_CONNECTION, portal)).findOne(
+            {
+                email: employee.emailInCompany,
+            });
+        
+        // Nếu chưa có cập nhật lại email cho user
+        if (!user) {
+            await User(connect(DB_CONNECTION, portal)).findOneAndUpdate({
+                email: oldMailInCompany
+            },{$set: {email: employee.emailInCompany} })
+        }
+    }
 
-    if(userId){
+    // Đổi roles >Khanh làm
+    if(user){
         await UserRole(connect(DB_CONNECTION, portal)).deleteMany({
-            userId : userId
+            userId : user._id
         });
         let dataRoles = await roles.map((roleId) => {
             return {
-                userId : userId,
+                userId : user._id,
                 roleId : roleId
             };
         });
@@ -1474,9 +1498,17 @@ exports.importEmployeeInfor = async (portal, company, data) => {
 
     let rowError = [];
     data = data.map((x, index) => {
-        let checkEmployeeNumber = employeeInfo.some(y => y.employeeNumber.toString() === x.employeeNumber.toString());
-        let checkEmailInCompany = employeeInfo.some(y => y.emailInCompany === x.emailInCompany);
-        let checkEmployeeTimesheetId = employeeInfo.some(y => y.employeeTimesheetId.toString() === x.employeeTimesheetId.toString());
+        // Check lỗi trùng mã nhân viên, mã chấm công, email
+        let checkEmployeeNumber, checkEmailInCompany, checkEmployeeTimesheetId;
+        if(x.employeeNumber)
+            checkEmployeeNumber = employeeInfo.some(y => y.employeeNumber.toString() === x.employeeNumber.toString());
+        
+        if(x.emailInCompany)
+            checkEmailInCompany = employeeInfo.some(y => y.emailInCompany === x.emailInCompany);
+        
+        if(x.employeeTimesheetId)
+            checkEmployeeTimesheetId = employeeInfo.some(y => y.employeeTimesheetId.toString() === x.employeeTimesheetId.toString());
+        
         if (checkEmployeeNumber) {
             x = {
                 ...x,
@@ -1503,7 +1535,7 @@ exports.importEmployeeInfor = async (portal, company, data) => {
         }
         return x;
     })
-
+    console.log('rowError', rowError);
     if (rowError.length !== 0) {
         return {
             errorStatus: true,

@@ -852,26 +852,37 @@ exports.evaluateTask = async (req, res) => {
  */
 editTaskByResponsibleEmployees = async (req, res) => {
     try {
+        let body = JSON.parse(req.body.data)
+        if (req?.files?.length > 0) {
+            req.files.map(item => {
+                if (body?.description) {
+                    let src = `<img src="${item?.originalname?.split(".")?.[0]}">`.toString()
+                    let newSrc = `<img src="${item?.path}">`.toString()
+                    body.description = body?.description?.toString()?.replace(src, newSrc)
+                }
+            })
+        }
+
         let oldTask = await PerformTaskService.getTaskById(req.portal, req.params.taskId, req.user._id);
-        let task = await PerformTaskService.editTaskByResponsibleEmployees(req.portal, req.body.data, req.params.taskId);
+        let task = await PerformTaskService.editTaskByResponsibleEmployees(req.portal, body, req.params.taskId);
         let user = task.user;
         let tasks = task.tasks;
         let data = {
             "organizationalUnits": tasks.organizationalUnit,
             "title": "Cập nhật thông tin công việc",
             "level": "general",
-            "content": `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}" target="_blank">${tasks?.name}</a> với vai trò người thực hiện</p>`,
-            "sender": user.name,
+            "content": `<p><strong>${user?.name}</strong> đã cập nhật thông tin công việc <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}" target="_blank">${tasks?.name}</a> với vai trò người thực hiện</p>`,
+            "sender": user?.name,
             "users": tasks.accountableEmployees,
             associatedDataObject: {
                 dataType: 1,
-                description: `<p><strong>${tasks.name}:</strong> ${user.name} đã cập nhật thông tin công việc với vai trò người thực hiện</p>`
+                description: `<p><strong>${tasks.name}:</strong> ${user?.name} đã cập nhật thông tin công việc với vai trò người thực hiện</p>`
             }
         };
         NotificationServices.createNotification(req.portal, tasks.organizationalUnit, data);
 
         let title = "Cập nhật thông tin công việc: " + task.tasks.name;
-        sendEmail(task.email, title, '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}">${tasks?.name}</a> với vai trò người thực hiện</p>`);
+        sendEmail(task.email, title, '', `<p><strong>${user?.name}</strong> đã cập nhật thông tin công việc <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}">${tasks?.name}</a> với vai trò người thực hiện</p>`);
 
         // Thêm nhật ký hoạt động
         let description = await PerformTaskService.createDescriptionEditTaskLogs(req.portal, req.user._id, task.newTask, oldTask);
@@ -914,12 +925,23 @@ editTaskByResponsibleEmployees = async (req, res) => {
     }
 }
 /**
- * edit task by responsible employee
+ * edit task by accountable employee
  */
 editTaskByAccountableEmployees = async (req, res) => {
     try {
+        let body = JSON.parse(req.body.data)
+        if (req?.files?.length > 0) {
+            req.files.map(item => {
+                if (body?.description) {
+                    let src = `<img src="${item?.originalname?.split(".")?.[0]}">`.toString()
+                    let newSrc = `<img src="${item?.path}">`.toString()
+
+                    body.description = body?.description?.toString()?.replace(src, newSrc)
+                }
+            })
+        }
         let oldTask = await PerformTaskService.getTaskById(req.portal, req.params.taskId, req.user._id);
-        let task = await PerformTaskService.editTaskByAccountableEmployees(req.portal, req.body.data, req.params.taskId);
+        let task = await PerformTaskService.editTaskByAccountableEmployees(req.portal, body, req.params.taskId);
         let user = task.user;
         let tasks = task.tasks;
         let data = {

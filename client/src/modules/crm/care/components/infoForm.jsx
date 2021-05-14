@@ -13,15 +13,6 @@ function InfoCareForm(props) {
     let careInfomation
     if (crm.cares.careById) careInfomation = crm.cares.careById;
 
-    function formatCareStatus(input) {
-        input = parseInt(input);
-        if (input === 1) return 'Chưa thực hiện';
-        if (input === 2) return 'Đang thực hiện';
-        if (input === 3) return 'Đang tạm hoãn';
-        if (input === 4) return 'Đã hoàn thành';
-    }
-
-
 
     console.log('CRM - info', crm)
     return (
@@ -200,7 +191,7 @@ function InfoCareForm(props) {
                                             <div className="form-group">
                                                 <strong className="col-sm-4">{"Kết quả hoạt động"}</strong>
                                                 <div className="col-sm-8">
-                                                    <span>{careInfomation.evaluation ? careInfomation.evaluation.result==0?'Thành công':'Thất bại' : ''}</span>
+                                                    <span>{careInfomation.evaluation ? careInfomation.evaluation.result==1?'Thành công':'Thất bại' : ''}</span>
                                                 </div>
                                             </div>
                                         </div>

@@ -891,11 +891,9 @@ const EmployeeEditFrom = (props) => {
         const { employee } = state;
         let result = true;
         if (employee) {
-            result = validatorInput(employee.employeeNumber) && validatorInput(employee.employeeTimesheetId) &&
-                validatorInput(employee.fullName) && validatorInput(employee.birthdate) &&
-                validatorInput(employee.emailInCompany) && validatorInput(employee.identityCardNumber) &&
-                validatorInput(employee.identityCardDate) && validatorInput(employee.identityCardAddress) &&
-                validatorInput(employee.phoneNumber) && validatorInput(employee.temporaryResidence);
+            result = validatorInput(employee.employeeNumber) &&
+                validatorInput(employee.fullName);
+
             if (employee.healthInsuranceStartDate && employee.healthInsuranceEndDate) {
                 if (new Date(employee.healthInsuranceEndDate).getTime() < new Date(employee.healthInsuranceStartDate).getTime()) {
                     return false;
@@ -1118,7 +1116,7 @@ const EmployeeEditFrom = (props) => {
             }
         })
     }
-
+    console.log('employee', employee)
     return (
         <React.Fragment>
             <DialogModal

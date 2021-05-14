@@ -53,6 +53,14 @@ const EmployeeImportForm = (props) => {
 
     }
 
+    const _convertRoleNameToId = (name) => {
+        const { role } = props;
+        let roles = role?.list;
+        let roleFilter = roles && roles.filter(r => r.name === name);
+
+        return roleFilter.length > 0 ? roleFilter[0]._id : null;
+    }
+
     /**
      * Function kiểm dữ liệu import thông tin cơ bản của nhân viên
      * @param {*} value : dữ liệu cần import
@@ -162,12 +170,16 @@ const EmployeeImportForm = (props) => {
         // Check dữ liệu import có hợp lệ hay không
         let checkImportData = value, rowError = [];
         value = value.map((x, index) => {
+            let positionId;
+            if (x.position) {
+                positionId = x.position.split(",");
+                positionId = positionId.map(o => _convertRoleNameToId(o.trim()));
+            }
+
             let errorAlert = [];
-            if (x.employeeNumber === null || x.fullName === null || x.emailInCompany === null || x.employeeTimesheetId === null
-                || x.birthdate === null || x.identityCardNumber === null || x.identityCardDate === null || x.identityCardAddress === null
-                || x.phoneNumber === null || x.temporaryResidence === null || checkImportData.filter(y => y.employeeNumber === x.employeeNumber).length > 1
-                || checkImportData.filter(y => y.emailInCompany === x.emailInCompany).length > 1
-                || checkImportData.filter(y => y.employeeTimesheetId === x.employeeTimesheetId).length > 1) {
+            if (x.employeeNumber === null || x.fullName === null || checkImportData.filter(y => y.employeeNumber === x.employeeNumber).length > 1
+                || (x.emailInCompany && checkImportData.filter(y => y.emailInCompany === x.emailInCompany).length > 1)
+                || (x.employeeTimesheetId && checkImportData.filter(y => y.employeeTimesheetId === x.employeeTimesheetId).length > 1)) {
                 rowError = [...rowError, index + 1]
                 x = { ...x, error: true }
             }
@@ -180,37 +192,18 @@ const EmployeeImportForm = (props) => {
             if (x.fullName === null) {
                 errorAlert = [...errorAlert, `${translate('human_resource.profile.full_name')} ${translate('human_resource.cannot_be_empty')}`];
             }
-            if (x.emailInCompany === null) {
-                errorAlert = [...errorAlert, `${translate('human_resource.profile.email_company')} ${translate('human_resource.cannot_be_empty')}`];
-            } else {
-                if (checkImportData.filter(y => y.emailInCompany === x.emailInCompany).length > 1)
-                    errorAlert = [...errorAlert, `${translate('human_resource.profile.email_company')} ${translate('human_resource.value_duplicate')}`];
-            };
-            if (x.employeeTimesheetId === null) {
-                errorAlert = [...errorAlert, `${translate('human_resource.profile.attendance_code')} ${translate('human_resource.cannot_be_empty')}`];
-            } else {
-                if (checkImportData.filter(y => y.employeeTimesheetId === x.employeeTimesheetId).length > 1)
-                    errorAlert = [...errorAlert, `${translate('human_resource.profile.attendance_code')} ${translate('human_resource.value_duplicate')}`];
-            };
-            if (x.birthdate === null) {
-                errorAlert = [...errorAlert, `${translate('human_resource.profile.date_birth')} ${translate('human_resource.cannot_be_empty')}`];
+            if (x.emailInCompany && checkImportData.filter(y => y.emailInCompany === x.emailInCompany).length > 1) {
+                errorAlert = [...errorAlert, `${translate('human_resource.profile.email_company')} ${translate('human_resource.value_duplicate')}`];
             }
-            if (x.identityCardNumber === null) {
-                errorAlert = [...errorAlert, `${translate('human_resource.profile.id_card')} ${translate('human_resource.cannot_be_empty')}`];
+            if (x.employeeTimesheetId && checkImportData.filter(y => y.employeeTimesheetId === x.employeeTimesheetId).length > 1) {
+                errorAlert = [...errorAlert, `${translate('human_resource.profile.attendance_code')} ${translate('human_resource.value_duplicate')}`];
             }
-            if (x.identityCardDate === null) {
-                errorAlert = [...errorAlert, `${translate('human_resource.profile.date_issued')} ${translate('human_resource.cannot_be_empty')}`];
+            x = { ...x, errorAlert: errorAlert };
+
+            if (positionId && positionId.length > 0) {
+                x = { ...x, positionId: positionId }
             }
-            if (x.identityCardAddress === null) {
-                errorAlert = [...errorAlert, `${translate('human_resource.profile.issued_by')} ${translate('human_resource.cannot_be_empty')}`];
-            }
-            if (x.phoneNumber === null) {
-                errorAlert = [...errorAlert, `${translate('human_resource.profile.mobile_phone_1')} ${translate('human_resource.cannot_be_empty')}`];
-            }
-            if (x.temporaryResidence === null) {
-                errorAlert = [...errorAlert, `${translate('human_resource.profile.current_residence')} ${translate('human_resource.cannot_be_empty')}`];
-            }
-            x = { ...x, errorAlert: errorAlert }
+            console.log('x', x)
             return x;
         });
         setState(state => ({
@@ -817,8 +810,8 @@ const EmployeeImportForm = (props) => {
 }
 
 function mapState(state) {
-    const { employeesManager, field } = state;
-    return { employeesManager, field };
+    const { employeesManager, field, role } = state;
+    return { employeesManager, field, role };
 };
 
 const actionCreators = {

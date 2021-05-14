@@ -335,6 +335,14 @@ function CustomerHomePage(props) {
 
                 {/* search form */}
                 <div className="form-inline" >
+                    {/* tim kiem theo ma khach hang */}
+                    <div className="form-group">
+                        <label className="form-control-static">Mã khách hàng</label>
+                        <input className="form-control" type="text"
+                            name="customerCode" onChange={handleSearchByCustomerCode}
+                            placeholder={`Mã khách hàng`}
+                        />
+                    </div>
                     <div className="form-group unitSearch">
                         {/* Tìm kiếm khách hàng theo người quản lý */}
                         <label>{translate('crm.customer.owner')}</label>
@@ -349,17 +357,11 @@ function CustomerHomePage(props) {
                                 }
                                 onChange={handleSearchByOwner}
                                 multiple={false}
+                                options={{ nonSelectedText: ('Chọn nhân viên quản lý ') , 
+                                allSelectedText: translate(`task.task_management.select_all_department`) }}
                             />
                         }
                     </div>
-                    <div className="form-group">
-                        <label className="form-control-static">Mã khách hàng</label>
-                        <input className="form-control" type="text"
-                            name="customerCode" onChange={handleSearchByCustomerCode}
-                            placeholder={`Mã khách hàng`}
-                        />
-                    </div>
-
                 </div>
 
                 <div className="form-inline">

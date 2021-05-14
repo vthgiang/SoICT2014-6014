@@ -16,6 +16,7 @@ import { AnnualLeaveChartAndTable } from '../../human-resource/employee-dashboar
 import { LoadTaskOrganizationChart } from '../../task/task-dashboard/task-organization-dashboard/loadTaskOrganizationChart'
 import ViewAllTaskUrgent from './viewAllTaskUrgent';
 import ViewAllTaskNeedToDo from './viewAllTaskNeedToDo';
+import StatisticsKpiUnits from '../../kpi/organizational-unit/dashboard/component/statisticsKpiUnits'
 
 import c3 from 'c3';
 import Swal from 'sweetalert2';
@@ -511,7 +512,7 @@ function DashboardUnitForAdmin(props) {
                             <div className="box box-solid">
                                 <div className="box-header with-border">
                                     <div className="box-title" >
-                                        {translate('dashboard_unit.urgent_need_to_do_chart')}
+                                        {translate('dashboard_unit.urgent_chart')}
                                         {
                                             organizationalUnits && organizationalUnits.length < 2 ?
                                                 <>
@@ -547,25 +548,54 @@ function DashboardUnitForAdmin(props) {
                                                     }
                                                 </div>
                                             </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                                            <div className="col-md-12">
-                                                <div style={{ display: 'flex', flexDirection: 'column', marginTop: '10px', marginBottom: 0 }}>
-                                                    <p className="pull-left" style={{ marginRight: '10px', display: 'flex', alignItems: 'center' }}>
-                                                        <b style={{ marginTop: '10px', marginRight: '5px' }} >{translate('dashboard_unit.need_to_do_task_amount')}</b>
-                                                        <span className="material-icons title-urgent " style={{ zIndex: 999, cursor: "pointer", fontSize: '15px', marginTop: '10px' }}
-                                                            onClick={handleClickshowTaskNeedToDo}>
-                                                            help
-                                                        </span>
-                                                    </p >
-                                                    {
-                                                        tasks.isLoading ?
-                                                            <p style={{ marginTop: '60px', textAlign: "center" }}>{translate('general.loading')}</p>
-                                                            :
-                                                            tasks?.organizationUnitTasksChart?.taskNeedToDo?.length > 0 
-                                                                ? <div id="pieChartTaskNeedToDo"></div>
-                                                                : <p style={{ marginTop: '60px', textAlign: "center" }}>{translate('kpi.organizational_unit.dashboard.no_data')}</p>
-                                                    }
-                                                </div>
+                    <div className="row">
+                        <div className="col-md-12">
+                            <div className="box box-solid">
+                                <div className="box-header with-border">
+                                    <div className="box-title" >
+                                        {translate('dashboard_unit.need_to_do_chart')}
+                                        {
+                                            organizationalUnits && organizationalUnits.length < 2 ?
+                                                <>
+                                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
+                                                    <span>{` ${getUnitName(listUnitSelect, organizationalUnits).map(o => o).join(", ")}`}</span>
+                                                </>
+                                                :
+                                                <span onClick={() => showUnitTask(listUnitSelect, organizationalUnits)} style={{ cursor: 'pointer' }}>
+                                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
+                                                    <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {organizationalUnits?.length}</a>
+                                                    <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                                </span>
+                                        }
+                                    </div>
+                                </div>
+
+                                <div className="box-body" style={{ marginBottom: 15 }}>
+                                    <div className="row " >
+                                        <div className="col-md-12">
+                                            <div style={{ display: 'flex', flexDirection: 'column', marginTop: '10px', marginBottom: 0 }}>
+                                                <p className="pull-left" style={{ marginRight: '10px', display: 'flex', alignItems: 'center' }}>
+                                                    <b style={{ marginTop: '10px', marginRight: '5px' }} >{translate('dashboard_unit.need_to_do_task_amount')}</b>
+                                                    <span className="material-icons title-urgent " style={{ zIndex: 999, cursor: "pointer", fontSize: '15px', marginTop: '10px' }}
+                                                        onClick={handleClickshowTaskNeedToDo}>
+                                                        help
+                                                    </span>
+                                                </p >
+                                                {
+                                                    tasks.isLoading ?
+                                                        <p style={{ marginTop: '60px', textAlign: "center" }}>{translate('general.loading')}</p>
+                                                        :
+                                                        tasks?.organizationUnitTasksChart?.taskNeedToDo?.length > 0 
+                                                            ? <div id="pieChartTaskNeedToDo"></div>
+                                                            : <p style={{ marginTop: '60px', textAlign: "center" }}>{translate('kpi.organizational_unit.dashboard.no_data')}</p>
+                                                }
                                             </div>
                                         </div>
                                     </div>
@@ -587,8 +617,8 @@ function DashboardUnitForAdmin(props) {
                         />
                     </LazyLoadComponent>
 
-                     {/*Dashboard tải công việc */}
-                     <div className="row">
+                    {/*Dashboard tải công việc */}
+                    <div className="row">
                         <div className="col-xs-12">
                             <LazyLoadComponent once={true}>
                                 <LoadTaskOrganizationChart
@@ -605,6 +635,23 @@ function DashboardUnitForAdmin(props) {
                                     typeChart={"followUnit"}
                                 />
                             </LazyLoadComponent>
+                        </div>
+                    </div>
+
+                    {/* Thống kê KPI */}
+                    <div className="row">
+                        <div className="col-md-12">
+                            <div className="box box-primary">
+                                <div className="box-header with-border">
+                                    <div className="box-title">Biểu đồ thống kê điểm KPI {monthTitle} giữa các đơn vị </div>
+                                </div>
+                                <div className="box-body">
+                                    {
+                                        organizationalUnits &&
+                                        <StatisticsKpiUnits organizationalUnitIds={organizationalUnits} monthStatistics={month} />
+                                    }
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
