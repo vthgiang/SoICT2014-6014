@@ -82,18 +82,33 @@ const getVehicleCarrierUsable = (date, listPlan, listCarriers, listVehicles) => 
 let totalDistance = 99999999;
 let day = new Array(99999);
 let selectedRequirement = new Array(99999);
-var saveArr;
+let saveArr;
+let saveArrVehicle;
 const generatePlanShortestDistance = (listRequirement, countDay, listVehiclesDays, numVehiclesDays, k) => {
     if (k >= listRequirement.length){
         let distance = 0;
+        let minR;
+        let vehicleUsedRes = new Array(99999);
         for (let i = 0; i< countDay; i++){
             if (day[i] && day[i].length!==0){
-                distance+=calMinDistance.calMinDistanceOneDay(day[i], listVehiclesDays[i], numVehiclesDays[i])
+                let k = calMinDistance.calMinDistanceOneDay(day[i], listVehiclesDays[i], numVehiclesDays[i]);
+                minR = k.minR;
+                vehicleUsedRes[i] = k.vehicleUsedRes?.slice();
+                distance+=minR;
             }
         }
         if (distance<totalDistance){
+            saveArrVehicle = new Array(99999);
+            saveArr = new Array(99999);
+            // for (let i=0;i<99999;i++){
+            //     saveArrVehicle[i] = new Array(99999) 
+            // }
+            // console.log(vehicleUsedRes);
             for (let i = 0; i<countDay;i++){
                 saveArr[i] = [...day[i]]
+                if (vehicleUsedRes[i]){
+                    saveArrVehicle[i] = vehicleUsedRes[i].slice()
+                }
             }
             // saveArr = [...day];
             totalDistance = distance;
@@ -112,8 +127,9 @@ const generatePlanShortestDistance = (listRequirement, countDay, listVehiclesDay
         }
     }
 }
-const generatePlanFastestMove = (listRequirement, listPlan, allVehicles, allCarriers, inDay) => {
-    saveArr = []
+exports.generatePlanFastestMove = (listRequirement, listPlan, allVehicles, allCarriers, inDay) => {
+    saveArr = [];
+    saveArrVehicle = new Array(99999)
     let listVehiclesDays = [];
     let numVehiclesDays = [];
     let usableCarriers, usableVehicles;
@@ -133,7 +149,8 @@ const generatePlanFastestMove = (listRequirement, listPlan, allVehicles, allCarr
         day[i] = [];
     }
     generatePlanShortestDistance(listRequirement, inDay, listVehiclesDays, numVehiclesDays, 0);
-    return saveArr;
+    let startDay = getNextDay(1);
+    return {saveArr, saveArrVehicle, startDay};
 }
 
 exports.generatePlan = (listRequirement, listPlan, listVehicles, listCarriers) => {
@@ -674,5 +691,6 @@ let allVehicles = [
     }
 ]
 
-generatePlanFastestMove(allTransportRequirements, null, allVehicles, allCarriers, 3);
+// let o = generatePlanFastestMove(allTransportRequirements, null, allVehicles, allCarriers, 2);
+// console.log("haha")
 // console.log(k);

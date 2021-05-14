@@ -78,7 +78,7 @@ exports.calMinDistanceVehicleGo = (listRequirementsGeocode) => {
     for (let i = 0 ; i< listRequirementsGeocode.length; i++){
         went[i] = false;
     }
-    console.log(listRequirementsGeocode, " aaaaaaaaaaa")
+    // console.log(listRequirementsGeocode, " aaaaaaaaaaa")
     minRouteVehicle(listRequirementsGeocode, null, 0, 0, listRequirementsGeocode.length);
     return minR;
 }

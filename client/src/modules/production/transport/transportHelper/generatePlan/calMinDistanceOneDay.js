@@ -24,6 +24,7 @@ const changeTransportRequirementToGeocodeArray = (listRequirements) => {
 let minR = 99999999;
 let selected = new Array(999999);
 let vehicleUsed = new Array(99999);
+let vehicleUsedRes = new Array(99999);
 let countVehicleUsed=0;
 const minRouteInDay = (listRequirements, listVehicles, numVehicles, k) => {
     if (k>=listRequirements.length){
@@ -33,7 +34,12 @@ const minRouteInDay = (listRequirements, listVehicles, numVehicles, k) => {
                 tmpDistance+=calMinDistanceVehicleGo.calMinDistanceVehicleGo(changeTransportRequirementToGeocodeArray(listRequirements));
             }
         }
-        if (tmpDistance < minR) minR = tmpDistance;
+        if (tmpDistance < minR) {
+            for (let i=0;i<listVehicles.length;i++){
+                vehicleUsedRes[i] = [...vehicleUsed[i]];
+            }
+            minR = tmpDistance;
+        }
         return;
     }
 
@@ -63,6 +69,7 @@ const minRouteInDay = (listRequirements, listVehicles, numVehicles, k) => {
 }
 
 exports.calMinDistanceOneDay = (listRequirements, listVehicles, numVehicles) => {
+    console.log(listRequirements.length);
     minR = 9999999;
     for (let i =0; i< listRequirements.length ;i++){
         selected[i] = false;
@@ -71,5 +78,5 @@ exports.calMinDistanceOneDay = (listRequirements, listVehicles, numVehicles) => 
         vehicleUsed[i] = [];
     }
     minRouteInDay(listRequirements, listVehicles, numVehicles, 0);
-    return minR;
+    return {minR, vehicleUsedRes};
 }
