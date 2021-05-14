@@ -11,11 +11,18 @@ const isTimeZoneDateSmaller = (date1, date2) => { //Ngày bắt đầu trước 
         return false
     }
 }
+let startDatePlan;
 const getNextDay = (n)=> {
-    let currentDay = new Date();
+    let currentDay;
+    if (!startDatePlan){
+        currentDay = new Date();
+    }
+    else {
+        currentDay = new Date(startDatePlan);
+    }
     let date = currentDay.getDate();
     currentDay.setDate(date+n);
-    currentDay.setHours(0,0,0);
+    currentDay.setHours(10,0,1);
     return new Date(currentDay);
 }
 
@@ -80,15 +87,15 @@ const getVehicleCarrierUsable = (date, listPlan, listCarriers, listVehicles) => 
 
 // Trả về xe có thể sử dụng sau khi phân công người
 let totalDistance = 99999999;
-let day = new Array(99999);
-let selectedRequirement = new Array(99999);
+let day = new Array(999);
+let selectedRequirement = new Array(999);
 let saveArr;
 let saveArrVehicle;
 const generatePlanShortestDistance = (listRequirement, countDay, listVehiclesDays, numVehiclesDays, k) => {
     if (k >= listRequirement.length){
         let distance = 0;
         let minR;
-        let vehicleUsedRes = new Array(99999);
+        let vehicleUsedRes = new Array(999);
         for (let i = 0; i< countDay; i++){
             if (day[i] && day[i].length!==0){
                 let k = calMinDistance.calMinDistanceOneDay(day[i], listVehiclesDays[i], numVehiclesDays[i]);
@@ -127,13 +134,14 @@ const generatePlanShortestDistance = (listRequirement, countDay, listVehiclesDay
         }
     }
 }
-exports.generatePlanFastestMove = (listRequirement, listPlan, allVehicles, allCarriers, inDay) => {
-    if (!(listRequirement && listPlan && allVehicles && allCarriers 
-        && listRequirement.length!==0 && listPlan.length!==0 && allVehicles.length!==0 && allCarriers.length!==0)){
+exports.generatePlanFastestMove = (listRequirement, listPlan, allVehicles, allCarriers, inDay, startDate) => {
+    startDatePlan = startDate;
+    if (!(listRequirement && allVehicles && allCarriers 
+        && listRequirement.length!==0 && allVehicles.length!==0 && allCarriers.length!==0)){
             return;
         }
     saveArr = [];
-    saveArrVehicle = new Array(99999)
+    saveArrVehicle = new Array(999)
     totalDistance = 999999999;
     day = new Array(inDay+5);
     selectedRequirement = new Array(listRequirement.length+5);
@@ -141,7 +149,7 @@ exports.generatePlanFastestMove = (listRequirement, listPlan, allVehicles, allCa
     let listCarriersDays = [];
     let numVehiclesDays = [];
     let usableCarriers, usableVehicles;
-    for (let i=1;i<=inDay;i++){
+    for (let i=0;i<inDay;i++){
         let resultVehicleCarrierUsable = getVehicleCarrierUsable(getNextDay(i), listPlan, allCarriers, allVehicles);
         usableCarriers = resultVehicleCarrierUsable.usableCarriers;
         usableVehicles = resultVehicleCarrierUsable.usableVehicles;
@@ -158,7 +166,7 @@ exports.generatePlanFastestMove = (listRequirement, listPlan, allVehicles, allCa
         day[i] = [];
     }
     generatePlanShortestDistance(listRequirement, inDay, listVehiclesDays, numVehiclesDays, 0);
-    let startDay = getNextDay(1);
+    // let startDay = getNextDay(1);
     let plans = [];
     if (saveArr && saveArr.length!==0 && saveArrVehicle && saveArrVehicle.length!==0){
         for (let i = 0;i< inDay; i++){
@@ -189,13 +197,13 @@ exports.generatePlanFastestMove = (listRequirement, listPlan, allVehicles, allCa
                 })
             }
             plans.push({
-                nextDay: i+1,
+                date: getNextDay(i).toISOString(),
                 transportRequirements: requirements,
                 transportVehicles: vehicles,
             })
         }
     }
-    return {saveArr, saveArrVehicle, startDay, plans};
+    return {saveArr, saveArrVehicle, plans};
 }
 
 exports.generatePlan = (listRequirement, listPlan, listVehicles, listCarriers) => {
@@ -477,7 +485,7 @@ let allTransportRequirements = [
 ]
 
 //========================================================================
-let allCarriers2 = [
+let allCarriers = [
     {
         "active": true,
         "status": 0,

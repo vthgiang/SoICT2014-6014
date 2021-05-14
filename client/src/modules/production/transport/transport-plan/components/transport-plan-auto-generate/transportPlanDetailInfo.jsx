@@ -127,7 +127,7 @@ function TransportPlanDetailInfo(props) {
                                 <th>{"Địa chỉ giao hàng"}</th>
                                 <th>{"Ngày tạo"}</th>
                                 <th>{"Ngày mong muốn vận chuyển"}</th>
-                                <th>{"Trạng thái"}</th>
+                                {/* <th>{"Trạng thái"}</th> */}
                                 {/* <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
                                     <DataTableSetting
                                         tableId={tableId}
@@ -162,7 +162,7 @@ function TransportPlanDetailInfo(props) {
                                                 ))
                                             }
                                         </td>
-                                        <td>{x.status}</td>
+                                        {/* <td>{x.status}</td> */}
                                     </tr>
                                 ))
                             }

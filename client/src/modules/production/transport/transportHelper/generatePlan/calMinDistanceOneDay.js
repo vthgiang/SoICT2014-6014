@@ -22,16 +22,16 @@ const changeTransportRequirementToGeocodeArray = (listRequirements) => {
     return res;
 }
 let minR = 99999999;
-let selected = new Array(999999);
-let vehicleUsed = new Array(99999);
-let vehicleUsedRes = new Array(99999);
+let selected = new Array(999);
+let vehicleUsed = new Array(999);
+let vehicleUsedRes = new Array(999);
 let countVehicleUsed=0;
 const minRouteInDay = (listRequirements, listVehicles, numVehicles, k) => {
     if (k>=listRequirements.length){
         let tmpDistance = 0;
         for (let i=0;i<listVehicles.length;i++){
             if (vehicleUsed[i] && vehicleUsed[i].length!==0){
-                tmpDistance+=calMinDistanceVehicleGo.calMinDistanceVehicleGo(changeTransportRequirementToGeocodeArray(listRequirements));
+                tmpDistance+=calMinDistanceVehicleGo.calMinDistanceVehicleGo(changeTransportRequirementToGeocodeArray(listRequirements), listVehicles[i]);
             }
         }
         if (tmpDistance < minR) {

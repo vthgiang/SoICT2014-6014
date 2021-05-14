@@ -42,6 +42,7 @@ function TransportPlanCreateForm(props) {
     const [listSelectedRequirementsLocation, setListSelectedRequirementsLocation] = useState([])
     const handleClickCreateCode = () => {
         setFormSchedule({
+            ...formSchedule,
             code: generateCode("KHVC"),
         })
     }

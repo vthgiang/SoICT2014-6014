@@ -7,9 +7,8 @@ import { formatDate, formatToTimeZoneDate} from "../../../../../helpers/formatDa
 
 import { TransportPlanCreateForm } from "./transportPlanCreateForm"
 import { TransportPlanEditForm } from "./transportPlanEditForm"
-import { TransportPlanDetailInfo } from "./transportPlanDetailInfo"
+import { TransportPlanDetailInfo } from "./transport-plan-detail/transportPlanDetailInfo2"
 import { TransportVehicleCarrierListedChart } from "./transport-vehicle-carrier-listed/transportVehicleCarrierListedChart"
-
 
 import { transportPlanActions } from "../redux/actions"
 import { transportVehicleActions } from '../../transport-vehicle/redux/actions'
@@ -225,6 +224,12 @@ function TransportVehicleCarrier2(props) {
         }
         return res;
     }
+    const [planChosenSeen, setPlanChosenSeen] = useState({})
+    const handleShowDetailPlan = (plan) => {
+        console.log(plan);
+        setPlanChosenSeen(plan);
+        window.$('#modal-detail-info-transport-plan2').modal('show');
+    }
 
     useEffect(() => {
         // console.log(listAllVehicles);
@@ -264,7 +269,9 @@ function TransportVehicleCarrier2(props) {
                 {/* </div> */}
 
                 <div className="box-body qlcv">
-
+                    <TransportPlanDetailInfo 
+                        currentTransportPlan={planChosenSeen}
+                    />
                     <div className={"divTest"}>
                         <table className={"tableTest table-bordered table-hover not-sort"}>
                             <thead>
@@ -312,7 +319,7 @@ function TransportVehicleCarrier2(props) {
                                                     </span>
                                                     <span className="tooltiptext">
                                                         <a style={{ color: "white" }} 
-                                                            // onClick={() => this.handleShowDetailManufacturingCommand(command)}
+                                                            onClick={() => handleShowDetailPlan(getCurrentPlan(formatDate(day), vehicle._id))}
                                                         >{getCurrentPlan(formatDate(day), vehicle._id)?.code}</a>
                                                     </span>
                                                 </td>
@@ -368,7 +375,7 @@ function TransportVehicleCarrier2(props) {
                                                     </span>
                                                     <span className="tooltiptext">
                                                         <a style={{ color: "white" }} 
-                                                            // onClick={() => this.handleShowDetailManufacturingCommand(command)}
+                                                            onClick={() => handleShowDetailPlan(getCurrentPlan(formatDate(day), carrier._id))}
                                                         >{getCurrentPlan(formatDate(day), carrier._id)?.code}</a>
                                                     </span>
                                                 </td>

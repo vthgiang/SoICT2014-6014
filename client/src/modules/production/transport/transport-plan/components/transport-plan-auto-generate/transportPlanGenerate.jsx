@@ -15,6 +15,8 @@ import { transportVehicleActions } from '../../../transport-vehicle/redux/action
 import { transportDepartmentActions } from "../../../transport-department/redux/actions"
 import { generatePlanFastestMove } from "../../../transportHelper/generatePlan"
 
+import { getListDateBetween, isTimeZoneDateSmaller } from "../../../transportHelper/compareDateTimeZone"
+
 function TransportPlanGenerate(props) {
     // let allTransportRequirements;
     let {transportRequirements, transportVehicle, transportDepartment, transportPlan} = props;
@@ -23,7 +25,8 @@ function TransportPlanGenerate(props) {
         startDate: "",
         endDate: "",
         name: "Kế hoạch vận chuyển",
-        inDay: 1,
+        inDay: 0,
+        disableGenerateButtonStatus: true,
     });
     const [listPlanGenerate, setListPlanGenerate] = useState([])
 
@@ -79,10 +82,18 @@ function TransportPlanGenerate(props) {
 
     const handleSubmitGenerate = () => {
         // console.log(listAll);
-        let generatePlan = generatePlanFastestMove(listAll.allRequirements, listAll.allPlans, listAll.allVehicles, listAll.allCarriers, formSchedule.inDay);
+        let generatePlan = generatePlanFastestMove(listAll.allRequirements, listAll.allPlans, listAll.allVehicles, listAll.allCarriers, formSchedule.inDay, formSchedule.startDate);
         console.log(generatePlan);
         let {plans} = generatePlan;
-        setListPlanGenerate(plans);
+        let res=[]
+        if (plans && plans.length!==0){
+            plans.map(item => {
+                if (item.transportRequirements && item.transportRequirements.length!==0){
+                    res.push(item);
+                }
+            })
+        }
+        setListPlanGenerate(res);
     }
 
     const handleShowDetailInfo = (transportPlan) => {
@@ -93,14 +104,6 @@ function TransportPlanGenerate(props) {
     const save = () => {
         // props.createTransportPlan(formSchedule);
     }
-
-    // useEffect(() => {
-    //     props.getAllTransportRequirements({page:1, limit: 100, status: 2})
-    // }, [])
-
-    // useEffect(() => {
-    //     console.log(formSchedule, " day la form schedule");
-    // }, [formSchedule])
     
     useEffect(() => {
         let allPlans = [];
@@ -124,6 +127,34 @@ function TransportPlanGenerate(props) {
             })
         }
     }, [transportRequirements])
+
+    useEffect(() => {
+        // if (isTimeZoneDateSmaller(formSchedule.startDate, formSchedule.endDate)){
+            let lenDay = getListDateBetween(formSchedule.startDate, formSchedule.endDate).length;
+            console.log(lenDay, " so ngay");
+            if (lenDay !==0){
+                setFormSchedule({
+                    ...formSchedule,
+                    inDay: lenDay
+                })
+            }
+        // }
+    }, [formSchedule.startDate, formSchedule.endDate])
+
+    useEffect(() => {
+        if (formSchedule.inDay && Number(formSchedule.inDay) > 0){
+            setFormSchedule({
+                ...formSchedule,
+                disableGenerateButtonStatus: false,
+            })
+        }
+        else{
+            setFormSchedule({
+                ...formSchedule,
+                disableGenerateButtonStatus: true,
+            })
+        }
+    }, [formSchedule.inDay])
 
     useEffect(() => {
         let allVehicles=[];
@@ -195,60 +226,56 @@ function TransportPlanGenerate(props) {
 
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 
-                        <div className="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-
+                                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <div className="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+                                        <div className="form-group">
+                                            <label>
+                                                Từ ngày <span className="attention"> * </span>
+                                            </label>
+                                            <DatePicker
+                                                id={`start_date_generate_plan`}
+                                                value={formatDate(formSchedule.startDate)}
+                                                onChange={handleStartDateChange}
+                                                disabled={false}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+                                        <div className={`form-group`}>
+                                            <label>
+                                                Tới ngày
+                                                <span className="attention"> * </span>
+                                            </label>
+                                            <DatePicker
+                                                id={`end_date_generate_plan`}
+                                                value={formatDate(formSchedule.endDate)}
+                                                onChange={handleEndDateChange}
+                                                disabled={false}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+                                        <div className="form-group" style={{marginTop: "26px"}}>
+                                            <button type="button" 
+                                                    className="btn btn-success" 
+                                                    title={"Tạo kế hoạch"} 
+                                                    onClick={() => handleSubmitGenerate()}
+                                                    disabled={formSchedule.disableGenerateButtonStatus}
+                                            >
+                                                {"Tạo kế hoạch"}
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
                                 {/* <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                    <div className="form-group">
-                                        <label>
-                                            Mã kế hoạch <span className="attention"> </span>
-                                        </label>
-                                        <input type="text" className="form-control" disabled={true} 
-                                            value={formSchedule.code}
-                                        />
-                                    </div>
-                                </div> */}
-
-                                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                    <div className="form-group">
-                                        <label>
-                                            Từ ngày <span className="attention"> * </span>
-                                        </label>
-                                        <DatePicker
-                                            id={`start_date12`}
-                                            value={formatDate(formSchedule.startDate)}
-                                            onChange={handleStartDateChange}
-                                            disabled={false}
-                                        />
-                                    </div>
-                                </div>
-                                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                    <div className={`form-group`}>
-                                        <label>
-                                            Tới ngày
-                                            <span className="attention"> * </span>
-                                        </label>
-                                        <DatePicker
-                                            id={`end_date12`}
-                                            value={formatDate(formSchedule.endDate)}
-                                            onChange={handleEndDateChange}
-                                            disabled={false}
-                                        />
-                                    </div>
-                                </div>
-                                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                     <div className="form-group">
                                         <label>
                                             Số ngày <span className="attention"> * </span>
                                         </label>
                                         <input type="number" onChange={handleDayChange}></input>
                                     </div>
-                                </div>
-                                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                    <div className="form-group">
-                                        <button type="button" className="btn btn-success" title={"Tạo kế hoạch"} onClick={() => handleSubmitGenerate()}>{"Tạo kế hoạch"}</button>
-                                    </div>
-                                </div>
-                        </div>
+                                </div> */}
                     </div>
                 
                     <table id={"tableId"} className="table table-striped table-bordered table-hover">
@@ -257,8 +284,8 @@ function TransportPlanGenerate(props) {
                             <th className="col-fixed" style={{ width: 60 }}>{"Số thứ tự"}</th>
                             {/* <th>{"Mã kế hoạch"}</th>
                             <th>{"Tên kế hoạch"}</th>
-                            <th>{"Trạng thái"}</th>
-                            <th>{"Thời gian"}</th> */}
+                            <th>{"Trạng thái"}</th> */}
+                            <th>{"Thời gian"}</th>
                             {/* <th>{"Người phụ trách"}</th> */}
                             <th>{"Hành động"}</th>
                         </tr>
@@ -273,7 +300,9 @@ function TransportPlanGenerate(props) {
                                 {/* <td>{x.code}</td>
                                 <td>{x.name}</td> */}
                                 {/* <td>{getPlanStatus(x.status)}</td> */}
-                                {/* <td>{formatDate(x.startTime)+" - "+formatDate(x.endTime)}</td> */}
+                                <td>{formatDate(x.date)+" - "+formatDate(x.date)}</td>
+                                
+                                {/* <td>{x.date+" - "+x.date}</td> */}
                                 {/* <td>{""}</td> */}
                                 <td style={{ textAlign: "center" }}>
                                     <a className="edit text-green" 
@@ -284,20 +313,20 @@ function TransportPlanGenerate(props) {
                                         <i className="material-icons">visibility
                                         </i>
                                     </a>
-                                    <a className="edit text-yellow" style={{ width: '5px' }} 
+                                    {/* <a className="edit text-yellow" style={{ width: '5px' }} 
                                         title={"Chỉnh sửa kế hoạch"} 
                                         // onClick={() => handleEditPlan(x)}
                                     >
                                         <i className="material-icons">edit</i>
-                                    </a>
-                                    <DeleteNotification
+                                    </a> */}
+                                    {/* <DeleteNotification
                                         content={"Xóa kế hoạch vận chuyển"}
                                         data={{
                                             id: x._id,
                                             info: x.code
                                         }}
-                                        // func={handleDelete}
-                                    />
+                                        func={handleDelete}
+                                    /> */}
                                 </td>
                             </tr>
                         ))

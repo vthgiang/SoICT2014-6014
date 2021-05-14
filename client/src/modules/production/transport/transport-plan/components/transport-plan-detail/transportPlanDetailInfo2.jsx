@@ -1,19 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { ButtonModal, DialogModal, ErrorLabel, DatePicker, SelectBox, LazyLoadComponent, forceCheckOrVisible } from '../../../../../common-components';
+import { ButtonModal, DialogModal, ErrorLabel, DatePicker, SelectBox, LazyLoadComponent, forceCheckOrVisible } from '../../../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
-import { generateCode } from "../../../../../helpers/generateCode";
-import { formatToTimeZoneDate, formatDate } from "../../../../../helpers/formatDate"
-import ValidationHelper from '../../../../../helpers/validationHelper';
+import { formatToTimeZoneDate, formatDate } from "../../../../../../helpers/formatDate"
+import ValidationHelper from '../../../../../../helpers/validationHelper';
 
-import { LocationMap } from './map/locationMap'
-import { TransportVehicleAndCarrierSelect } from "./transport-plan-detail/transportVehicleAndCarrierSelect"
+import { LocationMap } from '../map/locationMap'
+import { TransportVehicleAndCarrierSelect } from "../transport-plan-detail/transportVehicleAndCarrierSelect"
 
-import { transportPlanActions } from '../redux/actions';
-import { transportRequirementsActions } from '../../transport-requirements/redux/actions'
-import { getTypeRequirement } from '../../transportHelper/getTextFromValue'
-
-import {} from './transport-plan.css'
+import { transportPlanActions } from '../../redux/actions';
+import { transportRequirementsActions } from '../../../transport-requirements/redux/actions'
+import { getTypeRequirement } from '../../../transportHelper/getTextFromValue'
 
 function TransportPlanDetailInfo(props) {
     let allTransportRequirements;
@@ -137,16 +134,16 @@ function TransportPlanDetailInfo(props) {
     return (
         <React.Fragment>
             <DialogModal
-                modalID="modal-detail-info-transport-plan" 
+                modalID="modal-detail-info-transport-plan2" 
                 isLoading={false}
-                formID="modal-detail-info-transport-plan"
+                formID="modal-detail-info-transport-plan2"
                 title={"Chi tiết kế hoạch vận chuyển"}
                 size={100}
                 maxWidth={500}
                 hasSaveButton={false}
                 hasNote={false}
             >
-            <form id="modal-detail-info-transport-plan" >
+            <form id="modal-detail-info-transport-plan2" >
                 <div className="box-body">
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 

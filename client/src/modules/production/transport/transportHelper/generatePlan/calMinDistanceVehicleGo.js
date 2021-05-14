@@ -15,7 +15,7 @@
  */
 
 let minR = 99999;
-let went = new Array(999999);
+let went = new Array(999);
 let ordinal = [];
 let payload, volume;
 const calDistanceGeocode = (lat1, lng1, lat2, lng2) => {
@@ -73,11 +73,13 @@ const minRouteVehicle = (listRequirementsGeocode, beforeGeocode, currentDistance
     }
 }
 
-exports.calMinDistanceVehicleGo = (listRequirementsGeocode) => {
+exports.calMinDistanceVehicleGo = (listRequirementsGeocode, transportVehicles) => {
     minR = 99999;
     for (let i = 0 ; i< listRequirementsGeocode.length; i++){
         went[i] = false;
     }
+    payload = transportVehicles.payload;
+    volume = transportVehicles.volume;
     // console.log(listRequirementsGeocode, " aaaaaaaaaaa")
     minRouteVehicle(listRequirementsGeocode, null, 0, 0, listRequirementsGeocode.length);
     return minR;

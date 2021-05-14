@@ -50,6 +50,7 @@ function ArrangeDialog(props) {
                 msg_faile={"fail"}
                 // func={save}
                 // disableSubmit={!isFormValidated()}
+                hasSaveButton={false}
                 size={100}
                 maxWidth={500}
             >

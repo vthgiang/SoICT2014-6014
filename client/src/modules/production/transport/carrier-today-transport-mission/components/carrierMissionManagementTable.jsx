@@ -15,6 +15,8 @@ import { transportProcessActions } from "../../transport-route/redux/actions"
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 import { convertJsonObjectToFormData } from '../../../../../helpers/jsonObjectToFormDataObjectConverter'
 
+import { getTypeRequirement } from '../../transportHelper/getTextFromValue'
+
 function CarrierMissionManagementTable(props) {
     let {transportPlanId, transportPlan, transportSchedule, socket, sendCurrentLocate} = props;
     const [transportScheduleByCarrierId, setTransportScheduleByCarrierId] = useState()
@@ -238,7 +240,7 @@ function CarrierMissionManagementTable(props) {
                             <tr key={index}>
                                 <td>{index+1}</td>
                                 <td>{routeOrdinal.transportRequirement?.code}</td>
-                                <td>{routeOrdinal.transportRequirement?.type}</td>
+                                <td>{getTypeRequirement(routeOrdinal.transportRequirement?.type)}</td>
                                 <td>{(String(routeOrdinal.type)==="1")?routeOrdinal.transportRequirement?.fromAddress:routeOrdinal.transportRequirement?.toAddress}</td>
                                 <td>{(String(routeOrdinal.type)==="1")?"Nhận hàng":"Trả hàng"}</td>
                                 <td>

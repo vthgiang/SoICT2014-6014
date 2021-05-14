@@ -84,7 +84,7 @@ function TransportManageRouteMainPage(props) {
                 if(String(item.status)!=="1"){
                     listTransportPlans.push({
                         value: item._id,
-                        text: item.code,
+                        text: item.code+" - "+item.name,
                     });
                 }
             });
