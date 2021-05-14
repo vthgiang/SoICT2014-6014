@@ -1184,7 +1184,7 @@ class DetailTaskTab extends Component {
                                         {
                                             task?.responsibleEmployees?.length > 0 && task.responsibleEmployees.map((item, index) => {
                                                 // Nếu người này không còn trong công việc
-                                                if (task?.inactiveEmployees.some(o => o._id === item._id)) {
+                                                if (task?.inactiveEmployees?.some(o => o._id === item._id)) {
                                                     return (
                                                         <a key={index} title="đã rời khỏi công việc" className="raci-style" style={{ opacity: .5 }}>
                                                             <img src={process.env.REACT_APP_SERVER + item.avatar} className="img-circle" style={{ width: '20px', height: '20px', borderRadius: '50%', marginRight: '5px' }} alt="User avatar" />
@@ -1207,7 +1207,7 @@ class DetailTaskTab extends Component {
                                         {
                                             task?.accountableEmployees?.length > 0 && task.accountableEmployees.map((item, index) => {
                                                 // Nếu người này không còn trong công việc
-                                                if (task?.inactiveEmployees.some(o => o._id === item._id)) {
+                                                if (task?.inactiveEmployees?.some(o => o._id === item._id)) {
                                                     return (
                                                         <a key={index} title="đã rời khỏi công việc" className="raci-style" style={{ opacity: .5 }}>
                                                             <img src={process.env.REACT_APP_SERVER + item.avatar} className="img-circle" style={{ width: '20px', height: '20px', borderRadius: '50%', marginRight: '5px' }} alt="User avatar" />
@@ -1233,7 +1233,7 @@ class DetailTaskTab extends Component {
                                                 {
                                                     task?.consultedEmployees?.length > 0 && task.consultedEmployees.map((item, index) => {
                                                         // Nếu người này không còn trong công việc
-                                                        if (task?.inactiveEmployees.some(o => o._id === item._id)) {
+                                                        if (task?.inactiveEmployees?.some(o => o._id === item._id)) {
                                                             return (
                                                                 <a key={index} title="đã rời khỏi công việc" className="raci-style" style={{ opacity: .5 }}>
                                                                     <img src={process.env.REACT_APP_SERVER + item.avatar} className="img-circle" style={{ width: '20px', height: '20px', borderRadius: '50%', marginRight: '5px' }} alt="User avatar" />
@@ -1260,7 +1260,7 @@ class DetailTaskTab extends Component {
                                                 {
                                                     task?.informedEmployees?.length > 0 && task.informedEmployees.map((item, index) => {
                                                         // Nếu người này không còn trong công việc
-                                                        if (task?.inactiveEmployees.some(o => o._id === item._id)) {
+                                                        if (task?.inactiveEmployees?.some(o => o._id === item._id)) {
                                                             return (
                                                                 <a key={index} title="đã rời khỏi công việc" className="raci-style" style={{ opacity: .5 }}>
                                                                     <img src={process.env.REACT_APP_SERVER + item.avatar} className="img-circle" style={{ width: '20px', height: '20px', borderRadius: '50%', marginRight: '5px' }} alt="User avatar" />
@@ -1312,7 +1312,7 @@ class DetailTaskTab extends Component {
                                                                 <ul>
                                                                     {(eva.results.length !== 0) ?
                                                                         eva.results.map((res, index) => {
-                                                                            if (res.employee && task.inactiveEmployees.indexOf(res.employee._id) !== -1) {
+                                                                            if (res.employee && task.inactiveEmployees?.indexOf(res.employee._id) !== -1) {
                                                                                 return <li key={index}><strike>{res.employee.name}</strike>: &nbsp;&nbsp; {(res.automaticPoint !== null && res.automaticPoint !== undefined) ? res.automaticPoint : translate('task.task_management.detail_not_auto')} - {res.employeePoint ? res.employeePoint : translate('task.task_management.detail_not_emp')} - {res.approvedPoint ? res.approvedPoint : translate('task.task_management.detail_not_acc')}</li>
                                                                             }
                                                                             else {
