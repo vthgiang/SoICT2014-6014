@@ -3215,8 +3215,8 @@ export default {
                 calc_average_action_rating:
                     "Trung bình cộng điểm đánh giá hoạt động",
                 calc_failed_action_rating:
-                    "Số hoạt động không đạt (rating < 5)",
-                calc_passed_action_rating: "Số công việc đạt (rating >= 5)",
+                    "Tổng các tích điểm hoạt động và độ quan trọng hoạt động của các hoạt động không đạt (rating < 5)",
+                calc_all_action_rating: "Tổng các tích điểm hoạt động và độ quan trọng hoạt động của tất cả hoạt động",
                 calc_progress: "Tiến độ công việc",
                 calc_new_formula: "Công thức hiện tại",
                 calc_total_day:

@@ -94,9 +94,6 @@ function calcAutoPoint(data) {
         && new Date(item.createdAt).getFullYear() === evaluationsDate.getFullYear()
     ))
 
-    let numberOfPassedActions = actions.filter(act => act.rating >= 5).length;
-    let numberOfFailedActions = actions.filter(act => act.rating < 5).length;
-
     // Tổng số hoạt động
     let a = 0;
     a = actions.length;
@@ -117,6 +114,14 @@ function calcAutoPoint(data) {
     let averageActionRating = !a ? 10 : reduceAction.rating / reduceAction.actionImportanceLevel; // a = 0 thì avg mặc định là 10
     let autoHasActionInfo = progress / (daysUsed / totalDays) - 0.5 * (10 - (averageActionRating)) * 10;
     let automaticPoint = 0;
+    let sumRatingOfFailedActions = 0, sumRatingOfAllActions = 0;
+
+    actions.map((item) => {
+        if (item.rating < 5) {
+            sumRatingOfFailedActions = sumRatingOfFailedActions + item.rating * item.actionImportanceLevel
+        }
+        sumRatingOfAllActions = sumRatingOfAllActions + item.rating * item.actionImportanceLevel
+    });
 
     if (!task.formula) {
         if (task.taskTemplate === null || task.taskTemplate === undefined) { // Công việc không theo mẫu
@@ -131,8 +136,8 @@ function calcAutoPoint(data) {
             formula = formula.replace(/totalDays/g, `(${totalDays})`);
             formula = formula.replace(/daysUsed/g, `(${daysUsed})`);
             formula = formula.replace(/averageActionRating/g, `(${averageActionRating})`);
-            formula = formula.replace(/numberOfFailedActions/g, `(${numberOfFailedActions})`);
-            formula = formula.replace(/numberOfPassedActions/g, `(${numberOfPassedActions})`);
+            formula = formula.replace(/sumRatingOfFailedActions/g, `${sumRatingOfFailedActions}`);
+            formula = formula.replace(/sumRatingOfAllActions/g, `${sumRatingOfAllActions}`);
             formula = formula.replace(/progress/g, `(${progressTask})`);
 
             // thay mã code bằng giá trị(chỉ dùng cho kiểu số)
@@ -166,8 +171,8 @@ function calcAutoPoint(data) {
             formula = formula.replace(/totalDays/g, `(${totalDays})`);
             formula = formula.replace(/daysUsed/g, `(${daysUsed})`);
             formula = formula.replace(/averageActionRating/g, `(${averageActionRating})`);
-            formula = formula.replace(/numberOfFailedActions/g, `(${numberOfFailedActions})`);
-            formula = formula.replace(/numberOfPassedActions/g, `(${numberOfPassedActions})`);
+            formula = formula.replace(/sumRatingOfFailedActions/g, `${sumRatingOfFailedActions}`);
+            formula = formula.replace(/sumRatingOfAllActions/g, `${sumRatingOfAllActions}`);
             formula = formula.replace(/progress/g, `(${progressTask})`);
 
             // thay mã code bằng giá trị(chỉ dùng cho kiểu số)
@@ -195,8 +200,8 @@ function calcAutoPoint(data) {
             formula = formula.replace(/totalDays/g, `(${totalDays})`);
             formula = formula.replace(/daysUsed/g, `(${daysUsed})`);
             formula = formula.replace(/averageActionRating/g, `(${averageActionRating})`);
-            formula = formula.replace(/numberOfFailedActions/g, `(${numberOfFailedActions})`);
-            formula = formula.replace(/numberOfPassedActions/g, `(${numberOfPassedActions})`);
+            formula = formula.replace(/sumRatingOfFailedActions/g, `${sumRatingOfFailedActions}`);
+            formula = formula.replace(/sumRatingOfAllActions/g, `${sumRatingOfAllActions}`);
             formula = formula.replace(/progress/g, `(${progressTask})`);
 
             // thay mã code bằng giá trị(chỉ dùng cho kiểu số)
