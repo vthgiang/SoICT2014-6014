@@ -45,116 +45,116 @@ function QuillEditor (props) {
         }
 
         if (!isText) {
-            if (enableEdit && !isText) {
-                // Bắt sự kiện text-change
-                quill.on('text-change', (e) => {
-                    setHeightContainer(id, maxHeight)
+            // Bắt sự kiện text-change
+            quill.on('text-change', (e) => {
+                setHeightContainer(id, maxHeight)
 
-                    let imgs, imageSources = [];
-                    let selection = quill.getSelection()?.index;
+                let imgs, imageSources = [];
+                let selection = quill.getSelection()?.index;
 
-                    if (quill?.container) {
-                        imgs = Array.from(
-                            quill?.container?.querySelectorAll('img[src^="data:"]:not(.loading)')
-                        );
-    
-                        // Lọc base64 ảnh
-                        if (imgs && imgs.length !== 0) {
-                            imgs = imgs.map((item, index) => {
-                                imageSources.push({
-                                    originalName: "image" + index,
-                                    url: item.getAttribute("src")
-                                });
-                                item.src = "image" + index;
-                                return item;
-                            })
-                        }
-                    }
-                    
-                    // Auto Insert URL and email
-                    let insert = null;
-                    if (e && e.ops && e.ops.length !== 0) {
-                        e.ops.map(item => {
-                            if (item?.insert && !item?.attributes) {
-                                insert = item?.insert
-                            }
-                        })
-                    }
-                    
-                    if (insert === " " || insert === "\n") {   // Handle event type space and enter
-                        let text, temp;
-                        if (insert === "\n") {
-                            selection = selection + 1;
-                        }
-                        temp = selection - 2;
+                if (quill?.container) {
+                    imgs = Array.from(
+                        quill?.container?.querySelectorAll('img[src^="data:"]:not(.loading)')
+                    );
 
-                        while (temp >= 0) {
-                            text = quill.getText(temp, 1);
-                            if (text?.toString() === " " || text?.toString() === "\n") {
-                                break;
-                            } else {
-                                temp--;
-                            }
-                        }
-
-                        text = quill.getText(temp + 1, selection - temp - 2)?.toString();
-                        if ((text?.startsWith("http://") || text?.startsWith("https://")) && (text !== "https://") && (text !== "http://")) {
-                            quill.deleteText(temp + 1, selection - temp - 2);
-                            quill.insertText(temp + 1, text, 'link', text);
-                        } else if (text?.endsWith("@gmail.com") || (text?.endsWith("@sis.hust.edu.vn"))) {
-                            quill.deleteText(temp + 1, selection - temp - 2);
-                            quill.insertText(temp + 1, text, 'link', "mailto:" + text);
-
-                            // Remove attr target for link email
-                            window.$('.ql-editor a').map(function() {
-                                if (this.href?.startsWith("mailto:")) {
-                                    window.$(this).removeAttr("target")
-                                }
-                            })
-                        }
-                    } else if (insert && insert.length > 1) {   // Handle event paste
-                        if ((insert?.startsWith("http://") || insert?.startsWith("https://")) && (insert !== "https://") && (insert !== "http://")) {
-                            quill.deleteText(selection, insert.length);
-                            quill.insertText(selection, insert, 'link', insert);
-                        } else if (insert?.endsWith("@gmail.com") || (insert?.endsWith("@sis.hust.edu.vn"))) {
-                            quill.deleteText(selection, insert.length);
-                            quill.insertText(selection, insert, 'link', "mailto:" + insert);
-                            
-                            // Remove attr target for link email
-                            window.$('.ql-editor a').map(function() {
-                                if (this.href?.startsWith("mailto:")) {
-                                    window.$(this).removeAttr("target")
-                                }
-                            })
-                        }
-                    }
-                    
-                    // Trả về html quill
-                    if (quill && quill.root) {
-                        props.getTextData(quill.root.innerHTML, imageSources);
-                    }
-
-                    // Add lại base64 ảnh
+                    // Lọc base64 ảnh
                     if (imgs && imgs.length !== 0) {
                         imgs = imgs.map((item, index) => {
-                            item.src = imageSources?.[index]?.url;
+                            imageSources.push({
+                                originalName: "image" + index,
+                                url: item.getAttribute("src")
+                            });
+                            item.src = "image" + index;
                             return item;
                         })
                     }
-                });
+                }
+                
+                // Auto Insert URL and email
+                let insert = null;
+                if (e && e.ops && e.ops.length !== 0) {
+                    e.ops.map(item => {
+                        if (item?.insert && !item?.attributes) {
+                            insert = item?.insert
+                        }
+                    })
+                }
+                
+                if (insert === " " || insert === "\n") {   // Handle event type space and enter
+                    let text, temp;
+                    if (insert === "\n") {
+                        selection = selection + 1;
+                    }
+                    temp = selection - 2;
 
-                // Custom insert table
-                window.$(`#insert-tabletoolbar${id}`).click(() => {
-                    let table = quill.getModule('table');
-                    table.insertTable(3, 3);
-                });
-            } else {
-                // Disable edit
-                quill.enable(enableEdit);
-            }
+                    while (temp >= 0) {
+                        text = quill.getText(temp, 1);
+                        if (text?.toString() === " " || text?.toString() === "\n") {
+                            break;
+                        } else {
+                            temp--;
+                        }
+                    }
+
+                    text = quill.getText(temp + 1, selection - temp - 2)?.toString();
+                    if ((text?.startsWith("http://") || text?.startsWith("https://")) && (text !== "https://") && (text !== "http://")) {
+                        quill.deleteText(temp + 1, selection - temp - 2);
+                        quill.insertText(temp + 1, text, 'link', text);
+                    } else if (text?.endsWith("@gmail.com") || (text?.endsWith("@sis.hust.edu.vn"))) {
+                        quill.deleteText(temp + 1, selection - temp - 2);
+                        quill.insertText(temp + 1, text, 'link', "mailto:" + text);
+
+                        // Remove attr target for link email
+                        window.$('.ql-editor a').map(function() {
+                            if (this.href?.startsWith("mailto:")) {
+                                window.$(this).removeAttr("target")
+                            }
+                        })
+                    }
+                } else if (insert && insert.length > 1) {   // Handle event paste
+                    if ((insert?.startsWith("http://") || insert?.startsWith("https://")) && (insert !== "https://") && (insert !== "http://")) {
+                        quill.deleteText(selection, insert.length);
+                        quill.insertText(selection, insert, 'link', insert);
+                    } else if (insert?.endsWith("@gmail.com") || (insert?.endsWith("@sis.hust.edu.vn"))) {
+                        quill.deleteText(selection, insert.length);
+                        quill.insertText(selection, insert, 'link', "mailto:" + insert);
+                        
+                        // Remove attr target for link email
+                        window.$('.ql-editor a').map(function() {
+                            if (this.href?.startsWith("mailto:")) {
+                                window.$(this).removeAttr("target")
+                            }
+                        })
+                    }
+                }
+                
+                // Trả về html quill
+                if (quill && quill.root && props.getTextData) {
+                    props.getTextData(quill.root.innerHTML, imageSources);
+                }
+
+                // Add lại base64 ảnh
+                if (imgs && imgs.length !== 0) {
+                    imgs = imgs.map((item, index) => {
+                        item.src = imageSources?.[index]?.url;
+                        return item;
+                    })
+                }
+            });
+
+            // Custom insert table
+            window.$(`#insert-tabletoolbar${id}`).click(() => {
+                let table = quill.getModule('table');
+                table.insertTable(3, 3);
+            });
+
+            // Disable edit
+            quill.enable(enableEdit);
 
             setQuill(quill)
         }
+
+        setHeightContainer(id, maxHeight)
     }, [])
 
     useEffect(() => {

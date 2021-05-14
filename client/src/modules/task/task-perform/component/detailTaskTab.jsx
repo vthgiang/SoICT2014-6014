@@ -16,7 +16,7 @@ import { getStorage } from '../../../../config';
 import { SelectFollowingTaskModal } from './selectFollowingTaskModal';
 import { withTranslate } from 'react-redux-multilingual';
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
-import { ShowMoreShowLess } from '../../../../common-components';
+import { ShowMoreShowLess, QuillEditor } from '../../../../common-components';
 import moment from 'moment';
 import Swal from 'sweetalert2';
 import parse from 'html-react-parser';
@@ -1159,7 +1159,13 @@ class DetailTaskTab extends Component {
                                         isHtmlElement={true}
                                         characterLimit={200}
                                     >
-                                        {task.description && parse(task.description)}
+                                        <QuillEditor
+                                            id={`description-${task?._id}`}
+                                            toolbar={false}
+                                            quillValueDefault={task?.description}
+                                            enableDropImage={false}
+                                            enableEdit={false}
+                                        />
                                     </ShowMoreShowLess>
                                 </div>
                             </div>
