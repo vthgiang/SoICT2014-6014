@@ -5,6 +5,7 @@ const { sendEmail } = require(`../../../helpers/emailHelper`);
 const Logger = require(`../../../logs`);
 const { Task, Project } = require('../../../models');
 const { connect } = require(`../../../helpers/dbHelper`);
+const moment = require('moment')
 // Điều hướng đến dịch vụ cơ sở dữ liệu của module quản lý công việc
 
 
@@ -546,27 +547,8 @@ exports.createProjectTask = async (req, res) => {
             },
         };
 
-        // // Gửi mail cho trưởng đơn vị phối hợp thực hiện công việc
-        // let collaboratedEmail = tasks.collaboratedEmail;
-        // let collaboratedHtml = tasks.collaboratedHtml;
-        // let collaboratedData = {
-        //     organizationalUnits: task.organizationalUnit._id,
-        //     title: "Tạo mới công việc được phối hợp với đơn vị bạn",
-        //     level: "general",
-        //     content: collaboratedHtml,
-        //     sender: task.organizationalUnit.name,
-        //     users: tasks.managersOfOrganizationalUnitThatHasCollaborated,
-        //     associatedDataObject: {
-        //         dataType: 1,
-        //         description: `Đơn vị bạn được mời phối hợp thực hiện trong công việc: <strong>${task.name}</strong></p>`
-        //     },
-        // };
-
         await NotificationServices.createNotification(req.portal, req.user.company._id, data);
-        // await NotificationServices.createNotification(req.portal, req.user.company._id, collaboratedData);
         await sendEmail(email, "Bạn có công việc mới", '', html);
-        // collaboratedEmail && collaboratedEmail.length !== 0
-        //     && await sendEmail(collaboratedEmail, "Đơn vị bạn được phối hợp thực hiện công việc mới", '', collaboratedHtml);
         await NewsFeed.createNewsFeed(req.portal, {
             title: data?.title,
             description: data?.content,
@@ -578,17 +560,6 @@ exports.createProjectTask = async (req, res) => {
             },
             relatedUsers: data?.users
         });
-        // await NewsFeed.createNewsFeed(req.portal, {
-        //     title: collaboratedData?.title,
-        //     description: collaboratedData?.content,
-        //     creator: req.user._id,
-        //     associatedDataObject: { 
-        //         dataType: 1,
-        //         value: task?._id,
-        //         description: task?.name
-        //     },
-        //     relatedUsers: collaboratedData?.users
-        // });
 
         await Logger.info(req.user.email, 'create_task', req.portal)
         res.status(200).json({
@@ -612,23 +583,29 @@ exports.createProjectTask = async (req, res) => {
 exports.createProjectTasksFromCPM = async (req, res) => {
     try {
         let totalProjectBudget = 0;
+        let endDateOfProject = req.body[0]?.endDate;
         for (let currentTask of req.body) {
             if (currentTask.preceedingTasks.length > 0) {
+                console.log('currentTask.preceedingTasks', currentTask.preceedingTasks)
+                let currentNewPreceedingTasks = [];
                 for (let currentPreceedingItem of currentTask.preceedingTasks) {
                     const localPreceedingItem = req.body.find(item => item.code === currentPreceedingItem.task);
                     const remotePreceedingItem = await Task(connect(DB_CONNECTION, req.portal)).findOne({
                         taskProject: currentTask.taskProject,
                         name: localPreceedingItem.name
                     });
-                    currentTask = {
-                        ...currentTask,
-                        preceedingTasks: {
-                            task: remotePreceedingItem._id,
-                            link: ''
-                        }
-                    }
+                    currentNewPreceedingTasks.push({
+                        task: remotePreceedingItem._id,
+                        link: ''
+                    })
+                }
+                currentTask = {
+                    ...currentTask,
+                    isFromCPM: true,
+                    preceedingTasks: currentNewPreceedingTasks,
                 }
             }
+            // console.log(currentTask)
             var tasks = await TaskManagementService.createProjectTask(req.portal, currentTask);
             var task = tasks.task;
             var user = tasks.user.filter(user => user !== req.user._id); // Lọc thông tin người tạo ra khỏi danh sách sẽ gửi thông báo
@@ -667,10 +644,21 @@ exports.createProjectTasksFromCPM = async (req, res) => {
             await Logger.info(req.user.email, 'create_tasks_list_excel_cpm', req.portal)
 
             totalProjectBudget += currentTask.estimateNormalCost;
+            console.log(currentTask.endDate, endDateOfProject, moment(currentTask.endDate).isAfter(moment(endDateOfProject)))
+            if (moment(currentTask.endDate).isAfter(moment(endDateOfProject))) {
+                endDateOfProject = currentTask.endDate;
+            }
         }
-        await Project(connect(DB_CONNECTION, req.portal)).updateOne({
-            "budget": totalProjectBudget,
-        });
+        console.log(endDateOfProject);
+
+        await Project(connect(DB_CONNECTION, req.portal)).findByIdAndUpdate(req.body[0].taskProject, {
+            $set: {
+                budget: totalProjectBudget,
+                endDate: endDateOfProject,
+                budgetChangeRequest: totalProjectBudget,
+                endDateRequest: endDateOfProject,
+            }
+        }, { new: true });
         res.status(200).json({
             success: true,
             messages: ['create_tasks_list_excel_cpm_success'],

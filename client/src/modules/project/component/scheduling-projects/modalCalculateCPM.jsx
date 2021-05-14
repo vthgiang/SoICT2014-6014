@@ -8,7 +8,7 @@ import jsPERT, { pertProbability, START, END, Pert } from 'js-pert';
 import { fakeObj, fakeArr } from './staticData';
 import { Collapse } from 'react-bootstrap';
 import { DialogModal } from '../../../../common-components';
-import { convertToMilliseconds, convertUserIdToUserName, getCurrentProjectDetails } from '../projects/functionHelper';
+import { convertToMilliseconds, convertUserIdToUserName, getCurrentProjectDetails, handleWeekendAndWorkTime, processDataTasksStartEnd } from '../projects/functionHelper';
 import { Canvas, Node } from 'reaflow';
 import { getNumsOfDaysWithoutGivenDay, getSalaryFromUserId, numberWithCommas } from '../../../task/task-management/component/functionHelpers';
 import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
@@ -28,6 +28,7 @@ const ModalCalculateCPM = (props) => {
     useEffect(() => {
         console.log('tasksData co thay doi');
         setCurrentTasksData(tasksData);
+        console.log('tasksData', tasksData)
     }, [tasksData]);
 
     for (let item of currentTasksData) {
@@ -49,149 +50,6 @@ const ModalCalculateCPM = (props) => {
         const currentRole = getStorage("currentRole");
         props.getRoleSameDepartment(currentRole);
     }, [])
-
-    const handleWeekendAndWorkTime = (taskItem) => {
-        // Nếu unitTime = 'days'
-        if (projectDetail?.unitTime === 'days') {
-            // Check xem startDate có phải thứ 7 hoặc chủ nhật không thì cộng thêm ngày để startDate vào ngày thứ 2 tuần sau
-            let dayOfStartDate = (new Date(taskItem.startDate)).getDay();
-            if (dayOfStartDate === 6) taskItem.startDate = moment(taskItem.startDate).add(2, 'days').format();
-            if (dayOfStartDate === 0) taskItem.startDate = moment(taskItem.startDate).add(1, 'days').format();
-            // Tách phần integer và phần decimal của estimateNormalTime
-            const estimateNormalTimeArr = taskItem.estimateNormalTime.toString().split('.');
-            const integerPart = Number(estimateNormalTimeArr[0]);
-            const decimalPart = estimateNormalTimeArr.length === 2 ? Number(`.${estimateNormalTimeArr[1]}`) : undefined;
-            let tempEndDate = '';
-            // Cộng phần nguyên
-            for (let i = 0; i < integerPart; i++) {
-                // Tính tempEndDate = + 1 ngày trước để kiểm tra
-                if (i === 0) {
-                    tempEndDate = moment(taskItem.startDate).add(1, 'days').format();
-                } else {
-                    tempEndDate = moment(taskItem.endDate).add(1, 'days').format();
-                }
-                // Nếu tempEndDate đang là thứ 7 thì công thêm 2 ngày
-                if ((new Date(tempEndDate)).getDay() === 6) {
-                    taskItem.endDate = moment(tempEndDate).add(2, 'days').format();
-                }
-                // Nếu tempEndDate đang là chủ nhật thì công thêm 1 ngày
-                else if ((new Date(tempEndDate)).getDay() === 0) {
-                    taskItem.endDate = moment(tempEndDate).add(1, 'days').format();
-                }
-                // Còn không thì không cộng gì
-                else {
-                    taskItem.endDate = tempEndDate;
-                }
-            }
-            // Cộng phần thập phân (nếu có)
-            if (decimalPart) {
-                if (!taskItem.endDate) {
-                    taskItem.endDate = moment(taskItem.startDate).add(decimalPart, 'days').format();
-                } else {
-                    taskItem.endDate = moment(taskItem.endDate).add(decimalPart, 'days').format();
-                }
-                // Check xem endDate hiện tại là thứ mấy => Cộng tiếp để bỏ qua thứ 7 và chủ nhật (nếu có)
-                dayOfStartDate = (new Date(taskItem.endDate)).getDay();
-                if (dayOfStartDate === 6) taskItem.endDate = moment(taskItem.endDate).add(2, 'days').format();
-                if (dayOfStartDate === 0) taskItem.endDate = moment(taskItem.endDate).add(1, 'days').format();
-            }
-            return taskItem;
-        }
-
-        // Nếu unitTime = 'hours'
-        const dailyMorningStartTime = moment('08:00', 'HH:mm');
-        const dailyMorningEndTime = moment('12:00', 'HH:mm');
-        const dailyAfternoonStartTime = moment('13:30', 'HH:mm');
-        const dailyAfternoonEndTime = moment('17:30', 'HH:mm');
-        // Check xem startDate có phải thứ 7 hoặc chủ nhật không thì cộng thêm ngày để startDate vào ngày thứ 2 tuần sau
-        let dayOfStartDate = (new Date(taskItem.startDate)).getDay();
-        if (dayOfStartDate === 6) taskItem.startDate = moment(taskItem.startDate).add(2, 'days').format();
-        if (dayOfStartDate === 0) taskItem.startDate = moment(taskItem.startDate).add(1, 'days').format();
-        // Tách phần integer và phần decimal của estimateNormalTime
-        const estimateNormalTimeArr = taskItem.estimateNormalTime.toString().split('.');
-        const integerPart = Number(estimateNormalTimeArr[0]);
-        const decimalPart = estimateNormalTimeArr.length === 2 ? Number(`.${estimateNormalTimeArr[1]}`) : undefined;
-        let tempEndDate = '';
-        // Cộng phần nguyên
-        for (let i = 0; i < integerPart; i++) {
-            // Tính tempEndDate = + 1 tiêng trước để kiểm tra
-            if (i === 0) {
-                tempEndDate = moment(taskItem.startDate).add(1, 'hours').format();
-            } else {
-                tempEndDate = moment(taskItem.endDate).add(1, 'hours').format();
-            }
-            const currentEndDateInMomentHourMinutes = moment(moment(tempEndDate).format('HH:mm'), 'HH:mm');
-            // Nếu đang ở giờ nghỉ trưa
-            if (currentEndDateInMomentHourMinutes.isAfter(dailyMorningEndTime) && currentEndDateInMomentHourMinutes.isBefore(dailyAfternoonStartTime)) {
-                tempEndDate = moment(tempEndDate).set({
-                    hour: 13,
-                    minute: 30,
-                });
-                tempEndDate = moment(tempEndDate).add(1, 'hours').format();
-            }
-            // Nếu quá 17:30
-            else if (currentEndDateInMomentHourMinutes.isAfter(dailyAfternoonEndTime)) {
-                tempEndDate = moment(tempEndDate).set({
-                    hour: 8,
-                    minute: 0,
-                });
-                tempEndDate = moment(tempEndDate).add(1, 'hours').format();
-                tempEndDate = moment(tempEndDate).add(1, 'days').format();
-            }
-            // Nếu tempEndDate đang là thứ 7 thì công thêm 2 ngày
-            if ((new Date(tempEndDate)).getDay() === 6) {
-                taskItem.endDate = moment(tempEndDate).add(2, 'days').format();
-            }
-            // Nếu tempEndDate đang là chủ nhật thì công thêm 1 ngày
-            else if ((new Date(tempEndDate)).getDay() === 0) {
-                taskItem.endDate = moment(tempEndDate).add(1, 'days').format();
-            }
-            // Còn không thì không cộng gì
-            else {
-                taskItem.endDate = tempEndDate;
-            }
-        }
-        // Cộng phần thập phân (nếu có)
-        if (decimalPart) {
-            if (!taskItem.endDate) {
-                taskItem.endDate = moment(taskItem.startDate).add(decimalPart, 'hours').format();
-            } else {
-                taskItem.endDate = moment(taskItem.endDate).add(decimalPart, 'hours').format();
-            }
-            // Check xem endDate hiện tại là thứ mấy => Cộng tiếp để bỏ qua thứ 7 và chủ nhật (nếu có)
-            dayOfStartDate = (new Date(taskItem.endDate)).getDay();
-            if (dayOfStartDate === 6) taskItem.endDate = moment(taskItem.endDate).add(2, 'days').format();
-            if (dayOfStartDate === 0) taskItem.endDate = moment(taskItem.endDate).add(1, 'days').format();
-        }
-        return taskItem;
-    }
-
-    const processDataBeforeInserted = () => {
-        if (!currentTasksData || currentTasksData.length === 0) return [];
-        const tempTasksData = [...currentTasksData];
-        // Lặp mảng tasks
-        for (let taskItem of tempTasksData) {
-            if ((!taskItem.startDate || !taskItem.endDate) && taskItem.preceedingTasks.length === 0) {
-                taskItem.startDate = projectDetail?.startDate;
-                taskItem = handleWeekendAndWorkTime(taskItem);
-            } else {
-                // Lặp mảng preceedingTasks của taskItem hiện tại
-                for (let preceedingItem of taskItem.preceedingTasks) {
-                    const currentPreceedingTaskItem = tempTasksData.find(item => {
-                        return String(item.code) === String(preceedingItem.trim());
-                    });
-                    if (!taskItem.startDate ||
-                        moment(taskItem.startDate)
-                            .isBefore(moment(currentPreceedingTaskItem.endDate))) {
-                        taskItem.startDate = currentPreceedingTaskItem.endDate;
-                    }
-                    taskItem = handleWeekendAndWorkTime(taskItem);
-                }
-            }
-        }
-        // console.log('tempTasksData', tempTasksData);
-        return tempTasksData;
-    }
 
     const handleCalculateRecommend = () => {
         setTimeout(() => {
@@ -236,7 +94,7 @@ const ModalCalculateCPM = (props) => {
         return resultEdges;
     }
 
-    const processedData = processDataBeforeInserted();
+    const processedData = processDataTasksStartEnd(projectDetail, currentTasksData);
 
     // Tìm kiếm endDate muộn nhất trong list tasks
     const findLatestDate = (data) => {
@@ -251,7 +109,14 @@ const ModalCalculateCPM = (props) => {
     }
 
     const handleInsertListToDB = () => {
-        const message = moment(findLatestDate(processedData)).isAfter(moment(projectDetail?.endDate))
+        let currentProcessData = [...processedData];
+        console.log('currentProcessData ----------', currentProcessData)
+        if (!findLatestDate(currentProcessData)) {
+            currentProcessData = processDataTasksStartEnd(projectDetail, currentTasksData);
+        }
+        console.log('currentProcessData afterrrrrrr ----------', currentProcessData)
+        console.log('findLatestDate(currentProcessData)', findLatestDate(currentProcessData))
+        const message = moment(findLatestDate(currentProcessData)).isAfter(moment(projectDetail?.endDate))
             ? "Thời gian tính toán nhiều hơn thời gian dự kiến. Bạn có chắc chắn tiếp tục thêm vào cơ sở dữ liệu?"
             : "Bạn có muốn thêm vào cơ sở dữ liệu?"
         Swal.fire({
@@ -264,19 +129,19 @@ const ModalCalculateCPM = (props) => {
             confirmButtonText: translate('general.yes'),
         }).then(async (result) => {
             if (result.value) {
-                const newTasksList = processedData.map((processDataItem, processDataIndex) => {
-                    const responsiblesWithSalaryArr = processDataItem.currentResponsibleEmployees?.map(resItem => {
+                const newTasksList = currentProcessData.map((processDataItem, processDataIndex) => {
+                    const responsiblesWithSalaryArr = processDataItem.currentResponsibleEmployees?.map((resItem, resIndex) => {
                         return ({
                             userId: resItem,
                             salary: getSalaryFromUserId(projectDetail?.responsibleEmployeesWithUnit, resItem),
-                            weight: processDataItem.currentResWeightArr[processDataIndex].weight,
+                            weight: processDataItem.currentResWeightArr[resIndex].weight,
                         })
                     })
-                    const accountablesWithSalaryArr = processDataItem.currentAccountableEmployees?.map(accItem => {
+                    const accountablesWithSalaryArr = processDataItem.currentAccountableEmployees?.map((accItem, accIndex) => {
                         return ({
                             userId: accItem,
                             salary: getSalaryFromUserId(projectDetail?.responsibleEmployeesWithUnit, accItem),
-                            weight: processDataItem.currentAccWeightArr[processDataIndex].weight,
+                            weight: processDataItem.currentAccWeightArr[accIndex].weight,
                         })
                     })
                     const newActorsWithSalary = [...responsiblesWithSalaryArr, ...accountablesWithSalaryArr];
@@ -301,6 +166,7 @@ const ModalCalculateCPM = (props) => {
                         preceedingTasks,
                         responsibleEmployees: processDataItem.currentResponsibleEmployees,
                         accountableEmployees: processDataItem.currentAccountableEmployees,
+                        totalResWeight: processDataItem.totalResWeight,
                     }
                 });
 
@@ -327,6 +193,9 @@ const ModalCalculateCPM = (props) => {
     const handleApplyChange = (newData) => {
         setCurrentTasksData(newData);
     }
+    useEffect(() => {
+        console.log('processedData', processedData)
+    }, [processedData])
 
     return (
         <React.Fragment>
@@ -351,7 +220,12 @@ const ModalCalculateCPM = (props) => {
                         {moment(findLatestDate(processedData)).isAfter(moment(projectDetail?.endDate))
                             &&
                             <div className="dropdown pull-right" style={{ marginTop: 15, marginRight: 10 }}>
-                                <ModalCalculateRecommend handleApplyChange={handleApplyChange} processedData={processedData} currentTasksData={currentTasksData} oldCPMEndDate={findLatestDate(processedData)} />
+                                <ModalCalculateRecommend
+                                    handleApplyChange={handleApplyChange}
+                                    processedData={processedData}
+                                    currentTasksData={currentTasksData}
+                                    oldCPMEndDate={findLatestDate(processedData)}
+                                />
                                 <button
                                     onClick={handleCalculateRecommend}
                                     type="button" className="btn btn-warning dropdown-toggle" data-toggle="dropdown">
@@ -401,7 +275,7 @@ const ModalCalculateCPM = (props) => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {(currentTasksData && currentTasksData.length > 0) &&
+                                        {(currentTasksData && currentTasksData.length > 0) && processedData && processedData.length > 0 &&
                                             processedData.map((taskItem, index) => (
                                                 <tr key={index}>
                                                     <td style={renderRowTableStyle(pert.slack[taskItem?.code] === 0)}>{taskItem?.code}</td>

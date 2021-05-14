@@ -1052,6 +1052,7 @@ editTaskByAccountableEmployees = async (req, res) => {
             }
         })
     } catch (error) {
+        console.log('edit task', error)
         await Logger.error(req.user.email, ` edit task `, req.portal);
         res.status(400).json({
             success: false,

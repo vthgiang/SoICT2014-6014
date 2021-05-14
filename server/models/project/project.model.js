@@ -33,13 +33,6 @@ const ProjectSchema = new Schema(
         endDate: {
             type: Date,
         },
-        actualEndDate: {
-            type: Date,
-        },
-        // Chi phí ước lượng cho toàn bộ dự án
-        estimatedCost: {
-            type: Number,
-        },
         // Đơn vị thời gian của project
         unitTime: {
             // có 2 đơn vị thời gian: Giờ, Ngày
@@ -109,6 +102,10 @@ const ProjectSchema = new Schema(
         // Ngân sách cho dự án sau khi 1 change request được accept
         budgetChangeRequest: {
             type: Number,
+        },
+        // Thời điểm dự kiến kết thúc dự án sau khi 1 change request được accept
+        endDateRequest: {
+            type: Date,
         }
     },
     {

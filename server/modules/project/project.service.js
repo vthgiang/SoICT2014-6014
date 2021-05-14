@@ -7,6 +7,7 @@ const {
     User,
     Salary,
     Task,
+    ProjectChangeRequest,
 } = require('../../models');
 const arrayToTree = require("array-to-tree");
 const fs = require("fs");
@@ -14,6 +15,7 @@ const ObjectId = require("mongoose").Types.ObjectId;
 const { connect, } = require(`../../helpers/dbHelper`);
 const { dateParse } = require(`../../helpers/functionHelper`);
 const moment = require('moment');
+const { createProjectTask } = require('../task/task-management/task.service');
 
 const MILISECS_TO_DAYS = 86400000;
 
@@ -350,3 +352,94 @@ exports.getSalaryMembers = async (portal, data) => {
     }
     return newResponsibleEmployeesWithUnit;
 }
+
+exports.getListProjectChangeRequests = async (portal, query) => {
+    let { page, limit, projectId } = query;
+    // console.log(changeRequest);
+    const projectChangeRequestsList = await ProjectChangeRequest(connect(DB_CONNECTION, portal)).find({
+        taskProject: projectId,
+    }).populate({ path: "creator", select: "_id name email" });
+    console.log('Lấy danh sách CR', projectChangeRequestsList.length)
+    return projectChangeRequestsList;
+}
+
+exports.createProjectChangeRequest = async (portal, changeRequest) => {
+    console.log(changeRequest)
+    const createCRResult = await ProjectChangeRequest(connect(DB_CONNECTION, portal)).create(changeRequest);
+    const projectChangeRequestsList = await ProjectChangeRequest(connect(DB_CONNECTION, portal)).find({
+        taskProject: createCRResult.taskProject,
+    }).populate({ path: "creator", select: "_id name email" });
+    return projectChangeRequestsList;
+}
+
+exports.updateStatusProjectChangeRequest = async (portal, changeRequestId, requestStatus) => {
+    console.log(changeRequestId, requestStatus);
+    // update requestStatus trong database
+    const updateCRStatusResult = await ProjectChangeRequest(connect(DB_CONNECTION, portal)).findByIdAndUpdate(changeRequestId, {
+        $set: {
+            requestStatus,
+        }
+    }, { new: true });
+    // nếu requestStatus là đồng ý thì thực thi
+    if (Number(requestStatus) === 3) {
+        // Cập nhật + Tạo mới task nếu có
+        for (let affectedItem of updateCRStatusResult.affectedTasksList) {
+            // Nếu task cần edit
+            if (affectedItem.task) {
+                await Task(connect(DB_CONNECTION, portal)).findByIdAndUpdate(affectedItem.task, {
+                    $set: {
+                        preceedingTasks: affectedItem.new.preceedingTasks,
+                        startDate: affectedItem.new.startDate,
+                        startDate: affectedItem.new.startDate,
+                        endDate: affectedItem.new.endDate,
+                        estimateNormalTime: affectedItem.new.estimateNormalTime,
+                        estimateOptimisticTime: affectedItem.new.estimateOptimisticTime,
+                        estimateNormalCost: affectedItem.new.estimateNormalCost,
+                        estimateMaxCost: affectedItem.new.estimateMaxCost,
+                        actorsWithSalary: affectedItem.new.actorsWithSalary,
+                        responsibleEmployees: affectedItem.new.responsibleEmployees,
+                        accountableEmployees: affectedItem.new.accountableEmployees,
+                        totalResWeight: affectedItem.new.totalResWeight,
+                        estimateAssetCost: affectedItem.new.estimateAssetCost,
+                    }
+                }, { new: true });
+            }
+            // Nếu affectedItem.task là dạng undefined
+            else {
+                await createProjectTask(portal, updateCRStatusResult.currentTask);
+            }
+        }
+        await Project(connect(DB_CONNECTION, portal)).findByIdAndUpdate(updateCRStatusResult.taskProject, {
+            $set: {
+                budgetChangeRequest: updateCRStatusResult.baseline.newCost,
+                endDateRequest: updateCRStatusResult.baseline.newEndDate,
+            }
+        }, { new: true });
+    }
+    // query lại danh sách projectChangeRequest
+    const projectChangeRequestsList = await ProjectChangeRequest(connect(DB_CONNECTION, portal)).find({
+        taskProject: updateCRStatusResult.taskProject,
+    }).populate({ path: "creator", select: "_id name email" });
+    return projectChangeRequestsList;
+}
+
+exports.updateListProjectChangeRequests = async (portal, data) => {
+    console.log(data)
+    const { newChangeRequestsList } = data
+    for (let newCRItem of newChangeRequestsList) {
+        await ProjectChangeRequest(connect(DB_CONNECTION, portal)).findOneAndUpdate(
+            { _id: newCRItem._id },
+            {
+                ...newCRItem,
+            },
+            { new: true, overwrite: true },
+        );
+    }
+
+    // query lại danh sách projectChangeRequest
+    const projectChangeRequestsList = await ProjectChangeRequest(connect(DB_CONNECTION, portal)).find({
+        taskProject: newChangeRequestsList[0].taskProject,
+    }).populate({ path: "creator", select: "_id name email" });
+    return projectChangeRequestsList;
+}
+
