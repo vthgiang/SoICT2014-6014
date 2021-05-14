@@ -224,13 +224,13 @@ function TransportPlanDetailInfo(props) {
                         <div className="col-xs-12 col-sm-12 col-md-8 col-lg-8">
                             {
                                 (listRequirements && listRequirements.length!==0)
-                                // &&
-                                // <LocationMap 
-                                //     locations = {listSelectedRequirementsLocation}
-                                //     loadingElement={<div style={{height: `100%`}}/>}
-                                //     containerElement={<div style={{height: "40vh"}}/>}
-                                //     mapElement={<div style={{height: `100%`}}/>}
-                                // />
+                                &&
+                                <LocationMap 
+                                    locations = {listSelectedRequirementsLocation}
+                                    loadingElement={<div style={{height: `100%`}}/>}
+                                    containerElement={<div style={{height: "40vh"}}/>}
+                                    mapElement={<div style={{height: `100%`}}/>}
+                                />
                             }
                         </div>
                     </div>

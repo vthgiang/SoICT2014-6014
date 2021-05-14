@@ -87,7 +87,9 @@ function TransportPlanManagementTable(props) {
         <div className="tab-content">
             <div className="tab-pane active" id="list-transport-plan">
                 <div className="box-body qlcv">
-                <TransportPlanGenerate />
+                <TransportPlanGenerate 
+                    transportPlan={transportPlan}
+                />
                 <TransportPlanCreateForm 
                     currentDateClient={getCurrentDate()}
                 />

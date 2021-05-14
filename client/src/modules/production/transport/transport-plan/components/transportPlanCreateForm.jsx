@@ -216,7 +216,7 @@ function TransportPlanCreateForm(props) {
                 modalID="modal-create-transport-plan" 
                 isLoading={false}
                 formID="form-create-transport-requirements"
-                title={"Thêm lịch vận chuyển"}
+                title={"Thêm kế hoạch vận chuyển"}
                 msg_success={"success"}
                 msg_faile={"fail"}
                 func={save}

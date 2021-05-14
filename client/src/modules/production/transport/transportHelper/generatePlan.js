@@ -48,7 +48,7 @@ const getVehicleCarrierUsable = (date, listPlan, listCarriers, listVehicles) => 
                                     if (transportVehicles.carriers && transportVehicles.carriers.length !==0){
                                         transportVehicles.carriers.map(carriers => {
                                             if(carriers.carrier){
-                                                for (let j =0;j<allCarriers.length;j++){
+                                                for (let j =0;j<listCarriers.length;j++){
                                                     if (String(listCarriers[j]._id) === String(carriers.carrier._id)){
                                                         usedCarriers.push(listCarriers[j]);
                                                         usableCarriers = usableCarriers.filter(r => String(r._id) === String(carriers.carrier._id))
@@ -98,8 +98,8 @@ const generatePlanShortestDistance = (listRequirement, countDay, listVehiclesDay
             }
         }
         if (distance<totalDistance){
-            saveArrVehicle = new Array(99999);
-            saveArr = new Array(99999);
+            saveArrVehicle = new Array(countDay);
+            saveArr = new Array(countDay);
             // for (let i=0;i<99999;i++){
             //     saveArrVehicle[i] = new Array(99999) 
             // }
@@ -128,9 +128,17 @@ const generatePlanShortestDistance = (listRequirement, countDay, listVehiclesDay
     }
 }
 exports.generatePlanFastestMove = (listRequirement, listPlan, allVehicles, allCarriers, inDay) => {
+    if (!(listRequirement && listPlan && allVehicles && allCarriers 
+        && listRequirement.length!==0 && listPlan.length!==0 && allVehicles.length!==0 && allCarriers.length!==0)){
+            return;
+        }
     saveArr = [];
     saveArrVehicle = new Array(99999)
+    totalDistance = 999999999;
+    day = new Array(inDay+5);
+    selectedRequirement = new Array(listRequirement.length+5);
     let listVehiclesDays = [];
+    let listCarriersDays = [];
     let numVehiclesDays = [];
     let usableCarriers, usableVehicles;
     for (let i=1;i<=inDay;i++){
@@ -138,8 +146,9 @@ exports.generatePlanFastestMove = (listRequirement, listPlan, allVehicles, allCa
         usableCarriers = resultVehicleCarrierUsable.usableCarriers;
         usableVehicles = resultVehicleCarrierUsable.usableVehicles;
         listVehiclesDays.push(usableVehicles);
-        if (usableVehicles.length > Math.floor(usableCarriers.length / 2)){
-            numVehiclesDays.push(Math.floor(usableCarriers.length / 2));
+        listCarriersDays.push(usableCarriers);
+        if (usableVehicles.length > Math.ceil(usableCarriers.length / 2)){
+            numVehiclesDays.push(Math.ceil(usableCarriers.length / 2));
         }
         else {
             numVehiclesDays.push(usableVehicles.length);
@@ -150,7 +159,43 @@ exports.generatePlanFastestMove = (listRequirement, listPlan, allVehicles, allCa
     }
     generatePlanShortestDistance(listRequirement, inDay, listVehiclesDays, numVehiclesDays, 0);
     let startDay = getNextDay(1);
-    return {saveArr, saveArrVehicle, startDay};
+    let plans = [];
+    if (saveArr && saveArr.length!==0 && saveArrVehicle && saveArrVehicle.length!==0){
+        for (let i = 0;i< inDay; i++){
+            let requirements = [];
+            let vehicles = [];
+            let listCarrier = listCarriersDays[i];
+            if (saveArr[i] && saveArr[i].length!==0){
+                saveArr[i].map(item => {
+                    requirements.push(item);
+                })
+                saveArrVehicle[i].map(vehicleDay => {
+                    if (vehicleDay && vehicleDay.length!==0){
+
+                        vehicleDay.map((r, index) => {
+                            if(r && r.length!==0){
+                                vehicles.push({
+                                    vehicle: listVehiclesDays[i][index],
+                                    carriers: [
+                                        {
+                                            carrier: listCarrier[index],
+                                            pos: 1,
+                                        }
+                                    ]
+                                })
+                            }
+                        })
+                    }
+                })
+            }
+            plans.push({
+                nextDay: i+1,
+                transportRequirements: requirements,
+                transportVehicles: vehicles,
+            })
+        }
+    }
+    return {saveArr, saveArrVehicle, startDay, plans};
 }
 
 exports.generatePlan = (listRequirement, listPlan, listVehicles, listCarriers) => {
@@ -432,7 +477,7 @@ let allTransportRequirements = [
 ]
 
 //========================================================================
-let allCarriers = [
+let allCarriers2 = [
     {
         "active": true,
         "status": 0,

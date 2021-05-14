@@ -69,7 +69,6 @@ const minRouteInDay = (listRequirements, listVehicles, numVehicles, k) => {
 }
 
 exports.calMinDistanceOneDay = (listRequirements, listVehicles, numVehicles) => {
-    console.log(listRequirements.length);
     minR = 9999999;
     for (let i =0; i< listRequirements.length ;i++){
         selected[i] = false;
