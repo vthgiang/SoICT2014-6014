@@ -26,6 +26,7 @@ const TabEvalProject = (props) => {
     }
 
     const getGraphTasksDataOfTimeMode = (listData, timeMode) => {
+        if (!listData || listData.length === 0) return undefined;
         let categories = [];
         let modalEVMData = [];
         let plannedValues = ['Planned Value'], actualCosts = ['Actual Cost'], earnedValues = ['Earned Value'];

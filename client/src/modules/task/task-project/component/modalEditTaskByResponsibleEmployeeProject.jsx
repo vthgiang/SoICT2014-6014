@@ -418,6 +418,7 @@ class ModalEditTaskByResponsibleEmployeeProject extends Component {
         const { errorTaskName, errorTaskDescription, taskDescriptionDefault } = this.state;
         const { title, id, role, perform } = this.props;
 
+        const currentProjectName = project?.data?.list?.find((projectItem) => String(projectItem._id) === String(taskProjectName))?.name
         let listKpi = [];
         if (KPIPersonalManager && KPIPersonalManager.kpiSets) listKpi = KPIPersonalManager.kpiSets.kpis;
 
@@ -467,13 +468,7 @@ class ModalEditTaskByResponsibleEmployeeProject extends Component {
                                         <label>
                                             {translate('task.task_management.project')}
                                         </label>
-                                        <TreeSelect
-                                            id={`select-task-project-task-edit-by-responsible-${id}`}
-                                            mode='radioSelect'
-                                            data={project.data?.list}
-                                            handleChange={this.handleTaskProject}
-                                            value={[taskProjectName]}
-                                        />
+                                        <input className="form-control" disabled={true} value={currentProjectName}/>
                                     </div>
                                 </div>
 

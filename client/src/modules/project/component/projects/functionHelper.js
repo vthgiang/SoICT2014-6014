@@ -73,6 +73,11 @@ export const getDurationWithoutSatSun = (startDate, endDate, timeMode) => {
         // return theo don vi giờ - hours
         return duration;
     }
+    if (timeMode === 'milliseconds') {
+        duration = (moment(endDate).diff(moment(startDate), `milliseconds`) / MILISECS_TO_DAYS - numsOfSaturdays - numsOfSundays);
+        // return theo don vi milliseconds
+        return duration * MILISECS_TO_DAYS;
+    }
     duration = moment(endDate).diff(moment(startDate), `milliseconds`) / MILISECS_TO_DAYS - numsOfSaturdays - numsOfSundays;
     // return theo don vi ngày - days
     return duration;
@@ -179,6 +184,7 @@ export const getProjectParticipants = (projectDetail, hasManagerAndCreator = fal
 
 export const getEmailMembers = (projectDetail) => {
     let resultArr = [];
+    // if (!projectDetail) return [];
     // resultArr.push(projectDetail?.creator?.email);
     // for (let managerItem of projectDetail?.projectManager) {
     //     if (!resultArr.includes(managerItem?.email)) {
