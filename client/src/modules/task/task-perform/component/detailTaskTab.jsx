@@ -1159,7 +1159,7 @@ class DetailTaskTab extends Component {
                                         isHtmlElement={true}
                                         characterLimit={200}
                                     >
-                                        {task && parse(task.description)}
+                                        {task.description && parse(task.description)}
                                     </ShowMoreShowLess>
                                 </div>
                             </div>

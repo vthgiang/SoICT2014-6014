@@ -130,6 +130,7 @@ function ListProject(props) {
             <ProjectDetailForm
                 projectDetailId={projectDetail && projectDetail._id}
                 projectDetail={projectDetail}
+                currentProjectTasks={tasks && tasks.tasksbyproject}
             />
 
             <ProjectEditForm

@@ -79,7 +79,8 @@ export default {
         },
 
         dashboard_unit: {
-            urgent_need_to_do_chart: "Biểu đồ thể hiện số công việc khẩn cấp/Cần làm",
+            urgent_chart: "Biểu đồ thể hiện số công việc khẩn cấp",
+            need_to_do_chart: "Biểu đồ thể hiện số công việc cần làm",
             urgent_task_amount: "Số công việc khẩn cấp",
             need_to_do_task_amount: "Số công việc cần làm",
             list_employe_timing: "Danh sách nhân viên đang bấm giờ"

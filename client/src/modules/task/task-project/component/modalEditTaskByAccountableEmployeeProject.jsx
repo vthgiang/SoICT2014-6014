@@ -16,6 +16,7 @@ import { TaskTemplateFormValidator } from '../../task-template/component/taskTem
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import Swal from 'sweetalert2'
 import moment from 'moment';
+import { convertUserIdToUserName } from '../../../project/component/projects/functionHelper';
 
 class ModalEditTaskByAccountableEmployeeProject extends Component {
 
@@ -963,7 +964,7 @@ class ModalEditTaskByAccountableEmployeeProject extends Component {
     }
 
     render() {
-        console.log('new edit Task', this.state);
+        // console.log('new edit Task', this.state);
 
         const { user, tasktemplates, department, translate, project } = this.props;
         const { task, organizationalUnit, collaboratedWithOrganizationalUnits, errorOnEndDate, errorOnStartDate, errorTaskName, errorTaskDescription, errorOnFormula, taskName, taskDescription, statusOptions, priorityOptions, taskDescriptionDefault,
@@ -1000,6 +1001,13 @@ class ModalEditTaskByAccountableEmployeeProject extends Component {
             }
         }
 
+        let priorityArr = [
+            { value: 1, text: translate('task.task_management.low') },
+            { value: 2, text: translate('task.task_management.average') },
+            { value: 3, text: translate('task.task_management.standard') },
+            { value: 4, text: translate('task.task_management.high') },
+            { value: 5, text: translate('task.task_management.urgent') },
+        ];
         let statusArr = [
             { value: "inprocess", text: translate('task.task_management.inprocess') },
             { value: "wait_for_approval", text: translate('task.task_management.wait_for_approval') },
@@ -1013,6 +1021,7 @@ class ModalEditTaskByAccountableEmployeeProject extends Component {
             usersOfChildrenOrganizationalUnit = user.usersOfChildrenOrganizationalUnit;
         }
         let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
+        const listUsers = user && user.usersInUnitsOfCompany ? getEmployeeSelectBoxItems(user.usersInUnitsOfCompany) : [];
 
         return (
             <div>
@@ -1053,30 +1062,16 @@ class ModalEditTaskByAccountableEmployeeProject extends Component {
                                         />
                                         <ErrorLabel content={errorTaskDescription} />
                                     </div>
-                                    {/* <div className="form-group">
-                                        <label>{translate('task.task_management.add_parent_task')}</label>
-                                        <SelectBox
-                                            id={`select-parent-${perform}-${role}`}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            items={listParentTask}
-                                            multiple={false}
-                                            value={parent}
-                                            onChange={this.handleSelectedParent}
-                                            onSearch={this.onSearch}
-                                        />
-                                    </div> */}
 
                                     <div className="form-group">
                                         <label>
                                             {translate('task.task_management.project')}
                                         </label>
-                                        <TreeSelect
-                                            id={`select-task-project-task-edit-by-accountable-${id}`}
-                                            mode='radioSelect'
-                                            data={project.data?.list}
-                                            handleChange={this.handleTaskProject}
-                                            value={[taskProjectName]}
+                                        <input
+                                            className="form-control"
+                                            value={task && task.taskProject && this.props.project.data.list.length !== 0 &&
+                                                this.props.project.data.list.find(projectItem => String(projectItem._id) === String(task.taskProject))?.name}
+                                            disabled={true}
                                         />
                                     </div>
                                 </div>
@@ -1104,7 +1099,7 @@ class ModalEditTaskByAccountableEmployeeProject extends Component {
                                     </div>
 
                                     {/*Mức ưu tiên*/}
-                                    {/* <div className="col-lg-6 col-md-6 col-ms-12 col-xs-12">
+                                    <div className="col-lg-6 col-md-6 col-ms-12 col-xs-12">
                                         <label>{translate('task.task_management.detail_priority')}</label>
                                         {
                                             <SelectBox
@@ -1117,12 +1112,12 @@ class ModalEditTaskByAccountableEmployeeProject extends Component {
                                                 onChange={this.handleSelectedPriority}
                                             />
                                         }
-                                    </div> */}
+                                    </div>
                                 </div>
 
 
                                 {/* </div> */}
-                                <div className="row form-group">
+                                {/* <div className="row form-group">
                                     <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnStartDate === undefined ? "" : "has-error"}`}>
                                         <label className="control-label">{translate('task.task_management.start_date')}<span className="text-red">*</span></label>
                                         <DatePicker
@@ -1151,7 +1146,7 @@ class ModalEditTaskByAccountableEmployeeProject extends Component {
                                         />
                                         <ErrorLabel content={errorOnEndDate} />
                                     </div>
-                                </div>
+                                </div> */}
                                 {/**Công thức tính của mẫu công việc */}
                                 <div className={` form-group ${errorOnFormula === undefined ? "" : "has-error"}`} >
                                     <label className="control-label" htmlFor="inputFormula">{translate('task_template.formula')}<span className="text-red">*</span></label>
@@ -1194,7 +1189,7 @@ class ModalEditTaskByAccountableEmployeeProject extends Component {
                                 <legend className="scheduler-border">{translate('task.task_management.edit_member_info')}</legend>
 
                                 {/*Người thực hiện*/}
-                                <div className="form-group">
+                                {/* <div className="form-group">
                                     <label>{translate('task.task_management.responsible')}</label>
                                     {unitMembers &&
                                         <SelectBox
@@ -1207,10 +1202,10 @@ class ModalEditTaskByAccountableEmployeeProject extends Component {
                                             value={responsibleEmployees}
                                         />
                                     }
-                                </div>
+                                </div> */}
 
                                 {/*Người phê duyệt*/}
-                                <div className="form-group">
+                                {/* <div className="form-group">
                                     <label>{translate('task.task_management.accountable')}</label>
                                     {unitMembers &&
                                         <SelectBox
@@ -1223,7 +1218,7 @@ class ModalEditTaskByAccountableEmployeeProject extends Component {
                                             value={accountableEmployees}
                                         />
                                     }
-                                </div>
+                                </div> */}
 
                                 {/*Người tư vấn */}
                                 <div className="form-group">
@@ -1263,75 +1258,6 @@ class ModalEditTaskByAccountableEmployeeProject extends Component {
                                             value={informedEmployees}
                                         />
                                     }
-                                </div>
-                            </fieldset>
-
-
-                            {/* Thành viên rời khỏi công việc */}
-                            <fieldset className="scheduler-border">
-                                <legend className="scheduler-border">{translate('task.task_management.edit_inactive_emp')}</legend>
-                                <div className="form-group">
-
-                                    <div>
-                                        {/* Thành viên phê duyệt */}
-                                        <div style={{ marginBottom: 15 }}>
-                                            <div style={{ marginBottom: 5 }}><strong>{translate('task.task_management.accountable')}</strong></div>
-                                            {
-                                                task.accountableEmployees.map((elem, index) => {
-                                                    return <div key={index} style={{ paddingLeft: 20 }}>
-                                                        <label style={{ fontWeight: "normal", margin: "7px 0px" }}>
-                                                            <input
-                                                                type="checkbox"
-                                                                checked={this.state.listInactive[`${elem._id}`] && this.state.listInactive[`${elem._id}`].checked === true}
-                                                                value={elem._id}
-                                                                name="accountable" onChange={(e) => this.handleChangeActiveAccountable(e, elem._id)}
-                                                            />&nbsp;&nbsp;&nbsp;{elem.name}
-                                                        </label>
-                                                    </div>
-                                                })
-                                            }
-                                        </div>
-
-                                        <div style={{ marginBottom: 15 }}>
-                                            <div style={{ marginBottom: 5 }}><strong>{translate('task.task_management.responsible')}</strong></div>
-                                            {
-                                                task.responsibleEmployees.map((elem, index) => {
-                                                    return <div key={index} style={{ paddingLeft: 20 }}>
-                                                        <label style={{ fontWeight: "normal", margin: "7px 0px" }}>
-                                                            <input
-                                                                type="checkbox"
-                                                                checked={this.state.listInactive[`${elem._id}`] && this.state.listInactive[`${elem._id}`].checked === true}
-                                                                value={elem._id}
-                                                                name="responsible" onChange={(e) => this.handleChangeActiveResponsible(e, elem._id)}
-                                                            />&nbsp;&nbsp;&nbsp;{elem.name}
-                                                        </label>
-                                                        <br />
-                                                    </div>
-                                                })
-                                            }
-                                        </div>
-
-                                        {task.consultedEmployees.length !== 0 &&
-                                            <div>
-                                                <div style={{ marginBottom: 5 }}><strong>{translate('task.task_management.consulted')}</strong></div>
-                                                {
-                                                    task.consultedEmployees.map((elem, key) => {
-                                                        return <div key={key} style={{ paddingLeft: 20 }}>
-                                                            <label style={{ fontWeight: "normal", margin: "7px 0px" }}>
-                                                                <input
-                                                                    type="checkbox"
-                                                                    checked={this.state.listInactive[`${elem._id}`] && this.state.listInactive[`${elem._id}`].checked === true}
-                                                                    value={elem._id}
-                                                                    name="consulted" onChange={(e) => this.handleChangeActiveConsulted(e, elem._id)}
-                                                                />&nbsp;&nbsp;&nbsp;{elem.name}
-                                                            </label>
-                                                            <br />
-                                                        </div>
-                                                    })
-                                                }
-                                            </div>
-                                        }
-                                    </div>
                                 </div>
                             </fieldset>
                         </form>
