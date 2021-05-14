@@ -31,11 +31,14 @@ function QuillEditor (props) {
             if (quill && quill.container && quill.container.firstChild) {
                 quill.container.firstChild.innerHTML = quillValueDefault;
             } 
-            let imgs = Array.from(quill.container.querySelectorAll('img[src^="upload/private"]'))
-            if (imgs?.length > 0) {
-                imgs.map((item) => {
-                    props.downloadFile(item.getAttribute("src"), item.getAttribute("src"), false)
-                })
+            if (quill?.container) {
+                let imgs = Array.from(quill?.container?.querySelectorAll('img[src^="upload/private"]'))
+                
+                if (imgs?.length > 0) {
+                    imgs.map((item) => {
+                        props.downloadFile(item.getAttribute("src"), item.getAttribute("src"), false)
+                    })
+                }
             }
 
             setHeightContainer(id, maxHeight)
@@ -50,22 +53,24 @@ function QuillEditor (props) {
                     let imgs, imageSources = [];
                     let selection = quill.getSelection()?.index;
 
-                    imgs = Array.from(
-                        quill.container.querySelectorAll('img[src^="data:"]:not(.loading)')
-                    );
-
-                    // Lọc base64 ảnh
-                    if (imgs && imgs.length !== 0) {
-                        imgs = imgs.map((item, index) => {
-                            imageSources.push({
-                                originalName: "image" + index,
-                                url: item.getAttribute("src")
-                            });
-                            item.src = "image" + index;
-                            return item;
-                        })
+                    if (quill?.container) {
+                        imgs = Array.from(
+                            quill?.container?.querySelectorAll('img[src^="data:"]:not(.loading)')
+                        );
+    
+                        // Lọc base64 ảnh
+                        if (imgs && imgs.length !== 0) {
+                            imgs = imgs.map((item, index) => {
+                                imageSources.push({
+                                    originalName: "image" + index,
+                                    url: item.getAttribute("src")
+                                });
+                                item.src = "image" + index;
+                                return item;
+                            })
+                        }
                     }
-
+                    
                     // Auto Insert URL and email
                     let insert = null;
                     if (e && e.ops && e.ops.length !== 0) {
@@ -165,13 +170,22 @@ function QuillEditor (props) {
             if (quill && quill.container && quill.container.firstChild) {
                 quill.container.firstChild.innerHTML = quillValueDefault;
             }  
+
+            if (quill?.container) {
+                let imgs = Array.from(quill?.container?.querySelectorAll('img[src^="upload/private"]'))
+                if (imgs?.length > 0) {
+                    imgs.map((item) => {
+                        props.downloadFile(item.getAttribute("src"), item.getAttribute("src"), false)
+                    })
+                }
+            }
         }
 
         setHeightContainer(id, maxHeight)
     }, [quillValueDefault])
 
     useEffect(() => {
-        if (quill) {
+        if (quill?.container) {
             // Add lại base64 ảnh download từ server
             let imgs = Array.from(quill.container.querySelectorAll('img[src^="upload/private"]'))
 
@@ -186,10 +200,11 @@ function QuillEditor (props) {
                     return img;
                 })
             }
+
         }
 
         setHeightContainer(id, maxHeight)
-    }, [JSON.stringify(auth.showFiles)])
+    }, [JSON.stringify(auth.showFiles), quill])
 
     function setHeightContainer (id, maxHeight) {
         window.$(`#editor-container${id}`).height("")
