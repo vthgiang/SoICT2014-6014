@@ -187,6 +187,21 @@ function DashboardUnitForAdmin(props) {
                             return result;
                         }
                     }
+                },
+                y: {
+                    label: {
+                        text: translate('kpi.organizational_unit.dashboard.trend_chart.amount_tasks'),
+                        position: "outer-top"
+                    },
+                    tick: {
+                        format: function(d) {
+                            if (d - parseInt(d) === 0) {
+                                return d;
+                            } else {
+                                return "";
+                            }
+                        }
+                    },
                 }
             },
 
@@ -245,6 +260,10 @@ function DashboardUnitForAdmin(props) {
                 },
 
                 y: {
+                    label: {
+                        text: translate('kpi.organizational_unit.dashboard.trend_chart.amount_tasks'),
+                        position: "outer-top"
+                    },
                     tick: {
                         format: function(d) {
                             if (d - parseInt(d) === 0) {
@@ -526,6 +545,9 @@ function DashboardUnitForAdmin(props) {
                                                     <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
                                                 </span>
                                         }
+                                        <a className="text-red" title={translate('task.task_management.explain')} onClick={() => handleClickshowTaskUrgent()}>
+                                            <i className="fa fa-question-circle" style={{ color: '#dd4b39', cursor: 'pointer', marginLeft: '5px' }} />
+                                        </a>
                                     </div>
                                 </div>
 
@@ -533,18 +555,12 @@ function DashboardUnitForAdmin(props) {
                                     <div className="row " >
                                         <div className="">
                                             <div className="col-md-12">
-                                                <div style={{ display: 'flex', flexDirection: 'column', marginTop: '10px', marginBottom: 0 }}>
-                                                    <p className="pull-left" style={{ display: 'flex', alignItems: 'center' }}> <b style={{ marginTop: '10px', marginRight: '5px' }}>{translate('dashboard_unit.urgent_task_amount')}</b>
-                                                        <span className="material-icons title-urgent " style={{ zIndex: 999, cursor: "pointer", fontSize: '15px', marginTop: '10px' }}
-                                                            onClick={handleClickshowTaskUrgent}>
-                                                            help
-                                                        </span>
-                                                    </p >
+                                                <div style={{ display: 'flex', flexDirection: 'column', marginBottom: 0 }}>
                                                     {
-                                                        tasks.isLoading ? <p style={{ marginTop: '60px', textAlign: "center" }}>{translate('general.loading')}</p>
+                                                        tasks.isLoading ? <p>{translate('general.loading')}</p>
                                                             : tasks?.organizationUnitTasksChart?.urgent?.length > 0 
                                                                 ? <div id="pieChartUrgent"></div>
-                                                                : <p style={{ marginTop: '60px', textAlign: "center" }}>{translate('kpi.organizational_unit.dashboard.no_data')}</p>
+                                                                : <p>{translate('kpi.organizational_unit.dashboard.no_data')}</p>
                                                     }
                                                 </div>
                                             </div>
@@ -574,27 +590,23 @@ function DashboardUnitForAdmin(props) {
                                                     <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
                                                 </span>
                                         }
+                                        <a className="text-red" title={translate('task.task_management.explain')} onClick={() => handleClickshowTaskNeedToDo()}>
+                                            <i className="fa fa-question-circle" style={{ color: '#dd4b39', cursor: 'pointer', marginLeft: '5px' }} />
+                                        </a>
                                     </div>
                                 </div>
 
                                 <div className="box-body" style={{ marginBottom: 15 }}>
                                     <div className="row " >
                                         <div className="col-md-12">
-                                            <div style={{ display: 'flex', flexDirection: 'column', marginTop: '10px', marginBottom: 0 }}>
-                                                <p className="pull-left" style={{ marginRight: '10px', display: 'flex', alignItems: 'center' }}>
-                                                    <b style={{ marginTop: '10px', marginRight: '5px' }} >{translate('dashboard_unit.need_to_do_task_amount')}</b>
-                                                    <span className="material-icons title-urgent " style={{ zIndex: 999, cursor: "pointer", fontSize: '15px', marginTop: '10px' }}
-                                                        onClick={handleClickshowTaskNeedToDo}>
-                                                        help
-                                                    </span>
-                                                </p >
+                                            <div style={{ display: 'flex', flexDirection: 'column', marginBottom: 0 }}>
                                                 {
                                                     tasks.isLoading ?
-                                                        <p style={{ marginTop: '60px', textAlign: "center" }}>{translate('general.loading')}</p>
+                                                        <p>{translate('general.loading')}</p>
                                                         :
                                                         tasks?.organizationUnitTasksChart?.taskNeedToDo?.length > 0 
                                                             ? <div id="pieChartTaskNeedToDo"></div>
-                                                            : <p style={{ marginTop: '60px', textAlign: "center" }}>{translate('kpi.organizational_unit.dashboard.no_data')}</p>
+                                                            : <p>{translate('kpi.organizational_unit.dashboard.no_data')}</p>
                                                 }
                                             </div>
                                         </div>
