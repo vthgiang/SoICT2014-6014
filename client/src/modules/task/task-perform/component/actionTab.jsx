@@ -187,12 +187,21 @@ class ActionTab extends Component {
         return true;
     }
 
-    setHover = async (id, value) => {
-        if (isNaN(value)) {
-            this.hover[id] = 0;
+    setHover = async (id, value, type) => {
+        if (type === "rating") {
+            if (isNaN(value)) {
+                this.hover[`${id}-rating`] = null;
+            } else {
+                this.hover[`${id}-rating`] = value;
+            }
         } else {
-            this.hover[id] = value;
+            if (isNaN(value)) {
+                this.hover[`${id}-actionImportanceLevel`] = null;
+            } else {
+                this.hover[`${id}-actionImportanceLevel`] = value;
+            }
         }
+        
         await this.setState(state => {
             return {
                 ...state,
@@ -203,6 +212,7 @@ class ActionTab extends Component {
             }
         })
     }
+    
     setValueRating = async (actionId, newValue) => {
         let newEvaluations = this.state.evaluations
         newEvaluations[actionId] = {
@@ -218,11 +228,11 @@ class ActionTab extends Component {
         })
     }
 
-    setActionImportanceLevel = (e, actionId) => {
+    setActionImportanceLevel = (actionId, value) => {
         let newEvaluations = this.state.evaluations
         newEvaluations[actionId] = {
             ...newEvaluations[actionId],
-            actionImportanceLevel: e.target.value
+            actionImportanceLevel: value
         }
         this.setState(state => {
             return {
@@ -1182,10 +1192,10 @@ class ActionTab extends Component {
         })
     }
 
-    setActionImportanceLevelAll = (e) => {
+    setActionImportanceLevelAll = (value) => {
         this.setState({
             ...this.state,
-            actionImportanceLevelAll: e.target.value
+            actionImportanceLevelAll: value
         })
     }
 
@@ -1406,7 +1416,8 @@ class ActionTab extends Component {
                                                                     <React.Fragment>
                                                                         {(role === "accountable" || role === "consulted" || role === "creator" || role === "informed") &&
                                                                             <>
-                                                                                <li style={{ display: "inline-table", width: "60%" }} className="list-inline">
+                                                                                <div className="form-group">
+                                                                                    <span style={{ marginRight: "5px" }}>Điểm đánh giá hoạt động <strong>({evaluations?.[item?._id]?.rating ?? item?.rating}/10)</strong></span>
                                                                                     <Rating
                                                                                         fractions={2}
                                                                                         stop={10}
@@ -1417,22 +1428,29 @@ class ActionTab extends Component {
                                                                                             this.setValueRating(item._id, value);
                                                                                         }}
                                                                                         onHover={(value) => {
-                                                                                            this.setHover(item._id, value)
+                                                                                            this.setHover(item._id, value, "rating")
                                                                                         }}
                                                                                     />
-                                                                                    <div style={{ display: "inline", marginLeft: "5px" }}>{this.hover[item._id]}</div>
-                                                                                </li>
-                                                                                <li style={{ display: "inline-table", width: "40%" }} className="list-inline">
-                                                                                    <input type="range"
-                                                                                        min='0'
-                                                                                        max='10'
-                                                                                        name={`actionTaskImportanceLevel${item._id}`}
-                                                                                        onChange={(e) => this.setActionImportanceLevel(e, item._id)}
-                                                                                        value={evaluations?.[item._id]?.actionImportanceLevel ?? item?.actionImportanceLevel}
+                                                                                    <div style={{ display: "inline", marginLeft: "5px" }}>{this.hover?.[`${item?._id}-rating`]}</div>
+                                                                                </div>
+                                                                                <div className="form-group">
+                                                                                    <span style={{ marginRight: "5px" }}>Độ quan trọng hoạt động <strong>({evaluations?.[item?._id]?.actionImportanceLevel ?? item?.actionImportanceLevel}/10)</strong></span>
+                                                                                    <Rating
+                                                                                        fractions={2}
+                                                                                        stop={10}
+                                                                                        emptySymbol="fa fa-star-o fa-2x"
+                                                                                        fullSymbol="fa fa-star fa-2x"
+                                                                                        initialRating={evaluations?.[item._id]?.actionImportanceLevel ?? item?.actionImportanceLevel}
+                                                                                        onClick={(value) => {
+                                                                                            this.setActionImportanceLevel(item._id, value)
+                                                                                        }}
+                                                                                        onHover={(value) => {
+                                                                                            this.setHover(item._id, value, "actionImportanceLevel")
+                                                                                        }}
                                                                                     />
-                                                                                </li>
-                                                                                <br/>
-                                                                                <li><a style={{ cursor: "pointer" }} onClick={() => this.evaluationTaskAction(item, task._id, role, 1)}>Gửi đánh giá</a><span> (Đánh giá: <strong>{evaluations?.[item?._id]?.rating ?? item?.rating}</strong> - Độ quan trọng: <strong>{evaluations?.[item?._id]?.actionImportanceLevel ?? item?.actionImportanceLevel})</strong></span></li>
+                                                                                    <div style={{ display: "inline", marginLeft: "5px" }}>{this.hover?.[`${item?._id}-actionImportanceLevel`]}</div>
+                                                                                </div>
+                                                                                <a style={{ cursor: "pointer", fontWeight: '600' }} onClick={() => this.evaluationTaskAction(item, task._id, role, 1)}>Gửi đánh giá</a>
                                                                             </>
                                                                         }
                                                                     </React.Fragment>
@@ -1693,34 +1711,41 @@ class ActionTab extends Component {
                                             (role === "accountable") && taskActions.length > 1 &&
                                             <React.Fragment>
                                                 <h4 style={{ fontWeight: 600, color: "#616161" }}>Chọn đánh giá cho tất cả hoạt động của bạn </h4>
-                                                <div className="rating-approve-all--wraper">
-                                                    <div style={{ width: "50%" }}>
-                                                        <Rating
-                                                            fractions={2}
-                                                            stop={10}
-                                                            emptySymbol="fa fa-star-o fa-2x"
-                                                            fullSymbol="fa fa-star fa-2x"
-                                                            initialRating={ratingAll ?? 0}
-                                                            onClick={(value) => {
-                                                                this.setValueRatingApproveAll(value);
-                                                            }}
-                                                            onHover={(value) => {
-                                                                this.setHover('all-action', value)
-                                                            }}
-                                                        />
-                                                        <div style={{ display: "inline", marginLeft: "5px" }}>{this.hover['all-action']}</div>
-                                                    </div>
-                                                    <div style={{ width: "50%" }}>
-                                                        <input type="range"
-                                                            min='0'
-                                                            max='10'
-                                                            name={`actionTaskImportanceLevelAll${task?._id}`}
-                                                            onChange={(e) => this.setActionImportanceLevelAll(e)}
-                                                            value={actionImportanceLevelAll ?? 10}
-                                                        />
-                                                    </div>
+                                                <div className="form-group">
+                                                    <span style={{ marginRight: "5px" }}>Điểm đánh giá hoạt động <strong>({ratingAll ?? 0}/10)</strong></span>
+                                                    <Rating 
+                                                        fractions={2}
+                                                        stop={10}
+                                                        emptySymbol="fa fa-star-o fa-2x"
+                                                        fullSymbol="fa fa-star fa-2x"
+                                                        initialRating={ratingAll ?? 0}
+                                                        onClick={(value) => {
+                                                            this.setValueRatingApproveAll(value);
+                                                        }}
+                                                        onHover={(value) => {
+                                                            this.setHover('all-action', value, "rating")
+                                                        }}
+                                                    />
+                                                    <div style={{ display: "inline", marginLeft: "5px" }}>{this.hover?.['all-action-rating']}</div>
                                                 </div>
-                                                <a style={{ cursor: "pointer" }} onClick={() => this.evaluationAllTaskAction(task._id, taskActions)}>Gửi đánh giá</a><span> (Đánh giá: <strong>{ratingAll ?? 0}</strong> - Độ quan trọng: <strong>{actionImportanceLevelAll ?? 10})</strong></span>
+                                                <div className="form-group">
+                                                    <span style={{ marginRight: "5px" }}>Độ quan trọng hoạt động <strong>({actionImportanceLevelAll ?? 10}/10)</strong></span>
+                                                    <Rating
+                                                        fractions={2}
+                                                        stop={10}
+                                                        emptySymbol="fa fa-star-o fa-2x"
+                                                        fullSymbol="fa fa-star fa-2x"
+                                                        initialRating={actionImportanceLevelAll ?? 10}
+                                                        onClick={(value) => {
+                                                            this.setActionImportanceLevelAll(value)
+                                                        }}
+                                                        onHover={(value) => {
+                                                            this.setHover('all-action', value, "actionImportanceLevel")
+                                                        }}
+                                                    />
+                                                    <div style={{ display: "inline", marginLeft: "5px" }}>{this.hover?.['all-action-actionImportanceLevel']}</div>
+                                                </div>
+                                                <a style={{ cursor: "pointer", fontWeight: '600' }} onClick={() => this.evaluationAllTaskAction(task._id, taskActions)}>Gửi đánh giá</a>
                                                 <button style={{ marginTop: '7px' }} className="btn btn-block btn-default btn-sm" onClick={this.togglePopupApproveAllAction}>Hủy đánh giá hoạt động</button>
                                             </React.Fragment>
                                             : (role === "accountable") && taskActions.length > 1 && <button className="btn btn-block btn-success btn-sm" onClick={this.togglePopupApproveAllAction}>Đánh giá tất cả hoạt động</button>

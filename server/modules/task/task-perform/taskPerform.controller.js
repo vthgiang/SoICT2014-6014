@@ -852,18 +852,19 @@ exports.evaluateTask = async (req, res) => {
  */
 editTaskByResponsibleEmployees = async (req, res) => {
     try {
+        let body = JSON.parse(req.body.data)
         if (req?.files?.length > 0) {
             req.files.map(item => {
-                if (req.body?.description) {
+                if (body?.description) {
                     let src = `<img src="${item?.originalname?.split(".")?.[0]}">`.toString()
                     let newSrc = `<img src="${item?.path}">`.toString()
-                    req.body.description = req.body?.description?.toString()?.replace(src, newSrc)
+                    body.description = body?.description?.toString()?.replace(src, newSrc)
                 }
             })
         }
 
         let oldTask = await PerformTaskService.getTaskById(req.portal, req.params.taskId, req.user._id);
-        let task = await PerformTaskService.editTaskByResponsibleEmployees(req.portal, req.body, req.params.taskId);
+        let task = await PerformTaskService.editTaskByResponsibleEmployees(req.portal, body, req.params.taskId);
         let user = task.user;
         let tasks = task.tasks;
         let data = {
@@ -928,19 +929,19 @@ editTaskByResponsibleEmployees = async (req, res) => {
  */
 editTaskByAccountableEmployees = async (req, res) => {
     try {
+        let body = JSON.parse(req.body.data)
         if (req?.files?.length > 0) {
             req.files.map(item => {
-                if (req.body?.description) {
+                if (body?.description) {
                     let src = `<img src="${item?.originalname?.split(".")?.[0]}">`.toString()
                     let newSrc = `<img src="${item?.path}">`.toString()
 
-                    req.body.description = req.body?.description?.toString()?.replace(src, newSrc)
+                    body.description = body?.description?.toString()?.replace(src, newSrc)
                 }
             })
         }
-        
         let oldTask = await PerformTaskService.getTaskById(req.portal, req.params.taskId, req.user._id);
-        let task = await PerformTaskService.editTaskByAccountableEmployees(req.portal, req.body, req.params.taskId);
+        let task = await PerformTaskService.editTaskByAccountableEmployees(req.portal, body, req.params.taskId);
         let user = task.user;
         let tasks = task.tasks;
         let data = {
@@ -1052,7 +1053,6 @@ editTaskByAccountableEmployees = async (req, res) => {
             }
         })
     } catch (error) {
-        console.log('edit task', error)
         await Logger.error(req.user.email, ` edit task `, req.portal);
         res.status(400).json({
             success: false,

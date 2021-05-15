@@ -77,7 +77,7 @@ exports.createUseRequest = async (req, res) => {
             };
 
             await NotificationServices.createNotification(req.portal, req.user.company._id, noti);
-            await sendEmail(email, "Bạn có thông báo mới", '', html);
+            //await sendEmail(email, "Bạn có thông báo mới", '', html);
         }
 
         await Logger.info(req.user.email, 'CREATE_USE_REQUEST', req.portal);
@@ -129,6 +129,25 @@ exports.deleteUseRequest = async (req, res) => {
 exports.updateUseRequest = async (req, res) => {
     try {
         var recommenddistributeUpdate = await RecommendDistributeService.updateUseRequest(req.portal, req.params.id, req.body);
+        if (recommenddistributeUpdate.email) {
+            var email = recommenddistributeUpdate.email;
+            var html = recommenddistributeUpdate.html;
+            var noti = {
+                organizationalUnits: [],
+                title: "Sửa đăng ký sử dụng thiết bị" + " " + recommenddistributeUpdate.equipmentName,
+                level: "general",
+                content: html,
+                sender: recommenddistributeUpdate.user.name,
+                users: recommenddistributeUpdate.manager,
+                associatedDataObject: {
+                    dataType: 2,
+                    description: `<p><strong>${recommenddistributeUpdate.user.name}</strong> sửa đăng ký sử dụng thiết bị:  <strong>${recommenddistributeUpdate.equipmentName}</strong>.</p>`
+                },
+            };
+
+            await NotificationServices.createNotification(req.portal, req.user.company._id, noti);
+            await sendEmail(email, "Bạn có thông báo mới", '', html);
+        }
         await Logger.info(req.user.email, 'EDIT_USE_REQUEST', req.portal);
         res.status(200).json({
             success: true,

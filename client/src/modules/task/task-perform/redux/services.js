@@ -528,24 +528,13 @@ function editTaskByResponsibleEmployees(data, taskId) {
     let formData = new FormData();
     formData.append("type", "all")
     formData.append("role", "responsible")
+    formData.append("data", JSON.stringify(data))
 
     // append image
     data.imageDescriptions && data.imageDescriptions.forEach(x => {
         formData.append("files", x);
     })
-    data.imageDescriptions = null
-
-    for (let key in data) {
-        console.log(key, data[key])
-        if (data?.[key] && Array.isArray(data[key])) {
-            data[key].forEach(x => {
-                formData.append(key, x);
-            })
-        } else {
-            formData.append(key, data?.[key]);
-        }
-    }
-
+    
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}`,
         method: 'POST',
@@ -561,24 +550,13 @@ function editTaskByResponsibleEmployees(data, taskId) {
 function editTaskByAccountableEmployees(data, taskId) {
     let formData = new FormData();
     formData.append("type", "all")
-    formData.append("role", "responsaccountableible")
+    formData.append("role", "accountable")
+    formData.append("data", JSON.stringify(data))
 
     // append image
     data.imageDescriptions && data.imageDescriptions.forEach(x => {
         formData.append("files", x);
     })
-    data.imageDescriptions = null
-
-    for (let key in data) {
-        console.log(key, data[key])
-        if (data?.[key] && Array.isArray(data[key])) {
-            data[key].forEach(x => {
-                formData.append(key, x);
-            })
-        } else {
-            formData.append(key, data?.[key]);
-        }
-    }
     
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}`,

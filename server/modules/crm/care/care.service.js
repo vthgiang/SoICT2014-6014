@@ -9,9 +9,12 @@ const STATUS_VALUE = {
 };
 exports.createCare = async (portal, companyId, data, userId) => {
     let { startDate, endDate } = data;
+   
+
     if (startDate) {
         const date = startDate.split('-');
         startDate = [date[2], date[1], date[0]].join("-");
+
         data = { ...data, startDate };
     }
 
@@ -22,17 +25,19 @@ exports.createCare = async (portal, companyId, data, userId) => {
     }
 
     if (userId) {
-        data = { ...data, creator: userId };
+        data = { ...data, creator: userId ,updatedBy:userId };
     }
-    //xu ly trang thai cua hoat dong
-    const now = new Date();
-    if(data.startDate>now) data = {...data,status:STATUS_VALUE.unfulfilled};
-    else if(data.endDate>now) data = {...data,status:STATUS_VALUE.processing};
-    else data = {...data,status:STATUS_VALUE.expired};
-    
     //------------
 
     const newCare = await Care(connect(DB_CONNECTION, portal)).create(data);
+    const care = await Care(connect(DB_CONNECTION, portal)).findById(newCare._id);
+    if (care.status == 3 || care.status == 5) return;
+    let now = new Date();
+    if (care.startDate.getTime() > now.getTime()) updateCareStatus(care._id, STATUS_VALUE.unfulfilled, portal)
+    else if (care.endDate.getTime() > now.getTime()) updateCareStatus(care._id, STATUS_VALUE.processing, portal)
+    else updateCareStatus(care._id, STATUS_VALUE.expired, portal);
+
+
     const getNewCare = await Care(connect(DB_CONNECTION, portal)).findById(newCare._id)
         .populate({ path: 'creator', select: '_id name' })
         .populate({ path: 'customer', select: '_id name ' })
@@ -41,7 +46,7 @@ exports.createCare = async (portal, companyId, data, userId) => {
     return getNewCare;
 }
 
-const updateCareStatus = async (id, status,portal)=>{
+const updateCareStatus = async (id, status, portal) => {
     await Care(connect(DB_CONNECTION, portal)).findByIdAndUpdate(id, {
         $set: { status: status }
     }, { new: true });
@@ -94,9 +99,9 @@ exports.getCares = async (portal, companyId, query) => {
     listCare.forEach(care => {
         if (care.status == 3 || care.status == 5) return;
         let now = new Date();
-        if (care.startDate > now) updateCareStatus(care._id,STATUS_VALUE.unfulfilled,portal)
-        else if (care.endDate > now) updateCareStatus(care._id,STATUS_VALUE.processing,portal)
-        else updateCareStatus(care._id,STATUS_VALUE.expired,portal)
+        if (care.startDate > now) updateCareStatus(care._id, STATUS_VALUE.unfulfilled, portal)
+        else if (care.endDate > now) updateCareStatus(care._id, STATUS_VALUE.processing, portal)
+        else updateCareStatus(care._id, STATUS_VALUE.expired, portal)
     });
 
     const cares = await Care(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 'desc' })
