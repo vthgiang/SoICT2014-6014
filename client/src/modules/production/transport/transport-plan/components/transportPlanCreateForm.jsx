@@ -10,6 +10,7 @@ import { LocationMap } from './map/locationMap'
 import { TransportVehicleAndCarrierSelect } from './transport-plan-create/transportVehicleAndCarrierSelect'
 
 import { transportPlanActions } from '../redux/actions';
+import { transportDepartmentActions } from '../../transport-department/redux/actions'
 import { transportRequirementsActions } from '../../transport-requirements/redux/actions'
 import { getTypeRequirement } from '../../transportHelper/getTextFromValue'
 
@@ -17,12 +18,13 @@ import {} from './transport-plan.css'
 
 function TransportPlanCreateForm(props) {
     // let allTransportRequirements;
-    let {transportRequirements} = props;
+    let {transportRequirements, transportDepartment} = props;
     const [formSchedule, setFormSchedule] = useState({
         code: "",
         startDate: "",
         endDate: "",
         name: "Kế hoạch vận chuyển",
+        supervisor: "title"
     });
 
     /**
@@ -68,6 +70,33 @@ function TransportPlanCreateForm(props) {
             endDate: formatToTimeZoneDate(value),
         })
     }
+
+    const getSupervisor = () => {
+        let supervisorList = [{
+            value: "title",
+            text: "Chọn người giám sát"
+        }];
+        if (transportDepartment && transportDepartment.listUser && transportDepartment.listUser.length!==0){
+            let listUser = transportDepartment.listUser.filter(r=>Number(r.role) === 2);
+            if (listUser && listUser.length!==0 && listUser[0].list && listUser[0].list.length!==0){
+                listUser[0].list.map(userId => {
+                    supervisorList.push({
+                        value: userId._id,
+                        text: userId.name,
+                    });
+                })
+            }
+        }
+        return supervisorList;
+    }
+
+    const handleSupervisorChange = (value) => {
+        setFormSchedule({
+            ...formSchedule,
+            supervisor: value[0],
+        })
+    }
+
     const save = () => {
         props.createTransportPlan(formSchedule);
     }
@@ -142,6 +171,9 @@ function TransportPlanCreateForm(props) {
     // useEffect(() => {
     //     console.log(formSchedule, " day la form schedule");
     // }, [formSchedule])
+    useEffect(() => {
+        props.getUserByRole({currentUserId: localStorage.getItem('userId'), role: 2})
+    }, [])
     useEffect(() => {
         props.getAllTransportRequirements({page: 1, limit: 100, status: "2"})
     }, [formSchedule.startDate, formSchedule.endDate])
@@ -262,20 +294,18 @@ function TransportPlanCreateForm(props) {
                                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                             <div className={`form-group`}>
                                                 <label>
-                                                    Người phụ trách
+                                                    Người phụ trách giám sát
                                                     <span className="attention"> * </span>
                                                 </label>
-                                                <input type="text" className="form-control" disabled={false} 
-                                                />
-                                                {/* <SelectBox
+                                                <SelectBox
                                                     id={`select-type-requirement`}
                                                     className="form-control select2"
                                                     style={{ width: "100%" }}
-                                                    value={"5"}
-                                                    // items={requirements}
-                                                    // onChange={handleTypeRequirementChange}
+                                                    value={formSchedule.supervisor}
+                                                    items={getSupervisor()}
+                                                    onChange={handleSupervisorChange}
                                                     multiple={false}
-                                                /> */}
+                                                />
                                             </div>
                                         </div>
 
@@ -409,13 +439,15 @@ function TransportPlanCreateForm(props) {
 }
 
 function mapState(state) {
-    const {transportRequirements} = state;
-    return {transportRequirements}
+    const {transportRequirements, transportDepartment} = state;
+    console.log(transportDepartment);
+    return {transportRequirements, transportDepartment}
 }
 
 const actions = {
     getAllTransportRequirements: transportRequirementsActions.getAllTransportRequirements,
     createTransportPlan: transportPlanActions.createTransportPlan,
+    getUserByRole: transportDepartmentActions.getUserByRole,
 }
 
 const connectedTransportPlanCreateForm = connect(mapState, actions)(withTranslate(TransportPlanCreateForm));
