@@ -7,6 +7,7 @@ const {
     User,
     Salary,
     Task,
+    ProjectChangeRequest,
 } = require('../../models');
 const arrayToTree = require("array-to-tree");
 const fs = require("fs");
@@ -14,6 +15,7 @@ const ObjectId = require("mongoose").Types.ObjectId;
 const { connect, } = require(`../../helpers/dbHelper`);
 const { dateParse } = require(`../../helpers/functionHelper`);
 const moment = require('moment');
+const { createProjectTask } = require('../task/task-management/task.service');
 
 const MILISECS_TO_DAYS = 86400000;
 
@@ -34,14 +36,14 @@ exports.get = async (portal, query) => {
         //     page: query.page
         // }
     }
-    options = {
+    options = userId ? {
         ...options,
         $or: [
             { 'projectManager': userId },
             { 'responsibleEmployees': userId },
             { 'creator': userId }
         ]
-    }
+    } : {};
     let project;
     if (query.calledId === "paginate") {
         project = await Project(
@@ -49,17 +51,17 @@ exports.get = async (portal, query) => {
         ).paginate(options, {
             page, limit,
             populate: [
-                { path: "responsibleEmployees", select: "_id name" },
-                { path: "projectManager", select: "_id name" },
-                { path: "creator", select: "_id name" }
+                { path: "responsibleEmployees", select: "_id name email" },
+                { path: "projectManager", select: "_id name email" },
+                { path: "creator", select: "_id name email" }
             ]
         });
     }
     else {
         project = await Project(connect(DB_CONNECTION, portal)).find(options)
-            .populate({ path: "responsibleEmployees", select: "_id name" })
-            .populate({ path: "projectManager", select: "_id name" })
-            .populate({ path: "creator", select: "_id name" })
+            .populate({ path: "responsibleEmployees", select: "_id name email" })
+            .populate({ path: "projectManager", select: "_id name email" })
+            .populate({ path: "creator", select: "_id name email" })
     }
     return project;
 }
@@ -73,6 +75,7 @@ exports.show = async (portal, id) => {
 exports.create = async (portal, data) => {
     let newData = {};
     let newResponsibleEmployeesWithUnit = [];
+    console.log(data)
 
     if (data) {
         for (let i in data) {
@@ -86,64 +89,39 @@ exports.create = async (portal, data) => {
         for (let employeeItem of data.responsibleEmployeesWithUnit) {
             let newListUsers = [];
             for (let userItem of employeeItem.listUsers) {
-                let currentUser = await User(connect(DB_CONNECTION, portal)).findById(userItem.userId);
-                // Tìm employee từ user email
-                let currentEmployee = await Employee(connect(DB_CONNECTION, portal)).find({
-                    'emailInCompany': currentUser.email
-                })
-                // Nếu user này không phải là nhân viên => Không có lương
-                if (!currentEmployee || currentEmployee.length === 0) {
+                // Nếu như gửi lên từ client đã có lương rồi
+                if (userItem.salary) {
                     newListUsers.push({
                         userId: userItem.userId,
-                        salary: 0
+                        salary: userItem.salary,
                     })
-                    continue;
                 }
-                // Tra cứu bảng lương
-                let currentSalary = await Salary(connect(DB_CONNECTION, portal)).find({
-                    $and: [
-                        { 'organizationalUnit': employeeItem.unitId },
-                        { 'employee': currentEmployee[0]._id },
-                    ]
-                });
-                newListUsers.push({
-                    userId: userItem.userId,
-                    salary: currentSalary && currentSalary.length > 0 ? Number(currentSalary[0].mainSalary) : 0,
-                })
-            }
-            // Add vào mảng cuối cùng
-            newResponsibleEmployeesWithUnit.push({
-                unitId: employeeItem.unitId,
-                listUsers: newListUsers,
-            })
-        }
-        for (let employeeItem of data.responsibleEmployeesWithUnit) {
-            let newListUsers = [];
-            for (let userItem of employeeItem.listUsers) {
-                let currentUser = await User(connect(DB_CONNECTION, portal)).findById(userItem.userId);
-                // Tìm employee từ user email
-                let currentEmployee = await Employee(connect(DB_CONNECTION, portal)).find({
-                    'emailInCompany': currentUser.email
-                })
-                // Nếu user này không phải là nhân viên => Không có lương
-                if (!currentEmployee || currentEmployee.length === 0) {
+                else {
+                    let currentUser = await User(connect(DB_CONNECTION, portal)).findById(userItem.userId);
+                    // Tìm employee từ user email
+                    let currentEmployee = await Employee(connect(DB_CONNECTION, portal)).find({
+                        'emailInCompany': currentUser.email
+                    })
+                    // Nếu user này không phải là nhân viên => Không có lương
+                    if (!currentEmployee || currentEmployee.length === 0) {
+                        newListUsers.push({
+                            userId: userItem.userId,
+                            salary: 0
+                        })
+                        continue;
+                    }
+                    // Tra cứu bảng lương
+                    let currentSalary = await Salary(connect(DB_CONNECTION, portal)).find({
+                        $and: [
+                            { 'organizationalUnit': employeeItem.unitId },
+                            { 'employee': currentEmployee[0]._id },
+                        ]
+                    });
                     newListUsers.push({
                         userId: userItem.userId,
-                        salary: 0
+                        salary: currentSalary && currentSalary.length > 0 ? Number(currentSalary[0].mainSalary) : 0,
                     })
-                    continue;
                 }
-                // Tra cứu bảng lương
-                let currentSalary = await Salary(connect(DB_CONNECTION, portal)).find({
-                    $and: [
-                        { 'organizationalUnit': employeeItem.unitId },
-                        { 'employee': currentEmployee[0]._id },
-                    ]
-                });
-                newListUsers.push({
-                    userId: userItem.userId,
-                    salary: currentSalary && currentSalary.length > 0 ? Number(currentSalary[0].mainSalary) : 0,
-                })
             }
             // Add vào mảng cuối cùng
             newResponsibleEmployeesWithUnit.push({
@@ -166,30 +144,39 @@ exports.edit = async (portal, id, data) => {
         for (let employeeItem of data.responsibleEmployeesWithUnit) {
             let newListUsers = [];
             for (let userItem of employeeItem.listUsers) {
-                let currentUser = await User(connect(DB_CONNECTION, portal)).findById(userItem.userId);
-                // Tìm employee từ user email
-                let currentEmployee = await Employee(connect(DB_CONNECTION, portal)).find({
-                    'emailInCompany': currentUser.email
-                })
-                // Nếu user này không phải là nhân viên => Không có lương
-                if (!currentEmployee || currentEmployee.length === 0) {
+                // Nếu như gửi lên từ client đã có lương rồi
+                if (userItem.salary) {
                     newListUsers.push({
                         userId: userItem.userId,
-                        salary: 0
+                        salary: userItem.salary,
                     })
-                    continue;
                 }
-                // Tra cứu bảng lương
-                let currentSalary = await Salary(connect(DB_CONNECTION, portal)).find({
-                    $and: [
-                        { 'organizationalUnit': employeeItem.unitId },
-                        { 'employee': currentEmployee[0]._id },
-                    ]
-                });
-                newListUsers.push({
-                    userId: userItem.userId,
-                    salary: currentSalary && currentSalary.length > 0 ? Number(currentSalary[0].mainSalary) : 0,
-                })
+                else {
+                    let currentUser = await User(connect(DB_CONNECTION, portal)).findById(userItem.userId);
+                    // Tìm employee từ user email
+                    let currentEmployee = await Employee(connect(DB_CONNECTION, portal)).find({
+                        'emailInCompany': currentUser.email
+                    })
+                    // Nếu user này không phải là nhân viên => Không có lương
+                    if (!currentEmployee || currentEmployee.length === 0) {
+                        newListUsers.push({
+                            userId: userItem.userId,
+                            salary: 0
+                        })
+                        continue;
+                    }
+                    // Tra cứu bảng lương
+                    let currentSalary = await Salary(connect(DB_CONNECTION, portal)).find({
+                        $and: [
+                            { 'organizationalUnit': employeeItem.unitId },
+                            { 'employee': currentEmployee[0]._id },
+                        ]
+                    });
+                    newListUsers.push({
+                        userId: userItem.userId,
+                        salary: currentSalary && currentSalary.length > 0 ? Number(currentSalary[0].mainSalary) : 0,
+                    })
+                }
             }
             // Add vào mảng cuối cùng
             newResponsibleEmployeesWithUnit.push({
@@ -204,11 +191,12 @@ exports.edit = async (portal, id, data) => {
             name: data.name,
             parent: data.parent,
             startDate: data.startDate,
-            endDate: data.startDate,
+            endDate: data.endDate,
             description: data.description,
             projectManager: data.projectManager,
             responsibleEmployeesWithUnit: newResponsibleEmployeesWithUnit,
             responsibleEmployees: data.responsibleEmployees,
+            unitTime: data.unitTime,
         }
     }, { new: true });
     return await Project(connect(DB_CONNECTION, portal)).findOne({ _id: id })
@@ -290,43 +278,168 @@ exports.getListTasksEval = async (portal, id, evalMonth) => {
         .find({
             taskProject: id,
         })
+        .populate({ path: "responsibleEmployees", select: "_id name" })
+        .populate({ path: "accountableEmployees", select: "_id name" })
+        .populate({ path: "consultedEmployees", select: "_id name" })
+        .populate({ path: "informedEmployees", select: "_id name" })
+        .populate({ path: "creator", select: "_id name" })
+        .populate({ path: "preceedingTasks", select: "_id name" });
+    // .populate([
+    //     { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
+    //     { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
+    // ]);
     let currentTasksWithinEvalMonth = []
-    // Chỉ lấy những task mà có startDate nhỏ hơn hoặc bằng evalMonth && endDate bằng hoặc lớn hơn evalMonth
+    // Chỉ lấy những task mà có endDate trong khoảng đầu cuối của evalMonth
     currentTasks.forEach((currentTaskItem) => {
-        const startMonth = Number(moment(currentTaskItem.startDate).format('M'));
-        const endMonth = Number(moment(currentTaskItem.endDate).format('M'));
-        const evalMonthNumber = Number(moment(evalMonth).format('M'));
-        if (startMonth <= evalMonthNumber && evalMonthNumber <= endMonth) {
+        const startOfCurrentMonthMoment = moment(evalMonth).startOf('month');
+        const endOfCurrentMonthMoment = moment(evalMonth).endOf('month');
+        if (moment(currentTaskItem.endDate).isSameOrAfter(startOfCurrentMonthMoment) &&
+            moment(currentTaskItem.endDate).isSameOrBefore(endOfCurrentMonthMoment)) {
             currentTasksWithinEvalMonth.push(currentTaskItem);
         }
     })
     if (currentTasksWithinEvalMonth.length === 0) return [];
     return currentTasksWithinEvalMonth.map((item) => {
-        // Nếu task đấy chưa có đánh giá tháng này
-        if (item.evaluations.length === 0 || !item.evaluations) {
-            return {
-                code: item.code,
-                name: item.name,
-                evalMonth,
-                automaticPoint: undefined,
-                employeePoint: undefined,
-                approvedPoint: undefined,
+        return item;
+    })
+}
+
+exports.getSalaryMembers = async (portal, data) => {
+    console.log(data)
+    let newResponsibleEmployeesWithUnit = [];
+    for (let employeeItem of data.responsibleEmployeesWithUnit) {
+        let newListUsers = [];
+        for (let userItem of employeeItem.listUsers) {
+            // Nếu như gửi lên từ client đã có lương rồi
+            if (userItem.salary) {
+                newListUsers.push({
+                    userId: userItem.userId,
+                    salary: userItem.salary,
+                })
+            }
+            else {
+                let currentUser = await User(connect(DB_CONNECTION, portal)).findById(userItem.userId);
+                // Tìm employee từ user email
+                let currentEmployee = await Employee(connect(DB_CONNECTION, portal)).find({
+                    'emailInCompany': currentUser.email
+                })
+                // Nếu user này không phải là nhân viên => Không có lương
+                if (!currentEmployee || currentEmployee.length === 0) {
+                    newListUsers.push({
+                        userId: userItem.userId,
+                        salary: 0
+                    })
+                    continue;
+                }
+                // Tra cứu bảng lương
+                let currentSalary = await Salary(connect(DB_CONNECTION, portal)).find({
+                    $and: [
+                        { 'organizationalUnit': employeeItem.unitId },
+                        { 'employee': currentEmployee[0]._id },
+                    ]
+                });
+                newListUsers.push({
+                    userId: userItem.userId,
+                    salary: currentSalary && currentSalary.length > 0 ? Number(currentSalary[0].mainSalary) : 0,
+                })
             }
         }
-        // Lấy Eval của tháng đang đánh giá
-        const currentEvalution = item.evaluations.find((evaluationItem) => {
-            const evalMonthNumber = Number(moment(evalMonth).format('M'));
-            const currentItemEvalMonthNumber = Number(moment(evaluationItem.evaluatingMonth).format('M'));
-            return evalMonthNumber === currentItemEvalMonthNumber
-        });
-        return {
-            code: item.code,
-            name: item.name,
-            evalMonth,
-            automaticPoint: currentEvalution.resultsForProject.automaticPoint,
-            employeePoint: currentEvalution.resultsForProject.employeePoint,
-            approvedPoint: currentEvalution.resultsForProject.approvedPoint,
+        // Add vào mảng cuối cùng
+        newResponsibleEmployeesWithUnit.push({
+            unitId: employeeItem.unitId,
+            listUsers: newListUsers,
+        })
+    }
+    return newResponsibleEmployeesWithUnit;
+}
+
+exports.getListProjectChangeRequests = async (portal, query) => {
+    let { page, limit, projectId } = query;
+    // console.log(changeRequest);
+    const projectChangeRequestsList = await ProjectChangeRequest(connect(DB_CONNECTION, portal)).find({
+        taskProject: projectId,
+    }).populate({ path: "creator", select: "_id name email" });
+    console.log('Lấy danh sách CR', projectChangeRequestsList.length)
+    return projectChangeRequestsList;
+}
+
+exports.createProjectChangeRequest = async (portal, changeRequest) => {
+    console.log(changeRequest)
+    const createCRResult = await ProjectChangeRequest(connect(DB_CONNECTION, portal)).create(changeRequest);
+    const projectChangeRequestsList = await ProjectChangeRequest(connect(DB_CONNECTION, portal)).find({
+        taskProject: createCRResult.taskProject,
+    }).populate({ path: "creator", select: "_id name email" });
+    return projectChangeRequestsList;
+}
+
+exports.updateStatusProjectChangeRequest = async (portal, changeRequestId, requestStatus) => {
+    console.log(changeRequestId, requestStatus);
+    // update requestStatus trong database
+    const updateCRStatusResult = await ProjectChangeRequest(connect(DB_CONNECTION, portal)).findByIdAndUpdate(changeRequestId, {
+        $set: {
+            requestStatus,
         }
-    })
+    }, { new: true });
+    // nếu requestStatus là đồng ý thì thực thi
+    if (Number(requestStatus) === 3) {
+        // Cập nhật + Tạo mới task nếu có
+        for (let affectedItem of updateCRStatusResult.affectedTasksList) {
+            // Nếu task cần edit
+            if (affectedItem.task) {
+                await Task(connect(DB_CONNECTION, portal)).findByIdAndUpdate(affectedItem.task, {
+                    $set: {
+                        preceedingTasks: affectedItem.new.preceedingTasks,
+                        startDate: affectedItem.new.startDate,
+                        startDate: affectedItem.new.startDate,
+                        endDate: affectedItem.new.endDate,
+                        estimateNormalTime: affectedItem.new.estimateNormalTime,
+                        estimateOptimisticTime: affectedItem.new.estimateOptimisticTime,
+                        estimateNormalCost: affectedItem.new.estimateNormalCost,
+                        estimateMaxCost: affectedItem.new.estimateMaxCost,
+                        actorsWithSalary: affectedItem.new.actorsWithSalary,
+                        responsibleEmployees: affectedItem.new.responsibleEmployees,
+                        accountableEmployees: affectedItem.new.accountableEmployees,
+                        totalResWeight: affectedItem.new.totalResWeight,
+                        estimateAssetCost: affectedItem.new.estimateAssetCost,
+                    }
+                }, { new: true });
+            }
+            // Nếu affectedItem.task là dạng undefined
+            else {
+                await createProjectTask(portal, updateCRStatusResult.currentTask);
+            }
+        }
+        await Project(connect(DB_CONNECTION, portal)).findByIdAndUpdate(updateCRStatusResult.taskProject, {
+            $set: {
+                budgetChangeRequest: updateCRStatusResult.baseline.newCost,
+                endDateRequest: updateCRStatusResult.baseline.newEndDate,
+            }
+        }, { new: true });
+    }
+    // query lại danh sách projectChangeRequest
+    const projectChangeRequestsList = await ProjectChangeRequest(connect(DB_CONNECTION, portal)).find({
+        taskProject: updateCRStatusResult.taskProject,
+    }).populate({ path: "creator", select: "_id name email" });
+    return projectChangeRequestsList;
+}
+
+exports.updateListProjectChangeRequests = async (portal, data) => {
+    console.log(data)
+    const { newChangeRequestsList } = data
+    for (let newCRItem of newChangeRequestsList) {
+        await ProjectChangeRequest(connect(DB_CONNECTION, portal)).findOneAndUpdate(
+            { _id: newCRItem._id },
+            {
+                ...newCRItem,
+            },
+            { new: true, overwrite: true },
+        );
+    }
+
+    // query lại danh sách projectChangeRequest
+    const projectChangeRequestsList = await ProjectChangeRequest(connect(DB_CONNECTION, portal)).find({
+        taskProject: newChangeRequestsList[0].taskProject,
+    }).populate({ path: "creator", select: "_id name email" });
+    return projectChangeRequestsList;
 }
 

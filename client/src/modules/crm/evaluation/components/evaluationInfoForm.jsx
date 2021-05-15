@@ -9,7 +9,7 @@ EvaluationInfoForm.propTypes = {
 };
 
 function EvaluationInfoForm(props) {
-    const {translate} =props
+    const {translate,evaluationInfo} =props
     return (
         <React.Fragment>
             <DialogModal
@@ -36,6 +36,7 @@ function EvaluationInfoForm(props) {
 
                                 <EvaluationTabInfoForm
                                     id={`evaluation-tab`}
+                                    evaluationInfo = {evaluationInfo}
                                 />
 
 

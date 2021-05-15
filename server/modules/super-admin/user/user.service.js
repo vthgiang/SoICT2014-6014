@@ -5,6 +5,7 @@ const {
     UserRole,
     Role,
     Company,
+    Employee
 } = require(`../../../models`);
 const bcrypt = require("bcryptjs");
 const generator = require("generate-password");
@@ -405,8 +406,14 @@ exports.createUser = async (portal, data, company) => {
     });
     var hash = bcrypt.hashSync(password, salt);
 
+    if (!data.email)
+        throw ['email_empty'];
+    
+    if (!data.name)
+        throw ['username_empty'];
+    
     var checkUser = await User(connect(DB_CONNECTION, portal)).findOne({
-        email: data.email,
+        email: data.email.trim(),
     });
 
     if (checkUser) {
@@ -414,8 +421,8 @@ exports.createUser = async (portal, data, company) => {
     }
 
     var user = await User(connect(DB_CONNECTION, portal)).create({
-        name: data.name,
-        email: data.email,
+        name: data.name.trim(),
+        email: data.email.trim(),
         password: hash,
         company: company,
     });
@@ -568,6 +575,10 @@ exports.checkUserExited = async (portal, email) => {
  * @data dữ liệu chỉnh sửa
  */
 exports.editUser = async (portal, id, data) => {
+    if (!data.email)
+        throw ['email_empty'];
+    if (!data.name)
+        throw ['username_empty'];
     var user = await User(connect(DB_CONNECTION, portal))
         .findById(id)
         .select("-password -password2 -status -deleteSoft")
@@ -583,11 +594,13 @@ exports.editUser = async (portal, id, data) => {
             },
         ]);
 
+    const name = data.name.trim();
+    const email = data.email.trim();
     if (!user) {
         throw ["user_not_found"];
     }
 
-    if (user.email !== data.email) {
+    if (user.email !== email) {
         const checkEmail = await User(connect(DB_CONNECTION, portal)).findOne({
             email: data.email,
         });
@@ -597,7 +610,7 @@ exports.editUser = async (portal, id, data) => {
             data.email
         );
     }
-    user.name = data.name;
+    user.name = name;
 
     if (data.password) {
         var salt = bcrypt.genSaltSync(10);
@@ -613,9 +626,16 @@ exports.editUser = async (portal, id, data) => {
         user.tokens = [];
     }
 
-    user.email = data.email;
+    const oldEmail = user.email;
+    user.email = email;
     await user.save();
 
+    // Tìm user trong bảng employees và cập nhật lại email
+    // Kiểm tra email mới đã có trong bảng Employees hay chưa.
+    const employees = await Employee(connect(DB_CONNECTION, portal)).findOne({ emailInCompany: data.email });
+    if (!employees)
+        await Employee(connect(DB_CONNECTION, portal)).findOneAndUpdate({ emailInCompany: oldEmail }, { $set: { emailInCompany: data.email } });
+    
     return user;
 };
 
@@ -652,6 +672,23 @@ exports.deleteUser = async (portal, id) => {
     await UserRole(connect(DB_CONNECTION, portal)).deleteOne({
         userId: id,
     });
+
+    return deleteUser;
+};
+
+/**
+ * Xóa tài khoản người dùng theo email
+ * @email email tài khoản người dùng
+ */
+exports.deleteUserByEmail = async (portal, email) => {
+    var deleteUser = await User(connect(DB_CONNECTION, portal)).findOneAndDelete({
+        email: email,
+    }, { $new: true });
+
+    if (deleteUser)
+        await UserRole(connect(DB_CONNECTION, portal)).deleteOne({
+            userId: deleteUser._id,
+        });
 
     return deleteUser;
 };

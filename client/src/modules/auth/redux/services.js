@@ -20,6 +20,7 @@ export const AuthService = {
     downloadFile,
     createPassword2,
     deletePassword2,
+    checkLinkValid,
 };
 
 async function login(data) {
@@ -150,4 +151,14 @@ function deletePassword2(data) {
             pwd2: data
         }
     }, true, true, 'auth');
+}
+
+function checkLinkValid(data) {
+     return sendRequest({
+        url: `${ process.env.REACT_APP_SERVER }/auth/reset-password`,
+        method: 'GET',
+        params: {
+            token: data.token,
+        }
+    }, false, false, 'auth');
 }

@@ -79,7 +79,8 @@ export default {
         },
 
         dashboard_unit: {
-            urgent_need_to_do_chart: "Biểu đồ thể hiện số công việc khẩn cấp/Cần làm",
+            urgent_chart: "Biểu đồ thể hiện số công việc khẩn cấp",
+            need_to_do_chart: "Biểu đồ thể hiện số công việc cần làm",
             urgent_task_amount: "Số công việc khẩn cấp",
             need_to_do_task_amount: "Số công việc cần làm",
             list_employe_timing: "Danh sách nhân viên đang bấm giờ"
@@ -273,16 +274,19 @@ export default {
             phases_list: 'Danh sách giai đoạn',
             issues_list: 'Danh sách vấn đề',
             project_report: 'Báo cáo dự án',
-            project_evaluation: 'Đánh giá',
+            project_evaluation: 'Thống kê đánh giá',
             
             // Quản lý vận chuyển
             manage_transport: "Quản lý vận chuyển",
             manage_transport_requirements: "Yêu cầu vận chuyển",
             manage_transport_plan: "Kế hoạch vận chuyển",
-            manage_transport_schedule: "Lịch vận chuyển",
+            manage_transport_schedule: "Lệnh vận chuyển",
             manage_transport_vehicle: "Phương tiện vận chuyển",
             manage_transport_human: "Nhân viên vận chuyển",
             manage_transport_route: "Hành trình vận chuyển",
+            manage_transport_department: "Phân vai trò đơn vị vận chuyển",
+            carrier_today_transport_mission: "Nhiệm vụ vận chuyển hôm nay",
+            carrier_all_times_transport_mission: "Nhiệm vụ vận chuyển mỗi ngày",
 
 
 
@@ -467,7 +471,8 @@ export default {
             request_forgot_password_success:
                 "Yêu cầu thay đổi mật khẩu thành công. Hệ thống đã gửi yêu cầu xác nhận thay đổi mật khẩu vào email của bạn",
             reset_password_success: "Thiết lập mật khẩu thành công",
-            otp_invalid: "Yêu cầu thiết lập lại mật khẩu không hợp lệ",
+            otp_invalid: "Mã xác thức không chính xác",
+            reset_password_invalid: "Yêu cầu thiết lập lại mật khẩu không hợp lệ",
             portal_invalid: "Portal không hợp lệ",
             create_password2_success: 'Thêm mật khẩu cấp 2 thành công',
             create_password2_faile: 'Thêm mật khẩu cấp 2 thất bại',
@@ -1239,7 +1244,7 @@ export default {
             total_salary: "Tổng lương",
             month: "Tháng",
             unit: "Đơn vị",
-            position: "Chức vụ",
+            position: "Chức danh",
             no_data: "Không có dữ liệu",
             start_date: "Từ ngày",
             end_date: "Đến ngày",
@@ -1259,7 +1264,7 @@ export default {
 
         page: {
             unit: "Đơn vị",
-            position: "Chức vụ",
+            position: "Chức danh",
             month: "Tháng",
             status: "Trạng thái",
             staff_number: "Mã nhân viên",
@@ -1446,7 +1451,7 @@ export default {
             // Nhóm dùng chung cho module quản lý nhân sự
             stt: "STT",
             unit: "Đơn vị",
-            position: "Chức vụ",
+            position: "Chức danh",
             month: "Tháng",
             status: "Trạng thái",
             staff_number: "Mã nhân viên",
@@ -1541,6 +1546,12 @@ export default {
                 file_export_name: "Bảng thống kê nghỉ phép",
                 type: "Xin nghỉ theo giờ",
                 totalHours: "Tổng số giờ nghỉ",
+                leaveOfAbsenceLetter: "Đơn xin nghỉ phép",
+                waiting_for_approval_letter: "Đơn chờ phê duyệt",
+                approved_letter: "Đơn đã chấp nhận",
+                not_approved_letter: "Đơn không chấp nhận",
+                have: "Có",
+                this_month: "trong tháng này",
 
                 // Nhóm dành cho table
                 table: {
@@ -1830,7 +1841,7 @@ export default {
                 district: "Huyện/Quận",
                 province: "Tỉnh/Thành phố",
                 nation: "Quốc gia",
-
+                roles: "Chức danh",
                 academic_level: "Trình độ học vấn",
                 educational_level: "Trình độ văn hoá",
                 language_level: "Trình độ ngoại ngữ",
@@ -3204,8 +3215,8 @@ export default {
                 calc_average_action_rating:
                     "Trung bình cộng điểm đánh giá hoạt động",
                 calc_failed_action_rating:
-                    "Số hoạt động không đạt (rating < 5)",
-                calc_passed_action_rating: "Số công việc đạt (rating >= 5)",
+                    "Tổng các tích điểm hoạt động và độ quan trọng hoạt động của các hoạt động không đạt (rating < 5)",
+                calc_all_action_rating: "Tổng các tích điểm hoạt động và độ quan trọng hoạt động của tất cả hoạt động",
                 calc_progress: "Tiến độ công việc",
                 calc_new_formula: "Công thức hiện tại",
                 calc_total_day:
@@ -5793,8 +5804,8 @@ export default {
             },
 
             unit: {
-                day: 'Ngày',
-                hour: 'Giờ',
+                days: 'Ngày',
+                hours: 'Giờ',
             },
             schedule: {
                 taskCode: 'Mã công việc',

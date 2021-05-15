@@ -72,6 +72,7 @@ const EmployeeCreateForm = (props) => {
             identityCardAddress: "",
             identityCardDate: formatDate2(Date.now()),
             birthdate: formatDate2(Date.now()),
+            roles: [],
             experiences: [],
             socialInsuranceDetails: [],
         },
@@ -135,6 +136,20 @@ const EmployeeCreateForm = (props) => {
                 [name]: value
             }
         }));
+    }
+
+    /**
+    * Function lưu thông tin chức danh vào state
+    * @param {*} data : dữ liệu về chức danh
+    */
+    const handleChangeRole = (data) => {
+        setState({
+            ...state,
+            employee: {
+                ...employee,
+                roles: [...data]
+            }
+        })
     }
 
     /**
@@ -302,11 +317,8 @@ const EmployeeCreateForm = (props) => {
     /** Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form */
     const isFormValidated = () => {
         const { employee } = state;
-        let result = validatorInput(employee.employeeNumber) && validatorInput(employee.employeeTimesheetId) &&
-            validatorInput(employee.fullName) && validatorInput(employee.birthdate) &&
-            validatorInput(employee.emailInCompany) && validatorInput(employee.identityCardNumber) &&
-            validatorInput(employee.identityCardDate) && validatorInput(employee.identityCardAddress) &&
-            validatorInput(employee.phoneNumber) && validatorInput(employee.temporaryResidence);
+        let result = validatorInput(employee.employeeNumber) &&
+            validatorInput(employee.fullName);
 
         if (employee.healthInsuranceStartDate && employee.healthInsuranceEndDate) {
             if (new Date(employee.healthInsuranceEndDate).getTime() < new Date(employee.healthInsuranceStartDate).getTime()) {
@@ -578,6 +590,7 @@ const EmployeeCreateForm = (props) => {
                             img={img}
                             handleChange={handleChange}
                             handleUpload={handleUpload}
+                            handleChangeRole={handleChangeRole}
                             employee={employee}
                         />
                         {/* Tab thông tin liên hệ */}

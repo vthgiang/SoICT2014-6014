@@ -267,6 +267,46 @@ exports.editCustomerPoint = async (portal, companyId, id, data, userId) => {
     }, { new: true });
 }
 
+exports.addPromotion = async (portal, companyId, id, data, userId) => {
+    let { value, description, minimumOrderValue, promotionalValueMax, expirationDate } = data;
+
+
+    let promotions = [];
+    let getCustomer = await Customer(connect(DB_CONNECTION, portal)).findById(id);
+    if (getCustomer.promotions) promotions = getCustomer.promotions;
+    promotions = await [...promotions, { value, description, minimumOrderValue, promotionalValueMax, expirationDate: this.formatDate(expirationDate) }]
+    getCustomer = await { getCustomer, promotions };
+    await Customer(connect(DB_CONNECTION, portal)).findByIdAndUpdate(id, {
+        $set: getCustomer
+    }, { new: true });
+    return await Customer(connect(DB_CONNECTION, portal)).findOne({ _id: id })
+        .populate({ path: 'group', select: '_id name' })
+        .populate({ path: 'status', select: '_id name' })
+        .populate({ path: 'owner', select: '_id name email' })
+        .populate({ path: 'creator', select: '_id name email' })
+        .populate({ path: 'statusHistories.oldValue statusHistories.newValue statusHistories.createdBy', select: '_id name' })
+
+
+}
+
+exports.addRankPoint = async (portal, companyId, id, data, userId) => {
+    let { paymentAmount } = data;
+    let rankPoints = [];
+    let getCustomer = await Customer(connect(DB_CONNECTION, portal)).findById(id);
+    if (getCustomer.rankPoints) rankPoints = getCustomer.rankPoints;
+    //lay thoi gian hien tai
+    const now = new Date();
+    const month = now.getMonth();
+    const year = now.getFullYear();
+    rankPoints = await [...rankPoints, { point: (paymentAmount / 10000), expirationDate: new Date(month+3,year) }]
+    getCustomer = await { getCustomer, rankPoints };
+    return await Customer(connect(DB_CONNECTION, portal)).findByIdAndUpdate(id, {
+        $set: getCustomer
+    }, { new: true });
+}
+
+
+
 
 exports.deleteCustomer = async (portal, companyId, id) => {
     let delCustomer = await Customer(connect(DB_CONNECTION, portal)).findOneAndDelete({ _id: id });

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { CrmGroupActions } from '../redux/actions';
@@ -8,165 +8,166 @@ import EditGroupForm from './editForm';
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
 import CreateCareCommonForm from '../../common/createCareCommonForm';
 import GroupInfoForm from './groupInfoForm';
-class CrmGroup extends Component {
-    constructor(props) {
-        super(props);
-        const tableId = "table-manage-crm-group";
-        const defaultConfig = { limit: 5 }
-        const limit = getTableConfiguration(tableId, defaultConfig).limit;
 
-        this.state = {
-            limit: limit,
-            page: 0,
-            option: 'name',
-            value: '',
-            tableId,
-        }
-    }
+function CrmGroup(props) {
 
-    render() {
-        const { crm, translate } = this.props;
-        const { list } = crm.groups;
-        const { option, limit, page, groupIdEdit, tableId, groupIdCreateCareACtion } = this.state;
+    const tableIdDefault = "table-manage-crm-group";
+    const defaultConfig = { limit: 5 }
+    const limitInit = getTableConfiguration(tableIdDefault, defaultConfig).limit;
+    const [groupEditId, setGroupEditId] = useState();
+    const [groupCreateCareACtionId, setGroupCreateCareACtionId] = useState();
+    const [groupInfoId, setGroupInfoId] = useState();
+    const [searchState, setSearchState] = useState({
+        limit: limitInit,
+        page: 0,
+        option: 'name',
+        value: '',
+        tableId: tableIdDefault,
+    });
+    useEffect(() => props.getGroups(searchState), []
+    )
 
-        let pageTotal = (crm.groups.totalDocs % limit === 0) ?
-            parseInt(crm.groups.totalDocs / limit) :
-            parseInt((crm.groups.totalDocs / limit) + 1);
-        let cr_page = parseInt((page / limit) + 1);
+    const { crm, translate } = props;
+    const { list } = crm.groups;
+    const { option, limit, page, groupIdEdit, tableId, groupIdCreateCareACtion } = searchState;
 
-        return (
-            <div className="box">
-                <div className="box-body">
-                    <CreateGroupForm />
-                    <GroupInfoForm/>
-                    {groupIdCreateCareACtion && <CreateCareCommonForm type={2} />}
-                    {groupIdEdit && <EditGroupForm groupIdEdit={groupIdEdit} />}
-
-
-                    <table className="table table-hover table-striped table-bordered" id={tableId} style={{ marginTop: '10px' }}>
-                        <thead>
-                            <tr>
-                                <th>{translate('crm.group.code')}</th>
-                                <th>{translate('crm.group.name')}</th>
-                                <th>{translate('crm.group.description')}</th>
-                                <th>Số lượng khách hàng </th>
-                                <th style={{ width: "120px" }}>
-                                    {translate('table.action')}
-                                    <DataTableSetting
-                                        columnArr={[
-                                            translate('crm.group.code'),
-                                            translate('crm.group.name'),
-                                            translate('crm.group.description'),
-                                            'Số lượng khách hàng'
-                                        ]}
-                                        setLimit={this.setLimit}
-                                        tableId={tableId}
-                                    />
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                list && list.length > 0 ?
-                                    list.map(gr =>
-                                        <tr key={gr._id}>
-                                            <td>{gr.code}</td>
-                                            <td>{gr.name}</td>
-                                            <td>{gr.description}</td>
-                                            <td>30</td>
-                                            <td style={{ textAlign: 'center' }}>
-                                                <a className="text-green" onClick={this.handleInfoGroup}><i className="material-icons">visibility</i></a>
-                                                <a className="text-yellow" onClick={() => this.handleEditGroup(gr._id)}><i className="material-icons">edit</i></a>
-                                                <a className="text-green"
-                                                    onClick={() => this.handleCreateCareAction(gr._id)}
-                                                ><i className="material-icons">add_comment</i></a>
-                                                <ConfirmNotification
-                                                    icon="question"
-                                                    title="Xóa thông tin về khách hàng"
-                                                    content="<h3>Xóa thông tin khách hàng</h3>"
-                                                    name="delete"
-                                                    className="text-red"
-                                                    func={() => this.deleteGroup(gr._id)}
-                                                />
-                                            </td>
-                                        </tr>
-                                    ) : crm.groups.isLoading ?
-                                        <tr><td colSpan={4}>{translate('general.loading')}</td></tr> :
-                                        <tr><td colSpan={4}>{translate('general.no_data')}</td></tr>
-                            }
-                        </tbody>
-                    </table>
-
-                    {/* PaginateBar */}
-                    <PaginateBar pageTotal={pageTotal} currentPage={cr_page} func={this.setPage} />
-                </div>
-            </div>
-        );
-    }
-
-    componentDidMount() {
-        this.props.getGroups(this.state);
-    }
+    let pageTotal = (crm.groups.totalDocs % limit === 0) ?
+        parseInt(crm.groups.totalDocs / limit) :
+        parseInt((crm.groups.totalDocs / limit) + 1);
+    let cr_page = parseInt((page / limit) + 1);
 
     // Cac ham thiet lap va tim kiem gia tri
-    setOption = (title, option) => {
-        this.setState({
-            [title]: option
-        });
-    }
 
-    searchWithOption = async () => {
-        const data = {
-            limit: this.state.limit,
-            page: 1,
-            key: this.state.option,
-            value: this.state.value
-        };
-        await this.props.getGroups(data);
-    }
 
-    setPage = (pageNumber) => {
-        let { limit } = this.state;
+
+    const setPage = async (pageNumber) => {
+        let { limit } = searchState;
         let page = (pageNumber - 1) * (limit);
+        let newState = { ...searchState, page: parseInt(page), }
 
-        this.setState({
-            page: parseInt(page),
-        }, () => this.props.getGroups(this.state));
+        await setSearchState(newState);
+        props.getGroups(searchState);
     }
 
-    setLimit = (number) => {
-        this.setState({ limit: number });
-        const data = {
-            limit: number,
-            page: this.state.page,
-            key: this.state.option,
-            value: this.state.value
-        };
-        this.props.getGroups(data);
+    const setLimit = async (number) => {
+        let newState = { ...searchState, limit: number, }
+
+        await setSearchState(newState)
+        props.getGroups(searchState);
     }
 
-    deleteGroup = async (id) => {
+    const deleteGroup = async (id) => {
         if (id) {
-            await this.props.deleteGroup(id);
+            await props.deleteGroup(id);
         }
     }
 
-    handleEditGroup = (id) => {
-        this.setState({
-            ...this.state,
-            groupIdEdit: id,
-        }, () => window.$('#modal-edit-group').modal('show'));
+    const handleEditGroup = async (id) => {
+        await setGroupEditId(id);
+        window.$('#modal-edit-group').modal('show');
     }
-    handleCreateCareAction = (id) => {
-        this.setState({
-            ...this.state,
-            groupIdCreateCareACtion: id,
-        }, () => window.$('#modal-crm-care-common-create').modal('show'));
+    const handleCreateCareAction = async (id) => {
+        await setGroupCreateCareACtionId(id);
+        window.$('#modal-crm-care-common-create').modal('show');
     }
-    handleInfoGroup = ()=>{
-        window.$('#modal-info-group').modal('show');
+    const handleInfoGroup = async (id) => {
+        await setGroupInfoId(id);
+        window.$(`#modal-info-group`).modal('show');
     }
+
+    //xu ly tim kiem
+    /**
+     * ham xu ly tim kiem theo ma nhom
+     */
+    const handleSearchByCode = async (e) => {
+        const value = e.target.value;
+        let newState = { ...searchState, code: value }
+        await setSearchState(newState);
+    }
+    const search = () => {
+        props.getGroups(searchState);
+    }
+    return (
+        <div className="box">
+            <div className="box-body qlcv">
+                <CreateGroupForm />
+                {groupInfoId && <GroupInfoForm groupInfoId={groupInfoId} />}
+                {groupCreateCareACtionId && <CreateCareCommonForm type={2} />}
+                {groupEditId && <EditGroupForm groupIdEdit={groupEditId} />}
+                {/*  tim kiem theo ma nhom */}
+                <div className="form-inline" style={{marginLeft:'10px'}}>
+                    <div className="form-group">
+                        <label className="form-control-static">Mã nhóm khách hàng</label>
+                        <input className="form-control" type="text"
+                            name="customerCode" onChange={handleSearchByCode}
+                            placeholder={`Mã nhóm khách hàng`}
+                        />
+                    </div>
+                    <div className="form-group" >
+                        <label></label>
+                        <button type="button" className="btn btn-success" onClick={search} title={translate('form.search')}>{translate('form.search')}</button>
+                    </div>
+                </div>
+
+                <table className="table table-hover table-striped table-bordered" id={tableId} style={{ marginTop: '10px' }}>
+                    <thead>
+                        <tr>
+                            <th>{translate('crm.group.code')}</th>
+                            <th>{translate('crm.group.name')}</th>
+                            <th>{translate('crm.group.description')}</th>
+                            <th style={{ width: "120px" }}>
+                                {translate('table.action')}
+                                <DataTableSetting
+                                    columnArr={[
+                                        translate('crm.group.code'),
+                                        translate('crm.group.name'),
+                                        translate('crm.group.description'),
+                                        'Số lượng khách hàng'
+                                    ]}
+                                    setLimit={setLimit}
+                                    tableId={tableId}
+                                />
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            list && list.length > 0 ?
+                                list.map(gr =>
+                                    <tr key={gr._id}>
+                                        <td>{gr.code}</td>
+                                        <td>{gr.name}</td>
+                                        <td>{gr.description}</td>
+                                        <td style={{ textAlign: 'center' }}>
+                                            <a className="text-green" onClick={() => handleInfoGroup(gr._id)}><i className="material-icons">visibility</i></a>
+                                            <a className="text-yellow" onClick={() => handleEditGroup(gr._id)}><i className="material-icons">edit</i></a>
+                                            <ConfirmNotification
+                                                icon="question"
+                                                title="Xóa thông tin về khách hàng"
+                                                content="<h3>Xóa thông tin khách hàng</h3>"
+                                                name="delete"
+                                                className="text-red"
+                                                func={() => deleteGroup(gr._id)}
+                                            />
+                                        </td>
+                                    </tr>
+                                ) : crm.groups.isLoading ?
+                                    <tr><td colSpan={4}>{translate('general.loading')}</td></tr> :
+                                    <tr><td colSpan={4}>{translate('general.no_data')}</td></tr>
+                        }
+                    </tbody>
+                </table>
+
+                {/* PaginateBar */}
+                <PaginateBar pageTotal={pageTotal} currentPage={cr_page} func={setPage} />
+            </div>
+        </div>
+    );
 }
+
+
+
+
 
 
 function mapStateToProps(state) {

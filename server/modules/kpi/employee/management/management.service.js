@@ -36,8 +36,12 @@ exports.getAllKPIEmployeeSetsInOrganizationByMonth = async (portal, data) => {
  */
 exports.copyKPI = async (portal, id, data) => {
     let { unitId, dateNew, creator } = data;
+    let monthSearch, nextMonthSearch;
 
-    dateNew = new Date(dateNew);
+    monthSearch = new Date(dateNew);
+    nextMonthSearch = new Date(dateNew);
+    nextMonthSearch.setMonth(nextMonthSearch.getMonth() + 1);
+
 
     let checkEmployeeKPISet = await EmployeeKpiSet(connect(DB_CONNECTION, portal)).findOne({
         organizationalUnit: unitId,
@@ -45,12 +49,12 @@ exports.copyKPI = async (portal, id, data) => {
         "$and": [
             {
                 "$expr": { 
-                    "$eq": [ { "$month": "$date" }, dateNew.getMonth() + 1 ]
+                    "$eq": [ { "$month": "$date" }, monthSearch.getMonth() + 1 ]
                 }
             },
             {
                 "$expr": { 
-                    "$eq": [ { "$year": "$date" }, dateNew.getFullYear() ]
+                    "$eq": [ { "$year": "$date" }, monthSearch.getFullYear() ]
                 }
             }
         ]
@@ -66,24 +70,37 @@ exports.copyKPI = async (portal, id, data) => {
             .populate("organizationalUnit")
             .populate({path: "creator", select :"_id name email avatar"})
             .populate({ path: "kpis", populate: { path: 'parent' } });
-
+           
+        parentUnitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+            .findOne({
+                organizationalUnit: mongoose.Types.ObjectId(oldEmployeeKpiSet?.organizationalUnit?._id),
+                date: { $gte: monthSearch, $lt: nextMonthSearch }
+            })
+            .populate({ path: "kpis" });
+        
         newEmployeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
             .create({
                 organizationalUnit: oldEmployeeKpiSet?.organizationalUnit?._id,
                 creator: creator,
-                date: dateNew,
+                date: monthSearch,
                 kpis: [],
                 approver: oldEmployeeKpiSet?.approver,
             })
 
         for (let i in oldEmployeeKpiSet.kpis) {
+            let parentKpi = parentUnitKpiSet?.kpis?.filter(item => {
+                return item?.name === oldEmployeeKpiSet.kpis[i]?.parent?.name
+            })
+
+            let parent = parentKpi?.[0]?._id 
+
             let target = await EmployeeKpi(connect(DB_CONNECTION, portal))
                 .create({
                     name: oldEmployeeKpiSet.kpis[i].name,
                     weight: oldEmployeeKpiSet.kpis[i].weight,
                     criteria: oldEmployeeKpiSet.kpis[i].criteria,
                     type: oldEmployeeKpiSet.kpis[i].type,
-                    parent: null,
+                    parent: parent,
                 });
             employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
                 .findByIdAndUpdate(

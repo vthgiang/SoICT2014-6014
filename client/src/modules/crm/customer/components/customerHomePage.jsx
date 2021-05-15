@@ -53,14 +53,13 @@ function CustomerHomePage(props) {
                 props.getCareTypes({});           
                 const currentRole = getStorage('currentRole')
                 if (user && user.organizationalUnitsOfUser) {
-                    console.log('user.organizationalUnitsOfUser', user.organizationalUnitsOfUser)
                     let getCurrentUnit = user.organizationalUnitsOfUser.find(item =>
                         item.managers[0] === currentRole
                         || item.deputyManagers[0] === currentRole
                         || item.employees[0] === currentRole);
                     if (getCurrentUnit) {
                         props.getChildrenOfOrganizationalUnits(getCurrentUnit._id);
-                        console.log('vao day');
+                        
                     }
                 }
              }
@@ -336,6 +335,14 @@ function CustomerHomePage(props) {
 
                 {/* search form */}
                 <div className="form-inline" >
+                    {/* tim kiem theo ma khach hang */}
+                    <div className="form-group">
+                        <label className="form-control-static">Mã khách hàng</label>
+                        <input className="form-control" type="text"
+                            name="customerCode" onChange={handleSearchByCustomerCode}
+                            placeholder={`Mã khách hàng`}
+                        />
+                    </div>
                     <div className="form-group unitSearch">
                         {/* Tìm kiếm khách hàng theo người quản lý */}
                         <label>{translate('crm.customer.owner')}</label>
@@ -350,17 +357,11 @@ function CustomerHomePage(props) {
                                 }
                                 onChange={handleSearchByOwner}
                                 multiple={false}
+                                options={{ nonSelectedText: ('Chọn nhân viên quản lý ') , 
+                                allSelectedText: translate(`task.task_management.select_all_department`) }}
                             />
                         }
                     </div>
-                    <div className="form-group">
-                        <label className="form-control-static">Mã khách hàng</label>
-                        <input className="form-control" type="text"
-                            name="customerCode" onChange={handleSearchByCustomerCode}
-                            placeholder={`Mã khách hàng`}
-                        />
-                    </div>
-
                 </div>
 
                 <div className="form-inline">
@@ -382,7 +383,7 @@ function CustomerHomePage(props) {
                         <label>{translate('crm.customer.group')}</label>
                         {
                             listGroups &&
-                            <SelectMulti id="multiSelectUnit13"
+                            <SelectMulti id="multiSelectUnit-group-customer-home-page"
                                 items={listGroups}
                                 onChange={handleSearchByGroup}
                                 options={{ nonSelectedText: listGroups.length !== 0 ? ('Chọn nhóm khách hàng') : "Chưa có nhóm khách hàng", allSelectedText: translate(`task.task_management.select_all_department`) }}
@@ -478,14 +479,15 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-    getDepartment: UserActions.getDepartmentOfUser,
+   
     getCustomers: CrmCustomerActions.getCustomers,
     deleteCustomer: CrmCustomerActions.deleteCustomer,
-    getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
     getGroups: CrmGroupActions.getGroups,
     getStatus: CrmStatusActions.getStatus,
     getCareTypes: CrmCareTypeActions.getCareTypes,
     getAllEmployeeOfUnitByRole: UserActions.getAllEmployeeOfUnitByRole,
+    getDepartment: UserActions.getDepartmentOfUser,
+    getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
 
 }
 

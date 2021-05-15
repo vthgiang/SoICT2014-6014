@@ -72,7 +72,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
         let dateOfEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
         let monthOfEval = dateOfEval.getMonth();
         let yearOfEval = dateOfEval.getFullYear();
-        evaluations = task.evaluations.find(e => (monthOfEval === new Date(e.date).getMonth() && yearOfEval === new Date(e.date).getFullYear()));
+        evaluations = task?.evaluations?.find(e => (monthOfEval === new Date(e?.date)?.getMonth() && yearOfEval === new Date(e?.date)?.getFullYear()));
 
         let automaticPoint = (evaluations && evaluations.results.length !== 0) ? evaluations.results[0].automaticPoint : 0;
 
@@ -336,10 +336,11 @@ class ModalEditTaskByResponsibleEmployee extends Component {
     }
 
     handleTaskDescriptionChange = (value, imgs) => {
-        this.validateTaskDescription(value, true);
+        console.log(value, imgs)
+        this.validateTaskDescription(value, imgs, true);
     }
 
-    validateTaskDescription = (value, willUpdateState) => {
+    validateTaskDescription = (value, imgs, willUpdateState) => {
         let { translate } = this.props;
         let errorMessage = undefined;
         // if (value === "") {
@@ -350,6 +351,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                 return {
                     ...state,
                     taskDescription: value,
+                    taskDescriptionImages: imgs,
                     errorTaskDescription: errorMessage,
                 }
             })
@@ -385,20 +387,20 @@ class ModalEditTaskByResponsibleEmployee extends Component {
     }
 
     save = () => {
-        let taskId;
-        taskId = this.props.id;
+        let taskId = this.props.id;
+        let imageDescriptions = QuillEditor.convertImageBase64ToFile(this.state.taskDescriptionImages)
 
         let data = {
             listInfo: this.state.listInfo,
-
             date: this.formatDate(Date.now()),
             name: this.state.taskName,
             description: this.state.taskDescription,
+            taskDescriptionImages: null,
             user: this.state.userId,
             progress: this.state.progress,
-            // kpi: this.state.kpi ? this.state.kpi : [],
             info: this.state.info,
             taskProject: this.state.taskProjectName,
+            imageDescriptions: imageDescriptions
         }
 
         this.props.editTaskByResponsibleEmployees(data, taskId);
@@ -457,7 +459,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                                             embeds={false}
                                             quillValueDefault={taskDescriptionDefault}
                                             getTextData={this.handleTaskDescriptionChange}
-                                            height={150}
+                                            maxHeight={180}
                                             placeholder={"Mô tả công việc"}
                                         />
                                         <ErrorLabel content={errorTaskDescription} />

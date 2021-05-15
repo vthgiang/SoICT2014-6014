@@ -6,8 +6,13 @@ import './generalTaskChart.css';
 import ViewAllGeneralTask from './viewAllGeneralTask';
 import _cloneDeep from 'lodash/cloneDeep';
 import useDeepCompareEffect from 'use-deep-compare-effect'
+import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
 
 const GeneralTaskChart = (props) => {
+    const tableId = "general-list-task";
+    const defaultConfig = { hiddenColumns: ["5", "6", "7", "8"] }
+    getTableConfiguration(tableId, defaultConfig)
+
     const { translate } = props;
     const dataTable = []
     const [state, setstate] = useState([]);
@@ -428,7 +433,7 @@ const GeneralTaskChart = (props) => {
     return (
         <React.Fragment>
             <ViewAllGeneralTask showDetailTask={showDetailTask} />
-            <DataTableSetting className="pull-right" tableId='general-list-task' tableContainerId="tree-table-container" tableWidth="1300px"
+            <DataTableSetting className="pull-right" tableId={tableId} tableContainerId="tree-table-container" tableWidth="1300px"
                 columnArr={[
                     translate('task.task_dashboard.unit'),
                     translate('task.task_dashboard.all_tasks'),

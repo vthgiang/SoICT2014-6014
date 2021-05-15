@@ -13,15 +13,6 @@ function InfoCareForm(props) {
     let careInfomation
     if (crm.cares.careById) careInfomation = crm.cares.careById;
 
-    function formatCareStatus(input) {
-        input = parseInt(input);
-        if (input === 1) return 'Chưa thực hiện';
-        if (input === 2) return 'Đang thực hiện';
-        if (input === 3) return 'Đang tạm hoãn';
-        if (input === 4) return 'Đã hoàn thành';
-    }
-
-
 
     console.log('CRM - info', crm)
     return (
@@ -101,7 +92,7 @@ function InfoCareForm(props) {
                                             <div className="form-group">
                                                 <strong className="col-sm-4">{'Độ ưu tiên'}</strong>
                                                 <div className="col-sm-8">
-                                                    <span>Ưu tiên cao</span>
+                                                    <span>{careInfomation.priority?formatFunction.formatCarePriority(careInfomation.priority):''}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -113,7 +104,7 @@ function InfoCareForm(props) {
                                             <div className="form-group">
                                                 <strong className="col-sm-4">{translate('crm.care.status')}</strong>
                                                 <div className="col-sm-8">
-                                                    <span>{careInfomation.status ? formatCareStatus(careInfomation.status) : ''}</span>
+                                                    <span>{careInfomation.status ? formatFunction.formatCareStatus(careInfomation.status) : ''}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -200,7 +191,7 @@ function InfoCareForm(props) {
                                             <div className="form-group">
                                                 <strong className="col-sm-4">{"Kết quả hoạt động"}</strong>
                                                 <div className="col-sm-8">
-                                                    <span>{careInfomation.evaluation ? careInfomation.evaluation.result : ''}</span>
+                                                    <span>{careInfomation.evaluation ? careInfomation.evaluation.result==1?'Thành công':'Thất bại' : ''}</span>
                                                 </div>
                                             </div>
                                         </div>

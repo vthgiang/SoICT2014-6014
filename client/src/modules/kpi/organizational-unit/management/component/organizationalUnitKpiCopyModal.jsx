@@ -8,47 +8,47 @@ import { managerActions } from '../redux/actions';
 import { ErrorLabel, DatePicker, DialogModal, SelectBox } from '../../../../../common-components';
 import { createKpiUnit } from '../../creation/redux/reducers.js';
 
-function ModalCopyKPIUnit(props){
+function ModalCopyKPIUnit (props) {
     const TYPE = {
         DEFAULT: 'default',
         COPY_PARENT_KPI_TO_UNIT: 'copy-parent-kpi-to-unit',
         COPY_PARENT_KPI_TO_EMPLOYEE: 'copy-parent-kpi-to-employee'
     };
-
+    const { translate, createKpiUnit } = props;
+    const { kpiId, idunit, monthDefault, approverDefault, type = TYPE.DEFAULT, kpiunit, organizationalUnitSelect } = props;
+    
     const [state, setState] = useState({
 
     });
+    const { month, errorOnDate, approver, listKpiUnit, organizationalUnitId } = state;
 
-    useEffect(()=>{
-        if (props.kpiId !== state.kpiId) {
-            let listKpiUnit = {};
-            if (props.kpiunit?.kpis?.length > 0) {
-                props.kpiunit.kpis.map(item => {
-                    listKpiUnit[item._id] = true;
-                })
-            }
-            setState ({
-                ...state,
-                kpiId: props.kpiId,
-                listKpiUnit: listKpiUnit,
-                organizationalUnitId: props.kpiunit?.organizationalUnit?._id
+    if (props.kpiId !== state.kpiId) {
+        let listKpiUnit = {};
+        if (props.kpiunit?.kpis?.length > 0) {
+            props.kpiunit.kpis.map(item => {
+                listKpiUnit[item._id] = true;
             })
         }
-    },[props.kpiId])
+
+        setState ({
+            ...state,
+            kpiId: props.kpiId,
+            listKpiUnit: listKpiUnit,
+            organizationalUnitId: props.kpiunit?.organizationalUnit?._id,
+            month: props.monthDefault
+        })
+    }
 
     useEffect(() => {
-        const { type, kpiunit, monthDefault } = props;
-
-        if (type === TYPE.COPY_PARENT_KPI_TO_UNIT) {
+        if (type !== TYPE.DEFAULT) {
             props.getCurrentKPIUnit(null, kpiunit?.organizationalUnit?._id, monthDefault, 'copy')
         }
-    },[])
+    }, [])
 
     useEffect(() => {
-        const { type } = props;
         const { listKpiUnit } = state;
 
-        if (props.createKpiUnit?.copyKPILoading && listKpiUnit && type === TYPE.COPY_PARENT_KPI_TO_UNIT) {
+        if (props.createKpiUnit?.copyKPILoading && listKpiUnit && type !== TYPE.DEFAULT) {
             setState({
                 ...state,
                 listKpiUnit: null
@@ -56,7 +56,7 @@ function ModalCopyKPIUnit(props){
             })
         }
 
-        if (!props.createKpiUnit?.copyKPILoading && props.createKpiUnit?.copyKPI && !listKpiUnit && type === TYPE.COPY_PARENT_KPI_TO_UNIT) {
+        if (!props.createKpiUnit?.copyKPILoading && props.createKpiUnit?.copyKPI && !listKpiUnit && type !== TYPE.DEFAULT) {
             let listKpiUnitNew = {};
             if (props.createKpiUnit?.copyKPI?.kpis?.length > 0) {
                 props.createKpiUnit.copyKPI.kpis.map(item => {
@@ -68,14 +68,8 @@ function ModalCopyKPIUnit(props){
                 listKpiUnit: listKpiUnitNew
             })
         }
-
     });
-    useEffect(() =>{
-        setState( {
-            ...state,
-            kpiId: null,
-        })
-    },[]);
+
     useEffect(() =>{
         let listKpiUnit = {};
         if (props.kpiunit?.kpis?.length > 0) {
@@ -89,7 +83,8 @@ function ModalCopyKPIUnit(props){
             listKpiUnit: listKpiUnit,
             organizationalUnitId: props.kpiunit?.organizationalUnit?._id
         })
-    },[props.kpiId])
+    }, [props.kpiId])
+
     function formatDate(date) {
         let d = new Date(date),
             month = '' + (d.getMonth() + 1),
@@ -107,12 +102,14 @@ function ModalCopyKPIUnit(props){
     /** Thay đổi ngày tháng */
     const handleNewDateChange = (value) => {
         let month = value.slice(3, 7) + '-' + value.slice(0, 2);
-
         setState({
             ...state,
             month: month
         });
 
+        if (type !== TYPE.DEFAULT) {
+            props.getCurrentKPIUnit(null, organizationalUnitId, month, 'copy')
+        }
     };
 
     /** Thay đổi người phê duyệt */
@@ -124,8 +121,6 @@ function ModalCopyKPIUnit(props){
     };
 
     const handleSubmit = () => {
-        const { kpiId, idunit, monthDefault, approverDefault, type = TYPE.DEFAULT, kpiunit } = props;
-        const { month, approver, listKpiUnit, organizationalUnitId } = state;
         let arrayKpiUnit = listKpiUnit && Object.keys(listKpiUnit);
 
         if (type === TYPE.DEFAULT) {
@@ -147,7 +142,7 @@ function ModalCopyKPIUnit(props){
                 matchParent: kpiunit?.organizationalUnit?._id === organizationalUnitId
             }
 
-            props.copyKPIUnit(kpiId, data);
+            props.copyKPIUnit(createKpiUnit?.copyKPI?._id, data);
         } else if (type === TYPE.COPY_PARENT_KPI_TO_EMPLOYEE) {
             let data = {
                 type: TYPE.COPY_PARENT_KPI_TO_EMPLOYEE,
@@ -157,7 +152,7 @@ function ModalCopyKPIUnit(props){
                 listKpiUnit: arrayKpiUnit?.filter(item => listKpiUnit?.[item])
             }
 
-            props.copyKPIUnit(kpiId, data);
+            props.copyKPIUnit(createKpiUnit?.copyKPI?._id, data);
         }
 
     };
@@ -176,8 +171,6 @@ function ModalCopyKPIUnit(props){
     };
 
     const handleSelectOrganizationalUnit = (value) => {
-        const { monthDefault } = props;
-
         setState({
             ...state,
             organizationalUnitId: value[0]
@@ -186,11 +179,7 @@ function ModalCopyKPIUnit(props){
         props.getCurrentKPIUnit(null, value[0], monthDefault, 'copy')
     };
 
-    const { translate, createKpiUnit } = props;
-    const { kpiunit, kpiId, type = TYPE.DEFAULT, monthDefault, approverDefault, organizationalUnitSelect } = props;
-    const { month, errorOnDate, approver, listKpiUnit, organizationalUnitId } = state;
-
-    let listKpi = type === TYPE.COPY_PARENT_KPI_TO_UNIT ? createKpiUnit?.copyKPI : kpiunit;
+    let listKpi = type === TYPE.DEFAULT ? kpiunit : createKpiUnit?.copyKPI;
 
     return (
         <DialogModal
@@ -203,14 +192,12 @@ function ModalCopyKPIUnit(props){
             {/* Đơn vị */}
             <div className="form-group" style={{ marginLeft: "10px" }}>
                 <label style={{ marginRight: "10px"}}>{translate('kpi.organizational_unit.management.copy_modal.organizational_unit')}</label>
-                { organizationalUnitSelect && type === TYPE.COPY_PARENT_KPI_TO_UNIT
+                { organizationalUnitSelect?.length > 0 && type === TYPE.COPY_PARENT_KPI_TO_UNIT
                     ? <SelectBox
                         id={`organizationalUnitSelectBoxInOrganizationalUnitKpiCopy`}
                         className="form-control select2"
                         style={{ width: "100%" }}
-                        items={organizationalUnitSelect?.length > 0
-                        && organizationalUnitSelect.map(item => { return { value: item.id, text: item.name } })
-                        }
+                        items={organizationalUnitSelect.map(item => { return { value: item.id, text: item.name } })}
                         multiple={false}
                         onChange={handleSelectOrganizationalUnit}
                         value={organizationalUnitId}
@@ -222,21 +209,18 @@ function ModalCopyKPIUnit(props){
             {/* Chọn tháng */}
             <div className="form-group" style={{ marginLeft: "10px" }}>
                 <label style={{ marginRight: "10px"}}>{translate('kpi.organizational_unit.management.copy_modal.month')}</label>
-                {type === TYPE.DEFAULT
-                    ? <DatePicker
-                        id="new_date"
-                        value={month}
-                        onChange={handleNewDateChange}
-                        dateFormat="month-year"
-                    />
-                    : <span>{formatDate(monthDefault)}</span>
-                }
+                <DatePicker
+                    id="new_date"
+                    value={formatDate(monthDefault)}
+                    onChange={handleNewDateChange}
+                    dateFormat="month-year"
+                />
                 <ErrorLabel content={errorOnDate} />
             </div>
 
             {/* CHọn người phê duyệt */}
             {approverDefault
-            && <div className="form-group" style={{ margin: "0px 10px"}}>
+            && <div className="form-group" style={{ marginLeft: "10px"}}>
                 <label>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set_modal.approver')}</label>
                 <SelectBox
                     id={`copy-kpi-unit-approver`}
@@ -260,7 +244,7 @@ function ModalCopyKPIUnit(props){
                         })
                         }
                     </ul>
-                    : <div>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.not_initialize')} {formatDate(monthDefault)}</div>
+                    : <div>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.not_initialize')} {formatDate(month)}</div>
                 }
             </div>
         </DialogModal >

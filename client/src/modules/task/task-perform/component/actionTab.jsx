@@ -106,9 +106,7 @@ class ActionTab extends Component {
                 user: idUser,
                 time: 0,
             },
-            evaluations: {
-                creator: idUser,
-            },
+            evaluations: {},
             fileTaskEdited: {
                 files: [],
                 creator: idUser,
@@ -189,12 +187,21 @@ class ActionTab extends Component {
         return true;
     }
 
-    setHover = async (id, value) => {
-        if (isNaN(value)) {
-            this.hover[id] = 0;
+    setHover = async (id, value, type) => {
+        if (type === "rating") {
+            if (isNaN(value)) {
+                this.hover[`${id}-rating`] = null;
+            } else {
+                this.hover[`${id}-rating`] = value;
+            }
         } else {
-            this.hover[id] = value * 2;
+            if (isNaN(value)) {
+                this.hover[`${id}-actionImportanceLevel`] = null;
+            } else {
+                this.hover[`${id}-actionImportanceLevel`] = value;
+            }
         }
+        
         await this.setState(state => {
             return {
                 ...state,
@@ -205,31 +212,54 @@ class ActionTab extends Component {
             }
         })
     }
-    setValueRating = async (actionId, taskId, role, newValue, firstTime) => {
+    
+    setValueRating = async (actionId, newValue) => {
+        let newEvaluations = this.state.evaluations
+        newEvaluations[actionId] = {
+            ...newEvaluations[actionId],
+            rating: newValue,
+        }
         await this.setState(state => {
             return {
                 ...state,
                 valueRating: newValue,
-                evaluations: {
-                    ...state.evaluations,
-                    rating: newValue * 2,
-                    firstTime: firstTime,
-                    type: "evaluation",
-                    role: role,
-                }
-            }
-        })
-        let { evaluations } = this.state;
-        this.props.evaluationAction(actionId, taskId, evaluations)
-        await this.setState(state => {
-            return {
-                ...state,
-                showEvaluations: [...this.state.showEvaluations, actionId]
+                evaluations: newEvaluations
             }
         })
     }
 
+    setActionImportanceLevel = (actionId, value) => {
+        let newEvaluations = this.state.evaluations
+        newEvaluations[actionId] = {
+            ...newEvaluations[actionId],
+            actionImportanceLevel: value
+        }
+        this.setState(state => {
+            return {
+                ...state,
+                evaluations: newEvaluations
+            }
+        })
+    }
 
+    evaluationTaskAction = (evaAction, taskId, role, firstTime) => {
+        let newEvaluations = this.state.evaluations
+        newEvaluations[evaAction?._id] = {
+            ...newEvaluations[evaAction?._id],
+            rating: newEvaluations?.[evaAction?._id]?.rating ?? evaAction?.rating,
+            actionImportanceLevel: newEvaluations?.[evaAction?._id]?.actionImportanceLevel ?? evaAction?.actionImportanceLevel,
+            firstTime: firstTime,
+            type: "evaluation",
+            role: role,
+        }
+        this.props.evaluationAction(evaAction?._id, taskId, newEvaluations?.[evaAction?._id])
+        this.setState(state => {
+            return {
+                ...state,
+                showEvaluations: [...this.state.showEvaluations, evaAction?._id]
+            }
+        })
+    }
     handleChangeContent = async (content) => {
         await this.setState(state => {
             return {
@@ -1155,14 +1185,30 @@ class ActionTab extends Component {
         })
     }
 
-    setValueRatingApproveAll = (taskId, taskActions, value) => {
+    setValueRatingApproveAll = (value) => {
+        this.setState({
+            ...this.state,
+            ratingAll: value
+        })
+    }
+
+    setActionImportanceLevelAll = (value) => {
+        this.setState({
+            ...this.state,
+            actionImportanceLevelAll: value
+        })
+    }
+
+    evaluationAllTaskAction = (taskId, taskActions) => {
+        const { actionImportanceLevelAll, ratingAll } = this.state
         let evaluation = [], showEvaluations = [];
 
         taskActions.forEach((obj, index) => {
             evaluation = [...evaluation, {
                 actionId: obj._id,
                 role: 'accountable',
-                rating: value * 2,
+                rating: ratingAll ?? 0,
+                actionImportanceLevel: actionImportanceLevelAll ?? 10
             }]
             showEvaluations = [...showEvaluations, obj._id]
         })
@@ -1205,9 +1251,9 @@ class ActionTab extends Component {
         Swal.fire({
             html: `<div style="max-width: 100%; max-height: 100%" > 
                 <h4 style="margin-bottom: 15px">Thời gian bấm giờ cho hoạt động "<strong>${nameAction}</strong>"</h4>` +
-                `<ul>${result.map(o => (
+                `<ol>${result.map(o => (
                     `<li>${o.creatorName}: ${convertTime(o.duration)}</li>`
-                )).join(" ")} </ul>`
+                ))} </ol>`
                 +
                 `<div>`,
 
@@ -1222,7 +1268,7 @@ class ActionTab extends Component {
         const subtasks = tasks.subtasks;
         const {
             showEvaluations, selected, comment, editComment, showChildComment, editAction, action, taskActions,
-            editTaskComment, showEditTaskFile,
+            editTaskComment, showEditTaskFile, evaluations, actionImportanceLevelAll, ratingAll, 
             editCommentOfTaskComment, valueRating, currentUser, hover, fileTaskEdited, showSort,
             showFile, deleteFile, taskFiles, newActionEdited, newCommentOfActionEdited, newAction,
             newCommentOfAction, newTaskCommentEdited, newCommentOfTaskComment, newTaskComment, newCommentOfTaskCommentEdited, showBoxAddLogTimer, addLogStartTime, addLogEndTime
@@ -1315,7 +1361,7 @@ class ActionTab extends Component {
                                                                     {
                                                                         item.name && <b style={{ display: 'flex', marginTop: '4px' }}>{item.name} </b>
                                                                     }
-                                                                    {item.description.split('\n').map((item, idx) => (
+                                                                    {item?.description?.split('\n')?.map((item, idx) => (
                                                                         <div key={idx}>
                                                                             {parse(item)}
                                                                         </div>
@@ -1356,32 +1402,57 @@ class ActionTab extends Component {
                                                                 {item.creator &&
                                                                     <React.Fragment>
                                                                         {item.evaluations && <li><a style={{ cursor: "pointer", pointerEvents: item.evaluations.length > 0 ? "" : "none" }} className="link-black text-sm" onClick={() => { this.handleShowEvaluations(item._id) }}><i className="fa fa-thumbs-o-up margin-r-5"></i>{translate("task.task_perform.evaluation")} ({item.evaluations && item.evaluations.length})</a></li>}
-                                                                        {(role === "accountable" || role === "consulted" || role === "creator" || role === "informed") &&
-                                                                            <li style={{ display: "inline-table" }} className="list-inline">
-                                                                                <React.Fragment>
-                                                                                    <Rating
-                                                                                        fractions={2}
-                                                                                        emptySymbol="fa fa-star-o fa-2x high"
-                                                                                        fullSymbol="fa fa-star fa-2x high"
-                                                                                        initialRating={0}
-                                                                                        onClick={(value) => {
-                                                                                            this.setValueRating(item._id, task._id, role, value, 1);
-                                                                                        }}
-                                                                                        onHover={(value) => {
-                                                                                            this.setHover(item._id, value)
-                                                                                        }}
-                                                                                    />
-                                                                                    <div style={{ display: "inline", marginLeft: "5px" }}>{this.hover[item._id]}</div>
-                                                                                </React.Fragment>
-                                                                            </li>
-                                                                        }
-
                                                                         {item.files && item.files.length > 0 && // Chỉ hiện show file khi có file đính kèm
                                                                             <li style={{ display: "inline-table" }}>
                                                                                 <a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => this.handleShowFile(item._id)}><i className="fa fa-paperclip" aria-hidden="true"></i> {translate("task.task_perform.file_attach")} ({item.files && item.files.length})</a>
                                                                             </li>
                                                                         }
                                                                         <li><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => this.handleShowChildComment(item._id)}><i className="fa fa-comments-o margin-r-5"></i> {translate("task.task_perform.comment")} ({item.comments.length}) &nbsp;</a></li>
+                                                                    </React.Fragment>
+                                                                }
+                                                            </ul>}
+                                                            {!showSort && <ul className="list-inline tool-level1">
+                                                                {item.creator &&
+                                                                    <React.Fragment>
+                                                                        {(role === "accountable" || role === "consulted" || role === "creator" || role === "informed") &&
+                                                                            <>
+                                                                                <div className="form-group">
+                                                                                    <span style={{ marginRight: "5px" }}>Điểm đánh giá hoạt động <strong>({evaluations?.[item?._id]?.rating ?? item?.rating}/10)</strong></span>
+                                                                                    <Rating
+                                                                                        fractions={2}
+                                                                                        stop={10}
+                                                                                        emptySymbol="fa fa-star-o fa-2x"
+                                                                                        fullSymbol="fa fa-star fa-2x"
+                                                                                        initialRating={evaluations?.[item._id]?.rating ?? item?.rating}
+                                                                                        onClick={(value) => {
+                                                                                            this.setValueRating(item._id, value);
+                                                                                        }}
+                                                                                        onHover={(value) => {
+                                                                                            this.setHover(item._id, value, "rating")
+                                                                                        }}
+                                                                                    />
+                                                                                    <div style={{ display: "inline", marginLeft: "5px" }}>{this.hover?.[`${item?._id}-rating`]}</div>
+                                                                                </div>
+                                                                                <div className="form-group">
+                                                                                    <span style={{ marginRight: "5px" }}>Độ quan trọng hoạt động <strong>({evaluations?.[item?._id]?.actionImportanceLevel ?? item?.actionImportanceLevel}/10)</strong></span>
+                                                                                    <Rating
+                                                                                        fractions={2}
+                                                                                        stop={10}
+                                                                                        emptySymbol="fa fa-star-o fa-2x"
+                                                                                        fullSymbol="fa fa-star fa-2x"
+                                                                                        initialRating={evaluations?.[item._id]?.actionImportanceLevel ?? item?.actionImportanceLevel}
+                                                                                        onClick={(value) => {
+                                                                                            this.setActionImportanceLevel(item._id, value)
+                                                                                        }}
+                                                                                        onHover={(value) => {
+                                                                                            this.setHover(item._id, value, "actionImportanceLevel")
+                                                                                        }}
+                                                                                    />
+                                                                                    <div style={{ display: "inline", marginLeft: "5px" }}>{this.hover?.[`${item?._id}-actionImportanceLevel`]}</div>
+                                                                                </div>
+                                                                                <a style={{ cursor: "pointer", fontWeight: '600' }} onClick={() => this.evaluationTaskAction(item, task._id, role, 1)}>Gửi đánh giá</a>
+                                                                            </>
+                                                                        }
                                                                     </React.Fragment>
                                                                 }
 
@@ -1393,13 +1464,13 @@ class ActionTab extends Component {
                                                                         <ul className="list-inline">
                                                                             <li>
                                                                                 {
-                                                                                    Array.isArray(item.evaluations) &&
+                                                                                    Array.isArray(item?.evaluations) &&
                                                                                     item.evaluations.map((element, index) => {
                                                                                         return (
                                                                                             <p key={index}>
-                                                                                                <b> {element.creator.name} </b>
-                                                                                                {this.getRoleNameInTask(element.role)}
-                                                                                                <span className="text-red"> {element.rating}/10 </span>
+                                                                                                <b> {element?.creator?.name} </b>
+                                                                                                {this.getRoleNameInTask(element?.role)}
+                                                                                                <span> Đánh giá:<span className="text-red"> {element?.rating}/10</span> - Độ quan trọng:<span className="text-red"> {element?.actionImportanceLevel}/10</span></span>
                                                                                             </p>
                                                                                         )
                                                                                     })
@@ -1639,24 +1710,42 @@ class ActionTab extends Component {
                                         this.state.showPopupApproveAllAction ?
                                             (role === "accountable") && taskActions.length > 1 &&
                                             <React.Fragment>
-                                                <div className="rating-approve-all--wraper">
-                                                    <h4 style={{ fontWeight: 600, color: "#616161", marginRight: '10px' }}>Chọn đánh giá cho tất cả hoạt động của bạn </h4>
-                                                    <div className="rating-approve-all--wraper">
-                                                        <Rating
-                                                            fractions={2}
-                                                            emptySymbol="fa fa-star-o fa-2x high"
-                                                            fullSymbol="fa fa-star fa-2x high"
-                                                            initialRating={0}
-                                                            onClick={(value) => {
-                                                                this.setValueRatingApproveAll(task._id, taskActions, value);
-                                                            }}
-                                                            onHover={(value) => {
-                                                                this.setHover('all-action', value)
-                                                            }}
-                                                        />
-                                                        <div style={{ display: "inline", marginLeft: "5px" }}>{this.hover['all-action']}</div>
-                                                    </div>
+                                                <h4 style={{ fontWeight: 600, color: "#616161" }}>Chọn đánh giá cho tất cả hoạt động của bạn </h4>
+                                                <div className="form-group">
+                                                    <span style={{ marginRight: "5px" }}>Điểm đánh giá hoạt động <strong>({ratingAll ?? 0}/10)</strong></span>
+                                                    <Rating 
+                                                        fractions={2}
+                                                        stop={10}
+                                                        emptySymbol="fa fa-star-o fa-2x"
+                                                        fullSymbol="fa fa-star fa-2x"
+                                                        initialRating={ratingAll ?? 0}
+                                                        onClick={(value) => {
+                                                            this.setValueRatingApproveAll(value);
+                                                        }}
+                                                        onHover={(value) => {
+                                                            this.setHover('all-action', value, "rating")
+                                                        }}
+                                                    />
+                                                    <div style={{ display: "inline", marginLeft: "5px" }}>{this.hover?.['all-action-rating']}</div>
                                                 </div>
+                                                <div className="form-group">
+                                                    <span style={{ marginRight: "5px" }}>Độ quan trọng hoạt động <strong>({actionImportanceLevelAll ?? 10}/10)</strong></span>
+                                                    <Rating
+                                                        fractions={2}
+                                                        stop={10}
+                                                        emptySymbol="fa fa-star-o fa-2x"
+                                                        fullSymbol="fa fa-star fa-2x"
+                                                        initialRating={actionImportanceLevelAll ?? 10}
+                                                        onClick={(value) => {
+                                                            this.setActionImportanceLevelAll(value)
+                                                        }}
+                                                        onHover={(value) => {
+                                                            this.setHover('all-action', value, "actionImportanceLevel")
+                                                        }}
+                                                    />
+                                                    <div style={{ display: "inline", marginLeft: "5px" }}>{this.hover?.['all-action-actionImportanceLevel']}</div>
+                                                </div>
+                                                <a style={{ cursor: "pointer", fontWeight: '600' }} onClick={() => this.evaluationAllTaskAction(task._id, taskActions)}>Gửi đánh giá</a>
                                                 <button style={{ marginTop: '7px' }} className="btn btn-block btn-default btn-sm" onClick={this.togglePopupApproveAllAction}>Hủy đánh giá hoạt động</button>
                                             </React.Fragment>
                                             : (role === "accountable") && taskActions.length > 1 && <button className="btn btn-block btn-success btn-sm" onClick={this.togglePopupApproveAllAction}>Đánh giá tất cả hoạt động</button>

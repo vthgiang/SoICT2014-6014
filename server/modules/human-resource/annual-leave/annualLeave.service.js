@@ -10,6 +10,7 @@ const {
 const {
     connect
 } = require(`../../../helpers/dbHelper`);
+const { last, first } = require('lodash');
 
 
 
@@ -192,7 +193,7 @@ exports.getTotalAnnualLeave = async (portal, company, organizationalUnits, month
     return {
         totalList: listAnnulLeave.length,
         totalListAnnulLeave: listAnnulLeave,
-        totalListOfYear
+        totalListOfYear,
     };
 }
 
@@ -295,6 +296,58 @@ exports.getAnnualLeaveByStartDateAndEndDate = async (portal, organizationalUnits
     }
 }
 
+/**Lay tong so don nghi phep cho phe duyet trong thang */
+const fetchNumberOfWaitForAppoval = async (portal, company) => {
+    let currentMonth = new Date();
+    let firstDay = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
+    let lastDay = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1);
+
+    let arrayOfListAbsentLetter = await AnnualLeave(connect(DB_CONNECTION, portal)).aggregate([
+        { $match: { 
+            startDate: 
+                {
+                    "$gte": firstDay,
+                    "$lt": lastDay
+                },
+            endDate: 
+                {
+                    "$gte": firstDay,
+                    "$lt": lastDay
+                }
+        }},
+        { 
+            $group: {
+                _id: '$status',
+                count: { $sum: 1}
+            }
+        }
+    ])
+
+    let numberOfWaitForApproval, numberApproved, numberNotApproved
+
+    for(let i = 0; i < arrayOfListAbsentLetter.length; i++) {
+        
+        switch(arrayOfListAbsentLetter[i]._id) {
+            case 'waiting_for_approval': {
+                numberOfWaitForApproval = arrayOfListAbsentLetter[i].count;
+                break;
+            }
+            case 'approved': {
+                numberApproved = arrayOfListAbsentLetter[i].count;
+                break;
+            }
+            case 'disapproved': {
+                numberNotApproved = arrayOfListAbsentLetter[i].count;
+            }
+        }
+    }
+
+    return {
+        numberOfWaitForApproval: numberOfWaitForApproval || 0,
+        numberApproved: numberApproved || 0,
+        numberNotApproved: numberNotApproved || 0
+    }
+}
 
 
 /**
@@ -347,6 +400,7 @@ exports.searchAnnualLeaves = async (portal, params, company) => {
             return {
                 totalList: 0,
                 listSalarys: [],
+                numberWaitForApproval: 0,
             }
         }
     }
@@ -400,9 +454,14 @@ exports.searchAnnualLeaves = async (portal, params, company) => {
         }).skip(params.page).limit(params.limit);
     let totalList = await AnnualLeave(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
 
+    let { numberOfWaitForApproval, numberApproved, numberNotApproved} = await fetchNumberOfWaitForAppoval(portal, company);
+    
     return {
         totalList,
-        listAnnualLeaves
+        listAnnualLeaves,
+        numberWaitForApproval: numberOfWaitForApproval,
+        numberApproved: numberApproved,
+        numberNotApproved: numberNotApproved
     }
 }
 

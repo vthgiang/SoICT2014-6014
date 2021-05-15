@@ -5,25 +5,26 @@ import { withTranslate } from 'react-redux-multilingual';
 import Sortable from 'sortablejs';
 import { QuillEditor } from '../../../../common-components';
 import parse from 'html-react-parser';
-
-function ActionForm (props) {
+import { ReactSortable } from "react-sortablejs"
+function ActionForm(props) {
 
     let EMPTY_ACTION = {
         name: '',
         description: '',
         mandatory: true,
     };
-    
+
     const [state, setState] = useState({
         EMPTY_ACTION: Object.assign({}, EMPTY_ACTION),
         editAction: false,
         action: Object.assign({}, EMPTY_ACTION),
-        quillValueDefault: null
+        quillValueDefault: null,
+        taskActions: []
     })
 
     useEffect(() => {
         if (props.type !== state.type) {
-            setState( state => {
+            setState(state => {
                 return {
                     ...state,
                     taskActions: props.initialData,
@@ -32,15 +33,15 @@ function ActionForm (props) {
             })
         }
         if (props.savedTaskAsTemplate && props.initialData && props.initialData.length > 0 && !state.taskActions) {
-            
-            setState(state =>{
+
+            setState(state => {
                 return {
                     ...state,
                     taskActions: props.initialData,
                 }
             })
-        } 
-    },[props.type, props.initialData])
+        }
+    }, [props.type, props.initialData])
 
     /**Gửi truy vấn tạo 1 template mới */
     const handleSubmit = async (event) => {
@@ -48,52 +49,12 @@ function ActionForm (props) {
         props.addNewTemplate(newTemplate);
     }
 
-    useEffect(() => {
-        // Load library for sort action table
-        handleSortable();
-    },[])
-
-    // Drag and drop item in action table
-    const handleSortable = () => {
-        var el1 = document.getElementById('actions');
-        Sortable.create(el1, {
-            chosenClass: 'chosen',
-            animation: 500,
-            onChange: function (evt) {
-                window.$('#actions tr').each(function (index) {
-                    window.$(this).find('td:nth-child(1)').html(index + 1);
-                });
-            },
-            onEnd: async (evt) => {
-                let taskActions = state.taskActions;
-                const item = taskActions[evt.oldIndex];
-                taskActions.splice(evt.oldIndex, 1);
-                taskActions.splice(evt.newIndex, 0, item);
-            }, store: {
-                /**
-                 * Khắc phục lỗi với thư viện Sortable. Chi tiết lỗi như sau:
-                 * Khi lưu thứ tự sắp xếp mới vào state, do state thay đổi, react render lại.
-                 * Sortable phát hiện cấu trúc DOM thay đổi nên tự động thay đổi trở lại thứ tự các phần tử
-                 * Kết quả: thứ tự trong State lưu một đằng, giao diện hiển thị thể hiện một nẻo
-                 **/
-                set: (sortable) => {
-                    let state = state;
-                    state.keyPrefix = Math.random(); // force react to destroy children
-                    state.order = sortable.toArray();
-                    setState({
-                        ...state
-                    })
-                }
-            }
-        });
-    }
-
     const handleChangeActionName = (event) => {
         let value = event.target.value;
         let { action } = state;
         state.action.name = value;
         setState(
-            {...state}
+            { ...state }
         );
     }
 
@@ -114,7 +75,7 @@ function ActionForm (props) {
         let { action } = state;
         state.action.mandatory = value;
         setState(
-            {...state}
+            { ...state }
         );
     }
 
@@ -133,18 +94,21 @@ function ActionForm (props) {
 
     /**reset all data fields of action table */
     const handleClearAction = (event) => {
-        event.preventDefault(); // Ngăn không submit
+        console.log("object");
+        // event.preventDefault(); // Ngăn không submit
         setState(state => {
             return {
                 ...state,
-                action: Object.assign({}, state.EMPTY_ACTION),
-                quillValueDefault: state.EMPTY_ACTION.description
+                action: Object.assign({},EMPTY_ACTION),
+                quillValueDefault: EMPTY_ACTION.description
             }
-        });
+        })
+        console.log("2");
     }
 
     /**Thêm 1 hoạt động */
     const handleAddAction = (event) => {
+        console.log("object");
         // event.preventDefault(); // Ngăn không submit
         let { taskActions, action } = state;
 
@@ -154,7 +118,7 @@ function ActionForm (props) {
             ...taskActions,
             action,
         ]
-        
+
         setState({
             ...state,
             taskActions: newTaskActions,
@@ -267,24 +231,27 @@ function ActionForm (props) {
                         <th style={{ width: '60px' }} title="Hành động">{translate('task_template.action')}</th>
                     </tr>
                 </thead>
-                <tbody id="actions">
+
                     {
                         (typeof taskActions === 'undefined' || taskActions.length === 0) ? <tr><td colSpan={5}><center>{translate('task_template.no_data')}</center></td></tr> :
-                            taskActions.map((item, index) =>
-                                <tr key={`${state.keyPrefix}_${index}`}>
-                                    <td>{index + 1}</td>
+                            // <ReactSortable animation={500} tag="tbody" id="actions" list={taskActions} setList={(newState) => setState({...state, taskActions: newState })}>
+                            <ReactSortable animation={500} tag="tbody" id="actions" list={taskActions} setList={(newState) => {props.onDataChange(newState);setState({...state, taskActions: newState })}}>
+                                {taskActions.map((item, index) =>
+                                <tr className="" key={`${state.keyPrefix}_${index}`}>
+                                    <td >{index + 1}</td>
                                     <td>{parse(item.name)}</td>
-                                    <td><div>{parse(item.description)}</div></td>
-                                    <td>{item.mandatory ? "Có" : "Không"}</td>
+                                    <td>{parse(item.description)}</td>
+                                    <td >{item.mandatory ? "Có" : "Không"}</td>
                                     {/**các button sửa, xóa 1 hoạt động */}
-                                    <td>
+                                    <td >
                                         <a href="#abc" className="edit" title="Edit" data-toggle="tooltip" onClick={() => handleEditAction(item, index)}><i className="material-icons"></i></a>
                                         <a href="#abc" className="delete" title="Delete" data-toggle="tooltip" onClick={() => handleDeleteAction(index)}><i className="material-icons"></i></a>
                                     </td>
                                 </tr>
-                            )
+                            )}
+                            </ReactSortable>
+
                     }
-                </tbody>
             </table>
         </fieldset>
     )

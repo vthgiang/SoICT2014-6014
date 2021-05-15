@@ -119,6 +119,7 @@ function GeneralTabInfoForm(props) {
                                 </div>
                             </div>
 
+
                             {/* Ngày sinh */}
                             <div className="col-md-6">
                                 <div className="form-horizontal">
@@ -133,8 +134,6 @@ function GeneralTabInfoForm(props) {
                         </div>
                     ) : (
                         <> <div className="row">
-
-
                             {/* Người dại diện */}
                             <div className="col-md-6">
                                 <div className="form-horizontal">

@@ -40,7 +40,7 @@ function InsurranceTab(props) {
                 socialInsuranceNumber: props.employee ? props.employee.socialInsuranceNumber : '',
             }
         })
-    }, [props.id]);
+    }, [props.id, props.employee?.socialInsuranceDetails]);
 
     const formatDate = (date, monthYear = false) => {
         if (date) {

@@ -443,7 +443,6 @@ function OrganizationalUnitKpiCreate(props) {
                 (organizationalUnit?.parent_id && item?.parent_id === organizationalUnit?.parent_id)
                 || item?.id === organizationalUnit?.parent_id
             )
-            && (item?.id !== organizationalUnit?.id)
     })
 
     if (listOrganizationalUnitCopy?.length > 0) {

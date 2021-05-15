@@ -7,22 +7,25 @@ const mongoose = require("mongoose");
 
 /**
  * Copy KPI đơn vị từ một tháng cũ sang tháng mới
+ * Có 3 trường hợp (default: copy kpi của 1 đơn vị giữa các tháng
+ * kpi_to_unit: copy từ kpi đơn vị cha cho kpi đơn vị con, kpi_to_employee: copy từ kpi đơn vị cha cho kpi nhân viên 
  * @param {*} kpiId id của OrganizationalUnitKPIset của tháng cũ
  * @query {*} datenew tháng mới được chọn để tạo
  * @query {*} idunit Id của đơn vị 
  */
 exports.copyKPI = async (portal, kpiId, data) => {
     let organizationalUnitOldKPISet, checkOrganizationalUnitKpiSet, parentUnitKpiSet;
-    let newDate, nextNewDate;
+    let monthSearch, nextMonthSearch;
 
-    newDate = new Date(data.datenew);
-    nextNewDate = new Date(data.datenew);
-    nextNewDate.setMonth(nextNewDate.getMonth() + 1);
+    monthSearch = new Date(data?.datenew);
+    nextMonthSearch = new Date(data?.datenew);
+    nextMonthSearch.setMonth(nextMonthSearch.getMonth() + 1);
 
+    // Kiểm tra tồn tại KPI
     checkOrganizationalUnitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
         .findOne({
             organizationalUnit: data.idunit,
-            date: { $gte: newDate, $lt: nextNewDate }
+            date: { $gte: monthSearch, $lt: nextMonthSearch }
         })
 
     if (checkOrganizationalUnitKpiSet) {
@@ -30,50 +33,63 @@ exports.copyKPI = async (portal, kpiId, data) => {
     } else {
         let organizationalUnitKpiSet, organizationalUnitNewKpi;
 
+        // Tạo kpi tháng mới
         organizationalUnitNewKpi = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
             .create({
                 organizationalUnit: data.idunit,
                 creator: data.creator,
-                date: newDate,
+                date: new Date(data?.datenew),
                 kpis: []
             })
 
-        if (data.type === 'default') {
-            organizationalUnitOldKPISet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
-                .findById(kpiId)
-                .populate("organizationalUnit")
-                .populate({ path: "creator", select: "_id name email avatar" })
-                .populate({ path: "kpis", populate: { path: 'parent' } });
+        // Lấy dữ liệu kpi được sao chép
+        organizationalUnitOldKPISet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+            .findById(kpiId)
+            .populate("organizationalUnit")
+            .populate({ path: "creator", select: "_id name email avatar" })
+            .populate({ path: "kpis", populate: { path: 'parent' } });
 
+        // Lấy kpi đơn vị cha của tập kpi mới
+        if (data.type === 'default') {
             parentUnitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
                 .findOne({
                     organizationalUnit: mongoose.Types.ObjectId(organizationalUnitOldKPISet?.organizationalUnit?.parent),
-                    date: { $gte: newDate, $lt: nextNewDate }
+                    date: { $gte: monthSearch, $lt: nextMonthSearch }
                 })
                 .populate({ path: "kpis" });
         } else {
-            organizationalUnitOldKPISet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+            // true: sao chép từ kpi đơn vị cha, false: sao chép từ kpi đơn vị cùng cấp
+            let organizationalUnit = JSON.parse(data?.matchParent?.toLowerCase()) ? organizationalUnitOldKPISet?.organizationalUnit?._id : organizationalUnitOldKPISet?.organizationalUnit?.parent
+
+            parentUnitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
                 .findOne({
-                    organizationalUnit: mongoose.Types.ObjectId(data?.organizationalUnitIdCopy),
-                    date: { $gte: newDate, $lt: nextNewDate }
+                    organizationalUnit: mongoose.Types.ObjectId(organizationalUnit),
+                    date: { $gte: monthSearch, $lt: nextMonthSearch }
                 })
-                .populate("organizationalUnit")
-                .populate({ path: "creator", select: "_id name email avatar" })
                 .populate({ path: "kpis" });
         }
 
+        // Match các mục tiêu kpi
         for (let i in organizationalUnitOldKPISet?.kpis) {
             if (data?.listKpiUnit?.includes(organizationalUnitOldKPISet.kpis?.[i]?._id.toString())) {
                 let target, parent;
 
                 if (data.type === 'default' ) {
                     let parentKpi = parentUnitKpiSet?.kpis?.filter(item => {
-                        return item?.name === organizationalUnitOldKPISet.kpis[i]?.name
+                        return item?.name === organizationalUnitOldKPISet.kpis[i]?.parent?.name
                     })
 
                     parent = parentKpi?.[0]?._id 
                 } else {    // 2 trường hợp, copy từ kpi cha hoặc copy từ đơn vị cùng cha
-                    parent = JSON.parse(data?.matchParent?.toLowerCase()) ? organizationalUnitOldKPISet.kpis[i]?._id : organizationalUnitOldKPISet.kpis[i]?.parent
+                    let parentKpi = parentUnitKpiSet?.kpis?.filter(item => {
+                        if (JSON.parse(data?.matchParent?.toLowerCase())) {
+                            return item?.name === organizationalUnitOldKPISet.kpis[i]?.name
+                        } else {
+                            return item?.name === organizationalUnitOldKPISet.kpis[i]?.parent?.name
+                        }
+                    })
+
+                    parent = parentKpi?.[0]?._id 
                 }
 
                 target = await OrganizationalUnitKpi(connect(DB_CONNECTION, portal))

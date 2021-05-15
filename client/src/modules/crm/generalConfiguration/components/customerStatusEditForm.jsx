@@ -1,89 +1,67 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { CrmStatusActions } from '../../status/redux/actions';
 import { DialogModal, ErrorLabel } from '../../../../common-components';
 
-class CustomerStatusEditForm extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {}
+function CustomerStatusEditForm(props) {
+
+
+    const { translate, data } = props;
+    const { name, description, _id } = data;
+    const [statusEdit, setStatusEdit] = useState({id:_id, name, description });
+    if (statusEdit.id != data._id) {
+        setStatusEdit({ id: data._id, name: data.name, description: data.description })
     }
 
-    static getDerivedStateFromProps(props, state) {
-        const { statusIdEdit, data } = props;
-        if (statusIdEdit != state.statusIdEdit) {
-            return {
-                ...state,
-                statusIdEdit: props.statusIdEdit,
-                name: data.name,
-                description: data.description,
-            }
-        } else {
-            return null;
-        }
-    }
-
-    handleChangeStatusName = (e) => {
+    const handleChangeStatusName = async (e) => {
         const { value } = e.target;
-
-        this.setState({
-            name: value,
-        })
+        const newStatus = { ...statusEdit, name: value }
+        await setStatusEdit(newStatus);
     }
 
-    handleChangeStatusDescription = (e) => {
+    const handleChangeStatusDescription = async (e) => {
         const { value } = e.target;
+        const newStatus = { ...statusEdit, description: value, }
+        await setStatusEdit(newStatus);
+    }
 
-        this.setState({
-            description: value,
-        })
+    const save = () => {
+        props.editStatus(statusEdit.id, statusEdit);
     }
 
 
-    save = () => {
-        const { statusIdEdit, name, description } = this.state;
-        const data = {
-            name,
-            description
-        }
+    return (
+        <React.Fragment>
+            <DialogModal
+                modalID={`modal-crm-customer-status-edit`}
+                isLoading={false}
+                formID="form-crm-status-edit"
+                title="Chỉnh sửa nhóm khách hàng"
+                func={save} size={50}
+            // disableSubmit={!this.isFormValidated()}
+            >
+                {/* Form chỉnh sửa trạng thái khách hàng */}
+                <form id="form-crm-status-edit">
+                    {/* Tên trạng thái khách hàng */}
+                    <div className={`form-group`}>
+                        <label>{translate('crm.status.name')}<span className="attention"> * </span></label>
+                        <input type="text" className="form-control" value={statusEdit.name ? statusEdit.name : ''} onChange={handleChangeStatusName} />
+                        {/* <ErrorLabel content={groupCodeEditFormError} /> */}
+                    </div>
 
-        this.props.editStatus(statusIdEdit, data);
-    }
-
-    render() {
-        const { translate } = this.props;
-        const { name, description } = this.state;
-        return (
-            <React.Fragment>
-                <DialogModal
-                    modalID="modal-crm-customer-edit" isLoading={false}
-                    formID="form-crm-status-edit"
-                    title="Chỉnh sửa nhóm khách hàng"
-                    func={this.save} size={50}
-                // disableSubmit={!this.isFormValidated()}
-                >
-                    {/* Form chỉnh sửa trạng thái khách hàng */}
-                    <form id="form-crm-status-edit">
-                        {/* Tên trạng thái khách hàng */}
-                        <div className={`form-group`}>
-                            <label>{translate('crm.status.name')}<span className="attention"> * </span></label>
-                            <input type="text" className="form-control" value={name ? name : ''} onChange={this.handleChangeStatusName} />
-                            {/* <ErrorLabel content={groupCodeEditFormError} /> */}
-                        </div>
-
-                        {/* Mô tả trạng thái khách hàng */}
-                        <div className={`form-group`}>
-                            <label>{translate('crm.status.description')}<span className="attention"> * </span></label>
-                            <input type="text" className="form-control" value={description ? description : ''} onChange={this.handleChangeStatusDescription} />
-                            {/* <ErrorLabel content={groupNameEditFormError} /> */}
-                        </div>
-                    </form>
-                </DialogModal>
-            </React.Fragment>
-        );
-    }
+                    {/* Mô tả trạng thái khách hàng */}
+                    <div className={`form-group`}>
+                        <label>{translate('crm.status.description')}<span className="attention"> * </span></label>
+                        <input type="text" className="form-control" value={statusEdit.description ? statusEdit.description : ''} onChange={handleChangeStatusDescription} />
+                        {/* <ErrorLabel content={groupNameEditFormError} /> */}
+                    </div>
+                </form>
+            </DialogModal>
+        </React.Fragment>
+    );
 }
+
 
 // function mapStateToProps(state) {
 //     const { crm } = state;

@@ -25,6 +25,8 @@ const initState = {
         nextPage: 0,
     },
     listTasksEval: [],
+    salaries: [],
+    changeRequests: [],
 }
 
 export function project(state = initState, action) {
@@ -38,6 +40,11 @@ export function project(state = initState, action) {
         case ProjectConstants.GET_LIST_TASKS_EVAL:
         case ProjectConstants.GET_PROJECT_DETAILS_REQUEST:
         case ProjectConstants.ADD_PROJECT_TASKS_CPM:
+        case ProjectConstants.GET_SALARY_MEMBER:
+        case ProjectConstants.GET_CHANGE_REQUESTS_LIST:
+        case ProjectConstants.CREATE_PROJECT_CHANGE_REQUEST:
+        case ProjectConstants.GET_LIST_PROJECT_CHANGE_REQUESTS:
+        case ProjectConstants.UPDATE_STATUS_PROJECT_CHANGE_REQUEST:
             return {
                 ...state,
                 isLoading: true,
@@ -50,6 +57,11 @@ export function project(state = initState, action) {
         case ProjectConstants.GET_LIST_TASKS_EVAL_FAILE:
         case ProjectConstants.GET_PROJECT_DETAILS_FAILE:
         case ProjectConstants.ADD_PROJECT_TASKS_CPM_FAILE:
+        case ProjectConstants.GET_SALARY_MEMBER_FAILE:
+        case ProjectConstants.GET_CHANGE_REQUESTS_LIST_FAILE:
+        case ProjectConstants.CREATE_PROJECT_CHANGE_REQUEST_FAILE:
+        case ProjectConstants.GET_LIST_PROJECT_CHANGE_REQUESTS_FAILE:
+        case ProjectConstants.UPDATE_STATUS_PROJECT_CHANGE_REQUEST_FAILE:
             return {
                 ...state,
                 isLoading: false,
@@ -128,6 +140,41 @@ export function project(state = initState, action) {
                 isLoading: false,
                 listTasksEval: action.payload,
             };
+
+        case ProjectConstants.GET_SALARY_MEMBER_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                salaries: action.payload,
+            };
+
+        case ProjectConstants.GET_CHANGE_REQUESTS_LIST_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                changeRequests: action.payload,
+            };
+
+        case ProjectConstants.CREATE_PROJECT_CHANGE_REQUEST_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                changeRequests: action.payload,
+            }
+
+        case ProjectConstants.GET_LIST_PROJECT_CHANGE_REQUESTS_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                changeRequests: action.payload,
+            }
+
+        case ProjectConstants.UPDATE_STATUS_PROJECT_CHANGE_REQUEST_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                changeRequests: action.payload,
+            }
 
         default:
             return state;

@@ -32,7 +32,7 @@ exports.createTransportRequirement = async (portal, data, userId) => {
                 })
             })
         }
-        newTransportRequirement = await TransportRequirement(connect(DB_CONNECTION, portal)).create({
+        let newTransportRequirementData = {
             status: data.status,
             code: data.code,
             type: data.type,
@@ -52,8 +52,14 @@ exports.createTransportRequirement = async (portal, data, userId) => {
                     lat: data.toLat,
                     lng: data.toLng,
                 },
-            }
-        });
+            },
+            approver: data.approver,
+
+        }
+        if (data.bill){
+            newTransportRequirementData.bill = data.bill;
+        }
+        newTransportRequirement = await TransportRequirement(connect(DB_CONNECTION, portal)).create(newTransportRequirementData);
         
     }
 
@@ -64,49 +70,9 @@ exports.createTransportRequirement = async (portal, data, userId) => {
     return requirement;
 }
 
-// Lấy ra tất cả các thông tin Ví dụ theo mô hình lấy dữ liệu số  1
-// exports.getExamples = async (portal, data) => {
-//     let keySearch = {};
-//     if (data?.exampleName?.length > 0) {
-//         keySearch = {
-//             exampleName: {
-//                 $regex: data.exampleName,
-//                 $options: "i"
-//             }
-//         }
-//     }
-
-//     let page, perPage;
-//     page = data?.page ? Number(data.page) : 1;
-//     perPage = data?.perPage ? Number(data.perPage) : 20;
-
-//     let totalList = await Example(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
-//     let examples = await Example(connect(DB_CONNECTION, portal)).find(keySearch)
-//         .skip((page - 1) * perPage)
-//         .limit(perPage);
-
-//     return { 
-//         data: examples, 
-//         totalList 
-//     }
-// }
-
-// // Lấy ra một phần thông tin Ví dụ (lấy ra exampleName) theo mô hình dữ liệu số  2
-// exports.getOnlyExampleName = async (portal, data) => {
-//     let keySearch;
-//     if (data?.exampleName?.length > 0) {
-//         keySearch = {
-//             exampleName: {
-//                 $regex: data.exampleName,
-//                 $options: "i"
-//             }
-//         }
-//     }
 
 exports.getAllTransportRequirements = async (portal, data) => {
-    if (data.transportPlan){
-        transportPlans = TransportPlanServices.getPlanById(portal,data.transportPlan);
-    }
+
     let keySearch = {};
     // if (data?.exampleName?.length > 0) {
     //     keySearch = {
@@ -116,21 +82,40 @@ exports.getAllTransportRequirements = async (portal, data) => {
     //         }
     //     }
     // }
+    if (data.status){
+        keySearch.status = data.status;
+    }
     let page, limit;
     page = data?.page ? Number(data.page) : 1;
     limit = data?.limit ? Number(data.limit) : 20;
+    let totalList;
+    let requirements;
+    if (data?.page && data?.limit){    
+        totalList = await TransportRequirement(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
+        requirements = await TransportRequirement(connect(DB_CONNECTION, portal)).find(keySearch)
+            .populate({path:'transportPlan'})
+            .populate({
+                path: 'creator'
+            })
+            .populate({
+                path: 'goods.good'
+            })
+            .skip((page - 1) * limit)
+            .limit(limit);
+    }
+    else {
+        totalList = await TransportRequirement(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
+        requirements = await TransportRequirement(connect(DB_CONNECTION, portal)).find(keySearch)
+            .populate({path:'transportPlan'})
+            .populate({
+                path: 'creator'
+            })
+            .populate({
+                path: 'goods.good'
+            })
+    }
 
-    let totalList = await TransportRequirement(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
-    let requirements = await TransportRequirement(connect(DB_CONNECTION, portal)).find(keySearch)
-        .populate({path:'transportPlan'})
-        .populate({
-            path: 'creator'
-        })
-        .populate({
-            path: 'goods.good'
-        })
-        .skip((page - 1) * limit)
-        .limit(limit);
+
         // .populate('TransportPlan');
     return { 
         data: requirements, 
@@ -165,7 +150,6 @@ exports.getAllTransportRequirements = async (portal, data) => {
 // Chỉnh sửa một Ví dụ
 exports.editTransportRequirement = async (portal, id, data) => {
 
-
     let oldTransportRequirement = await TransportRequirement(connect(DB_CONNECTION, portal)).findById(id);
 
     if (!oldTransportRequirement) {
@@ -174,15 +158,31 @@ exports.editTransportRequirement = async (portal, id, data) => {
 
     // Cach 2 de update
     await TransportRequirement(connect(DB_CONNECTION, portal)).update({ _id: id }, { $set: data });
+
+
     let transportRequirement = await TransportRequirement(connect(DB_CONNECTION, portal)).findById({ _id: oldTransportRequirement._id })
-    .populate({path: 'transportPlan'})
+    .populate([
+        {
+            path: 'transportPlan'
+        },
+        {
+            path: 'creator'
+        },
+        {
+            path: 'goods.good'
+        }
+    ])        
     return transportRequirement;
 }
 
-// Xóa một Ví dụ
+/**
+ * Xóa yêu cầu vận chuyển => xóa trong plan => xóa trong lịch vận chuyển: route, transportVehicles(hàng trên xe)
+ * @param {*} portal 
+ * @param {*} id 
+ * @returns 
+ */
 exports.deleteTransportRequirement = async (portal, id) => {
     let deleteRequirement = await TransportRequirement(connect(DB_CONNECTION, portal)).findOne({_id: id});
-
     if (deleteRequirement && deleteRequirement.transportPlan){
         await TransportPlanServices.deleteTransportRequirementByPlanId(portal, deleteRequirement.transportPlan, id);
     }
@@ -192,10 +192,14 @@ exports.deleteTransportRequirement = async (portal, id) => {
 
 exports.getTransportRequirementById = async (portal, id) => {
     let transportRequirement = await TransportRequirement(connect(DB_CONNECTION, portal)).findById({ _id: id })
-    .populate({
-        path: 'transportPlan',
-    });
-    console.log(transportRequirement);
+    .populate([
+        {
+            path: 'transportPlan',
+        },
+        {
+            path: 'goods.good',
+        }
+    ]);
     if (transportRequirement) {
         return transportRequirement;
     }

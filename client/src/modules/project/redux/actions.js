@@ -9,6 +9,10 @@ export const ProjectActions = {
 
     getListTasksEvalDispatch,
     createProjectTasksFromCPMDispatch,
+    getSalaryMembersDispatch,
+    createProjectChangeRequestDispatch,
+    updateStatusProjectChangeRequestDispatch,
+    getListProjectChangeRequestsDispatch,
 }
 
 function getProjectsDispatch(data = undefined) {
@@ -114,6 +118,71 @@ function createProjectTasksFromCPMDispatch(tasksList) {
             })
             .catch((err) => {
                 dispatch({ type: ProjectConstants.ADD_PROJECT_TASKS_CPM_FAILE });
+            });
+    };
+}
+
+function getSalaryMembersDispatch(data) {
+    return (dispatch) => {
+        dispatch({ type: ProjectConstants.GET_SALARY_MEMBER });
+        ProjectServices.getSalaryMembersAPI(data)
+            .then((res) => {
+                dispatch({
+                    type: ProjectConstants.GET_SALARY_MEMBER_SUCCESS,
+                    payload: res.data.content,
+                });
+            })
+            .catch((err) => {
+                dispatch({ type: ProjectConstants.GET_SALARY_MEMBER_FAILE });
+            });
+    };
+}
+
+function createProjectChangeRequestDispatch(changeRequest) {
+    return (dispatch) => {
+        dispatch({ type: ProjectConstants.CREATE_PROJECT_CHANGE_REQUEST });
+        ProjectServices.createProjectChangeRequestAPI(changeRequest)
+            .then((res) => {
+                dispatch({
+                    type: ProjectConstants.CREATE_PROJECT_CHANGE_REQUEST_SUCCESS,
+                    payload: res.data.content,
+                });
+            })
+            .catch((err) => {
+                dispatch({ type: ProjectConstants.CREATE_PROJECT_CHANGE_REQUEST_FAILE });
+            });
+    };
+}
+
+function getListProjectChangeRequestsDispatch(data) {
+    console.log('data', data)
+    return (dispatch) => {
+        dispatch({ type: ProjectConstants.GET_LIST_PROJECT_CHANGE_REQUESTS });
+        ProjectServices.getListProjectChangeRequestsAPI(data)
+            .then((res) => {
+                dispatch({
+                    type: ProjectConstants.GET_LIST_PROJECT_CHANGE_REQUESTS_SUCCESS,
+                    payload: res.data.content,
+                });
+            })
+            .catch((err) => {
+                dispatch({ type: ProjectConstants.GET_LIST_PROJECT_CHANGE_REQUESTS_FAILE });
+            });
+    };
+}
+
+function updateStatusProjectChangeRequestDispatch(data) {
+    return (dispatch) => {
+        dispatch({ type: ProjectConstants.UPDATE_STATUS_PROJECT_CHANGE_REQUEST });
+        ProjectServices.updateStatusProjectChangeRequestAPI(data)
+            .then((res) => {
+                dispatch({
+                    type: ProjectConstants.UPDATE_STATUS_PROJECT_CHANGE_REQUEST_SUCCESS,
+                    payload: res.data.content,
+                });
+            })
+            .catch((err) => {
+                dispatch({ type: ProjectConstants.UPDATE_STATUS_PROJECT_CHANGE_REQUEST_FAILE });
             });
     };
 }

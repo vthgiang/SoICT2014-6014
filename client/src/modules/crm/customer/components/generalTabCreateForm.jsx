@@ -5,17 +5,18 @@ import { SelectBox, DatePicker, ErrorLabel } from '../../../../common-components
 import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
 import ValidationHelper from '../../../../helpers/validationHelper';
 import './customer.css';
+import { getData } from '../../common';
 
 function GeneralTabCreateForm(props) {
 
-    const { crm, user } = props;
+    const { crm, user, auth, role } = props;
     const { callBackFromParentCreateForm } = props;
     const [customerInfo, setCustomerInfo] = useState({})
     const [crmState, setCrmState] = useState({});
 
     useEffect(() => {
 
-        if ( crm.status.list && crm.status.list.length > 0 && user.usersOfChildrenOrganizationalUnit) {
+        if (crm.status.list && crm.status.list.length > 0 && user.usersOfChildrenOrganizationalUnit) {
 
             // Lấy danh sách người trong phòng ban hiện tại và con
             let unitMembers;
@@ -42,6 +43,18 @@ function GeneralTabCreateForm(props) {
         }
 
     }, [])
+
+    /**
+     * lay thong tin nguoi dung hien tai cho vao selectBox
+     * @param {*} value 
+     */
+    let userSelectBox;
+    if (auth && auth.user) {
+        userSelectBox = { value: auth.user._id, text: auth.user.name };
+    }
+
+
+
 
     /**
      * Hàm xử lý khi người sở hữu/quản lý thay đổi
@@ -339,7 +352,7 @@ function GeneralTabCreateForm(props) {
         // lấy trạng thái khách hàng lưu vào db
         listStatus.forEach(o => {
             if (o.active) {
-                getStatusActive=[o._id];
+                getStatusActive = [o._id];
             }
         })
         const newCustomerInfo = {
@@ -460,7 +473,7 @@ function GeneralTabCreateForm(props) {
     } = customerInfo;
 
     const { customerNameError, customerCodeError, customerTaxNumberError, } = {};
-    const {unitMembers,listGroups,listStatus} = crmState;
+    const { unitMembers, listGroups, listStatus } = crmState;
     let progressBarWidth;
 
     // setting timeline customer status
@@ -495,10 +508,6 @@ function GeneralTabCreateForm(props) {
                             </div>
                         </div>
                     </div>
-
-
-
-
                     <div className="row">
                         {/* Mã khách hàng */}
                         <div className="col-md-6">
@@ -667,15 +676,15 @@ function GeneralTabCreateForm(props) {
                     </div>
 
                     <div className="row">
-                            {/* // Mã số thuế */}
-                            <div className="col-md-6">
-                                <div className={`form-group ${!customerTaxNumberError ? "" : "has-error"}`}>
-                                    <label>{translate('crm.customer.taxNumber')}</label>
-                                    <input type="text" className="form-control" value={taxNumber ? taxNumber : ''} onChange={handleChangeTaxNumber} placeholder={translate('crm.customer.taxNumber')} />
-                                    <ErrorLabel content={customerTaxNumberError} />
-                                </div>
+                        {/* // Mã số thuế */}
+                        <div className="col-md-6">
+                            <div className={`form-group ${!customerTaxNumberError ? "" : "has-error"}`}>
+                                <label>{translate('crm.customer.taxNumber')}</label>
+                                <input type="text" className="form-control" value={taxNumber ? taxNumber : ''} onChange={handleChangeTaxNumber} placeholder={translate('crm.customer.taxNumber')} />
+                                <ErrorLabel content={customerTaxNumberError} />
                             </div>
                         </div>
+                    </div>
                     <div className="row">
                         {/* khu vực */}
                         <div className="col-md-6">
@@ -721,12 +730,12 @@ function GeneralTabCreateForm(props) {
                             <div className={`form-group`} >
                                 <label className="control-label">{translate('crm.customer.owner')}<span className="text-red">*</span></label>
                                 {
-                                    unitMembers &&
+                                    unitMembers && userSelectBox &&
                                     <SelectBox
                                         id={`customer-owner`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
-                                        items={unitMembers}
+                                        items={getData.getRole(role) == 'employee' ? [userSelectBox] : unitMembers}
                                         value={owner}
                                         onChange={handleChangeCustomerOwner}
                                         multiple={true}
@@ -752,8 +761,6 @@ function GeneralTabCreateForm(props) {
                                 <textarea type="text" className="form-control" onChange={handleChangeCustomerNote} />
                             </div>
                         </div>
-
-
                     </div>
                 </fieldset>
             </div>
@@ -764,8 +771,8 @@ function GeneralTabCreateForm(props) {
 
 
 function mapStateToProps(state) {
-    const { crm, user } = state;
-    return { crm, user };
+    const { crm, user, role, auth } = state;
+    return { crm, user, role, auth };
 }
 
 export default connect(mapStateToProps, null)(withTranslate(GeneralTabCreateForm));

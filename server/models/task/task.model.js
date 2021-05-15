@@ -144,6 +144,7 @@ const TaskSchema = new Schema(
             // 1: Thấp, 2: Trung Bình, 3: Tiêu chuẩn, 4: Cao, 5: Khẩn cấp
             // Low, Average, Standard, High, Urgent
             type: Number,
+            default: 3,
         },
         isArchived: {
             // Lưu kho hay không. Task lưu kho sẽ mặc định ẩn đi cho gọn giao diện, vì số task có thể rất lớn. Khi cần xem lại, phải chọn filter phù hợp và search
@@ -234,7 +235,13 @@ const TaskSchema = new Schema(
             requestStatus: { // 0: chưa yêu cầu, 1: đang yêu cầu, 2: từ chối, 3: đồng ý
                 type: Number,
                 default: 0,
-            }
+            },
+            responsibleUpdatedAt: {
+                type: Date,
+            },
+            accountableUpdatedAt: {
+                type: Date,
+            },
         },
         evaluations: [
             {
@@ -307,47 +314,8 @@ const TaskSchema = new Schema(
                             type: Number, // Suggest tự động dựa theo lần đánh giá trước đó (nếu có), theo thời gian thực hiện, độ quan trọng của công việc, % đóng góp
                             default: -1,
                         },
-                        isProject: {
-                            // Check xem task co phai cua project khong hay task doc lap
-                            type: Boolean,
-                        }
                     },
                 ],
-                resultsForProject: {
-                    // Kết quả thực hiện công việc CỦA DỰ ÁN
-                    employee: {
-                        // Người đánh giá
-                        type: Schema.Types.ObjectId,
-                        ref: "User",
-                    },
-                    organizationalUnit: {
-                        type: Schema.Types.ObjectId,
-                        ref: "OrganizationalUnit",
-                    },
-                    role: {
-                        // người thực hiện: responsible, người tư vấn: consulted, người phê duyệt: accountable
-                        type: String,
-                        enum: ["responsible", "consulted", "accountable"],
-                    },
-                    automaticPoint: {
-                        // Điểm hệ thống đánh giá
-                        type: Number,
-                        default: 0,
-                    },
-                    employeePoint: {
-                        // Điểm tự đánh giá
-                        type: Number,
-                        default: 0,
-                    },
-                    approvedPoint: {
-                        // Điểm được phê duyệt
-                        type: Number,
-                        default: 0,
-                    },
-                    hoursSpent: {
-                        type: Number,
-                    },
-                },
                 taskInformations: [
                     {
                         // Lưu lại lịch sử các giá trị của thuộc tính công việc trong mỗi lần đánh giá
@@ -390,42 +358,104 @@ const TaskSchema = new Schema(
             automaticPoint: {
                 // Điểm hệ thống đánh giá cho task
                 type: Number,
-                default: 0,
+                default: null,
             },
-            responsibleEmployee: {
-                automaticPoint: {
-                    // Điểm hệ thống đánh giá cho người thực hiện
-                    type: Number,
-                    default: 0,
+            responsibleEmployees: [
+                {
+                    employee: {
+                        // Người đánh giá
+                        type: Schema.Types.ObjectId,
+                        ref: "User",
+                    },
+                    automaticPoint: {
+                        // Điểm hệ thống đánh giá cho người thực hiện
+                        type: Number,
+                        default: null,
+                    },
+                    employeePoint: {
+                        // Điểm người thực hiện tự đánh giá bản thân
+                        type: Number,
+                        default: null,
+                    },
+                    accountablePoint: {
+                        // Điểm người phê duyệt đánh giá cho người thực hiện
+                        type: Number,
+                        default: null,
+                    },
+                    contribution: {
+                        // % Đóng góp: 0->100
+                        type: Number,
+                    },
+                    hoursSpent: {
+                        type: Number,
+                    },
+                }
+            ],
+            accountableEmployees: [
+                {
+                    employee: {
+                        // Người đánh giá
+                        type: Schema.Types.ObjectId,
+                        ref: "User",
+                    },
+                    automaticPoint: {
+                        // Điểm hệ thống đánh giá cho người phê duyệt
+                        type: Number,
+                        default: null,
+                    },
+                    employeePoint: {
+                        // Điểm người phê duyệt tự đánh giá bản thân
+                        type: Number,
+                        default: null,
+                    },
+                    contribution: {
+                        // % Đóng góp: 0->100
+                        type: Number,
+                    },
+                    hoursSpent: {
+                        type: Number,
+                    },
+                }
+            ],
+            taskInformations: {
+                // Lưu lại lịch sử các giá trị của thuộc tính công việc trong mỗi lần đánh giá
+                code: {
+                    // Mã thuộc tính công việc dùng trong công thức (nếu công việc theo mẫu)
+                    type: String,
                 },
-                employeePoint: {
-                    // Điểm người thực hiện tự đánh giá bản thân
-                    type: Number,
-                    default: 0,
+                name: {
+                    // Tên thuộc tính công việc (bao gồm progress + point + các thuộc tính khác nếu như đây là công việc theo mẫu)
+                    type: String,
                 },
-                accountablePoint: {
-                    // Điểm người phê duyệt đánh giá cho người thực hiện
-                    type: Number,
-                    default: 0,
+                filledByAccountableEmployeesOnly: {
+                    // Chỉ người phê duyệt được điền?
+                    type: Boolean,
+                    default: true,
                 },
-            },
-            accountableEmployee: {
-                automaticPoint: {
-                    // Điểm hệ thống đánh giá cho người phê duyệt
-                    type: Number,
-                    default: 0,
+                extra: {
+                    // Cho kiểu dữ liệu tập giá trị, lưu lại các tập giá trị
+                    type: String,
                 },
-                employeePoint: {
-                    // Điểm người phê duyệt tự đánh giá bản thân
-                    type: Number,
-                    default: 0,
+                type: {
+                    type: String,
+                    enum: [
+                        "text",
+                        "boolean",
+                        "date",
+                        "number",
+                        "set_of_values",
+                    ],
+                },
+                value: {
+                    // Giá trị tương ứng của các thuộc tính (tại thời điểm đánh giá)
+                    type: Schema.Types.Mixed,
                 },
             },
         },
         formula: {
             type: String,
             default:
-                "progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100",
+                "progress / (daysUsed / totalDays) - (sumRatingOfFailedActions / sumRatingOfAllActions) * 100",
         },
         progress: {
             // % Hoàn thành thành công việc
@@ -588,6 +618,11 @@ const TaskSchema = new Schema(
                     type: Number,
                     default: -1,
                 },
+                actionImportanceLevel: {
+                    // 0-10: tùy mức độ quan trọng
+                    type: Number,
+                    default: 10,
+                },
                 files: [
                     {
                         // Các files đi kèm actions
@@ -621,6 +656,11 @@ const TaskSchema = new Schema(
                             // -1: chưa đánh giá, 0-10: tùy mức độ tốt
                             type: Number,
                             default: -1,
+                        },
+                        actionImportanceLevel: {
+                            // 0-10: tùy mức độ quan trọng
+                            type: Number,
+                            default: 10,
                         },
                     },
                 ],
@@ -796,10 +836,6 @@ const TaskSchema = new Schema(
         estimateOptimisticTime: {
             type: Number,
         },
-        //thời gian ước lượng nhiều nhất có thể cho phép để hoàn thành task
-        estimatePessimisticTime: {
-            type: Number,
-        },
         //chi phí ước lượng thông thường của task
         estimateNormalCost: {
             type: Number,
@@ -812,10 +848,11 @@ const TaskSchema = new Schema(
         actualCost: {
             type: Number,
         },
-        // ngân sách để chi trả cho task đó
-        budget: {
-            type: Number,
+        //thời điểm thực kết thúc task đó
+        actualEndDate: {
+            type: Date,
         },
+        // Danh sách thành viên tham gia công việc + lương tháng + trọng số thành viên trong công việc
         actorsWithSalary: [
             {
                 userId: {
@@ -825,10 +862,21 @@ const TaskSchema = new Schema(
                 salary: {
                     type: Number,
                 },
+                weight: {
+                    type: Number,
+                },
             },
         ],
+        // Ước lượng chi phí tài sản
         estimateAssetCost: {
             type: Number,
+        },
+        // Trọng số tổng dành cho Thành viên Thực hiện
+        totalResWeight: {
+            type: Number,
+        },
+        isFromCPM: {
+            type: Boolean,
         }
     },
     {

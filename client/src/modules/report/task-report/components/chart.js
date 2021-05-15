@@ -601,13 +601,13 @@ function exportDataChart(tasks, dataForAxisXInChart) {
         let groupDataByResponsibleEmployees = groupByResponsibleEmployees(groupDataByDate, dataForAxisXInChart);
 
         // Sau đó gom nhóm theo người phê duyệt
-        let groupByAccountableEmployees = groupByAccountableEmployees(groupDataByResponsibleEmployees, dataForAxisXInChart);
+        let groupByAccountableEmployee = groupByAccountableEmployees(groupDataByResponsibleEmployees, dataForAxisXInChart);
 
         // groupByAccountableEmployees đang là mảng 3 cấp-> convert 1 array câp
-        groupByAccountableEmployees = convertArray3dTo1d(groupByAccountableEmployees);
+        groupByAccountableEmployee = convertArray3dTo1d(groupByAccountableEmployee);
 
         // Tính tổng/Trung bình cộng, xử lý tên mới, và showInreport các trường thông tin theo tùy chọn của người dùng
-        output = dataAfterAggregate(groupByAccountableEmployees);
+        output = dataAfterAggregate(groupByAccountableEmployee);
     }
 
     // Time -> Người phê duyệt -> người thực hiện

@@ -6,23 +6,6 @@ const {
     connect
 } = require(`../../../../helpers/dbHelper`);
 const TransportPlanServices = require('../transportPlan/transportPlan.service')
-exports.createTransportVehicle = async (portal, data) => {
-    let newTransportVehicle;
-    console.log(data);
-    if (data && data.length !== 0) {
-            newTransportVehicle = await TransportVehicle(connect(DB_CONNECTION, portal)).create({
-                asset: data.id,
-                code: data.code,
-                name: data.name,
-                payload: data.payload,
-                volume: data.volume,
-        });
-        
-    }
-
-    // let example = await Example(connect(DB_CONNECTION, portal)).findById({ _id: newExample._id });;
-    // return example;
-}
 
 /**
  * Lưu lại xe từ module asset, nếu đã có xe thì ko lưu mới
@@ -36,14 +19,14 @@ exports.createTransportVehicle = async (portal, data) => {
             vehicleId: vehicle._id,
         }
  * @param {*} portal 
- * @param {*} vehicleId id phương tiện (assetid)
  * @param {*} data {asset: id tương ứng tài sản cố định, code: mã phương tiện,
  *                  name: tên phương tiện, payload, volume, transportPlan: id plan } 
  * @returns 
  */
-exports.editTransportVehicleToSetPlan = async (portal, vehicleId, data) => {
+exports.createTransportVehicle = async (portal, data) => {
+    let assetId = data.id;
     let newTransportVehicle;
-    let oldTransportVehicle = await TransportVehicle(connect(DB_CONNECTION, portal)).findOne({asset: vehicleId});
+    let oldTransportVehicle = await TransportVehicle(connect(DB_CONNECTION, portal)).findOne({asset: assetId});
     
     if (!oldTransportVehicle) {
         newTransportVehicle = await TransportVehicle(connect(DB_CONNECTION, portal)).create({
@@ -52,55 +35,39 @@ exports.editTransportVehicleToSetPlan = async (portal, vehicleId, data) => {
             name: data.name,
             payload: data.payload,
             volume: data.volume,
-            transportPlan: data.transportPlan,
+            // transportPlan: data.transportPlan,
+            usable: 1,
         });
     }
     else {
-        const transportVehicleId = oldTransportVehicle._id; 
-        await TransportVehicle(connect(DB_CONNECTION, portal)).update({ _id: transportVehicleId }, { $set: data });
-        newTransportVehicle = await TransportVehicle(connect(DB_CONNECTION, portal)).findById({ _id: transportVehicleId });
+        newTransportVehicle = await TransportVehicle(connect(DB_CONNECTION, portal)).update({ _id: oldTransportVehicle._id }, { $set: {usable: 1} });
     }
-    return newTransportVehicle;
+    let transportVehicle = await TransportVehicle(connect(DB_CONNECTION, portal)).findById({ _id: newTransportVehicle._id })
+    .populate([{
+        path: "asset"
+    }])
+    return transportVehicle;
 }
+/**
+ * Đổi trạng thái
+ * @param {*} portal 
+ * @param {*} id 
+ * @returns 
+ */
+exports.editTransportVehicle = async (portal, id, data) => {
+    console.log(id, data)
+    let oldTransportVehicle = await TransportVehicle(connect(DB_CONNECTION, portal)).findById(id);
 
-// Lấy ra tất cả các thông tin Ví dụ theo mô hình lấy dữ liệu số  1
-// exports.getExamples = async (portal, data) => {
-//     let keySearch = {};
-//     if (data?.exampleName?.length > 0) {
-//         keySearch = {
-//             exampleName: {
-//                 $regex: data.exampleName,
-//                 $options: "i"
-//             }
-//         }
-//     }
-
-//     let page, perPage;
-//     page = data?.page ? Number(data.page) : 1;
-//     perPage = data?.perPage ? Number(data.perPage) : 20;
-
-//     let totalList = await Example(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
-//     let examples = await Example(connect(DB_CONNECTION, portal)).find(keySearch)
-//         .skip((page - 1) * perPage)
-//         .limit(perPage);
-
-//     return { 
-//         data: examples, 
-//         totalList 
-//     }
-// }
-
-// // Lấy ra một phần thông tin Ví dụ (lấy ra exampleName) theo mô hình dữ liệu số  2
-// exports.getOnlyExampleName = async (portal, data) => {
-//     let keySearch;
-//     if (data?.exampleName?.length > 0) {
-//         keySearch = {
-//             exampleName: {
-//                 $regex: data.exampleName,
-//                 $options: "i"
-//             }
-//         }
-//     }
+    if (!oldTransportVehicle) {
+        return -1;
+    }
+    await TransportVehicle(connect(DB_CONNECTION, portal)).update({ _id: id }, { $set: data });
+    let transportVehicle = await TransportVehicle(connect(DB_CONNECTION, portal)).findById({ _id: oldTransportVehicle._id })
+    .populate([{
+        path: "asset"
+    }])
+    return transportVehicle;
+}
 
 exports.getAllTransportVehicles = async (portal, data) => {
     let keySearch = {};
@@ -119,6 +86,9 @@ exports.getAllTransportVehicles = async (portal, data) => {
 
     let totalList = await TransportVehicle(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
     let vehicles = await TransportVehicle(connect(DB_CONNECTION, portal)).find(keySearch)
+        .populate([{
+            path: "asset"
+        }])
         .skip((page - 1) * limit)
         .limit(limit);
     return { 

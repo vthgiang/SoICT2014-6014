@@ -13,8 +13,8 @@ require("dotenv").config();
 require("./global")(server);
 
 app.use(require("cors")());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false,limit: '50mb',parameterLimit:50000 }));
+app.use(bodyParser.json({limit: '50mb'}));
 app.use(cookieParser());
 
 app.use("/upload/avatars", express.static("upload/avatars"));
@@ -215,6 +215,9 @@ app.use("/crm/cares", require("./modules/crm/care/care.route"));
 app.use("/crm/careTypes", require("./modules/crm/careType/careType.route"));
 app.use("/crm/groups", require("./modules/crm/group/group.route"));
 app.use("/crm/status", require("./modules/crm/status/status.route"));
+app.use("/crm/evaluations", require("./modules/crm/evaluation/evaluation.route"));
+app.use("/crm/loyalCustomers", require("./modules/crm/loyalCustomer/loyalCustomer.route"));
+app.use("/crm/customerRankPoints", require("./modules/crm/rankPoint/customerRankPoint.route"));
 
 // production - manufaturing
 app.use(
@@ -275,6 +278,8 @@ app.use("/transport-requirement", require("./modules/production/transport/transp
 app.use("/transport-plan", require("./modules/production/transport/transportPlan/transportPlan.route"));
 app.use("/transport-vehicle", require("./modules/production/transport/transportVehicle/transportVehicle.route"));
 app.use("/transport-schedule", require("./modules/production/transport/transportSchedule/transportSchedule.route"));
+app.use("/transport-process", require("./modules/production/transport/transportProcess/transportProcess.route"))
+app.use("/transport-department", require("./modules/production/transport/transportDepartment/transportDepartment.route"));
 
 app.use(router);
 

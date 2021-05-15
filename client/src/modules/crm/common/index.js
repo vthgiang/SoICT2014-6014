@@ -10,7 +10,14 @@ export const formatFunction = {
     formatCustomerLocationImportForm,
     getIdGroupInArray,
     getIdStatusInArray,
+    formatCarePriority,
+    formatCareStatus
+
 }
+export const getData = {
+    getRole
+}
+
 
 function formatDate(date, monthYear = false) {
     if (date) {
@@ -168,3 +175,28 @@ function formatCustomerLocation(value,translate) {
     if (value === 3) return translate('crm.customer.southern');
 }
 
+function formatCarePriority(value){
+    value = parseInt(value);
+    if (value === 1) return 'Ưu tiên thấp';
+    if (value === 2) return 'Ưu tiên tiêu chuẩn';
+    if (value === 3) return 'Ưu tiên cao';
+}
+
+function formatCareStatus(value){
+    value = parseInt(value);
+    if (value === 1) return 'Chưa thực hiện';
+    if (value === 2) return 'Đang thực hiện';
+    if (value === 3) return 'Đã hoàn thành';
+    if (value === 4) return 'Đã quá hạn';
+    if (value === 5) return 'Hoàn thành quá hạn';
+}
+
+
+function getRole (role){
+   if(!role||!role.item||!role.item.parents) return null;
+   const listParent = role.item.parents;
+   for(let i = 0;i<listParent.length;i++){
+       if(listParent[i].name =='Manager') return 'manager'
+   }
+   return 'employee'
+}

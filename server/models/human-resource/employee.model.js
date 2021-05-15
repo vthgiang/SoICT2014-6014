@@ -31,7 +31,6 @@ const EmployeeSchema = new Schema({
     },
     employeeTimesheetId: { // mã số chấm công của nhân viên
         type: String,
-        required: true
     },
     gender: { // male - nam, female - nữ
         type: String,
@@ -40,22 +39,18 @@ const EmployeeSchema = new Schema({
     },
     birthdate: {
         type: Date,
-        required: true
     },
     birthplace: {
         type: String
     },
     identityCardNumber: { // số cmnd
         type: Number,
-        required: true
     },
     identityCardDate: { // ngày cấp
         type: Date,
-        required: true
     },
     identityCardAddress: {
         type: String,
-        required: true
     },
     emailInCompany: { // địa chỉ email dùng ở company
         type: String
@@ -88,7 +83,6 @@ const EmployeeSchema = new Schema({
      */
     phoneNumber: {
         type: Number,
-        required: true
     },
     phoneNumber2: {
         type: Number,
@@ -137,7 +131,6 @@ const EmployeeSchema = new Schema({
     },
     temporaryResidence: {
         type: String,
-        required: true
     },
     temporaryResidenceCountry: {
         type: String,

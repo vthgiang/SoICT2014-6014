@@ -1,14 +1,14 @@
 const express = require("express");
 const router = express.Router();
 const TaskManagementController = require("./task.controller");
-const { auth } = require(`../../../middleware`);
+const { auth, uploadFile } = require(`../../../middleware`);
 
 router.get('/tasks', auth, TaskManagementController.getTasks);
 router.get('/tasks/:taskId/sub-tasks', auth, TaskManagementController.getSubTask);
 
 router.get('/task-evaluations', auth, TaskManagementController.getTaskEvaluations);
 
-router.post('/tasks', auth, TaskManagementController.createTask);
+router.post('/tasks', auth, uploadFile([{ name: 'files', path: '/files/task-description' }], 'array'), TaskManagementController.createTask);
 
 router.post('/tasks/project-tasks', auth, TaskManagementController.createProjectTask);
 

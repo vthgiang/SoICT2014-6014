@@ -525,14 +525,20 @@ function editActivateOfTask(taskId, typeOfTask, listSelected) {
  * @param {*} taskId id cua task muon cap nhat
  */
 function editTaskByResponsibleEmployees(data, taskId) {
+    let formData = new FormData();
+    formData.append("type", "all")
+    formData.append("role", "responsible")
+    formData.append("data", JSON.stringify(data))
+
+    // append image
+    data.imageDescriptions && data.imageDescriptions.forEach(x => {
+        formData.append("files", x);
+    })
+    
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}`,
         method: 'POST',
-        data: {
-            data: data,
-            type: 'all',
-            role: 'responsible',
-        }
+        data: formData
     }, true, true, 'task.task_management');
 }
 
@@ -542,14 +548,20 @@ function editTaskByResponsibleEmployees(data, taskId) {
  * @param {*} taskId id cua task muon cap nhat
  */
 function editTaskByAccountableEmployees(data, taskId) {
+    let formData = new FormData();
+    formData.append("type", "all")
+    formData.append("role", "accountable")
+    formData.append("data", JSON.stringify(data))
+
+    // append image
+    data.imageDescriptions && data.imageDescriptions.forEach(x => {
+        formData.append("files", x);
+    })
+    
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}`,
         method: 'POST',
-        data: {
-            data: data,
-            type: 'all',
-            role: 'accountable',
-        }
+        data: formData
     }, true, true, 'task.task_management');
 }
 

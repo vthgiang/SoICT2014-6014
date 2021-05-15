@@ -1186,14 +1186,14 @@ const LINKS = [{
     components: getComponentsInLink('/crm/loyal-customer')
 },{
     url: '/crm/evaluation',
-    description: `Khách hàng thân thiết`,
+    description: `Đánh giá hoạt động CSKH`,
     category: LINK_CATEGORY.CRM.name,
     roles: [
         ROOT_ROLES.SUPER_ADMIN.name,
         ROOT_ROLES.ADMIN.name,
         ROOT_ROLES.MANAGER.name,
         ROOT_ROLES.DEPUTY_MANAGER.name,
-        ROOT_ROLES.EMPLOYEE.name,
+        
     ],
     components: getComponentsInLink('/crm/evaluation')
 },
@@ -1232,7 +1232,7 @@ const LINKS = [{
         ROOT_ROLES.ADMIN.name,
         ROOT_ROLES.MANAGER.name,
         ROOT_ROLES.DEPUTY_MANAGER.name,
-        ROOT_ROLES.EMPLOYEE.name,
+    
     ],
     components: getComponentsInLink('/crm/generalConfiguration')
 },
@@ -1439,7 +1439,34 @@ const LINKS = [{
 },
 {
     url: "/manage-transport-route",
-    description: "Lộ trình vận chuyển",
+    description: "Hành trình vận chuyển",
+    category: LINK_CATEGORY.TRANSPORT.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name
+    ]
+},
+{
+    url: "/manage-transport-department",
+    description: "Phân vai trò đơn vị vận chuyển",
+    category: LINK_CATEGORY.TRANSPORT.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name
+    ]
+},
+{
+    url: "/carrier-today-transport-mission",
+    description: "Nhiệm vụ vận chuyển ngày hôm nay",
+    category: LINK_CATEGORY.TRANSPORT.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name
+    ]
+},
+{
+    url: "/carrier-all-times-transport-mission",
+    description: "Nhiệm vụ vận chuyển mỗi ngày",
     category: LINK_CATEGORY.TRANSPORT.name,
     roles: [
         ROOT_ROLES.SUPER_ADMIN.name,

@@ -77,7 +77,8 @@ export default {
         },
 
         dashboard_unit: {
-            urgent_need_to_do_chart: "The chart shows the number of urgent / To-do tasks",
+            urgent_chart: "The chart shows the number of urgent tasks",
+            need_to_do_chart: "The chart shows the number of to-do tasks",
             urgent_task_amount: "The number of urgent tasks",
             need_to_do_task_amount: "The number of tasks to do",
             list_employe_timing: "List of employees who are timing"
@@ -265,6 +266,9 @@ export default {
             manage_transport_vehicle: "Manage transport vehical",
             manage_transport_human: "Manage transport human",
             manage_transport_route: "Manage transport route",
+            manage_transport_department: "Manage transport department",
+            carrier_today_transport_mission: "Transporting missions today",
+            carrier_all_times_transport_mission: "List of transporting missions all times",
 
             user_guide: "User guide",
             user_guide_detail: "User guide detail",
@@ -1363,6 +1367,12 @@ export default {
                 file_export_name: "Annual leave statistics table",
                 type: "Annual leave by hours",
                 totalHours: "Total hours",
+                leaveOfAbsenceLetter: "Leave of absence letter",
+                waiting_for_approval_letter: "Waiting for appoval letter",
+                approved_letter: "Approved letter",
+                not_approved_letter: "Disapproved letter",
+                have: "Have",
+                this_month: "this month",
 
                 // Nhóm dành cho table
                 table: {
@@ -1629,7 +1639,7 @@ export default {
                 district: "County/District",
                 province: "Province/City",
                 nation: "Nation",
-
+                roles : "Role",
                 academic_level: "Academic level",
                 educational_level: "Educational level",
                 language_level: "Language level",
@@ -2908,8 +2918,8 @@ export default {
                 calc_overdue_date: "Overdue date of task",
                 calc_day_used: "Time from start date to today",
                 calc_average_action_rating: "Average action of task rating",
-                calc_failed_action_rating: "Number of failed action",
-                calc_passed_action_rating: "Number of passed action",
+                calc_failed_action_rating: "Sum of activity scores and performance importance of failed activities (rating < 5)",
+                calc_all_action_rating: "Sum of activity scores and performance importance of all activities",
                 calc_progress: "Progress of task",
                 calc_new_formula: "Current formula",
                 calc_total_day: "Time from start date to end date",
@@ -4245,8 +4255,8 @@ export default {
             },
 
             unit: {
-                day: 'Day',
-                hour: 'Hour',
+                days: 'Ngày',
+                hours: 'Giờ',
             },
 
             schedule: {

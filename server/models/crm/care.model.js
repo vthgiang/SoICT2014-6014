@@ -31,7 +31,7 @@ const CustomerCareSchema = new Schema({
     }],
     status: { //trạng thái công việc 1: chưa thực hiện, 2: đang thực hiện, 3: Hoàn thành, 4: quá hạn, 5: hoàn thành quá hạn
         type: Number,
-        default: 1,
+        default: 2,
     },
     priority:{// độ ưu tiên
         type: Number,

@@ -7,11 +7,11 @@ class ErrorLabel extends Component {
     }
 
     render() { 
-        const { content } = this.props;
+        const { content, style } = this.props;
         return ( 
             <React.Fragment>
                 {
-                    content && <div className="help-block">{content}</div>
+                    content && <div className="help-block" style={style}>{content}</div>
                 }
             </React.Fragment>
          );

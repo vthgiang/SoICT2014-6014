@@ -55,6 +55,7 @@ const EmployeeEditFrom = (props) => {
             identityCardDate: "",
             birthdate: "",
         },
+        roles: [],
         experiences: [],
         socialInsuranceDetails: [],
         courses: [],
@@ -167,7 +168,6 @@ const EmployeeEditFrom = (props) => {
                 });
             };
         }
-
         shouldUpdate()
         return () => {
             mountedRef.current = false;
@@ -217,6 +217,16 @@ const EmployeeEditFrom = (props) => {
         });
     }
 
+    /**
+    * Function lưu thông tin chức danh vào state
+    * @param {*} data : dữ liệu về chức danh
+    */
+    const handleChangeRole = (data) => {
+        setState({
+            ...state,
+            roles: [...data]
+        })
+    }
 
     /**
      * Function thêm kinh nghiệm làm việc
@@ -881,11 +891,9 @@ const EmployeeEditFrom = (props) => {
         const { employee } = state;
         let result = true;
         if (employee) {
-            result = validatorInput(employee.employeeNumber) && validatorInput(employee.employeeTimesheetId) &&
-                validatorInput(employee.fullName) && validatorInput(employee.birthdate) &&
-                validatorInput(employee.emailInCompany) && validatorInput(employee.identityCardNumber) &&
-                validatorInput(employee.identityCardDate) && validatorInput(employee.identityCardAddress) &&
-                validatorInput(employee.phoneNumber) && validatorInput(employee.temporaryResidence);
+            result = validatorInput(employee.employeeNumber) &&
+                validatorInput(employee.fullName);
+
             if (employee.healthInsuranceStartDate && employee.healthInsuranceEndDate) {
                 if (new Date(employee.healthInsuranceEndDate).getTime() < new Date(employee.healthInsuranceStartDate).getTime()) {
                     return false;
@@ -908,24 +916,6 @@ const EmployeeEditFrom = (props) => {
     const save = async () => {
         let { _id, experiences, degrees, certificates, contracts, files, avatar,
             disciplines, commendations, annualLeaves, socialInsuranceDetails, courses } = state;
-
-        await setState(state => {
-            return {
-                ...state,
-                createExperiences: experiences.filter(x => x._id === undefined),
-                createDegrees: degrees.filter(x => x._id === undefined),
-                createCertificates: certificates.filter(x => x._id === undefined),
-                // createCareer: career.filter(x => x._id === undefined),
-                // createMajor: major.filter(x => x._id === undefined),
-                createContracts: contracts.filter(x => x._id === undefined),
-                createDisciplines: disciplines.filter(x => x._id === undefined),
-                createCommendations: commendations.filter(x => x._id === undefined),
-                createAnnualLeaves: annualLeaves.filter(x => x._id === undefined),
-                createCourses: courses.filter(x => x._id === undefined),
-                createSocialInsuranceDetails: socialInsuranceDetails.filter(x => x._id === undefined),
-                createFiles: files.filter(x => x._id === undefined),
-            }
-        });
 
         let formData = convertJsonObjectToFormData({
             ...state,
@@ -961,68 +951,12 @@ const EmployeeEditFrom = (props) => {
             formData.append("file", x.fileUpload);
         })
         formData.append("fileAvatar", avatar);
-
-        props.updateInformationEmployee(_id, formData);
-        experiences.forEach(x => {
-            if (x._id === undefined) {
-                x._id = "0"
-            }
-        }
-        );
-        degrees.forEach(x => {
-            if (x._id === undefined) {
-                x._id = "0"
-            }
-        }
-        );
-        certificates.forEach(x => {
-            if (x._id === undefined) {
-                x._id = "0"
-            }
-        }
-        );
-        contracts.forEach(x => {
-            if (x._id === undefined) {
-                x._id = "0"
-            }
-        }
-        );
-        disciplines.forEach(x => {
-            if (x._id === undefined) {
-                x._id = "0"
-            }
-        }
-        );
-        commendations.forEach(x => {
-            if (x._id === undefined) {
-                x._id = "0"
-            }
-        }
-        );
-        annualLeaves.forEach(x => {
-            if (x._id === undefined) {
-                x._id = "0"
-            }
-        }
-        );
-        courses.forEach(x => {
-            if (x._id === undefined) {
-                x._id = "0"
-            }
-        }
-        );
-        socialInsuranceDetails.forEach(x => {
-            if (x._id === undefined) {
-                x._id = "0"
-            }
-        }
-        );
-        files.forEach(x => {
-            if (x._id === undefined) {
-                x._id = "0"
-            }
-        }
-        );
+        await props.updateInformationEmployee(_id, formData);
+        await props.getEmployeeProfile({ id: props._id, callAPIByUser: false });
+        setState({
+            ...state,
+            dataStatus: DATA_STATUS.QUERYING
+        })
     }
 
     const _fm_saveMember = (data) => {
@@ -1182,7 +1116,7 @@ const EmployeeEditFrom = (props) => {
             }
         })
     }
-
+    console.log('employee', employee)
     return (
         <React.Fragment>
             <DialogModal
@@ -1215,7 +1149,9 @@ const EmployeeEditFrom = (props) => {
                                     img={img}
                                     handleChange={handleChange}
                                     handleUpload={handleUpload}
+                                    handleChangeRole={handleChangeRole}
                                     employee={employee}
+                                    roles={roles}
                                 />}
                             {/* Tab thông tin liên hệ */}
                             <ContactTab
@@ -1238,7 +1174,7 @@ const EmployeeEditFrom = (props) => {
                                 id={`edit_diploma${_id}`}
                                 degrees={degrees}
                                 certificates={certificates}
-
+                                employee={employee}
                                 handleAddDegree={handleCreateDegree}
                                 handleEditDegree={handleEditDegree}
                                 handleDeleteDegree={handleDeleteDegree}

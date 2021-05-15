@@ -133,7 +133,7 @@ exports.editCustomer = async (req, res) => {
         }
 
         //upload file đính kèm cho form edit
-        if(req.files && req.files.fileAttachment){
+        if (req.files && req.files.fileAttachment) {
             fileAttachment = req.files.fileAttachment ? req.files.fileAttachment : undefined;
         }
 
@@ -164,9 +164,9 @@ exports.editCustomer = async (req, res) => {
  * @param {*} req 
  * @param {*} res 
  */
-exports.editCustomerPoint = async (req, res)=> {
+exports.editCustomerPoint = async (req, res) => {
     try {
-        const newCustomerPoint = await CustomerService.editCustomerPoint(req.portal, req.user.company._id,req.params.id, req.body, req.user._id);
+        const newCustomerPoint = await CustomerService.editCustomerPoint(req.portal, req.user.company._id, req.params.id, req.body, req.user._id);
         await Logger.info(req.user.email, 'edit_customer_point_success');
         res.status(200).json({
             success: true,
@@ -182,6 +182,31 @@ exports.editCustomerPoint = async (req, res)=> {
         })
     }
 }
+
+/**
+ * Them khuyen mai cho khach hang
+ * @param {*} req 
+ * @param {*} res 
+ */
+exports.addPromotion = async (req, res) => {
+    try {
+        const newCustomerPoint = await CustomerService.addPromotion(req.portal, req.user.company._id, req.params.id, req.body, req.user._id);
+        await Logger.info(req.user.email, 'add_customer_promotion_success');
+        res.status(200).json({
+            success: true,
+            messages: ['add_customer_promotion_success'],
+            content: newCustomerPoint
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, 'add_customer_promotion_faile ', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ['add_customer_promotion_faile'],
+            content: error
+        })
+    }
+}
+
 /**
  * Xóa một khách hàng
  * @param {*} req 

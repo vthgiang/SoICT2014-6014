@@ -526,7 +526,12 @@ function KPIUnitManager(props) {
                                                     </a>
                                                     }
                                                     {state.showModalCopy === item._id
-                                                        ? <ModalCopyKPIUnit kpiId={item._id} idunit={item.organizationalUnit._id} kpiunit={item} />
+                                                        ? <ModalCopyKPIUnit 
+                                                            kpiId={item._id} 
+                                                            idunit={item.organizationalUnit._id} 
+                                                            kpiunit={item} 
+                                                            monthDefault={endMonth}
+                                                        />
                                                         : null
                                                     }
                                                 </td>
