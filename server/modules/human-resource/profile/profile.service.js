@@ -119,26 +119,15 @@ exports.getEmployeeEmailsByOrganizationalUnitsAndPositions = async (portal, orga
  * Lấy thông tin cá nhân của nhân viên theo emailInCompany
  * @userId : Id người dùng(tài khoản)
  */
-exports.getEmployeeProfile = async (portal, email, employeesId) => {
-    let employees;
-    if (email)
-        employees = await Employee(connect(DB_CONNECTION, portal)).find({
+exports.getEmployeeProfile = async (portal, email) => {
+    let employees = await Employee(connect(DB_CONNECTION, portal)).find({
             emailInCompany: email
         }).populate([
             { path: "career.field" },
             { path: "career.position" },
             { path: "career.action" },
         ]);
-    
-    if (employeesId)
-        employees = await Employee(connect(DB_CONNECTION, portal)).find({
-            _id: employeesId
-        }).populate([
-            { path: "career.field" },
-            { path: "career.position" },
-            { path: "career.action" },
-        ]);
-    
+
     if (employees.length === 0) {
         return {
             employees: employees

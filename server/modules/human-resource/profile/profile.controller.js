@@ -16,7 +16,7 @@ exports.getEmployeeProfile = async (req, res) => {
             inforEmployee = await EmployeeService.getEmployeeProfile(req.portal, user.email);
         } else { // Theo employeeId
             let employee = await EmployeeService.getEmployeeInforById(req.portal, req.params.id);
-            inforEmployee = await EmployeeService.getEmployeeProfile(req.portal, null, employee._id);
+            inforEmployee = await EmployeeService.getEmployeeProfile(req.portal, employee.emailInCompany);
         };
         await Log.info(req.user.email, 'GET_INFOR_PERSONAL', req.portal);
         res.status(200).json({
@@ -179,22 +179,29 @@ exports.createEmployee = async (req, res) => {
             if (checkMSNV === true) {
                 throw ["employee_number_have_exist"];
             } else {
+                // Nếu nhân viên không có email thì hệ thống sẽ tự động tạo mail , đảm bảo duy nhất
+                let emailInCompany = req.body.emailInCompany;
+                if (!emailInCompany) {
+                    emailInCompany = `${req.body.employeeNumber}@autocreated.dxclan.com`;
+                    req.body = { ...req.body, emailInCompany };
+                }
+                    
                 // Kiểm tra sự tồn tại của email công ty nhân viên
-                let checkEmail = await EmployeeService.checkEmployeeCompanyEmailExisted(req.portal, req.body.emailInCompany);
+                let checkEmail = await EmployeeService.checkEmployeeCompanyEmailExisted(req.portal, emailInCompany);
                 if (checkEmail === true) {
                     throw ["email_in_company_have_exist"];
                 } else {
                     let data = await EmployeeService.createEmployee(req.portal, req.body, req.user.company._id, fileInfor);
-                    if (req.body.emailInCompany) {
-                        let checkUser = await UserService.checkUserExited(req.portal, req.body.emailInCompany);
+                    if (emailInCompany) {
+                        let checkUser = await UserService.checkUserExited(req.portal, emailInCompany);
                         if (checkUser === false) {
                             let userInfo = {
-                                email: req.body.emailInCompany,
+                                email: emailInCompany,
                                 name: req.body.fullName
                             }
                             let user = await UserService.createUser(req.portal, userInfo, req.user.company._id);
-                            for(let x in req.body.roles){
-                                await RoleService.createRelationshipUserRole(req.portal,user._id,req.body.roles[x])
+                            for (let x in req.body.roles) {
+                                await RoleService.createRelationshipUserRole(req.portal, user._id, req.body.roles[x])
                             };
                         }
                     }
@@ -213,7 +220,7 @@ exports.createEmployee = async (req, res) => {
         await Log.error(req.user.email, 'CREATE_EMPLOYEE', req.portal);
         res.status(400).json({
             success: false,
-            messages: ["create_employee_faile"],
+            messages: Array.isArray(error) ? error : ["create_employee_faile"],
             content: {
                 error: error
             }
@@ -341,6 +348,15 @@ exports.deleteEmployee = async (req, res) => {
 exports.importEmployees = async (req, res) => {
     try {
         let data;
+        if (req.body.importData) {
+            req.body.importData = req.body.importData.map(o => {
+                if (!o.emailInCompany) {
+                    o.emailInCompany = `${o.employeeNumber}@autocreated.dxclan.com`
+                }
+                return o;
+            })  
+        }
+
         if (req.body.importType === 'Employee_Infor') {
             data = await EmployeeService.importEmployeeInfor(req.portal, req.user.company._id, req.body.importData);
         };
@@ -365,7 +381,7 @@ exports.importEmployees = async (req, res) => {
         if (req.body.importType === 'FamilyMembers') {
             data = await EmployeeService.importFamily(req.portal, req.user.company._id, req.body.importData);
         };
-        //  console.log('data', data);
+
         if (data.errorStatus === true) {
             await Log.error(req.user.email, 'IMPORT_EMPLOYEE', req.portal);
             res.status(400).json({
