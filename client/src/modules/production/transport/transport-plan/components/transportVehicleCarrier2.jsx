@@ -63,7 +63,8 @@ function TransportVehicleCarrier2(props) {
     useEffect(() => {
         // Lấy tất cả plans đã có để kiểm tra xe và người có bị trùng lặp không
         props.getAllTransportDepartments();
-        props.getAllTransportVehicles();
+        props.getAllTransportVehicles();        
+        props.getUserByRole({currentUserId: localStorage.getItem('userId'), role: 3})
     }, [transportPlan])
 
     useEffect(() => {
@@ -77,28 +78,36 @@ function TransportVehicleCarrier2(props) {
                     allVehicles.push(vehicle);
                 })
             }
-            if (transportDepartment && transportDepartment.lists && transportDepartment.lists.length !==0){
-                let lists = transportDepartment.lists;
-                let carrierOrganizationalUnit = [];
-                carrierOrganizationalUnit = lists.filter(r => r.role === 2) // role nhân viên vận chuyển
-                if (carrierOrganizationalUnit && carrierOrganizationalUnit.length !==0){
-                    carrierOrganizationalUnit.map(item =>{
-                        if (item.organizationalUnit){
-                            let organizationalUnit = item.organizationalUnit;
-                            organizationalUnit.employees && organizationalUnit.employees.length !==0
-                            && organizationalUnit.employees.map(employees => {
-                                employees.users && employees.users.length !== 0
-                                && employees.users.map(users => {
-                                    if (users.userId){
-                                        if (users.userId.name){
-                                            allCarriers.push(users.userId)
-                                        }
-                                    }
-                                })
-                            })
-                        }
+            // if (transportDepartment && transportDepartment.lists && transportDepartment.lists.length !==0){
+            //     let lists = transportDepartment.lists;
+            //     let carrierOrganizationalUnit = [];
+            //     carrierOrganizationalUnit = lists.filter(r => r.role === 2) // role nhân viên vận chuyển
+            //     if (carrierOrganizationalUnit && carrierOrganizationalUnit.length !==0){
+            //         carrierOrganizationalUnit.map(item =>{
+            //             if (item.organizationalUnit){
+            //                 let organizationalUnit = item.organizationalUnit;
+            //                 organizationalUnit.employees && organizationalUnit.employees.length !==0
+            //                 && organizationalUnit.employees.map(employees => {
+            //                     employees.users && employees.users.length !== 0
+            //                     && employees.users.map(users => {
+            //                         if (users.userId){
+            //                             if (users.userId.name){
+            //                                 allCarriers.push(users.userId)
+            //                             }
+            //                         }
+            //                     })
+            //                 })
+            //             }
+            //         })
+            //     } 
+            // }
+            if (transportDepartment && transportDepartment.listUser && transportDepartment.listUser.length!==0){
+                let listUser = transportDepartment.listUser.filter(r=>Number(r.role) === 3);
+                if (listUser && listUser.length!==0 && listUser[0].list && listUser[0].list.length!==0){
+                    listUser[0].list.map(userId => {
+                        allCarriers.push(userId);
                     })
-                } 
+                }
             }
 
             if (lday && lday.length!==0 && allVehicles && allCarriers){
@@ -461,6 +470,7 @@ function mapState(state) {
 const actions = {
     getAllTransportDepartments: transportDepartmentActions.getAllTransportDepartments,
     getAllTransportVehicles: transportVehicleActions.getAllTransportVehicles,
+    getUserByRole: transportDepartmentActions.getUserByRole,
 }
 
 const connectedTransportVehicleCarrier2 = connect(mapState, actions)(withTranslate(TransportVehicleCarrier2));

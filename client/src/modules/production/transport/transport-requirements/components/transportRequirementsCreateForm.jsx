@@ -23,7 +23,7 @@ import { BillActions } from '../../../warehouse/bill-management/redux/actions';
 import { CrmCustomerActions } from "../../../../crm/customer/redux/actions";
 import { GoodActions} from '../../../common-production/good-management/redux/actions';
 import { transportRequirementsActions } from '../redux/actions'
-import { transportDepartment, transportDepartmentActions } from '../../transport-department/redux/actions'
+import { transportDepartmentActions } from '../../transport-department/redux/actions'
 import { getGeocode } from '../../transportHelper/getGeocodeGoong'
 
 function TransportRequirementsCreateForm(props) {
@@ -275,41 +275,56 @@ function TransportRequirementsCreateForm(props) {
     // }, [billId])
     useEffect(() => {
         props.getAllTransportDepartments();
+        props.getUserByRole({currentUserId: localStorage.getItem('userId'), role: 1})
     }, [])
 
     useEffect(() => {
-        console.log(transportDepartment, " transportDepartment")
-        let newApproverList = [...approverList];
-        if (transportDepartment && transportDepartment.lists && transportDepartment.lists.length!==0){
-            // role vận chuyển === 2
-            let lists = transportDepartment.lists.filter(r => String(r.role) === "2") 
-                console.log(lists, " unit")
-                if (lists && lists.length !==0){
-                    lists.map(item =>{
-                        if (item.organizationalUnit){
-                            let organizationalUnit = item.organizationalUnit;
-                            organizationalUnit.managers && organizationalUnit.managers.length !==0
-                            && organizationalUnit.managers.map(managers => {
-                                managers.users && managers.users.length !== 0
-                                && managers.users.map(users => {
-                                    if (users.userId){
-                                        if (users.userId._id){
-                                            let check = newApproverList.filter(r =>
-                                                    String(r.value) ===  String(users.userId._id)
-                                                )
-                                            if (!(check && check.length!==0)){
-                                                newApproverList.push({
-                                                    value: users.userId._id,
-                                                    text: users.userId.name
-                                                })
-                                            }
-                                        }
-                                    }
-                                })
-                            })
-                        }
+        // console.log(transportDepartment, " transportDepartment")
+        // let newApproverList = [...approverList];
+        // if (transportDepartment && transportDepartment.lists && transportDepartment.lists.length!==0){
+        //     // role vận chuyển === 2
+        //     let lists = transportDepartment.lists.filter(r => String(r.role) === "2") 
+        //         console.log(lists, " unit")
+        //         if (lists && lists.length !==0){
+        //             lists.map(item =>{
+        //                 if (item.organizationalUnit){
+        //                     let organizationalUnit = item.organizationalUnit;
+        //                     organizationalUnit.managers && organizationalUnit.managers.length !==0
+        //                     && organizationalUnit.managers.map(managers => {
+        //                         managers.users && managers.users.length !== 0
+        //                         && managers.users.map(users => {
+        //                             if (users.userId){
+        //                                 if (users.userId._id){
+        //                                     let check = newApproverList.filter(r =>
+        //                                             String(r.value) ===  String(users.userId._id)
+        //                                         )
+        //                                     if (!(check && check.length!==0)){
+        //                                         newApproverList.push({
+        //                                             value: users.userId._id,
+        //                                             text: users.userId.name
+        //                                         })
+        //                                     }
+        //                                 }
+        //                             }
+        //                         })
+        //                     })
+        //                 }
+        //             })
+        //         } 
+        // }
+        // setApproverList(newApproverList)
+        let newApproverList = [...approverList]
+        // console.log(transportDepartment, " opopopo")
+        if (transportDepartment && transportDepartment.listUser && transportDepartment.listUser.length!==0){
+            let listUser = transportDepartment.listUser.filter(r=>Number(r.role) === 1);
+            if (listUser && listUser.length!==0 && listUser[0].list && listUser[0].list.length!==0){
+                listUser[0].list.map(userId => {
+                    newApproverList.push({
+                        value: userId._id,
+                        text: userId.name
                     })
-                } 
+                })
+            }
         }
         setApproverList(newApproverList)
     }, [transportDepartment])
@@ -538,6 +553,7 @@ const actions = {
     getCustomers: CrmCustomerActions.getCustomers,
     createTransportRequirement: transportRequirementsActions.createTransportRequirement,
     getAllTransportDepartments: transportDepartmentActions.getAllTransportDepartments,
+    getUserByRole: transportDepartmentActions.getUserByRole,
 }
 
 const connectedTransportRequirementsCreateForm = connect(mapState, actions)(withTranslate(TransportRequirementsCreateForm));

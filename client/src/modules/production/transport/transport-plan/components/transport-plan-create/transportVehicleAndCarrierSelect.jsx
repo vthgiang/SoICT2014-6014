@@ -49,6 +49,7 @@ function TransportVehicleAndCarrierSelect(props) {
         props.getAllTransportDepartments();
         props.getAllTransportVehicles();
         props.getAllTransportPlans();
+        props.getUserByRole({currentUserId: localStorage.getItem('userId'), role: 3})
     }, [])
 
     useEffect(() => {
@@ -59,31 +60,41 @@ function TransportVehicleAndCarrierSelect(props) {
                     vehiclesList.push(vehicle);
                 })
             }
+            // let carriersList = [];
+            // if (transportDepartment && transportDepartment.lists && transportDepartment.lists.length !==0){
+            //     let lists = transportDepartment.lists;
+            //     let carrierOrganizationalUnit = [];
+            //     carrierOrganizationalUnit = lists.filter(r => r.role === 2) // role nhân viên vận chuyển
+            //     console.log(carrierOrganizationalUnit, " unit")
+            //     if (carrierOrganizationalUnit && carrierOrganizationalUnit.length !==0){
+            //         carrierOrganizationalUnit.map(item =>{
+            //             if (item.organizationalUnit){
+            //                 let organizationalUnit = item.organizationalUnit;
+            //                 organizationalUnit.employees && organizationalUnit.employees.length !==0
+            //                 && organizationalUnit.employees.map(employees => {
+            //                     employees.users && employees.users.length !== 0
+            //                     && employees.users.map(users => {
+            //                         if (users.userId){
+            //                             if (users.userId.name){
+            //                                 carriersList.push(users.userId)
+            //                             }
+            //                         }
+            //                     })
+            //                 })
+            //             }
+            //         })
+            //     } 
+            // }
             let carriersList = [];
-            if (transportDepartment && transportDepartment.lists && transportDepartment.lists.length !==0){
-                let lists = transportDepartment.lists;
-                let carrierOrganizationalUnit = [];
-                carrierOrganizationalUnit = lists.filter(r => r.role === 2) // role nhân viên vận chuyển
-                console.log(carrierOrganizationalUnit, " unit")
-                if (carrierOrganizationalUnit && carrierOrganizationalUnit.length !==0){
-                    carrierOrganizationalUnit.map(item =>{
-                        if (item.organizationalUnit){
-                            let organizationalUnit = item.organizationalUnit;
-                            organizationalUnit.employees && organizationalUnit.employees.length !==0
-                            && organizationalUnit.employees.map(employees => {
-                                employees.users && employees.users.length !== 0
-                                && employees.users.map(users => {
-                                    if (users.userId){
-                                        if (users.userId.name){
-                                            carriersList.push(users.userId)
-                                        }
-                                    }
-                                })
-                            })
-                        }
+            if (transportDepartment && transportDepartment.listUser && transportDepartment.listUser.length!==0){
+                let listUser = transportDepartment.listUser.filter(r=>Number(r.role) === 3);
+                if (listUser && listUser.length!==0 && listUser[0].list && listUser[0].list.length!==0){
+                    listUser[0].list.map(userId => {
+                        carriersList.push(userId);
                     })
-                } 
+                }
             }
+            console.log(carriersList, " opppppppppppppppppppppppppppppppppppppppppppppppppppppp")
             if (transportPlan && transportPlan.lists && transportPlan.lists.length!==0){
                 transportPlan.lists.map(plan => {
                     // nếu có kế hoạch khác bị trùng thời gian
@@ -127,7 +138,7 @@ function TransportVehicleAndCarrierSelect(props) {
         }
         console.log(transportVehicle, transportDepartment)
         console.log(startTime)
-    }, [startTime, endTime, transportDepartment, transportVehicle, transportPlan])
+    }, [startTime, endTime, transportDepartment, transportVehicle, transportPlan, transportDepartment])
     /**
      * Lấy id tài xế đã có trong listVehicleAndCarrier
      */
@@ -579,6 +590,7 @@ const actions = {
     getAllTransportDepartments: transportDepartmentActions.getAllTransportDepartments,
     getAllTransportVehicles: transportVehicleActions.getAllTransportVehicles,
     getAllTransportPlans: transportPlanActions.getAllTransportPlans,
+    getUserByRole: transportDepartmentActions.getUserByRole,
 }
 const connectedTransportVehicleAndCarrierSelect = connect(mapState, actions)(withTranslate(TransportVehicleAndCarrierSelect));
 export { connectedTransportVehicleAndCarrierSelect as TransportVehicleAndCarrierSelect };

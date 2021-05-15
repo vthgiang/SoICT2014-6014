@@ -284,7 +284,7 @@ export default {
             manage_transport_human: "Nhân viên vận chuyển",
             manage_transport_route: "Hành trình vận chuyển",
             manage_transport_department: "Phân vai trò đơn vị vận chuyển",
-            carrier_today_transport_mission: "Nhiệm vụ vận chuyển hôm nay",
+            carrier_today_transport_mission: "Nhiệm vụ vận chuyển",
             carrier_all_times_transport_mission: "Nhiệm vụ vận chuyển mỗi ngày",
 
 
