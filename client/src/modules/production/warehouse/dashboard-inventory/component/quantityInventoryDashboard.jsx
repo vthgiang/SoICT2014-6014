@@ -92,7 +92,8 @@ class QuantityInventoryDashboard extends Component {
                     goodReceipt,
                     goodIssue
                 ],
-                type: 'bar'
+                type: 'bar',
+                labels: true,
             },
             padding: {
                 bottom: 20,

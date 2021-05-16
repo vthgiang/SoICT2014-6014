@@ -2611,7 +2611,11 @@ exports.editTaskByResponsibleEmployees = async (portal, data, taskId) => {
     let imageUrls = filterImageUrlInString(task?.description)
     if (imageUrls?.length > 0) {
         imageUrls?.length > 0 && imageUrls.forEach((filepath) => {
-            fs.unlinkSync(SERVER_DIR + "/" + filepath.toString());
+            try {
+                fs.unlinkSync(SERVER_DIR + "/" + filepath.toString());
+            } catch (error) {
+                
+            }
         })
     }
 
@@ -2898,7 +2902,11 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
     let imageUrls = filterImageUrlInString(taskItem?.description)
     if (imageUrls?.length > 0) {
         imageUrls?.length > 0 && imageUrls.forEach((filepath) => {
-            fs.unlinkSync(SERVER_DIR + "/" + filepath.toString());
+            try {
+                fs.unlinkSync(SERVER_DIR + "/" + filepath.toString());
+            } catch (error) {
+                
+            }
         })
     }
     
@@ -4411,7 +4419,7 @@ exports.evaluateTaskByAccountableEmployees = async (portal, data, taskId) => {
 
     await Task(connect(DB_CONNECTION, portal)).updateOne(
         { _id: taskId },
-        { $set: { status: status[0] } }
+        { $set: { status: status?.[0] } }
     );
     let task = await Task(connect(DB_CONNECTION, portal)).findById(taskId);
 

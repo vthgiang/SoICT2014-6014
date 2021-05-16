@@ -123,6 +123,7 @@ class TopTenProductBarChart extends Component {
                     arrayQuantity
                 ],
                 type: 'bar',
+                labels: true,
             },
             axis: {
                 x: {

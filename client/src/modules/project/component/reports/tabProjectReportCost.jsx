@@ -75,6 +75,7 @@ const TabProjectReportCost = (props) => {
             data: {
                 columns: preprocessData().columns,
                 type: 'bar',
+                labels: true,
             },
             bar: {
                 width: {

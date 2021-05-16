@@ -476,16 +476,16 @@ function DashboardUnitForAdmin(props) {
             let tasks = [];
             let accountableTask = [], consultedTask = [], responsibleTask = [], informedTask = [];
             taskListByStatus && taskListByStatus.forEach(task => {
-                if (task.accountableEmployees.includes(listEmployee[i].userId._id)) {
+                if (task?.accountableEmployees?.includes(listEmployee?.[i]?.userId?._id)) {
                     accountableTask = [...accountableTask, task._id]
                 }
-                if (task.consultedEmployees.includes(listEmployee[i].userId._id)) {
+                if (task?.consultedEmployees?.includes(listEmployee?.[i]?.userId?._id)) {
                     consultedTask = [...consultedTask, task._id]
                 }
-                if (task.responsibleEmployees.includes(listEmployee[i].userId._id)) {
+                if (task?.responsibleEmployees?.includes(listEmployee?.[i]?.userId?._id)) {
                     responsibleTask = [...responsibleTask, task._id]
                 }
-                if (task.informedEmployees.includes(listEmployee[i].userId._id)) {
+                if (task?.informedEmployees?.includes(listEmployee?.[i]?.userId?._id)) {
                     informedTask = [...informedTask, task._id]
                 }
             });
@@ -493,7 +493,7 @@ function DashboardUnitForAdmin(props) {
             let totalTask = tasks.filter(function (item, pos) {
                 return tasks.indexOf(item) === pos;
             })
-            employeeTasks = [...employeeTasks, { _id: listEmployee[i].userId._id, name: listEmployee[i].userId.name, totalTask: totalTask.length }]
+            employeeTasks = [...employeeTasks, { _id: listEmployee?.[i]?.userId?._id, name: listEmployee?.[i]?.userId?.name, totalTask: totalTask.length }]
         };
         if (employeeTasks.length !== 0) {
             employeeTasks = employeeTasks.sort((a, b) => b.totalTask - a.totalTask);

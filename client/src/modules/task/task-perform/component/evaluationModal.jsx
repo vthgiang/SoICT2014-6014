@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal } from '../../../../common-components/index';
 import { EvaluateByResponsibleEmployee } from './evaluateByResponsibleEmployee';
-import { EvaluateByAccountableEmployee } from './evaluateByAccountableEmployee';
+import { EvaluateByAccountableEmployee } from './evaluateByAccountableEmployeeHook';
 import { EvaluateByConsultedEmployee } from './evaluateByConsultedEmployee';
 import Swal from 'sweetalert2';
 
@@ -98,7 +98,6 @@ class EvaluationModal extends Component {
         let isInNextMonthOfEndDate = false;
         if ((yearOfEval === yearOfEndDate && monthOfEval > monthOfEndDate) || (yearOfEval > yearOfEndDate)) {
             isInNextMonthOfEndDate = true;
-            console.log('isInNextMonthOfEndDate', isInNextMonthOfEndDate, monthOfEval, monthOfEndDate);
         }
 
         // nếu expire < 0 là đang quá hạn; ngược lại thì vẫn đúng hạn
@@ -184,7 +183,6 @@ class EvaluationModal extends Component {
     handleAddEval = async () => {
         await this.setState(state => {
             let numOfNewEval = state.newEvalArray.length;
-            console.log(`new-${numOfNewEval}`);
             state.newEvalArray.unshift(`new-${numOfNewEval}`);
             state.showEval[`new-${numOfNewEval}`] = true;
             return {
@@ -219,7 +217,6 @@ class EvaluationModal extends Component {
     }
 
     handleChangeMonthEval = async (value) => {
-        console.log('value', value);
         await this.setState(state => {
             state.month[value.id] = value.evaluatingMonth
             state.dateParam[value.id] = value.date
@@ -239,8 +236,8 @@ class EvaluationModal extends Component {
     }
 
     handleChangeEnableAddItem = async (id) => {
-        let splitter = id.split("-");
-        if(splitter[0] === "new"){
+        let splitter = id?.split("-");
+        if(splitter?.[0] === "new"){
             await this.setState({ disableAddItem: false });
         }
     }
@@ -250,7 +247,6 @@ class EvaluationModal extends Component {
         let { disableAddItem, newEvalArray, dateParam, month, evaluationsList, checkMonth, showEval, content, evaluation, isEval, expire, isInNextMonthOfEndDate } = this.state;
         const { role, id, hasAccountable } = this.props;
 
-        console.log('isEval', this.state);
         let task;
         if (performtasks.task) {
             task = performtasks.task;

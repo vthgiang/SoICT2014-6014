@@ -49,6 +49,7 @@ class NormDasdboard extends Component {
                     ['Đại Cồ Việt', -10, -0, 10, 0, -10, 0, 0, 0],
                 ],
                 type: 'bar',
+                labels: true,
                 // groups: [
                 //     ['Trần Đại Nghĩa','Tạ Quang Bửu', 'Lê Thanh Nghị', 'Đại Cồ Việt']
                 // ]
