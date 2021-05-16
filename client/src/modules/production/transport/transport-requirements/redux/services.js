@@ -17,7 +17,8 @@ function getAllTransportRequirements(queryData) {
                 limit: queryData !== undefined ? queryData.limit : null,
                 // page: 1,
                 // limit: 100,
-                status: queryData !== undefined ? queryData.status : null
+                status: queryData !== undefined ? queryData.status : null,
+                currentUserId: localStorage.getItem('userId'),
             }
         },
          false, // Nếu có truy vấn thành công thì không hiện thông báo

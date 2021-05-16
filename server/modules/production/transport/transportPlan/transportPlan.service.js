@@ -56,6 +56,9 @@ exports.createTransportPlan = async (portal, data) => {
         },
         {
             path: 'transportVehicles.carriers.carrier'
+        },
+        {
+            path: 'supervisor'
         }
     ])
     ;;
@@ -91,6 +94,9 @@ exports.getAllTransportPlans = async (portal, data) => {
             },
             {
                 path: 'transportVehicles.carriers.carrier'
+            },
+            {
+                path: 'supervisor'
             }
         ])
         .skip((page - 1) * limit)
@@ -116,6 +122,9 @@ exports.getPlanById = async (portal, id) => {
         },
         {
             path: 'transportVehicles.carriers.carrier'
+        },
+        {
+            path: 'supervisor'
         }
     ]);
     if (plan) {
@@ -232,6 +241,9 @@ exports.editTransportPlan = async (portal, id, data) => {
         },
         {
             path: 'transportVehicles.carriers.carrier'
+        },
+        {
+            path: 'supervisor'
         }
     ])
     return transportPlan;
@@ -251,6 +263,9 @@ exports.editTransportPlanStatus = async (portal, id, value) => {
         },
         {
             path: 'transportVehicles.carriers.carrier'
+        },
+        {
+            path: 'supervisor'
         }
     ])
     return transportPlan;    

@@ -313,7 +313,10 @@ function TransportRequirementsCreateForm(props) {
         //         } 
         // }
         // setApproverList(newApproverList)
-        let newApproverList = [...approverList]
+        let newApproverList = [{
+            value: "title",
+            text: "--Chọn người phê duyệt--"
+        }]
         // console.log(transportDepartment, " opopopo")
         if (transportDepartment && transportDepartment.listUser && transportDepartment.listUser.length!==0){
             let listUser = transportDepartment.listUser.filter(r=>Number(r.role) === 1);

@@ -7,6 +7,7 @@ const {
 } = require(`../../../../helpers/dbHelper`);
 
 const TransportPlanServices = require("../transportPlan/transportPlan.service")
+const TransportDepartmentServices = require("../transportDepartment/transportDepartment.service")
 
 // Tạo mới mảng Ví dụ
 exports.createTransportRequirement = async (portal, data, userId) => {
@@ -77,7 +78,7 @@ exports.createTransportRequirement = async (portal, data, userId) => {
 
 
 exports.getAllTransportRequirements = async (portal, data) => {
-
+    let currentUserId = String(data.currentUserId);
     let keySearch = {};
     // if (data?.exampleName?.length > 0) {
     //     keySearch = {
@@ -105,6 +106,12 @@ exports.getAllTransportRequirements = async (portal, data) => {
             .populate({
                 path: 'goods.good'
             })
+            .populate({
+                path: 'transportPlan',
+                populate: {
+                    path: 'supervisor'
+                }
+            })
             .skip((page - 1) * limit)
             .limit(limit);
     }
@@ -121,12 +128,53 @@ exports.getAllTransportRequirements = async (portal, data) => {
             .populate({
                 path: 'approver'
             })
+            .populate({                
+                path: 'transportPlan',
+                populate: {
+                    path: 'supervisor'
+                }
+            })
     }
+    let res = [];
 
+    // Lấy danh sách người phê duyệt, xếp lịch
+    let headerUser = await TransportDepartmentServices.getUserByRole(portal, {currentUserId: currentUserId, role: 1});
+    let checkCurrentIdIsHearder = false;
+    if (headerUser && headerUser.list && headerUser.list.length!==0){
+        headerUser.list.map(item => {
+            if (String(item._id) === currentUserId){
+                checkCurrentIdIsHearder = true;
+            }
+        })
+    }
+    for (let i=0;i<requirements.length;i++){
+        // Trưởng đơn vị, người xếp lịch được xem các yêu cầu gửi tới đơn vị mình
+        let flag=true;
+        if (flag && checkCurrentIdIsHearder && headerUser && headerUser.list && headerUser.list.length!==0){
+            headerUser.list.map(item => {
+                if (String(item._id) === String(requirements[i].approver?._id)){
+                    res.push(requirements[i]);
+                    flag=false;
+                }
+            })
+        }
+        // Người tạo được xem
+        if (flag && String(requirements[i].creator?._id) === String(currentUserId)){
+            res.push(requirements[i]);
+            flag=false;
+            continue;
+        }
+        if (flag && (String(requirements[i].transportPlan?.supervisor?._id) === currentUserId)){
+            res.push(requirements[i]);
+            flag=false;
+            continue;
+        }
+
+    }
 
         // .populate('TransportPlan');
     return { 
-        data: requirements, 
+        data: res, 
         totalList 
     }
 }
@@ -178,6 +226,9 @@ exports.editTransportRequirement = async (portal, id, data) => {
         },
         {
             path: 'goods.good'
+        },
+        {
+            path: 'approver'
         }
     ])        
     return transportRequirement;

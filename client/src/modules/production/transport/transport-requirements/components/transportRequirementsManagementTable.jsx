@@ -193,6 +193,7 @@ function TransportRequirementsManagementTable(props) {
                             <th>{"Địa chỉ nhận hàng"}</th>
                             <th>{"Địa chỉ giao hàng"}</th>
                             <th>{"Người tạo"}</th>
+                            <th>{"Người xử lí yêu cầu"}</th>
                             <th>{"Trạng thái"}</th>
                             <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
                                 <DataTableSetting
@@ -227,6 +228,7 @@ function TransportRequirementsManagementTable(props) {
                                     <td>{x.fromAddress}</td>
                                     <td>{x.toAddress}</td>
                                     <td>{x.creator ? x.creator.name : ""}</td>
+                                    <td>{x.approver ? x.approver.name: ""}</td>
                                     <td>{getTransportRequirementStatus(x.status)}</td>
                                     <td style={{ textAlign: "center" }}>
                                         <a className="edit text-green" style={{ width: '5px' }} 

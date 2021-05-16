@@ -70,7 +70,7 @@ const transportRequirementStatus = [
         value: "1", text: "Chờ phê duyệt"
     },
     {
-        value: "2", text: "Chờ xếp lịch"
+        value: "2", text: "Đã phê duyệt - Chờ xếp lịch"
     },
     {
         value: "3", text: "Chờ vận chuyển"

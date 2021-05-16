@@ -131,7 +131,7 @@ function TransportPlanManagementTable(props) {
                                 <td>{x.name}</td>
                                 <td>{getPlanStatus(x.status)}</td>
                                 <td>{formatDate(x.startTime)+" - "+formatDate(x.endTime)}</td>
-                                <td>{""}</td>
+                                <td>{x.supervisor?.name}</td>
                                 <td style={{ textAlign: "center" }}>
                                     <a className="edit text-green" 
                                         style={{ width: '5px' }} 
