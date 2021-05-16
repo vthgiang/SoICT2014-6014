@@ -21,17 +21,19 @@ const changeTransportRequirementToGeocodeArray = (listRequirements) => {
     })
     return res;
 }
-let minR = 99999999;
-let selected = new Array(999);
-let vehicleUsed = new Array(999);
-let vehicleUsedRes = new Array(999);
+let minR = 999;
+let fatherDistance;
+let selected;
+let vehicleUsed;
+let vehicleUsedRes;
 let countVehicleUsed=0;
 const minRouteInDay = (listRequirements, listVehicles, numVehicles, k) => {
     if (k>=listRequirements.length){
         let tmpDistance = 0;
         for (let i=0;i<listVehicles.length;i++){
             if (vehicleUsed[i] && vehicleUsed[i].length!==0){
-                tmpDistance+=calMinDistanceVehicleGo.calMinDistanceVehicleGo(changeTransportRequirementToGeocodeArray(listRequirements), listVehicles[i]);
+                if (tmpDistance >=minR || tmpDistance >=fatherDistance) return;
+                tmpDistance+=calMinDistanceVehicleGo.calMinDistanceVehicleGo(changeTransportRequirementToGeocodeArray(vehicleUsed[i]), listVehicles[i], minR);
             }
         }
         if (tmpDistance < minR) {
@@ -42,9 +44,8 @@ const minRouteInDay = (listRequirements, listVehicles, numVehicles, k) => {
         }
         return;
     }
-
     for (let i=0; i<listRequirements.length; i++){
-        if (selected[i] === false){
+        if (selected[i] === false && check(i, listRequirements.length)){
             for (let j=0; j< listVehicles.length; j++){
                 let flag2 = true;
                 if (!(vehicleUsed[j] && vehicleUsed[j].length!==0)){
@@ -67,15 +68,24 @@ const minRouteInDay = (listRequirements, listVehicles, numVehicles, k) => {
         }
     }
 }
-
-exports.calMinDistanceOneDay = (listRequirements, listVehicles, numVehicles) => {
-    minR = 9999999;
+const check = (start, end) => {
+    for (let i = start + 1; i<end;i++){
+        if (selected[i]===true) return false;
+    }
+    return true;
+}
+exports.calMinDistanceOneDay = (listRequirements, listVehicles, numVehicles, totalDistance) => {
+    minR = 999;
+    fatherDistance = totalDistance;
+    selected = new Array(listRequirements.length);
+    vehicleUsed = new Array(listVehicles.length);
+    vehicleUsedRes = new Array(listVehicles.length)
     for (let i =0; i< listRequirements.length ;i++){
         selected[i] = false;
     }
     for (let i=0; i< listVehicles.length;i++){
         vehicleUsed[i] = [];
-    }
+    };
     minRouteInDay(listRequirements, listVehicles, numVehicles, 0);
     return {minR, vehicleUsedRes};
 }
