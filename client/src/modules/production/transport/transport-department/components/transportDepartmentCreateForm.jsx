@@ -17,7 +17,6 @@ function TransportDepartmentCreateForm(props) {
     // Chứa 2 giá trị 2 trường nhập vào và lỗi
     const [formState, setFormState] = useState({
         _id: "",
-        value: "title",
     })
 
     const [formRoleUnit1, setFormRoleUnit1] = useState({
@@ -37,7 +36,6 @@ function TransportDepartmentCreateForm(props) {
     const save = () => {
         let data = {
             organizationalUnit: formState._id,
-            role: formState.value,
             type: [
                 {
                     roleTransport: 1,
@@ -60,7 +58,7 @@ function TransportDepartmentCreateForm(props) {
      */
     const isFormValidated = () => {
         // if (formState._id!=="" && formState.value!=="title") return true;
-        if (formRoleUnit1?.roleId?.length!==0 && formRoleUnit2?.roleId?.length!==0 && formRoleUnit3?.roleId?.length!==0 && String(formState?.value)==="2")
+        if (formRoleUnit1?.roleId?.length!==0 && formRoleUnit2?.roleId?.length!==0 && formRoleUnit3?.roleId?.length!==0)
         return true; 
         else return false
     }
@@ -95,13 +93,6 @@ function TransportDepartmentCreateForm(props) {
         }
         console.log(selectedUnit);
     };
-
-    const handleRoleChange = (value) => {
-        setFormState({
-            ...formState,
-            value: value[0],
-        });
-    }
 
     const handleRole1Change = (value) => {
         let listUser = [];
@@ -267,26 +258,6 @@ function TransportDepartmentCreateForm(props) {
                             multiple={false}
                         />
                         {/* <ErrorLabel content={organizationalUnitError} /> */}
-                    </div>
-                    <div className={`form-group`}>
-                        <label>
-                            {"Vai trò của đơn vị"}
-                            <span className="text-red">*</span>
-                        </label>
-                        <SelectBox
-                            id={`select-role-for-transport-department`}
-                            className="form-control select2"
-                            style={{ width: "100%" }}
-                            value={formState.value}
-                            items={[
-                                { value: "title", text: "---Chọn vai trò cho đơn vị---" },
-                                { value: 1, text: "Quản lý vận chuyển" },
-                                { value: 2, text: "Nhân viên vận chuyển" },
-                            ]}
-                            onChange={handleRoleChange}
-                            multiple={false}
-                        />
-                        {/* <ErrorLabel content={roleError} /> */}
                     </div>
                     <div className={`form-group`}>
                         

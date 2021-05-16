@@ -18,7 +18,6 @@ exports.createTransportDepartment = async (portal, data) => {
     if (data && data.length !== 0) {
         newTransportDepartment = await TransportDepartment(connect(DB_CONNECTION, portal)).create({
             organizationalUnit: data.organizationalUnit,
-            role: data.role,
             type: data.type,
         });
         

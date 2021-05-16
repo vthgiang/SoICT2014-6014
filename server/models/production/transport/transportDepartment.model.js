@@ -8,10 +8,6 @@ const TransportDepartmentSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "OrganizationalUnit"
     },
-    role: {// Vai trò: 1. Quản lý vận chuyển, 2. Nhân viên vận chuyển
-        type: Number,
-        enum: [1, 2, ]
-    },
     type: [{
         roleTransport: { // Vai trò trong module vận chuyển: 1. Người phê duyệt, xếp lịch, 2. Người giám sát lịch trình, 3. Nhân viên vận chuyển
             type: Number,
