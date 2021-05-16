@@ -244,9 +244,10 @@ class ActionTab extends Component {
 
     evaluationTaskAction = (evaAction, taskId, role, firstTime) => {
         let newEvaluations = this.state.evaluations
+        let rating = newEvaluations?.[evaAction?._id]?.rating ?? evaAction?.rating;
         newEvaluations[evaAction?._id] = {
             ...newEvaluations[evaAction?._id],
-            rating: newEvaluations?.[evaAction?._id]?.rating ?? evaAction?.rating,
+            rating: rating === -1 ? 0 : rating,
             actionImportanceLevel: newEvaluations?.[evaAction?._id]?.actionImportanceLevel ?? evaAction?.actionImportanceLevel,
             firstTime: firstTime,
             type: "evaluation",
@@ -1416,9 +1417,9 @@ class ActionTab extends Component {
                                                                     <React.Fragment>
                                                                         {(role === "accountable" || role === "consulted" || role === "creator" || role === "informed") &&
                                                                             <>
-                                                                                <div className="form-group">
+                                                                                <div className="form-group text-sm">
                                                                                     {/* Code hiển thị: Nếu chưa chọn điểm đánh giá mới, hiển thị điểm đánh giá trong DB. Nếu chưa đánh giá, hiển thị -- */}
-                                                                                    <span style={{ marginRight: "5px" }}>Điểm đánh giá: <strong>{evaluations?.[item?._id]?.rating ?? (item?.rating !== -1 ? item?.rating : "--")}/10</strong></span> 
+                                                                                    <span style={{ marginRight: "5px" }}>Điểm đánh giá: <strong>{evaluations?.[item?._id]?.rating ?? (item?.rating !== -1 ? item?.rating : "--")}/10</strong></span>
                                                                                     <Rating
                                                                                         fractions={2}
                                                                                         stop={10}
@@ -1434,7 +1435,7 @@ class ActionTab extends Component {
                                                                                     />
                                                                                     <div style={{ display: "inline", marginLeft: "5px" }}>{this.hover?.[`${item?._id}-rating`]}</div>
                                                                                 </div>
-                                                                                <div className="form-group">
+                                                                                <div className="form-group text-sm">
                                                                                     {/* Code hiển thị: Nếu chưa chọn độ quan trọng mới, hiển thị độ quan trọng trong DB */}
                                                                                     <span style={{ marginRight: "5px" }}>Độ quan trọng: <strong>{evaluations?.[item?._id]?.actionImportanceLevel ?? item?.actionImportanceLevel}/10</strong></span>
                                                                                     <Rating
@@ -1472,7 +1473,7 @@ class ActionTab extends Component {
                                                                                             <p key={index}>
                                                                                                 <b> {element?.creator?.name} </b>
                                                                                                 {this.getRoleNameInTask(element?.role)}
-                                                                                                <span> Đánh giá:<span className="text-red"> {element?.rating}/10</span> - Độ quan trọng:<span className="text-red"> {element?.actionImportanceLevel}/10</span></span>
+                                                                                                <span> Điểm đánh giá:<span className="text-red"> {element?.rating}/10</span> - Độ quan trọng:<span className="text-red"> {element?.actionImportanceLevel}/10</span></span>
                                                                                             </p>
                                                                                         )
                                                                                     })
@@ -1714,7 +1715,7 @@ class ActionTab extends Component {
                                             <div style={{ borderColor: "#ddd", marginTop: 20 }}>
                                                 <button style={{ marginTop: 7, marginBottom: 7 }} className="btn btn-block btn-default btn-sm" onClick={this.togglePopupApproveAllAction}>Hủy đánh giá tất cả các hoạt động</button>
 
-                                                <div className="form-group">
+                                                <div className="form-group text-sm">
                                                     <span style={{ marginRight: "5px" }}>Điểm đánh giá: <strong>{ratingAll ?? 0}/10</strong></span>
                                                     <Rating
                                                         fractions={2}
@@ -1732,7 +1733,7 @@ class ActionTab extends Component {
                                                     <div style={{ display: "inline", marginLeft: "5px" }}>{this.hover?.['all-action-rating']}</div>
                                                 </div>
 
-                                                <div className="form-group">
+                                                <div className="form-group text-sm">
                                                     <span style={{ marginRight: "5px" }}>Độ quan trọng: <strong>{actionImportanceLevelAll ?? 10}/10</strong></span>
                                                     <Rating
                                                         fractions={2}
