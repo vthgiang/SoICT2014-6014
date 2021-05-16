@@ -201,7 +201,7 @@ class ActionTab extends Component {
                 this.hover[`${id}-actionImportanceLevel`] = value;
             }
         }
-        
+
         await this.setState(state => {
             return {
                 ...state,
@@ -212,7 +212,7 @@ class ActionTab extends Component {
             }
         })
     }
-    
+
     setValueRating = async (actionId, newValue) => {
         let newEvaluations = this.state.evaluations
         newEvaluations[actionId] = {
@@ -1268,7 +1268,7 @@ class ActionTab extends Component {
         const subtasks = tasks.subtasks;
         const {
             showEvaluations, selected, comment, editComment, showChildComment, editAction, action, taskActions,
-            editTaskComment, showEditTaskFile, evaluations, actionImportanceLevelAll, ratingAll, 
+            editTaskComment, showEditTaskFile, evaluations, actionImportanceLevelAll, ratingAll,
             editCommentOfTaskComment, valueRating, currentUser, hover, fileTaskEdited, showSort,
             showFile, deleteFile, taskFiles, newActionEdited, newCommentOfActionEdited, newAction,
             newCommentOfAction, newTaskCommentEdited, newCommentOfTaskComment, newTaskComment, newCommentOfTaskCommentEdited, showBoxAddLogTimer, addLogStartTime, addLogEndTime
@@ -1417,7 +1417,7 @@ class ActionTab extends Component {
                                                                         {(role === "accountable" || role === "consulted" || role === "creator" || role === "informed") &&
                                                                             <>
                                                                                 <div className="form-group">
-                                                                                    <span style={{ marginRight: "5px" }}>Điểm đánh giá hoạt động <strong>({evaluations?.[item?._id]?.rating ?? item?.rating}/10)</strong></span>
+                                                                                    <span style={{ marginRight: "5px" }}>Điểm đánh giá: <strong>{evaluations?.[item?._id]?.rating ?? item?.rating}/10</strong></span>
                                                                                     <Rating
                                                                                         fractions={2}
                                                                                         stop={10}
@@ -1434,7 +1434,7 @@ class ActionTab extends Component {
                                                                                     <div style={{ display: "inline", marginLeft: "5px" }}>{this.hover?.[`${item?._id}-rating`]}</div>
                                                                                 </div>
                                                                                 <div className="form-group">
-                                                                                    <span style={{ marginRight: "5px" }}>Độ quan trọng hoạt động <strong>({evaluations?.[item?._id]?.actionImportanceLevel ?? item?.actionImportanceLevel}/10)</strong></span>
+                                                                                    <span style={{ marginRight: "5px" }}>Độ quan trọng: <strong>{evaluations?.[item?._id]?.actionImportanceLevel ?? item?.actionImportanceLevel}/10</strong></span>
                                                                                     <Rating
                                                                                         fractions={2}
                                                                                         stop={10}
@@ -1709,11 +1709,12 @@ class ActionTab extends Component {
                                     {
                                         this.state.showPopupApproveAllAction ?
                                             (role === "accountable") && taskActions.length > 1 &&
-                                            <React.Fragment>
-                                                <h4 style={{ fontWeight: 600, color: "#616161" }}>Chọn đánh giá cho tất cả hoạt động của bạn </h4>
+                                            <div style={{ borderColor: "#ddd", marginTop: 20 }}>
+                                                <button style={{ marginTop: 7, marginBottom: 7 }} className="btn btn-block btn-default btn-sm" onClick={this.togglePopupApproveAllAction}>Hủy đánh giá tất cả các hoạt động</button>
+
                                                 <div className="form-group">
-                                                    <span style={{ marginRight: "5px" }}>Điểm đánh giá hoạt động <strong>({ratingAll ?? 0}/10)</strong></span>
-                                                    <Rating 
+                                                    <span style={{ marginRight: "5px" }}>Điểm đánh giá: <strong>{ratingAll ?? 0}/10</strong></span>
+                                                    <Rating
                                                         fractions={2}
                                                         stop={10}
                                                         emptySymbol="fa fa-star-o fa-2x"
@@ -1728,8 +1729,9 @@ class ActionTab extends Component {
                                                     />
                                                     <div style={{ display: "inline", marginLeft: "5px" }}>{this.hover?.['all-action-rating']}</div>
                                                 </div>
+
                                                 <div className="form-group">
-                                                    <span style={{ marginRight: "5px" }}>Độ quan trọng hoạt động <strong>({actionImportanceLevelAll ?? 10}/10)</strong></span>
+                                                    <span style={{ marginRight: "5px" }}>Độ quan trọng: <strong>{actionImportanceLevelAll ?? 10}/10</strong></span>
                                                     <Rating
                                                         fractions={2}
                                                         stop={10}
@@ -1745,9 +1747,8 @@ class ActionTab extends Component {
                                                     />
                                                     <div style={{ display: "inline", marginLeft: "5px" }}>{this.hover?.['all-action-actionImportanceLevel']}</div>
                                                 </div>
-                                                <a style={{ cursor: "pointer", fontWeight: '600' }} onClick={() => this.evaluationAllTaskAction(task._id, taskActions)}>Gửi đánh giá</a>
-                                                <button style={{ marginTop: '7px' }} className="btn btn-block btn-default btn-sm" onClick={this.togglePopupApproveAllAction}>Hủy đánh giá hoạt động</button>
-                                            </React.Fragment>
+                                                <button style={{ marginTop: 7, marginBottom: 7 }} className="btn btn-block btn-default btn-sm" onClick={() => this.evaluationAllTaskAction(task._id, taskActions)}>Gửi đánh giá tất cả các hoạt động</button>
+                                            </div>
                                             : (role === "accountable") && taskActions.length > 1 && <button className="btn btn-block btn-success btn-sm" onClick={this.togglePopupApproveAllAction}>Đánh giá tất cả hoạt động</button>
                                     }
                                     {(role === "responsible" || role === "accountable") && taskActions.length > 1 && <button className="btn btn-block btn-default btn-sm" onClick={this.showSort}>Sắp xếp hoạt động</button>}
