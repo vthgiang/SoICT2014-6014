@@ -62,7 +62,10 @@ class TaskInformationForm extends Component {
 
     render() {
         const { translate } = this.props;
-        const { value, task, perform, role, id, disabled, indexReRender, legendText = translate('task.task_management.detail_info') } = this.props;
+        const { value, task, perform, role, id, 
+            disabled, indexReRender, legendText = translate('task.task_management.detail_info'),
+            progress, errorOnProgress 
+        } = this.props;
         const { listInfo } = this.state;
 
         return (
@@ -78,7 +81,7 @@ class TaskInformationForm extends Component {
                             </div>
                         }
 
-                        <div className={`form-group ${value.errorOnProgress === undefined ? "" : "has-error"}`}>
+                        <div className={`form-group ${errorOnProgress === undefined ? "" : "has-error"}`}>
                             <label>{translate('task.task_management.detail_progress')} (1-100)</label>
                             <input
                                 className="form-control"
@@ -86,10 +89,10 @@ class TaskInformationForm extends Component {
                                 name="progress"
                                 placeholder={translate('task.task_management.edit_enter_progress')}
                                 onChange={this.props.handleChangeProgress}
-                                value={this.checkNullUndefined(value.progress) ? value.progress : ''}
+                                value={this.checkNullUndefined(progress) ? progress : ''}
                                 disabled={disabled}
                             />
-                            <ErrorLabel content={value.errorOnProgress} />
+                            <ErrorLabel content={errorOnProgress} />
 
                         </div>
                         {(perform !== 'evaluate' && !disabled) && role === "accountable" &&

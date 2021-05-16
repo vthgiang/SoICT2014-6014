@@ -36,6 +36,7 @@ const HumanResourceChartBySalary = (props) => {
                 columns: [],
                 hide: true,
                 type: 'bar',
+                labels: true,
             },
             axis: {
                 rotated: true,

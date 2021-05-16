@@ -295,7 +295,119 @@ exports.getAnnualLeaveByStartDateAndEndDate = async (portal, organizationalUnits
         }
     }
 }
+/**
+ * Lấy thông tin nghỉ phép trong 6 hoặc 12 tháng gần nhất theo đơn vị
+ * @param {*} organizationalUnits: array id đơn vị
+ * @param {*} numberMonth : Số tháng cần lấy thông tin nghỉ phép (6 hoặc 12)
+ * @param {*} company : Id công ty
+ * @param {*} employeeName: tên nhân viên
+ */
+ exports.getAnnualLeaveByStartDateAndEndDateUserOfOrganizationalUnits = async (portal,email, organizationalUnits, startDate, endDate, company) => {
+    if (new Date(startDate).getTime() > new Date(endDate).getTime()) {
+        return {
+            arrMonth: [],
+            listAnnualLeaveOfNumberMonth: [],
+        }
+    } else {
+        let endMonth = new Date(endDate).getMonth();
+        let endYear = new Date(endDate).getFullYear();
+        endMonth = endMonth + 1;
+        let arrMonth = [];
+        for (let i = 0;; i++) {
+            let month = endMonth - i;
+            if (month > 0) {
+                if (month.toString().length === 1) {
+                    month = `${endYear}-0${month}-01`;
+                    arrMonth = [...arrMonth, month];
+                } else {
+                    month = `${endYear}-${month}-01`;
+                    arrMonth = [...arrMonth, month];
+                }
+                if (`${startDate}-01` === month) {
+                    break;
+                }
+            } else {
+                let j = 1;
+                for (j;; j++) {
+                    month = month + 12;
+                    if (month > 0) {
+                        break;
+                    }
+                }
+                if (month.toString().length === 1) {
+                    month = `${endYear-j}-0${month}-01`;
+                    arrMonth = [...arrMonth, month];
+                } else {
+                    month = `${endYear-j}-${month}-01`;
+                    arrMonth = [...arrMonth, month];
+                }
+                if (`${startDate}-01` === month) {
+                    break;
+                }
+            }
+        }
 
+        let querys = [];
+        arrMonth.forEach(x => {
+            let date = new Date(x);
+            let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+            let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 1);
+            querys = [...querys, {
+                startDate: {
+                    "$gt": firstDay,
+                    "$lte": lastDay
+                }
+            }]
+        })
+
+        if (organizationalUnits) {
+            let keySearchEmployee = {
+                company: company
+            };
+            if(email){
+                keySearchEmployee = {
+                    ...keySearchEmployee,
+                    emailInCompany: {
+                        $regex: email,
+                        $options: "i"
+                    }
+                }
+            };
+            let employee = await Employee(connect(DB_CONNECTION, portal)).find(keySearchEmployee, {
+                _id: 1
+            });
+            let listAnnualLeaveOfNumberMonth = await AnnualLeave(connect(DB_CONNECTION, portal)).find({
+                company: company,
+                status: 'approved',
+                organizationalUnit: {
+                    $in: organizationalUnits
+                },
+                employee: {
+                    $in: employee
+                },
+                "$or": querys
+            }, {
+            })
+            return {
+                listAnnualLeaveOfNumberMonth,
+                arrMonth
+            }
+        } else {
+            let listAnnualLeaveOfNumberMonth = await AnnualLeave(connect(DB_CONNECTION, portal)).find({
+                company: company,
+                status: 'approved',
+                "$or": querys
+            }, {
+                startDate: 1,
+                endDate: 1
+            })
+            return {
+                listAnnualLeaveOfNumberMonth,
+                arrMonth
+            }
+        }
+    }
+}
 /**Lay tong so don nghi phep cho phe duyet trong thang */
 const fetchNumberOfWaitForAppoval = async (portal, company) => {
     let currentMonth = new Date();

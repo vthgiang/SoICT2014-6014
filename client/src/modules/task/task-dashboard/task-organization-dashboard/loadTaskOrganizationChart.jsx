@@ -184,7 +184,8 @@ const LoadTaskOrganizationChart = (props) => {
                     titleX,
                     dataChart
                 ],
-                type: 'bar'
+                type: 'bar',
+                labels: true,
             },
 
             padding: {

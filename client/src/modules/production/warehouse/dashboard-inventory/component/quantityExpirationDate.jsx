@@ -45,7 +45,8 @@ class QuantityExpirationDate extends Component {
                     ['x', 'Albendazole', 'Afatinib', 'Zoledronic Acid', 'Abobotulinum', 'Acid Thioctic', 'Mometasone (bôi)', 'Capecitabine', 'Mytomycin C'],
                     ['Số lượng', 10, 20, 30, 20, 10, 22, 50, 60, 20],
                 ],
-                type: 'bar'
+                type: 'bar',
+                labels: true,
             },
             axis: {
                 x: {

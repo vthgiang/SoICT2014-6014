@@ -15,6 +15,7 @@ export const UserServices = {
     getAllEmployeeOfUnitByRole,
     getAllEmployeeOfUnitByIds,
     getAllUsersWithRole,
+    getUserById,
     edit,
     create,
     destroy,
@@ -213,7 +214,17 @@ function getAllUserInAllUnitsOfCompany() {
         "super_admin.user"
     );
 }
-
+function getUserById(id){
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/user/users/${id}`,
+            method: "GET",
+        },
+        true,
+        true,
+        "super_admin.user"
+    );
+}
 function edit(id, data) {
     return sendRequest(
         {
