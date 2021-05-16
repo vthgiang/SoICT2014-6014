@@ -1417,7 +1417,8 @@ class ActionTab extends Component {
                                                                         {(role === "accountable" || role === "consulted" || role === "creator" || role === "informed") &&
                                                                             <>
                                                                                 <div className="form-group">
-                                                                                    <span style={{ marginRight: "5px" }}>Điểm đánh giá: <strong>{evaluations?.[item?._id]?.rating ?? item?.rating}/10</strong></span>
+                                                                                    {/* Code hiển thị: Nếu chưa chọn điểm đánh giá mới, hiển thị điểm đánh giá trong DB. Nếu chưa đánh giá, hiển thị -- */}
+                                                                                    <span style={{ marginRight: "5px" }}>Điểm đánh giá: <strong>{evaluations?.[item?._id]?.rating ?? (item?.rating !== -1 ? item?.rating : "--")}/10</strong></span> 
                                                                                     <Rating
                                                                                         fractions={2}
                                                                                         stop={10}
@@ -1434,6 +1435,7 @@ class ActionTab extends Component {
                                                                                     <div style={{ display: "inline", marginLeft: "5px" }}>{this.hover?.[`${item?._id}-rating`]}</div>
                                                                                 </div>
                                                                                 <div className="form-group">
+                                                                                    {/* Code hiển thị: Nếu chưa chọn độ quan trọng mới, hiển thị độ quan trọng trong DB */}
                                                                                     <span style={{ marginRight: "5px" }}>Độ quan trọng: <strong>{evaluations?.[item?._id]?.actionImportanceLevel ?? item?.actionImportanceLevel}/10</strong></span>
                                                                                     <Rating
                                                                                         fractions={2}
