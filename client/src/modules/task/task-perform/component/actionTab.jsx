@@ -1331,6 +1331,30 @@ class ActionTab extends Component {
                     <div className="tab-content">
                         <div className={selected === "taskAction" ? "active tab-pane" : "tab-pane"} id="taskAction">
 
+                            {/* Thêm hoạt động cho công việc*/}
+                            {role === "responsible" && task && !showSort &&
+                                <React.Fragment>
+                                    <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
+                                    <ContentMaker
+                                        idQuill={`add-action-${id}`}
+                                        inputCssClass="text-input-level1" controlCssClass="tool-level1 row"
+                                        onFilesChange={this.onActionFilesChange}
+                                        onFilesError={this.onFilesError}
+                                        files={newAction.files}
+                                        text={newAction.descriptionDefault}
+                                        placeholder={role === "responsible" ? translate("task.task_perform.result") : translate("task.task_perform.enter_action")}
+                                        submitButtonText={role === "responsible" ? translate("general.add") : translate("task.task_perform.create_action")}
+                                        onTextChange={(value, imgs) => {
+                                            this.setState(state => {
+                                                return { ...state, newAction: { ...state.newAction, description: value, descriptionDefault: null } }
+                                            })
+                                        }}
+                                        onSubmit={(e) => { this.submitAction(task._id, taskActions.length) }}
+                                    />
+                                </React.Fragment>
+                            }
+
+
                             {typeof taskActions !== 'undefined' && taskActions.length !== 0 ?
                                 <ShowMoreShowLess
                                     id={`description${id}`}
@@ -1675,7 +1699,7 @@ class ActionTab extends Component {
                                 </ShowMoreShowLess>
                                 : null
                             }
-                            {/* Thêm hoạt động cho công việc*/}
+                            {/* Sắp xếo hoạt động CV*/}
                             {showSort ?
                                 <div className="row" style={{ marginTop: 20 }}>
                                     <div className="col-xs-6">
@@ -1687,29 +1711,8 @@ class ActionTab extends Component {
                                 </div>
                                 :
                                 <React.Fragment>
-                                    {role === "responsible" && task &&
-                                        <React.Fragment>
-                                            <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
-                                            <ContentMaker
-                                                idQuill={`add-action-${id}`}
-                                                inputCssClass="text-input-level1" controlCssClass="tool-level1 row"
-                                                onFilesChange={this.onActionFilesChange}
-                                                onFilesError={this.onFilesError}
-                                                files={newAction.files}
-                                                text={newAction.descriptionDefault}
-                                                placeholder={role === "responsible" ? translate("task.task_perform.result") : translate("task.task_perform.enter_action")}
-                                                submitButtonText={role === "responsible" ? translate("general.add") : translate("task.task_perform.create_action")}
-                                                onTextChange={(value, imgs) => {
-                                                    this.setState(state => {
-                                                        return { ...state, newAction: { ...state.newAction, description: value, descriptionDefault: null } }
-                                                    })
-                                                }}
-                                                onSubmit={(e) => { this.submitAction(task._id, taskActions.length) }}
-                                            />
-                                        </React.Fragment>
-                                    }
-
                                     {
+                                        // Đánh giá tất cả các hoạt động CV
                                         this.state.showPopupApproveAllAction ?
                                             (role === "accountable") && taskActions.length > 1 &&
                                             <div style={{ borderColor: "#ddd", marginTop: 20 }}>
@@ -1761,6 +1764,34 @@ class ActionTab extends Component {
 
                         {/* Chuyển qua tab trao đổi */}
                         <div className={selected === "taskComment" ? "active tab-pane" : "tab-pane"} id="taskComment">
+
+                            {/* Thêm bình luận cho công việc*/}
+                            <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="User Image" />
+                            <ContentMaker
+                                idQuill={`add-comment-task-${id}`}
+                                inputCssClass="text-input-level1" controlCssClass="tool-level1 row"
+                                onFilesChange={this.onTaskCommentFilesChange}
+                                onFilesError={this.onFilesError}
+                                files={newTaskComment.files}
+                                text={newTaskComment.descriptionDefault}
+                                placeholder={translate("task.task_perform.enter_comment")}
+                                submitButtonText={translate("task.task_perform.create_comment")}
+                                onTextChange={(value, imgs) => {
+                                    this.setState(state => {
+                                        return {
+                                            ...state,
+                                            newTaskComment: {
+                                                ...state.newTaskComment,
+                                                description: value,
+                                                descriptionDefault: null
+                                            }
+                                        }
+                                    })
+
+                                }}
+                                onSubmit={(e) => { this.submitTaskComment(task._id) }}
+                            />
+
                             {typeof taskComments !== 'undefined' && taskComments.length !== 0 ?
                                 <ShowMoreShowLess
                                     id={`taskComment${id}`}
@@ -1990,32 +2021,6 @@ class ActionTab extends Component {
                                     }
                                 </ShowMoreShowLess> : null
                             }
-                            {/* Thêm bình luận cho công việc*/}
-                            <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="User Image" />
-                            <ContentMaker
-                                idQuill={`add-comment-task-${id}`}
-                                inputCssClass="text-input-level1" controlCssClass="tool-level1 row"
-                                onFilesChange={this.onTaskCommentFilesChange}
-                                onFilesError={this.onFilesError}
-                                files={newTaskComment.files}
-                                text={newTaskComment.descriptionDefault}
-                                placeholder={translate("task.task_perform.enter_comment")}
-                                submitButtonText={translate("task.task_perform.create_comment")}
-                                onTextChange={(value, imgs) => {
-                                    this.setState(state => {
-                                        return {
-                                            ...state,
-                                            newTaskComment: {
-                                                ...state.newTaskComment,
-                                                description: value,
-                                                descriptionDefault: null
-                                            }
-                                        }
-                                    })
-
-                                }}
-                                onSubmit={(e) => { this.submitTaskComment(task._id) }}
-                            />
                         </div>
 
 

@@ -275,7 +275,7 @@ export default {
             issues_list: 'Danh sách vấn đề',
             project_report: 'Báo cáo dự án',
             project_evaluation: 'Thống kê đánh giá',
-            
+
             // Quản lý vận chuyển
             manage_transport: "Quản lý vận chuyển",
             manage_transport_requirements: "Yêu cầu vận chuyển",
@@ -3371,9 +3371,9 @@ export default {
                 change_process: "Quy trình",
                 change_incoming: "Dữ liệu vào",
                 change_outgoing: "Dữ liệu ra",
-                edit_action: "Sửa hành động",
-                delete_action: "Xóa hành động",
-                mandatory_action: "Hành động bắt buộc",
+                edit_action: "Sửa hoạt động",
+                delete_action: "Xóa hoạt động",
+                mandatory_action: "Hoạt động bắt buộc",
                 confirm_action: "Xác nhận thực hiện",
                 evaluation: "Đánh giá",
                 attach_file: "Đính kèm file",
@@ -5756,7 +5756,7 @@ export default {
         manage_transport: {
             add_requirements: "Thêm yêu cầu vận chuyển",
         },
-        
+
         // Quản lý dự án
         project: {
             code: "Mã dự án",
@@ -5785,7 +5785,7 @@ export default {
             role: 'Vai trò trong dự án',
             creator: 'Người tạo dự án',
 
-            task_management:  {
+            task_management: {
                 add_err_time_cost: "Thời gian & Chi phí phải là số lớn hơn 0",
                 end_date: "Ngày dự kiến kết thúc",
 
