@@ -9,6 +9,7 @@ const {
 const TransportScheduleServices = require('../transportSchedule/transportSchedule.service');
 const TransportVehicleServices = require('../transportVehicle/transportVehicle.service');
 const TransportRequirementServices = require('../transportRequirements/transportRequirements.service')
+const TransportDepartmentServices = require("../transportDepartment/transportDepartment.service")
 
 /**
  * Tạo transportPlan mới
@@ -22,6 +23,7 @@ exports.createTransportPlan = async (portal, data) => {
         newTransportPlan = await TransportPlan(connect(DB_CONNECTION, portal)).create({
         code: data.code,
         supervisor: data.supervisor,
+        creator: data.creator,
         name: data.name,
         status: 1,
         startTime: data.startDate,
@@ -81,7 +83,7 @@ exports.getAllTransportPlans = async (portal, data) => {
     //         }
     //     }
     // }
-
+    let currentUserId = data.currentUserId;
     let page, limit;
     page = data?.page ? Number(data.page) : 1;
     limit = data?.limit ? Number(data.limit) : 200;
@@ -97,12 +99,48 @@ exports.getAllTransportPlans = async (portal, data) => {
             },
             {
                 path: 'supervisor'
+            },
+            {
+                path: 'creator'
             }
         ])
         .skip((page - 1) * limit)
         .limit(limit);
+    
+    let res = [];
+    // Lấy danh sách người phê duyệt, xếp lịch
+    let headerUser = await TransportDepartmentServices.getUserByRole(portal, {currentUserId: currentUserId, role: 1});
+    let checkCurrentIdIsHearder = false;
+    if (headerUser && headerUser.list && headerUser.list.length!==0){
+        headerUser.list.map(item => {
+            if (String(item._id) === currentUserId){
+                checkCurrentIdIsHearder = true;
+            }
+        })
+    }
+    for (let i=0;i<plans.length;i++){
+        // Trưởng đơn vị, người xếp lịch được xem các plan (đồng thời cũng là người tạo)
+        let flag=true;
+        if (flag && checkCurrentIdIsHearder && headerUser && headerUser.list && headerUser.list.length!==0){
+            console.log(plans[i].creator);
+            headerUser.list.map(item => {
+                if (String(item._id) === String(plans[i].creator?._id)){
+                    res.push(plans[i]);
+                    flag=false;
+                }
+            })
+        }
+        // Người giám sát được xem
+        if (flag && String(plans[i].supervisor?._id) === String(currentUserId)){
+            res.push(plans[i]);
+            flag=false;
+            continue;
+        }
+    }
+    // console.log(res.length);
+    totalList = res.length;
     return { 
-        data: plans, 
+        data: res, 
         totalList 
     }
 }

@@ -105,6 +105,9 @@ function TransportVehicleCarrier2(props) {
                 let listUser = transportDepartment.listUser.filter(r=>Number(r.role) === 3);
                 if (listUser && listUser.length!==0 && listUser[0].list && listUser[0].list.length!==0){
                     listUser[0].list.map(userId => {
+                        if (allCarriers.length!==0){
+                            allCarriers = allCarriers.filter(r=>String(r._id)!==String(userId._id));
+                        }
                         allCarriers.push(userId);
                     })
                 }

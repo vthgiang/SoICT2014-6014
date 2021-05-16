@@ -89,12 +89,15 @@ function TransportVehicleAndCarrierSelect(props) {
             if (transportDepartment && transportDepartment.listUser && transportDepartment.listUser.length!==0){
                 let listUser = transportDepartment.listUser.filter(r=>Number(r.role) === 3);
                 if (listUser && listUser.length!==0 && listUser[0].list && listUser[0].list.length!==0){
-                    listUser[0].list.map(userId => {
+                    listUser[0].list.map(userId => {                        
+                        if (carriersList.length!==0){
+                            carriersList = carriersList.filter(r=>String(r._id)!==String(userId._id));
+                        }
                         carriersList.push(userId);
                     })
                 }
             }
-            console.log(carriersList, " opppppppppppppppppppppppppppppppppppppppppppppppppppppp")
+            // console.log(carriersList, " opppppppppppppppppppppppppppppppppppppppppppppppppppppp")
             if (transportPlan && transportPlan.lists && transportPlan.lists.length!==0){
                 transportPlan.lists.map(plan => {
                     // nếu có kế hoạch khác bị trùng thời gian

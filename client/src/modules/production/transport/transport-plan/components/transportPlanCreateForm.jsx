@@ -98,7 +98,7 @@ function TransportPlanCreateForm(props) {
     }
 
     const save = () => {
-        props.createTransportPlan(formSchedule);
+        props.createTransportPlan({...formSchedule, creator: localStorage.getItem('userId')});
     }
     
     /**

@@ -9,6 +9,10 @@ const TransportPlanSchema = new Schema({
     name: {
         type: String,
     },
+    creator: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+    },
     supervisor: {
         type: Schema.Types.ObjectId,
         ref: 'User',
