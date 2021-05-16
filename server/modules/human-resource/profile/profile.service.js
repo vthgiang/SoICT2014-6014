@@ -22,6 +22,8 @@ const {
 
 const fs = require('fs');
 const mongoose = require("mongoose");
+const UserService = require(`../../super-admin/user/user.service`);
+const RoleService = require(`../../super-admin/role/role.service`);
 
 /**
  * Lấy thông tin phòng ban, chức vụ của nhân viên theo emailCompany
@@ -1142,36 +1144,49 @@ exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company)
     queryEditCreateDeleteDocumentInCollection(oldEmployee._id, company, AnnualLeave, deleteAnnualLeaves, editAnnualLeaves, createAnnualLeaves);
     queryEditCreateDeleteDocumentInCollection(oldEmployee._id, company, EmployeeCourse, deleteCourses, editCourses, createCourses);
    
-    let user;
     if (employee.emailInCompany) {
         // Kiểm tra xem email mới của nhân viên có tồn tại trong bảng user hay chưa
-        user = await User(connect(DB_CONNECTION, portal)).findOne(
+        const user = await User(connect(DB_CONNECTION, portal)).findOne(
             {
                 email: employee.emailInCompany,
             });
         
-        // Nếu chưa có cập nhật lại email cho user
-        if (!user) {
+        // Kiểm tra nhân viên được edit  có tài khoản người dùng hay chưa.
+        const oldUser = await User(connect(DB_CONNECTION, portal)).findOne({
+            email: oldMailInCompany
+        })
+
+        // Nếu email mới chưa trùng trong bảng user và employees đang chỉnh sửa đã có tài khoản đăng nhạp vào hệ thống.
+        if ((!user || user && employee.emailInCompany === oldUser.email) && oldUser) {
             await User(connect(DB_CONNECTION, portal)).findOneAndUpdate({
                 email: oldMailInCompany
-            },{$set: {email: employee.emailInCompany} })
-        }
-    }
+            }, {
+                $set: { email: employee.emailInCompany}
+            })
 
-    // Đổi roles >Khanh làm
-    if(user){
-        await UserRole(connect(DB_CONNECTION, portal)).deleteMany({
-            userId : user._id
-        });
-        let dataRoles = await roles.map((roleId) => {
-            return {
-                userId : user._id,
-                roleId : roleId
-            };
-        });
-        await UserRole(
-            connect(DB_CONNECTION, portal)
-        ).insertMany(dataRoles);
+            await UserRole(connect(DB_CONNECTION, portal)).deleteMany({
+                userId : oldUser._id
+            });
+
+            if (roles && roles.length > 0)
+                for (let x in roles) {
+                    await RoleService.createRelationshipUserRole(portal, oldUser._id, roles[x]);
+                };
+        }
+
+        // Nếu email mới chưa trùng trong bảng user và employees đang chỉnh sửa chưa có tài khoản thì tạo mới.
+        if (!user && !oldUser) {
+            let userInfo = {
+                email: employee.emailInCompany,
+                name: employee.fullName
+            }
+
+            let user = await UserService.createUser(portal, userInfo, company);
+            if (roles && roles.length > 0)
+                for(let x in roles){
+                    await RoleService.createRelationshipUserRole(portal, user._id, roles[x]);
+                };
+        }
     }
 
     // Lấy thông tin nhân viên vừa chỉnh sửa
