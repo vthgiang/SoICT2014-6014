@@ -118,7 +118,8 @@ function AdministrationStatisticsReport(props) {
             },
             data: {
                 columns: dataChart,
-                type: 'bar'
+                type: 'bar',
+                labels: true,
             },
 
         })
@@ -345,6 +346,7 @@ function AdministrationStatisticsReport(props) {
             data: {
                 columns: [count],
                 type: 'bar',
+                labels: true,
             },
 
             padding: {

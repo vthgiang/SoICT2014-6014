@@ -51,7 +51,8 @@ function KpiUser(props) {
             },
             data: {
                 columns: dataChart,
-                type: 'bar'
+                type: 'bar',
+                labels: true,
             },
 
         })

@@ -49,6 +49,7 @@ class QuantityNorm extends Component {
                     ['Số lượng sắp xuất', 200, 100, 100, 100, 400, 128, 270, 130, 230]
                 ],
                 type: 'bar',
+                labels: true,
                 types: {
                     'Số lượng sắp nhập': 'line',
                     'Số lượng sắp xuất': 'line'

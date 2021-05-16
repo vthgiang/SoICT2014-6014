@@ -206,6 +206,7 @@ class AssetDisposalChart extends Component {
                         dataColumnChart.value
                     ],
                     type: 'bar',
+                    labels: true,
                     axes: {
                         'Giá trị': 'y2',
                         'Số lượng': 'y'
@@ -252,6 +253,7 @@ class AssetDisposalChart extends Component {
                         dataColumnChart.value
                     ],
                     type: 'bar',
+                    labels: true,
                     axes: {
                         'Value': 'y2',
                         'Amount': 'y'

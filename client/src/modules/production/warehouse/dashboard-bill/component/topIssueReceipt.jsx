@@ -39,6 +39,7 @@ class TopIssueReceipt extends Component {
                     ['Số lượng', 600, 500, 450, 450, 300],
                 ],
                 type: 'bar',
+                labels: true,
             },
             axis: {
                 x: {

@@ -54,6 +54,7 @@ const SalaryOfOrganizationalUnitsChart = (props) => {
                 columns: [],
                 hide: true,
                 type: 'bar',
+                labels: true,
             },
             padding: {
                 bottom: 20,

@@ -33,6 +33,7 @@ function BarChartDomain(props) {
             data: {
                 columns: [count],
                 type: 'bar',
+                labels: true,
             },
 
             padding: {
