@@ -17,6 +17,11 @@ function StockEditForm(props) {
         managementGood: []
     }
 
+    const MANAGEMENT_ROLE = {
+        role: '',
+        managementGood: []
+    };
+
     const [state, setState] = useState({
         code: '',
         name: '',
@@ -25,7 +30,7 @@ function StockEditForm(props) {
         goods: [],
         good: Object.assign({}, EMPTY_GOOD),
         managementLocation: [],
-        // role: Object.assign({}, MANAGEMENT_ROLE),
+        role: Object.assign({}, MANAGEMENT_ROLE),
         description: '',
         editInfo: false,
         editInfoRole: false,
@@ -603,8 +608,8 @@ function StockEditForm(props) {
                                                         <td>{x.role.name}</td>
                                                         <td>{x.managementGood ? x.managementGood.map((item, key) => { return <p key={key}>{translate(`manage_warehouse.stock_management.${item}`)}</p> }) : ''}</td>
                                                         <td>
-                                                            <a href="#abc" className="edit" title={translate('general.edit')} onClick={() => handleEditRole(x, index)}><i className="material-icons"></i></a>
-                                                            <a href="#abc" className="delete" title={translate('general.delete')} onClick={() => handleDeleteRole(index)}><i className="material-icons"></i></a>
+                                                            <a className="edit" title={translate('general.edit')} onClick={() => handleEditRole(x, index)}><i className="material-icons"></i></a>
+                                                            <a className="delete" title={translate('general.delete')} onClick={() => handleDeleteRole(index)}><i className="material-icons"></i></a>
                                                         </td>
                                                     </tr>
                                                 )
@@ -673,8 +678,8 @@ function StockEditForm(props) {
                                                         <td>{x.minQuantity}</td>
                                                         <td>{x.maxQuantity}</td>
                                                         <td>
-                                                            <a href="#abc" className="edit" title={translate('general.edit')} onClick={() => handleEditGood(x, index)}><i className="material-icons"></i></a>
-                                                            <a href="#abc" className="delete" title={translate('general.delete')} onClick={() => handleDeleteGood(index)}><i className="material-icons"></i></a>
+                                                            <a className="edit" title={translate('general.edit')} onClick={() => handleEditGood(x, index)}><i className="material-icons"></i></a>
+                                                            <a className="delete" title={translate('general.delete')} onClick={() => handleDeleteGood(index)}><i className="material-icons"></i></a>
                                                         </td>
                                                     </tr>
                                                 )
