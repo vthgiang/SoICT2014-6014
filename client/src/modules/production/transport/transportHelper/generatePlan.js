@@ -100,9 +100,9 @@ const generatePlanShortestDistance = (listRequirement, countDay, listVehiclesDay
         for (let i = 0; i< countDay; i++){
             if (day[i] && day[i].length!==0){
                 
-                console.time('start');
+                // console.time('start');
                 let k = calMinDistance.calMinDistanceOneDay(day[i], listVehiclesDays[i], numVehiclesDays[i], totalDistance);
-                console.timeEnd('start');  
+                // console.timeEnd('start');  
                 minR = k.minR;
                 vehicleUsedRes[i] = k.vehicleUsedRes?.slice();
                 distance+=minR;
@@ -1109,6 +1109,6 @@ let allVehicles = [
     }
 ]
 
-let o = generatePlanFastestMove(allTransportRequirements, null, allVehicles, allCarriers, 2, "2021-05-16");
-console.log("haha")
+// let o = generatePlanFastestMove(allTransportRequirements, null, allVehicles, allCarriers, 2, "2021-05-16");
+// console.log("haha")
 // console.log(k);

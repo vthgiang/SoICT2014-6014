@@ -5,7 +5,7 @@
 export const isTimeZoneDateSmaller = (date1, date2) => { //Ngày bắt đầu trước ngày kết thúc
     let startTimeZoneDate = new Date(date1);
     let endTimeZoneDate = new Date(date2);
-    startTimeZoneDate.setHours(11,0,1);
+    startTimeZoneDate.setHours(12,0,1);
     endTimeZoneDate.setHours(10,0,1);
     if (startTimeZoneDate.getTime() < endTimeZoneDate.getTime()) {
         return true

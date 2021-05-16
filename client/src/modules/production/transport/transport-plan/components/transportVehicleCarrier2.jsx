@@ -238,7 +238,7 @@ function TransportVehicleCarrier2(props) {
     }
     const [planChosenSeen, setPlanChosenSeen] = useState({})
     const handleShowDetailPlan = (plan) => {
-        console.log(plan);
+        // console.log(plan);
         setPlanChosenSeen(plan);
         window.$('#modal-detail-info-transport-plan2').modal('show');
     }
@@ -402,7 +402,7 @@ function TransportVehicleCarrier2(props) {
                 </div>
             </div>
 
-            <div className="box box-solid">
+            {/* <div className="box box-solid">
                 <div className="box-header">
                     <div className="box-title">{"Danh sách công việc vận chuyển nhân viên theo ngày"}</div>
                 </div>
@@ -416,50 +416,15 @@ function TransportVehicleCarrier2(props) {
                                     <th>{"STT"}</th>
                                     <th>{"Tên nhân viên"}</th>
                                     <th>{"Email"}</th>
-                                    {
-                                        listDay && listDay.length!==0
-                                        &&
-                                        listDay.map(item => (
-                                            <th>{formatDate(item)}</th>
-                                        )) 
-                                    }
                                 </tr>
                             </thead>
                             <tbody className="transport-special-row">
-                            {
-                                listAllCarriers && listAllCarriers.length!==0
-                                &&
-                                listAllCarriers.map((carrier, index1)=>(
-                                    carrier &&
-                                    <tr key={carrier._id} className="word-no-break">
-                                        <td>{index1+1}</td>
-                                        <td>{carrier.name}</td>
-                                        <td>{carrier.email}</td>
-                                        {
-                                            listDay && listDay.length!==0
-                                            && listDay.map((day, index2) => (
-                                                <td className="tooltip-checkbox-transport">
-                                                    <span className={"icon "+getStatusTickBox(formatDate(day), carrier._id)}
-                                                    title={"ngay-nguoi"} 
-                                                    >
-
-                                                    </span>
-                                                    <span className="tooltiptext">
-                                                        <a style={{ color: "white" }} 
-                                                            // onClick={() => this.handleShowDetailManufacturingCommand(command)}
-                                                        >{getCurrentPlan(formatDate(day), carrier._id)?.code}</a>
-                                                    </span>
-                                                </td>
-                                            ))
-                                        }
-                                    </tr>
-                                ))
-                            }
+                            
                             </tbody>
                         </table>
                     </div>
                 </div>
-            </div>
+            </div> */}
          
         </div>
     )

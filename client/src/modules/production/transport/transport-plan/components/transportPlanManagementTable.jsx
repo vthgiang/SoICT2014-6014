@@ -78,19 +78,20 @@ function TransportPlanManagementTable(props) {
         return res;
     }
     return (
-        <div className="nav-tabs-custom">
-        <ul className="nav nav-tabs">
-            <li className="active"><a href="#list-transport-plan" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Kế hoạch vận chuyển"}</a></li>
-            {/* <li><a href="#list-vehicle-carrier" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Thống kê phương tiện và nhân viên vận chuyển"}</a></li> */}
-            <li><a href="#list-vehicle-carrier2" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Thống kê phương tiện và nhân viên vận chuyển"}</a></li>
-        </ul>
-        <div className="tab-content">
-            <div className="tab-pane active" id="list-transport-plan">
+        // <div className="nav-tabs-custom">
+        // <ul className="nav nav-tabs">
+        //     <li className="active"><a href="#list-transport-plan" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Kế hoạch vận chuyển"}</a></li>
+        //     {/* <li><a href="#list-vehicle-carrier" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Thống kê phương tiện và nhân viên vận chuyển"}</a></li> */}
+        //     <li><a href="#list-vehicle-carrier2" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Thống kê phương tiện và nhân viên vận chuyển"}</a></li>
+        // </ul>
+        // <div className="tab-content">
+        //     <div className="tab-pane active" id="list-transport-plan">
                 <div className="box-body qlcv">
                 <TransportPlanGenerate 
                     transportPlan={transportPlan}
                 />
                 <TransportPlanCreateForm 
+                    transportPlan={transportPlan}
                     currentDateClient={getCurrentDate()}
                 />
                 <TransportPlanEditForm
@@ -162,22 +163,22 @@ function TransportPlanManagementTable(props) {
                     </tbody>
                 </table>
             </div>
-            </div>
-            {/* <div className="tab-pane" id="list-vehicle-carrier"> */}
-                {/* <TransportVehicleAndCarrierListed 
-                    transportPlan = {transportPlan}
-                    // key={transportPlan}
-                /> */}
-            {/* </div> */}
-            <div className="tab-pane" id="list-vehicle-carrier2">
-                <TransportVehicleCarrier2 
-                    transportPlan = {transportPlan}
-                    // key={transportPlan}
-                />
-            </div>
+    //         {/* </div>
+    //         <div className="tab-pane" id="list-vehicle-carrier">
+    //             <TransportVehicleAndCarrierListed 
+    //                 transportPlan = {transportPlan}
+    //                 // key={transportPlan}
+    //             />
+    //         </div>
+    //         <div className="tab-pane" id="list-vehicle-carrier2">
+    //             <TransportVehicleCarrier2 
+    //                 transportPlan = {transportPlan}
+    //                 // key={transportPlan}
+    //             />
+    //         </div>
 
-        </div>
-    </div>
+    //     </div>
+    // </div> */}
     )
 }
 

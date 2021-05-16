@@ -8,6 +8,7 @@ import ValidationHelper from '../../../../../helpers/validationHelper';
 
 import { LocationMap } from './map/locationMap'
 import { TransportVehicleAndCarrierSelect } from './transport-plan-create/transportVehicleAndCarrierSelect'
+import { TransportVehicleCarrier2 } from './transportVehicleCarrier2'
 
 import { transportPlanActions } from '../redux/actions';
 import { transportDepartmentActions } from '../../transport-department/redux/actions'
@@ -18,7 +19,7 @@ import {} from './transport-plan.css'
 
 function TransportPlanCreateForm(props) {
     // let allTransportRequirements;
-    let {transportRequirements, transportDepartment} = props;
+    let {transportRequirements, transportDepartment, transportPlan} = props;
     const [formSchedule, setFormSchedule] = useState({
         code: "",
         startDate: "",
@@ -99,6 +100,13 @@ function TransportPlanCreateForm(props) {
 
     const save = () => {
         props.createTransportPlan({...formSchedule, creator: localStorage.getItem('userId')});
+        setFormSchedule({
+            code: "",
+            startDate: "",
+            endDate: "",
+            name: "Kế hoạch vận chuyển",
+            supervisor: "title"
+        })
     }
     
     /**
@@ -146,7 +154,7 @@ function TransportPlanCreateForm(props) {
         else{
             arr.push(requirement._id);
         }
-        console.log(arr);
+        // console.log(arr);
         setListSelectedRequirements(arr);
     }
 
@@ -206,7 +214,7 @@ function TransportPlanCreateForm(props) {
             &&listSelectedRequirements && listSelectedRequirements.length !==0){
             listRequirements.map((item, index) => {
                 if (listSelectedRequirements.indexOf(item._id) >=0){
-                    console.log(item, "otem");
+                    // console.log(item, "otem");
                     locationArr.push(
                         {
                             name: String(index+1),
@@ -226,7 +234,7 @@ function TransportPlanCreateForm(props) {
                 }
             })
         }
-        console.log(locationArr, " ar")
+        // console.log(locationArr, " ar")
         setListSelectedRequirementsLocation(locationArr);
     }, [listSelectedRequirements])
 
@@ -260,11 +268,18 @@ function TransportPlanCreateForm(props) {
             <form id="form-create-transport-requirements" >
             <div className="nav-tabs-custom">
                 <ul className="nav nav-tabs">
-                    <li className="active"><a href="#plan-list-transport-requirement" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Kế hoạch vận chuyển"}</a></li>
-                    <li><a href="#plan-transport-vehicle-carrier" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Xếp kế hoạch vận chuyển"}</a></li>
+                    <li className="active"><a href="#plan-list-transport-carrier" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Thống kê phương tiện và nhân viên"}</a></li>
+                    <li><a href="#plan-list-transport-requirement" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Chọn yêu cầu vận chuyển"}</a></li>
+                    <li><a href="#plan-transport-vehicle-carrier" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Chọn phương tiện và nhân viên"}</a></li>
                 </ul>
                 <div className="tab-content">
-                    <div className="tab-pane active" id="plan-list-transport-requirement">
+                <div className="tab-pane active" id="plan-list-transport-carrier">
+                    <TransportVehicleCarrier2 
+                        transportPlan = {transportPlan}
+                        // key={transportPlan}
+                    />
+                </div>                
+                    <div className="tab-pane" id="plan-list-transport-requirement">
                         <div className="box-body">
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 
@@ -440,7 +455,7 @@ function TransportPlanCreateForm(props) {
 
 function mapState(state) {
     const {transportRequirements, transportDepartment} = state;
-    console.log(transportDepartment);
+    // console.log(transportDepartment);
     return {transportRequirements, transportDepartment}
 }
 
