@@ -1,7 +1,6 @@
 import React, { Component, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate, IntlActions } from 'react-redux-multilingual';
-import Sortable from 'sortablejs';
 import Swal from 'sweetalert2';
 import { CrmStatusActions } from '../../status/redux/actions';
 import CustomerStatusAddForm from './customerStatusAddForm';
