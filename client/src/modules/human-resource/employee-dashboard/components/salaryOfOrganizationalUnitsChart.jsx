@@ -51,8 +51,7 @@ const SalaryOfOrganizationalUnitsChart = (props) => {
         let chart = c3.generate({
             bindto: salaryChart.current,
             data: {
-                columns: [],
-                hide: true,
+                columns: [[data.nameData, ...data.data1]],
                 type: 'bar',
                 labels: true,
             },
@@ -75,12 +74,6 @@ const SalaryOfOrganizationalUnitsChart = (props) => {
                 }
             }
         });
-
-        setTimeout(function () {
-            chart.load({
-                columns: [[data.nameData, ...data.data1]],
-            });
-        }, 100);
     };
 
     const { translate, salary, department } = props;
