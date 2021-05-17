@@ -14,7 +14,7 @@ function TrendsInChildrenOrganizationalUnitKpiChart(props) {
     const chart = null;
 
     const [state, setState] = useState({
-        currentRole: null,
+        currentRole: localStorage.getItem("currentRole"),
         dataStatus: DATA_STATUS.QUERYING,
     });
 
@@ -25,12 +25,11 @@ function TrendsInChildrenOrganizationalUnitKpiChart(props) {
         props.getAllEmployeeKpiInChildrenOrganizationalUnit(localStorage.getItem("currentRole"), props.month, props.organizationalUnitId);
         props.getAllTaskOfChildrenOrganizationalUnit(localStorage.getItem("currentRole"), props.month, props.organizationalUnitId);
 
-        setState( {
+        setState({
             ...state,
-            currentRole: localStorage.getItem("currentRole"),
             dataStatus: DATA_STATUS.QUERYING
         })
-    },[])
+    }, [])
 
     useEffect(() => {
         if (state.currentRole !== localStorage.getItem("currentRole")) {
@@ -38,26 +37,11 @@ function TrendsInChildrenOrganizationalUnitKpiChart(props) {
             props.getAllEmployeeKpiInChildrenOrganizationalUnit(localStorage.getItem("currentRole"), props.month, props.organizationalUnitId);
             props.getAllTaskOfChildrenOrganizationalUnit(localStorage.getItem("currentRole"), props.month, props.organizationalUnitId);
 
-            setState(  {
+            setState({
                 ...state,
                 dataStatus: DATA_STATUS.QUERYING,
             });
         }
-
-        if (props.organizationalUnitId !== state.organizationalUnitId || props.month !== state.month) {
-            props.getCurrentKPIUnit(state.currentRole, props.organizationalUnitId, props.month);
-            props.getAllEmployeeKpiInChildrenOrganizationalUnit(state.currentRole, state.month, props.organizationalUnitId);
-            props.getAllTaskOfChildrenOrganizationalUnit(state.currentRole, props.month, props.organizationalUnitId)
-
-            setState( {
-                ...state,
-                dataStatus: DATA_STATUS.QUERYING,
-            });
-
-        }
-    },[])
-    useEffect(() => {
-
 
         if (state.dataStatus === DATA_STATUS.QUERYING) {
             if(props.createKpiUnit.currentKPI && props.dashboardOrganizationalUnitKpi.employeeKpisOfChildUnit && props.dashboardOrganizationalUnitKpi.tasksOfChildrenOrganizationalUnit) {
@@ -92,6 +76,17 @@ function TrendsInChildrenOrganizationalUnitKpiChart(props) {
             month: props.month
         })
     }
+
+    useEffect(() => {
+        props.getCurrentKPIUnit(state.currentRole, props.organizationalUnitId, props.month);
+        props.getAllEmployeeKpiInChildrenOrganizationalUnit(state.currentRole, state.month, props.organizationalUnitId);
+        props.getAllTaskOfChildrenOrganizationalUnit(state.currentRole, props.month, props.organizationalUnitId)
+
+        setState( {
+            ...state,
+            dataStatus: DATA_STATUS.QUERYING,
+        });
+    }, [state.organizationalUnitId, state.month])
 
     /** Hàm tiện ích lấy các KPI con có cùng parent */
     const getArrayListChildTargetSameParent = () => {

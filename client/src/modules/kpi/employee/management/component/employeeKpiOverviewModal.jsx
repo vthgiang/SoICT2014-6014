@@ -37,7 +37,9 @@ function EmployeeKpiOverviewModal(props) {
     let list;
     if (kpimembers?.currentKPI) {
         list = _deepClone(kpimembers.currentKPI?.kpis);
-        list.sort((a, b) => (a.weight < b.weight) ? 1 : -1);
+        if (list?.length > 0) {
+            list.sort((a, b) => (a.weight < b.weight) ? 1 : -1);
+        }
     }
 
     return (
