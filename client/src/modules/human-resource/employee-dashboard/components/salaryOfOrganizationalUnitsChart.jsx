@@ -51,8 +51,7 @@ const SalaryOfOrganizationalUnitsChart = (props) => {
         let chart = c3.generate({
             bindto: salaryChart.current,
             data: {
-                columns: [],
-                hide: true,
+                columns: [[data.nameData, ...data.data1]],
                 type: 'bar',
                 labels: true,
             },
@@ -75,20 +74,14 @@ const SalaryOfOrganizationalUnitsChart = (props) => {
                 }
             }
         });
-
-        setTimeout(function () {
-            chart.load({
-                columns: [[data.nameData, ...data.data1]],
-            });
-        }, 100);
     };
 
     const { translate, salary, department } = props;
 
-    const { monthShow } = props;
+    const { monthShow, organizationalUnits } = props;
     const { unit } = state;
 
-    let organizationalUnitsName = department.list.map(x => { return { _id: x._id, name: x.name, salary: 0 } });
+    let organizationalUnitsName = department?.list?.filter(item => organizationalUnits.includes(item?._id))?.map(x => { return { _id: x._id, name: x.name, salary: 0 } });
     let data = salary.listSalaryByMonth;
     if (data.length !== 0) {
         data = data.map(x => {

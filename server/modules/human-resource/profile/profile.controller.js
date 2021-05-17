@@ -262,7 +262,6 @@ exports.updateEmployeeInformation = async (req, res) => {
         // Kiểm tra dữ liệu truyền vào
         if (req.body.employee.employeeNumber === undefined || req.body.employee.employeeNumber.trim() === "") {
             throw ["employee_number_required"];
-
         }else if (req.body.employee.fullName === undefined || req.body.employee.fullName.trim() === "") {
             throw ["full_name_required"];
         } else {
@@ -282,20 +281,6 @@ exports.updateEmployeeInformation = async (req, res) => {
                 }
             }
             let data = await EmployeeService.updateEmployeeInformation(req.portal, req.params.id, req.body, fileInfor, req.user.company._id);
-            // if (req.body.employee.emailInCompany) {
-            //     let checkUser = await UserService.checkUserExited(req.portal, req.body.employee.emailInCompany);
-            //     console.log('checkUser', checkUser);
-            //     if (checkUser === false) {
-            //         let userInfo = {
-            //             email: req.body.employee.emailInCompany,
-            //             name: req.body.employee.fullName
-            //         }
-            //         let user = await UserService.createUser(req.portal, userInfo, req.user.company._id);
-            //         for(let x in req.body.roles){
-            //             await RoleService.createRelationshipUserRole(req.portal,user._id,req.body.roles[x]);
-            //         };
-            //     }
-            // }
             
             await Log.info(req.user.email, 'EDIT_EMPLOYEE', req.portal);
             res.status(200).json({

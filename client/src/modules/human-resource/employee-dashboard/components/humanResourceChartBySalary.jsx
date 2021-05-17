@@ -33,8 +33,7 @@ const HumanResourceChartBySalary = (props) => {
         let chart = c3.generate({
             bindto: rotateChart.current,
             data: {
-                columns: [],
-                hide: true,
+                columns: [[data.nameData, ...data.data1]],
                 type: 'bar',
                 labels: true,
             },
@@ -51,12 +50,6 @@ const HumanResourceChartBySalary = (props) => {
                 }
             }
         });
-
-        setTimeout(function () {
-            chart.load({
-                columns: [[data.nameData, ...data.data1]],
-            });
-        }, 100);
     };
 
     /**
