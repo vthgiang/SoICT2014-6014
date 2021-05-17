@@ -686,7 +686,7 @@ function EvaluateByAccountableEmployee(props) {
     }
 
     // hàm cập nhật progress
-    function handleChangeProgress (e) {
+    const handleChangeProgress = async (e) => {
         let { translate } = props;
         let msg;
         let value = parseInt(e.target.value);
@@ -696,32 +696,44 @@ function EvaluateByAccountableEmployee(props) {
 
         setProgress(value)
         setErrorOnProgress(msg)
-        handleChangeAutoPoint();
-    }
 
-    // hàm tính điểm tự dộng
-    const calcAutomaticPoint = () => {
         let taskInfo = {
             task: state.task,
-            progress: state.progress,
+            progress: value,
             date: state.endDate,
             time: state.endTime,
             info: state.info,
         };
-
         let automaticPoint = AutomaticTaskPointCalculator.calcAutoPoint(taskInfo);
         if (isNaN(automaticPoint)) automaticPoint = undefined
+        if (automaticPoint < 0) {
+            automaticPoint = 0;
+        };
+        setState({
+            ...state,
+            autoPoint: automaticPoint,
+            showAutoPointInfo: undefined
+        });
 
-        return automaticPoint;
+
     }
 
     // hàm cập nhật điểm tự động
     const handleChangeAutoPoint = async () => {
-        let automaticPoint = calcAutomaticPoint();
+        let taskInfo = {
+            task: state.task,
+            progress: progress,
+            date: state.endDate,
+            time: state.endTime,
+            info: state.info,
+        };
+        console.log("taskInfo", taskInfo)
+        let automaticPoint = AutomaticTaskPointCalculator.calcAutoPoint(taskInfo);
+        if (isNaN(automaticPoint)) automaticPoint = undefined
         if (automaticPoint < 0) {
             automaticPoint = 0;
         };
-        await setState({
+        setState({
             ...state,
             autoPoint: automaticPoint,
             showAutoPointInfo: undefined
@@ -1202,7 +1214,7 @@ function EvaluateByAccountableEmployee(props) {
         let automaticPoint = data.automaticPoint;
         let taskInfo = {
             task: data.task,
-            progress: state.progress,
+            progress: progress,
             date: value,
             time: state.endTime,
             info: state.info,
@@ -1249,7 +1261,7 @@ function EvaluateByAccountableEmployee(props) {
         let automaticPoint = data.automaticPoint;
         let taskInfo = {
             task: data.task,
-            progress: state.progress,
+            progress: progress,
             date: state.endDate,
             time: value,
             info: state.info,
@@ -1381,7 +1393,7 @@ function EvaluateByAccountableEmployee(props) {
         let automaticPoint = data.automaticPoint;
         let taskInfo = {
             task: data.task,
-            progress: state.progress,
+            progress: progress,
             date: endDate,
             time: endTime,
             info: state.info,
@@ -1608,7 +1620,8 @@ function EvaluateByAccountableEmployee(props) {
     //     disabled = true;
     // }
     let disableSubmit = !isFormValidated();
-
+    console.log("state", state)
+    console.log("progress", progress)
     return (
         <React.Fragment>
             <div style={{ display: "flex", flexDirection: "column" }}>
