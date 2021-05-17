@@ -509,6 +509,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                                 role={role}
                                 perform={perform}
                                 value={this.state}
+                                progress={this.state.progress}
                             />
                         </form>
                     </DialogModal>

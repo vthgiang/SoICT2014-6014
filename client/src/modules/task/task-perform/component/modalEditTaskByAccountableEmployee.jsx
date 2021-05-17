@@ -1214,6 +1214,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                 role={role}
                                 perform={perform}
                                 value={this.state}
+                                progress={this.state.progress}
                             />
                             <fieldset className="scheduler-border">
                                 <legend className="scheduler-border">{translate('task.task_management.edit_member_info')}</legend>
