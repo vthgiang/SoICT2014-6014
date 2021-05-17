@@ -177,5 +177,5 @@ const actions = {
     deleteSystemLink: SystemLinkActions.deleteSystemLink
 }
 
-const connectedManageLinkSystem = connect(mapState, actions)(withTranslate(ManageLinkSystem));
-export { connectedManageLinkSystem as ManageLinkSystem };
+export default connect(mapState, actions)(withTranslate(ManageLinkSystem));
+

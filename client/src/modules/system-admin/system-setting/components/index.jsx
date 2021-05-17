@@ -235,5 +235,4 @@ const actions = {
     restore: SystemSettingActions.restore
 }
 
-const connectedSystemSetting = connect(mapState, actions)(withTranslate(SystemSetting));
-export { connectedSystemSetting as SystemSetting }
+export default connect(mapState, actions)(withTranslate(SystemSetting));
