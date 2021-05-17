@@ -294,11 +294,11 @@ class MainDashboardUnit extends Component {
                     <div className="nav-tabs-custom">
                         <ul className="nav nav-tabs">
                             <li className="active"><a href="#task" data-toggle="tab" onClick={() => this.handleNavTabs()}>Công việc</a></li>
-                            <li><a href="#employee-capacity" data-toggle="tab" onClick={() => this.handleNavTabs()}>Năng lực nhân viên</a></li>
+                            <li><a href="#employee-capacity" data-toggle="tab" onClick={() => this.handleNavTabs(true)}>Năng lực nhân viên</a></li>
                             <li><a href="#human-resourse" data-toggle="tab" onClick={() => this.handleNavTabs(true)}>Tổng quan nhân sự</a></li>
-                            <li><a href="#annualLeave" data-toggle="tab" onClick={() => this.handleNavTabs()}>Nghỉ phép-Tăng ca</a></li>
+                            <li><a href="#annualLeave" data-toggle="tab" onClick={() => this.handleNavTabs(true)}>Nghỉ phép-Tăng ca</a></li>
                             <li><a href="#salary" data-toggle="tab" onClick={() => this.handleNavTabs(true)}>Lương thưởng nhân viên</a></li>
-                            <li><a href="#integrated-statistics" data-toggle="tab">Thống kê tổng hợp</a></li>
+                            <li><a href="#integrated-statistics" data-toggle="tab" onClick={() => this.handleNavTabs(true)}>Thống kê tổng hợp</a></li>
                         </ul>
                         <div className="tab-content ">
                             <div className="tab-pane active" id="task">
@@ -323,70 +323,78 @@ class MainDashboardUnit extends Component {
 
                             {/* Tab tổng quan nhân sự*/}
                             <div className="tab-pane" id="human-resourse">
-                                <div className="row qlcv" style={{ marginTop: '10px' }}>
-                                    <div className="col-md-3 col-sm-6 col-xs-6">
-                                        <div className="info-box with-border">
-                                            <span className="info-box-icon bg-aqua"><i className="fa fa-users"></i></span>
-                                            <div className="info-box-content">
-                                                <span className="info-box-text">Số nhân viên</span>
-                                                <span className="info-box-number">
-                                                    {listAllEmployees.length}
-                                                </span>
+                                <LazyLoadComponent>
+                                    <div className="row qlcv" style={{ marginTop: '10px' }}>
+                                        <div className="col-md-3 col-sm-6 col-xs-6">
+                                            <div className="info-box with-border">
+                                                <span className="info-box-icon bg-aqua"><i className="fa fa-users"></i></span>
+                                                <div className="info-box-content">
+                                                    <span className="info-box-text">Số nhân viên</span>
+                                                    <span className="info-box-number">
+                                                        {listAllEmployees.length}
+                                                    </span>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
 
-                                    <div className="col-lg-3 col-md-3 col-sm-6 col-xs-6">
-                                        <div className="info-box with-border">
-                                            <span className="info-box-icon bg-yellow"><i className="fa fa-tasks"></i></span>
-                                            <div className="info-box-content">
-                                                <span className="info-box-text">Số sinh nhật</span>
-                                                <span className="info-box-number">
-                                                    {employeesManager.listEmployees ? employeesManager.listEmployees.length : 0}
-                                                </span>
+                                        <div className="col-lg-3 col-md-3 col-sm-6 col-xs-6">
+                                            <div className="info-box with-border">
+                                                <span className="info-box-icon bg-yellow"><i className="fa fa-tasks"></i></span>
+                                                <div className="info-box-content">
+                                                    <span className="info-box-text">Số sinh nhật</span>
+                                                    <span className="info-box-number">
+                                                        {employeesManager.listEmployees ? employeesManager.listEmployees.length : 0}
+                                                    </span>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
 
-                                    <div className="col-lg-3 col-md-3 col-sm-6 col-xs-6">
-                                        <div className="info-box with-border">
-                                            <span className="info-box-icon bg-green"><i className="fa fa-gift"></i></span>
-                                            <div className="info-box-content">
-                                                <span className="info-box-text">Số khen thưởng</span>
-                                                <span className="info-box-number">
-                                                    {discipline.totalListCommendation ? discipline.totalListCommendation.length : 0}
-                                                </span>
+                                        <div className="col-lg-3 col-md-3 col-sm-6 col-xs-6">
+                                            <div className="info-box with-border">
+                                                <span className="info-box-icon bg-green"><i className="fa fa-gift"></i></span>
+                                                <div className="info-box-content">
+                                                    <span className="info-box-text">Số khen thưởng</span>
+                                                    <span className="info-box-number">
+                                                        {discipline.totalListCommendation ? discipline.totalListCommendation.length : 0}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="col-lg-3 col-md-3 col-sm-6 col-xs-6">
+                                            <div className="info-box with-border">
+                                                <span className="info-box-icon bg-red"><i className="fa fa-balance-scale"></i></span>
+                                                <div className="info-box-content">
+                                                    <span className="info-box-text">Số kỷ luật</span>
+                                                    <span className="info-box-number">
+                                                        {discipline.totalListDiscipline ? discipline.totalListDiscipline.length : 0}
+                                                    </span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="col-lg-3 col-md-3 col-sm-6 col-xs-6">
-                                        <div className="info-box with-border">
-                                            <span className="info-box-icon bg-red"><i className="fa fa-balance-scale"></i></span>
-                                            <div className="info-box-content">
-                                                <span className="info-box-text">Số kỷ luật</span>
-                                                <span className="info-box-number">
-                                                    {discipline.totalListDiscipline ? discipline.totalListDiscipline.length : 0}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <TabHumanResource childOrganizationalUnit={childOrganizationalUnit.filter(item => organizationalUnits.includes(item?.id))} defaultUnit={true} organizationalUnits={organizationalUnits} monthShow={monthShow} />
+                                    <TabHumanResource childOrganizationalUnit={childOrganizationalUnit.filter(item => organizationalUnits.includes(item?.id))} defaultUnit={true} organizationalUnits={organizationalUnits} monthShow={monthShow} />
+                                </LazyLoadComponent>
                             </div>
 
                             {/* Tab nghỉ phép tăng ca*/}
                             <div className="tab-pane" id="annualLeave">
-                                <TabAnualLeave childOrganizationalUnit={childOrganizationalUnit.filter(item => organizationalUnits.includes(item?.id))} defaultUnit={true} organizationalUnits={organizationalUnits}/>
+                                <LazyLoadComponent>
+                                    <TabAnualLeave childOrganizationalUnit={childOrganizationalUnit.filter(item => organizationalUnits.includes(item?.id))} defaultUnit={true} organizationalUnits={organizationalUnits}/>
+                                </LazyLoadComponent>
                             </div>
 
                             {/* Tab lương thưởng*/}
                             <div className="tab-pane" id="salary">
-                                <TabSalary childOrganizationalUnit={childOrganizationalUnit.filter(item => organizationalUnits.includes(item?.id))} organizationalUnits={organizationalUnits} monthShow={monthShow} />
+                                <LazyLoadComponent>
+                                    <TabSalary childOrganizationalUnit={childOrganizationalUnit.filter(item => organizationalUnits.includes(item?.id))} organizationalUnits={organizationalUnits} monthShow={monthShow} />
+                                </LazyLoadComponent>
                             </div>
 
                             {/* Tab thống kê tổng hợp*/}
                             <div className="tab-pane" id="integrated-statistics">
-                                <TabIntegratedStatistics listAllEmployees={listAllEmployees} month={monthShow} employeeTasks={employeeTasks} listEmployee={listEmployee} organizationalUnits={organizationalUnits}/>
+                                <LazyLoadComponent>
+                                    <TabIntegratedStatistics listAllEmployees={listAllEmployees} month={monthShow} employeeTasks={employeeTasks} listEmployee={listEmployee} organizationalUnits={organizationalUnits}/>
+                                </LazyLoadComponent>
                             </div>
                         </div>
                     </div>

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DatePicker, SelectBox } from '../../../common-components';
+import { DatePicker, LazyLoadComponent, SelectBox } from '../../../common-components';
 
 import { ViewAllTasks, ViewAllOverTime, TrendWorkChart } from './combinedContent';
 import { ViewAllCommendation, ViewAllDiscipline } from '../../dashboard-unit/components/combinedContent';
@@ -459,127 +459,135 @@ class ComponentInfor extends Component {
                                     </div>
                                 </div>
                             </div>
+
                             {/* Tổng hợp kỷ luật */}
-                            <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                                <div className="box box-solid">
-                                    <div className="box-header with-border">
-                                        <h3 className="box-title">{translate('human_resource.dashboard_personal.general_discipline')} {monthShow}</h3>
-                                    </div>
-                                    <div className="box-body">
-                                        <table className="table table-striped table-bordered table-hover">
-                                            <thead>
-                                                <tr>
-                                                    <th className="col-fixed" style={{ width: 80 }}>STT</th>
-                                                    <th>{translate('human_resource.dashboard_personal.fullname')}</th>
-                                                    <th className="col-sort">{translate('human_resource.dashboard_personal.reason_discipline')}</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {discipline.totalListDiscipline.length !== 0 &&
-                                                    discipline.totalListDiscipline.map((x, index) => index < 5 ? (
-                                                        <tr key={index}>
-                                                            <td>{index + 1}</td>
-                                                            <td>{x.employee.fullName}</td>
-                                                            <td>{x.reason}</td>
-                                                        </tr>
-                                                    ) : null)
-                                                }
-                                            </tbody>
-                                        </table>
-                                        {
-                                            (!discipline.totalListDiscipline || discipline.totalListDiscipline.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
-                                        }
-                                    </div>
-                                    <div className="box-footer text-center">
-                                        <a style={{ cursor: 'pointer' }} onClick={this.viewAllDiscipline} className="uppercase">{translate('human_resource.dashboard_personal.see_all')}</a>
+                            <LazyLoadComponent>
+                                <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                    <div className="box box-solid">
+                                        <div className="box-header with-border">
+                                            <h3 className="box-title">{translate('human_resource.dashboard_personal.general_discipline')} {monthShow}</h3>
+                                        </div>
+                                        <div className="box-body">
+                                            <table className="table table-striped table-bordered table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th className="col-fixed" style={{ width: 80 }}>STT</th>
+                                                        <th>{translate('human_resource.dashboard_personal.fullname')}</th>
+                                                        <th className="col-sort">{translate('human_resource.dashboard_personal.reason_discipline')}</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {discipline.totalListDiscipline.length !== 0 &&
+                                                        discipline.totalListDiscipline.map((x, index) => index < 5 ? (
+                                                            <tr key={index}>
+                                                                <td>{index + 1}</td>
+                                                                <td>{x.employee.fullName}</td>
+                                                                <td>{x.reason}</td>
+                                                            </tr>
+                                                        ) : null)
+                                                    }
+                                                </tbody>
+                                            </table>
+                                            {
+                                                (!discipline.totalListDiscipline || discipline.totalListDiscipline.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                                            }
+                                        </div>
+                                        <div className="box-footer text-center">
+                                            <a style={{ cursor: 'pointer' }} onClick={this.viewAllDiscipline} className="uppercase">{translate('human_resource.dashboard_personal.see_all')}</a>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            </LazyLoadComponent>
                         </div>
 
                         <div className="row">
                             {/* Tổng hợp nghỉ phép */}
-                            <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                                <div className="box box-solid">
-                                    <div className="box-header with-border">
-                                        <h3 className="box-title">{translate('human_resource.dashboard_personal.general_annual_leave')} {monthShow}</h3>
-                                    </div>
-                                    <div className="box-body">
-                                        <table className="table table-striped table-bordered table-hover">
-                                            <thead>
-                                                <tr>
-                                                    <th>STT</th>
-                                                    <th>{translate('human_resource.dashboard_personal.fullname')}</th>
-                                                    <th className="col-sort">{translate('human_resource.dashboard_personal.total_hours')}</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {employeeHoursOff.length !== 0 &&
-                                                    employeeHoursOff.map((x, index) => index < 5 ? (
-                                                        <tr key={index}>
-                                                            <td>{index + 1}</td>
-                                                            <td>Nhân viên {index + 1}</td>
-                                                            <td>
-                                                                <div className="clearfix"> <small className="pull-right">{x.totalHours}</small> </div>
-                                                                <div className="progress xs">
-                                                                    <div style={{ width: `${(x.totalHours / maxHoursOff).toFixed(2) * 100}%` }} className="progress-bar progress-bar-green">
+                            <LazyLoadComponent>
+                                <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                    <div className="box box-solid">
+                                        <div className="box-header with-border">
+                                            <h3 className="box-title">{translate('human_resource.dashboard_personal.general_annual_leave')} {monthShow}</h3>
+                                        </div>
+                                        <div className="box-body">
+                                            <table className="table table-striped table-bordered table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th>STT</th>
+                                                        <th>{translate('human_resource.dashboard_personal.fullname')}</th>
+                                                        <th className="col-sort">{translate('human_resource.dashboard_personal.total_hours')}</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {employeeHoursOff.length !== 0 &&
+                                                        employeeHoursOff.map((x, index) => index < 5 ? (
+                                                            <tr key={index}>
+                                                                <td>{index + 1}</td>
+                                                                <td>Nhân viên {index + 1}</td>
+                                                                <td>
+                                                                    <div className="clearfix"> <small className="pull-right">{x.totalHours}</small> </div>
+                                                                    <div className="progress xs">
+                                                                        <div style={{ width: `${(x.totalHours / maxHoursOff).toFixed(2) * 100}%` }} className="progress-bar progress-bar-green">
+                                                                        </div>
                                                                     </div>
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    ) : null)
-                                                }
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <div className="box-footer text-center">
-                                        <a style={{ cursor: 'pointer' }} onClick={this.viewAllHoursOff} className="uppercase">{translate('human_resource.dashboard_personal.see_all')}</a>
+                                                                </td>
+                                                            </tr>
+                                                        ) : null)
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div className="box-footer text-center">
+                                            <a style={{ cursor: 'pointer' }} onClick={this.viewAllHoursOff} className="uppercase">{translate('human_resource.dashboard_personal.see_all')}</a>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            </LazyLoadComponent>
 
                             {/* Tổng hợp tăng ca */}
-                            <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                                <div className="box box-solid">
-                                    <div className="box-header with-border">
-                                        <h3 className="box-title">{translate('human_resource.dashboard_personal.general_overtime')} {monthShow}</h3>
-                                    </div>
-                                    <div className="box-body">
-                                        <table className="table table-striped table-bordered table-hover">
-                                            <thead>
-                                                <tr>
-                                                    <th>STT</th>
-                                                    <th>{translate('human_resource.dashboard_personal.fullname')}</th>
-                                                    <th className="col-sort">{translate('human_resource.dashboard_personal.total_hours')}</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {employeeOvertime.length !== 0 &&
-                                                    employeeOvertime.map((x, index) => index < 5 ? (
-                                                        <tr key={index}>
-                                                            <td>{index + 1}</td>
-                                                            <td>Nhân viên {index + 1}</td>
-                                                            <td>
-                                                                <div className="clearfix"> <small className="pull-right">{x.totalHours}</small> </div>
-                                                                <div className="progress xs">
-                                                                    <div style={{ width: `${(x.totalHours / maxOverTime).toFixed(2) * 100}%` }} className="progress-bar progress-bar-green">
+                            <LazyLoadComponent>
+                                <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                    <div className="box box-solid">
+                                        <div className="box-header with-border">
+                                            <h3 className="box-title">{translate('human_resource.dashboard_personal.general_overtime')} {monthShow}</h3>
+                                        </div>
+                                        <div className="box-body">
+                                            <table className="table table-striped table-bordered table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th>STT</th>
+                                                        <th>{translate('human_resource.dashboard_personal.fullname')}</th>
+                                                        <th className="col-sort">{translate('human_resource.dashboard_personal.total_hours')}</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {employeeOvertime.length !== 0 &&
+                                                        employeeOvertime.map((x, index) => index < 5 ? (
+                                                            <tr key={index}>
+                                                                <td>{index + 1}</td>
+                                                                <td>Nhân viên {index + 1}</td>
+                                                                <td>
+                                                                    <div className="clearfix"> <small className="pull-right">{x.totalHours}</small> </div>
+                                                                    <div className="progress xs">
+                                                                        <div style={{ width: `${(x.totalHours / maxOverTime).toFixed(2) * 100}%` }} className="progress-bar progress-bar-green">
+                                                                        </div>
                                                                     </div>
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    ) : null)
-                                                }
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <div className="box-footer text-center">
-                                        <a style={{ cursor: 'pointer' }} onClick={this.viewAllOverTime} className="uppercase">{translate('human_resource.dashboard_personal.see_all')}</a>
+                                                                </td>
+                                                            </tr>
+                                                        ) : null)
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div className="box-footer text-center">
+                                            <a style={{ cursor: 'pointer' }} onClick={this.viewAllOverTime} className="uppercase">{translate('human_resource.dashboard_personal.see_all')}</a>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            </LazyLoadComponent>
 
-                            <TrendWorkChart nameChart={`${translate('human_resource.dashboard_personal.trend_of_work')}`} nameData1={`${translate('human_resource.dashboard_personal.total_hours_works')}`} nameData2={`${translate('human_resource.dashboard_personal.overtime_total')}`} />
-
+                            <LazyLoadComponent>
+                                <TrendWorkChart nameChart={`${translate('human_resource.dashboard_personal.trend_of_work')}`} nameData1={`${translate('human_resource.dashboard_personal.total_hours_works')}`} nameData2={`${translate('human_resource.dashboard_personal.overtime_total')}`} />
+                            </LazyLoadComponent>
                         </div>
                     </div> : <div className="box">
                         <div className="box-body">

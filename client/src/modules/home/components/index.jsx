@@ -26,5 +26,4 @@ function mapState(state) {
     return { auth };
 }
 
-const connectedHome = connect(mapState, null)(withTranslate(Home));
-export { connectedHome as Home };
+export default connect(mapState, null)(withTranslate(Home));
