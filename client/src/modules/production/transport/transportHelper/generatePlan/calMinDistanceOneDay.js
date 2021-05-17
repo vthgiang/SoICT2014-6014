@@ -37,8 +37,9 @@ const minRouteInDay = (listRequirements, listVehicles, numVehicles, k) => {
             }
         }
         if (tmpDistance < minR) {
+            vehicleUsedRes = new Array(listVehicles.length);
             for (let i=0;i<listVehicles.length;i++){
-                vehicleUsedRes[i] = [...vehicleUsed[i]];
+                vehicleUsedRes[i] = vehicleUsed[i].slice();
             }
             minR = tmpDistance;
         }

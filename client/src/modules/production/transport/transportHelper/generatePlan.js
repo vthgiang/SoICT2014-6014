@@ -147,7 +147,7 @@ const check = (start, end) => {
     }
     return true;
 }
-exports.generatePlanFastestMove = (listRequirement, listPlan, allVehicles, allCarriers, inDay, startDate) => {
+const generatePlanFastestMove = (listRequirement, listPlan, allVehicles, allCarriers, inDay, startDate) => {
     startDatePlan = startDate;
     if (!(listRequirement && allVehicles && allCarriers 
         && listRequirement.length!==0 && allVehicles.length!==0 && allCarriers.length!==0)){
@@ -190,11 +190,11 @@ exports.generatePlanFastestMove = (listRequirement, listPlan, allVehicles, allCa
                 saveArr[i].map(item => {
                     requirements.push(item);
                 })
-                saveArrVehicle[i].map(vehicleDay => {
+                saveArrVehicle[i].map((vehicleDay, index) => {
                     if (vehicleDay && vehicleDay.length!==0){
 
-                        vehicleDay.map((r, index) => {
-                            if(r && r.length!==0){
+                        // vehicleDay.map((r, index) => {
+                        //     if(r && r.length!==0){
                                 vehicles.push({
                                     vehicle: listVehiclesDays[i][index],
                                     carriers: [
@@ -204,8 +204,8 @@ exports.generatePlanFastestMove = (listRequirement, listPlan, allVehicles, allCa
                                         }
                                     ]
                                 })
-                            }
-                        })
+                            // }
+                        // })
                     }
                 })
             }
@@ -216,6 +216,7 @@ exports.generatePlanFastestMove = (listRequirement, listPlan, allVehicles, allCa
             })
         }
     }
+    console.log(saveArrVehicle);
     return {saveArr, saveArrVehicle, plans};
 }
 
@@ -1109,6 +1110,6 @@ let allVehicles = [
     }
 ]
 
-// let o = generatePlanFastestMove(allTransportRequirements, null, allVehicles, allCarriers, 2, "2021-05-16");
-// console.log("haha")
+let o = generatePlanFastestMove(allTransportRequirements, null, allVehicles, allCarriers, 2, "2021-05-16");
+console.log("haha")
 // console.log(k);
