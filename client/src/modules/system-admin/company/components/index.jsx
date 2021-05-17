@@ -22,4 +22,4 @@ class Company extends Component {
     }
 }
 
-export { Company }
+export default Company

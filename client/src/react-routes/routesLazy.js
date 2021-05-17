@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, Suspense, lazy } from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 
@@ -10,22 +10,12 @@ import Layout from "../layout/layout";
 import { NotFound } from "../modules/not-found/components";
 
 import Login from "../modules/auth/components/login";
-import ResetPassword from "../modules/auth/components/resetPasswordNew";
+import ResetPassword from "../modules/auth/components/resetPassword";
 import { Introduction } from "../modules/intro/components";
 import ManageDocument from "../modules/document/components/administration";
 import Document from "../modules/document/components/user";
 
-import { Home } from "../modules/home/components";
 
-import { Notifications } from "../modules/combine-modules";
-
-import { SystemSetting } from "../modules/system-admin/system-setting/components";
-import { Company } from "../modules/system-admin/company/components";
-import { ManageLinkSystem } from "../modules/system-admin/system-link/components";
-import ManageRoleDefault from "../modules/system-admin/root-role/components";
-import ComponentsDefaultManagement from "../modules/system-admin/system-component/components";
-
-import ManageSystem from "../modules/super-admin/system/components";
 import ManageUser from "../modules/super-admin/user/components";
 import ManageRole from "../modules/super-admin/role/components";
 import ManageLink from "../modules/super-admin/link/components";
@@ -49,10 +39,9 @@ import FieldManager from "../modules/human-resource/field/components";
 import TimesheetsManager from "../modules/human-resource/timesheets/components";
 import { AnnualLeave } from "../modules/human-resource/annual-leave/components/combinedContent";
 import { ManageLeaveApplication } from "../modules/human-resource/annual-leave/components/combinedContent";
-import EmployeesInfomation from "../modules/human-resource/employee-infomation/components/";
+import EmployeesInfomation from "../modules/human-resource/employee-infomation/components";
 import { DashboardPersonal } from "../modules/dashboard-personal/components";
 import { DashboardUnit } from "../modules/dashboard-unit/components";
-import DashboardUnitForAdmin from "../modules/dashboard-unit/components/dashboardUnitForAdmin";
 
 import { ListEducation } from "../modules/training/education-program/components/educationProgramList";
 import { TrainingPlan } from "../modules/training/course/components/course";
@@ -162,9 +151,6 @@ import TransportSchedule from '../modules/production/transport/transport-schedul
 import TransportVehicle from '../modules/production/transport/transport-vehicle/components';
 import TransportHuman from '../modules/production/transport/transport-human/components';
 import TransportRoute from '../modules/production/transport/transport-route/components';
-import TransportDepartment from '../modules/production/transport/transport-department/components'
-import CarrierTodayTransportMission from '../modules/production/transport/carrier-today-transport-mission/components'
-import CarrierAllTimesTransportMission from '../modules/production/transport/carrier-all-times-transport-mission/components'
 
 // import AnswerAuthQuestionPage from '../modules/auth/components/answerAuthQuestion';
 
@@ -177,8 +163,17 @@ import ProjectEvaluation from '../modules/project/component/evaluations/index';
 import { UserGuide } from '../modules/user-guide/components';
 import AllTimeSheetLog from '../modules/task/task-dashboard/statistic/allTimeSheetLog';
 
-class Routes extends Component {
-    render() {
+const Home = lazy(() => import("../modules/home/components"))
+const Notifications = lazy(() => import("../modules/notification/components/index"))
+const SystemSetting = lazy(() => import("../modules/system-admin/system-setting/components"))
+const Company = lazy(() => import("../modules/system-admin/company/components"))
+const ManageLinkSystem = lazy(() => import("../modules/system-admin/system-link/components"))
+const ManageRoleDefault = lazy(() => import("../modules/system-admin/root-role/components"))
+const ComponentsDefaultManagement = lazy(() => import("../modules/system-admin/system-component/components"))
+const ManageSystem = lazy(() => import("../modules/super-admin/system/components"))
+const DashboardUnitForAdmin = lazy(() => import("../modules/dashboard-unit/components/dashboardUnitForAdmin"))
+
+function Routes (props) {
         const {
             auth,
             company,
@@ -188,9 +183,10 @@ class Routes extends Component {
             component,
             department,
             employeesManager,
-        } = this.props;
+        } = props;
         return (
             <React.Fragment>
+                <Suspense fallback={<div>Loading...</div>}>
                 <Switch>
                     <AuthRoute
                         exact
@@ -235,7 +231,7 @@ class Routes extends Component {
                         component={SystemSetting}
                     />
                     <PrivateRoute
-                        isLoading={this.props.rootRoles.isLoading}
+                        isLoading={props.rootRoles.isLoading}
                         key={"manage_roles_default"}
                         arrPage={[
                             {
@@ -258,7 +254,7 @@ class Routes extends Component {
                         component={ManageRoleDefault}
                     />
                     <PrivateRoute
-                        isLoading={this.props.systemLinks.isLoading}
+                        isLoading={props.systemLinks.isLoading}
                         key={"manage_links_default"}
                         arrPage={[
                             {
@@ -281,7 +277,7 @@ class Routes extends Component {
                         component={ManageLinkSystem}
                     />
                     <PrivateRoute
-                        isLoading={this.props.systemComponents.isLoading}
+                        isLoading={props.systemComponents.isLoading}
                         key={"manage_components_default"}
                         arrPage={[
                             {
@@ -318,7 +314,7 @@ class Routes extends Component {
                         component={Home}
                     />
                     <PrivateRoute
-                        isLoading={this.props.company.isLoading}
+                        isLoading={props.company.isLoading}
                         key={"companies-management"}
                         arrPage={[
                             {
@@ -336,7 +332,7 @@ class Routes extends Component {
                         component={Company}
                     />
                     <PrivateRoute
-                        isLoading={this.props.system.isLoading}
+                        isLoading={props.system.isLoading}
                         key={"system-management"}
                         arrPage={[
                             {
@@ -359,7 +355,7 @@ class Routes extends Component {
                         component={ManageSystem}
                     />
                     <PrivateRoute
-                        isLoading={this.props.user.isLoading}
+                        isLoading={props.user.isLoading}
                         key={"users-management"}
                         arrPage={[
                             {
@@ -382,7 +378,7 @@ class Routes extends Component {
                         component={ManageUser}
                     />
                     <PrivateRoute
-                        isLoading={this.props.role.isLoading}
+                        isLoading={props.role.isLoading}
                         arrPage={[
                             {
                                 link: "#",
@@ -405,7 +401,7 @@ class Routes extends Component {
                         component={ManageRole}
                     />
                     <PrivateRoute
-                        isLoading={this.props.link.isLoading}
+                        isLoading={props.link.isLoading}
                         key={"links-management"}
                         arrPage={[
                             {
@@ -428,7 +424,7 @@ class Routes extends Component {
                         component={ManageLink}
                     />
                     <PrivateRoute
-                        isLoading={this.props.department.isLoading}
+                        isLoading={props.department.isLoading}
                         key={"departments-management"}
                         arrPage={[
                             {
@@ -448,10 +444,10 @@ class Routes extends Component {
                         path={"/departments-management"}
                         pageName={"manage_department"}
                         layout={Layout}
-                        component={ManageDepartment}
+                        component={(ManageDepartment)}
                     />
                     <PrivateRoute
-                        isLoading={this.props.component.isLoading}
+                        isLoading={props.component.isLoading}
                         key={"components-management"}
                         arrPage={[
                             {
@@ -471,7 +467,7 @@ class Routes extends Component {
                         path={"/components-management"}
                         pageName={"manage_component"}
                         layout={Layout}
-                        component={ManageComponent}
+                        component={(ManageComponent)}
                     />
 
                     {/* Quản lý tài liệu của admin */}
@@ -492,7 +488,7 @@ class Routes extends Component {
                         path={"/documents-management"}
                         pageName={"manage_document"}
                         layout={Layout}
-                        component={ManageDocument}
+                        component={(ManageDocument)}
                     />
 
                     {/* Quản lý tài liệu đơn vị */}
@@ -513,7 +509,7 @@ class Routes extends Component {
                         path={"/documents/organizational-unit"}
                         pageName={"documents_og"}
                         layout={Layout}
-                        component={ManageDocument}
+                        component={(ManageDocument)}
                     />
 
                     {/* Tài liệu văn bản của người dùng */}
@@ -534,12 +530,12 @@ class Routes extends Component {
                         path={"/documents"}
                         pageName={"documents"}
                         layout={Layout}
-                        component={Document}
+                        component={(Document)}
                     />
                     {/* Quan ly nhan su */}
 
                     <PrivateRoute
-                        isLoading={this.props.annualLeave.isLoading}
+                        isLoading={props.annualLeave.isLoading}
                         key={"manage_configuration"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -555,10 +551,10 @@ class Routes extends Component {
                         path={"/manage-configuration"}
                         pageName={"manage_configuration"}
                         layout={Layout}
-                        component={ConfigurationManager}
+                        component={(ConfigurationManager)}
                     />
                     <PrivateRoute
-                        isLoading={this.props.annualLeave.isLoading}
+                        isLoading={props.annualLeave.isLoading}
                         key={"dashboard_personal"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -574,10 +570,10 @@ class Routes extends Component {
                         path={"/dashboard-personal"}
                         pageName={"dashboard_personal"}
                         layout={Layout}
-                        component={DashboardPersonal}
+                        component={(DashboardPersonal)}
                     />
                     <PrivateRoute
-                        isLoading={this.props.annualLeave.isLoading}
+                        isLoading={props.annualLeave.isLoading}
                         key={"dashboard_unit"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -593,10 +589,10 @@ class Routes extends Component {
                         path={"/dashboard-unit"}
                         pageName={"dashboard_unit"}
                         layout={Layout}
-                        component={DashboardUnit}
+                        component={(DashboardUnit)}
                     />
                     <PrivateRoute
-                        isLoading={this.props.annualLeave.isLoading}
+                        isLoading={props.annualLeave.isLoading}
                         key={"dashboard_all_unit"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -612,10 +608,10 @@ class Routes extends Component {
                         path={"/dashboard-all-unit"}
                         pageName={"dashboard_all_unit"}
                         layout={Layout}
-                        component={DashboardUnitForAdmin}
+                        component={(DashboardUnitForAdmin)}
                     />
                     <PrivateRoute
-                        isLoading={this.props.annualLeave.isLoading}
+                        isLoading={props.annualLeave.isLoading}
                         key={"leave_application"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -631,7 +627,7 @@ class Routes extends Component {
                         path={"/hr-manage-leave-application"}
                         pageName={"leave_application"}
                         layout={Layout}
-                        component={ManageLeaveApplication}
+                        component={(ManageLeaveApplication)}
                     />
 
                     <PrivateRoute
@@ -651,11 +647,11 @@ class Routes extends Component {
                         path={"/employees-infomation"}
                         pageName={"employee_infomation"}
                         layout={Layout}
-                        component={EmployeesInfomation}
+                        component={(EmployeesInfomation)}
                     />
 
                     <PrivateRoute
-                        isLoading={this.props.employeesManager.isLoading}
+                        isLoading={props.employeesManager.isLoading}
                         key={"add_employee"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -671,10 +667,10 @@ class Routes extends Component {
                         path={"/hr-add-employee"}
                         pageName={"add_employee"}
                         layout={Layout}
-                        component={EmployeeCreate}
+                        component={(EmployeeCreate)}
                     />
                     <PrivateRoute
-                        isLoading={this.props.employeesInfo.isLoading}
+                        isLoading={props.employeesInfo.isLoading}
                         key={"detail_employee"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -690,10 +686,10 @@ class Routes extends Component {
                         path={"/hr-detail-employee"}
                         pageName={"detail_employee"}
                         layout={Layout}
-                        component={EmployeeDetail}
+                        component={(EmployeeDetail)}
                     />
                     <PrivateRoute
-                        isLoading={this.props.employeesInfo.isLoading}
+                        isLoading={props.employeesInfo.isLoading}
                         key={"update_employee"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -709,10 +705,10 @@ class Routes extends Component {
                         path={"/hr-update-employee"}
                         pageName={"update_employee"}
                         layout={Layout}
-                        component={UpdateEmployee}
+                        component={(UpdateEmployee)}
                     />
                     <PrivateRoute
-                        isLoading={this.props.employeesManager.isLoading}
+                        isLoading={props.employeesManager.isLoading}
                         key={"list_employee"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -728,11 +724,11 @@ class Routes extends Component {
                         path={"/hr-list-employee"}
                         pageName={"list_employee"}
                         layout={Layout}
-                        component={EmpoyeeManager}
+                        component={(EmpoyeeManager)}
                     />
 
                     <PrivateRoute
-                        isLoading={this.props.department.isLoading}
+                        isLoading={props.department.isLoading}
                         key={"manage_unit"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -748,11 +744,11 @@ class Routes extends Component {
                         path={"/hr-manage-department"}
                         pageName={"manage_unit"}
                         layout={Layout}
-                        component={DepartmentManage}
+                        component={(DepartmentManage)}
                     />
 
                     <PrivateRoute
-                        isLoading={this.props.employeesManager.isLoading}
+                        isLoading={props.employeesManager.isLoading}
                         key={"dashBoard_employee"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -768,10 +764,10 @@ class Routes extends Component {
                         path={"/hr-dashboard-employee"}
                         pageName={"dashboard_employee"}
                         layout={Layout}
-                        component={EmployeeDashBoard}
+                        component={(EmployeeDashBoard)}
                     />
                     <PrivateRoute
-                        isLoading={this.props.discipline.isLoading}
+                        isLoading={props.discipline.isLoading}
                         key={"discipline"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -787,10 +783,10 @@ class Routes extends Component {
                         path={"/hr-discipline"}
                         pageName={"discipline"}
                         layout={Layout}
-                        component={ManagerPraiseDiscipline}
+                        component={(ManagerPraiseDiscipline)}
                     />
                     <PrivateRoute
-                        isLoading={this.props.annualLeave.isLoading}
+                        isLoading={props.annualLeave.isLoading}
                         key={"annual_leave"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -809,7 +805,7 @@ class Routes extends Component {
                         component={AnnualLeaveManager}
                     />
                     <PrivateRoute
-                        isLoading={this.props.workPlan.isLoading}
+                        isLoading={props.workPlan.isLoading}
                         key={"manage_work_plan"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -828,7 +824,7 @@ class Routes extends Component {
                         component={ManageWorkPlan}
                     />
                     <PrivateRoute
-                        isLoading={this.props.workPlan.isLoading}
+                        isLoading={props.workPlan.isLoading}
                         key={"annual_leave_personal"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -847,7 +843,7 @@ class Routes extends Component {
                         component={AnnualLeave}
                     />
                     <PrivateRoute
-                        isLoading={this.props.salary.isLoading}
+                        isLoading={props.salary.isLoading}
                         key={"salary_employee"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -867,7 +863,7 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute
-                        isLoading={this.props.field.isLoading}
+                        isLoading={props.field.isLoading}
                         key={"fields"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -905,7 +901,7 @@ class Routes extends Component {
                         component={TimesheetsManager}
                     />
                     <PrivateRoute
-                        isLoading={this.props.education.isLoading}
+                        isLoading={props.education.isLoading}
                         key={"list_education"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -924,7 +920,7 @@ class Routes extends Component {
                         component={ListEducation}
                     />
                     <PrivateRoute
-                        isLoading={this.props.course.isLoading}
+                        isLoading={props.course.isLoading}
                         key={"training_plan"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -945,7 +941,7 @@ class Routes extends Component {
 
                     {/* kpi - routes */}
                     <PrivateRoute
-                        isLoading={this.props.createKpiUnit.isLoading}
+                        isLoading={props.createKpiUnit.isLoading}
                         key={"kpi-unit-create"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -964,7 +960,7 @@ class Routes extends Component {
                         component={OrganizationalUnitKpiCreateForAdmin}
                     />
                     <PrivateRoute
-                        isLoading={this.props.createKpiUnit.isLoading}
+                        isLoading={props.createKpiUnit.isLoading}
                         key={"kpi-unit-create"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -1003,7 +999,7 @@ class Routes extends Component {
                     />
                     <PrivateRoute
                         isLoading={
-                            this.props.dashboardOrganizationalUnitKpi.isLoading
+                            props.dashboardOrganizationalUnitKpi.isLoading
                         }
                         key={"kpi-unit-dashboard"}
                         arrPage={[
@@ -1024,7 +1020,7 @@ class Routes extends Component {
                     />
                     <PrivateRoute
                         isLoading={
-                            this.props.statisticsOfOrganizationalUnitKpi
+                            props.statisticsOfOrganizationalUnitKpi
                                 .isLoading
                         }
                         key={"kpi-unit-statistic"}
@@ -1045,7 +1041,7 @@ class Routes extends Component {
                         component={StatisticsOfOrganizationalUnitKpi}
                     />
                     <PrivateRoute
-                        isLoading={this.props.managerKpiUnit.isLoading}
+                        isLoading={props.managerKpiUnit.isLoading}
                         key={"kpi-unit-manager"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -1064,7 +1060,7 @@ class Routes extends Component {
                         component={KPIUnitManager}
                     />
                     <PrivateRoute
-                        isLoading={this.props.createEmployeeKpiSet.isLoading}
+                        isLoading={props.createEmployeeKpiSet.isLoading}
                         key={"kpi-personal-create"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -1083,7 +1079,7 @@ class Routes extends Component {
                         component={CreateEmployeeKpiSet}
                     />
                     <PrivateRoute
-                        isLoading={this.props.KPIPersonalManager.isLoading}
+                        isLoading={props.KPIPersonalManager.isLoading}
                         key={"kpi-personal-manager"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -1102,7 +1098,7 @@ class Routes extends Component {
                         component={KPIPersonalManager}
                     />
                     <PrivateRoute
-                        isLoading={this.props.dashboardEmployeeKpiSet.isLoading}
+                        isLoading={props.dashboardEmployeeKpiSet.isLoading}
                         key={"kpi-personal-dashboard"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -1140,7 +1136,7 @@ class Routes extends Component {
                         component={KPIPersonalEvaluate}
                     />
                     <PrivateRoute
-                        isLoading={this.props.tasktemplates.isLoading}
+                        isLoading={props.tasktemplates.isLoading}
                         key={"task-template-management"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -1179,7 +1175,7 @@ class Routes extends Component {
                         component={Notifications}
                     />
                     <PrivateRoute
-                        isLoading={this.props.kpimembers.isLoading}
+                        isLoading={props.kpimembers.isLoading}
                         key={"kpi_member_manager"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -1218,7 +1214,7 @@ class Routes extends Component {
                     />
                     {/* Task Management */}
                     <PrivateRoute
-                        isLoading={this.props.tasks.isLoading}
+                        isLoading={props.tasks.isLoading}
                         key={"task-management"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -1239,7 +1235,7 @@ class Routes extends Component {
 
                     {/* Quản lý công việc đơn vị */}
                     <PrivateRoute
-                        isLoading={this.props.tasks.isLoading}
+                        isLoading={props.tasks.isLoading}
                         key={"task-management-unit"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -1258,7 +1254,7 @@ class Routes extends Component {
                         component={TaskManagementOfUnit}
                     />
                     <PrivateRoute // Trang chi tiết công việc (không có trên menu)
-                        isLoading={this.props.tasks.isLoading}
+                        isLoading={props.tasks.isLoading}
                         key={"task"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -1273,7 +1269,7 @@ class Routes extends Component {
                         component={TaskComponent}
                     />
                     <PrivateRoute
-                        isLoading={this.props.tasks.isLoading}
+                        isLoading={props.tasks.isLoading}
                         key={"task-management-dashboard"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -1292,7 +1288,7 @@ class Routes extends Component {
                         component={TaskDashboard}
                     />
                     <PrivateRoute
-                        isLoading={this.props.tasks.isLoading}
+                        isLoading={props.tasks.isLoading}
                         key={"task-organization-management-dashboard"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -1351,7 +1347,7 @@ class Routes extends Component {
                     {/** Quản lý tài sản */}
                     {/** Nhân viên */}
                     <PrivateRoute
-                        isLoading={this.props.recommendProcure.isLoading}
+                        isLoading={props.recommendProcure.isLoading}
                         key={"asset-purchase-request"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -1371,7 +1367,7 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute
-                        isLoading={this.props.recommendDistribute.isLoading}
+                        isLoading={props.recommendDistribute.isLoading}
                         key={"asset-use-request"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -1391,7 +1387,7 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute
-                        isLoading={this.props.assetsManager.isLoading}
+                        isLoading={props.assetsManager.isLoading}
                         key={"manage-assigned-asset"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -1411,7 +1407,7 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute
-                        isLoading={this.props.assetsManager.isLoading}
+                        isLoading={props.assetsManager.isLoading}
                         key={"employee-manage-info-asset"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -1452,7 +1448,7 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute
-                        isLoading={this.props.assetType.isLoading}
+                        isLoading={props.assetType.isLoading}
                         key={"manage-type-asset"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -1472,7 +1468,7 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute
-                        isLoading={this.props.assetsManager.isLoading}
+                        isLoading={props.assetsManager.isLoading}
                         key={"manage-info-asset"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -1568,7 +1564,7 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute
-                        isLoading={this.props.recommendProcure.isLoading}
+                        isLoading={props.recommendProcure.isLoading}
                         key={"manage-asset-purchase-request"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -1588,7 +1584,7 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute
-                        isLoading={this.props.recommendDistribute.isLoading}
+                        isLoading={props.recommendDistribute.isLoading}
                         key={"manage-asset-use-request"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -1608,7 +1604,7 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute
-                        isLoading={this.props.reports.isLoading}
+                        isLoading={props.reports.isLoading}
                         key={"task-report-management"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -1668,7 +1664,7 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute
-                        isLoading={this.props.categories.isLoading}
+                        isLoading={props.categories.isLoading}
                         key={"category-management"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -1688,7 +1684,7 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute
-                        isLoading={this.props.goods.isLoading}
+                        isLoading={props.goods.isLoading}
                         key={"good-management"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -1707,7 +1703,7 @@ class Routes extends Component {
                         component={GoodManagement}
                     />
                     <PrivateRoute
-                        isLoading={this.props.stocks.isLoading}
+                        isLoading={props.stocks.isLoading}
                         key={"stock-management"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -1726,7 +1722,7 @@ class Routes extends Component {
                         component={StockManagement}
                     />
                     <PrivateRoute
-                        isLoading={this.props.binLocations.isLoading}
+                        isLoading={props.binLocations.isLoading}
                         key={"bin-location-management"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -1745,7 +1741,7 @@ class Routes extends Component {
                         component={BinLocationManagement}
                     />
                     <PrivateRoute
-                        isLoading={this.props.lots.isLoading}
+                        isLoading={props.lots.isLoading}
                         key={"inventory-management"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -1764,7 +1760,7 @@ class Routes extends Component {
                         component={InventoryManagement}
                     />
                     <PrivateRoute
-                        isLoading={this.props.bills.isLoading}
+                        isLoading={props.bills.isLoading}
                         key={"bill-management"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -1784,7 +1780,7 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute
-                        isLoading={this.props.assetsManager.isLoading}
+                        isLoading={props.assetsManager.isLoading}
                         key={"view-building-list"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -1938,7 +1934,7 @@ class Routes extends Component {
                     {/* Orders Management */}
 
                     <PrivateRoute
-                        isLoading={this.props.salesOrders.isLoading}
+                        isLoading={props.salesOrders.isLoading}
                         key={"/manage-sales-order"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -1978,7 +1974,7 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute
-                        isLoading={this.props.quotes.isLoading}
+                        isLoading={props.quotes.isLoading}
                         key={"/manage-quote"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -2018,7 +2014,7 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute
-                        isLoading={this.props.discounts.isLoading}
+                        isLoading={props.discounts.isLoading}
                         key={"/manage-discount"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -2038,7 +2034,7 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute
-                        isLoading={this.props.taxs.isLoading}
+                        isLoading={props.taxs.isLoading}
                         key={"/manage-tax"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -2058,7 +2054,7 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute
-                        isLoading={this.props.serviceLevelAgreements.isLoading}
+                        isLoading={props.serviceLevelAgreements.isLoading}
                         key={"/manage-sla"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -2140,7 +2136,7 @@ class Routes extends Component {
                     {/* Plans Management */}
 
                     <PrivateRoute
-                        isLoading={this.props.plan.isLoading}
+                        isLoading={props.plan.isLoading}
                         key={"manage-plans"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -2161,7 +2157,7 @@ class Routes extends Component {
 
                     {/* Example Management */}
                     <PrivateRoute
-                        isLoading={this.props.example1.isLoading}
+                        isLoading={props.example1.isLoading}
                         key={"manage-examples-1"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -2181,7 +2177,7 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute
-                        isLoading={this.props.example2.isLoading}
+                        isLoading={props.example2.isLoading}
                         key={"manage-examples-2"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -2202,7 +2198,7 @@ class Routes extends Component {
 
                     {/* Example Management Hooks*/}
                     <PrivateRoute
-                        isLoading={this.props.example1.isLoading}
+                        isLoading={props.example1.isLoading}
                         key={"manage-examples-1"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -2222,7 +2218,7 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute
-                        isLoading={this.props.example2.isLoading}
+                        isLoading={props.example2.isLoading}
                         key={"manage-examples-2"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -2244,7 +2240,7 @@ class Routes extends Component {
                     {/* Manufacturing-management */}
 
                     <PrivateRoute
-                        isLoading={this.props.manufacturingPlan.isLoading}
+                        isLoading={props.manufacturingPlan.isLoading}
                         key={"manage-manufacturing-plan"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -2264,7 +2260,7 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute
-                        isLoading={this.props.manufacturingCommand.isLoading}
+                        isLoading={props.manufacturingCommand.isLoading}
                         key={"manage-manufacturing-command"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -2283,7 +2279,7 @@ class Routes extends Component {
                         component={ManufacturingCommand}
                     />
                     <PrivateRoute
-                        isLoading={this.props.workSchedule.isLoading}
+                        isLoading={props.workSchedule.isLoading}
                         key={"manage-work-schedule"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -2303,7 +2299,7 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute
-                        isLoading={this.props.purchasingRequest.isLoading}
+                        isLoading={props.purchasingRequest.isLoading}
                         key={"manage-purchasing-request"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -2363,7 +2359,7 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute
-                        isLoading={this.props.manufacturingWorks.isLoading}
+                        isLoading={props.manufacturingWorks.isLoading}
                         key={"manage-manufacturing-works"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -2383,7 +2379,7 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute
-                        isLoading={this.props.manufacturingMill.isLoading}
+                        isLoading={props.manufacturingMill.isLoading}
                         key={"manage-manufacturing-mill"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -2403,7 +2399,7 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute
-                        isLoading={this.props.lots.isLoading}
+                        isLoading={props.lots.isLoading}
                         key={"manage-manufacturing-lot"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -2537,65 +2533,7 @@ class Routes extends Component {
                         pageName={"manage_transport_route"}
                         layout={Layout}
                         component={TransportRoute} // component ứng với trang, tạo ở bước 1
-                    />                    
-                    <PrivateRoute
-                        isLoading={false}
-                        key={"manage-transport-department"}
-                        arrPage={[
-                            { link: "/", name: "home", icon: "fa fa-home" },
-                            {
-                                link: "/manage-transport-department", // url trang
-                                name: "manage_transport_department", // tên trang
-                                icon: " fa fa-address-card ",
-                            },
-                        ]}
-                        auth={auth}
-                        exact={true}
-                        link={"/manage-transport-department"}
-                        path={"/manage-transport-department"}
-                        pageName={"manage_transport_department"}
-                        layout={Layout}
-                        component={TransportDepartment} // component ứng với trang, tạo ở bước 1
                     />
-                    <PrivateRoute
-                        isLoading={false}
-                        key={"carrier-today-transport-mission"}
-                        arrPage={[
-                            { link: "/", name: "home", icon: "fa fa-home" },
-                            {
-                                link: "/carrier-today-transport-mission", // url trang
-                                name: "manage_transport_route", // tên trang
-                                icon: " fa fa-calendar-o ",
-                            },
-                        ]}
-                        auth={auth}
-                        exact={true}
-                        link={"/carrier-today-transport-mission"}
-                        path={"/carrier-today-transport-mission"}
-                        pageName={"carrier_today_transport_mission"}
-                        layout={Layout}
-                        component={CarrierTodayTransportMission} // component ứng với trang, tạo ở bước 1
-                    /> 
-                    <PrivateRoute
-                        isLoading={false}
-                        key={"carrier-all-times-transport-mission"}
-                        arrPage={[
-                            { link: "/", name: "home", icon: "fa fa-home" },
-                            {
-                                link: "/carrier-all-times-transport-mission", // url trang
-                                name: "carrier_all_times_transport_mission", // tên trang
-                                icon: " fa fa-calendar-o ",
-                            },
-                        ]}
-                        auth={auth}
-                        exact={true}
-                        link={"/carrier-all-times-transport-mission"}
-                        path={"/carrier-all-times-transport-mission"}
-                        pageName={"carrier_all_times_transport_mission"}
-                        layout={Layout}
-                        component={CarrierAllTimesTransportMission} // component ứng với trang, tạo ở bước 1
-                    /> 
-
 
                     {/* Quản lý dự án */}
                     <PrivateRoute
@@ -2805,10 +2743,9 @@ class Routes extends Component {
 
                     {/* NOT FOUND */}
                     <Route component={NotFound}></Route>
-                </Switch>
+                </Switch></Suspense>
             </React.Fragment>
         );
-    }
 }
 
 const mapStateToProps = (state) => {
