@@ -36,6 +36,22 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
         props.getAllEmployee({ organizationalUnits: organizationalUnits, startDate: startDateNew, endDate: endDateNew });
     }, [])
 
+    useEffect(() => {
+        let organizationalUnitsTemp = props.defaultUnit ? props?.childOrganizationalUnit?.map(item => item?.id) : []
+        setState({
+            ...state,
+            organizationalUnits: organizationalUnitsTemp,
+            organizationalUnitsSearch: organizationalUnitsTemp,
+        })
+
+        let arrStart = startDate.split('-');
+        let startDateNew = [arrStart[1], arrStart[0]].join('-');
+
+        let arrEnd = endDate.split('-');
+        let endDateNew = [arrEnd[1], arrEnd[0]].join('-');
+        props.getAllEmployee({ organizationalUnits: organizationalUnitsTemp, startDate: startDateNew, endDate: endDateNew });
+    }, [JSON.stringify(props.childOrganizationalUnit)])
+
     /**
      * Function bắt sự kiện thay đổi unit
      * @param {*} value : Array id đơn vị
@@ -207,6 +223,7 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
     const { childOrganizationalUnit } = props;
 
     let organizationalUnitsName = [];
+    console.log("88888", organizationalUnitsSearch, childOrganizationalUnit)
     if (organizationalUnitsSearch) {
         organizationalUnitsName = department.list.filter(x => organizationalUnitsSearch.includes(x._id));
         organizationalUnitsName = organizationalUnitsName.map(x => x.name);
@@ -262,25 +279,6 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
             <div className="box-body" >
                 <div className="qlcv" style={{ marginBottom: 15 }} >
                     <div className="form-inline" >
-                        <div className="form-group" >
-                            <label className="form-control-static" > {translate('kpi.evaluation.dashboard.organizational_unit')} </label>
-                            <SelectMulti id="multiSelectUnits-towBarChart"
-                                items={childOrganizationalUnit.map((p, i) => { return { value: p.id, text: p.name } })}
-                                options={{
-                                    nonSelectedText: translate('page.non_unit'),
-                                    allSelectedText: translate('page.all_unit'),
-                                }}
-                                onChange={handleSelectOrganizationalUnit}
-                                value={organizationalUnits}
-                            >
-                            </SelectMulti>
-                        </div>
-                        <div className="form-group" >
-                            <label></label>
-                            <button type="button" className="btn btn-success" title={translate('general.search')} onClick={() => handleSunmitSearch()} > {translate('general.search')} </button>
-                        </div>
-                    </div>
-                    <div className="form-inline" >
                         <div className="form-group">
                             <label className="form-control-static" >Từ tháng</label>
                             <DatePicker
@@ -302,7 +300,27 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
                             />
                         </div>
                     </div>
-
+                    <div className="form-inline" >
+                        {!props.defaultUnit
+                            && <div className="form-group" >
+                                <label className="form-control-static" > {translate('kpi.evaluation.dashboard.organizational_unit')} </label>
+                                <SelectMulti id="multiSelectUnits-towBarChart"
+                                    items={childOrganizationalUnit.map((p, i) => { return { value: p.id, text: p.name } })}
+                                    options={{
+                                        nonSelectedText: translate('page.non_unit'),
+                                        allSelectedText: translate('page.all_unit'),
+                                    }}
+                                    onChange={handleSelectOrganizationalUnit}
+                                    value={organizationalUnits}
+                                >
+                                </SelectMulti>
+                            </div>
+                        }
+                        <div className="form-group" >
+                            <label></label>
+                            <button type="button" className="btn btn-success" title={translate('general.search')} onClick={() => handleSunmitSearch()} > {translate('general.search')} </button>
+                        </div>
+                    </div>
                 </div>
                 <div className="dashboard_box_body" >
                     <p className="pull-left" style={{ marginBottom: 0 }} > < b > ĐV tính: Người </b></p >
