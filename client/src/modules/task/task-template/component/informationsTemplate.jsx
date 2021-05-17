@@ -342,7 +342,7 @@ function InformationForm(props) {
 
                 {
                     (typeof taskInformations === 'undefined' || taskInformations.length === 0) ? <tr><td colSpan={5}><center>{translate('task_template.no_data')}</center></td></tr> :
-                        <ReactSortable animation={500} tag="tbody" id="actions" list={taskInformations} setList={(newState) => {props.onDataChange(newState);setState({ ...state, taskInformations: newState })}}>
+                        <ReactSortable animation={500} tag="tbody" id="actions" list={taskInformations} setList={(newState) => { props.onDataChange(newState); setState({ ...state, taskInformations: newState }) }}>
                             {taskInformations.map((item, index) =>
                                 <tr key={`${state.keyPrefix}_${index}`}>
                                     <td>p{index + 1}</td>

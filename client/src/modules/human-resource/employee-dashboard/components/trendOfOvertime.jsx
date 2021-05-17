@@ -164,18 +164,12 @@ const TrendOfOvertime = (props) => {
      */
     const renderChart = (data) => {
         data.data1.shift();
-        let fakeData1 = data.data1.map((x, index) => {
-            if (index % 2 === 0) {
-                return x * 2
-            } else return x / 2
-        });
         removePreviousChart();
         let chart = c3.generate({
             bindto: barChart.current,
             data: {
                 x: 'x',
-                columns: [],
-                hide: true,
+                columns: [data.ratioX, ['data1', ...data.data1]],
                 type: data.lineChart === true ? '' : 'bar',
                 names: {
                     data1: data.nameData1,
@@ -196,18 +190,6 @@ const TrendOfOvertime = (props) => {
                 }
             },
         });
-
-        setTimeout(function () {
-            chart.load({
-                columns: [data.ratioX, ['data1', ...fakeData1]],
-            });
-        }, 100);
-
-        setTimeout(function () {
-            chart.load({
-                columns: [data.ratioX, ['data1', ...data.data1]],
-            });
-        }, 300);
     }
 
     /** Bắt sự kiện tìm kiếm */
@@ -277,25 +259,6 @@ const TrendOfOvertime = (props) => {
                 </div>
                 <div className="box-body">
                     <div className="qlcv" style={{ marginBottom: 15 }}>
-                        <div className="form-inline">
-                            <div className="form-group">
-                                <label className="form-control-static">{translate('kpi.evaluation.dashboard.organizational_unit')}</label>
-                                <SelectMulti id="multiSelectUnitsOvertime"
-                                    items={childOrganizationalUnit.map((p, i) => { return { value: p.id, text: p.name } })}
-                                    options={{
-                                        nonSelectedText: translate('page.non_unit'),
-                                        allSelectedText: translate('page.all_unit'),
-                                    }}
-                                    onChange={handleSelectOrganizationalUnit}
-                                    value={organizationalUnits}
-                                >
-                                </SelectMulti>
-                            </div>
-                            <div className="form-group">
-                                <label></label>
-                                <button type="button" className="btn btn-success" title={translate('general.search')} onClick={() => handleSunmitSearch()} >{translate('general.search')}</button>
-                            </div>
-                        </div>
                         <div className="form-inline" >
                             <div className="form-group">
                                 <label className="form-control-static" >Từ tháng</label>
@@ -318,7 +281,27 @@ const TrendOfOvertime = (props) => {
                                 />
                             </div>
                         </div>
-
+                        <div className="form-inline">
+                            {!props.defaultUnit 
+                                && <div className="form-group">
+                                    <label className="form-control-static">{translate('kpi.evaluation.dashboard.organizational_unit')}</label>
+                                    <SelectMulti id="multiSelectUnitsOvertime"
+                                        items={childOrganizationalUnit.map((p, i) => { return { value: p.id, text: p.name } })}
+                                        options={{
+                                            nonSelectedText: translate('page.non_unit'),
+                                            allSelectedText: translate('page.all_unit'),
+                                        }}
+                                        onChange={handleSelectOrganizationalUnit}
+                                        value={organizationalUnits}
+                                    >
+                                    </SelectMulti>
+                                </div>
+                            }
+                            <div className="form-group">
+                                <label></label>
+                                <button type="button" className="btn btn-success" title={translate('general.search')} onClick={() => handleSunmitSearch()} >{translate('general.search')}</button>
+                            </div>
+                        </div>
                     </div>
                     <div className="dashboard_box_body">
                         <p className="pull-left" style={{ marginBottom: 0 }}><b>ĐV tính: Số giờ</b></p>

@@ -75,8 +75,7 @@ const AgePyramidChart = (props) => {
         let chart = c3.generate({
             bindto: _chart.current,
             data: {
-                columns: [],
-                hide: true,
+                columns: [[data.nameData1, ...data.data1], [data.nameData2, ...data.data2]],
                 type: 'bar',
                 groups: [[data.nameData1, data.nameData2]]
             },
@@ -112,12 +111,6 @@ const AgePyramidChart = (props) => {
                 }
             }
         });
-
-        setTimeout(function () {
-            chart.load({
-                columns: [[data.nameData1, ...data.data1], [data.nameData2, ...data.data2]],
-            });
-        }, 100);
     }
 
     const isEqual = (items1, items2) => {

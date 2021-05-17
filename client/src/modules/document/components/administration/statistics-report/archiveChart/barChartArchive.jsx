@@ -34,6 +34,7 @@ function BarChartArchive(props){
             data: {
                 columns: [count],
                 type: 'bar',
+                labels: true,
             },
 
             padding: {

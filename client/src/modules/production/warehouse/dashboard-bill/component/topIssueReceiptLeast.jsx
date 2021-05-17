@@ -39,6 +39,7 @@ class TopIssueReceiptLeast extends Component {
                     ['Số lượng', 600, 550, 450, 400, 200],
                 ],
                 type: 'bar',
+                labels: true,
             },
             axis: {
                 x: {

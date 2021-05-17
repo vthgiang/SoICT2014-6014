@@ -36,7 +36,10 @@ function StockManagementTable(props) {
     }, [])
 
     const setPage = (page) => {
-        setState({ page });
+        setState({ 
+            ...state, 
+            page 
+        });
         const data = {
             limit: state.limit,
             page: page,
@@ -46,7 +49,10 @@ function StockManagementTable(props) {
     }
 
     const setLimit = (number) => {
-        setState({ limit: number });
+        setState({
+            ...state,
+            limit: number
+        });
         const data = {
             limit: number,
             page: state.page,

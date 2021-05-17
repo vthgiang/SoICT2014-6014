@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect } from 'react';
+import React, { Component, useState, useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { getStorage } from '../../../../config';
@@ -14,15 +14,18 @@ import Swal from 'sweetalert2';
 var currentTask;
 
 function EvaluateByAccountableEmployee(props) {
+    const { translate, user, KPIPersonalManager, performtasks } = props;
+    const { id, perform, role, hasAccountable } = props;
 
     const [state, setState] = useState(initState(props.date))
-    const { userId } = state;
+    const [progress, setProgress] = useState(initState(props.date).progress)
+    const [errorOnProgress, setErrorOnProgress] = useState(undefined)
 
     function initState(date) {
         let data = getData(date)
 
         return {
-            isEval: isEval,
+            isEval: props.isEval,
             errorInfo: {},
             errorApprovedPoint: {},
             errorContribute: {},
@@ -52,10 +55,9 @@ function EvaluateByAccountableEmployee(props) {
             unit: data.unit,
         }
     }
-    const { translate, user, KPIPersonalManager, performtasks } = props;
-    const { isEval, startDate, endDate, endTime, startTime, storedEvaluatingMonth, evaluatingMonth, task, date, oldAutoPoint, autoPoint, errorOnDate, errorOnMonth, showAutoPointInfo, dentaDate, prevDate, info, results, empPoint, progress,
-        errorInfo, errorOnStartDate, errorOnEndDate, errorApprovedPoint, errorContribute, errSumContribution, indexReRender, unit, kpi, evaluation } = state;
-    const { id, perform, role, hasAccountable } = props;
+    const { isEval, startDate, endDate, endTime, startTime, storedEvaluatingMonth, evaluatingMonth, task, date, oldAutoPoint, autoPoint, errorOnDate, errorOnMonth, showAutoPointInfo, dentaDate, prevDate, info, results, empPoint,
+        errorInfo, errorOnStartDate, errorOnEndDate, errorApprovedPoint, errorContribute, errSumContribution, indexReRender, unit, kpi, evaluation, userId
+    } = state;
 
     useEffect(() => {
         if (props.date) {
@@ -81,6 +83,7 @@ function EvaluateByAccountableEmployee(props) {
             errorOnAccountableContribution: undefined,
             errorOnMyPoint: undefined
         })
+        setErrorOnProgress(undefined)
     }
 
     // Sau khi cập nhật id mới, cập nhật lại state
@@ -119,20 +122,19 @@ function EvaluateByAccountableEmployee(props) {
 
             evaluation: data.evaluation,
         })
+        setProgress(data.progress)
+        setErrorOnProgress(undefined)
     }, [id])
 
     // Cập nhật state.kpi khi có kết quả truy vấn mới
     useEffect(() => {
         let data = getData(props.date);
-        if (props.date) {
-            props.getAllKpiSetsOrganizationalUnitByMonth(userId, unit, props.date);
-        }
 
         setState({
             ...state,
             kpi: data.kpi
         })
-    }, JSON.stringify(props.KPIPersonalManager.kpiSets))
+    }, [JSON.stringify(props.KPIPersonalManager.kpiSets)])
 
     function handleSortMonthEval(evaluations) {
         // sắp xếp đánh giá theo thứ tự tháng
@@ -654,6 +656,7 @@ function EvaluateByAccountableEmployee(props) {
             checkSave: data.checkSave,
             indexReRender: state.indexReRender + 1,
         });
+        setProgress(data.progress)
     }
 
 
@@ -683,19 +686,17 @@ function EvaluateByAccountableEmployee(props) {
     }
 
     // hàm cập nhật progress
-    const handleChangeProgress = async (e) => {
+    function handleChangeProgress (e) {
         let { translate } = props;
         let msg;
         let value = parseInt(e.target.value);
         if (value < 0 || value > 100) {
             msg = translate('task.task_perform.modal_approve_task.err_range');
         }
-        await setState({
-            ...state,
-            progress: value,
-            errorOnProgress: msg,
-        })
-        await handleChangeAutoPoint();
+
+        setProgress(value)
+        setErrorOnProgress(msg)
+        handleChangeAutoPoint();
     }
 
     // hàm tính điểm tự dộng
@@ -1269,7 +1270,7 @@ function EvaluateByAccountableEmployee(props) {
     }
 
     function convertDateTime(date, time) {
-        let splitter = date.split("-");
+        let splitter = date?.split("-");
         let strDateTime = `${splitter[2]}-${splitter[1]}-${splitter[0]} ${time}`;
         return new Date(strDateTime);
     }
@@ -1404,7 +1405,7 @@ function EvaluateByAccountableEmployee(props) {
     // hàm validate submit
     const isFormValidated = () => {
         const { evaluatingMonth, errorOnMonth, errorOnDate, errorOnEndDate, errorOnStartDate, errorOnPoint, errorOnAccountablePoint, errorOnAccountableContribution, errorOnMyPoint,
-            errorOnProgress, errorOnInfoDate, errorOnInfoBoolean, errorOnNumberInfo, errorOnTextInfo, errorApprovedPoint, errorContribute, errSumContribution } = state;
+            errorOnInfoDate, errorOnInfoBoolean, errorOnNumberInfo, errorOnTextInfo, errorApprovedPoint, errorContribute, errSumContribution } = state;
         let { info, results, empPoint, progress, } = state;
 
         let checkErrorContribute = true;
@@ -1525,7 +1526,7 @@ function EvaluateByAccountableEmployee(props) {
         let endDateTask = convertDateTime(state.endDate, state.endTime);
         let data = {
             user: getStorage("userId"),
-            progress: state.progress,
+            progress: progress,
             automaticPoint: state.autoPoint,
             role: "accountable",
             hasAccountable: state.hasAccountable,
@@ -1754,6 +1755,8 @@ function EvaluateByAccountableEmployee(props) {
                                 perform={perform}
                                 id={id}
                                 value={state}
+                                progress={progress}
+                                errorOnProgress={errorOnProgress}
                                 disabled={disabled}
                             />
 

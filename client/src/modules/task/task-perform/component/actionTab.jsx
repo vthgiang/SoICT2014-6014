@@ -201,7 +201,7 @@ class ActionTab extends Component {
                 this.hover[`${id}-actionImportanceLevel`] = value;
             }
         }
-        
+
         await this.setState(state => {
             return {
                 ...state,
@@ -212,7 +212,7 @@ class ActionTab extends Component {
             }
         })
     }
-    
+
     setValueRating = async (actionId, newValue) => {
         let newEvaluations = this.state.evaluations
         newEvaluations[actionId] = {
@@ -244,9 +244,10 @@ class ActionTab extends Component {
 
     evaluationTaskAction = (evaAction, taskId, role, firstTime) => {
         let newEvaluations = this.state.evaluations
+        let rating = newEvaluations?.[evaAction?._id]?.rating ?? evaAction?.rating;
         newEvaluations[evaAction?._id] = {
             ...newEvaluations[evaAction?._id],
-            rating: newEvaluations?.[evaAction?._id]?.rating ?? evaAction?.rating,
+            rating: rating === -1 ? 0 : rating,
             actionImportanceLevel: newEvaluations?.[evaAction?._id]?.actionImportanceLevel ?? evaAction?.actionImportanceLevel,
             firstTime: firstTime,
             type: "evaluation",
@@ -1268,7 +1269,7 @@ class ActionTab extends Component {
         const subtasks = tasks.subtasks;
         const {
             showEvaluations, selected, comment, editComment, showChildComment, editAction, action, taskActions,
-            editTaskComment, showEditTaskFile, evaluations, actionImportanceLevelAll, ratingAll, 
+            editTaskComment, showEditTaskFile, evaluations, actionImportanceLevelAll, ratingAll,
             editCommentOfTaskComment, valueRating, currentUser, hover, fileTaskEdited, showSort,
             showFile, deleteFile, taskFiles, newActionEdited, newCommentOfActionEdited, newAction,
             newCommentOfAction, newTaskCommentEdited, newCommentOfTaskComment, newTaskComment, newCommentOfTaskCommentEdited, showBoxAddLogTimer, addLogStartTime, addLogEndTime
@@ -1329,6 +1330,30 @@ class ActionTab extends Component {
                     </ul>
                     <div className="tab-content">
                         <div className={selected === "taskAction" ? "active tab-pane" : "tab-pane"} id="taskAction">
+
+                            {/* Thêm hoạt động cho công việc*/}
+                            {role === "responsible" && task && !showSort &&
+                                <React.Fragment>
+                                    <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
+                                    <ContentMaker
+                                        idQuill={`add-action-${id}`}
+                                        inputCssClass="text-input-level1" controlCssClass="tool-level1 row"
+                                        onFilesChange={this.onActionFilesChange}
+                                        onFilesError={this.onFilesError}
+                                        files={newAction.files}
+                                        text={newAction.descriptionDefault}
+                                        placeholder={role === "responsible" ? translate("task.task_perform.result") : translate("task.task_perform.enter_action")}
+                                        submitButtonText={role === "responsible" ? translate("general.add") : translate("task.task_perform.create_action")}
+                                        onTextChange={(value, imgs) => {
+                                            this.setState(state => {
+                                                return { ...state, newAction: { ...state.newAction, description: value, descriptionDefault: null } }
+                                            })
+                                        }}
+                                        onSubmit={(e) => { this.submitAction(task._id, taskActions.length) }}
+                                    />
+                                </React.Fragment>
+                            }
+
 
                             {typeof taskActions !== 'undefined' && taskActions.length !== 0 ?
                                 <ShowMoreShowLess
@@ -1416,8 +1441,9 @@ class ActionTab extends Component {
                                                                     <React.Fragment>
                                                                         {(role === "accountable" || role === "consulted" || role === "creator" || role === "informed") &&
                                                                             <>
-                                                                                <div className="form-group">
-                                                                                    <span style={{ marginRight: "5px" }}>Điểm đánh giá hoạt động <strong>({evaluations?.[item?._id]?.rating ?? item?.rating}/10)</strong></span>
+                                                                                <div className="form-group text-sm">
+                                                                                    {/* Code hiển thị: Nếu chưa chọn điểm đánh giá mới, hiển thị điểm đánh giá trong DB. Nếu chưa đánh giá, hiển thị -- */}
+                                                                                    <span style={{ marginRight: "5px" }}>Điểm đánh giá: <strong>{evaluations?.[item?._id]?.rating ?? (item?.rating !== -1 ? item?.rating : "--")}/10</strong></span>
                                                                                     <Rating
                                                                                         fractions={2}
                                                                                         stop={10}
@@ -1433,8 +1459,9 @@ class ActionTab extends Component {
                                                                                     />
                                                                                     <div style={{ display: "inline", marginLeft: "5px" }}>{this.hover?.[`${item?._id}-rating`]}</div>
                                                                                 </div>
-                                                                                <div className="form-group">
-                                                                                    <span style={{ marginRight: "5px" }}>Độ quan trọng hoạt động <strong>({evaluations?.[item?._id]?.actionImportanceLevel ?? item?.actionImportanceLevel}/10)</strong></span>
+                                                                                <div className="form-group text-sm">
+                                                                                    {/* Code hiển thị: Nếu chưa chọn độ quan trọng mới, hiển thị độ quan trọng trong DB */}
+                                                                                    <span style={{ marginRight: "5px" }}>Độ quan trọng: <strong>{evaluations?.[item?._id]?.actionImportanceLevel ?? item?.actionImportanceLevel}/10</strong></span>
                                                                                     <Rating
                                                                                         fractions={2}
                                                                                         stop={10}
@@ -1470,7 +1497,7 @@ class ActionTab extends Component {
                                                                                             <p key={index}>
                                                                                                 <b> {element?.creator?.name} </b>
                                                                                                 {this.getRoleNameInTask(element?.role)}
-                                                                                                <span> Đánh giá:<span className="text-red"> {element?.rating}/10</span> - Độ quan trọng:<span className="text-red"> {element?.actionImportanceLevel}/10</span></span>
+                                                                                                <span> Điểm đánh giá:<span className="text-red"> {element?.rating}/10</span> - Độ quan trọng:<span className="text-red"> {element?.actionImportanceLevel}/10</span></span>
                                                                                             </p>
                                                                                         )
                                                                                     })
@@ -1672,7 +1699,7 @@ class ActionTab extends Component {
                                 </ShowMoreShowLess>
                                 : null
                             }
-                            {/* Thêm hoạt động cho công việc*/}
+                            {/* Sắp xếo hoạt động CV*/}
                             {showSort ?
                                 <div className="row" style={{ marginTop: 20 }}>
                                     <div className="col-xs-6">
@@ -1684,36 +1711,16 @@ class ActionTab extends Component {
                                 </div>
                                 :
                                 <React.Fragment>
-                                    {role === "responsible" && task &&
-                                        <React.Fragment>
-                                            <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
-                                            <ContentMaker
-                                                idQuill={`add-action-${id}`}
-                                                inputCssClass="text-input-level1" controlCssClass="tool-level1 row"
-                                                onFilesChange={this.onActionFilesChange}
-                                                onFilesError={this.onFilesError}
-                                                files={newAction.files}
-                                                text={newAction.descriptionDefault}
-                                                placeholder={role === "responsible" ? translate("task.task_perform.result") : translate("task.task_perform.enter_action")}
-                                                submitButtonText={role === "responsible" ? translate("general.add") : translate("task.task_perform.create_action")}
-                                                onTextChange={(value, imgs) => {
-                                                    this.setState(state => {
-                                                        return { ...state, newAction: { ...state.newAction, description: value, descriptionDefault: null } }
-                                                    })
-                                                }}
-                                                onSubmit={(e) => { this.submitAction(task._id, taskActions.length) }}
-                                            />
-                                        </React.Fragment>
-                                    }
-
                                     {
+                                        // Đánh giá tất cả các hoạt động CV
                                         this.state.showPopupApproveAllAction ?
                                             (role === "accountable") && taskActions.length > 1 &&
-                                            <React.Fragment>
-                                                <h4 style={{ fontWeight: 600, color: "#616161" }}>Chọn đánh giá cho tất cả hoạt động của bạn </h4>
-                                                <div className="form-group">
-                                                    <span style={{ marginRight: "5px" }}>Điểm đánh giá hoạt động <strong>({ratingAll ?? 0}/10)</strong></span>
-                                                    <Rating 
+                                            <div style={{ borderColor: "#ddd", marginTop: 20 }}>
+                                                <button style={{ marginTop: 7, marginBottom: 7 }} className="btn btn-block btn-default btn-sm" onClick={this.togglePopupApproveAllAction}>Hủy đánh giá tất cả các hoạt động</button>
+
+                                                <div className="form-group text-sm">
+                                                    <span style={{ marginRight: "5px" }}>Điểm đánh giá: <strong>{ratingAll ?? 0}/10</strong></span>
+                                                    <Rating
                                                         fractions={2}
                                                         stop={10}
                                                         emptySymbol="fa fa-star-o fa-2x"
@@ -1728,8 +1735,9 @@ class ActionTab extends Component {
                                                     />
                                                     <div style={{ display: "inline", marginLeft: "5px" }}>{this.hover?.['all-action-rating']}</div>
                                                 </div>
-                                                <div className="form-group">
-                                                    <span style={{ marginRight: "5px" }}>Độ quan trọng hoạt động <strong>({actionImportanceLevelAll ?? 10}/10)</strong></span>
+
+                                                <div className="form-group text-sm">
+                                                    <span style={{ marginRight: "5px" }}>Độ quan trọng: <strong>{actionImportanceLevelAll ?? 10}/10</strong></span>
                                                     <Rating
                                                         fractions={2}
                                                         stop={10}
@@ -1745,9 +1753,8 @@ class ActionTab extends Component {
                                                     />
                                                     <div style={{ display: "inline", marginLeft: "5px" }}>{this.hover?.['all-action-actionImportanceLevel']}</div>
                                                 </div>
-                                                <a style={{ cursor: "pointer", fontWeight: '600' }} onClick={() => this.evaluationAllTaskAction(task._id, taskActions)}>Gửi đánh giá</a>
-                                                <button style={{ marginTop: '7px' }} className="btn btn-block btn-default btn-sm" onClick={this.togglePopupApproveAllAction}>Hủy đánh giá hoạt động</button>
-                                            </React.Fragment>
+                                                <button style={{ marginTop: 7, marginBottom: 7 }} className="btn btn-block btn-default btn-sm" onClick={() => this.evaluationAllTaskAction(task._id, taskActions)}>Gửi đánh giá tất cả các hoạt động</button>
+                                            </div>
                                             : (role === "accountable") && taskActions.length > 1 && <button className="btn btn-block btn-success btn-sm" onClick={this.togglePopupApproveAllAction}>Đánh giá tất cả hoạt động</button>
                                     }
                                     {(role === "responsible" || role === "accountable") && taskActions.length > 1 && <button className="btn btn-block btn-default btn-sm" onClick={this.showSort}>Sắp xếp hoạt động</button>}
@@ -1757,6 +1764,34 @@ class ActionTab extends Component {
 
                         {/* Chuyển qua tab trao đổi */}
                         <div className={selected === "taskComment" ? "active tab-pane" : "tab-pane"} id="taskComment">
+
+                            {/* Thêm bình luận cho công việc*/}
+                            <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="User Image" />
+                            <ContentMaker
+                                idQuill={`add-comment-task-${id}`}
+                                inputCssClass="text-input-level1" controlCssClass="tool-level1 row"
+                                onFilesChange={this.onTaskCommentFilesChange}
+                                onFilesError={this.onFilesError}
+                                files={newTaskComment.files}
+                                text={newTaskComment.descriptionDefault}
+                                placeholder={translate("task.task_perform.enter_comment")}
+                                submitButtonText={translate("task.task_perform.create_comment")}
+                                onTextChange={(value, imgs) => {
+                                    this.setState(state => {
+                                        return {
+                                            ...state,
+                                            newTaskComment: {
+                                                ...state.newTaskComment,
+                                                description: value,
+                                                descriptionDefault: null
+                                            }
+                                        }
+                                    })
+
+                                }}
+                                onSubmit={(e) => { this.submitTaskComment(task._id) }}
+                            />
+
                             {typeof taskComments !== 'undefined' && taskComments.length !== 0 ?
                                 <ShowMoreShowLess
                                     id={`taskComment${id}`}
@@ -1986,32 +2021,6 @@ class ActionTab extends Component {
                                     }
                                 </ShowMoreShowLess> : null
                             }
-                            {/* Thêm bình luận cho công việc*/}
-                            <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="User Image" />
-                            <ContentMaker
-                                idQuill={`add-comment-task-${id}`}
-                                inputCssClass="text-input-level1" controlCssClass="tool-level1 row"
-                                onFilesChange={this.onTaskCommentFilesChange}
-                                onFilesError={this.onFilesError}
-                                files={newTaskComment.files}
-                                text={newTaskComment.descriptionDefault}
-                                placeholder={translate("task.task_perform.enter_comment")}
-                                submitButtonText={translate("task.task_perform.create_comment")}
-                                onTextChange={(value, imgs) => {
-                                    this.setState(state => {
-                                        return {
-                                            ...state,
-                                            newTaskComment: {
-                                                ...state.newTaskComment,
-                                                description: value,
-                                                descriptionDefault: null
-                                            }
-                                        }
-                                    })
-
-                                }}
-                                onSubmit={(e) => { this.submitTaskComment(task._id) }}
-                            />
                         </div>
 
 
