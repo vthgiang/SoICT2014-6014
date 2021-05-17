@@ -378,13 +378,11 @@ function StockCreateForm(props) {
 
     const handleAddRole = async (e) => {
         e.preventDefault();
-        await setState(state => {
-            let managementLocation = [...(state.managementLocation), state.role];
-            setState({
-                ...state,
-                managementLocation: managementLocation,
-                role: Object.assign({}, EMPTY_ROLE)
-            })
+        let managementLocation = [...(state.managementLocation), state.role];
+        await setState({
+            ...state,
+            managementLocation: managementLocation,
+            role: Object.assign({}, EMPTY_ROLE)
         })
     }
 
@@ -428,7 +426,7 @@ function StockCreateForm(props) {
 
     const handleCancelEditRole = async (e) => {
         e.preventDefault();
-        setState({
+        await setState({
             ...state,
             editInfoRole: false,
             role: Object.assign({}, EMPTY_ROLE)

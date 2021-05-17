@@ -236,16 +236,16 @@ class MainDashboardUnit extends Component {
             let tasks = [];
             let accountableTask = [], consultedTask = [], responsibleTask = [], informedTask = [];
             taskListByStatus && taskListByStatus.forEach(task => {
-                if (task.accountableEmployees.includes(listEmployee[i].userId._id)) {
+                if (task?.accountableEmployees?.includes(listEmployee?.[i]?.userId?._id)) {
                     accountableTask = [...accountableTask, task._id]
                 }
-                if (task.consultedEmployees.includes(listEmployee[i].userId._id)) {
+                if (task?.consultedEmployees?.includes(listEmployee?.[i]?.userId?._id)) {
                     consultedTask = [...consultedTask, task._id]
                 }
-                if (task.responsibleEmployees.includes(listEmployee[i].userId._id)) {
+                if (task?.responsibleEmployees?.includes(listEmployee?.[i]?.userId?._id)) {
                     responsibleTask = [...responsibleTask, task._id]
                 }
-                if (task.informedEmployees.includes(listEmployee[i].userId._id)) {
+                if (task?.informedEmployees?.includes(listEmployee?.[i]?.userId?._id)) {
                     informedTask = [...informedTask, task._id]
                 }
             });
@@ -253,7 +253,7 @@ class MainDashboardUnit extends Component {
             let totalTask = tasks.filter(function (item, pos) {
                 return tasks.indexOf(item) === pos;
             })
-            employeeTasks = [...employeeTasks, { _id: listEmployee[i].userId._id, name: listEmployee[i].userId.name, totalTask: totalTask.length }]
+            employeeTasks = [...employeeTasks, { _id: listEmployee?.[i]?.userId?._id, name: listEmployee?.[i].userId?.name, totalTask: totalTask?.length }]
         };
         if (employeeTasks.length !== 0) {
             employeeTasks = employeeTasks.sort((a, b) => b.totalTask - a.totalTask);
@@ -303,7 +303,7 @@ class MainDashboardUnit extends Component {
                         <div className="tab-content ">
                             <div className="tab-pane active" id="task">
                                 <TabTask 
-                                    childOrganizationalUnit={childOrganizationalUnit} 
+                                    childOrganizationalUnit={childOrganizationalUnit.filter(item => organizationalUnits.includes(item?.id))} 
                                     organizationalUnits={organizationalUnits}
                                     getUnitName={this.getUnitName}
                                     showUnitTask={this.showUnitTask}
@@ -312,7 +312,12 @@ class MainDashboardUnit extends Component {
                             {/* Tab năng lực nhân viên*/}
                             <div className="tab-pane" id="employee-capacity">
                                 <LazyLoadComponent>
-                                    <TabEmployeeCapacity organizationalUnits={organizationalUnits} month={monthShow} allOrganizationalUnits={childOrganizationalUnit.map(x => x.id)} />
+                                    <TabEmployeeCapacity 
+                                        organizationalUnits={organizationalUnits}
+                                        month={monthShow} 
+                                        allOrganizationalUnits={organizationalUnits} 
+                                        childOrganizationalUnit={childOrganizationalUnit}
+                                    />
                                 </LazyLoadComponent>
                             </div>
 
@@ -366,17 +371,17 @@ class MainDashboardUnit extends Component {
                                         </div>
                                     </div>
                                 </div>
-                                <TabHumanResource childOrganizationalUnit={childOrganizationalUnit} defaultUnit={true} organizationalUnits={organizationalUnits} monthShow={monthShow} />
+                                <TabHumanResource childOrganizationalUnit={childOrganizationalUnit.filter(item => organizationalUnits.includes(item?.id))} defaultUnit={true} organizationalUnits={organizationalUnits} monthShow={monthShow} />
                             </div>
 
                             {/* Tab nghỉ phép tăng ca*/}
                             <div className="tab-pane" id="annualLeave">
-                                <TabAnualLeave childOrganizationalUnit={childOrganizationalUnit} defaultUnit={true} organizationalUnits={organizationalUnits}/>
+                                <TabAnualLeave childOrganizationalUnit={childOrganizationalUnit.filter(item => organizationalUnits.includes(item?.id))} defaultUnit={true} organizationalUnits={organizationalUnits}/>
                             </div>
 
                             {/* Tab lương thưởng*/}
                             <div className="tab-pane" id="salary">
-                                <TabSalary childOrganizationalUnit={childOrganizationalUnit} organizationalUnits={organizationalUnits} monthShow={monthShow} />
+                                <TabSalary childOrganizationalUnit={childOrganizationalUnit.filter(item => organizationalUnits.includes(item?.id))} organizationalUnits={organizationalUnits} monthShow={monthShow} />
                             </div>
 
                             {/* Tab thống kê tổng hợp*/}

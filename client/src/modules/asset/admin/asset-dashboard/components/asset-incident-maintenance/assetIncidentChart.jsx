@@ -192,6 +192,7 @@ class AssetIncidentChart extends Component {
                     dataColumnChart.count,
                 ],
                 type: 'bar',
+                labels: true,
             },
             axis: {
                 x: {

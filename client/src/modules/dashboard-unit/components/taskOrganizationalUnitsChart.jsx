@@ -169,8 +169,7 @@ class TaskOrganizationalUnitsChart extends Component {
             bindto: this.refs.taskUnitsChart,
             data: {
                 x: 'x',
-                columns: [],
-                hide: true,
+                columns: data,
             },
             bar: {
                 width: {
@@ -221,14 +220,6 @@ class TaskOrganizationalUnitsChart extends Component {
         });
 
         this.chart = chart;
-
-        setTimeout(function () {
-            if (chart) {
-                chart.load({
-                    columns: data,
-                });
-            }
-        }, 100);
     };
 
     /** Bắt sự kiện tìm kiếm */

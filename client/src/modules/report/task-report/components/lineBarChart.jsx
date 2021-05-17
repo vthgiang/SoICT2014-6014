@@ -77,6 +77,7 @@ function LineBarChart(props) {
                 x: 'x',
                 columns: newData,
                 type: 'bar',
+                labels: true,
                 types: typeChart,
                 // groups: [['p1', 'p2']]
             },

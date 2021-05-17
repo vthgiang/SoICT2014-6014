@@ -2,7 +2,6 @@ import React, { Component, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import Sortable from 'sortablejs';
 import { QuillEditor } from '../../../../common-components';
 import parse from 'html-react-parser';
 import { ReactSortable } from "react-sortablejs"
@@ -99,7 +98,7 @@ function ActionForm(props) {
         setState(state => {
             return {
                 ...state,
-                action: Object.assign({},EMPTY_ACTION),
+                action: Object.assign({}, EMPTY_ACTION),
                 quillValueDefault: EMPTY_ACTION.description
             }
         })
@@ -232,11 +231,11 @@ function ActionForm(props) {
                     </tr>
                 </thead>
 
-                    {
-                        (typeof taskActions === 'undefined' || taskActions.length === 0) ? <tr><td colSpan={5}><center>{translate('task_template.no_data')}</center></td></tr> :
-                            // <ReactSortable animation={500} tag="tbody" id="actions" list={taskActions} setList={(newState) => setState({...state, taskActions: newState })}>
-                            <ReactSortable animation={500} tag="tbody" id="actions" list={taskActions} setList={(newState) => {props.onDataChange(newState);setState({...state, taskActions: newState })}}>
-                                {taskActions.map((item, index) =>
+                {
+                    (typeof taskActions === 'undefined' || taskActions.length === 0) ? <tr><td colSpan={5}><center>{translate('task_template.no_data')}</center></td></tr> :
+                        // <ReactSortable animation={500} tag="tbody" id="actions" list={taskActions} setList={(newState) => setState({...state, taskActions: newState })}>
+                        <ReactSortable animation={500} tag="tbody" id="actions" list={taskActions} setList={(newState) => { props.onDataChange(newState); setState({ ...state, taskActions: newState }) }}>
+                            {taskActions.map((item, index) =>
                                 <tr className="" key={`${state.keyPrefix}_${index}`}>
                                     <td >{index + 1}</td>
                                     <td>{parse(item.name)}</td>
@@ -249,9 +248,9 @@ function ActionForm(props) {
                                     </td>
                                 </tr>
                             )}
-                            </ReactSortable>
+                        </ReactSortable>
 
-                    }
+                }
             </table>
         </fieldset>
     )
