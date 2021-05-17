@@ -653,17 +653,19 @@ function DashboardUnitForAdmin(props) {
                     {/* Thống kê KPI */}
                     <div className="row">
                         <div className="col-md-12">
-                            <div className="box box-primary">
-                                <div className="box-header with-border">
-                                    <div className="box-title">Biểu đồ thống kê điểm KPI {monthTitle} giữa các đơn vị </div>
+                            <LazyLoadComponent>
+                                <div className="box box-primary">
+                                    <div className="box-header with-border">
+                                        <div className="box-title">Biểu đồ thống kê điểm KPI {monthTitle} giữa các đơn vị </div>
+                                    </div>
+                                    <div className="box-body">
+                                        {
+                                            organizationalUnits &&
+                                            <StatisticsKpiUnits organizationalUnitIds={organizationalUnits} monthStatistics={month} />
+                                        }
+                                    </div>
                                 </div>
-                                <div className="box-body">
-                                    {
-                                        organizationalUnits &&
-                                        <StatisticsKpiUnits organizationalUnitIds={organizationalUnits} monthStatistics={month} />
-                                    }
-                                </div>
-                            </div>
+                            </LazyLoadComponent>
                         </div>
                     </div>
                 </div>
@@ -688,5 +690,4 @@ const actionCreators = {
     getTaskInOrganizationUnitByDateNow: taskManagementActions.getTaskByPriorityInOrganizationUnit,
 };
 
-const connectedDashboardUnitForAdmin = connect(mapState, actionCreators)(withTranslate(DashboardUnitForAdmin));
-export { connectedDashboardUnitForAdmin as DashboardUnitForAdmin };
+export default connect(mapState, actionCreators)(withTranslate(DashboardUnitForAdmin));
