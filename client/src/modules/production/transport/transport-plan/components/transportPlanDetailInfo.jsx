@@ -51,6 +51,7 @@ function TransportPlanDetailInfo(props) {
                 endDate: currentTransportPlan.endTime,
                 code: currentTransportPlan.code,
                 name: currentTransportPlan.name,
+                supervisor: currentTransportPlan.supervisor,
             });
 
             let idArr = []
@@ -148,7 +149,9 @@ function TransportPlanDetailInfo(props) {
             >
             <form id="modal-detail-info-transport-plan" >
                 <div className="box-body">
-                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <div className="box box-solid">
+                        <div className="box-body qlcv">
+                    <div className="row ">
 
                         <div className="col-xs-12 col-sm-12 col-md-4 col-lg-4">
 
@@ -178,7 +181,8 @@ function TransportPlanDetailInfo(props) {
                                             Người phụ trách
                                             {/* <span className="attention"> * </span> */}
                                         </label>
-                                        <input type="text" className="form-control" disabled={false} 
+                                        <input type="text" className="form-control" disabled={true} 
+                                            value={formSchedule.supervisor?.name}
                                         />
                                         {/* <SelectBox
                                             id={`select-type-requirement`}
@@ -229,72 +233,92 @@ function TransportPlanDetailInfo(props) {
                                 <LocationMap 
                                     locations = {listSelectedRequirementsLocation}
                                     loadingElement={<div style={{height: `100%`}}/>}
-                                    containerElement={<div style={{height: "40vh"}}/>}
+                                    containerElement={<div style={{height: "45vh", marginTop: '20px'}}/>}
                                     mapElement={<div style={{height: `100%`}}/>}
+                                    defaultZoom={10}
+                                    defaultCenter={listSelectedRequirementsLocation[0]?.locations}
                                 />
                             }
                         </div>
                     </div>
-                {
-                    listRequirements && listRequirements.length!==0
-                    &&
-                    <table id={"1"} className="table table-striped table-bordered table-hover">
-                        <thead>
-                            <tr>
-                                <th className="col-fixed" style={{ width: 60 }}>{"STT"}</th>
-                                <th>{"Mã yêu cầu"}</th>
-                                <th>{"Loại yêu cầu"}</th>
-                                <th>{"Địa chỉ nhận hàng"}</th>
-                                <th>{"Địa chỉ giao hàng"}</th>
-                                <th>{"Ngày tạo"}</th>
-                                <th>{"Ngày mong muốn vận chuyển"}</th>
-                                <th>{"Trạng thái"}</th>
-                                {/* <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
-                                    <DataTableSetting
-                                        tableId={tableId}
-                                        columnArr={[
-                                            translate('manage_example.index'),
-                                            translate('manage_example.exampleName'),
-                                            translate('manage_example.description'),
-                                        ]}
-                                        setLimit={setLimit}
-                                    />
-                                </th> */}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {(listRequirements && listRequirements.length !== 0) &&
-                                listRequirements.map((x, index) => (
-                                    x &&
-                                    <tr key={index}>
-                                        <td>{index+1}</td>
-                                        <td>{x.code}</td>
-                                        <td>{getTypeRequirement(x.type)}</td>
-                                        <td>{x.fromAddress}</td>
-                                        <td>{x.toAddress}</td>
-                                        <td>{x.createdAt ? formatDate(x.createdAt) : ""}</td>
-                                        <td>
-                                            {
-                                                (x.timeRequests && x.timeRequests.length!==0)
-                                                && x.timeRequests.map((timeRequest, index2)=>(
-                                                    <div key={index+" "+index2}>
-                                                        {index2+1+"/ "+formatDate(timeRequest.timeRequest)}
-                                                    </div>
-                                                ))
-                                            }
-                                        </td>
-                                        <td>{x.status}</td>
+                    
+                        </div>
+                    </div>
+                    <div className="box box-solid">
+                        <div className="box-header">
+                            <div className="box-title">{"Danh sách nhiệm vụ vận chuyển"}</div>
+                        </div>
+                        <div className="box-body qlcv">
+                        {
+                            listRequirements && listRequirements.length!==0
+                            &&
+                            <table id={"1"} className="table table-striped table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th className="col-fixed" style={{ width: 60 }}>{"STT"}</th>
+                                        <th>{"Mã yêu cầu"}</th>
+                                        <th>{"Loại yêu cầu"}</th>
+                                        <th>{"Địa chỉ nhận hàng"}</th>
+                                        <th>{"Địa chỉ giao hàng"}</th>
+                                        <th>{"Ngày tạo"}</th>
+                                        <th>{"Ngày mong muốn vận chuyển"}</th>
+                                        <th>{"Trạng thái"}</th>
+                                        {/* <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
+                                            <DataTableSetting
+                                                tableId={tableId}
+                                                columnArr={[
+                                                    translate('manage_example.index'),
+                                                    translate('manage_example.exampleName'),
+                                                    translate('manage_example.description'),
+                                                ]}
+                                                setLimit={setLimit}
+                                            />
+                                        </th> */}
                                     </tr>
-                                ))
-                            }
-                        </tbody>
-                    </table>
-                }
+                                </thead>
+                                <tbody>
+                                    {(listRequirements && listRequirements.length !== 0) &&
+                                        listRequirements.map((x, index) => (
+                                            x &&
+                                            <tr key={index}>
+                                                <td>{index+1}</td>
+                                                <td>{x.code}</td>
+                                                <td>{getTypeRequirement(x.type)}</td>
+                                                <td>{x.fromAddress}</td>
+                                                <td>{x.toAddress}</td>
+                                                <td>{x.createdAt ? formatDate(x.createdAt) : ""}</td>
+                                                <td>
+                                                    {
+                                                        (x.timeRequests && x.timeRequests.length!==0)
+                                                        && x.timeRequests.map((timeRequest, index2)=>(
+                                                            <div key={index+" "+index2}>
+                                                                {index2+1+"/ "+formatDate(timeRequest.timeRequest)}
+                                                            </div>
+                                                        ))
+                                                    }
+                                                </td>
+                                                <td>{x.status}</td>
+                                            </tr>
+                                        ))
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                        </div>
+                    </div>  
+
+                    <div className="box box-solid">
+                        <div className="box-header">
+                            <div className="box-title">{"Danh sách phân công phương tiện và nhân viên"}</div>
+                        </div>
+                        <div className="box-body qlcv">        
+                            <TransportVehicleAndCarrierSelect
+                                currentTransportPlan={currentTransportPlan}
+                            />
+                        </div>
+                    </div>
+
                 </div>
-            
-                <TransportVehicleAndCarrierSelect
-                    currentTransportPlan={currentTransportPlan}
-                />
             </form>
             </DialogModal>
         </React.Fragment>

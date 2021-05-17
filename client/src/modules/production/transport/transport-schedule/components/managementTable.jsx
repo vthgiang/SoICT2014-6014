@@ -15,11 +15,20 @@ import { convertDistanceToKm, convertTimeToMinutes } from "../../transportHelper
 
 
 function ManagementTable(props) {
-    let {transportPlan} = props
+    let {transportPlan, transportSchedule} = props
     const [currentPlanId, setCurrentPlanId] = useState()
+    const [listPlans, setListPlans] = useState();
+
+    useEffect(() => {
+        if (transportPlan && transportPlan.lists){
+            setListPlans(transportPlan.lists);
+        }
+    }, [transportPlan])
     useEffect(() => {
         props.getAllTransportPlans({page: 1, limit: 100});
-    }, []);
+        console.clear();
+        console.log("realodddddd");
+    }, [transportSchedule]);
     const handleShowArrangeForm = (plan) => {
         console.log(plan, " aaaa")
         setCurrentPlanId(plan._id);
@@ -44,8 +53,8 @@ function ManagementTable(props) {
                     </thead>
                     <tbody>
                     {
-                    (transportPlan && transportPlan.lists && transportPlan.lists.length !== 0) &&
-                    transportPlan.lists.map((x, index) => (
+                    (listPlans && listPlans.length !== 0) &&
+                    listPlans.map((x, index) => (
                             x &&
                             <tr key={index}>
                                 <td>{index + 1}</td>
@@ -74,8 +83,8 @@ function ManagementTable(props) {
 }
 
 function mapState(state) {
-    const {transportPlan} = state;
-    return { transportPlan };
+    const {transportPlan, transportSchedule} = state;
+    return { transportPlan, transportSchedule };
 }
 
 const actions = {

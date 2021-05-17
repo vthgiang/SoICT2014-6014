@@ -117,7 +117,7 @@ function TransportPlanManagementTable(props) {
                             <th>{"Tên kế hoạch"}</th>
                             <th>{"Trạng thái"}</th>
                             <th>{"Thời gian"}</th>
-                            <th>{"Người phụ trách"}</th>
+                            <th>{"Người phụ trách giám sát"}</th>
                             <th>{"Hành động"}</th>
                         </tr>
                     </thead>

@@ -130,6 +130,15 @@ const generatePlanShortestDistance = (listRequirement, countDay, listVehiclesDay
     for (let i=0; i<listRequirement.length;i++) {
         if (!selectedRequirement[i] && check(i, listRequirement.length)){
             for (let j=0; j< countDay; j++){
+                // let checkIsHaveVehicleCanCarry = false;
+                // for (let z=0;z<listVehiclesDays[j].length;z++){
+                //     if (listVehiclesDays[j][z].payload >= listRequirement[i].payload 
+                //         && listVehiclesDays[j][z].volume >= listRequirement[i].volume){
+                //             checkIsHaveVehicleCanCarry = true;
+                //             break; 
+                //         }
+                // }
+                // if (!checkIsHaveVehicleCanCarry) continue;
                 selectedRequirement[i] = true;
                 day[j].push(listRequirement[i]);
                 generatePlanShortestDistance(listRequirement, countDay, listVehiclesDays, numVehiclesDays, k+1);
@@ -147,7 +156,7 @@ const check = (start, end) => {
     }
     return true;
 }
-const generatePlanFastestMove = (listRequirement, listPlan, allVehicles, allCarriers, inDay, startDate) => {
+exports.generatePlanFastestMove = (listRequirement, listPlan, allVehicles, allCarriers, inDay, startDate) => {
     startDatePlan = startDate;
     if (!(listRequirement && allVehicles && allCarriers 
         && listRequirement.length!==0 && allVehicles.length!==0 && allCarriers.length!==0)){
@@ -216,7 +225,7 @@ const generatePlanFastestMove = (listRequirement, listPlan, allVehicles, allCarr
             })
         }
     }
-    console.log(saveArrVehicle);
+    // console.log(saveArrVehicle);
     return {saveArr, saveArrVehicle, plans};
 }
 
@@ -1110,6 +1119,6 @@ let allVehicles = [
     }
 ]
 
-let o = generatePlanFastestMove(allTransportRequirements, null, allVehicles, allCarriers, 2, "2021-05-16");
-console.log("haha")
+// let o = generatePlanFastestMove(allTransportRequirements, null, allVehicles, allCarriers, 2, "2021-05-16");
+// console.log("haha")
 // console.log(k);
