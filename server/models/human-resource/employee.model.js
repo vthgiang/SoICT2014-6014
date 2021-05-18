@@ -75,7 +75,7 @@ const EmployeeSchema = new Schema({
     },
     maritalStatus: { // Tình trạng hôn nhân: single - Độc thân, married - Đã kết hôn
         type: String,
-        enum: ['single', 'married']
+        // enum: ['single', 'married']
     },
     /**
      * Start
