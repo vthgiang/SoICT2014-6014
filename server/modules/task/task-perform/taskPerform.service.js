@@ -2614,7 +2614,7 @@ exports.editTaskByResponsibleEmployees = async (portal, data, taskId) => {
             try {
                 fs.unlinkSync(SERVER_DIR + "/" + filepath.toString());
             } catch (error) {
-                
+
             }
         })
     }
@@ -2868,7 +2868,7 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
             })
         }
     }
-    
+
     // cập nhật thông tin cơ bản
     await Task(connect(DB_CONNECTION, portal)).updateOne(
         { _id: taskId },
@@ -2905,11 +2905,11 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
             try {
                 fs.unlinkSync(SERVER_DIR + "/" + filepath.toString());
             } catch (error) {
-                
+
             }
         })
     }
-    
+
     let task = await Task(connect(DB_CONNECTION, portal)).findById(taskId);
 
     // list info
@@ -4333,7 +4333,6 @@ exports.evaluateTaskByAccountableEmployees = async (portal, data, taskId) => {
         evaluatingMonth,
         startDate,
         endDate,
-        status,
         info,
         results,
         kpi,
@@ -4417,10 +4416,10 @@ exports.evaluateTaskByAccountableEmployees = async (portal, data, taskId) => {
         }
     }
 
-    await Task(connect(DB_CONNECTION, portal)).updateOne(
-        { _id: taskId },
-        { $set: { status: status?.[0] } }
-    );
+    // await Task(connect(DB_CONNECTION, portal)).updateOne(
+    //     { _id: taskId },
+    //     { $set: { status: status?.[0] } }
+    // );
     let task = await Task(connect(DB_CONNECTION, portal)).findById(taskId);
 
     checkSave &&

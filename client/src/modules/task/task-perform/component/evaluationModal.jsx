@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal } from '../../../../common-components/index';
 import { EvaluateByResponsibleEmployee } from './evaluateByResponsibleEmployee';
-import { EvaluateByAccountableEmployee } from './evaluateByAccountableEmployeeHook';
+import { EvaluateByAccountableEmployee } from './evaluateByAccountableEmployee';
 import { EvaluateByConsultedEmployee } from './evaluateByConsultedEmployee';
 import Swal from 'sweetalert2';
 
@@ -237,7 +237,7 @@ class EvaluationModal extends Component {
 
     handleChangeEnableAddItem = async (id) => {
         let splitter = id?.split("-");
-        if(splitter?.[0] === "new"){
+        if (splitter?.[0] === "new") {
             await this.setState({ disableAddItem: false });
         }
     }
@@ -275,7 +275,7 @@ class EvaluationModal extends Component {
         let checkEvaluationOfMonth = checkData.checkMonth;
 
         let dateProps;
-        if(!checkEvaluationOfMonth) {
+        if (!checkEvaluationOfMonth) {
             if (dateParam[content]) {
                 dateProps = dateParam
             } else {
@@ -325,18 +325,18 @@ class EvaluationModal extends Component {
 
                                 {/* Thêm mới đánh giá */}
                                 { // (showEval === false) && // checkMonth === false && // !(isInNextMonthOfEndDate) && // kiểm tra khi qua ngày kết thúc ko cho đánh giá
-                                    !disableAddItem ? 
-                                    <li className={content === 'new' ? "active" : undefined} >
-                                        <a style={{ cursor: 'pointer' }} onClick={() => this.handleAddEval()}>
-                                            {translate('task.task_management.add_eval_of_this_month')}&nbsp;&nbsp;&nbsp;&nbsp;<i style={{ color: 'green' }} className="fa fa-plus-square"></i>
+                                    !disableAddItem ?
+                                        <li className={content === 'new' ? "active" : undefined} >
+                                            <a style={{ cursor: 'pointer' }} onClick={() => this.handleAddEval()}>
+                                                {translate('task.task_management.add_eval_of_this_month')}&nbsp;&nbsp;&nbsp;&nbsp;<i style={{ color: 'green' }} className="fa fa-plus-square"></i>
                                             &nbsp;
                                         </a>
-                                    </li> : <li className={content === 'new' ? "active" : undefined} >
-                                        <a style={{ cursor: 'pointer' }} onClick={() => this.showAlertDisableAdd()}>
-                                            {translate('task.task_management.add_eval_of_this_month')}&nbsp;&nbsp;&nbsp;&nbsp;<i style={{ color: 'green' }} className="fa fa-plus-square"></i>
+                                        </li> : <li className={content === 'new' ? "active" : undefined} >
+                                            <a style={{ cursor: 'pointer' }} onClick={() => this.showAlertDisableAdd()}>
+                                                {translate('task.task_management.add_eval_of_this_month')}&nbsp;&nbsp;&nbsp;&nbsp;<i style={{ color: 'green' }} className="fa fa-plus-square"></i>
                                             &nbsp;
                                         </a>
-                                    </li>
+                                        </li>
                                 }
                             </ul>
                         </div>
@@ -352,7 +352,7 @@ class EvaluationModal extends Component {
                             title={title}
                             perform='evaluate'
                             evaluation={evaluation}
-                            date={evaluation ? this.formatDate(evaluation.evaluatingMonth) : (checkEvaluationOfMonth ? dateParam[content] : (dateParam[content] ? dateParam[content] : this.TODAY) )}
+                            date={evaluation ? this.formatDate(evaluation.evaluatingMonth) : (checkEvaluationOfMonth ? dateParam[content] : (dateParam[content] ? dateParam[content] : this.TODAY))}
                             handleChangeMonthEval={this.handleChangeMonthEval}
                             isEval={isEval}
                             handleChangeShowEval={this.handleChangeShowEval}
@@ -369,7 +369,7 @@ class EvaluationModal extends Component {
                             title={title}
                             perform='evaluate'
                             evaluation={evaluation}
-                            date={evaluation ? this.formatDate(evaluation.evaluatingMonth) : (checkEvaluationOfMonth ? dateParam[content] : (dateParam[content] ? dateParam[content] : this.TODAY) )}
+                            date={evaluation ? this.formatDate(evaluation.evaluatingMonth) : (checkEvaluationOfMonth ? dateParam[content] : (dateParam[content] ? dateParam[content] : this.TODAY))}
                             handleChangeMonthEval={this.handleChangeMonthEval}
                             isEval={isEval}
                             handleChangeShowEval={this.handleChangeShowEval}
@@ -387,7 +387,7 @@ class EvaluationModal extends Component {
                             title={title}
                             perform='evaluate'
                             evaluation={evaluation}
-                            date={evaluation ? this.formatDate(evaluation.evaluatingMonth) : (checkEvaluationOfMonth ? dateParam[content] : (dateParam[content] ? dateParam[content] : this.TODAY) )}
+                            date={evaluation ? this.formatDate(evaluation.evaluatingMonth) : (checkEvaluationOfMonth ? dateParam[content] : (dateParam[content] ? dateParam[content] : this.TODAY))}
                             handleChangeMonthEval={this.handleChangeMonthEval}
                             isEval={isEval}
                             handleChangeShowEval={this.handleChangeShowEval}
@@ -404,7 +404,7 @@ class EvaluationModal extends Component {
                             title={title}
                             perform='evaluate'
                             evaluation={evaluation}
-                            date={evaluation ? this.formatDate(evaluation.evaluatingMonth) : (checkEvaluationOfMonth ? dateParam[content] : (dateParam[content] ? dateParam[content] : this.TODAY) )}
+                            date={evaluation ? this.formatDate(evaluation.evaluatingMonth) : (checkEvaluationOfMonth ? dateParam[content] : (dateParam[content] ? dateParam[content] : this.TODAY))}
                             handleChangeMonthEval={this.handleChangeMonthEval}
                             isEval={isEval}
                             handleChangeShowEval={this.handleChangeShowEval}
