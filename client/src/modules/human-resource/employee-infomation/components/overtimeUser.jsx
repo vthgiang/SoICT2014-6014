@@ -99,10 +99,10 @@ function TakeLeaveUser(props) {
                 <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
                     <thead>
                         <tr>
-                            <th>Tháng</th>
-                            <th>thời gian làm</th>
-                            <th>thời gian tăng ca</th>
-                            <th>thời gian nghỉ</th>
+                            <th>{translate('human_resource.month')}</th>
+                            <th>{translate('human_resource.timesheets.total_timesheets')}</th>
+                            <th>{translate('human_resource.timesheets.total_over_time')}</th>
+                            <th>{translate('human_resource.timesheets.total_hours_off')}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -236,7 +236,7 @@ function TakeLeaveUser(props) {
                         <span style={{ marginRight: '10px', color: "#00c0ef" }} className="material-icons">
                             person
                 </span>
-                        <span style={{ fontWeight: 'bold' }}>Số buổi nghỉ phép</span>
+                        <span style={{ fontWeight: 'bold' }}>{translate('human_resource.annual_leave.approved_letter')}</span>
                     </div>
                     <span style={{ fontSize: '21px' }} className="info-box-number"> {listAnnualLeaveOfNumberMonth ? listAnnualLeaveOfNumberMonth.length : 0} </span>
                 </div>
@@ -258,7 +258,7 @@ function TakeLeaveUser(props) {
                         <span style={{ marginRight: '10px', color: "#00c0ef" }} className="material-icons">
                             person
                 </span>
-                        <span style={{ fontWeight: 'bold' }}>thời gian làm</span>
+                        <span style={{ fontWeight: 'bold' }}>{translate('human_resource.timesheets.total_timesheets')}</span>
                     </div>
                     <span style={{ fontSize: '21px' }} className="info-box-number"> {totalHours}</span>
                 </div>
@@ -269,7 +269,7 @@ function TakeLeaveUser(props) {
                         <span style={{ marginRight: '10px', color: "#00c0ef" }} className="material-icons">
                             person
                 </span>
-                        <span style={{ fontWeight: 'bold' }}>thời gian tăng ca</span>
+                        <span style={{ fontWeight: 'bold' }}>{translate('human_resource.timesheets.total_over_time')}</span>
                     </div>
                     <span style={{ fontSize: '21px' }} className="info-box-number">{overTime}</span>
                 </div>
@@ -280,7 +280,7 @@ function TakeLeaveUser(props) {
                         <span style={{ marginRight: '10px', color: "#00c0ef" }} className="material-icons">
                             person
                 </span>
-                        <span style={{ fontWeight: 'bold' }}>thời gian nghỉ</span>
+                        <span style={{ fontWeight: 'bold' }}>{translate('human_resource.timesheets.total_hours_off')}</span>
                     </div>
                     <span style={{ fontSize: '21px' }} className="info-box-number">{hoursOff}</span>
                 </div>

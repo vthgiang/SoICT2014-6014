@@ -7,6 +7,8 @@ import TaskUser from "./taskUser";
 import TakeLeaveUser from "./overtimeUser"
 import { UserServices } from "../../../super-admin/user/redux/services";
 import { SelectMulti, DatePicker } from '../../../../common-components';
+import CommendationUser from "./commendationUser";
+import DisciplineUser from "./disciplineUser";
 
 function DetailUser(props) {
     const [ nameTask, setNameTask ] = useState(" thực hiện ")
@@ -93,6 +95,10 @@ function DetailUser(props) {
             <AssetsManagedByUser user={props.user} unitId={props.id} type="quản lý" ></AssetsManagedByUser>
             <label>Tài sản sử dụng</label>
             <AssetsManagedByUser user={props.user} unitId={props.id} type="sử dụng" ></AssetsManagedByUser>
+            <label>Thông tin khen thưởng</label>
+            <CommendationUser user={props.user} unitId={props.id} email={email} startDate={startDate} endDate={endDate}></CommendationUser>
+            <label>Thông tin kỷ luật</label>
+            <DisciplineUser user={props.user} unitId={props.id} email={email} startDate={startDate} endDate={endDate}></DisciplineUser>
             <KpiUser user={props.user} unitId={props.id} startDate={startDate} endDate={endDate} ></KpiUser>
             <TakeLeaveUser user={props.user} unitId={props.id} email={email} startDate={startDate} endDate={endDate} ></TakeLeaveUser>
         </div>
