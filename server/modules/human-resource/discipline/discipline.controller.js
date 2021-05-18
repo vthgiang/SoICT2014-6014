@@ -14,6 +14,8 @@ exports.searchDisciplines = async (req, res) => {
                 employeeNumber: req.query.employeeNumber,
                 employeeName: req.query.employeeName,
                 decisionNumber: req.query.decisionNumber,
+                startDate:req.query.startDate,
+                endDate:req.query.endDate,
                 page: Number(req.query.page),
                 limit: Number(req.query.limit),
             }
