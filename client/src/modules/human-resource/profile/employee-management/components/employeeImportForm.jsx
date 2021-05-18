@@ -78,7 +78,7 @@ const EmployeeImportForm = (props) => {
             let healthInsuranceEndDate = (!x.healthInsuranceEndDate || typeof x.healthInsuranceEndDate === 'string') ? x.healthInsuranceEndDate : convertExcelDateToJSDate(x.healthInsuranceEndDate);
 
             let gender = x.gender === translate('human_resource.profile.male') ? "male" : "female";
-            let maritalStatus = x.maritalStatus === translate('human_resource.profile.single') ? "single" : "married";
+            let maritalStatus = x.maritalStatus ? x.maritalStatus === translate('human_resource.profile.single') ? "single" : "married" : null;
             let professionalSkill, educationalLevel, status;
             switch (x.status) {
                 case translate('human_resource.profile.leave'):
