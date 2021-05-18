@@ -24,7 +24,7 @@ class TaskManagement extends Component {
         let userId = getStorage("userId");
         super(props);
         const tableId = "tree-table-task-management";
-        const defaultConfig = { limit: 20, hiddenColumns: ["2", "7", "8"] }
+        const defaultConfig = { limit: 20, hiddenColumns: ["2", "3", "4", "7", "8"] }
         const limit = getTableConfiguration(tableId, defaultConfig).limit;
         // lấy giá trị từ dashboard công việc cá nhân
         const stateFromTaskDashboard = JSON.parse(localStorage.getItem("stateFromTaskDashboard"));
