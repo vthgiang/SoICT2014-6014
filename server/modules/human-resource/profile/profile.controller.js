@@ -397,7 +397,8 @@ exports.importEmployees = async (req, res) => {
                             for (let i = 0; i < importDataLength; i++){
                                 if (importData[i].positionId && importData[i].positionId.length > 0 && importData[i].employeeNumber.toString() === x.employeeNumber.toString()) {
                                     for (let k in importData[i].positionId) {
-                                        await RoleService.createRelationshipUserRole(req.portal, userCreated._id, importData[i].positionId[k])
+                                        if(importData[i].positionId[k])
+                                            await RoleService.createRelationshipUserRole(req.portal, userCreated._id, importData[i].positionId[k])
                                     };
                                     break;
                                 }
