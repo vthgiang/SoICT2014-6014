@@ -942,6 +942,7 @@ exports.createCommentOfTaskAction = async (portal, params, body, files, user) =>
             path: "taskActions.evaluations.creator",
             select: "name email avatar ",
         },
+        { path: "taskActions.timesheetLogs.creator", select: "_id name email" },
         { path: "taskComments.creator", select: "name email avatar" },
         {
             path: "taskComments.comments.creator",
@@ -1083,7 +1084,7 @@ exports.createCommentOfTaskAction = async (portal, params, body, files, user) =>
  */
 exports.editCommentOfTaskAction = async (portal, params, body, files) => {
     const now = new Date();
-    let action = await Task(connect(DB_CONNECTION, portal)).updateOne(
+    const action = await Task(connect(DB_CONNECTION, portal)).findOneAndUpdate(
         {
             _id: params.taskId,
             "taskActions._id": params.actionId,
@@ -1094,22 +1095,6 @@ exports.editCommentOfTaskAction = async (portal, params, body, files) => {
                 "taskActions.$.comments.$[elem].description": body.description,
                 "taskActions.$.comments.$[elem].updatedAt": now,
             },
-        },
-        {
-            arrayFilters: [
-                {
-                    "elem._id": params.commentId,
-                },
-            ],
-        }
-    );
-    let action1 = await Task(connect(DB_CONNECTION, portal)).updateOne(
-        {
-            _id: params.taskId,
-            "taskActions._id": params.actionId,
-            "taskActions.comments._id": params.commentId,
-        },
-        {
             $push: {
                 "taskActions.$.comments.$[elem].files": files,
             },
@@ -1120,15 +1105,9 @@ exports.editCommentOfTaskAction = async (portal, params, body, files) => {
                     "elem._id": params.commentId,
                 },
             ],
+            new: true,
         }
-    );
-    let task = await Task(connect(DB_CONNECTION, portal))
-        .findOne({
-            _id: params.taskId,
-            "taskActions._id": params.actionId,
-            "taskActions.comments._id": params.commentId,
-        })
-        .populate([
+    ).populate([
             { path: "taskActions.creator", select: "name email avatar " },
             {
                 path: "taskActions.comments.creator",
@@ -1138,9 +1117,10 @@ exports.editCommentOfTaskAction = async (portal, params, body, files) => {
                 path: "taskActions.evaluations.creator",
                 select: "name email avatar ",
             },
-        ])
-        .select("taskActions");
-    return task.taskActions;
+            { path: "taskActions.timesheetLogs.creator", select: "_id name email" }
+        ]);
+    
+    return action.taskActions;
 };
 
 /**
@@ -1158,23 +1138,15 @@ exports.deleteCommentOfTaskAction = async (portal, params) => {
         { $unwind: "$files" },
         { $replaceRoot: { newRoot: "$files" } },
     ]);
-
-    let action = await Task(connect(DB_CONNECTION, portal)).update(
+    let action = await Task(connect(DB_CONNECTION, portal)).findOneAndUpdate(
         {
             _id: params.taskId,
             "taskActions._id": params.actionId,
             "taskActions.comments._id": params.commentId,
         },
         { $pull: { "taskActions.$.comments": { _id: params.commentId } } },
-        { safe: true }
-    );
-    let i = 0;
-    for (i = 0; i < files.length; i++) {
-        fs.unlinkSync(files[i].url);
-    }
-    let task = await Task(connect(DB_CONNECTION, portal))
-        .findOne({ _id: params.taskId })
-        .populate([
+        { new: true }
+    ).populate([
             { path: "taskActions.creator", select: "name email avatar " },
             {
                 path: "taskActions.comments.creator",
@@ -1184,9 +1156,14 @@ exports.deleteCommentOfTaskAction = async (portal, params) => {
                 path: "taskActions.evaluations.creator",
                 select: "name email avatar",
             },
-        ])
-        .select("taskActions");
-    return task.taskActions;
+            { path: "taskActions.timesheetLogs.creator", select: "_id name email" }
+        ]);
+
+    let i = 0;
+    for (i = 0; i < files.length; i++) {
+        fs.unlinkSync(files[i].url);
+    }
+    return action.taskActions;
 };
 /**
  * Thêm hoạt động cho công việc
@@ -1329,6 +1306,7 @@ exports.createTaskAction = async (portal, params, body, files) => {
             },
             { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
             { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
+            { path: "taskActions.timesheetLogs.creator", select: "_id name email" }
         ]);
 
     let getUser, accEmployees;
@@ -1347,25 +1325,18 @@ exports.createTaskAction = async (portal, params, body, files) => {
  * Sửa hoạt động của cộng việc
  */
 exports.editTaskAction = async (portal, params, body, files) => {
-    let action = await Task(connect(DB_CONNECTION, portal)).updateOne(
+    let action = await Task(connect(DB_CONNECTION, portal)).findOneAndUpdate(
         { _id: params.taskId, "taskActions._id": params.actionId },
         {
             $set: {
                 "taskActions.$.description": body.description,
             },
-        }
-    );
-    let action1 = await Task(connect(DB_CONNECTION, portal)).updateOne(
-        { _id: params.taskId, "taskActions._id": params.actionId },
-        {
             $push: {
                 "taskActions.$.files": files,
             },
-        }
-    );
-    let task = await Task(connect(DB_CONNECTION, portal))
-        .findOne({ _id: params.taskId, "taskActions._id": params.actionId })
-        .populate([
+        },
+        {new: true}
+    ).populate([
             { path: "taskActions.creator", select: "name email avatar" },
             {
                 path: "taskActions.comments.creator",
@@ -1375,8 +1346,9 @@ exports.editTaskAction = async (portal, params, body, files) => {
                 path: "taskActions.evaluations.creator",
                 select: "name email avatar ",
             },
+            { path: "taskActions.timesheetLogs.creator", select: "_id name email" }
         ]);
-    return task.taskActions;
+    return action.taskActions;
 };
 
 /**
@@ -1392,23 +1364,15 @@ exports.deleteTaskAction = async (portal, params) => {
         { $replaceRoot: { newRoot: "$files" } },
     ]);
 
-    let action = await Task(connect(DB_CONNECTION, portal)).update(
+    const action = await Task(connect(DB_CONNECTION, portal)).findOneAndUpdate(
         { _id: params.taskId, "taskActions._id": params.actionId },
         {
             $pull: {
                 taskActions: { _id: params.actionId },
             },
         },
-        { safe: true }
-    );
-    //xoa file sau khi xoa hoat dong
-    let i;
-    for (i = 0; i < files.length; i++) {
-        fs.unlinkSync(files[i].url);
-    }
-    let task = await Task(connect(DB_CONNECTION, portal))
-        .findOne({ _id: params.taskId })
-        .populate([
+        { new: true }
+    ).populate([
             { path: "taskActions.creator", select: "name email avatar" },
             {
                 path: "taskActions.comments.creator",
@@ -1418,9 +1382,15 @@ exports.deleteTaskAction = async (portal, params) => {
                 path: "taskActions.evaluations.creator",
                 select: "name email avatar",
             },
+            { path: "taskActions.timesheetLogs.creator", select: "_id name email" }
         ]);
-
-    return task.taskActions;
+    //xoa file sau khi xoa hoat dong
+    let i;
+    for (i = 0; i < files.length; i++) {
+        fs.unlinkSync(files[i].url);
+    }
+   
+    return action.taskActions;
 };
 
 /**
@@ -1597,27 +1567,18 @@ exports.createTaskComment = async (portal, params, body, files, user) => {
  */
 exports.editTaskComment = async (portal, params, body, files) => {
     let now = new Date();
-    let taskComment = await Task(connect(DB_CONNECTION, portal)).updateOne(
+    let taskComment = await Task(connect(DB_CONNECTION, portal)).findOneAndUpdate(
         { _id: params.taskId, "taskComments._id": params.commentId },
         {
             $set: {
                 "taskComments.$.description": body.description,
                 "taskComments.$.updatedAt": now,
             },
-        }
-    );
-    let taskcomment2 = await Task(connect(DB_CONNECTION, portal)).updateOne(
-        { _id: params.taskId, "taskComments._id": params.commentId },
-        {
             $push: {
                 "taskComments.$.files": files,
             },
-        }
-    );
-
-    let task = await Task(connect(DB_CONNECTION, portal))
-        .findOne({ _id: params.taskId, "taskComments._id": params.commentId })
-        .populate([
+        },{new: true}
+    ).populate([
             { path: "taskComments.creator", select: "name email avatar " },
             {
                 path: "taskComments.comments.creator",
@@ -1628,7 +1589,7 @@ exports.editTaskComment = async (portal, params, body, files) => {
                 select: "name email avatar ",
             },
         ]);
-    return task.taskComments;
+    return taskComment.taskComments;
 };
 /**
  * Xóa bình luận công việc
@@ -1643,19 +1604,12 @@ exports.deleteTaskComment = async (portal, params) => {
         { $replaceRoot: { newRoot: "$files" } },
     ]);
 
-    //xoa files
-    let i;
-    for (i = 0; i < files.length; i++) {
-        fs.unlinkSync(files[i].url);
-    }
-    let comment = await Task(connect(DB_CONNECTION, portal)).update(
+    
+    const comment = await Task(connect(DB_CONNECTION, portal)).findOneAndUpdate(
         { _id: params.taskId, "taskComments._id": params.commentId },
         { $pull: { taskComments: { _id: params.commentId } } },
-        { safe: true }
-    );
-    let task = await Task(connect(DB_CONNECTION, portal))
-        .findOne({ _id: params.taskId })
-        .populate([
+        { new: true }
+    ).populate([
             { path: "taskComments.creator", select: "name email avatar " },
             {
                 path: "taskComments.comments.creator",
@@ -1666,7 +1620,14 @@ exports.deleteTaskComment = async (portal, params) => {
                 select: "name email avatar ",
             },
         ]);
-    return task.taskComments;
+
+    //xoa files
+    let i;
+    for (i = 0; i < files.length; i++) {
+        fs.unlinkSync(files[i].url);
+    }
+
+    return comment.taskComments;
 };
 /**
  * Thêm bình luận của bình luận công việc
@@ -1857,7 +1818,7 @@ exports.createCommentOfTaskComment = async (portal, params, body, files, user) =
  */
 exports.editCommentOfTaskComment = async (portal, params, body, files) => {
     const now = new Date();
-    let comment = await Task(connect(DB_CONNECTION, portal)).updateOne(
+    const comment = await Task(connect(DB_CONNECTION, portal)).findOneAndUpdate(
         //thieu 1 tham so child comment
         { _id: params.taskId, "taskComments.comments._id": params.commentId },
         {
@@ -1865,18 +1826,6 @@ exports.editCommentOfTaskComment = async (portal, params, body, files) => {
                 "taskComments.$.comments.$[elem].description": body.description,
                 "taskComments.$.comments.$[elem].updatedAt": now,
             },
-        },
-        {
-            arrayFilters: [
-                {
-                    "elem._id": params.commentId,
-                },
-            ],
-        }
-    );
-    let action1 = await Task(connect(DB_CONNECTION, portal)).updateOne(
-        { _id: params.taskId, "taskComments.comments._id": params.commentId },
-        {
             $push: {
                 "taskComments.$.comments.$[elem].files": files,
             },
@@ -1887,15 +1836,9 @@ exports.editCommentOfTaskComment = async (portal, params, body, files) => {
                     "elem._id": params.commentId,
                 },
             ],
+            new: true,
         }
-    );
-
-    let taskComment = await Task(connect(DB_CONNECTION, portal))
-        .findOne({
-            _id: params.taskId,
-            "taskComments.comments._id": params.commentId,
-        })
-        .populate([
+    ).populate([
             { path: "taskComments.creator", select: "name email avatar" },
             {
                 path: "taskComments.comments.creator",
@@ -1905,9 +1848,8 @@ exports.editCommentOfTaskComment = async (portal, params, body, files) => {
                 path: "taskActions.evaluations.creator",
                 select: "name email avatar ",
             },
-        ])
-        .select("taskComments");
-    return taskComment.taskComments;
+        ]);
+    return comment.taskComments;
 };
 /**
  * Xóa bình luận của bình luận coogn việc
@@ -1928,24 +1870,15 @@ exports.deleteCommentOfTaskComment = async (portal, params) => {
         { $unwind: "$files" },
         { $replaceRoot: { newRoot: "$files" } },
     ]);
-    let comment = await Task(connect(DB_CONNECTION, portal)).update(
+    let comment = await Task(connect(DB_CONNECTION, portal)).findOneAndUpdate(
         { _id: params.taskId, "taskComments.comments._id": params.commentId },
         {
             $pull: {
                 "taskComments.$.comments": { _id: params.commentId },
             },
         },
-        { safe: true }
-    );
-
-    //xoa file sau khi xoa binh luan
-    let i = 0;
-    for (i = 0; i < files.length; i++) {
-        fs.unlinkSync(files[i].url);
-    }
-    let taskComment = await Task(connect(DB_CONNECTION, portal))
-        .findOne({ _id: params.taskId })
-        .populate([
+        { new: true }
+    ).populate([
             { path: "taskComments.creator", select: "name email avatar" },
             {
                 path: "taskComments.comments.creator",
@@ -1955,10 +1888,14 @@ exports.deleteCommentOfTaskComment = async (portal, params) => {
                 path: "taskActions.evaluations.creator",
                 select: "name email avatar ",
             },
-        ])
-        .select("taskComments");
+        ]);
 
-    return taskComment.taskComments;
+    //xoa file sau khi xoa binh luan
+    let i = 0;
+    for (i = 0; i < files.length; i++) {
+        fs.unlinkSync(files[i].url);
+    }
+    return comment.taskComments;
 };
 /**
  * Đánh giá hoạt động
