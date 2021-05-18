@@ -1,56 +1,48 @@
-import React, { Component } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 
-import { RootRoleActions} from '../redux/actions';
+import { RootRoleActions } from '../redux/actions';
 
 import { withTranslate } from 'react-redux-multilingual';
 
-class RootRoleTable extends Component {
+function RootRoleTable(props) {
 
-    constructor(props) {
-        super(props);
+    useEffect(() => {
+        props.getAllRootRoles();
+    }, [])
 
-        this.state = {}
-    }
+    const { rootRoles, translate } = props;
 
-    componentDidMount() {
-        this.props.getAllRootRoles();
-    }
+    return (
+        <React.Fragment>
+            <table className="table table-hover table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>{translate('manage_role.name')}</th>
+                        <th>{translate('manage_role.description')}</th>
+                    </tr>
+                </thead>
 
-    render() { 
-        const { rootRoles, translate } = this.props;
-
-        return ( 
-            <React.Fragment>
-                <table className="table table-hover table-striped table-bordered">
-                    <thead>
-                        <tr>
-                            <th>{ translate('manage_role.name') }</th>
-                            <th>{ translate('manage_role.description') }</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        {
-                            rootRoles.list.map( role => 
-                                <tr key={ `role-default-${role._id}` }>
-                                    <td> { role.name } </td>
-                                    <td> { role.description } </td>
-                                </tr>       
-                            )
-                        }
-                    </tbody>
-                </table>
-            </React.Fragment>
-         );
-    }
+                <tbody>
+                    {
+                        rootRoles.list.map(role =>
+                            <tr key={`role-default-${role._id}`}>
+                                <td> {role.name} </td>
+                                <td> {role.description} </td>
+                            </tr>
+                        )
+                    }
+                </tbody>
+            </table>
+        </React.Fragment>
+    );
 }
- 
+
 function mapState(state) {
     const { rootRoles } = state;
     return { rootRoles }
 }
-const actions =  {
+const actions = {
     getAllRootRoles: RootRoleActions.getAllRootRoles
 }
 
