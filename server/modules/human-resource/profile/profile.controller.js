@@ -336,7 +336,7 @@ exports.importEmployees = async (req, res) => {
         if (req.body.importData) {
             req.body.importData = req.body.importData.map(o => {
                 if (!o.emailInCompany) {
-                    o.emailInCompany = `${o.employeeNumber}@autocreated.dxclan.com`
+                    o.emailInCompany = `${o.employeeNumber}@autocreated.dxclan.com`.toLowerCase();
                 }
                 return o;
             })  

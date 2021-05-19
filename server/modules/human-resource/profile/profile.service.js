@@ -1537,9 +1537,13 @@ exports.importEmployeeInfor = async (portal, company, data) => {
         if (checkEmployeeNumber || checkEmailInCompany || checkEmployeeTimesheetId) {
             rowError = [...rowError, index + 1];
         }
-        return x;
+        return {
+                ...x,
+                avatar: '/upload/human-resource/avatars/avatar5.png',
+                company: company,
+            };
     })
-    console.log('rowError', rowError);
+
     if (rowError.length !== 0) {
         return {
             errorStatus: true,
@@ -1547,13 +1551,6 @@ exports.importEmployeeInfor = async (portal, company, data) => {
             rowErrorOfEmployeeInfor: rowError
         }
     } else {
-        data = data.map(x => {
-            return {
-                ...x,
-                avatar: '/upload/human-resource/avatars/avatar5.png',
-                company: company,
-            }
-        })
         return await Employee(connect(DB_CONNECTION, portal)).insertMany(data);
     }
 }
