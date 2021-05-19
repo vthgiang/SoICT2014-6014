@@ -3700,6 +3700,13 @@ export default {
                     export_file: "Export file",
                     KPI_info: "Infomation of ",
                     point_field: "Point (Automatic - Employee - Approver)",
+                    weekly_point_field:
+                        "Weekly point (Automatic - Employee - Approver)",
+                    weekly_point: "Weekly point",
+                    week1: "Week 1",
+                    week2: "Week 2",
+                    week3: "Week 3",
+                    week4: "Week 4",
                     not_avaiable: "Not evaluated",
                     no_point: "No Point",
                     lastest_evaluation: "Lastest evaluation",
