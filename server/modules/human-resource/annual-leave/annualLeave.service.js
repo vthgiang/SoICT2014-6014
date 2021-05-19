@@ -10,9 +10,8 @@ const {
 const {
     connect
 } = require(`../../../helpers/dbHelper`);
-const { last, first } = require('lodash');
 
-
+const mongoose = require('mongoose')
 
 exports.getAnnaulLeaveBeforAndAfterOneWeek =async (portal, organizationalUnits,company) =>{
     const dateNow = new Date();
@@ -409,24 +408,38 @@ exports.getAnnualLeaveByStartDateAndEndDate = async (portal, organizationalUnits
     }
 }
 /**Lay tong so don nghi phep cho phe duyet trong thang */
-const fetchNumberOfWaitForAppoval = async (portal, company) => {
+const fetchNumberOfWaitForAppoval = async (portal, params, company) => {
+
     let currentMonth = new Date();
     let firstDay = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
     let lastDay = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1);
 
+    let keySearch = {
+        startDate: 
+            {
+                "$gte": firstDay,
+                "$lt": lastDay
+            },
+        endDate: 
+            {
+                "$gte": firstDay,
+                "$lt": lastDay
+            }
+    }
+    
+    if (params.organizationalUnits) {
+        keySearch = {
+            ...keySearch,
+            organizationalUnit: {
+                $in: params.organizationalUnits.map(item => mongoose.Types.ObjectId(item))
+            }
+        };
+    }
+
     let arrayOfListAbsentLetter = await AnnualLeave(connect(DB_CONNECTION, portal)).aggregate([
-        { $match: { 
-            startDate: 
-                {
-                    "$gte": firstDay,
-                    "$lt": lastDay
-                },
-            endDate: 
-                {
-                    "$gte": firstDay,
-                    "$lt": lastDay
-                }
-        }},
+        { $match: 
+            keySearch 
+        },
         { 
             $group: {
                 _id: '$status',
@@ -436,7 +449,7 @@ const fetchNumberOfWaitForAppoval = async (portal, company) => {
     ])
 
     let numberOfWaitForApproval, numberApproved, numberNotApproved
-
+    
     for(let i = 0; i < arrayOfListAbsentLetter.length; i++) {
         
         switch(arrayOfListAbsentLetter[i]._id) {
@@ -566,7 +579,7 @@ exports.searchAnnualLeaves = async (portal, params, company) => {
         }).skip(params.page).limit(params.limit);
     let totalList = await AnnualLeave(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
 
-    let { numberOfWaitForApproval, numberApproved, numberNotApproved} = await fetchNumberOfWaitForAppoval(portal, company);
+    let { numberOfWaitForApproval, numberApproved, numberNotApproved} = await fetchNumberOfWaitForAppoval(portal, params, company);
     
     return {
         totalList,
