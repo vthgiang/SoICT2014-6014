@@ -21,18 +21,27 @@ const TabProjectInfo = (props) => {
                         <strong>Thời điểm kết thúc dự kiến - ban đầu:</strong>
                         <a>{moment(projectDetail?.endDate).format('HH:mm DD/MM/YYYY')}</a>
                     </div>
-                    <div>
-                        <strong>Thời điểm kết thúc dự kiến - hiện tại:</strong>
-                        <a>{projectDetail?.endDateRequest && moment(projectDetail?.endDateRequest).format('HH:mm DD/MM/YYYY')}</a>
-                    </div>
-                    <div>
-                        <strong>Chi phí ước lượng dự kiến - ban đầu:</strong>
-                        <a>{numberWithCommas(projectDetail?.budget)} VND</a>
-                    </div>
-                    <div>
-                        <strong>Chi phí ước lượng dự kiến - hiện tại:</strong>
-                        <a>{projectDetail?.budget && numberWithCommas(projectDetail?.budgetChangeRequest)} VND</a>
-                    </div>
+                    {
+                        projectDetail?.endDateRequest &&
+                        <div>
+                            <strong>Thời điểm kết thúc dự kiến - hiện tại:</strong>
+                            <a>{moment(projectDetail?.endDateRequest).format('HH:mm DD/MM/YYYY')}</a>
+                        </div>
+                    }
+                    {
+                        projectDetail?.budget &&
+                        <div>
+                            <strong>Chi phí ước lượng dự kiến - ban đầu:</strong>
+                            <a>{numberWithCommas(projectDetail?.budget)} VND</a>
+                        </div>
+                    }
+                    {
+                        projectDetail?.budget &&
+                        <div>
+                            <strong>Chi phí ước lượng dự kiến - hiện tại:</strong>
+                            <a>{numberWithCommas(projectDetail?.budgetChangeRequest)} VND</a>
+                        </div>
+                    }
                 </div>
                 {
                     currentChangeRequestsListNeedApprove && currentChangeRequestsListNeedApprove.length > 0

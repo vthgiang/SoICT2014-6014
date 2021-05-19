@@ -1430,11 +1430,11 @@ confirmTask = async (req, res) => {
 
 /** Yêu cầu kết thúc công việc */
 requestAndApprovalCloseTask = async (req, res) => {
+    let data = {
+        ...req.body,
+        userId: req.user._id
+    }
     try {
-        let data = {
-            ...req.body,
-            userId: req.user._id
-        }
         let task = await PerformTaskService.requestAndApprovalCloseTask(req.portal, req.params.taskId, data);
 
         let dataNotification, email = [];
@@ -1520,6 +1520,7 @@ requestAndApprovalCloseTask = async (req, res) => {
             content: task
         })
     } catch (error) {
+        console.log('error request close task', error)
         let message = data?.type + '_close_task_failure';
         await Logger.error(req.user.email, ` request close task `, req.portal);
         res.status(400).json({

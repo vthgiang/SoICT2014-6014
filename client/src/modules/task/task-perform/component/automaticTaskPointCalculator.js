@@ -1,6 +1,6 @@
 import moment from 'moment';
 import Swal from 'sweetalert2';
-import { getDurationWithoutSatSun } from '../../../project/component/projects/functionHelper';
+import { getDurationWithoutSatSun, MILISECS_TO_HOURS } from '../../../project/component/projects/functionHelper';
 var mexp = require('math-expression-evaluator'); // native js package
 
 export const AutomaticTaskPointCalculator = {
@@ -8,6 +8,9 @@ export const AutomaticTaskPointCalculator = {
     calcProjectAutoPoint,
     getAmountOfWeekDaysInMonth,
     calcProjectTaskMemberAutoPoint,
+    calcProjectTaskPoint,
+    calcProjectMemberPoint,
+    convertIndexPointToNormalPoint,
 }
 
 const MILISECS_TO_DAYS = 86400000;
@@ -235,6 +238,211 @@ function getAmountOfWeekDaysInMonth(date) {
         result += Math.floor((date.daysInMonth() - dif) / 7) + 1;
     }
     return result;
+}
+
+function convertIndexPointToNormalPoint(indexPoint) {
+    if (!indexPoint || indexPoint === Infinity || Number.isNaN(indexPoint) || indexPoint < 0.5) return 0;
+    else if (indexPoint >= 0.5 && indexPoint < 0.75) return 40;
+    else if (indexPoint >= 0.75 && indexPoint < 1) return 60;
+    else if (indexPoint >= 1 && indexPoint < 1.25) return 80;
+    else if (indexPoint >= 1.25 && indexPoint < 1.5) return 90;
+    else return 100;
+}
+
+function calcProjectTaskPoint(data, getCalcPointsOnly = true) {
+    // console.log('\n--------------');
+    const { task, progress, projectDetail, currentTaskActualCost, info } = data;
+    const { timesheetLogs, estimateNormalCost, startDate, endDate, actorsWithSalary, responsibleEmployees, estimateAssetCost, accountableEmployees } = task;
+    /***************** Yếu tố tiến độ **********************/
+    const usedDuration = getDurationWithoutSatSun(task.startDate, moment().format(), 'milliseconds');
+    const totalDuration = task.estimateNormalTime;
+    const schedulePerformanceIndex = (Number(progress) / 100) / (usedDuration / totalDuration);
+    const taskTimePoint = convertIndexPointToNormalPoint(schedulePerformanceIndex) * (task?.timeWeight || 0.25);
+    // console.log('taskTimePoint', taskTimePoint)
+    /***************** Yếu tố chất lượng **********************/
+    // Các hoạt động (chỉ lấy những hoạt động đã đánh giá của người phê duyệt)
+    let actionsHasRating = task.taskActions.filter(item => (
+        item.rating && item.rating !== -1
+    ))
+    let sumRatingOfPassedActions = 0, sumRatingOfAllActions = 0;
+    actionsHasRating.length > 0 && actionsHasRating.map((item) => {
+        const currentActionImportanceLevel = item.actionImportanceLevel && item.actionImportanceLevel > 0 ? item.actionImportanceLevel : 10;
+        if (item.rating >= 5) {
+            sumRatingOfPassedActions = sumRatingOfPassedActions + item.rating * currentActionImportanceLevel;
+        }
+        sumRatingOfAllActions = sumRatingOfAllActions + item.rating * currentActionImportanceLevel;
+    });
+    const taskQualityPoint = sumRatingOfAllActions === 0
+        ? 0
+        : [(sumRatingOfPassedActions / sumRatingOfAllActions) * 100] * (task?.qualityWeight || 0.25);
+    // console.log('taskQualityPoint', taskQualityPoint)
+    /***************** Yếu tố chi phí **********************/
+    let actualCost = 0;
+    if (currentTaskActualCost) actualCost = Number(currentTaskActualCost);
+    else if (task?.actualCost) actualCost = Number(task.actualCost);
+    const costPerformanceIndex = ((Number(progress) / 100) * estimateNormalCost) / (actualCost);
+    const taskCostPoint = convertIndexPointToNormalPoint(costPerformanceIndex) * (task?.costWeight || 0.25);
+    // console.log('taskCostPoint', taskCostPoint)
+    /***************** Yếu tố chuyên cần **********************/
+    let totalTimeLogs = 0;
+    if (timesheetLogs && timesheetLogs.length > 0) {
+        for (let timeSheetItem of timesheetLogs) {
+            totalTimeLogs += timeSheetItem.duration;
+        }
+    }
+    const taskDilligencePoint = Math.min((totalTimeLogs / totalDuration) * 100 * (task?.dilligenceWeight || 0.25), 100);
+    // console.log('taskDilligencePoint', taskDilligencePoint)
+    let autoTaskPoint = 0;
+    let formula;
+    if (task.formulaProjectTask) {
+        formula = task.formulaProjectTask;
+        const taskInformations = info;
+
+        formula = formula.replace(/taskTimePoint/g, `(${taskTimePoint})`);
+        formula = formula.replace(/taskQualityPoint/g, `(${taskQualityPoint})`);
+        formula = formula.replace(/taskCostPoint/g, `(${taskCostPoint})`);
+        formula = formula.replace(/taskDilligencePoint/g, `(${taskDilligencePoint})`);
+
+        // thay mã code bằng giá trị(chỉ dùng cho kiểu số)
+        for (let i in taskInformations) {
+            if (taskInformations[i].type === 'number') {
+                let stringToGoIntoTheRegex = `${taskInformations[i].code}`;
+                let regex = new RegExp(stringToGoIntoTheRegex, "g");
+                formula = formula.replace(regex, `(${taskInformations[i].value})`);
+            }
+        }
+
+        // thay tất cả các biến có dạng p0, p1, p2,... còn lại thành undefined, để nếu không có giá trị thì sẽ trả về NaN, tránh được lỗi undefined
+        for (let i = 0; i < 100; i++) {
+            let stringToGoIntoTheRegex = 'p' + i;
+            let regex = new RegExp(stringToGoIntoTheRegex, "g");
+            formula = formula.replace(regex, undefined);
+        }
+        autoTaskPoint = calculateExpression(formula);
+    } else {
+        autoTaskPoint = taskTimePoint + taskQualityPoint + taskCostPoint + taskDilligencePoint;
+    }
+
+    if (getCalcPointsOnly) return autoTaskPoint;
+    return {
+        usedDuration,
+        totalDuration,
+        schedulePerformanceIndex,
+        actionsHasRating,
+        sumRatingOfPassedActions,
+        sumRatingOfAllActions,
+        estimateNormalCost,
+        actualCost,
+        costPerformanceIndex,
+        totalTimeLogs,
+        taskTimePoint,
+        taskQualityPoint,
+        taskCostPoint,
+        taskDilligencePoint,
+        autoTaskPoint,
+    }
+}
+
+function calcProjectMemberPoint(data, getCalcPointsOnly = true) {
+    // console.log('\n--------------');
+    const { task, progress, projectDetail, currentMemberActualCost, info, userId } = data;
+    const { timesheetLogs, estimateNormalCost, startDate, endDate, actorsWithSalary, responsibleEmployees, estimateAssetCost, accountableEmployees, estimateNormalTime } = task;
+    /***************** Yếu tố tiến độ **********************/
+    const usedDuration = getDurationWithoutSatSun(task.startDate, moment().format(), 'milliseconds');
+    const totalDuration = task.estimateNormalTime;
+    const schedulePerformanceIndex = (Number(progress) / 100) / (usedDuration / totalDuration);
+    const memberTimePoint = convertIndexPointToNormalPoint(schedulePerformanceIndex) * (task?.timeWeight || 0.25);
+    // console.log('memberTimePoint', memberTimePoint)
+    /***************** Yếu tố chất lượng **********************/
+    // Các hoạt động (chỉ lấy những hoạt động đã đánh giá của người phê duyệt)
+    let actionsHasRating = task.taskActions.filter(item => (
+        item.rating && item.rating !== -1
+    ))
+    let sumRatingOfPassedActions = 0, sumRatingOfAllActions = 0;
+    actionsHasRating.length > 0 && actionsHasRating.map((item) => {
+        const currentActionImportanceLevel = item.actionImportanceLevel && item.actionImportanceLevel > 0 ? item.actionImportanceLevel : 10;
+        if (item.rating >= 5) {
+            sumRatingOfPassedActions = sumRatingOfPassedActions + item.rating * currentActionImportanceLevel;
+        }
+        sumRatingOfAllActions = sumRatingOfAllActions + item.rating * currentActionImportanceLevel;
+    });
+    const memberQualityPoint = sumRatingOfAllActions === 0
+        ? 0
+        : [(sumRatingOfPassedActions / sumRatingOfAllActions) * 100] * (task?.qualityWeight || 0.25);
+    // console.log('memberQualityPoint', memberQualityPoint)
+    /***************** Yếu tố chi phí **********************/
+    let actualCost = 0;
+    if (currentMemberActualCost) actualCost = Number(currentMemberActualCost);
+    // Tìm lương và trọng số thành viên đó
+    let estimateNormalMemberCost = 0;
+    const currentEmployee = actorsWithSalary.find((actorSalaryItem) => {
+        return String(actorSalaryItem.userId) === String(userId)
+    });
+    if (currentEmployee) {
+        estimateNormalMemberCost = Number(currentEmployee.salary) * Number(currentEmployee.weight / 100) * totalDuration
+            / (projectDetail.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS);
+    }
+    const costPerformanceIndex = ((Number(progress) / 100) * estimateNormalMemberCost) / (actualCost);
+    const memberCostPoint = convertIndexPointToNormalPoint(costPerformanceIndex) * (task?.costWeight || 0.25);
+    // console.log('memberCostPoint', memberCostPoint)
+    /***************** Yếu tố chuyên cần **********************/
+    let totalTimeLogs = 0;
+    for (let timeSheetItem of timesheetLogs) {
+        if (String(userId) === String(timeSheetItem.creator.id)) {
+            totalTimeLogs += timeSheetItem.duration;
+        }
+    }
+    const memberDilligencePoint = Math.min((totalTimeLogs / totalDuration) * 100 * (task?.dilligenceWeight || 0.25), 100);
+    // console.log('memberDilligencePoint', memberDilligencePoint)
+    let autoMemberPoint = 0;
+    let formula;
+    if (task.formulaProjectMember) {
+        formula = task.formulaProjectMember;
+        const taskInformations = info;
+
+        formula = formula.replace(/memberTimePoint/g, `(${memberTimePoint})`);
+        formula = formula.replace(/memberQualityPoint/g, `(${memberQualityPoint})`);
+        formula = formula.replace(/memberCostPoint/g, `(${memberCostPoint})`);
+        formula = formula.replace(/memberDilligencePoint/g, `(${memberDilligencePoint})`);
+
+        // thay mã code bằng giá trị(chỉ dùng cho kiểu số)
+        for (let i in taskInformations) {
+            if (taskInformations[i].type === 'number') {
+                let stringToGoIntoTheRegex = `${taskInformations[i].code}`;
+                let regex = new RegExp(stringToGoIntoTheRegex, "g");
+                formula = formula.replace(regex, `(${taskInformations[i].value})`);
+            }
+        }
+
+        // thay tất cả các biến có dạng p0, p1, p2,... còn lại thành undefined, để nếu không có giá trị thì sẽ trả về NaN, tránh được lỗi undefined
+        for (let i = 0; i < 100; i++) {
+            let stringToGoIntoTheRegex = 'p' + i;
+            let regex = new RegExp(stringToGoIntoTheRegex, "g");
+            formula = formula.replace(regex, undefined);
+        }
+        autoMemberPoint = calculateExpression(formula);
+    } else {
+        autoMemberPoint = memberTimePoint + memberQualityPoint + memberCostPoint + memberDilligencePoint;
+    }
+
+    if (getCalcPointsOnly) return autoMemberPoint;
+    return {
+        usedDuration,
+        totalDuration,
+        schedulePerformanceIndex,
+        actionsHasRating,
+        sumRatingOfPassedActions,
+        sumRatingOfAllActions,
+        estimateNormalMemberCost,
+        actualCost,
+        costPerformanceIndex,
+        totalTimeLogs,
+        memberTimePoint,
+        memberQualityPoint,
+        memberCostPoint,
+        memberDilligencePoint,
+        autoMemberPoint,
+    }
 }
 
 function calcProjectAutoPoint(data, getCalcPointsOnly = true) {
