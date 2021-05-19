@@ -43,7 +43,7 @@ function RequestToCloseProjectTaskModal(props) {
     }
 
     const sendRequestCloseTask = () => {
-        props.evaluateTaskByResponsibleEmployeesProject(resData, task._id);
+        // props.evaluateTaskByResponsibleEmployeesProject(resData, task._id);
         props.requestAndApprovalCloseTask(id, {
             taskStatus: status,
             description: description,
@@ -60,10 +60,10 @@ function RequestToCloseProjectTaskModal(props) {
     }
 
     const approvalRequestCloseTask = async () => {
-        for (let i = 0; i < accData.resEvalArr.length; i++) {
-            await props.evaluateTaskByResponsibleEmployeesProject(accData.resEvalArr[i], task._id);
-        }
-        await props.evaluateTaskByAccountableEmployeesProject(accData.accData, task._id)
+        // for (let i = 0; i < accData.resEvalArr.length; i++) {
+        //     await props.evaluateTaskByResponsibleEmployeesProject(accData.resEvalArr[i], task._id);
+        // }
+        // await props.evaluateTaskByAccountableEmployeesProject(accData.accData, task._id)
         await props.requestAndApprovalCloseTask(id, {
             requestedBy: requestToCloseTask && requestToCloseTask.requestedBy,
             taskStatus: status,

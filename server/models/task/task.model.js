@@ -865,6 +865,9 @@ const TaskSchema = new Schema(
                 weight: {
                     type: Number,
                 },
+                actualCost: {
+                    type: Number,
+                },
             },
         ],
         // Ước lượng chi phí tài sản
@@ -877,7 +880,33 @@ const TaskSchema = new Schema(
         },
         isFromCPM: {
             type: Boolean,
-        }
+        },
+        formulaProjectTask: {
+            type: String,
+            default:
+                "taskTimePoint + taskQualityPoint + taskCostPoint + taskDilligencePoint",
+        },
+        formulaProjectMember: {
+            type: String,
+            default:
+                "memberTimePoint + memberQualityPoint + memberCostPoint + memberDilligencePoint",
+        },
+        timeWeight: {
+            type: Number,
+            default: 0.25,
+        },
+        qualityWeight: {
+            type: Number,
+            default: 0.25,
+        },
+        costWeight: {
+            type: Number,
+            default: 0.25,
+        },
+        dilligenceWeight: {
+            type: Number,
+            default: 0.25,
+        },
     },
     {
         timestamps: true,

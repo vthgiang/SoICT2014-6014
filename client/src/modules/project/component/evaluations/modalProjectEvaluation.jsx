@@ -56,7 +56,8 @@ const ModalProjectEvaluation = (props) => {
                     </ul>
                     <div className="tab-content">
                         {/** Thống kê điểm số công việc theo tháng */}
-                        <div className="tab-pane active" id="eval-project">
+                        {
+                            <div className="tab-pane active" id="eval-project">
                             <TabEvalProject
                                 projectDetail={projectDetail}
                                 projectDetailId={projectDetailId}
@@ -65,6 +66,7 @@ const ModalProjectEvaluation = (props) => {
                                 currentMonth={currentMonth}
                                 handleChangeMonth={handleChangeMonth} />
                         </div>
+                        }
                         {/** Tab Đánh giá thành viên dự án */}
                         {
                             checkIfAbleToCRUDProject({ project, user, currentProjectId }) &&

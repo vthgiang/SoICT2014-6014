@@ -135,32 +135,27 @@ const ProjectDetailPage = (props) => {
                                     </button>
                                 </div>
                                 {/* Button thêm mới */}
-                                {checkIfAbleToCRUDProject({ project, user, currentProjectId }) &&
-                                    <div className="dropdown pull-right" style={{ marginTop: 15, marginRight: 10 }}>
-                                        {currentProjectTasks && currentProjectTasks.length > 0 ? null : <ModalAddTaskSchedule projectDetail={projectDetail} onHandleReRender={onHandleReRender} />}
-                                        {currentProjectTasks && currentProjectTasks.length > 0
-                                            &&
-                                            <TaskProjectAddModal onHandleReRender={onHandleReRender} currentProjectTasks={currentProjectTasks} parentTask={parentTask} />}
-
-                                        <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true"
-                                            title={translate('project.add_btn_task')}>
-                                            {translate('project.add_btn_task')}
-                                        </button>
-                                        <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
-                                            {
-                                                currentProjectTasks && currentProjectTasks.length === 0
-                                                &&
-                                                <li><a style={{ cursor: 'pointer' }} onClick={onHandleOpenScheduleModal} title={translate('project.add_btn_scheduling')}>
-                                                    {translate('project.add_btn_scheduling')}</a></li>
-                                            }
-                                            {
-                                                currentProjectTasks && currentProjectTasks.length === 0 ? null :
-                                                    <li><a style={{ cursor: 'pointer' }} onClick={handleOpenCreateTask} title={translate('project.add_btn_normal')}>
-                                                        {translate('project.add_btn_normal')}</a></li>
-                                            }
-
-                                        </ul>
-                                    </div>
+                                {
+                                    checkIfAbleToCRUDProject({ project, user, currentProjectId }) && currentProjectTasks && currentProjectTasks.length > 0 ? null :
+                                        (projectDetail && <ModalAddTaskSchedule projectDetail={projectDetail} onHandleReRender={onHandleReRender} />)
+                                }
+                                {
+                                    checkIfAbleToCRUDProject({ project, user, currentProjectId }) && currentProjectTasks && currentProjectTasks.length === 0 &&
+                                    <button type="button" className="btn btn-success pull-right" onClick={onHandleOpenScheduleModal}
+                                        title={`Tạo công việc mới bằng file excel`}>
+                                        Tạo công việc mới bằng file excel
+                                    </button>
+                                }
+                                {
+                                    currentProjectTasks && currentProjectTasks.length > 0 &&
+                                    <TaskProjectAddModal onHandleReRender={onHandleReRender} currentProjectTasks={currentProjectTasks} parentTask={parentTask} />
+                                }
+                                {
+                                    currentProjectTasks && currentProjectTasks.length > 0 &&
+                                    <button type="button" className="btn btn-success pull-right" onClick={handleOpenCreateTask}
+                                        title={`Tạo công việc mới bằng tay`}>
+                                        Tạo công việc mới bằng tay
+                                    </button>
                                 }
                             </div>
                         </div>

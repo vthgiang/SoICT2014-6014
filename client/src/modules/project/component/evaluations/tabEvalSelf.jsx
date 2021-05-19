@@ -15,7 +15,10 @@ const TabEvalSelf = (props) => {
     const handleSelfData = (listTaskData) => {
         if (!listTaskData || listTaskData.length === 0) return undefined;
         let selfData;
-        const selfItem = projectDetail.responsibleEmployees.find(projectEmpItem => String(projectEmpItem._id) === userId);
+        const selfItem = projectDetail.responsibleEmployees.find(projectEmpItem => String(projectEmpItem._id) === userId)
+            || projectDetail.projectManager.find(projectManItem => String(projectManItem._id) === userId);
+        if (!selfItem) return undefined;
+        
         // Lấy danh sách tasks mà có member này tham gia
         const tasksWithMemberArr = listTaskData.filter((listTaskItem) => {
             const responsibleEmployeesFlatten = listTaskItem.responsibleEmployees.map(resItem => String(resItem.id));

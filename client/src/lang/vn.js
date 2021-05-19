@@ -4026,6 +4026,13 @@ export default {
                     KPI_info: "Thông tin KPI",
                     point_field:
                         "Điểm (Tự động - Tự đánh giá - Người phê duyệt đánh giá)",
+                    weekly_point_field:
+                        "Điểm từng tuần (Tự động - Tự đánh giá - Người phê duyệt đánh giá)",
+                    weekly_point: "Điểm đánh giá tuần",
+                    week1: "Tuần 1",
+                    week2: "Tuần 2",
+                    week3: "Tuần 3",
+                    week4: "Tuần 4",
                     not_avaiable: "Chưa đánh giá",
                     no_point: "Chưa có điểm",
                     lastest_evaluation: "Đánh giá cuối",

@@ -5610,7 +5610,7 @@ exports.requestAndApprovalCloseTask = async (portal, taskId, data) => {
     await Task(connect(DB_CONNECTION, portal))
         .findByIdAndUpdate(taskId, {
             ...keyUpdate,
-            actualEndDate: requestStatus === 'approval' ? new Date() : undefined,
+            actualEndDate: type === 'approval' ? new Date() : undefined,
         }, { new: true });
 
     let newTask = await this.getTaskById(portal, taskId, userId);
@@ -6813,6 +6813,7 @@ exports.evaluateTaskByResponsibleEmployeesProject = async (portal, data, taskId)
         checkSave,
         progress,
         info,
+        actualResMemberCost,
     } = data;
     // let startEval = new Date(startDate);
 
@@ -6830,6 +6831,18 @@ exports.evaluateTaskByResponsibleEmployeesProject = async (portal, data, taskId)
     const currentTask = await Task(connect(DB_CONNECTION, portal))
         .findOne({ _id: taskId });
     const currentOverallEvaluation = currentTask.overallEvaluation;
+    // update actual cost
+    const updateTaskActualCostMember = await Task(connect(DB_CONNECTION, portal)).updateOne(
+        {
+            _id: taskId,
+            'actorsWithSalary.userId': userId,
+        },
+        {
+            $set: {
+                'actorsWithSalary.$.actualCost': actualResMemberCost,
+            },
+        },
+    );
     // Nếu task này chưa được đánh giá overall lần nào
     if (!currentOverallEvaluation) {
         let overallObject = {
@@ -7136,6 +7149,8 @@ exports.evaluateTaskByAccountableEmployeesProject = async (portal, data, taskId)
         employeePoint,
         checkSave,
         progress,
+        actualAccMemberCost,
+        actualCostTask,
         info,
     } = data;
     // let startEval = new Date(startDate);
@@ -7154,6 +7169,28 @@ exports.evaluateTaskByAccountableEmployeesProject = async (portal, data, taskId)
     const currentTask = await Task(connect(DB_CONNECTION, portal))
         .findOne({ _id: taskId });
     const currentOverallEvaluation = currentTask.overallEvaluation;
+    // update actual cost
+    await Task(connect(DB_CONNECTION, portal)).updateOne(
+        {
+            _id: taskId,
+            'actorsWithSalary.userId': userId,
+        },
+        {
+            $set: {
+                'actorsWithSalary.$.actualCost': actualAccMemberCost,
+            },
+        },
+    );
+    await Task(connect(DB_CONNECTION, portal)).updateOne(
+        {
+            _id: taskId,
+        },
+        {
+            $set: {
+                actualCost: actualCostTask,
+            },
+        },
+    );
     // Nếu task này chưa được đánh giá overall lần nào
     if (!currentOverallEvaluation) {
         let overallObject = {
