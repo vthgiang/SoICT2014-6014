@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, Suspense, lazy } from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 
@@ -15,17 +15,7 @@ import { Introduction } from "../modules/intro/components";
 import ManageDocument from "../modules/document/components/administration";
 import Document from "../modules/document/components/user";
 
-import { Home } from "../modules/home/components";
 
-import { Notifications } from "../modules/combine-modules";
-
-import { SystemSetting } from "../modules/system-admin/system-setting/components";
-import { Company } from "../modules/system-admin/company/components";
-import { ManageLinkSystem } from "../modules/system-admin/system-link/components";
-import ManageRoleDefault from "../modules/system-admin/root-role/components";
-import ComponentsDefaultManagement from "../modules/system-admin/system-component/components";
-
-import ManageSystem from "../modules/super-admin/system/components";
 import ManageUser from "../modules/super-admin/user/components";
 import ManageRole from "../modules/super-admin/role/components";
 import ManageLink from "../modules/super-admin/link/components";
@@ -52,7 +42,6 @@ import { ManageLeaveApplication } from "../modules/human-resource/annual-leave/c
 import EmployeesInfomation from "../modules/human-resource/employee-infomation/components/";
 import { DashboardPersonal } from "../modules/dashboard-personal/components";
 import { DashboardUnit } from "../modules/dashboard-unit/components";
-import DashboardUnitForAdmin from "../modules/dashboard-unit/components/dashboardUnitForAdmin";
 
 import { ListEducation } from "../modules/training/education-program/components/educationProgramList";
 import { TrainingPlan } from "../modules/training/course/components/course";
@@ -177,6 +166,16 @@ import ProjectEvaluation from '../modules/project/component/evaluations/index';
 import { UserGuide } from '../modules/user-guide/components';
 import AllTimeSheetLog from '../modules/task/task-dashboard/statistic/allTimeSheetLog';
 
+const Home = lazy(() => import("../modules/home/components"))
+const Notifications = lazy(() => import("../modules/notification/components/index"))
+const SystemSetting = lazy(() => import("../modules/system-admin/system-setting/components"))
+const Company = lazy(() => import("../modules/system-admin/company/components"))
+const ManageLinkSystem = lazy(() => import("../modules/system-admin/system-link/components"))
+const ManageRoleDefault = lazy(() => import("../modules/system-admin/root-role/components"))
+const ComponentsDefaultManagement = lazy(() => import("../modules/system-admin/system-component/components"))
+const ManageSystem = lazy(() => import("../modules/super-admin/system/components"))
+const DashboardUnitForAdmin = lazy(() => import("../modules/dashboard-unit/components/dashboardUnitForAdmin"))
+
 class Routes extends Component {
     render() {
         const {
@@ -190,7 +189,7 @@ class Routes extends Component {
             employeesManager,
         } = this.props;
         return (
-            <React.Fragment>
+            <Suspense fallback={<div>Loading...</div>}>
                 <Switch>
                     <AuthRoute
                         exact
@@ -2806,7 +2805,7 @@ class Routes extends Component {
                     {/* NOT FOUND */}
                     <Route component={NotFound}></Route>
                 </Switch>
-            </React.Fragment>
+            </Suspense>
         );
     }
 }
