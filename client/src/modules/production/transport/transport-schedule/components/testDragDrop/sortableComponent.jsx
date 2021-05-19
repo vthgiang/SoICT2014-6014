@@ -322,7 +322,7 @@ let {value, index, stt} = props
 return(
     <div className="address-element" style={{margin: "10px", cursor: "pointer"}}>
 		<div>
-			{"STT: "+ stt}
+			{"STT: "+ (stt+1)}
 		</div>
 		<div>
 			{"Địa chỉ: "+ value.address}
@@ -331,7 +331,13 @@ return(
 			{"Loai: "+ value.addressType}
 		</div>
 		<div>
-			{"id: "+ value.transportRequirementId}
+			{"id: "+ value.transportRequirement?.code}
+		</div>
+		<div>
+			{"Trọng lượng: "+ value.payload}
+		</div>
+		<div>
+			{"Thể tích: "+ value.volume}
 		</div>
 		<div>
 			{"Khoảng cách: "+value.distance}

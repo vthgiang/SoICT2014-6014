@@ -26,6 +26,13 @@ function ArrangeOrdinalTransportOneVehicle(props) {
      */
     const [locationsOnMap, setLocationOnMap] = useState();
 
+    const [payloadVolumeStatus, setPayloadVolumeStatus] = useState({
+        maxPayload: 0,
+        maxVolume: 0,
+        posMaxPayload: 0,
+        posMaxVolume: 0,
+    })
+
     const [activeMapState, setActiveMapState] = useState();
     /**
      * addressList của component con
@@ -83,9 +90,47 @@ function ArrangeOrdinalTransportOneVehicle(props) {
         }
         return reverseConvertTimeToMinutes(res);    
     }
+
+    useEffect(() => {
+        let res = {
+            maxPayload: 0,
+            maxVolume: 0,
+            posMaxPayload: 0,
+            posMaxVolume: 0,
+            status: 1, // 1 hợp lý, 2 không hợp lý do trọng tải hoặc thể tích không đáp ứng được
+        }
+        let payload=0, volume=0;
+        if (addressList && addressList.length!==0){
+            addressList.map((address, index) => {
+                if (address.payload && address.volume){
+                    if (Number(address.addressType) === 1){
+                        payload+=address.payload;
+                        volume+=address.volume;
+                    }
+                    else {
+                        payload-=address.payload;
+                        volume-=address.volume;
+                    }
+                    if (payload>res.maxPayload){
+                        res.maxPayload = payload;
+                        res.posMaxPayload = index+1;
+                    }
+                    if (volume>res.maxVolume){
+                       res.maxVolume = volume;
+                       res.posMaxVolume = index + 1;
+                    }
+                }
+                
+            })
+        }
+        if (res.maxPayload > item.transportVehicle?.payload || res.maxVolume > item.transportVehicle?.volume){
+            res.status = 0;
+        }
+        setPayloadVolumeStatus(res);
+    }, [addressList]) 
+
     return (		
         <fieldset className="scheduler-border" style={{ height: "100%" }}>
-
             <div className="col-xs-12 col-sm-12 col-md-5 col-lg-5">
                 <legend className="scheduler-border">{item.transportVehicle.name}</legend>
                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -108,18 +153,33 @@ function ArrangeOrdinalTransportOneVehicle(props) {
                         <strong>{"Tổng thời gian di chuyển: "}</strong>{getTotalTime()}
                     </div>
                 </div>
+                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <div className="form-group">
+                        <strong>{"Trọng lượng hàng hóa lớn nhất đạt: "}</strong>{payloadVolumeStatus.maxPayload + "- tại địa điểm "+ payloadVolumeStatus.posMaxPayload }
+                    </div>
+                </div>
+                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <div className="form-group">
+                        <strong>{"Thể tích hàng hóa lớn nhất đạt: "}</strong>{payloadVolumeStatus.maxVolume + "- tại địa điểm "+ payloadVolumeStatus.posMaxVolume }
+                    </div>
+                </div>
+                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <div className="form-group">
+                        <strong>{payloadVolumeStatus.status === 1? "Có thể sử dụng lộ trình này": "Lộ trình không hợp lý cần sắp xếp lại"}</strong>
+                    </div>
+                </div>
             </div>
             <div className="col-xs-12 col-sm-12 col-md-7 col-lg-7">
                 <div className = "transport-map">
                     {
-                        // (activeMapState && activeMapState.length!==0)
-                        (locationsOnMap && locationsOnMap.length!==0 && locationsOnMap.length>=2)
-                        &&
-                        <MapContainer 
-                            locations={locationsOnMap}
+                        // // (activeMapState && activeMapState.length!==0)
+                        // (locationsOnMap && locationsOnMap.length!==0 && locationsOnMap.length>=2)
+                        // &&
+                        // <MapContainer 
+                        //     locations={locationsOnMap}
 
-                            // locations={activeMapState}
-                        />
+                        //     // locations={activeMapState}
+                        // />
                     }
                 </div>
                 {/* <div className="form-group">

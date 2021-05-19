@@ -10,7 +10,9 @@
     width: 300px;
     background-color: white;
     padding: 10px;
-    border: green solid 1px;
+    /* border: green solid 1px; */
+    border: aliceblue solid 1px;
+    box-shadow: 3px 3px #888888;
     z-index: 100000000000;
 }
 .address-element:hover {
