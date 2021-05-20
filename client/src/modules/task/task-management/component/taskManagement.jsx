@@ -510,7 +510,7 @@ class TaskManagement extends Component {
                     startDate: getFormatDateFromTime(dataTemp[n].startDate, 'dd-mm-yyyy'),
                     endDate: getFormatDateFromTime(dataTemp[n].endDate, 'dd-mm-yyyy'),
                     status: this.checkTaskRequestToClose(dataTemp[n]),
-                    progress: dataTemp[n].progress ? dataTemp[n].progress + "%" : "0%",
+                    progress: dataTemp[n].progress ? dataTemp[n].progress : 0,
                     totalLoggedTime: getTotalTimeSheetLogs(dataTemp[n].timesheetLogs),
                     parent: dataTemp[n].parent ? dataTemp[n].parent._id : null
                 }
