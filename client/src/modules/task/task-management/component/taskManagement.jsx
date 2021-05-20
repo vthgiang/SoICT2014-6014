@@ -13,7 +13,7 @@ import { DepartmentActions } from '../../../super-admin/organizational-unit/redu
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { performTaskAction } from "../../task-perform/redux/actions";
 import { taskManagementActions } from '../redux/actions';
-import { ProjectActions } from "../../../project/redux/actions";
+import { ProjectActions } from "../../../project/projects/redux/actions";
 import { TaskAddModal } from './taskAddModal';
 import { ModalPerform } from '../../task-perform/component/modalPerform';
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration'

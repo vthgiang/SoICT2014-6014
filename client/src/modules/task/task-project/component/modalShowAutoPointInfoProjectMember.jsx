@@ -5,7 +5,7 @@ import { DialogModal } from '../../../../common-components';
 import { AutomaticTaskPointCalculator } from '../../task-perform/component/automaticTaskPointCalculator';
 import { checkIsNullUndefined, numberWithCommas } from '../../task-management/component/functionHelpers';
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
-import { convertUserIdToUserName } from '../../../project/component/projects/functionHelper';
+import { convertUserIdToUserName } from '../../../project/projects/components/functionHelper';
 
 const ModalShowAutoPointInfoProjectMember = (props) => {
     const { task, translate, progress, projectDetail, userId, currentMemberActualCost, user } = props;
