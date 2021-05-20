@@ -238,6 +238,7 @@ exports.uploadFile = (arrData, type) => {
                 cb(null, `${hash}.${extend[extend.length - 1]}`);
             },
         }),
+        limits: { fieldSize: 25 * 1024 * 1024 }
     });
 
     switch (type) {
