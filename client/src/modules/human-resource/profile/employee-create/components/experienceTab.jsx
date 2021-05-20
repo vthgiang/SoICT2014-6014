@@ -22,10 +22,10 @@ function ExperienceTab(props) {
             return {
                 ...state,
                 id: props.id,
-                experiences: props.employee ? props.employee.experiences : [],
-                professionalSkill: props.employee ? props.employee.professionalSkill : "",
-                foreignLanguage: props.employee ? props.employee.foreignLanguage : "",
-                educationalLevel: props.employee ? props.employee.educationalLevel : "",
+                experiences: props.employee?.experiences ? props.employee.experiences : [],
+                professionalSkill: props.employee?.professionalSkill ? props.employee.professionalSkill : "",
+                foreignLanguage: props.employee?.foreignLanguage ? props.employee.foreignLanguage : "",
+                educationalLevel: props.employee?.educationalLevel ? props.employee.educationalLevel : "",
             }
         })
     }, [props.id, props.employee?.experiences])
