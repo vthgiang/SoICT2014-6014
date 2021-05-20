@@ -1,8 +1,9 @@
 import { getFormatDateFromTime } from '../../../../helpers/stringMethod';
+import _cloneDeep from 'lodash/cloneDeep';
 
 /** Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
 export const convertDataToExportData = (translate, currentTasks, fileName) => {
-    let data = JSON.parse(JSON.stringify(currentTasks));
+    let data = _cloneDeep(currentTasks);
 
     if (data?.length > 0) {
         data = data.map((item, index) => {
@@ -84,7 +85,6 @@ export const convertDataToExportData = (translate, currentTasks, fileName) => {
             },
         ]
     }
-
     return exportData;
 }
 
