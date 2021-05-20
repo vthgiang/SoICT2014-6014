@@ -65,7 +65,6 @@
     "react-scripts": "^3.4.4",
     "react-sortable-hoc": "^2.0.0",
     "react-sortablejs": "^6.0.0",
-    "sortablejs": "^1.10.2",
     "react-textarea-autosize": "^8.2.0",
     "react-toastify": "^5.5.0",
     "reaflow": "^3.0.14",
@@ -73,6 +72,7 @@
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
     "socket.io-client": "^2.3.1",
+    "sortablejs": "^1.10.2",
     "sweetalert2": "^9.15.2",
     "use-deep-compare-effect": "^1.6.1",
     "xlsx": "^0.16.3"

@@ -62,15 +62,25 @@ class ApiImage extends Component {
     }
 
     showImage = () => {
-        const { alt = "File not available", showImg = true } = this.props;
+        const { alt = "File not available", showImg = true, haveNextImage, havePreviousImage } = this.props;
         let { image } = this.state;
-
         if (showImg) {
             Swal.fire({
                 html: `<img src=${image} alt=${alt} style="max-width: 100%; max-height: 100%" />`,
                 width: 'auto',
                 showCloseButton: true,
-                showConfirmButton: false,
+                showConfirmButton: havePreviousImage ? true : false,
+                showCancelButton: haveNextImage ? true : false,
+                confirmButtonText: '<',
+                cancelButtonText: '>',
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#3085d6',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    this.props.showPreviousImage();
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    this.props.showNextImage();
+                }
             })
         }
     }
