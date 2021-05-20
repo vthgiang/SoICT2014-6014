@@ -369,6 +369,7 @@ class CommentInProcess extends Component {
                 {comments ?
                     //Hiển thị bình luận của công việc
                     comments.map(item => {
+                        let arrImageIndex = item.files.map((elem, index) => this.isImage(elem.name) ? index : -1).filter(index => index !== -1);
                         return (
                             <div key={item._id}>
                                 <img className={inputAvatarCssClass} src={(process.env.REACT_APP_SERVER + item.creator?.avatar)} alt="User Image" />
@@ -405,23 +406,27 @@ class CommentInProcess extends Component {
                                                     <li style={{ display: "inline-table" }}>
                                                         <div><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => this.handleShowFile(item._id)}><b><i className="fa fa-paperclip" aria-hidden="true">{translate('task.task_perform.attach_file')}({item.files && item.files.length})</i></b></a> </div></li>
                                                     {showfile.some(obj => obj === item._id) &&
-                                                         <div>
-                                                         {item.files.map((elem, index) => {
-                                                             return <div key={index} className="show-files-task">
-                                                                 {this.isImage(elem.name) ?
-                                                                     <ApiImage
-                                                                         className="attachment-img files-attach"
-                                                                         style={{ marginTop: "5px" }}
-                                                                         src={elem.url}
-                                                                         file={elem}
-                                                                         requestDownloadFile={this.requestDownloadFile}
-                                                                     />
-                                                                     :
-                                                                     <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
-                                                                 }
-                                                             </div>
-                                                         })}
-                                                     </div>
+                                                        <div>
+                                                            {item.files.map((elem, index) => {
+                                                                return <div key={index} className="show-files-task">
+                                                                    {this.isImage(elem.name) ?
+                                                                        <ApiImage
+                                                                            showPreviousImage={() => this.showPreviousImage(index, item.files, arrImageIndex)}
+                                                                            showNextImage={() => this.showNextImage(index, item.files, arrImageIndex)}
+                                                                            haveNextImage={index < arrImageIndex[arrImageIndex.length - 1] ? true : false}
+                                                                            havePreviousImage={index > arrImageIndex[0] ? true : false}
+                                                                            className="attachment-img files-attach"
+                                                                            style={{ marginTop: "5px" }}
+                                                                            src={elem.url}
+                                                                            file={elem}
+                                                                            requestDownloadFile={this.requestDownloadFile}
+                                                                        />
+                                                                        :
+                                                                        <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
+                                                                    }
+                                                                </div>
+                                                            })}
+                                                        </div>
                                                     }
                                                 </React.Fragment>
                                             }
@@ -454,7 +459,7 @@ class CommentInProcess extends Component {
                                                 <div className="tool-level1" style={{ marginTop: -15 }}>
                                                     {item.files.length > 0 &&
                                                         <div className="tool-level1" style={{ marginTop: -15 }}>
-                                                            {item.files.map((file,index) => {
+                                                            {item.files.map((file, index) => {
                                                                 return <div key={index}>
                                                                     <a style={{ cursor: "pointer" }}>{file.name} &nbsp;</a><a style={{ cursor: "pointer" }} className="link-black text-sm btn-box-tool" onClick={() => { this.handleDeleteFile(file._id, file.name, undefined, item._id, task._id, "comment") }}><i className="fa fa-times"></i></a>
                                                                 </div>
@@ -483,7 +488,7 @@ class CommentInProcess extends Component {
                                         {item.comments.map(child => {
                                             return <div key={child._id}>
                                                 <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + child.creator?.avatar)} alt="User Image" />
-                                                
+
                                                 {editChildComment !== child._id && // Đang edit thì ẩn đi
                                                     <div>
                                                         <p className="content-level2">
@@ -521,6 +526,10 @@ class CommentInProcess extends Component {
                                                                                 return <div key={index} className="show-files-task">
                                                                                     {this.isImage(elem.name) ?
                                                                                         <ApiImage
+                                                                                            showPreviousImage={() => this.showPreviousImage(index, item.files, arrImageIndex)}
+                                                                                            showNextImage={() => this.showNextImage(index, item.files, arrImageIndex)}
+                                                                                            haveNextImage={index < arrImageIndex[arrImageIndex.length - 1] ? true : false}
+                                                                                            havePreviousImage={index > arrImageIndex[0] ? true : false}
                                                                                             className="attachment-img files-attach"
                                                                                             style={{ marginTop: "5px" }}
                                                                                             src={elem.url}
@@ -594,7 +603,7 @@ class CommentInProcess extends Component {
                                         {/*Thêm bình luận cho bình luận */}
                                         <div>
                                             <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
-                                            
+
                                             <ContentMaker
                                                 idQuill={`add-child-comment-process-${item?._id}-${task?._id}`}
                                                 inputCssClass="text-input-level2" controlCssClass="tool-level2"
@@ -619,7 +628,7 @@ class CommentInProcess extends Component {
                     }) : null
                 }
                 <img className={inputAvatarCssClass} src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="User Image" />
-                
+
                 <ContentMaker
                     idQuill={`add-comment-process-${task?._id}`}
                     inputCssClass="text-input-level1" controlCssClass="tool-level1"
