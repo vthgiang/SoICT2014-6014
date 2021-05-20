@@ -16,7 +16,7 @@ import { TaskTemplateFormValidator } from '../../task-template/component/taskTem
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import Swal from 'sweetalert2'
 import moment from 'moment';
-import { convertUserIdToUserName } from '../../../project/component/projects/functionHelper';
+import { convertUserIdToUserName } from '../../../project/projects/components/functionHelper';
 
 class ModalEditTaskByAccountableEmployeeProject extends Component {
 
