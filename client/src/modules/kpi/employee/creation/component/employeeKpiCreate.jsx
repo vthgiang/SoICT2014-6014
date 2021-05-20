@@ -793,5 +793,4 @@ const actionCreators = {
     downloadFile: AuthActions.downloadFile,
 };
 
-const connectedCreateEmployeeKpiSet = connect(mapState, actionCreators)(withTranslate(CreateEmployeeKpiSet));
-export { connectedCreateEmployeeKpiSet as CreateEmployeeKpiSet };
+export default connect(mapState, actionCreators)(withTranslate(CreateEmployeeKpiSet));

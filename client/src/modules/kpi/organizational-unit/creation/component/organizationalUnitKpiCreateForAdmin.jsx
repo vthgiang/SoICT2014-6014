@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 
-import { OrganizationalUnitKpiCreate } from './organizationalUnitKpiCreate';
+import OrganizationalUnitKpiCreate from './organizationalUnitKpiCreate';
 
 function OrganizationalUnitKpiCreateForAdmin (props) {
     const { department } = props
@@ -39,5 +39,4 @@ const actions = {
     getAllUnit: DepartmentActions.get
 }
 
-const connectedOrganizationalUnitKpiCreateForAdmin = connect(mapState, actions)(withTranslate(OrganizationalUnitKpiCreateForAdmin))
-export { connectedOrganizationalUnitKpiCreateForAdmin as OrganizationalUnitKpiCreateForAdmin}
+export default connect(mapState, actions)(withTranslate(OrganizationalUnitKpiCreateForAdmin))

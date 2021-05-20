@@ -239,5 +239,4 @@ const actionCreators = {
 	deleteXmlDiagram: TaskProcessActions.deleteXmlDiagram,
 	deleteTaskProcess: TaskProcessActions.deleteTaskProcess
 };
-const connectedTaskProcessManagement = connect(mapState, actionCreators)(withTranslate(TaskProcessManagement));
-export { connectedTaskProcessManagement as TaskProcessManagement };
+export default connect(mapState, actionCreators)(withTranslate(TaskProcessManagement));

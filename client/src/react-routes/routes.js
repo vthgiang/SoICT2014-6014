@@ -7,164 +7,161 @@ import { AuthRoute } from "./authRoute";
 
 import Layout from "../layout/layout";
 
-import { NotFound } from "../modules/not-found/components";
-
-import Login from "../modules/auth/components/login";
-import ResetPassword from "../modules/auth/components/resetPasswordNew";
-import { Introduction } from "../modules/intro/components";
-import ManageDocument from "../modules/document/components/administration";
-import Document from "../modules/document/components/user";
-
-
-import ManageUser from "../modules/super-admin/user/components";
-import ManageRole from "../modules/super-admin/role/components";
-import ManageLink from "../modules/super-admin/link/components";
-import ManageDepartment from "../modules/super-admin/organizational-unit/components";
-import ManageComponent from "../modules/super-admin/component/components";
-import ConfigurationManager from "../modules/super-admin/module-configuration/components";
-
-import AnnualLeaveManager from "../modules/human-resource/annual-leave/components";
-import { ManagerPraiseDiscipline } from "../modules/human-resource/commendation-discipline/components";
-import EmployeeDashBoard from "../modules/human-resource/employee-dashboard/components";
-import { DepartmentManage } from "../modules/human-resource/employee-in-organizational-unit/components/employeeInOrganizationalUnit";
-import { ManageWorkPlan } from "../modules/human-resource/work-plan/components/worksPlanManagement";
-import {
-    EmployeeDetail,
-    UpdateEmployee,
-} from "../modules/human-resource/profile/employee-info/components/combinedContent";
-import EmpoyeeManager from "../modules/human-resource/profile/employee-management/components";
-import EmployeeCreate from "../modules/human-resource/profile/employee-create/components";
-import SalaryManager from "../modules/human-resource/salary/components";
-import FieldManager from "../modules/human-resource/field/components";
-import TimesheetsManager from "../modules/human-resource/timesheets/components";
-import { AnnualLeave } from "../modules/human-resource/annual-leave/components/combinedContent";
-import { ManageLeaveApplication } from "../modules/human-resource/annual-leave/components/combinedContent";
-import EmployeesInfomation from "../modules/human-resource/employee-infomation/components/";
-import { DashboardPersonal } from "../modules/dashboard-personal/components";
-import { DashboardUnit } from "../modules/dashboard-unit/components";
-
-import { ListEducation } from "../modules/training/education-program/components/educationProgramList";
-import { TrainingPlan } from "../modules/training/course/components/course";
+const NotFound = lazy(() => import("../modules/not-found/components"))
+const Login = lazy(() => import("../modules/auth/components/login"))
+const ResetPassword = lazy(() => import("../modules/auth/components/resetPasswordNew"))
+const Introduction = lazy(() => import("../modules/intro/components"))
+const ManageDocument = lazy(() => import("../modules/document/components/administration"))
+const Document = lazy(() => import("../modules/document/components/user"))
 
 
-import { OrganizationalUnitKpiCreateForAdmin } from "../modules/kpi/organizational-unit/creation/component/organizationalUnitKpiCreateForAdmin";
-import { OrganizationalUnitKpiCreate } from "../modules/kpi/organizational-unit/creation/component/organizationalUnitKpiCreate";
-import { OrganizationalUnitKpiDashboard } from "../modules/kpi/organizational-unit/dashboard/component/organizationalUnitKpiDashboard";
-import { KPIUnitManager } from "../modules/kpi/organizational-unit/management/component/organizationalUnitKpiOverview";
-import { KPIUnitEvaluate } from "../modules/kpi/organizational-unit/evaluation/component/organizationalUnitKpiEvaluation";
-import { StatisticsOfOrganizationalUnitKpi } from "../modules/kpi/statistic/component/statisticsOfOrganizationalUnitKpi";
+const ManageUser = lazy(() => import("../modules/super-admin/user/components"))
+const ManageRole = lazy(() => import("../modules/super-admin/role/components"))
+const ManageLink = lazy(() => import("../modules/super-admin/link/components"))
+const ManageDepartment = lazy(() => import("../modules/super-admin/organizational-unit/components"))
+const ManageComponent = lazy(() => import("../modules/super-admin/component/components"))
+const ConfigurationManager = lazy(() => import("../modules/super-admin/module-configuration/components"))
 
-import { CreateEmployeeKpiSet } from "../modules/kpi/employee/creation/component/employeeKpiCreate";
-import { KPIPersonalManager } from "../modules/kpi/employee/management/component/employeeKpiManagement";
-import { DashBoardEmployeeKpiSet } from "../modules/kpi/employee/dashboard/component/employeeKpiDashboard";
-import { KPIPersonalEvaluate } from "../modules/kpi/employee/management/component/employeeKpiData";
+const AnnualLeaveManager = lazy(() => import("../modules/human-resource/annual-leave/components"))
+const ManagerPraiseDiscipline = lazy(() => import("../modules/human-resource/commendation-discipline/components"))
+const EmployeeDashBoard = lazy(() => import("../modules/human-resource/employee-dashboard/components"))
+const DepartmentManage = lazy(() => import("../modules/human-resource/employee-in-organizational-unit/components/employeeInOrganizationalUnit"))
+const ManageWorkPlan = lazy(() => import("../modules/human-resource/work-plan/components/worksPlanManagement"))
+const EmployeeDetail = lazy(() => import("../modules/human-resource/profile/employee-info/components/combinedContent"))
+const UpdateEmployee = lazy(() => import("../modules/human-resource/profile/employee-info/components/combinedContent"))
+const EmpoyeeManager = lazy(() => import("../modules/human-resource/profile/employee-management/components"))
+const EmployeeCreate = lazy(() => import("../modules/human-resource/profile/employee-create/components"))
+const SalaryManager = lazy(() => import("../modules/human-resource/salary/components"))
+const FieldManager = lazy(() => import("../modules/human-resource/field/components"))
+const TimesheetsManager = lazy(() => import("../modules/human-resource/timesheets/components"))
+const AnnualLeave = lazy(() => import("../modules/human-resource/annual-leave/components/combinedContent"))
+const ManageLeaveApplication = lazy(() => import("../modules/human-resource/annual-leave/components/combinedContent"))
+const EmployeesInfomation = lazy(() => import("../modules/human-resource/employee-infomation/components/"))
+const DashboardPersonal = lazy(() => import("../modules/dashboard-personal/components"))
+const DashboardUnit = lazy(() => import("../modules/dashboard-unit/components"))
 
-import { EmployeeKpiManagement } from "../modules/kpi/evaluation/employee-evaluation/component/employeeKpiManagement";
-import { EmployeeKpiEvaluationDashboard } from "../modules/kpi/evaluation/dashboard/component/employeeKpiEvaluationDashboard";
+const ListEducation = lazy(() => import("../modules/training/education-program/components/educationProgramList"))
+const TrainingPlan = lazy(() => import("../modules/training/course/components/course"))
 
-import { TaskManagement } from "../modules/task/task-management/component/taskManagement";
-import { TaskManagementOfUnit } from "../modules/task/task-management/component/taskManagementOfUnit";
-import { TaskComponent } from "../modules/task/task-perform/component/taskComponent";
-import { TaskDashboard } from "../modules/task/task-dashboard/task-personal-dashboard/taskDashboard";
-import { TaskTemplate } from "../modules/task/task-template/component/taskTemplate";
-import { TaskProcessManagement } from "../modules/task/task-process/component/task-process-management/taskProcessManagement";
-import { ProcessTemplate } from "../modules/task/task-process/component/process-template/processTemplate";
-import { TaskOrganizationUnitDashboard } from "../modules/task/task-dashboard/task-organization-dashboard/taskOrganizationUnitDashboard";
+
+const OrganizationalUnitKpiCreateForAdmin = lazy(() => import("../modules/kpi/organizational-unit/creation/component/organizationalUnitKpiCreateForAdmin"))
+const OrganizationalUnitKpiCreate = lazy(() => import("../modules/kpi/organizational-unit/creation/component/organizationalUnitKpiCreate"))
+const OrganizationalUnitKpiDashboard = lazy(() => import("../modules/kpi/organizational-unit/dashboard/component/organizationalUnitKpiDashboard"))
+const KPIUnitManager = lazy(() => import("../modules/kpi/organizational-unit/management/component/organizationalUnitKpiOverview"))
+const KPIUnitEvaluate = lazy(() => import("../modules/kpi/organizational-unit/evaluation/component/organizationalUnitKpiEvaluation"))
+const StatisticsOfOrganizationalUnitKpi = lazy(() => import("../modules/kpi/statistic/component/statisticsOfOrganizationalUnitKpi"))
+
+const CreateEmployeeKpiSet = lazy(() => import("../modules/kpi/employee/creation/component/employeeKpiCreate"))
+const KPIPersonalManager = lazy(() => import("../modules/kpi/employee/management/component/employeeKpiManagement"))
+const DashBoardEmployeeKpiSet = lazy(() => import("../modules/kpi/employee/dashboard/component/employeeKpiDashboard"))
+const KPIPersonalEvaluate = lazy(() => import("../modules/kpi/employee/management/component/employeeKpiData"))
+
+const EmployeeKpiManagement = lazy(() => import("../modules/kpi/evaluation/employee-evaluation/component/employeeKpiManagement"))
+const EmployeeKpiEvaluationDashboard = lazy(() => import("../modules/kpi/evaluation/dashboard/component/employeeKpiEvaluationDashboard"))
+
+const TaskManagement = lazy(() => import("../modules/task/task-management/component/taskManagement"))
+const TaskManagementOfUnit = lazy(() => import("../modules/task/task-management/component/taskManagementOfUnit"))
+const TaskComponent = lazy(() => import("../modules/task/task-perform/component/taskComponent"))
+const TaskDashboard = lazy(() => import("../modules/task/task-dashboard/task-personal-dashboard/taskDashboard"))
+const TaskTemplate = lazy(() => import("../modules/task/task-template/component/taskTemplate"))
+const TaskProcessManagement = lazy(() => import("../modules/task/task-process/component/task-process-management/taskProcessManagement"))
+const ProcessTemplate = lazy(() => import("../modules/task/task-process/component/process-template/processTemplate"))
+const TaskOrganizationUnitDashboard = lazy(() => import("../modules/task/task-dashboard/task-organization-dashboard/taskOrganizationUnitDashboard"))
 
 //asset
-import RecommendProcure from "../modules/asset/user/purchase-request/components";
-import RecommendDistribute from "../modules/asset/user/use-request/components";
-import ManagerRecommendProcure from "../modules/asset/admin/purchase-request/components";
-import ManagerRecommendDistribute from "../modules/asset/admin/use-request/components";
-import ManagerAssetType from "../modules/asset/admin/asset-type/components";
-import MaintainanceManager from "../modules/asset/admin/maintainance/components";
+const RecommendProcure = lazy(() => import("../modules/asset/user/purchase-request/components"))
+const RecommendDistribute = lazy(() => import("../modules/asset/user/use-request/components"))
+const ManagerRecommendProcure = lazy(() => import("../modules/asset/admin/purchase-request/components"))
+const ManagerRecommendDistribute = lazy(() => import("../modules/asset/admin/use-request/components"))
+const ManagerAssetType = lazy(() => import("../modules/asset/admin/asset-type/components"))
+const MaintainanceManager = lazy(() => import("../modules/asset/admin/maintainance/components"))
 
 // import UsageManager from "../modules/asset/admin/usage/components";
-import IncidentManager from "../modules/asset/admin/incident/components";
-import ManagerDepreciation from "../modules/asset/admin/depreciation/components";
-import AssetManager from "../modules/asset/admin/asset-information/components";
-import { ManagerAssetAssignedCrash } from "../modules/asset/user/asset-assigned/components";
-import { DashBoardAssets } from "../modules/asset/admin/asset-dashboard/components/assetDashBoard";
-import { BuildingAsset } from "../modules/asset/admin/building/components";
-import EmployeeAssetManagement from "../modules/asset/user/asset-managed/components";
+const IncidentManager = lazy(() => import("../modules/asset/admin/incident/components"))
+const ManagerDepreciation = lazy(() => import("../modules/asset/admin/depreciation/components"))
+const AssetManager = lazy(() => import("../modules/asset/admin/asset-information/components"))
+const ManagerAssetAssignedCrash = lazy(() => import("../modules/asset/user/asset-assigned/components"))
+const DashBoardAssets = lazy(() => import("../modules/asset/admin/asset-dashboard/components/assetDashBoard"))
+const BuildingAsset = lazy(() => import("../modules/asset/admin/building/components"))
+const EmployeeAssetManagement = lazy(() => import("../modules/asset/user/asset-managed/components"))
 
 //report
-import TaskReportManager from "../modules/report/task-report/components/taskReportManager";
+const TaskReportManager = lazy(() => import("../modules/report/task-report/components/taskReportManager"))
 
 //warehouse
-import InventoryDashBoard from "../modules/production/warehouse/dashboard-inventory/component";
-import BillDashBoard from "../modules/production/warehouse/dashboard-bill/component";
-import CategoryManagement from "../modules/production/common-production/category-management/component";
-import GoodManagement from "../modules/production/common-production/good-management/component";
-import StockManagement from "../modules/production/warehouse/stock-management/component";
-import BinLocationManagement from "../modules/production/warehouse/bin-location-management/components";
-import BillManagement from "../modules/production/warehouse/bill-management/components";
-import InventoryManagement from "../modules/production/warehouse/inventory-management/components";
+const InventoryDashBoard = lazy(() => import("../modules/production/warehouse/dashboard-inventory/component"))
+const BillDashBoard = lazy(() => import("../modules/production/warehouse/dashboard-bill/component"))
+const CategoryManagement = lazy(() => import("../modules/production/common-production/category-management/component"))
+const GoodManagement = lazy(() => import("../modules/production/common-production/good-management/component"))
+const StockManagement = lazy(() => import("../modules/production/warehouse/stock-management/component"))
+const BinLocationManagement = lazy(() => import("../modules/production/warehouse/bin-location-management/components"))
+const BillManagement = lazy(() => import("../modules/production/warehouse/bill-management/components"))
+const InventoryManagement = lazy(() => import("../modules/production/warehouse/inventory-management/components"))
 
 // Customer Management
-import CrmDashBoard from "../modules/crm/dashboard/components";
-import CrmCustomer from "../modules/crm/customer/components";
-import CrmGroup from "../modules/crm/group/components";
-import CrmCare from "../modules/crm/care/components";
-import CrmLoyalCustomer from '../modules/crm/loyalCustomer/components'
-import CrmEvaluation from '../modules/crm/evaluation/components'
-import GeneralConfiguration from "../modules/crm/generalConfiguration/components";
+const CrmDashBoard = lazy(() => import("../modules/crm/dashboard/components"))
+const CrmCustomer = lazy(() => import("../modules/crm/customer/components"))
+const CrmGroup = lazy(() => import("../modules/crm/group/components"))
+const CrmCare = lazy(() => import("../modules/crm/care/components"))
+const CrmLoyalCustomer = lazy(() => import("../modules/crm/loyalCustomer/components"))
+const CrmEvaluation = lazy(() => import("../modules/crm/evaluation/components"))
+const GeneralConfiguration = lazy(() => import("../modules/crm/generalConfiguration/components"))
 
 //orders
-import PurchaseOrder from "../modules/production/order/purchase-order/components";
-import SalesOrder from "../modules/production/order/sales-order/components";
-import Discount from "../modules/production/order/discount/components";
-import Quote from "../modules/production/order/quote/components";
-import SalesOrderDashboard from "../modules/production/order/sales-order-dashboard/components";
-import Tax from "../modules/production/order/tax/components";
-import ServiceLevelAgreement from "../modules/production/order/service-level-agreement/components";
-import BusinessDepartment from "../modules/production/order/business-department/components";
-import Payment from "../modules/production/order/payment/components";
-import BankAccount from "../modules/production/order/bank-account/components";
+const PurchaseOrder = lazy(() => import("../modules/production/order/purchase-order/components"))
+const SalesOrder = lazy(() => import("../modules/production/order/sales-order/components"))
+const Discount = lazy(() => import("../modules/production/order/discount/components"))
+const Quote = lazy(() => import("../modules/production/order/quote/components"))
+const SalesOrderDashboard = lazy(() => import("../modules/production/order/sales-order-dashboard/components"))
+const Tax = lazy(() => import("../modules/production/order/tax/components"))
+const ServiceLevelAgreement = lazy(() => import("../modules/production/order/service-level-agreement/components"))
+const BusinessDepartment = lazy(() => import("../modules/production/order/business-department/components"))
+const Payment = lazy(() => import("../modules/production/order/payment/components"))
+const BankAccount = lazy(() => import("../modules/production/order/bank-account/components"))
 
 // plans
-import PlanManagement from "../modules/plan/components";
+const PlanManagement = lazy(() => import("../modules/plan/components"))
 
 // Example
-import ExampleManagement1 from "../modules/example/example1/components";
-import ExampleManagement2 from "../modules/example/example2/components";
+const ExampleManagement1 = lazy(() => import("../modules/example/example1/components"))
+const ExampleManagement2 = lazy(() => import("../modules/example/example2/components"))
 
-import ExampleManagementHooks1 from "../modules/example/example1/components-hooks";
-import ExampleManagementHooks2 from "../modules/example/example2/components-hooks";
+const ExampleManagementHooks1 = lazy(() => import("../modules/example/example1/components-hooks"))
+const ExampleManagementHooks2 = lazy(() => import("../modules/example/example2/components-hooks"))
 
 // Manufacturing Managements
 
-import ManufacturingPlan from "../modules/production/manufacturing/manufacturing-plan/components";
-import ManufacturingCommand from "../modules/production/manufacturing/manufacturing-command/components";
-import ManufacturingMill from "../modules/production/manufacturing/manufacturing-mill/components";
-import ManufacturingPerformance from "../modules/production/manufacturing/manufacturing-performance/components";
-import WorkSchedule from "../modules/production/manufacturing/work-schedule/components";
-import ManufacturingWorks from "../modules/production/manufacturing/manufacturing-works/components";
-import PurchasingRequest from "../modules/production/manufacturing/purchasing-request/components";
-import ManufacturingDashboard from "../modules/production/manufacturing/manufacturing-dashboard/components";
-import ManufacturingLot from "../modules/production/manufacturing/manufacturing-lot/components";
+const ManufacturingPlan = lazy(() => import("../modules/production/manufacturing/manufacturing-plan/components"))
+const ManufacturingCommand = lazy(() => import("../modules/production/manufacturing/manufacturing-command/components"))
+const ManufacturingMill = lazy(() => import("../modules/production/manufacturing/manufacturing-mill/components"))
+const ManufacturingPerformance = lazy(() => import("../modules/production/manufacturing/manufacturing-performance/components"))
+const WorkSchedule = lazy(() => import("../modules/production/manufacturing/work-schedule/components"))
+const ManufacturingWorks = lazy(() => import("../modules/production/manufacturing/manufacturing-works/components"))
+const PurchasingRequest = lazy(() => import("../modules/production/manufacturing/purchasing-request/components"))
+const ManufacturingDashboard = lazy(() => import("../modules/production/manufacturing/manufacturing-dashboard/components"))
+const ManufacturingLot = lazy(() => import("../modules/production/manufacturing/manufacturing-lot/components"))
 
 // Transport Managements
-import TransportRequirements from '../modules/production/transport/transport-requirements/components';
-import TransportPlan from '../modules/production/transport/transport-plan/components';
-import TransportSchedule from '../modules/production/transport/transport-schedule/components'
-import TransportVehicle from '../modules/production/transport/transport-vehicle/components';
-import TransportHuman from '../modules/production/transport/transport-human/components';
-import TransportRoute from '../modules/production/transport/transport-route/components';
-import TransportDepartment from '../modules/production/transport/transport-department/components'
-import CarrierTodayTransportMission from '../modules/production/transport/carrier-today-transport-mission/components'
-import CarrierAllTimesTransportMission from '../modules/production/transport/carrier-all-times-transport-mission/components'
+const TransportRequirements = lazy(() => import("../modules/production/transport/transport-requirements/components"))
+const TransportPlan = lazy(() => import("../modules/production/transport/transport-plan/components"))
+const TransportSchedule = lazy(() => import("../modules/production/transport/transport-schedule/components"))
+const TransportVehicle = lazy(() => import("../modules/production/transport/transport-vehicle/components"))
+const TransportHuman = lazy(() => import("../modules/production/transport/transport-human/components"))
+const TransportRoute = lazy(() => import("../modules/production/transport/transport-route/components"))
+const TransportDepartment = lazy(() => import("../modules/production/transport/transport-department/components"))
+const CarrierTodayTransportMission = lazy(() => import("../modules/production/transport/carrier-today-transport-mission/components"))
+const CarrierAllTimesTransportMission = lazy(() => import("../modules/production/transport/carrier-all-times-transport-mission/components"))
 
 // import AnswerAuthQuestionPage from '../modules/auth/components/answerAuthQuestion';
 
-import { Project } from '../modules/project/component/projects/index';
-import Phase from '../modules/project/component/phases/index';
-import PhaseDetail from '../modules/project/component/phases/detailPhase';
-import ProjectDetailPage from '../modules/project/component/projects/detailProjectPage';
-import ProjectReport from '../modules/project/component/reports/index';
-import ProjectEvaluation from '../modules/project/component/evaluations/index';
-import { UserGuide } from '../modules/user-guide/components';
-import AllTimeSheetLog from '../modules/task/task-dashboard/statistic/allTimeSheetLog';
+const Project = lazy(() => import("../modules/project/component/projects/index"))
+const Phase = lazy(() => import("../modules/project/component/phases/index"))
+const PhaseDetail = lazy(() => import("../modules/project/component/phases/detailPhase"))
+const ProjectDetailPage = lazy(() => import("../modules/project/component/projects/detailProjectPage"))
+const ProjectReport = lazy(() => import("../modules/project/component/reports/index"))
+const ProjectEvaluation = lazy(() => import("../modules/project/component/evaluations/index"))
+const UserGuide = lazy(() => import("../modules/user-guide/components"))
+const AllTimeSheetLog = lazy(() => import("../modules/task/task-dashboard/statistic/allTimeSheetLog"))
 
 const Home = lazy(() => import("../modules/home/components"))
 const Notifications = lazy(() => import("../modules/notification/components/index"))

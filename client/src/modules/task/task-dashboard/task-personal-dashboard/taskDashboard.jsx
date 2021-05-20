@@ -665,5 +665,4 @@ const actionCreators = {
     getTimeSheetOfUser: taskManagementActions.getTimeSheetOfUser,
 };
 
-const connectedTaskDashboard = connect(mapState, actionCreators)(withTranslate(TaskDashboard));
-export { connectedTaskDashboard as TaskDashboard };
+export default connect(mapState, actionCreators)(withTranslate(TaskDashboard));

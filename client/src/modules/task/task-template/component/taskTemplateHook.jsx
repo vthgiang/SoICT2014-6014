@@ -1299,5 +1299,4 @@ export { connectedAddTaskTemplate as AddTaskTemplate };
 //     _delete: taskTemplateActions._delete,
 //     show: RoleActions.show,
 // };
-// const connectedTaskTemplate = connect(mapState, actionCreators)(withTranslate(TaskTemplate));
-// export { connectedTaskTemplate as TaskTemplate };
+// export default connect(mapState, actionCreators)(withTranslate(TaskTemplate));

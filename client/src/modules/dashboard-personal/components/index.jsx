@@ -37,5 +37,4 @@ const actionCreators = {
     getRoleSameDepartment: UserActions.getRoleSameDepartment
 };
 
-const dashboardPersonal = connect(mapState, actionCreators)(withTranslate(DashboardPersonal));
-export { dashboardPersonal as DashboardPersonal };
+export default connect(mapState, actionCreators)(withTranslate(DashboardPersonal));

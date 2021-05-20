@@ -28,5 +28,4 @@ class NotFound extends Component {
 }
  
 const mapState = state => state;
-const NotFoundExport = connect(mapState)(withTranslate(NotFound));
-export { NotFoundExport as NotFound }
+export default connect(mapState)(withTranslate(NotFound));

@@ -917,6 +917,5 @@ const actionCreators = {
     getAllDepartment: DepartmentActions.get,
     getProjectsDispatch: ProjectActions.getProjectsDispatch,
 };
-const translateTaskManagement = connect(mapState, actionCreators)(withTranslate(TaskManagement));
-export { translateTaskManagement as TaskManagement };
+export default connect(mapState, actionCreators)(withTranslate(TaskManagement));
 
