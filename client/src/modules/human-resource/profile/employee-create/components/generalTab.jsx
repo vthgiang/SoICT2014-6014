@@ -549,7 +549,7 @@ function GeneralTab(props) {
                         {/* Số CMND */}
                         <div className={`form-group col-lg-4 col-md-4 col-ms-12 col-xs-12`}>
                             <label htmlFor="CMND">{translate('human_resource.profile.id_card')}</label>
-                            <input type="number" className="form-control" name="identityCardNumber" value={identityCardNumber} onChange={handleCMNDChange} placeholder={translate('human_resource.profile.id_card')} autoComplete="off" />
+                            <input type="text" className="form-control" name="identityCardNumber" value={identityCardNumber} onChange={handleCMNDChange} placeholder={translate('human_resource.profile.id_card')} autoComplete="off" />
                         </div>
                         {/* Ngày cấp */}
                         <div className={`form-group col-lg-4 col-md-4 col-ms-12 col-xs-12`}>

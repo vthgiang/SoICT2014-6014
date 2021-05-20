@@ -216,12 +216,12 @@ function UpdateEmployee(props) {
                                         {/* Di động 1 */}
                                         <div className="form-group col-md-4">
                                             <label >{translate('human_resource.profile.mobile_phone_1')}</label>
-                                            <input type="text" className="form-control " name="phoneNumber" defaultValue={x.phoneNumber ? "0" + x.phoneNumber : ""} onChange={handleChange} />
+                                            <input type="text" className="form-control " name="phoneNumber" defaultValue={x.phoneNumber ? x.phoneNumber : ""} onChange={handleChange} />
                                         </div>
                                         {/* Di động 2 */}
                                         <div className="form-group col-md-4">
                                             <label>{translate('human_resource.profile.mobile_phone_2')}</label>
-                                            <input type="text" className="form-control " name="phoneNumber2" defaultValue={x.phoneNumber2 ? "0" + x.phoneNumber2 : ""} onChange={handleChange} />
+                                            <input type="text" className="form-control " name="phoneNumber2" defaultValue={x.phoneNumber2 ? x.phoneNumber2 : ""} onChange={handleChange} />
                                         </div>
                                     </div>
                                 </div>
@@ -240,7 +240,7 @@ function UpdateEmployee(props) {
                                         {/* Điện thoại cố định */}
                                         <div className="form-group col-md-4">
                                             <label>{translate('human_resource.profile.home_phone')}</label>
-                                            <input type="text" className="form-control " name="homePhone" defaultValue={x.homePhone ? "0" + x.homePhone : ""} onChange={handleChange} />
+                                            <input type="text" className="form-control " name="homePhone" defaultValue={x.homePhone ? x.homePhone : ""} onChange={handleChange} />
                                         </div>
                                     </div>
                                 </div>
@@ -257,7 +257,7 @@ function UpdateEmployee(props) {
                                             {/* Di động */}
                                             <div className="form-group" >
                                                 <label htmlFor="emergencyContactPersonPhoneNumber">{translate('human_resource.profile.mobile_phone')}</label>
-                                                <input type="text" className="form-control " name="emergencyContactPersonPhoneNumber" id="emergencyContactPersonPhoneNumber" defaultValue={x.emergencyContactPersonPhoneNumber ? "0" + x.emergencyContactPersonPhoneNumber : ""} onChange={handleChange} />
+                                                <input type="text" className="form-control " name="emergencyContactPersonPhoneNumber" id="emergencyContactPersonPhoneNumber" defaultValue={x.emergencyContactPersonPhoneNumber ? x.emergencyContactPersonPhoneNumber : ""} onChange={handleChange} />
                                             </div>
                                             {/* Emai cá nhân */}
                                             <div className="form-group" >
@@ -274,7 +274,7 @@ function UpdateEmployee(props) {
                                             {/* Diện thoại có định */}
                                             <div className="form-group" >
                                                 <label htmlFor="emergencyContactPersonHomePhone">{translate('human_resource.profile.home_phone')}</label>
-                                                <input type="text" className="form-control " name="emergencyContactPersonHomePhone" id="emergencyContactPersonHomePhone" defaultValue={x.emergencyContactPersonHomePhone ? "0" + x.emergencyContactPersonHomePhone : ""} onChange={handleChange} />
+                                                <input type="text" className="form-control " name="emergencyContactPersonHomePhone" id="emergencyContactPersonHomePhone" defaultValue={x.emergencyContactPersonHomePhone ? x.emergencyContactPersonHomePhone : ""} onChange={handleChange} />
                                             </div>
                                             {/* Địa chỉ */}
                                             <div className="form-group" >
