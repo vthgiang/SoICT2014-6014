@@ -128,5 +128,4 @@ const actionCreators = {
     getListBuildingAsTree: AssetManagerActions.getListBuildingAsTree,
 };
 
-const BuildingAssetConnected = connect(mapState, actionCreators)(withTranslate(BuildingAsset));
-export { BuildingAssetConnected as BuildingAsset };
+export default connect(mapState, actionCreators)(withTranslate(BuildingAsset));

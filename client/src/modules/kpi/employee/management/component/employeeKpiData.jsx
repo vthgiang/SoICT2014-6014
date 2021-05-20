@@ -359,4 +359,4 @@ function KPIPersonalEvaluate(props) {
     );
 }
 
-export { KPIPersonalEvaluate };
+export default KPIPersonalEvaluate;

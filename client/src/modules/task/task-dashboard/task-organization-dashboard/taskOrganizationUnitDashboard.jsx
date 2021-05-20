@@ -717,5 +717,4 @@ const actionCreators = {
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
 };
 
-const connectedTaskDashboardUnit = connect(mapState, actionCreators)(withTranslate(TaskOrganizationUnitDashboard));
-export { connectedTaskDashboardUnit as TaskOrganizationUnitDashboard };
+export default connect(mapState, actionCreators)(withTranslate(TaskOrganizationUnitDashboard));

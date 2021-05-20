@@ -68,5 +68,4 @@ function mapState(state) {
 const actionCreators = {
    
 };
-const connectedDashBoardEmployeeKpiSet = connect(mapState, actionCreators)(withTranslate(DashBoardEmployeeKpiSet));
-export { connectedDashBoardEmployeeKpiSet as DashBoardEmployeeKpiSet };
+export default connect(mapState, actionCreators)(withTranslate(DashBoardEmployeeKpiSet));

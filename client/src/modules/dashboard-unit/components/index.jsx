@@ -84,6 +84,4 @@ const actionCreators = {
     getChildrenOfOrganizationalUnitsAsTree: DashboardEvaluationEmployeeKpiSetAction.getChildrenOfOrganizationalUnitsAsTree,
     getDepartment: DepartmentActions.get,
 };
-
-const dashboardUnit = connect(mapState, actionCreators)(withTranslate(DashboardUnit));
-export { dashboardUnit as DashboardUnit };
+export default connect(mapState, actionCreators)(withTranslate(DashboardUnit));

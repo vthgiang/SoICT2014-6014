@@ -807,6 +807,5 @@ const actionCreators = {
     getAllDepartment: DepartmentActions.get,
     getChildrenOfOrganizationalUnitsAsTree: DashboardEvaluationEmployeeKpiSetAction.getChildrenOfOrganizationalUnitsAsTree,
 };
-const translateTaskManagementOfUnit = connect(mapState, actionCreators)(withTranslate(TaskManagementOfUnit));
-export { translateTaskManagementOfUnit as TaskManagementOfUnit };
+export default connect(mapState, actionCreators)(withTranslate(TaskManagementOfUnit));
 

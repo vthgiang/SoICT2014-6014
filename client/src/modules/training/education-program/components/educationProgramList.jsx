@@ -295,5 +295,4 @@ const actionCreators = {
     deleteEducation: EducationActions.deleteEducation,
 };
 
-const connectedListEducation = connect(mapState, actionCreators)(withTranslate(ListEducation));
-export { connectedListEducation as ListEducation };
+export default connect(mapState, actionCreators)(withTranslate(ListEducation));

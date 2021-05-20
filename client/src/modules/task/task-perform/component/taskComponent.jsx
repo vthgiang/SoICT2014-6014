@@ -131,7 +131,6 @@ const actionCreators = {
     getProjectsDispatch: ProjectActions.getProjectsDispatch,
 };
 
-const taskComponent = connect(mapState, actionCreators)(withTranslate(TaskComponent));
-export { taskComponent as TaskComponent }
+export default connect(mapState, actionCreators)(withTranslate(TaskComponent));
 
 

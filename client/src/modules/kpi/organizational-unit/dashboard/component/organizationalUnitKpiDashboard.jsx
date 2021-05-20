@@ -554,5 +554,4 @@ function mapState(state) {
 const actionCreators = {
     getChildrenOfOrganizationalUnitsAsTree: DashboardEvaluationEmployeeKpiSetAction.getChildrenOfOrganizationalUnitsAsTree
 };
-const connectedOrganizationalUnitKpiDashboard = connect(mapState, actionCreators)(withTranslate(OrganizationalUnitKpiDashboard));
-export { connectedOrganizationalUnitKpiDashboard as OrganizationalUnitKpiDashboard };
+export default connect(mapState, actionCreators)(withTranslate(OrganizationalUnitKpiDashboard));

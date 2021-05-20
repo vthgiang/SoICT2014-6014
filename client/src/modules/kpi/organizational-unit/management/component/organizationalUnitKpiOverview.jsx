@@ -571,5 +571,4 @@ const actionCreators = {
     getAllKPIUnit: managerActions.getAllKPIUnit,
     getChildrenOfOrganizationalUnitsAsTree: DashboardEvaluationEmployeeKpiSetAction.getChildrenOfOrganizationalUnitsAsTree,
 };
-const connectedKPIUnitManager = connect(mapState, actionCreators)(withTranslate(KPIUnitManager));
-export { connectedKPIUnitManager as KPIUnitManager };
+export default connect(mapState, actionCreators)(withTranslate(KPIUnitManager));

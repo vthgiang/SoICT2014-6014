@@ -18,5 +18,4 @@ function mapState(state) {
     return { project, user }
 }
 
-const connectedExampleManagementTable = connect(mapState, null)(withTranslate(ManagementTableProject));
-export { connectedExampleManagementTable as Project };
+export default connect(mapState, null)(withTranslate(ManagementTableProject));
