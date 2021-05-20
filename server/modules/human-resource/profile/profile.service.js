@@ -1170,7 +1170,8 @@ exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company)
 
             if (roles && roles.length > 0)
                 for (let x in roles) {
-                    await RoleService.createRelationshipUserRole(portal, oldUser._id, roles[x]);
+                    if(roles[x])
+                        await RoleService.createRelationshipUserRole(portal, oldUser._id, roles[x]);
                 };
         }
 
@@ -1183,8 +1184,9 @@ exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company)
 
             let user = await UserService.createUser(portal, userInfo, company);
             if (roles && roles.length > 0)
-                for(let x in roles){
-                    await RoleService.createRelationshipUserRole(portal, user._id, roles[x]);
+                for (let x in roles) {
+                    if(roles[x])
+                        await RoleService.createRelationshipUserRole(portal, user._id, roles[x]);
                 };
         }
     }

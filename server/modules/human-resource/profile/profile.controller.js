@@ -201,7 +201,8 @@ exports.createEmployee = async (req, res) => {
                             }
                             let user = await UserService.createUser(req.portal, userInfo, req.user.company._id);
                             for (let x in req.body.roles) {
-                                await RoleService.createRelationshipUserRole(req.portal, user._id, req.body.roles[x])
+                                if(req.body.roles[x])
+                                    await RoleService.createRelationshipUserRole(req.portal, user._id, req.body.roles[x])
                             };
                         }
                     }
