@@ -52,16 +52,12 @@ const MultipleBarChart = (props) => {
 
     const renderChart = (data) => {
         data.data1.shift(); data.data2.shift(); data.data3.shift();
-        let bigData1 = data.data1.map(x => 2 * x);
-        let bigData2 = data.data2.map(x => x / 2);
-        let bigData3 = data.data3.map(x => x * 1.5);
         removePreviousChart();
         let chart = c3.generate({
             bindto: chart.current,
             data: {
                 x: 'x',
-                columns: [],
-                hide: true,
+                columns: [data.ratioX, ['data1', ...data.data1], ['data2', ...data.data2], ['data3', ...data.data3]],
                 type: data.lineBar === true ? 'bar' : '',
                 names: {
                     data1: data.nameData1,
@@ -92,17 +88,6 @@ const MultipleBarChart = (props) => {
                 }
             }
         });
-
-        setTimeout(function () {
-            chart.load({
-                columns: [data.ratioX, ['data1', ...bigData1], ['data2', ...bigData2], ['data3', ...bigData3]],
-            });
-        }, 100);
-        setTimeout(function () {
-            chart.load({
-                columns: [data.ratioX, ['data1', ...data.data1], ['data2', ...data.data2], ['data3', ...data.data3]],
-            });
-        }, 300);
     }
     const { lineBar, nameChart } = state;
         return (

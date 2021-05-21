@@ -396,6 +396,8 @@ exports.setTaskImportanceLevel = async (portal, id, kpiType, data) => {
     }
 
     let task = await getResultTaskByMonth(portal, key);
+
+    // Tính điểm KPI thánh
     let autoPoint = 0;
     let approvePoint = 0;
     let employPoint = 0;
@@ -437,6 +439,7 @@ exports.setTaskImportanceLevel = async (portal, id, kpiType, data) => {
         sumTaskImportance = 1;
     }
 
+    // Cập nhật điểm KPI tháng
     let result = await EmployeeKpi(connect(DB_CONNECTION, portal))
         .findByIdAndUpdate(
             id,
@@ -449,6 +452,28 @@ exports.setTaskImportanceLevel = async (portal, id, kpiType, data) => {
             },
             { new: true }
         );
+
+    // Cập nhật điểm KPI tuần
+    let currentDate = new Date(data?.[0]?.date)
+    let currentMonth = currentDate?.getMonth()
+    let currentYear = currentDate?.getFullYear()
+    let week1 = setPointForWeek(task, "week1", new Date(currentYear, currentMonth, 2), new Date(currentYear, currentMonth, 9)) // ví dụ: new Date(2021,3,2) = 0h0'0 1/4/2021, new Date(2021,3,9) = 0h0'0 8/4/2021
+    let week2 = setPointForWeek(task, "week2", new Date(currentYear, currentMonth, 9), new Date(currentYear, currentMonth, 16)) // ví dụ: new Date(2021,3,9) = 0h0'0 8/4/2021, new Date(2021,3,16) = 0h0'0 15/4/2021
+    let week3 = setPointForWeek(task, "week3", new Date(currentYear, currentMonth, 16), new Date(currentYear, currentMonth, 23)) // ví dụ: new Date(2021,3,16) = 0h0'0 15/4/2021, new Date(2021,3,23) = 0h0'0 21/4/2021
+    let week4 = setPointForWeek(task, "week4", new Date(currentYear, currentMonth, 23), new Date(currentYear, currentMonth + 1, 2)) // ví dụ: new Date(2021,3,23) = 0h0'0 21/4/2021, new Date(2021,4,2) = 0h0'0 1/5/2021
+    let resultWeek = [week1, week2, week3, week4]
+    await EmployeeKpi(connect(DB_CONNECTION, portal))
+        .findByIdAndUpdate(
+            id,
+            {
+                $set: {
+                    weeklyEvaluate: resultWeek
+                },
+            },
+            { new: true }
+        );
+
+    // Cập nhật điểm tập KPI tháng
     let autoPointSet = 0;
     let employeePointSet = 0;
     let approvedPointSet = 0;
@@ -461,7 +486,6 @@ exports.setTaskImportanceLevel = async (portal, id, kpiType, data) => {
         approvedPointSet += kpi.approvedPoint ? kpi.approvedPoint * weight : 0;
 
     };
-
     let updateKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
         .findByIdAndUpdate(kpiSet._id,
             {
@@ -477,7 +501,72 @@ exports.setTaskImportanceLevel = async (portal, id, kpiType, data) => {
         .populate({path: "creator", select :"_id name email avatar"})
         .populate({path: "approver", select :"_id name email avatar"})
 
+
     return { task, result, updateKpiSet };
+}
+
+// Tính điểm KPI từng tuần
+function setPointForWeek (tasks, title, startDate, endDate) {
+    startDate = new Date(startDate)
+    endDate = new Date(endDate)
+
+    // Lọc CV theo tuần
+    let taskInWeek = tasks.filter(item => {
+        let startDateTask = new Date(item?.startDateTask)
+        let endDateTask = new Date(item?.endDateTask)
+
+        return (startDateTask >= startDate && startDateTask < endDate)
+            || (endDateTask >= startDate && endDateTask < endDate)
+            || (startDateTask < startDate && endDateTask >= endDate)
+    })
+
+    let automaticPoint = 0;
+    let approvedPoint = 0;
+    let employeePoint = 0;
+    let sumTaskImportance = 0;
+
+    if (taskInWeek.length) {
+        for (element of taskInWeek) {
+            let date1 = new Date(element?.startDateTask);
+            let date2 = new Date(element?.endDateTask);
+            let timeInWeek = 0, totalTime = date2?.getTime() - date1.getTime(), ratioTimeInWeek = 0
+
+            // Lấy số ngày thực hiện CV trong tuần
+            if (date2?.getTime() > endDate?.getTime()) {
+                if (date1?.getTime() > startDate.getTime()) {
+                    timeInWeek = endDate?.getTime() - date1?.getTime()
+                } else {
+                    timeInWeek = endDate?.getTime() - startDate?.getTime()
+                }
+            } else {
+                if (date1?.getTime() > startDate.getTime()) {
+                    timeInWeek = date2?.getTime() - date1?.getTime()
+                } else {
+                    timeInWeek = date2?.getTime() - startDate?.getTime()
+                }
+            }
+
+            ratioTimeInWeek = timeInWeek / totalTime
+            automaticPoint += element.results.automaticPoint * element.results.taskImportanceLevel * ratioTimeInWeek;
+            approvedPoint += element.results.approvedPoint * element.results.taskImportanceLevel * ratioTimeInWeek;
+            employeePoint += element.results.employeePoint * element.results.taskImportanceLevel * ratioTimeInWeek;
+            sumTaskImportance += element.results.taskImportanceLevel * ratioTimeInWeek;
+        }
+
+    }
+    else {
+        automaticPoint = 0;
+        employeePoint = 0;
+        approvedPoint = 0;
+        sumTaskImportance = 1;
+    }
+
+    return {
+        title: title,
+        automaticPoint: Math.round(automaticPoint / sumTaskImportance),
+        employeePoint: Math.round(employeePoint / sumTaskImportance),
+        approvedPoint: Math.round(approvedPoint / sumTaskImportance)
+    }
 }
 
 async function updateTaskImportanceLevel(portal, taskId, employeeId, point, date, role) {

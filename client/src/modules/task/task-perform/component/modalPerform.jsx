@@ -2,7 +2,7 @@ import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal } from '../../../../common-components';
-import { TaskComponent } from './taskComponent';
+import TaskComponent from './taskComponent';
 
 function ModalPerform(props) {
     const [state, setState] = useState({})

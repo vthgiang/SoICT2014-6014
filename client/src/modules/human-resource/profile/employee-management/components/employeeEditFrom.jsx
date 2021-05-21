@@ -162,13 +162,13 @@ const EmployeeEditFrom = (props) => {
                     commendations: props.employeesInfo?.commendations,
                     disciplines: props.employeesInfo?.disciplines,
                     courses: props.employeesInfo?.courses,
-                    roles: props.employeesInfo?.roles?.length > 0 && props.employeesInfo?.roles.map(x => x?.roleId?.id),
+                    roles: props.employeesInfo?.roles?.length > 0 ? props.employeesInfo?.roles.map(x => x?.roleId?.id) : [],
                     organizationalUnits: props.employeesInfo?.organizationalUnits?.length > 0 && props.employeesInfo?.organizationalUnits.map(x => x._id),
                     houseHold: props.employeesInfo?.employees?.[0]?.houseHold
                 });
             };
         }
-        shouldUpdate()
+        shouldUpdate();
         return () => {
             mountedRef.current = false;
         }
@@ -1116,7 +1116,7 @@ const EmployeeEditFrom = (props) => {
             }
         })
     }
-    console.log('employee', employee)
+
     return (
         <React.Fragment>
             <DialogModal

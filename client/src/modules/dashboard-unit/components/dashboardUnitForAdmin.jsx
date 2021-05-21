@@ -187,6 +187,21 @@ function DashboardUnitForAdmin(props) {
                             return result;
                         }
                     }
+                },
+                y: {
+                    label: {
+                        text: translate('kpi.organizational_unit.dashboard.trend_chart.amount_tasks'),
+                        position: "outer-top"
+                    },
+                    tick: {
+                        format: function(d) {
+                            if (d - parseInt(d) === 0) {
+                                return d;
+                            } else {
+                                return "";
+                            }
+                        }
+                    },
                 }
             },
 
@@ -245,6 +260,10 @@ function DashboardUnitForAdmin(props) {
                 },
 
                 y: {
+                    label: {
+                        text: translate('kpi.organizational_unit.dashboard.trend_chart.amount_tasks'),
+                        position: "outer-top"
+                    },
                     tick: {
                         format: function(d) {
                             if (d - parseInt(d) === 0) {
@@ -457,16 +476,16 @@ function DashboardUnitForAdmin(props) {
             let tasks = [];
             let accountableTask = [], consultedTask = [], responsibleTask = [], informedTask = [];
             taskListByStatus && taskListByStatus.forEach(task => {
-                if (task.accountableEmployees.includes(listEmployee[i].userId._id)) {
+                if (task?.accountableEmployees?.includes(listEmployee?.[i]?.userId?._id)) {
                     accountableTask = [...accountableTask, task._id]
                 }
-                if (task.consultedEmployees.includes(listEmployee[i].userId._id)) {
+                if (task?.consultedEmployees?.includes(listEmployee?.[i]?.userId?._id)) {
                     consultedTask = [...consultedTask, task._id]
                 }
-                if (task.responsibleEmployees.includes(listEmployee[i].userId._id)) {
+                if (task?.responsibleEmployees?.includes(listEmployee?.[i]?.userId?._id)) {
                     responsibleTask = [...responsibleTask, task._id]
                 }
-                if (task.informedEmployees.includes(listEmployee[i].userId._id)) {
+                if (task?.informedEmployees?.includes(listEmployee?.[i]?.userId?._id)) {
                     informedTask = [...informedTask, task._id]
                 }
             });
@@ -474,7 +493,7 @@ function DashboardUnitForAdmin(props) {
             let totalTask = tasks.filter(function (item, pos) {
                 return tasks.indexOf(item) === pos;
             })
-            employeeTasks = [...employeeTasks, { _id: listEmployee[i].userId._id, name: listEmployee[i].userId.name, totalTask: totalTask.length }]
+            employeeTasks = [...employeeTasks, { _id: listEmployee?.[i]?.userId?._id, name: listEmployee?.[i]?.userId?.name, totalTask: totalTask.length }]
         };
         if (employeeTasks.length !== 0) {
             employeeTasks = employeeTasks.sort((a, b) => b.totalTask - a.totalTask);
@@ -526,6 +545,9 @@ function DashboardUnitForAdmin(props) {
                                                     <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
                                                 </span>
                                         }
+                                        <a className="text-red" title={translate('task.task_management.explain')} onClick={() => handleClickshowTaskUrgent()}>
+                                            <i className="fa fa-question-circle" style={{ color: '#dd4b39', cursor: 'pointer', marginLeft: '5px' }} />
+                                        </a>
                                     </div>
                                 </div>
 
@@ -533,18 +555,12 @@ function DashboardUnitForAdmin(props) {
                                     <div className="row " >
                                         <div className="">
                                             <div className="col-md-12">
-                                                <div style={{ display: 'flex', flexDirection: 'column', marginTop: '10px', marginBottom: 0 }}>
-                                                    <p className="pull-left" style={{ display: 'flex', alignItems: 'center' }}> <b style={{ marginTop: '10px', marginRight: '5px' }}>{translate('dashboard_unit.urgent_task_amount')}</b>
-                                                        <span className="material-icons title-urgent " style={{ zIndex: 999, cursor: "pointer", fontSize: '15px', marginTop: '10px' }}
-                                                            onClick={handleClickshowTaskUrgent}>
-                                                            help
-                                                        </span>
-                                                    </p >
+                                                <div style={{ display: 'flex', flexDirection: 'column', marginBottom: 0 }}>
                                                     {
-                                                        tasks.isLoading ? <p style={{ marginTop: '60px', textAlign: "center" }}>{translate('general.loading')}</p>
+                                                        tasks.isLoading ? <p>{translate('general.loading')}</p>
                                                             : tasks?.organizationUnitTasksChart?.urgent?.length > 0 
                                                                 ? <div id="pieChartUrgent"></div>
-                                                                : <p style={{ marginTop: '60px', textAlign: "center" }}>{translate('kpi.organizational_unit.dashboard.no_data')}</p>
+                                                                : <p>{translate('kpi.organizational_unit.dashboard.no_data')}</p>
                                                     }
                                                 </div>
                                             </div>
@@ -574,27 +590,23 @@ function DashboardUnitForAdmin(props) {
                                                     <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
                                                 </span>
                                         }
+                                        <a className="text-red" title={translate('task.task_management.explain')} onClick={() => handleClickshowTaskNeedToDo()}>
+                                            <i className="fa fa-question-circle" style={{ color: '#dd4b39', cursor: 'pointer', marginLeft: '5px' }} />
+                                        </a>
                                     </div>
                                 </div>
 
                                 <div className="box-body" style={{ marginBottom: 15 }}>
                                     <div className="row " >
                                         <div className="col-md-12">
-                                            <div style={{ display: 'flex', flexDirection: 'column', marginTop: '10px', marginBottom: 0 }}>
-                                                <p className="pull-left" style={{ marginRight: '10px', display: 'flex', alignItems: 'center' }}>
-                                                    <b style={{ marginTop: '10px', marginRight: '5px' }} >{translate('dashboard_unit.need_to_do_task_amount')}</b>
-                                                    <span className="material-icons title-urgent " style={{ zIndex: 999, cursor: "pointer", fontSize: '15px', marginTop: '10px' }}
-                                                        onClick={handleClickshowTaskNeedToDo}>
-                                                        help
-                                                    </span>
-                                                </p >
+                                            <div style={{ display: 'flex', flexDirection: 'column', marginBottom: 0 }}>
                                                 {
                                                     tasks.isLoading ?
-                                                        <p style={{ marginTop: '60px', textAlign: "center" }}>{translate('general.loading')}</p>
+                                                        <p>{translate('general.loading')}</p>
                                                         :
                                                         tasks?.organizationUnitTasksChart?.taskNeedToDo?.length > 0 
                                                             ? <div id="pieChartTaskNeedToDo"></div>
-                                                            : <p style={{ marginTop: '60px', textAlign: "center" }}>{translate('kpi.organizational_unit.dashboard.no_data')}</p>
+                                                            : <p>{translate('kpi.organizational_unit.dashboard.no_data')}</p>
                                                 }
                                             </div>
                                         </div>
@@ -641,17 +653,19 @@ function DashboardUnitForAdmin(props) {
                     {/* Thống kê KPI */}
                     <div className="row">
                         <div className="col-md-12">
-                            <div className="box box-primary">
-                                <div className="box-header with-border">
-                                    <div className="box-title">Biểu đồ thống kê điểm KPI {monthTitle} giữa các đơn vị </div>
+                            <LazyLoadComponent>
+                                <div className="box box-primary">
+                                    <div className="box-header with-border">
+                                        <div className="box-title">Biểu đồ thống kê điểm KPI {monthTitle} giữa các đơn vị </div>
+                                    </div>
+                                    <div className="box-body">
+                                        {
+                                            organizationalUnits &&
+                                            <StatisticsKpiUnits organizationalUnitIds={organizationalUnits} monthStatistics={month} />
+                                        }
+                                    </div>
                                 </div>
-                                <div className="box-body">
-                                    {
-                                        organizationalUnits &&
-                                        <StatisticsKpiUnits organizationalUnitIds={organizationalUnits} monthStatistics={month} />
-                                    }
-                                </div>
-                            </div>
+                            </LazyLoadComponent>
                         </div>
                     </div>
                 </div>
@@ -676,5 +690,4 @@ const actionCreators = {
     getTaskInOrganizationUnitByDateNow: taskManagementActions.getTaskByPriorityInOrganizationUnit,
 };
 
-const connectedDashboardUnitForAdmin = connect(mapState, actionCreators)(withTranslate(DashboardUnitForAdmin));
-export { connectedDashboardUnitForAdmin as DashboardUnitForAdmin };
+export default connect(mapState, actionCreators)(withTranslate(DashboardUnitForAdmin));

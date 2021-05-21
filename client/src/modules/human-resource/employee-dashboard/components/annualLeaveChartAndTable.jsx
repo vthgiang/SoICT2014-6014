@@ -131,6 +131,7 @@ const AnnualLeaveChartAndTable = (props) => {
                 x: 'x',
                 columns: [["x", ...data.ratioX], ['data1', ...data.data1], ['data2', ...data.data2]],
                 type: 'bar',
+                labels: true,
                 names: {
                     data1: data.nameData1,
                     data2: data.nameData2,

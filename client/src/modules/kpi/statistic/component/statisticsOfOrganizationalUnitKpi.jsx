@@ -577,5 +577,4 @@ const actions = {
     getChildrenOfOrganizationalUnitsAsTree: DashboardEvaluationEmployeeKpiSetAction.getChildrenOfOrganizationalUnitsAsTree,
 }
 
-const connectedStatisticsOfOrganizationalUnitKpi = connect(mapState, actions)(withTranslate(StatisticsOfOrganizationalUnitKpi));
-export { connectedStatisticsOfOrganizationalUnitKpi as StatisticsOfOrganizationalUnitKpi };
+export default connect(mapState, actions)(withTranslate(StatisticsOfOrganizationalUnitKpi));

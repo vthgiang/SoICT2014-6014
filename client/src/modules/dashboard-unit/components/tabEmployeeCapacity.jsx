@@ -99,8 +99,7 @@ class TabEmployeeCapacity extends Component {
 
 
     render() {
-        const { translate, department, dashboardEvaluationEmployeeKpiSet } = this.props;
-
+        const { translate, department, dashboardEvaluationEmployeeKpiSet, childOrganizationalUnit } = this.props;
         const { month, organizationalUnits, allOrganizationalUnits, numberOfExcellentEmployees, numberOfExcellent,
             resultsOfAllOrganizationalUnitsKpiChartData, resultsOfAllEmployeeKpiSetChartData } = this.state;
 
@@ -132,7 +131,7 @@ class TabEmployeeCapacity extends Component {
                             <div className="box-header with-border">
                                 <div className="box-title">
                                     {translate('kpi.organizational_unit.dashboard.result_kpi_unit')}
-                                    {
+                                    {/* {
                                         unitForResultsOfAllOrganizationalUnitKpiChart && unitForResultsOfAllOrganizationalUnitKpiChart.length < 2 ?
                                             <>
                                                 <span>{` ${translate('task.task_dashboard.of')}`}</span>
@@ -144,6 +143,12 @@ class TabEmployeeCapacity extends Component {
                                                 <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {unitForResultsOfAllOrganizationalUnitKpiChart?.length}</a>
                                                 <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
                                             </span>
+                                    } */}
+                                    {childOrganizationalUnit?.length > 1
+                                        ? <span onClick={() => showListInSwal(childOrganizationalUnit.filter((item, index) => index > 0).map(item => item?.name), translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
+                                            <span> {childOrganizationalUnit?.[0]?.name} </span> {translate('human_resource.profile.employee_management.and')} <a style={{ fontWeight: 'bold' }}> {childOrganizationalUnit.length - 1} </a>{translate('kpi.evaluation.dashboard.number_of_child_unit')}
+                                        </span>
+                                        : childOrganizationalUnit?.[0]?.name && ` ${childOrganizationalUnit?.[0]?.name}`
                                     }
                                 </div>
                                 {resultsOfAllOrganizationalUnitsKpiChartData && <ExportExcel type="link" id="export-all-organizational-unit-kpi-results-chart" exportData={resultsOfAllOrganizationalUnitsKpiChartData} style={{ marginLeft: 10 }} />}

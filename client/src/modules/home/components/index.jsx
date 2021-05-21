@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import SystemHome from './systemHome';
 import { SuperHome } from './superHome';
-import { Introduction } from '../../intro/components';
+import Introduction from '../../intro/components';
 
 class Home extends Component {
     constructor(props) {
@@ -26,5 +26,4 @@ function mapState(state) {
     return { auth };
 }
 
-const connectedHome = connect(mapState, null)(withTranslate(Home));
-export { connectedHome as Home };
+export default connect(mapState, null)(withTranslate(Home));

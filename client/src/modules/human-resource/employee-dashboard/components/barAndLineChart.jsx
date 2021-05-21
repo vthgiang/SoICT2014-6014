@@ -39,16 +39,13 @@ const BarAndLineChart = (props) => {
 
     const renderChart = (data) => {
         data.data1.shift(); data.data2.shift();
-        let bigData1 = data.data1.map(x => 1.5 * x);
-        let bigData2 = data.data2.map(x => 2 * x);
         removePreviousChart();
 
         let chart = c3.generate({
             bindto: chart.current,
             data: {
                 x: 'x',
-                columns: [],
-                hide: true,
+                columns: [data.ratioX, ['data1', ...data.data1], ['data2', ...data.data2]],
                 types: {
                     data1: data.lineBar === true ? 'bar' : '',
                 },
@@ -81,17 +78,6 @@ const BarAndLineChart = (props) => {
                 }
             }
         });
-
-        setTimeout(function () {
-            chart.load({
-                columns: [data.ratioX, ['data1', ...bigData1], ['data2', ...bigData2]],
-            });
-        }, 100);
-        setTimeout(function () {
-            chart.load({
-                columns: [data.ratioX, ['data1', ...data.data1], ['data2', ...data.data2]],
-            });
-        }, 300);
     }
 
     useEffect(() => {

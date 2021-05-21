@@ -5,8 +5,9 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal } from '../../../../common-components';
 import { getStorage } from '../../../../config';
-import { getCurrentProjectDetails, getEndDateOfProject, getEstimateCostOfProject, getNewTasksListAfterCR, MILISECS_TO_DAYS, MILISECS_TO_HOURS, processAffectedTasksChangeRequest, processDataTasksStartEnd } from '../../../project/component/projects/functionHelper';
-import { ProjectActions } from '../../../project/redux/actions';
+import { ChangeRequestActions } from '../../../project/change-requests/redux/actions';
+import { getCurrentProjectDetails, getEndDateOfProject, getEstimateCostOfProject, getNewTasksListAfterCR, MILISECS_TO_DAYS, MILISECS_TO_HOURS, processAffectedTasksChangeRequest, processDataTasksStartEnd } from '../../../project/projects/components/functionHelper';
+import { ProjectActions } from '../../../project/projects/redux/actions';
 import { RoleActions } from '../../../super-admin/role/redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { checkIfHasCommonItems } from '../../task-management/component/functionHelpers';
@@ -208,7 +209,7 @@ const actionCreators = {
     addProjectTask: taskManagementActions.addProjectTask,
     getProjectsDispatch: ProjectActions.getProjectsDispatch,
     getTasksByProject: taskManagementActions.getTasksByProject,
-    createProjectChangeRequestDispatch: ProjectActions.createProjectChangeRequestDispatch,
+    createProjectChangeRequestDispatch: ChangeRequestActions.createProjectChangeRequestDispatch,
 
     showInfoRole: RoleActions.show,
     getRoleSameDepartment: UserActions.getRoleSameDepartment,

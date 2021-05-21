@@ -176,7 +176,8 @@ function StatisticsOfOrganizationalUnitKpiResultsChart(props) {
             data: {
                 x: 'x',
                 columns: dataChart?.length > 0 ? dataChart : [],
-                type: 'bar'
+                type: 'bar',
+                labels: true,
             },
 
             bar: {

@@ -10,14 +10,13 @@ import { ModalShowAutoPointInfoProjectTask } from './modalShowAutoPointInfoProje
 import { getStorage } from '../../../../config';
 import moment from 'moment';
 import "../../task-perform/component/scrollBar.css";
-import { getCurrentProjectDetails } from '../../../project/component/projects/functionHelper';
+import { getCurrentProjectDetails } from '../../../project/projects/components/functionHelper';
 import { checkIsNullUndefined } from '../../task-management/component/functionHelpers';
-import { ProjectActions } from '../../../project/redux/actions';
+import { ProjectActions } from '../../../project/projects/redux/actions';
 import { ModalShowAutoPointInfoProjectMember } from './modalShowAutoPointInfoProjectMember';
 
 const EvaluateByResponsibleEmployeeProject = (props) => {
     const { role, task, project } = props;
-    console.log('task', task)
     const projectDetail = getCurrentProjectDetails(project, String(task?.taskProject));
     const userId = getStorage('userId');
     const [currentProgress, setCurrentProgress] = useState(task?.progress || 0);
@@ -25,6 +24,11 @@ const EvaluateByResponsibleEmployeeProject = (props) => {
     const currentUserAutomaticPointInDB = task.overallEvaluation?.responsibleEmployees?.find((item) => String(item.employee?._id) === userId)?.automaticPoint;
     const currentUserHandPointInDb = task.overallEvaluation?.responsibleEmployees?.find((item) => String(item.employee?._id) === userId)?.employeePoint;
     const [currentUserHandPoint, setCurrentUserHandPoint] = useState(currentUserHandPointInDb || 0);
+    const [currentMemberActualCost, setCurrentMemberActualCost] = useState(
+        task?.actorsWithSalary.find((actorItem) => {
+            return String(userId) === String(actorItem.userId)
+        })?.actualCost || ''
+    );
 
     useEffect(() => {
         props.getProjectsDispatch({ calledId: "all", userId });
@@ -38,7 +42,7 @@ const EvaluateByResponsibleEmployeeProject = (props) => {
                 projectDetail,
             };
 
-            let automaticPoint = AutomaticTaskPointCalculator.calcProjectAutoPoint(taskInfo);
+            let automaticPoint = AutomaticTaskPointCalculator.calcProjectTaskPoint(taskInfo);
             if (isNaN(automaticPoint)) automaticPoint = undefined
 
             return automaticPoint;
@@ -48,9 +52,10 @@ const EvaluateByResponsibleEmployeeProject = (props) => {
             progress: currentProgress,
             projectDetail,
             userId,
+            currentMemberActualCost,
         };
 
-        let automaticPoint = AutomaticTaskPointCalculator.calcProjectTaskMemberAutoPoint(taskMemberInfo);
+        let automaticPoint = AutomaticTaskPointCalculator.calcProjectMemberPoint(taskMemberInfo);
         if (isNaN(automaticPoint)) automaticPoint = undefined
 
         return automaticPoint;
@@ -62,7 +67,7 @@ const EvaluateByResponsibleEmployeeProject = (props) => {
 
     let currentUserAutomaticPoint = useMemo(() => {
         return calcAutomaticPoint('member')
-    }, [currentProgress]);;
+    }, [currentProgress, currentMemberActualCost]);
 
     const openModalTaskCalculation = () => {
         setTimeout(() => {
@@ -72,29 +77,31 @@ const EvaluateByResponsibleEmployeeProject = (props) => {
 
     const openModalMemberCalculation = () => {
         setTimeout(() => {
-            window.$(`#modal-automatic-point-info-project-member-${task?._id}`).modal('show');
+            window.$(`#modal-automatic-point-info-project-member-${task?._id}-${userId}`).modal('show');
         }, 10);
     }
 
-    // const handleSaveEvalResult = () => {
-    //     props.evaluateTaskByResponsibleEmployeesProject({
-    //         userId,
-    //         taskAutomaticPoint: Number(currentTaskAutomaticPoint),
-    //         automaticPoint: Number(currentUserAutomaticPoint),
-    //         employeePoint: Number(currentUserHandPoint),
-    //         progress: currentProgress,
-    //     }, task._id)
-    // }
-
-    useEffect(() => {
-        props.handleSaveResponsibleData({
+    const handleSaveEvalResult = () => {
+        props.evaluateTaskByResponsibleEmployeesProject({
             userId,
             taskAutomaticPoint: Number(currentTaskAutomaticPoint),
             automaticPoint: Number(currentUserAutomaticPoint),
             employeePoint: Number(currentUserHandPoint),
             progress: currentProgress,
-        })
-    }, [currentProgress, currentUserHandPoint])
+            actualResMemberCost: Number(currentMemberActualCost),
+        }, task._id)
+    }
+
+    // useEffect(() => {
+    //     props.handleSaveResponsibleData({
+    //         userId,
+    //         taskAutomaticPoint: Number(currentTaskAutomaticPoint),
+    //         automaticPoint: Number(currentUserAutomaticPoint),
+    //         employeePoint: Number(currentUserHandPoint),
+    //         progress: currentProgress,
+    //         actualResMemberCost: Number(currentMemberActualCost),
+    //     })
+    // }, [currentProgress, currentUserHandPoint, currentMemberActualCost])
 
     return (
         <React.Fragment>
@@ -109,6 +116,7 @@ const EvaluateByResponsibleEmployeeProject = (props) => {
                     progress={currentProgress}
                     projectDetail={projectDetail}
                     userId={userId}
+                    currentMemberActualCost={currentMemberActualCost}
                 />
 
                 <fieldset className="scheduler-border">
@@ -118,12 +126,12 @@ const EvaluateByResponsibleEmployeeProject = (props) => {
 
                     <legend className="scheduler-border">Thông tin công việc</legend>
                     <div className="row">
-                        <div className="col-md-6">
+                        <div className="col-md-6 col-xs-6">
                             <label>Thời gian bắt đầu công việc</label>
                             {'  '}
                             {moment(task?.startDate).format('HH:mm DD/MM/YYYY')}
                         </div>
-                        <div className="col-md-6">
+                        <div className="col-md-6 col-xs-6">
                             <label>Thời gian dự kiến kết thúc công việc</label>
                             {'  '}
                             {moment(task?.endDate).format('HH:mm DD/MM/YYYY')}
@@ -157,6 +165,12 @@ const EvaluateByResponsibleEmployeeProject = (props) => {
                     <legend className="scheduler-border">Điểm cho người thực hiện</legend>
                     <div className="row">
                         <div className="col-md-12">
+                            <label>Chi phí thực của thành viên:</label>
+                            <input className="form-control" type="number" value={currentMemberActualCost} onChange={e => setCurrentMemberActualCost(e.target.value)} />
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-md-12">
                             <strong>Điểm tự động đã được lưu:</strong>{'  '}
                             {checkIsNullUndefined(currentUserAutomaticPointInDB) ? 'Chưa tính được' : currentUserAutomaticPointInDB}
                         </div>
@@ -176,6 +190,12 @@ const EvaluateByResponsibleEmployeeProject = (props) => {
                         </div>
                     </div>
                 </fieldset>
+
+                <div className="box">
+                    <div className="row">
+                        <button className="btn-success pull-right" onClick={handleSaveEvalResult} title="Lưu kết quả đánh giá">Lưu kết quả đánh giá</button>
+                    </div>
+                </div>
             </div>
         </React.Fragment>
     )

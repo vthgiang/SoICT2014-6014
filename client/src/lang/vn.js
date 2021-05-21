@@ -275,7 +275,7 @@ export default {
             issues_list: 'Danh sách vấn đề',
             project_report: 'Báo cáo dự án',
             project_evaluation: 'Thống kê đánh giá',
-            
+
             // Quản lý vận chuyển
             manage_transport: "Quản lý vận chuyển",
             manage_transport_requirements: "Yêu cầu vận chuyển",
@@ -1466,7 +1466,7 @@ export default {
             all_status: "Chọn tất cả các trạng thái",
             non_status: "Chọn trạng thái",
             not_unit: "Chưa chọn đơn vị",
-            add_data_by_excel: "Thêm dữ liệu bằng việc Import file excel",
+            add_data_by_excel: "Thêm - Cập nhật dữ liệu bằng việc Import file excel",
             download_file: "Download file import mẫu!",
             choose_file: "Chọn file",
             name_button_export: "Xuất báo cáo",
@@ -2080,7 +2080,7 @@ export default {
                     add_employee: "Thêm nhân viên",
                     add_employee_title: "Thêm mới nhân viên",
                     add_by_hand: "Thêm một nhân viên",
-                    add_import: "Thêm dữ liệu từ file",
+                    add_import: "Thêm - Cập nhật dữ liệu từ file",
                     update_import: "Cập nhật dữ liệu từ file",
 
                     // Thông điệp trả về từ server
@@ -2107,10 +2107,11 @@ export default {
                     employee_number_have_exist: "Mã nhân viên đã tồn tại",
                     staff_code_not_find: "Mã nhân viên không tồn tại",
                     email_in_company_have_exist: "Email công ty đã tồn tại",
+                    email_in_company_not_have_exist: "Email công ty không tồn tại",
                     employee_timesheet_id_required:
                         "Mã số chấm công không được để trống",
-                    employee_timesheet_id_have_exist:
-                        "Mã số chấm công đã tồn tại",
+                    employee_timesheet_id_have_exist: "Mã số chấm công đã tồn tại",
+                    employee_timesheet_id_not_have_exist: "Mã số chấm công không tồn tại",
                     full_name_required: "Họ và tên không được để trống",
                     birthdate_required: "Ngày sinh không được để trống",
                     starting_date_required:
@@ -3215,8 +3216,8 @@ export default {
                 calc_average_action_rating:
                     "Trung bình cộng điểm đánh giá hoạt động",
                 calc_failed_action_rating:
-                    "Số hoạt động không đạt (rating < 5)",
-                calc_passed_action_rating: "Số công việc đạt (rating >= 5)",
+                    "Tổng các tích điểm hoạt động và độ quan trọng hoạt động của các hoạt động không đạt (rating < 5)",
+                calc_all_action_rating: "Tổng các tích điểm hoạt động và độ quan trọng hoạt động của tất cả hoạt động",
                 calc_progress: "Tiến độ công việc",
                 calc_new_formula: "Công thức hiện tại",
                 calc_total_day:
@@ -3371,9 +3372,9 @@ export default {
                 change_process: "Quy trình",
                 change_incoming: "Dữ liệu vào",
                 change_outgoing: "Dữ liệu ra",
-                edit_action: "Sửa hành động",
-                delete_action: "Xóa hành động",
-                mandatory_action: "Hành động bắt buộc",
+                edit_action: "Sửa hoạt động",
+                delete_action: "Xóa hoạt động",
+                mandatory_action: "Hoạt động bắt buộc",
                 confirm_action: "Xác nhận thực hiện",
                 evaluation: "Đánh giá",
                 attach_file: "Đính kèm file",
@@ -4026,6 +4027,13 @@ export default {
                     KPI_info: "Thông tin KPI",
                     point_field:
                         "Điểm (Tự động - Tự đánh giá - Người phê duyệt đánh giá)",
+                    weekly_point_field:
+                        "Điểm từng tuần (Tự động - Tự đánh giá - Người phê duyệt đánh giá)",
+                    weekly_point: "Điểm đánh giá tuần",
+                    week1: "Tuần 1",
+                    week2: "Tuần 2",
+                    week3: "Tuần 3",
+                    week4: "Tuần 4",
                     not_avaiable: "Chưa đánh giá",
                     no_point: "Chưa có điểm",
                     lastest_evaluation: "Đánh giá cuối",
@@ -5756,7 +5764,7 @@ export default {
         manage_transport: {
             add_requirements: "Thêm yêu cầu vận chuyển",
         },
-        
+
         // Quản lý dự án
         project: {
             code: "Mã dự án",
@@ -5785,7 +5793,7 @@ export default {
             role: 'Vai trò trong dự án',
             creator: 'Người tạo dự án',
 
-            task_management:  {
+            task_management: {
                 add_err_time_cost: "Thời gian & Chi phí phải là số lớn hơn 0",
                 end_date: "Ngày dự kiến kết thúc",
 

@@ -59,5 +59,4 @@ const actionCreators = {
     getDepartment: DepartmentActions.get,
 };
 
-const praiseDiscipline = connect(mapState, actionCreators)(withTranslate(ManagerPraiseDiscipline));
-export { praiseDiscipline as ManagerPraiseDiscipline };
+export default connect(mapState, actionCreators)(withTranslate(ManagerPraiseDiscipline));

@@ -294,5 +294,4 @@ const actionCreators = {
     getListEducation: EducationActions.getListEducation,
 };
 
-const connectedListCourse = connect(mapState, actionCreators)(withTranslate(TrainingPlan));
-export { connectedListCourse as TrainingPlan };
+export default connect(mapState, actionCreators)(withTranslate(TrainingPlan));

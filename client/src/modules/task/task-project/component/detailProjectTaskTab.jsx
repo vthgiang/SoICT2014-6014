@@ -24,12 +24,12 @@ import parse from 'html-react-parser';
 import { TaskAddModal } from '../../task-management/component/taskAddModal';
 import { ModalAddTaskTemplate } from '../../task-template/component/addTaskTemplateModal';
 
-import { ProjectActions } from "../../../project/redux/actions";
+import { ProjectActions } from "../../../project/projects/redux/actions";
 import { ROOT_ROLE } from '../../../../helpers/constants';
 import dayjs from 'dayjs';
 import { RequestToCloseProjectTaskModal } from './requestToCloseProjectTaskModal';
 import { ModalRequestEditProjectTaskEmployee } from './modalRequestEditProjectTaskEmployee';
-import { getCurrentProjectDetails } from '../../../project/component/projects/functionHelper';
+import { checkIfAbleToCRUDProject, getCurrentProjectDetails } from '../../../project/projects/components/functionHelper';
 class DetailProjectTaskTab extends Component {
 
     constructor(props) {
@@ -51,6 +51,7 @@ class DetailProjectTaskTab extends Component {
             CONSULTED: { name: translate('task.task_management.consulted'), value: "consulted" },
             CREATOR: { name: translate('task.task_management.creator'), value: "creator" },
             INFORMED: { name: translate('task.task_management.informed'), value: "informed" },
+            PROJECT_MANAGER: { name: 'Người quản lý dự án', value: "accountable" },
         };
 
         this.EMPLOYEE_SELECT_BOX = [];
@@ -122,6 +123,10 @@ class DetailProjectTaskTab extends Component {
                     tmp = task.informedEmployees && task.informedEmployees.find(item => item._id === userId);
                     if (tmp) {
                         roles.push(this.ROLE.INFORMED);
+                    }
+                    
+                    if (checkIfAbleToCRUDProject({ project: this.props.project, user: this.props.user, currentProjectId: task.taskProject })) {
+                        roles.push(this.ROLE.PROJECT_MANAGER);
                     }
 
                     if (userId === task.creator._id) {

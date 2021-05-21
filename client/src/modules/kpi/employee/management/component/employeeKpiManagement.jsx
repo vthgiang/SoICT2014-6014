@@ -441,5 +441,4 @@ const actionCreators = {
     getEmployeeKPISets: kpiMemberActions.getEmployeeKPISets,
 };
 
-const connectedKPIPersonalManager = connect(mapState, actionCreators)(withTranslate(KPIPersonalManager));
-export { connectedKPIPersonalManager as KPIPersonalManager };
+export default connect(mapState, actionCreators)(withTranslate(KPIPersonalManager));

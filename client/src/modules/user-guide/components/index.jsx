@@ -586,5 +586,4 @@ const mapDispatchToProps = {
 }
 
 
-const connectedUserGuideManagementTable = connect(mapState, mapDispatchToProps)(withTranslate(UserGuide));
-export { connectedUserGuideManagementTable as UserGuide };
+export default connect(mapState, mapDispatchToProps)(withTranslate(UserGuide));

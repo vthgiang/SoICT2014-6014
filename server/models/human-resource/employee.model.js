@@ -44,7 +44,7 @@ const EmployeeSchema = new Schema({
         type: String
     },
     identityCardNumber: { // số cmnd
-        type: Number,
+        type: String,
     },
     identityCardDate: { // ngày cấp
         type: Date,
@@ -75,17 +75,17 @@ const EmployeeSchema = new Schema({
     },
     maritalStatus: { // Tình trạng hôn nhân: single - Độc thân, married - Đã kết hôn
         type: String,
-        enum: ['single', 'married']
+        // enum: ['single', 'married']
     },
     /**
      * Start
      * Thông tin liên hệ
      */
     phoneNumber: {
-        type: Number,
+        type: String,
     },
     phoneNumber2: {
-        type: Number,
+        type: String,
     },
     personalEmail: {
         type: String,
@@ -94,7 +94,7 @@ const EmployeeSchema = new Schema({
         type: String,
     },
     homePhone: { // SĐT nhà riêng
-        type: Number,
+        type: String,
     },
     emergencyContactPerson: { // Người liên hệ khẩn cấp
         type: String,
@@ -103,13 +103,13 @@ const EmployeeSchema = new Schema({
         type: String,
     },
     emergencyContactPersonPhoneNumber: {
-        type: Number,
+        type: String,
     },
     emergencyContactPersonEmail: {
         type: String,
     },
     emergencyContactPersonHomePhone: {
-        type: Number,
+        type: String,
     },
     emergencyContactPersonAddress: {
         type: String,

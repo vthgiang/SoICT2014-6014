@@ -10,7 +10,7 @@ import { performTaskAction } from '../redux/actions';
 
 import qs from 'qs';
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
-import { ProjectActions } from '../../../project/redux/actions';
+import { ProjectActions } from '../../../project/projects/redux/actions';
 import { getStorage } from '../../../../config';
 import { DetailProjectTaskTab } from '../../task-project/component/detailProjectTaskTab';
 
@@ -131,7 +131,6 @@ const actionCreators = {
     getProjectsDispatch: ProjectActions.getProjectsDispatch,
 };
 
-const taskComponent = connect(mapState, actionCreators)(withTranslate(TaskComponent));
-export { taskComponent as TaskComponent }
+export default connect(mapState, actionCreators)(withTranslate(TaskComponent));
 
 

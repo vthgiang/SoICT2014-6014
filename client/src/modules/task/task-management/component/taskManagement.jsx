@@ -13,7 +13,7 @@ import { DepartmentActions } from '../../../super-admin/organizational-unit/redu
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { performTaskAction } from "../../task-perform/redux/actions";
 import { taskManagementActions } from '../redux/actions';
-import { ProjectActions } from "../../../project/redux/actions";
+import { ProjectActions } from "../../../project/projects/redux/actions";
 import { TaskAddModal } from './taskAddModal';
 import { ModalPerform } from '../../task-perform/component/modalPerform';
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
@@ -24,7 +24,7 @@ class TaskManagement extends Component {
         let userId = getStorage("userId");
         super(props);
         const tableId = "tree-table-task-management";
-        const defaultConfig = { limit: 20, hiddenColumns: ["2", "7", "8"] }
+        const defaultConfig = { limit: 20, hiddenColumns: ["2", "3", "4", "7", "8"] }
         const limit = getTableConfiguration(tableId, defaultConfig).limit;
         // lấy giá trị từ dashboard công việc cá nhân
         const stateFromTaskDashboard = JSON.parse(localStorage.getItem("stateFromTaskDashboard"));
@@ -510,7 +510,7 @@ class TaskManagement extends Component {
                     startDate: getFormatDateFromTime(dataTemp[n].startDate, 'dd-mm-yyyy'),
                     endDate: getFormatDateFromTime(dataTemp[n].endDate, 'dd-mm-yyyy'),
                     status: this.checkTaskRequestToClose(dataTemp[n]),
-                    progress: dataTemp[n].progress ? dataTemp[n].progress + "%" : "0%",
+                    progress: dataTemp[n].progress ? dataTemp[n].progress : 0,
                     totalLoggedTime: getTotalTimeSheetLogs(dataTemp[n].timesheetLogs),
                     parent: dataTemp[n].parent ? dataTemp[n].parent._id : null
                 }
@@ -917,6 +917,5 @@ const actionCreators = {
     getAllDepartment: DepartmentActions.get,
     getProjectsDispatch: ProjectActions.getProjectsDispatch,
 };
-const translateTaskManagement = connect(mapState, actionCreators)(withTranslate(TaskManagement));
-export { translateTaskManagement as TaskManagement };
+export default connect(mapState, actionCreators)(withTranslate(TaskManagement));
 

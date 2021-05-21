@@ -553,5 +553,4 @@ const actionCreators = {
     getAllXmlDiagram: TaskProcessActions.getAllXmlDiagram,
     deleteXmlDiagram: TaskProcessActions.deleteXmlDiagram,
 };
-const connectedProcessTemplate = connect(mapState, actionCreators)(withTranslate(ProcessTemplate));
-export { connectedProcessTemplate as ProcessTemplate };
+export default connect(mapState, actionCreators)(withTranslate(ProcessTemplate));

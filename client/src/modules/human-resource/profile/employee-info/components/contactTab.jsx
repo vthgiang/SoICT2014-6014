@@ -53,12 +53,12 @@ function ContactTab(props) {
                     {/* Số điện thoại di động 1 */}
                     <div className="form-group col-md-4">
                         <strong>{translate('human_resource.profile.mobile_phone_1')}&emsp; </strong>
-                        {phoneNumber ? "0" + phoneNumber : ""}
+                        {phoneNumber ? phoneNumber : ""}
                     </div>
                     {/* Số điện thoại di động 2 */}
                     <div className="form-group col-md-4">
                         <strong>{translate('human_resource.profile.mobile_phone_2')}&emsp; </strong>
-                        {phoneNumber2 ? "0" + phoneNumber2 : ""}
+                        {phoneNumber2 ? phoneNumber2 : ""}
                     </div>
                 </div>
                 <div className="row">
@@ -75,7 +75,7 @@ function ContactTab(props) {
                     {/* Số điện thoại cố định */}
                     <div className="form-group col-md-4">
                         <strong>{translate('human_resource.profile.home_phone')}&emsp; </strong>
-                        {homePhone ? "0" + homePhone : ""}
+                        {homePhone ? homePhone : ""}
                     </div>
                 </div>
                 {/* Thông tin liên hệ khẩn cấp */}
@@ -102,12 +102,12 @@ function ContactTab(props) {
                         {/* Điện thoại di động*/}
                         <div className="form-group col-md-4">
                             <strong>{translate('human_resource.profile.mobile_phone')}&emsp; </strong>
-                            {emergencyContactPersonPhoneNumber ? "0" + emergencyContactPersonPhoneNumber : ""}
+                            {emergencyContactPersonPhoneNumber ? emergencyContactPersonPhoneNumber : ""}
                         </div>
                         {/* Điện thoại cố định */}
                         <div className="form-group col-md-4">
                             <strong>{translate('human_resource.profile.home_phone')}&emsp; </strong>
-                            {emergencyContactPersonHomePhone ? "0" + homePhone : ""}
+                            {emergencyContactPersonHomePhone ? homePhone : ""}
                         </div>
                         {/* Email */}
                         <div className="form-group col-md-4">

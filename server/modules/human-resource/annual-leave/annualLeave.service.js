@@ -11,7 +11,7 @@ const {
     connect
 } = require(`../../../helpers/dbHelper`);
 
-
+const mongoose = require('mongoose')
 
 exports.getAnnaulLeaveBeforAndAfterOneWeek =async (portal, organizationalUnits,company) =>{
     const dateNow = new Date();
@@ -294,7 +294,185 @@ exports.getAnnualLeaveByStartDateAndEndDate = async (portal, organizationalUnits
         }
     }
 }
+/**
+ * Lấy thông tin nghỉ phép trong 6 hoặc 12 tháng gần nhất theo đơn vị
+ * @param {*} organizationalUnits: array id đơn vị
+ * @param {*} numberMonth : Số tháng cần lấy thông tin nghỉ phép (6 hoặc 12)
+ * @param {*} company : Id công ty
+ * @param {*} employeeName: tên nhân viên
+ */
+ exports.getAnnualLeaveByStartDateAndEndDateUserOfOrganizationalUnits = async (portal,email, organizationalUnits, startDate, endDate, company) => {
+    if (new Date(startDate).getTime() > new Date(endDate).getTime()) {
+        return {
+            arrMonth: [],
+            listAnnualLeaveOfNumberMonth: [],
+        }
+    } else {
+        let endMonth = new Date(endDate).getMonth();
+        let endYear = new Date(endDate).getFullYear();
+        endMonth = endMonth + 1;
+        let arrMonth = [];
+        for (let i = 0;; i++) {
+            let month = endMonth - i;
+            if (month > 0) {
+                if (month.toString().length === 1) {
+                    month = `${endYear}-0${month}-01`;
+                    arrMonth = [...arrMonth, month];
+                } else {
+                    month = `${endYear}-${month}-01`;
+                    arrMonth = [...arrMonth, month];
+                }
+                if (`${startDate}-01` === month) {
+                    break;
+                }
+            } else {
+                let j = 1;
+                for (j;; j++) {
+                    month = month + 12;
+                    if (month > 0) {
+                        break;
+                    }
+                }
+                if (month.toString().length === 1) {
+                    month = `${endYear-j}-0${month}-01`;
+                    arrMonth = [...arrMonth, month];
+                } else {
+                    month = `${endYear-j}-${month}-01`;
+                    arrMonth = [...arrMonth, month];
+                }
+                if (`${startDate}-01` === month) {
+                    break;
+                }
+            }
+        }
 
+        let querys = [];
+        arrMonth.forEach(x => {
+            let date = new Date(x);
+            let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+            let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 1);
+            querys = [...querys, {
+                startDate: {
+                    "$gt": firstDay,
+                    "$lte": lastDay
+                }
+            }]
+        })
+
+        if (organizationalUnits) {
+            let keySearchEmployee = {
+                company: company
+            };
+            if(email){
+                keySearchEmployee = {
+                    ...keySearchEmployee,
+                    emailInCompany: {
+                        $regex: email,
+                        $options: "i"
+                    }
+                }
+            };
+            let employee = await Employee(connect(DB_CONNECTION, portal)).find(keySearchEmployee, {
+                _id: 1
+            });
+            let listAnnualLeaveOfNumberMonth = await AnnualLeave(connect(DB_CONNECTION, portal)).find({
+                company: company,
+                status: 'approved',
+                organizationalUnit: {
+                    $in: organizationalUnits
+                },
+                employee: {
+                    $in: employee
+                },
+                "$or": querys
+            }, {
+            })
+            return {
+                listAnnualLeaveOfNumberMonth,
+                arrMonth
+            }
+        } else {
+            let listAnnualLeaveOfNumberMonth = await AnnualLeave(connect(DB_CONNECTION, portal)).find({
+                company: company,
+                status: 'approved',
+                "$or": querys
+            }, {
+                startDate: 1,
+                endDate: 1
+            })
+            return {
+                listAnnualLeaveOfNumberMonth,
+                arrMonth
+            }
+        }
+    }
+}
+/**Lay tong so don nghi phep cho phe duyet trong thang */
+const fetchNumberOfWaitForAppoval = async (portal, params, company) => {
+
+    let currentMonth = new Date();
+    let firstDay = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
+    let lastDay = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1);
+
+    let keySearch = {
+        startDate: 
+            {
+                "$gte": firstDay,
+                "$lt": lastDay
+            },
+        endDate: 
+            {
+                "$gte": firstDay,
+                "$lt": lastDay
+            }
+    }
+    
+    if (params.organizationalUnits) {
+        keySearch = {
+            ...keySearch,
+            organizationalUnit: {
+                $in: params.organizationalUnits.map(item => mongoose.Types.ObjectId(item))
+            }
+        };
+    }
+
+    let arrayOfListAbsentLetter = await AnnualLeave(connect(DB_CONNECTION, portal)).aggregate([
+        { $match: 
+            keySearch 
+        },
+        { 
+            $group: {
+                _id: '$status',
+                count: { $sum: 1}
+            }
+        }
+    ])
+
+    let numberOfWaitForApproval, numberApproved, numberNotApproved
+    
+    for(let i = 0; i < arrayOfListAbsentLetter.length; i++) {
+        
+        switch(arrayOfListAbsentLetter[i]._id) {
+            case 'waiting_for_approval': {
+                numberOfWaitForApproval = arrayOfListAbsentLetter[i].count;
+                break;
+            }
+            case 'approved': {
+                numberApproved = arrayOfListAbsentLetter[i].count;
+                break;
+            }
+            case 'disapproved': {
+                numberNotApproved = arrayOfListAbsentLetter[i].count;
+            }
+        }
+    }
+
+    return {
+        numberOfWaitForApproval: numberOfWaitForApproval || 0,
+        numberApproved: numberApproved || 0,
+        numberNotApproved: numberNotApproved || 0
+    }
+}
 
 
 /**
@@ -401,54 +579,12 @@ exports.searchAnnualLeaves = async (portal, params, company) => {
         }).skip(params.page).limit(params.limit);
     let totalList = await AnnualLeave(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
 
+    let { numberOfWaitForApproval, numberApproved, numberNotApproved} = await fetchNumberOfWaitForAppoval(portal, params, company);
     
-    let currentMonth = new Date();
-    let firstDay = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
-    let lastDay = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1);
-
-    let numberWaitForApproval = await AnnualLeave(connect(DB_CONNECTION, portal)).countDocuments({
-        company,
-        status: "waiting_for_approval",
-        startDate: {
-            "$gte": firstDay,
-            "$lt":  lastDay
-        },
-        endDate: {
-            "$gte": firstDay,
-            "$lt": lastDay
-        }
-    })
-
-    let numberApproved = await AnnualLeave(connect(DB_CONNECTION, portal)).countDocuments({
-        company,
-        status: "approved",
-        startDate: {
-            "$gte": firstDay,
-            "$lt":  lastDay
-        },
-        endDate: {
-            "$gte": firstDay,
-            "$lt": lastDay
-        }
-    })
-
-    let numberNotApproved = await AnnualLeave(connect(DB_CONNECTION, portal)).countDocuments({
-        company,
-        status: "disapproved",
-        startDate: {
-            "$gte": firstDay,
-            "$lt":  lastDay
-        },
-        endDate: {
-            "$gte": firstDay,
-            "$lt": lastDay
-        }
-    })
-
     return {
         totalList,
         listAnnualLeaves,
-        numberWaitForApproval: numberWaitForApproval,
+        numberWaitForApproval: numberOfWaitForApproval,
         numberApproved: numberApproved,
         numberNotApproved: numberNotApproved
     }

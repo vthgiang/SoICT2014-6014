@@ -139,6 +139,7 @@ class DepreciationBarChart extends Component {
             data: {
                 columns: [count],
                 type: 'bar',
+                labels: true,
             },
 
             padding: {

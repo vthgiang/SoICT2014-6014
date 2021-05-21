@@ -40,7 +40,6 @@ function GeneralTab(props) {
         }
 
         if (props.employee) {
-            console.log('props.employee', props.employee)
             setState(state => {
                 return {
                     ...state,
@@ -499,6 +498,7 @@ function GeneralTab(props) {
                                 onChange={handleChangeStatus}
                             />
                         </div>
+
                         {/* Tình trạng hôn nhân */}
                         <div className="form-group col-lg-6 col-md-6 col-ms-12 col-xs-12">
                             <label>{translate('human_resource.profile.relationship')}</label>
@@ -512,6 +512,21 @@ function GeneralTab(props) {
                                         <input type="radio" name={`maritalStatus${id}`} value="married" onChange={handleMaritalStatusChange} checked={maritalStatus === "married" ? true : false} />&nbsp;&nbsp;{translate('human_resource.profile.married')}</label>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                    <div className="row">
+                        {/* Những role của nhân viên này */}
+                        <div className="form-group col-lg-12 col-md-12 col-ms-12 col-xs-12">
+                            <label>{translate('human_resource.profile.roles')}</label>
+                            <SelectBox
+                                id={`roles${id}`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                items={listRoles.map(role => { return { value: role ? role._id : null, text: role ? role.name : "" } })}
+                                onChange={handleEmployeeRolesChange}
+                                value={roles}
+                                multiple={true}
+                            />
                         </div>
                     </div>
 
@@ -549,7 +564,7 @@ function GeneralTab(props) {
                         {/* Số CMND */}
                         <div className={`form-group col-lg-4 col-md-4 col-ms-12 col-xs-12`}>
                             <label htmlFor="CMND">{translate('human_resource.profile.id_card')}</label>
-                            <input type="number" className="form-control" name="identityCardNumber" value={identityCardNumber} onChange={handleCMNDChange} placeholder={translate('human_resource.profile.id_card')} autoComplete="off" />
+                            <input type="text" className="form-control" name="identityCardNumber" value={identityCardNumber} onChange={handleCMNDChange} placeholder={translate('human_resource.profile.id_card')} autoComplete="off" />
                         </div>
                         {/* Ngày cấp */}
                         <div className={`form-group col-lg-4 col-md-4 col-ms-12 col-xs-12`}>
@@ -581,21 +596,6 @@ function GeneralTab(props) {
                         <div className="form-group col-lg-4 col-md-4 col-ms-12 col-xs-12">
                             <label htmlFor="nation">{translate('human_resource.profile.nationality')}</label>
                             <input type="text" className="form-control" name="nationality" value={nationality ? nationality : ""} onChange={handleChange} placeholder={translate('human_resource.profile.nationality')} autoComplete="off" />
-                        </div>
-                    </div>
-                    <div className="row">
-                        {/* Những role của nhân viên này */}
-                        <div className="form-group col-lg-4 col-md-4 col-ms-12 col-xs-12">
-                            <label>{translate('human_resource.profile.roles')}</label>
-                            <SelectBox
-                                id={`roles${id}`}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                items={listRoles.map(role => { return { value: role ? role._id : null, text: role ? role.name : "" } })}
-                                onChange={handleEmployeeRolesChange}
-                                value={roles}
-                                multiple={true}
-                            />
                         </div>
                     </div>
                 </div>

@@ -81,6 +81,7 @@ class ValueBarChart extends Component {
             data: {
                 columns: [count],
                 type: 'bar',
+                labels: true,
             },
             padding: {
                 bottom: 20,

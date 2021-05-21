@@ -784,5 +784,4 @@ const actionCreators = {
     downloadFile: AuthActions.downloadFile,
     getDepartmentsThatUserIsManager: DepartmentActions.getDepartmentsThatUserIsManager
 };
-const connectedOrganizationalUnitKpiCreate = connect(mapState, actionCreators)(withTranslate(OrganizationalUnitKpiCreate));
-export { connectedOrganizationalUnitKpiCreate as OrganizationalUnitKpiCreate };
+export default connect(mapState, actionCreators)(withTranslate(OrganizationalUnitKpiCreate));

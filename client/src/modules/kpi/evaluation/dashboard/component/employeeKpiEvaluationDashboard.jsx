@@ -708,5 +708,4 @@ const actionCreators = {
     getChildrenOfOrganizationalUnitsAsTree: DashboardEvaluationEmployeeKpiSetAction.getChildrenOfOrganizationalUnitsAsTree,
 };
 
-const connectedKPIMember = connect(mapState, actionCreators)(withTranslate(EmployeeKpiEvaluationDashboard));
-export {connectedKPIMember as EmployeeKpiEvaluationDashboard};
+export default connect(mapState, actionCreators)(withTranslate(EmployeeKpiEvaluationDashboard));

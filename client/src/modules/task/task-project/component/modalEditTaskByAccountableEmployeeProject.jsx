@@ -16,7 +16,7 @@ import { TaskTemplateFormValidator } from '../../task-template/component/taskTem
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import Swal from 'sweetalert2'
 import moment from 'moment';
-import { convertUserIdToUserName } from '../../../project/component/projects/functionHelper';
+import { convertUserIdToUserName } from '../../../project/projects/components/functionHelper';
 
 class ModalEditTaskByAccountableEmployeeProject extends Component {
 
@@ -35,7 +35,8 @@ class ModalEditTaskByAccountableEmployeeProject extends Component {
         let taskName = task && task.name;
         let taskDescription = task && task.description;
         let progress = task && task.progress;
-        let formula = task && task.formula;
+        let formulaProjectTask = task && task.formulaProjectTask;
+        let formulaProjectMember = task && task.formulaProjectMember;
         let parent = (task && task.parent) ? task.parent._id : "";
         let parentTask = task && task.parent;
         let taskProject = task && task.taskProject;
@@ -134,7 +135,8 @@ class ModalEditTaskByAccountableEmployeeProject extends Component {
             statusOptions: statusOptions,
             priorityOptions: priorityOptions,
             progress: progress,
-            formula: formula,
+            formulaProjectTask,
+            formulaProjectMember,
             parent: parent,
             parentTask: parentTask,
             taskProjectName: taskProject,
@@ -170,7 +172,8 @@ class ModalEditTaskByAccountableEmployeeProject extends Component {
                 errorOnProgress: undefined,
                 errorTaskName: undefined,
                 errorTaskDescription: undefined,
-                errorOnFormula: undefined,
+                errorOnFormulaTask: undefined,
+                errorOnFormulaMember: undefined,
                 errorInfo: {},
                 errorOnStartDate: undefined,
                 errorOnEndDate: undefined,
@@ -693,10 +696,10 @@ class ModalEditTaskByAccountableEmployeeProject extends Component {
 
     handleChangeTaskFormula = (event) => {
         let value = event.target.value;
-        this.validateFormula(value, true);
+        this.validateTaskFormula(value, true);
     }
 
-    validateFormula = (value, willUpdateState = true) => {
+    validateTaskFormula = (value, willUpdateState = true) => {
         let { translate } = this.props;
         let msg = TaskTemplateFormValidator.validateTaskTemplateFormula(value);
 
@@ -707,8 +710,32 @@ class ModalEditTaskByAccountableEmployeeProject extends Component {
             this.setState(state => {
                 return {
                     ...state,
-                    formula: value,
-                    errorOnFormula: msg,
+                    formulaProjectTask: value,
+                    errorOnFormulaTask: msg,
+                };
+            });
+        }
+        return msg === undefined;
+    }
+
+    handleChangeMemberFormula = (event) => {
+        let value = event.target.value;
+        this.validateMemberFormula(value, true);
+    }
+
+    validateMemberFormula = (value, willUpdateState = true) => {
+        let { translate } = this.props;
+        let msg = TaskTemplateFormValidator.validateTaskTemplateFormula(value);
+
+        if (value === "") {
+            msg = translate('task.task_perform.modal_approve_task.err_empty');
+        }
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    formulaProjectMember: value,
+                    errorOnFormulaMember: msg,
                 };
             });
         }
@@ -862,7 +889,8 @@ class ModalEditTaskByAccountableEmployeeProject extends Component {
             description: this.state.taskDescription,
             status: this.state.statusOptions,
             priority: this.state.priorityOptions,
-            formula: this.state.formula,
+            formulaProjectTask: this.state.formulaProjectTask,
+            formulaProjectMember: this.state.formulaProjectMember,
             parent: this.state.parent,
             user: this.state.userId,
             progress: this.state.progress,
@@ -967,8 +995,8 @@ class ModalEditTaskByAccountableEmployeeProject extends Component {
         // console.log('new edit Task', this.state);
 
         const { user, tasktemplates, department, translate, project } = this.props;
-        const { task, organizationalUnit, collaboratedWithOrganizationalUnits, errorOnEndDate, errorOnStartDate, errorTaskName, errorTaskDescription, errorOnFormula, taskName, taskDescription, statusOptions, priorityOptions, taskDescriptionDefault,
-            startDate, endDate, startTime, endTime, formula, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees, inactiveEmployees, parent, parentTask
+        const { task, organizationalUnit, collaboratedWithOrganizationalUnits, errorOnEndDate, errorOnStartDate, errorTaskName, errorTaskDescription, errorOnFormulaTask, errorOnFormulaMember, taskName, taskDescription, statusOptions, priorityOptions, taskDescriptionDefault,
+            startDate, endDate, startTime, endTime, formulaProjectTask, formulaProjectMember, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees, inactiveEmployees, parent, parentTask
             , taskProjectName } = this.state;
 
         const { tasks, perform, id, role, title, hasAccountable } = this.props;
@@ -1147,26 +1175,41 @@ class ModalEditTaskByAccountableEmployeeProject extends Component {
                                         <ErrorLabel content={errorOnEndDate} />
                                     </div>
                                 </div> */}
-                                {/**Công thức tính của mẫu công việc */}
-                                <div className={` form-group ${errorOnFormula === undefined ? "" : "has-error"}`} >
-                                    <label className="control-label" htmlFor="inputFormula">{translate('task_template.formula')}<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" id="inputFormula" placeholder="progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100"
-                                        value={formula} onChange={this.handleChangeTaskFormula}
+                                {/**Công thức tính của công việc */}
+                                <div className={` form-group ${errorOnFormulaTask === undefined ? "" : "has-error"}`} >
+                                    <label className="control-label" htmlFor="inputProjectTaskFormula">Công thức tính điểm công việc tự động<span className="text-red">*</span></label>
+                                    <input type="text" className="form-control" id="inputProjectTaskFormula" placeholder="taskTimePoint + taskQualityPoint + taskCostPoint + taskDilligencePoint"
+                                        value={formulaProjectTask} onChange={this.handleChangeTaskFormula}
                                     />
-                                    <ErrorLabel content={errorOnFormula} />
+                                    <ErrorLabel content={errorOnFormulaTask} />
 
                                     <br />
-                                    <div><span style={{ fontWeight: 800 }}>Ví dụ: </span>progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100</div>
+                                    <div><span style={{ fontWeight: 800 }}>Ví dụ: </span>taskTimePoint + taskQualityPoint + taskCostPoint + taskDilligencePoint</div>
                                     <br />
                                     <div><span style={{ fontWeight: 800 }}>{translate('task_template.parameters')}:</span></div>
-                                    <div><span style={{ fontWeight: 600 }}>daysOverdue</span> - Thời gian quá hạn (ngày)</div>
-                                    <div><span style={{ fontWeight: 600 }}>daysUsed</span> - Thời gian làm việc tính đến ngày đánh giá (ngày)</div>
-                                    <div><span style={{ fontWeight: 600 }}>totalDays</span> - Thời gian từ ngày bắt đầu đến ngày kết thúc công việc (ngày)</div>
-                                    <div><span style={{ fontWeight: 600 }}>averageActionRating</span> - Trung bình điểm đánh giá (rating) hoạt động của công việc</div>
-                                    <div><span style={{ fontWeight: 600 }}>numberOfFailedActions</span> - Số hoạt động không đạt (rating &lt; 5)</div>
-                                    <div><span style={{ fontWeight: 600 }}>numberOfPassedActions</span> - Số hoạt động đạt (rating &ge; 5)</div>
-                                    <div><span style={{ fontWeight: 600 }}>progress</span> - % Tiến độ công việc (0-100)</div>
-                                    <div><span style={{ fontWeight: 600 }}>p1, p2,...</span> - Thông tin công việc kiểu số (Chỉ có với các công việc theo mẫu)</div>
+                                    <div><span style={{ fontWeight: 600 }}>taskTimePoint</span> - Điểm yếu tố tiến độ của công việc</div>
+                                    <div><span style={{ fontWeight: 600 }}>taskQualityPoint</span> - Điểm yếu tố chất lượng của công việc</div>
+                                    <div><span style={{ fontWeight: 600 }}>taskCostPoint</span> - Điểm yếu tố chi phí của công việc</div>
+                                    <div><span style={{ fontWeight: 600 }}>taskDilligencePoint</span> - Điểm yếu tố chuyên cần của công việc</div>
+                                    <div><span style={{ fontWeight: 600 }}>p1, p2,...</span> - Thông tin công việc kiểu số</div>
+                                </div>
+                                {/**Công thức tính của thành viên công việc */}
+                                <div className={` form-group ${errorOnFormulaMember === undefined ? "" : "has-error"}`} >
+                                    <label className="control-label" htmlFor="inputProjectMemberFormula">Công thức tính điểm thành viên công việc tự động<span className="text-red">*</span></label>
+                                    <input type="text" className="form-control" id="inputProjectMemberFormula" placeholder="memberTimePoint + memberQualityPoint + memberCostPoint + memberDilligencePoint"
+                                        value={formulaProjectMember} onChange={this.handleChangeMemberFormula}
+                                    />
+                                    <ErrorLabel content={errorOnFormulaMember} />
+
+                                    <br />
+                                    <div><span style={{ fontWeight: 800 }}>Ví dụ: </span>memberTimePoint + memberQualityPoint + memberCostPoint + memberDilligencePoint</div>
+                                    <br />
+                                    <div><span style={{ fontWeight: 800 }}>{translate('task_template.parameters')}:</span></div>
+                                    <div><span style={{ fontWeight: 600 }}>memberTimePoint</span> - Điểm yếu tố tiến độ của công việc</div>
+                                    <div><span style={{ fontWeight: 600 }}>memberQualityPoint</span> - Điểm yếu tố chất lượng của công việc</div>
+                                    <div><span style={{ fontWeight: 600 }}>memberCostPoint</span> - Điểm yếu tố chi phí của thành viên trong công việc</div>
+                                    <div><span style={{ fontWeight: 600 }}>memberDilligencePoint</span> - Điểm yếu tố chuyên cần của thành viên trong công việc</div>
+                                    <div><span style={{ fontWeight: 600 }}>p1, p2,...</span> - Thông tin công việc kiểu số</div>
                                 </div>
                             </fieldset>
 

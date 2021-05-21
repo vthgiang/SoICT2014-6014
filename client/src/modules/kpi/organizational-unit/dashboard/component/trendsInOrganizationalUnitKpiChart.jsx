@@ -11,10 +11,9 @@ import 'c3/c3.css';
 
 function TrendsInOrganizationalUnitKpiChart(props) {
     const DATA_STATUS = {NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3};
-    const chart = null;
 
     const [state, setState] = useState({
-        currentRole: null,
+        currentRole: localStorage.getItem("currentRole"),
         dataStatus: DATA_STATUS.NOT_AVAILABLE
     });
 
@@ -27,10 +26,9 @@ function TrendsInOrganizationalUnitKpiChart(props) {
 
         setState({
             ...state,
-            currentRole: localStorage.getItem("currentRole"),
             dataStatus: DATA_STATUS.QUERYING
         })
-    },[]);
+    }, []);
 
     useEffect(() => {
         if (state.currentRole !== localStorage.getItem("currentRole")) {
@@ -44,17 +42,6 @@ function TrendsInOrganizationalUnitKpiChart(props) {
                 dataStatus: DATA_STATUS.QUERYING
             });
 
-        }
-
-        if (props.organizationalUnitId !== state.organizationalUnitId || props.month !== state.month) {
-            props.getCurrentKPIUnit(state.currentRole, props.organizationalUnitId, props.month);
-            props.getAllEmployeeKpiInOrganizationalUnit(state.currentRole, props.organizationalUnitId, props.month);
-            props.getAllTaskOfOrganizationalUnit(state.currentRole, props.organizationalUnitId, props.month)
-
-            setState( {
-                ...state,
-                dataStatus:DATA_STATUS.QUERYING,
-            });
         }
 
         if (state.dataStatus === DATA_STATUS.QUERYING) {
@@ -81,7 +68,6 @@ function TrendsInOrganizationalUnitKpiChart(props) {
             });
 
         }
-
     });
 
     if (props.organizationalUnitId !== state.organizationalUnitId || props.month !== state.month) {
@@ -91,6 +77,17 @@ function TrendsInOrganizationalUnitKpiChart(props) {
             month: props.month
         })
     }
+
+    useEffect(() => {
+        props.getCurrentKPIUnit(state.currentRole, props.organizationalUnitId, props.month);
+        props.getAllEmployeeKpiInOrganizationalUnit(state.currentRole, props.organizationalUnitId, props.month);
+        props.getAllTaskOfOrganizationalUnit(state.currentRole, props.organizationalUnitId, props.month)
+
+        setState( {
+            ...state,
+            dataStatus:DATA_STATUS.QUERYING,
+        });
+    }, [state.organizationalUnitId, state.month])
 
     const getArrayListTaskSameOrganizationUnitKpi = () => {
         const { createKpiUnit, dashboardOrganizationalUnitKpi } = props;

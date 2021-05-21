@@ -122,12 +122,12 @@ function ContactTab(props) {
                     {/* Điện thoại cá nhân 1 */}
                     <div className={`form-group col-md-4`}>
                         <label >{translate('human_resource.profile.mobile_phone_1')}</label>
-                        <input type="number" className="form-control" name="phoneNumber" value={phoneNumber} onChange={handlePhoneChange} placeholder={translate('human_resource.profile.mobile_phone_1')} autoComplete="off" />
+                        <input type="text" className="form-control" name="phoneNumber" value={phoneNumber} onChange={handlePhoneChange} placeholder={translate('human_resource.profile.mobile_phone_1')} autoComplete="off" />
                     </div>
                     {/* Điện thoại cá nhân 2 */}
                     <div className="form-group col-md-4">
                         <label >{translate('human_resource.profile.mobile_phone_2')}</label>
-                        <input type="number" className="form-control" name="phoneNumber2" value={phoneNumber2 ? phoneNumber2 : ''} onChange={handleChange} placeholder={translate('human_resource.profile.mobile_phone_2')} autoComplete="off" />
+                        <input type="text" className="form-control" name="phoneNumber2" value={phoneNumber2 ? phoneNumber2 : ''} onChange={handleChange} placeholder={translate('human_resource.profile.mobile_phone_2')} autoComplete="off" />
                     </div>
                 </div>
                 <div className="row">
