@@ -27,9 +27,9 @@ function LoyalCustomerHomePage(props) {
         window.$('#modal-crm-customer-promotion-add').modal('show')
     }
     const { loyalCustomers, } = crm;
-
+const [searchState, setSearchState] = useState({page:0,limit:10})
     useEffect(() => {
-        props.getLoyalCustomers();
+        props.getLoyalCustomers(searchState);
         const currentRole = getStorage('currentRole');
         if (user && user.organizationalUnitsOfUser) {
             let getCurrentUnit = user.organizationalUnitsOfUser.find(item =>

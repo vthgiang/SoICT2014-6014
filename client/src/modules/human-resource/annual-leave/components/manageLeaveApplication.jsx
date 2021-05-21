@@ -403,5 +403,4 @@ const actionCreators = {
     getDepartmentsThatUserIsManager: DepartmentActions.getDepartmentsThatUserIsManager,
 };
 
-const leaveApplication = connect(mapState, actionCreators)(withTranslate(ManageLeaveApplication));
-export { leaveApplication as ManageLeaveApplication };
+export default connect(mapState, actionCreators)(withTranslate(ManageLeaveApplication));

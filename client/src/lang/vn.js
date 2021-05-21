@@ -79,8 +79,8 @@ export default {
         },
 
         dashboard_unit: {
-            urgent_chart: "Biểu đồ thể hiện số công việc khẩn cấp",
-            need_to_do_chart: "Biểu đồ thể hiện số công việc cần làm",
+            urgent_chart: "Công việc khẩn cấp",
+            need_to_do_chart: "Công việc cần làm",
             urgent_task_amount: "Số công việc khẩn cấp",
             need_to_do_task_amount: "Số công việc cần làm",
             list_employe_timing: "Danh sách nhân viên đang bấm giờ"
@@ -1466,7 +1466,7 @@ export default {
             all_status: "Chọn tất cả các trạng thái",
             non_status: "Chọn trạng thái",
             not_unit: "Chưa chọn đơn vị",
-            add_data_by_excel: "Thêm dữ liệu bằng việc Import file excel",
+            add_data_by_excel: "Thêm - Cập nhật dữ liệu bằng việc Import file excel",
             download_file: "Download file import mẫu!",
             choose_file: "Chọn file",
             name_button_export: "Xuất báo cáo",
@@ -2080,7 +2080,7 @@ export default {
                     add_employee: "Thêm nhân viên",
                     add_employee_title: "Thêm mới nhân viên",
                     add_by_hand: "Thêm một nhân viên",
-                    add_import: "Thêm dữ liệu từ file",
+                    add_import: "Thêm - Cập nhật dữ liệu từ file",
                     update_import: "Cập nhật dữ liệu từ file",
 
                     // Thông điệp trả về từ server
@@ -2107,10 +2107,11 @@ export default {
                     employee_number_have_exist: "Mã nhân viên đã tồn tại",
                     staff_code_not_find: "Mã nhân viên không tồn tại",
                     email_in_company_have_exist: "Email công ty đã tồn tại",
+                    email_in_company_not_have_exist: "Email công ty không tồn tại",
                     employee_timesheet_id_required:
                         "Mã số chấm công không được để trống",
-                    employee_timesheet_id_have_exist:
-                        "Mã số chấm công đã tồn tại",
+                    employee_timesheet_id_have_exist: "Mã số chấm công đã tồn tại",
+                    employee_timesheet_id_not_have_exist: "Mã số chấm công không tồn tại",
                     full_name_required: "Họ và tên không được để trống",
                     birthdate_required: "Ngày sinh không được để trống",
                     starting_date_required:

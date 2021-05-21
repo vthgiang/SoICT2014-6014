@@ -138,5 +138,4 @@ const actionCreators = {
     getDepartment: DepartmentActions.get,
 }
 
-const connectDetaiEmployee = connect(mapState, actionCreators)(withTranslate(EmployeeDetail));
-export { connectDetaiEmployee as EmployeeDetail };
+export default connect(mapState, actionCreators)(withTranslate(EmployeeDetail));

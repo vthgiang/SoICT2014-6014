@@ -1,4 +1,4 @@
-import React, {Component, useEffect, useState} from 'react';
+import React, {Component, useEffect, useRef, useState} from 'react';
 import {connect} from 'react-redux';
 
 import {createUnitKpiActions} from '../../creation/redux/actions';
@@ -20,9 +20,9 @@ function ResultsOfAllOrganizationalUnitKpiChart(props) {
         startDate: currentYear + '-' + 1,
         endDate: (currentMonth > 10) ? ((currentYear + 1) + '-' + (currentMonth - 10)) : (currentYear + '-' + (currentMonth + 2))
     };
-    const chart = null;
 
     const refMultiLineChart = React.createRef();
+    const chart = useRef()
 
     const DATA_STATUS = {NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3};
     const KIND_OF_POINT = {AUTOMATIC: 1, EMPLOYEE: 2, APPROVED: 3};
@@ -61,30 +61,9 @@ function ResultsOfAllOrganizationalUnitKpiChart(props) {
     }, [state.kindOfPoint]);
 
     useEffect(() => {
-        if (state.dataStatus === DATA_STATUS.NOT_AVAILABLE) {
-            props.getAllOrganizationalUnitKpiSetByTimeOfChildUnit(state.userRoleId, state.startDate, state.endDate)
-
-            setState({
-                ...state,
-                dataStatus: DATA_STATUS.QUERYING
-            })
-        } else if (state.dataStatus === DATA_STATUS.QUERYING) {
-            if (props.createKpiUnit.organizationalUnitKpiSetsOfChildUnit) {
-
-                setState({
-                    ...state,
-                    dataStatus: DATA_STATUS.AVAILABLE
-                })
-            }
-        } else if (state.dataStatus === DATA_STATUS.AVAILABLE) {
-
+            console.log("8888")
             multiLineChart();
-
-            setState({
-                ...state,
-                dataStatus: DATA_STATUS.FINISHED
-            })
-        }
+          
     });
 
     const handleSelectKindOfPoint = (value) => {
@@ -205,7 +184,8 @@ function ResultsOfAllOrganizationalUnitKpiChart(props) {
             xs = Object.assign(xs, temporary);
         }
 
-        const chart = c3.generate({
+        console.log(refMultiLineChart.current)
+        chart.current = c3.generate({
             bindto: refMultiLineChart.current,
 
             padding: {
@@ -247,11 +227,6 @@ function ResultsOfAllOrganizationalUnitKpiChart(props) {
             }
         })
 
-        setState({
-            ...state,
-            chart: chart,
-            dataChart: dataChart
-        })
     };
 
     const handleExportData = (exportData) => {
@@ -382,34 +357,36 @@ function ResultsOfAllOrganizationalUnitKpiChart(props) {
                             onClick={handleSearchData}>{translate('kpi.organizational_unit.dashboard.search')}</button>
                 </div>
             </section>
-
-            <section className="box-body" style={{textAlign: "right"}}>
-                <div className="btn-group">
-                    <button type="button"
-                            className={`btn btn-xs ${kindOfPoint === KIND_OF_POINT.AUTOMATIC ? 'btn-danger' : null}`}
-                            onClick={() => handleSelectKindOfPoint(KIND_OF_POINT.AUTOMATIC)}>{translate('kpi.evaluation.dashboard.auto_point')}</button>
-                    <button type="button"
-                            className={`btn btn-xs ${kindOfPoint === KIND_OF_POINT.EMPLOYEE ? 'btn-danger' : null}`}
-                            onClick={() => handleSelectKindOfPoint(KIND_OF_POINT.EMPLOYEE)}>{translate('kpi.evaluation.dashboard.employee_point')}</button>
-                    <button type="button"
-                            className={`btn btn-xs ${kindOfPoint === KIND_OF_POINT.APPROVED ? 'btn-danger' : null}`}
-                            onClick={() => handleSelectKindOfPoint(KIND_OF_POINT.APPROVED)}>{translate('kpi.evaluation.dashboard.approve_point')}</button>
-                </div>
-            </section>
-            {organizationalUnitKpiSetsOfChildUnit ?
-
-            <section id={"resultsOfAllUnit"} className="c3-chart-container">
-                <div ref={refMultiLineChart}></div>
-                <CustomLegendC3js
-                    chart={state.chart}
-                    chartId={"resultsOfAllUnit"}
-                    legendId={"resultsOfAllUnitLegend"}
-                    title={organizationalUnitKpiSetsOfChildUnit && `${translate('general.list_unit')} (${organizationalUnitKpiSetsOfChildUnit.length})`}
-                    dataChartLegend={organizationalUnitKpiSetsOfChildUnit && organizationalUnitKpiSetsOfChildUnit.map(item => item[0].name)}
-                />
-            </section>
-                : organizationalUnitKpiSetsOfChildUnit &&
-                <section>{translate('kpi.organizational_unit.dashboard.no_data')}</section>
+            { createKpiUnit.loading
+                ? <p>{translate('general.loading')}</p>
+                : organizationalUnitKpiSetsOfChildUnit
+                    ? <section>
+                        <section className="box-body" style={{textAlign: "right"}}>
+                            <div className="btn-group">
+                                <button type="button"
+                                        className={`btn btn-xs ${kindOfPoint === KIND_OF_POINT.AUTOMATIC ? 'btn-danger' : null}`}
+                                        onClick={() => handleSelectKindOfPoint(KIND_OF_POINT.AUTOMATIC)}>{translate('kpi.evaluation.dashboard.auto_point')}</button>
+                                <button type="button"
+                                        className={`btn btn-xs ${kindOfPoint === KIND_OF_POINT.EMPLOYEE ? 'btn-danger' : null}`}
+                                        onClick={() => handleSelectKindOfPoint(KIND_OF_POINT.EMPLOYEE)}>{translate('kpi.evaluation.dashboard.employee_point')}</button>
+                                <button type="button"
+                                        className={`btn btn-xs ${kindOfPoint === KIND_OF_POINT.APPROVED ? 'btn-danger' : null}`}
+                                        onClick={() => handleSelectKindOfPoint(KIND_OF_POINT.APPROVED)}>{translate('kpi.evaluation.dashboard.approve_point')}</button>
+                            </div>
+                        </section>
+                        <section id={"resultsOfAllUnit"} className="c3-chart-container">
+                            <div ref={refMultiLineChart}></div>
+                            <CustomLegendC3js
+                                chart={chart.current}
+                                chartId={"resultsOfAllUnit"}
+                                legendId={"resultsOfAllUnitLegend"}
+                                title={organizationalUnitKpiSetsOfChildUnit && `${translate('general.list_unit')} (${organizationalUnitKpiSetsOfChildUnit.length})`}
+                                dataChartLegend={organizationalUnitKpiSetsOfChildUnit && organizationalUnitKpiSetsOfChildUnit.map(item => item[0].name)}
+                            />
+                        </section>
+                    </section>
+                    : organizationalUnitKpiSetsOfChildUnit &&
+                        <section>{translate('kpi.organizational_unit.dashboard.no_data')}</section>
             }
 
         </React.Fragment>
@@ -418,8 +395,8 @@ function ResultsOfAllOrganizationalUnitKpiChart(props) {
 }
 
 function mapState(state) {
-    const {createKpiUnit} = state;
-    return {createKpiUnit}
+    const { createKpiUnit } = state;
+    return { createKpiUnit }
 }
 
 const actions = {

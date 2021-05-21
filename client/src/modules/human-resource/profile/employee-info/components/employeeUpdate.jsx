@@ -384,5 +384,4 @@ const actionCreator = {
     updatePersonalInformation: EmployeeInfoActions.updatePersonalInformation,
 };
 
-const updateEmployee = connect(mapState, actionCreator)(withTranslate(UpdateEmployee));
-export { updateEmployee as UpdateEmployee };
+export default connect(mapState, actionCreator)(withTranslate(UpdateEmployee));

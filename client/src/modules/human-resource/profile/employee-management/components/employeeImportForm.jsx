@@ -608,6 +608,11 @@ const EmployeeImportForm = (props) => {
         props.importEmployees({ importType: "Employee_Infor", importData: importDataOfEmployeeInfor });
     }
 
+    const handleImportUpdateEmployeeInfor = () => {
+        let { importDataOfEmployeeInfor } = state;
+        props.importEmployees({ importType: "Update_Employee_Infor", importData: importDataOfEmployeeInfor });
+    }
+
     /**
     * Function bắt sự kiện import kinh nghiệm làm việc
     */
@@ -712,6 +717,7 @@ const EmployeeImportForm = (props) => {
                                 teamplateImport={teamplateImport}
                                 handleCheckImportData={handleCheckImportDataOfEmployeeInfor}
                                 handleImport={handleImportEmployeeInfor}
+                                handleImportUpdate={handleImportUpdateEmployeeInfor}
                             />
                             <EmployeeImportTab
                                 id="import_employee_experience"

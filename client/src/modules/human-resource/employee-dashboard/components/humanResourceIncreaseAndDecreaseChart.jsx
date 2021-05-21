@@ -322,16 +322,19 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
                         </div>
                     </div>
                 </div>
-                <div className="dashboard_box_body" >
-                    <p className="pull-left" style={{ marginBottom: 0 }} > < b > ĐV tính: Người </b></p >
-                    <div className="box-tools pull-right" >
-                        <div className="btn-group pull-rigth">
-                            <button type="button" className={`btn btn-xs ${lineChart ? "active" : "btn-danger"}`} onClick={() => handleChangeViewChart(false)}>Bar chart</button>
-                            <button type="button" className={`btn btn-xs ${lineChart ? 'btn-danger' : "active"}`} onClick={() => handleChangeViewChart(true)}>Line chart</button>
+                { employeesManager.isLoading
+                    ? <p>{translate('general.loading')}</p>
+                    : <div className="dashboard_box_body" >
+                        <p className="pull-left" style={{ marginBottom: 0 }} > < b > ĐV tính: Người </b></p >
+                        <div className="box-tools pull-right" >
+                            <div className="btn-group pull-rigth">
+                                <button type="button" className={`btn btn-xs ${lineChart ? "active" : "btn-danger"}`} onClick={() => handleChangeViewChart(false)}>Bar chart</button>
+                                <button type="button" className={`btn btn-xs ${lineChart ? 'btn-danger' : "active"}`} onClick={() => handleChangeViewChart(true)}>Line chart</button>
+                            </div>
                         </div>
+                        <div ref={_chart} ></div>
                     </div>
-                    <div ref={_chart} ></div>
-                </div>
+                }
             </div>
         </div>
     )

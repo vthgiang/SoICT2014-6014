@@ -414,21 +414,22 @@ function ResultsOfAllEmployeeKpiSetChart(props) {
                             onClick={() => handleSelectKindOfPoint(KIND_OF_POINT.APPROVED)}>{translate('kpi.evaluation.dashboard.approve_point')}</button>
                 </div>
             </section>
-            {employeeKpiSetsInOrganizationalUnitByMonth ?
-
-            <section id={"resultsOfAllEmployeeKpiSet"} className="c3-chart-container">
-                <div ref={refMultiLineChart}></div>
-                <CustomLegendC3js
-                    chart={state.chart}
-                    chartId={"resultsOfAllEmployeeKpiSet"}
-                    legendId={"resultsOfAllEmployeeKpiSetLegend"}
-                    title={employeeKpiSetsInOrganizationalUnitByMonth && `${translate('general.list_employee')} (${employeeKpiSetsInOrganizationalUnitByMonth.length })`}
-                    dataChartLegend={state.dataChart && state.dataChart.filter((item, index) => index % 2 === 1).map(item => item[0])}
-                />
-            </section>
-                : employeeKpiSetsInOrganizationalUnitByMonth &&
-                <section>{translate('kpi.organizational_unit.dashboard.no_data')}</section>
-            }
+            {createEmployeeKpiSet.loading
+                ? <p>{translate('general.loading')}</p>
+                : employeeKpiSetsInOrganizationalUnitByMonth ?
+                    <section id={"resultsOfAllEmployeeKpiSet"} className="c3-chart-container">
+                        <div ref={refMultiLineChart}></div>
+                        <CustomLegendC3js
+                            chart={state.chart}
+                            chartId={"resultsOfAllEmployeeKpiSet"}
+                            legendId={"resultsOfAllEmployeeKpiSetLegend"}
+                            title={employeeKpiSetsInOrganizationalUnitByMonth && `${translate('general.list_employee')} (${employeeKpiSetsInOrganizationalUnitByMonth.length })`}
+                            dataChartLegend={state.dataChart && state.dataChart.filter((item, index) => index % 2 === 1).map(item => item[0])}
+                        />
+                    </section>
+                        : employeeKpiSetsInOrganizationalUnitByMonth &&
+                        <section>{translate('kpi.organizational_unit.dashboard.no_data')}</section>
+            }                           
         </React.Fragment>
     )
 }

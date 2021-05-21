@@ -1,7 +1,7 @@
 import React, { Component, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { ConfirmNotification, ExportExcel, PaginateBar, SelectBox, SelectMulti } from '../../../../common-components';
+import { ConfirmNotification, DataTableSetting, ExportExcel, PaginateBar, SelectBox, SelectMulti } from '../../../../common-components';
 import { formatFunction, getData } from '../../common/index';
 import { CrmCustomerActions } from '../../customer/redux/actions';
 import { CrmCareActions } from '../redux/action';
@@ -18,7 +18,7 @@ import { getStorage } from '../../../../config';
 function CrmCareHomePage(props) {
 
     const [searchState, setSearchState] = useState({
-        limit: 5,
+        limit: 10,
         page: 0,
     })
     const { crm, translate, user, auth, role } = props;
@@ -53,12 +53,19 @@ function CrmCareHomePage(props) {
         const page = (pageNumber - 1) * (limit);
         const newSearchState = { ...searchState, page: parseInt(page), }
         await setSearchState(newSearchState);
-        props.getCares(searchState);
+        props.getCares(newSearchState);
+    }
+
+    const setLimit = async (number) => {
+        const newState = { ...searchState, limit: number }
+        await setSearchState(newState);
+        props.getCares(newState);
     }
     const search = () => {
         console.log(searchState);
         props.getCares(searchState);
     }
+
 
     useEffect(
         () => {
@@ -251,7 +258,7 @@ function CrmCareHomePage(props) {
                             onChange={handleSearchByCustomerCareStaffs}
                             options={{ nonSelectedText: "Nhân viên phụ trách ", allSelectedText: 'Chọn tất cả' }}
                         >
-                          
+
                         </SelectMulti>}
                     </div>
                 </div>
@@ -305,26 +312,31 @@ function CrmCareHomePage(props) {
                             <th>{translate('crm.care.name')}</th>
                             <th>{translate('crm.care.careType')}</th>
                             <th>{translate('crm.care.customer')}</th>
-                            {/* <th>{translate('crm.care.description')}</th> */}
                             <th>{translate('crm.care.priority')}</th>
                             <th>{translate('crm.care.caregiver')}</th>
                             <th>{translate('crm.care.status')}</th>
                             <th>{translate('crm.care.startDate')}</th>
                             <th>{translate('crm.care.endDate')}</th>
-                            <th>{translate('crm.care.action')}</th>
-                            {/* <th style={{ width: "120px" }}>
-                                    {translate('table.action')}
-                                    <DataTableSetting
-                                        columnArr={[
-                                            translate('crm.group.name'),
-                                            translate('crm.group.code'),
-                                            translate('crm.group.description'),
-                                        ]}
-                                        limit={this.state.limit}
-                                        setLimit={this.setLimit}
-                                        tableId="table-manage-crm-group"
-                                    />
-                                </th> */}
+
+                            <th style={{ width: "120px" }}>
+                                {translate('table.action')}
+                                <DataTableSetting
+                                    columnArr={[
+                                        translate('crm.group.name'),
+                                        translate('crm.group.code'),
+                                        translate('crm.group.description'),
+                                        translate('crm.care.priority'),
+                                        translate('crm.care.caregiver'),
+                                        translate('crm.care.status'),
+                                        translate('crm.care.startDate'),
+                                        translate('crm.care.endDate')
+
+                                    ]}
+                                    limit={searchState.limit}
+                                    setLimit={setLimit}
+                                    tableId="table-manage-crm-group"
+                                />
+                            </th>
                         </tr>
                     </thead>
 
@@ -344,7 +356,7 @@ function CrmCareHomePage(props) {
                                     <td>{o.endDate ? formatFunction.formatDate(o.endDate) : ''}</td>
                                     <td style={{ textAlign: 'left' }}>
                                         <a className="text-green" onClick={() => handleInfo(o._id)}><i className="material-icons">visibility</i></a>
-                                        {o.status != 3 && o.status != 5 &&(o.customerCareStaffs[0]._id == auth.user._id||getData.getRole(role) =='manager')&&
+                                        {o.status != 3 && o.status != 5 && (o.customerCareStaffs[0]._id == auth.user._id || getData.getRole(role) == 'manager') &&
                                             <>
                                                 <a className="text-yellow" onClick={() => handleEdit(o._id)}><i className="material-icons">edit</i></a>
                                                 {/* Chỉ người thực hiện mới được báo hoàn thành */}

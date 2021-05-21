@@ -233,10 +233,13 @@ const HumanResourceChartBySalary = (props) => {
                     </div>
                 </div>
                 <div className="box-body">
-                    <div className="dashboard_box_body">
-                        <p className="pull-right" style={{ marginBottom: 0 }} > < b > ĐV tính: Người</b></p >
-                        <div ref={rotateChart}></div>
-                    </div>
+                    {salary.isLoading
+                        ? <p>{translate('general.loading')}</p>
+                        : <div className="dashboard_box_body">
+                            <p className="pull-right" style={{ marginBottom: 0 }} > < b > ĐV tính: Người</b></p >
+                             <div ref={rotateChart}></div>
+                        </div>
+                    }
                 </div>
             </div>
         </React.Fragment>
