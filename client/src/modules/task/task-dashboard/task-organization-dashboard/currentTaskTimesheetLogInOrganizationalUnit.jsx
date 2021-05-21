@@ -75,19 +75,23 @@ function CurrentTaskTimesheetLogInOrganizationalUnit(props) {
                             </tr>
                         </thead>
                         <tbody>
-                            { currentTaskTimesheetLog && currentTaskTimesheetLog.length !== 0  
-                                ? currentTaskTimesheetLog.map((item, index) =>
-                                    <tr key={item._id}>
-                                        <td>{index + 1}</td>
-                                        <td title={item?.creator?.name}>{item?.creator?.name}</td>
-                                        <td title={item?.creator?.email}>{item?.creator?.email}</td>
-                                        <td title={item?.task?.name}><a href={`/task?taskId=${item?.task?._id}`} target="_blank">{item?.task?.name}</a></td>
-                                        <td>{showTiming(item?.startedAt, time)}</td>
-                                    </tr>
-                                )
-                                : <tr>
-                                    <td colSpan="5">{translate('kpi.organizational_unit.kpi_organizational_unit_manager.no_data')}</td>
+                            { performtasks.loading
+                                ? <tr>
+                                    <td colSpan="5">{translate('general.loading')}</td>
                                 </tr>
+                                : currentTaskTimesheetLog && currentTaskTimesheetLog.length !== 0  
+                                    ? currentTaskTimesheetLog.map((item, index) =>
+                                        <tr key={item._id}>
+                                            <td>{index + 1}</td>
+                                            <td title={item?.creator?.name}>{item?.creator?.name}</td>
+                                            <td title={item?.creator?.email}>{item?.creator?.email}</td>
+                                            <td title={item?.task?.name}><a href={`/task?taskId=${item?.task?._id}`} target="_blank">{item?.task?.name}</a></td>
+                                            <td>{showTiming(item?.startedAt, time)}</td>
+                                        </tr>
+                                    )
+                                    : <tr>
+                                        <td colSpan="5">{translate('kpi.organizational_unit.kpi_organizational_unit_manager.no_data')}</td>
+                                    </tr>           
                             }
                         </tbody>
                     </table>

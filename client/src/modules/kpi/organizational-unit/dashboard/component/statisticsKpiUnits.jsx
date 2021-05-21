@@ -124,16 +124,18 @@ const StatisticsKpiUnits = (props) => {
     return (
         <div>
             {
-                treeKpiUnits &&
-                treeKpiUnits.map((tree, index) =>
-                    <div key={index} className="tf-tree example" style={{ display: 'flex', justifyContent: 'flex-start', marginTop: '50px' }}>
-                        <ul>
-                            {
-                                displayTreeView(tree, translate)
-                            }
-                        </ul>
-                    </div>
-                )
+                managerKpiUnit?.isLoading
+                ? <p>{translate('general.loading')}</p>
+                : treeKpiUnits 
+                    && treeKpiUnits.map((tree, index) =>
+                        <div key={index} className="tf-tree example" style={{ display: 'flex', justifyContent: 'flex-start', marginTop: '50px' }}>
+                            <ul>
+                                {
+                                    displayTreeView(tree, translate)
+                                }
+                            </ul>
+                        </div>
+                    )
             }
         </div>
     )

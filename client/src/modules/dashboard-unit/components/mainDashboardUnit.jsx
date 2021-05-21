@@ -136,7 +136,7 @@ class MainDashboardUnit extends Component {
 
     /** Bắt sự kiện chuyển tab  */
     handleNavTabs = (value) => {
-        if (!value) {
+        if (value) {
             forceCheckOrVisible(true, false);
         }
         window.dispatchEvent(new Event('resize')); // Fix lỗi chart bị resize khi đổi tab

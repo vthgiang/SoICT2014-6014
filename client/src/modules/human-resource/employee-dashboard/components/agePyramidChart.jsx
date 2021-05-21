@@ -218,21 +218,24 @@ const AgePyramidChart = (props) => {
                     </div>
                 </div>
                 <div className="box-body dashboard_box_body">
-                    <div className="form-inline">
-                        <div style={{ textAlign: "center", padding: 2 }} className='form-group col-lg-1 col-md-1 col-sm-1 col-xs-1'>
-                            <img style={{ width: 40, marginTop: 80, height: 120 }} src="image/female_icon.png" />
-                            <div className='number_box'>{femaleEmployees.length}</div>
+                    {employeesManager.isLoading
+                        ? <p>{translate('general.loading')}</p>
+                        : <div className="form-inline">
+                            <div style={{ textAlign: "center", padding: 2 }} className='form-group col-lg-1 col-md-1 col-sm-1 col-xs-1'>
+                                <img style={{ width: 40, marginTop: 80, height: 120 }} src="image/female_icon.png" />
+                                <div className='number_box'>{femaleEmployees.length}</div>
+                            </div>
+                            <div className='row form-group col-lg-10 col-md-10 col-sm-10 col-xs-10' style={{ padding: 0 }}>
+                                <p className="pull-left" style={{ marginBottom: 0 }}><b>Độ tuổi</b></p>
+                                <p className="pull-right" style={{ marginBottom: 0 }}><b>ĐV tính: Người</b></p>
+                                <div ref={_chart}></div>
+                            </div>
+                            <div style={{ textAlign: "center", padding: 2 }} className='form-group col-lg-1 col-md-1 col-sm-1 col-xs-1'>
+                                <img style={{ width: 40, marginTop: 80, height: 120 }} src="image/male_icon.png" />
+                                <div className='number_box'>{maleEmployees.length}</div>
+                            </div>
                         </div>
-                        <div className='row form-group col-lg-10 col-md-10 col-sm-10 col-xs-10' style={{ padding: 0 }}>
-                            <p className="pull-left" style={{ marginBottom: 0 }}><b>Độ tuổi</b></p>
-                            <p className="pull-right" style={{ marginBottom: 0 }}><b>ĐV tính: Người</b></p>
-                            <div ref={_chart}></div>
-                        </div>
-                        <div style={{ textAlign: "center", padding: 2 }} className='form-group col-lg-1 col-md-1 col-sm-1 col-xs-1'>
-                            <img style={{ width: 40, marginTop: 80, height: 120 }} src="image/male_icon.png" />
-                            <div className='number_box'>{maleEmployees.length}</div>
-                        </div>
-                    </div>
+                    }
                 </div>
             </div>
         </React.Fragment>

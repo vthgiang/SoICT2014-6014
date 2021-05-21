@@ -203,26 +203,29 @@ class QualificationChart extends Component {
                             }
                         </div>
                     </div>
-                    <div className="box-body">
-                        <div className="box-tools pull-left" >
-                            <div className="btn-group pull-left">
-                                <button type="button" className={`btn btn-xs ${typeChart ? "active" : "btn-danger"}`} onClick={() => this.handleChangeViewChart(false)}>Trình độ chuyên môn</button>
-                                <button type="button" className={`btn btn-xs ${typeChart ? 'btn-danger' : "active"}`} onClick={() => this.handleChangeViewChart(true)}>Trình độ chuyên ngành</button>
+                    { employeesManager.isLoading
+                        ? <p>{translate('general.loading')}</p>
+                        : <div className="box-body">
+                            <div className="box-tools pull-left" >
+                                <div className="btn-group pull-left">
+                                    <button type="button" className={`btn btn-xs ${typeChart ? "active" : "btn-danger"}`} onClick={() => this.handleChangeViewChart(false)}>Trình độ chuyên môn</button>
+                                    <button type="button" className={`btn btn-xs ${typeChart ? 'btn-danger' : "active"}`} onClick={() => this.handleChangeViewChart(true)}>Trình độ chuyên ngành</button>
+                                </div>
                             </div>
+                            <section id={"donutChart"} className="c3-chart-container">
+                                <div ref="donutChart"></div>
+                                <div style={{ paddingTop: 10 }}>
+                                    <CustomLegendC3js
+                                        chart={this.chart}
+                                        chartId={"donutChart"}
+                                        legendId={"donutChartLegend"}
+                                        title={`${typeChart ? "Danh sách trình độ chuyên ngành" : "Dánh sách trình độ chuyên môn"}`}
+                                        dataChartLegend={this.dataChart && this.dataChart.map(item => item[0])}
+                                    />
+                                </div>
+                            </section>
                         </div>
-                        <section id={"donutChart"} className="c3-chart-container">
-                            <div ref="donutChart"></div>
-                            <div style={{ paddingTop: 10 }}>
-                                <CustomLegendC3js
-                                    chart={this.chart}
-                                    chartId={"donutChart"}
-                                    legendId={"donutChartLegend"}
-                                    title={`${typeChart ? "Danh sách trình độ chuyên ngành" : "Dánh sách trình độ chuyên môn"}`}
-                                    dataChartLegend={this.dataChart && this.dataChart.map(item => item[0])}
-                                />
-                            </div>
-                        </section>
-                    </div>
+                    }
                 </div>
             </React.Fragment>
         )
