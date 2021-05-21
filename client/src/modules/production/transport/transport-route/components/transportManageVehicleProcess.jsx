@@ -20,9 +20,12 @@ function TransportManageVehicleProcess(props) {
      */
     const {route, timelineBarWidth} = props
     let totalDistance = 0;
+    let totalTime = 0;
 
     //Vị trí các điểm trên timeline bar - sử dụng để marginLeft
     const [timelineItemPos, setTimelineItemPos] = useState([])
+
+    const [processBarLen, setProcessBarLen] = useState(0);
     useEffect(() => {
         if (route){
             let barWidth = timelineBarWidth?timelineBarWidth:100
@@ -39,12 +42,26 @@ function TransportManageVehicleProcess(props) {
                     currentTimelineItemDistance+= routeOrdinal.distance;
                     // timelineItem.push((currentTimelineItemDistance/totalDistance)*barWidth);
                     timelineItem.push((routeOrdinal.distance/totalDistance)*100);
+                    if (String(routeOrdinal.type) === "1"){
+                        if (String(routeOrdinal.transportRequirement?.transportStatus?.fromAddress?.status) === "1"){
+                           setProcessBarLen(currentTimelineItemDistance/totalDistance * 100);
+                        }
+                    }
+                    else {
+                        if (String(routeOrdinal.transportRequirement?.transportStatus?.toAddress?.status) === "1"){
+                            setProcessBarLen(currentTimelineItemDistance/totalDistance * 100);
+                        }
+                    }
                 });
                 setTimelineItemPos(timelineItem)
             }
         }
-        console.log(route, " kkkkkkkkkkkkkkkkkkk")
+        // console.log(route, " kkkkkkkkkkkkkkkkkkk")
     }, [route, timelineBarWidth])
+
+    useEffect(() => {
+        console.log(processBarLen, " ooooooooooooooooooooooooooooooo")
+    }, [processBarLen])
 
     // useEffect(() => {
     //     console.log(timelineItemPos);
@@ -105,7 +122,7 @@ function TransportManageVehicleProcess(props) {
 
     return (
         <div className="timeline-transport" style={{width: timelineBarWidth+"%"}}>
-            <div className="timeline-progress" style={{ width: `0%` }}></div>
+            <div className="timeline-progress" style={{ width: processBarLen +'%' }}></div>
             <div className="timeline-items-transport">
             {
                 (route && route.routeOrdinal && route.routeOrdinal.length !== 0)

@@ -130,9 +130,21 @@ function ArrangeOrdinalTransportOneVehicle(props) {
     }, [addressList]) 
 
     return (		
-        <fieldset className="scheduler-border" style={{ height: "100%" }}>
-            <div className="col-xs-12 col-sm-12 col-md-5 col-lg-5">
-                <legend className="scheduler-border">{item.transportVehicle.name}</legend>
+        // <fieldset className="scheduler-border" style={{ height: "100%" }}>
+            <div className="box box-solid">
+                {/* <div className="box-header"> */}
+                    {/* <div className="box-title">{item.transportVehicle?.name +" - " +item.transportVehicle?.code}</div> */}
+                {/* </div> */}
+
+                <div className="box-body qlcv">
+
+            <div className="col-xs-12 col-sm-12 col-md-5 col-lg-5" style={{padding: "0px"}}>
+                <legend className="scheduler-border">{item.transportVehicle.code}</legend>
+                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <div className="form-group">
+                        <strong>{"Tên xe: "}</strong>{item.transportVehicle.name}
+                    </div>
+                </div> 
                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <div className="form-group">
                         <strong>{"Trọng tải: "}</strong>{item.transportVehicle.payload}
@@ -172,14 +184,18 @@ function ArrangeOrdinalTransportOneVehicle(props) {
             <div className="col-xs-12 col-sm-12 col-md-7 col-lg-7">
                 <div className = "transport-map">
                     {
-                        // // (activeMapState && activeMapState.length!==0)
-                        // (locationsOnMap && locationsOnMap.length!==0 && locationsOnMap.length>=2)
-                        // &&
-                        // <MapContainer 
-                        //     locations={locationsOnMap}
+                        // (activeMapState && activeMapState.length!==0)
+                        (locationsOnMap && locationsOnMap.length!==0 && locationsOnMap.length>=2)
+                        &&
+                        <MapContainer 
+                            locations={locationsOnMap}
 
-                        //     // locations={activeMapState}
-                        // />
+                            loadingElement={<div style={{height: `100%`}}/>}
+                            containerElement={<div style={{height: "50vh"}}/>}
+                            mapElement={<div style={{height: `100%`}}/>}
+                            defaultZoom={11}
+                            // locations={activeMapState}
+                        />
                     }
                 </div>
                 {/* <div className="form-group">
@@ -226,7 +242,9 @@ function ArrangeOrdinalTransportOneVehicle(props) {
                     callBackToSetLocationsOnMap = {callBackToSetLocationsOnMap}
                 /> */}
             </div>
-        </fieldset>
+        {/* </fieldset> */}
+        </div>
+        </div>
                        
     )
 }

@@ -164,7 +164,7 @@ function TransportTime(props) {
                                 {listTimeChosen && listTimeChosen.length === 0 ? (
                                     <tr>
                                         {/* <td colSpan={7}>{translate("general.no_data")}</td> */}
-                                        <td colSpan={3}>{"Không có dữ liệu"}</td>
+                                        <td colSpan={4}>{"Không có dữ liệu"}</td>
                                     </tr>
                                 ) : (
                                     listTimeChosen.map((x, index) => (

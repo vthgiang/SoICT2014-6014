@@ -344,8 +344,14 @@ function TransportManageRouteMainPage(props) {
                     (currentTransportPlan._id!=="0" && currentTransportSchedule && currentTransportSchedule.route && currentTransportSchedule.route.length !== 0)
                     && currentTransportSchedule.route.map((item,index) =>(
                         item &&
-                        <fieldset className="scheduler-border" style={{ height: "100%" }}>
-                            <legend className="scheduler-border">{item.transportVehicle?.name}</legend>
+                        // <fieldset className="scheduler-border" style={{ height: "100%" }}>
+                        //     <legend className="scheduler-border">{item.transportVehicle?.name}</legend>
+            <div className="box box-solid">
+                {/* <div className="box-header"> */}
+                    {/* <div className="box-title">{item.transportVehicle?.name +" - " +item.transportVehicle?.code}</div> */}
+                {/* </div> */}
+
+                <div className="box-body qlcv">
                             <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                                 <table>
                                     <tbody>
@@ -417,7 +423,9 @@ function TransportManageRouteMainPage(props) {
                                     timelineBarWidth={getBarWidth(item)}
                                 />
                             </div>
-                        </fieldset>
+                </div>
+            </div>
+                        // </fieldset>
                     ))
                 }
                 

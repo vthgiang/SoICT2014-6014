@@ -304,7 +304,7 @@ function TransportGoods(props) {
                                 {listGoodsChosen && listGoodsChosen.length === 0 ? (
                                     <tr>
                                         {/* <td colSpan={7}>{translate("general.no_data")}</td> */}
-                                        <td colSpan={6}>{"Không có dữ liệu"}</td>
+                                        <td colSpan={7}>{"Không có dữ liệu"}</td>
                                     </tr>
                                 ) : (
                                     listGoodsChosen.map((x, index) => (
