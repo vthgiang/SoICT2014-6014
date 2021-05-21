@@ -346,6 +346,9 @@ exports.importEmployees = async (req, res) => {
         if (req.body.importType === 'Employee_Infor') {
             data = await EmployeeService.importEmployeeInfor(req.portal, req.user.company._id, req.body.importData);
         };
+        if (req.body.importType === 'Update_Employee_Infor') {
+            data = await EmployeeService.importUpdateEmployeeInfor(req.portal, req.user.company._id, req.body.importData);
+        };
         if (req.body.importType === 'Experience') {
             data = await EmployeeService.importExperience(req.portal, req.user.company._id, req.body.importData);
         };

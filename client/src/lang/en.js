@@ -1284,7 +1284,7 @@ export default {
             all_status: "Select all status",
             non_status: "Select status",
             not_unit: "Not selected unit",
-            add_data_by_excel: "Add data by importing excel file",
+            add_data_by_excel: "Add - Update data by importing excel file",
             download_file: "Download the sample import file",
             choose_file: "Choose file",
             name_button_export: "Export report",
@@ -1885,7 +1885,7 @@ export default {
                     add_employee: "Add staff",
                     add_employee_title: "Add new staff",
                     add_by_hand: "Add a staff",
-                    add_import: "Add data from file",
+                    add_import: "Add - Update data from file",
                     update_import: "Update data from file",
 
                     // Thông điệp trả về từ server
@@ -1904,10 +1904,10 @@ export default {
                     employee_number_have_exist: "Employee number have exist",
                     staff_code_not_find: 'Employee number does have exist',
                     email_in_company_have_exist: "Email in company have exist",
-                    employee_timesheet_id_required:
-                        "Employee timesheet id required",
-                    employee_timesheet_id_have_exist:
-                        "Employee timesheet have exist",
+                    email_in_company_not_have_exist: "Email in company have not exist",
+                    employee_timesheet_id_required: "Employee timesheet id required",
+                    employee_timesheet_id_have_exist: "Employee timesheet have exist",
+                    employee_timesheet_id_not_have_exist: "Employee timesheet have not exist",
                     full_name_required: "Full name required",
                     birthdate_required: "Birthdate required",
                     starting_date_required: "Starting date required",
