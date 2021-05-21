@@ -164,7 +164,7 @@ const UserGuide = lazy(() => import("../modules/user-guide/components"))
 const AllTimeSheetLog = lazy(() => import("../modules/task/task-dashboard/statistic/allTimeSheetLog"))
 
 const Home = lazy(() => import("../modules/home/components"))
-const Notifications = lazy(() => import("../modules/notification/components/index"))
+const Notifications = lazy(() => import("../modules/notification/components"))
 const SystemSetting = lazy(() => import("../modules/system-admin/system-setting/components"))
 const Company = lazy(() => import("../modules/system-admin/company/components"))
 const ManageLinkSystem = lazy(() => import("../modules/system-admin/system-link/components"))
