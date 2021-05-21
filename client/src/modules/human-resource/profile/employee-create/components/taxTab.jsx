@@ -14,13 +14,13 @@ function TaxTab(props) {
             return {
                 ...state,
                 id: props.id,
-                atmNumber: props.employee ? props.employee.atmNumber : "",
-                bankName: props.employee ? props.employee.bankName : "",
-                bankAddress: props.employee ? props.employee.bankAddress : "",
-                taxNumber: props.employee ? props.employee.taxNumber : "",
-                taxRepresentative: props.employee ? props.employee.taxRepresentative : "",
-                taxDateOfIssue: props.employee ? props.employee.taxDateOfIssue : "",
-                taxAuthority: props.employee ? props.employee.taxAuthority : "",
+                atmNumber: props.employee?.atmNumber ? props.employee.atmNumber : "",
+                bankName: props.employee?.bankName ? props.employee.bankName : "",
+                bankAddress: props.employee?.bankAddress ? props.employee.bankAddress : "",
+                taxNumber: props.employee?.taxNumber ? props.employee.taxNumber : "",
+                taxRepresentative: props.employee?.taxRepresentative ? props.employee.taxRepresentative : "",
+                taxDateOfIssue: props.employee?.taxDateOfIssue ? props.employee.taxDateOfIssue : "",
+                taxAuthority: props.employee?.taxAuthority ? props.employee.taxAuthority : "",
             }
         })
     }, [props.id])

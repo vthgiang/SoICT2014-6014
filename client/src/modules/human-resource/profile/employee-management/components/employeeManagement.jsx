@@ -1116,7 +1116,7 @@ const EmployeeManagement = (props) => {
             <EmployeeCreateForm />
 
             {/* From import thông tin nhân viên*/
-                importEmployee && <EmployeeImportForm />
+                importEmployee && <EmployeeImportForm/>
             }
 
             {/* From xem thông tin nhân viên */

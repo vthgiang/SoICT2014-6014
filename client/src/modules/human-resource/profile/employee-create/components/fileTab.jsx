@@ -40,7 +40,7 @@ function FileTab(props) {
                     ...state,
                     id: props.id,
                     files: props.files,
-                    archivedRecordNumber: props.employee ? props.employee.archivedRecordNumber : '',
+                    archivedRecordNumber: props.employee?.archivedRecordNumber ? props.employee.archivedRecordNumber : '',
                     employee: props.employee,
                 }
             })

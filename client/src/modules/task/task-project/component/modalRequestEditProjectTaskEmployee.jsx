@@ -4,16 +4,17 @@ import { withTranslate } from 'react-redux-multilingual';
 import { DatePicker, DialogModal, ErrorLabel, SelectBox, TimePicker } from '../../../../common-components';
 import moment from 'moment'
 import { checkIfHasCommonItems, checkIsNullUndefined, getSalaryFromUserId, numberWithCommas } from '../../task-management/component/functionHelpers';
-import { convertUserIdToUserName, getCurrentProjectDetails, getEstimateHumanCostFromParams, getEstimateMemberCost, getMaxMinDateInArr, getNearestIntegerNumber, getNewTasksListAfterCR, getProjectParticipants, handleWeekendAndWorkTime, MILISECS_TO_DAYS, MILISECS_TO_HOURS, processAffectedTasksChangeRequest, getEstimateCostOfProject, getEndDateOfProject } from '../../../project/component/projects/functionHelper';
+import { convertUserIdToUserName, getCurrentProjectDetails, getEstimateHumanCostFromParams, getEstimateMemberCost, getMaxMinDateInArr, getNearestIntegerNumber, getNewTasksListAfterCR, getProjectParticipants, handleWeekendAndWorkTime, MILISECS_TO_DAYS, MILISECS_TO_HOURS, processAffectedTasksChangeRequest, getEstimateCostOfProject, getEndDateOfProject } from '../../../project/projects/components/functionHelper';
 import ValidationHelper from '../../../../helpers/validationHelper';
 import { TaskFormValidator } from '../../task-management/component/taskFormValidator';
 import dayjs from 'dayjs';
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import { getStorage } from '../../../../config';
-import { ProjectActions } from '../../../project/redux/actions';
+import { ProjectActions } from '../../../project/projects/redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { taskManagementActions } from '../../task-management/redux/actions';
 import { RoleActions } from '../../../super-admin/role/redux/actions';
+import { ChangeRequestActions } from '../../../project/change-requests/redux/actions';
 
 const ModalRequestEditProjectTaskEmployee = (props) => {
     const { task, translate, progress, project, id, user, currentProjectTasks, tasks } = props;
@@ -988,11 +989,11 @@ function mapState(state) {
 const mapDispatchToProps = {
     getProjectsDispatch: ProjectActions.getProjectsDispatch,
     deleteProjectDispatch: ProjectActions.deleteProjectDispatch,
-    getListProjectChangeRequestsDispatch: ProjectActions.getListProjectChangeRequestsDispatch,
+    getListProjectChangeRequestsDispatch: ChangeRequestActions.getListProjectChangeRequestsDispatch,
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
     getTasksByProject: taskManagementActions.getTasksByProject,
     showInfoRole: RoleActions.show,
-    createProjectChangeRequestDispatch: ProjectActions.createProjectChangeRequestDispatch,
+    createProjectChangeRequestDispatch: ChangeRequestActions.createProjectChangeRequestDispatch,
 }
 
 const modalRequestEditProjectTaskEmployee = connect(mapState, mapDispatchToProps)(withTranslate(ModalRequestEditProjectTaskEmployee));

@@ -13,7 +13,7 @@ import { DepartmentActions } from '../../../super-admin/organizational-unit/redu
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { performTaskAction } from "../../task-perform/redux/actions";
 import { taskManagementActions } from '../redux/actions';
-import { ProjectActions } from "../../../project/redux/actions";
+import { ProjectActions } from "../../../project/projects/redux/actions";
 import { TaskAddModal } from './taskAddModal';
 import { ModalPerform } from '../../task-perform/component/modalPerform';
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
@@ -510,7 +510,7 @@ class TaskManagement extends Component {
                     startDate: getFormatDateFromTime(dataTemp[n].startDate, 'dd-mm-yyyy'),
                     endDate: getFormatDateFromTime(dataTemp[n].endDate, 'dd-mm-yyyy'),
                     status: this.checkTaskRequestToClose(dataTemp[n]),
-                    progress: dataTemp[n].progress ? dataTemp[n].progress + "%" : "0%",
+                    progress: dataTemp[n].progress ? dataTemp[n].progress : 0,
                     totalLoggedTime: getTotalTimeSheetLogs(dataTemp[n].timesheetLogs),
                     parent: dataTemp[n].parent ? dataTemp[n].parent._id : null
                 }

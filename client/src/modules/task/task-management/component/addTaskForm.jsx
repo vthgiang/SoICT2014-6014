@@ -12,7 +12,7 @@ import { taskManagementActions } from '../redux/actions';
 import { DatePicker, TimePicker, SelectBox, ErrorLabel, ToolTip, TreeSelect, QuillEditor } from '../../../../common-components';
 import { TaskFormValidator } from './taskFormValidator';
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
-import ModalAddProject from '../../../project/component/projects/createProject';
+import ModalAddProject from '../../../project/projects/components/createProject';
 import { RoleActions } from '../../../super-admin/role/redux/actions';
 import { ROOT_ROLE } from '../../../../helpers/constants';
 import dayjs from "dayjs";
