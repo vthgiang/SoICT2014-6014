@@ -154,12 +154,12 @@ const CarrierAllTimesTransportMission = lazy(() => import("../modules/production
 
 // import AnswerAuthQuestionPage from '../modules/auth/components/answerAuthQuestion';
 
-const Project = lazy(() => import("../modules/project/component/projects/index"))
-const Phase = lazy(() => import("../modules/project/component/phases/index"))
-const PhaseDetail = lazy(() => import("../modules/project/component/phases/detailPhase"))
-const ProjectDetailPage = lazy(() => import("../modules/project/component/projects/detailProjectPage"))
-const ProjectReport = lazy(() => import("../modules/project/component/reports/index"))
-const ProjectEvaluation = lazy(() => import("../modules/project/component/evaluations/index"))
+const Project = lazy(() => import("../modules/project/projects/components/index"))
+// const Phase = lazy(() => import("../modules/project/component/phases/index"))
+// const PhaseDetail = lazy(() => import("../modules/project/component/phases/detailPhase"))
+const ProjectDetailPage = lazy(() => import("../modules/project/projects/components/detailProjectPage"))
+const ProjectReport = lazy(() => import("../modules/project/reports/components/index"))
+const ProjectStatistic = lazy(() => import("../modules/project/statistic/components/index"))
 const UserGuide = lazy(() => import("../modules/user-guide/components"))
 const AllTimeSheetLog = lazy(() => import("../modules/task/task-dashboard/statistic/allTimeSheetLog"))
 
@@ -2656,7 +2656,7 @@ class Routes extends Component {
                         layout={Layout}
                         component={Project}
                     />
-                    <PrivateRoute
+                    {/* <PrivateRoute
                         isLoading={false}
                         key={"/project/phases-list"}
                         arrPage={[
@@ -2717,7 +2717,7 @@ class Routes extends Component {
                         pageName={"issues_list"}
                         layout={Layout}
                         component={Project}
-                    />
+                    /> */}
                     <PrivateRoute
                         isLoading={false}
                         key={"/project/project-report"}
@@ -2754,7 +2754,7 @@ class Routes extends Component {
                         path={"/project/project-evaluation"}
                         pageName={"project_evaluation"}
                         layout={Layout}
-                        component={ProjectEvaluation}
+                        component={ProjectStatistic}
                     />
 
                     <PrivateRoute

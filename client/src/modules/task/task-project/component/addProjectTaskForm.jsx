@@ -15,7 +15,7 @@ import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import { RoleActions } from '../../../super-admin/role/redux/actions';
 import { ROOT_ROLE } from '../../../../helpers/constants';
 import dayjs from "dayjs";
-import { convertUserIdToUserName, getCurrentProjectDetails, getDurationWithoutSatSun, getEstimateHumanCostFromParams, getEstimateMemberCost, getMaxMinDateInArr, getNearestIntegerNumber, getProjectParticipants, handleWeekendAndWorkTime } from '../../../project/component/projects/functionHelper';
+import { convertUserIdToUserName, getCurrentProjectDetails, getDurationWithoutSatSun, getEstimateHumanCostFromParams, getEstimateMemberCost, getMaxMinDateInArr, getNearestIntegerNumber, getProjectParticipants, handleWeekendAndWorkTime } from '../../../project/projects/components/functionHelper';
 import moment from 'moment';
 import { checkIfHasCommonItems, getSalaryFromUserId, numberWithCommas } from '../../task-management/component/functionHelpers';
 

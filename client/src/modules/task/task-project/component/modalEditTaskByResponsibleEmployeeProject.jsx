@@ -9,7 +9,7 @@ import { TaskInformationForm } from '../../task-perform/component/taskInformatio
 
 import { managerKpiActions } from '../../../kpi/employee/management/redux/actions';
 import { performTaskAction } from '../../task-perform/redux/actions';
-import { ProjectActions } from '../../../project/redux/actions';
+import { ProjectActions } from '../../../project/projects/redux/actions';
 
 class ModalEditTaskByResponsibleEmployeeProject extends Component {
 

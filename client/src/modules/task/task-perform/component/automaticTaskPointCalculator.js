@@ -1,6 +1,6 @@
 import moment from 'moment';
 import Swal from 'sweetalert2';
-import { getDurationWithoutSatSun, MILISECS_TO_HOURS } from '../../../project/component/projects/functionHelper';
+import { getDurationWithoutSatSun, MILISECS_TO_HOURS } from '../../../project/projects/components/functionHelper';
 var mexp = require('math-expression-evaluator'); // native js package
 
 export const AutomaticTaskPointCalculator = {

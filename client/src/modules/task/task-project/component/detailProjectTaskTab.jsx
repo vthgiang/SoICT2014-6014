@@ -24,12 +24,12 @@ import parse from 'html-react-parser';
 import { TaskAddModal } from '../../task-management/component/taskAddModal';
 import { ModalAddTaskTemplate } from '../../task-template/component/addTaskTemplateModal';
 
-import { ProjectActions } from "../../../project/redux/actions";
+import { ProjectActions } from "../../../project/projects/redux/actions";
 import { ROOT_ROLE } from '../../../../helpers/constants';
 import dayjs from 'dayjs';
 import { RequestToCloseProjectTaskModal } from './requestToCloseProjectTaskModal';
 import { ModalRequestEditProjectTaskEmployee } from './modalRequestEditProjectTaskEmployee';
-import { checkIfAbleToCRUDProject, getCurrentProjectDetails } from '../../../project/component/projects/functionHelper';
+import { checkIfAbleToCRUDProject, getCurrentProjectDetails } from '../../../project/projects/components/functionHelper';
 class DetailProjectTaskTab extends Component {
 
     constructor(props) {

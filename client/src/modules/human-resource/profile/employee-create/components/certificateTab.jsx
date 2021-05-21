@@ -21,8 +21,8 @@ function CertificateTab(props) {
             return {
                 ...state,
                 id: props.id,
-                degrees: props.employee ? props.employee.degrees : [],
-                certificates: props.employee ? props.employee.certificates : []
+                degrees: props.employee?.degrees ? props.employee.degrees : [],
+                certificates: props.employee?.certificates ? props.employee.certificates : []
             }
         })
     }, [props.id, props.employee?.degrees, props.employee?.certificates])

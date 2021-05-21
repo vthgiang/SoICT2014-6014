@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import './treeTable.css';
+import ProgressBar from 'react-bootstrap/ProgressBar'
 
 class TreeTable extends Component {
     constructor(props) {
@@ -145,7 +146,6 @@ class TreeTable extends Component {
                     queue.push(item.children[k]);
                 }
             }
-
             return false;
         }
 
@@ -249,7 +249,7 @@ class TreeTable extends Component {
 
     render() {
         const { translate, column, data, actions = true, tableId = 'tree-table' } = this.props;
-
+        let columnProgressIndex = column.findIndex((column) => column.key === "progress");
         return (
             <React.Fragment>
                 <table id={tableId} className="table table-striped table-hover table-bordered" style={{ marginBottom: 0 }}>
@@ -266,7 +266,16 @@ class TreeTable extends Component {
                                     {
                                         rows.row.map((x, index) => index === 0 ?
                                             <td key={index} data-column="name">{x}</td> :
-                                            <td key={index}>{x}</td>
+                                            index !== columnProgressIndex ?
+                                                <td key={index}>{x}</td> :
+                                                <td key={index}>
+                                                    <div >
+                                                        {x + "%"}
+                                                    </div>
+                                                    <div >
+                                                        <ProgressBar style={{ backgroundColor: "#DDD" }} min="0" max="100" now={x} />
+                                                    </div>
+                                                </td>
                                         )
                                     }
                                     {actions &&

@@ -1643,7 +1643,7 @@ class EvaluateByAccountableEmployee extends Component {
     render() {
         const { translate, user, KPIPersonalManager, performtasks } = this.props;
         const { isEval, startDate, endDate, endTime, startTime, storedEvaluatingMonth, evaluatingMonth, task, date, oldAutoPoint, autoPoint, errorOnDate, errorOnMonth, showAutoPointInfo, dentaDate, prevDate, info, results, empPoint, progress,
-            errorInfo, errorOnStartDate, errorOnEndDate, errorApprovedPoint, errorContribute, errSumContribution, indexReRender, unit, kpi, evaluation } = this.state;
+            errorOnProgress, errorInfo, errorOnStartDate, errorOnEndDate, errorApprovedPoint, errorContribute, errSumContribution, indexReRender, unit, kpi, evaluation } = this.state;
         const { id, perform, role, hasAccountable } = this.props;
 
         let listKpi = [];
@@ -1823,6 +1823,8 @@ class EvaluateByAccountableEmployee extends Component {
                                     perform={perform}
                                     id={id}
                                     value={this.state}
+                                    progress={progress}
+                                    errorOnProgress={errorOnProgress}
                                     disabled={disabled}
                                 />
 

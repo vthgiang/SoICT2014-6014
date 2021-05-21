@@ -168,7 +168,7 @@ const EmployeeEditFrom = (props) => {
                 });
             };
         }
-        shouldUpdate()
+        shouldUpdate();
         return () => {
             mountedRef.current = false;
         }

@@ -10,9 +10,9 @@ import { ModalShowAutoPointInfoProjectTask } from './modalShowAutoPointInfoProje
 import { getStorage } from '../../../../config';
 import moment from 'moment';
 import "../../task-perform/component/scrollBar.css";
-import { getCurrentProjectDetails } from '../../../project/component/projects/functionHelper';
+import { getCurrentProjectDetails } from '../../../project/projects/components/functionHelper';
 import { checkIsNullUndefined } from '../../task-management/component/functionHelpers';
-import { ProjectActions } from '../../../project/redux/actions';
+import { ProjectActions } from '../../../project/projects/redux/actions';
 import { ModalShowAutoPointInfoProjectMember } from './modalShowAutoPointInfoProjectMember';
 
 const EvaluateByResponsibleEmployeeProject = (props) => {
