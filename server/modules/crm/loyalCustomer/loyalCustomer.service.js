@@ -26,7 +26,7 @@ exports.getLoyalCustomers = async (userId, portal, companyId, query, currentRole
     if (listAllCustomer) customers = listAllCustomer.customers;
     let loyalCustomers = [];
     for (const customer of customers) {
-        let listSaleOrder = await getAllSalesOrders(userId, { page: 1, limit: 100, currentRole, customer: customer._id }, portal);
+        let listSaleOrder = await getAllSalesOrders(userId, { page: 1, limit: 100, currentRole, customer: customer._id }, portal,true);
         let saleOrders;
         if (listSaleOrder) saleOrders = listSaleOrder.allSalesOrders.docs;
         let totalOrderValue = 0;
@@ -46,6 +46,6 @@ exports.getLoyalCustomers = async (userId, portal, companyId, query, currentRole
         loyalCustomers = [...loyalCustomers, { customer, totalOrder: saleOrders.length, totalOrderValue, rankPoint,totalPromotion }];
     }
      loyalCustomers =  loyalCustomers.sort((a, b) => (a.rankPoint < b.rankPoint) ? 1 : -1).filter((x)=>x.rankPoint>0);
-    return loyalCustomers
+    return {listDocsTotal: loyalCustomers.length, loyalCustomers}
 }
 

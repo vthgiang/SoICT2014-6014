@@ -83,7 +83,7 @@ module.exports = {
     Product: require('./crm/product.model'),
     ProductCategory: require('./crm/productCategory.model'),
     ProductDiscount: require('./crm/productDiscount.model'),
-
+    CrmTask: require('./crm/crmTask.model'),
 
     //order
     BankAccount: require('./production/order/bankAccount.model'),

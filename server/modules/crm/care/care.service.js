@@ -1,5 +1,7 @@
 const { Care } = require('../../../models');
 const { connect } = require(`../../../helpers/dbHelper`);
+const { getCrmTask } = require('../crmTask/crmTask.service');
+const { createTaskAction, evaluationAction } = require('../../task/task-perform/taskPerform.service')
 const STATUS_VALUE = {
     unfulfilled: 1,
     processing: 2,
@@ -8,8 +10,10 @@ const STATUS_VALUE = {
     completedOverdue: 5
 };
 exports.createCare = async (portal, companyId, data, userId) => {
+
+    console.log('DATA', data);
     let { startDate, endDate } = data;
-   
+
 
     if (startDate) {
         const date = startDate.split('-');
@@ -25,7 +29,7 @@ exports.createCare = async (portal, companyId, data, userId) => {
     }
 
     if (userId) {
-        data = { ...data, creator: userId ,updatedBy:userId };
+        data = { ...data, creator: userId, updatedBy: userId };
     }
     //------------
 
@@ -142,19 +146,51 @@ exports.editCare = async (portal, companyId, id, data, userId) => {
         endDate = [date[2], date[1], date[0]].join("-");
         data = { ...data, endDate };
     }
-
+    const oldCare = await Care(connect(DB_CONNECTION, portal)).findOne({ _id: id });
     await Care(connect(DB_CONNECTION, portal)).findByIdAndUpdate(id, {
         $set: data
     }, { new: true });
+    await Care(connect(DB_CONNECTION, portal)).findOne({ _id: id });
 
-    return await Care(connect(DB_CONNECTION, portal)).findOne({ _id: id })
+    const newCare = await Care(connect(DB_CONNECTION, portal)).findOne({ _id: id })
         .populate({ path: 'creator', select: '_id name' })
         .populate({ path: 'customer', select: '_id name' })
         .populate({ path: 'customerCareStaffs', select: '_id name' })
         .populate({ path: 'customerCareTypes', select: '_id name' })
+
+    if (oldCare.status != newCare.status && (newCare.status == STATUS_VALUE.completedOverdue || newCare.status == STATUS_VALUE.accomplished)) {
+        // Ghi lại công việc
+        //lấy công việc chăm sóc khách hàng của nhân viên
+
+        const crmTask = await getCrmTask(portal, userId, 2);
+        //thêm mới hoạt động váo công việc
+        let params = { taskId: crmTask.task }
+        let body = {
+            creator: userId,
+            description: `<p> <strong> ${newCare.name}</strong>, tên khách hàng : <strong> ${newCare.customer.name}</strong>  </p>`,
+            index: '1'
+        }
+        const action = await createTaskAction(portal, params, body, []);
+        // thực hiện đánh giá cho hoạt động
+        params = { taskId: crmTask.task, actionId: action.taskActions[0]._id }
+        body = {
+            rating: parseFloat(newCare.evaluation.point),
+            actionImportanceLevel: 10,
+            firstTime: 1,
+            type: 'evaluation',
+            role: 'accountable',
+            creator: userId
+        }
+        evaluationAction(portal, params, body)
+
+    }
+
+    return newCare;
 }
 
 exports.deleteCare = async (portal, companyId, id) => {
     let delCare = await Care(connect(DB_CONNECTION, portal)).findOneAndDelete({ _id: id });
     return delCare;
 }
+
+

@@ -1,6 +1,7 @@
 const { Customer, User } = require('../../../models');
 const { connect } = require(`../../../helpers/dbHelper`);
-
+const { getCrmTask } = require('../crmTask/crmTask.service')
+const { createTaskAction } = require('../../task/task-perform/taskPerform.service')
 exports.getUrl = (destination, filename) => {
     let url = `${destination}/${filename}`;
     return url.substr(1, url.length);
@@ -61,6 +62,18 @@ exports.createCustomer = async (portal, companyId, data, userId, fileConverts) =
     }
 
     const newCustomer = await Customer(connect(DB_CONNECTION, portal)).create(data);
+    // them vao hoạt động tìm kiếm khách hàng
+    //lấy công việc thêm khách hàng của nhân viên
+    const crmTask = await getCrmTask(portal, userId, 1);
+    //thêm mới hoạt động váo công việc
+    const params = { taskId: crmTask.task }
+    const body = {
+        creator: userId,
+        description: `<p>Thêm mới khách hàng<strong> ${newCustomer.name}</strong></p>`,
+        index: '1'
+    }
+    createTaskAction(portal, params, body, []);
+
     const getNewCustomer = await Customer(connect(DB_CONNECTION, portal)).findById(newCustomer._id)
         .populate({ path: 'group', select: '_id name' })
         .populate({ path: 'status', select: '_id name' })
@@ -105,6 +118,21 @@ exports.importCustomers = async (portal, companyId, data, userId) => {
     }
 
     const result = await Customer(connect(DB_CONNECTION, portal)).insertMany(data);
+
+
+    // them vao hoạt động tìm kiếm khách hàng
+    //lấy công việc thêm khách hàng của nhân viên
+    const crmTask = await getCrmTask(portal, userId, 1);
+    //thêm mới hoạt động váo công việc
+    const params = { taskId: crmTask.task }
+    for ([index, x] of data.entries()) {
+        const body = {
+            creator: userId,
+            description: `<p>Thêm mới khách hàng<strong> ${x.name}</strong></p>`,
+            index: '1'
+        }
+        createTaskAction(portal, params, body, []);
+    }
 
     let getResult = [];
     for (let obj of result) {
@@ -298,7 +326,7 @@ exports.addRankPoint = async (portal, companyId, id, data, userId) => {
     const now = new Date();
     const month = now.getMonth();
     const year = now.getFullYear();
-    rankPoints = await [...rankPoints, { point: (paymentAmount / 10000), expirationDate: new Date(month+3,year) }]
+    rankPoints = await [...rankPoints, { point: (paymentAmount / 10000), expirationDate: new Date(month + 3, year) }]
     getCustomer = await { getCustomer, rankPoints };
     return await Customer(connect(DB_CONNECTION, portal)).findByIdAndUpdate(id, {
         $set: getCustomer
