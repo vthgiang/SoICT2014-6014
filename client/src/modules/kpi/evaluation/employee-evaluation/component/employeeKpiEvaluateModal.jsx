@@ -426,7 +426,7 @@ function EmployeeKpiEvaluateModal(props) {
                                             </div>
                                             <div>
                                                 <label>{translate('kpi.evaluation.employee_evaluation.weekly_point')}:</label>
-                                                <a style={{ cursor: 'pointer' }} onClick={() => showWeeklyPoint(item?.weeklyEvaluate)}> {translate('general.detail')}</a>
+                                                <a style={{ cursor: 'pointer' }} onClick={() => showWeeklyPoint(item?.weeklyEvaluations)}> {translate('general.detail')}</a>
                                             </div>
                                             {item.updatedAt &&
                                                 <div>

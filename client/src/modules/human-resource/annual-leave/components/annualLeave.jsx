@@ -218,5 +218,4 @@ const actionCreators = {
     getNumberAnnaulLeave: AnnualLeaveActions.searchAnnualLeaves,
 };
 
-const annualLeave = connect(mapState, actionCreators)(withTranslate(AnnualLeave));
-export { annualLeave as AnnualLeave };
+export default connect(mapState, actionCreators)(withTranslate(AnnualLeave));
