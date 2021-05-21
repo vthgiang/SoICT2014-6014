@@ -869,7 +869,7 @@ exports.updateAssetInformation = async (
         editFiles,
         deleteFiles,
     } = data;
-    console.log("data", data);
+
     let avatar = fileInfo.avatar === "" ? data.avatar : fileInfo.avatar,
         file = fileInfo.file;
     let oldAsset = await Asset(connect(DB_CONNECTION, portal)).findById(id);

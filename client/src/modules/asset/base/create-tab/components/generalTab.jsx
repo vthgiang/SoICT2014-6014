@@ -526,9 +526,11 @@ function GeneralTab(props) {
         }
     };
 
+    console.log("7777", prevProps.assignedToUser !== props.assignedToUser, props.assignedToUser === null)
     if (prevProps.id !== props.id
         || prevProps.assignedToUser !== props.assignedToUser
         || prevProps.assignedToOrganizationalUnit !== props.assignedToOrganizationalUnit){
+            console.log("6666", props.assignedToUser)
             setState(state => {
                 return{
                     ...state,
@@ -571,6 +573,7 @@ function GeneralTab(props) {
             setPrevProps(props)
         }
     
+        console.log("555", state.assignedToUser)
         const { id, translate, user, assetsManager, role, department, assetType } = props;
         const {
             img, defaultAvatar, code, assetName, assetTypes, group, serial, purchaseDate, warrantyExpirationDate, managedBy, isObj,
@@ -786,17 +789,15 @@ function GeneralTab(props) {
                                 {/* Người sử dụng */}
                                 <div className={`form-group`}>
                                     <label>{translate('asset.general_information.user')}</label>
-                                    <div id="assignedToUserBox">
-                                        <SelectBox
-                                            id={`assignedToUserBox${assignedToUser}`}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            value={assignedToUser ? assignedToUser : ""}
-                                            items={[{ value: 'null', text: 'Chưa có người được giao sử dụng' }, ...userlist.map(x => { return { value: x.id, text: x.name + " - " + x.email } })]}
-                                            multiple={false}
-                                            disabled
-                                        />
-                                    </div>
+                                    {console.log("assignedToUser", assignedToUser)}
+                                    <SelectBox
+                                        id={`assignedToUserBox${id}`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        value={assignedToUser ?? -1}
+                                        items={[{ value: -1, text: 'Chưa có người được giao sử dụng' }, ...userlist.map(x => { return { value: x.id, text: x.name + " - " + x.email } })]}
+                                        disabled
+                                    />
                                 </div>
 
                                 {/* Đơn vị sử dụng */}
@@ -807,8 +808,8 @@ function GeneralTab(props) {
                                             id={`assignedToOrganizationalUnitBox${assignedToOrganizationalUnit}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
-                                            items={[{ value: 'null', text: 'Chưa có đơn vị được giao sử dụng' }, ...departmentlist.map(x => { return { value: x._id, text: x.name } })]}
-                                            value={assignedToOrganizationalUnit ? assignedToOrganizationalUnit : ""}
+                                            items={[{ value: -1, text: 'Chưa có đơn vị được giao sử dụng' }, ...departmentlist.map(x => { return { value: x._id, text: x.name } })]}
+                                            value={assignedToOrganizationalUnit ?? -1}
                                             multiple={false}
                                             disabled
                                         />
