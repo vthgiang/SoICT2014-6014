@@ -893,6 +893,11 @@ exports.getCurrentTaskTimesheetLogOfEmployeeInOrganizationalUnit = async (portal
  * Thêm bình luận của hoạt động
  */
 exports.createCommentOfTaskAction = async (portal, params, body, files, user) => {
+    console.log('params',params);
+    console.log('body',body);
+    console.log('user',user)
+    console.log('file',files);
+   
     let commentOfTaskAction = await Task(connect(DB_CONNECTION, portal)).findOneAndUpdate(
         { _id: params.taskId, "taskActions._id": params.actionId },
         {
@@ -1193,6 +1198,7 @@ exports.deleteCommentOfTaskAction = async (portal, params) => {
  */
 
 exports.createTaskAction = async (portal, params, body, files) => {
+
     let actionInformation = {
         creator: body.creator,
         description: body.description,
@@ -1964,6 +1970,7 @@ exports.deleteCommentOfTaskComment = async (portal, params) => {
  * Đánh giá hoạt động
  */
 exports.evaluationAction = async (portal, params, body) => {
+    
     // Kiểm tra xem đánh giá hoạt động đã tồn tại hay chưa - nếu chưa tạo mới, nếu có ghi đè
     let danhgia = await Task(connect(DB_CONNECTION, portal)).aggregate([
         { $match: { _id: mongoose.Types.ObjectId(params.taskId) } },
@@ -2864,7 +2871,7 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
             })
         }
     }
-    
+
     // cập nhật thông tin cơ bản
     await Task(connect(DB_CONNECTION, portal)).updateOne(
         { _id: taskId },
@@ -2901,7 +2908,7 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
             fs.unlinkSync(SERVER_DIR + "/" + filepath.toString());
         })
     }
-    
+
     let task = await Task(connect(DB_CONNECTION, portal)).findById(taskId);
 
     // list info
@@ -6028,6 +6035,7 @@ exports.editDocument = async (portal, taskId, documentId, body, files) => {
  *  thêm bình luận
  */
 exports.createComment = async (portal, params, body, files) => {
+   
     const commentss = {
         description: body.description,
         creator: body.creator,

@@ -35,9 +35,11 @@ export function loyalCustomers(state = initState, action) {
    
 
         case CrmLoyalCustomerConstants.GET_CRM_LOYALCUSTOMERS_SUCCESS:
+            console.log('payload',action.payload);
             return {
                 ...state,
-                list: action.payload,
+                totalDocs:action.payload.listDocsTotal,
+                list: action.payload.loyalCustomers,
                 isLoading: false,
             };
 
