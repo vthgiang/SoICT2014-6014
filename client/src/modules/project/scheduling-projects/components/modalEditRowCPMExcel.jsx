@@ -255,7 +255,7 @@ const ModalEditRowCPMExcel = (props) => {
     }
 
     useEffect(() => {
-        props.getProjectsDispatch({ calledId: "all", userId });
+        props.getProjectsDispatch({ calledId: "user_all", userId });
         props.getAllUserInAllUnitsOfCompany();
     }, [])
 

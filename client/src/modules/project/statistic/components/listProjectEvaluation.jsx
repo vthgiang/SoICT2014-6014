@@ -23,7 +23,7 @@ function ListProjectEvaluation(props) {
 
     useEffect(() => {
         props.getProjectsDispatch({ calledId: "paginate", page, limit, userId });
-        props.getProjectsDispatch({ calledId: "all", userId });
+        props.getProjectsDispatch({ calledId: "user_all", userId });
         props.getAllUserInAllUnitsOfCompany();
     }, [])
 

@@ -31,7 +31,7 @@ const EvaluateByResponsibleEmployeeProject = (props) => {
     );
 
     useEffect(() => {
-        props.getProjectsDispatch({ calledId: "all", userId });
+        props.getProjectsDispatch({ calledId: "user_all", userId });
     }, [])
 
     const calcAutomaticPoint = (type) => {

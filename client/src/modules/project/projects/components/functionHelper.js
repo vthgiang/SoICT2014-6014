@@ -19,9 +19,11 @@ export const checkIfAbleToCRUDProject = ({ project, user, currentProjectId }) =>
     return checkIfCurrentRoleIsUnitManager || checkIfCurrentIdIsProjectManagerOrCreator;
 }
 
-export const getCurrentProjectDetails = (project, projectId = undefined) => {
+export const getCurrentProjectDetails = (project, projectId = undefined, type = 'user_all') => {
     const currentProjectId = projectId || window.location.href.split('?id=')[1];
-    const projectDetail = project?.data?.list?.filter(item => item._id === currentProjectId)?.[0];
+    const projectDetail = type === 'user_all'
+        ? project?.data?.listbyuser?.filter(item => item._id === currentProjectId)?.[0]
+        : project?.data?.list?.filter(item => item._id === currentProjectId)?.[0];
     return projectDetail;
 }
 
@@ -535,4 +537,29 @@ export const getEstimateCostOfProject = (currentProjectTasks) => {
         estCost += Number(taskItem.estimateNormalCost)
     }
     return estCost;
+}
+
+export const getEstimateMemberCostOfTask = (task, projectDetail, userId) => {
+    let estimateNormalMemberCost = 0;
+    if (!task || !projectDetail) return 0;
+    const currentEmployee = task.actorsWithSalary.find((actorSalaryItem) => {
+        return String(actorSalaryItem.userId) === String(userId)
+    });
+    if (currentEmployee) {
+        estimateNormalMemberCost = Number(currentEmployee.salary) * Number(currentEmployee.weight / 100) * task.estimateNormalTime
+            / (projectDetail.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS);
+    }
+    return estimateNormalMemberCost;
+}
+
+export const getActualMemberCostOfTask = (task, projectDetail, userId) => {
+    let actualNormalMemberCost = 0;
+    if (!task || !projectDetail) return 0;
+    const currentEmployee = task.actorsWithSalary.find((actorSalaryItem) => {
+        return String(actorSalaryItem.userId) === String(userId)
+    });
+    if (currentEmployee) {
+        actualNormalMemberCost = Number(currentEmployee.actualCost || 0);
+    }
+    return actualNormalMemberCost;
 }

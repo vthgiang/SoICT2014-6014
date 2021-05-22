@@ -20,7 +20,7 @@ const ModalDetailReport = (props) => {
     const currentTasks = tasks?.tasksbyproject;
 
     useEffect(() => {
-        props.getProjectsDispatch({ calledId: "all", userId });
+        props.getProjectsDispatch({ calledId: "user_all", userId });
         props.getAllUserInAllUnitsOfCompany();
         props.getTasksByProject(projectDetailId || projectDetail?._id)
     }, [currentProjectId])

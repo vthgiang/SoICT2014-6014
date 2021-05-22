@@ -163,7 +163,7 @@ const TaskProjectAddModal = (props) => {
     useEffect(() => {
         const userId = getStorage("userId");
         const currentRole = getStorage("currentRole");
-        props.getProjectsDispatch({ calledId: "all", userId });
+        props.getProjectsDispatch({ calledId: "user_all", userId });
         props.getRoleSameDepartment(currentRole);
     }, [])
 
