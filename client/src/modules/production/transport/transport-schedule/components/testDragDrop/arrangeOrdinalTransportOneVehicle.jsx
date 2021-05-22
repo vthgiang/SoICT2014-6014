@@ -4,7 +4,8 @@ import { withTranslate } from "react-redux-multilingual";
 
 import { SortableComponent } from "./sortableComponent"
 
-import { MapContainer } from "../googleReactMap/maphook"
+// import { MapContainer } from "../googleReactMap/maphook"
+import { MapContainer } from "../../../transportHelper/googleReactMap/mapContainer"
 
 import { reverseConvertDistanceToKm, convertDistanceToKm, reverseConvertTimeToMinutes, convertTimeToMinutes } from "../../../transportHelper/convertDistanceAndDuration"
 

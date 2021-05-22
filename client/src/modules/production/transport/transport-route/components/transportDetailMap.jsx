@@ -16,7 +16,9 @@ function TransportDetailMap(props) {
     let {currentVehicleRoute, transportPlanId, socket, getLocateOnMap, stopGetLocateOnMap, currentLocationOnMap} = props;
     const [ currentPosition, setCurrentPosition ] = useState({});
     
-    const [currentMarker, setCurrentMarker] = useState([])
+    const [driverLocation, setDriverLocation] = useState([])
+    const [nonDirectLocations, setNonDirectLocations] = useState([])
+    const [locations, setLocations] = useState([]);
     // const [timer, setTimer] =useState()
     // useEffect(() => {
     //     console.log(currentVehicleRoute, " day la route")
@@ -26,22 +28,68 @@ function TransportDetailMap(props) {
             console.log(currentLocationOnMap);
             console.log(typeof currentLocationOnMap);
             let {lat, lng} = convertStringNavigatorGeocode(currentLocationOnMap);
-            // setCurrentMarker([{
+            // setDriverLocation([{
             //     name: "c",
             //     location: {
             //         lat: parseFloat(currentLocationOnMap.slice(a1+5,a2)),
             //         lng: parseFloat(currentLocationOnMap.slice(b1+5,b2))
             //     }
             // }])
-            setCurrentMarker([{
-                name: "c",
-                location: {
-                    lat: lat,
-                    lng: lng
-                }
-            }])
+            if (Number(lat)>=0 && Number(lng)>=0){
+                setDriverLocation([{
+                    name: "c",
+                    location: {
+                        lat: lat,
+                        lng: lng
+                    }
+                }])
+            }
+            else {                
+                setDriverLocation([])
+            }
         }
     }, [currentLocationOnMap])
+
+    useEffect(() => {
+        console.log(driverLocation, " bbbbbbbbbbbb")
+    }, [driverLocation])
+
+    useEffect(() => {
+        console.log(currentVehicleRoute, "ok baby")
+        let nonDirect = [];
+        let locationsList = [];
+        if (currentVehicleRoute && currentVehicleRoute.routeOrdinal && currentVehicleRoute.routeOrdinal.length !==0 ){
+            currentVehicleRoute.routeOrdinal.map((mission, index) => {
+                if (Number(mission.type) === 1){
+                    let address= {
+                        name: String(index+1),
+                        location: mission.transportRequirement?.geocode?.fromAddress
+                        
+                    }
+                    if (mission.transportRequirement?.transportStatus?.fromAddress){
+                        nonDirect.push(address)
+                    }
+                    else {
+                        locationsList.push(address);
+                    }
+                }
+                else {
+                    let address={
+                        name: String(index+1),
+                        location: mission.transportRequirement?.geocode?.toAddress
+                    }
+                    if (mission.transportRequirement?.transportStatus?.toAddress){
+                        nonDirect.push(address)
+                    }
+                    else {
+                        locationsList.push(address);
+                    }
+                }
+            })
+        }
+        setNonDirectLocations(nonDirect);
+        setLocations(locationsList);
+    }, [currentVehicleRoute])
     // useEffect(() => {
     //     if (getLocateOnMap){
     //         setTimer(setInterval(() => {
@@ -106,8 +154,9 @@ function TransportDetailMap(props) {
                     <div style={{height: "600px"}}>
 
                         <MapContainer
-                            locations={currentMarker}
-                            // defaultCenter = {currentMarker?currentMarker[0]?.location:undefined}
+                            driverLocation={driverLocation}
+                            locations={locations}
+                            nonDirectLocations={nonDirectLocations}
                         />
                     </div>
                 </form>

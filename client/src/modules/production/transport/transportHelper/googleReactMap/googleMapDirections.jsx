@@ -6,9 +6,9 @@ function MapDirectionsRenderer(props) {
     const [directions, setDirections] = useState(null);
     const [error, setError] = useState(null);
   
-    const { places, travelMode, stt } = props;
+    const { places, travelMode, stt, colorLine } = props;
     useEffect(() => {
-        let timeDelay = (typeof stt == 'number')?stt*1000:1000;
+        let timeDelay = (typeof stt == 'number')?stt*2000:2000;
         setTimeout(()=>{
             if (places && travelMode){
                 let waypoints = []
@@ -52,7 +52,7 @@ function MapDirectionsRenderer(props) {
                 {
                     suppressMarkers: true,
                     polylineOptions: {
-                        strokeColor: '#'+Math.floor(Math.random()*16777215).toString(16),
+                        strokeColor: colorLine?colorLine:'#'+Math.floor(Math.random()*16777215).toString(16),
                     },
                     preserveViewport: true,
                 }

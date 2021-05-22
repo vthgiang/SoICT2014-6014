@@ -15,6 +15,23 @@
             defaultZoom={props.defaultZoom}
         >
         {
+            props.driverLocation && props.driverLocation
+            && 
+            props.driverLocation.map(item => {
+                console.log(item, "aaaaaaaaaa");
+                return <Marker key={"driverLocation"} position={item.location} icon={item.icon} label={item.name}/>
+            })
+        }
+        {   
+            props.nonDirectLocations && props.nonDirectLocations.length!==0
+            &&   props.nonDirectLocations.map((item, index) => {            
+                    return (
+                        <Marker key={"nonDirectLocation"+index} position={item.location} icon={item.icon} label={item.name}/>
+                    )
+                })
+            
+        }
+        {
                 props.locations.map((item, index) => {
                 return (
                     <Marker key={item.name} position={item.location} icon={item.icon} label={item.name}/>
@@ -22,16 +39,33 @@
             })
         }
         {
+            props.driverLocation && props.driverLocation.length!==0
+            && props.locations && props.locations.length!==0
+            && 
+            <MapDirectionsRenderer
+                        key = {"direction root"} 
+                        places={[
+                            props.driverLocation[0],
+                            props.locations[0],
+                        ]} 
+                        travelMode={window.google.maps.TravelMode.DRIVING}
+                        stt={0}
+                        colorLine={"red"}    
+                    />
+        }
+        {
             props.locations.map((item, index) =>{
+                console.log(item)
                 return (
                     (index!==0) &&
-                    <MapDirectionsRenderer 
+                    <MapDirectionsRenderer
+                        // key = {"direction "+index} 
                         places={[
                             props.locations[index-1],
                             item,
                         ]} 
                         travelMode={window.google.maps.TravelMode.DRIVING}
-                        stt={index}    
+                        stt={index+1}    
                     />
                 )
             })
@@ -43,7 +77,7 @@
     );
 
     const MapContainer = props => {
-    const {locations} = props;
+    const {locations, driverLocation, nonDirectLocations} = props;
     const {
         loadingElement,
         containerElement,
@@ -59,7 +93,7 @@
             process.env.REACT_APP_API_KEY 
             +'&v=3.exp&libraries=geometry,drawing,places'
         }
-        locations={locations}
+        locations={locations?locations:[]}
         //   loadingElement={loadingElement || <div style={{height: `100%`}}/>}
         loadingElement={loadingElement || <div style={{height: `400px`}}/>}
         // containerElement={containerElement || <div style={{height: "80vh"}}/>}
@@ -68,6 +102,8 @@
         // mapElement={mapElement || <div style={{height: `400px`}}/>}
         defaultCenter={defaultCenter || {lat: 21.078017641, lng: 105.70710958}}
         defaultZoom={defaultZoom || 11}
+        driverLocation={driverLocation?driverLocation:[]}
+        nonDirectLocations={nonDirectLocations?nonDirectLocations:[]}
         />
     );
     };
