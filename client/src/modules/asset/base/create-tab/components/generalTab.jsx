@@ -614,7 +614,7 @@ function GeneralTab(props) {
                                 img ?
                                     < ApiImage className="attachment-img avarta" id={`avatar-imform-${id}`} src={img} />
                                     :
-                                    <img className="customer-avatar" src={defaultAvatar} />
+                                    <img className="customer-avatar" src={defaultAvatar} style={{height:'100%', width:'100%'}}/>
                             }
                         </div>
                         <div className="upload btn btn-default ">
