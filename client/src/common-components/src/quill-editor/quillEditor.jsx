@@ -187,10 +187,12 @@ class QuillEditor extends Component {
 
     componentDidUpdate() {
         const { auth } = this.props
-        const { id, maxHeight, enableEdit } = this.props
+        const { id, maxHeight, enableEdit = true } = this.props
         const { quill } = this.state
 
-        quill && quill.enable(enableEdit);
+        if (quill) {
+            quill.enable(enableEdit);
+        }
 
         if (quill?.container) {
             // Add lại base64 ảnh download từ server
