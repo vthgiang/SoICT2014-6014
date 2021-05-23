@@ -12,6 +12,8 @@ import { kpiMemberActions } from '../../../evaluation/employee-evaluation/redux/
 import { ModalCopyKPIPersonal } from './employeeKpiCopyModal';
 import { ModalDetailKPIPersonal } from './employeeKpiDetailModal';
 
+import { showWeeklyPoint } from './functionHelpers'
+
 var translate = '';
 
 function KPIPersonalManager(props) {
@@ -388,9 +390,8 @@ function KPIPersonalManager(props) {
                         <th title={translate('kpi.evaluation.employee_evaluation.time')}>{translate('kpi.evaluation.employee_evaluation.time')}</th>
                         <th title={translate('kpi.evaluation.employee_evaluation.status')}>{translate('kpi.evaluation.employee_evaluation.status')}</th>
                         <th title={translate('kpi.evaluation.employee_evaluation.number_of_targets')}>{translate('kpi.evaluation.employee_evaluation.number_of_targets')}</th>
-                        <th title={translate('kpi.evaluation.employee_evaluation.system_evaluate')}>{translate('kpi.evaluation.employee_evaluation.system_evaluate')}</th>
-                        <th title={translate('kpi.evaluation.employee_evaluation.result_self_evaluate')}>{translate('kpi.evaluation.employee_evaluation.result_self_evaluate')}</th>
-                        <th title={translate('kpi.evaluation.employee_evaluation.evaluation_management')}>{translate('kpi.evaluation.employee_evaluation.evaluation_management')}</th>
+                        <th title={translate('task.task_management.eval_of')}>{translate('task.task_management.eval_of')}</th>
+                        <th title={translate('kpi.evaluation.employee_evaluation.weekly_point')} style={{ textAlign: "center" }}>{translate('kpi.evaluation.employee_evaluation.weekly_point')}</th>
                         <th title={translate('kpi.evaluation.employee_evaluation.action')}>{translate('kpi.evaluation.employee_evaluation.action')}</th>
                     </tr>
                     </thead>
@@ -401,9 +402,14 @@ function KPIPersonalManager(props) {
                             <td>{formatDate(item.date)}</td>
                             <td>{checkStatusKPI(item.status)}</td>
                             <td>{item.kpis.length}</td>
-                            <td>{item.automaticPoint === null ? translate('kpi.evaluation.employee_evaluation.not_evaluated_yet') : item.automaticPoint}</td>
-                            <td>{item.employeePoint === null ? translate('kpi.evaluation.employee_evaluation.not_evaluated_yet') : item.employeePoint}</td>
-                            <td>{item.approvedPoint === null ? translate('kpi.evaluation.employee_evaluation.not_evaluated_yet') : item.approvedPoint}</td>
+                            <td title={`${translate('kpi.evaluation.dashboard.auto_point')} - ${translate('kpi.evaluation.dashboard.employee_point')} - ${translate('kpi.evaluation.dashboard.approve_point')}`}>
+                                <strong>{item?.automaticPoint !== null && item?.automaticPoint >= 0 ? item.automaticPoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')} - </strong>
+                                <strong>{item?.employeePoint !== null && item?.employeePoint >= 0 ? item.employeePoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')} - </strong>
+                                <strong>{item?.approvedPoint !== null && item?.approvedPoint >= 0 ? item.approvedPoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')}</strong>
+                            </td>
+                            <td style={{ textAlign: "center" }}>
+                                <a style={{ cursor: 'pointer' }} onClick={() => showWeeklyPoint(translate, item?.weeklyEvaluations)}> {translate('general.detail')}</a>
+                            </td>
                             <td>
 
                                 {/**Các Button để xem chi tiết, khởi tạo KPI tháng mới */}

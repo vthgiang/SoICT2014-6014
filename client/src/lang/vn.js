@@ -4029,7 +4029,7 @@ export default {
                         "Điểm (Tự động - Tự đánh giá - Người phê duyệt đánh giá)",
                     weekly_point_field:
                         "Điểm từng tuần (Tự động - Tự đánh giá - Người phê duyệt đánh giá)",
-                    weekly_point: "Điểm đánh giá tuần",
+                    weekly_point: "Đánh giá tuần",
                     week1: "Tuần 1",
                     week2: "Tuần 2",
                     week3: "Tuần 3",

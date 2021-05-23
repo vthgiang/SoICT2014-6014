@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import parse from 'html-react-parser';
 
 import { DialogModal } from '../../../../../common-components/index';
 import { DataTableSetting, ExportExcel } from '../../../../../common-components';
@@ -10,7 +11,8 @@ import { kpiMemberActions } from '../../../evaluation/employee-evaluation/redux/
 import { TaskDialog } from '../../../evaluation/employee-evaluation/component/taskImpotanceDialog';
 import { ModalDetailTask } from '../../../../task/task-dashboard/task-personal-dashboard/modalDetailTask';
 import { EmployeeKpiOverviewModal } from './employeeKpiOverviewModal';
-import parse from 'html-react-parser';
+
+import { showWeeklyPoint } from './functionHelpers'
 
 function ModalDetailKPIPersonal(props) {
 
@@ -313,12 +315,16 @@ function ModalDetailKPIPersonal(props) {
                                                     <span> {item.weight}/100</span>
                                                 </div>
 
-                                                <div>
-                                                    <label>{translate('kpi.evaluation.employee_evaluation.point_field')}:</label>
-                                                    <span> {item.automaticPoint ? item.automaticPoint : translate('kpi.evaluation.employee_evaluation.no_point')}</span>
-                                                    <span> - {item.employeePoint ? item.employeePoint : translate('kpi.evaluation.employee_evaluation.no_point')}</span>
-                                                    <span> - {item.approvedPoint ? item.approvedPoint : translate('kpi.evaluation.employee_evaluation.no_point')}</span>
-                                                </div>
+                                            <div>
+                                                <label>{translate('task.task_management.eval_of')}{` (${translate('kpi.evaluation.dashboard.auto_point')} - ${translate('kpi.evaluation.dashboard.employee_point')} - ${translate('kpi.evaluation.dashboard.approve_point')})`}:</label>
+                                                <span> {item.automaticPoint ? item.automaticPoint : translate('kpi.evaluation.employee_evaluation.not_avaiable')}</span>
+                                                <span> - {item.employeePoint ? item.employeePoint : translate('kpi.evaluation.employee_evaluation.not_avaiable')}</span>
+                                                <span> - {item.approvedPoint ? item.approvedPoint : translate('kpi.evaluation.employee_evaluation.not_avaiable')}</span>
+                                            </div>
+                                            <div>
+                                                <label>{translate('kpi.evaluation.employee_evaluation.weekly_point')}:</label>
+                                                <a style={{ cursor: 'pointer' }} onClick={() => showWeeklyPoint(translate, item?.weeklyEvaluations)}> {translate('general.detail')}</a>
+                                            </div>
 
                                                 {item.updatedAt &&
                                                     <div>

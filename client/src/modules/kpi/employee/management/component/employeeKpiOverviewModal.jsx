@@ -74,9 +74,11 @@ function EmployeeKpiOverviewModal(props) {
                             <th title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.no_')} style={{ width: "50px" }} className="col-fixed">{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.no_')}</th>
                             <th title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.target_name')}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.target_name')}</th>
                             <th title={translate('kpi.organizational_unit.dashboard.trend_chart.amount_tasks')}>{translate('kpi.organizational_unit.dashboard.trend_chart.amount_tasks')}</th>
-                            <th title={translate('kpi.evaluation.dashboard.auto_point')}>{translate('kpi.evaluation.dashboard.auto_point')}</th>
-                            <th title={translate('kpi.evaluation.dashboard.employee_point')}>{translate('kpi.evaluation.dashboard.employee_point')}</th>
-                            <th title={translate('kpi.evaluation.dashboard.approve_point')}>{translate('kpi.evaluation.dashboard.approve_point')}</th>
+                            <th title={translate('task.task_management.eval_of')}>{translate('task.task_management.eval_of')}</th>
+                            <th title={`${translate('kpi.evaluation.employee_evaluation.weekly_point')} 1`}>{translate('kpi.evaluation.employee_evaluation.weekly_point')} 1</th>
+                            <th title={`${translate('kpi.evaluation.employee_evaluation.weekly_point')} 2`}>{translate('kpi.evaluation.employee_evaluation.weekly_point')} 2</th>
+                            <th title={`${translate('kpi.evaluation.employee_evaluation.weekly_point')} 3`}>{translate('kpi.evaluation.employee_evaluation.weekly_point')} 3</th>
+                            <th title={`${translate('kpi.evaluation.employee_evaluation.weekly_point')} 4`}>{translate('kpi.evaluation.employee_evaluation.weekly_point')} 4</th>
                             <th title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.weight')}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.weight')}</th>
                         </tr>
                     </thead>
@@ -86,10 +88,56 @@ function EmployeeKpiOverviewModal(props) {
                                 <tr key={kpi?._id}>
                                     <td>{index + 1}</td>
                                     <td>{kpi?.name}</td>
-                                    <td>{kpi?.amountTask}</td>
-                                    <td>{kpi?.automaticPoint !== null && kpi?.automaticPoint >= 0 ? kpi.automaticPoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')}</td>
-                                    <td>{kpi?.employeePoint !== null && kpi?.employeePoint >= 0 ? kpi.employeePoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')}</td>
-                                    <td>{kpi?.approvedPoint !== null && kpi?.approvedPoint >= 0 ? kpi.approvedPoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')}</td>
+                                    <td>{kpi?.amountTask ?? 0}</td>
+                                    <td title={`${translate('kpi.evaluation.dashboard.auto_point')} - ${translate('kpi.evaluation.dashboard.employee_point')} - ${translate('kpi.evaluation.dashboard.approve_point')}`}>
+                                        <strong>{kpi?.automaticPoint !== null && kpi?.automaticPoint >= 0 ? kpi.automaticPoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')} - </strong>
+                                        <strong>{kpi?.employeePoint !== null && kpi?.employeePoint >= 0 ? kpi.employeePoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')} - </strong>
+                                        <strong>{kpi?.approvedPoint !== null && kpi?.approvedPoint >= 0 ? kpi.approvedPoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')}</strong>
+                                    </td>
+                                    <td title={`${translate('kpi.evaluation.dashboard.auto_point')} - ${translate('kpi.evaluation.dashboard.employee_point')} - ${translate('kpi.evaluation.dashboard.approve_point')}`}>
+                                        { kpi?.weeklyEvaluations?.length > 0 
+                                            && kpi?.weeklyEvaluations?.filter(eva => eva?.title === 'week1')?.map(
+                                                item => <>
+                                                        <span>{kpi?.automaticPoint !== null && kpi?.automaticPoint >= 0 ? kpi.automaticPoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')} - </span>
+                                                        <span>{kpi?.employeePoint !== null && kpi?.employeePoint >= 0 ? kpi.employeePoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')} - </span>
+                                                        <span>{kpi?.approvedPoint !== null && kpi?.approvedPoint >= 0 ? kpi.approvedPoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')}</span>
+                                                    </>
+                                            )
+                                        }
+                                    </td>
+                                    <td title={`${translate('kpi.evaluation.dashboard.auto_point')} - ${translate('kpi.evaluation.dashboard.employee_point')} - ${translate('kpi.evaluation.dashboard.approve_point')}`}>
+                                        { kpi?.weeklyEvaluations?.length > 0 
+                                            && kpi?.weeklyEvaluations?.filter(eva => eva?.title === 'week2')?.map(
+                                                item => <>
+                                                        <span>{kpi?.automaticPoint !== null && kpi?.automaticPoint >= 0 ? kpi.automaticPoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')} - </span>
+                                                        <span>{kpi?.employeePoint !== null && kpi?.employeePoint >= 0 ? kpi.employeePoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')} - </span>
+                                                        <span>{kpi?.approvedPoint !== null && kpi?.approvedPoint >= 0 ? kpi.approvedPoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')}</span>
+                                                    </>
+                                            )
+                                        }
+                                    </td>
+                                    <td title={`${translate('kpi.evaluation.dashboard.auto_point')} - ${translate('kpi.evaluation.dashboard.employee_point')} - ${translate('kpi.evaluation.dashboard.approve_point')}`}>
+                                        { kpi?.weeklyEvaluations?.length > 0 
+                                            && kpi?.weeklyEvaluations?.filter(eva => eva?.title === 'week3')?.map(
+                                                item => <>
+                                                        <span>{kpi?.automaticPoint !== null && kpi?.automaticPoint >= 0 ? kpi.automaticPoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')} - </span>
+                                                        <span>{kpi?.employeePoint !== null && kpi?.employeePoint >= 0 ? kpi.employeePoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')} - </span>
+                                                        <span>{kpi?.approvedPoint !== null && kpi?.approvedPoint >= 0 ? kpi.approvedPoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')}</span>
+                                                    </>
+                                            )
+                                        }
+                                    </td>
+                                    <td title={`${translate('kpi.evaluation.dashboard.auto_point')} - ${translate('kpi.evaluation.dashboard.employee_point')} - ${translate('kpi.evaluation.dashboard.approve_point')}`}>
+                                        { kpi?.weeklyEvaluations?.length > 0 
+                                            && kpi?.weeklyEvaluations?.filter(eva => eva?.title === 'week4')?.map(
+                                                item => <>
+                                                        <span>{kpi?.automaticPoint !== null && kpi?.automaticPoint >= 0 ? kpi.automaticPoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')} - </span>
+                                                        <span>{kpi?.employeePoint !== null && kpi?.employeePoint >= 0 ? kpi.employeePoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')} - </span>
+                                                        <span>{kpi?.approvedPoint !== null && kpi?.approvedPoint >= 0 ? kpi.approvedPoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')}</span>
+                                                    </>
+                                            )
+                                        }
+                                    </td>
                                     <td>{kpi?.weight}</td>
                                 </tr>
                             ))

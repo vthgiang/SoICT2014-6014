@@ -13,6 +13,7 @@ import { DialogModal } from '../../../../../common-components/index';
 import { ModalDetailTask } from '../../../../task/task-dashboard/task-personal-dashboard/modalDetailTask';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 import { EmployeeKpiOverviewModal } from "../../../employee/management/component/employeeKpiOverviewModal";
+import { showWeeklyPoint } from '../../../employee/management/component/functionHelpers'
 
 // import './tableCSS.css';
 
@@ -295,44 +296,6 @@ function EmployeeKpiEvaluateModal(props) {
         }
     }
 
-    const formatTitleWeeklyEvaluate = (title) => {
-        switch (title) {
-            case "week1":
-                return translate('kpi.evaluation.employee_evaluation.week1')
-                break
-            case "week2":
-                return translate('kpi.evaluation.employee_evaluation.week2')
-                break
-            case "week3":
-                return translate('kpi.evaluation.employee_evaluation.week3')
-                break
-            case "week4":
-                return translate('kpi.evaluation.employee_evaluation.week4')
-                break
-        }
-    }
-
-    const showWeeklyPoint = (weeklyEvaluate) => {
-        let weeklyPointHtml = ""
-
-        if (weeklyEvaluate?.length > 0) {
-            weeklyEvaluate.map(item => {
-                weeklyPointHtml = weeklyPointHtml + `<li>${formatTitleWeeklyEvaluate(item?.title)}: <strong>${item?.automaticPoint}</strong> - <strong>${item?.employeePoint}</strong> - <strong>${item?.approvedPoint}</strong></li>`
-            })
-        } else {
-            weeklyPointHtml = `<strong>${translate('task.task_management.not_eval')}</strong>`
-        }
-
-        Swal.fire({
-            html: `<h3 style="color: red"><div>Kết quả KPI tuần</div> </h3>
-            <div style="font-size: 1.3em; text-align: left; margin-top: 15px; line-height: 1.7">
-            <p>${translate('kpi.evaluation.employee_evaluation.weekly_point_field')}</b></p>
-            <ul>${weeklyPointHtml}</ul>
-            </div>`,
-            width: "40%",
-        })
-    }
-
     if (kpimembers.tasks) {
         myTask = kpimembers.tasks;
 
@@ -419,14 +382,14 @@ function EmployeeKpiEvaluateModal(props) {
                                                 <span> {item.weight}/100</span>
                                             </div>
                                             <div>
-                                                <label>{translate('kpi.evaluation.employee_evaluation.point_field')}:</label>
+                                                <label>{translate('task.task_management.eval_of')}{` (${translate('kpi.evaluation.dashboard.auto_point')} - ${translate('kpi.evaluation.dashboard.employee_point')} - ${translate('kpi.evaluation.dashboard.approve_point')})`}:</label>
                                                 <span> {item.automaticPoint ? item.automaticPoint : translate('kpi.evaluation.employee_evaluation.not_avaiable')}</span>
                                                 <span> - {item.employeePoint ? item.employeePoint : translate('kpi.evaluation.employee_evaluation.not_avaiable')}</span>
                                                 <span> - {item.approvedPoint ? item.approvedPoint : translate('kpi.evaluation.employee_evaluation.not_avaiable')}</span>
                                             </div>
                                             <div>
                                                 <label>{translate('kpi.evaluation.employee_evaluation.weekly_point')}:</label>
-                                                <a style={{ cursor: 'pointer' }} onClick={() => showWeeklyPoint(item?.weeklyEvaluations)}> {translate('general.detail')}</a>
+                                                <a style={{ cursor: 'pointer' }} onClick={() => showWeeklyPoint(translate, item?.weeklyEvaluations)}> {translate('general.detail')}</a>
                                             </div>
                                             {item.updatedAt &&
                                                 <div>
@@ -464,7 +427,7 @@ function EmployeeKpiEvaluateModal(props) {
                                                                 <td>{itemTask.startDate ? formatDate(itemTask.startDate) : ""}<br /> <i className="fa fa-angle-double-down"></i><br /> {itemTask.endDate ? formatDate(itemTask.endDate) : ""}</td>
                                                                 <td>{formatTaskStatus(translate, itemTask.status)}</td>
                                                                 <td>{itemTask.results.contribution ? itemTask.results.contribution : 0}%</td>
-                                                                <td>{itemTask.results.automaticPoint + '-' + itemTask.results.employeePoint + '-' + itemTask.results.approvedPoint}</td>
+                                                                <td title={`${translate('kpi.evaluation.dashboard.auto_point')} - ${translate('kpi.evaluation.dashboard.employee_point')} - ${translate('kpi.evaluation.dashboard.approve_point')}`}>{itemTask.results.automaticPoint + '-' + itemTask.results.employeePoint + '-' + itemTask.results.approvedPoint}</td>
                                                                 <td>
                                                                     {points && tasks && 
                                                                         <React.Fragment>
