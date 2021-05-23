@@ -25,7 +25,7 @@ const ProjectDetailPage = (props) => {
     const currentProjectId = window.location.href.split('?id=')[1];
 
     useEffect(() => {
-        props.getProjectsDispatch({ calledId: "all", userId });
+        props.getProjectsDispatch({ calledId: "user_all", userId });
         props.getAllUserInAllUnitsOfCompany();
         props.getTasksByProject(currentProjectId);
         props.getListProjectChangeRequestsDispatch(currentProjectId);
@@ -58,7 +58,7 @@ const ProjectDetailPage = (props) => {
     }
 
     const handleAfterCreateProject = async () => {
-        await props.getProjectsDispatch({ calledId: "all", userId });
+        await props.getProjectsDispatch({ calledId: "user_all", userId });
         await props.getTasksByProject(currentProjectId);
         // console.log('project', project)
         projectDetail = getCurrentProjectDetails(project);

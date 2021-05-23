@@ -5,7 +5,7 @@ import { ProjectActions } from "../../projects/redux/actions";
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import moment from 'moment';
 import momentDurationFormatSetup from 'moment-duration-format';
-import { getAmountOfWeekDaysInMonth } from '../../projects/components/functionHelper';
+import { getActualMemberCostOfTask, getAmountOfWeekDaysInMonth, getEstimateMemberCostOfTask } from '../../projects/components/functionHelper';
 import { checkIsNullUndefined, numberWithCommas } from '../../../task/task-management/component/functionHelpers';
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
@@ -16,30 +16,6 @@ const MILISECS_TO_DAYS = 86400000;
 
 const TabProjectReportMember = (props) => {
     const { currentTasks, translate, projectDetail } = props;
-
-    const getCurrentActualCostForTask = (taskItem) => {
-        let actualCost = 0;
-        const { timesheetLogs, actorsWithSalary, responsibleEmployees, accountableEmployees } = taskItem
-        if (!timesheetLogs) return 0;
-        for (let timeItem of timesheetLogs) {
-            // Lấy salary của creator của timeLog đó
-            let currentSalary = actorsWithSalary.find(actorItem => String(actorItem.userId) === String(timeItem.creator))?.salary;
-            // Tính số ngày công của tháng đó
-            const currentMonthWorkDays = getAmountOfWeekDaysInMonth(moment(timeItem.startedAt));
-            // Tính trọng số của creator cho task đó
-            let weight = 0;
-            const responsibleEmployeesFlatten = responsibleEmployees.map(resItem => String(resItem.id));
-            const accountableEmployeesFlatten = accountableEmployees.map(accItem => String(accItem.id));
-            if (responsibleEmployeesFlatten.includes(String(timeItem.creator))) {
-                weight = 0.8 / responsibleEmployeesFlatten.length;  // Trọng số phải đi kèm với số người
-            } else {
-                weight = 0.2 / accountableEmployeesFlatten.length;  // Trọng số phải đi kèm với số người
-            }
-            // Tính actual cost của task đó bằng cách cộng thêm actual cost của creator hiện tại
-            actualCost += weight * (currentSalary / currentMonthWorkDays) * (timeItem.duration / MILISECS_TO_DAYS);
-        }
-        return actualCost;
-    }
 
     const preprocessMembersData = () => {
         let result = [];
@@ -92,33 +68,20 @@ const TabProjectReportMember = (props) => {
                 for (let currentTimeLogMemberItem of currentTimeLogMember) {
                     totalTimeLogsMilliseconds += currentTimeLogMemberItem.duration;
                 }
-                // Tính trọng số của nhân viên cho task đó
-                let weight = 0;
-                const responsibleEmployeesFlatten = tasksWithMemberItem.responsibleEmployees.map(resItem => String(resItem.id));
-                const accountableEmployeesFlatten = tasksWithMemberItem.accountableEmployees.map(accItem => String(accItem.id));
-                if (responsibleEmployeesFlatten.includes(String(memberItem.id))) {
-                    weight = 0.8 / responsibleEmployeesFlatten.length;  // Trọng số phải đi kèm với số người
-                } else {
-                    weight = 0.2 / accountableEmployeesFlatten.length;  // Trọng số phải đi kèm với số người
-                }
                 // Tính ngân sách của nhân viên cho task đó
-                totalBudgetForMember += weight * tasksWithMemberItem.estimateNormalCost;
-                // Lấy salary của creator của timeLog đó
-                let currentSalary = tasksWithMemberItem?.actorsWithSalary.find(actorItem => String(actorItem.userId) === String(memberItem.id))?.salary;
-                // Tính số ngày công của tháng đó
-                const currentMonthWorkDays = getAmountOfWeekDaysInMonth(moment(tasksWithMemberItem.startDate));
-                // Tính chi phí của nhân viên cho task đó
+                let budgetEachTask = 0;
+                budgetEachTask = getEstimateMemberCostOfTask(tasksWithMemberItem, projectDetail, memberItem.id);
+                totalBudgetForMember += budgetEachTask;
+                // Lấy chi phí thực của nhân viên cho task đó
                 let actualCostEachTask = 0;
-                for (let currentTimeLogMemberItem of currentTimeLogMember) {
-                    actualCostEachTask += weight * (currentSalary / currentMonthWorkDays) * currentTimeLogMemberItem.duration / MILISECS_TO_DAYS;
-                    totalActualCostForMember += actualCostEachTask;
-                }
+                actualCostEachTask += getActualMemberCostOfTask(tasksWithMemberItem, projectDetail, memberItem.id);
+                totalActualCostForMember += actualCostEachTask;
                 // Push vào tasksWithBudgetAndCostAndPointForMember
                 tasksWithBudgetAndCostAndPointForMember.push({
                     id: tasksWithMemberItem?._id,
                     code: tasksWithMemberItem?.code,
                     name: tasksWithMemberItem?.name,
-                    budgetEachTask: weight * tasksWithMemberItem.estimateNormalCost,
+                    budgetEachTask,
                     actualCostEachTask,
                     currentMemberCurrentTaskPoint,
                     startDate: tasksWithMemberItem?.startDate,
@@ -148,7 +111,7 @@ const TabProjectReportMember = (props) => {
                     overdueTasks.push(tasksWithMemberItem);
                 }
                 // Push vào onBudgetTasks
-                let currentTaskActualCost = tasksWithMemberItem.actualCost || getCurrentActualCostForTask(tasksWithMemberItem);
+                let currentTaskActualCost = tasksWithMemberItem.actualCost || 0;
                 if (currentTaskActualCost <= tasksWithMemberItem.estimateNormalCost) {
                     onBudgetTasks.push(tasksWithMemberItem);
                 }
@@ -243,6 +206,7 @@ const TabProjectReportMember = (props) => {
     }
 
     const membersData = preprocessMembersData();
+    console.log('membersData', membersData)
 
     const renderData = (data, paramText) => {
         if (data.length === 0) return <div className="col-md-4 statistical-item">Không có thành viên nào</div>
@@ -368,8 +332,8 @@ const TabProjectReportMember = (props) => {
                                     <th>Số công việc quá hạn</th>
                                     <th>Số công việc đủ chi phí</th>
                                     <th>Số công việc lãng phí chi phí</th>
-                                    <th>Ngân sách cho thành viên (VND)</th>
-                                    <th>Chi phí thực của thành viên (VND)</th>
+                                    <th>Tổng ngân sách cho thành viên (VND)</th>
+                                    <th>Tổng chi phí thực của thành viên (VND)</th>
                                 </tr>
                             </thead>
                             <tbody>

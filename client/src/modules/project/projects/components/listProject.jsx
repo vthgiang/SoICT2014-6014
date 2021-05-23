@@ -26,14 +26,14 @@ function ListProject(props) {
 
     useEffect(() => {
         props.getProjectsDispatch({ calledId: "paginate", page, limit, userId });
-        props.getProjectsDispatch({ calledId: "all", userId });
+        props.getProjectsDispatch({ calledId: "user_all", userId });
         props.getAllUserInAllUnitsOfCompany();
     }, [])
 
     // Sau khi add project mới hoặc edit project thì call lại tất cả list project
     const handleAfterCreateProject = () => {
         props.getProjectsDispatch({ calledId: "paginate", page, limit, userId });
-        props.getProjectsDispatch({ calledId: "all", userId });
+        props.getProjectsDispatch({ calledId: "user_all", userId });
     }
 
     const handleChangeProjectName = (e) => {

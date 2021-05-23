@@ -163,7 +163,7 @@ class DetailProjectTaskTab extends Component {
         // this.props.getProjectsDispatch({ calledId: "" });
         this.props.showInfoRole(currentRole);
         this.props.getTasksByProject(this.props.task?.taskProject);
-        this.props.getProjectsDispatch({ calledId: "all", userId: getStorage('userId') });
+        this.props.getProjectsDispatch({ calledId: "user_all", userId: getStorage('userId') });
     }
 
     handleChangeCollapseInfo = async () => {

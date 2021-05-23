@@ -22,7 +22,7 @@ const ModalProjectEvaluation = (props) => {
     const [currentMonth, setCurrentMonth] = useState(moment().startOf('month'));
 
     useEffect(() => {
-        props.getProjectsDispatch({ calledId: "all", userId });
+        props.getProjectsDispatch({ calledId: "user_all", userId });
         props.getAllUserInAllUnitsOfCompany();
         props.getTasksByProject(projectDetailId || projectDetail?._id)
         props.getListTasksEvalDispatch(currentProjectId, currentMonth.format());
