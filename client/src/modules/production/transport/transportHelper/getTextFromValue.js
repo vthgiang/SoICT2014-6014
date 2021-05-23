@@ -120,3 +120,23 @@ exports.getPlanStatus = (value) => {
     }
     return res;
 }
+
+exports.checkFinishMission = (mission) => {
+    if (Number(mission.type) === 1){
+        if (mission.transportRequirement?.transportStatus?.fromAddress){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    else {
+        if (mission.transportRequirement?.transportStatus?.toAddress){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+}

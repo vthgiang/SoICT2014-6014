@@ -65,6 +65,7 @@ function ArrangeOrdinalTransport(props) {
      * Submit state và lưu vào transportSchedule qua plan id, lưu lại lộ trình các xe
      */
     const handleSubmitRoute = () => {
+        console.log(transportOrdinalAddress, " oooooooooooooooooooooooooooooooooo")
         if (transportOrdinalAddress && transportOrdinalAddress.length !==0){
             let data = [];
             transportOrdinalAddress.map((item, index) => {
@@ -85,17 +86,16 @@ function ArrangeOrdinalTransport(props) {
                 })
             })
             props.editTransportScheduleByPlanId(currentTransportSchedule?.transportPlan?._id, {route: data})
-            setTransportOrdinalAddress([]);
         }
     }
-    useEffect(() => {
-        props.getAllTransportPlans({page: 1, limit: 100});
-    }, []);
+    // useEffect(() => {
+    //     props.getAllTransportPlans({page: 1, limit: 100});
+    // }, []);
 
     useEffect(() => {
-        console.log(currentTransportSchedule, " currentTransportSchedule, thay doi ne")
         // Lưu dữ liệu xe và hàng trên xe
         setTransportVehicles([])
+        setTransportOrdinalAddress([]);
         if (currentTransportSchedule){
             if (currentTransportSchedule.transportVehicles && currentTransportSchedule.transportVehicles.length !== 0){
                 setTransportVehicles(currentTransportSchedule.transportVehicles);
@@ -110,7 +110,7 @@ function ArrangeOrdinalTransport(props) {
      * @param {*} vehicleId 
      */
     const callBackStateOrdinalAddress = (addressOrdinalList, vehicleId) => {
-        const transportOrdinal = [...transportOrdinalAddress];
+        let transportOrdinal = [...transportOrdinalAddress];
         if (transportOrdinal && transportOrdinal.length !==0 ){
             let index = -1;
             for (let i = 0; i< transportOrdinal.length; i++){
@@ -129,10 +129,10 @@ function ArrangeOrdinalTransport(props) {
             }
         }
         else {
-            transportOrdinal.push({
+            transportOrdinal = [{
                 transportVehicle: vehicleId,
                 addressOrdinal: addressOrdinalList,
-            })            
+            }]
         }
         
         setTransportOrdinalAddress(transportOrdinal);

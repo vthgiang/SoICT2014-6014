@@ -28,12 +28,13 @@ function CarrierMissionManagementTable(props) {
     
     const [sendCurrentLocateTimer, setSendCurrentLocateTimer] = useState([]);
     const [ currentPosition, setCurrentPosition ] = useState({});
+    const [currentPlanId, setCurrentPlanId] = useState();
 
     const handleCarrierDateChange = (value) => {
         setCurrentDate(formatToTimeZoneDate(value));
     }
-    const handleShowMissionReport = (misssion) => {
-        setCurrentMission(misssion);
+    const handleShowMissionReport = (mission, index) => {
+        setCurrentMission(mission)
         window.$(`#modal-carrier-report-process`).modal('show');
     }
 
@@ -181,6 +182,8 @@ function CarrierMissionManagementTable(props) {
                     ){
                         flag = true;
                         setCurrentVehicleRoute(item.route);
+                        setCurrentPlanId(item.transportPlan._id);
+                        console.log(item.transportPlan);
                     }
                 }
             })
@@ -193,6 +196,7 @@ function CarrierMissionManagementTable(props) {
             {/* <TransportDialogMissionReport /> */}
                 <CarrierMissionReport
                     currentMission={currentMission}
+                    currentPlanId={currentPlanId}
                 />
                 <div className="form-inline">
                     <div className="form-group">
@@ -261,7 +265,7 @@ function CarrierMissionManagementTable(props) {
                                     <a className="edit text-blue" style={{ width: '5px' }} 
                                         // title={translate('manage_example.detail_info_example')} 
                                         title={'Báo cáo nhiện vụ vận chuyển'}
-                                        onClick={() => handleShowMissionReport(routeOrdinal)}
+                                        onClick={() => handleShowMissionReport(routeOrdinal, index)}
                                     >
                                         <i className="material-icons">
                                             assignment_turned_in

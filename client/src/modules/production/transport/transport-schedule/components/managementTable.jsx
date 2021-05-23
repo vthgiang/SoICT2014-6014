@@ -26,8 +26,6 @@ function ManagementTable(props) {
     }, [transportPlan])
     useEffect(() => {
         props.getAllTransportPlans({page: 1, limit: 100});
-        console.clear();
-        console.log("realodddddd");
     }, [transportSchedule]);
     const handleShowArrangeForm = (plan) => {
         console.log(plan, " aaaa")

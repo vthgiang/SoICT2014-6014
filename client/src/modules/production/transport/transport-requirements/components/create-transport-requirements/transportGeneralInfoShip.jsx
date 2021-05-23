@@ -65,6 +65,7 @@ function TransportGeneralInfoShip(props) {
 
     return (
         <React.Fragment>
+            {/* <div class="row row-equal-height" style="margin-top: 0px;"> */}
             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6" style={{ padding: 0, height: "100%" }}>
                         <fieldset className="scheduler-border" style={{ height: "100%" }}>
@@ -177,6 +178,7 @@ function TransportGeneralInfoShip(props) {
                       
                     </div>
                 </div>
+                {/* </div> */}
         </React.Fragment>
     );
 }

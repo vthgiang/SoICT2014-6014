@@ -301,7 +301,7 @@ function SortableComponent(props) {
 export {SortableComponent}
 
 const SortableList = SortableContainer(({items}) => {
-	console.log(items, " day la itemmmmmmmmmmmmmm")
+	// console.log(items, " day la itemmmmmmmmmmmmmm")
   return (
     <div className={"test1"}>
       {items.map((item, index) => (

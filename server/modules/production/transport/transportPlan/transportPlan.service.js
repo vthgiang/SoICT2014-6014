@@ -122,7 +122,7 @@ exports.getAllTransportPlans = async (portal, data) => {
         // Trưởng đơn vị, người xếp lịch được xem các plan (đồng thời cũng là người tạo)
         let flag=true;
         if (flag && checkCurrentIdIsHearder && headerUser && headerUser.list && headerUser.list.length!==0){
-            console.log(plans[i].creator);
+            // console.log(plans[i].creator);
             headerUser.list.map(item => {
                 if (String(item._id) === String(plans[i].creator?._id)){
                     res.push(plans[i]);
@@ -184,93 +184,96 @@ exports.editTransportPlan = async (portal, id, data) => {
     if (!oldTransportPlan) {
         return -1;
     }
-    /**
-     * Xử lí thay đổi thêm, xóa yêu cầu vận chuyển trong kế hoạch, giữ lại những yêu cầu vận chuyển chung giữa mới và cũ
-     * Nếu không có điểm chung, tạo mới hoàn toàn lệnh vận chuyển
-     * Xóa bỏ các kế hoạch trong plan mới, xóa bỏ trong schedule
-     * Set lại plan mới
-     */
-    if (data.transportRequirements && data.transportRequirements.length!==0){
-        data.transportRequirements.map(async requirementId => {
-            await TransportRequirementServices.editTransportRequirement(portal, requirementId, {
-                transportPlan: id,
-                status: 3,
-            }) 
-        })
-    }
-    if (oldTransportPlan.transportRequirements && oldTransportPlan.transportRequirements.length!==0
-        && data.transportRequirements && data.transportRequirements.length!==0){
-
-            let sameTransportRequirements = oldTransportPlan.transportRequirements.filter(r=>{
-                return data.transportRequirements.indexOf(String(r)) !==-1;
+    if (!(Object.keys(data).length === 1 && data.status)){
+        // Check có phải cập nhật status ko
+        /**
+         * Xử lí thay đổi thêm, xóa yêu cầu vận chuyển trong kế hoạch, giữ lại những yêu cầu vận chuyển chung giữa mới và cũ
+         * Nếu không có điểm chung, tạo mới hoàn toàn lệnh vận chuyển
+         * Xóa bỏ các kế hoạch trong plan mới, xóa bỏ trong schedule
+         * Set lại plan mới
+         */
+        if (data.transportRequirements && data.transportRequirements.length!==0){
+            data.transportRequirements.map(async requirementId => {
+                await TransportRequirementServices.editTransportRequirement(portal, requirementId, {
+                    transportPlan: id,
+                    status: 3,
+                }) 
             })
-            if (sameTransportRequirements && sameTransportRequirements.length!==0){
-                let needRemoveTransportRequirements = oldTransportPlan.transportRequirements.filter(r=>{
-                    return sameTransportRequirements.indexOf(String(r)) ===-1;
+        }
+        if (oldTransportPlan.transportRequirements && oldTransportPlan.transportRequirements.length!==0
+            && data.transportRequirements && data.transportRequirements.length!==0){
+                console.log("vao 203");
+                let sameTransportRequirements = oldTransportPlan.transportRequirements.filter(r=>{
+                    return data.transportRequirements.indexOf(String(r)) !==-1;
                 })
-                if (needRemoveTransportRequirements && needRemoveTransportRequirements.length!==0){
-                    needRemoveTransportRequirements.map(requirementId => {
-                        TransportScheduleServices.deleteTransportRequirementByPlanId(portal, id, requirementId)
-                        TransportRequirementServices.editTransportRequirement(portal, requirementId, {
-                            transportPlan: null,
-                            status: 2,
-                        })
+                if (sameTransportRequirements && sameTransportRequirements.length!==0){
+                    let needRemoveTransportRequirements = oldTransportPlan.transportRequirements.filter(r=>{
+                        return sameTransportRequirements.indexOf(String(r)) ===-1;
                     })
-                }
-            }
-            else{
-                await TransportScheduleServices.planDeleteTransportSchedule(portal, id);
-                await TransportScheduleServices.planCreateTransportRoute(portal,{transportPlan:id});
-            }
-    }
-    else {
-        await TransportScheduleServices.planDeleteTransportSchedule(portal, id);
-        await TransportScheduleServices.planCreateTransportRoute(portal,{transportPlan:id});
-    }
-    if (oldTransportPlan.transportVehicles && oldTransportPlan.transportVehicles.length!==0
-        && data.transportVehicles && data.transportVehicles.length!==0){
-            let sameVehicle = oldTransportPlan.transportVehicles.filter(r=>{
-                let flag = false;
-                if (r.vehicle){
-                    for (let i=0;i<data.transportVehicles.length;i++){
-                        if (String(data.transportVehicles[i].vehicle) === String(r.vehicle)){
-                            flag = true
-                        }
+                    if (needRemoveTransportRequirements && needRemoveTransportRequirements.length!==0){
+                        needRemoveTransportRequirements.map(requirementId => {
+                            TransportScheduleServices.deleteTransportRequirementByPlanId(portal, id, requirementId)
+                            TransportRequirementServices.editTransportRequirement(portal, requirementId, {
+                                transportPlan: null,
+                                status: 2,
+                            })
+                        })
                     }
-                    return flag;
                 }
                 else{
-                    return false;
+                    await TransportScheduleServices.planDeleteTransportSchedule(portal, id);
+                    await TransportScheduleServices.planCreateTransportRoute(portal,{transportPlan:id});
                 }
-            })
-            if (sameVehicle && sameVehicle.length!==0){
-                let needRemoveTransportVehicles = oldTransportPlan.transportVehicles.filter(r=>{
+        }
+        else {
+            await TransportScheduleServices.planDeleteTransportSchedule(portal, id);
+            await TransportScheduleServices.planCreateTransportRoute(portal,{transportPlan:id});
+        }
+        if (oldTransportPlan.transportVehicles && oldTransportPlan.transportVehicles.length!==0
+            && data.transportVehicles && data.transportVehicles.length!==0){
+                let sameVehicle = oldTransportPlan.transportVehicles.filter(r=>{
+                    let flag = false;
                     if (r.vehicle){
-                        let flag = true;
-                        for (let i = 0; i< sameVehicle.length;i++){
-                            if (String(sameVehicle[i].vehicle) === String(r.vehicle)){
-                                flag = false;
+                        for (let i=0;i<data.transportVehicles.length;i++){
+                            if (String(data.transportVehicles[i].vehicle) === String(r.vehicle)){
+                                flag = true
                             }
                         }
-                        if (flag){
-                            return true;
-                        }
+                        return flag;
                     }
-                    return false;
+                    else{
+                        return false;
+                    }
                 })
-                if (needRemoveTransportVehicles && needRemoveTransportVehicles.length!==0){
-                    needRemoveTransportVehicles.map(transportVehicle => {
-                        TransportScheduleServices.deleteTransportVehiclesByPlanId(portal, id, transportVehicle.vehicle)
+                if (sameVehicle && sameVehicle.length!==0){
+                    let needRemoveTransportVehicles = oldTransportPlan.transportVehicles.filter(r=>{
+                        if (r.vehicle){
+                            let flag = true;
+                            for (let i = 0; i< sameVehicle.length;i++){
+                                if (String(sameVehicle[i].vehicle) === String(r.vehicle)){
+                                    flag = false;
+                                }
+                            }
+                            if (flag){
+                                return true;
+                            }
+                        }
+                        return false;
                     })
+                    if (needRemoveTransportVehicles && needRemoveTransportVehicles.length!==0){
+                        needRemoveTransportVehicles.map(transportVehicle => {
+                            TransportScheduleServices.deleteTransportVehiclesByPlanId(portal, id, transportVehicle.vehicle)
+                        })
+                    }
                 }
-            }
-            else{
-                await TransportScheduleServices.planDeleteTransportSchedule(portal, id);
-                await TransportScheduleServices.planCreateTransportRoute(portal,{transportPlan:id});
-            }
+                else{
+                    await TransportScheduleServices.planDeleteTransportSchedule(portal, id);
+                    await TransportScheduleServices.planCreateTransportRoute(portal,{transportPlan:id});
+                }
+        }
+        // Cập nhật lại trạng thái
+        data.status = 1
     }
-    // Cach 2 de update
-    data.status = 1
     await TransportPlan(connect(DB_CONNECTION, portal)).update({ _id: id }, { $set: data });
     let transportPlan = await TransportPlan(connect(DB_CONNECTION, portal)).findById({ _id: oldTransportPlan._id })
     .populate([
@@ -321,7 +324,7 @@ exports.addTransportRequirementToPlan = async (portal, planId, data) => {
 
     // Xóa bỏ kế hoạch vận chuyển trong kế hoạch cũ
     if (transportRequirement.transportPlan){
-        console.log(transportRequirement.transportPlan._id)
+        // console.log(transportRequirement.transportPlan._id)
         await this.deleteTransportRequirementByPlanId(portal, transportRequirement.transportPlan._id, requirementId);
     }
     // Xóa bỏ trong kế hoạch mới (chỉ để tránh trùng lặp)

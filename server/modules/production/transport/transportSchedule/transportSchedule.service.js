@@ -20,6 +20,7 @@ exports.planCreateTransportRoute = async (portal, data) => {
     if (data && data.length !== 0) {
         newTransportRoute = await TransportSchedule(connect(DB_CONNECTION, portal)).create({
             transportPlan: data.transportPlan,
+            // name: "Lệnh vận chuyển kế hoạch "+data.planCode?data.planCode:""
         });
     }
     let transportRoute = await TransportSchedule(connect(DB_CONNECTION, portal)).findById({ _id: newTransportRoute._id });;
@@ -148,7 +149,7 @@ exports.editTransportRouteByPlanId = async (portal, planId, data) => {
                 countRequirement += item.routeOrdinal.length;
             }
         })
-        console.log(countRequirement, newTransportSchedule.transportPlan.transportRequirements.length)
+        // console.log(countRequirement, newTransportSchedule.transportPlan.transportRequirements.length)
         if (countRequirement === 2*newTransportSchedule.transportPlan.transportRequirements.length){
             await TransportPlanServices.editTransportPlanStatus(portal, planId, 2); 
         }
@@ -262,7 +263,7 @@ exports.changeTransportRequirementProcess = async (portal, data) => {
 }
 
 exports.getAllTransportScheduleRouteByCarrierId = async (portal, carrierId) => {
-    console.log(carrierId)
+    // console.log(carrierId)
     let planHaveCarrierId = await TransportPlanServices.findPlansHaveCarrierId(portal, carrierId);
     let listSchedule = []
     let schedule;
@@ -280,7 +281,7 @@ exports.getAllTransportScheduleRouteByCarrierId = async (portal, carrierId) => {
                         })
                     }
                 })
-                console.log(vehicleId);
+                // console.log(vehicleId);
                 for (let j=0;j<schedule.route.length;j++){
                     if (String(schedule.route[j].transportVehicle._id) === String(vehicleId)){
                         listSchedule.push({
@@ -289,6 +290,7 @@ exports.getAllTransportScheduleRouteByCarrierId = async (portal, carrierId) => {
                                 startTime: schedule.transportPlan?.startTime,
                                 endTime: schedule.transportPlan?.endTime,
                                 code: schedule.transportPlan?.code,
+                                _id: schedule.transportPlan?._id
                             }
                         })
                     }
@@ -303,6 +305,7 @@ exports.getAllTransportScheduleRouteByCarrierId = async (portal, carrierId) => {
 exports.changeTransportStatusByCarrierId = async (portal, carrierId, data) => {
     if (data) {
         let requirementId= data.requirementId;
+        let transportPlanId = data.transportPlanId;
         let transportStatus = {
             status: data.status,
             detail: data.detail,
@@ -327,7 +330,27 @@ exports.changeTransportStatusByCarrierId = async (portal, carrierId, data) => {
             }
             await TransportRequirementServices.editTransportRequirement(portal, requirementId, {"transportStatus.toAddress": transportStatus, status: requirementStatus})
         }
-        let listSchedule = this.getAllTransportScheduleRouteByCarrierId(portal, carrierId);
+        
+        let currentSchedule = await this.getTransportRouteByPlanId(portal, transportPlanId);
+        let checkFinishPlan = true;
+        if  (currentSchedule && currentSchedule.length !==0){
+            currentSchedule.route.map(item => {
+                if (item.routeOrdinal && item.routeOrdinal.length !==0){
+                    item.routeOrdinal.map(itemRouteOrdinal => {
+                        if (!(Number(itemRouteOrdinal.transportRequirement.status) === 5 || Number(itemRouteOrdinal.transportRequirement.status) === 6)){
+                            // Kiểm tra các yêu cầu vận chuyển có trạng thái 5: đã hoàn thành, 6: giao thất bại
+                            checkFinishPlan = false;
+                        }
+                    })
+                }    
+            })
+        }
+        let planStatus = 3 // Đang thực hiện
+        if (checkFinishPlan){
+            planStatus = 4;
+        }
+        let listSchedule = await this.getAllTransportScheduleRouteByCarrierId(portal, carrierId);
+        await TransportPlanServices.editTransportPlan(portal, transportPlanId, {status: planStatus});
         return listSchedule;
     }
     return -1;
