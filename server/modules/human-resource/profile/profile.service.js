@@ -1608,6 +1608,8 @@ exports.importEmployeeInfor = async (portal, company, data) => {
             rowError = [...rowError, index + 1];
         }
 
+        // Xóa các trường có giá trị null, chỉ cập nhật nhưngx trường có giá trị
+        Object.keys(x).forEach((key) => (x[key] == null) && delete x[key]);
         return x
     })
 
