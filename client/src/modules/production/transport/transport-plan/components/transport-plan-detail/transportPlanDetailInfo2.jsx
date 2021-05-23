@@ -136,14 +136,14 @@ function TransportPlanDetailInfo(props) {
             <DialogModal
                 modalID="modal-detail-info-transport-plan2" 
                 isLoading={false}
-                formID="modal-detail-info-transport-plan2"
+                // formID="modal-detail-info-transport-plan2"
                 title={"Chi tiết kế hoạch vận chuyển"}
                 size={100}
                 maxWidth={500}
                 hasSaveButton={false}
                 hasNote={false}
             >
-            <form id="modal-detail-info-transport-plan2" >
+            {/* <form id="modal-detail-info-transport-plan2" > */}
                 <div className="box-body">
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 
@@ -292,7 +292,7 @@ function TransportPlanDetailInfo(props) {
                 <TransportVehicleAndCarrierSelect
                     currentTransportPlan={currentTransportPlan}
                 />
-            </form>
+            {/* </form> */}
             </DialogModal>
         </React.Fragment>
     );

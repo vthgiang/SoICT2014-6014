@@ -18,8 +18,8 @@ function getAllTransportPlans(queryData) {
             params: {
                 // page: queryData !== undefined ? queryData.page : null,
                 // limit: queryData !== undefined ? queryData.limit : null
-                page: 1,
-                limit: 100,
+                page: queryData !== undefined ? queryData.page : null,
+                limit: queryData !== undefined ? queryData.limit : null,
                 currentUserId: localStorage.getItem('userId'),
             }
         },

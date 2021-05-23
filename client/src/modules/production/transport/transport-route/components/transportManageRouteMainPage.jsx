@@ -116,6 +116,7 @@ function TransportManageRouteMainPage(props) {
                 })
             }
         }
+        console.log(length,longestRoute);
         return length/longestRoute * 100;
     }
 
@@ -283,15 +284,17 @@ function TransportManageRouteMainPage(props) {
     useEffect(() => {
         // console.log(currentTransportSchedule, " allll")
         if (currentTransportSchedule && currentTransportSchedule.route && currentTransportSchedule.route.length!==0){
+            let resLength = 0;
             currentTransportSchedule.route.map(r => {
                 if (r.routeOrdinal && r.routeOrdinal.length!==0){
                     let length = 0;
                     r.routeOrdinal.map(routeOrdinal => {
                         length += routeOrdinal.distance?routeOrdinal.distance:0;
                     })
-                    setLongestRoute(length);
+                    if (length > resLength) resLength = length;
                 }
             })
+            setLongestRoute(resLength);
         }
     }, [currentTransportSchedule])
 

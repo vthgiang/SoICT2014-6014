@@ -85,8 +85,12 @@ exports.getAllTransportPlans = async (portal, data) => {
     // }
     let currentUserId = data.currentUserId;
     let page, limit;
-    page = data?.page ? Number(data.page) : 1;
-    limit = data?.limit ? Number(data.limit) : 200;
+    if (data.page && data.limit){
+        page= data.page;
+        limit = data.limit;
+    }
+    // page = data?.page ? Number(data.page) : 1;
+    // limit = data?.limit ? Number(data.limit) : 200;
 
     let totalList = await TransportPlan(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
     let plans = await TransportPlan(connect(DB_CONNECTION, portal)).find(keySearch)
@@ -104,8 +108,8 @@ exports.getAllTransportPlans = async (portal, data) => {
                 path: 'creator'
             }
         ])
-        .skip((page - 1) * limit)
-        .limit(limit);
+        // .skip((page - 1) * limit)
+        // .limit(limit);
     
     let res = [];
     // Lấy danh sách người phê duyệt, xếp lịch
@@ -137,8 +141,10 @@ exports.getAllTransportPlans = async (portal, data) => {
             continue;
         }
     }
-    // console.log(res.length);
     totalList = res.length;
+    if (data.page && data.limit){
+        res = res.slice((page-1)*limit, page*limit);
+    }
     return { 
         data: res, 
         totalList 

@@ -45,6 +45,7 @@ export function transportPlan(state = initialState, action) {
 		return {
                 ...state,
                 lists: action.payload.data,
+                totalList: action.payload.totalList,
                 isLoading: false
             }
         case transportPlanConstants.CREATE_TRANSPORT_PLAN_SUCCESS:

@@ -300,8 +300,8 @@ function TransportVehicleCarrier2(props) {
                                     {
                                         listDay && listDay.length!==0
                                         &&
-                                        listDay.map(item => (
-                                            <th>{formatDate(item)}</th>
+                                        listDay.map((item, index) => (
+                                            <th key={index+"day"}>{formatDate(item)}</th>
                                         )) 
                                     }
                                 </tr>
@@ -360,8 +360,8 @@ function TransportVehicleCarrier2(props) {
                                     {
                                         listDay && listDay.length!==0
                                         &&
-                                        listDay.map(item => (
-                                            <th>{formatDate(item)}</th>
+                                        listDay.map((item, index) => (
+                                            <th key={index+"day2"}>{formatDate(item)}</th>
                                         )) 
                                     }
                                 </tr>

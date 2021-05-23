@@ -399,7 +399,7 @@ function TransportPlanCreateForm(props) {
                                     {(listRequirements && listRequirements.length !== 0) &&
                                         listRequirements.map((x, index) => (
                                             x &&
-                                            <tr key={index}>
+                                            <tr key={index+x._id}>
                                                 <td>{index+1}</td>
                                                 <td>{x.code}</td>
                                                 <td>{getTypeRequirement(x.type)}</td>
