@@ -219,6 +219,7 @@ export function kpimembers(state = {}, action) {
           element.automaticPoint = updateKpiSet.automaticPoint;
           element.employeePoint = updateKpiSet.employeePoint;
           element.approvedPoint = updateKpiSet.approvedPoint;
+          element.weeklyEvaluations = updateKpiSet.weeklyEvaluations
         });
       }
 

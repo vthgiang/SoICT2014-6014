@@ -90,7 +90,6 @@ export async function sendRequest(options, showSuccessAlert = false, showFailAle
         );
         return Promise.resolve(res);
     }).catch(err => {
-        console.log('err', err.response.data.messages)
         let messages;
         if (!err.response) {
             showServerDisconnectedError();

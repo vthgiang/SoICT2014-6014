@@ -435,7 +435,6 @@ exports.getIncidents = async (req, res) => {
             content: data
         });
     } catch (error) {
-        console.log(error)
         res.status(400).json({
             success: false,
             messages: ["get_incidents_false"],

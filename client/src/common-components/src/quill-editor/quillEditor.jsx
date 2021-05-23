@@ -37,7 +37,6 @@ class QuillEditor extends Component {
             } 
             if (quill?.container) {
                 let imgs = Array.from(quill?.container?.querySelectorAll('img[src^="upload/private"]'))
-                
                 if (imgs?.length > 0) {
                     imgs.map((item) => {
                         this.props.downloadFile(item.getAttribute("src"), item.getAttribute("src"), false)
@@ -153,7 +152,9 @@ class QuillEditor extends Component {
             });
 
             // Disable edit
-            quill.enable(enableEdit);
+            if (quill && !isText) {
+                quill.enable(enableEdit);
+            }
         }
 
         this.setState({
@@ -162,16 +163,18 @@ class QuillEditor extends Component {
         this.setHeightContainer(id, maxHeight)
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
+    shouldComponentUpdate = (nextProps, nextState) => {
+        const { auth } = this.props
+        const { enableEdit, quillValueDefault } = this.props;
         const { quill } = this.state
 
-        // Insert value ban đầu
-        // Lưu ý: quillValueDefault phải được truyền vào 1 giá trị cố định, không thayđô
-        if (nextProps.quillValueDefault !== this.props.quillValueDefault && (this.props.quillValueDefault || this.props.quillValueDefault === '')) {
-            if (quill && quill.container && quill.container.firstChild) {
-                quill.container.firstChild.innerHTML = this.props.quillValueDefault;
-            }  
+        // render lại khi download ảnh
+        if (JSON.stringify(nextProps.auth) !== JSON.stringify(auth)) {
+            return true
+        }
 
+        // download ảnh 
+        if (nextProps.quillValueDefault !== quillValueDefault) {
             if (quill?.container) {
                 let imgs = Array.from(quill?.container?.querySelectorAll('img[src^="upload/private"]'))
                 if (imgs?.length > 0) {
@@ -182,16 +185,34 @@ class QuillEditor extends Component {
             }
         }
 
-        return true
+        if (nextProps.quillValueDefault === quillValueDefault) {
+            return false;
+        } 
+
+        if (nextProps.enableEdit !== enableEdit) {
+            return true;
+        }
+
+        return true;
     }
 
     componentDidUpdate() {
         const { auth } = this.props
-        const { id, maxHeight, enableEdit } = this.props
+        const { id, maxHeight = 200, enableEdit = true, isText = false, quillValueDefault } = this.props
         const { quill } = this.state
 
-        quill && quill.enable(enableEdit);
+        if (quill && !isText) {
+            quill.enable(enableEdit);
+        }
 
+        // Insert value ban đầu
+        // Lưu ý: quillValueDefault phải được truyền vào 1 giá trị cố định, không thay đổi 
+        if (quillValueDefault || quillValueDefault === '') {
+            if (quill && quill.container && quill.container.firstChild) {
+                quill.container.firstChild.innerHTML = this.props.quillValueDefault;
+            }  
+        }
+        
         if (quill?.container) {
             // Add lại base64 ảnh download từ server
             let imgs = Array.from(quill.container.querySelectorAll('img[src^="upload/private"]'))
@@ -214,7 +235,7 @@ class QuillEditor extends Component {
 
     setHeightContainer = (id, maxHeight) => {
         window.$(`#editor-container${id}`).height("")
-        let heightCurrent = window.$(`#editor-container${id}`).height()
+        let heightCurrent = window.$(`#editor-container${id}`)?.height()
         if (heightCurrent > maxHeight) {
             window.$(`#editor-container${id}`).height(maxHeight)
         } else {

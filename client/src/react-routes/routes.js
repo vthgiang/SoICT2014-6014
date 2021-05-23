@@ -7,6 +7,7 @@ import { AuthRoute } from "./authRoute";
 
 import Layout from "../layout/layout";
 
+const Home = lazy(() => import("../modules/home/components"))
 const NotFound = lazy(() => import("../modules/not-found/components"))
 const Login = lazy(() => import("../modules/auth/components/login"))
 const ResetPassword = lazy(() => import("../modules/auth/components/resetPasswordNew"))
@@ -27,15 +28,15 @@ const ManagerPraiseDiscipline = lazy(() => import("../modules/human-resource/com
 const EmployeeDashBoard = lazy(() => import("../modules/human-resource/employee-dashboard/components"))
 const DepartmentManage = lazy(() => import("../modules/human-resource/employee-in-organizational-unit/components/employeeInOrganizationalUnit"))
 const ManageWorkPlan = lazy(() => import("../modules/human-resource/work-plan/components/worksPlanManagement"))
-const EmployeeDetail = lazy(() => import("../modules/human-resource/profile/employee-info/components/combinedContent"))
-const UpdateEmployee = lazy(() => import("../modules/human-resource/profile/employee-info/components/combinedContent"))
+const EmployeeDetail = lazy(() => import("../modules/human-resource/profile/employee-info/components/employeeDetailPage"))
+const UpdateEmployee = lazy(() => import("../modules/human-resource/profile/employee-info/components/employeeUpdate"))
 const EmpoyeeManager = lazy(() => import("../modules/human-resource/profile/employee-management/components"))
 const EmployeeCreate = lazy(() => import("../modules/human-resource/profile/employee-create/components"))
 const SalaryManager = lazy(() => import("../modules/human-resource/salary/components"))
 const FieldManager = lazy(() => import("../modules/human-resource/field/components"))
 const TimesheetsManager = lazy(() => import("../modules/human-resource/timesheets/components"))
-const AnnualLeave = lazy(() => import("../modules/human-resource/annual-leave/components/combinedContent"))
-const ManageLeaveApplication = lazy(() => import("../modules/human-resource/annual-leave/components/combinedContent"))
+const AnnualLeave = lazy(() => import("../modules/human-resource/annual-leave/components/annualLeave"))
+const ManageLeaveApplication = lazy(() => import("../modules/human-resource/annual-leave/components/manageLeaveApplication"))
 const EmployeesInfomation = lazy(() => import("../modules/human-resource/employee-infomation/components/"))
 const DashboardPersonal = lazy(() => import("../modules/dashboard-personal/components"))
 const DashboardUnit = lazy(() => import("../modules/dashboard-unit/components"))
@@ -163,8 +164,7 @@ const ProjectStatistic = lazy(() => import("../modules/project/statistic/compone
 const UserGuide = lazy(() => import("../modules/user-guide/components"))
 const AllTimeSheetLog = lazy(() => import("../modules/task/task-dashboard/statistic/allTimeSheetLog"))
 
-const Home = lazy(() => import("../modules/home/components"))
-const Notifications = lazy(() => import("../modules/notification/components"))
+const Notifications = lazy(() => import("../modules/notification/components/index"))
 const SystemSetting = lazy(() => import("../modules/system-admin/system-setting/components"))
 const Company = lazy(() => import("../modules/system-admin/company/components"))
 const ManageLinkSystem = lazy(() => import("../modules/system-admin/system-link/components"))
@@ -186,7 +186,7 @@ class Routes extends Component {
             employeesManager,
         } = this.props;
         return (
-            <Suspense fallback={<div>Loading...</div>}>
+            <Suspense fallback={<Layout/>}>
                 <Switch>
                     <AuthRoute
                         exact

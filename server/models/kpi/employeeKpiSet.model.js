@@ -39,6 +39,23 @@ const EmployeeKpiSetSchema = new Schema({
         type: Number,
         default: null
     },
+    weeklyEvaluations: [{
+        title: {    // week1 (1-7/month), week2 (8-14/month), week3 (15-21/month), week4 (21-28,29,30,31/month)
+            type: String
+        },
+        automaticPoint: { // Điểm tự động
+            type: Number,
+            default: null
+        },
+        employeePoint: { // Điểm nhân viên tự đánh giá
+            type: Number,
+            default: null
+        },
+        approvedPoint: {
+            type: Number,
+            default: null
+        },
+    }],
     kpis: [{
         type: Schema.Types.ObjectId,
         ref: 'EmployeeKpi',

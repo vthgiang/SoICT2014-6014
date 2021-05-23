@@ -14,6 +14,7 @@ import { DashboardEvaluationEmployeeKpiSetAction } from '../../../evaluation/das
 
 import { EmployeeKpiApproveModal } from './employeeKpiApproveModal';
 import { EmployeeKpiEvaluateModal } from './employeeKpiEvaluateModal';
+import { showWeeklyPoint } from '../../../employee/management/component/functionHelpers'
 
 function EmployeeKpiManagement(props) {
     const DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
@@ -981,32 +982,36 @@ function EmployeeKpiManagement(props) {
                                     <th title="Thời gian">{translate('kpi.evaluation.employee_evaluation.time')}</th>
                                     <th title="Số lượng mục tiêu">{translate('kpi.evaluation.employee_evaluation.num_of_kpi')}</th>
                                     <th title="Trạng thái KPI">{translate('kpi.evaluation.employee_evaluation.kpi_status')}</th>
-                                    <th title={translate('kpi.evaluation.employee_evaluation.system_evaluate')}>{translate('kpi.evaluation.employee_evaluation.system_evaluate')}</th>
-                                    <th title={translate('kpi.evaluation.employee_evaluation.result_self_evaluate')}>{translate('kpi.evaluation.employee_evaluation.result_self_evaluate')}</th>
-                                    <th title={translate('kpi.evaluation.employee_evaluation.evaluation_management')}>{translate('kpi.evaluation.employee_evaluation.evaluation_management')}</th>
+                                    <th title={translate('task.task_management.eval_of')}>{translate('task.task_management.eval_of')}</th>
+                                    <th title={translate('kpi.evaluation.employee_evaluation.weekly_point')} style={{ textAlign: "center" }}>{translate('kpi.evaluation.employee_evaluation.weekly_point')}</th>
                                     <th title="Phê duyệt" style={{ textAlign: "center" }}>{translate('kpi.evaluation.employee_evaluation.approve')}</th>
                                     <th title="Đánh giá">{translate('kpi.evaluation.employee_evaluation.evaluate')}</th>
                                 </tr>
                             </thead>
                             <tbody className="task-table">
                                 {(kpimember && kpimember.length !== 0) ?
-                                    kpimember.map((item, index) =>
+                                    kpimember.map((kpi, index) =>
                                         <tr key={index}>
                                             <td>{index + 1}</td>
-                                            <td>{item.creator ? item.creator.name : ""}</td>
-                                            <td>{item.approver ? item.approver.name : ""}</td>
-                                            <td>{item ? formatDate(item.date) : ""}</td>
-                                            <td>{item.kpis ? item.kpis.length : ""}</td>
-                                            <td>{item ? checkStatusKPI(item.status) : ""}</td>
-                                            <td>{item.automaticPoint === null ? translate('kpi.evaluation.employee_evaluation.not_evaluated_yet') : item.automaticPoint}</td>
-                                            <td>{item.employeePoint === null ? translate('kpi.evaluation.employee_evaluation.not_evaluated_yet') : item.employeePoint}</td>
-                                            <td>{item.approvedPoint === null ? translate('kpi.evaluation.employee_evaluation.not_evaluated_yet') : item.approvedPoint}</td>
+                                            <td>{kpi.creator ? kpi.creator.name : ""}</td>
+                                            <td>{kpi.approver ? kpi.approver.name : ""}</td>
+                                            <td>{kpi ? formatDate(kpi.date) : ""}</td>
+                                            <td>{kpi.kpis ? kpi.kpis.length : ""}</td>
+                                            <td>{kpi ? checkStatusKPI(kpi.status) : ""}</td>
+                                            <td title={`${translate('kpi.evaluation.dashboard.auto_point')} - ${translate('kpi.evaluation.dashboard.employee_point')} - ${translate('kpi.evaluation.dashboard.approve_point')}`}>
+                                                <strong>{kpi?.automaticPoint !== null && kpi?.automaticPoint >= 0 ? kpi.automaticPoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')} - </strong>
+                                                <strong>{kpi?.employeePoint !== null && kpi?.employeePoint >= 0 ? kpi.employeePoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')} - </strong>
+                                                <strong>{kpi?.approvedPoint !== null && kpi?.approvedPoint >= 0 ? kpi.approvedPoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')}</strong>
+                                            </td>
                                             <td style={{ textAlign: "center" }}>
-                                                <a data-target={`#modal-approve-KPI-member`} onClick={() => handleShowApproveModal(item)} data-toggle="modal" className="approve"
+                                                <a style={{ cursor: 'pointer' }} onClick={() => showWeeklyPoint(translate, kpi?.weeklyEvaluations)}> {translate('general.detail')}</a>
+                                            </td>
+                                            <td style={{ textAlign: "center" }}>
+                                                <a data-target={`#modal-approve-KPI-member`} onClick={() => handleShowApproveModal(kpi)} data-toggle="modal" className="approve"
                                                     title={translate('kpi.evaluation.employee_evaluation.approve_this_kpi')}><i className="fa fa-bullseye"></i></a>
                                             </td>
                                             <td>
-                                                <a data-target={`#employee-kpi-evaluation-modal`} onClick={() => showEvaluateModal(item)} data-toggle="modal"
+                                                <a data-target={`#employee-kpi-evaluation-modal`} onClick={() => showEvaluateModal(kpi)} data-toggle="modal"
                                                     className="copy" title={translate('kpi.evaluation.employee_evaluation.evaluate_this_kpi')}><i className="fa fa-list"></i></a>
                                             </td>
                                         </tr>

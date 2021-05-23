@@ -1163,6 +1163,7 @@ class DetailTaskTab extends Component {
                                             id={`description-${task?._id}`}
                                             toolbar={false}
                                             quillValueDefault={task?.description}
+                                            maxHeight={180}
                                             enableDropImage={false}
                                             enableEdit={false}
                                         />

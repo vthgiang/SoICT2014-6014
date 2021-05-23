@@ -79,8 +79,8 @@ export default {
         },
 
         dashboard_unit: {
-            urgent_chart: "Biểu đồ thể hiện số công việc khẩn cấp",
-            need_to_do_chart: "Biểu đồ thể hiện số công việc cần làm",
+            urgent_chart: "Công việc khẩn cấp",
+            need_to_do_chart: "Công việc cần làm",
             urgent_task_amount: "Số công việc khẩn cấp",
             need_to_do_task_amount: "Số công việc cần làm",
             list_employe_timing: "Danh sách nhân viên đang bấm giờ"
@@ -4029,7 +4029,7 @@ export default {
                         "Điểm (Tự động - Tự đánh giá - Người phê duyệt đánh giá)",
                     weekly_point_field:
                         "Điểm từng tuần (Tự động - Tự đánh giá - Người phê duyệt đánh giá)",
-                    weekly_point: "Điểm đánh giá tuần",
+                    weekly_point: "Đánh giá tuần",
                     week1: "Tuần 1",
                     week2: "Tuần 2",
                     week3: "Tuần 3",
