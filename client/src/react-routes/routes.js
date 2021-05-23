@@ -7,6 +7,7 @@ import { AuthRoute } from "./authRoute";
 
 import Layout from "../layout/layout";
 
+const Home = lazy(() => import("../modules/home/components"))
 const NotFound = lazy(() => import("../modules/not-found/components"))
 const Login = lazy(() => import("../modules/auth/components/login"))
 const ResetPassword = lazy(() => import("../modules/auth/components/resetPasswordNew"))
@@ -163,7 +164,6 @@ const ProjectStatistic = lazy(() => import("../modules/project/statistic/compone
 const UserGuide = lazy(() => import("../modules/user-guide/components"))
 const AllTimeSheetLog = lazy(() => import("../modules/task/task-dashboard/statistic/allTimeSheetLog"))
 
-const Home = lazy(() => import("../modules/home/components"))
 const Notifications = lazy(() => import("../modules/notification/components/index"))
 const SystemSetting = lazy(() => import("../modules/system-admin/system-setting/components"))
 const Company = lazy(() => import("../modules/system-admin/company/components"))
@@ -186,7 +186,7 @@ class Routes extends Component {
             employeesManager,
         } = this.props;
         return (
-            <Suspense fallback={<div>Loading...</div>}>
+            <Suspense fallback={<Layout/>}>
                 <Switch>
                     <AuthRoute
                         exact
