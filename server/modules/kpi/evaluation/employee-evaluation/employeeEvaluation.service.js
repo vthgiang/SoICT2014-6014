@@ -752,6 +752,8 @@ exports.setPointAllKpi = async (portal, idEmployee, idKpiSet, data) => {
     let employeePointSet = 0;
     let approvedPointSet = 0;
     let totalWeight = 0;
+    let weeklyEvaluations = {}
+    
     for (let i in kpis) {
         let obj = {
             id: kpis[i].id,
@@ -765,8 +767,26 @@ exports.setPointAllKpi = async (portal, idEmployee, idKpiSet, data) => {
         let task = await getResultTaskByMonth(portal, obj);
 
         // Đánh giá KPI tuần
-
+        let currentDate = new Date(date)
+        let currentMonth = currentDate?.getMonth()
+        let currentYear = currentDate?.getFullYear()
+        let week1 = setPointForWeek(task, "week1", new Date(currentYear, currentMonth, 2), new Date(currentYear, currentMonth, 9)) // ví dụ: new Date(2021,3,2) = 0h0'0 1/4/2021, new Date(2021,3,9) = 0h0'0 8/4/2021
+        let week2 = setPointForWeek(task, "week2", new Date(currentYear, currentMonth, 9), new Date(currentYear, currentMonth, 16)) // ví dụ: new Date(2021,3,9) = 0h0'0 8/4/2021, new Date(2021,3,16) = 0h0'0 15/4/2021
+        let week3 = setPointForWeek(task, "week3", new Date(currentYear, currentMonth, 16), new Date(currentYear, currentMonth, 23)) // ví dụ: new Date(2021,3,16) = 0h0'0 15/4/2021, new Date(2021,3,23) = 0h0'0 21/4/2021
+        let week4 = setPointForWeek(task, "week4", new Date(currentYear, currentMonth, 23), new Date(currentYear, currentMonth + 1, 2)) // ví dụ: new Date(2021,3,23) = 0h0'0 21/4/2021, new Date(2021,4,2) = 0h0'0 1/5/2021
+        let resultWeek = [week1, week2, week3, week4]
+        await EmployeeKpi(connect(DB_CONNECTION, portal))
+            .findByIdAndUpdate(
+                kpis[i].id,
+                {
+                    $set: {
+                        weeklyEvaluations: resultWeek
+                    },
+                },
+                { new: true }
+            );
         
+        // Đánh giá KPI tháng
         let automaticPoint = 0;
         let approvedPoint = 0;
         let employeePoint = 0;
@@ -844,12 +864,44 @@ exports.setPointAllKpi = async (portal, idEmployee, idKpiSet, data) => {
             );
 
         let weight = kpi.weight / 100;
+
+        // Tính điểm KPI tuần cho tập KPI
+        if (kpi?.weeklyEvaluations?.length > 0) {
+            kpi.weeklyEvaluations.map(item => {
+                if (!weeklyEvaluations[item.title]) {
+                    weeklyEvaluations[item.title] = {
+                        automaticPoint: 0,
+                        employeePoint: 0,
+                        approvedPoint: 0
+                    }
+                }
+                weeklyEvaluations[item.title].automaticPoint += item.automaticPoint ? item.automaticPoint * weight : 0;
+                weeklyEvaluations[item.title].employeePoint += item.employeePoint ? item.employeePoint * weight : 0;
+                weeklyEvaluations[item.title].approvedPoint += item.approvedPoint ? item.approvedPoint * weight : 0;
+            })
+        }
+
+        // Tính điểm KPI tháng cho tập KPI
         totalWeight += weight;
         autoPointSet += kpi.automaticPoint ? kpi.automaticPoint * weight : 0;
         employeePointSet += kpi.employeePoint ? kpi.employeePoint * weight : 0;
         approvedPointSet += kpi.approvedPoint ? kpi.approvedPoint * weight : 0;
 
 
+    }
+
+    // Mảng các đánh giá tuần cho tập KPI
+    let titleWeeklyEvaluations = Object.keys(weeklyEvaluations)
+    let weeklyEvaluationsOfKpiSet = []
+    if (titleWeeklyEvaluations?.length > 0) {
+        titleWeeklyEvaluations.map(item => {
+            weeklyEvaluationsOfKpiSet.push({
+                title: item.toString(),
+                automaticPoint: Math.round(weeklyEvaluations?.[item]?.automaticPoint),
+                employeePoint: Math.round(weeklyEvaluations?.[item]?.employeePoint),
+                approvedPoint: Math.round(weeklyEvaluations?.[item]?.approvedPoint)
+            })
+        })
     }
 
     let updateKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
@@ -859,6 +911,7 @@ exports.setPointAllKpi = async (portal, idEmployee, idKpiSet, data) => {
                     "automaticPoint": Math.round(autoPointSet / totalWeight ? autoPointSet / totalWeight : 0),
                     "employeePoint": Math.round(employeePointSet / totalWeight ? employeePointSet / totalWeight : 0),
                     "approvedPoint": Math.round(approvedPointSet / totalWeight ? approvedPointSet / totalWeight : 0),
+                    weeklyEvaluations: weeklyEvaluationsOfKpiSet
                 },
             },
             { new: true }
