@@ -9,7 +9,7 @@ import ServerResponseAlert from '../../alert/components/serverResponseAlert';
 import { toast } from 'react-toastify';
 import ValidationHelper from '../../../helpers/validationHelper';
 // import { generateCharacter } from "../../../helpers/generateCode";
-
+import './login.css';
 function ResetPasswordNew(props) {
     const [state, setState] = useState({
         otp: ""

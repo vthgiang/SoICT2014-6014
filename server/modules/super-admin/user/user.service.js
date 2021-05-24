@@ -12,6 +12,7 @@ const generator = require("generate-password");
 const OrganizationalUnitService = require(`../../super-admin/organizational-unit/organizationalUnit.service`);
 const { connect } = require(`../../../helpers/dbHelper`);
 const { sendEmail } = require("../../../helpers/emailHelper");
+
 /**
  * Lấy danh sách tất cả user trong 1 công ty
  * @company id của công ty
@@ -934,11 +935,19 @@ exports.getUsersByRolesArray = async (portal, roles) => {
 
 exports.sendEmailResetPasswordUser = async(portal, email) => {
     let user = await User(connect(DB_CONNECTION, portal)).findOne({ email });
-    let code = await generator.generate({ length: 6, numbers: true });
-    user.resetPasswordToken = code;
+    // let code = await generator.generate({ length: 6, numbers: true });
+    // user.resetPasswordToken = code;
+    const salt = bcrypt.genSaltSync(10);
+    const password = generator.generate({
+        length: 10,
+        numbers: true,
+    });
+    const hash = bcrypt.hashSync(password, salt);
+
+    user.password = hash;
+
     if (user.password2) {
         user.password2 = ""
-        
         await User(connect(DB_CONNECTION, portal)).updateOne({
             _id: user._id,
         }, { $set: user })
@@ -947,35 +956,84 @@ exports.sendEmailResetPasswordUser = async(portal, email) => {
     }
     
     let subject = `${process.env.WEB_NAME} : Thay đổi mật khẩu - Change password`;
-    let html = `
-        <div style="
-            background-color:azure;
-            padding: 100px;
-            text-align: center;
-        ">
-            <h3>
-                Yêu cầu xác thực thay đổi mật khẩu
-            </h3>
-            <p>Mã xác thực: <b style="color: red">${code}</b></p>
-            <button style="
-                padding: 8px 8px 8px 8px; 
-                border: 1px solid rgb(4, 197, 30); 
-                border-radius: 5px;
-                background-color: #4CAF50"
-            >
-                <a 
-                    style="
-                        text-decoration: none;
-                        color: white;
-                        " 
-                    href="${process.env.WEBSITE}/reset-password?portal=${portal}&otp=${code}&email=${email}"
-                >
-                    Xác thực
-                </a>
-            </button>
-        </div>
-        `
-    await sendEmail(email, subject, '', html);
+    let text = `Yêu cầu cấp lại mật khẩu cho email ${email}`
+    let html =  `<html>
+                <head>
+                    <style>
+                        .wrapper {
+                            width: 100%;
+                            min-width: 580px;
+                            background-color: #FAFAFA;
+                            padding: 10px 0;
+                        }
+                
+                        .info {
+                            list-style-type: none;
+                        }
+                
+                        @media screen and (max-width: 600px) {
+                            .form {
+                                border: solid 1px #dddddd;
+                                padding: 50px 30px;
+                                border-radius: 3px;
+                                margin: 0px 5%;
+                                background-color: #FFFFFF;
+                            }
+                        }
+                
+                        .form {
+                            border: solid 1px #dddddd;
+                            padding: 50px 30px;
+                            border-radius: 3px;
+                            margin: 0px 25%;
+                            background-color: #FFFFFF;
+                        }
+                
+                        .title {
+                            text-align: center;
+                        }
+                
+                        .footer {
+                            margin: 0px 25%;
+                            text-align: center;
+                
+                        }
+                    </style>
+                </head>
+                
+                <body>
+                    <div class="wrapper">
+                        <div class="title">
+                            <h1>${process.env.WEB_NAME}</h1>
+                        </div>
+                        <div class="form">
+                            <p><b>Thông tin tài khoản đăng nhập mới của bạn: </b></p>
+                            <div class="info">
+                                <li>Portal: ${portal}</li>
+                                <li>Tài khoản: ${email}</li>
+                                <li>Mật khẩu: <b>${password}</b></li>
+                            </div>
+                            <p>Đăng nhập ngay tại: <a href="${process.env.WEBSITE}/login">${process.env.WEBSITE}/login</a></p><br />
+                
+                            <p><b>Your account information: </b></p>
+                            <div class="info">
+                                <li>Portal: ${portal}</li>
+                                <li>Account: ${email}</li>
+                                <li>Password: <b>${password}</b></li>
+                            </div>
+                            <p>Login in: <a href="${process.env.WEBSITE}/login">${process.env.WEBSITE}/login</a></p>
+                        </div>
+                        <div class="footer">
+                            <p>Copyright by
+                                <i>Công ty Cổ phần Công nghệ
+                                    <br />
+                                    An toàn thông tin và Truyền thông Việt Nam</i>
+                            </p>
+                        </div>
+                    </div>
+                </body>
+        </html>`
+    await sendEmail(email, subject,text, html);
 
     return {
         portal, email
