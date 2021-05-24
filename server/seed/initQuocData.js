@@ -39,6 +39,7 @@ const { job } = require("cron");
 
 require("dotenv").config();
 
+const ADDITIONAL_USERS_NUM = 45;
 const months = [
     "01",
     "02",
@@ -312,17 +313,17 @@ const initHumanResourceForProjectData = async () => {
 
     const nvPhongMaketing = await Role(vnistDB).create({
         parents: [roleEmployee._id],
-        name: "Nhân viên phòng Marketing & NCPT sản phẩm",
+        name: "Nhân viên phòng Marketing",
         type: roleChucDanh._id,
     });
     const phoPhongMaketing = await Role(vnistDB).create({
         parents: [roleDeputyManager._id, nvPhongMaketing._id],
-        name: "Phó phòng Marketing & NCPT sản phẩm",
+        name: "Phó phòng Marketing",
         type: roleChucDanh._id,
     });
     const truongPhongMaketing = await Role(vnistDB).create({
         parents: [roleManager._id, nvPhongMaketing._id, phoPhongMaketing._id],
-        name: "Trưởng phòng Marketing & NCPT sản phẩm",
+        name: "Trưởng phòng Marketing",
         type: roleChucDanh._id,
     });
 
@@ -454,6 +455,54 @@ const initHumanResourceForProjectData = async () => {
         type: roleChucDanh._id,
     });
 
+    const nvPhongRND = await Role(vnistDB).create({
+        parents: [roleEmployee._id],
+        name: "Nhân viên phòng NC & PT",
+        type: roleChucDanh._id,
+    });
+    const phoPhongRND = await Role(vnistDB).create({
+        parents: [roleDeputyManager._id, nvPhongRND._id],
+        name: "Phó phòng NC & PT",
+        type: roleChucDanh._id,
+    });
+    const truongPhongRND = await Role(vnistDB).create({
+        parents: [roleManager._id, nvPhongRND._id, phoPhongRND._id],
+        name: "Trưởng phòng NC & PT",
+        type: roleChucDanh._id,
+    });
+
+    const nvPhongBDCL = await Role(vnistDB).create({
+        parents: [roleEmployee._id],
+        name: "Nhân viên phòng Bảo đảm chất lượng",
+        type: roleChucDanh._id,
+    });
+    const phoPhongBDCL = await Role(vnistDB).create({
+        parents: [roleDeputyManager._id, nvPhongBDCL._id],
+        name: "Phó phòng Bảo đảm chất lượng",
+        type: roleChucDanh._id,
+    });
+    const truongPhongBDCL = await Role(vnistDB).create({
+        parents: [roleManager._id, nvPhongBDCL._id, phoPhongBDCL._id],
+        name: "Trưởng phòng Bảo đảm chất lượng",
+        type: roleChucDanh._id,
+    });
+
+    const nvPhongKTCL = await Role(vnistDB).create({
+        parents: [roleEmployee._id],
+        name: "Nhân viên phòng Kiểm tra chất lượng",
+        type: roleChucDanh._id,
+    });
+    const phoPhongKTCL = await Role(vnistDB).create({
+        parents: [roleDeputyManager._id, nvPhongKTCL._id],
+        name: "Phó phòng Kiểm tra chất lượng",
+        type: roleChucDanh._id,
+    });
+    const truongPhongKTCL = await Role(vnistDB).create({
+        parents: [roleManager._id, nvPhongKTCL._id, phoPhongKTCL._id],
+        name: "Trưởng phòng Kiểm tra chất lượng",
+        type: roleChucDanh._id,
+    });
+
     // Tìm các role đã có sẵn trong db VNIST
     const nvKinhDoanh247 = await Role(vnistDB).findOne({
         name: "Nhân viên phòng kinh doanh 247",
@@ -479,7 +528,27 @@ const initHumanResourceForProjectData = async () => {
     const truongPhongSalesAdmin = await Role(vnistDB).findOne({
         name: "Trưởng phòng quản lý bán hàng",
     });
-
+    const nvPhongKH = await Role(vnistDB).findOne({
+        name: "Nhân viên phòng kế hoạch",
+    });
+    const phoPhongKH = await Role(vnistDB).findOne({
+        name: "Phó phòng kế hoạch",
+    });
+    const truongPhongKH = await Role(vnistDB).findOne({
+        name: "Trưởng phòng kế hoạch",
+    });
+    const nvNhaMayThuocBot = await Role(vnistDB).findOne({
+        name: "Nhân viên nhà máy thuốc bột",
+    });
+    const quanDocNhaMayThuocBot = await Role(vnistDB).findOne({
+        name: "Quản đốc nhà máy thuốc bột",
+    });
+    const nvNhaMayThuocNuoc = await Role(vnistDB).findOne({
+        name: "Nhân viên nhà máy thuốc nước",
+    });
+    const quanDocNhaMayThuocNuoc = await Role(vnistDB).findOne({
+        name: "Quản đốc nhà máy thuốc nước",
+    });
 
     /*---------------------------------------------------------------------------------------------
     -----------------------------------------------------------------------------------------------
@@ -491,6 +560,15 @@ const initHumanResourceForProjectData = async () => {
     });
     const boPhanKinhDoanh = await OrganizationalUnit(vnistDB).findOne({
         name: "Bộ phận kinh doanh",
+    });
+    const nhamaythuocbot = await OrganizationalUnit(vnistDB).findOne({
+        name: "Nhà máy sản xuất thuốc bột",
+    });
+    const nhamaythuocnuoc = await OrganizationalUnit(vnistDB).findOne({
+        name: "Nhà máy sản xuất thuốc nước",
+    });
+    const phongkehoach = await OrganizationalUnit(vnistDB).findOne({
+        name: "Phòng kế hoạch",
     });
 
     const phongKinhDoanh247 = await OrganizationalUnit(vnistDB).insertMany([
@@ -517,9 +595,9 @@ const initHumanResourceForProjectData = async () => {
 
     const phongMaketing = await OrganizationalUnit(vnistDB).insertMany([
         {
-            name: "Phòng Marketing & NCPT sản phẩm",
+            name: "Phòng Marketing",
             description:
-                "Phòng Marketing & NCPT sản phẩm Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
+                "Phòng Marketing Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
             managers: [truongPhongMaketing._id],
             deputyManagers: [phoPhongMaketing._id],
             employees: [nvPhongMaketing._id],
@@ -559,7 +637,7 @@ const initHumanResourceForProjectData = async () => {
             managers: [truongPhongQTMT._id],
             deputyManagers: [phoPhongQTMT._id],
             employees: [nvPhongQTMT._id],
-            parent: phongQTNS[0]._id,
+            parent: phongQTNS._id,
         },
     ]);
 
@@ -571,7 +649,7 @@ const initHumanResourceForProjectData = async () => {
             managers: [truongPhongQTHCNS._id],
             deputyManagers: [phoPhongQTHCNS._id],
             employees: [nvPhongQTHCNS._id],
-            parent: phongQTNS[0]._id,
+            parent: phongQTNS._id,
         },
     ]);
 
@@ -583,7 +661,7 @@ const initHumanResourceForProjectData = async () => {
             managers: [truongPhongHCHT._id],
             deputyManagers: [phoPhongHCHT._id],
             employees: [nvPhongHCHT._id],
-            parent: phongQTNS[0]._id,
+            parent: phongQTNS._id,
         },
     ]);
 
@@ -607,7 +685,7 @@ const initHumanResourceForProjectData = async () => {
             managers: [truongPhongKTDN._id],
             deputyManagers: [phoPhongKTDN._id],
             employees: [nvPhongKTDN._id],
-            parent: phongTCKT[0]._id,
+            parent: phongTCKT._id,
         },
     ]);
 
@@ -619,7 +697,7 @@ const initHumanResourceForProjectData = async () => {
             managers: [truongPhongKTBH._id],
             deputyManagers: [phoPhongKTBH._id],
             employees: [nvPhongKTBH._id],
-            parent: phongTCKT[0]._id,
+            parent: phongTCKT._id,
         },
     ]);
 
@@ -645,25 +723,47 @@ const initHumanResourceForProjectData = async () => {
         },
     ]);
 
+    const boPhanNCPT = await OrganizationalUnit(vnistDB).insertMany([
+        {
+            name: "Bộ phận Nghiên cứu & Phát triển",
+            description:
+                "Bộ phận Nghiên cứu & Phát triển",
+            managers: [truongPhongRND._id],
+            deputyManagers: [phoPhongRND._id],
+            employees: [nvPhongRND._id],
+            parent: Directorate._id,
+        },
+    ]);
+
+    const boPhanBDCL = await OrganizationalUnit(vnistDB).insertMany([
+        {
+            name: "Bộ phận Bảo đảm chất lượng",
+            description:
+                "Bộ phận Bảo đảm chất lượng",
+            managers: [truongPhongBDCL._id],
+            deputyManagers: [phoPhongBDCL._id],
+            employees: [nvPhongBDCL._id],
+            parent: Directorate._id,
+        },
+    ]);
+
+    const boPhanKTCL = await OrganizationalUnit(vnistDB).insertMany([
+        {
+            name: "Bộ phận Kiểm tra chất lượng",
+            description:
+                "Bộ phận Kiểm tra chất lượng",
+            managers: [truongPhongKTCL._id],
+            deputyManagers: [phoPhongKTCL._id],
+            employees: [nvPhongKTCL._id],
+            parent: Directorate._id,
+        },
+    ]);
+
     /*---------------------------------------------------------------------------------------------
     -----------------------------------------------------------------------------------------------
          3. LẤY CÁC TÀI KHOẢN ĐÃ CÓ CỦA VNIST ĐỂ TẠO NHÂN VIÊN TRƯỚC
     -----------------------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------------------- */
-    // const units = [
-    //     boPhanKinhDoanh,
-    //     phongKinhDoanh123,
-    //     phongKinhDoanh247,
-    //     phongMaketing,
-    //     phongKS,
-    //     phongQTNS,
-    //     phongQTMT,
-    //     phongQTHCNS,
-    //     phongHCHT,
-    //     phongTCKT,
-    //     phongKTDN,
-    //     phongKTBH,
-    // ];
     const fields = await Field(vnistDB).insertMany([
         {
             // 0
@@ -916,8 +1016,8 @@ const initHumanResourceForProjectData = async () => {
     const salt = await bcrypt.genSaltSync(10);
     const hash = await bcrypt.hashSync("vnist123@", salt);
     let usersForProject = [];
-    for (let i = 0; i <= 20; i++) {
-        if (i <= 10) {
+    for (let i = 0; i <= ADDITIONAL_USERS_NUM; i++) {
+        if (i <= ADDITIONAL_USERS_NUM / 2) {
             let name = randomDateNameMale();
             usersForProject = [
                 ...usersForProject,
@@ -952,28 +1052,99 @@ const initHumanResourceForProjectData = async () => {
          6. GÁN PHÂN QUYỀN ROLE CHO CÁC VỊ TRÍ TRONG CÔNG TY
     -----------------------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------------------- */
-    const phongBan = [
-        nvPhongMaketing,
-        nvPhongKS,
-        nvPhongQTNS,
-        nvPhongQTMT,
-        nvPhongQTHCNS,
-        nvPhongHCHT,
-        nvPhongTCKT,
-        nvPhongKTDN,
-        nvPhongKTBH,
-    ];
     let userRolesForProject = [];
-    for (let i = 0; i <= 20; i++) {
-        let index = Math.floor(Math.random() * 9);
-        let unit = phongBan[index];
-        userRolesForProject = [
-            ...userRolesForProject,
-            {
-                userId: usersForProjectAfterDB[i]._id,
-                roleId: unit._id,
-            },
-        ];
+    let rndArr = [], marketingArr = [], ktclArr = [], bdclArr = [], khArr = [], thuocBotArr = [], thuocNuocArr = [], qlhtnsArr = [], ktdnArr = [];
+    for (let i = 0; i <= ADDITIONAL_USERS_NUM; i++) {
+        if (i >= 0 && i < 6) {
+            userRolesForProject = [
+                ...userRolesForProject,
+                {
+                    userId: usersForProjectAfterDB[i]._id,
+                    roleId: i === 0 ? truongPhongRND._id : nvPhongRND._id,
+                },
+            ];
+            rndArr.push(usersForProjectAfterDB[i]);
+        }
+        else if (i >= 6 && i < 11) {
+            userRolesForProject = [
+                ...userRolesForProject,
+                {
+                    userId: usersForProjectAfterDB[i]._id,
+                    roleId: i === 6 ? truongPhongMaketing._id : nvPhongMaketing._id,
+                },
+            ];
+            marketingArr.push(usersForProjectAfterDB[i]);
+        }
+        else if (i >= 11 && i < 16) {
+            userRolesForProject = [
+                ...userRolesForProject,
+                {
+                    userId: usersForProjectAfterDB[i]._id,
+                    roleId: i === 11 ? truongPhongKTCL._id : nvPhongKTCL._id,
+                },
+            ];
+            ktclArr.push(usersForProjectAfterDB[i]);
+        }
+        else if (i >= 16 && i < 21) {
+            userRolesForProject = [
+                ...userRolesForProject,
+                {
+                    userId: usersForProjectAfterDB[i]._id,
+                    roleId: i === 16 ? truongPhongBDCL._id : nvPhongBDCL._id,
+                },
+            ];
+            bdclArr.push(usersForProjectAfterDB[i]);
+        }
+        else if (i >= 21 && i < 26) {
+            userRolesForProject = [
+                ...userRolesForProject,
+                {
+                    userId: usersForProjectAfterDB[i]._id,
+                    roleId: nvPhongKH._id,
+                },
+            ];
+            khArr.push(usersForProjectAfterDB[i]);
+        }
+        else if (i >= 26 && i < 31) {
+            userRolesForProject = [
+                ...userRolesForProject,
+                {
+                    userId: usersForProjectAfterDB[i]._id,
+                    roleId: nvNhaMayThuocBot._id,
+                },
+            ];
+            thuocBotArr.push(usersForProjectAfterDB[i]);
+        }
+        else if (i >= 31 && i < 36) {
+            userRolesForProject = [
+                ...userRolesForProject,
+                {
+                    userId: usersForProjectAfterDB[i]._id,
+                    roleId: nvNhaMayThuocNuoc._id,
+                },
+            ];
+            thuocNuocArr.push(usersForProjectAfterDB[i]);
+        }
+        else if (i >= 36 && i < 41) {
+            userRolesForProject = [
+                ...userRolesForProject,
+                {
+                    userId: usersForProjectAfterDB[i]._id,
+                    roleId: i === 36 ? truongPhongQTHCNS._id : nvPhongQTHCNS._id,
+                },
+            ];
+            qlhtnsArr.push(usersForProjectAfterDB[i]);
+        }
+        else {
+            userRolesForProject = [
+                ...userRolesForProject,
+                {
+                    userId: usersForProjectAfterDB[i]._id,
+                    roleId: i === 41 ? truongPhongKTDN._id : nvPhongKTDN._id,
+                },
+            ];
+            ktdnArr.push(usersForProjectAfterDB[i]);
+        }
     }
     await UserRole(vnistDB).insertMany(userRolesForProject);
 
@@ -1183,68 +1354,116 @@ const initHumanResourceForProjectData = async () => {
     }
     await Salary(vnistDB).insertMany(salaryForUsersProject);
 
-    const currentSalaries = await Salary(vnistDB).find({});
-    const currentEmployees = await Employee(vnistDB).find({});
-    const currentOrganizationUnits = await OrganizationalUnit(vnistDB).find({});
-    console.log('------------------LƯƠNG NHÂN VIÊN---------------------')
-    console.log('-------------------------------------------------------------')
-    for (let salaryItem of currentSalaries) {
-        const moment = require('moment');
-        const currentEmployee = currentEmployees.find(item => {
-            return JSON.stringify(item._id) === JSON.stringify(salaryItem.employee)
-        });
-        const currentOrganizationUnit = currentOrganizationUnits.find(item => {
-            return JSON.stringify(item._id) === JSON.stringify(salaryItem.organizationalUnit)
-        });
-        console.log(currentEmployee.fullName, '---', currentOrganizationUnit.name, '---', moment(salaryItem.month).format('MM-YYYY'), '---', salaryItem.mainSalary);
-    }
-    console.log('-------------------------------------------------------------')
-    console.log('-------------------------------------------------------------')
-
     /*---------------------------------------------------------------------------------------------
     -----------------------------------------------------------------------------------------------
          TẠO DỮ LIỆU CHO DỰ ÁN
     -----------------------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------------------- */
+
+    const currentSalaries = await Salary(vnistDB).find({});
+    const currentEmployees = await Employee(vnistDB).find({});
+    const currentUsers = await User(vnistDB).find({});
+    // Set 1 người làm projectManager
     const projectManager = await User(vnistDB).findOne({
         name: 'Nguyễn Văn Danh'
     });
-    // const currentUsers = await User(vnistDB).find({});
+    let directorateArr = usersAlreadyInVNIST;
 
-    // const newEmployeesWithUnit = [
-    //     {
-    //         unitId: Directorate._id,
-    //         listUsers: [
-    //             {
-    //                 userId: Directorate.managers[0],
-    //                 salary: ,
-    //             }
-    //         ]
-    //     }
-    // ];
+    const dataForResponsibleEmployees = [
+        { unitItem: Directorate, unitUsersArr: getShortenArray(directorateArr, 4) },
+        { unitItem: boPhanNCPT[0], unitUsersArr: getShortenArray(rndArr, 5) },
+        { unitItem: phongMaketing[0], unitUsersArr: getShortenArray(marketingArr) },
+        { unitItem: boPhanKTCL[0], unitUsersArr: getShortenArray(ktclArr) },
+        { unitItem: boPhanBDCL[0], unitUsersArr: getShortenArray(bdclArr) },
+        { unitItem: phongkehoach, unitUsersArr: getShortenArray(khArr) },
+        { unitItem: nhamaythuocbot, unitUsersArr: getShortenArray(thuocBotArr) },
+        { unitItem: nhamaythuocnuoc, unitUsersArr: getShortenArray(thuocNuocArr) },
+        { unitItem: phongQTHCNS[0], unitUsersArr: getShortenArray(qlhtnsArr) },
+        { unitItem: phongKTDN[0], unitUsersArr: getShortenArray(ktdnArr) },
+    ]
 
-    const newProject = {
-        code: 'DUAN11',
-        name: 'Du an 1',
-        "unitTime": "day",
+    const newResponsibleEmployeesWithUnit = dataForResponsibleEmployees.map((dataItem) => {
+        return {
+            unitId: dataItem.unitItem._id,
+            listUsers: dataItem.unitUsersArr.map((userItem) => {
+                return {
+                    userId: userItem._id,
+                    salary: getSalaryFromUserIdAndOrgId(currentSalaries, currentEmployees, currentUsers, dataItem.unitItem._id, userItem._id),
+                }
+            })
+        }
+    });
+
+    const newResponsibleEmployees = newResponsibleEmployeesWithUnit.map((unitItem) => {
+        return unitItem.listUsers.map((userItem) => {
+            return userItem.userId
+        })
+    }).flat();
+
+    const newEmptyProject = {
+        name: 'Dự án test lập kế hoạch CPM',
+        "unitTime": "days",
         "unitCost": "VND",
         "status": "inprocess",
         "startDate": new Date("2021-04-16T00:00:00Z"),
         "endDate": new Date("2021-07-23T00:00:00Z"),
-        "description": "ádasdasdasdasd",
+        "description": "Dự án này có danh sách công việc rỗng để có thể test chức năng lập kế hoạch",
         projectManager: [
             projectManager._id,
         ],
         creator: projectManager._id,
-        responsibleEmployees: [],
-        responsibleEmployeesWithUnit: []
+        responsibleEmployees: newResponsibleEmployees,
+        responsibleEmployeesWithUnit: newResponsibleEmployeesWithUnit,
+    }
+
+    const drugRNDProject = {
+        name: 'Dự án nghiên cứu sản phẩm thuốc công ty Việt Anh',
+        "unitTime": "days",
+        "unitCost": "VND",
+        "status": "inprocess",
+        "startDate": new Date("2021-04-16T00:00:00Z"),
+        "endDate": new Date("2021-07-23T00:00:00Z"),
+        "description": "Dự án này có dữ liệu danh sách công việc của 1 dự án cụ thể - dự án nghiên cứu và phát triển thuốc mới",
+        projectManager: [
+            projectManager._id,
+        ],
+        creator: projectManager._id,
+        responsibleEmployees: newResponsibleEmployees,
+        responsibleEmployeesWithUnit: newResponsibleEmployeesWithUnit,
     }
 
     await Project(vnistDB).insertMany([
-        newProject,
+        newEmptyProject,
+        drugRNDProject,
     ]);
+
+    /*---------------------------------------------------------------------------------------------
+    -----------------------------------------------------------------------------------------------
+            TẠO DANH SÁCH CÔNG VIỆC CHO DỰ ÁN
+    -----------------------------------------------------------------------------------------------
+    ----------------------------------------------------------------------------------------------- */
+
     console.log('Hoàn thành tạo dữ liệu cho dự án')
 
+}
+
+const getSalaryFromUserIdAndOrgId = (currentSalaries, currentEmployees, currentUsers, orgId, userId) => {
+    const currentUserItem = currentUsers.find((usersItem) => String(usersItem._id) === String(userId));
+    const currentEmployeeItem = currentEmployees.find((empsItem) => String(empsItem.emailInCompany) === String(currentUserItem.email));
+    if (!currentEmployeeItem) return 0;
+    const currentSalaryItem = currentSalaries.find((salsItem) => (
+        String(salsItem.organizationalUnit) === String(orgId)
+        && String(salsItem.employee) === String(currentEmployeeItem._id))
+    );
+    return !currentSalaryItem ? 0 : currentSalaryItem.mainSalary;
+}
+
+const getShortenArray = (array, numsOfItems = 3) => {
+    if (!Array.isArray(array) || !array) return [];
+    if (array.length < numsOfItems) {
+        return array;
+    }
+    return array.filter((arrItem, arrIndex) => arrIndex < numsOfItems);
 }
 
 initHumanResourceForProjectData().catch((err) => {

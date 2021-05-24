@@ -57,7 +57,6 @@ const TabProjectInfo = (props) => {
                 <div className="box-body qlcv">
                     <div className="row">
                         {renderItemLabelContent(translate('project.name'), projectDetail ? projectDetail?.name : null)}
-                        {renderItemLabelContent(translate('project.code'), projectDetail ? projectDetail?.code : null)}
                     </div>
 
                     <div className="row">

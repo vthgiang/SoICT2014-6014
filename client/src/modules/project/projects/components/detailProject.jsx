@@ -30,16 +30,6 @@ const ProjectDetailForm = (props) => {
                             <div className="col-md-6">
                                 <div className="form-horizontal">
                                     <div className="form-group">
-                                        <strong className="col-sm-4">{translate('project.code')}</strong>
-                                        <div className="col-sm-8">
-                                            <span>{projectDetail ? projectDetail?.code : null}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-md-6">
-                                <div className="form-horizontal">
-                                    <div className="form-group">
                                         <strong className="col-sm-4">{translate('project.detail_link')}</strong>
                                         <a className="col-sm-8" href={`/project/project-details?id=${projectDetail?._id}`} target="_blank">
                                             {projectDetail ? projectDetail?.name : null}

@@ -563,3 +563,13 @@ export const getActualMemberCostOfTask = (task, projectDetail, userId) => {
     }
     return actualNormalMemberCost;
 }
+
+export const renderLongListUsers = (list, limit = 10) => {
+    if (!list) return '';
+    if (list.length > limit) {
+        const newList = list.filter((item, index) => index < limit);
+        newList.push('...');
+        return newList.join(', ');
+    }
+    return list.join(', ');
+}
