@@ -320,13 +320,13 @@ exports.changeTransportStatusByCarrierId = async (portal, carrierId, data) => {
         }
         if (String(data.type) === "1"){
             if (String(data.status)!=="2"){
-                requirementStatus = 4;
+                requirementStatus = 4; // Đã lấy đc hàng
             }
             await TransportRequirementServices.editTransportRequirement(portal, requirementId, {"transportStatus.fromAddress": transportStatus, status: requirementStatus})
         }
         else {
             if (String(data.status)!=="2"){
-                requirementStatus = 5;
+                requirementStatus = 5; // Hoàn thành yêu cầu vc
             }
             await TransportRequirementServices.editTransportRequirement(portal, requirementId, {"transportStatus.toAddress": transportStatus, status: requirementStatus})
         }

@@ -28,6 +28,20 @@ const requirements = [
         text: "Khác",
     }
 ];
+exports.getListTypeRequirement = () => {
+    return requirements;
+}
+exports.getValueTypeRequirement = (billGroup, billType) => {
+    let res = "5";
+    if (billGroup && billType){
+        requirements.map(item => {
+            if (String(item.billGroup) === String(billGroup) && String(item.billType) === billType){
+                res = item.value;
+            }
+        })
+    }
+    return res;
+}
 exports.getTypeRequirement = (value)=>{
     let res="";
     if (value && requirements){

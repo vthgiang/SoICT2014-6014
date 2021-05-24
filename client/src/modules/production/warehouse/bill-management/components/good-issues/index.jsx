@@ -7,6 +7,9 @@ import BillDetailForm from '../genaral/billDetailForm';
 import GoodIssueEditForm from './goodIssueEditForm';
 import GoodIssueCreateForm from './goodIssueCreateForm';
 import QualityControlForm from '../genaral/quatityControlForm';
+
+import {TransportRequirementsCreateForm} from '../../../../transport/transport-requirements/components/transportRequirementsCreateForm'
+
 import { getTableConfiguration } from '../../../../../../helpers/tableConfiguration';
 class IssueManagement extends Component {
     constructor(props) {
@@ -30,8 +33,19 @@ class IssueManagement extends Component {
                 currentRow: bill
             }
         })
-
+        
         window.$('#modal-edit-bill-issue').modal('show');
+    }
+
+    handleCreateTransportRequirement = async (bill) => {
+        await this.setState(state => {
+            return{
+                ...state,
+                billTransport: bill
+
+            }
+        })        
+        window.$('#modal-create-transport-requirements').modal('show');
     }
 
     findIndexOfStaff = (array, id) => {
@@ -66,6 +80,9 @@ class IssueManagement extends Component {
         return (
             <div id="bill-good-issues">
                 <div className="box-body qlcv">
+                    <TransportRequirementsCreateForm 
+                        billFromStockModules={this.state.billTransport}
+                    />
                     <GoodIssueCreateForm group={group} />
                     {
                         this.state.currentControl &&
@@ -278,6 +295,7 @@ class IssueManagement extends Component {
                                                     func={() => this.handleFinishedQualityControlStaff(x)}
                                                 />
                                             }
+                                            <a onClick={() => this.handleCreateTransportRequirement(x) } className="text-blue"><i className="material-icons">airport_shuttle</i></a>
                                         </td>
                                     </tr>
                                 ))

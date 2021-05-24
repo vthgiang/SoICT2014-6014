@@ -24,13 +24,15 @@ import { CrmCustomerActions } from "../../../../crm/customer/redux/actions";
 import { GoodActions} from '../../../common-production/good-management/redux/actions';
 import { transportRequirementsActions } from '../redux/actions'
 import { transportDepartmentActions } from '../../transport-department/redux/actions'
+import { getListTypeRequirement, getValueTypeRequirement, getTypeRequirement } from '../../transportHelper/getTextFromValue'
 import { getGeocode } from '../../transportHelper/getGeocodeGoong'
 
 function TransportRequirementsCreateForm(props) {
 
     // const { translate, example, page, perPage } = props;
     // const { exampleName, description, exampleNameError } = state1;
-    const {requirements, bills, transportDepartment} = props
+    const {bills, transportDepartment, billFromStockModules} = props
+    const requirements=getListTypeRequirement();
     // /**
     //  * Hàm dùng để kiểm tra xem form đã được validate hay chưa
     //  */
@@ -42,6 +44,21 @@ function TransportRequirementsCreateForm(props) {
     // }
 
     // Khởi tạo state
+
+    useEffect(() => {
+        console.log(billFromStockModules,"billFromStockModules");
+        if (billFromStockModules){
+            handleClickCreateCode();
+            setCurrentBill({bill: billFromStockModules, id: billFromStockModules._id});
+            setState({
+                ...state,
+                billGroup: billFromStockModules.group,
+                billType: billFromStockModules.type,
+                value: getValueTypeRequirement(billFromStockModules.group, billFromStockModules.type),
+            })
+        }
+    }, [billFromStockModules])
+
     const [state, setState] = useState({
         value: "5",
         billGroup: "2",
@@ -226,7 +243,8 @@ function TransportRequirementsCreateForm(props) {
     useEffect(() => {
         // props.getCustomers();
         // props.getBillsByType({ page:1, limit:30, group: parseInt(state.billGroup), managementLocation: localStorage.getItem("currentRole") });
-        props.getBillsByType({ group: parseInt(state.billGroup), managementLocation: localStorage.getItem("currentRole") });
+        console.log(state, " okkkkkkkkkkkk")
+        if(!billFromStockModules)props.getBillsByType({ group: parseInt(state.billGroup), managementLocation: localStorage.getItem("currentRole") });
     },[state])
 
     // useEffect(() => {
@@ -452,20 +470,32 @@ function TransportRequirementsCreateForm(props) {
                                         Loại yêu cầu
                                         <span className="attention"> * </span>
                                     </label>
-                                    <SelectBox
-                                        id={`select-type-requirement`}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        value={state.value}
-                                        items={requirements}
-                                        onChange={handleTypeRequirementChange}
-                                        multiple={false}
-                                    />
+                                    {
+                                        !billFromStockModules
+                                        &&
+                                        <SelectBox
+                                            id={`select-type-requirement`}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            value={state.value}
+                                            items={requirements}
+                                            onChange={handleTypeRequirementChange}
+                                            multiple={false}
+                                        />
+                                    }
+                                    {
+                                        billFromStockModules
+                                        &&
+                                        <input type="text" className="form-control" disabled={true} 
+                                            value={getTypeRequirement(state.value)}
+                                        />
+                                    }
                                 </div>
                             </div>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 {
-                                    state.value !== "5" &&
+                                    state.value !== "5" && !billFromStockModules
+                                    &&
                                     <div className={`form-group`}>
                                         <label>
                                             Phiếu kho
@@ -479,6 +509,19 @@ function TransportRequirementsCreateForm(props) {
                                             items={getBills()}
                                             onChange={handleTypeBillChange}
                                             multiple={false}
+                                        />
+                                    </div>
+                                }
+                                {
+                                    billFromStockModules
+                                    &&
+                                    <div className={`form-group`}>
+                                        <label>
+                                            Phiếu kho
+                                            <span className="attention"> * </span>
+                                        </label>
+                                        <input type="text" className="form-control" disabled={true} 
+                                            value={currentBill?.bill?.code}
                                         />
                                     </div>
                                 }
