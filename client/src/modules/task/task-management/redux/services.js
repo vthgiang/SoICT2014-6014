@@ -350,6 +350,7 @@ function getPaginateTasks(role, unit, number, perPage, status, priority, special
  */
 
 function addNewTask(newTask) {
+    console.log('newTask', newTask)
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/task/tasks`,
         method: 'POST',

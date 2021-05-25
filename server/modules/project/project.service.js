@@ -75,7 +75,6 @@ exports.show = async (portal, id) => {
 exports.create = async (portal, data) => {
     let newData = {};
     let newResponsibleEmployeesWithUnit = [];
-    console.log(data)
 
     if (data) {
         for (let i in data) {
@@ -187,8 +186,9 @@ exports.edit = async (portal, id, data) => {
     }
     const a = await Project(connect(DB_CONNECTION, portal)).findByIdAndUpdate(id, {
         $set: {
-            code: data.code,
+            // code: data.code,
             name: data.name,
+            projectType: data.projectType,
             parent: data.parent,
             startDate: data.startDate,
             endDate: data.endDate,

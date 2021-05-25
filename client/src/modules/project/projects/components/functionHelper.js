@@ -573,3 +573,8 @@ export const renderLongListUsers = (list, limit = 10) => {
     }
     return list.join(', ');
 }
+
+export const renderProjectTypeText = (projectType) => {
+    if (projectType === 1) return "Đơn giản"
+    return "Phương pháp CPM";
+}

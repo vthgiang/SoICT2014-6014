@@ -59,16 +59,18 @@ function TaskAddModal(props) {
         return new Date(strDateTime);
     }
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
+        const { projectId } = props;
         const { newTask, startTime, endTime } = state;
         let startDateTask = convertDateTime(newTask.startDate, startTime);
         let endDateTask = convertDateTime(newTask.endDate, endTime);
         let imageDescriptions = QuillEditor.convertImageBase64ToFile(newTask?.imgs)
-        
+
         let data = {
             ...newTask,
             startDate: startDateTask,
             endDate: endDateTask,
+            taskProject: projectId,
             imgs: null
         }
         let formData = new FormData();
@@ -86,7 +88,11 @@ function TaskAddModal(props) {
             formData.append("files", x);
         })
 
-        props.addTask(formData);
+        await props.addTask(formData);
+
+        if (props.onHandleReRender) {
+            await props.onHandleReRender();
+        }
     }
 
     useEffect(() => {

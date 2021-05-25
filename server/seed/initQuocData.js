@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const Terms = require("../helpers/config");
+const moment = require('moment');
 
 const {
     Component,
@@ -40,6 +41,9 @@ const { job } = require("cron");
 require("dotenv").config();
 
 const ADDITIONAL_USERS_NUM = 45;
+const MILISECS_TO_DAYS = 86400000;
+const MILISECS_TO_HOURS = 3600000;
+
 const months = [
     "01",
     "02",
@@ -1402,6 +1406,7 @@ const initHumanResourceForProjectData = async () => {
 
     const newEmptyProject = {
         name: 'Dự án test lập kế hoạch CPM',
+        projectType: 2,
         "unitTime": "days",
         "unitCost": "VND",
         "status": "inprocess",
@@ -1418,6 +1423,7 @@ const initHumanResourceForProjectData = async () => {
 
     const drugRNDProject = {
         name: 'Dự án nghiên cứu sản phẩm thuốc công ty Việt Anh',
+        projectType: 2,
         "unitTime": "days",
         "unitCost": "VND",
         "status": "inprocess",
@@ -1432,7 +1438,7 @@ const initHumanResourceForProjectData = async () => {
         responsibleEmployeesWithUnit: newResponsibleEmployeesWithUnit,
     }
 
-    await Project(vnistDB).insertMany([
+    const projectDataInsertedDB = await Project(vnistDB).insertMany([
         newEmptyProject,
         drugRNDProject,
     ]);
@@ -1442,9 +1448,56 @@ const initHumanResourceForProjectData = async () => {
             TẠO DANH SÁCH CÔNG VIỆC CHO DỰ ÁN
     -----------------------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------------------- */
+    const drugRNDProjectIdInDB = projectDataInsertedDB.find((proDBItem) => proDBItem.name === drugRNDProject.name)._id;
+    const fakeTasksData = [
+        { name: 'Công việc A', code: 'A', preceedingTasks: [], startDate: '', endDate: '', estimateNormalTime: 6, creator: projectManager._id, description: '', responsibleEmployees: [], accountableEmployees: [], actorsWithSalary: [], estimateAssetCost: 1000000, totalResWeight: 0.8, taskProject: drugRNDProjectIdInDB, organizationalUnit: Directorate._id },
+        { name: 'Công việc B', code: 'B', preceedingTasks: ['A'], startDate: '', endDate: '', estimateNormalTime: 4, creator: projectManager._id, description: '', responsibleEmployees: [], accountableEmployees: [], actorsWithSalary: [], estimateAssetCost: 1000000, totalResWeight: 0.6, taskProject: drugRNDProjectIdInDB, organizationalUnit: Directorate._id },
+        { name: 'Công việc C', code: 'C', preceedingTasks: ['A', 'B'], startDate: '', endDate: '', estimateNormalTime: 7, creator: projectManager._id, description: '', responsibleEmployees: [], accountableEmployees: [], actorsWithSalary: [], estimateAssetCost: 1000000, totalResWeight: 0.7, taskProject: drugRNDProjectIdInDB, organizationalUnit: Directorate._id },
+        // { name: 'Công việc D', code: 'D', preceedingTasks: ['B'], startDate: '', endDate: '', estimateNormalTime: 3, creator: projectManager._id, description: '', responsibleEmployees: [], accountableEmployees: [], actorsWithSalary: [], estimateAssetCost: 1000000, totalResWeight: 0.9, taskProject: drugRNDProjectIdInDB, organizationalUnit: Directorate._id },
+        // { name: 'Công việc E', code: 'E', preceedingTasks: ['A', 'C'], startDate: '', endDate: '', estimateNormalTime: 6, creator: projectManager._id, description: '', responsibleEmployees: [], accountableEmployees: [], actorsWithSalary: [], estimateAssetCost: 1000000, totalResWeight: 0.8, taskProject: drugRNDProjectIdInDB, organizationalUnit: Directorate._id },
+        // { name: 'Công việc F', code: 'F', preceedingTasks: ['E'], startDate: '', endDate: '', estimateNormalTime: 5, creator: projectManager._id, description: '', responsibleEmployees: [], accountableEmployees: [], actorsWithSalary: [], estimateAssetCost: 1000000, totalResWeight: 0.8, taskProject: drugRNDProjectIdInDB, organizationalUnit: Directorate._id },
+        // { name: 'Công việc G', code: 'G', preceedingTasks: ['D'], startDate: '', endDate: '', estimateNormalTime: 2, creator: projectManager._id, description: '', responsibleEmployees: [], accountableEmployees: [], actorsWithSalary: [], estimateAssetCost: 1000000, totalResWeight: 0.8, taskProject: drugRNDProjectIdInDB, organizationalUnit: Directorate._id },
+    ]
+    const startEndTasksData = processDataTasksStartEnd(drugRNDProject, fakeTasksData);
+    const startEndTasksDataWithoutPreceeding = startEndTasksData.map((seTaskItem) => {
+        const { estimateNormalTime } = seTaskItem;
+        return {
+            ...seTaskItem,
+            preceedingTasks: [],
+            estimateNormalTime: Number(estimateNormalTime) * (drugRNDProject.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS),
+        }
+    })
+    const firstInsertedDBTasks = await Task(vnistDB).insertMany(startEndTasksDataWithoutPreceeding);
+    // console.log('firstInsertedDBTasks', firstInsertedDBTasks)
+    const fullTasksData = fakeTasksData.map((fakeItem, fakeIndex) => {
+        let preceedingTasks = [];
+        if (fakeItem.preceedingTasks && fakeItem.preceedingTasks.length > 0) {
+            preceedingTasks = fakeItem.preceedingTasks.map((fakePreItem) => {
+                const currentTaskNameFromFake = fakeTasksData.find((fakeItem) => String(fakeItem.code) === String(fakePreItem))?.name;
+                const currentTaskIdFromDB = firstInsertedDBTasks.find((firstInsItem) => firstInsItem.name === currentTaskNameFromFake)?._id;
+                return {
+                    task: currentTaskIdFromDB,
+                    link: '',
+                };
+            })
+        }
+        return {
+            ...firstInsertedDBTasks[fakeIndex]._doc,
+            preceedingTasks,
+        }
+    })
+    console.log('fullTasksData', fullTasksData)
+    for (let fullItem of fullTasksData) {
+        const { preceedingTasks, _id } = fullItem;
+        await Task(vnistDB).findByIdAndUpdate(_id, {
+            $set: {
+                preceedingTasks,
+            }
+        }, { new: true });
+    }
+
 
     console.log('Hoàn thành tạo dữ liệu cho dự án')
-
 }
 
 const getSalaryFromUserIdAndOrgId = (currentSalaries, currentEmployees, currentUsers, orgId, userId) => {
@@ -1464,6 +1517,161 @@ const getShortenArray = (array, numsOfItems = 3) => {
         return array;
     }
     return array.filter((arrItem, arrIndex) => arrIndex < numsOfItems);
+}
+
+const handleWeekendAndWorkTime = (projectDetail, taskItem) => {
+    // Nếu unitTime = 'days'
+    if (projectDetail?.unitTime === 'days') {
+        // Check xem startDate có phải thứ 7 hoặc chủ nhật không thì cộng thêm ngày để startDate vào ngày thứ 2 tuần sau
+        let dayOfStartDate = (new Date(taskItem.startDate)).getDay();
+        if (dayOfStartDate === 6) taskItem.startDate = moment(taskItem.startDate).add(2, 'days').format();
+        if (dayOfStartDate === 0) taskItem.startDate = moment(taskItem.startDate).add(1, 'days').format();
+        // Tách phần integer và phần decimal của estimateNormalTime
+        const estimateNormalTimeArr = taskItem.estimateNormalTime.toString().split('.');
+        const integerPart = Number(estimateNormalTimeArr[0]);
+        const decimalPart = estimateNormalTimeArr.length === 2 ? Number(`.${estimateNormalTimeArr[1]}`) : undefined;
+        let tempEndDate = '';
+        // Cộng phần nguyên
+        for (let i = 0; i < integerPart; i++) {
+            // Tính tempEndDate = + 1 ngày trước để kiểm tra
+            if (i === 0) {
+                tempEndDate = moment(taskItem.startDate).add(1, 'days').format();
+            } else {
+                tempEndDate = moment(taskItem.endDate).add(1, 'days').format();
+            }
+            // Nếu tempEndDate đang là thứ 7 thì công thêm 2 ngày
+            if ((new Date(tempEndDate)).getDay() === 6) {
+                taskItem.endDate = moment(tempEndDate).add(2, 'days').format();
+            }
+            // Nếu tempEndDate đang là chủ nhật thì công thêm 1 ngày
+            else if ((new Date(tempEndDate)).getDay() === 0) {
+                taskItem.endDate = moment(tempEndDate).add(1, 'days').format();
+            }
+            // Còn không thì không cộng gì
+            else {
+                taskItem.endDate = tempEndDate;
+            }
+        }
+        // Cộng phần thập phân (nếu có)
+        if (decimalPart) {
+            if (!taskItem.endDate) {
+                taskItem.endDate = moment(taskItem.startDate).add(decimalPart, 'days').format();
+            } else {
+                taskItem.endDate = moment(taskItem.endDate).add(decimalPart, 'days').format();
+            }
+            // Check xem endDate hiện tại là thứ mấy => Cộng tiếp để bỏ qua thứ 7 và chủ nhật (nếu có)
+            dayOfStartDate = (new Date(taskItem.endDate)).getDay();
+            if (dayOfStartDate === 6) taskItem.endDate = moment(taskItem.endDate).add(2, 'days').format();
+            if (dayOfStartDate === 0) taskItem.endDate = moment(taskItem.endDate).add(1, 'days').format();
+        }
+        return taskItem;
+    }
+
+    // Nếu unitTime = 'hours'
+    const dailyMorningStartTime = moment('08:00', 'HH:mm');
+    const dailyMorningEndTime = moment('12:00', 'HH:mm');
+    const dailyAfternoonStartTime = moment('13:30', 'HH:mm');
+    const dailyAfternoonEndTime = moment('17:30', 'HH:mm');
+    // Check xem startDate có phải thứ 7 hoặc chủ nhật không thì cộng thêm ngày để startDate vào ngày thứ 2 tuần sau
+    let dayOfStartDate = (new Date(taskItem.startDate)).getDay();
+    if (dayOfStartDate === 6) taskItem.startDate = moment(taskItem.startDate).add(2, 'days').format();
+    if (dayOfStartDate === 0) taskItem.startDate = moment(taskItem.startDate).add(1, 'days').format();
+    // Tách phần integer và phần decimal của estimateNormalTime
+    const estimateNormalTimeArr = taskItem.estimateNormalTime.toString().split('.');
+    const integerPart = Number(estimateNormalTimeArr[0]);
+    const decimalPart = estimateNormalTimeArr.length === 2 ? Number(`.${estimateNormalTimeArr[1]}`) : undefined;
+    let tempEndDate = '';
+    // Cộng phần nguyên
+    for (let i = 0; i < integerPart; i++) {
+        // Tính tempEndDate = + 1 tiêng trước để kiểm tra
+        if (i === 0) {
+            tempEndDate = moment(taskItem.startDate).add(1, 'hours').format();
+        } else {
+            tempEndDate = moment(taskItem.endDate).add(1, 'hours').format();
+        }
+        const currentEndDateInMomentHourMinutes = moment(moment(tempEndDate).format('HH:mm'), 'HH:mm');
+        // Nếu đang ở giờ nghỉ trưa
+        if (currentEndDateInMomentHourMinutes.isAfter(dailyMorningEndTime) && currentEndDateInMomentHourMinutes.isBefore(dailyAfternoonStartTime)) {
+            tempEndDate = moment(tempEndDate).set({
+                hour: 13,
+                minute: 30,
+            });
+            tempEndDate = moment(tempEndDate).add(1, 'hours').format();
+        }
+        // Nếu quá 17:30
+        else if (currentEndDateInMomentHourMinutes.isAfter(dailyAfternoonEndTime)) {
+            tempEndDate = moment(tempEndDate).set({
+                hour: 8,
+                minute: 0,
+            });
+            tempEndDate = moment(tempEndDate).add(1, 'hours').format();
+            tempEndDate = moment(tempEndDate).add(1, 'days').format();
+        }
+        // Nếu tempEndDate đang là thứ 7 thì công thêm 2 ngày
+        if ((new Date(tempEndDate)).getDay() === 6) {
+            taskItem.endDate = moment(tempEndDate).add(2, 'days').format();
+        }
+        // Nếu tempEndDate đang là chủ nhật thì công thêm 1 ngày
+        else if ((new Date(tempEndDate)).getDay() === 0) {
+            taskItem.endDate = moment(tempEndDate).add(1, 'days').format();
+        }
+        // Còn không thì không cộng gì
+        else {
+            taskItem.endDate = tempEndDate;
+        }
+    }
+    // Cộng phần thập phân (nếu có)
+    if (decimalPart) {
+        if (!taskItem.endDate) {
+            taskItem.endDate = moment(taskItem.startDate).add(decimalPart, 'hours').format();
+        } else {
+            taskItem.endDate = moment(taskItem.endDate).add(decimalPart, 'hours').format();
+        }
+        // Check xem endDate hiện tại là thứ mấy => Cộng tiếp để bỏ qua thứ 7 và chủ nhật (nếu có)
+        dayOfStartDate = (new Date(taskItem.endDate)).getDay();
+        if (dayOfStartDate === 6) taskItem.endDate = moment(taskItem.endDate).add(2, 'days').format();
+        if (dayOfStartDate === 0) taskItem.endDate = moment(taskItem.endDate).add(1, 'days').format();
+    }
+    return taskItem;
+}
+
+const processDataTasksStartEnd = (projectDetail, currentTasksData) => {
+    if (!currentTasksData || currentTasksData.length === 0) return [];
+    const tempTasksData = [...currentTasksData];
+    // console.log('tempTasksData', tempTasksData)
+    // Lặp mảng tasks
+    for (let taskItem of tempTasksData) {
+        console.log(taskItem.name, taskItem.startDate, taskItem.endDate)
+        if (taskItem.estimateNormalTime > 20) {
+            console.error('Estimate normal time đang quá lớn: ', taskItem.estimateNormalTime);
+        }
+        if (taskItem.preceedingTasks.length === 0 && (!taskItem.startDate || !taskItem.endDate)) {
+            taskItem.startDate = taskItem.startDate || projectDetail?.startDate;
+            taskItem = handleWeekendAndWorkTime(projectDetail, taskItem);
+        }
+        else {
+            // Lặp mảng preceedingTasks của taskItem hiện tại
+            for (let preceedingItem of taskItem.preceedingTasks) {
+                const currentPreceedingTaskItem = tempTasksData.find(item => {
+                    // chỗ này quan trọng nhất là .code
+                    if (typeof preceedingItem === 'string') {
+                        return String(item.code) === String(preceedingItem).trim();
+                    }
+                    return String(item.code) === String(preceedingItem.task);
+                });
+                if (currentPreceedingTaskItem && (
+                    !taskItem.startDate ||
+                    moment(taskItem.startDate)
+                        .isBefore(moment(currentPreceedingTaskItem.endDate))
+                )) {
+                    taskItem.startDate = currentPreceedingTaskItem.endDate;
+                }
+                taskItem = handleWeekendAndWorkTime(projectDetail, taskItem);
+            }
+        }
+    }
+    // console.log('tempTasksData', tempTasksData);
+    return tempTasksData;
 }
 
 initHumanResourceForProjectData().catch((err) => {

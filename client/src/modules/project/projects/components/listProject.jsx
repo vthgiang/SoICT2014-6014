@@ -8,8 +8,9 @@ import ProjectDetailForm from './detailProject';
 import { ProjectActions } from '../redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { getStorage } from "../../../../config";
-import { checkIfAbleToCRUDProject, renderLongListUsers } from "./functionHelper";
+import { checkIfAbleToCRUDProject, renderLongListUsers, renderProjectTypeText } from "./functionHelper";
 import { taskManagementActions } from "../../../task/task-management/redux/actions";
+import { DepartmentActions } from "../../../super-admin/organizational-unit/redux/actions";
 
 function ListProject(props) {
     // Khởi tạo state
@@ -117,7 +118,6 @@ function ListProject(props) {
         window.$('#modal-create-project').modal('show')
     }
 
-
     let lists = [];
     if (project) {
         lists = project.data.paginate
@@ -174,6 +174,7 @@ function ListProject(props) {
                         <thead>
                             <tr>
                                 <th>{translate('project.name')}</th>
+                                <th>Hình thức quản lý</th>
                                 <th>{translate('project.creator')}</th>
                                 <th>{translate('project.manager')}</th>
                                 <th>{translate('project.member')}</th>
@@ -201,6 +202,7 @@ function ListProject(props) {
                                     return (
                                         <tr key={index}>
                                             <td>{projectItem?.name}</td>
+                                            <td>{renderProjectTypeText(projectItem?.projectType)}</td>
                                             <td>{projectItem?.creator?.name}</td>
                                             <td>{projectItem?.projectManager.map(o => o.name).join(", ")}</td>
                                             <td>{renderLongListUsers(projectItem?.responsibleEmployees.map(o => o.name))}</td>

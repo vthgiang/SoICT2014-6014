@@ -16,6 +16,8 @@ import { TaskProjectAddModal } from '../../../task/task-project/component/taskPr
 import TabProjectInfo from './tabProjectInfo';
 import TabChangeRequestProject from './tabChangeRequestProject';
 import { ChangeRequestActions } from '../../change-requests/redux/actions';
+import { TaskAddModal } from '../../../task/task-management/component/taskAddModal';
+import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
 
 const ProjectDetailPage = (props) => {
     const { translate, project, user, tasks } = props;
@@ -26,13 +28,19 @@ const ProjectDetailPage = (props) => {
 
     useEffect(() => {
         props.getProjectsDispatch({ calledId: "user_all", userId });
+        props.getAllDepartment();
+        props.getDepartment();
         props.getAllUserInAllUnitsOfCompany();
         props.getTasksByProject(currentProjectId);
         props.getListProjectChangeRequestsDispatch(currentProjectId);
     }, [])
 
-    const handleOpenCreateTask = () => {
+    const handleOpenCreateProjectTask = () => {
         window.$(`#addNewProjectTask-undefined`).modal('show');
+    }
+
+    const handleOpenCreateTask = () => {
+        window.$(`#addNewTask-undefined`).modal('show');
     }
 
     const currentProjectTasks = tasks?.tasksbyproject;
@@ -133,10 +141,23 @@ const ProjectDetailPage = (props) => {
                                 </div>
                                 {/* Button thêm mới */}
                                 {
-                                    checkIfAbleToCRUDProject({ project, user, currentProjectId }) && currentProjectTasks && currentProjectTasks.length > 0 ? null :
+                                    projectDetail?.projectType === 1 &&
+                                    <TaskAddModal onHandleReRender={onHandleReRender} projectId={projectDetail._id}/>
+                                }
+                                {
+                                    projectDetail?.projectType === 1 &&
+                                    <button type="button" className="btn btn-success pull-right" onClick={handleOpenCreateTask}
+                                        title={`Tạo công việc mới`}>
+                                        Tạo công việc mới
+                                    </button>
+                                }
+                                {
+                                    projectDetail?.projectType === 2 &&
+                                        checkIfAbleToCRUDProject({ project, user, currentProjectId }) && currentProjectTasks && currentProjectTasks.length > 0 ? null :
                                         (projectDetail && <ModalAddTaskSchedule projectDetail={projectDetail} onHandleReRender={onHandleReRender} />)
                                 }
                                 {
+                                    projectDetail?.projectType === 2 &&
                                     checkIfAbleToCRUDProject({ project, user, currentProjectId }) && currentProjectTasks && currentProjectTasks.length === 0 &&
                                     <button type="button" className="btn btn-success pull-right" onClick={onHandleOpenScheduleModal}
                                         title={`Tạo công việc mới bằng file excel`}>
@@ -144,12 +165,14 @@ const ProjectDetailPage = (props) => {
                                     </button>
                                 }
                                 {
+                                    projectDetail?.projectType === 2 &&
                                     currentProjectTasks && currentProjectTasks.length > 0 &&
                                     <TaskProjectAddModal onHandleReRender={onHandleReRender} currentProjectTasks={currentProjectTasks} parentTask={parentTask} />
                                 }
                                 {
+                                    projectDetail?.projectType === 2 &&
                                     currentProjectTasks && currentProjectTasks.length > 0 &&
-                                    <button type="button" className="btn btn-success pull-right" onClick={handleOpenCreateTask}
+                                    <button type="button" className="btn btn-success pull-right" onClick={handleOpenCreateProjectTask}
                                         title={`Tạo công việc mới bằng tay`}>
                                         Tạo công việc mới bằng tay
                                     </button>
@@ -199,5 +222,7 @@ const mapDispatchToProps = {
     getListProjectChangeRequestsDispatch: ChangeRequestActions.getListProjectChangeRequestsDispatch,
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
     getTasksByProject: taskManagementActions.getTasksByProject,
+    getAllDepartment: DepartmentActions.get,
+    getDepartment: UserActions.getDepartmentOfUser,
 }
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ProjectDetailPage));

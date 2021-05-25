@@ -5,7 +5,7 @@ import { ProjectActions } from '../redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import moment from 'moment';
 import 'c3/c3.css';
-import { getEndDateOfProject, renderItemLabelContent } from './functionHelper';
+import { getEndDateOfProject, renderItemLabelContent, renderProjectTypeText } from './functionHelper';
 import { numberWithCommas } from '../../../task/task-management/component/functionHelpers';
 
 const TabProjectInfo = (props) => {
@@ -57,6 +57,7 @@ const TabProjectInfo = (props) => {
                 <div className="box-body qlcv">
                     <div className="row">
                         {renderItemLabelContent(translate('project.name'), projectDetail ? projectDetail?.name : null)}
+                        {renderItemLabelContent('Hình thức quản lý', projectDetail ? renderProjectTypeText(projectDetail?.projectType) : null)}
                     </div>
 
                     <div className="row">
