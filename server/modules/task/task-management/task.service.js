@@ -1968,6 +1968,7 @@ exports.sendEmailForCreateTask = async (portal, task) => {
  * Tạo công việc mới
  */
 exports.createTask = async (portal, task) => {
+    // console.log('task', task.taskProject)
     // Lấy thông tin công việc liên quan
     var level = 1;
     if (mongoose.Types.ObjectId.isValid(task.parent)) {

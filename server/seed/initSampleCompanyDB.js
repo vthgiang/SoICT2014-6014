@@ -202,7 +202,7 @@ const initSampleCompanyDB = async () => {
         if (!db.models.ManufacturingPlan) ManufacturingPlan(db);
         if (!db.models.ManufacturingCommand) ManufacturingCommand(db);
 
-        console.log("models_list", db.models);
+        // console.log("models_list", db.models);
     };
 
     initModels(vnistDB);
@@ -6806,28 +6806,7 @@ const initSampleCompanyDB = async () => {
 
     ]);
     console.log("Khởi tạo xong danh sách thông tin báo giá");
-    const newProject = {
-        code: 'DUAN11',
-        name: 'Du an 1',
-        "unitTime": "day",
-        "unitCost": "VND",
-        "status": "inprocess",
-        "startDate": new Date("2021-04-16T00:00:00Z"),
-        "endDate": new Date("2021-07-23T00:00:00Z"),
-        "description": "ádasdasdasdasd",
-        projectManager: [
-            projectManager._id,
-        ],
-        creator: projectManager._id,
-        responsibleEmployees: [],
-        responsibleEmployeesWithUnit: []
-    }
-
-    await Project(vnist).insertMany([
-        newProject,
-    ]);
-    console.log('Hoàn thành tạo dữ liệu cho dự án')
-
+    
     /*---------------------------------------------------------------------------------------------
       -----------------------------------------------------------------------------------------------
           TẠO DỮ LIỆU ĐƠN BÁN HÀNG

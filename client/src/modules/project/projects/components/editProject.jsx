@@ -25,6 +25,10 @@ const ProjectEditForm = (props) => {
         { text: 'Ngày', value: 'days' },
         { text: 'Giờ', value: 'hours' },
     ]
+    const fakeProjectTypeList = [
+        { text: 'QLDA dạng đơn giản', value: 1 },
+        { text: 'QLDA phương pháp CPM', value: 2 },
+    ]
     const preprocessUsersList = useCallback((currentObject) => {
         if (typeof currentObject?.[0] === 'string') {
             return currentObject;
@@ -37,7 +41,7 @@ const ProjectEditForm = (props) => {
         codeError: undefined,
         projectName: projectEdit?.name || "",
         description: projectEdit?.description || "",
-        code: projectEdit?.code || "",
+        projectType: projectEdit?.projectType || "",
         startDate: projectEdit?.startDate ? formatDate(projectEdit?.startDate) : '',
         endDate: projectEdit?.endDate ? formatDate(projectEdit?.endDate) : '',
         projectManager: preprocessUsersList(projectEdit?.projectManager),
@@ -56,7 +60,7 @@ const ProjectEditForm = (props) => {
         currentEmployeeRow: [],
     })
 
-    const { projectName, projectNameError, codeError, description, code, startDate, endDate, projectManager, responsibleEmployees, unitCost, unitTime, estimatedCost, projectId } = form;
+    const { projectName, projectNameError, codeError, description, projectType, startDate, endDate, projectManager, responsibleEmployees, unitCost, unitTime, estimatedCost, projectId } = form;
 
     if (projectEditId !== projectId) {
         setForm({
@@ -64,7 +68,7 @@ const ProjectEditForm = (props) => {
             projectNameError: undefined,
             projectName: projectEdit?.name || "",
             description: projectEdit?.description || "",
-            code: projectEdit?.code || "",
+            projectType: projectEdit?.projectType || 2,
             startDate: projectEdit?.startDate ? formatDate(projectEdit?.startDate) : '',
             endDate: projectEdit?.endDate ? formatDate(projectEdit?.endDate) : '',
             projectManager: preprocessUsersList(projectEdit?.projectManager),
@@ -112,16 +116,6 @@ const ProjectEditForm = (props) => {
             })
             return;
         }
-        if (currentKey === 'code') {
-            let { translate } = props;
-            let { message } = ValidationHelper.validateName(translate, event.target.value, 6, 6);
-            setForm({
-                ...form,
-                [currentKey]: event.target.value,
-                codeError: message === undefined ? message : "Mã dự án phải có 6 kí tự",
-            })
-            return;
-        }
         const justRenderEventArr = ['projectManager', 'responsibleEmployees', 'startDate', 'endDate'];
         if (justRenderEventArr.includes(currentKey)) {
             setForm({
@@ -130,7 +124,7 @@ const ProjectEditForm = (props) => {
             })
             return;
         }
-        const renderFirstItemArr = ['unitCost', 'unitTime'];
+        const renderFirstItemArr = ['unitCost', 'unitTime', 'projectType'];
         if (renderFirstItemArr.includes(currentKey)) {
             setForm({
                 ...form,
@@ -154,7 +148,6 @@ const ProjectEditForm = (props) => {
     const isFormValidated = () => {
         let { translate } = props;
         if (!ValidationHelper.validateName(translate, projectName, 6, 255).status) return false;
-        if (!ValidationHelper.validateName(translate, code, 6, 6).status) return false;
         if (projectManager.length === 0) return false;
         if (responsibleEmployees.length === 0) return false;
         if (startDate.length === 0) return false;
@@ -183,7 +176,7 @@ const ProjectEditForm = (props) => {
 
             await props.editProjectDispatch(projectEdit?._id, {
                 name: projectName,
-                code,
+                projectType,
                 startDate: start,
                 endDate: end,
                 projectManager,
@@ -316,16 +309,25 @@ const ProjectEditForm = (props) => {
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border">Thông số dự án</legend>
 
-                            <div className={`form-group ${!projectNameError ? "" : "has-error"}`}>
-                                <label>{translate('project.name')}<span className="text-red">*</span></label>
-                                <input type="text" className="form-control" value={projectName} onChange={(e) => handleChangeForm(e, 'projectName')}></input>
-                                <ErrorLabel content={projectNameError} />
-                            </div>
+                            <div className="row">
+                                <div className={`form-group col-md-6 col-xs-6 ${!projectNameError ? "" : "has-error"}`}>
+                                    <label>{translate('project.name')}<span className="text-red">*</span></label>
+                                    <input type="text" className="form-control" value={projectName} onChange={(e) => handleChangeForm(e, 'projectName')}></input>
+                                    <ErrorLabel content={projectNameError} />
+                                </div>
 
-                            <div className={`form-group ${!codeError ? "" : "has-error"}`}>
-                                <label>{translate('project.code')}<span className="text-red">*</span></label>
-                                <input type="text" className="form-control" value={code} onChange={(e) => handleChangeForm(e, 'code')}></input>
-                                <ErrorLabel content={codeError} />
+                                <div className={`form-group col-md-6 col-xs-6`}>
+                                    <label>Hình thức quản lý dự án<span className="text-red">*</span></label>
+                                    <SelectBox
+                                        id={`edit-select-project-type`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={fakeProjectTypeList}
+                                        onChange={(e) => handleChangeForm(e, 'projectType')}
+                                        value={projectType}
+                                        multiple={false}
+                                    />
+                                </div>
                             </div>
 
                             <div className="row">
@@ -487,7 +489,7 @@ const ProjectEditForm = (props) => {
                                                             />}
                                                     </div>
                                                 </td>
-                                                <td>
+                                                <td style={{ maxWidth: 250 }}>
                                                     <div className={`form-group`}>
                                                         {listDepartments && listDepartments.length > 0 &&
                                                             <SelectBox

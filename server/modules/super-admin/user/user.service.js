@@ -322,7 +322,7 @@ getAllUserInUnitAndItsSubUnits = async (portal, unitId) => {
                 deputyManagers: department.deputyManagers.map((item) => item.toString()),
                 employees: department.employees.map((item) => item.toString()),
                 parent_id:
-                    department.parent !== null
+                    department.parent !== null && department.parent !== undefined
                         ? department.parent.toString()
                         : null,
             };

@@ -13,6 +13,7 @@ import { DepartmentActions } from '../../../super-admin/organizational-unit/redu
 import { ProjectActions } from '../../../project/projects/redux/actions';
 import { getStorage } from '../../../../config';
 import { DetailProjectTaskTab } from '../../task-project/component/detailProjectTaskTab';
+import { getCurrentProjectDetails } from '../../../project/projects/components/functionHelper';
 
 class TaskComponent extends Component {
     constructor(props) {
@@ -29,7 +30,8 @@ class TaskComponent extends Component {
 
         this.props.getAllUserOfCompany();
         this.props.getAllDepartment();
-        this.props.getProjectsDispatch({ calledId: "all", userId: getStorage('userId') });
+        this.props.getProjectsDispatch({ calledId: "all" });
+        this.props.getProjectsDispatch({ calledId: "user_all", userId: getStorage('userId') });
     }
 
     shouldComponentUpdate = (nextProps, nextState) => {
@@ -66,8 +68,7 @@ class TaskComponent extends Component {
     }
 
     render = () => {
-        const { translate } = this.props;
-        const { user, performtasks } = this.props;
+        const { translate, project, user, performtasks } = this.props;
 
         let taskId = this.props.id;
         let task;
@@ -91,8 +92,8 @@ class TaskComponent extends Component {
         return (
             <div className="row row-equal-height" style={{ margin: "0px", height: "100%", backgroundColor: "#fff" }}>
                 <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{ paddingTop: "10px" }}>
-                    {task?.taskProject ?
-                        <DetailProjectTaskTab
+                    {(task?.taskProject && getCurrentProjectDetails(project, task?.taskProject)?.projectType === 2)
+                        ? <DetailProjectTaskTab
                             id={taskId}
                             onChangeTaskRole={this.onChangeTaskRole}
                             task={task && task}
@@ -103,7 +104,8 @@ class TaskComponent extends Component {
                             onChangeTaskRole={this.onChangeTaskRole}
                             task={task && task}
                             showToolbar={true}
-                        />}
+                        />
+                    }
                 </div>
 
                 <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{ padding: "10px 0 10px 0", borderLeft: "1px solid #f4f4f4" }}>
@@ -119,8 +121,8 @@ class TaskComponent extends Component {
     }
 }
 function mapState(state) {
-    const { tasks, performtasks, user } = state;
-    return { tasks, performtasks, user };
+    const { tasks, performtasks, user, project } = state;
+    return { tasks, performtasks, user, project };
 }
 
 const actionCreators = {

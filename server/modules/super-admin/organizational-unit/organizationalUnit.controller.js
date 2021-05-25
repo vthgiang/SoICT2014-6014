@@ -25,7 +25,7 @@ exports.getOrganizationalUnits = async (req, res) => {
                 content: { list, tree }
             });
         } catch (error) {
-
+            console.log('get_departments_error', error)
             await Logger.error(req.user.email, 'get_departments_faile', req.portal);
             res.status(400).json({
                 success: false,
