@@ -142,14 +142,15 @@ class AllTimeSheetLogsByUnit extends Component {
 
         if (listEmployee) {
             for (let i in listEmployee) {
-                allTimeSheet[listEmployee[i]?.userId._id] = {
-                    totalhours: 0,
-                    autotimer: 0,
-                    manualtimer: 0,
-                    logtimer: 0,
-                    name: listEmployee[i].userId.name,
-                    userId: listEmployee[i].userId._id
-                }
+                if (listEmployee[i] && listEmployee[i].userId && listEmployee[i].userId._id)
+                    allTimeSheet[listEmployee[i].userId._id] = {
+                        totalhours: 0,
+                        autotimer: 0,
+                        manualtimer: 0,
+                        logtimer: 0,
+                        name: listEmployee[i].userId.name,
+                        userId: listEmployee[i].userId._id
+                    }
             }
         }
 
