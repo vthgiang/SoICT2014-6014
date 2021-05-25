@@ -41,9 +41,9 @@ const ProjectDetailForm = (props) => {
                                 <div className="form-horizontal">
                                     <div className="form-group">
                                         <strong className="col-sm-4">Hình thức quản lý dự án</strong>
-                                        <a className="col-sm-8">
+                                        <div className="col-sm-8">
                                             {projectDetail ? renderProjectTypeText(projectDetail?.projectType) : null}
-                                        </a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

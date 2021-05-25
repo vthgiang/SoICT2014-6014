@@ -862,6 +862,7 @@ const TaskSchema = new Schema(
                 salary: {
                     type: Number,
                 },
+                // Số lớn hơn 1
                 weight: {
                     type: Number,
                 },
@@ -874,7 +875,7 @@ const TaskSchema = new Schema(
         estimateAssetCost: {
             type: Number,
         },
-        // Trọng số tổng dành cho Thành viên Thực hiện
+        // Trọng số tổng dành cho Thành viên Thực hiện - Số lớn hơn 1
         totalResWeight: {
             type: Number,
         },
@@ -891,18 +892,22 @@ const TaskSchema = new Schema(
             default:
                 "memberTimePoint + memberQualityPoint + memberCostPoint + memberDilligencePoint",
         },
+        // Số bé hơn 1
         timeWeight: {
             type: Number,
             default: 0.25,
         },
+        // Số bé hơn 1
         qualityWeight: {
             type: Number,
             default: 0.25,
         },
+        // Số bé hơn 1
         costWeight: {
             type: Number,
             default: 0.25,
         },
+        // Số bé hơn 1
         dilligenceWeight: {
             type: Number,
             default: 0.25,
