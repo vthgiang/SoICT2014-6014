@@ -137,17 +137,20 @@ const SalaryOfOrganizationalUnitsChart = (props) => {
                         {` tháng ${monthShow}`}
                     </div>
                 </div>
-                <div className="box-body">
-                    <div className="box-tools pull-right" >
+                {salary.isLoading
+                    ? <div style={{ marginLeft: "5px" }}>{translate('general.loading')}</div>
+                    : <div className="box-body">
+                        <div className="box-tools pull-right" >
 
-                        <div className="btn-group pull-right">
-                            <button type="button" className={`btn btn-xs ${unit ? "active" : "btn-danger"}`} onClick={() => handleChangeUnitChart(false)}>Triệu</button>
-                            <button type="button" className={`btn btn-xs ${unit ? 'btn-danger' : "active"}`} onClick={() => handleChangeUnitChart(true)}>Tỷ</button>
+                            <div className="btn-group pull-right">
+                                <button type="button" className={`btn btn-xs ${unit ? "active" : "btn-danger"}`} onClick={() => handleChangeUnitChart(false)}>Triệu</button>
+                                <button type="button" className={`btn btn-xs ${unit ? 'btn-danger' : "active"}`} onClick={() => handleChangeUnitChart(true)}>Tỷ</button>
+                            </div>
+                            <p className="pull-right" style={{ marginBottom: 0, marginRight: 10 }} > < b > ĐV tính</b></p >
                         </div>
-                        <p className="pull-right" style={{ marginBottom: 0, marginRight: 10 }} > < b > ĐV tính</b></p >
+                        <div ref={salaryChart}></div>
                     </div>
-                    <div ref={salaryChart}></div>
-                </div>
+                }
             </div>
         </React.Fragment>
     )

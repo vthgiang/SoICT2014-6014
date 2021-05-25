@@ -13,6 +13,7 @@ import c3 from 'c3';
 import 'c3/c3.css';
 
 const AnnualLeaveTrendsChart = (props) => {
+    const { department, annualLeave, translate, timesheets, childOrganizationalUnit } = props;
 
     /**
      * Function format dữ liệu Date thành string
@@ -50,6 +51,7 @@ const AnnualLeaveTrendsChart = (props) => {
         organizationalUnitsSearch: props.defaultUnit ? props.organizationalUnits : [],
         organizationalUnits: props.defaultUnit ? props.organizationalUnits : [],
     })
+    const { lineChart, nameChart, organizationalUnits, nameData1, nameData2, startDate, endDate, startDateShow, endDateShow, organizationalUnitsSearch } = state;
     
     const barChart = useRef(null);
 
@@ -64,6 +66,35 @@ const AnnualLeaveTrendsChart = (props) => {
         props.getAnnualLeave({ organizationalUnits: organizationalUnits, startDate: startDateNew, endDate: endDateNew })
         props.getTimesheets({ organizationalUnits: organizationalUnits, startDate: startDateNew, endDate: endDateNew, trendHoursOff: true })
     }, []);
+
+    useEffect(() => {
+        if (annualLeave?.arrMonth?.length > 0) {
+            let ratioX = ['x', ...annualLeave.arrMonth];
+            let listHoursOffOfUnitsByStartDateAndEndDate = JSON.parse(JSON.stringify(timesheets.listHoursOffOfUnitsByStartDateAndEndDate));
+            let listAnnualLeaveOfNumberMonth = JSON.parse(JSON.stringify(annualLeave.listAnnualLeaveOfNumberMonth));
+            let data1 = ['data1'], data2 = ['data2'];
+            annualLeave.arrMonth.forEach(x => {
+                let total = 0;
+                let date = new Date(x);
+                let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+                let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 1);
+                listAnnualLeaveOfNumberMonth.forEach(y => {
+                    if (firstDay.getTime() < new Date(y.startDate).getTime() && new Date(y.startDate).getTime() <= lastDay.getTime()) {
+                        total += 1;
+                    }
+                })
+                data1 = [...data1, total]
+                let hoursOff = 0;
+                listHoursOffOfUnitsByStartDateAndEndDate.forEach(y => {
+                    if (new Date(y.month).getTime() === new Date(x).getTime()) {
+                        hoursOff = hoursOff + y.totalHoursOff ? y.totalHoursOff : 0
+                    };
+                })
+                data2 = [...data2, hoursOff]
+            })
+            renderChart({ nameData1, ratioX, data1, lineChart, nameData2, data2 });
+        }
+    }, [JSON.stringify(annualLeave)])
 
     /**
      * Function bắt sự kiện thay đổi unit
@@ -161,7 +192,7 @@ const AnnualLeaveTrendsChart = (props) => {
      * Render chart
      * @param {*} data : Dữ liệu biểu đồ
      */
-    const renderChart = (data) => {
+    function renderChart (data) {
         data.data1.shift();
         data.data2.shift();
         removePreviousChart();
@@ -214,41 +245,12 @@ const AnnualLeaveTrendsChart = (props) => {
         }
     }
 
-    const { department, annualLeave, translate, timesheets, childOrganizationalUnit } = props;
-    const { lineChart, nameChart, organizationalUnits, nameData1, nameData2, startDate, endDate, startDateShow, endDateShow, organizationalUnitsSearch } = state;
-
     let organizationalUnitsName = [];
     if (organizationalUnitsSearch) {
         organizationalUnitsName = department.list.filter(x => organizationalUnitsSearch.includes(x._id));
         organizationalUnitsName = organizationalUnitsName.map(x => x.name);
     }
 
-    if (annualLeave.arrMonth.length !== 0) {
-        let ratioX = ['x', ...annualLeave.arrMonth];
-        let listHoursOffOfUnitsByStartDateAndEndDate = JSON.parse(JSON.stringify(timesheets.listHoursOffOfUnitsByStartDateAndEndDate));
-        let listAnnualLeaveOfNumberMonth = JSON.parse(JSON.stringify(annualLeave.listAnnualLeaveOfNumberMonth));
-        let data1 = ['data1'], data2 = ['data2'];
-        annualLeave.arrMonth.forEach(x => {
-            let total = 0;
-            let date = new Date(x);
-            let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
-            let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 1);
-            listAnnualLeaveOfNumberMonth.forEach(y => {
-                if (firstDay.getTime() < new Date(y.startDate).getTime() && new Date(y.startDate).getTime() <= lastDay.getTime()) {
-                    total += 1;
-                }
-            })
-            data1 = [...data1, total]
-            let hoursOff = 0;
-            listHoursOffOfUnitsByStartDateAndEndDate.forEach(y => {
-                if (new Date(y.month).getTime() === new Date(x).getTime()) {
-                    hoursOff = hoursOff + y.totalHoursOff ? y.totalHoursOff : 0
-                };
-            })
-            data2 = [...data2, hoursOff]
-        })
-        renderChart({ nameData1, ratioX, data1, lineChart, nameData2, data2 });
-    }
     return (
         <React.Fragment>
             <div className="box box-solid">
@@ -317,16 +319,21 @@ const AnnualLeaveTrendsChart = (props) => {
                             </div>
                         </div>
                     </div>
-                    <div className="dashboard_box_body">
-                        <p className="pull-left" style={{ marginBottom: 0 }}><b>ĐV tính: Số lần</b></p>
-                        <div className="box-tools pull-right">
-                            <div className="btn-group pull-rigth">
-                                <button type="button" className={`btn btn-xs ${lineChart ? "active" : "btn-danger"}`} onClick={() => handleChangeViewChart(false)}>Dạng cột</button>
-                                <button type="button" className={`btn btn-xs ${lineChart ? 'btn-danger' : "active"}`} onClick={() => handleChangeViewChart(true)}>Dạng đường</button>
+                    {annualLeave.isLoading
+                        ? <div>{translate('general.loading')}</div>
+                        : annualLeave?.arrMonth?.length > 0
+                            ? <div className="dashboard_box_body">
+                                <p className="pull-left" style={{ marginBottom: 0 }}><b>ĐV tính: Số lần</b></p>
+                                <div className="box-tools pull-right">
+                                    <div className="btn-group pull-rigth">
+                                        <button type="button" className={`btn btn-xs ${lineChart ? "active" : "btn-danger"}`} onClick={() => handleChangeViewChart(false)}>Dạng cột</button>
+                                        <button type="button" className={`btn btn-xs ${lineChart ? 'btn-danger' : "active"}`} onClick={() => handleChangeViewChart(true)}>Dạng đường</button>
+                                    </div>
+                                </div>
+                                <div ref={barChart}></div>
                             </div>
-                        </div>
-                        <div ref={barChart}></div>
-                    </div>
+                            : <div>{translate('kpi.organizational_unit.dashboard.no_data')}</div>
+                    }
                 </div>
             </div>
         </React.Fragment >

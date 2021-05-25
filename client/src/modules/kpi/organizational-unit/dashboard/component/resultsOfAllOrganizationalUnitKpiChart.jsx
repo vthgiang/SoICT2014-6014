@@ -358,7 +358,7 @@ function ResultsOfAllOrganizationalUnitKpiChart(props) {
                 </div>
             </section>
             { createKpiUnit.loading
-                ? <p>{translate('general.loading')}</p>
+                ? <div>{translate('general.loading')}</div>
                 : organizationalUnitKpiSetsOfChildUnit
                     ? <section>
                         <section className="box-body" style={{textAlign: "right"}}>

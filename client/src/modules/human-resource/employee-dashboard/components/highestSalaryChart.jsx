@@ -78,8 +78,9 @@ const HighestSalaryChart = (props) => {
                     </div>
                     <div className="box-body no-parding">
                         <ul className="users-list clearfix">
-                            {
-                                (dataSalary && dataSalary.length !== 0) ?
+                            {salary.isLoading
+                                ? <li>{translate('general.loading')}</li>
+                                : (dataSalary && dataSalary.length !== 0) ?
                                     dataSalary.map((x, index) => (
                                         index < 5 &&
                                         <li key={index} style={{ maxWidth: 200 }}>
