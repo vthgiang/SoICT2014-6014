@@ -5,12 +5,18 @@ const mongoosePaginate = require('mongoose-paginate-v2');
 
 const ProjectSchema = new Schema(
     {
-        code: {
-            type: String,
-            default: generateUniqueCode('PJ', 'v1')
-        },
+        // code: {
+        //     type: String,
+        //     default: generateUniqueCode('PJ', 'v1')
+        // },
         name: {
             type: String
+        },
+        projectType: {
+            // có 2 loại: 1: không ràng buộc, 2: phương pháp CPM
+            type: Number,
+            default: 1,
+            enum: [1, 2],
         },
         description: {
             type: String,

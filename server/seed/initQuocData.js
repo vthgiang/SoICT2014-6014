@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const Terms = require("../helpers/config");
+const moment = require('moment');
 
 const {
     Component,
@@ -38,6 +39,10 @@ const {
 const { job } = require("cron");
 
 require("dotenv").config();
+
+const ADDITIONAL_USERS_NUM = 45;
+const MILISECS_TO_DAYS = 86400000;
+const MILISECS_TO_HOURS = 3600000;
 
 const months = [
     "01",
@@ -312,17 +317,17 @@ const initHumanResourceForProjectData = async () => {
 
     const nvPhongMaketing = await Role(vnistDB).create({
         parents: [roleEmployee._id],
-        name: "Nhân viên phòng Marketing & NCPT sản phẩm",
+        name: "Nhân viên phòng Marketing",
         type: roleChucDanh._id,
     });
     const phoPhongMaketing = await Role(vnistDB).create({
         parents: [roleDeputyManager._id, nvPhongMaketing._id],
-        name: "Phó phòng Marketing & NCPT sản phẩm",
+        name: "Phó phòng Marketing",
         type: roleChucDanh._id,
     });
     const truongPhongMaketing = await Role(vnistDB).create({
         parents: [roleManager._id, nvPhongMaketing._id, phoPhongMaketing._id],
-        name: "Trưởng phòng Marketing & NCPT sản phẩm",
+        name: "Trưởng phòng Marketing",
         type: roleChucDanh._id,
     });
 
@@ -454,6 +459,54 @@ const initHumanResourceForProjectData = async () => {
         type: roleChucDanh._id,
     });
 
+    const nvPhongRND = await Role(vnistDB).create({
+        parents: [roleEmployee._id],
+        name: "Nhân viên phòng NC & PT",
+        type: roleChucDanh._id,
+    });
+    const phoPhongRND = await Role(vnistDB).create({
+        parents: [roleDeputyManager._id, nvPhongRND._id],
+        name: "Phó phòng NC & PT",
+        type: roleChucDanh._id,
+    });
+    const truongPhongRND = await Role(vnistDB).create({
+        parents: [roleManager._id, nvPhongRND._id, phoPhongRND._id],
+        name: "Trưởng phòng NC & PT",
+        type: roleChucDanh._id,
+    });
+
+    const nvPhongBDCL = await Role(vnistDB).create({
+        parents: [roleEmployee._id],
+        name: "Nhân viên phòng Bảo đảm chất lượng",
+        type: roleChucDanh._id,
+    });
+    const phoPhongBDCL = await Role(vnistDB).create({
+        parents: [roleDeputyManager._id, nvPhongBDCL._id],
+        name: "Phó phòng Bảo đảm chất lượng",
+        type: roleChucDanh._id,
+    });
+    const truongPhongBDCL = await Role(vnistDB).create({
+        parents: [roleManager._id, nvPhongBDCL._id, phoPhongBDCL._id],
+        name: "Trưởng phòng Bảo đảm chất lượng",
+        type: roleChucDanh._id,
+    });
+
+    const nvPhongKTCL = await Role(vnistDB).create({
+        parents: [roleEmployee._id],
+        name: "Nhân viên phòng Kiểm tra chất lượng",
+        type: roleChucDanh._id,
+    });
+    const phoPhongKTCL = await Role(vnistDB).create({
+        parents: [roleDeputyManager._id, nvPhongKTCL._id],
+        name: "Phó phòng Kiểm tra chất lượng",
+        type: roleChucDanh._id,
+    });
+    const truongPhongKTCL = await Role(vnistDB).create({
+        parents: [roleManager._id, nvPhongKTCL._id, phoPhongKTCL._id],
+        name: "Trưởng phòng Kiểm tra chất lượng",
+        type: roleChucDanh._id,
+    });
+
     // Tìm các role đã có sẵn trong db VNIST
     const nvKinhDoanh247 = await Role(vnistDB).findOne({
         name: "Nhân viên phòng kinh doanh 247",
@@ -479,7 +532,27 @@ const initHumanResourceForProjectData = async () => {
     const truongPhongSalesAdmin = await Role(vnistDB).findOne({
         name: "Trưởng phòng quản lý bán hàng",
     });
-
+    const nvPhongKH = await Role(vnistDB).findOne({
+        name: "Nhân viên phòng kế hoạch",
+    });
+    const phoPhongKH = await Role(vnistDB).findOne({
+        name: "Phó phòng kế hoạch",
+    });
+    const truongPhongKH = await Role(vnistDB).findOne({
+        name: "Trưởng phòng kế hoạch",
+    });
+    const nvNhaMayThuocBot = await Role(vnistDB).findOne({
+        name: "Nhân viên nhà máy thuốc bột",
+    });
+    const quanDocNhaMayThuocBot = await Role(vnistDB).findOne({
+        name: "Quản đốc nhà máy thuốc bột",
+    });
+    const nvNhaMayThuocNuoc = await Role(vnistDB).findOne({
+        name: "Nhân viên nhà máy thuốc nước",
+    });
+    const quanDocNhaMayThuocNuoc = await Role(vnistDB).findOne({
+        name: "Quản đốc nhà máy thuốc nước",
+    });
 
     /*---------------------------------------------------------------------------------------------
     -----------------------------------------------------------------------------------------------
@@ -491,6 +564,15 @@ const initHumanResourceForProjectData = async () => {
     });
     const boPhanKinhDoanh = await OrganizationalUnit(vnistDB).findOne({
         name: "Bộ phận kinh doanh",
+    });
+    const nhamaythuocbot = await OrganizationalUnit(vnistDB).findOne({
+        name: "Nhà máy sản xuất thuốc bột",
+    });
+    const nhamaythuocnuoc = await OrganizationalUnit(vnistDB).findOne({
+        name: "Nhà máy sản xuất thuốc nước",
+    });
+    const phongkehoach = await OrganizationalUnit(vnistDB).findOne({
+        name: "Phòng kế hoạch",
     });
 
     const phongKinhDoanh247 = await OrganizationalUnit(vnistDB).insertMany([
@@ -517,9 +599,9 @@ const initHumanResourceForProjectData = async () => {
 
     const phongMaketing = await OrganizationalUnit(vnistDB).insertMany([
         {
-            name: "Phòng Marketing & NCPT sản phẩm",
+            name: "Phòng Marketing",
             description:
-                "Phòng Marketing & NCPT sản phẩm Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
+                "Phòng Marketing Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
             managers: [truongPhongMaketing._id],
             deputyManagers: [phoPhongMaketing._id],
             employees: [nvPhongMaketing._id],
@@ -559,7 +641,7 @@ const initHumanResourceForProjectData = async () => {
             managers: [truongPhongQTMT._id],
             deputyManagers: [phoPhongQTMT._id],
             employees: [nvPhongQTMT._id],
-            parent: phongQTNS[0]._id,
+            parent: phongQTNS._id,
         },
     ]);
 
@@ -571,7 +653,7 @@ const initHumanResourceForProjectData = async () => {
             managers: [truongPhongQTHCNS._id],
             deputyManagers: [phoPhongQTHCNS._id],
             employees: [nvPhongQTHCNS._id],
-            parent: phongQTNS[0]._id,
+            parent: phongQTNS._id,
         },
     ]);
 
@@ -583,7 +665,7 @@ const initHumanResourceForProjectData = async () => {
             managers: [truongPhongHCHT._id],
             deputyManagers: [phoPhongHCHT._id],
             employees: [nvPhongHCHT._id],
-            parent: phongQTNS[0]._id,
+            parent: phongQTNS._id,
         },
     ]);
 
@@ -607,7 +689,7 @@ const initHumanResourceForProjectData = async () => {
             managers: [truongPhongKTDN._id],
             deputyManagers: [phoPhongKTDN._id],
             employees: [nvPhongKTDN._id],
-            parent: phongTCKT[0]._id,
+            parent: phongTCKT._id,
         },
     ]);
 
@@ -619,7 +701,7 @@ const initHumanResourceForProjectData = async () => {
             managers: [truongPhongKTBH._id],
             deputyManagers: [phoPhongKTBH._id],
             employees: [nvPhongKTBH._id],
-            parent: phongTCKT[0]._id,
+            parent: phongTCKT._id,
         },
     ]);
 
@@ -645,25 +727,47 @@ const initHumanResourceForProjectData = async () => {
         },
     ]);
 
+    const boPhanNCPT = await OrganizationalUnit(vnistDB).insertMany([
+        {
+            name: "Bộ phận Nghiên cứu & Phát triển",
+            description:
+                "Bộ phận Nghiên cứu & Phát triển",
+            managers: [truongPhongRND._id],
+            deputyManagers: [phoPhongRND._id],
+            employees: [nvPhongRND._id],
+            parent: Directorate._id,
+        },
+    ]);
+
+    const boPhanBDCL = await OrganizationalUnit(vnistDB).insertMany([
+        {
+            name: "Bộ phận Bảo đảm chất lượng",
+            description:
+                "Bộ phận Bảo đảm chất lượng",
+            managers: [truongPhongBDCL._id],
+            deputyManagers: [phoPhongBDCL._id],
+            employees: [nvPhongBDCL._id],
+            parent: Directorate._id,
+        },
+    ]);
+
+    const boPhanKTCL = await OrganizationalUnit(vnistDB).insertMany([
+        {
+            name: "Bộ phận Kiểm tra chất lượng",
+            description:
+                "Bộ phận Kiểm tra chất lượng",
+            managers: [truongPhongKTCL._id],
+            deputyManagers: [phoPhongKTCL._id],
+            employees: [nvPhongKTCL._id],
+            parent: Directorate._id,
+        },
+    ]);
+
     /*---------------------------------------------------------------------------------------------
     -----------------------------------------------------------------------------------------------
          3. LẤY CÁC TÀI KHOẢN ĐÃ CÓ CỦA VNIST ĐỂ TẠO NHÂN VIÊN TRƯỚC
     -----------------------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------------------- */
-    // const units = [
-    //     boPhanKinhDoanh,
-    //     phongKinhDoanh123,
-    //     phongKinhDoanh247,
-    //     phongMaketing,
-    //     phongKS,
-    //     phongQTNS,
-    //     phongQTMT,
-    //     phongQTHCNS,
-    //     phongHCHT,
-    //     phongTCKT,
-    //     phongKTDN,
-    //     phongKTBH,
-    // ];
     const fields = await Field(vnistDB).insertMany([
         {
             // 0
@@ -916,8 +1020,8 @@ const initHumanResourceForProjectData = async () => {
     const salt = await bcrypt.genSaltSync(10);
     const hash = await bcrypt.hashSync("vnist123@", salt);
     let usersForProject = [];
-    for (let i = 0; i <= 20; i++) {
-        if (i <= 10) {
+    for (let i = 0; i <= ADDITIONAL_USERS_NUM; i++) {
+        if (i <= ADDITIONAL_USERS_NUM / 2) {
             let name = randomDateNameMale();
             usersForProject = [
                 ...usersForProject,
@@ -952,28 +1056,99 @@ const initHumanResourceForProjectData = async () => {
          6. GÁN PHÂN QUYỀN ROLE CHO CÁC VỊ TRÍ TRONG CÔNG TY
     -----------------------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------------------- */
-    const phongBan = [
-        nvPhongMaketing,
-        nvPhongKS,
-        nvPhongQTNS,
-        nvPhongQTMT,
-        nvPhongQTHCNS,
-        nvPhongHCHT,
-        nvPhongTCKT,
-        nvPhongKTDN,
-        nvPhongKTBH,
-    ];
     let userRolesForProject = [];
-    for (let i = 0; i <= 20; i++) {
-        let index = Math.floor(Math.random() * 9);
-        let unit = phongBan[index];
-        userRolesForProject = [
-            ...userRolesForProject,
-            {
-                userId: usersForProjectAfterDB[i]._id,
-                roleId: unit._id,
-            },
-        ];
+    let rndArr = [], marketingArr = [], ktclArr = [], bdclArr = [], khArr = [], thuocBotArr = [], thuocNuocArr = [], qlhtnsArr = [], ktdnArr = [];
+    for (let i = 0; i <= ADDITIONAL_USERS_NUM; i++) {
+        if (i >= 0 && i < 6) {
+            userRolesForProject = [
+                ...userRolesForProject,
+                {
+                    userId: usersForProjectAfterDB[i]._id,
+                    roleId: i === 0 ? truongPhongRND._id : nvPhongRND._id,
+                },
+            ];
+            rndArr.push(usersForProjectAfterDB[i]);
+        }
+        else if (i >= 6 && i < 11) {
+            userRolesForProject = [
+                ...userRolesForProject,
+                {
+                    userId: usersForProjectAfterDB[i]._id,
+                    roleId: i === 6 ? truongPhongMaketing._id : nvPhongMaketing._id,
+                },
+            ];
+            marketingArr.push(usersForProjectAfterDB[i]);
+        }
+        else if (i >= 11 && i < 16) {
+            userRolesForProject = [
+                ...userRolesForProject,
+                {
+                    userId: usersForProjectAfterDB[i]._id,
+                    roleId: i === 11 ? truongPhongKTCL._id : nvPhongKTCL._id,
+                },
+            ];
+            ktclArr.push(usersForProjectAfterDB[i]);
+        }
+        else if (i >= 16 && i < 21) {
+            userRolesForProject = [
+                ...userRolesForProject,
+                {
+                    userId: usersForProjectAfterDB[i]._id,
+                    roleId: i === 16 ? truongPhongBDCL._id : nvPhongBDCL._id,
+                },
+            ];
+            bdclArr.push(usersForProjectAfterDB[i]);
+        }
+        else if (i >= 21 && i < 26) {
+            userRolesForProject = [
+                ...userRolesForProject,
+                {
+                    userId: usersForProjectAfterDB[i]._id,
+                    roleId: nvPhongKH._id,
+                },
+            ];
+            khArr.push(usersForProjectAfterDB[i]);
+        }
+        else if (i >= 26 && i < 31) {
+            userRolesForProject = [
+                ...userRolesForProject,
+                {
+                    userId: usersForProjectAfterDB[i]._id,
+                    roleId: nvNhaMayThuocBot._id,
+                },
+            ];
+            thuocBotArr.push(usersForProjectAfterDB[i]);
+        }
+        else if (i >= 31 && i < 36) {
+            userRolesForProject = [
+                ...userRolesForProject,
+                {
+                    userId: usersForProjectAfterDB[i]._id,
+                    roleId: nvNhaMayThuocNuoc._id,
+                },
+            ];
+            thuocNuocArr.push(usersForProjectAfterDB[i]);
+        }
+        else if (i >= 36 && i < 41) {
+            userRolesForProject = [
+                ...userRolesForProject,
+                {
+                    userId: usersForProjectAfterDB[i]._id,
+                    roleId: i === 36 ? truongPhongQTHCNS._id : nvPhongQTHCNS._id,
+                },
+            ];
+            qlhtnsArr.push(usersForProjectAfterDB[i]);
+        }
+        else {
+            userRolesForProject = [
+                ...userRolesForProject,
+                {
+                    userId: usersForProjectAfterDB[i]._id,
+                    roleId: i === 41 ? truongPhongKTDN._id : nvPhongKTDN._id,
+                },
+            ];
+            ktdnArr.push(usersForProjectAfterDB[i]);
+        }
     }
     await UserRole(vnistDB).insertMany(userRolesForProject);
 
@@ -1183,68 +1358,320 @@ const initHumanResourceForProjectData = async () => {
     }
     await Salary(vnistDB).insertMany(salaryForUsersProject);
 
-    const currentSalaries = await Salary(vnistDB).find({});
-    const currentEmployees = await Employee(vnistDB).find({});
-    const currentOrganizationUnits = await OrganizationalUnit(vnistDB).find({});
-    console.log('------------------LƯƠNG NHÂN VIÊN---------------------')
-    console.log('-------------------------------------------------------------')
-    for (let salaryItem of currentSalaries) {
-        const moment = require('moment');
-        const currentEmployee = currentEmployees.find(item => {
-            return JSON.stringify(item._id) === JSON.stringify(salaryItem.employee)
-        });
-        const currentOrganizationUnit = currentOrganizationUnits.find(item => {
-            return JSON.stringify(item._id) === JSON.stringify(salaryItem.organizationalUnit)
-        });
-        console.log(currentEmployee.fullName, '---', currentOrganizationUnit.name, '---', moment(salaryItem.month).format('MM-YYYY'), '---', salaryItem.mainSalary);
-    }
-    console.log('-------------------------------------------------------------')
-    console.log('-------------------------------------------------------------')
-
     /*---------------------------------------------------------------------------------------------
     -----------------------------------------------------------------------------------------------
          TẠO DỮ LIỆU CHO DỰ ÁN
     -----------------------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------------------- */
+
+    const currentSalaries = await Salary(vnistDB).find({});
+    const currentEmployees = await Employee(vnistDB).find({});
+    const currentUsers = await User(vnistDB).find({});
+    // Set 1 người làm projectManager
     const projectManager = await User(vnistDB).findOne({
         name: 'Nguyễn Văn Danh'
     });
-    // const currentUsers = await User(vnistDB).find({});
+    let directorateArr = usersAlreadyInVNIST;
 
-    // const newEmployeesWithUnit = [
-    //     {
-    //         unitId: Directorate._id,
-    //         listUsers: [
-    //             {
-    //                 userId: Directorate.managers[0],
-    //                 salary: ,
-    //             }
-    //         ]
-    //     }
-    // ];
+    const dataForResponsibleEmployees = [
+        { unitItem: Directorate, unitUsersArr: getShortenArray(directorateArr, 4) },
+        { unitItem: boPhanNCPT[0], unitUsersArr: getShortenArray(rndArr, 5) },
+        { unitItem: phongMaketing[0], unitUsersArr: getShortenArray(marketingArr) },
+        { unitItem: boPhanKTCL[0], unitUsersArr: getShortenArray(ktclArr) },
+        { unitItem: boPhanBDCL[0], unitUsersArr: getShortenArray(bdclArr) },
+        { unitItem: phongkehoach, unitUsersArr: getShortenArray(khArr) },
+        { unitItem: nhamaythuocbot, unitUsersArr: getShortenArray(thuocBotArr) },
+        { unitItem: nhamaythuocnuoc, unitUsersArr: getShortenArray(thuocNuocArr) },
+        { unitItem: phongQTHCNS[0], unitUsersArr: getShortenArray(qlhtnsArr) },
+        { unitItem: phongKTDN[0], unitUsersArr: getShortenArray(ktdnArr) },
+    ]
 
-    const newProject = {
-        code: 'DUAN11',
-        name: 'Du an 1',
-        "unitTime": "day",
+    const newResponsibleEmployeesWithUnit = dataForResponsibleEmployees.map((dataItem) => {
+        return {
+            unitId: dataItem.unitItem._id,
+            listUsers: dataItem.unitUsersArr.map((userItem) => {
+                return {
+                    userId: userItem._id,
+                    salary: getSalaryFromUserIdAndOrgId(currentSalaries, currentEmployees, currentUsers, dataItem.unitItem._id, userItem._id),
+                }
+            })
+        }
+    });
+
+    const newResponsibleEmployees = newResponsibleEmployeesWithUnit.map((unitItem) => {
+        return unitItem.listUsers.map((userItem) => {
+            return userItem.userId
+        })
+    }).flat();
+
+    const newEmptyProject = {
+        name: 'Dự án test lập kế hoạch CPM',
+        projectType: 2,
+        "unitTime": "days",
         "unitCost": "VND",
         "status": "inprocess",
         "startDate": new Date("2021-04-16T00:00:00Z"),
         "endDate": new Date("2021-07-23T00:00:00Z"),
-        "description": "ádasdasdasdasd",
+        "description": "Dự án này có danh sách công việc rỗng để có thể test chức năng lập kế hoạch",
         projectManager: [
             projectManager._id,
         ],
         creator: projectManager._id,
-        responsibleEmployees: [],
-        responsibleEmployeesWithUnit: []
+        responsibleEmployees: newResponsibleEmployees,
+        responsibleEmployeesWithUnit: newResponsibleEmployeesWithUnit,
     }
 
-    await Project(vnistDB).insertMany([
-        newProject,
-    ]);
-    console.log('Hoàn thành tạo dữ liệu cho dự án')
+    const drugRNDProject = {
+        name: 'Dự án nghiên cứu sản phẩm thuốc công ty Việt Anh',
+        projectType: 2,
+        "unitTime": "days",
+        "unitCost": "VND",
+        "status": "inprocess",
+        "startDate": new Date("2021-04-16T00:00:00Z"),
+        "endDate": new Date("2021-07-23T00:00:00Z"),
+        "description": "Dự án này có dữ liệu danh sách công việc của 1 dự án cụ thể - dự án nghiên cứu và phát triển thuốc mới",
+        projectManager: [
+            projectManager._id,
+        ],
+        creator: projectManager._id,
+        responsibleEmployees: newResponsibleEmployees,
+        responsibleEmployeesWithUnit: newResponsibleEmployeesWithUnit,
+    }
 
+    const projectDataInsertedDB = await Project(vnistDB).insertMany([
+        newEmptyProject,
+        drugRNDProject,
+    ]);
+
+    /*---------------------------------------------------------------------------------------------
+    -----------------------------------------------------------------------------------------------
+            TẠO DANH SÁCH CÔNG VIỆC CHO DỰ ÁN
+    -----------------------------------------------------------------------------------------------
+    ----------------------------------------------------------------------------------------------- */
+    const drugRNDProjectIdInDB = projectDataInsertedDB.find((proDBItem) => proDBItem.name === drugRNDProject.name)._id;
+    const fakeTasksData = [
+        { name: 'Công việc A', code: 'A', preceedingTasks: [], startDate: '', endDate: '', estimateNormalTime: 6, creator: projectManager._id, description: '', responsibleEmployees: [], accountableEmployees: [], actorsWithSalary: [], estimateAssetCost: 1000000, totalResWeight: 0.8, taskProject: drugRNDProjectIdInDB, organizationalUnit: Directorate._id },
+        { name: 'Công việc B', code: 'B', preceedingTasks: ['A'], startDate: '', endDate: '', estimateNormalTime: 4, creator: projectManager._id, description: '', responsibleEmployees: [], accountableEmployees: [], actorsWithSalary: [], estimateAssetCost: 1000000, totalResWeight: 0.6, taskProject: drugRNDProjectIdInDB, organizationalUnit: Directorate._id },
+        { name: 'Công việc C', code: 'C', preceedingTasks: ['A', 'B'], startDate: '', endDate: '', estimateNormalTime: 7, creator: projectManager._id, description: '', responsibleEmployees: [], accountableEmployees: [], actorsWithSalary: [], estimateAssetCost: 1000000, totalResWeight: 0.7, taskProject: drugRNDProjectIdInDB, organizationalUnit: Directorate._id },
+        // { name: 'Công việc D', code: 'D', preceedingTasks: ['B'], startDate: '', endDate: '', estimateNormalTime: 3, creator: projectManager._id, description: '', responsibleEmployees: [], accountableEmployees: [], actorsWithSalary: [], estimateAssetCost: 1000000, totalResWeight: 0.9, taskProject: drugRNDProjectIdInDB, organizationalUnit: Directorate._id },
+        // { name: 'Công việc E', code: 'E', preceedingTasks: ['A', 'C'], startDate: '', endDate: '', estimateNormalTime: 6, creator: projectManager._id, description: '', responsibleEmployees: [], accountableEmployees: [], actorsWithSalary: [], estimateAssetCost: 1000000, totalResWeight: 0.8, taskProject: drugRNDProjectIdInDB, organizationalUnit: Directorate._id },
+        // { name: 'Công việc F', code: 'F', preceedingTasks: ['E'], startDate: '', endDate: '', estimateNormalTime: 5, creator: projectManager._id, description: '', responsibleEmployees: [], accountableEmployees: [], actorsWithSalary: [], estimateAssetCost: 1000000, totalResWeight: 0.8, taskProject: drugRNDProjectIdInDB, organizationalUnit: Directorate._id },
+        // { name: 'Công việc G', code: 'G', preceedingTasks: ['D'], startDate: '', endDate: '', estimateNormalTime: 2, creator: projectManager._id, description: '', responsibleEmployees: [], accountableEmployees: [], actorsWithSalary: [], estimateAssetCost: 1000000, totalResWeight: 0.8, taskProject: drugRNDProjectIdInDB, organizationalUnit: Directorate._id },
+    ]
+    const startEndTasksData = processDataTasksStartEnd(drugRNDProject, fakeTasksData);
+    const startEndTasksDataWithoutPreceeding = startEndTasksData.map((seTaskItem) => {
+        const { estimateNormalTime } = seTaskItem;
+        return {
+            ...seTaskItem,
+            preceedingTasks: [],
+            estimateNormalTime: Number(estimateNormalTime) * (drugRNDProject.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS),
+        }
+    })
+    const firstInsertedDBTasks = await Task(vnistDB).insertMany(startEndTasksDataWithoutPreceeding);
+    // console.log('firstInsertedDBTasks', firstInsertedDBTasks)
+    const fullTasksData = fakeTasksData.map((fakeItem, fakeIndex) => {
+        let preceedingTasks = [];
+        if (fakeItem.preceedingTasks && fakeItem.preceedingTasks.length > 0) {
+            preceedingTasks = fakeItem.preceedingTasks.map((fakePreItem) => {
+                const currentTaskNameFromFake = fakeTasksData.find((fakeItem) => String(fakeItem.code) === String(fakePreItem))?.name;
+                const currentTaskIdFromDB = firstInsertedDBTasks.find((firstInsItem) => firstInsItem.name === currentTaskNameFromFake)?._id;
+                return {
+                    task: currentTaskIdFromDB,
+                    link: '',
+                };
+            })
+        }
+        return {
+            ...firstInsertedDBTasks[fakeIndex]._doc,
+            preceedingTasks,
+        }
+    })
+    console.log('fullTasksData', fullTasksData)
+    for (let fullItem of fullTasksData) {
+        const { preceedingTasks, _id } = fullItem;
+        await Task(vnistDB).findByIdAndUpdate(_id, {
+            $set: {
+                preceedingTasks,
+            }
+        }, { new: true });
+    }
+
+
+    console.log('Hoàn thành tạo dữ liệu cho dự án')
+}
+
+const getSalaryFromUserIdAndOrgId = (currentSalaries, currentEmployees, currentUsers, orgId, userId) => {
+    const currentUserItem = currentUsers.find((usersItem) => String(usersItem._id) === String(userId));
+    const currentEmployeeItem = currentEmployees.find((empsItem) => String(empsItem.emailInCompany) === String(currentUserItem.email));
+    if (!currentEmployeeItem) return 0;
+    const currentSalaryItem = currentSalaries.find((salsItem) => (
+        String(salsItem.organizationalUnit) === String(orgId)
+        && String(salsItem.employee) === String(currentEmployeeItem._id))
+    );
+    return !currentSalaryItem ? 0 : currentSalaryItem.mainSalary;
+}
+
+const getShortenArray = (array, numsOfItems = 3) => {
+    if (!Array.isArray(array) || !array) return [];
+    if (array.length < numsOfItems) {
+        return array;
+    }
+    return array.filter((arrItem, arrIndex) => arrIndex < numsOfItems);
+}
+
+const handleWeekendAndWorkTime = (projectDetail, taskItem) => {
+    // Nếu unitTime = 'days'
+    if (projectDetail?.unitTime === 'days') {
+        // Check xem startDate có phải thứ 7 hoặc chủ nhật không thì cộng thêm ngày để startDate vào ngày thứ 2 tuần sau
+        let dayOfStartDate = (new Date(taskItem.startDate)).getDay();
+        if (dayOfStartDate === 6) taskItem.startDate = moment(taskItem.startDate).add(2, 'days').format();
+        if (dayOfStartDate === 0) taskItem.startDate = moment(taskItem.startDate).add(1, 'days').format();
+        // Tách phần integer và phần decimal của estimateNormalTime
+        const estimateNormalTimeArr = taskItem.estimateNormalTime.toString().split('.');
+        const integerPart = Number(estimateNormalTimeArr[0]);
+        const decimalPart = estimateNormalTimeArr.length === 2 ? Number(`.${estimateNormalTimeArr[1]}`) : undefined;
+        let tempEndDate = '';
+        // Cộng phần nguyên
+        for (let i = 0; i < integerPart; i++) {
+            // Tính tempEndDate = + 1 ngày trước để kiểm tra
+            if (i === 0) {
+                tempEndDate = moment(taskItem.startDate).add(1, 'days').format();
+            } else {
+                tempEndDate = moment(taskItem.endDate).add(1, 'days').format();
+            }
+            // Nếu tempEndDate đang là thứ 7 thì công thêm 2 ngày
+            if ((new Date(tempEndDate)).getDay() === 6) {
+                taskItem.endDate = moment(tempEndDate).add(2, 'days').format();
+            }
+            // Nếu tempEndDate đang là chủ nhật thì công thêm 1 ngày
+            else if ((new Date(tempEndDate)).getDay() === 0) {
+                taskItem.endDate = moment(tempEndDate).add(1, 'days').format();
+            }
+            // Còn không thì không cộng gì
+            else {
+                taskItem.endDate = tempEndDate;
+            }
+        }
+        // Cộng phần thập phân (nếu có)
+        if (decimalPart) {
+            if (!taskItem.endDate) {
+                taskItem.endDate = moment(taskItem.startDate).add(decimalPart, 'days').format();
+            } else {
+                taskItem.endDate = moment(taskItem.endDate).add(decimalPart, 'days').format();
+            }
+            // Check xem endDate hiện tại là thứ mấy => Cộng tiếp để bỏ qua thứ 7 và chủ nhật (nếu có)
+            dayOfStartDate = (new Date(taskItem.endDate)).getDay();
+            if (dayOfStartDate === 6) taskItem.endDate = moment(taskItem.endDate).add(2, 'days').format();
+            if (dayOfStartDate === 0) taskItem.endDate = moment(taskItem.endDate).add(1, 'days').format();
+        }
+        return taskItem;
+    }
+
+    // Nếu unitTime = 'hours'
+    const dailyMorningStartTime = moment('08:00', 'HH:mm');
+    const dailyMorningEndTime = moment('12:00', 'HH:mm');
+    const dailyAfternoonStartTime = moment('13:30', 'HH:mm');
+    const dailyAfternoonEndTime = moment('17:30', 'HH:mm');
+    // Check xem startDate có phải thứ 7 hoặc chủ nhật không thì cộng thêm ngày để startDate vào ngày thứ 2 tuần sau
+    let dayOfStartDate = (new Date(taskItem.startDate)).getDay();
+    if (dayOfStartDate === 6) taskItem.startDate = moment(taskItem.startDate).add(2, 'days').format();
+    if (dayOfStartDate === 0) taskItem.startDate = moment(taskItem.startDate).add(1, 'days').format();
+    // Tách phần integer và phần decimal của estimateNormalTime
+    const estimateNormalTimeArr = taskItem.estimateNormalTime.toString().split('.');
+    const integerPart = Number(estimateNormalTimeArr[0]);
+    const decimalPart = estimateNormalTimeArr.length === 2 ? Number(`.${estimateNormalTimeArr[1]}`) : undefined;
+    let tempEndDate = '';
+    // Cộng phần nguyên
+    for (let i = 0; i < integerPart; i++) {
+        // Tính tempEndDate = + 1 tiêng trước để kiểm tra
+        if (i === 0) {
+            tempEndDate = moment(taskItem.startDate).add(1, 'hours').format();
+        } else {
+            tempEndDate = moment(taskItem.endDate).add(1, 'hours').format();
+        }
+        const currentEndDateInMomentHourMinutes = moment(moment(tempEndDate).format('HH:mm'), 'HH:mm');
+        // Nếu đang ở giờ nghỉ trưa
+        if (currentEndDateInMomentHourMinutes.isAfter(dailyMorningEndTime) && currentEndDateInMomentHourMinutes.isBefore(dailyAfternoonStartTime)) {
+            tempEndDate = moment(tempEndDate).set({
+                hour: 13,
+                minute: 30,
+            });
+            tempEndDate = moment(tempEndDate).add(1, 'hours').format();
+        }
+        // Nếu quá 17:30
+        else if (currentEndDateInMomentHourMinutes.isAfter(dailyAfternoonEndTime)) {
+            tempEndDate = moment(tempEndDate).set({
+                hour: 8,
+                minute: 0,
+            });
+            tempEndDate = moment(tempEndDate).add(1, 'hours').format();
+            tempEndDate = moment(tempEndDate).add(1, 'days').format();
+        }
+        // Nếu tempEndDate đang là thứ 7 thì công thêm 2 ngày
+        if ((new Date(tempEndDate)).getDay() === 6) {
+            taskItem.endDate = moment(tempEndDate).add(2, 'days').format();
+        }
+        // Nếu tempEndDate đang là chủ nhật thì công thêm 1 ngày
+        else if ((new Date(tempEndDate)).getDay() === 0) {
+            taskItem.endDate = moment(tempEndDate).add(1, 'days').format();
+        }
+        // Còn không thì không cộng gì
+        else {
+            taskItem.endDate = tempEndDate;
+        }
+    }
+    // Cộng phần thập phân (nếu có)
+    if (decimalPart) {
+        if (!taskItem.endDate) {
+            taskItem.endDate = moment(taskItem.startDate).add(decimalPart, 'hours').format();
+        } else {
+            taskItem.endDate = moment(taskItem.endDate).add(decimalPart, 'hours').format();
+        }
+        // Check xem endDate hiện tại là thứ mấy => Cộng tiếp để bỏ qua thứ 7 và chủ nhật (nếu có)
+        dayOfStartDate = (new Date(taskItem.endDate)).getDay();
+        if (dayOfStartDate === 6) taskItem.endDate = moment(taskItem.endDate).add(2, 'days').format();
+        if (dayOfStartDate === 0) taskItem.endDate = moment(taskItem.endDate).add(1, 'days').format();
+    }
+    return taskItem;
+}
+
+const processDataTasksStartEnd = (projectDetail, currentTasksData) => {
+    if (!currentTasksData || currentTasksData.length === 0) return [];
+    const tempTasksData = [...currentTasksData];
+    // console.log('tempTasksData', tempTasksData)
+    // Lặp mảng tasks
+    for (let taskItem of tempTasksData) {
+        console.log(taskItem.name, taskItem.startDate, taskItem.endDate)
+        if (taskItem.estimateNormalTime > 20) {
+            console.error('Estimate normal time đang quá lớn: ', taskItem.estimateNormalTime);
+        }
+        if (taskItem.preceedingTasks.length === 0 && (!taskItem.startDate || !taskItem.endDate)) {
+            taskItem.startDate = taskItem.startDate || projectDetail?.startDate;
+            taskItem = handleWeekendAndWorkTime(projectDetail, taskItem);
+        }
+        else {
+            // Lặp mảng preceedingTasks của taskItem hiện tại
+            for (let preceedingItem of taskItem.preceedingTasks) {
+                const currentPreceedingTaskItem = tempTasksData.find(item => {
+                    // chỗ này quan trọng nhất là .code
+                    if (typeof preceedingItem === 'string') {
+                        return String(item.code) === String(preceedingItem).trim();
+                    }
+                    return String(item.code) === String(preceedingItem.task);
+                });
+                if (currentPreceedingTaskItem && (
+                    !taskItem.startDate ||
+                    moment(taskItem.startDate)
+                        .isBefore(moment(currentPreceedingTaskItem.endDate))
+                )) {
+                    taskItem.startDate = currentPreceedingTaskItem.endDate;
+                }
+                taskItem = handleWeekendAndWorkTime(projectDetail, taskItem);
+            }
+        }
+    }
+    // console.log('tempTasksData', tempTasksData);
+    return tempTasksData;
 }
 
 initHumanResourceForProjectData().catch((err) => {
