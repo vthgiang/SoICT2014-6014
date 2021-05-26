@@ -169,6 +169,8 @@ const TabProjectReportCost = (props) => {
                             <thead>
                                 <tr>
                                     <th>Tên công việc</th>
+                                    <th>Trạng thái</th>
+                                    <th>Tiến độ (%)</th>
                                     <th>Thời gian bắt đầu</th>
                                     <th>Thời gian dự kiến kết thúc</th>
                                     <th>Ngân sách (VND)</th>
@@ -180,6 +182,8 @@ const TabProjectReportCost = (props) => {
                                     displayContent.tasks.map((taskItem, index) => (
                                         <tr key={index}>
                                             <td>{taskItem?.name}</td>
+                                            <td>{taskItem?.status}</td>
+                                            <td>{taskItem?.progress}</td>
                                             <td>{moment(taskItem?.startDate).format('HH:mm DD/MM/YYYY')}</td>
                                             <td>{moment(taskItem?.endDate).format('HH:mm DD/MM/YYYY')}</td>
                                             <td>{numberWithCommas(taskItem.estimateNormalCost)}</td>

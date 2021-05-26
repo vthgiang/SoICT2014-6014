@@ -60,8 +60,8 @@ const TabProjectReportMember = (props) => {
                         let curEmployeePoint = checkIsNullUndefined(accEvalItem.employeePoint) ? 0 : accEvalItem.employeePoint;
                         currentMemberCurrentTaskPoint = (curAutomaticPoint + curEmployeePoint) / 2;
                     }
+                    taskWithMemberItemForPoints++;
                 }
-                taskWithMemberItemForPoints++;
                 currentMemberPointSum += currentMemberCurrentTaskPoint;
                 // Tính tổng số giờ của nhân viên dành cho task đó
                 const currentTimeLogMember = tasksWithMemberItem.timesheetLogs.filter(item => String(item.creator) === String(memberItem.id));
@@ -107,7 +107,8 @@ const TabProjectReportMember = (props) => {
                     behindScheduleTasks.push(tasksWithMemberItem);
                 }
                 // Push vào overdueTasks
-                if (tasksWithMemberItem.progress < 100 && moment().isAfter(moment(tasksWithMemberItem.endDate))) {
+                if ((tasksWithMemberItem.progress < 100 && moment().isAfter(moment(tasksWithMemberItem.endDate)))
+                    || (tasksWithMemberItem.progress === 100 && moment().isAfter(moment(tasksWithMemberItem.endDate)) && tasksWithMemberItem.status === 'inprocess')) {
                     overdueTasks.push(tasksWithMemberItem);
                 }
                 // Push vào onBudgetTasks
@@ -147,7 +148,8 @@ const TabProjectReportMember = (props) => {
         let membersAlwaysBehindSchedule = [];
         membersData.forEach((item) => {
             const { id, name, behindScheduleTasks, overdueTasks, totalTasks } = item;
-            if ((behindScheduleTasks.length + overdueTasks.length) / totalTasks.length >= 0.5 && behindScheduleTasks.length + overdueTasks.length > 0) {
+            if (((behindScheduleTasks.length + overdueTasks.length) / totalTasks.length >= 0.5)
+                && (behindScheduleTasks.length + overdueTasks.length > 0)) {
                 membersAlwaysBehindSchedule.push({
                     id,
                     name,
@@ -190,7 +192,7 @@ const TabProjectReportMember = (props) => {
         membersData.forEach((item) => {
             const { id, name, tasksWithBudgetAndCostAndPointForMember, currentMemberPoint } = item;
             if (currentMemberPoint >= 85) {
-            // if (currentMemberPoint >= 0) {
+                // if (currentMemberPoint >= 0) {
                 membersWithPoint.push({
                     id,
                     name,
@@ -273,15 +275,17 @@ const TabProjectReportMember = (props) => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {item?.tasksWithBudgetAndCostAndPointForMember?.map((taskItem, index) => (
-                                            <tr key={index}>
-                                                <td>{taskItem?.name}</td>
-                                                <td>{taskItem?.id}</td>
-                                                <td>{moment(taskItem?.startDate).format('HH:mm DD/MM/YYYY')}</td>
-                                                <td>{moment(taskItem?.endDate).format('HH:mm DD/MM/YYYY')}</td>
-                                                <td>{Math.round(taskItem?.currentMemberCurrentTaskPoint)} / 100</td>
-                                            </tr>
-                                        ))
+                                        {item?.tasksWithBudgetAndCostAndPointForMember
+                                            ?.filter((taskItem) => moment(taskItem.endDate).isSameOrBefore(moment()))
+                                            ?.map((taskItem, index) => (
+                                                <tr key={index}>
+                                                    <td>{taskItem?.name}</td>
+                                                    <td>{taskItem?.id}</td>
+                                                    <td>{moment(taskItem?.startDate).format('HH:mm DD/MM/YYYY')}</td>
+                                                    <td>{moment(taskItem?.endDate).format('HH:mm DD/MM/YYYY')}</td>
+                                                    <td>{numberWithCommas(taskItem?.currentMemberCurrentTaskPoint)} / 100</td>
+                                                </tr>
+                                            ))
                                         }
                                     </tbody>
                                 </table>
@@ -304,7 +308,7 @@ const TabProjectReportMember = (props) => {
                 </div>
                 <div className="box">
                     <div className="box-body qlcv">
-                        <h4><strong>Các thành viên hay bị chậm tiến độ / quá hạn</strong></h4>
+                        <h4><strong>Các thành viên hay bị chậm tiến độ / quá hạn (tổng số trễ / tổng công việc lớn hơn hoặc bằng 1/2)</strong></h4>
                         <div className="row statistical-wrapper" style={{ marginTop: '5px' }}>
                             {renderData(getMembersAlwaysBehindSchedule(membersData), 'công việc trễ tiến độ')}
                         </div>
@@ -312,7 +316,7 @@ const TabProjectReportMember = (props) => {
                 </div>
                 <div className="box">
                     <div className="box-body qlcv">
-                        <h4><strong>Các thành viên hay để lãng phí chi phí</strong></h4>
+                        <h4><strong>Các thành viên hay để lãng phí chi phí (tổng số vi phạm / tổng công việc lớn hơn hoặc bằng 1/2)</strong></h4>
                         <div className="row statistical-wrapper" style={{ marginTop: '5px' }}>
                             {renderData(getMembersAlwaysBehindBudget(membersData), 'công việc lãng phí chi phí')}
                         </div>
@@ -334,6 +338,7 @@ const TabProjectReportMember = (props) => {
                                     <th>Số công việc lãng phí chi phí</th>
                                     <th>Tổng ngân sách cho thành viên (VND)</th>
                                     <th>Tổng chi phí thực của thành viên (VND)</th>
+                                    <th>Điểm số hiện tại</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -352,6 +357,7 @@ const TabProjectReportMember = (props) => {
                                             <td style={{ color: memberItem?.totalActualCostForMember > memberItem?.totalBudgetForMember ? 'red' : 'black' }}>
                                                 {numberWithCommas(memberItem?.totalActualCostForMember)}
                                             </td>
+                                            <td>{numberWithCommas(memberItem?.currentMemberPoint)} / 100</td>
                                         </tr>
                                     ))
                                 }

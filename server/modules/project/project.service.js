@@ -73,18 +73,19 @@ exports.show = async (portal, id) => {
 }
 
 exports.create = async (portal, data) => {
+    console.log('data', data)
     let newData = {};
     let newResponsibleEmployeesWithUnit = [];
 
     if (data) {
-        for (let i in data) {
-            if (data[i] && data[i].length > 0) {
-                newData = {
-                    ...newData,
-                    [i]: data[i]
-                }
-            }
-        }
+        // for (let i in data) {
+        //     if (data[i] && data[i].length > 0) {
+        //         newData = {
+        //             ...newData,
+        //             [i]: data[i]
+        //         }
+        //     }
+        // }
         for (let employeeItem of data.responsibleEmployeesWithUnit) {
             let newListUsers = [];
             for (let userItem of employeeItem.listUsers) {
@@ -131,7 +132,8 @@ exports.create = async (portal, data) => {
     }
 
     let project = await Project(connect(DB_CONNECTION, portal)).create({
-        ...newData,
+        // ...newData,
+        ...data,
         responsibleEmployeesWithUnit: newResponsibleEmployeesWithUnit,
     });
     return project;

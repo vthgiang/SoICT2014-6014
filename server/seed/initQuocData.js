@@ -37,12 +37,14 @@ const {
     Project,
 } = require("../models");
 const { job } = require("cron");
+const { isEqual } = require("lodash");
 
 require("dotenv").config();
 
 const ADDITIONAL_USERS_NUM = 45;
 const MILISECS_TO_DAYS = 86400000;
 const MILISECS_TO_HOURS = 3600000;
+const SUBTRACT_TO_START_DATE = 70;
 
 const months = [
     "01",
@@ -1363,7 +1365,6 @@ const initHumanResourceForProjectData = async () => {
          TẠO DỮ LIỆU CHO DỰ ÁN
     -----------------------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------------------- */
-
     const currentSalaries = await Salary(vnistDB).find({});
     const currentEmployees = await Employee(vnistDB).find({});
     const currentUsers = await User(vnistDB).find({});
@@ -1373,17 +1374,29 @@ const initHumanResourceForProjectData = async () => {
     });
     let directorateArr = usersAlreadyInVNIST;
 
+    const TotalUnitUsersArr = {
+        direct: getShortenArray(directorateArr, 4),
+        ncpt: getShortenArray(rndArr, 5),
+        marketing: getShortenArray(marketingArr, 2),
+        ktcl: getShortenArray(ktclArr, 2),
+        bdcl: getShortenArray(bdclArr, 2),
+        kehoach: getShortenArray(khArr, 2),
+        thuocbot: getShortenArray(thuocBotArr, 2),
+        thuocnuoc: getShortenArray(thuocNuocArr, 2),
+        qthcns: getShortenArray(qlhtnsArr, 1),
+        ktdn: getShortenArray(ktdnArr),
+    }
     const dataForResponsibleEmployees = [
-        { unitItem: Directorate, unitUsersArr: getShortenArray(directorateArr, 4) },
-        { unitItem: boPhanNCPT[0], unitUsersArr: getShortenArray(rndArr, 5) },
-        { unitItem: phongMaketing[0], unitUsersArr: getShortenArray(marketingArr) },
-        { unitItem: boPhanKTCL[0], unitUsersArr: getShortenArray(ktclArr) },
-        { unitItem: boPhanBDCL[0], unitUsersArr: getShortenArray(bdclArr) },
-        { unitItem: phongkehoach, unitUsersArr: getShortenArray(khArr) },
-        { unitItem: nhamaythuocbot, unitUsersArr: getShortenArray(thuocBotArr) },
-        { unitItem: nhamaythuocnuoc, unitUsersArr: getShortenArray(thuocNuocArr) },
-        { unitItem: phongQTHCNS[0], unitUsersArr: getShortenArray(qlhtnsArr) },
-        { unitItem: phongKTDN[0], unitUsersArr: getShortenArray(ktdnArr) },
+        { unitItem: Directorate, unitUsersArr: TotalUnitUsersArr.direct },
+        { unitItem: boPhanNCPT[0], unitUsersArr: TotalUnitUsersArr.ncpt },
+        { unitItem: phongMaketing[0], unitUsersArr: TotalUnitUsersArr.marketing },
+        { unitItem: boPhanKTCL[0], unitUsersArr: TotalUnitUsersArr.ktcl },
+        { unitItem: boPhanBDCL[0], unitUsersArr: TotalUnitUsersArr.bdcl },
+        { unitItem: phongkehoach, unitUsersArr: TotalUnitUsersArr.kehoach },
+        { unitItem: nhamaythuocbot, unitUsersArr: TotalUnitUsersArr.thuocbot },
+        { unitItem: nhamaythuocnuoc, unitUsersArr: TotalUnitUsersArr.thuocnuoc },
+        { unitItem: phongQTHCNS[0], unitUsersArr: TotalUnitUsersArr.qthcns },
+        { unitItem: phongKTDN[0], unitUsersArr: TotalUnitUsersArr.ktdn },
     ]
 
     const newResponsibleEmployeesWithUnit = dataForResponsibleEmployees.map((dataItem) => {
@@ -1404,7 +1417,24 @@ const initHumanResourceForProjectData = async () => {
         })
     }).flat();
 
-    const newEmptyProject = {
+    const newEmptyProjectType1 = {
+        name: 'Dự án test không ràng buộc',
+        projectType: 1,
+        "unitTime": "days",
+        "unitCost": "VND",
+        "status": "inprocess",
+        "startDate": new Date("2021-04-16T00:00:00Z"),
+        "endDate": new Date("2021-07-23T00:00:00Z"),
+        "description": "Dự án này có danh sách công việc không bị ràng buộc bởi tham số gì",
+        projectManager: [
+            projectManager._id,
+        ],
+        creator: projectManager._id,
+        responsibleEmployees: newResponsibleEmployees,
+        responsibleEmployeesWithUnit: newResponsibleEmployeesWithUnit,
+    }
+
+    const newEmptyProjectType2 = {
         name: 'Dự án test lập kế hoạch CPM',
         projectType: 2,
         "unitTime": "days",
@@ -1421,14 +1451,16 @@ const initHumanResourceForProjectData = async () => {
         responsibleEmployeesWithUnit: newResponsibleEmployeesWithUnit,
     }
 
+    const drugRNDProjectStartDate = moment().subtract(SUBTRACT_TO_START_DATE, 'days').format();
+    const drugRNDProjectEndDate = moment().add(100, 'days').format();
     const drugRNDProject = {
         name: 'Dự án nghiên cứu sản phẩm thuốc công ty Việt Anh',
         projectType: 2,
         "unitTime": "days",
         "unitCost": "VND",
         "status": "inprocess",
-        "startDate": new Date("2021-04-16T00:00:00Z"),
-        "endDate": new Date("2021-07-23T00:00:00Z"),
+        "startDate": new Date(drugRNDProjectStartDate),
+        "endDate": new Date(drugRNDProjectEndDate),
         "description": "Dự án này có dữ liệu danh sách công việc của 1 dự án cụ thể - dự án nghiên cứu và phát triển thuốc mới",
         projectManager: [
             projectManager._id,
@@ -1439,8 +1471,9 @@ const initHumanResourceForProjectData = async () => {
     }
 
     const projectDataInsertedDB = await Project(vnistDB).insertMany([
-        newEmptyProject,
         drugRNDProject,
+        newEmptyProjectType1,
+        newEmptyProjectType2,
     ]);
 
     /*---------------------------------------------------------------------------------------------
@@ -1449,24 +1482,291 @@ const initHumanResourceForProjectData = async () => {
     -----------------------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------------------- */
     const drugRNDProjectIdInDB = projectDataInsertedDB.find((proDBItem) => proDBItem.name === drugRNDProject.name)._id;
+
+    let fakeRACIData = [];
+    for (let i = 0; i < 28; i++) {
+        const ncptResDirAccArray = [0, 1, 4, 5, 6, 8, 9, 10, 11, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25];
+        const ncptThuocnuocThuocbotResDirAccArray = [12, 13, 14];
+        if (ncptResDirAccArray.includes(i)) {
+            const responsibleEmployees = getRandomUsersFromUnit(TotalUnitUsersArr.ncpt, 1).map(item => item._id);
+            // const accountableEmployees = [projectManager._id];
+            const accountableEmployees = getRandomUsersFromUnit(TotalUnitUsersArr.direct, 1).map(item => item._id);
+            fakeRACIData.push({
+                responsibleEmployees,
+                accountableEmployees,
+            })
+        }
+        else if (ncptThuocnuocThuocbotResDirAccArray.includes(i)) {
+            const responsibleEmployees = [
+                ...getRandomUsersFromUnit(TotalUnitUsersArr.ncpt, 1).map(item => item._id),
+                ...getRandomUsersFromUnit(TotalUnitUsersArr.thuocnuoc, 1).map(item => item._id),
+                ...getRandomUsersFromUnit(TotalUnitUsersArr.thuocbot, 1).map(item => item._id),
+            ];
+            const accountableEmployees = getRandomUsersFromUnit(TotalUnitUsersArr.direct, 1).map(item => item._id);
+            fakeRACIData.push({
+                responsibleEmployees,
+                accountableEmployees,
+            });
+        }
+        // Tài liệu nghiên cứu
+        else if (i === 2) {
+            const responsibleEmployees = getRandomUsersFromUnit(TotalUnitUsersArr.ncpt, 1).map(item => item._id);
+            let accountableEmployees = getRandomUsersFromUnit(TotalUnitUsersArr.direct, 1).map(item => item._id);
+            while (isEqual(responsibleEmployees, accountableEmployees)) {
+                accountableEmployees = getRandomUsersFromUnit(TotalUnitUsersArr.direct, 1).map(item => item._id);
+            }
+            fakeRACIData.push({
+                responsibleEmployees,
+                accountableEmployees,
+            });
+        }
+        // Bảng dự trù nguyên, phụ liệu
+        else if (i === 3) {
+            const responsibleEmployees = getRandomUsersFromUnit(TotalUnitUsersArr.ncpt, 1).map(item => item._id);
+            const accountableEmployees = getRandomUsersFromUnit(TotalUnitUsersArr.kehoach, 1).map(item => item._id);
+            fakeRACIData.push({
+                responsibleEmployees,
+                accountableEmployees,
+            });
+        }
+        // Tiêu chuẩn cơ sở
+        else if (i === 7) {
+            const responsibleEmployees = getRandomUsersFromUnit(TotalUnitUsersArr.ncpt, 1).map(item => item._id);
+            const accountableEmployees = [
+                ...getRandomUsersFromUnit(TotalUnitUsersArr.ktcl, 1).map(item => item._id),
+                ...getRandomUsersFromUnit(TotalUnitUsersArr.bdcl, 1).map(item => item._id),
+            ];
+            fakeRACIData.push({
+                responsibleEmployees,
+                accountableEmployees,
+            });
+        }
+        // Nhãn sản phẩm
+        else if (i === 26) {
+            const responsibleEmployees = [
+                ...getRandomUsersFromUnit(TotalUnitUsersArr.ncpt, 1).map(item => item._id),
+                ...getRandomUsersFromUnit(TotalUnitUsersArr.marketing, 1).map(item => item._id),
+            ];
+            const accountableEmployees = getRandomUsersFromUnit(TotalUnitUsersArr.direct, 1).map(item => item._id);
+            fakeRACIData.push({
+                responsibleEmployees,
+                accountableEmployees,
+            });
+        }
+        // Hồ sơ đăng ký sản phẩm
+        else if (i === 27) {
+            const responsibleEmployees = getRandomUsersFromUnit(TotalUnitUsersArr.ncpt, 1).map(item => item._id);
+            const accountableEmployees = getRandomUsersFromUnit(TotalUnitUsersArr.qthcns, 1).map(item => item._id);
+            fakeRACIData.push({
+                responsibleEmployees,
+                accountableEmployees,
+            });
+        }
+    }
+
     const fakeTasksData = [
-        { name: 'Công việc A', code: 'A', preceedingTasks: [], startDate: '', endDate: '', estimateNormalTime: 6, creator: projectManager._id, description: '', responsibleEmployees: [], accountableEmployees: [], actorsWithSalary: [], estimateAssetCost: 1000000, totalResWeight: 0.8, taskProject: drugRNDProjectIdInDB, organizationalUnit: Directorate._id },
-        { name: 'Công việc B', code: 'B', preceedingTasks: ['A'], startDate: '', endDate: '', estimateNormalTime: 4, creator: projectManager._id, description: '', responsibleEmployees: [], accountableEmployees: [], actorsWithSalary: [], estimateAssetCost: 1000000, totalResWeight: 0.6, taskProject: drugRNDProjectIdInDB, organizationalUnit: Directorate._id },
-        { name: 'Công việc C', code: 'C', preceedingTasks: ['A', 'B'], startDate: '', endDate: '', estimateNormalTime: 7, creator: projectManager._id, description: '', responsibleEmployees: [], accountableEmployees: [], actorsWithSalary: [], estimateAssetCost: 1000000, totalResWeight: 0.7, taskProject: drugRNDProjectIdInDB, organizationalUnit: Directorate._id },
-        // { name: 'Công việc D', code: 'D', preceedingTasks: ['B'], startDate: '', endDate: '', estimateNormalTime: 3, creator: projectManager._id, description: '', responsibleEmployees: [], accountableEmployees: [], actorsWithSalary: [], estimateAssetCost: 1000000, totalResWeight: 0.9, taskProject: drugRNDProjectIdInDB, organizationalUnit: Directorate._id },
-        // { name: 'Công việc E', code: 'E', preceedingTasks: ['A', 'C'], startDate: '', endDate: '', estimateNormalTime: 6, creator: projectManager._id, description: '', responsibleEmployees: [], accountableEmployees: [], actorsWithSalary: [], estimateAssetCost: 1000000, totalResWeight: 0.8, taskProject: drugRNDProjectIdInDB, organizationalUnit: Directorate._id },
-        // { name: 'Công việc F', code: 'F', preceedingTasks: ['E'], startDate: '', endDate: '', estimateNormalTime: 5, creator: projectManager._id, description: '', responsibleEmployees: [], accountableEmployees: [], actorsWithSalary: [], estimateAssetCost: 1000000, totalResWeight: 0.8, taskProject: drugRNDProjectIdInDB, organizationalUnit: Directorate._id },
-        // { name: 'Công việc G', code: 'G', preceedingTasks: ['D'], startDate: '', endDate: '', estimateNormalTime: 2, creator: projectManager._id, description: '', responsibleEmployees: [], accountableEmployees: [], actorsWithSalary: [], estimateAssetCost: 1000000, totalResWeight: 0.8, taskProject: drugRNDProjectIdInDB, organizationalUnit: Directorate._id },
+        { name: 'Báo cáo nghiên cứu thị trường', code: 'A', preceedingTasks: [], startDate: '', endDate: '', estimateNormalTime: 5, creator: projectManager._id, description: '', responsibleEmployees: [], accountableEmployees: [], actorsWithSalary: [], estimateAssetCost: 1000000, totalResWeight: 80, taskProject: drugRNDProjectIdInDB, organizationalUnit: Directorate._id },
+        { name: 'Phiếu đề xuất ý tưởng', code: 'B', preceedingTasks: ['A', 'D'], startDate: '', endDate: '', estimateNormalTime: 3, creator: projectManager._id, description: '', responsibleEmployees: [], accountableEmployees: [], actorsWithSalary: [], estimateAssetCost: 1000000, totalResWeight: 60, taskProject: drugRNDProjectIdInDB, organizationalUnit: Directorate._id },
+        { name: 'Tài liệu nghiên cứu', code: 'C', preceedingTasks: [], startDate: '', endDate: '', estimateNormalTime: 2, creator: projectManager._id, description: '', responsibleEmployees: [], accountableEmployees: [], actorsWithSalary: [], estimateAssetCost: 1000000, totalResWeight: 70, taskProject: drugRNDProjectIdInDB, organizationalUnit: Directorate._id },
+        { name: 'Bảng dự trù nguyên - phụ liệu', code: 'D', preceedingTasks: ['C'], startDate: '', endDate: '', estimateNormalTime: 2, creator: projectManager._id, description: '', responsibleEmployees: [], accountableEmployees: [], actorsWithSalary: [], estimateAssetCost: 1000000, totalResWeight: 90, taskProject: drugRNDProjectIdInDB, organizationalUnit: Directorate._id },
+        { name: 'Đề cương xây dựng Quy mô Phòng thí nghiệm', code: 'E', preceedingTasks: ['B'], startDate: '', endDate: '', estimateNormalTime: 5, creator: projectManager._id, description: '', responsibleEmployees: [], accountableEmployees: [], actorsWithSalary: [], estimateAssetCost: 1000000, totalResWeight: 80, taskProject: drugRNDProjectIdInDB, organizationalUnit: Directorate._id },
+        { name: 'Báo cáo kết quả thử nghiệm Quy mô Phòng thí nghiệm - Tuần 1', code: 'F', preceedingTasks: ['E'], startDate: '', endDate: '', estimateNormalTime: 5, creator: projectManager._id, description: '', responsibleEmployees: [], accountableEmployees: [], actorsWithSalary: [], estimateAssetCost: 1000000, totalResWeight: 80, taskProject: drugRNDProjectIdInDB, organizationalUnit: Directorate._id },
+        { name: 'Báo cáo kết quả thử nghiệm Quy mô Phòng thí nghiệm - Tuần 2', code: 'G', preceedingTasks: ['F'], startDate: '', endDate: '', estimateNormalTime: 5, creator: projectManager._id, description: '', responsibleEmployees: [], accountableEmployees: [], actorsWithSalary: [], estimateAssetCost: 1000000, totalResWeight: 80, taskProject: drugRNDProjectIdInDB, organizationalUnit: Directorate._id },
+        { name: 'Tiêu chuẩn cơ sở', code: 'H', preceedingTasks: ['C'], startDate: '', endDate: '', estimateNormalTime: 5, creator: projectManager._id, description: '', responsibleEmployees: [], accountableEmployees: [], actorsWithSalary: [], estimateAssetCost: 1000000, totalResWeight: 70, taskProject: drugRNDProjectIdInDB, organizationalUnit: Directorate._id },
+        { name: 'Đề cương xây dựng Quy mô Pilot', code: 'I', preceedingTasks: ['G'], startDate: '', endDate: '', estimateNormalTime: 5, creator: projectManager._id, description: '', responsibleEmployees: [], accountableEmployees: [], actorsWithSalary: [], estimateAssetCost: 1000000, totalResWeight: 70, taskProject: drugRNDProjectIdInDB, organizationalUnit: Directorate._id },
+        { name: 'Báo cáo kết quả thử nghiệm Quy mô Pilot - Tuần 1', code: 'K', preceedingTasks: ['I'], startDate: '', endDate: '', estimateNormalTime: 5, creator: projectManager._id, description: '', responsibleEmployees: [], accountableEmployees: [], actorsWithSalary: [], estimateAssetCost: 1000000, totalResWeight: 70, taskProject: drugRNDProjectIdInDB, organizationalUnit: Directorate._id },
+        { name: 'Báo cáo kết quả thử nghiệm Quy mô Pilot - Tuần 2', code: 'L', preceedingTasks: ['K'], startDate: '', endDate: '', estimateNormalTime: 5, creator: projectManager._id, description: '', responsibleEmployees: [], accountableEmployees: [], actorsWithSalary: [], estimateAssetCost: 1000000, totalResWeight: 70, taskProject: drugRNDProjectIdInDB, organizationalUnit: Directorate._id },
+        { name: 'Đề cương xây dựng Quy mô Bán công nghiệp', code: 'M', preceedingTasks: ['G', 'L'], startDate: '', endDate: '', estimateNormalTime: 5, creator: projectManager._id, description: '', responsibleEmployees: [], accountableEmployees: [], actorsWithSalary: [], estimateAssetCost: 1000000, totalResWeight: 70, taskProject: drugRNDProjectIdInDB, organizationalUnit: Directorate._id },
+        { name: 'Báo cáo kết quả thử nghiệm Quy mô Bán công nghiệp - Tuần 1', code: 'N', preceedingTasks: ['M'], startDate: '', endDate: '', estimateNormalTime: 5, creator: projectManager._id, description: '', responsibleEmployees: [], accountableEmployees: [], actorsWithSalary: [], estimateAssetCost: 1000000, totalResWeight: 70, taskProject: drugRNDProjectIdInDB, organizationalUnit: Directorate._id },
+        { name: 'Báo cáo kết quả thử nghiệm Quy mô Bán công nghiệp - Tuần 2', code: 'O', preceedingTasks: ['N'], startDate: '', endDate: '', estimateNormalTime: 5, creator: projectManager._id, description: '', responsibleEmployees: [], accountableEmployees: [], actorsWithSalary: [], estimateAssetCost: 1000000, totalResWeight: 70, taskProject: drugRNDProjectIdInDB, organizationalUnit: Directorate._id },
+        { name: 'Báo cáo kết quả thử nghiệm Quy mô Bán công nghiệp - Tuần 3', code: 'P', preceedingTasks: ['O'], startDate: '', endDate: '', estimateNormalTime: 5, creator: projectManager._id, description: '', responsibleEmployees: [], accountableEmployees: [], actorsWithSalary: [], estimateAssetCost: 1000000, totalResWeight: 70, taskProject: drugRNDProjectIdInDB, organizationalUnit: Directorate._id },
+        { name: 'Đề cương xây dựng Độ ổn định sản phẩm', code: 'Q', preceedingTasks: ['P'], startDate: '', endDate: '', estimateNormalTime: 5, creator: projectManager._id, description: '', responsibleEmployees: [], accountableEmployees: [], actorsWithSalary: [], estimateAssetCost: 1000000, totalResWeight: 70, taskProject: drugRNDProjectIdInDB, organizationalUnit: Directorate._id },
+        { name: 'Báo cáo kết quả thử nghiệm Độ ổn định sản phẩm - Tuần 1', code: 'R', preceedingTasks: ['Q'], startDate: '', endDate: '', estimateNormalTime: 5, creator: projectManager._id, description: '', responsibleEmployees: [], accountableEmployees: [], actorsWithSalary: [], estimateAssetCost: 1000000, totalResWeight: 70, taskProject: drugRNDProjectIdInDB, organizationalUnit: Directorate._id },
+        { name: 'Báo cáo kết quả thử nghiệm Độ ổn định sản phẩm - Tuần 2', code: 'S', preceedingTasks: ['R'], startDate: '', endDate: '', estimateNormalTime: 5, creator: projectManager._id, description: '', responsibleEmployees: [], accountableEmployees: [], actorsWithSalary: [], estimateAssetCost: 1000000, totalResWeight: 70, taskProject: drugRNDProjectIdInDB, organizationalUnit: Directorate._id },
+        { name: 'Báo cáo kết quả thử nghiệm Độ ổn định sản phẩm - Tuần 3', code: 'T', preceedingTasks: ['S'], startDate: '', endDate: '', estimateNormalTime: 5, creator: projectManager._id, description: '', responsibleEmployees: [], accountableEmployees: [], actorsWithSalary: [], estimateAssetCost: 1000000, totalResWeight: 70, taskProject: drugRNDProjectIdInDB, organizationalUnit: Directorate._id },
+        { name: 'Báo cáo kết quả thử nghiệm Độ ổn định sản phẩm - Tuần 4', code: 'U', preceedingTasks: ['T'], startDate: '', endDate: '', estimateNormalTime: 5, creator: projectManager._id, description: '', responsibleEmployees: [], accountableEmployees: [], actorsWithSalary: [], estimateAssetCost: 1000000, totalResWeight: 70, taskProject: drugRNDProjectIdInDB, organizationalUnit: Directorate._id },
+        { name: 'Báo cáo kết quả thử nghiệm Độ ổn định sản phẩm - Tuần 5', code: 'V', preceedingTasks: ['U'], startDate: '', endDate: '', estimateNormalTime: 5, creator: projectManager._id, description: '', responsibleEmployees: [], accountableEmployees: [], actorsWithSalary: [], estimateAssetCost: 1000000, totalResWeight: 70, taskProject: drugRNDProjectIdInDB, organizationalUnit: Directorate._id },
+        { name: 'Báo cáo kết quả thử nghiệm Độ ổn định sản phẩm - Tuần 6', code: 'W', preceedingTasks: ['V'], startDate: '', endDate: '', estimateNormalTime: 5, creator: projectManager._id, description: '', responsibleEmployees: [], accountableEmployees: [], actorsWithSalary: [], estimateAssetCost: 1000000, totalResWeight: 70, taskProject: drugRNDProjectIdInDB, organizationalUnit: Directorate._id },
+        { name: 'Báo cáo kết quả thử nghiệm Độ ổn định sản phẩm - Tuần 7', code: 'X', preceedingTasks: ['W'], startDate: '', endDate: '', estimateNormalTime: 5, creator: projectManager._id, description: '', responsibleEmployees: [], accountableEmployees: [], actorsWithSalary: [], estimateAssetCost: 1000000, totalResWeight: 70, taskProject: drugRNDProjectIdInDB, organizationalUnit: Directorate._id },
+        { name: 'Báo cáo kết quả thử nghiệm Độ ổn định sản phẩm - Tuần 8', code: 'Y', preceedingTasks: ['X'], startDate: '', endDate: '', estimateNormalTime: 5, creator: projectManager._id, description: '', responsibleEmployees: [], accountableEmployees: [], actorsWithSalary: [], estimateAssetCost: 1000000, totalResWeight: 70, taskProject: drugRNDProjectIdInDB, organizationalUnit: Directorate._id },
+        { name: 'Báo cáo kết quả thử nghiệm Độ ổn định sản phẩm - Tuần 9', code: 'Z', preceedingTasks: ['Y'], startDate: '', endDate: '', estimateNormalTime: 5, creator: projectManager._id, description: '', responsibleEmployees: [], accountableEmployees: [], actorsWithSalary: [], estimateAssetCost: 1000000, totalResWeight: 70, taskProject: drugRNDProjectIdInDB, organizationalUnit: Directorate._id },
+        { name: 'Báo cáo kết quả thử nghiệm Độ ổn định sản phẩm - Tuần 10', code: 'AA', preceedingTasks: ['Z'], startDate: '', endDate: '', estimateNormalTime: 5, creator: projectManager._id, description: '', responsibleEmployees: [], accountableEmployees: [], actorsWithSalary: [], estimateAssetCost: 1000000, totalResWeight: 70, taskProject: drugRNDProjectIdInDB, organizationalUnit: Directorate._id },
+        { name: 'Nhãn sản phẩm', code: 'AB', preceedingTasks: ['H', 'P', 'AA'], startDate: '', endDate: '', estimateNormalTime: 3, creator: projectManager._id, description: '', responsibleEmployees: [], accountableEmployees: [], actorsWithSalary: [], estimateAssetCost: 1000000, totalResWeight: 70, taskProject: drugRNDProjectIdInDB, organizationalUnit: Directorate._id },
+        { name: 'Hồ sơ đăng ký sản phảm', code: 'AC', preceedingTasks: ['AB'], startDate: '', endDate: '', estimateNormalTime: 4, creator: projectManager._id, description: '', responsibleEmployees: [], accountableEmployees: [], actorsWithSalary: [], estimateAssetCost: 1000000, totalResWeight: 70, taskProject: drugRNDProjectIdInDB, organizationalUnit: Directorate._id },
     ]
     const startEndTasksData = processDataTasksStartEnd(drugRNDProject, fakeTasksData);
-    const startEndTasksDataWithoutPreceeding = startEndTasksData.map((seTaskItem) => {
-        const { estimateNormalTime } = seTaskItem;
+    const startEndTasksDataWithoutPreceeding = startEndTasksData.map((seTaskItem, seTaskIndex) => {
+        const { estimateNormalTime, startDate, estimateAssetCost, endDate } = seTaskItem;
+        const { responsibleEmployees, accountableEmployees } = fakeRACIData[seTaskIndex];
+
+        const responsibleSalary = responsibleEmployees.map((resItem) => {
+            const currentOrgId = getOrgIdFromUserId(resItem, newResponsibleEmployeesWithUnit);
+            return {
+                userId: resItem,
+                salary: Number(getSalaryFromUserIdAndOrgId(currentSalaries, currentEmployees, currentUsers, currentOrgId, resItem)),
+                weight: Number(seTaskItem.totalResWeight) / (responsibleEmployees.length),
+            }
+        })
+        const accountableSalary = accountableEmployees.map((accItem) => {
+            const currentOrgId = getOrgIdFromUserId(accItem, newResponsibleEmployeesWithUnit);
+            return {
+                userId: accItem,
+                salary: Number(getSalaryFromUserIdAndOrgId(currentSalaries, currentEmployees, currentUsers, currentOrgId, accItem)),
+                weight: (100 - Number(seTaskItem.totalResWeight)) / (accountableEmployees.length),
+            }
+        })
+
+        // Các hoạt động và Bấm giờ cho các hoạt động
+        let totalTimesheetLogs = [];
+        let actionsList = [];
+        for (let resItem of responsibleEmployees) {
+            for (let accItem of accountableEmployees) {
+                let timesheetLogs = [];
+                const currentActionsWithoutTimesheet = generateTaskActionsArray(resItem, accItem, 1);
+                const currentActions = currentActionsWithoutTimesheet.map((cAWTItem, cAWTIndex) => {
+                    const currentResWeight = responsibleSalary.find((resSalItem) => String(resSalItem.userId) === String(resItem)).weight;
+                    const currentAccWeight = accountableSalary.find((accSalItem) => String(accSalItem.userId) === String(accItem)).weight;
+                    const limitResDuration = Math.floor((estimateNormalTime * (drugRNDProject.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS) / responsibleEmployees.length) * (currentResWeight / 100));
+                    const limitAccDuration = Math.floor((estimateNormalTime * (drugRNDProject.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS) / accountableEmployees.length) * (currentAccWeight / 100));
+                    timesheetLogs.push(
+                        generateTimesheetLogItem(resItem, limitResDuration, startDate, drugRNDProject.unitTime),
+                        generateTimesheetLogItem(accItem, limitAccDuration, startDate, drugRNDProject.unitTime),
+                    );
+                    return {
+                        ...cAWTItem,
+                        timesheetLogs,
+                    }
+                })
+                totalTimesheetLogs.push(...timesheetLogs);
+                actionsList.push(...currentActions);
+            }
+        }
+
+        // Chi phí công việc ước lượng + Chi phí công việc ước lượng thoả hiệp
+        let estimateNormalCost = 0, estimateMaxCost = 0;
+        for (let resItem of responsibleEmployees) {
+            estimateNormalCost += getEstimateMemberCostOfTask(
+                [...responsibleSalary, ...accountableSalary],
+                estimateNormalTime * (drugRNDProject.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS),
+                drugRNDProject,
+                resItem
+            )
+        }
+        for (let accItem of accountableEmployees) {
+            estimateNormalCost += getEstimateMemberCostOfTask(
+                [...responsibleSalary, ...accountableSalary],
+                estimateNormalTime * (drugRNDProject.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS),
+                drugRNDProject,
+                accItem
+            )
+        }
+        estimateNormalCost += estimateAssetCost;
+        estimateMaxCost = getNearestIntegerNumber(estimateNormalCost);
+
+        // Chi phí thực chỉ xuất hiện khi thời gian hiện tại quá thời điểm kết thúc dự kiến + Điểm số đánh giá
+        let actualCost, actualEndDate, progress = 0, responsibleSalaryWithCost, accountableSalaryWithCost, status = 'inprocess';
+        let overallEvaluation;
+        if (moment(endDate).isSameOrBefore(moment())) {
+            const isFinished = getRandomIntFromInterval(0, 1);
+            // const isFinished = 1;
+            progress = 100;
+            actualCost = getRandomIntFromInterval(Math.floor(estimateNormalCost * 0.5), Math.floor(estimateNormalCost * 1.5));
+            responsibleSalaryWithCost = responsibleSalary.map((resSalItem) => {
+                const tempActualCost = actualCost * resSalItem.weight / 100;
+                const resActualCost = Math.floor(tempActualCost - getRandomIntFromInterval(Math.floor(tempActualCost / 100), Math.floor(tempActualCost / 10)));
+                return {
+                    ...resSalItem,
+                    actualCost: resActualCost,
+                };
+            });
+            accountableSalaryWithCost = accountableSalary.map((accSalItem) => {
+                const tempActualCost = actualCost * accSalItem.weight / 100;
+                const accActualCost = Math.floor(tempActualCost - getRandomIntFromInterval(Math.floor(tempActualCost / 100), Math.floor(tempActualCost / 10)));
+                return {
+                    ...accSalItem,
+                    actualCost: accActualCost,
+                };
+            });
+            if (isFinished === 1) {
+                status = 'finished';
+                actualEndDate = moment(endDate).add(getRandomIntFromInterval(-25, 20), 'hours').format();
+                const currentTask = {
+                    ...seTaskItem,
+                    progress,
+                    status,
+                    estimateNormalCost,
+                    estimateMaxCost,
+                    actualEndDate,
+                    timesheetLogs: totalTimesheetLogs,
+                    taskActions: actionsList,
+                    actorsWithSalary: (responsibleSalaryWithCost && accountableSalaryWithCost) ? [...responsibleSalaryWithCost, ...accountableSalaryWithCost] : [...responsibleSalary, ...accountableSalary],
+                    estimateNormalTime: Number(estimateNormalTime) * (drugRNDProject.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS),
+                    estimateOptimisticTime: Number((estimateNormalTime - 2) < 1 ? 1 : (estimateNormalTime - 2)) * (drugRNDProject.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS),
+                }
+                const dataTask = {
+                    task: currentTask,
+                    progress,
+                    currentTaskActualCost: actualCost,
+                }
+                const taskAutomaticPoint = calcProjectTaskPoint(dataTask);
+                const resPointArr = responsibleSalaryWithCost.map((resSalWithCostItem) => {
+                    const dataMemberTask = {
+                        task: currentTask,
+                        progress,
+                        projectDetail: drugRNDProject,
+                        currentMemberActualCost: resSalWithCostItem.actualCost,
+                        userId: resSalWithCostItem.userId,
+                    }
+                    const memberAutomaticPoint = calcProjectMemberPoint(dataMemberTask);
+                    return {
+                        automaticPoint: memberAutomaticPoint,
+                        employeePoint: getRandomIntFromInterval(80, 100),
+                        accountablePoint: getRandomIntFromInterval(80, 100),
+                        employee: resSalWithCostItem.userId,
+                    }
+                })
+                const accPointArr = accountableSalaryWithCost.map((accSalWithCostItem) => {
+                    const dataMemberTask = {
+                        task: currentTask,
+                        progress,
+                        projectDetail: drugRNDProject,
+                        currentMemberActualCost: accSalWithCostItem.actualCost,
+                        userId: accSalWithCostItem.userId,
+                    }
+                    const memberAutomaticPoint = calcProjectMemberPoint(dataMemberTask);
+                    return {
+                        automaticPoint: memberAutomaticPoint,
+                        employeePoint: getRandomIntFromInterval(80, 100),
+                        employee: accSalWithCostItem.userId,
+                    }
+                })
+                overallEvaluation = {
+                    automaticPoint: taskAutomaticPoint,
+                    responsibleEmployees: resPointArr,
+                    accountableEmployees: accPointArr,
+                }
+            }
+        }
+
         return {
             ...seTaskItem,
+            ...fakeRACIData[seTaskIndex],
             preceedingTasks: [],
+            progress,
+            status,
+            taskActions: actionsList,
+            timesheetLogs: totalTimesheetLogs,
+            actorsWithSalary: (responsibleSalaryWithCost && accountableSalaryWithCost) ? [...responsibleSalaryWithCost, ...accountableSalaryWithCost] : [...responsibleSalary, ...accountableSalary],
+            estimateNormalCost,
+            estimateMaxCost,
+            actualCost,
+            actualEndDate,
             estimateNormalTime: Number(estimateNormalTime) * (drugRNDProject.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS),
+            estimateOptimisticTime: Number((estimateNormalTime - 2) < 1 ? 1 : (estimateNormalTime - 2)) * (drugRNDProject.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS),
+            overallEvaluation,
         }
     })
+    // console.log(startEndTasksDataWithoutPreceeding);
     const firstInsertedDBTasks = await Task(vnistDB).insertMany(startEndTasksDataWithoutPreceeding);
     // console.log('firstInsertedDBTasks', firstInsertedDBTasks)
     const fullTasksData = fakeTasksData.map((fakeItem, fakeIndex) => {
@@ -1486,7 +1786,7 @@ const initHumanResourceForProjectData = async () => {
             preceedingTasks,
         }
     })
-    console.log('fullTasksData', fullTasksData)
+    // console.log('fullTasksData', fullTasksData)
     for (let fullItem of fullTasksData) {
         const { preceedingTasks, _id } = fullItem;
         await Task(vnistDB).findByIdAndUpdate(_id, {
@@ -1495,9 +1795,26 @@ const initHumanResourceForProjectData = async () => {
             }
         }, { new: true });
     }
-
+    if (moment(drugRNDProject.endDate).isBefore(moment(getLatestTaskEndDate(startEndTasksData)))) {
+        await Project(vnistDB).findByIdAndUpdate(drugRNDProjectIdInDB, {
+            $set: {
+                endDate: getLatestTaskEndDate(startEndTasksData),
+            }
+        }, { new: true });
+    }
 
     console.log('Hoàn thành tạo dữ liệu cho dự án')
+}
+
+const getOrgIdFromUserId = (userId, newResponsibleEmployeesWithUnit) => {
+    for (let unitItem of newResponsibleEmployeesWithUnit) {
+        for (let userItem of unitItem.listUsers) {
+            if (String(userItem.userId) === String(userId)) {
+                return unitItem.unitId;
+            }
+        }
+    }
+    return undefined;
 }
 
 const getSalaryFromUserIdAndOrgId = (currentSalaries, currentEmployees, currentUsers, orgId, userId) => {
@@ -1641,7 +1958,7 @@ const processDataTasksStartEnd = (projectDetail, currentTasksData) => {
     // console.log('tempTasksData', tempTasksData)
     // Lặp mảng tasks
     for (let taskItem of tempTasksData) {
-        console.log(taskItem.name, taskItem.startDate, taskItem.endDate)
+        // console.log(taskItem.name, taskItem.startDate, taskItem.endDate)
         if (taskItem.estimateNormalTime > 20) {
             console.error('Estimate normal time đang quá lớn: ', taskItem.estimateNormalTime);
         }
@@ -1672,6 +1989,271 @@ const processDataTasksStartEnd = (projectDetail, currentTasksData) => {
     }
     // console.log('tempTasksData', tempTasksData);
     return tempTasksData;
+}
+
+const getRandomUsersFromUnit = (array, numOfItems) => {
+    let resultArr = [];
+    if (array.length < numOfItems) return [];
+    if (array.length === numOfItems) return array;
+    let currentArray = [...array];
+    for (let i = 0; i < numOfItems; i++) {
+        const currentIndex = Math.floor(Math.random() * currentArray.length);
+        resultArr.push(currentArray[currentIndex]);
+        currentArray.splice(currentIndex, 1)
+    }
+    return resultArr;
+}
+
+const getLatestTaskEndDate = (currentProjectTasks, needCustomFormat = false) => {
+    if (!currentProjectTasks || currentProjectTasks.length === 0) return undefined;
+    let currentEndDate = currentProjectTasks[0].endDate;
+    for (let taskItem of currentProjectTasks) {
+        if (moment(taskItem.endDate).isAfter(moment(currentEndDate))) {
+            currentEndDate = taskItem.endDate;
+        }
+    }
+    return needCustomFormat ? moment(currentEndDate).format('HH:mm DD/MM/YYYY') : moment(currentEndDate).format();
+}
+
+const generateTaskActionsArray = (resId, accId, numOfActions = 3) => {
+    if (numOfActions === 0) return [];
+    let tasksActions = [];
+    for (let i = 0; i < numOfActions; i++) {
+        const rating = getRandomIntFromInterval(5, 10);
+        const actionImportanceLevel = getRandomIntFromInterval(5, 10);
+        const action = {
+            mandatory: true,
+            rating,
+            actionImportanceLevel,
+            creator: resId,
+            description: `<p>Hoạt động ${i} - người tạo ${resId}</p>`,
+            evaluations: [{
+                rating,
+                actionImportanceLevel,
+                creator: accId,
+                role: 'accountable',
+            }]
+        }
+        tasksActions.push(action);
+    }
+    return tasksActions;
+}
+
+const generateTimesheetLogItem = (creatorId, duration, startedAt, timeMode = 'days') => {
+    const randomDuration = getRandomIntFromInterval(100, Number(duration));
+    const formattedRandomDuration = Number(randomDuration) / (timeMode === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS);
+    return {
+        creator: creatorId,
+        autoStopped: 1,
+        acceptLog: true,
+        description: '',
+        duration: randomDuration,
+        startedAt,
+        stoppedAt: moment(startedAt).add(formattedRandomDuration, timeMode).format(),
+    }
+}
+
+const getEstimateMemberCostOfTask = (actorsWithSalary, estimateNormalTime, projectDetail, userId) => {
+    let estimateNormalMemberCost = 0;
+    if (!projectDetail) return 0;
+    const currentEmployee = actorsWithSalary.find((actorSalaryItem) => {
+        return String(actorSalaryItem.userId) === String(userId)
+    });
+    if (currentEmployee) {
+        estimateNormalMemberCost = Number(currentEmployee.salary) * Number(currentEmployee.weight / 100) * estimateNormalTime
+            / (projectDetail.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS);
+    }
+    return estimateNormalMemberCost;
+}
+
+const getNearestIntegerNumber = (value) => {
+    const beforeDecimalPart = value.toString().split('.')[0].replace(/,/g, '');
+    const beforeDecimalPartArr = beforeDecimalPart.split('');
+    const numberWithFirstSecondIndexArr = beforeDecimalPartArr.map((item, index) => {
+        if (index === 0 || index === 1) return item
+        else return "0";
+    })
+    const numberWithFirstSecondIndex = numberWithFirstSecondIndexArr.join('');
+    const result = Number(numberWithFirstSecondIndex) + Math.pow(10, beforeDecimalPart.length - 2);
+    return result;
+}
+
+const getRandomIntFromInterval = (min, max) => { // min and max included 
+    return Math.floor(Math.random() * (max - min + 1) + min)
+}
+
+const calcProjectTaskPoint = (data, getCalcPointsOnly = true) => {
+    // console.log('\n--------------');
+    const { task, progress, currentTaskActualCost } = data;
+    const { timesheetLogs, estimateNormalCost } = task;
+    /***************** Yếu tố tiến độ **********************/
+    const usedDuration = getDurationWithoutSatSun(task.startDate, task.actualEndDate, 'milliseconds');
+    const totalDuration = task.estimateNormalTime;
+    const schedulePerformanceIndex = (Number(progress) / 100) / (usedDuration / totalDuration);
+    const taskTimePoint = convertIndexPointToNormalPoint(schedulePerformanceIndex) * (task?.timeWeight || 0.25);
+    // console.log('taskTimePoint', taskTimePoint)
+    /***************** Yếu tố chất lượng **********************/
+    // Các hoạt động (chỉ lấy những hoạt động đã đánh giá của người phê duyệt)
+    let actionsHasRating = task.taskActions.filter(item => (
+        item.rating && item.rating !== -1
+    ))
+    let sumRatingOfPassedActions = 0, sumRatingOfAllActions = 0;
+    actionsHasRating.length > 0 && actionsHasRating.map((item) => {
+        const currentActionImportanceLevel = item.actionImportanceLevel && item.actionImportanceLevel > 0 ? item.actionImportanceLevel : 10;
+        if (item.rating >= 5) {
+            sumRatingOfPassedActions = sumRatingOfPassedActions + item.rating * currentActionImportanceLevel;
+        }
+        sumRatingOfAllActions = sumRatingOfAllActions + item.rating * currentActionImportanceLevel;
+    });
+    const taskQualityPoint = sumRatingOfAllActions === 0
+        ? 0
+        : [(sumRatingOfPassedActions / sumRatingOfAllActions) * 100] * (task?.qualityWeight || 0.25);
+    // console.log('taskQualityPoint', taskQualityPoint)
+    /***************** Yếu tố chi phí **********************/
+    let actualCost = 0;
+    if (currentTaskActualCost) actualCost = Number(currentTaskActualCost);
+    else if (task?.actualCost) actualCost = Number(task.actualCost);
+    const costPerformanceIndex = ((Number(progress) / 100) * estimateNormalCost) / (actualCost);
+    const taskCostPoint = convertIndexPointToNormalPoint(costPerformanceIndex) * (task?.costWeight || 0.25);
+    // console.log('taskCostPoint', taskCostPoint)
+    /***************** Yếu tố chuyên cần **********************/
+    let totalTimeLogs = 0;
+    if (timesheetLogs && timesheetLogs.length > 0) {
+        for (let timeSheetItem of timesheetLogs) {
+            totalTimeLogs += timeSheetItem.duration;
+        }
+    }
+    const taskDilligencePoint = Math.min((totalTimeLogs / totalDuration) * 100 * (task?.dilligenceWeight || 0.25), 100);
+    // console.log('taskDilligencePoint', taskDilligencePoint)
+    const autoTaskPoint = taskTimePoint + taskQualityPoint + taskCostPoint + taskDilligencePoint;
+
+    if (getCalcPointsOnly) return autoTaskPoint;
+    return {
+        usedDuration,
+        totalDuration,
+        schedulePerformanceIndex,
+        actionsHasRating,
+        sumRatingOfPassedActions,
+        sumRatingOfAllActions,
+        estimateNormalCost,
+        actualCost,
+        costPerformanceIndex,
+        totalTimeLogs,
+        taskTimePoint,
+        taskQualityPoint,
+        taskCostPoint,
+        taskDilligencePoint,
+        autoTaskPoint,
+    }
+}
+
+const calcProjectMemberPoint = (data, getCalcPointsOnly = true) => {
+    // console.log('\n--------------');
+    const { task, progress, projectDetail, currentMemberActualCost, userId } = data;
+    const { timesheetLogs } = task;
+    const currentEmployee = task.actorsWithSalary.find((actorSalaryItem) => {
+        return String(actorSalaryItem.userId) === String(userId)
+    });
+    /***************** Yếu tố tiến độ **********************/
+    const usedDuration = getDurationWithoutSatSun(task.startDate, task.actualEndDate, 'milliseconds');
+    const totalDuration = task.estimateNormalTime;
+    const schedulePerformanceIndex = (Number(progress) / 100) / (usedDuration / totalDuration);
+    const memberTimePoint = convertIndexPointToNormalPoint(schedulePerformanceIndex) * (task?.timeWeight || 0.25);
+    // console.log('memberTimePoint', memberTimePoint)
+    /***************** Yếu tố chất lượng **********************/
+    // Các hoạt động (chỉ lấy những hoạt động đã đánh giá của người phê duyệt)
+    let actionsHasRating = task.taskActions.filter(item => (
+        item.rating && item.rating !== -1
+    ))
+    let sumRatingOfPassedActions = 0, sumRatingOfAllActions = 0;
+    actionsHasRating.length > 0 && actionsHasRating.map((item) => {
+        const currentActionImportanceLevel = item.actionImportanceLevel && item.actionImportanceLevel > 0 ? item.actionImportanceLevel : 10;
+        if (item.rating >= 5) {
+            sumRatingOfPassedActions = sumRatingOfPassedActions + item.rating * currentActionImportanceLevel;
+        }
+        sumRatingOfAllActions = sumRatingOfAllActions + item.rating * currentActionImportanceLevel;
+    });
+    const memberQualityPoint = sumRatingOfAllActions === 0
+        ? 0
+        : [(sumRatingOfPassedActions / sumRatingOfAllActions) * 100] * (task?.qualityWeight || 0.25);
+    // console.log('memberQualityPoint', memberQualityPoint)
+    /***************** Yếu tố chi phí **********************/
+    let actualCost = 0;
+    if (currentMemberActualCost) actualCost = Number(currentMemberActualCost);
+    // Tìm lương và trọng số thành viên đó
+    let estimateNormalMemberCost = getEstimateMemberCostOfTask(task.actorsWithSalary, totalDuration, projectDetail, userId);
+    const costPerformanceIndex = ((Number(progress) / 100) * estimateNormalMemberCost) / (actualCost);
+    const memberCostPoint = convertIndexPointToNormalPoint(costPerformanceIndex) * (task?.costWeight || 0.25);
+    // console.log('memberCostPoint', memberCostPoint)
+    /***************** Yếu tố chuyên cần **********************/
+    let totalTimeLogs = 0;
+    for (let timeSheetItem of timesheetLogs) {
+        if (String(userId) === String(timeSheetItem.creator)) {
+            totalTimeLogs += timeSheetItem.duration;
+        }
+    }
+    const memberDilligencePoint = Math.min((totalTimeLogs / (totalDuration * Number(currentEmployee.weight / 100))) * 100 * (task?.dilligenceWeight || 0.25), 100);
+    // console.log('memberDilligencePoint', memberDilligencePoint)
+    let autoMemberPoint = memberTimePoint + memberQualityPoint + memberCostPoint + memberDilligencePoint;
+    console.log('\n')
+
+    if (getCalcPointsOnly) return autoMemberPoint;
+    return {
+        usedDuration,
+        totalDuration,
+        schedulePerformanceIndex,
+        actionsHasRating,
+        sumRatingOfPassedActions,
+        sumRatingOfAllActions,
+        estimateNormalMemberCost,
+        actualCost,
+        costPerformanceIndex,
+        totalTimeLogs,
+        memberTimePoint,
+        memberQualityPoint,
+        memberCostPoint,
+        memberDilligencePoint,
+        autoMemberPoint,
+    }
+}
+
+const getDurationWithoutSatSun = (startDate, endDate, timeMode) => {
+    const numsOfSaturdays = getNumsOfDaysWithoutGivenDay(new Date(startDate), new Date(endDate), 6)
+    const numsOfSundays = getNumsOfDaysWithoutGivenDay(new Date(startDate), new Date(endDate), 0)
+    let duration = 0
+    if (timeMode === 'hours') {
+        duration = (moment(endDate).diff(moment(startDate), `milliseconds`) / MILISECS_TO_DAYS - numsOfSaturdays - numsOfSundays) * 8;
+        // return theo don vi giờ - hours
+        return duration;
+    }
+    if (timeMode === 'milliseconds') {
+        duration = (moment(endDate).diff(moment(startDate), `milliseconds`) / MILISECS_TO_DAYS - numsOfSaturdays - numsOfSundays);
+        // return theo don vi milliseconds
+        return duration * MILISECS_TO_DAYS;
+    }
+    duration = moment(endDate).diff(moment(startDate), `milliseconds`) / MILISECS_TO_DAYS - numsOfSaturdays - numsOfSundays;
+    // return theo don vi ngày - days
+    return duration;
+}
+
+const getNumsOfDaysWithoutGivenDay = (startDate, endDate, givenDay) => {
+    let numberOfDates = 0
+    while (startDate < endDate) {
+        if (startDate.getDay() === givenDay) {
+            numberOfDates++
+        }
+        startDate.setDate(startDate.getDate() + 1)
+    }
+    return numberOfDates
+}
+
+const convertIndexPointToNormalPoint = (indexPoint) => {
+    if (!indexPoint || indexPoint === Infinity || Number.isNaN(indexPoint) || indexPoint < 0.5) return 0;
+    else if (indexPoint >= 0.5 && indexPoint < 0.75) return 40;
+    else if (indexPoint >= 0.75 && indexPoint < 1) return 60;
+    else if (indexPoint >= 1 && indexPoint < 1.25) return 80;
+    else if (indexPoint >= 1.25 && indexPoint < 1.5) return 90;
+    else return 100;
 }
 
 initHumanResourceForProjectData().catch((err) => {

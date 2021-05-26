@@ -259,7 +259,7 @@ const TabEvalProject = (props) => {
                                     <th>Planned Value (VND)</th>
                                     <th>Actual Cost (VND)</th>
                                     <th>Earned Value (VND)</th>
-                                    <th>Điểm số tự động</th>
+                                    <th>Điểm số công việc</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -272,11 +272,11 @@ const TabEvalProject = (props) => {
                                             <td>{moment(taskItem?.endDate).format('HH:mm DD/MM/YYYY')}</td> 
                                             <td>{taskItem?.actualEndDate && taskItem?.status === 'finished' && moment(taskItem?.actualEndDate).format('HH:mm DD/MM/YYYY')}</td>                                         
                                             <td>{numberWithCommas(taskItem?.estDuration)}</td>
-                                            <td>{numberWithCommas(taskItem?.realDuration)}</td>
+                                            <td>{taskItem?.realDuration && numberWithCommas(taskItem?.realDuration)}</td>
                                             <td>{numberWithCommas(taskItem?.plannedValue)}</td>
                                             <td>{numberWithCommas(taskItem?.actualCost)}</td>
                                             <td>{numberWithCommas(taskItem?.earnedValue)}</td>
-                                            <td>{checkUndefinedNull(taskItem?.overallEvaluation?.automaticPoint) ? 'Chưa tính được' : `${taskItem?.overallEvaluation?.automaticPoint} / 100`}</td>
+                                            <td>{checkUndefinedNull(taskItem?.overallEvaluation?.automaticPoint) ? 'Chưa tính được' : `${numberWithCommas(taskItem?.overallEvaluation?.automaticPoint)} / 100`}</td>
                                         </tr>
                                     )
                                 })

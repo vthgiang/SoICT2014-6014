@@ -7,6 +7,7 @@ import { UserActions } from '../../../super-admin/user/redux/actions';
 import { getStorage } from "../../../../config";
 import ModalProjectEvaluation from "./modalProjectEvaluation";
 import { taskManagementActions } from "../../../task/task-management/redux/actions";
+import { renderLongListUsers } from "../../projects/components/functionHelper";
 
 function ListProjectEvaluation(props) {
     // Khởi tạo state
@@ -124,7 +125,6 @@ function ListProjectEvaluation(props) {
                         <thead>
                             <tr>
                                 <th>{translate('project.name')}</th>
-                                <th>{translate('project.code')}</th>
                                 <th>{translate('project.creator')}</th>
                                 <th>{translate('project.manager')}</th>
                                 <th>{translate('project.member')}</th>
@@ -135,10 +135,9 @@ function ListProjectEvaluation(props) {
                                 lists.map((projectItem, index) => (
                                     <tr key={index} style={{ cursor: 'pointer' }} onClick={() => handleShowDetailInfo(projectItem)}>
                                         <td>{projectItem?.name}</td>
-                                        <td>{projectItem?.code}</td>
                                         <td>{projectItem?.creator?.name}</td>
                                         <td>{projectItem?.projectManager.map(o => o.name).join(", ")}</td>
-                                        <td>{projectItem?.responsibleEmployees.map(o => o.name).join(", ")}</td>
+                                        <td>{renderLongListUsers(projectItem?.responsibleEmployees.map(o => o.name))}</td>
                                     </tr>
                                 ))
                             }

@@ -127,6 +127,7 @@ const TabEvalProjectMember = (props) => {
                                 {(processedMemberData.length !== 0) &&
                                     processedMemberData.map((memberItem, memberIndex) => {
                                         return memberItem?.tasksWithPointAndRoleAndEVM?.map((memberTaskItem, memberTaskIndex) => {
+                                            console.log(memberItem?.name, memberTaskItem?.tasksWithMemberItem.name, memberTaskItem?.tasksWithMemberItem.status)
                                             if (memberTaskIndex === memberItem?.tasksWithPointAndRoleAndEVM.length - 1) {
                                                 return (
                                                     <>
@@ -136,10 +137,10 @@ const TabEvalProjectMember = (props) => {
                                                             <td>{memberTaskItem?.tasksWithMemberItem.name}</td>
                                                             <td>{moment(memberTaskItem?.tasksWithMemberItem?.startDate).format('HH:mm DD/MM/YYYY')}</td>
                                                             <td>{moment(memberTaskItem?.tasksWithMemberItem?.endDate).format('HH:mm DD/MM/YYYY')}</td>
-                                                            <td>{memberTaskItem?.actualEndDate && memberTaskItem?.tasksWithMemberItem?.status === 'finished'
-                                                                && moment(memberTaskItem?.actualEndDate).format('HH:mm DD/MM/YYYY')}</td>
+                                                            <td>{memberTaskItem?.tasksWithMemberItem?.actualEndDate && memberTaskItem?.tasksWithMemberItem?.status === 'finished'
+                                                                && moment(memberTaskItem?.tasksWithMemberItem?.actualEndDate).format('HH:mm DD/MM/YYYY')}</td>
                                                             <td>{numberWithCommas(memberTaskItem?.estDuration)}</td>
-                                                            <td>{numberWithCommas(memberTaskItem?.realDuration)}</td>
+                                                            <td>{memberTaskItem?.realDuration && numberWithCommas(memberTaskItem?.realDuration)}</td>
                                                             <td>{numberWithCommas(memberTaskItem?.estCost)}</td>
                                                             <td>{numberWithCommas(memberTaskItem?.realCost)}</td>
                                                             <td>{memberTaskItem.currentRole}</td>
@@ -173,9 +174,10 @@ const TabEvalProjectMember = (props) => {
                                                     <td>{memberTaskItem?.tasksWithMemberItem.name}</td>
                                                     <td>{moment(memberTaskItem?.tasksWithMemberItem?.startDate).format('HH:mm DD/MM/YYYY')}</td>
                                                     <td>{moment(memberTaskItem?.tasksWithMemberItem?.endDate).format('HH:mm DD/MM/YYYY')}</td>
-                                                    <td>{memberTaskItem?.actualEndDate && moment(memberTaskItem?.actualEndDate).format('HH:mm DD/MM/YYYY')}</td>
+                                                    <td>{memberTaskItem?.tasksWithMemberItem?.actualEndDate && memberTaskItem?.tasksWithMemberItem?.status === 'finished'
+                                                        && moment(memberTaskItem?.tasksWithMemberItem?.actualEndDate).format('HH:mm DD/MM/YYYY')}</td>
                                                     <td>{numberWithCommas(memberTaskItem?.estDuration)}</td>
-                                                    <td>{numberWithCommas(memberTaskItem?.realDuration)}</td>
+                                                    <td>{memberTaskItem?.realDuration && numberWithCommas(memberTaskItem?.realDuration)}</td>
                                                     <td>{numberWithCommas(memberTaskItem?.estCost)}</td>
                                                     <td>{numberWithCommas(memberTaskItem?.realCost)}</td>
                                                     <td>{memberTaskItem.currentRole}</td>

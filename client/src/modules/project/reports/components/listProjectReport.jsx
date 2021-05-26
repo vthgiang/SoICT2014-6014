@@ -7,6 +7,7 @@ import { UserActions } from '../../../super-admin/user/redux/actions';
 import { getStorage } from "../../../../config";
 import ModalDetailReport from "./modalDetailReport";
 import { taskManagementActions } from "../../../task/task-management/redux/actions";
+import { renderLongListUsers } from "../../projects/components/functionHelper";
 
 function ListProjectReport(props) {
     // Khởi tạo state
@@ -120,7 +121,6 @@ function ListProjectReport(props) {
                         <thead>
                             <tr>
                                 <th>{translate('project.name')}</th>
-                                <th>{translate('project.code')}</th>
                                 <th>{translate('project.creator')}</th>
                                 <th>{translate('project.manager')}</th>
                                 <th>{translate('project.member')}</th>
@@ -146,10 +146,9 @@ function ListProjectReport(props) {
                                 lists.map((projectItem, index) => (
                                     <tr key={index}>
                                         <td>{projectItem?.name}</td>
-                                        <td>{projectItem?.code}</td>
                                         <td>{projectItem?.creator?.name}</td>
                                         <td>{projectItem?.projectManager.map(o => o.name).join(", ")}</td>
-                                        <td>{projectItem?.responsibleEmployees.map(o => o.name).join(", ")}</td>
+                                        <td>{renderLongListUsers(projectItem?.responsibleEmployees.map(o => o.name))}</td>
                                         <td style={{ textAlign: "center" }}>
                                             <a className="edit text-green" style={{ width: '5px' }} onClick={() => handleShowDetailInfo(projectItem)}><i className="material-icons">visibility</i></a>
 
