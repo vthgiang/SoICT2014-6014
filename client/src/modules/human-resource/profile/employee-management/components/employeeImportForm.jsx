@@ -56,7 +56,7 @@ const EmployeeImportForm = (props) => {
     const _convertRoleNameToId = (name) => {
         const { role } = props;
         let roles = role?.list;
-        let roleFilter = roles && roles.filter(r => r.name === name);
+        let roleFilter = roles && roles.filter(r => r.name.toLowerCase() === name.toLowerCase());
 
         return roleFilter.length > 0 ? roleFilter[0]._id : null;
     }
