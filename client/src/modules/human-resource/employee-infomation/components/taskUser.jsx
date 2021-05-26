@@ -6,6 +6,7 @@ import { formatPriority, getTotalTimeSheetLogs, formatStatus } from "../../../ta
 
 function TaskUser(props) {
     const [taskResponsible, setTaskResponsible] = useState()
+    const [nameTask, setNameTask] = useState(" thực hiện ")
     const [taskAccountable, setTaskAccountable] = useState()
     const [taskConsulted, setTaskConsulted] = useState()
     const [taskInformed, setTaskInformed] = useState()
@@ -64,6 +65,9 @@ function TaskUser(props) {
         data[index] = 1
         setStatus(data)
     }
+    const handleNameTask = (taskName) => {
+        setNameTask(taskName)
+    }
     const showData = (data) => {
         let result = null
         if (data.length !== 0) {
@@ -91,97 +95,116 @@ function TaskUser(props) {
     }
     return (
         <div>
-            <div className="col-md-2 col-sm-4 col-xs-4 statistical-item" onClick={() => handChangeStatus(0)} >
-                <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: "#fff", padding: '10px', borderRadius: '10px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <span style={{ marginRight: '10px', color: "#00c0ef" }} className="material-icons">
-                            person
+            <div className="row statistical-wrapper" style={{ marginTop: '5px' }}>
+                <div className="col-md-2 col-sm-4 col-xs-4 statistical-item" onClick={() => handChangeStatus(0)} >
+                    <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: "#fff", padding: '10px', borderRadius: '10px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                            <span style={{ marginRight: '10px', color: "#00c0ef" }} className="material-icons">
+                                person
                 </span>
-                        <span style={{ fontWeight: 'bold' }}>{props.user.name || null} thực hiện</span>
+                            <span style={{ fontWeight: 'bold' }}>{props.user.name || null} thực hiện</span>
+                        </div>
+                        <span style={{ fontSize: '21px' }} className="info-box-number">{taskResponsible ? taskResponsible.totalCount : 0}</span>
                     </div>
-                    <span style={{ fontSize: '21px' }} className="info-box-number">{taskResponsible ? taskResponsible.totalCount : 0}</span>
                 </div>
-            </div>
-            <div className="col-md-2 col-sm-4 col-xs-4 statistical-item" onClick={() => handChangeStatus(1)}>
-                <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: "#fff", padding: '10px', borderRadius: '10px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <span style={{ marginRight: '10px', color: "#00c0ef" }} className="material-icons">
-                            person
-                </span>
-                        <span style={{ fontWeight: 'bold' }}>{props.user.name || null} phê duyệt</span>
-                    </div>
-                    <span style={{ fontSize: '21px' }} className="info-box-number">{taskAccountable ? taskAccountable.totalCount : 0}</span>
-                </div>
-            </div>
-            <div className="col-md-2 col-sm-4 col-xs-4 statistical-item" onClick={() => handChangeStatus(2)}>
-                <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: "#fff", padding: '10px', borderRadius: '10px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <span style={{ marginRight: '10px', color: "#00c0ef" }} className="material-icons">
-                            person
-                </span>
-                        <span style={{ fontWeight: 'bold' }}>{props.user.name || null} tư vấn</span>
-                    </div>
-                    <span style={{ fontSize: '21px' }} className="info-box-number">{taskConsulted ? taskConsulted.totalCount : 0}</span>
-                </div>
-            </div>
-            <div className="col-md-2 col-sm-4 col-xs-4 statistical-item" onClick={() => handChangeStatus(3)}>
-                <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: "#fff", padding: '10px', borderRadius: '10px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <span style={{ marginRight: '10px', color: "#00c0ef" }} className="material-icons">
-                            person_search
-                </span>
-                        <span style={{ fontWeight: 'bold' }}>{props.user.name || null} quan sát</span>
-                    </div>
-                    <span style={{ fontSize: '21px' }} className="info-box-number">{taskInformed ? taskInformed.totalCount : 0}</span>
-                </div>
-            </div>
-            <div className="col-md-2 col-sm-4 col-xs-4 statistical-item" onClick={() => handChangeStatus(4)}>
-                <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: "#fff", padding: '10px', borderRadius: '10px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <span style={{ marginRight: '10px', color: "#00c0ef" }} className="material-icons">
-                            person_add
-                </span>
-                        <span style={{ fontWeight: 'bold' }}>{props.user.name || null} đã tạo</span>
-                    </div>
-                    <span style={{ fontSize: '21px' }} className="info-box-number">{taskCreator ? taskCreator.tasks.length : 0}</span>
-                </div>
-            </div>
-            <table className="table table-striped table-bordered table-hover box-body">
-                <thead>
-                    <tr>
-                        <th>{translate('task.task_management.col_name')}</th>
-                        <th>{translate('task.task_management.col_project')}</th>
-                        <th>{translate('task.task_management.col_priority')}</th>
-                        <th>{translate('task.task_management.col_status')}</th>
-                        <th>{translate('task.task_management.col_progress')}</th>
-                        <th>{translate('task.task_management.col_logged_time')}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {taskResponsible && status[0] === 1 &&
-                        showData(taskResponsible.tasks)
-                    }
 
 
-                    {taskAccountable && status[1] === 1 &&
-                        showData(taskAccountable.tasks)
-                    }
+                <div className="col-md-2 col-sm-4 col-xs-4 statistical-item" onClick={() => handChangeStatus(1)}>
+                    <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: "#fff", padding: '10px', borderRadius: '10px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                            <span style={{ marginRight: '10px', color: "#289428" }} className="material-icons">
+                                person
+                </span>
+                            <span style={{ fontWeight: 'bold' }}>{props.user.name || null} phê duyệt</span>
+                        </div>
+                        <span style={{ fontSize: '21px' }} className="info-box-number">{taskAccountable ? taskAccountable.totalCount : 0}</span>
+                    </div>
+                </div>
+                <div className="col-md-2 col-sm-4 col-xs-4 statistical-item" onClick={() => handChangeStatus(2)}>
+                    <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: "#fff", padding: '10px', borderRadius: '10px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                            <span style={{ marginRight: '10px', color: "#f13c3c" }} className="material-icons">
+                                person
+                </span>
+                            <span style={{ fontWeight: 'bold' }}>{props.user.name || null} tư vấn</span>
+                        </div>
+                        <span style={{ fontSize: '21px' }} className="info-box-number">{taskConsulted ? taskConsulted.totalCount : 0}</span>
+                    </div>
+                </div>
+                <div className="col-md-2 col-sm-4 col-xs-4 statistical-item" onClick={() => handChangeStatus(3)}>
+                    <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: "#fff", padding: '10px', borderRadius: '10px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                            <span style={{ marginRight: '10px', color: "#f39c12" }} className="material-icons">
+                                person_search
+                </span>
+                            <span style={{ fontWeight: 'bold' }}>{props.user.name || null} quan sát</span>
+                        </div>
+                        <span style={{ fontSize: '21px' }} className="info-box-number">{taskInformed ? taskInformed.totalCount : 0}</span>
+                    </div>
+                </div>
+                <div className="col-md-2 col-sm-4 col-xs-4 statistical-item" onClick={() => handChangeStatus(4)}>
+                    <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: "#fff", padding: '10px', borderRadius: '10px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                            <span style={{ marginRight: '10px', color: "#dcb67a" }} className="material-icons">
+                                person_add
+                </span>
+                            <span style={{ fontWeight: 'bold' }}>{props.user.name || null} đã tạo</span>
+                        </div>
+                        <span style={{ fontSize: '21px' }} className="info-box-number">{taskCreator ? taskCreator.tasks.length : 0}</span>
+                    </div>
+                </div>
+            </div>
 
-                    {taskConsulted && status[2] === 1 &&
-                        showData(taskConsulted.tasks)
-                    }
+            <div className="row">
+                <div className="col-xs-12">
+                    <div className="box box-primary">
+                        <div className="box-header with-border">
+                            <div class="title">Công việc {nameTask}</div>
+                        </div>
+                        <table className="table table-striped table-bordered table-hover box-body">
 
-                    {taskInformed && status[3] === 1 &&
-                        showData(taskInformed.tasks)
-                    }
+                            <thead>
+                                <tr>
+                                    <th>{translate('task.task_management.col_name')}</th>
+                                    <th>{translate('task.task_management.col_project')}</th>
+                                    <th>{translate('task.task_management.col_priority')}</th>
+                                    <th>{translate('task.task_management.col_status')}</th>
+                                    <th>{translate('task.task_management.col_progress')}</th>
+                                    <th>{translate('task.task_management.col_logged_time')}</th>
+                                </tr>
+                            </thead>
 
-                    {taskCreator && status[4] === 1 &&
-                        showData(taskCreator.tasks)
-                    }
-                </tbody>
-            </table>
+
+                            <tbody>
+                                {taskResponsible && status[0] === 1 &&
+                                    showData(taskResponsible.tasks)
+                                }
+
+
+                                {taskAccountable && status[1] === 1 &&
+                                    showData(taskAccountable.tasks)
+                                }
+
+                                {taskConsulted && status[2] === 1 &&
+                                    showData(taskConsulted.tasks)
+                                }
+
+                                {taskInformed && status[3] === 1 &&
+                                    showData(taskInformed.tasks)
+                                }
+
+                                {taskCreator && status[4] === 1 &&
+                                    showData(taskCreator.tasks)
+                                }
+                            </tbody>
+
+                        </table>
+                    </div>
+                </div>
+            </div>
             {!resultShow && <div className="table-info-panel">{translate('confirm.no_data')}</div>}
         </div>
+
 
     )
 }

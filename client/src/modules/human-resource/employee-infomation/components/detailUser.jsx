@@ -11,7 +11,7 @@ import CommendationUser from "./commendationUser";
 import DisciplineUser from "./disciplineUser";
 
 function DetailUser(props) {
-    const [ nameTask, setNameTask ] = useState(" thực hiện ")
+    const [nameTask, setNameTask] = useState(" thực hiện ")
     const formatDate = (date, monthYear = false) => {
         if (date) {
             let d = new Date(date),
@@ -58,7 +58,7 @@ function DetailUser(props) {
             endDate: value,
         })
     }
-    const handleNameTask = (taskName) =>{
+    const handleNameTask = (taskName) => {
         setNameTask(taskName)
     }
     let partMonth1 = state.startDate.split('-');
@@ -67,38 +67,77 @@ function DetailUser(props) {
     let endDate = [partMonth2[1], partMonth2[0]].join('-');
     return (
         <div>
-            <div className="form-inline" >
-                <div className="form-group">
-                    <label className="form-control-static" >Từ tháng</label>
-                    <DatePicker
-                        id="form-month-annual-leave"
-                        dateFormat="month-year"
-                        deleteValue={false}
-                        value={state.startDate}
-                        onChange={handleStartMonthChange}
-                    />
-                </div>
-                <div className='form-group'>
-                    <label className="form-control-static" >Đến tháng</label>
-                    <DatePicker
-                        id="to-month-annual-leave"
-                        dateFormat="month-year"
-                        deleteValue={false}
-                        value={state.endDate}
-                        onChange={handleEndMonthChange}
-                    />
+            <div className="qlcv" style={{ textAlign: "left" }}>
+                <div className="form-inline" >
+                    <div className="form-group">
+                        <label style={{ width: "auto" }}>Từ </label>
+                        <DatePicker
+                            id="form-month-annual-leave"
+                            dateFormat="month-year"
+                            deleteValue={false}
+                            value={state.startDate}
+                            onChange={handleStartMonthChange}
+                        />
+                    </div>
+                    <div className='form-group'>
+                        <label style={{ width: "auto" }}>Đến </label>
+                        <DatePicker
+                            id="to-month-annual-leave"
+                            dateFormat="month-year"
+                            deleteValue={false}
+                            value={state.endDate}
+                            onChange={handleEndMonthChange}
+                        />
+                    </div>
                 </div>
             </div>
-            <label>Công việc {nameTask}</label>
-            <TaskUser user={props.user} unitId={props.id} startDate={startDate} endDate={endDate} changeTask={handleNameTask}></TaskUser>
-            <label>Tài sản quản lý</label>
-            <AssetsManagedByUser user={props.user} unitId={props.id} type="quản lý" ></AssetsManagedByUser>
-            <label>Tài sản sử dụng</label>
-            <AssetsManagedByUser user={props.user} unitId={props.id} type="sử dụng" ></AssetsManagedByUser>
-            <label>Thông tin khen thưởng</label>
-            <CommendationUser user={props.user} unitId={props.id} email={email} startDate={startDate} endDate={endDate}></CommendationUser>
-            <label>Thông tin kỷ luật</label>
-            <DisciplineUser user={props.user} unitId={props.id} email={email} startDate={startDate} endDate={endDate}></DisciplineUser>
+
+            <TaskUser user={props.user} unitId={props.id} startDate={startDate} endDate={endDate} changeTask={handleNameTask}>
+
+            </TaskUser>
+            <div className="row">
+                <div className="col-xs-12">
+                    <div className="box box-primary">
+                        <div className="box-header with-border">
+                            <div class="title">Tài sản quản lý</div>
+                        </div>
+                        <AssetsManagedByUser user={props.user} unitId={props.id} type="quản lý" ></AssetsManagedByUser>
+                    </div>
+                </div>
+            </div>
+
+            <div className="row">
+                <div className="col-xs-12">
+                    <div className="box box-primary">
+                        <div className="box-header with-border">
+                            <div class="title">Tài sản sử dụng</div>
+                        </div>
+                        <AssetsManagedByUser user={props.user} unitId={props.id} type="sử dụng" ></AssetsManagedByUser>
+                    </div>
+                </div>
+            </div>
+
+            <div className="row">
+                <div className="col-xs-12">
+                    <div className="box box-primary">
+                        <div className="box-header with-border">
+                            <div class="title">Thông tin khen thưởng</div>
+                        </div>
+                        <CommendationUser user={props.user} unitId={props.id} email={email} startDate={startDate} endDate={endDate}></CommendationUser>
+                    </div>
+                </div>
+            </div>
+
+            <div className="row">
+                <div className="col-xs-12">
+                    <div className="box box-primary">
+                        <div className="box-header with-border">
+                            <div class="title">Thông tin kỷ luật</div>
+                        </div>
+                        <DisciplineUser user={props.user} unitId={props.id} email={email} startDate={startDate} endDate={endDate}></DisciplineUser>
+                    </div>
+                </div>
+            </div>
             <KpiUser user={props.user} unitId={props.id} startDate={startDate} endDate={endDate} ></KpiUser>
             <TakeLeaveUser user={props.user} unitId={props.id} email={email} startDate={startDate} endDate={endDate} ></TakeLeaveUser>
         </div>
