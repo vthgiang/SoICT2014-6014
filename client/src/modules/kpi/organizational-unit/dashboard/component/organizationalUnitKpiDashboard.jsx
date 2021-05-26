@@ -25,7 +25,6 @@ function OrganizationalUnitKpiDashboard(props) {
         organizationalUnitId: null,
         month: today.getFullYear() + '-' + (today.getMonth() + 1),
         date: (today.getMonth() + 1) + '-' + today.getFullYear(),
-        monthStatistics: "",
     };
 
     const [state, setState] = useState({
@@ -39,7 +38,6 @@ function OrganizationalUnitKpiDashboard(props) {
         dataStatus: DATA_STATUS.NOT_AVAILABLE,
 
         childUnitChart: 1,
-        monthStatistics: DATA_SEARCH.monthStatistics,
     });
 
     useEffect(() => {
@@ -133,18 +131,6 @@ function OrganizationalUnitKpiDashboard(props) {
         })
     };
 
-    const handleSelectDateStatistics = (date) => {
-        let month = date.slice(3, 7) + '-' + date.slice(0, 2);
-        DATA_SEARCH.monthStatistics = month;
-    };
-
-    const handleSearchKpiUnits = () => {
-        setState({
-            ...state,
-            monthStatistics: DATA_SEARCH.monthStatistics
-        })
-    };
-
     const showDistributionOfOrganizationalUnitKpiDoc = () => {
         Swal.fire({
             icon: "question",
@@ -166,7 +152,6 @@ function OrganizationalUnitKpiDashboard(props) {
         resultsOfAllOrganizationalUnitsKpiChartData,
         statisticsOfOrganizationalUnitKpiResultChartData,
         organizationalUnitOfChartAllKpis,
-        monthStatistics
     } = state;
     let childOrganizationalUnit, childrenOrganizationalUnit, childrenOrganizationalUnitLoading;
     let organizationalUnitSelectBox, typeChartSelectBox, currentOrganizationalUnit;
@@ -363,26 +348,10 @@ function OrganizationalUnitKpiDashboard(props) {
                                 <div className="box-header with-border">
                                     <div className="box-title">Biểu đồ thống kê điểm KPI giữa các đơn vị</div>
                                 </div>
-                                <div className="box-body">
-                                    <div className="form-inline" >
-                                        <label style={{ width: 'auto', marginRight: '10px' }}>Tháng</label>
-                                        <div className="form-group" style={{ marginRight: '10px' }}>
-                                            <DatePicker
-                                                id="monthFilterResultKpi"
-                                                dateFormat="month-year"
-                                                value={defaultDate}
-                                                onChange={handleSelectDateStatistics}
-                                                disabled={false}
-                                            />
-                                        </div>
-                                        <button type="button" className="btn btn-success" onClick={handleSearchKpiUnits} >{translate('kpi.evaluation.employee_evaluation.search')}</button>
-                                    </div>
-
-                                    {
-                                        organizationalUnitIds &&
-                                        <StatisticsKpiUnits organizationalUnitIds={organizationalUnitIds} monthStatistics={monthStatistics} />
-                                    }
-                                </div>
+                                {
+                                    organizationalUnitIds &&
+                                    <StatisticsKpiUnits organizationalUnitIds={organizationalUnitIds} />
+                                }
                             </div>
                         </div>
                     </div>

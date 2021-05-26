@@ -124,26 +124,28 @@ copyParentKPIUnitToChildrenKPIEmployee = async (req, res) => {
 exports.calculateKpiUnit = async (req, res) => {
     try {
         let kpiUnit = await managerService.calculateKpiUnit(req.portal, req.body);
-       
-        // Thêm log
-        let log = getDataOrganizationalUnitKpiSetLog({
-            type: "set_point_all",
-            creator: req.user._id,
-            organizationalUnit: kpiUnit?.kpiUnitSet?.organizationalUnit, 
-            month: kpiUnit?.kpiUnitSet?.date,
-            newData: kpiUnit?.kpiUnitSet
-        })
-        await managerService.createOrganizationalUnitKpiSetLogs(req.portal, {
-            ...log,
-            organizationalUnitKpiSetId: kpiUnit?.kpiUnitSet?._id
-        })
 
-        // Thêm newsfeed
-        await KPIUnitService.createNewsFeedForOrganizationalUnitKpiSet(req.portal, {
-            ...log,
-            organizationalUnit: kpiUnit?.kpiUnitSet?.organizationalUnit,
-            organizationalUnitKpiSetId: kpiUnit?.kpiUnitSet?._id
-        })
+        for (let i = 0; i < kpiUnit.length; i++) {
+            // Thêm log
+            let log = getDataOrganizationalUnitKpiSetLog({
+                type: "set_point_all",
+                creator: req.user._id,
+                organizationalUnit: kpiUnit?.[i]?.kpiUnitSet?.organizationalUnit, 
+                month: kpiUnit?.[i]?.kpiUnitSet?.date,
+                newData: kpiUnit?.[i]?.kpiUnitSet
+            })
+            await managerService.createOrganizationalUnitKpiSetLogs(req.portal, {
+                ...log,
+                organizationalUnitKpiSetId: kpiUnit?.[i]?.kpiUnitSet?._id
+            })
+
+            // Thêm newsfeed
+            await KPIUnitService.createNewsFeedForOrganizationalUnitKpiSet(req.portal, {
+                ...log,
+                organizationalUnit: kpiUnit?.[i]?.kpiUnitSet?.organizationalUnit,
+                organizationalUnitKpiSetId: kpiUnit?.[i]?.kpiUnitSet?._id
+            })
+        }
         
         Logger.info(req.user.email, ' calculate kpi unit ', req.portal)
         res.status(200).json({

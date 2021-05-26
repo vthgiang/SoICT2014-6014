@@ -4,63 +4,68 @@ import { withTranslate } from "react-redux-multilingual";
 import { UserActions } from "../../../super-admin/user/redux/actions";
 import { UserServices } from "../../../super-admin/user/redux/services";
 import DetailUser from "./detailUser";
-
+import { SelectBox } from "../../../../common-components"
 
 
 function EmployeeInfomation(props) {
     const { user } = props
-    const formatDate = (date, monthYear = false) => {
-        if (date) {
-            let d = new Date(date),
-                month = '' + (d.getMonth() + 1),
-                day = '' + d.getDate(),
-                year = d.getFullYear();
-
-            if (month.length < 2)
-                month = '0' + month;
-            if (day.length < 2)
-                day = '0' + day;
-
-            if (monthYear === true) {
-                return [month, year].join('-');
-            } else return [day, month, year].join('-');
-        }
-        return date;
-    };
     const [currentUser, setCurrentUser] = useState()
+    const [idUser, setIdUser ] = useState("")
+    const [listUsers,setListUsers] = useState([])
     useEffect(() => {
         let currentRole = localStorage.getItem("currentRole")
         props.getAllUserSameDepartment(currentRole)
     }, [])
     const { userdepartments } = user
-    let listUser = []
+    const { translate } = props
+    let listUser = [] , list = []
     if (userdepartments) {
-        const {deputyManagers, employees, managers} = userdepartments
+        const {deputyManagers , employees, managers } = userdepartments
         let keyDeputyManagers = Object.keys(deputyManagers)
         let keyEmployees = Object.keys(employees)
-        listUser= listUser.concat(deputyManagers[keyDeputyManagers[0]].members)
-        listUser= listUser.concat(employees[keyEmployees[0]].members)
+        if (employees[keyEmployees[0]]){
+            listUser = listUser.concat(employees[keyEmployees[0]].members)
+            list = employees[keyEmployees[0]].members.map(category => { return { value: category._id, text: category.name } });
+        }
+        if (deputyManagers[keyDeputyManagers[0]]){
+            listUser = listUser.concat(deputyManagers[keyDeputyManagers[0]].members)
+            list = list.concat(deputyManagers[keyDeputyManagers[0]].members.map(category => { return { value: category._id, text: category.name } }));
+        }
+        if (JSON.stringify(listUser)!==JSON.stringify(listUsers)){
+            setListUsers(listUser)
+        }
     }
-    const handchangeUser = (data) =>{
-        setCurrentUser(data)
+    const handchangeUser = (data) => {
+        let dataUser = listUsers.find(value=>value._id===data[0])
+        setCurrentUser(dataUser)
+        setIdUser(data[0])
     }
 
     return (
         <div>
             <p>Trang thông tin nhân viên</p>
-            <div className="row" >
+            <div class="form-group" >
+            <label class="form-control-static" >Nhân viên</label>
                {
                 listUser &&
-                listUser.map((x, index) =>
-                        <p onClick={()=>{handchangeUser(x)}} >{x.name}</p>
-                )
+                <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                id={`select-box-edit-name`}
+                className="form-control select2"
+                style={{ width: "auto" }}
+                items={list }
+                value={idUser}
+                onChange={handchangeUser}
+                multiple={false}
+                options={{ placeholder: "chọn nhân viên" }}
+            />
                }
+
             </div>
             {
                 currentUser &&
                 <DetailUser user={currentUser} id={userdepartments._id}></DetailUser>
             }
-            
+
         </div>
     )
 }

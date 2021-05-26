@@ -143,6 +143,17 @@ const COMPONENTS = [{
     ]
 },
 {
+    name: 'refresh-kpi-unit-in-dashboard',
+    description: 'Button làm mới biểu đồ thống kê KPI giữa các đơn vị',
+    roles: [
+        ROOT_ROLES.MANAGER.name,
+    ],
+    links: [
+        '/kpi-units/dashboard',
+        '/dashboard-all-unit'
+    ]
+},
+{
     name: 'create-task-process-button',
     description: 'Button thêm mới mẫu quy trình công việc',
     roles: [

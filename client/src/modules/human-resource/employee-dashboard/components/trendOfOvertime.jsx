@@ -12,6 +12,7 @@ import c3 from 'c3';
 import 'c3/c3.css';
 
 const TrendOfOvertime = (props) => {
+    const { department, timesheets, translate, childOrganizationalUnit, employeesManager } = props;
 
     /**
      * Function format dữ liệu Date thành string
@@ -49,6 +50,7 @@ const TrendOfOvertime = (props) => {
         organizationalUnitsSearch: props.defaultUnit ? props.organizationalUnits : [],
         organizationalUnits: props.defaultUnit ? props.organizationalUnits : [],
     })
+    const { lineChart, nameChart, nameData1, startDate, endDate, startDateShow, endDateShow, organizationalUnits, organizationalUnitsSearch } = state;
 
     const barChart = useRef(null)
 
@@ -63,6 +65,23 @@ const TrendOfOvertime = (props) => {
         props.getTimesheets({ organizationalUnits: organizationalUnits, startDate: startDateNew, endDate: endDateNew, trendOvertime: true })
     }, []);
 
+    useEffect(() => {
+        if (timesheets?.arrMonth?.length > 0) {
+            let ratioX = ['x', ...timesheets.arrMonth];
+            let listOvertimeOfUnitsByStartDateAndEndDate = timesheets.listOvertimeOfUnitsByStartDateAndEndDate;
+            let data1 = ['data1'];
+            timesheets.arrMonth.forEach(x => {
+                let overtime = 0;
+                listOvertimeOfUnitsByStartDateAndEndDate.forEach(y => {
+                    if (new Date(y.month).getTime() === new Date(x).getTime()) {
+                        overtime = overtime + y.totalOvertime ? y.totalOvertime : 0
+                    };
+                })
+                data1 = [...data1, overtime]
+            })
+            renderChart({ nameData1, ratioX, data1, lineChart });
+        }
+    }, [JSON.stringify(timesheets)])
     /**
      * Function bắt sự kiện thay đổi unit
      * @param {*} value : Array id đơn vị
@@ -162,7 +181,7 @@ const TrendOfOvertime = (props) => {
      * Render chart
      * @param {*} data : Dữ liệu biểu đồ
      */
-    const renderChart = (data) => {
+    function renderChart (data) {
         data.data1.shift();
         removePreviousChart();
         let chart = c3.generate({
@@ -211,30 +230,12 @@ const TrendOfOvertime = (props) => {
         }
     }
 
-    const { department, timesheets, translate, childOrganizationalUnit } = props;
-    const { lineChart, nameChart, nameData1, startDate, endDate, startDateShow, endDateShow, organizationalUnits, organizationalUnitsSearch } = state;
-
     let organizationalUnitsName = [];
     if (organizationalUnitsSearch) {
         organizationalUnitsName = department.list.filter(x => organizationalUnitsSearch.includes(x._id));
         organizationalUnitsName = organizationalUnitsName.map(x => x.name);
     }
 
-    if (timesheets.arrMonth.length !== 0) {
-        let ratioX = ['x', ...timesheets.arrMonth];
-        let listOvertimeOfUnitsByStartDateAndEndDate = timesheets.listOvertimeOfUnitsByStartDateAndEndDate;
-        let data1 = ['data1'];
-        timesheets.arrMonth.forEach(x => {
-            let overtime = 0;
-            listOvertimeOfUnitsByStartDateAndEndDate.forEach(y => {
-                if (new Date(y.month).getTime() === new Date(x).getTime()) {
-                    overtime = overtime + y.totalOvertime ? y.totalOvertime : 0
-                };
-            })
-            data1 = [...data1, overtime]
-        })
-        renderChart({ nameData1, ratioX, data1, lineChart });
-    }
     return (
         <React.Fragment>
             <div className="box box-solid">
@@ -303,16 +304,21 @@ const TrendOfOvertime = (props) => {
                             </div>
                         </div>
                     </div>
-                    <div className="dashboard_box_body">
-                        <p className="pull-left" style={{ marginBottom: 0 }}><b>ĐV tính: Số giờ</b></p>
-                        <div className="box-tools pull-right">
-                            <div className="btn-group pull-rigth">
-                                <button type="button" className={`btn btn-xs ${lineChart ? "active" : "btn-danger"}`} onClick={() => handleChangeViewChart(false)}>Dạng cột</button>
-                                <button type="button" className={`btn btn-xs ${lineChart ? 'btn-danger' : "active"}`} onClick={() => handleChangeViewChart(true)}>Dạng đường</button>
+                    {timesheets.isLoading
+                        ? <div>{translate('general.loading')}</div>
+                        : timesheets?.arrMonth?.length > 0
+                            ? <div className="dashboard_box_body">
+                                <p className="pull-left" style={{ marginBottom: 0 }}><b>ĐV tính: Số giờ</b></p>
+                                <div className="box-tools pull-right">
+                                    <div className="btn-group pull-rigth">
+                                        <button type="button" className={`btn btn-xs ${lineChart ? "active" : "btn-danger"}`} onClick={() => handleChangeViewChart(false)}>Dạng cột</button>
+                                        <button type="button" className={`btn btn-xs ${lineChart ? 'btn-danger' : "active"}`} onClick={() => handleChangeViewChart(true)}>Dạng đường</button>
+                                    </div>
+                                </div>
+                                <div ref={barChart}></div>
                             </div>
-                        </div>
-                        <div ref={barChart}></div>
-                    </div>
+                            : <div>{translate('kpi.organizational_unit.dashboard.no_data')}</div>
+                    }
                 </div>
             </div>
         </React.Fragment >

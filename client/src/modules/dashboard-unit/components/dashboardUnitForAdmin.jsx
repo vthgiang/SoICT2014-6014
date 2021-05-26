@@ -661,7 +661,7 @@ function DashboardUnitForAdmin(props) {
                                     <div className="box-body">
                                         {
                                             organizationalUnits &&
-                                            <StatisticsKpiUnits organizationalUnitIds={organizationalUnits} monthStatistics={month} />
+                                            <StatisticsKpiUnits organizationalUnitIds={organizationalUnits} monthStatistics={month} type="for-admin"/>
                                         }
                                     </div>
                                 </div>
