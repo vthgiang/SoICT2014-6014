@@ -490,6 +490,36 @@ class TaskManagementOfUnit extends Component {
             creatorEmployees: value,
         })
     }
+    handleDelete = async (id) => {
+        const { tasks, translate } = this.props;
+        let currentTasks = tasks.tasks.find(task => task._id === id);
+        let progress = currentTasks.progress;
+        let action = currentTasks.taskActions.filter(item => item.creator); // Nếu công việc theo mẫu, chưa hoạt động nào được xác nhận => cho xóa
+
+        if (action.length === 0 && progress === 0) {
+            Swal.fire({
+                title: `Bạn có chắc chắn muốn xóa công việc "${currentTasks.name}"?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: this.props.translate('general.no'),
+                confirmButtonText: this.props.translate('general.yes'),
+            }).then((result) => {
+                if (result.value) {
+                    this.props.deleteTaskById(id);
+                }
+            })
+
+        }
+        else {
+            Swal.fire({
+                title: translate('task.task_management.confirm_delete'),
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'Xác nhận'
+            })
+        }
+    }
 
     render() {
         const { tasks, user, translate, dashboardEvaluationEmployeeKpiSet } = this.props;
@@ -545,7 +575,7 @@ class TaskManagementOfUnit extends Component {
             }
 
             for (let i in data) {
-                data[i] = { ...data[i], action: ["edit"] }
+                data[i] = { ...data[i], action: ["edit","delete"] }
             }
         }
 
@@ -751,8 +781,10 @@ class TaskManagementOfUnit extends Component {
                                     data={data}
                                     titleAction={{
                                         edit: translate('task.task_management.action_edit'),
+                                        delete: translate('task.task_management.action_delete'),
                                     }}
                                     funcEdit={this.handleShowModal}
+                                    funcDelete={this.handleDelete}
                                 />
                             </div>
 
@@ -806,6 +838,7 @@ const actionCreators = {
     getDepartment: UserActions.getDepartmentOfUser,
     getAllDepartment: DepartmentActions.get,
     getChildrenOfOrganizationalUnitsAsTree: DashboardEvaluationEmployeeKpiSetAction.getChildrenOfOrganizationalUnitsAsTree,
+    deleteTaskById: taskManagementActions._delete,
 };
 export default connect(mapState, actionCreators)(withTranslate(TaskManagementOfUnit));
 
