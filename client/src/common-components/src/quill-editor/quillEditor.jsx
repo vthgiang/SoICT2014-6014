@@ -5,6 +5,7 @@ import parse from 'html-react-parser';
 
 import { configQuillEditor } from './configQuillEditor';
 import { ToolbarQuillEditor } from './toolbarQuillEditor';
+import { SlimScroll } from '../slim-scroll/slimScroll'
 
 import { AuthActions } from '../../../modules/auth/redux/actions'
 
@@ -175,6 +176,14 @@ class QuillEditor extends Component {
 
         // download ảnh 
         if (nextProps.quillValueDefault !== quillValueDefault) {
+            // Insert value ban đầu
+            // Lưu ý: quillValueDefault phải được truyền vào 1 giá trị cố định, không thay đổi 
+            if (nextProps.quillValueDefault || nextProps.quillValueDefault === '') {
+                if (quill && quill.container && quill.container.firstChild) {
+                    quill.container.firstChild.innerHTML = nextProps.quillValueDefault;
+                }  
+            }
+
             if (quill?.container) {
                 let imgs = Array.from(quill?.container?.querySelectorAll('img[src^="upload/private"]'))
                 if (imgs?.length > 0) {
@@ -204,14 +213,6 @@ class QuillEditor extends Component {
         if (quill && !isText) {
             quill.enable(enableEdit);
         }
-
-        // Insert value ban đầu
-        // Lưu ý: quillValueDefault phải được truyền vào 1 giá trị cố định, không thay đổi 
-        if (quillValueDefault || quillValueDefault === '') {
-            if (quill && quill.container && quill.container.firstChild) {
-                quill.container.firstChild.innerHTML = this.props.quillValueDefault;
-            }  
-        }
         
         if (quill?.container) {
             // Add lại base64 ảnh download từ server
@@ -234,13 +235,8 @@ class QuillEditor extends Component {
     }
 
     setHeightContainer = (id, maxHeight) => {
-        window.$(`#editor-container${id}`).height("")
-        let heightCurrent = window.$(`#editor-container${id}`)?.height()
-        if (heightCurrent > maxHeight) {
-            window.$(`#editor-container${id}`).height(maxHeight)
-        } else {
-            window.$(`#editor-container${id}`).height("")
-        }
+        SlimScroll.removeVerticalScrollStyleCSS(`editor-container${id}`)
+        SlimScroll.addVerticalScrollStyleCSS(`editor-container${id}`, maxHeight, true)
     }
 
     /** 
