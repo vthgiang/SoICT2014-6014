@@ -44,6 +44,7 @@ require("dotenv").config();
 const ADDITIONAL_USERS_NUM = 45;
 const MILISECS_TO_DAYS = 86400000;
 const MILISECS_TO_HOURS = 3600000;
+const SUBTRACT_TO_START_DATE = 70;
 
 const months = [
     "01",
@@ -1450,7 +1451,7 @@ const initHumanResourceForProjectData = async () => {
         responsibleEmployeesWithUnit: newResponsibleEmployeesWithUnit,
     }
 
-    const drugRNDProjectStartDate = moment().subtract(55, 'days').format();
+    const drugRNDProjectStartDate = moment().subtract(SUBTRACT_TO_START_DATE, 'days').format();
     const drugRNDProjectEndDate = moment().add(100, 'days').format();
     const drugRNDProject = {
         name: 'Dự án nghiên cứu sản phẩm thuốc công ty Việt Anh',
@@ -1595,14 +1596,14 @@ const initHumanResourceForProjectData = async () => {
     ]
     const startEndTasksData = processDataTasksStartEnd(drugRNDProject, fakeTasksData);
     const startEndTasksDataWithoutPreceeding = startEndTasksData.map((seTaskItem, seTaskIndex) => {
-        const { estimateNormalTime } = seTaskItem;
+        const { estimateNormalTime, startDate, estimateAssetCost, endDate } = seTaskItem;
         const { responsibleEmployees, accountableEmployees } = fakeRACIData[seTaskIndex];
 
         const responsibleSalary = responsibleEmployees.map((resItem) => {
             const currentOrgId = getOrgIdFromUserId(resItem, newResponsibleEmployeesWithUnit);
             return {
                 userId: resItem,
-                salary: getSalaryFromUserIdAndOrgId(currentSalaries, currentEmployees, currentUsers, currentOrgId, resItem),
+                salary: Number(getSalaryFromUserIdAndOrgId(currentSalaries, currentEmployees, currentUsers, currentOrgId, resItem)),
                 weight: Number(seTaskItem.totalResWeight) / (responsibleEmployees.length),
             }
         })
@@ -1610,19 +1611,162 @@ const initHumanResourceForProjectData = async () => {
             const currentOrgId = getOrgIdFromUserId(accItem, newResponsibleEmployeesWithUnit);
             return {
                 userId: accItem,
-                salary: getSalaryFromUserIdAndOrgId(currentSalaries, currentEmployees, currentUsers, currentOrgId, accItem),
+                salary: Number(getSalaryFromUserIdAndOrgId(currentSalaries, currentEmployees, currentUsers, currentOrgId, accItem)),
                 weight: (100 - Number(seTaskItem.totalResWeight)) / (accountableEmployees.length),
             }
         })
+
+        // Các hoạt động và Bấm giờ cho các hoạt động
+        let totalTimesheetLogs = [];
+        let actionsList = [];
+        for (let resItem of responsibleEmployees) {
+            for (let accItem of accountableEmployees) {
+                let timesheetLogs = [];
+                const currentActionsWithoutTimesheet = generateTaskActionsArray(resItem, accItem, 1);
+                const currentActions = currentActionsWithoutTimesheet.map((cAWTItem, cAWTIndex) => {
+                    const currentResWeight = responsibleSalary.find((resSalItem) => String(resSalItem.userId) === String(resItem)).weight;
+                    const currentAccWeight = accountableSalary.find((accSalItem) => String(accSalItem.userId) === String(accItem)).weight;
+                    const limitResDuration = Math.floor((estimateNormalTime * (drugRNDProject.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS) / responsibleEmployees.length) * (currentResWeight / 100));
+                    const limitAccDuration = Math.floor((estimateNormalTime * (drugRNDProject.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS) / accountableEmployees.length) * (currentAccWeight / 100));
+                    timesheetLogs.push(
+                        generateTimesheetLogItem(resItem, limitResDuration, startDate, drugRNDProject.unitTime),
+                        generateTimesheetLogItem(accItem, limitAccDuration, startDate, drugRNDProject.unitTime),
+                    );
+                    return {
+                        ...cAWTItem,
+                        timesheetLogs,
+                    }
+                })
+                totalTimesheetLogs.push(...timesheetLogs);
+                actionsList.push(...currentActions);
+            }
+        }
+
+        // Chi phí công việc ước lượng + Chi phí công việc ước lượng thoả hiệp
+        let estimateNormalCost = 0, estimateMaxCost = 0;
+        for (let resItem of responsibleEmployees) {
+            estimateNormalCost += getEstimateMemberCostOfTask(
+                [...responsibleSalary, ...accountableSalary],
+                estimateNormalTime * (drugRNDProject.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS),
+                drugRNDProject,
+                resItem
+            )
+        }
+        for (let accItem of accountableEmployees) {
+            estimateNormalCost += getEstimateMemberCostOfTask(
+                [...responsibleSalary, ...accountableSalary],
+                estimateNormalTime * (drugRNDProject.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS),
+                drugRNDProject,
+                accItem
+            )
+        }
+        estimateNormalCost += estimateAssetCost;
+        estimateMaxCost = getNearestIntegerNumber(estimateNormalCost);
+
+        // Chi phí thực chỉ xuất hiện khi thời gian hiện tại quá thời điểm kết thúc dự kiến + Điểm số đánh giá
+        let actualCost, actualEndDate, progress = 0, responsibleSalaryWithCost, accountableSalaryWithCost, status = 'inprocess';
+        let overallEvaluation;
+        if (moment(endDate).isSameOrBefore(moment())) {
+            const isFinished = getRandomIntFromInterval(0, 1);
+            // const isFinished = 1;
+            progress = 100;
+            actualCost = getRandomIntFromInterval(Math.floor(estimateNormalCost * 0.5), Math.floor(estimateNormalCost * 1.5));
+            responsibleSalaryWithCost = responsibleSalary.map((resSalItem) => {
+                const tempActualCost = actualCost * resSalItem.weight / 100;
+                const resActualCost = Math.floor(tempActualCost - getRandomIntFromInterval(Math.floor(tempActualCost / 100), Math.floor(tempActualCost / 10)));
+                return {
+                    ...resSalItem,
+                    actualCost: resActualCost,
+                };
+            });
+            accountableSalaryWithCost = accountableSalary.map((accSalItem) => {
+                const tempActualCost = actualCost * accSalItem.weight / 100;
+                const accActualCost = Math.floor(tempActualCost - getRandomIntFromInterval(Math.floor(tempActualCost / 100), Math.floor(tempActualCost / 10)));
+                return {
+                    ...accSalItem,
+                    actualCost: accActualCost,
+                };
+            });
+            if (isFinished === 1) {
+                status = 'finished';
+                actualEndDate = moment(endDate).add(getRandomIntFromInterval(-25, 20), 'hours').format();
+                const currentTask = {
+                    ...seTaskItem,
+                    progress,
+                    status,
+                    estimateNormalCost,
+                    estimateMaxCost,
+                    actualEndDate,
+                    timesheetLogs: totalTimesheetLogs,
+                    taskActions: actionsList,
+                    actorsWithSalary: (responsibleSalaryWithCost && accountableSalaryWithCost) ? [...responsibleSalaryWithCost, ...accountableSalaryWithCost] : [...responsibleSalary, ...accountableSalary],
+                    estimateNormalTime: Number(estimateNormalTime) * (drugRNDProject.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS),
+                    estimateOptimisticTime: Number((estimateNormalTime - 2) < 1 ? 1 : (estimateNormalTime - 2)) * (drugRNDProject.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS),
+                }
+                const dataTask = {
+                    task: currentTask,
+                    progress,
+                    currentTaskActualCost: actualCost,
+                }
+                const taskAutomaticPoint = calcProjectTaskPoint(dataTask);
+                const resPointArr = responsibleSalaryWithCost.map((resSalWithCostItem) => {
+                    const dataMemberTask = {
+                        task: currentTask,
+                        progress,
+                        projectDetail: drugRNDProject,
+                        currentMemberActualCost: resSalWithCostItem.actualCost,
+                        userId: resSalWithCostItem.userId,
+                    }
+                    const memberAutomaticPoint = calcProjectMemberPoint(dataMemberTask);
+                    return {
+                        automaticPoint: memberAutomaticPoint,
+                        employeePoint: getRandomIntFromInterval(80, 100),
+                        accountablePoint: getRandomIntFromInterval(80, 100),
+                        employee: resSalWithCostItem.userId,
+                    }
+                })
+                const accPointArr = accountableSalaryWithCost.map((accSalWithCostItem) => {
+                    const dataMemberTask = {
+                        task: currentTask,
+                        progress,
+                        projectDetail: drugRNDProject,
+                        currentMemberActualCost: accSalWithCostItem.actualCost,
+                        userId: accSalWithCostItem.userId,
+                    }
+                    const memberAutomaticPoint = calcProjectMemberPoint(dataMemberTask);
+                    return {
+                        automaticPoint: memberAutomaticPoint,
+                        employeePoint: getRandomIntFromInterval(80, 100),
+                        employee: accSalWithCostItem.userId,
+                    }
+                })
+                overallEvaluation = {
+                    automaticPoint: taskAutomaticPoint,
+                    responsibleEmployees: resPointArr,
+                    accountableEmployees: accPointArr,
+                }
+            }
+        }
+
         return {
             ...seTaskItem,
             ...fakeRACIData[seTaskIndex],
             preceedingTasks: [],
-            actorsWithSalary: [...responsibleSalary, ...accountableSalary],
+            progress,
+            status,
+            taskActions: actionsList,
+            timesheetLogs: totalTimesheetLogs,
+            actorsWithSalary: (responsibleSalaryWithCost && accountableSalaryWithCost) ? [...responsibleSalaryWithCost, ...accountableSalaryWithCost] : [...responsibleSalary, ...accountableSalary],
+            estimateNormalCost,
+            estimateMaxCost,
+            actualCost,
+            actualEndDate,
             estimateNormalTime: Number(estimateNormalTime) * (drugRNDProject.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS),
             estimateOptimisticTime: Number((estimateNormalTime - 2) < 1 ? 1 : (estimateNormalTime - 2)) * (drugRNDProject.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS),
+            overallEvaluation,
         }
     })
+    // console.log(startEndTasksDataWithoutPreceeding);
     const firstInsertedDBTasks = await Task(vnistDB).insertMany(startEndTasksDataWithoutPreceeding);
     // console.log('firstInsertedDBTasks', firstInsertedDBTasks)
     const fullTasksData = fakeTasksData.map((fakeItem, fakeIndex) => {
@@ -1658,7 +1802,6 @@ const initHumanResourceForProjectData = async () => {
             }
         }, { new: true });
     }
-
 
     console.log('Hoàn thành tạo dữ liệu cho dự án')
 }
@@ -1870,6 +2013,247 @@ const getLatestTaskEndDate = (currentProjectTasks, needCustomFormat = false) => 
         }
     }
     return needCustomFormat ? moment(currentEndDate).format('HH:mm DD/MM/YYYY') : moment(currentEndDate).format();
+}
+
+const generateTaskActionsArray = (resId, accId, numOfActions = 3) => {
+    if (numOfActions === 0) return [];
+    let tasksActions = [];
+    for (let i = 0; i < numOfActions; i++) {
+        const rating = getRandomIntFromInterval(5, 10);
+        const actionImportanceLevel = getRandomIntFromInterval(5, 10);
+        const action = {
+            mandatory: true,
+            rating,
+            actionImportanceLevel,
+            creator: resId,
+            description: `<p>Hoạt động ${i} - người tạo ${resId}</p>`,
+            evaluations: [{
+                rating,
+                actionImportanceLevel,
+                creator: accId,
+                role: 'accountable',
+            }]
+        }
+        tasksActions.push(action);
+    }
+    return tasksActions;
+}
+
+const generateTimesheetLogItem = (creatorId, duration, startedAt, timeMode = 'days') => {
+    const randomDuration = getRandomIntFromInterval(100, Number(duration));
+    const formattedRandomDuration = Number(randomDuration) / (timeMode === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS);
+    return {
+        creator: creatorId,
+        autoStopped: 1,
+        acceptLog: true,
+        description: '',
+        duration: randomDuration,
+        startedAt,
+        stoppedAt: moment(startedAt).add(formattedRandomDuration, timeMode).format(),
+    }
+}
+
+const getEstimateMemberCostOfTask = (actorsWithSalary, estimateNormalTime, projectDetail, userId) => {
+    let estimateNormalMemberCost = 0;
+    if (!projectDetail) return 0;
+    const currentEmployee = actorsWithSalary.find((actorSalaryItem) => {
+        return String(actorSalaryItem.userId) === String(userId)
+    });
+    if (currentEmployee) {
+        estimateNormalMemberCost = Number(currentEmployee.salary) * Number(currentEmployee.weight / 100) * estimateNormalTime
+            / (projectDetail.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS);
+    }
+    return estimateNormalMemberCost;
+}
+
+const getNearestIntegerNumber = (value) => {
+    const beforeDecimalPart = value.toString().split('.')[0].replace(/,/g, '');
+    const beforeDecimalPartArr = beforeDecimalPart.split('');
+    const numberWithFirstSecondIndexArr = beforeDecimalPartArr.map((item, index) => {
+        if (index === 0 || index === 1) return item
+        else return "0";
+    })
+    const numberWithFirstSecondIndex = numberWithFirstSecondIndexArr.join('');
+    const result = Number(numberWithFirstSecondIndex) + Math.pow(10, beforeDecimalPart.length - 2);
+    return result;
+}
+
+const getRandomIntFromInterval = (min, max) => { // min and max included 
+    return Math.floor(Math.random() * (max - min + 1) + min)
+}
+
+const calcProjectTaskPoint = (data, getCalcPointsOnly = true) => {
+    // console.log('\n--------------');
+    const { task, progress, currentTaskActualCost } = data;
+    const { timesheetLogs, estimateNormalCost } = task;
+    /***************** Yếu tố tiến độ **********************/
+    const usedDuration = getDurationWithoutSatSun(task.startDate, task.actualEndDate, 'milliseconds');
+    const totalDuration = task.estimateNormalTime;
+    const schedulePerformanceIndex = (Number(progress) / 100) / (usedDuration / totalDuration);
+    const taskTimePoint = convertIndexPointToNormalPoint(schedulePerformanceIndex) * (task?.timeWeight || 0.25);
+    // console.log('taskTimePoint', taskTimePoint)
+    /***************** Yếu tố chất lượng **********************/
+    // Các hoạt động (chỉ lấy những hoạt động đã đánh giá của người phê duyệt)
+    let actionsHasRating = task.taskActions.filter(item => (
+        item.rating && item.rating !== -1
+    ))
+    let sumRatingOfPassedActions = 0, sumRatingOfAllActions = 0;
+    actionsHasRating.length > 0 && actionsHasRating.map((item) => {
+        const currentActionImportanceLevel = item.actionImportanceLevel && item.actionImportanceLevel > 0 ? item.actionImportanceLevel : 10;
+        if (item.rating >= 5) {
+            sumRatingOfPassedActions = sumRatingOfPassedActions + item.rating * currentActionImportanceLevel;
+        }
+        sumRatingOfAllActions = sumRatingOfAllActions + item.rating * currentActionImportanceLevel;
+    });
+    const taskQualityPoint = sumRatingOfAllActions === 0
+        ? 0
+        : [(sumRatingOfPassedActions / sumRatingOfAllActions) * 100] * (task?.qualityWeight || 0.25);
+    // console.log('taskQualityPoint', taskQualityPoint)
+    /***************** Yếu tố chi phí **********************/
+    let actualCost = 0;
+    if (currentTaskActualCost) actualCost = Number(currentTaskActualCost);
+    else if (task?.actualCost) actualCost = Number(task.actualCost);
+    const costPerformanceIndex = ((Number(progress) / 100) * estimateNormalCost) / (actualCost);
+    const taskCostPoint = convertIndexPointToNormalPoint(costPerformanceIndex) * (task?.costWeight || 0.25);
+    // console.log('taskCostPoint', taskCostPoint)
+    /***************** Yếu tố chuyên cần **********************/
+    let totalTimeLogs = 0;
+    if (timesheetLogs && timesheetLogs.length > 0) {
+        for (let timeSheetItem of timesheetLogs) {
+            totalTimeLogs += timeSheetItem.duration;
+        }
+    }
+    const taskDilligencePoint = Math.min((totalTimeLogs / totalDuration) * 100 * (task?.dilligenceWeight || 0.25), 100);
+    // console.log('taskDilligencePoint', taskDilligencePoint)
+    const autoTaskPoint = taskTimePoint + taskQualityPoint + taskCostPoint + taskDilligencePoint;
+
+    if (getCalcPointsOnly) return autoTaskPoint;
+    return {
+        usedDuration,
+        totalDuration,
+        schedulePerformanceIndex,
+        actionsHasRating,
+        sumRatingOfPassedActions,
+        sumRatingOfAllActions,
+        estimateNormalCost,
+        actualCost,
+        costPerformanceIndex,
+        totalTimeLogs,
+        taskTimePoint,
+        taskQualityPoint,
+        taskCostPoint,
+        taskDilligencePoint,
+        autoTaskPoint,
+    }
+}
+
+const calcProjectMemberPoint = (data, getCalcPointsOnly = true) => {
+    // console.log('\n--------------');
+    const { task, progress, projectDetail, currentMemberActualCost, userId } = data;
+    const { timesheetLogs } = task;
+    const currentEmployee = task.actorsWithSalary.find((actorSalaryItem) => {
+        return String(actorSalaryItem.userId) === String(userId)
+    });
+    /***************** Yếu tố tiến độ **********************/
+    const usedDuration = getDurationWithoutSatSun(task.startDate, task.actualEndDate, 'milliseconds');
+    const totalDuration = task.estimateNormalTime;
+    const schedulePerformanceIndex = (Number(progress) / 100) / (usedDuration / totalDuration);
+    const memberTimePoint = convertIndexPointToNormalPoint(schedulePerformanceIndex) * (task?.timeWeight || 0.25);
+    // console.log('memberTimePoint', memberTimePoint)
+    /***************** Yếu tố chất lượng **********************/
+    // Các hoạt động (chỉ lấy những hoạt động đã đánh giá của người phê duyệt)
+    let actionsHasRating = task.taskActions.filter(item => (
+        item.rating && item.rating !== -1
+    ))
+    let sumRatingOfPassedActions = 0, sumRatingOfAllActions = 0;
+    actionsHasRating.length > 0 && actionsHasRating.map((item) => {
+        const currentActionImportanceLevel = item.actionImportanceLevel && item.actionImportanceLevel > 0 ? item.actionImportanceLevel : 10;
+        if (item.rating >= 5) {
+            sumRatingOfPassedActions = sumRatingOfPassedActions + item.rating * currentActionImportanceLevel;
+        }
+        sumRatingOfAllActions = sumRatingOfAllActions + item.rating * currentActionImportanceLevel;
+    });
+    const memberQualityPoint = sumRatingOfAllActions === 0
+        ? 0
+        : [(sumRatingOfPassedActions / sumRatingOfAllActions) * 100] * (task?.qualityWeight || 0.25);
+    // console.log('memberQualityPoint', memberQualityPoint)
+    /***************** Yếu tố chi phí **********************/
+    let actualCost = 0;
+    if (currentMemberActualCost) actualCost = Number(currentMemberActualCost);
+    // Tìm lương và trọng số thành viên đó
+    let estimateNormalMemberCost = getEstimateMemberCostOfTask(task.actorsWithSalary, totalDuration, projectDetail, userId);
+    const costPerformanceIndex = ((Number(progress) / 100) * estimateNormalMemberCost) / (actualCost);
+    const memberCostPoint = convertIndexPointToNormalPoint(costPerformanceIndex) * (task?.costWeight || 0.25);
+    // console.log('memberCostPoint', memberCostPoint)
+    /***************** Yếu tố chuyên cần **********************/
+    let totalTimeLogs = 0;
+    for (let timeSheetItem of timesheetLogs) {
+        if (String(userId) === String(timeSheetItem.creator)) {
+            totalTimeLogs += timeSheetItem.duration;
+        }
+    }
+    const memberDilligencePoint = Math.min((totalTimeLogs / (totalDuration * Number(currentEmployee.weight / 100))) * 100 * (task?.dilligenceWeight || 0.25), 100);
+    // console.log('memberDilligencePoint', memberDilligencePoint)
+    let autoMemberPoint = memberTimePoint + memberQualityPoint + memberCostPoint + memberDilligencePoint;
+    console.log('\n')
+
+    if (getCalcPointsOnly) return autoMemberPoint;
+    return {
+        usedDuration,
+        totalDuration,
+        schedulePerformanceIndex,
+        actionsHasRating,
+        sumRatingOfPassedActions,
+        sumRatingOfAllActions,
+        estimateNormalMemberCost,
+        actualCost,
+        costPerformanceIndex,
+        totalTimeLogs,
+        memberTimePoint,
+        memberQualityPoint,
+        memberCostPoint,
+        memberDilligencePoint,
+        autoMemberPoint,
+    }
+}
+
+const getDurationWithoutSatSun = (startDate, endDate, timeMode) => {
+    const numsOfSaturdays = getNumsOfDaysWithoutGivenDay(new Date(startDate), new Date(endDate), 6)
+    const numsOfSundays = getNumsOfDaysWithoutGivenDay(new Date(startDate), new Date(endDate), 0)
+    let duration = 0
+    if (timeMode === 'hours') {
+        duration = (moment(endDate).diff(moment(startDate), `milliseconds`) / MILISECS_TO_DAYS - numsOfSaturdays - numsOfSundays) * 8;
+        // return theo don vi giờ - hours
+        return duration;
+    }
+    if (timeMode === 'milliseconds') {
+        duration = (moment(endDate).diff(moment(startDate), `milliseconds`) / MILISECS_TO_DAYS - numsOfSaturdays - numsOfSundays);
+        // return theo don vi milliseconds
+        return duration * MILISECS_TO_DAYS;
+    }
+    duration = moment(endDate).diff(moment(startDate), `milliseconds`) / MILISECS_TO_DAYS - numsOfSaturdays - numsOfSundays;
+    // return theo don vi ngày - days
+    return duration;
+}
+
+const getNumsOfDaysWithoutGivenDay = (startDate, endDate, givenDay) => {
+    let numberOfDates = 0
+    while (startDate < endDate) {
+        if (startDate.getDay() === givenDay) {
+            numberOfDates++
+        }
+        startDate.setDate(startDate.getDate() + 1)
+    }
+    return numberOfDates
+}
+
+const convertIndexPointToNormalPoint = (indexPoint) => {
+    if (!indexPoint || indexPoint === Infinity || Number.isNaN(indexPoint) || indexPoint < 0.5) return 0;
+    else if (indexPoint >= 0.5 && indexPoint < 0.75) return 40;
+    else if (indexPoint >= 0.75 && indexPoint < 1) return 60;
+    else if (indexPoint >= 1 && indexPoint < 1.25) return 80;
+    else if (indexPoint >= 1.25 && indexPoint < 1.5) return 90;
+    else return 100;
 }
 
 initHumanResourceForProjectData().catch((err) => {

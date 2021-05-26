@@ -346,7 +346,10 @@ function calcProjectTaskPoint(data, getCalcPointsOnly = true) {
 function calcProjectMemberPoint(data, getCalcPointsOnly = true) {
     // console.log('\n--------------');
     const { task, progress, projectDetail, currentMemberActualCost, info, userId } = data;
-    const { timesheetLogs, estimateNormalCost, startDate, endDate, actorsWithSalary, responsibleEmployees, estimateAssetCost, accountableEmployees, estimateNormalTime } = task;
+    const { timesheetLogs } = task;
+    const currentEmployee = task.actorsWithSalary.find((actorSalaryItem) => {
+        return String(actorSalaryItem.userId) === String(userId)
+    });
     /***************** Yếu tố tiến độ **********************/
     const usedDuration = getDurationWithoutSatSun(task.startDate, moment().format(), 'milliseconds');
     const totalDuration = task.estimateNormalTime;
@@ -385,7 +388,7 @@ function calcProjectMemberPoint(data, getCalcPointsOnly = true) {
             totalTimeLogs += timeSheetItem.duration;
         }
     }
-    const memberDilligencePoint = Math.min((totalTimeLogs / totalDuration) * 100 * (task?.dilligenceWeight || 0.25), 100);
+    const memberDilligencePoint = Math.min((totalTimeLogs / (totalDuration * Number(currentEmployee.weight / 100))) * 100 * (task?.dilligenceWeight || 0.25), 100);
     // console.log('memberDilligencePoint', memberDilligencePoint)
     let autoMemberPoint = 0;
     let formula;
@@ -451,10 +454,7 @@ function calcTaskEVMPoint(data) {
     const earnedValue = Number(progress) / 100 * Number(estimateNormalCost);
     // Other params
     const estDuration = Number(estimateNormalTime) / (projectDetail?.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS);
-    const realDuration = moment().isSameOrAfter(moment(startDate))
-        ? getDurationWithoutSatSun(startDate, actualEndDate || moment().format(), 'milliseconds') / (projectDetail?.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS)
-        : 0;
-
+    const realDuration = (task?.status === 'finished' && actualEndDate) ? (getDurationWithoutSatSun(startDate, actualEndDate, 'milliseconds') / (projectDetail?.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS)) : undefined;
     return {
         earnedValue,
         plannedValue,
@@ -473,9 +473,9 @@ function calcMemberStatisticEvalPoint(data) {
     // Estimate cost
     const estCost = getEstimateMemberCostOfTask(task, projectDetail, userId);
     // Real duration
-    const realDuration = moment().isSameOrAfter(moment(startDate))
-        ? getDurationWithoutSatSun(startDate, actualEndDate || moment().format(), 'milliseconds') / (projectDetail?.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS)
-        : 0;
+    const realDuration = (task?.status === 'finished' && actualEndDate)
+        ? (getDurationWithoutSatSun(startDate, actualEndDate, 'milliseconds') / (projectDetail?.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS) * (currentMemberWithSalary.weight / 100))
+        : undefined;
     // Real cost
     const realCost = getActualMemberCostOfTask(task, projectDetail, userId);
 
