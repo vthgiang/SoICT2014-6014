@@ -3,6 +3,8 @@ import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { taskManagementService } from "../../../task/task-management/redux/services";
 import { formatPriority, getTotalTimeSheetLogs, formatStatus } from "../../../task/task-management/component/functionHelpers.js"
+import { taskManagementActions } from "../../../task/task-management/redux/actions";
+import Swal from 'sweetalert2';
 function areEqual(prevProps, nextProps) {
     if (prevProps.user._id === nextProps.user._id && prevProps.search === nextProps.search ){
         return true
@@ -19,6 +21,7 @@ function TaskUser(props) {
     const [taskCreator, setTaskCreator] = useState()
     const [resultShow, setResultShow] = useState(false)
     const [status, setStatus] = useState([1, 0, 0, 0, 0])
+    const [updateDelete, setUpdateDelete] = useState(0)
     const { translate } = props
     useEffect(() => {
         if (props.startDate) {
@@ -48,7 +51,7 @@ function TaskUser(props) {
                     setTaskCreator(data)
                 })
         }
-    }, [props.user._id, props.startDate, props.endDate])
+    }, [props.user._id, props.startDate, props.endDate,updateDelete])
     const handChangeStatus = (index) => {
         switch (index) {
             case 0:
@@ -74,10 +77,29 @@ function TaskUser(props) {
     const handleNameTask = (taskName) => {
         setNameTask(taskName)
     }
+    const handleDelete = async (id,name) => {
+        const { tasks, translate } = props;
+            Swal.fire({
+                title: `Bạn có chắc chắn muốn xóa công việc "${name}"?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: translate('general.no'),
+                confirmButtonText: translate('general.yes'),
+            }).then(async (result) => {
+                if (result.value) {
+                    await props.deleteTaskById(id);
+                    await setUpdateDelete(updateDelete+1)
+                }
+            })
+
+    }
     const showData = (data) => {
         let result = null
         if (data.length !== 0) {
             result = data.map((x, index) => {
+                console.log(x);
                 return (
                     <tr key={index}>
                         <td>{x.name}</td>
@@ -86,6 +108,10 @@ function TaskUser(props) {
                         <td>{formatStatus(translate, x.status)}</td>
                         <td>{x.progress ? x.progress + "%" : "0%"}</td>
                         <td>{getTotalTimeSheetLogs(x.timesheetLogs)}</td>
+                        <td>
+                        <a style={{ cursor: 'pointer' }} onClick={() =>handleDelete(x._id,x.name)} className="delete" title={translate('task.task_management.action_delete')}>
+                        <i className="material-icons"></i>
+                    </a></td>
                     </tr>
                 )
             })
@@ -177,6 +203,7 @@ function TaskUser(props) {
                                     <th>{translate('task.task_management.col_status')}</th>
                                     <th>{translate('task.task_management.col_progress')}</th>
                                     <th>{translate('task.task_management.col_logged_time')}</th>
+                                    <th >{translate('table.action')}</th>
                                 </tr>
                             </thead>
 
@@ -221,7 +248,7 @@ function mapState(state) {
 }
 
 const mapDispatchToProps = {
-
+    deleteTaskById: taskManagementActions._delete,
 }
 
 
