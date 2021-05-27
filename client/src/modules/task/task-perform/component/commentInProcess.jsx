@@ -371,7 +371,7 @@ class CommentInProcess extends Component {
                     //Hiển thị bình luận của công việc
                     comments.map(item => {
                         let arrImageIndex = item.files.map((elem, index) => this.isImage(elem.name) ? index : -1).filter(index => index !== -1);
-                                                                let listImage = item.files.map((elem) => this.isImage(elem.name) ? elem.url : -1).filter(url => url !== -1);
+                        let listImage = item.files.map((elem) => this.isImage(elem.name) ? elem.url : -1).filter(url => url !== -1);
                         return (
                             <div key={item._id}>
                                 <img className={inputAvatarCssClass} src={(process.env.REACT_APP_SERVER + item.creator?.avatar)} alt="User Image" />
