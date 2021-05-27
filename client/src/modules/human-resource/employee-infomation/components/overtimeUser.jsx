@@ -5,6 +5,13 @@ import { TimesheetsActions } from "../../timesheets/redux/actions";
 import { AnnualLeaveActions } from "../../annual-leave/redux/actions";
 import c3 from 'c3';
 import 'c3/c3.css';
+function areEqual(prevProps, nextProps) {
+    if (prevProps.user._id === nextProps.user._id && prevProps.email === nextProps.email && prevProps.search === nextProps.search  && JSON.stringify(prevProps.timesheets.listTimesheetsByEmployeeIdAndTime)===JSON.stringify(nextProps.timesheets.listTimesheetsByEmployeeIdAndTime) && JSON.stringify(prevProps.annualLeave.listAnnualLeaveOfNumberMonth)===JSON.stringify(nextProps.annualLeave.listAnnualLeaveOfNumberMonth)){
+        return true
+    } else {
+        return false
+    }
+}
 function TakeLeaveUser(props) {
     const [showOverTimeAndHourTime, setShowOverTimeAndHourTime] = useState({ isLoading: true ,show:false})
     const [showAnnualLeave, setShowAnnualLeave] = useState({ isLoading: true , show:true})
@@ -198,7 +205,6 @@ function TakeLeaveUser(props) {
     }
     const { timesheets, translate, annualLeave } = props
     const { listTimesheetsByEmployeeIdAndTime } = timesheets
-    
     let overTime = 0, hoursOff = 0, totalHours = 0;
     const { listAnnualLeaveOfNumberMonth } = annualLeave
     // if (timesheets.){}
@@ -209,20 +215,22 @@ function TakeLeaveUser(props) {
             totalHours = totalHours + listTimesheetsByEmployeeIdAndTime[i].totalHours
         }
     }
-    if (listTimesheetsByEmployeeIdAndTime.length !== 0) {
+    if (listTimesheetsByEmployeeIdAndTime) {
         let ratioX = ['x', ...timesheets.arrMonthById];
         let data1 = ['data1'], data2 = ['data2'];
-        timesheets.arrMonthById.forEach(x => {
-            let month = `${new Date(x).getFullYear()}-${new Date(x).getMonth()}`;
-            let data = listTimesheetsByEmployeeIdAndTime.find(x => `${new Date(x.month).getFullYear()}-${new Date(x.month).getMonth()}` === month);
-            if (data) {
-                data1 = [...data1, data.totalHours];
-                data2 = [...data2, data.totalOvertime ? data.totalOvertime : 0];
-            } else {
-                data1 = [...data1, 0];
-                data2 = [...data2, 0];
-            }
-        })
+        if (listTimesheetsByEmployeeIdAndTime.length!==0){
+            timesheets.arrMonthById.forEach(x => {
+                let month = `${new Date(x).getFullYear()}-${new Date(x).getMonth()}`;
+                let data = listTimesheetsByEmployeeIdAndTime.find(x => `${new Date(x.month).getFullYear()}-${new Date(x.month).getMonth()}` === month);
+                if (data) {
+                    data1 = [...data1, data.totalHours];
+                    data2 = [...data2, data.totalOvertime ? data.totalOvertime : 0];
+                } else {
+                    data1 = [...data1, 0];
+                    data2 = [...data2, 0];
+                }
+            })
+        }
         let nameData1=`${translate('human_resource.dashboard_personal.total_hours_works')}`
         let nameData2=`${translate('human_resource.dashboard_personal.overtime_total')}`
         renderChart({ nameData1, nameData2, ratioX, data1, data2, lineChart });
@@ -314,4 +322,4 @@ const mapDispatchToProps = {
 
 
 
-export default connect(mapState, mapDispatchToProps)(withTranslate(TakeLeaveUser));
+export default connect(mapState, mapDispatchToProps)(withTranslate(React.memo(TakeLeaveUser,areEqual)));

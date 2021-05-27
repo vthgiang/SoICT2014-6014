@@ -12,6 +12,7 @@ import DisciplineUser from "./disciplineUser";
 
 function DetailUser(props) {
     const [nameTask, setNameTask] = useState(" thực hiện ")
+    const { translate } = props
     const formatDate = (date, monthYear = false) => {
         if (date) {
             let d = new Date(date),
@@ -36,6 +37,7 @@ function DetailUser(props) {
         startDate: _startDate,
         endDate: formatDate(Date.now(), true)
     })
+    const [search,setSearch]= useState(0)
     const [email, setEmail] = useState()
     useEffect(() => {
         if (props.user._id) {
@@ -60,6 +62,9 @@ function DetailUser(props) {
     }
     const handleNameTask = (taskName) => {
         setNameTask(taskName)
+    }
+    const handleSunmitSearch=()=>{
+        setSearch(search+1)
     }
     let partMonth1 = state.startDate.split('-');
     let startDate = [partMonth1[1], partMonth1[0]].join('-');
@@ -89,10 +94,12 @@ function DetailUser(props) {
                             onChange={handleEndMonthChange}
                         />
                     </div>
+                <button type="button" className="btn btn-success" title={translate('general.search')} onClick={() => handleSunmitSearch()} >{translate('general.search')}</button>
+
                 </div>
             </div>
 
-            <TaskUser user={props.user} unitId={props.id} startDate={startDate} endDate={endDate} changeTask={handleNameTask}>
+            <TaskUser user={props.user} unitId={props.id} startDate={startDate} endDate={endDate} search={search} changeTask={handleNameTask}>
 
             </TaskUser>
             <div className="row">
@@ -123,7 +130,7 @@ function DetailUser(props) {
                         <div className="box-header with-border">
                             <div class="title">Thông tin khen thưởng</div>
                         </div>
-                        <CommendationUser user={props.user} unitId={props.id} email={email} startDate={startDate} endDate={endDate}></CommendationUser>
+                        <CommendationUser user={props.user} unitId={props.id} email={email} startDate={startDate} endDate={endDate} search={search} ></CommendationUser>
                     </div>
                 </div>
             </div>
@@ -134,12 +141,12 @@ function DetailUser(props) {
                         <div className="box-header with-border">
                             <div class="title">Thông tin kỷ luật</div>
                         </div>
-                        <DisciplineUser user={props.user} unitId={props.id} email={email} startDate={startDate} endDate={endDate}></DisciplineUser>
+                        <DisciplineUser user={props.user} unitId={props.id} email={email} startDate={startDate} endDate={endDate} search={search}></DisciplineUser>
                     </div>
                 </div>
             </div>
-            <KpiUser user={props.user} unitId={props.id} startDate={startDate} endDate={endDate} ></KpiUser>
-            <TakeLeaveUser user={props.user} unitId={props.id} email={email} startDate={startDate} endDate={endDate} ></TakeLeaveUser>
+            <KpiUser user={props.user} unitId={props.id} startDate={startDate} endDate={endDate} search={search} ></KpiUser>
+            <TakeLeaveUser user={props.user} unitId={props.id} email={email} startDate={startDate} endDate={endDate} search={search}></TakeLeaveUser>
         </div>
     )
 }

@@ -34,6 +34,9 @@ function EmployeeInfomation(props) {
         if (JSON.stringify(listUser)!==JSON.stringify(listUsers)){
             setListUsers(listUser)
         }
+        if (!currentUser && listUsers){
+            setCurrentUser(listUsers[0])
+        }
     }
     const handchangeUser = (data) => {
         let dataUser = listUsers.find(value=>value._id===data[0])
@@ -53,7 +56,7 @@ function EmployeeInfomation(props) {
                 className="form-control select2"
                 style={{ width: "auto" }}
                 items={list }
-                value={idUser}
+                value={currentUser?currentUser._id:null}
                 onChange={handchangeUser}
                 multiple={false}
                 options={{ placeholder: "chọn nhân viên" }}

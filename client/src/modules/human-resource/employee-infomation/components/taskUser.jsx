@@ -3,7 +3,13 @@ import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { taskManagementService } from "../../../task/task-management/redux/services";
 import { formatPriority, getTotalTimeSheetLogs, formatStatus } from "../../../task/task-management/component/functionHelpers.js"
-
+function areEqual(prevProps, nextProps) {
+    if (prevProps.user._id === nextProps.user._id && prevProps.search === nextProps.search ){
+        return true
+    } else {
+        return false
+    }
+}
 function TaskUser(props) {
     const [taskResponsible, setTaskResponsible] = useState()
     const [nameTask, setNameTask] = useState(" thực hiện ")
@@ -220,4 +226,4 @@ const mapDispatchToProps = {
 
 
 
-export default connect(mapState, mapDispatchToProps)(withTranslate(TaskUser));
+export default connect(mapState, mapDispatchToProps)(withTranslate(React.memo(TaskUser,areEqual)));

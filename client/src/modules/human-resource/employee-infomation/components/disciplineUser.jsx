@@ -3,13 +3,20 @@ import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { DisciplineActions } from "../../commendation-discipline/redux/actions";
 
+function areEqual(prevProps, nextProps) {
+    if (prevProps.user._id === nextProps.user._id && prevProps.search === nextProps.search  && prevProps.email === nextProps.email && JSON.stringify(prevProps.discipline.listDisciplines)===JSON.stringify(nextProps.discipline.listDisciplines)){
+        return true
+    } else {
+        return false
+    }
+}
 
 function DisciplineUser(props) {
     useEffect(() => {
         if (props.unitId) {
             props.getListDiscipline({ organizationalUnits: props.unitId, employeeName: props.user.name, startDate: props.startDate, endDate: props.endDate, page: 0, limit: 100000 })
         }
-    }, [props.user._id])
+    }, [props.user._id,props.search])
     const formatDate = (date, monthYear = false) => {
         if (date) {
             let d = new Date(date),
@@ -79,4 +86,4 @@ const mapDispatchToProps = {
 
 
 
-export default connect(mapState, mapDispatchToProps)(withTranslate(DisciplineUser));
+export default connect(mapState, mapDispatchToProps)(withTranslate(React.memo(DisciplineUser,areEqual)));
