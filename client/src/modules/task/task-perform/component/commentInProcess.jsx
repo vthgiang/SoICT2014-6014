@@ -358,66 +358,6 @@ class CommentInProcess extends Component {
         }
     }
 
-    showPreviousImage = async (index, arrFile, arrIndex) => {
-        let i = arrIndex.findIndex((e) => e === index)
-        if (i > 0) {
-            let newIndex = arrIndex[i - 1];
-            let alt = "File not available";
-            let src = arrFile[newIndex].url;
-            if ((src.search(';base64,') < 0) && !this.props.auth.showFiles.find(x => x.fileName === src).file) {
-                await this.props.downloadFile(src, `${src}`, false);
-            }
-            let image = await this.props.auth.showFiles.find(x => x.fileName === src).file;;
-            Swal.fire({
-                html: `<img src=${image} alt=${alt} style="max-width: 100%; max-height: 100%" />`,
-                width: 'auto',
-                showCloseButton: true,
-                showConfirmButton: i > 1 ? true : false,
-                showCancelButton: true,
-                confirmButtonText: '<',
-                cancelButtonText: '>',
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#3085d6',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    this.showPreviousImage(newIndex, arrFile, arrIndex);
-                } else if (result.dismiss === Swal.DismissReason.cancel) {
-                    this.showNextImage(newIndex, arrFile, arrIndex);
-                }
-            })
-        }
-    }
-
-    showNextImage = async (index, arrFile, arrIndex) => {
-        let i = arrIndex.findIndex((e) => e === index)
-        if (i < arrIndex.length - 1) {
-            let newIndex = arrIndex[i + 1];
-            let alt = "File not available";
-            let src = arrFile[newIndex].url;
-            if ((src.search(';base64,') < 0) && !this.props.auth.showFiles.find(x => x.fileName === src).file) {
-                await this.props.downloadFile(src, `${src}`, false);
-            }
-            let image = await this.props.auth.showFiles.find(x => x.fileName === src).file;
-            Swal.fire({
-                html: `<img src=${image} alt=${alt} style="max-width: 100%; max-height: 100%" />`,
-                width: 'auto',
-                showCloseButton: true,
-                showConfirmButton: true,
-                showCancelButton: i < arrIndex.length - 2 ? true : false,
-                confirmButtonText: '<',
-                cancelButtonText: '>',
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#3085d6',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    this.showPreviousImage(newIndex, arrFile, arrIndex);
-                } else if (result.dismiss === Swal.DismissReason.cancel) {
-                    this.showNextImage(newIndex, arrFile, arrIndex);
-                }
-            })
-        }
-    }
-
     render() {
         var comments;
         var minRows = 3, maxRows = 20
@@ -431,6 +371,7 @@ class CommentInProcess extends Component {
                     //Hiển thị bình luận của công việc
                     comments.map(item => {
                         let arrImageIndex = item.files.map((elem, index) => this.isImage(elem.name) ? index : -1).filter(index => index !== -1);
+                        let listImage = item.files.map((elem) => this.isImage(elem.name) ? elem.url : -1).filter(url => url !== -1);
                         return (
                             <div key={item._id}>
                                 <img className={inputAvatarCssClass} src={(process.env.REACT_APP_SERVER + item.creator?.avatar)} alt="User Image" />
@@ -472,10 +413,9 @@ class CommentInProcess extends Component {
                                                                 return <div key={index} className="show-files-task">
                                                                     {this.isImage(elem.name) ?
                                                                         <ApiImage
-                                                                            showPreviousImage={() => this.showPreviousImage(index, item.files, arrImageIndex)}
-                                                                            showNextImage={() => this.showNextImage(index, item.files, arrImageIndex)}
-                                                                            haveNextImage={index < arrImageIndex[arrImageIndex.length - 1] ? true : false}
-                                                                            havePreviousImage={index > arrImageIndex[0] ? true : false}
+                                                                            arrImageIndex={arrImageIndex}
+                                                                            listImage={listImage}
+                                                                            index={index}
                                                                             className="attachment-img files-attach"
                                                                             style={{ marginTop: "5px" }}
                                                                             src={elem.url}
@@ -547,6 +487,8 @@ class CommentInProcess extends Component {
                                 {showChildComment === item._id &&
                                     <div className="comment-content-child">
                                         {item.comments.map(child => {
+                                            let arrImageIndex = child.files.map((elem, index) => this.isImage(elem.name) ? index : -1).filter(index => index !== -1);
+                                            let listImage = child.files.map((elem) => this.isImage(elem.name) ? elem.url : -1).filter(url => url !== -1);
                                             return <div key={child._id}>
                                                 <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + child.creator?.avatar)} alt="User Image" />
 
@@ -587,10 +529,9 @@ class CommentInProcess extends Component {
                                                                                 return <div key={index} className="show-files-task">
                                                                                     {this.isImage(elem.name) ?
                                                                                         <ApiImage
-                                                                                            showPreviousImage={() => this.showPreviousImage(index, item.files, arrImageIndex)}
-                                                                                            showNextImage={() => this.showNextImage(index, item.files, arrImageIndex)}
-                                                                                            haveNextImage={index < arrImageIndex[arrImageIndex.length - 1] ? true : false}
-                                                                                            havePreviousImage={index > arrImageIndex[0] ? true : false}
+                                                                                            arrImageIndex={arrImageIndex}
+                                                                                            listImage={listImage}
+                                                                                            index={index}
                                                                                             className="attachment-img files-attach"
                                                                                             style={{ marginTop: "5px" }}
                                                                                             src={elem.url}

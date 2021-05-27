@@ -930,66 +930,6 @@ class ActionTab extends Component {
         }
     }
 
-    showPreviousImage = async (index, arrFile, arrIndex) => {
-        let i = arrIndex.findIndex((e) => e === index)
-        if (i > 0) {
-            let newIndex = arrIndex[i - 1];
-            let alt = "File not available";
-            let src = arrFile[newIndex].url;
-            if ((src.search(';base64,') < 0) && !this.props.auth.showFiles.find(x => x.fileName === src).file) {
-                await this.props.downloadFile(src, `${src}`, false);
-            }
-            let image = await this.props.auth.showFiles.find(x => x.fileName === src).file;;
-            Swal.fire({
-                html: `<img src=${image} alt=${alt} style="max-width: 100%; max-height: 100%" />`,
-                width: 'auto',
-                showCloseButton: true,
-                showConfirmButton: i > 1 ? true : false,
-                showCancelButton: true,
-                confirmButtonText: '<',
-                cancelButtonText: '>',
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#3085d6',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    this.showPreviousImage(newIndex, arrFile, arrIndex);
-                } else if (result.dismiss === Swal.DismissReason.cancel) {
-                    this.showNextImage(newIndex, arrFile, arrIndex);
-                }
-            })
-        }
-    }
-
-    showNextImage = async (index, arrFile, arrIndex) => {
-        let i = arrIndex.findIndex((e) => e === index)
-        if (i < arrIndex.length - 1) {
-            let newIndex = arrIndex[i + 1];
-            let alt = "File not available";
-            let src = arrFile[newIndex].url;
-            if ((src.search(';base64,') < 0) && !this.props.auth.showFiles.find(x => x.fileName === src).file) {
-                await this.props.downloadFile(src, `${src}`, false);
-            }
-            let image = await this.props.auth.showFiles.find(x => x.fileName === src).file;
-            Swal.fire({
-                html: `<img src=${image} alt=${alt} style="max-width: 100%; max-height: 100%" />`,
-                width: 'auto',
-                showCloseButton: true,
-                showConfirmButton: true,
-                showCancelButton: i < arrIndex.length - 2 ? true : false,
-                confirmButtonText: '<',
-                cancelButtonText: '>',
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#3085d6',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    this.showPreviousImage(newIndex, arrFile, arrIndex);
-                } else if (result.dismiss === Swal.DismissReason.cancel) {
-                    this.showNextImage(newIndex, arrFile, arrIndex);
-                }
-            })
-        }
-    }
-
     showSort = async () => {
         let { taskActions, showSort } = this.state
         if (showSort) {
@@ -1427,6 +1367,7 @@ class ActionTab extends Component {
                                         // Hiển thị hoạt động của công việc
                                         (taskActions).map((item, index) => {
                                             let arrImageIndex = item.files.map((elem, index) => this.isImage(elem.name) ? index : -1).filter(index => index !== -1);
+                                            let listImage = item.files.map((elem) => this.isImage(elem.name) ? elem.url : -1).filter(url => url !== -1);
                                             return (
                                                 <div key={item._id} className={index > 3 ? "hide-component" : ""}>
                                                     {item.creator ?
@@ -1576,10 +1517,9 @@ class ActionTab extends Component {
                                                                             return <div key={index} className="show-files-task">
                                                                                 {this.isImage(elem.name) ?
                                                                                     <ApiImage
-                                                                                        showPreviousImage={() => this.showPreviousImage(index, item.files, arrImageIndex)}
-                                                                                        showNextImage={() => this.showNextImage(index, item.files, arrImageIndex)}
-                                                                                        haveNextImage={index < arrImageIndex[arrImageIndex.length - 1] ? true : false}
-                                                                                        havePreviousImage={index > arrImageIndex[0] ? true : false}
+                                                                                        listImage={listImage}
+                                                                                        arrImageIndex={arrImageIndex}
+                                                                                        index={index}
                                                                                         className="attachment-img files-attach"
                                                                                         style={{ marginTop: "5px" }}
                                                                                         src={elem.url}
@@ -1620,8 +1560,8 @@ class ActionTab extends Component {
 
                                                                 {item.files.length > 0 &&
                                                                     <div className="tool-level1" style={{ marginTop: -15 }}>
-                                                                        {item.files.map(file => {
-                                                                            return <div>
+                                                                        {item.files.map((file, index) => {
+                                                                            return <div key={index}>
                                                                                 <a style={{ cursor: "pointer" }}>{file.name} &nbsp;</a><a style={{ cursor: "pointer" }} className="link-black text-sm btn-box-tool" onClick={() => { this.handleDeleteFile(file._id, file.name, item._id, "action") }}><i className="fa fa-times"></i></a>
                                                                             </div>
                                                                         })}
@@ -1634,6 +1574,8 @@ class ActionTab extends Component {
                                                     {!showSort && showChildComment.some(obj => obj === item._id) &&
                                                         <div>
                                                             {item.comments.map(child => {
+                                                                let arrImageIndex = child.files.map((elem, index) => this.isImage(elem.name) ? index : -1).filter(index => index !== -1);
+                                                                let listImage = child.files.map((elem) => this.isImage(elem.name) ? elem.url : -1).filter(url => url !== -1);
                                                                 return <div key={child._id}>
                                                                     <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + child.creator?.avatar)} alt="User Image" />
                                                                     {editComment !== child._id && // Khi đang edit thì nội dung cũ đi
@@ -1672,10 +1614,9 @@ class ActionTab extends Component {
                                                                                             return <div key={index} className="show-files-task">
                                                                                                 {this.isImage(elem.name) ?
                                                                                                     <ApiImage
-                                                                                                        showPreviousImage={() => this.showPreviousImage(index, item.files, arrImageIndex)}
-                                                                                                        showNextImage={() => this.showNextImage(index, item.files, arrImageIndex)}
-                                                                                                        haveNextImage={index < arrImageIndex[arrImageIndex.length - 1] ? true : false}
-                                                                                                        havePreviousImage={index > arrImageIndex[0] ? true : false}
+                                                                                                        arrImageIndex={arrImageIndex}
+                                                                                                        listImage={listImage}
+                                                                                                        index={index}
                                                                                                         className="attachment-img files-attach"
                                                                                                         style={{ marginTop: "5px" }}
                                                                                                         src={elem.url}
@@ -1872,6 +1813,7 @@ class ActionTab extends Component {
                                     {
                                         taskComments.map((item, index) => {
                                             let arrImageIndex = item.files.map((elem, index) => this.isImage(elem.name) ? index : -1).filter(index => index !== -1);
+                                            let listImage = item.files.map((elem) => this.isImage(elem.name) ? elem.url : -1).filter(url => url !== -1);
                                             return (
                                                 <div key={item._id} className={index > 3 ? "hide-component" : ""}>
                                                     <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + item.creator?.avatar)} alt="User Image" />
@@ -1911,10 +1853,9 @@ class ActionTab extends Component {
                                                                                 return <div key={index} className="show-files-task">
                                                                                     {this.isImage(elem.name) ?
                                                                                         <ApiImage
-                                                                                            showPreviousImage={() => this.showPreviousImage(index, item.files, arrImageIndex)}
-                                                                                            showNextImage={() => this.showNextImage(index, item.files, arrImageIndex)}
-                                                                                            haveNextImage={index < arrImageIndex[arrImageIndex.length - 1] ? true : false}
-                                                                                            havePreviousImage={index > arrImageIndex[0] ? true : false}
+                                                                                            arrImageIndex={arrImageIndex}
+                                                                                            listImage={listImage}
+                                                                                            index={index}
                                                                                             className="attachment-img files-attach"
                                                                                             style={{ marginTop: "5px" }}
                                                                                             src={elem.url}
@@ -1971,6 +1912,8 @@ class ActionTab extends Component {
                                                     {showChildComment.some(x => x === item._id) &&
                                                         <div className="comment-content-child">
                                                             {item.comments.map(child => {
+                                                                let arrImageIndex = child.files.map((elem, index) => this.isImage(elem.name) ? index : -1).filter(index => index !== -1);
+                                                                let listImage = child.files.map((elem) => this.isImage(elem.name) ? elem.url : -1).filter(url => url !== -1);
                                                                 return <div key={child._id}>
                                                                     <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + child.creator?.avatar)} alt="User Image" />
                                                                     {editCommentOfTaskComment !== child._id && // Đang edit thì ẩn đi
@@ -2008,10 +1951,9 @@ class ActionTab extends Component {
                                                                                                     return <div key={index} className="show-files-task">
                                                                                                         {this.isImage(elem.name) ?
                                                                                                             <ApiImage
-                                                                                                                showPreviousImage={() => this.showPreviousImage(index, item.files, arrImageIndex)}
-                                                                                                                showNextImage={() => this.showNextImage(index, item.files, arrImageIndex)}
-                                                                                                                haveNextImage={index < arrImageIndex[arrImageIndex.length - 1] ? true : false}
-                                                                                                                havePreviousImage={index > arrImageIndex[0] ? true : false}
+                                                                                                                arrImageIndex={arrImageIndex}
+                                                                                                                listImage={listImage}
+                                                                                                                index={index}
                                                                                                                 className="attachment-img files-attach"
                                                                                                                 style={{ marginTop: "5px" }}
                                                                                                                 src={elem.url}
@@ -2115,6 +2057,7 @@ class ActionTab extends Component {
                                         {
                                             documents.map((item, index) => {
                                                 let arrImageIndex = item.files.map((elem, index) => this.isImage(elem.name) ? index : -1).filter(index => index !== -1);
+                                                let listImage = item.files.map((elem) => this.isImage(elem.name) ? elem.url : -1).filter(url => url !== -1);
                                                 return (
                                                     <React.Fragment key={`documents-${item._id}`}>
                                                         {showEditTaskFile !== item._id &&
@@ -2151,10 +2094,9 @@ class ActionTab extends Component {
                                                                                     <div key={index} className="show-files-task">
                                                                                         {this.isImage(elem.name) ?
                                                                                             <ApiImage
-                                                                                                showPreviousImage={() => this.showPreviousImage(index, item.files, arrImageIndex)}
-                                                                                                showNextImage={() => this.showNextImage(index, item.files, arrImageIndex)}
-                                                                                                haveNextImage={index < arrImageIndex[arrImageIndex.length - 1] ? true : false}
-                                                                                                havePreviousImage={index > arrImageIndex[0] ? true : false}
+                                                                                                arrImageIndex={arrImageIndex}
+                                                                                                listImage={listImage}
+                                                                                                index={index}
                                                                                                 className="attachment-img files-attach"
                                                                                                 style={{ marginTop: "5px" }}
                                                                                                 src={elem.url}
