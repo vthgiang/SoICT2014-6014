@@ -6,15 +6,15 @@ import { AnnualLeaveActions } from "../../annual-leave/redux/actions";
 import c3 from 'c3';
 import 'c3/c3.css';
 function areEqual(prevProps, nextProps) {
-    if (prevProps.user._id === nextProps.user._id && prevProps.email === nextProps.email && prevProps.search === nextProps.search  && JSON.stringify(prevProps.timesheets.listTimesheetsByEmployeeIdAndTime)===JSON.stringify(nextProps.timesheets.listTimesheetsByEmployeeIdAndTime) && JSON.stringify(prevProps.annualLeave.listAnnualLeaveOfNumberMonth)===JSON.stringify(nextProps.annualLeave.listAnnualLeaveOfNumberMonth)){
+    if (prevProps.user._id === nextProps.user._id && prevProps.email === nextProps.email && prevProps.search === nextProps.search && JSON.stringify(prevProps.timesheets.listTimesheetsByEmployeeIdAndTime) === JSON.stringify(nextProps.timesheets.listTimesheetsByEmployeeIdAndTime) && JSON.stringify(prevProps.annualLeave.listAnnualLeaveOfNumberMonth) === JSON.stringify(nextProps.annualLeave.listAnnualLeaveOfNumberMonth)) {
         return true
     } else {
         return false
     }
 }
 function TakeLeaveUser(props) {
-    const [showOverTimeAndHourTime, setShowOverTimeAndHourTime] = useState({ isLoading: true ,show:false})
-    const [showAnnualLeave, setShowAnnualLeave] = useState({ isLoading: true , show:true})
+    const [showOverTimeAndHourTime, setShowOverTimeAndHourTime] = useState({ isLoading: true, show: false })
+    const [showAnnualLeave, setShowAnnualLeave] = useState({ isLoading: true, show: true })
     const [lineChart, setLineChart] = useState(true)
     const formatDate2 = (date, monthYear = false) => {
         if (date) {
@@ -58,7 +58,7 @@ function TakeLeaveUser(props) {
             props.getTimesheets({ employeeId: props.email, startDate: props.startDate, endDate: props.endDate, callApiByEmployeeId: true });
             props.getNumberAnnaulLeave({ email: props.email, organizationalUnits: props.unitId, startDate: props.startDate, endDate: props.endDate });
             setShowAnnualLeave({ ...showAnnualLeave, isLoading: false })
-            setShowOverTimeAndHourTime({...showOverTimeAndHourTime,isLoading:false})
+            setShowOverTimeAndHourTime({ ...showOverTimeAndHourTime, isLoading: false })
         }
     }, [props.email, props.startDate, props.endDate])
     const showAnnualLeaveUser = (listAnnualLeaveOfNumberMonth, showAnnualLeave) => {
@@ -100,7 +100,7 @@ function TakeLeaveUser(props) {
             </React.Fragment>
         )
     }
-    const showTimeSheetsUser = (listTimesheetsByEmployeeIdAndTime,showOverTimeAndHourTime) => {
+    const showTimeSheetsUser = (listTimesheetsByEmployeeIdAndTime, showOverTimeAndHourTime) => {
         return (
             <React.Fragment>
                 <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
@@ -136,15 +136,15 @@ function TakeLeaveUser(props) {
             </React.Fragment>
         )
     }
-    const handChangeShowOverTimeAndHourTime = () =>{
-        setShowOverTimeAndHourTime({...showOverTimeAndHourTime,show:true})
-        setShowAnnualLeave({...showAnnualLeave,show:false})
+    const handChangeShowOverTimeAndHourTime = () => {
+        setShowOverTimeAndHourTime({ ...showOverTimeAndHourTime, show: true })
+        setShowAnnualLeave({ ...showAnnualLeave, show: false })
     }
-    const handChangeShowAnnualLeave = () =>{
-        setShowOverTimeAndHourTime({...showOverTimeAndHourTime,show:false})
-        setShowAnnualLeave({...showAnnualLeave,show:true})
+    const handChangeShowAnnualLeave = () => {
+        setShowOverTimeAndHourTime({ ...showOverTimeAndHourTime, show: false })
+        setShowAnnualLeave({ ...showAnnualLeave, show: true })
     }
-   
+
     const renderChart = (data) => {
         data.data1.shift();
         data.data2.shift();
@@ -200,7 +200,7 @@ function TakeLeaveUser(props) {
             });
         }, 300);
     };
-    const handleChangeViewChart = (data) =>{
+    const handleChangeViewChart = (data) => {
         setLineChart(data)
     }
     const { timesheets, translate, annualLeave } = props
@@ -218,7 +218,7 @@ function TakeLeaveUser(props) {
     if (listTimesheetsByEmployeeIdAndTime) {
         let ratioX = ['x', ...timesheets.arrMonthById];
         let data1 = ['data1'], data2 = ['data2'];
-        if (listTimesheetsByEmployeeIdAndTime.length!==0){
+        if (listTimesheetsByEmployeeIdAndTime.length !== 0) {
             timesheets.arrMonthById.forEach(x => {
                 let month = `${new Date(x).getFullYear()}-${new Date(x).getMonth()}`;
                 let data = listTimesheetsByEmployeeIdAndTime.find(x => `${new Date(x.month).getFullYear()}-${new Date(x.month).getMonth()}` === month);
@@ -231,70 +231,23 @@ function TakeLeaveUser(props) {
                 }
             })
         }
-        let nameData1=`${translate('human_resource.dashboard_personal.total_hours_works')}`
-        let nameData2=`${translate('human_resource.dashboard_personal.overtime_total')}`
+        let nameData1 = `${translate('human_resource.dashboard_personal.total_hours_works')}`
+        let nameData2 = `${translate('human_resource.dashboard_personal.overtime_total')}`
         renderChart({ nameData1, nameData2, ratioX, data1, data2, lineChart });
     }
-    let nameChart=`${translate('human_resource.dashboard_personal.trend_of_work')}`
+    let nameChart = `${translate('human_resource.dashboard_personal.trend_of_work')}`
     return (
-        <div className="box-header with-border">
-            <div className="col-md-2 col-sm-4 col-xs-4 statistical-item" onClick={()=>{handChangeShowAnnualLeave()}} >
-                <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: "#fff", padding: '10px', borderRadius: '10px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <span style={{ marginRight: '10px', color: "#00c0ef" }} className="material-icons">
-                            person
-                </span>
-                        <span style={{ fontWeight: 'bold' }}>{translate('human_resource.annual_leave.approved_letter')}</span>
-                    </div>
-                    <span style={{ fontSize: '21px' }} className="info-box-number"> {listAnnualLeaveOfNumberMonth ? listAnnualLeaveOfNumberMonth.length : 0} </span>
-                </div>
-            </div>
-            <div className="col-md-2 col-sm-4 col-xs-4 statistical-item" onClick={()=>{handChangeShowAnnualLeave()}} >
-                <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: "#fff", padding: '10px', borderRadius: '10px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <span style={{ marginRight: '10px', color: "#00c0ef" }} className="material-icons">
-                            person
-                </span>
-                        <span style={{ fontWeight: 'bold' }}>Số buổi nghỉ phép còn lại</span>
-                    </div>
-                    <span style={{ fontSize: '21px' }} className="info-box-number">{listAnnualLeaveOfNumberMonth ? 11 - listAnnualLeaveOfNumberMonth.length : 11}</span>
-                </div>
-            </div>
-            <div className="col-md-2 col-sm-4 col-xs-4 statistical-item" onClick={()=>{handChangeShowOverTimeAndHourTime()}} >
-                <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: "#fff", padding: '10px', borderRadius: '10px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <span style={{ marginRight: '10px', color: "#00c0ef" }} className="material-icons">
-                            person
-                </span>
-                        <span style={{ fontWeight: 'bold' }}>{translate('human_resource.timesheets.total_timesheets')}</span>
-                    </div>
-                    <span style={{ fontSize: '21px' }} className="info-box-number"> {totalHours}</span>
-                </div>
-            </div>
-            <div className="col-md-2 col-sm-4 col-xs-4 statistical-item" onClick={()=>{handChangeShowOverTimeAndHourTime()}} >
-                <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: "#fff", padding: '10px', borderRadius: '10px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <span style={{ marginRight: '10px', color: "#00c0ef" }} className="material-icons">
-                            person
-                </span>
-                        <span style={{ fontWeight: 'bold' }}>{translate('human_resource.timesheets.total_over_time')}</span>
-                    </div>
-                    <span style={{ fontSize: '21px' }} className="info-box-number">{overTime}</span>
-                </div>
-            </div>
-            <div className="col-md-2 col-sm-4 col-xs-4 statistical-item" onClick={()=>{handChangeShowOverTimeAndHourTime()}} >
-                <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: "#fff", padding: '10px', borderRadius: '10px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <span style={{ marginRight: '10px', color: "#00c0ef" }} className="material-icons">
-                            person
-                </span>
-                        <span style={{ fontWeight: 'bold' }}>{translate('human_resource.timesheets.total_hours_off')}</span>
-                    </div>
-                    <span style={{ fontSize: '21px' }} className="info-box-number">{hoursOff}</span>
-                </div>
-            </div>
-            { showAnnualLeave.show && showAnnualLeaveUser(listAnnualLeaveOfNumberMonth, showAnnualLeave)}
-            { showOverTimeAndHourTime.show && showTimeSheetsUser(listTimesheetsByEmployeeIdAndTime,showOverTimeAndHourTime)}
+        <div className="nav-tabs-custom">
+            <ul className="nav nav-tabs">
+                <li><a>{translate('human_resource.annual_leave.approved_letter')} : {listAnnualLeaveOfNumberMonth ? listAnnualLeaveOfNumberMonth.length : 0} </a></li>
+                <li><a>Số buổi nghỉ phép còn lại : {listAnnualLeaveOfNumberMonth ? 11 - listAnnualLeaveOfNumberMonth.length : 11}</a></li>
+                <li><a>{translate('human_resource.timesheets.total_timesheets')} : {totalHours}</a></li>
+                <li><a>{translate('human_resource.timesheets.total_over_time')} : {overTime}</a></li>
+                <li><a>{translate('human_resource.timesheets.total_hours_off')} : {hoursOff}</a></li>
+            </ul>
+            
+            { showAnnualLeaveUser(listAnnualLeaveOfNumberMonth, showAnnualLeave)}
+            { showTimeSheetsUser(listTimesheetsByEmployeeIdAndTime, showOverTimeAndHourTime)}
             <h3 className="box-title">{`${nameChart} ${props.startDate}`}<i className="fa fa-fw fa-caret-right"></i>{props.endDate}</h3>
             <div className="dashboard_box_body">
                 <p className="pull-left" style={{ marginBottom: 0 }}><b>ĐV tính: Số giờ</b></p>
@@ -322,4 +275,4 @@ const mapDispatchToProps = {
 
 
 
-export default connect(mapState, mapDispatchToProps)(withTranslate(React.memo(TakeLeaveUser,areEqual)));
+export default connect(mapState, mapDispatchToProps)(withTranslate(React.memo(TakeLeaveUser, areEqual)));
