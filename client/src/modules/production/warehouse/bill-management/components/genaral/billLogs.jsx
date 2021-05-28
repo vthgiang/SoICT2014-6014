@@ -4,27 +4,20 @@ import { connect } from 'react-redux';
 import { DialogModal } from '../../../../../../common-components';
 import { formatFullDate } from '../../../../../../helpers/formatDate';
 
-class BillLogs extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            
-        }
-    }
+function BillLogs(props) {
 
-    render() {
-        const { logs, group, translate } = this.props;
+    const { logs, group, translate } = props;
 
-        return (
-            <React.Fragment>
-                <DialogModal
-                    modalID={`modal-detail-logs-version-bill`}
-                    formID={`form-detail-logs-version-bill`}
-                    title={translate(`manage_warehouse.bill_management.detail_version.${group}`)}
-                    size={75}
-                    hasSaveButton={false}
-                    hasNote={false}
-                >
+    return (
+        <React.Fragment>
+            <DialogModal
+                modalID={`modal-detail-logs-version-bill`}
+                formID={`form-detail-logs-version-bill`}
+                title={translate(`manage_warehouse.bill_management.detail_version.${group}`)}
+                size={75}
+                hasSaveButton={false}
+                hasNote={false}
+            >
                 <form id={`form-detail-logs-version-bill`}>
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border">{translate('manage_warehouse.bill_management.lot')}</legend>
@@ -55,17 +48,16 @@ class BillLogs extends Component {
                             </tbody>
                         </table>
                     </fieldset>
-                    </form>
-                </DialogModal>
-            </React.Fragment>
-        );
-    }
+                </form>
+            </DialogModal>
+        </React.Fragment>
+    );
 }
 
 const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
-    
+
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(BillLogs));

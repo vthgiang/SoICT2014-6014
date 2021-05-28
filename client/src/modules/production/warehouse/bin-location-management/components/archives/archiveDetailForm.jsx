@@ -1,19 +1,15 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
 import { DialogModal, SelectBox, Errorstrong, ButtonModal } from '../../../../../../common-components';
 import { translate } from 'react-redux-multilingual/lib/utils';
 
-class ArchiveDetailForm extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
+function ArchiveDetailForm(props){
+    const [state, setState] = useState({
 
-        }
-    }
+    })
 
-    render() {
-        const { translate, binLocations } = this.props;
+    const { translate, binLocations } = props;
         const { binLocationDetail } = binLocations;
         const {path, status, department, description, capacity, contained, users, enableGoods, unit } = binLocationDetail;
         
@@ -97,7 +93,6 @@ class ArchiveDetailForm extends Component {
                 </DialogModal>
             </React.Fragment>
         );
-    }
 }
 
 const mapStateToProps = state => state;
