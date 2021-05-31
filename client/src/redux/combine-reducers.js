@@ -260,6 +260,11 @@ const rootReducer = (state, action) => {
     if (action.type === 'RESET') {
         state = undefined;
         clearStorage();
+    } else if (action.type === 'SWITCH_PAGE') {
+        state = {
+            auth: state.auth,
+            socket: state.socket
+        }
     }
 
     return appReducer(state, action);
