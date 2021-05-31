@@ -7,8 +7,6 @@ import { formatToTimeZoneDate } from '../../../../../helpers/formatDate'
 import ValidationHelper from '../../../../../helpers/validationHelper';
 import {generateCode} from '../../../../../helpers/generateCode'
 
-import { TransportGeneralInfo } from './create-transport-requirements/transportGeneralInfo';
-import { TransportRequirementsViewDetails } from './transportRequirementsViewDetails';
 import { TransportGeneralInfoShip } from './create-transport-requirements/transportGeneralInfoShip';
 import { TransportReturn } from './create-transport-requirements/transportReturn';
 import { TransportImportGoods } from './create-transport-requirements/transportImportGoods';
@@ -17,7 +15,6 @@ import { TransportNewOne} from './create-transport-requirements/transportNewOne'
 import { TransportGoods } from './create-transport-requirements/transportGoods';
 import { TransportTime } from './create-transport-requirements/transportTime';
 
-import { exampleActions } from '../redux/actions';
 
 import { BillActions } from '../../../warehouse/bill-management/redux/actions';
 import { CrmCustomerActions } from "../../../../crm/customer/redux/actions";
@@ -29,21 +26,8 @@ import { getGeocode } from '../../transportHelper/getGeocodeGoong'
 
 function TransportRequirementsCreateForm(props) {
 
-    // const { translate, example, page, perPage } = props;
-    // const { exampleName, description, exampleNameError } = state1;
     const {bills, transportDepartment, billFromStockModules} = props
     const requirements=getListTypeRequirement();
-    // /**
-    //  * Hàm dùng để kiểm tra xem form đã được validate hay chưa
-    //  */
-    // const isFormValidated = () => {
-    //     if (!exampleNameError.status) {
-    //         return false;
-    //     }
-    //     return true;
-    // }
-
-    // Khởi tạo state
 
     useEffect(() => {
         console.log(billFromStockModules,"billFromStockModules");
@@ -100,16 +84,7 @@ function TransportRequirementsCreateForm(props) {
     //     good: [],
     // })
 
-    const { translate, example, page, perPage } = props;
-
-    const { exampleName, description, exampleNameError } = state;
-
-    const isFormValidated = () => {
-        if (!exampleNameError.status) {
-            return false;
-        }
-        return true;
-    }
+    const { translate} = props;
     /**
      * Hàm dùng để lưu thông tin của form và gọi service tạo mới ví dụ
      */
@@ -247,13 +222,6 @@ function TransportRequirementsCreateForm(props) {
         if(!billFromStockModules)props.getBillsByType({ group: parseInt(state.billGroup), managementLocation: localStorage.getItem("currentRole") });
     },[state])
 
-    // useEffect(() => {
-    //     const getGoods = async () => {
-    //         props.getAllGoods();
-    //     }
-    //     getGoods();
-    // }, [state, billId])
-
     const handleTypeBillChange = (value) => {
         // console.log(value[0]);
         if (value[0] !== "0") {
@@ -283,14 +251,6 @@ function TransportRequirementsCreateForm(props) {
         })
     }
 
-    // useEffect(() => {
-    //     let currentBill = bills.filter(r => r._id === billId.id);
-    //     setBillDetail({
-    //         ...billDetail,
-    //         currentBill: currentBill[0]
-    //     })
-        
-    // }, [billId])
     useEffect(() => {
         props.getAllTransportDepartments();
         props.getUserByRole({currentUserId: localStorage.getItem('userId'), role: 1})
@@ -360,7 +320,6 @@ function TransportRequirementsCreateForm(props) {
     }, [bills])
 
     useEffect(() => {
-        console.log(currentBill?.bill, " bbbb")
         if (currentBill && currentBill.bill && currentBill.bill.goods && currentBill.bill.goods.length!==0){
             let listGood = [];
             currentBill.bill.goods.map(item => {
@@ -584,13 +543,8 @@ function TransportRequirementsCreateForm(props) {
     );
 }
 
-function mapState(state) {
-    // const example = state.example1;
-    // return { example }  
-    // console.log(state, " day la state");    
+function mapState(state) { 
     const {bills, transportDepartment} = state;
-    // console.log(bills)
-    // const listAllGoods = state.goods.listALLGoods;
     return { bills, transportDepartment }
 }
 

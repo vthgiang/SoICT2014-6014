@@ -9,7 +9,7 @@ function MapDirectionsRenderer(props) {
     const { places, travelMode, stt, colorLine } = props;
     useEffect(() => {
         let timeDelay = (typeof stt == 'number')?stt*2000:2000;
-        setTimeout(()=>{
+        let k = setTimeout(()=>{
             if (places && travelMode){
                 let waypoints = []
                 places.map((p, index) => {
@@ -39,6 +39,7 @@ function MapDirectionsRenderer(props) {
                 );
             }
         }, timeDelay)
+        return clearTimeout(k);
     }, [places, travelMode]);
   
     if (error) {

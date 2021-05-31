@@ -18,7 +18,6 @@
             props.driverLocation && props.driverLocation
             && 
             props.driverLocation.map(item => {
-                console.log(item, "aaaaaaaaaa");
                 return <Marker key={"driverLocation"} position={item.location} icon={item.icon} label={item.name}/>
             })
         }
@@ -55,11 +54,10 @@
         }
         {
             props.locations.map((item, index) =>{
-                console.log(item)
                 return (
                     (index!==0) &&
                     <MapDirectionsRenderer
-                        // key = {"direction "+index} 
+                        key = {"direction "+index} 
                         places={[
                             props.locations[index-1],
                             item,

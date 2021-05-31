@@ -14,8 +14,10 @@ import { TransportReturn } from './create-transport-requirements/transportReturn
 import { TransportImportGoods } from './create-transport-requirements/transportImportGoods';
 import { TransportMaterial } from './create-transport-requirements/transportMaterial';
 import { TransportNewOne} from './edit-transport-requirement/transportNewOne';
-import { TransportGoods } from './edit-transport-requirement/transportGoods';
+// import { TransportGoods } from './edit-transport-requirement/transportGoods';
+import { TransportGoods } from './create-transport-requirements/transportGoods';
 import { TransportTime } from './edit-transport-requirement/transportTime';
+// import { TransportTime } from './create-transport-requirements/transportTime';
 
 import { LocateTransportRequirement } from './edit-transport-requirement/locateTransportRequirement'
 
@@ -30,9 +32,7 @@ function TransportRequirementsEditForm(props) {
     let {curentTransportRequirementDetail, editTransportRequirement} = props;
     // Khởi tạo state
     const [state, setState] = useState({
-        value: "5",
-        billGroup: "2",
-        billType: "3"
+        value: "5"
     })
 
     /**
@@ -42,28 +42,17 @@ function TransportRequirementsEditForm(props) {
         goods: [],
         timeRequests: [],
     });
-
-    const [importGoodsDetails, setImportGoodsDetails] = useState({
-        addressStock: "",
-        nameStock: ""
+    const [currentBill, setCurrentBill] = useState({
+        id: "0",
     })
+
     /**
      * Hàm dùng để lưu thông tin của form và gọi service tạo mới ví dụ
      */
     const save = async () => {
-        //     if (isFormValidated() && exampleName) {
-        //         props.createExample([{ exampleName, description }]);
-        //         props.getExamples({
-        //             exampleName: "",
-        //             page: page,
-        //             perPage: perPage
-        //         });
-        //     }
-        // const {payload, volume} = getTotalPayloadVolume(requirementsForm.goods);
         /**
          * Khi tạo mới yêu cầu vận chuyển, đồng thời lấy tọa độ geocode {Lat, Lng} lưu vào db
          */
-        console.log(requirementsForm, " 2123");
         let timeRequest = [];
         if(requirementsForm.timeRequests && requirementsForm.timeRequests.length!==0){
             requirementsForm.timeRequests.map(item => {
@@ -97,21 +86,28 @@ function TransportRequirementsEditForm(props) {
             timeRequests: timeRequest,
             fromAddress: requirementsForm.fromAddress,
             toAddress: requirementsForm.toAddress,
+            geocode: requirementsForm.geocode,
         };
         editTransportRequirement(curentTransportRequirementDetail._id, data);
         setRequirementsForm({})
     }
 
      useEffect(() => {
-        props.getCustomers();
-        props.getBillsByType({ page:1, limit:30, group: parseInt(state.billGroup), managementLocation: localStorage.getItem("currentRole") });
+        // props.getCustomers();
+        // props.getBillsByType({ page:1, limit:30, group: parseInt(state.billGroup), managementLocation: localStorage.getItem("currentRole") });
     },[state])
 
     // Khởi tạo giá trị ban đầu
     useEffect(() => {
-        console.log(curentTransportRequirementDetail, " curentTransportRequirementDetail");
         if (curentTransportRequirementDetail){
             setRequirementsForm(curentTransportRequirementDetail);
+            setState({
+                ...state,
+                value: String(curentTransportRequirementDetail.type),
+            });
+            if (curentTransportRequirementDetail.bill){
+                setCurrentBill({bill: curentTransportRequirementDetail.bill, id: curentTransportRequirementDetail.bill._id});
+            }
         }
     }, [curentTransportRequirementDetail])
 
@@ -191,6 +187,7 @@ function TransportRequirementsEditForm(props) {
                 <form id="modal-edit-example-hooks" 
                 // onSubmit={() => save(translate('manage_example.add_success'))}
                 >
+                
                     <div className="nav-tabs-custom">
                 <ul className="nav nav-tabs">
                     <li className="active"><a href="#list-transport-plan" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Thông tin chung"}</a></li>
@@ -201,6 +198,8 @@ function TransportRequirementsEditForm(props) {
                     <div className="tab-pane active" id="list-transport-plan">
                         {/* <LazyLoadComponent
                         > */}
+                        
+            <div className="box-body qlcv">
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <fieldset className="scheduler-border" style={{ height: "100%" }}>
                         <legend className="scheduler-border">Thông tin chung</legend>
@@ -219,24 +218,30 @@ function TransportRequirementsEditForm(props) {
                     </fieldset>
                             </div>
                             {
-                                state.value === "1" && ( 
-                                    <TransportGeneralInfoShip 
-                                        // billId = {billInfo.value}
-                                        // curBill = {billDetail.curBill}   
-                                    />
-                                )
-                            }
+                        state.value === "1" && ( 
+                            <TransportGeneralInfoShip 
+                                // billId = {billInfo.value}
+                                // curBill = {billDetail.curBill}   
+                                currentBill = {currentBill?.bill}
+                                callBackGeneralInfo={callBackGeneralInfo}
+                            />
+                        )
+                    }
                             {
                                 state.value === "2" && (
                                     < TransportReturn
+                                        currentBill = {currentBill?.bill}
+                                        callBackGeneralInfo={callBackGeneralInfo}
                                     />
                                 )
                             }
                             {
                                 state.value === "3" && (
                                     < TransportImportGoods
-                                        nameStock = {importGoodsDetails.nameStock}
-                                        addressStock ={importGoodsDetails.addressStock}
+                                        currentBill = {currentBill?.bill}
+                                        callBackGeneralInfo={callBackGeneralInfo}
+                                        // nameStock = {importGoodsDetails.nameStock}
+                                        // addressStock ={importGoodsDetails.addressStock}
                                     />
                                 )
                             }
@@ -261,8 +266,10 @@ function TransportRequirementsEditForm(props) {
                             < TransportTime 
                                 callBackState = {callBackTimeInfo}
                                 timeRequested = {curentTransportRequirementDetail?.timeRequests}
+                                componentId={"edit-time"}
                             />
                                 {/* </LazyLoadComponent> */}
+                            </div>
                             </div>
                             <div className="tab-pane" id="list-arrange-plan">
                                 <LazyLoadComponent
@@ -292,11 +299,12 @@ function TransportRequirementsEditForm(props) {
 }
 
 function mapState(state) {
+    return {}
 }
 
 const actions = {
     getBillsByType: BillActions.getBillsByType,
-    getCustomers: CrmCustomerActions.getCustomers,
+    // getCustomers: CrmCustomerActions.getCustomers,
 }
 
 const connectedTransportRequirementsEditForm = connect(mapState, actions)(withTranslate(TransportRequirementsEditForm));

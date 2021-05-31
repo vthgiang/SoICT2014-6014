@@ -66,23 +66,29 @@ function TransportPlanGenerate(props) {
         // console.log(listAll);
         let generatePlan = generatePlanFastestMove(listAll.allRequirements, listAll.allPlans, listAll.allVehicles, listAll.allCarriers, formSchedule.inDay, formSchedule.startDate);
         // console.log(generatePlan);
-        let {plans} = generatePlan;
-        let res=[]
-        if (plans && plans.length!==0){
-            plans.map((item, index) => {
-                if (item.transportRequirements && item.transportRequirements.length!==0){
-                    item.code = generateCode("KHVC");
-                    item.name = "Kế hoạch vận chuyển "+item.code
-                    item.startTime = item.date;
-                    item.endTime = item.date;
-                    if (listAll.allSupervisors && listAll.allSupervisors.length!==0){
-                        item.supervisor = listAll.allSupervisors[index % listAll.allSupervisors.length];
+        if (generatePlan){
+            let {plans} = generatePlan;
+            let res=[]
+            if (plans && plans.length!==0){
+                plans.map((item, index) => {
+                    if (item.transportRequirements && item.transportRequirements.length!==0){
+                        item.code = generateCode("KHVC");
+                        item.name = "Kế hoạch vận chuyển "+item.code
+                        item.startTime = item.date;
+                        item.endTime = item.date;
+                        if (listAll.allSupervisors && listAll.allSupervisors.length!==0){
+                            item.supervisor = listAll.allSupervisors[index % listAll.allSupervisors.length];
+                        }
+                        res.push(item);
                     }
-                    res.push(item);
-                }
-            })
+                })
+            }
+            setListPlanGenerate(res);
         }
-        setListPlanGenerate(res);
+        else {
+            setListPlanGenerate([]);
+        }
+        
     }
 
     const handleShowDetailInfo = (transportPlan) => {
@@ -319,6 +325,13 @@ function TransportPlanGenerate(props) {
                         </tr>
                     </thead>
                     <tbody>
+                    {
+                        !(listPlanGenerate && listPlanGenerate.length !== 0)
+                        &&
+                        <tr>
+                            <td colSpan={6}>{"Không có kế hoạch nào được tạo"}</td>
+                        </tr>
+                    }
                     {
                     (listPlanGenerate && listPlanGenerate.length !== 0) &&
                     listPlanGenerate.map((x, index) => (

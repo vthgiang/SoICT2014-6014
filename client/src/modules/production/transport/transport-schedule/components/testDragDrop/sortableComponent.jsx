@@ -319,6 +319,10 @@ const SortableList = SortableContainer(({items}) => {
 const SortableItem = SortableElement((props) =>
 {
 let {value, index, stt} = props
+const getTypeTransportRequirement = (value) => {
+	if (Number(value) === 1) return "Nhận";
+	return "Giao";
+}
 return(
     <div className="address-element" style={{margin: "10px", cursor: "pointer"}}>
 		<div>
@@ -328,7 +332,7 @@ return(
 			{"Địa chỉ: "+ value.address}
 		</div>		
 		<div>
-			{"Loai: "+ value.addressType}
+			{"Loai: "+ getTypeTransportRequirement(value.addressType)}
 		</div>
 		<div>
 			{"id: "+ value.transportRequirement?.code}

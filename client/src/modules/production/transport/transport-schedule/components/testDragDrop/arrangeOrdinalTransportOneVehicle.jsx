@@ -251,6 +251,7 @@ function ArrangeOrdinalTransportOneVehicle(props) {
 }
 
 function mapState(state) {
+    return {};
 }
 
 const actions = {
