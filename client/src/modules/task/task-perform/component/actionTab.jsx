@@ -32,6 +32,7 @@ class ActionTab extends Component {
         let lang = getStorage("lang")
         moment.locale(lang)
         this.state = {
+            filePaste:[],fileEditPaste:[],
             filterLogAutoStopped: 'all',
             taskActions: [],
             currentUser: idUser,
@@ -58,7 +59,7 @@ class ActionTab extends Component {
                 creator: idUser,
                 description: "",
                 files: [],
-                descriptionDefault: ""
+                descriptionDefault: "",
             },
             newActionEdited: {
                 creator: idUser,
@@ -363,7 +364,6 @@ class ActionTab extends Component {
         newAction.files && newAction.files.forEach(x => {
             data.append("files", x);
         })
-
         if (newAction.creator && newAction.description) {
             this.props.createTaskAction(taskId, data);
         }
@@ -371,6 +371,7 @@ class ActionTab extends Component {
         this.setState(state => {
             return {
                 ...state,
+                filePaste:[],
                 newAction: {
                     ...state.newAction,
                     description: "",
@@ -694,13 +695,55 @@ class ActionTab extends Component {
         });
     }
 
+    onActionFilesPaste= (fileObject) => {
+        console.log(this.state.newAction.files, this.state.filePaste);
+       
+        this.setState(state => {
+            return {
+                ...state,
+                filePaste:[...state.filePaste,fileObject],
+                newAction: {
+                    ...state.newAction,
+                    files: [...state.newAction.files,fileObject],
+                }
+            }
+        })
+    }
+    removeFile = (index) =>{
+        let files = this.state.newAction.files
+        let fileRemove =files.splice(index,1)
+            this.setState(state=>{
+                return {
+                    ...state,
+                    filePaste:state.filePaste.filter(value=>value.lastModified!==fileRemove[0].lastModified),
+                    newAction: {
+                        ...state.newAction,
+                        files: files,
+                    }
+                }
+            })
+    }
     onActionFilesChange = (files) => {
+        console.log(this.state.newAction.files, this.state.filePaste);
         this.setState(state => {
             return {
                 ...state,
                 newAction: {
                     ...state.newAction,
-                    files: files,
+                    files: [...files,...state.filePaste],
+                }
+            }
+        })
+    }
+    onEditActionFilesPaste= (fileObject) => {
+       
+        this.setState(state => {
+            return {
+                ...state,
+                fileEditPaste:[...state.fileEditPaste,fileObject],
+                newActionEdited: {
+                    ...state.newActionEdited,
+                    files: [...state.newActionEdited.files,fileObject],
                 }
             }
         })
@@ -1335,12 +1378,14 @@ class ActionTab extends Component {
 
                             {/* Thêm hoạt động cho công việc*/}
                             {role === "responsible" && task && !showSort &&
-                                <React.Fragment>
+                                <React.Fragment  >
                                     <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
                                     <ContentMaker
                                         idQuill={`add-action-${id}`}
                                         inputCssClass="text-input-level1" controlCssClass="tool-level1 row"
                                         onFilesChange={this.onActionFilesChange}
+                                        onFilesPaste={this.onActionFilesPaste}
+                                        onFilesRemote = {this.removeFile}
                                         onFilesError={this.onFilesError}
                                         files={newAction.files}
                                         text={newAction.descriptionDefault}
@@ -1544,6 +1589,7 @@ class ActionTab extends Component {
                                                                     idQuill={`edit-action-${item._id}`}
                                                                     inputCssClass="text-input-level1" controlCssClass="tool-level2 row"
                                                                     onFilesChange={this.onEditActionFilesChange}
+                                                                    onFilesPaste={this.onEditActionFilesPaste}
                                                                     onFilesError={this.onFilesError}
                                                                     files={newActionEdited.files}
                                                                     text={newActionEdited.descriptionDefault}

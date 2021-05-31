@@ -44,6 +44,15 @@ class ContentMaker extends Component {
             event.preventDefault();
         }
     }
+    //paste ảnh
+    handlePaste = e => {
+        if (e.clipboardData.files.length) {
+            const fileObject = e.clipboardData.files[0];
+            this.props.onFilesPaste(fileObject)
+        } else {
+            alert('No image data was found in your clipboard. Copy an image first or take a screenshot.');
+        }
+    };
     render() {
         const { translate } = this.props;
         const {
@@ -54,6 +63,7 @@ class ContentMaker extends Component {
         } = this.props
         return (
             <React.Fragment>
+            <div onPaste={this.handlePaste}>
                 <Files
                     ref='fileComponent'
                     className='files-dropzone-list'
@@ -64,6 +74,7 @@ class ContentMaker extends Component {
                     maxFileSize={maxFileSize}
                     minFileSize={minFileSize}
                     clickable={clickable}
+                    files={files}
                 >
                     <QuillEditor
                         id={idQuill}
@@ -80,6 +91,7 @@ class ContentMaker extends Component {
                         </div>
                     }
                 </Files>
+            </div>
                 <div className={controlCssClass}>
                     <div className="" style={{ textAlign: "right" }}>
                         <a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={(e) => this.refs.fileComponent.openFileChooser()}>{translate("task.task_perform.attach_file")}&nbsp;&nbsp;&nbsp;&nbsp;</a>
@@ -93,16 +105,20 @@ class ContentMaker extends Component {
                     </div>
                     {files && files.length > 0 &&
                         <div className='files-list'>
-                            <ul>{files.map((file) =>
+                            <ul>{files.map((file,index) =>
                                 <li className='files-list-item' key={file.id}>
                                     <div className='files-list-item-preview'>
-                                        {file.preview.type === 'image' ?
+                                        {!file.preview ?
                                             <React.Fragment>
-                                                <img className='files-list-item-preview-image' src={file.preview.url} />
+                                                <img className='files-list-item-preview-image' src={URL.createObjectURL(file)} />
+                                            </React.Fragment>
+                                            : file.preview.type === 'image' ?
+                                            <React.Fragment>
+                                                <img className='files-list-item-preview-image' src={URL.createObjectURL(file)} />
                                             </React.Fragment>
                                             :
                                             <div className='files-list-item-preview-extension'>{file.extension}</div>}
-                                        <a style={{ cursor: "pointer" }} className="pull-right btn-box-tool" onClick={(e) => { this.refs.fileComponent.removeFile(file) }}><i className="fa fa-times"></i></a>
+                                        <a style={{ cursor: "pointer" }} className="pull-right btn-box-tool" onClick={(e) => { this.refs.fileComponent.removeFile(file);this.props.onFilesRemote(index) }}><i className="fa fa-times"></i></a>
                                     </div>
                                     <div className='files-list-item-content'>
                                         <div className='files-list-item-content-item files-list-item-content-item-1'>{file.name}</div>
