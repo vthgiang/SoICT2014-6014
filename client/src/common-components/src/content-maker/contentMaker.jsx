@@ -48,9 +48,9 @@ class ContentMaker extends Component {
     handlePaste = e => {
         if (e.clipboardData.files.length) {
             const fileObject = e.clipboardData.files[0];
-            this.props.onFilesPaste(fileObject)
-        } else {
-            alert('No image data was found in your clipboard. Copy an image first or take a screenshot.');
+            if (this.props.onFilesPaste){
+                this.props.onFilesPaste(fileObject)
+            }
         }
     };
     render() {
@@ -110,15 +110,15 @@ class ContentMaker extends Component {
                                     <div className='files-list-item-preview'>
                                         {!file.preview ?
                                             <React.Fragment>
-                                                <img className='files-list-item-preview-image' src={URL.createObjectURL(file)} />
+                                                <img className='files-list-item-preview-image' src={window.URL.createObjectURL(file)} />
                                             </React.Fragment>
                                             : file.preview.type === 'image' ?
                                             <React.Fragment>
-                                                <img className='files-list-item-preview-image' src={URL.createObjectURL(file)} />
+                                                <img className='files-list-item-preview-image' src={window.URL.createObjectURL(file)} />
                                             </React.Fragment>
                                             :
                                             <div className='files-list-item-preview-extension'>{file.extension}</div>}
-                                        <a style={{ cursor: "pointer" }} className="pull-right btn-box-tool" onClick={(e) => { this.refs.fileComponent.removeFile(file);this.props.onFilesRemote(index) }}><i className="fa fa-times"></i></a>
+                                        <a style={{ cursor: "pointer" }} className="pull-right btn-box-tool" onClick={(e) => { this.refs.fileComponent.removeFile(file); if(this.props.onFilesRemote) this.props.onFilesRemote(index) }}><i className="fa fa-times"></i></a>
                                     </div>
                                     <div className='files-list-item-content'>
                                         <div className='files-list-item-content-item files-list-item-content-item-1'>{file.name}</div>
