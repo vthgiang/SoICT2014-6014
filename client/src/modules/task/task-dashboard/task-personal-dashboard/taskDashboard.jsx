@@ -424,7 +424,7 @@ class TaskDashboard extends Component {
                         <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: "#fff", padding: '10px', borderRadius: '10px' }}>
                             <div style={{ display: 'flex', alignItems: 'center' }}>
                                 <span style={{ marginRight: '10px', color: "#dcb67a" }} className="material-icons">
-                                    <span class="material-icons-outlined">
+                                    <span className="material-icons-outlined">
                                         person_search
                                     </span>
                                 </span>
