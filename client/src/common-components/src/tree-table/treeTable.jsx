@@ -249,7 +249,6 @@ class TreeTable extends Component {
 
     render() {
         const { translate, column, data, actions = true, tableId = 'tree-table' } = this.props;
-        let columnProgressIndex = column.findIndex((column) => column.key === "progress");
         return (
             <React.Fragment>
                 <table id={tableId} className="table table-striped table-hover table-bordered" style={{ marginBottom: 0 }}>
@@ -266,16 +265,7 @@ class TreeTable extends Component {
                                     {
                                         rows.row.map((x, index) => index === 0 ?
                                             <td key={index} data-column="name">{x}</td> :
-                                            index !== columnProgressIndex ?
-                                                <td key={index}>{x}</td> :
-                                                <td key={index}>
-                                                    <div >
-                                                        {x + "%"}
-                                                    </div>
-                                                    <div >
-                                                        <ProgressBar style={{ backgroundColor: "#DDD" }} min="0" max="100" now={x} />
-                                                    </div>
-                                                </td>
+                                            <td key={index}>{x}</td>
                                         )
                                     }
                                     {actions &&
