@@ -84,12 +84,20 @@ class ToolTip extends Component {
 
     }
 
+    displayTextTooltip = (data) => {
+        return <Tooltip placement="top" overlay={data}>
+            <span>{this.props.children}</span>
+        </Tooltip>
+    }
+
     diplayToolTip = (data, type, icon) => {
         switch (type) {
             case 'latest_history':
                 return this.displayTitleContent(data);
             case 'icon_tooltip':
                 return this.displayTooltipForIcon(data, icon);
+            case 'text_tooltip':
+                return this.displayTextTooltip(data)
             default:
                 return this.displayDefault(data);
         }

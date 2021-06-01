@@ -6,12 +6,12 @@ import { PrivateRoute } from "./privateRoute";
 import { AuthRoute } from "./authRoute";
 
 import Layout from "../layout/layout";
+import Login from "../modules/auth/components/login"
+import Introduction from "../modules/intro/components"
+import ResetPassword from "../modules/auth/components/resetPasswordNew"
 
 const Home = lazy(() => import("../modules/home/components"))
 const NotFound = lazy(() => import("../modules/not-found/components"))
-const Login = lazy(() => import("../modules/auth/components/login"))
-const ResetPassword = lazy(() => import("../modules/auth/components/resetPasswordNew"))
-const Introduction = lazy(() => import("../modules/intro/components"))
 const ManageDocument = lazy(() => import("../modules/document/components/administration"))
 const Document = lazy(() => import("../modules/document/components/user"))
 
