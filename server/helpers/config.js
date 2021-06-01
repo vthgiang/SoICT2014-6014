@@ -231,6 +231,13 @@ const COMPONENTS = [{
     links: [
         '/manufacturing-dashboard'
     ]
+}, {
+    name: 'create-transport-plan',
+    description: 'Tạo kế hoạch vận chuyển',
+    roles: [],
+    links: [
+        '/manage-transport-plan'
+    ]
 }];
 
 const getComponentsInLink = (link) => {
