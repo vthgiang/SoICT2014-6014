@@ -172,16 +172,16 @@ function TransportRequirementsManagementTable(props) {
                 editTransportRequirement={editTransportRequirement}
             />
             <div className="box-body qlcv">
-                {/* <div className="form-inline"> */}
+                <div className="form-inline">
                     {/* Tìm kiếm */}
-                    {/* <div className="form-group">
+                    <div className="form-group">
                         <label className="form-control-static">{translate('manage_example.exampleName')}</label>
-                        <input type="text" className="form-control" name="exampleName" onChange={handleChangeExampleName} placeholder={translate('manage_example.exampleName')} autoComplete="off" />
+                        <input type="text" className="form-control" name="exampleName" placeholder={translate('manage_example.exampleName')} autoComplete="off" />
                     </div>
                     <div className="form-group">
-                        <button type="button" className="btn btn-success" title={translate('manage_example.search')} onClick={() => handleSubmitSearch()}>{translate('manage_example.search')}</button>
-                    </div> */}
-                {/* </div> */}
+                        <button type="button" className="btn btn-success" title={translate('manage_example.search')} >{translate('manage_example.search')}</button>
+                    </div>
+                </div>
 
                 {/* Danh sách các yêu cầu */}
                 <table id={tableId} className="table table-striped table-bordered table-hover">
@@ -308,7 +308,6 @@ function TransportRequirementsManagementTable(props) {
 
 function mapState(state) {
     const {transportRequirements} = state;
-    console.log(transportRequirements, " oooooo")
     return { transportRequirements }
 }
 

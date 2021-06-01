@@ -55,6 +55,7 @@ exports.createTransportRequirement = async (portal, data, userId) => {
                 },
             },
             approver: data.approver,
+            department: data.department,
 
         }
         if (data.bill){
@@ -79,6 +80,7 @@ exports.createTransportRequirement = async (portal, data, userId) => {
 
 exports.getAllTransportRequirements = async (portal, data) => {
     let currentUserId = String(data.currentUserId);
+    let currentRole = String(data.currentRole);
     let keySearch = {};
     // if (data?.exampleName?.length > 0) {
     //     keySearch = {
@@ -134,29 +136,74 @@ exports.getAllTransportRequirements = async (portal, data) => {
                     path: 'supervisor'
                 }
             })
+            .populate({
+                path: 'department',
+                populate: {
+                    path: 'type.roleOrganizationalUnit',
+                    populate: [{
+                        path: "users",
+                        populate: [{
+                            path: "userId"
+                        }]
+                    }]
+                }
+            })
     }
     let res = [];
 
     // Lấy danh sách người phê duyệt, xếp lịch
-    let headerUser = await TransportDepartmentServices.getUserByRole(portal, {currentUserId: currentUserId, role: 1});
-    let checkCurrentIdIsHearder = false;
-    if (headerUser && headerUser.list && headerUser.list.length!==0){
-        headerUser.list.map(item => {
-            if (String(item._id) === currentUserId){
-                checkCurrentIdIsHearder = true;
-            }
-        })
-    }
+    // let headerUser = await TransportDepartmentServices.getUserByRole(portal, {currentUserId: currentUserId, role: 1});
+    
+    // let checkCurrentIdIsHearder = false;
+    // if (headerUser && headerUser.list && headerUser.list.length!==0){
+    //     headerUser.list.map(item => {
+    //         if (String(item._id) === currentUserId){
+    //             checkCurrentIdIsHearder = true;
+    //         }
+    //     })
+    // }
     for (let i=0;i<requirements.length;i++){
         // Trưởng đơn vị, người xếp lịch được xem các yêu cầu gửi tới đơn vị mình
         let flag=true;
-        if (flag && checkCurrentIdIsHearder && headerUser && headerUser.list && headerUser.list.length!==0){
-            headerUser.list.map(item => {
-                if (String(item._id) === String(requirements[i].approver?._id)){
-                    res.push(requirements[i]);
-                    flag=false;
-                }
-            })
+        let checkCurrentIdIsHearder = false;
+        // if (flag && checkCurrentIdIsHearder && headerUser && headerUser.list && headerUser.list.length!==0){
+            let department = requirements[i].department;
+            if (department){
+                let type = department.type.filter(r => Number(r.roleTransport) === 1);
+                if (type && type.length !==0){
+                    type.map(x => {
+                        if (x.roleOrganizationalUnit && x.roleOrganizationalUnit.length !==0){
+                            x.roleOrganizationalUnit.map(organization => {
+                                if (String(organization._id) === currentRole){
+                                    if (organization.users && organization.users.length !==0){
+                                        organization.users.map(user => {
+                                            if (user.userId && String(user.userId._id) === String(currentUserId)){
+                                                checkCurrentIdIsHearder = true;
+                                            }
+                                        });
+                                        if (checkCurrentIdIsHearder){
+                                            
+                                            organization.users.map(user => {
+                                                
+                                                if (String(user.userId?._id) === String(requirements[i].approver?._id) && flag){                                                    
+                                                    res.push(requirements[i]);
+                                                    flag = false;
+                                                }
+                                            });
+                                        }
+                                    }
+                                }
+                            })
+                        }
+                    })
+                // }
+            }
+            // headerUser.list.map(item => {
+            //     if (String(item._id) === String(requirements[i].approver?._id) && flag){
+            //         res.push(requirements[i]);
+            //         flag=false;
+            //     }
+            // })
         }
         // Người tạo được xem
         if (flag && String(requirements[i].creator?._id) === String(currentUserId)){

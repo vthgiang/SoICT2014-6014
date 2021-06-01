@@ -19,6 +19,7 @@ function getAllTransportRequirements(queryData) {
                 // limit: 100,
                 status: queryData !== undefined ? queryData.status : null,
                 currentUserId: localStorage.getItem('userId'),
+                currentRole: localStorage.getItem('currentRole'),
             }
         },
          false, // Nếu có truy vấn thành công thì không hiện thông báo

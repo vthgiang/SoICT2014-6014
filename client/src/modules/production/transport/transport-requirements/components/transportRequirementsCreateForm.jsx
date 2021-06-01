@@ -135,6 +135,7 @@ function TransportRequirementsCreateForm(props) {
             toLat: toLat,
             toLng: toLng,
             approver: requirementsForm.approver,
+            department: requirementsForm.department,
         }
         if (state.value !== "5"){
             data.bill = currentBill.id;
@@ -245,15 +246,20 @@ function TransportRequirementsCreateForm(props) {
     }
 
     const handleApproverChange = (value) => {
-        setRequirementsForm({
-            ...requirementsForm,
-            approver: value[0],
-        })
+        let list = [...approverList];
+        let res = list.filter(r => String(r.value) === String(value[0]));
+        if (res && res.length !==0){
+            setRequirementsForm({
+                ...requirementsForm,
+                approver: value[0],
+                department: res[0].department,
+            })
+        }
     }
 
     useEffect(() => {
         props.getAllTransportDepartments();
-        props.getUserByRole({currentUserId: localStorage.getItem('userId'), role: 1})
+        // props.getUserByRole({currentUserId: localStorage.getItem('userId'), role: 1})
     }, [])
 
     useEffect(() => {
@@ -296,17 +302,49 @@ function TransportRequirementsCreateForm(props) {
             text: "--Chọn người phê duyệt--"
         }]
         // console.log(transportDepartment, " opopopo")
-        if (transportDepartment && transportDepartment.listUser && transportDepartment.listUser.length!==0){
-            let listUser = transportDepartment.listUser.filter(r=>Number(r.role) === 1);
-            if (listUser && listUser.length!==0 && listUser[0].list && listUser[0].list.length!==0){
-                listUser[0].list.map(userId => {
-                    newApproverList.push({
-                        value: userId._id,
-                        text: userId.name
+        if (transportDepartment && transportDepartment.lists && transportDepartment.lists.length!==0){
+            transportDepartment.lists.map(item => {
+
+                let listRoleApproverOrganizationalUnit = item.type.filter(r => Number(r.roleTransport) === 1);
+                
+                if (listRoleApproverOrganizationalUnit && listRoleApproverOrganizationalUnit.length !==0){
+                    listRoleApproverOrganizationalUnit.map(organization => {
+                        
+                        if (organization.roleOrganizationalUnit && organization.roleOrganizationalUnit.length !==0){
+                            organization.roleOrganizationalUnit.map(roleOrganizationalUnit => {
+                                console.log(roleOrganizationalUnit);
+                                if (roleOrganizationalUnit.users && roleOrganizationalUnit.users.length !== 0){
+                                    roleOrganizationalUnit.users.map(user => {
+                                        
+                                        newApproverList.push({
+                                            value: user.userId?._id,
+                                            text: user.userId.name + " - " + roleOrganizationalUnit.name + " - " + item.organizationalUnit?.name,
+                                            department: item._id, 
+                                            roleOrganizationalUnit: roleOrganizationalUnit._id,
+                                        })
+                                    })
+                                }       
+                                
+                            })
+                        }
+                        
                     })
-                })
-            }
+                }
+
+            })
         }
+        // console.log(newApproverList, " ok");
+        // if (transportDepartment && transportDepartment.listUser && transportDepartment.listUser.length!==0){
+        //     let listUser = transportDepartment.listUser.filter(r=>Number(r.role) === 1);
+        //     if (listUser && listUser.length!==0 && listUser[0].list && listUser[0].list.length!==0){
+        //         listUser[0].list.map(userId => {
+        //             newApproverList.push({
+        //                 value: userId._id,
+        //                 text: userId.name
+        //             })
+        //         })
+        //     }
+        // }
         setApproverList(newApproverList)
     }, [transportDepartment])
 

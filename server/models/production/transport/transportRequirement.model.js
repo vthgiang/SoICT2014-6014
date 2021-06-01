@@ -19,6 +19,11 @@ const TransportRequirementSchema = new Schema({
         ref: 'User',
         required: true
     },
+    department: { // Phòng ban phụ trách
+        type: Schema.Types.ObjectId,
+        ref: 'TransportDepartment',
+        required: true,
+    },
     customer: { // Khách hàng
         type: Schema.Types.ObjectId,
         ref: 'Customer',
