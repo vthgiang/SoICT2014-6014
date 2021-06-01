@@ -1795,6 +1795,7 @@ const initHumanResourceForProjectData = async () => {
             }
         }, { new: true });
     }
+    // Cập nhật original estimate endDate của project
     if (moment(drugRNDProject.endDate).isBefore(moment(getLatestTaskEndDate(startEndTasksData)))) {
         await Project(vnistDB).findByIdAndUpdate(drugRNDProjectIdInDB, {
             $set: {
@@ -1802,6 +1803,12 @@ const initHumanResourceForProjectData = async () => {
             }
         }, { new: true });
     }
+    // Cập nhật original estimate budget của project
+    await Project(vnistDB).findByIdAndUpdate(drugRNDProjectIdInDB, {
+        $set: {
+            budget: getEstimateCostOfProject(fullTasksData),
+        }
+    }, { new: true });
 
     console.log('Hoàn thành tạo dữ liệu cho dự án')
 }
@@ -2254,6 +2261,15 @@ const convertIndexPointToNormalPoint = (indexPoint) => {
     else if (indexPoint >= 1 && indexPoint < 1.25) return 80;
     else if (indexPoint >= 1.25 && indexPoint < 1.5) return 90;
     else return 100;
+}
+
+const getEstimateCostOfProject = (currentProjectTasks) => {
+    if (!currentProjectTasks || currentProjectTasks.length === 0) return 0;
+    let estCost = 0;
+    for (let taskItem of currentProjectTasks) {
+        estCost += Number(taskItem.estimateNormalCost)
+    }
+    return estCost;
 }
 
 initHumanResourceForProjectData().catch((err) => {

@@ -2958,12 +2958,32 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
     await Task(connect(DB_CONNECTION, portal)).updateOne(
         { _id: taskId },
         {
-            $set: {
+            $set: status ? {
                 name: name,
                 description: description,
                 progress: progress,
                 priority: parseInt(priority[0]),
                 status: status[0],
+                formula: formula,
+                parent: parent,
+                taskProject: taskProject ?? undefined,
+
+                startDate: new Date(startDate),
+                endDate: new Date(endDate),
+
+                collaboratedWithOrganizationalUnits: newCollab,
+
+                responsibleEmployees: responsibleEmployees,
+                consultedEmployees: consultedEmployees,
+                accountableEmployees: accountableEmployees,
+                informedEmployees: informedEmployees,
+
+                inactiveEmployees: inactiveEmployees,
+            } : {
+                name: name,
+                description: description,
+                progress: progress,
+                priority: parseInt(priority[0]),
                 formula: formula,
                 parent: parent,
                 taskProject: taskProject ?? undefined,

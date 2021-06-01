@@ -143,8 +143,8 @@ const TaskProjectAddModal = (props) => {
         // const newTasksListAfterCR = getNewTasksListAfterCR(projectDetail, currentProjectTasks, newTaskFormatted);
         await props.createProjectChangeRequestDispatch({
             creator: getStorage('userId'),
-            name: `Thêm mới công việc ${newTask.name}`,
-            description: `Thêm mới công việc ${newTask.name}`,
+            name: `Thêm mới công việc "${newTask.name}"`,
+            description: `Thêm mới công việc "${newTask.name}"`,
             requestStatus: 1,
             type: 'add_task',
             currentTask,

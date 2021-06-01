@@ -5,12 +5,13 @@ import { ProjectActions } from '../redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import moment from 'moment';
 import 'c3/c3.css';
-import { checkIfAbleToCRUDProject, getCurrentProjectDetails, processAffectedTasksChangeRequest, MILISECS_TO_DAYS, MILISECS_TO_HOURS, getNewTasksListAfterCR, getEndDateOfProject, getEstimateCostOfProject } from './functionHelper';
+import { checkIfAbleToCRUDProject, getCurrentProjectDetails, processAffectedTasksChangeRequest, MILISECS_TO_DAYS, MILISECS_TO_HOURS, getNewTasksListAfterCR, getEndDateOfProject, getEstimateCostOfProject, renderLongList } from './functionHelper';
 import Swal from 'sweetalert2';
 import { taskManagementActions } from '../../../task/task-management/redux/actions';
 import ModalChangeRequestInfo from './modalChangeRequestInfo';
 import { getStorage } from '../../../../config';
 import { ChangeRequestActions } from '../../change-requests/redux/actions';
+import ModalCreateChangeRequest from '../../change-requests/components/modalCreateChangeRequest';
 
 const TabChangeRequestProject = (props) => {
     const { translate, project, currentProjectTasks, user, changeRequest } = props;
@@ -89,7 +90,7 @@ const TabChangeRequestProject = (props) => {
                 })
                 console.log('newChangeRequestsList', newChangeRequestsList)
             }
-            if (requestsPendingItem.type === 'edit_task' && requestsPendingItem.requestStatus === 1) {
+            else if (requestsPendingItem.type === 'edit_task' && requestsPendingItem.requestStatus === 1) {
                 const currentProjectTasksFormatPreceedingTasks = currentProjectTasks.map((taskItem) => {
                     return {
                         ...taskItem,
@@ -177,6 +178,12 @@ const TabChangeRequestProject = (props) => {
                 })
                 console.log('newChangeRequestsList', newChangeRequestsList)
             }
+            else {
+                newChangeRequestsList.push({
+                    ...requestsPendingItem,
+                });
+                console.log('newChangeRequestsList', newChangeRequestsList)
+            }
         }
         if (newChangeRequestsList.length > 0) {
             props.updateStatusProjectChangeRequestDispatch({
@@ -200,13 +207,15 @@ const TabChangeRequestProject = (props) => {
             cancelButtonColor: '#d33',
             cancelButtonText: translate('general.no'),
             confirmButtonText: translate('general.yes'),
-        }).then(async (result) => {
+        }).then((result) => {
             if (result.value) {
-                await props.updateStatusProjectChangeRequestDispatch({
+                props.updateStatusProjectChangeRequestDispatch({
                     changeRequestId,
                     requestStatus: 3,
                 });
-                await props.getTasksByProject(currentProjectId || projectDetail._id);
+                setTimeout(() => {
+                    props.getTasksByProject(currentProjectId || projectDetail._id);
+                }, 20);
                 console.log('\n------- da bam phe duyet---------')
             }
         }).catch(err => {
@@ -224,13 +233,15 @@ const TabChangeRequestProject = (props) => {
             cancelButtonColor: '#d33',
             cancelButtonText: translate('general.no'),
             confirmButtonText: translate('general.yes'),
-        }).then(async (result) => {
+        }).then((result) => {
             if (result.value) {
-                await props.updateStatusProjectChangeRequestDispatch({
+                props.updateStatusProjectChangeRequestDispatch({
                     changeRequestId,
                     requestStatus: 2,
                 });
-                await props.getTasksByProject(currentProjectId || projectDetail._id);
+                setTimeout(() => {
+                    props.getTasksByProject(currentProjectId || projectDetail._id);
+                }, 20);
             }
         })
     }
@@ -304,6 +315,12 @@ const TabChangeRequestProject = (props) => {
         return currentProjectTasks.find((taskItem) => String(taskItem._id) === taskId)?.name;
     }
 
+    const createNormalChangeRequest = () => {
+        setTimeout(() => {
+            window.$(`#modal-create-change-request`).modal("show");
+        }, 10);
+    }
+
     return (
         <React.Fragment>
             <div className="box">
@@ -314,6 +331,20 @@ const TabChangeRequestProject = (props) => {
                         projectDetail={projectDetail}
                         currentProjectTasks={currentProjectTasks}
                     />
+                    <ModalCreateChangeRequest
+                        currentProjectTasks={currentProjectTasks}
+                    />
+                    <div className="row">
+                        <div className="pull-right">
+                            <button
+                                type="button"
+                                className="btn btn-success pull-right"
+                                title="Tạo yêu cầu thay đổi"
+                                onClick={createNormalChangeRequest}
+                                style={{ marginRight: 10 }}
+                            >Tạo yêu cầu thay đổi</button>
+                        </div>
+                    </div>
                     <table id="project-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
@@ -336,10 +367,14 @@ const TabChangeRequestProject = (props) => {
                                         <td>{CRItem?.creator?.name}</td>
                                         <td>{moment(CRItem?.createdAt).format('HH:mm DD/MM/YYYY')}</td>
                                         <td>{CRItem?.description}</td>
-                                        <td>
-                                            {CRItem?.affectedTasksList?.map((affectedItem) => {
-                                                return getTaskName(currentProjectTasks, affectedItem?.new?.task) || affectedItem?.new?.name
-                                            }).join(', ')}
+                                        <td style={{ maxWidth: 500 }}>
+                                            {
+                                                renderLongList(
+                                                    CRItem?.affectedTasksList?.map((affectedItem) => {
+                                                        return getTaskName(currentProjectTasks, affectedItem?.task) || affectedItem?.new?.name
+                                                    }), 5
+                                                )
+                                            }
                                         </td>
                                         <td style={{
                                             ...renderTextCellColor(CRItem?.requestStatus),

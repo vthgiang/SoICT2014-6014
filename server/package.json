@@ -22,7 +22,7 @@
     "init": "node seed/initDB.js; node seed/initSampleCompanyDB.js; node seed/initOrganizationalUnitKPIData.js; node seed/initHumanResourceData.js",
     "y-init": "yarn db && yarn sc",
     "y-init-full": "yarn db && yarn sc && yarn sp && yarn shr",
-    "y-init-quoc": "yarn db && yarn sc && node seed/initQuocData.js"
+    "y-init-project": "yarn db && yarn sc && node seed/initProjectData.js"
   },
   "keywords": [],
   "author": "",

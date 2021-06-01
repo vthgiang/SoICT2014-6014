@@ -8,10 +8,13 @@ import { DialogModal, QuillEditor, SelectBox } from '../../../../common-componen
 import { performTaskAction } from '../../task-perform/redux/actions';
 import { EvaluateByResponsibleEmployeeProject } from './evaluateByResponsibleEmployeeProject';
 import { EvaluateByAccountableEmployeeProject } from './evaluateByAccountableEmployeeProject';
+import { getStorage } from '../../../../config';
+import { isUserInCurrentTask } from '../../../project/projects/components/functionHelper';
 
 function RequestToCloseProjectTaskModal(props) {
     const { id, role, task, translate, performtasks } = props;
     const [status, setStatus] = useState(task?.requestToCloseTask?.taskStatus ? task.requestToCloseTask.taskStatus : 'finished');
+    const userId = getStorage('userId');
     const [description, setDescription] = useState();
     const [descriptionDefault, setDescriptionDefault] = useState();
     const [resData, setResData] = useState();
@@ -191,7 +194,7 @@ function RequestToCloseProjectTaskModal(props) {
                 {role === "responsible" &&
                     <EvaluateByResponsibleEmployeeProject role={role} task={task} handleSaveResponsibleData={handleSaveResponsibleData} />
                 }
-                {role === "accountable" &&
+                {role === "accountable" && isUserInCurrentTask(userId, task) &&
                     <EvaluateByAccountableEmployeeProject role={role} task={task} handleSaveAccountableData={handleSaveAccountableData} handleSaveResponsibleData={handleSaveResponsibleData} />
                 }
 
