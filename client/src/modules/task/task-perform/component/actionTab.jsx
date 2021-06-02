@@ -32,8 +32,8 @@ class ActionTab extends Component {
         let lang = getStorage("lang")
         moment.locale(lang)
         this.state = {
-            filePaste:[],fileEditPaste:[],CommentOfActionFilePaste:[],editCommentOfActionFilePaste:[],newTaskCommentFilePaste:[],EditTaskCommentFilesPaste:[],
-            newCommentOfTaskCommentEditedFilePaste:[],newCommentOfTaskCommentPaste:[],taskFilesPaste:[],fileTaskEditedPaste:[],
+            filePaste: [], fileEditPaste: [], CommentOfActionFilePaste: [], editCommentOfActionFilePaste: [], newTaskCommentFilePaste: [], EditTaskCommentFilesPaste: [],
+            newCommentOfTaskCommentEditedFilePaste: [], newCommentOfTaskCommentPaste: [], taskFilesPaste: [], fileTaskEditedPaste: [],
             filterLogAutoStopped: 'all',
             taskActions: [],
             currentUser: idUser,
@@ -346,7 +346,7 @@ class ActionTab extends Component {
                     files: [],
                     descriptionDefault: ''
                 }
-                state.CommentOfActionFilePaste=[]
+                state.CommentOfActionFilePaste = []
                 return {
                     ...state,
                 }
@@ -373,7 +373,7 @@ class ActionTab extends Component {
         this.setState(state => {
             return {
                 ...state,
-                filePaste:[],
+                filePaste: [],
                 newAction: {
                     ...state.newAction,
                     description: "",
@@ -407,7 +407,7 @@ class ActionTab extends Component {
                     files: [],
                     descriptionDefault: ''
                 },
-                newTaskCommentFilePaste:[]
+                newTaskCommentFilePaste: []
             }
         })
     }
@@ -430,7 +430,7 @@ class ActionTab extends Component {
                 files: [],
                 descriptionDefault: ''
             }
-            state.newCommentOfTaskCommentPaste=[]
+            state.newCommentOfTaskCommentPaste = []
             return {
                 ...state,
             }
@@ -458,7 +458,7 @@ class ActionTab extends Component {
                     files: [],
                     descriptionDefault: ''
                 },
-                taskFilesPaste:[]
+                taskFilesPaste: []
             }
         })
 
@@ -697,31 +697,31 @@ class ActionTab extends Component {
         });
     }
 
-    onActionFilesPaste= (fileObject) => {
+    onActionFilesPaste = (fileObject) => {
         this.setState(state => {
             return {
                 ...state,
-                filePaste:[...state.filePaste,fileObject],
+                filePaste: [...state.filePaste, fileObject],
                 newAction: {
                     ...state.newAction,
-                    files: [...state.newAction.files,fileObject],
+                    files: [...state.newAction.files, fileObject],
                 }
             }
         })
     }
-    removeFile = (index) =>{
+    removeFile = (index) => {
         let files = this.state.newAction.files
-        let fileRemove =files.splice(index,1)
-            this.setState(state=>{
-                return {
-                    ...state,
-                    filePaste:state.filePaste.filter(value=>value.lastModified!==fileRemove[0].lastModified),
-                    newAction: {
-                        ...state.newAction,
-                        files: files,
-                    }
+        let fileRemove = files.splice(index, 1)
+        this.setState(state => {
+            return {
+                ...state,
+                filePaste: state.filePaste.filter(value => value.lastModified !== fileRemove[0].lastModified),
+                newAction: {
+                    ...state.newAction,
+                    files: files,
                 }
-            })
+            }
+        })
     }
     onActionFilesChange = (files) => {
         this.setState(state => {
@@ -729,37 +729,37 @@ class ActionTab extends Component {
                 ...state,
                 newAction: {
                     ...state.newAction,
-                    files: [...files,...state.filePaste],
+                    files: [...files, ...state.filePaste],
                 }
             }
         })
     }
-    onEditActionFilesPaste= (fileObject) => {
-       
+    onEditActionFilesPaste = (fileObject) => {
+
         this.setState(state => {
             return {
                 ...state,
-                fileEditPaste:[...state.fileEditPaste,fileObject],
+                fileEditPaste: [...state.fileEditPaste, fileObject],
                 newActionEdited: {
                     ...state.newActionEdited,
-                    files: [...state.newActionEdited.files,fileObject],
+                    files: [...state.newActionEdited.files, fileObject],
                 }
             }
         })
     }
-    removeEditFile = (index) =>{
+    removeEditFile = (index) => {
         let files = this.state.newActionEdited.files
-        let fileRemove =files.splice(index,1)
-            this.setState(state=>{
-                return {
-                    ...state,
-                    fileEditPaste:state.filePaste.filter(value=>value.lastModified!==fileRemove[0].lastModified),
-                    newActionEdited: {
-                        ...state.newActionEdited,
-                        files: files,
-                    }
+        let fileRemove = files.splice(index, 1)
+        this.setState(state => {
+            return {
+                ...state,
+                fileEditPaste: state.filePaste.filter(value => value.lastModified !== fileRemove[0].lastModified),
+                newActionEdited: {
+                    ...state.newActionEdited,
+                    files: files,
                 }
-            })
+            }
+        })
     }
 
     onEditActionFilesChange = (files) => {
@@ -773,31 +773,31 @@ class ActionTab extends Component {
             }
         })
     }
-    onEditCommentOfTaskCommentFilesPaste= (fileObject) => {
+    onEditCommentOfTaskCommentFilesPaste = (fileObject) => {
         this.setState(state => {
             return {
                 ...state,
-                newCommentOfTaskCommentEditedFilePaste:[...state.newCommentOfTaskCommentEditedFilePaste,fileObject],
+                newCommentOfTaskCommentEditedFilePaste: [...state.newCommentOfTaskCommentEditedFilePaste, fileObject],
                 newCommentOfTaskCommentEdited: {
                     ...state.newCommentOfTaskCommentEdited,
-                    files: [...state.newCommentOfTaskCommentEdited.files,fileObject],
+                    files: [...state.newCommentOfTaskCommentEdited.files, fileObject],
                 }
             }
         })
     }
-    removeEditCommentOfTaskCommentFiles = (index) =>{
+    removeEditCommentOfTaskCommentFiles = (index) => {
         let files = this.state.newCommentOfTaskCommentEdited.files
-        let fileRemove =files.splice(index,1)
-            this.setState(state=>{
-                return {
-                    ...state,
-                    newCommentOfTaskCommentEditedFilePaste:state.newCommentOfTaskCommentEditedFilePaste.filter(value=>value.lastModified!==fileRemove[0].lastModified),
-                    newCommentOfTaskCommentEdited: {
-                        ...state.newCommentOfTaskCommentEdited,
-                        files: files,
-                    }
+        let fileRemove = files.splice(index, 1)
+        this.setState(state => {
+            return {
+                ...state,
+                newCommentOfTaskCommentEditedFilePaste: state.newCommentOfTaskCommentEditedFilePaste.filter(value => value.lastModified !== fileRemove[0].lastModified),
+                newCommentOfTaskCommentEdited: {
+                    ...state.newCommentOfTaskCommentEdited,
+                    files: files,
                 }
-            })
+            }
+        })
     }
     onEditCommentOfTaskCommentFilesChange = async (files) => {
         this.setState(state => {
@@ -805,37 +805,37 @@ class ActionTab extends Component {
                 ...state,
                 newCommentOfTaskCommentEdited: {
                     ...state.newCommentOfTaskCommentEdited,
-                    files:[...files,...state.newCommentOfTaskCommentEditedFilePaste]
+                    files: [...files, ...state.newCommentOfTaskCommentEditedFilePaste]
                 }
             }
         });
     }
-    onEditTaskCommentFilePaste= (fileObject) => {
-       
+    onEditTaskCommentFilePaste = (fileObject) => {
+
         this.setState(state => {
             return {
                 ...state,
-                EditTaskCommentFilesPaste:[...state.EditTaskCommentFilesPaste,fileObject],
+                EditTaskCommentFilesPaste: [...state.EditTaskCommentFilesPaste, fileObject],
                 newTaskCommentEdited: {
                     ...state.newTaskCommentEdited,
-                    files: [...state.newTaskCommentEdited.files,fileObject],
+                    files: [...state.newTaskCommentEdited.files, fileObject],
                 }
             }
         })
     }
-    removeEditTaskCommentFile = (index) =>{
+    removeEditTaskCommentFile = (index) => {
         let files = this.state.newTaskCommentEdited.files
-        let fileRemove =files.splice(index,1)
-            this.setState(state=>{
-                return {
-                    ...state,
-                    EditTaskCommentFilesPaste:state.EditTaskCommentFilesPaste.filter(value=>value.lastModified!==fileRemove[0].lastModified),
-                    newTaskCommentEdited: {
-                        ...state.newTaskCommentEdited,
-                        files: files,
-                    }
+        let fileRemove = files.splice(index, 1)
+        this.setState(state => {
+            return {
+                ...state,
+                EditTaskCommentFilesPaste: state.EditTaskCommentFilesPaste.filter(value => value.lastModified !== fileRemove[0].lastModified),
+                newTaskCommentEdited: {
+                    ...state.newTaskCommentEdited,
+                    files: files,
                 }
-            })
+            }
+        })
     }
 
     onEditTaskCommentFilesChange = (files) => {
@@ -844,37 +844,37 @@ class ActionTab extends Component {
                 ...state,
                 newTaskCommentEdited: {
                     ...state.newTaskCommentEdited,
-                    files: [...files,...state.EditTaskCommentFilesPaste]
+                    files: [...files, ...state.EditTaskCommentFilesPaste]
                 }
             }
         });
     }
-    onTaskCommentFilePaste= (fileObject) => {
-       
+    onTaskCommentFilePaste = (fileObject) => {
+
         this.setState(state => {
             return {
                 ...state,
-                newTaskCommentFilePaste:[...state.newTaskCommentFilePaste,fileObject],
+                newTaskCommentFilePaste: [...state.newTaskCommentFilePaste, fileObject],
                 newTaskComment: {
                     ...state.newTaskComment,
-                    files: [...state.newTaskComment.files,fileObject],
+                    files: [...state.newTaskComment.files, fileObject],
                 }
             }
         })
     }
-    removeTaskCommentFile = (index) =>{
+    removeTaskCommentFile = (index) => {
         let files = this.state.newTaskComment.files
-        let fileRemove =files.splice(index,1)
-            this.setState(state=>{
-                return {
-                    ...state,
-                    newTaskCommentFilePaste:state.newTaskCommentFilePaste.filter(value=>value.lastModified!==fileRemove[0].lastModified),
-                    newTaskComment: {
-                        ...state.newTaskComment,
-                        files: files,
-                    }
+        let fileRemove = files.splice(index, 1)
+        this.setState(state => {
+            return {
+                ...state,
+                newTaskCommentFilePaste: state.newTaskCommentFilePaste.filter(value => value.lastModified !== fileRemove[0].lastModified),
+                newTaskComment: {
+                    ...state.newTaskComment,
+                    files: files,
                 }
-            })
+            }
+        })
     }
 
 
@@ -884,45 +884,45 @@ class ActionTab extends Component {
                 ...state,
                 newTaskComment: {
                     ...state.newTaskComment,
-                    files: [...files,...state.newTaskCommentFilePaste]
+                    files: [...files, ...state.newTaskCommentFilePaste]
                 }
             }
         })
     }
-    onCommentFilesPaste= (files, actionId) => {
-       
+    onCommentFilesPaste = (files, actionId) => {
+
         this.setState(state => {
-            if (state.newCommentOfAction[`${actionId}`]&&state.newCommentOfAction[`${actionId}`].files){
+            if (state.newCommentOfAction[`${actionId}`] && state.newCommentOfAction[`${actionId}`].files) {
                 state.newCommentOfAction[`${actionId}`] = {
                     ...state.newCommentOfAction[`${actionId}`],
-                    files: [...state.newCommentOfAction[`${actionId}`].files,files]
+                    files: [...state.newCommentOfAction[`${actionId}`].files, files]
                 }
-               
+
             } else {
                 state.newCommentOfAction[`${actionId}`] = {
                     ...state.newCommentOfAction[`${actionId}`],
                     files: [files]
                 }
             }
-            state.CommentOfActionFilePaste=[...state.CommentOfActionFilePaste,files]
+            state.CommentOfActionFilePaste = [...state.CommentOfActionFilePaste, files]
             return {
                 ...state,
             }
         })
     }
-    removeCommentFiles = (index,actionId) =>{
+    removeCommentFiles = (index, actionId) => {
         let files = this.state.newCommentOfAction[`${actionId}`].files
-        let fileRemove =files.splice(index,1)
-            this.setState(state=>{
-                state.newCommentOfAction[`${actionId}`] = {
-                    ...state.newCommentOfAction[`${actionId}`],
-                    files: files
-                }
-                state.CommentOfActionFilePaste = state.CommentOfActionFilePaste.filter(value=>value.lastModified!==fileRemove[0].lastModified)
-                return {
-                    ...state
-                }
-            })
+        let fileRemove = files.splice(index, 1)
+        this.setState(state => {
+            state.newCommentOfAction[`${actionId}`] = {
+                ...state.newCommentOfAction[`${actionId}`],
+                files: files
+            }
+            state.CommentOfActionFilePaste = state.CommentOfActionFilePaste.filter(value => value.lastModified !== fileRemove[0].lastModified)
+            return {
+                ...state
+            }
+        })
     }
 
 
@@ -930,32 +930,32 @@ class ActionTab extends Component {
         this.setState(state => {
             state.newCommentOfAction[`${actionId}`] = {
                 ...state.newCommentOfAction[`${actionId}`],
-                files: [...files,...state.CommentOfActionFilePaste]
+                files: [...files, ...state.CommentOfActionFilePaste]
             }
             return {
                 ...state
             }
         })
     }
-    onEditCommentOfActionFilePaste= (file) => {
+    onEditCommentOfActionFilePaste = (file) => {
         this.setState(state => {
             return {
                 ...state,
                 newCommentOfActionEdited: {
                     ...state.newCommentOfActionEdited,
-                    files: [...state.newCommentOfActionEdited.files,file],
+                    files: [...state.newCommentOfActionEdited.files, file],
                 },
-                editCommentOfActionFilePaste:[...state.editCommentOfActionFilePaste,file]
+                editCommentOfActionFilePaste: [...state.editCommentOfActionFilePaste, file]
             }
         })
     }
-    removeEditCommentOfActionFilePaste = (index) =>{
+    removeEditCommentOfActionFilePaste = (index) => {
         let files = this.state.newCommentOfActionEdited.files
-        let fileRemove =files.splice(index,1)
-        this.setState(state=>{
+        let fileRemove = files.splice(index, 1)
+        this.setState(state => {
             return {
                 ...state,
-                editCommentOfActionFilePaste:state.editCommentOfActionFilePaste.filter(value=>value.lastModified!==fileRemove[0].lastModified),
+                editCommentOfActionFilePaste: state.editCommentOfActionFilePaste.filter(value => value.lastModified !== fileRemove[0].lastModified),
                 newCommentOfActionEdited: {
                     ...state.newCommentOfActionEdited,
                     files: files,
@@ -969,74 +969,74 @@ class ActionTab extends Component {
                 ...state,
                 newCommentOfActionEdited: {
                     ...state.newCommentOfActionEdited,
-                    files: [...files,...state.editCommentOfActionFilePaste],
+                    files: [...files, ...state.editCommentOfActionFilePaste],
                 }
             }
         })
     }
-    onCommentOfTaskCommentFilesPaste= (commentId, files) => {
-       
+    onCommentOfTaskCommentFilesPaste = (commentId, files) => {
+
         this.setState(state => {
-            if (state.newCommentOfTaskComment[`${commentId}`]&&state.newCommentOfTaskComment[`${commentId}`].files){
+            if (state.newCommentOfTaskComment[`${commentId}`] && state.newCommentOfTaskComment[`${commentId}`].files) {
                 state.newCommentOfTaskComment[`${commentId}`] = {
                     ...state.newCommentOfTaskComment[`${commentId}`],
-                    files: [...state.newCommentOfTaskComment[`${commentId}`].files,files]
+                    files: [...state.newCommentOfTaskComment[`${commentId}`].files, files]
                 }
-               
+
             } else {
                 state.newCommentOfTaskComment[`${commentId}`] = {
                     ...state.newCommentOfTaskComment[`${commentId}`],
                     files: [files]
                 }
             }
-            state.newCommentOfTaskCommentPaste=[...state.newCommentOfTaskCommentPaste,files]
+            state.newCommentOfTaskCommentPaste = [...state.newCommentOfTaskCommentPaste, files]
             return {
                 ...state,
             }
         })
     }
-    removeCommentOfTaskCommentFiles = (commentId,index) =>{
+    removeCommentOfTaskCommentFiles = (commentId, index) => {
         let files = this.state.newCommentOfTaskComment[`${commentId}`].files
-        let fileRemove =files.splice(index,1)
-            this.setState(state=>{
-                state.newCommentOfTaskComment[`${commentId}`] = {
-                    ...state.newCommentOfTaskComment[`${commentId}`],
-                    files: files
-                }
-                state.newCommentOfTaskCommentPaste = state.newCommentOfTaskCommentPaste.filter(value=>value.lastModified!==fileRemove[0].lastModified)
-                return {
-                    ...state
-                }
-            })
+        let fileRemove = files.splice(index, 1)
+        this.setState(state => {
+            state.newCommentOfTaskComment[`${commentId}`] = {
+                ...state.newCommentOfTaskComment[`${commentId}`],
+                files: files
+            }
+            state.newCommentOfTaskCommentPaste = state.newCommentOfTaskCommentPaste.filter(value => value.lastModified !== fileRemove[0].lastModified)
+            return {
+                ...state
+            }
+        })
     }
     onCommentOfTaskCommentFilesChange = (commentId, files) => {
         this.setState(state => {
             state.newCommentOfTaskComment[`${commentId}`] = {
                 ...state.newCommentOfTaskComment[`${commentId}`],
-                files: [...files,...state.newCommentOfTaskCommentPaste]
+                files: [...files, ...state.newCommentOfTaskCommentPaste]
             }
             return { ...state, }
         })
     }
-    onTaskFilesPaste= (file) => {
+    onTaskFilesPaste = (file) => {
         this.setState(state => {
             return {
                 ...state,
                 taskFiles: {
                     ...state.taskFiles,
-                    files: [...state.taskFiles.files,file],
+                    files: [...state.taskFiles.files, file],
                 },
-                taskFilesPaste:[...state.taskFilesPaste,file]
+                taskFilesPaste: [...state.taskFilesPaste, file]
             }
         })
     }
-    removeTaskFilesPaste = (index) =>{
+    removeTaskFilesPaste = (index) => {
         let files = this.state.taskFiles.files
-        let fileRemove =files.splice(index,1)
-        this.setState(state=>{
+        let fileRemove = files.splice(index, 1)
+        this.setState(state => {
             return {
                 ...state,
-                taskFilesPaste:state.taskFilesPaste.filter(value=>value.lastModified!==fileRemove[0].lastModified),
+                taskFilesPaste: state.taskFilesPaste.filter(value => value.lastModified !== fileRemove[0].lastModified),
                 taskFiles: {
                     ...state.taskFiles,
                     files: files,
@@ -1050,7 +1050,7 @@ class ActionTab extends Component {
                 ...state,
                 taskFiles: {
                     ...state.taskFiles,
-                    files: [...files,...state.taskFilesPaste]
+                    files: [...files, ...state.taskFilesPaste]
                 }
             }
         })
@@ -1163,25 +1163,25 @@ class ActionTab extends Component {
             event.preventDefault();
         }
     }
-    onEditFileTaskPaste= (file) => {
+    onEditFileTaskPaste = (file) => {
         this.setState(state => {
             return {
                 ...state,
                 fileTaskEdited: {
                     ...state.fileTaskEdited,
-                    files: [...state.fileTaskEdited.files,file],
+                    files: [...state.fileTaskEdited.files, file],
                 },
-                fileTaskEditedPaste:[...state.fileTaskEditedPaste,file]
+                fileTaskEditedPaste: [...state.fileTaskEditedPaste, file]
             }
         })
     }
-    removeEditFileTaskPaste = (index) =>{
+    removeEditFileTaskPaste = (index) => {
         let files = this.state.fileTaskEdited.files
-        let fileRemove =files.splice(index,1)
-        this.setState(state=>{
+        let fileRemove = files.splice(index, 1)
+        this.setState(state => {
             return {
                 ...state,
-                fileTaskEditedPaste:state.fileTaskEditedPaste.filter(value=>value.lastModified!==fileRemove[0].lastModified),
+                fileTaskEditedPaste: state.fileTaskEditedPaste.filter(value => value.lastModified !== fileRemove[0].lastModified),
                 fileTaskEdited: {
                     ...state.fileTaskEdited,
                     files: files,
@@ -1518,15 +1518,24 @@ class ActionTab extends Component {
         }
     }
 
+    getCreatorId = (creator) => {
+        if (!creator)
+            return
+        if (creator && typeof (creator) === 'object') return creator._id;
+        else return creator;
+    }
+
     showDetailTimer = (nameAction, timeSheetLogs) => {
         nameAction = htmlToText(nameAction);
         let result = [];
         timeSheetLogs.reduce((res, value) => {
-            if (!res[value?.creator?._id]) {
-                res[value.creator._id] = { id: value.creator._id, duration: 0, creatorName: value.creator.name };
-                result.push(res[value.creator._id]);
+            const creatorId = this.getCreatorId(value?.creator);
+
+            if (!res[creatorId]) {
+                res[creatorId] = { id: creatorId, duration: 0, creatorName: value.creator.name };
+                result.push(res[creatorId]);
             }
-            res[value.creator._id].duration += value.duration;
+            res[creatorId].duration += value.duration;
             return res;
         }, {});
 
@@ -1534,8 +1543,8 @@ class ActionTab extends Component {
             html: `<div style="max-width: 100%; max-height: 100%" > 
                 <h4 style="margin-bottom: 15px">Thời gian bấm giờ cho hoạt động "<strong>${nameAction}</strong>"</h4>` +
                 `<ol>${result.map(o => (
-                    `<li>${o.creatorName}: ${convertTime(o.duration)}</li>`
-                ))} </ol>`
+                    `<li style="margin-bottom: 7px">${o.creatorName}: ${convertTime(o.duration)}</li>`
+                )).join(" ")} </ol>`
                 +
                 `<div>`,
 
@@ -1623,7 +1632,7 @@ class ActionTab extends Component {
                                         inputCssClass="text-input-level1" controlCssClass="tool-level1 row"
                                         onFilesChange={this.onActionFilesChange}
                                         onFilesPaste={this.onActionFilesPaste}
-                                        onFilesRemote = {this.removeFile}
+                                        onFilesRemote={this.removeFile}
                                         onFilesError={this.onFilesError}
                                         files={newAction.files}
                                         text={newAction.descriptionDefault}

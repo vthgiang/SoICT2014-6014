@@ -641,6 +641,10 @@ exports.stopTimesheetLog = async (portal, params, body, user) => {
                 path: "taskActions.comments.creator",
                 select: "name email avatar",
             },
+            {
+                path: "taskActions.timesheetLogs.creator",
+                select: "_id name email avatar",
+            },
             { path: "commentsInProcess.creator", select: "name email avatar" },
             {
                 path: "commentsInProcess.comments.creator",
@@ -881,6 +885,10 @@ exports.stopTimesheetLog = async (portal, params, body, user) => {
                 {
                     path: "commentsInProcess.comments.creator",
                     select: "name email avatar",
+                },
+                {
+                    path: "taskActions.timesheetLogs.creator",
+                    select: "_id name email avatar ",
                 },
                 {
                     path: "taskActions.evaluations.creator",
