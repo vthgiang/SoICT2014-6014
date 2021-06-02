@@ -98,7 +98,6 @@ class EvaluationModal extends Component {
         let isInNextMonthOfEndDate = false;
         if ((yearOfEval === yearOfEndDate && monthOfEval > monthOfEndDate) || (yearOfEval > yearOfEndDate)) {
             isInNextMonthOfEndDate = true;
-            console.log('isInNextMonthOfEndDate', isInNextMonthOfEndDate, monthOfEval, monthOfEndDate);
         }
 
         // nếu expire < 0 là đang quá hạn; ngược lại thì vẫn đúng hạn
@@ -184,7 +183,6 @@ class EvaluationModal extends Component {
     handleAddEval = async () => {
         await this.setState(state => {
             let numOfNewEval = state.newEvalArray.length;
-            console.log(`new-${numOfNewEval}`);
             state.newEvalArray.unshift(`new-${numOfNewEval}`);
             state.showEval[`new-${numOfNewEval}`] = true;
             return {
@@ -219,7 +217,6 @@ class EvaluationModal extends Component {
     }
 
     handleChangeMonthEval = async (value) => {
-        console.log('value', value);
         await this.setState(state => {
             state.month[value.id] = value.evaluatingMonth
             state.dateParam[value.id] = value.date
@@ -239,8 +236,8 @@ class EvaluationModal extends Component {
     }
 
     handleChangeEnableAddItem = async (id) => {
-        let splitter = id.split("-");
-        if(splitter[0] === "new"){
+        let splitter = id?.split("-");
+        if (splitter?.[0] === "new") {
             await this.setState({ disableAddItem: false });
         }
     }
@@ -250,7 +247,6 @@ class EvaluationModal extends Component {
         let { disableAddItem, newEvalArray, dateParam, month, evaluationsList, checkMonth, showEval, content, evaluation, isEval, expire, isInNextMonthOfEndDate } = this.state;
         const { role, id, hasAccountable } = this.props;
 
-        console.log('isEval', this.state);
         let task;
         if (performtasks.task) {
             task = performtasks.task;
@@ -279,7 +275,7 @@ class EvaluationModal extends Component {
         let checkEvaluationOfMonth = checkData.checkMonth;
 
         let dateProps;
-        if(!checkEvaluationOfMonth) {
+        if (!checkEvaluationOfMonth) {
             if (dateParam[content]) {
                 dateProps = dateParam
             } else {
@@ -329,18 +325,18 @@ class EvaluationModal extends Component {
 
                                 {/* Thêm mới đánh giá */}
                                 { // (showEval === false) && // checkMonth === false && // !(isInNextMonthOfEndDate) && // kiểm tra khi qua ngày kết thúc ko cho đánh giá
-                                    !disableAddItem ? 
-                                    <li className={content === 'new' ? "active" : undefined} >
-                                        <a style={{ cursor: 'pointer' }} onClick={() => this.handleAddEval()}>
-                                            {translate('task.task_management.add_eval_of_this_month')}&nbsp;&nbsp;&nbsp;&nbsp;<i style={{ color: 'green' }} className="fa fa-plus-square"></i>
+                                    !disableAddItem ?
+                                        <li className={content === 'new' ? "active" : undefined} >
+                                            <a style={{ cursor: 'pointer' }} onClick={() => this.handleAddEval()}>
+                                                {translate('task.task_management.add_eval_of_this_month')}&nbsp;&nbsp;&nbsp;&nbsp;<i style={{ color: 'green' }} className="fa fa-plus-square"></i>
                                             &nbsp;
                                         </a>
-                                    </li> : <li className={content === 'new' ? "active" : undefined} >
-                                        <a style={{ cursor: 'pointer' }} onClick={() => this.showAlertDisableAdd()}>
-                                            {translate('task.task_management.add_eval_of_this_month')}&nbsp;&nbsp;&nbsp;&nbsp;<i style={{ color: 'green' }} className="fa fa-plus-square"></i>
+                                        </li> : <li className={content === 'new' ? "active" : undefined} >
+                                            <a style={{ cursor: 'pointer' }} onClick={() => this.showAlertDisableAdd()}>
+                                                {translate('task.task_management.add_eval_of_this_month')}&nbsp;&nbsp;&nbsp;&nbsp;<i style={{ color: 'green' }} className="fa fa-plus-square"></i>
                                             &nbsp;
                                         </a>
-                                    </li>
+                                        </li>
                                 }
                             </ul>
                         </div>
@@ -356,7 +352,7 @@ class EvaluationModal extends Component {
                             title={title}
                             perform='evaluate'
                             evaluation={evaluation}
-                            date={evaluation ? this.formatDate(evaluation.evaluatingMonth) : (checkEvaluationOfMonth ? dateParam[content] : (dateParam[content] ? dateParam[content] : this.TODAY) )}
+                            date={evaluation ? this.formatDate(evaluation.evaluatingMonth) : (checkEvaluationOfMonth ? dateParam[content] : (dateParam[content] ? dateParam[content] : this.TODAY))}
                             handleChangeMonthEval={this.handleChangeMonthEval}
                             isEval={isEval}
                             handleChangeShowEval={this.handleChangeShowEval}
@@ -373,7 +369,7 @@ class EvaluationModal extends Component {
                             title={title}
                             perform='evaluate'
                             evaluation={evaluation}
-                            date={evaluation ? this.formatDate(evaluation.evaluatingMonth) : (checkEvaluationOfMonth ? dateParam[content] : (dateParam[content] ? dateParam[content] : this.TODAY) )}
+                            date={evaluation ? this.formatDate(evaluation.evaluatingMonth) : (checkEvaluationOfMonth ? dateParam[content] : (dateParam[content] ? dateParam[content] : this.TODAY))}
                             handleChangeMonthEval={this.handleChangeMonthEval}
                             isEval={isEval}
                             handleChangeShowEval={this.handleChangeShowEval}
@@ -391,7 +387,7 @@ class EvaluationModal extends Component {
                             title={title}
                             perform='evaluate'
                             evaluation={evaluation}
-                            date={evaluation ? this.formatDate(evaluation.evaluatingMonth) : (checkEvaluationOfMonth ? dateParam[content] : (dateParam[content] ? dateParam[content] : this.TODAY) )}
+                            date={evaluation ? this.formatDate(evaluation.evaluatingMonth) : (checkEvaluationOfMonth ? dateParam[content] : (dateParam[content] ? dateParam[content] : this.TODAY))}
                             handleChangeMonthEval={this.handleChangeMonthEval}
                             isEval={isEval}
                             handleChangeShowEval={this.handleChangeShowEval}
@@ -408,7 +404,7 @@ class EvaluationModal extends Component {
                             title={title}
                             perform='evaluate'
                             evaluation={evaluation}
-                            date={evaluation ? this.formatDate(evaluation.evaluatingMonth) : (checkEvaluationOfMonth ? dateParam[content] : (dateParam[content] ? dateParam[content] : this.TODAY) )}
+                            date={evaluation ? this.formatDate(evaluation.evaluatingMonth) : (checkEvaluationOfMonth ? dateParam[content] : (dateParam[content] ? dateParam[content] : this.TODAY))}
                             handleChangeMonthEval={this.handleChangeMonthEval}
                             isEval={isEval}
                             handleChangeShowEval={this.handleChangeShowEval}

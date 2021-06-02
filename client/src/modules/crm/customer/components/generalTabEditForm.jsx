@@ -588,7 +588,7 @@ function GeneralTabEditForm(props) {
                                 <label className="control-label">{translate('crm.customer.owner')}<span className="text-red">*</span></label>
                                 {unitMembers &&
                                     <SelectBox
-                                        id={`customer-owner-edit-form`}
+                                        id={`customer-owner-edit-form${code}`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
                                         items={unitMembers}

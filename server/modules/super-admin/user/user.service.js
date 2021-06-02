@@ -5,12 +5,14 @@ const {
     UserRole,
     Role,
     Company,
+    Employee
 } = require(`../../../models`);
 const bcrypt = require("bcryptjs");
 const generator = require("generate-password");
 const OrganizationalUnitService = require(`../../super-admin/organizational-unit/organizationalUnit.service`);
 const { connect } = require(`../../../helpers/dbHelper`);
 const { sendEmail } = require("../../../helpers/emailHelper");
+
 /**
  * Lấy danh sách tất cả user trong 1 công ty
  * @company id của công ty
@@ -320,7 +322,7 @@ getAllUserInUnitAndItsSubUnits = async (portal, unitId) => {
                 deputyManagers: department.deputyManagers.map((item) => item.toString()),
                 employees: department.employees.map((item) => item.toString()),
                 parent_id:
-                    department.parent !== null
+                    department.parent !== null && department.parent !== undefined
                         ? department.parent.toString()
                         : null,
             };
@@ -405,8 +407,14 @@ exports.createUser = async (portal, data, company) => {
     });
     var hash = bcrypt.hashSync(password, salt);
 
+    if (!data.email)
+        throw ['email_empty'];
+    
+    if (!data.name)
+        throw ['username_empty'];
+    
     var checkUser = await User(connect(DB_CONNECTION, portal)).findOne({
-        email: data.email,
+        email: data.email.trim(),
     });
 
     if (checkUser) {
@@ -414,8 +422,8 @@ exports.createUser = async (portal, data, company) => {
     }
 
     var user = await User(connect(DB_CONNECTION, portal)).create({
-        name: data.name,
-        email: data.email,
+        name: data.name.trim(),
+        email: data.email.trim(),
         password: hash,
         company: company,
     });
@@ -568,6 +576,10 @@ exports.checkUserExited = async (portal, email) => {
  * @data dữ liệu chỉnh sửa
  */
 exports.editUser = async (portal, id, data) => {
+    if (!data.email)
+        throw ['email_empty'];
+    if (!data.name)
+        throw ['username_empty'];
     var user = await User(connect(DB_CONNECTION, portal))
         .findById(id)
         .select("-password -password2 -status -deleteSoft")
@@ -583,11 +595,13 @@ exports.editUser = async (portal, id, data) => {
             },
         ]);
 
+    const name = data.name.trim();
+    const email = data.email.trim();
     if (!user) {
         throw ["user_not_found"];
     }
 
-    if (user.email !== data.email) {
+    if (user.email !== email) {
         const checkEmail = await User(connect(DB_CONNECTION, portal)).findOne({
             email: data.email,
         });
@@ -597,7 +611,7 @@ exports.editUser = async (portal, id, data) => {
             data.email
         );
     }
-    user.name = data.name;
+    user.name = name;
 
     if (data.password) {
         var salt = bcrypt.genSaltSync(10);
@@ -613,9 +627,16 @@ exports.editUser = async (portal, id, data) => {
         user.tokens = [];
     }
 
-    user.email = data.email;
+    const oldEmail = user.email;
+    user.email = email;
     await user.save();
 
+    // Tìm user trong bảng employees và cập nhật lại email
+    // Kiểm tra email mới đã có trong bảng Employees hay chưa.
+    const employees = await Employee(connect(DB_CONNECTION, portal)).findOne({ emailInCompany: data.email });
+    if (!employees)
+        await Employee(connect(DB_CONNECTION, portal)).findOneAndUpdate({ emailInCompany: oldEmail }, { $set: { emailInCompany: data.email } });
+    
     return user;
 };
 
@@ -652,6 +673,23 @@ exports.deleteUser = async (portal, id) => {
     await UserRole(connect(DB_CONNECTION, portal)).deleteOne({
         userId: id,
     });
+
+    return deleteUser;
+};
+
+/**
+ * Xóa tài khoản người dùng theo email
+ * @email email tài khoản người dùng
+ */
+exports.deleteUserByEmail = async (portal, email) => {
+    var deleteUser = await User(connect(DB_CONNECTION, portal)).findOneAndDelete({
+        email: email,
+    }, { $new: true });
+
+    if (deleteUser)
+        await UserRole(connect(DB_CONNECTION, portal)).deleteOne({
+            userId: deleteUser._id,
+        });
 
     return deleteUser;
 };
@@ -897,11 +935,19 @@ exports.getUsersByRolesArray = async (portal, roles) => {
 
 exports.sendEmailResetPasswordUser = async(portal, email) => {
     let user = await User(connect(DB_CONNECTION, portal)).findOne({ email });
-    let code = await generator.generate({ length: 6, numbers: true });
-    user.resetPasswordToken = code;
+    // let code = await generator.generate({ length: 6, numbers: true });
+    // user.resetPasswordToken = code;
+    const salt = bcrypt.genSaltSync(10);
+    const password = generator.generate({
+        length: 10,
+        numbers: true,
+    });
+    const hash = bcrypt.hashSync(password, salt);
+
+    user.password = hash;
+
     if (user.password2) {
         user.password2 = ""
-        
         await User(connect(DB_CONNECTION, portal)).updateOne({
             _id: user._id,
         }, { $set: user })
@@ -910,35 +956,84 @@ exports.sendEmailResetPasswordUser = async(portal, email) => {
     }
     
     let subject = `${process.env.WEB_NAME} : Thay đổi mật khẩu - Change password`;
-    let html = `
-        <div style="
-            background-color:azure;
-            padding: 100px;
-            text-align: center;
-        ">
-            <h3>
-                Yêu cầu xác thực thay đổi mật khẩu
-            </h3>
-            <p>Mã xác thực: <b style="color: red">${code}</b></p>
-            <button style="
-                padding: 8px 8px 8px 8px; 
-                border: 1px solid rgb(4, 197, 30); 
-                border-radius: 5px;
-                background-color: #4CAF50"
-            >
-                <a 
-                    style="
-                        text-decoration: none;
-                        color: white;
-                        " 
-                    href="${process.env.WEBSITE}/reset-password?portal=${portal}&otp=${code}&email=${email}"
-                >
-                    Xác thực
-                </a>
-            </button>
-        </div>
-        `
-    await sendEmail(email, subject, '', html);
+    let text = `Yêu cầu cấp lại mật khẩu cho email ${email}`
+    let html =  `<html>
+                <head>
+                    <style>
+                        .wrapper {
+                            width: 100%;
+                            min-width: 580px;
+                            background-color: #FAFAFA;
+                            padding: 10px 0;
+                        }
+                
+                        .info {
+                            list-style-type: none;
+                        }
+                
+                        @media screen and (max-width: 600px) {
+                            .form {
+                                border: solid 1px #dddddd;
+                                padding: 50px 30px;
+                                border-radius: 3px;
+                                margin: 0px 5%;
+                                background-color: #FFFFFF;
+                            }
+                        }
+                
+                        .form {
+                            border: solid 1px #dddddd;
+                            padding: 50px 30px;
+                            border-radius: 3px;
+                            margin: 0px 25%;
+                            background-color: #FFFFFF;
+                        }
+                
+                        .title {
+                            text-align: center;
+                        }
+                
+                        .footer {
+                            margin: 0px 25%;
+                            text-align: center;
+                
+                        }
+                    </style>
+                </head>
+                
+                <body>
+                    <div class="wrapper">
+                        <div class="title">
+                            <h1>${process.env.WEB_NAME}</h1>
+                        </div>
+                        <div class="form">
+                            <p><b>Thông tin tài khoản đăng nhập mới của bạn: </b></p>
+                            <div class="info">
+                                <li>Portal: ${portal}</li>
+                                <li>Tài khoản: ${email}</li>
+                                <li>Mật khẩu: <b>${password}</b></li>
+                            </div>
+                            <p>Đăng nhập ngay tại: <a href="${process.env.WEBSITE}/login">${process.env.WEBSITE}/login</a></p><br />
+                
+                            <p><b>Your account information: </b></p>
+                            <div class="info">
+                                <li>Portal: ${portal}</li>
+                                <li>Account: ${email}</li>
+                                <li>Password: <b>${password}</b></li>
+                            </div>
+                            <p>Login in: <a href="${process.env.WEBSITE}/login">${process.env.WEBSITE}/login</a></p>
+                        </div>
+                        <div class="footer">
+                            <p>Copyright by
+                                <i>Công ty Cổ phần Công nghệ
+                                    <br />
+                                    An toàn thông tin và Truyền thông Việt Nam</i>
+                            </p>
+                        </div>
+                    </div>
+                </body>
+        </html>`
+    await sendEmail(email, subject,text, html);
 
     return {
         portal, email

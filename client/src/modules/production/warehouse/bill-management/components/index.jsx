@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -16,46 +16,41 @@ import { GoodActions } from '../../../common-production/good-management/redux/ac
 import { CrmCustomerActions } from '../../../../crm/customer/redux/actions';
 import { millActions } from '../../../manufacturing/manufacturing-mill/redux/actions';
 
-class BillManagement extends Component {
+function BillManagement(props) {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            currentRole: localStorage.getItem("currentRole"),
-            limit: 5,
-            page: 1,
-            group: '',
-        }
-    }
+    const [state, setState] = useState({
+        currentRole: localStorage.getItem("currentRole"),
+        limit: 5,
+        page: 1,
+        group: '',
+    })
 
-    componentDidMount() {
-        const { limit, page, currentRole } = this.state;
-        this.props.getBillsByType({ page, limit, managementLocation: currentRole });
-        this.props.getBillsByType({ managementLocation: currentRole });
-        this.props.getAllStocks({ managementLocation: currentRole });
-        this.props.getUser();
-        this.props.getAllGoods();
-        this.props.getCustomers();
-        this.props.getAllManufacturingMills();
-    }
+    useEffect(() => {
+        const { limit, page, currentRole } = state;
+        props.getBillsByType({ page, limit, managementLocation: currentRole });
+        props.getBillsByType({ managementLocation: currentRole });
+        props.getAllStocks({ managementLocation: currentRole });
+        props.getUser();
+        props.getAllGoods();
+        props.getCustomers();
+        props.getAllManufacturingMills();
+    }, [])
 
-    handleShowDetailInfo = async (id) => {
-        await this.props.getDetailBill(id);
+    const handleShowDetailInfo = async (id) => {
+        await props.getDetailBill(id);
         window.$('#modal-detail-bill').modal('show');
     }
 
-    handleEdit = async (bill) => {
-        await this.setState(state => {
-            return {
-                ...state,
-                currentRow: bill
-            }
+    const handleEdit = async (bill) => {
+        await setState({
+            ...state,
+            currentRow: bill
         })
 
         window.$('#modal-edit-bill').modal('show');
     }
 
-    formatDate(date, monthYear = false) {
+    function formatDate(date, monthYear = false) {
         if (date) {
             let d = new Date(date),
                 day = '' + d.getDate(),
@@ -75,267 +70,235 @@ class BillManagement extends Component {
         }
     }
 
-    setPage = (page) => {
-        this.setState({ page });
+    const setPage = (page) => {
+        setState({ page });
         const data = {
-            limit: this.state.limit,
-            managementLocation: this.state.currentRole,
+            limit: state.limit,
+            managementLocation: state.currentRole,
             page: page,
-            code: this.state.code,
-            status: this.state.status,
-            stock: this.state.stock,
-            type: this.state.type,
-            startDate: this.state.startDate,
-            endDate: this.state.endDate,
-            customer: this.state.customer,
-            supplier: this.state.supplier,
-            toStock: this.state.toStock,
-            creator: this.state.creator
+            code: state.code,
+            status: state.status,
+            stock: state.stock,
+            type: state.type,
+            startDate: state.startDate,
+            endDate: state.endDate,
+            customer: state.customer,
+            supplier: state.supplier,
+            toStock: state.toStock,
+            creator: state.creator
         };
-        const { group } = this.state;
-        if(group !== '') {
+        const { group } = state;
+        if (group !== '') {
             data.group = group;
         }
-        this.props.getBillsByType(data);
+        props.getBillsByType(data);
     }
 
-    setLimit = (number) => {
-        this.setState({ limit: number });
+    const setLimit = (number) => {
+        setState({ limit: number });
         const data = {
             limit: number,
-            page: this.state.page,
-            managementLocation: this.state.currentRole,
-            code: this.state.code,
-            status: this.state.status,
-            stock: this.state.stock,
-            type: this.state.type,
-            startDate: this.state.startDate,
-            endDate: this.state.endDate,
-            customer: this.state.customer,
-            supplier: this.state.supplier,
-            toStock: this.state.toStock,
-            creator: this.state.creator
+            page: state.page,
+            managementLocation: state.currentRole,
+            code: state.code,
+            status: state.status,
+            stock: state.stock,
+            type: state.type,
+            startDate: state.startDate,
+            endDate: state.endDate,
+            customer: state.customer,
+            supplier: state.supplier,
+            toStock: state.toStock,
+            creator: state.creator
         };
-        const { group } = this.state;
-        if(group !== '') {
+        const { group } = state;
+        if (group !== '') {
             data.group = group;
         }
-        this.props.getBillsByType(data);
+        props.getBillsByType(data);
     }
 
-    handleStockChange = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                stock: value
-            }
+    const handleStockChange = (value) => {
+        setState({
+            ...state,
+            stock: value
         })
     }
 
-    handleToStockChange = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                toStock: value
-            }
+    const handleToStockChange = (value) => {
+        setState({
+            ...state,
+            toStock: value
         })
     }
 
-    handleCreatorChange = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                creator: value
-            }
+    const handleCreatorChange = (value) => {
+        setState({
+            ...state,
+            creator: value
         })
     }
 
-    handleCodeChange = (e) => {
+    const handleCodeChange = (e) => {
         let value = e.target.value;
-        this.setState(state => {
-            return {
-                ...state,
-                code: value
-            }
+        setState({
+            ...state,
+            code: value
         })
     }
 
-    handleTypeChange = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                type: value
-            }
+    const handleTypeChange = (value) => {
+        setState({
+            ...state,
+            type: value
         })
     }
 
-    handleStatusChange = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                status: value
-            }
+    const handleStatusChange = (value) => {
+        setState({
+            ...state,
+            status: value
         })
     }
 
-    handlePartnerChange = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                customer: value
-            }
+    const handlePartnerChange = (value) => {
+        setState({
+            ...state,
+            customer: value
         })
     }
 
-    handleSupplierChange = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                supplier: value
-            }
+    const handleSupplierChange = (value) => {
+        setState({
+            ...state,
+            supplier: value
         })
     }
 
-    handleSubmitSearch = () => {
+    const handleSubmitSearch = () => {
         let data = {
             page: '1',
-            limit: this.state.limit,
-            managementLocation: this.state.currentRole,
-            code: this.state.code,
-            status: this.state.status,
-            stock: this.state.stock,
-            type: this.state.type,
-            startDate: this.state.startDate,
-            endDate: this.state.endDate,
-            customer: this.state.customer,
-            supplier: this.state.supplier,
-            toStock: this.state.toStock,
-            creator: this.state.creator
+            limit: state.limit,
+            managementLocation: state.currentRole,
+            code: state.code,
+            status: state.status,
+            stock: state.stock,
+            type: state.type,
+            startDate: state.startDate,
+            endDate: state.endDate,
+            customer: state.customer,
+            supplier: state.supplier,
+            toStock: state.toStock,
+            creator: state.creator
         }
-        const { group } = this.state;
-        if(group !== '') {
+        const { group } = state;
+        if (group !== '') {
             data.group = group;
         }
-        this.props.getBillsByType(data);
+        props.getBillsByType(data);
     }
 
-    handleChangeStartDate = (value) => {
+    const handleChangeStartDate = (value) => {
         if (value === '') {
             value = null;
         }
 
-        this.setState(state => {
-            return {
-                ...state,
-                startDate: value
-            }
+        setState({
+            ...state,
+            startDate: value
         });
     }
 
-    handleChangeEndDate = (value) => {
+    const handleChangeEndDate = (value) => {
         if (value === '') {
             value = null;
         }
 
-        this.setState(state => {
-            return {
-                ...state,
-                endDate: value
-            }
+        setState({
+            ...state,
+            endDate: value
         });
     }
 
-    handleStockBook = async () => {
+    const handleStockBook = async () => {
         const page = 1;
         const group = '';
-        await this.setState(state => {
-            return {
-                ...state,
-                page: page,
-                group: group
-            }
+        await setState({
+            ...state,
+            page: page,
+            group: group
         })
-        const { limit } = this.state;
-        await this.props.getBillsByType({ page, limit, managementLocation: this.state.currentRole })
+        const { limit } = state;
+        await props.getBillsByType({ page, limit, managementLocation: state.currentRole })
     }
 
-    handleGoodReceipt = async () => {
+    const handleGoodReceipt = async () => {
         const page = 1;
         const group = '1';
-        const { limit } = this.state;
-        await this.setState(state => {
-            return {
-                ...state,
-                group: group,
-                page: page
-            }
+        const { limit } = state;
+        await setState({
+            ...state,
+            group: group,
+            page: page
         })
 
-        await this.props.getBillsByType({ page, limit, group, managementLocation: this.state.currentRole })
+        await props.getBillsByType({ page, limit, group, managementLocation: state.currentRole })
     }
 
-    handleGoodIssue = async () => {
+    const handleGoodIssue = async () => {
         const page = 1;
         const group = '2';
-        const { limit } = this.state;
-        await this.setState(state => {
-            return {
-                ...state,
-                group: group,
-                page: page
-            }
+        const { limit } = state;
+        await setState({
+            ...state,
+            group: group,
+            page: page
         })
 
-        await this.props.getBillsByType({ page, limit, group, managementLocation: this.state.currentRole })
+        await props.getBillsByType({ page, limit, group, managementLocation: state.currentRole })
     }
 
-    handleGoodReturn = async () => {
+    const handleGoodReturn = async () => {
         const page = 1;
         const group = '3';
-        const { limit } = this.state;
-        await this.setState(state => {
-            return {
-                ...state,
-                group: group,
-                page: page
-            }
+        const { limit } = state;
+        await setState({
+            ...state,
+            group: group,
+            page: page
         })
 
-        await this.props.getBillsByType({ page, limit, group, managementLocation: this.state.currentRole })
+        await props.getBillsByType({ page, limit, group, managementLocation: state.currentRole })
     }
 
-    handleStockTake = async () => {
+    const handleStockTake = async () => {
         const page = 1;
         const group = '4';
-        const { limit } = this.state;
-        await this.setState(state => {
-            return {
-                ...state,
-                group: group,
-                page: page
-            }
+        const { limit } = state;
+        await setState({
+            ...state,
+            group: group,
+            page: page
         })
 
-        await this.props.getBillsByType({ page, limit, group, managementLocation: this.state.currentRole })
+        await props.getBillsByType({ page, limit, group, managementLocation: state.currentRole })
     }
 
-    handleStockRotate = async () => {
+    const handleStockRotate = async () => {
         const page = 1;
         const group = '5';
-        const { limit } = this.state;
-        await this.setState(state => {
-            return {
-                ...state,
-                group: group,
-                page: page
-            }
+        const { limit } = state;
+        await setState({
+            ...state,
+            group: group,
+            page: page
         })
 
-        await this.props.getBillsByType({ page, limit, group, managementLocation: this.state.currentRole })
+        await props.getBillsByType({ page, limit, group, managementLocation: state.currentRole })
     }
 
-    getPartner = () => {
-        const { crm } = this.props;
+    const getPartner = () => {
+        const { crm } = props;
         let partnerArr = [];
 
         crm.customers.list.map(item => {
@@ -348,7 +311,7 @@ class BillManagement extends Component {
         return partnerArr;
     }
 
-    checkRoleApprovers = (bill) => {
+    const checkRoleApprovers = (bill) => {
         const { approvers } = bill;
         const userId = localStorage.getItem("userId");
         let approverIds = approvers.map(x => x.approver._id);
@@ -358,15 +321,15 @@ class BillManagement extends Component {
         return false
     }
 
-    handleFinishedApproval = (bill) => {
+    const handleFinishedApproval = (bill) => {
         const userId = localStorage.getItem("userId");
         const data = {
             approverId: userId
         }
-        this.props.editBill(bill._id, data);
+        props.editBill(bill._id, data);
     }
 
-    checkRoleQualityControlStaffs = (bill) => {
+    const checkRoleQualityControlStaffs = (bill) => {
         const { qualityControlStaffs } = bill;
         const userId = localStorage.getItem("userId");
         let qualityControlStaffId = qualityControlStaffs.map(x => x.staff._id);
@@ -376,30 +339,30 @@ class BillManagement extends Component {
         return false
     }
 
-    handleFinishedQualityControlStaff = (bill) => {
+    const handleFinishedQualityControlStaff = (bill) => {
         const userId = localStorage.getItem("userId");
         const data = {
             qualityControlStaffId: userId
         }
-        this.props.editBill(bill._id, data);
+        props.editBill(bill._id, data);
     }
 
-    checkRoleCanEdit = (bill) => {
+    const checkRoleCanEdit = (bill) => {
         const { responsibles, accountables, creator } = bill;
         const userId = localStorage.getItem("userId");
         let staffId = [];
-        if(responsibles.length > 0) {
+        if (responsibles.length > 0) {
             responsibles.map(x => {
                 staffId.push(x._id)
             })
         }
-        if(accountables.length > 0) {
+        if (accountables.length > 0) {
             accountables.map(x => {
                 staffId.push(x._id)
             })
         }
-        if(creator) {
-                staffId.push(creator._id)
+        if (creator) {
+            staffId.push(creator._id)
         }
         if (staffId.includes(userId)) {
             return true;
@@ -407,175 +370,173 @@ class BillManagement extends Component {
         return false
     }
 
-    render() {
 
-        const { translate, bills, stocks} = this.props;
-        const { group } = this.state;
+    const { translate, bills, stocks } = props;
+    const { group } = state;
 
-        return (
-            <div className="nav-tabs-custom">
-                <ul className="nav nav-tabs">
-                    <li className="active"><a href="#bill-stock-book" data-toggle="tab" onClick={() => this.handleStockBook()}>{translate('manage_warehouse.bill_management.stock_book')}</a></li>
-                    <li><a href="#bill-good-receipts" data-toggle="tab" onClick={() => this.handleGoodReceipt()}>{translate('manage_warehouse.bill_management.good_receipt')}</a></li>
-                    <li><a href="#bill-good-issues" data-toggle="tab" onClick={() => this.handleGoodIssue()}>{translate('manage_warehouse.bill_management.good_issue')}</a></li>
-                    <li><a href="#bill-good-returns" data-toggle="tab" onClick={() => this.handleGoodReturn()}>{translate('manage_warehouse.bill_management.good_return')}</a></li>
-                    <li><a href="#bill-stock-takes" data-toggle="tab" onClick={() => this.handleStockTake()}>{translate('manage_warehouse.bill_management.stock_take')}</a></li>
-                    <li><a href="#bill-stock-rotates" data-toggle="tab" onClick={() => this.handleStockRotate()}>{translate('manage_warehouse.bill_management.stock_rotate')}</a></li>
-                </ul>
-                <div className="tab-content">
+    return (
+        <div className="nav-tabs-custom">
+            <ul className="nav nav-tabs">
+                <li className="active"><a href="#bill-stock-book" data-toggle="tab" onClick={() => handleStockBook()}>{translate('manage_warehouse.bill_management.stock_book')}</a></li>
+                <li><a href="#bill-good-receipts" data-toggle="tab" onClick={() => handleGoodReceipt()}>{translate('manage_warehouse.bill_management.good_receipt')}</a></li>
+                <li><a href="#bill-good-issues" data-toggle="tab" onClick={() => handleGoodIssue()}>{translate('manage_warehouse.bill_management.good_issue')}</a></li>
+                <li><a href="#bill-good-returns" data-toggle="tab" onClick={() => handleGoodReturn()}>{translate('manage_warehouse.bill_management.good_return')}</a></li>
+                <li><a href="#bill-stock-takes" data-toggle="tab" onClick={() => handleStockTake()}>{translate('manage_warehouse.bill_management.stock_take')}</a></li>
+                <li><a href="#bill-stock-rotates" data-toggle="tab" onClick={() => handleStockRotate()}>{translate('manage_warehouse.bill_management.stock_rotate')}</a></li>
+            </ul>
+            <div className="tab-content">
 
-                { group === '' && 
-                    <BookManagement 
-                        handleEdit={this.handleEdit}
-                        formatDate={this.formatDate}
-                        setPage={this.setPage}
-                        setLimit={this.setLimit}
-                        handleStockChange={this.handleStockChange}
-                        handleCreatorChange={this.handleCreatorChange}
-                        handleTypeChange={this.handleTypeChange}
-                        handleStatusChange={this.handleStatusChange}
-                        handleCodeChange={this.handleCodeChange}
-                        handlePartnerChange={this.handlePartnerChange}
-                        handleSubmitSearch={this.handleSubmitSearch}
-                        handleChangeStartDate={this.handleChangeStartDate}
-                        handleChangeEndDate={this.handleChangeEndDate}
-                        getPartner={this.getPartner}
-                        handleShowDetailInfo={this.handleShowDetailInfo}
-
-                    />
-                }
-
-                { group === '1' && 
-                    <ReceiptManagement 
-                        handleEdit={this.handleEdit}
-                        formatDate={this.formatDate}
-                        setPage={this.setPage}
-                        setLimit={this.setLimit}
-                        handleStockChange={this.handleStockChange}
-                        handleCreatorChange={this.handleCreatorChange}
-                        handleTypeChange={this.handleTypeChange}
-                        handleStatusChange={this.handleStatusChange}
-                        handleCodeChange={this.handleCodeChange}
-                        handlePartnerChange={this.handleSupplierChange}
-                        handleSubmitSearch={this.handleSubmitSearch}
-                        handleChangeStartDate={this.handleChangeStartDate}
-                        handleChangeEndDate={this.handleChangeEndDate}
-                        getPartner={this.getPartner}
-                        handleShowDetailInfo={this.handleShowDetailInfo}
-                        checkRoleApprovers={this.checkRoleApprovers}
-                        handleFinishedApproval={this.handleFinishedApproval}
-                        checkRoleQualityControlStaffs={this.checkRoleQualityControlStaffs}
-                        handleFinishedQualityControlStaff={this.handleFinishedQualityControlStaff}
-                        checkRoleCanEdit={this.checkRoleCanEdit}
+                {group === '' &&
+                    <BookManagement
+                        handleEdit={handleEdit}
+                        formatDate={formatDate}
+                        setPage={setPage}
+                        setLimit={setLimit}
+                        handleStockChange={handleStockChange}
+                        handleCreatorChange={handleCreatorChange}
+                        handleTypeChange={handleTypeChange}
+                        handleStatusChange={handleStatusChange}
+                        handleCodeChange={handleCodeChange}
+                        handlePartnerChange={handlePartnerChange}
+                        handleSubmitSearch={handleSubmitSearch}
+                        handleChangeStartDate={handleChangeStartDate}
+                        handleChangeEndDate={handleChangeEndDate}
+                        getPartner={getPartner}
+                        handleShowDetailInfo={handleShowDetailInfo}
 
                     />
                 }
 
-                { group === '2' && 
-                    <IssueManagement 
-                        handleEdit={this.handleEdit}
-                        formatDate={this.formatDate}
-                        setPage={this.setPage}
-                        setLimit={this.setLimit}
-                        handleStockChange={this.handleStockChange}
-                        handleCreatorChange={this.handleCreatorChange}
-                        handleTypeChange={this.handleTypeChange}
-                        handleStatusChange={this.handleStatusChange}
-                        handleCodeChange={this.handleCodeChange}
-                        handlePartnerChange={this.handlePartnerChange}
-                        handleSubmitSearch={this.handleSubmitSearch}
-                        handleChangeStartDate={this.handleChangeStartDate}
-                        handleChangeEndDate={this.handleChangeEndDate}
-                        getPartner={this.getPartner}
-                        handleShowDetailInfo={this.handleShowDetailInfo}
-                        checkRoleApprovers={this.checkRoleApprovers}
-                        handleFinishedApproval={this.handleFinishedApproval}
-                        checkRoleQualityControlStaffs={this.checkRoleQualityControlStaffs}
-                        handleFinishedQualityControlStaff={this.handleFinishedQualityControlStaff}
-                        checkRoleCanEdit={this.checkRoleCanEdit}
+                {group === '1' &&
+                    <ReceiptManagement
+                        handleEdit={handleEdit}
+                        formatDate={formatDate}
+                        setPage={setPage}
+                        setLimit={setLimit}
+                        handleStockChange={handleStockChange}
+                        handleCreatorChange={handleCreatorChange}
+                        handleTypeChange={handleTypeChange}
+                        handleStatusChange={handleStatusChange}
+                        handleCodeChange={handleCodeChange}
+                        handlePartnerChange={handleSupplierChange}
+                        handleSubmitSearch={handleSubmitSearch}
+                        handleChangeStartDate={handleChangeStartDate}
+                        handleChangeEndDate={handleChangeEndDate}
+                        getPartner={getPartner}
+                        handleShowDetailInfo={handleShowDetailInfo}
+                        checkRoleApprovers={checkRoleApprovers}
+                        handleFinishedApproval={handleFinishedApproval}
+                        checkRoleQualityControlStaffs={checkRoleQualityControlStaffs}
+                        handleFinishedQualityControlStaff={handleFinishedQualityControlStaff}
+                        checkRoleCanEdit={checkRoleCanEdit}
+
                     />
                 }
 
-                { group === '3' && 
-                    <ReturnManagement 
-                        handleEdit={this.handleEdit}
-                        formatDate={this.formatDate}
-                        setPage={this.setPage}
-                        setLimit={this.setLimit}
-                        handleStockChange={this.handleStockChange}
-                        handleCreatorChange={this.handleCreatorChange}
-                        handleTypeChange={this.handleTypeChange}
-                        handleStatusChange={this.handleStatusChange}
-                        handleCodeChange={this.handleCodeChange}
-                        handlePartnerChange={this.handlePartnerChange}
-                        handleSubmitSearch={this.handleSubmitSearch}
-                        handleChangeStartDate={this.handleChangeStartDate}
-                        handleChangeEndDate={this.handleChangeEndDate}
-                        getPartner={this.getPartner}
-                        handleShowDetailInfo={this.handleShowDetailInfo}
-                        checkRoleApprovers={this.checkRoleApprovers}
-                        handleFinishedApproval={this.handleFinishedApproval}
-                        checkRoleQualityControlStaffs={this.checkRoleQualityControlStaffs}
-                        handleFinishedQualityControlStaff={this.handleFinishedQualityControlStaff}
-                        checkRoleCanEdit={this.checkRoleCanEdit}
+                {group === '2' &&
+                    <IssueManagement
+                        handleEdit={handleEdit}
+                        formatDate={formatDate}
+                        setPage={setPage}
+                        setLimit={setLimit}
+                        handleStockChange={handleStockChange}
+                        handleCreatorChange={handleCreatorChange}
+                        handleTypeChange={handleTypeChange}
+                        handleStatusChange={handleStatusChange}
+                        handleCodeChange={handleCodeChange}
+                        handlePartnerChange={handlePartnerChange}
+                        handleSubmitSearch={handleSubmitSearch}
+                        handleChangeStartDate={handleChangeStartDate}
+                        handleChangeEndDate={handleChangeEndDate}
+                        getPartner={getPartner}
+                        handleShowDetailInfo={handleShowDetailInfo}
+                        checkRoleApprovers={checkRoleApprovers}
+                        handleFinishedApproval={handleFinishedApproval}
+                        checkRoleQualityControlStaffs={checkRoleQualityControlStaffs}
+                        handleFinishedQualityControlStaff={handleFinishedQualityControlStaff}
+                        checkRoleCanEdit={checkRoleCanEdit}
                     />
                 }
 
-                { group === '4' &&
-                    <TakeManagement 
-                        handleEdit={this.handleEdit}
-                        formatDate={this.formatDate}
-                        setPage={this.setPage}
-                        setLimit={this.setLimit}
-                        handleStockChange={this.handleStockChange}
-                        handleCreatorChange={this.handleCreatorChange}
-                        handleTypeChange={this.handleTypeChange}
-                        handleStatusChange={this.handleStatusChange}
-                        handleCodeChange={this.handleCodeChange}
-                        handlePartnerChange={this.handlePartnerChange}
-                        handleSubmitSearch={this.handleSubmitSearch}
-                        handleChangeStartDate={this.handleChangeStartDate}
-                        handleChangeEndDate={this.handleChangeEndDate}
-                        getPartner={this.getPartner}
-                        handleShowDetailInfo={this.handleShowDetailInfo}
-                        checkRoleApprovers={this.checkRoleApprovers}
-                        handleFinishedApproval={this.handleFinishedApproval}
-                        checkRoleQualityControlStaffs={this.checkRoleQualityControlStaffs}
-                        handleFinishedQualityControlStaff={this.handleFinishedQualityControlStaff}
-                        checkRoleCanEdit={this.checkRoleCanEdit}
+                {group === '3' &&
+                    <ReturnManagement
+                        handleEdit={handleEdit}
+                        formatDate={formatDate}
+                        setPage={setPage}
+                        setLimit={setLimit}
+                        handleStockChange={handleStockChange}
+                        handleCreatorChange={handleCreatorChange}
+                        handleTypeChange={handleTypeChange}
+                        handleStatusChange={handleStatusChange}
+                        handleCodeChange={handleCodeChange}
+                        handlePartnerChange={handlePartnerChange}
+                        handleSubmitSearch={handleSubmitSearch}
+                        handleChangeStartDate={handleChangeStartDate}
+                        handleChangeEndDate={handleChangeEndDate}
+                        getPartner={getPartner}
+                        handleShowDetailInfo={handleShowDetailInfo}
+                        checkRoleApprovers={checkRoleApprovers}
+                        handleFinishedApproval={handleFinishedApproval}
+                        checkRoleQualityControlStaffs={checkRoleQualityControlStaffs}
+                        handleFinishedQualityControlStaff={handleFinishedQualityControlStaff}
+                        checkRoleCanEdit={checkRoleCanEdit}
                     />
                 }
 
-                { group === '5' && 
-                    <RotateManagement 
-                        handleEdit={this.handleEdit}
-                        formatDate={this.formatDate}
-                        setPage={this.setPage}
-                        setLimit={this.setLimit}
-                        handleStockChange={this.handleStockChange}
-                        handleCreatorChange={this.handleCreatorChange}
-                        handleTypeChange={this.handleTypeChange}
-                        handleStatusChange={this.handleStatusChange}
-                        handleCodeChange={this.handleCodeChange}
-                        handlePartnerChange={this.handleToStockChange}
-                        handleSubmitSearch={this.handleSubmitSearch}
-                        handleChangeStartDate={this.handleChangeStartDate}
-                        handleChangeEndDate={this.handleChangeEndDate}
-                        getPartner={this.getPartner}
-                        handleShowDetailInfo={this.handleShowDetailInfo}
-                        checkRoleApprovers={this.checkRoleApprovers}
-                        handleFinishedApproval={this.handleFinishedApproval}
-                        checkRoleQualityControlStaffs={this.checkRoleQualityControlStaffs}
-                        handleFinishedQualityControlStaff={this.handleFinishedQualityControlStaff}
-                        checkRoleCanEdit={this.checkRoleCanEdit}
+                {group === '4' &&
+                    <TakeManagement
+                        handleEdit={handleEdit}
+                        formatDate={formatDate}
+                        setPage={setPage}
+                        setLimit={setLimit}
+                        handleStockChange={handleStockChange}
+                        handleCreatorChange={handleCreatorChange}
+                        handleTypeChange={handleTypeChange}
+                        handleStatusChange={handleStatusChange}
+                        handleCodeChange={handleCodeChange}
+                        handlePartnerChange={handlePartnerChange}
+                        handleSubmitSearch={handleSubmitSearch}
+                        handleChangeStartDate={handleChangeStartDate}
+                        handleChangeEndDate={handleChangeEndDate}
+                        getPartner={getPartner}
+                        handleShowDetailInfo={handleShowDetailInfo}
+                        checkRoleApprovers={checkRoleApprovers}
+                        handleFinishedApproval={handleFinishedApproval}
+                        checkRoleQualityControlStaffs={checkRoleQualityControlStaffs}
+                        handleFinishedQualityControlStaff={handleFinishedQualityControlStaff}
+                        checkRoleCanEdit={checkRoleCanEdit}
                     />
                 }
-                </div>
+
+                {group === '5' &&
+                    <RotateManagement
+                        handleEdit={handleEdit}
+                        formatDate={formatDate}
+                        setPage={setPage}
+                        setLimit={setLimit}
+                        handleStockChange={handleStockChange}
+                        handleCreatorChange={handleCreatorChange}
+                        handleTypeChange={handleTypeChange}
+                        handleStatusChange={handleStatusChange}
+                        handleCodeChange={handleCodeChange}
+                        handlePartnerChange={handleToStockChange}
+                        handleSubmitSearch={handleSubmitSearch}
+                        handleChangeStartDate={handleChangeStartDate}
+                        handleChangeEndDate={handleChangeEndDate}
+                        getPartner={getPartner}
+                        handleShowDetailInfo={handleShowDetailInfo}
+                        checkRoleApprovers={checkRoleApprovers}
+                        handleFinishedApproval={handleFinishedApproval}
+                        checkRoleQualityControlStaffs={checkRoleQualityControlStaffs}
+                        handleFinishedQualityControlStaff={handleFinishedQualityControlStaff}
+                        checkRoleCanEdit={checkRoleCanEdit}
+                    />
+                }
             </div>
-        );
-    }
-    
+        </div>
+    );
 }
+
 
 const mapStateToProps = state => state;
 

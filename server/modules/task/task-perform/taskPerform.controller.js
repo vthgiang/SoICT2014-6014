@@ -138,6 +138,7 @@ exports.stopTimesheetLog = async (req, res) => {
             content: timer
         })
     } catch (error) {
+        console.log('error', error);
         await Logger.error(req.user.email, 'stop_timer_faile', req.portal)
         res.status(400).json({
             success: false,
@@ -852,26 +853,37 @@ exports.evaluateTask = async (req, res) => {
  */
 editTaskByResponsibleEmployees = async (req, res) => {
     try {
+        let body = JSON.parse(req.body.data)
+        if (req?.files?.length > 0) {
+            req.files.map(item => {
+                if (body?.description) {
+                    let src = `<img src="${item?.originalname?.split(".")?.[0]}">`.toString()
+                    let newSrc = `<img src="${item?.path}">`.toString()
+                    body.description = body?.description?.toString()?.replace(src, newSrc)
+                }
+            })
+        }
+
         let oldTask = await PerformTaskService.getTaskById(req.portal, req.params.taskId, req.user._id);
-        let task = await PerformTaskService.editTaskByResponsibleEmployees(req.portal, req.body.data, req.params.taskId);
+        let task = await PerformTaskService.editTaskByResponsibleEmployees(req.portal, body, req.params.taskId);
         let user = task.user;
         let tasks = task.tasks;
         let data = {
             "organizationalUnits": tasks.organizationalUnit,
             "title": "Cập nhật thông tin công việc",
             "level": "general",
-            "content": `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}" target="_blank">${tasks?.name}</a> với vai trò người thực hiện</p>`,
-            "sender": user.name,
+            "content": `<p><strong>${user?.name}</strong> đã cập nhật thông tin công việc <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}" target="_blank">${tasks?.name}</a> với vai trò người thực hiện</p>`,
+            "sender": user?.name,
             "users": tasks.accountableEmployees,
             associatedDataObject: {
                 dataType: 1,
-                description: `<p><strong>${tasks.name}:</strong> ${user.name} đã cập nhật thông tin công việc với vai trò người thực hiện</p>`
+                description: `<p><strong>${tasks.name}:</strong> ${user?.name} đã cập nhật thông tin công việc với vai trò người thực hiện</p>`
             }
         };
         NotificationServices.createNotification(req.portal, tasks.organizationalUnit, data);
 
         let title = "Cập nhật thông tin công việc: " + task.tasks.name;
-        sendEmail(task.email, title, '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}">${tasks?.name}</a> với vai trò người thực hiện</p>`);
+        sendEmail(task.email, title, '', `<p><strong>${user?.name}</strong> đã cập nhật thông tin công việc <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}">${tasks?.name}</a> với vai trò người thực hiện</p>`);
 
         // Thêm nhật ký hoạt động
         let description = await PerformTaskService.createDescriptionEditTaskLogs(req.portal, req.user._id, task.newTask, oldTask);
@@ -914,12 +926,23 @@ editTaskByResponsibleEmployees = async (req, res) => {
     }
 }
 /**
- * edit task by responsible employee
+ * edit task by accountable employee
  */
 editTaskByAccountableEmployees = async (req, res) => {
     try {
+        let body = JSON.parse(req.body.data)
+        if (req?.files?.length > 0) {
+            req.files.map(item => {
+                if (body?.description) {
+                    let src = `<img src="${item?.originalname?.split(".")?.[0]}">`.toString()
+                    let newSrc = `<img src="${item?.path}">`.toString()
+
+                    body.description = body?.description?.toString()?.replace(src, newSrc)
+                }
+            })
+        }
         let oldTask = await PerformTaskService.getTaskById(req.portal, req.params.taskId, req.user._id);
-        let task = await PerformTaskService.editTaskByAccountableEmployees(req.portal, req.body.data, req.params.taskId);
+        let task = await PerformTaskService.editTaskByAccountableEmployees(req.portal, body, req.params.taskId);
         let user = task.user;
         let tasks = task.tasks;
         let data = {
@@ -1031,6 +1054,7 @@ editTaskByAccountableEmployees = async (req, res) => {
             }
         })
     } catch (error) {
+        console.log('edit task error', error)
         await Logger.error(req.user.email, ` edit task `, req.portal);
         res.status(400).json({
             success: false,
@@ -1408,11 +1432,11 @@ confirmTask = async (req, res) => {
 
 /** Yêu cầu kết thúc công việc */
 requestAndApprovalCloseTask = async (req, res) => {
+    let data = {
+        ...req.body,
+        userId: req.user._id
+    }
     try {
-        let data = {
-            ...req.body,
-            userId: req.user._id
-        }
         let task = await PerformTaskService.requestAndApprovalCloseTask(req.portal, req.params.taskId, data);
 
         let dataNotification, email = [];
@@ -1498,6 +1522,7 @@ requestAndApprovalCloseTask = async (req, res) => {
             content: task
         })
     } catch (error) {
+        console.log('error request close task', error)
         let message = data?.type + '_close_task_failure';
         await Logger.error(req.user.email, ` request close task `, req.portal);
         res.status(400).json({

@@ -77,7 +77,8 @@ export default {
         },
 
         dashboard_unit: {
-            urgent_need_to_do_chart: "The chart shows the number of urgent / To-do tasks",
+            urgent_chart: "The chart shows the number of urgent tasks",
+            need_to_do_chart: "The chart shows the number of to-do tasks",
             urgent_task_amount: "The number of urgent tasks",
             need_to_do_task_amount: "The number of tasks to do",
             list_employe_timing: "List of employees who are timing"
@@ -1283,7 +1284,7 @@ export default {
             all_status: "Select all status",
             non_status: "Select status",
             not_unit: "Not selected unit",
-            add_data_by_excel: "Add data by importing excel file",
+            add_data_by_excel: "Add - Update data by importing excel file",
             download_file: "Download the sample import file",
             choose_file: "Choose file",
             name_button_export: "Export report",
@@ -1884,7 +1885,7 @@ export default {
                     add_employee: "Add staff",
                     add_employee_title: "Add new staff",
                     add_by_hand: "Add a staff",
-                    add_import: "Add data from file",
+                    add_import: "Add - Update data from file",
                     update_import: "Update data from file",
 
                     // Thông điệp trả về từ server
@@ -1903,10 +1904,10 @@ export default {
                     employee_number_have_exist: "Employee number have exist",
                     staff_code_not_find: 'Employee number does have exist',
                     email_in_company_have_exist: "Email in company have exist",
-                    employee_timesheet_id_required:
-                        "Employee timesheet id required",
-                    employee_timesheet_id_have_exist:
-                        "Employee timesheet have exist",
+                    email_in_company_not_have_exist: "Email in company have not exist",
+                    employee_timesheet_id_required: "Employee timesheet id required",
+                    employee_timesheet_id_have_exist: "Employee timesheet have exist",
+                    employee_timesheet_id_not_have_exist: "Employee timesheet have not exist",
                     full_name_required: "Full name required",
                     birthdate_required: "Birthdate required",
                     starting_date_required: "Starting date required",
@@ -2917,8 +2918,8 @@ export default {
                 calc_overdue_date: "Overdue date of task",
                 calc_day_used: "Time from start date to today",
                 calc_average_action_rating: "Average action of task rating",
-                calc_failed_action_rating: "Number of failed action",
-                calc_passed_action_rating: "Number of passed action",
+                calc_failed_action_rating: "Sum of activity scores and performance importance of failed activities (rating < 5)",
+                calc_all_action_rating: "Sum of activity scores and performance importance of all activities",
                 calc_progress: "Progress of task",
                 calc_new_formula: "Current formula",
                 calc_total_day: "Time from start date to end date",
@@ -3699,6 +3700,13 @@ export default {
                     export_file: "Export file",
                     KPI_info: "Infomation of ",
                     point_field: "Point (Automatic - Employee - Approver)",
+                    weekly_point_field:
+                        "Weekly point (Automatic - Employee - Approver)",
+                    weekly_point: "Weekly point",
+                    week1: "Week 1",
+                    week2: "Week 2",
+                    week3: "Week 3",
+                    week4: "Week 4",
                     not_avaiable: "Not evaluated",
                     no_point: "No Point",
                     lastest_evaluation: "Lastest evaluation",

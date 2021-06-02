@@ -18,13 +18,14 @@ function encryptMessage(message) {
 }
 
 const AuthenticateHeader = async () => {
-    const fpAgent = await FingerprintJS.load();
-    const result = await fpAgent.get();
-    const fingerprint = result.visitorId;
-
+    // const fpAgent = await FingerprintJS.load();
+    // const result = await fpAgent.get();
+    // const fingerprint = result.visitorId;
+  
     return {
         "crtp": encryptMessage(window.location.pathname),
-        "fgp": encryptMessage(fingerprint.toString()),
+        // "fgp": encryptMessage(fingerprint.toString()),
+        "fgp": encryptMessage(window.location.pathname),
         "utk": getStorage('jwt'),
         "crtr": encryptMessage(getStorage('currentRole'))
     }
@@ -66,7 +67,7 @@ const showServerDisconnectedError = async () => {
  * @data : data truyền đi - có thể có hoặc không
  */
 export async function sendRequest(options, showSuccessAlert = false, showFailAlert = true, module, successTitle = 'general.success', errorTitle = 'general.error') {
-
+   
     const requestOptions = {
         url: options.url,
         method: options.method,
@@ -75,7 +76,6 @@ export async function sendRequest(options, showSuccessAlert = false, showFailAle
         responseType: options.responseType,
         headers: await AuthenticateHeader()
     };
-
 
     return axios(requestOptions).then(res => {
         const messages = Array.isArray(res.data.messages) ? res.data.messages : [res.data.messages];

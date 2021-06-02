@@ -77,7 +77,7 @@ exports.getOrganizationalUnitsAsTree = async (portal, id = undefined) => {
             deputyManagers: department.deputyManagers.map(deputyManager => { return { _id: deputyManager._id.toString(), name: deputyManager.name } }),
             employees: department.employees.map(employee => { return { _id: employee._id.toString(), name: employee.name } }),
             description: department.description,
-            parent_id: department.parent !== null ? department.parent.toString() : null
+            parent_id: (department.parent !== null && department.parent !== undefined) ? department.parent.toString() : null
         }
     });
     const tree = await arrayToTree(newData);
@@ -117,7 +117,7 @@ exports.getChildrenOfOrganizationalUnitsAsTree = async (portal, role, organizati
             managers: department.managers.map(item => item.toString()),
             deputyManagers: department.deputyManagers.map(item => item.toString()),
             employees: department.employees.map(item => item.toString()),
-            parent_id: department.parent !== null ? department.parent.toString() : null
+            parent_id: (department.parent !== null && department.parent !== undefined) ? department.parent.toString() : null
         }
     });
 

@@ -152,8 +152,8 @@ function ModalDetailKPI(props) {
     const handleSetPointKPI = () => {
         let kpiUnitSet = props.id;
         let date = props.date;
-        //let kpiUnit = id;
-        props.calculateKPIUnit(kpiUnitSet, date);
+
+        props.calculateKPIUnit([kpiUnitSet], date);
     };
 
 

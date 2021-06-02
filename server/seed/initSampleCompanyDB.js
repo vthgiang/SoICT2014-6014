@@ -63,6 +63,7 @@ const {
     ProductCategory,
     ProductDiscount,
     Status,
+    CustomerRankPoint,
 
     ManufacturingWorks,
     ManufacturingMill,
@@ -201,7 +202,7 @@ const initSampleCompanyDB = async () => {
         if (!db.models.ManufacturingPlan) ManufacturingPlan(db);
         if (!db.models.ManufacturingCommand) ManufacturingCommand(db);
 
-        console.log("models_list", db.models);
+        // console.log("models_list", db.models);
     };
 
     initModels(vnistDB);
@@ -338,7 +339,14 @@ const initSampleCompanyDB = async () => {
             email: "cuongth.vnist@gmail.com",
             password: hash,
             company: vnist._id,
-        }
+        },
+        {
+            name: "Nguyễn Văn Thái",
+            email: "thainv.vnist@gmail.com",
+            password: hash,
+            company: vnist._id,
+        },
+
     ]);
     // console.log("Dữ liệu tài khoản người dùng cho công ty VNIST", users);
 
@@ -484,6 +492,7 @@ const initSampleCompanyDB = async () => {
         type: roleChucDanh._id,
     });
 
+
     // Khỏi tạo role cho khối sản xuất
 
     const nvNhaMayThuocBot = await Role(vnistDB).create({
@@ -519,6 +528,23 @@ const initSampleCompanyDB = async () => {
     const quanDocNhaMayTPCN = await Role(vnistDB).create({
         parents: [roleManager._id, nvNhaMayTPCN._id],
         name: "Quản đốc nhà máy thực phẩm chức năng",
+        type: roleChucDanh._id,
+    });
+    // Khỏi tạo role cho phòng chăm sóc khách hàng
+
+    const nvPhongCSKH = await Role(vnistDB).create({
+        parents: [roleEmployee._id],
+        name: "Nhân viên phòng CSKH",
+        type: roleChucDanh._id,
+    });
+    const phoPhongCSKH = await Role(vnistDB).create({
+        parents: [roleDeputyManager._id, nvPhongCSKH._id],
+        name: "Phó phòng CSKH",
+        type: roleChucDanh._id,
+    });
+    const truongPhongCSKH = await Role(vnistDB).create({
+        parents: [roleManager._id, nvPhongCSKH._id, phoPhongCSKH._id],
+        name: "Trưởng phòng CSKH",
         type: roleChucDanh._id,
     });
 
@@ -563,21 +589,13 @@ const initSampleCompanyDB = async () => {
             userId: users[5]._id,
             roleId: thanhVienBGĐ._id,
         },
-        {
-            // Phó phòng nhân sự Trần Thị Én
-            userId: users[6]._id,
-            roleId: phoPhongHC._id,
-        },
+       
         {
             // Nhân viên phòng nhân sự Phạm Đình Phúc
             userId: users[7]._id,
             roleId: nvPhongHC._id,
         },
-        {
-            // Thành viên ban giám đốc Phạm Đình Phúc
-            userId: users[7]._id,
-            roleId: thanhVienBGĐ._id,
-        },
+      
         {
             userId: users[8]._id,
             roleId: nvPhongHC._id,
@@ -587,10 +605,6 @@ const initSampleCompanyDB = async () => {
             roleId: nvPhongHC._id,
         },
         // Gán quyền cho phòng kế hoạch
-        {
-            userId: users[7]._id,
-            roleId: nvPhongKH._id,
-        },
         {
             userId: users[12]._id,
             roleId: phoPhongKH._id,
@@ -636,14 +650,7 @@ const initSampleCompanyDB = async () => {
             userId: users[5]._id,
             roleId: nvNhaMayThuocNuoc._id,
         },
-        {
-            userId: users[6]._id,
-            roleId: nvNhaMayThuocNuoc._id,
-        },
-        {
-            userId: users[7]._id,
-            roleId: nvNhaMayThuocNuoc._id,
-        },
+       
 
         {
             userId: users[8]._id,
@@ -676,14 +683,6 @@ const initSampleCompanyDB = async () => {
             roleId: nvKinhDoanh247._id,
         },
         {
-            userId: users[6]._id,
-            roleId: truongPhongKinhDoanh123._id,
-        },
-        {
-            userId: users[7]._id,
-            roleId: nvKinhDoanh123._id,
-        },
-        {
             userId: users[8]._id,
             roleId: nvKinhDoanh123._id,
         },
@@ -702,7 +701,25 @@ const initSampleCompanyDB = async () => {
         {
             userId: users[12]._id,
             roleId: nvSalesAdmin._id,
+        },//2 cái
+        //phân quyền cho phòng CSKH ??? 2 dâu ,
+        //, //1 cái
+        {
+            // Nguyễn Văn Danh cũng là trưởng phòng CSKH
+            userId: users[5]._id,
+            roleId: truongPhongCSKH._id,
         },
+        {
+            // nhân viên CSKH Trần Thị Én
+            userId: users[6]._id,
+            roleId: nvPhongCSKH._id,
+        },
+        {
+            // Nhân viên CSKH Phạm Đình Phúc
+            userId: users[7]._id,
+            roleId: nvPhongCSKH._id,
+        },
+
     ]);
 
     /**
@@ -727,6 +744,18 @@ const initSampleCompanyDB = async () => {
                 "Bao gồm các phòng ban kinh doanh",
             managers: [giamDocKinhDoanh._id],
             parent: Directorate._id,
+        },
+    ]);
+    // Khởi tạo cơ cấu tổ chức bộ phận CSKH
+    const boPhanCSKH = await OrganizationalUnit(vnistDB).insertMany([
+        {
+            name: "Phòng Chăm sóc khách hàng",
+            description:
+                "Phòng chăm sóc khách hàng",
+            managers: [truongPhongCSKH._id],
+            parent: Directorate._id,
+            deputyManagers: [phoPhongCSKH._id],
+            employees: [nvPhongCSKH._id],
         },
     ]);
 
@@ -5456,21 +5485,37 @@ const initSampleCompanyDB = async () => {
             name: "Khách bán buôn",
             code: "KBB",
             description: "Nhóm khách chỉ bán buôn",
+            "creator": users[5]._id,
+            "updatedBy": users[5]._id,
+            "createdAt": new Date(),
+            "updatedAt": new Date(),
         },
         {
             name: "Sỉ lẻ",
             code: "SL",
             description: "Nhóm khách chỉ bán sĩ lẻ",
+            "creator": users[5]._id,
+            "updatedBy": users[5]._id,
+            "createdAt": new Date(),
+            "updatedAt": new Date(),
         },
         {
             name: "Nhóm khách theo khu vực",
             code: "CCAD",
             description: "Nhóm khách theo khu vực",
+            "creator": users[5]._id,
+            "updatedBy": users[5]._id,
+            "createdAt": new Date(),
+            "updatedAt": new Date(),
         },
         {
             name: "Khách VIP",
             code: "ĐLVA",
             description: "Khách VIP",
+            "creator": users[5]._id,
+            "updatedBy": users[5]._id,
+            "createdAt": new Date(),
+            "updatedAt": new Date(),
         },
     ];
     const groups = await Group(vnistDB).insertMany(customerGroupData);
@@ -5480,39 +5525,59 @@ const initSampleCompanyDB = async () => {
     console.log("Tạo mẫu dữ liệu trạng thái khách hàng");
     const customerStatusData = [
         {
-            creator: [users[5]._id],
+
             code: "ST001",
             name: "Tiềm năng",
             description: "Khách hàng mới toanh",
             active: false,
+            "creator": users[5]._id,
+            "updatedBy": users[5]._id,
+            "createdAt": new Date(),
+            "updatedAt": new Date(),
         },
         {
-            creator: [users[5]._id],
+
             code: "ST002",
             name: "Quan tâm sản phẩm",
             description: "Khách hàng hứng thú với sản phẩm của công ty",
             active: false,
+            "creator": users[5]._id,
+            "updatedBy": users[5]._id,
+            "createdAt": new Date(),
+            "updatedAt": new Date(),
         },
         {
-            creator: [users[5]._id],
+
             code: "ST003",
             name: "Đã báo giá",
             description: "Khách hàng đã được báo giá",
             active: false,
+            "creator": users[5]._id,
+            "updatedBy": users[5]._id,
+            "createdAt": new Date(),
+            "updatedAt": new Date(),
         },
         {
-            creator: [users[5]._id],
+
             code: "ST005",
             name: "Đã kí hợp đồng",
             description: "Khách hàng đã kỹ hợp đồng với công ty",
             active: false,
+            "creator": users[5]._id,
+            "updatedBy": users[5]._id,
+            "createdAt": new Date(),
+            "updatedAt": new Date(),
         },
         {
-            creator: [users[5]._id],
+
             code: "ST004",
             name: "Đã mua sản phẩm",
             description: "Khách hàng đã mua sản phẩm",
             active: false,
+            "creator": users[5]._id,
+            "updatedBy": users[5]._id,
+            "createdAt": new Date(),
+            "updatedAt": new Date(),
         },
     ];
     const status = await Status(vnistDB).insertMany(customerStatusData);
@@ -5524,115 +5589,384 @@ const initSampleCompanyDB = async () => {
         {
             name: "Gọi điện tư vấn",
             description: "Gọi điện tư vấn",
+            "creator": users[5]._id,
+            "updatedBy": users[5]._id,
+            "createdAt": new Date(),
+            "updatedAt": new Date(),
         },
         {
             name: "Gửi Email",
             description: "Gửi Email giới thiệu ...",
+            "creator": users[5]._id,
+            "updatedBy": users[5]._id,
+            "createdAt": new Date(),
+            "updatedAt": new Date(),
         },
         {
             name: "Gặp mặt trực tiếp",
             description: "Hẹn gặp khách hàng trực tiếp",
+            "creator": users[5]._id,
+            "updatedBy": users[5]._id,
+            "createdAt": new Date(),
+            "updatedAt": new Date(),
         },
     ];
 
-    await CareType(vnistDB).insertMany(customerCareType);
+    const careTypes = await CareType(vnistDB).insertMany(customerCareType);
+    console.log("Xong! Đã tạo mẫu dữ liệu hình thức chăm sóc khách hàng");
+    // ****************** Tạo mẫu dữ liệu xếp hạng khách hàng********************
+
+    const customerRankPoints = [
+        {
+
+            "name": "Đồng",
+            "point": 0,
+            "description": "Xếp hạng đồng",
+            "creator": users[5]._id,
+            "updatedBy": users[5]._id,
+            "createdAt": new Date(),
+            "updatedAt": new Date(),
+
+        }
+        ,
+        /* 2 */
+        {
+
+            "name": "Bạc",
+            "point": 500,
+            "description": "Xếp hạng bạc",
+            "creator": users[5]._id,
+            "updatedBy": users[5]._id,
+            "createdAt": new Date(),
+            "updatedAt": new Date(),
+
+        }
+        ,
+
+        {
+            "name": "Vàng",
+            "point": 1000,
+            "description": "Xếp hạng bạc",
+            "creator": users[5]._id,
+            "updatedBy": users[5]._id,
+            "createdAt": new Date(),
+            "updatedAt": new Date(),
+
+        },
+        {
+            "name": "Bạch kim",
+            "point": 10000,
+            "description": "Xếp hạng bạch kim ",
+            "creator": users[5]._id,
+            "updatedBy": users[5]._id,
+            "createdAt": new Date(),
+            "updatedAt": new Date(),
+
+        }
+    ];
+
+    await CustomerRankPoint(vnistDB).insertMany(customerRankPoints);
     console.log("Xong! Đã tạo mẫu dữ liệu hình thức chăm sóc khách hàng");
 
     // ****************** Tạo mẫu dữ liệu khách hàng********************
     var listCustomers = await Customer(vnistDB).insertMany([
+
         {
-            creator: users[7]._id,
-            code: "KH001",
-            name: "Nguyễn Lệ Nhi",
-            owner: [users[5]._id],
-            gender: parseInt("1"),
-            company: "VNIST",
-            customerType: parseInt("1"),
-            represent: "Nguyễn Thị Hương",
-            taxNumber: "1528946392",
-            customerSource: "Facebook.com",
-            companyEstablishmentDate: new Date("2009-09-15"),
-            birthDate: new Date("1998-09-03"),
-            telephoneNumber: parseInt("02465756834"),
-            mobilephoneNumber: parseInt("0385025851"),
-            email: "nhinl.vnist@gmail.com",
-            address: "Ngọc mỹ, Quốc Oai, Hà Nội",
-            location: parseInt("3"),
-            website: "abcnddg.com",
-            group: groups[1]._id,
-            status: [
-                status[0]._id,
-                status[1]._id,
-                status[2]._id,
-                status[3]._id,
+
+            "owner": [
+                users[5]._id
             ],
-            point: parseInt("129"),
-            statusHistories: [
-                {
-                    oldValue: status[1]._id,
-                    newValue: status[1]._id,
-                    createdAt: new Date("2020-10-10"),
-                    createdBy: users[5]._id,
-                },
-                {
-                    oldValue: status[1]._id,
-                    newValue: status[3]._id,
-                    createdAt: new Date("2020-10-14"),
-                    createdBy: users[5]._id,
-                },
-                {
-                    oldValue: status[3]._id,
-                    newValue: status[4]._id,
-                    createdAt: new Date("2020-10-17"),
-                    createdBy: users[5]._id,
-                },
+            "status": [
+                status[4]._id
             ],
-        },
+            "point": 0,
+            "isDeleted": false,
+            "code": "KH12345",
+            "name": "Ngô Quyền",
+            "customerType": 1,
+            "group": groups[1]._id,
+            "gender": 2,
+            "birthDate": new Date("1998-09-03"),
+            "mobilephoneNumber": 123456789,
+            "email": "ThaiNguyen@gmail.com",
+            "address": "Nghệ An",
+            "telephoneNumber": 123456789,
+            "taxNumber": "Tax 123456789",
+            "location": 1,
+            "customerSource": "FaceBook",
+            "statusHistories": [
+                {
+
+                    "createdAt": new Date(),
+                    "oldValue": status[1]._id,
+                    "newValue": status[1]._id,
+                    "createdBy": users[5]._id,
+                    "description": "Khách hàng được khởi tạo"
+                },
+                {
+
+                    "oldValue": status[1]._id,
+                    "newValue": status[4]._id,
+                    "createdAt": new Date(),
+                    "createdBy": users[5]._id,
+                    "description": "Khách hàng đã kí hợp đồng"
+                }
+            ],
+            "creator": users[5]._id,
+            "rankPoints": [
+                {
+
+                    "point": 800,
+                    "expirationDate": new Date('2022-02-02')
+                },
+                {
+
+                    "point": 80,
+                    "expirationDate": new Date('2022-02-02')
+                }
+            ],
+            "files": [],
+            "promotions": [],
+            "createdAt": new Date(),
+            "updatedAt": new Date(),
+            "__v": 0,
+            "address2": "",
+            "company": "",
+            "companyEstablishmentDate": null,
+            "email2": "",
+            "linkedIn": "",
+            "note": "",
+            "represent": "",
+            "website": ""
+        }
+        ,
         {
-            creator: users[7]._id,
-            code: "KH002",
-            name: "Công ty Việt Anh",
-            owner: [users[5]._id],
-            gender: parseInt("2"),
-            company: "VIAVET",
-            represent: "Trương Anh Tuấn",
-            customerType: parseInt("2"),
-            taxNumber: "64673692",
-            customerSource: "Youtube, facebook",
-            companyEstablishmentDate: new Date("2014-09-15"),
-            birthDate: null,
-            telephoneNumber: parseInt("024657589843"),
-            mobilephoneNumber: parseInt("0345915454"),
-            email: "TuanTA.viavet@gmail.com",
-            address: "Thường tín, Hà Nội",
-            location: parseInt("1"),
-            website: "vietanhviavet.com",
-            group: groups[2]._id,
-            status: [
-                status[0]._id,
-                status[1]._id,
-                status[2]._id,
-                status[3]._id,
-                status[4]._id,
+
+            "owner": [
+                users[6]._id
             ],
-            point: parseInt("10001"),
-            statusHistories: [
+            "status": [
+                status[3]._id
+            ],
+            "point": 0,
+            "isDeleted": false,
+            "code": "KH0002",
+            "name": "Trần Hưng Đạo",
+            "customerType": 1,
+            "group": groups[1]._id,
+            "gender": 2,
+            "birthDate": new Date("1238-09-03"),
+            "mobilephoneNumber": 123456789,
+            "email": "hungdao@gmail.com",
+            "address": "Nam Định",
+            "telephoneNumber": 1234567890,
+            "taxNumber": "Tax 1234567111",
+            "location": 1,
+            "customerSource": "Shoppe",
+            "statusHistories": [
                 {
-                    oldValue: status[1]._id,
-                    newValue: status[1]._id,
-                    createdAt: new Date("2020-09-15"),
-                    createdBy: users[5]._id,
+
+                    "createdAt": new Date(),
+                    "oldValue": status[1]._id,
+                    "newValue": status[1]._id,
+                    "createdBy": users[5]._id,
+                    "description": "Khách hàng được khởi tạo"
                 },
                 {
-                    oldValue: status[1]._id,
-                    newValue: status[4]._id,
-                    createdAt: new Date("2020-10-10"),
-                    createdBy: users[6]._id,
-                },
+
+                    "oldValue": status[1]._id,
+                    "newValue": status[3]._id,
+                    "createdAt": new Date(),
+                    "createdBy": users[5]._id,
+                    "description": "Khách hàng đã được liên hệ"
+                }
             ],
+            "creator": users[5]._id,
+            "rankPoints": [
+                {
+
+                    "point": 100,
+                    "expirationDate": new Date('2022-02-02')
+                },
+                {
+
+                    "point": 50,
+                    "expirationDate": new Date('2022-02-02')
+                }
+            ],
+            "files": [],
+            "promotions": [],
+            "createdAt": new Date(),
+            "updatedAt": new Date(),
+            "__v": 0,
+            "address2": "",
+            "company": "",
+            "companyEstablishmentDate": null,
+            "email2": "",
+            "linkedIn": "",
+            "note": "",
+            "represent": "",
+            "website": ""
         },
+        
+        {
+
+            "owner": [
+                users[7]._id
+            ],
+            "status": [
+                status[4]._id
+            ],
+            "point": 0,
+            "isDeleted": false,
+            "code": "KH0003",
+            "name": "Công ty Việt Anh",
+            "customerType": 2,
+            "group": groups[1]._id,
+            "gender": 2,
+            "birthDate": new Date("1238-09-03"),
+            "mobilephoneNumber": 123456789,
+            "email": "vietanh@gmail.com",
+            "address": "Hà Nội",
+            "telephoneNumber": 1234561111,
+            "taxNumber": "Tax 11117111",
+            "location": 1,
+            "customerSource": "Shoppe",
+            "statusHistories": [
+                {
+
+                    "createdAt": new Date(),
+                    "oldValue": status[1]._id,
+                    "newValue": status[1]._id,
+                    "createdBy": users[5]._id,
+                    "description": "Khách hàng được khởi tạo"
+                },
+                {
+
+                    "oldValue": status[1]._id,
+                    "newValue": status[4]._id,
+                    "createdAt": new Date(),
+                    "createdBy": users[5]._id,
+                    "description": "Khách hàng đã mua hàng"
+                }
+            ],
+            "creator": users[5]._id,
+            "rankPoints": [
+                {
+
+                    "point": 1000,
+                    "expirationDate": new Date('2022-02-02')
+                },
+                {
+
+                    "point": 500,
+                    "expirationDate": new Date('2022-02-02')
+                }
+            ],
+            "files": [],
+            "promotions": [],
+            "createdAt": new Date(),
+            "updatedAt": new Date(),
+            "__v": 0,
+            "address2": "",
+            "company": "",
+            "companyEstablishmentDate": new Date('2002-02-02'),
+            "email2": "",
+            "linkedIn": "",
+            "note": "",
+            "represent": "Nguyễn Tuấn Anh",
+            "website": "vietanh.com.vn"
+        }
+
     ]);
     console.log("Xong! Đã tạo mẫu dữ liệu khách hàng");
+
+
+
+    // ****************** Tạo mẫu dữ liệu chăm sóc khách hàng********************
+
+    const customerCares = [
+        {
+
+            "customerCareStaffs": [
+                users[5]._id
+            ],
+            "customerCareTypes": [
+                careTypes[1]._id
+            ],
+            "status": 2,
+            "name": "Gọi điện cho khách hàng ",
+            "description": "<p>Gọi điện cho khách hàng tư vấn mua sản phẩm mới </p>",
+            "priority": 2,
+            "startDate": new Date('2021-05-05'),
+            "endDate": new Date('2021-05-31'),
+            "customer": listCustomers[1]._id,
+            "creator": users[5]._id,
+            "createdAt": new Date(),
+            "updatedAt": new Date(),
+            "__v": 0
+        }
+        ,
+        /* 2 */
+        {
+
+            "customerCareStaffs": [
+                users[6]._id
+            ],
+            "customerCareTypes": [
+                careTypes[1]._id
+            ],
+            "status": 5,
+            "customer": listCustomers[0]._id,
+            "name": "email phản hồi khiếu nại của khách hàng",
+            "description": "<p>email phản hồi khiếu nại của khách hàng</p>",
+            "priority": 2,
+            "startDate": new Date('2021-05-05'),
+            "endDate": new Date('2021-05-07'),
+            "customer": listCustomers[1]._id,
+            "creator": users[5]._id,
+            "createdAt": new Date(),
+            "updatedAt": new Date(),
+            "__v": 0,
+            "completeDate": new Date('2021-05-14'),
+            "evaluation": {
+                "point": 8.9,
+                "comment": "<p>khách hàng hài lòng về phản hồi</p>",
+                "result": 1
+            }
+        },
+        /* 3 */
+        {
+
+            "customerCareStaffs": [
+                users[6]._id
+            ],
+            "customerCareTypes": [
+                careTypes[1]._id
+            ],
+            "status": 5,
+            "customer": listCustomers[0]._id,
+            "name": "Gặp mặt trao đổi thông tin ",
+            "description": "<p>Gặp mặt trao đổi thông tin</p>",
+            "priority": 2,
+            "startDate": new Date('2021-05-05'),
+            "endDate": new Date('2021-05-07'),
+            "customer": listCustomers[1]._id,
+            "creator": users[5]._id,
+            "createdAt": new Date(),
+            "updatedAt": new Date(),
+            "__v": 0,
+            "completeDate": new Date('2021-05-14'),
+            "evaluation": {
+                "point": 8.0,
+                "comment": "<p>khách hàng hài lòng về cuộc gặp mặt </p>",
+                "result": 1
+            }
+        }
+    ];
+
+    await Care(vnistDB).insertMany(customerCares);
+    console.log("Xong! Đã tạo mẫu dữ liệu  chăm sóc khách hàng");
 
     /*---------------------------------------------------------------------------------------------
     -----------------------------------------------------------------------------------------------
@@ -5959,11 +6293,11 @@ const initSampleCompanyDB = async () => {
     ]);
     console.log("Khởi tạo xong danh sách thông tin khuyến mãi");
 
-         /*---------------------------------------------------------------------------------------------
-    -----------------------------------------------------------------------------------------------
-      TẠO DỮ LIỆU CẤU HÌNH ĐƠN VỊ KINH DOANH
-    -----------------------------------------------------------------------------------------------
-    ----------------------------------------------------------------------------------------------- */
+    /*---------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------
+ TẠO DỮ LIỆU CẤU HÌNH ĐƠN VỊ KINH DOANH
+-----------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------- */
 
     console.log("Khởi tạo dữ liệu cấu hình đơn vị kinh doanh");
     var listBusinessDepartments = await BusinessDepartment(vnistDB).insertMany([
@@ -6472,28 +6806,7 @@ const initSampleCompanyDB = async () => {
 
     ]);
     console.log("Khởi tạo xong danh sách thông tin báo giá");
-    const newProject = {
-        code: 'DUAN11',
-        name: 'Du an 1',
-        "unitTime": "day",
-        "unitCost": "VND",
-        "status": "inprocess",
-        "startDate": new Date("2021-04-16T00:00:00Z"),
-        "endDate": new Date("2021-07-23T00:00:00Z"),
-        "description": "ádasdasdasdasd",
-        projectManager: [
-            projectManager._id,
-        ],
-        creator: projectManager._id,
-        responsibleEmployees: [],
-        responsibleEmployeesWithUnit: []
-    }
-
-    await Project(vnist).insertMany([
-        newProject,
-    ]);
-    console.log('Hoàn thành tạo dữ liệu cho dự án')
-
+    
     /*---------------------------------------------------------------------------------------------
       -----------------------------------------------------------------------------------------------
           TẠO DỮ LIỆU ĐƠN BÁN HÀNG
@@ -6502,16 +6815,16 @@ const initSampleCompanyDB = async () => {
     // console.log("Khởi tạo dữ liệu đơn bán hàng");
     // var listSalesOrder = await SalesOrder(vnistDB).insertMany([
     //     {
-           
+
     //     },
     // ]);
     // console.log("Khởi tạo xong danh sách đơn bán hàng");
 
-       /*---------------------------------------------------------------------------------------------
-    -----------------------------------------------------------------------------------------------
-      TẠO DỮ LIỆU ĐƠN MUA NGUYÊN VẬT LIỆU
-    -----------------------------------------------------------------------------------------------
-    ----------------------------------------------------------------------------------------------- */
+    /*---------------------------------------------------------------------------------------------
+ -----------------------------------------------------------------------------------------------
+   TẠO DỮ LIỆU ĐƠN MUA NGUYÊN VẬT LIỆU
+ -----------------------------------------------------------------------------------------------
+ ----------------------------------------------------------------------------------------------- */
 
     // console.log("Khởi tạo dữ liệu đơn mua nguyên vật liệu");
     // var listPurchaseOrder = await PurchaseOrder(vnistDB).insertMany([
@@ -6530,7 +6843,7 @@ const initSampleCompanyDB = async () => {
     // console.log("Khởi tạo dữ liệu thông tin thanh toán đơn hàng, đơn mua nvl");
     // var listPurchaseOrders = await purchaseDate(vnistDB).insertMany([
     //     {
-            
+
     //     },
     // ]);
     // console.log("Khởi tạo xong danh sách thông tin thanh toán đơn hàng, đơn mua nvl");

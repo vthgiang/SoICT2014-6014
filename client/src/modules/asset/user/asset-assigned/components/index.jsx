@@ -22,6 +22,4 @@ function ManagerAssetAssignedCrash(props) {
     )
 }
 
-const assetAssignedCrash = connect(null, null)(withTranslate(ManagerAssetAssignedCrash));
-
-export { assetAssignedCrash as ManagerAssetAssignedCrash };
+export default connect(null, null)(withTranslate(ManagerAssetAssignedCrash));

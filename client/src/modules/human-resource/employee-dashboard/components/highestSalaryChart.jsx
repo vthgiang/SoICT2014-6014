@@ -56,51 +56,48 @@ const HighestSalaryChart = (props) => {
     
         return (
             <React.Fragment>
-                {childOrganizationalUnit.length === department.list.length &&
-                    <React.Fragment>
-                        <div className="box box-solid">
-                            <div className="box-header with-border">
-                                <div className="box-title">
-                                    {`Top 5 thu nhập cao nhất `}
-                                    {
-                                        organizationalUnitsName && organizationalUnitsName.length < 2 ?
-                                            <>
-                                                <span>{` ${translate('task.task_dashboard.of')}`}</span>
-                                                <span>{` ${organizationalUnitsName?.[0] ? organizationalUnitsName?.[0] : ""}`}</span>
-                                            </>
-                                            :
-                                            <span onClick={() => showListInSwal(organizationalUnitsName, translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
-                                                <span>{` ${translate('task.task_dashboard.of')}`}</span>
-                                                <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {organizationalUnitsName?.length}</a>
-                                                <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
-                                            </span>
-                                    }
-                                    {` tháng ${monthShow}`}
-                                </div>
-                            </div>
-                            <div className="box-body no-parding">
-                                <ul className="users-list clearfix">
-                                    {
-                                        (dataSalary && dataSalary.length !== 0) ?
-                                            dataSalary.map((x, index) => (
-                                                index < 5 &&
-                                                <li key={index} style={{ maxWidth: 200 }}>
-                                                    <ApiImage src={`.${x.employee.avatar}`} />
-                                                    <a className="users-list-name">{x.employee.fullName}</a>
-                                                    <span className="users-list-date">{x.employee.employeeNumber}</span>
-                                                </li>
-                                            ))
-                                            : <li>{translate('kpi.evaluation.employee_evaluation.data_not_found')}</li>
-                                    }
-                                </ul>
-                            </div>
-                            <div className="box-footer text-center">
-                                <a style={{ cursor: 'pointer' }} onClick={viewAllSalary} className="uppercase">Xem tất cả</a>
-                            </div>
+                <div className="box box-solid">
+                    <div className="box-header with-border">
+                        <div className="box-title">
+                            {`Top 5 thu nhập cao nhất `}
+                            {
+                                organizationalUnitsName && organizationalUnitsName.length < 2 ?
+                                    <>
+                                        <span>{` ${translate('task.task_dashboard.of')}`}</span>
+                                        <span>{` ${organizationalUnitsName?.[0] ? organizationalUnitsName?.[0] : ""}`}</span>
+                                    </>
+                                    :
+                                    <span onClick={() => showListInSwal(organizationalUnitsName, translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
+                                        <span>{` ${translate('task.task_dashboard.of')}`}</span>
+                                        <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {organizationalUnitsName?.length}</a>
+                                        <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                    </span>
+                            }
+                            {` tháng ${monthShow}`}
                         </div>
-                        <ViewAllSalary dataSalary={dataSalary} title={`Tổng hợp tình hình lương thưởng ${monthShow}`} viewTotalSalary={true} />
-                    </React.Fragment>
-                }
+                    </div>
+                    <div className="box-body no-parding">
+                        <ul className="users-list clearfix">
+                            {salary.isLoading
+                                ? <li>{translate('general.loading')}</li>
+                                : (dataSalary && dataSalary.length !== 0) ?
+                                    dataSalary.map((x, index) => (
+                                        index < 5 &&
+                                        <li key={index} style={{ maxWidth: 200 }}>
+                                            <ApiImage src={`.${x.employee.avatar}`} />
+                                            <a className="users-list-name">{x.employee.fullName}</a>
+                                            <span className="users-list-date">{x.employee.employeeNumber}</span>
+                                        </li>
+                                    ))
+                                    : <li>{translate('kpi.evaluation.employee_evaluation.data_not_found')}</li>
+                            }
+                        </ul>
+                    </div>
+                    <div className="box-footer text-center">
+                        <a style={{ cursor: 'pointer' }} onClick={viewAllSalary} className="uppercase">Xem tất cả</a>
+                    </div>
+                </div>
+                <ViewAllSalary dataSalary={dataSalary} title={`Tổng hợp tình hình lương thưởng ${monthShow}`} viewTotalSalary={true} />
             </React.Fragment>
         );
 }

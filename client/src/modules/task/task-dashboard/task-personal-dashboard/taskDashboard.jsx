@@ -424,7 +424,7 @@ class TaskDashboard extends Component {
                         <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: "#fff", padding: '10px', borderRadius: '10px' }}>
                             <div style={{ display: 'flex', alignItems: 'center' }}>
                                 <span style={{ marginRight: '10px', color: "#dcb67a" }} className="material-icons">
-                                    <span class="material-icons-outlined">
+                                    <span className="material-icons-outlined">
                                         person_search
                                     </span>
                                 </span>
@@ -475,7 +475,6 @@ class TaskDashboard extends Component {
                         <div className="box box-primary">
                             <div className="box-header with-border">
                                 <div className="box-title">{translate('task.task_management.tasks_calendar')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
-
                             </div>
                             <LazyLoadComponent once={true}>
                                 <GanttCalendar
@@ -665,5 +664,4 @@ const actionCreators = {
     getTimeSheetOfUser: taskManagementActions.getTimeSheetOfUser,
 };
 
-const connectedTaskDashboard = connect(mapState, actionCreators)(withTranslate(TaskDashboard));
-export { connectedTaskDashboard as TaskDashboard };
+export default connect(mapState, actionCreators)(withTranslate(TaskDashboard));

@@ -26,7 +26,7 @@ exports.getLoyalCustomers = async (userId, portal, companyId, query, currentRole
     if (listAllCustomer) customers = listAllCustomer.customers;
     let loyalCustomers = [];
     for (const customer of customers) {
-        let listSaleOrder = await getAllSalesOrders(userId, { page: 1, limit: 100, currentRole, customer: customer._id }, portal);
+        let listSaleOrder = await getAllSalesOrders(userId, { page: 1, limit: 100, currentRole, customer: customer._id }, portal,true);
         let saleOrders;
         if (listSaleOrder) saleOrders = listSaleOrder.allSalesOrders.docs;
         let totalOrderValue = 0;
@@ -36,17 +36,16 @@ exports.getLoyalCustomers = async (userId, portal, companyId, query, currentRole
         //tinh diem khach hang
         const now = new Date();
         let rankPoint = 0;
-        let totalPromotion = customer.promotion ? customer.promotion.length : 0;
-        const listRankPoint = customer.rankPoint;
+        let totalPromotion = customer.promotions ? customer.promotions.length : 0;
+        const listRankPoint = customer.rankPoints;
         if (listRankPoint) {
             listRankPoint.forEach(x => {
-                if (x.expirationDate > now) rankPoint += x.point;
+                if (x.expirationDate.getTime() > now.getTime()) rankPoint += x.point;
             });
         }
         loyalCustomers = [...loyalCustomers, { customer, totalOrder: saleOrders.length, totalOrderValue, rankPoint,totalPromotion }];
-
     }
-    await loyalCustomers.sort((a, b) => (a.rankPoint > b.rankPoint) ? 1 : -1)
-    return loyalCustomers
+     loyalCustomers =  loyalCustomers.sort((a, b) => (a.rankPoint < b.rankPoint) ? 1 : -1).filter((x)=>x.rankPoint>0);
+    return {listDocsTotal: loyalCustomers.length, loyalCustomers}
 }
 

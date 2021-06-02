@@ -12,6 +12,9 @@ import c3 from 'c3';
 import 'c3/c3.css';
 
 const HumanResourceIncreaseAndDecreaseChart = (props) => {
+    const { department, employeesManager, translate } = props;
+    const { childOrganizationalUnit } = props;
+
     let date = new Date()
     let _startDate = formatDate(date.setMonth(new Date().getMonth() - 3), true);
 
@@ -24,6 +27,7 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
         organizationalUnits: props.defaultUnit ? props?.childOrganizationalUnit?.map(item => item?.id) : [],
         organizationalUnitsSearch: props.defaultUnit ? props?.childOrganizationalUnit?.map(item => item?.id) : [],
     })
+    const { lineChart, nameChart, nameData1, nameData2, nameData3, startDate, endDate, startDateShow, endDateShow, organizationalUnits, organizationalUnitsSearch } = state;
 
     useEffect(() => {
         const { organizationalUnits, startDate, endDate } = state;
@@ -35,6 +39,50 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
 
         props.getAllEmployee({ organizationalUnits: organizationalUnits, startDate: startDateNew, endDate: endDateNew });
     }, [])
+
+    useEffect(() => {
+        let organizationalUnitsTemp = props.defaultUnit ? props?.childOrganizationalUnit?.map(item => item?.id) : []
+        setState({
+            ...state,
+            organizationalUnits: organizationalUnitsTemp,
+            organizationalUnitsSearch: organizationalUnitsTemp,
+        })
+
+        let arrStart = startDate.split('-');
+        let startDateNew = [arrStart[1], arrStart[0]].join('-');
+
+        let arrEnd = endDate.split('-');
+        let endDateNew = [arrEnd[1], arrEnd[0]].join('-');
+        props.getAllEmployee({ organizationalUnits: organizationalUnitsTemp, startDate: startDateNew, endDate: endDateNew });
+    }, [JSON.stringify(props.childOrganizationalUnit)])
+
+    useEffect(() => {
+        if (employeesManager?.arrMonth?.length > 0) {
+            let ratioX = ['x', ...employeesManager?.arrMonth];
+            let listEmployeesHaveStartingDateOfNumberMonth = employeesManager?.listEmployeesHaveStartingDateOfNumberMonth;
+            let listEmployeesHaveLeavingDateOfNumberMonth = employeesManager?.listEmployeesHaveLeavingDateOfNumberMonth;
+            let data1 = ['data1'], data2 = ['data2'], data3 = ["data3", ...employeesManager?.totalEmployees];
+            employeesManager.arrMonth.forEach(x => {
+                let date = new Date(x);
+                let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+                let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 1);
+                let total1 = 0, total2 = 0;
+                listEmployeesHaveStartingDateOfNumberMonth.forEach(y => {
+                    if (y.startingDate && firstDay.getTime() < new Date(y.startingDate).getTime() && new Date(y.startingDate).getTime() <= lastDay.getTime()) {
+                        total1 += 1;
+                    }
+                })
+                listEmployeesHaveLeavingDateOfNumberMonth.forEach(y => {
+                    if (y.leavingDate && firstDay.getTime() < new Date(y.leavingDate).getTime() && new Date(y.leavingDate).getTime() <= lastDay.getTime()) {
+                        total2 += 1;
+                    }
+                })
+                data1 = [...data1, total1];
+                data2 = [...data2, total2];
+            })
+            renderChart({ nameData1, nameData2, nameData3, ratioX, data1, data2, data3, lineChart });
+        }
+    }, [JSON.stringify(employeesManager)])
 
     /**
      * Function bắt sự kiện thay đổi unit
@@ -99,9 +147,9 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
     }
 
     if (!state.arrMonth
-        || props.employeesManager.arrMonth?.length !== state.arrMonth?.length
-        || !isEqual(props.employeesManager.listEmployeesHaveStartingDateOfNumberMonth, state.listEmployeesHaveStartingDateOfNumberMonth)
-        || !isEqual(props.employeesManager.listEmployeesHaveLeavingDateOfNumberMonth, state.listEmployeesHaveLeavingDateOfNumberMonth)
+        || employeesManager.arrMonth?.length !== state.arrMonth?.length
+        || !isEqual(employeesManager.listEmployeesHaveStartingDateOfNumberMonth, state.listEmployeesHaveStartingDateOfNumberMonth)
+        || !isEqual(employeesManager.listEmployeesHaveLeavingDateOfNumberMonth, state.listEmployeesHaveLeavingDateOfNumberMonth)
     ) {
         setState({
             ...state,
@@ -130,18 +178,19 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
      * Render chart
      * @param {*} data : Dữ liệu biểu đồ
      */
-    const renderChart = (data) => {
+    function renderChart (data) {
         data.data1.shift();
         data.data2.shift();
-        let fakeData1 = data.data1.map(x => 2 * x);
-        let fakeData2 = data.data2.map(x => x / 2);
         removePreviousChart();
         let chart = c3.generate({
             bindto: _chart.current,
             data: {
                 x: 'x',
-                columns: [],
-                hide: true,
+                columns: [
+                    data.ratioX, data.data3, 
+                    ['data1', ...data.data1],
+                    ['data2', ...data.data2]
+                ],
                 type: data.lineChart === true ? '' : 'bar',
                 names: {
                     data1: data.nameData1,
@@ -176,21 +225,6 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
                 }
             },
         });
-
-        setTimeout(function () {
-            chart.load({
-                columns: [data.ratioX, data.data3, ['data1', ...fakeData1],
-                ['data2', ...fakeData2]
-                ],
-            });
-        }, 100);
-        setTimeout(function () {
-            chart.load({
-                columns: [data.ratioX, data.data3, ['data1', ...data.data1],
-                ['data2', ...data.data2]
-                ],
-            });
-        }, 300);
     };
 
     /** Bắt sự kiện tìm kiếm */
@@ -214,42 +248,10 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
         }
     }
 
-    const { department, employeesManager, translate } = props;
-
-    const { lineChart, nameChart, nameData1, nameData2, nameData3, startDate, endDate, startDateShow, endDateShow, organizationalUnits, organizationalUnitsSearch } = state;
-
-    const { childOrganizationalUnit } = props;
-
     let organizationalUnitsName = [];
     if (organizationalUnitsSearch) {
         organizationalUnitsName = department.list.filter(x => organizationalUnitsSearch.includes(x._id));
         organizationalUnitsName = organizationalUnitsName.map(x => x.name);
-    }
-
-    if (employeesManager.arrMonth.length !== 0) {
-        let ratioX = ['x', ...employeesManager.arrMonth];
-        let listEmployeesHaveStartingDateOfNumberMonth = employeesManager.listEmployeesHaveStartingDateOfNumberMonth;
-        let listEmployeesHaveLeavingDateOfNumberMonth = employeesManager.listEmployeesHaveLeavingDateOfNumberMonth;
-        let data1 = ['data1'], data2 = ['data2'], data3 = ["data3", ...employeesManager.totalEmployees];
-        employeesManager.arrMonth.forEach(x => {
-            let date = new Date(x);
-            let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
-            let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 1);
-            let total1 = 0, total2 = 0;
-            listEmployeesHaveStartingDateOfNumberMonth.forEach(y => {
-                if (y.startingDate && firstDay.getTime() < new Date(y.startingDate).getTime() && new Date(y.startingDate).getTime() <= lastDay.getTime()) {
-                    total1 += 1;
-                }
-            })
-            listEmployeesHaveLeavingDateOfNumberMonth.forEach(y => {
-                if (y.leavingDate && firstDay.getTime() < new Date(y.leavingDate).getTime() && new Date(y.leavingDate).getTime() <= lastDay.getTime()) {
-                    total2 += 1;
-                }
-            })
-            data1 = [...data1, total1];
-            data2 = [...data2, total2];
-        })
-        renderChart({ nameData1, nameData2, nameData3, ratioX, data1, data2, data3, lineChart });
     }
 
     return (
@@ -276,25 +278,6 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
             <div className="box-body" >
                 <div className="qlcv" style={{ marginBottom: 15 }} >
                     <div className="form-inline" >
-                        <div className="form-group" >
-                            <label className="form-control-static" > {translate('kpi.evaluation.dashboard.organizational_unit')} </label>
-                            <SelectMulti id="multiSelectUnits-towBarChart"
-                                items={childOrganizationalUnit.map((p, i) => { return { value: p.id, text: p.name } })}
-                                options={{
-                                    nonSelectedText: translate('page.non_unit'),
-                                    allSelectedText: translate('page.all_unit'),
-                                }}
-                                onChange={handleSelectOrganizationalUnit}
-                                value={organizationalUnits}
-                            >
-                            </SelectMulti>
-                        </div>
-                        <div className="form-group" >
-                            <label></label>
-                            <button type="button" className="btn btn-success" title={translate('general.search')} onClick={() => handleSunmitSearch()} > {translate('general.search')} </button>
-                        </div>
-                    </div>
-                    <div className="form-inline" >
                         <div className="form-group">
                             <label className="form-control-static" >Từ tháng</label>
                             <DatePicker
@@ -316,18 +299,41 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
                             />
                         </div>
                     </div>
-
-                </div>
-                <div className="dashboard_box_body" >
-                    <p className="pull-left" style={{ marginBottom: 0 }} > < b > ĐV tính: Người </b></p >
-                    <div className="box-tools pull-right" >
-                        <div className="btn-group pull-rigth">
-                            <button type="button" className={`btn btn-xs ${lineChart ? "active" : "btn-danger"}`} onClick={() => handleChangeViewChart(false)}>Bar chart</button>
-                            <button type="button" className={`btn btn-xs ${lineChart ? 'btn-danger' : "active"}`} onClick={() => handleChangeViewChart(true)}>Line chart</button>
+                    <div className="form-inline" >
+                        {!props.defaultUnit
+                            && <div className="form-group" >
+                                <label className="form-control-static" > {translate('kpi.evaluation.dashboard.organizational_unit')} </label>
+                                <SelectMulti id="multiSelectUnits-towBarChart"
+                                    items={childOrganizationalUnit.map((p, i) => { return { value: p.id, text: p.name } })}
+                                    options={{
+                                        nonSelectedText: translate('page.non_unit'),
+                                        allSelectedText: translate('page.all_unit'),
+                                    }}
+                                    onChange={handleSelectOrganizationalUnit}
+                                    value={organizationalUnits}
+                                >
+                                </SelectMulti>
+                            </div>
+                        }
+                        <div className="form-group" >
+                            <label></label>
+                            <button type="button" className="btn btn-success" title={translate('general.search')} onClick={() => handleSunmitSearch()} > {translate('general.search')} </button>
                         </div>
                     </div>
-                    <div ref={_chart} ></div>
                 </div>
+                { employeesManager.isLoading
+                    ? <p>{translate('general.loading')}</p>
+                    : <div className="dashboard_box_body" >
+                        <p className="pull-left" style={{ marginBottom: 0 }} > < b > ĐV tính: Người </b></p >
+                        <div className="box-tools pull-right" >
+                            <div className="btn-group pull-rigth">
+                                <button type="button" className={`btn btn-xs ${lineChart ? "active" : "btn-danger"}`} onClick={() => handleChangeViewChart(false)}>Bar chart</button>
+                                <button type="button" className={`btn btn-xs ${lineChart ? 'btn-danger' : "active"}`} onClick={() => handleChangeViewChart(true)}>Line chart</button>
+                            </div>
+                        </div>
+                        <div ref={_chart} ></div>
+                    </div>
+                }
             </div>
         </div>
     )

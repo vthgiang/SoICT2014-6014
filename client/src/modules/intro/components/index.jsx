@@ -24,4 +24,4 @@ const Introduction = () => {
     );
 }
 
-export { Introduction };
+export default Introduction;

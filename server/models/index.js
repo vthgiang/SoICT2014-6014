@@ -79,10 +79,11 @@ module.exports = {
     CareType: require('./crm/careType.model'),
     Group: require('./crm/group.model'),
     Status: require('./crm/status.model'),
+    CustomerRankPoint: require('./crm/customerRankPoint.model'),
     Product: require('./crm/product.model'),
     ProductCategory: require('./crm/productCategory.model'),
     ProductDiscount: require('./crm/productDiscount.model'),
-
+    CrmTask: require('./crm/crmTask.model'),
 
     //order
     BankAccount: require('./production/order/bankAccount.model'),
@@ -121,6 +122,7 @@ module.exports = {
     
     // project
     Project: require('./project/project.model'),
+    ProjectChangeRequest: require('./project/projectChangeRequest.model'),
 
     // news feed
     NewsFeed: require('./news-feed/newsFeed.model')

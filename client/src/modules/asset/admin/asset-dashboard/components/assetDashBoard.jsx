@@ -666,5 +666,4 @@ function mapState(state) {
     return { listAssets, assetType, user };
 }
 
-const DashBoard = connect(mapState)(withTranslate(DashBoardAssets));
-export { DashBoard as DashBoardAssets };
+export default connect(mapState)(withTranslate(DashBoardAssets));

@@ -109,6 +109,7 @@ function TwoBarChart(props) {
                 x: 'x',
                 columns: newData,
                 type: 'bar',
+                labels: true,
                 types: barLinechartType,
             },
             bar: {

@@ -13,8 +13,8 @@ require("dotenv").config();
 require("./global")(server);
 
 app.use(require("cors")());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false,limit: '50mb',parameterLimit:50000 }));
+app.use(bodyParser.json({limit: '50mb'}));
 app.use(cookieParser());
 
 app.use("/upload/avatars", express.static("upload/avatars"));
@@ -217,6 +217,7 @@ app.use("/crm/groups", require("./modules/crm/group/group.route"));
 app.use("/crm/status", require("./modules/crm/status/status.route"));
 app.use("/crm/evaluations", require("./modules/crm/evaluation/evaluation.route"));
 app.use("/crm/loyalCustomers", require("./modules/crm/loyalCustomer/loyalCustomer.route"));
+app.use("/crm/customerRankPoints", require("./modules/crm/rankPoint/customerRankPoint.route"));
 
 // production - manufaturing
 app.use(

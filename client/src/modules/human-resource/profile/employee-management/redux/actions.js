@@ -95,13 +95,13 @@ function updateInformationEmployee(id, data) {
  * Xoá thông tin nhân viên
  * @id : id thông tin nhân viên cần xoá
  */
-function deleteEmployee(id) {
+function deleteEmployee(id, email) {
     return dispatch => {
         dispatch({
             type: EmployeeConstants.DELETE_EMPLOYEE_REQUEST
         });
 
-        EmployeeService.deleteEmployee(id)
+        EmployeeService.deleteEmployee(id, email)
             .then(res => {
                 dispatch({
                     type: EmployeeConstants.DELETE_EMPLOYEE_SUCCESS,

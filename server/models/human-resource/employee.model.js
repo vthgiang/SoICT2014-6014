@@ -31,7 +31,6 @@ const EmployeeSchema = new Schema({
     },
     employeeTimesheetId: { // mã số chấm công của nhân viên
         type: String,
-        required: true
     },
     gender: { // male - nam, female - nữ
         type: String,
@@ -40,22 +39,18 @@ const EmployeeSchema = new Schema({
     },
     birthdate: {
         type: Date,
-        required: true
     },
     birthplace: {
         type: String
     },
     identityCardNumber: { // số cmnd
-        type: Number,
-        required: true
+        type: String,
     },
     identityCardDate: { // ngày cấp
         type: Date,
-        required: true
     },
     identityCardAddress: {
         type: String,
-        required: true
     },
     emailInCompany: { // địa chỉ email dùng ở company
         type: String
@@ -80,18 +75,17 @@ const EmployeeSchema = new Schema({
     },
     maritalStatus: { // Tình trạng hôn nhân: single - Độc thân, married - Đã kết hôn
         type: String,
-        enum: ['single', 'married']
+        // enum: ['single', 'married']
     },
     /**
      * Start
      * Thông tin liên hệ
      */
     phoneNumber: {
-        type: Number,
-        required: true
+        type: String,
     },
     phoneNumber2: {
-        type: Number,
+        type: String,
     },
     personalEmail: {
         type: String,
@@ -100,7 +94,7 @@ const EmployeeSchema = new Schema({
         type: String,
     },
     homePhone: { // SĐT nhà riêng
-        type: Number,
+        type: String,
     },
     emergencyContactPerson: { // Người liên hệ khẩn cấp
         type: String,
@@ -109,13 +103,13 @@ const EmployeeSchema = new Schema({
         type: String,
     },
     emergencyContactPersonPhoneNumber: {
-        type: Number,
+        type: String,
     },
     emergencyContactPersonEmail: {
         type: String,
     },
     emergencyContactPersonHomePhone: {
-        type: Number,
+        type: String,
     },
     emergencyContactPersonAddress: {
         type: String,
@@ -137,7 +131,6 @@ const EmployeeSchema = new Schema({
     },
     temporaryResidence: {
         type: String,
-        required: true
     },
     temporaryResidenceCountry: {
         type: String,

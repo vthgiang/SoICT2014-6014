@@ -9,6 +9,34 @@ const ProjectChangeRequestSchema = new Schema(
             type: Schema.Types.ObjectId,
             ref: "User",
         },
+        // Tên dự án công việc thuộc về
+        taskProject: {
+            type: Schema.Types.ObjectId,
+            ref: 'Project',
+        },
+        baseline: {
+            oldEndDate: {
+                type: Date,
+            },
+            newEndDate: {
+                type: Date,
+            },
+            oldCost: {
+                type: Number,
+            },
+            newCost: {
+                type: Number,
+            },
+        },
+        type: {
+            type: String,
+            enum: [
+                "normal",
+                "add_task",
+                "edit_task",
+                "update_status_task",
+            ],
+        },
         createdAt: {
             type: Date,
             default: Date.now,
@@ -23,6 +51,116 @@ const ProjectChangeRequestSchema = new Schema(
             type: Number,
             default: 0,
         },
+        currentTask: {
+            // Id của task bị ảnh hưởng
+            task: {
+                type: Schema.Types.ObjectId,
+                ref: "Task",
+            },
+            organizationalUnit: {
+                type: Schema.Types.ObjectId,
+                ref: "OrganizationalUnit",
+            },
+            name: {
+                type: String,
+            },
+            creator: {
+                type: Schema.Types.ObjectId,
+                ref: "User",
+            },
+            description: {
+                type: String,
+            },
+            // Tên dự án công việc thuộc về
+            taskProject: {
+                type: Schema.Types.ObjectId,
+                ref: 'Project',
+            },
+            preceedingTasks: [
+                {
+                    task: {
+                        type: Schema.Types.ObjectId,
+                        ref: "Task",
+                    },
+                    link: {
+                        type: String,
+                    },
+                },
+            ],
+            startDate: {
+                type: Date,
+            },
+            endDate: {
+                type: Date,
+            },
+            inactiveEmployees: [
+                {
+                    // Những người từng tham gia công việc nhưng không còn tham gia nữa
+                    type: Schema.Types.ObjectId,
+                    ref: "User",
+                },
+            ],
+            responsibleEmployees: [
+                {
+                    //người thực hiện
+                    type: Schema.Types.ObjectId,
+                    ref: "User",
+                },
+            ],
+            accountableEmployees: [
+                {
+                    //người phê duyệt
+                    type: Schema.Types.ObjectId,
+                    ref: "User",
+                },
+            ],
+            //thời gian ước lượng thông thường của task
+            estimateNormalTime: {
+                type: Number,
+            },
+            //thời gian ước lượng ít nhất để hoàn thành task
+            estimateOptimisticTime: {
+                type: Number,
+            },
+            //chi phí ước lượng thông thường của task
+            estimateNormalCost: {
+                type: Number,
+            },
+            //chi phí ước lượng nhiều nhất có thể cho phép của task
+            estimateMaxCost: {
+                type: Number,
+            },
+            //chi phí thực cho task đó
+            actualCost: {
+                type: Number,
+            },
+            // ngân sách để chi trả cho task đó
+            budget: {
+                type: Number,
+            },
+            // Danh sách thành viên tham gia task với lương của họ
+            actorsWithSalary: [
+                {
+                    userId: {
+                        type: Schema.Types.ObjectId,
+                        ref: 'User',
+                    },
+                    salary: {
+                        type: Number,
+                    },
+                    weight: {
+                        type: Number,
+                    },
+                },
+            ],
+            // Trọng số tổng dành cho Thành viên Thực hiện
+            totalResWeight: {
+                type: Number,
+            },
+            estimateAssetCost: {
+                type: Number,
+            },
+        },
         affectedTasksList: [
             {
                 // Id của task bị ảnh hưởng
@@ -30,32 +168,23 @@ const ProjectChangeRequestSchema = new Schema(
                     type: Schema.Types.ObjectId,
                     ref: "Task",
                 },
-                // Tên dự án công việc thuộc về
-                taskProject: { 
-                    type: Schema.Types.ObjectId,
-                    ref: 'Project'
-                },
-                // Tên phase mà task thuộc về
-                taskPhase: {
-                    type: Schema.Types.ObjectId,
-                    ref: 'ProjectPhase'
-                },
                 old: {
-                    followingTasks: [
-                        {
-                            task: {
-                                type: Schema.Types.ObjectId,
-                                replies: this,
-                            },
-                            link: {
-                                type: String,
-                            },
-                            activated: {
-                                type: Boolean,
-                                default: false,
-                            },
-                        },
-                    ],
+                    // Tên dự án công việc thuộc về
+                    taskProject: {
+                        type: Schema.Types.ObjectId,
+                        ref: 'Project',
+                    },
+                    status: {
+                        // có 5 trạng thái công việc: Đang thực hiện, Chờ phê duyệt, Đã hoàn thành, Tạm hoãn, Bị hủy
+                        type: String,
+                        enum: [
+                            "inprocess",
+                            "wait_for_approval",
+                            "finished",
+                            "delayed",
+                            "canceled",
+                        ],
+                    },
                     preceedingTasks: [
                         {
                             task: {
@@ -128,30 +257,44 @@ const ProjectChangeRequestSchema = new Schema(
                             salary: {
                                 type: Number,
                             },
+                            weight: {
+                                type: Number,
+                            },
                         },
                     ],
+                    // Trọng số tổng dành cho Thành viên Thực hiện
+                    totalResWeight: {
+                        type: Number,
+                    },
                     estimateAssetCost: {
                         type: Number,
                     },
                 },
-                
+
                 /** Từ phần dưới trở xuống là những trường có thể sẽ bị ảnh hưởng khi có changeRequest liên quan tới task này */
                 new: {
-                    followingTasks: [
-                        {
-                            task: {
-                                type: Schema.Types.ObjectId,
-                                replies: this,
-                            },
-                            link: {
-                                type: String,
-                            },
-                            activated: {
-                                type: Boolean,
-                                default: false,
-                            },
-                        },
-                    ],
+                    name: {
+                        type: String,
+                    },
+                    description: {
+                        type: String,
+                    },
+                    status: {
+                        // có 5 trạng thái công việc: Đang thực hiện, Chờ phê duyệt, Đã hoàn thành, Tạm hoãn, Bị hủy
+                        type: String,
+                        enum: [
+                            "inprocess",
+                            "wait_for_approval",
+                            "finished",
+                            "delayed",
+                            "canceled",
+                        ],
+                    },
+                    // Tên dự án công việc thuộc về
+                    taskProject: {
+                        type: Schema.Types.ObjectId,
+                        ref: 'Project',
+                    },
                     preceedingTasks: [
                         {
                             task: {
@@ -224,8 +367,15 @@ const ProjectChangeRequestSchema = new Schema(
                             salary: {
                                 type: Number,
                             },
+                            weight: {
+                                type: Number,
+                            },
                         },
                     ],
+                    // Trọng số tổng dành cho Thành viên Thực hiện
+                    totalResWeight: {
+                        type: Number,
+                    },
                     estimateAssetCost: {
                         type: Number,
                     },

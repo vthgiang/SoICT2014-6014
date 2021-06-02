@@ -155,5 +155,4 @@ const actionCreators = {
     getRole: RoleActions.get,
 }
 
-const departmentManage = connect(mapState, actionCreators)(withTranslate(DepartmentManage));
-export { departmentManage as DepartmentManage };
+export default connect(mapState, actionCreators)(withTranslate(DepartmentManage));

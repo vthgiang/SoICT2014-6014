@@ -1,17 +1,15 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
 import { DialogModal, SelectBox, ErrorLabel, ButtonModal } from '../../../../../../common-components';
 
-class QuantityLotDetailForm extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            
-        }
-    }
+function QuantityLotDetailForm(props) {
 
-    formatDate(date, monthYear = false) {
+    const [state, setState] = useState({
+
+    })
+
+    function formatDate(date, monthYear = false) {
         if (date) {
             let d = new Date(date),
                 day = '' + d.getDate(),
@@ -31,19 +29,18 @@ class QuantityLotDetailForm extends Component {
         }
     }
 
-    render() {
-        const { quantityDetail, group, translate } = this.props;
+    const { quantityDetail, group, translate } = props;
 
-        return (
-            <React.Fragment>
-                <DialogModal
-                    modalID={`modal-detail-lot-quantity`}
-                    formID={`form-detail-lot-quantity`}
-                    title="Chi tiết số lượng"
-                    size={75}
-                    hasSaveButton={false}
-                    hasNote={false}
-                >
+    return (
+        <React.Fragment>
+            <DialogModal
+                modalID={`modal-detail-lot-quantity`}
+                formID={`form-detail-lot-quantity`}
+                title="Chi tiết số lượng"
+                size={75}
+                hasSaveButton={false}
+                hasNote={false}
+            >
                 <form id={`form-detail-lot-quantity`}>
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border">{translate('manage_warehouse.bill_management.lot')}</legend>
@@ -53,11 +50,11 @@ class QuantityLotDetailForm extends Component {
                                 <tr>
                                     <th title={translate('manage_warehouse.bill_management.lot_number')}>{translate('manage_warehouse.bill_management.lot_number')}</th>
                                     <th title={translate('manage_warehouse.bill_management.expiration_date')}>{translate('manage_warehouse.bill_management.expiration_date')}</th>
-                                    { group !== '3' && <th title={translate('manage_warehouse.bill_management.number')}>{translate('manage_warehouse.bill_management.number')}</th>}
-                                    { group === '3' && <th title={translate('manage_warehouse.bill_management.quantity_issue')}>{translate('manage_warehouse.bill_management.quantity_issue')}</th>}
-                                    { group === '3' && <th title={translate('manage_warehouse.bill_management.quantity_return')}>{translate('manage_warehouse.bill_management.quantity_return')}</th>}
-                                    { group === '4' && <th title={translate('manage_warehouse.bill_management.real_quantity')}>{translate('manage_warehouse.bill_management.real_quantity')}</th>}
-                                    { group === '4' && <th title={translate('manage_warehouse.bill_management.difference')}>{translate('manage_warehouse.bill_management.difference')}</th>}
+                                    {group !== '3' && <th title={translate('manage_warehouse.bill_management.number')}>{translate('manage_warehouse.bill_management.number')}</th>}
+                                    {group === '3' && <th title={translate('manage_warehouse.bill_management.quantity_issue')}>{translate('manage_warehouse.bill_management.quantity_issue')}</th>}
+                                    {group === '3' && <th title={translate('manage_warehouse.bill_management.quantity_return')}>{translate('manage_warehouse.bill_management.quantity_return')}</th>}
+                                    {group === '4' && <th title={translate('manage_warehouse.bill_management.real_quantity')}>{translate('manage_warehouse.bill_management.real_quantity')}</th>}
+                                    {group === '4' && <th title={translate('manage_warehouse.bill_management.difference')}>{translate('manage_warehouse.bill_management.difference')}</th>}
                                     <th title={translate('manage_warehouse.bill_management.description')}>{translate('manage_warehouse.bill_management.description')}</th>
                                 </tr>
                             </thead>
@@ -67,7 +64,7 @@ class QuantityLotDetailForm extends Component {
                                         quantityDetail.lots.map((x, index) =>
                                             <tr key={index}>
                                                 <td>{x.lot ? x.lot.code : ''}</td>
-                                                <td>{ x.lot ? x.lot.expirationDate ? this.formatDate(x.lot.expirationDate) : "" : "" }</td>
+                                                <td>{x.lot ? x.lot.expirationDate ? this.formatDate(x.lot.expirationDate) : "" : ""}</td>
                                                 <td>{x.quantity}</td>
                                                 {group === '3' && <td>{x.returnQuantity}</td>}
                                                 {group === '4' && <td>{x.realQuantity}</td>}
@@ -79,17 +76,16 @@ class QuantityLotDetailForm extends Component {
                             </tbody>
                         </table>
                     </fieldset>
-                    </form>
-                </DialogModal>
-            </React.Fragment>
-        );
-    }
+                </form>
+            </DialogModal>
+        </React.Fragment>
+    );
 }
 
 const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
-    
+
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(QuantityLotDetailForm));

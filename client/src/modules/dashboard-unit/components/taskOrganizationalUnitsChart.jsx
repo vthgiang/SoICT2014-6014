@@ -66,12 +66,12 @@ class TaskOrganizationalUnitsChart extends Component {
     componentDidMount() {
         const { startDate, endDate } = this.state;
         let { childOrganizationalUnit } = this.props;
-        childOrganizationalUnit = childOrganizationalUnit.map(x => x.id);
+        let childOrganizationalUnitId = childOrganizationalUnit.map(x => x.id);
         this.props.getAllEmployeeOfUnitByIds({
-            organizationalUnitIds: childOrganizationalUnit,
+            organizationalUnitIds: childOrganizationalUnitId,
             callApi: "employeesOfUnistsUserIsManager"
         });
-        this.props.getTaskInOrganizationUnitByMonth(childOrganizationalUnit, this.formatString(startDate), this.formatString(endDate));
+        this.props.getTaskInOrganizationUnitByMonth(childOrganizationalUnitId, this.formatString(startDate), this.formatString(endDate));
     }
 
     isEqual = (items1, items2) => {
@@ -90,6 +90,8 @@ class TaskOrganizationalUnitsChart extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
+        const { startDate, endDate } = this.state;
+        
         if (nextProps.tasks?.organizationUnitTasks && !this.isEqual(nextProps.tasks?.organizationUnitTasks?.tasks, this.state.taskOfUnists) &&
             nextProps.user?.employeesOfUnitsUserIsManager?.length !== 0) {
             this.setState({
@@ -100,7 +102,19 @@ class TaskOrganizationalUnitsChart extends Component {
         if (nextState.startDateShow !== this.state.startDateShow || nextState.endDateShow !== this.state.endDateShow || nextState.totalTask !== this.state.totalTask) {
             return true;
         }
-        return false;
+
+        if (JSON.stringify(nextProps.childOrganizationalUnit) !== JSON.stringify(this.props.childOrganizationalUnit)) {
+            let childOrganizationalUnitId = nextProps.childOrganizationalUnit.map(x => x.id);
+            this.props.getAllEmployeeOfUnitByIds({
+                organizationalUnitIds: childOrganizationalUnitId,
+                callApi: "employeesOfUnistsUserIsManager"
+            });
+            this.props.getTaskInOrganizationUnitByMonth(childOrganizationalUnitId, this.formatString(startDate), this.formatString(endDate));
+            
+            return true
+        }
+
+        return true;
     }
 
     /**
@@ -169,8 +183,7 @@ class TaskOrganizationalUnitsChart extends Component {
             bindto: this.refs.taskUnitsChart,
             data: {
                 x: 'x',
-                columns: [],
-                hide: true,
+                columns: data,
             },
             bar: {
                 width: {
@@ -221,14 +234,6 @@ class TaskOrganizationalUnitsChart extends Component {
         });
 
         this.chart = chart;
-
-        setTimeout(function () {
-            if (chart) {
-                chart.load({
-                    columns: data,
-                });
-            }
-        }, 100);
     };
 
     /** Bắt sự kiện tìm kiếm */
@@ -247,13 +252,13 @@ class TaskOrganizationalUnitsChart extends Component {
             })
         } else {
             let { childOrganizationalUnit } = this.props;
-            childOrganizationalUnit = childOrganizationalUnit.map(x => x.id);
+            let childOrganizationalUnitId = childOrganizationalUnit.map(x => x.id);
             this.setState({
                 startDateShow: startDate,
                 endDateShow: endDate,
                 taskOfUnists: []
             })
-            this.props.getTaskInOrganizationUnitByMonth(childOrganizationalUnit, this.formatString(startDate), this.formatString(endDate));
+            this.props.getTaskInOrganizationUnitByMonth(childOrganizationalUnitId, this.formatString(startDate), this.formatString(endDate));
         }
     }
 
@@ -386,27 +391,32 @@ class TaskOrganizationalUnitsChart extends Component {
                                 <button type="button" className="btn btn-success" title={translate('general.search')} onClick={() => this.handleSunmitSearch()} > {translate('general.search')} </button>
                             </div>
                         </div>
+                    </div>
 
-                    </div>
-                    <div className="" >
-                        <p className="pull-left" > < b > ĐV tính: Số công việc </b></p >
-                        <div className="box-tools pull-right" >
-                            <div className="btn-group pull-rigth">
-                                <button type="button" className={`btn btn-xs ${totalTask ? "active" : "btn-danger"}`} onClick={() => this.handleChangeViewChart(false)}>Tổng công việc</button>
-                                <button type="button" className={`btn btn-xs ${totalTask ? 'btn-danger' : "active"}`} onClick={() => this.handleChangeViewChart(true)}>Công việc trên đầu người</button>
+                    {tasks?.isLoading 
+                        ? <p>{translate('general.loading')}</p>
+                        : this.dataChart
+                            ? <div className="" >
+                                <p className="pull-left" > < b > ĐV tính: Số công việc </b></p >
+                                <div className="box-tools pull-right" >
+                                    <div className="btn-group pull-rigth">
+                                        <button type="button" className={`btn btn-xs ${totalTask ? "active" : "btn-danger"}`} onClick={() => this.handleChangeViewChart(false)}>Tổng công việc</button>
+                                        <button type="button" className={`btn btn-xs ${totalTask ? 'btn-danger' : "active"}`} onClick={() => this.handleChangeViewChart(true)}>Công việc trên đầu người</button>
+                                    </div>
+                                </div>
+                                <section id={"taskUnitsChart"} className="c3-chart-container">
+                                    <div ref="taskUnitsChart" style={{ marginBottom: "15px" }}></div>
+                                    <CustomLegendC3js
+                                        chart={this.chart}
+                                        chartId={"taskUnitsChart"}
+                                        legendId={"taskUnitsChartLegend"}
+                                        title={this.dataChart && `${translate('general.list_unit')} (${this.dataChart.length - 1})`}
+                                        dataChartLegend={this.dataChart && this.dataChart.filter((item, index) => index > 0).map(item => item[0])}
+                                    />
+                                </section>
                             </div>
-                        </div>
-                        <section id={"taskUnitsChart"} className="c3-chart-container">
-                            <div ref="taskUnitsChart" style={{ marginBottom: "15px" }}></div>
-                            <CustomLegendC3js
-                                chart={this.chart}
-                                chartId={"taskUnitsChart"}
-                                legendId={"taskUnitsChartLegend"}
-                                title={this.dataChart && `${translate('general.list_unit')} (${this.dataChart.length - 1})`}
-                                dataChartLegend={this.dataChart && this.dataChart.filter((item, index) => index > 0).map(item => item[0])}
-                            />
-                        </section>
-                    </div>
+                            : <p>{translate('kpi.organizational_unit.dashboard.no_data')}</p>
+                    }
                 </div>
             </div>
         )

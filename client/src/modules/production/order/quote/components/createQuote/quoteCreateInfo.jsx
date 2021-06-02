@@ -1,18 +1,15 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { DatePicker, SelectBox, ErrorLabel } from "../../../../../../common-components";
 import "../quote.css";
 
-class QuoteCreateInfo extends Component {
-    constructor(props) {
-        super(props);
-    }
+function QuoteCreateInfo (props) {
 
-    getCustomerOptions = () => {
+    const getCustomerOptions = () => {
         let options = [];
 
-        const { list } = this.props.customers;
+        const { list } = props.customers;
         if (list) {
             options = [
                 {
@@ -21,7 +18,7 @@ class QuoteCreateInfo extends Component {
                 },
             ];
 
-            let mapOptions = this.props.customers.list.map((item) => {
+            let mapOptions = props.customers.list.map((item) => {
                 return {
                     value: item._id,
                     text: item.code + " - " + item.name,
@@ -34,10 +31,10 @@ class QuoteCreateInfo extends Component {
         return options;
     };
 
-    getOrganizationalUnitOptions = () => {
+    const getOrganizationalUnitOptions = () => {
         let options = [];
 
-        const { listBusinessDepartments } = this.props;
+        const { listBusinessDepartments } = props;
         if (listBusinessDepartments.length) {
             options = [
                 {
@@ -62,7 +59,7 @@ class QuoteCreateInfo extends Component {
         return options;
     };
 
-    checkAvailableUser = (listUsers, id) => {
+    const checkAvailableUser = (listUsers, id) => {
         var result = -1;
         listUsers.forEach((value, index) => {
             if (value.user._id === id) {
@@ -72,11 +69,12 @@ class QuoteCreateInfo extends Component {
         return result;
     };
 
-    getUsersInDepartments = () => {
+    const getUsersInDepartments = () => {
         let users = [];
-        const { listBusinessDepartments } = this.props;
+        const { listBusinessDepartments } = props;
+        console.log(listBusinessDepartments);
         for (let indexDepartment = 0; indexDepartment < listBusinessDepartments.length; indexDepartment++) {
-            if (listBusinessDepartments[indexDepartment].role === 2 || listBusinessDepartments[indexDepartment].role === 3) {
+            if (listBusinessDepartments[indexDepartment].role === 1 ||listBusinessDepartments[indexDepartment].role === 2 || listBusinessDepartments[indexDepartment].role === 3) {
                 //Chỉ lấy đơn vị quản lý bán hàng và đơn vị kế toán
                 const { managers, deputyManagers, employees } = listBusinessDepartments[indexDepartment].organizationalUnit;
                 //Thềm các trưởng đơn vị vào danh sách
@@ -85,7 +83,7 @@ class QuoteCreateInfo extends Component {
                     if (managers[indexRole].users) {
                         for (let indexUser = 0; indexUser < managers[indexRole].users.length; indexUser++) {
                             //Check nếu user chưa tồn tại trong danh sách thì cho vào danh sách
-                            let availableCheckedIndex = this.checkAvailableUser(users, managers[indexRole].users[indexUser].userId._id);
+                            let availableCheckedIndex = checkAvailableUser(users, managers[indexRole].users[indexUser].userId._id);
                             if (availableCheckedIndex === -1) {
                                 users.push({ user: managers[indexRole].users[indexUser].userId, roleName: managers[indexRole].name });
                             } else {
@@ -102,7 +100,7 @@ class QuoteCreateInfo extends Component {
                     if (deputyManagers[indexRole].users) {
                         for (let indexUser = 0; indexUser < deputyManagers[indexRole].users.length; indexUser++) {
                             //Check nếu user chưa tồn tại trong danh sách thì cho vào danh sách
-                            let availableCheckedIndex = this.checkAvailableUser(users, deputyManagers[indexRole].users[indexUser].userId._id);
+                            let availableCheckedIndex = checkAvailableUser(users, deputyManagers[indexRole].users[indexUser].userId._id);
                             if (availableCheckedIndex === -1) {
                                 users.push({ user: deputyManagers[indexRole].users[indexUser].userId, roleName: deputyManagers[indexRole].name });
                             } else {
@@ -118,7 +116,7 @@ class QuoteCreateInfo extends Component {
                     if (employees[indexRole].users) {
                         for (let indexUser = 0; indexUser < employees[indexRole].users.length; indexUser++) {
                             //Check nếu user chưa tồn tại trong danh sách thì cho vào danh sách
-                            let availableCheckedIndex = this.checkAvailableUser(users, employees[indexRole].users[indexUser].userId._id);
+                            let availableCheckedIndex = checkAvailableUser(users, employees[indexRole].users[indexUser].userId._id);
                             if (availableCheckedIndex === -1) {
                                 users.push({ user: employees[indexRole].users[indexUser].userId, roleName: employees[indexRole].name });
                             } else {
@@ -133,10 +131,10 @@ class QuoteCreateInfo extends Component {
         return users;
     };
 
-    getApproversOptions = () => {
+    const getApproversOptions = () => {
         let options = [];
 
-        const { listBusinessDepartments } = this.props;
+        const { listBusinessDepartments } = props;
         if (listBusinessDepartments.length) {
             options = [
                 {
@@ -144,7 +142,7 @@ class QuoteCreateInfo extends Component {
                     text: "---Chọn người phê duyệt---",
                 },
             ];
-            let users = this.getUsersInDepartments();
+            let users = getUsersInDepartments();
             let mapOptions = users.map((item) => {
                 return {
                     value: item.user._id,
@@ -158,7 +156,6 @@ class QuoteCreateInfo extends Component {
         return options;
     };
 
-    render() {
         let {
             code,
             note,
@@ -175,7 +172,7 @@ class QuoteCreateInfo extends Component {
             approvers,
             isUseForeignCurrency,
             foreignCurrency,
-        } = this.props;
+        } = props;
 
         let {
             customerError,
@@ -186,7 +183,7 @@ class QuoteCreateInfo extends Component {
             expirationDateError,
             organizationalUnitError,
             approversError,
-        } = this.props;
+        } = props;
 
         const {
             handleCustomerChange,
@@ -202,7 +199,8 @@ class QuoteCreateInfo extends Component {
             handleCustomerEmailChange,
             handleOrganizationalUnitChange,
             handleApproversChange,
-        } = this.props;
+        } = props;
+        
         return (
             <React.Fragment>
                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -221,7 +219,7 @@ class QuoteCreateInfo extends Component {
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={customer}
-                                            items={this.getCustomerOptions()}
+                                            items={getCustomerOptions()}
                                             onChange={handleCustomerChange}
                                             multiple={false}
                                         />
@@ -342,7 +340,7 @@ class QuoteCreateInfo extends Component {
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     value={organizationalUnit}
-                                    items={this.getOrganizationalUnitOptions()}
+                                    items={getOrganizationalUnitOptions()}
                                     onChange={handleOrganizationalUnitChange}
                                     multiple={false}
                                 />
@@ -358,7 +356,7 @@ class QuoteCreateInfo extends Component {
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     value={approvers}
-                                    items={this.getApproversOptions()}
+                                    items={getApproversOptions()}
                                     onChange={handleApproversChange}
                                     multiple={true}
                                 />
@@ -451,7 +449,7 @@ class QuoteCreateInfo extends Component {
             </React.Fragment>
         );
     }
-}
+
 
 function mapStateToProps(state) {
     const { listBusinessDepartments } = state.businessDepartments;

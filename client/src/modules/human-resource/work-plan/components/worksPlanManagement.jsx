@@ -430,6 +430,4 @@ const actionCreators = {
     getListWorkPlan: WorkPlanActions.getListWorkPlan,
     updateWorkPlan: WorkPlanActions.updateWorkPlan,
 };
-
-const listWorkPlan = connect(mapState, actionCreators)(withTranslate(ManageWorkPlan));
-export { listWorkPlan as ManageWorkPlan };
+export default connect(mapState, actionCreators)(withTranslate(ManageWorkPlan));

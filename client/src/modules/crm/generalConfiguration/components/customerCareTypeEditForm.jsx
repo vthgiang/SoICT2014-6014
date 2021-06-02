@@ -52,7 +52,7 @@ function CustomerCareTypeEditEditForm(props) {
                     {/* Mô tả trạng thái khách hàng */}
                     <div className={`form-group`}>
                         <label>{translate('crm.status.description')}<span className="attention"> * </span></label>
-                        <input type="text" className="form-control" value={careTypeEdit.description ? careTypeEdit.description : ''} onChange={handleChangeName} />
+                        <input type="text" className="form-control" value={careTypeEdit.description ? careTypeEdit.description : ''} onChange={handleChangeDescription} />
                         {/* <ErrorLabel content={groupNameEditFormError} /> */}
                     </div>
                 </form>

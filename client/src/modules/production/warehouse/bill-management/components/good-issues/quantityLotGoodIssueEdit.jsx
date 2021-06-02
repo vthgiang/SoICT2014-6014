@@ -1,58 +1,50 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
 import { DialogModal, SelectBox, ErrorLabel, ButtonModal } from '../../../../../../common-components';
 
-class QuantityLotGoodIssueEdit extends Component {
-    constructor(props) {
-        super(props);
-        this.EMPTY_LOT = {
-            lot: '',
-            quantity: '',
-            returnQuantity: '',
-            damagedQuantity: '',
-            note: ''
-        }
-        this.state = {
-            lot: Object.assign({}, this.EMPTY_LOT),
-            lots: this.props.initialData,
-            editInfo: false,
-            good: ''
-        }
+function QuantityLotGoodIssueEdit(props) {
+    const EMPTY_LOT = {
+        lot: '',
+        quantity: '',
+        returnQuantity: '',
+        damagedQuantity: '',
+        note: ''
     }
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.good !== prevState.good) {
-            return {
-                ...prevState,
-                good: nextProps.good,
-                lots: nextProps.initialData
-            }
-        } else {
-            return null;
-        }
-    }
+    const [state, setState] = useState({
+        lot: Object.assign({}, EMPTY_LOT),
+        lots: props.initialData,
+        editInfo: false,
+        good: ''
+    })
 
-    handleAddLotInfo = async () => {
-        this.setState(state => {
-            return {
-                ...state,
-                quantity: 2
-            }
+    useEffect(() => {
+        setState({
+            ...state,
+            good: props.good,
+            lots: props.initialData
+        })
+    }, [props.good])
+
+    const handleAddLotInfo = () => {
+        setState({
+            ...state,
+            quantity: 2
         })
     }
 
-    getLotsByGood = () => {
-        const { lots, translate } = this.props;
+    const getLotsByGood = () => {
+        const { lots, translate } = props;
         let lotArr = [{ value: '', text: translate('manage_warehouse.bill_management.choose_lot') }]
 
-        if(lots.listLotsByGood && lots.listLotsByGood.length > 0) {
+        if (lots.listLotsByGood && lots.listLotsByGood.length > 0) {
             lots.listLotsByGood.map(item => {
-                let stock = item.stocks.filter(x => x.stock._id === this.props.stock);
+                let stock = item.stocks.filter(x => x.stock._id === props.stock);
                 let quantity = stock[0] ? stock[0].quantity : 0;
-                if(quantity > 0) {
-                    lotArr.push({ 
-                        value: item._id, 
+                if (quantity > 0) {
+                    lotArr.push({
+                        value: item._id,
                         text: item.code + "--" + quantity + " (" + item.good.baseUnit + ")",
                         quantity: quantity,
                     });
@@ -62,178 +54,161 @@ class QuantityLotGoodIssueEdit extends Component {
         return lotArr;
     }
 
-    handleLotChange = (value) => {
+    const handleLotChange = (value) => {
         let lot = value[0];
-        this.validateLot(lot, true);
+        validateLot(lot, true);
     }
 
-    validateLot = async (value, willUpdateState = true) => {
-        const dataLots = await this.getLotsByGood();
+    const validateLot = async (value, willUpdateState = true) => {
+        const dataLots = await getLotsByGood();
         let msg = undefined;
-        const { translate } = this.props;
-        if(!value) {
+        const { translate } = props;
+        if (!value) {
             msg = translate('manage_warehouse.bill_management.validate_lot');
         }
-        if(willUpdateState) {
+        if (willUpdateState) {
             let lotName = dataLots.find(x => x.value === value);
-            this.state.lot.lot = { _id: value, code: lotName.text, quantity: lotName.quantity };
-            await this.setState(state => {
-                return {
-                    ...state,
-                    lotQuantity: lotName.quantity,
-                    errorLot: msg,
-                }
+            state.lot.lot = { _id: value, code: lotName.text, quantity: lotName.quantity };
+            await setState({
+                ...state,
+                lotQuantity: lotName.quantity,
+                errorLot: msg,
             })
         }
         return msg === undefined;
     }
 
-    handleQuantityChange = (e) => {
+    const handleQuantityChange = (e) => {
         let value = e.target.value;
-        this.validateQuantity(value, true);
+        validateQuantity(value, true);
     }
 
-    validateQuantity = (value, willUpdateState = true) => {
-        const { lotQuantity, lot } = this.state;
+    const validateQuantity = (value, willUpdateState = true) => {
+        const { lotQuantity, lot } = state;
         let msg = undefined;
-        const { translate } = this.props;
-        
+        const { translate } = props;
+
         if (!value) {
             msg = translate('manage_warehouse.bill_management.validate_quantity');
         }
 
-        if(Number(value) > Number(lotQuantity)) {
+        if (Number(value) > Number(lotQuantity)) {
             msg = ` ${translate('manage_warehouse.bill_management.validate_norm')} (${lotQuantity}) `
         }
 
         if (willUpdateState) {
-            this.state.lot.quantity = value;
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorQuantity: msg,
-                }
+            state.lot.quantity = value;
+            setState({
+                ...state,
+                errorQuantity: msg,
             });
         }
         return msg === undefined;
     }
 
-    isFormValidated = () => {
-        if(this.state.lots.length > 0) {
+    const isFormValidated = () => {
+        if (state.lots.length > 0) {
             return true;
         }
         return false
     }
 
-    isMaterialsValidated = () => {
+    const isMaterialsValidated = () => {
         let result =
-            this.validateQuantity(this.state.lot.quantity, false) &&
-            this.validateLot(this.state.lot.lot, false)
+            validateQuantity(state.lot.quantity, false) &&
+            validateLot(state.lot.lot, false)
         return result
     }
 
-    handleAddLot = async (e) => {
+    const handleAddLot = async (e) => {
         e.preventDefault();
-        await this.setState(state => {
-            let lots = [...(this.state.lots), state.lot];
-            return {
-                ...state,
-                lots: lots,
-                lot: Object.assign({}, this.EMPTY_LOT),
-            }
+        let lots = [...(state.lots), state.lot];
+        await setState({
+            ...state,
+            lots: lots,
+            lot: Object.assign({}, EMPTY_LOT),
         })
-        // this.props.onDataChange(this.state.lots);
+        // props.onDataChange(state.lots);
     }
 
-    handleClearLot = (e) => {
+    const handleClearLot = (e) => {
         e.preventDefault();
-        this.setState(state => {
-            return {
-                ...state,
-                lot: Object.assign({}, this.EMPTY_LOT)
-            }
+        setState({
+            ...state,
+            lot: Object.assign({}, EMPTY_LOT)
         })
     }
 
-    handleSaveEditLot = async (e) => {
+    const handleSaveEditLot = async (e) => {
         e.preventDefault();
-        const { indexInfo, lots } = this.state;
+        const { indexInfo, lots } = state;
         let newLots;
         if (lots) {
             newLots = lots.map((item, index) => {
-                return (index === indexInfo) ? this.state.lot : item;
+                return (index === indexInfo) ? state.lot : item;
             })
         }
-        await this.setState(state => {
-            return {
-                ...state,
-                lots: newLots,
-                editInfo: false,
-                lot: Object.assign({}, this.EMPTY_LOT),
-            }
+        await setState({
+            ...state,
+            lots: newLots,
+            editInfo: false,
+            lot: Object.assign({}, EMPTY_LOT),
         })
-        // this.props.onDataChange(this.state.lots);
+        // props.onDataChange(state.lots);
     }
 
-    handleCancelEditLot = (e) => {
+    const handleCancelEditLot = (e) => {
         e.preventDefault();
-        this.setState(state => {
-            return {
-                ...state,
-                editInfo: false,
-                lot: Object.assign({}, this.EMPTY_LOT)
-            }
+        setState({
+            ...state,
+            editInfo: false,
+            lot: Object.assign({}, EMPTY_LOT)
         })
     }
 
-    handleEditLot = (lot, index) => {
-        this.setState(state => {
-            return {
-                ...state,
-                editInfo: true,
-                indexInfo: index,
-                lot: Object.assign({}, lot)
-            }
+    const handleEditLot = (lot, index) => {
+        setState({
+            ...state,
+            editInfo: true,
+            indexInfo: index,
+            lot: Object.assign({}, lot)
         })
     }
 
-    handleDeleteLot = async (index) => {
-        const { lots } = this.state;
+    const handleDeleteLot = async (index) => {
+        const { lots } = state;
         let newLots;
         if (lots) {
             newLots = lots.filter((item, x) => index !== x);
         }
-        await this.setState(state => {
-            return {
-                ...state,
-                lots: newLots
-            }
+        await setState({
+            ...state,
+            lots: newLots
         })
 
-        // this.props.onDataChange(this.state.lots);
+        // props.onDataChange(state.lots);
     }
 
-    save = () => {
-        this.props.onDataChange(this.state.lots);
+    const save = () => {
+        props.onDataChange(state.lots);
     }
 
-    render() {
-        const { translate, group, good } = this.props;
-        const { errorLot, lot, errorQuantity, lots } = this.state;
-        const dataLots = this.getLotsByGood();
+    const { translate, group, good } = props;
+    const { errorLot, lot, errorQuantity, lots } = state;
+    const dataLots = getLotsByGood();
 
-        return (
-            <React.Fragment>
-                <DialogModal
-                    modalID={`modal-edit-quantity-issue`}
-                    formID={`form-edit-quantity-issue`}
-                    title="Sửa số lượng theo lô"
-                    msg_success={translate('manage_warehouse.bill_management.add_success')}
-                    msg_faile={translate('manage_warehouse.bill_management.add_faile')}
-                    disableSubmit={!this.isFormValidated()}
-                    func={this.save}
-                    size="75"
-                >
+    return (
+        <React.Fragment>
+            <DialogModal
+                modalID={`modal-edit-quantity-issue`}
+                formID={`form-edit-quantity-issue`}
+                title="Sửa số lượng theo lô"
+                msg_success={translate('manage_warehouse.bill_management.add_success')}
+                msg_faile={translate('manage_warehouse.bill_management.add_faile')}
+                disableSubmit={!isFormValidated()}
+                func={save}
+                size="75"
+            >
                 <form id={`form-edit-quantity-issue`}>
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border">{translate('manage_warehouse.bill_management.lot')}</legend>
@@ -246,7 +221,7 @@ class QuantityLotGoodIssueEdit extends Component {
                                 style={{ width: "100%" }}
                                 value={lot.lot ? lot.lot._id : '1'}
                                 items={dataLots}
-                                onChange={this.handleLotChange}
+                                onChange={handleLotChange}
                                 multiple={false}
                             />
                             <ErrorLabel content={errorLot} />
@@ -255,20 +230,20 @@ class QuantityLotGoodIssueEdit extends Component {
                         <div className={`form-group ${!errorQuantity ? "" : "has-error"}`}>
                             <label className="control-label">{translate('manage_warehouse.bill_management.number')}</label>
                             <div>
-                                <input type="number" className="form-control" placeholder={translate('manage_warehouse.bill_management.number')} value={lot.quantity} onChange={this.handleQuantityChange} />
+                                <input type="number" className="form-control" placeholder={translate('manage_warehouse.bill_management.number')} value={lot.quantity} onChange={handleQuantityChange} />
                             </div>
                             <ErrorLabel content={errorQuantity} />
                         </div>
 
                         <div className="pull-right" style={{ marginBottom: "10px" }}>
-                            {this.state.editInfo ?
+                            {state.editInfo ?
                                 <React.Fragment>
-                                    <button className="btn btn-success" onClick={this.handleCancelEditLot} style={{ marginLeft: "10px" }}>{translate('task_template.cancel_editing')}</button>
-                                    <button className="btn btn-success" disabled={!this.isMaterialsValidated()} onClick={this.handleSaveEditLot} style={{ marginLeft: "10px" }}>{translate('task_template.save')}</button>
+                                    <button className="btn btn-success" onClick={handleCancelEditLot} style={{ marginLeft: "10px" }}>{translate('task_template.cancel_editing')}</button>
+                                    <button className="btn btn-success" disabled={!isMaterialsValidated()} onClick={handleSaveEditLot} style={{ marginLeft: "10px" }}>{translate('task_template.save')}</button>
                                 </React.Fragment> :
-                                <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!this.isMaterialsValidated()} onClick={this.handleAddLot}>{translate('task_template.add')}</button>
+                                <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!isMaterialsValidated()} onClick={handleAddLot}>{translate('task_template.add')}</button>
                             }
-                            <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={this.handleClearLot}>{translate('task_template.delete')}</button>
+                            <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={handleClearLot}>{translate('task_template.delete')}</button>
                         </div>
 
                         <table className="table table-bordered">
@@ -287,8 +262,8 @@ class QuantityLotGoodIssueEdit extends Component {
                                                 <td>{x.lot.code}</td>
                                                 <td>{x.quantity}</td>
                                                 <td>
-                                                    <a href="#abc" className="edit" title={translate('general.edit')} onClick={() => this.handleEditLot(x, index)}><i className="material-icons"></i></a>
-                                                    <a href="#abc" className="delete" title={translate('general.delete')} onClick={() => this.handleDeleteLot(index)}><i className="material-icons"></i></a>
+                                                    <a href="#abc" className="edit" title={translate('general.edit')} onClick={() => handleEditLot(x, index)}><i className="material-icons"></i></a>
+                                                    <a href="#abc" className="delete" title={translate('general.delete')} onClick={() => handleDeleteLot(index)}><i className="material-icons"></i></a>
                                                 </td>
                                             </tr>
                                         ) : <tr><td colSpan={3}><center>{translate('task_template.no_data')}</center></td></tr>
@@ -296,17 +271,16 @@ class QuantityLotGoodIssueEdit extends Component {
                             </tbody>
                         </table>
                     </fieldset>
-                    </form>
-                </DialogModal>
-            </React.Fragment>
-        );
-    }
+                </form>
+            </DialogModal>
+        </React.Fragment>
+    );
 }
 
 const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
-    
+
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(QuantityLotGoodIssueEdit));

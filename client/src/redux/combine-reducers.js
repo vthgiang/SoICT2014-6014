@@ -76,6 +76,7 @@ import { cares } from "../modules/crm/care/redux/reducers";
 import { careTypes } from "../modules/crm/careType/redux/reducers";
 import { evaluations } from "../modules/crm/evaluation/redux/reducers";
 import {loyalCustomers} from "../modules/crm/loyalCustomer/redux/reducers"
+import {customerRankPoints} from "../modules/crm/customerRankPoint/redux/reducers"
 
 //order
 import { taxs } from "../modules/production/order/tax/redux/reducers";
@@ -113,7 +114,13 @@ import { transportVehicle } from '../modules/production/transport/transport-vehi
 import { transportSchedule } from '../modules/production/transport/transport-schedule/redux/reducers';
 import { transportDepartment } from '../modules/production/transport/transport-department/redux/reducers';
 
-import { project } from "../modules/project/redux/reducers";
+// Project
+import { project } from "../modules/project/projects/redux/reducers";
+import { changeRequest } from "../modules/project/change-requests/redux/reducers";
+import { projectStatistic } from "../modules/project/statistic/redux/reducers";
+import { schedulingProjects } from "../modules/project/scheduling-projects/redux/reducers";
+
+
 import { newsFeeds } from "../modules/home/redux/reducers";
 
 const appReducer = combineReducers({
@@ -198,7 +205,7 @@ const appReducer = combineReducers({
 
     // customer management
     crm: combineReducers({
-        customers, groups, status, cares, careTypes,evaluations,loyalCustomers
+        customers, groups, status, cares, careTypes,evaluations,loyalCustomers,customerRankPoints
     }),
 
     //order
@@ -240,6 +247,10 @@ const appReducer = combineReducers({
     
     // project
     project,
+    projectStatistic,
+    changeRequest,
+    schedulingProjects,
+
     Intl,
 
     newsFeeds
@@ -249,6 +260,11 @@ const rootReducer = (state, action) => {
     if (action.type === 'RESET') {
         state = undefined;
         clearStorage();
+    } else if (action.type === 'SWITCH_PAGE') {
+        state = {
+            auth: state.auth,
+            socket: state.socket
+        }
     }
 
     return appReducer(state, action);

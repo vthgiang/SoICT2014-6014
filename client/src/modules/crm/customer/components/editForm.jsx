@@ -62,6 +62,7 @@ function CrmCustomerEdit(props) {
                             oldValue: o.oldValue ? o.oldValue : null,
                             newValue: o.newValue,
                             createdBy: o.createdBy,
+                            description:o.description? o.description:''
                         })) : [],
                     files: customer.files?customer.files:[],
                 };
@@ -128,7 +129,7 @@ function CrmCustomerEdit(props) {
         console.log(value);
     }
 
-    const save = () => {
+    const save = async  () => {
         let formData;
         let newEditingCustomer = {...editingCustomer}
         if (statusChangeHistory.newStatus) {
@@ -139,6 +140,7 @@ function CrmCustomerEdit(props) {
 
             //lấy danh sách trạng thái khách hàng trước khi edit (lịch sử cũ)
             let { statusHistories } = editingCustomer;
+            console.log('history',statusHistories)
 
             const getDateTime = new Date();
 

@@ -9,7 +9,7 @@ import { TaskInformationForm } from '../../task-perform/component/taskInformatio
 
 import { managerKpiActions } from '../../../kpi/employee/management/redux/actions';
 import { performTaskAction } from '../../task-perform/redux/actions';
-import { ProjectActions } from '../../../project/redux/actions';
+import { ProjectActions } from '../../../project/projects/redux/actions';
 
 class ModalEditTaskByResponsibleEmployeeProject extends Component {
 
@@ -41,7 +41,7 @@ class ModalEditTaskByResponsibleEmployeeProject extends Component {
         let department = task.organizationalUnit ? task.organizationalUnit._id : '';
 
         this.props.getAllKpiSetsOrganizationalUnitByMonth(userId, department, date);
-        this.props.getProjectsDispatch({ calledId: "all" });
+        this.props.getProjectsDispatch({ calledId: "user_all" });
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -418,6 +418,7 @@ class ModalEditTaskByResponsibleEmployeeProject extends Component {
         const { errorTaskName, errorTaskDescription, taskDescriptionDefault } = this.state;
         const { title, id, role, perform } = this.props;
 
+        const currentProjectName = project?.data?.list?.find((projectItem) => String(projectItem._id) === String(taskProjectName))?.name
         let listKpi = [];
         if (KPIPersonalManager && KPIPersonalManager.kpiSets) listKpi = KPIPersonalManager.kpiSets.kpis;
 
@@ -467,13 +468,7 @@ class ModalEditTaskByResponsibleEmployeeProject extends Component {
                                         <label>
                                             {translate('task.task_management.project')}
                                         </label>
-                                        <TreeSelect
-                                            id={`select-task-project-task-edit-by-responsible-${id}`}
-                                            mode='radioSelect'
-                                            data={project.data?.list}
-                                            handleChange={this.handleTaskProject}
-                                            value={[taskProjectName]}
-                                        />
+                                        <input className="form-control" disabled={true} value={currentProjectName}/>
                                     </div>
                                 </div>
 

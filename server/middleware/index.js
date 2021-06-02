@@ -8,6 +8,8 @@ const fs = require("fs");
 const CryptoJS = require("crypto-js");
 const { initModels, connect } = require(`../helpers/dbHelper`);
 const { decryptMessage } = require('../helpers/functionHelper');
+const rateLimit = require("express-rate-limit");
+
 /**
  * ****************************************
  * Middleware xác thực truy cập người dùng
@@ -76,8 +78,8 @@ exports.authFunc = (checkPage = true) => {
                  * Nếu hai fingerprint này giống nhau -> token được tạo ra và gửi đi từ cùng một trình duyệt trên cùng 1 thiết bị
                  * Nếu hai fingerprint này khác nhau -> token đã bị lấy cắp và gửi từ một trình duyệt trên thiết bị khác
                  */
-                if (verified.fingerprint !== fingerprint)
-                    throw ["fingerprint_invalid"]; // phát hiện lỗi client copy jwt và paste vào localstorage của trình duyệt để không phải đăng nhập
+                // if (verified.fingerprint !== fingerprint)
+                //     throw ["fingerprint_invalid"]; // phát hiện lỗi client copy jwt và paste vào localstorage của trình duyệt để không phải đăng nhập
 
                 /**
                  * Kiểm tra xem current role có đúng với người dùng hay không?
@@ -236,6 +238,7 @@ exports.uploadFile = (arrData, type) => {
                 cb(null, `${hash}.${extend[extend.length - 1]}`);
             },
         }),
+        limits: { fieldSize: 25 * 1024 * 1024 }
     });
 
     switch (type) {
@@ -302,4 +305,24 @@ exports.authCUIP = async (req, res, next) => {
             messages: err,
         });
     }
+}
+
+/**
+ * Giới hạn số request tới api trong 1 khoang thời gian
+ * @param {*} windowMs khoản thời gian (phút)
+ * @param {*} maxRequest Số request tối đa
+ * @param {*} message 
+ * @returns 
+ */
+exports.rateLimitRequest = (windowMs = 60, maxRequest = 100, message) => { // mặc định trong vòng 1 tiếng chỉ cho phép tối đa 100 request tới api
+     const createAccountLimiter = rateLimit({
+            windowMs: windowMs * 60 * 1000, //  hour window
+            max: maxRequest, // start blocking after maxRequest requests
+            message: "Too many accounts created from this IP, please try again after an hour",
+            handler: (req, res, next) => res.status(429).json({
+                    success: false,
+                    messages: message?[message]:["Too many accounts created from this IP, please try again after an hour"]
+                }),
+        });
+        return createAccountLimiter;
 }

@@ -33,9 +33,9 @@ const HumanResourceChartBySalary = (props) => {
         let chart = c3.generate({
             bindto: rotateChart.current,
             data: {
-                columns: [],
-                hide: true,
+                columns: [[data.nameData, ...data.data1]],
                 type: 'bar',
+                labels: true,
             },
             axis: {
                 rotated: true,
@@ -50,12 +50,6 @@ const HumanResourceChartBySalary = (props) => {
                 }
             }
         });
-
-        setTimeout(function () {
-            chart.load({
-                columns: [[data.nameData, ...data.data1]],
-            });
-        }, 100);
     };
 
     /**
@@ -239,10 +233,13 @@ const HumanResourceChartBySalary = (props) => {
                     </div>
                 </div>
                 <div className="box-body">
-                    <div className="dashboard_box_body">
-                        <p className="pull-right" style={{ marginBottom: 0 }} > < b > ĐV tính: Người</b></p >
-                        <div ref={rotateChart}></div>
-                    </div>
+                    {salary.isLoading
+                        ? <p>{translate('general.loading')}</p>
+                        : <div className="dashboard_box_body">
+                            <p className="pull-right" style={{ marginBottom: 0 }} > < b > ĐV tính: Người</b></p >
+                             <div ref={rotateChart}></div>
+                        </div>
+                    }
                 </div>
             </div>
         </React.Fragment>

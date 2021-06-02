@@ -32,6 +32,8 @@ class ActionTab extends Component {
         let lang = getStorage("lang")
         moment.locale(lang)
         this.state = {
+            filePaste: [], fileEditPaste: [], CommentOfActionFilePaste: [], editCommentOfActionFilePaste: [], newTaskCommentFilePaste: [], EditTaskCommentFilesPaste: [],
+            newCommentOfTaskCommentEditedFilePaste: [], newCommentOfTaskCommentPaste: [], taskFilesPaste: [], fileTaskEditedPaste: [],
             filterLogAutoStopped: 'all',
             taskActions: [],
             currentUser: idUser,
@@ -58,7 +60,7 @@ class ActionTab extends Component {
                 creator: idUser,
                 description: "",
                 files: [],
-                descriptionDefault: ""
+                descriptionDefault: "",
             },
             newActionEdited: {
                 creator: idUser,
@@ -67,10 +69,10 @@ class ActionTab extends Component {
                 descriptionDefault: ""
             },
             newCommentOfAction: {
-                // creator: idUser,
-                // description: "",
-                // files: [],
-                // taskActionId: null,
+                creator: idUser,
+                description: "",
+                files: [],
+                taskActionId: null,
                 descriptionDefault: ""
             },
             newCommentOfActionEdited: {
@@ -187,12 +189,21 @@ class ActionTab extends Component {
         return true;
     }
 
-    setHover = async (id, value) => {
-        if (isNaN(value)) {
-            this.hover[id] = 0;
+    setHover = async (id, value, type) => {
+        if (type === "rating") {
+            if (isNaN(value)) {
+                this.hover[`${id}-rating`] = null;
+            } else {
+                this.hover[`${id}-rating`] = value;
+            }
         } else {
-            this.hover[id] = value;
+            if (isNaN(value)) {
+                this.hover[`${id}-actionImportanceLevel`] = null;
+            } else {
+                this.hover[`${id}-actionImportanceLevel`] = value;
+            }
         }
+
         await this.setState(state => {
             return {
                 ...state,
@@ -203,6 +214,7 @@ class ActionTab extends Component {
             }
         })
     }
+
     setValueRating = async (actionId, newValue) => {
         let newEvaluations = this.state.evaluations
         newEvaluations[actionId] = {
@@ -218,11 +230,11 @@ class ActionTab extends Component {
         })
     }
 
-    setActionImportanceLevel = (e, actionId) => {
+    setActionImportanceLevel = (actionId, value) => {
         let newEvaluations = this.state.evaluations
         newEvaluations[actionId] = {
             ...newEvaluations[actionId],
-            actionImportanceLevel: e.target.value
+            actionImportanceLevel: value
         }
         this.setState(state => {
             return {
@@ -234,9 +246,10 @@ class ActionTab extends Component {
 
     evaluationTaskAction = (evaAction, taskId, role, firstTime) => {
         let newEvaluations = this.state.evaluations
+        let rating = newEvaluations?.[evaAction?._id]?.rating ?? evaAction?.rating;
         newEvaluations[evaAction?._id] = {
             ...newEvaluations[evaAction?._id],
-            rating: newEvaluations?.[evaAction?._id]?.rating ?? evaAction?.rating,
+            rating: rating === -1 ? 0 : rating,
             actionImportanceLevel: newEvaluations?.[evaAction?._id]?.actionImportanceLevel ?? evaAction?.actionImportanceLevel,
             firstTime: firstTime,
             type: "evaluation",
@@ -333,6 +346,7 @@ class ActionTab extends Component {
                     files: [],
                     descriptionDefault: ''
                 }
+                state.CommentOfActionFilePaste = []
                 return {
                     ...state,
                 }
@@ -352,7 +366,6 @@ class ActionTab extends Component {
         newAction.files && newAction.files.forEach(x => {
             data.append("files", x);
         })
-
         if (newAction.creator && newAction.description) {
             this.props.createTaskAction(taskId, data);
         }
@@ -360,6 +373,7 @@ class ActionTab extends Component {
         this.setState(state => {
             return {
                 ...state,
+                filePaste: [],
                 newAction: {
                     ...state.newAction,
                     description: "",
@@ -393,6 +407,7 @@ class ActionTab extends Component {
                     files: [],
                     descriptionDefault: ''
                 },
+                newTaskCommentFilePaste: []
             }
         })
     }
@@ -415,6 +430,7 @@ class ActionTab extends Component {
                 files: [],
                 descriptionDefault: ''
             }
+            state.newCommentOfTaskCommentPaste = []
             return {
                 ...state,
             }
@@ -442,6 +458,7 @@ class ActionTab extends Component {
                     files: [],
                     descriptionDefault: ''
                 },
+                taskFilesPaste: []
             }
         })
 
@@ -653,9 +670,6 @@ class ActionTab extends Component {
         })
     }
 
-    onEditCommentOfTaskCommentFilesChange = async (files) => {
-
-    }
 
     handleConfirmAction = async (e, actionId, userId, taskId) => {
         e.preventDefault();
@@ -683,12 +697,65 @@ class ActionTab extends Component {
         });
     }
 
+    onActionFilesPaste = (fileObject) => {
+        this.setState(state => {
+            return {
+                ...state,
+                filePaste: [...state.filePaste, fileObject],
+                newAction: {
+                    ...state.newAction,
+                    files: [...state.newAction.files, fileObject],
+                }
+            }
+        })
+    }
+    removeFile = (index) => {
+        let files = this.state.newAction.files
+        let fileRemove = files.splice(index, 1)
+        this.setState(state => {
+            return {
+                ...state,
+                filePaste: state.filePaste.filter(value => value.lastModified !== fileRemove[0].lastModified),
+                newAction: {
+                    ...state.newAction,
+                    files: files,
+                }
+            }
+        })
+    }
     onActionFilesChange = (files) => {
         this.setState(state => {
             return {
                 ...state,
                 newAction: {
                     ...state.newAction,
+                    files: [...files, ...state.filePaste],
+                }
+            }
+        })
+    }
+    onEditActionFilesPaste = (fileObject) => {
+
+        this.setState(state => {
+            return {
+                ...state,
+                fileEditPaste: [...state.fileEditPaste, fileObject],
+                newActionEdited: {
+                    ...state.newActionEdited,
+                    files: [...state.newActionEdited.files, fileObject],
+                }
+            }
+        })
+    }
+    removeEditFile = (index) => {
+        let files = this.state.newActionEdited.files
+        let fileRemove = files.splice(index, 1)
+        this.setState(state => {
+            return {
+                ...state,
+                fileEditPaste: state.filePaste.filter(value => value.lastModified !== fileRemove[0].lastModified),
+                newActionEdited: {
+                    ...state.newActionEdited,
                     files: files,
                 }
             }
@@ -706,29 +773,69 @@ class ActionTab extends Component {
             }
         })
     }
-
-    onEditCommentOfActionFilesChange = (files) => {
+    onEditCommentOfTaskCommentFilesPaste = (fileObject) => {
         this.setState(state => {
             return {
                 ...state,
-                newCommentOfActionEdited: {
-                    ...state.newCommentOfActionEdited,
+                newCommentOfTaskCommentEditedFilePaste: [...state.newCommentOfTaskCommentEditedFilePaste, fileObject],
+                newCommentOfTaskCommentEdited: {
+                    ...state.newCommentOfTaskCommentEdited,
+                    files: [...state.newCommentOfTaskCommentEdited.files, fileObject],
+                }
+            }
+        })
+    }
+    removeEditCommentOfTaskCommentFiles = (index) => {
+        let files = this.state.newCommentOfTaskCommentEdited.files
+        let fileRemove = files.splice(index, 1)
+        this.setState(state => {
+            return {
+                ...state,
+                newCommentOfTaskCommentEditedFilePaste: state.newCommentOfTaskCommentEditedFilePaste.filter(value => value.lastModified !== fileRemove[0].lastModified),
+                newCommentOfTaskCommentEdited: {
+                    ...state.newCommentOfTaskCommentEdited,
                     files: files,
                 }
             }
         })
     }
-
     onEditCommentOfTaskCommentFilesChange = async (files) => {
         this.setState(state => {
             return {
                 ...state,
                 newCommentOfTaskCommentEdited: {
                     ...state.newCommentOfTaskCommentEdited,
-                    files: files
+                    files: [...files, ...state.newCommentOfTaskCommentEditedFilePaste]
                 }
             }
         });
+    }
+    onEditTaskCommentFilePaste = (fileObject) => {
+
+        this.setState(state => {
+            return {
+                ...state,
+                EditTaskCommentFilesPaste: [...state.EditTaskCommentFilesPaste, fileObject],
+                newTaskCommentEdited: {
+                    ...state.newTaskCommentEdited,
+                    files: [...state.newTaskCommentEdited.files, fileObject],
+                }
+            }
+        })
+    }
+    removeEditTaskCommentFile = (index) => {
+        let files = this.state.newTaskCommentEdited.files
+        let fileRemove = files.splice(index, 1)
+        this.setState(state => {
+            return {
+                ...state,
+                EditTaskCommentFilesPaste: state.EditTaskCommentFilesPaste.filter(value => value.lastModified !== fileRemove[0].lastModified),
+                newTaskCommentEdited: {
+                    ...state.newTaskCommentEdited,
+                    files: files,
+                }
+            }
+        })
     }
 
     onEditTaskCommentFilesChange = (files) => {
@@ -737,16 +844,31 @@ class ActionTab extends Component {
                 ...state,
                 newTaskCommentEdited: {
                     ...state.newTaskCommentEdited,
-                    files: files
+                    files: [...files, ...state.EditTaskCommentFilesPaste]
                 }
             }
         });
     }
+    onTaskCommentFilePaste = (fileObject) => {
 
-    onTaskCommentFilesChange = (files) => {
         this.setState(state => {
             return {
                 ...state,
+                newTaskCommentFilePaste: [...state.newTaskCommentFilePaste, fileObject],
+                newTaskComment: {
+                    ...state.newTaskComment,
+                    files: [...state.newTaskComment.files, fileObject],
+                }
+            }
+        })
+    }
+    removeTaskCommentFile = (index) => {
+        let files = this.state.newTaskComment.files
+        let fileRemove = files.splice(index, 1)
+        this.setState(state => {
+            return {
+                ...state,
+                newTaskCommentFilePaste: state.newTaskCommentFilePaste.filter(value => value.lastModified !== fileRemove[0].lastModified),
                 newTaskComment: {
                     ...state.newTaskComment,
                     files: files,
@@ -755,35 +877,180 @@ class ActionTab extends Component {
         })
     }
 
-    onCommentFilesChange = (files, actionId) => {
+
+    onTaskCommentFilesChange = (files) => {
+        this.setState(state => {
+            return {
+                ...state,
+                newTaskComment: {
+                    ...state.newTaskComment,
+                    files: [...files, ...state.newTaskCommentFilePaste]
+                }
+            }
+        })
+    }
+    onCommentFilesPaste = (files, actionId) => {
+
+        this.setState(state => {
+            if (state.newCommentOfAction[`${actionId}`] && state.newCommentOfAction[`${actionId}`].files) {
+                state.newCommentOfAction[`${actionId}`] = {
+                    ...state.newCommentOfAction[`${actionId}`],
+                    files: [...state.newCommentOfAction[`${actionId}`].files, files]
+                }
+
+            } else {
+                state.newCommentOfAction[`${actionId}`] = {
+                    ...state.newCommentOfAction[`${actionId}`],
+                    files: [files]
+                }
+            }
+            state.CommentOfActionFilePaste = [...state.CommentOfActionFilePaste, files]
+            return {
+                ...state,
+            }
+        })
+    }
+    removeCommentFiles = (index, actionId) => {
+        let files = this.state.newCommentOfAction[`${actionId}`].files
+        let fileRemove = files.splice(index, 1)
         this.setState(state => {
             state.newCommentOfAction[`${actionId}`] = {
                 ...state.newCommentOfAction[`${actionId}`],
-                files: files,
+                files: files
             }
+            state.CommentOfActionFilePaste = state.CommentOfActionFilePaste.filter(value => value.lastModified !== fileRemove[0].lastModified)
             return {
                 ...state
             }
         })
     }
 
-    onCommentOfTaskCommentFilesChange = (commentId, files) => {
+
+    onCommentFilesChange = (files, actionId) => {
+        this.setState(state => {
+            state.newCommentOfAction[`${actionId}`] = {
+                ...state.newCommentOfAction[`${actionId}`],
+                files: [...files, ...state.CommentOfActionFilePaste]
+            }
+            return {
+                ...state
+            }
+        })
+    }
+    onEditCommentOfActionFilePaste = (file) => {
+        this.setState(state => {
+            return {
+                ...state,
+                newCommentOfActionEdited: {
+                    ...state.newCommentOfActionEdited,
+                    files: [...state.newCommentOfActionEdited.files, file],
+                },
+                editCommentOfActionFilePaste: [...state.editCommentOfActionFilePaste, file]
+            }
+        })
+    }
+    removeEditCommentOfActionFilePaste = (index) => {
+        let files = this.state.newCommentOfActionEdited.files
+        let fileRemove = files.splice(index, 1)
+        this.setState(state => {
+            return {
+                ...state,
+                editCommentOfActionFilePaste: state.editCommentOfActionFilePaste.filter(value => value.lastModified !== fileRemove[0].lastModified),
+                newCommentOfActionEdited: {
+                    ...state.newCommentOfActionEdited,
+                    files: files,
+                }
+            }
+        })
+    }
+    onEditCommentOfActionFilesChange = (files) => {
+        this.setState(state => {
+            return {
+                ...state,
+                newCommentOfActionEdited: {
+                    ...state.newCommentOfActionEdited,
+                    files: [...files, ...state.editCommentOfActionFilePaste],
+                }
+            }
+        })
+    }
+    onCommentOfTaskCommentFilesPaste = (commentId, files) => {
+
+        this.setState(state => {
+            if (state.newCommentOfTaskComment[`${commentId}`] && state.newCommentOfTaskComment[`${commentId}`].files) {
+                state.newCommentOfTaskComment[`${commentId}`] = {
+                    ...state.newCommentOfTaskComment[`${commentId}`],
+                    files: [...state.newCommentOfTaskComment[`${commentId}`].files, files]
+                }
+
+            } else {
+                state.newCommentOfTaskComment[`${commentId}`] = {
+                    ...state.newCommentOfTaskComment[`${commentId}`],
+                    files: [files]
+                }
+            }
+            state.newCommentOfTaskCommentPaste = [...state.newCommentOfTaskCommentPaste, files]
+            return {
+                ...state,
+            }
+        })
+    }
+    removeCommentOfTaskCommentFiles = (commentId, index) => {
+        let files = this.state.newCommentOfTaskComment[`${commentId}`].files
+        let fileRemove = files.splice(index, 1)
         this.setState(state => {
             state.newCommentOfTaskComment[`${commentId}`] = {
                 ...state.newCommentOfTaskComment[`${commentId}`],
                 files: files
             }
+            state.newCommentOfTaskCommentPaste = state.newCommentOfTaskCommentPaste.filter(value => value.lastModified !== fileRemove[0].lastModified)
+            return {
+                ...state
+            }
+        })
+    }
+    onCommentOfTaskCommentFilesChange = (commentId, files) => {
+        this.setState(state => {
+            state.newCommentOfTaskComment[`${commentId}`] = {
+                ...state.newCommentOfTaskComment[`${commentId}`],
+                files: [...files, ...state.newCommentOfTaskCommentPaste]
+            }
             return { ...state, }
         })
     }
-
+    onTaskFilesPaste = (file) => {
+        this.setState(state => {
+            return {
+                ...state,
+                taskFiles: {
+                    ...state.taskFiles,
+                    files: [...state.taskFiles.files, file],
+                },
+                taskFilesPaste: [...state.taskFilesPaste, file]
+            }
+        })
+    }
+    removeTaskFilesPaste = (index) => {
+        let files = this.state.taskFiles.files
+        let fileRemove = files.splice(index, 1)
+        this.setState(state => {
+            return {
+                ...state,
+                taskFilesPaste: state.taskFilesPaste.filter(value => value.lastModified !== fileRemove[0].lastModified),
+                taskFiles: {
+                    ...state.taskFiles,
+                    files: files,
+                }
+            }
+        })
+    }
     onTaskFilesChange = (files) => {
         this.setState(state => {
             return {
                 ...state,
                 taskFiles: {
                     ...state.taskFiles,
-                    files: files,
+                    files: [...files, ...state.taskFilesPaste]
                 }
             }
         })
@@ -896,14 +1163,39 @@ class ActionTab extends Component {
             event.preventDefault();
         }
     }
-
+    onEditFileTaskPaste = (file) => {
+        this.setState(state => {
+            return {
+                ...state,
+                fileTaskEdited: {
+                    ...state.fileTaskEdited,
+                    files: [...state.fileTaskEdited.files, file],
+                },
+                fileTaskEditedPaste: [...state.fileTaskEditedPaste, file]
+            }
+        })
+    }
+    removeEditFileTaskPaste = (index) => {
+        let files = this.state.fileTaskEdited.files
+        let fileRemove = files.splice(index, 1)
+        this.setState(state => {
+            return {
+                ...state,
+                fileTaskEditedPaste: state.fileTaskEditedPaste.filter(value => value.lastModified !== fileRemove[0].lastModified),
+                fileTaskEdited: {
+                    ...state.fileTaskEdited,
+                    files: files,
+                }
+            }
+        })
+    }
     onEditFileTask = (files) => {
         this.setState(state => {
             return {
                 ...state,
                 fileTaskEdited: {
                     ...state.fileTaskEdited,
-                    files: files
+                    files: [...files, ...state.fileTaskEditedPaste]
                 }
             }
         });
@@ -1182,10 +1474,10 @@ class ActionTab extends Component {
         })
     }
 
-    setActionImportanceLevelAll = (e) => {
+    setActionImportanceLevelAll = (value) => {
         this.setState({
             ...this.state,
-            actionImportanceLevelAll: e.target.value
+            actionImportanceLevelAll: value
         })
     }
 
@@ -1226,15 +1518,24 @@ class ActionTab extends Component {
         }
     }
 
+    getCreatorId = (creator) => {
+        if (!creator)
+            return
+        if (creator && typeof (creator) === 'object') return creator._id;
+        else return creator;
+    }
+
     showDetailTimer = (nameAction, timeSheetLogs) => {
         nameAction = htmlToText(nameAction);
         let result = [];
         timeSheetLogs.reduce((res, value) => {
-            if (!res[value?.creator?._id]) {
-                res[value.creator._id] = { id: value.creator._id, duration: 0, creatorName: value.creator.name };
-                result.push(res[value.creator._id]);
+            const creatorId = this.getCreatorId(value?.creator);
+
+            if (!res[creatorId]) {
+                res[creatorId] = { id: creatorId, duration: 0, creatorName: value.creator.name };
+                result.push(res[creatorId]);
             }
-            res[value.creator._id].duration += value.duration;
+            res[creatorId].duration += value.duration;
             return res;
         }, {});
 
@@ -1242,14 +1543,16 @@ class ActionTab extends Component {
             html: `<div style="max-width: 100%; max-height: 100%" > 
                 <h4 style="margin-bottom: 15px">Thời gian bấm giờ cho hoạt động "<strong>${nameAction}</strong>"</h4>` +
                 `<ol>${result.map(o => (
-                    `<li>${o.creatorName}: ${convertTime(o.duration)}</li>`
-                ))} </ol>`
+                    `<li style="margin-bottom: 7px">${o.creatorName}: ${convertTime(o.duration)}</li>`
+                )).join(" ")} </ol>`
                 +
                 `<div>`,
 
             confirmButtonText: `Đồng ý`,
         })
     }
+
+
 
     render() {
         let task, informations, statusTask, documents, actionComments, taskComments, logTimer, logs;
@@ -1258,7 +1561,7 @@ class ActionTab extends Component {
         const subtasks = tasks.subtasks;
         const {
             showEvaluations, selected, comment, editComment, showChildComment, editAction, action, taskActions,
-            editTaskComment, showEditTaskFile, evaluations, actionImportanceLevelAll, ratingAll, 
+            editTaskComment, showEditTaskFile, evaluations, actionImportanceLevelAll, ratingAll,
             editCommentOfTaskComment, valueRating, currentUser, hover, fileTaskEdited, showSort,
             showFile, deleteFile, taskFiles, newActionEdited, newCommentOfActionEdited, newAction,
             newCommentOfAction, newTaskCommentEdited, newCommentOfTaskComment, newTaskComment, newCommentOfTaskCommentEdited, showBoxAddLogTimer, addLogStartTime, addLogEndTime
@@ -1320,6 +1623,32 @@ class ActionTab extends Component {
                     <div className="tab-content">
                         <div className={selected === "taskAction" ? "active tab-pane" : "tab-pane"} id="taskAction">
 
+                            {/* Thêm hoạt động cho công việc*/}
+                            {role === "responsible" && task && !showSort &&
+                                <React.Fragment  >
+                                    <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
+                                    <ContentMaker
+                                        idQuill={`add-action-${id}`}
+                                        inputCssClass="text-input-level1" controlCssClass="tool-level1 row"
+                                        onFilesChange={this.onActionFilesChange}
+                                        onFilesPaste={this.onActionFilesPaste}
+                                        onFilesRemote={this.removeFile}
+                                        onFilesError={this.onFilesError}
+                                        files={newAction.files}
+                                        text={newAction.descriptionDefault}
+                                        placeholder={role === "responsible" ? translate("task.task_perform.result") : translate("task.task_perform.enter_action")}
+                                        submitButtonText={role === "responsible" ? translate("general.add") : translate("task.task_perform.create_action")}
+                                        onTextChange={(value, imgs) => {
+                                            this.setState(state => {
+                                                return { ...state, newAction: { ...state.newAction, description: value, descriptionDefault: null } }
+                                            })
+                                        }}
+                                        onSubmit={(e) => { this.submitAction(task._id, taskActions.length) }}
+                                    />
+                                </React.Fragment>
+                            }
+
+
                             {typeof taskActions !== 'undefined' && taskActions.length !== 0 ?
                                 <ShowMoreShowLess
                                     id={`description${id}`}
@@ -1329,6 +1658,8 @@ class ActionTab extends Component {
                                     {
                                         // Hiển thị hoạt động của công việc
                                         (taskActions).map((item, index) => {
+                                            let arrImageIndex = item.files.map((elem, index) => this.isImage(elem.name) ? index : -1).filter(index => index !== -1);
+                                            let listImage = item.files.map((elem) => this.isImage(elem.name) ? elem.url : -1).filter(url => url !== -1);
                                             return (
                                                 <div key={item._id} className={index > 3 ? "hide-component" : ""}>
                                                     {item.creator ?
@@ -1406,7 +1737,9 @@ class ActionTab extends Component {
                                                                     <React.Fragment>
                                                                         {(role === "accountable" || role === "consulted" || role === "creator" || role === "informed") &&
                                                                             <>
-                                                                                <li style={{ display: "inline-table", width: "60%" }} className="list-inline">
+                                                                                <div className="form-group text-sm">
+                                                                                    {/* Code hiển thị: Nếu chưa chọn điểm đánh giá mới, hiển thị điểm đánh giá trong DB. Nếu chưa đánh giá, hiển thị -- */}
+                                                                                    <span style={{ marginRight: "5px" }}>Điểm đánh giá: <strong>{evaluations?.[item?._id]?.rating ?? (item?.rating !== -1 ? item?.rating : "--")}/10</strong></span>
                                                                                     <Rating
                                                                                         fractions={2}
                                                                                         stop={10}
@@ -1417,22 +1750,30 @@ class ActionTab extends Component {
                                                                                             this.setValueRating(item._id, value);
                                                                                         }}
                                                                                         onHover={(value) => {
-                                                                                            this.setHover(item._id, value)
+                                                                                            this.setHover(item._id, value, "rating")
                                                                                         }}
                                                                                     />
-                                                                                    <div style={{ display: "inline", marginLeft: "5px" }}>{this.hover[item._id]}</div>
-                                                                                </li>
-                                                                                <li style={{ display: "inline-table", width: "40%" }} className="list-inline">
-                                                                                    <input type="range"
-                                                                                        min='0'
-                                                                                        max='10'
-                                                                                        name={`actionTaskImportanceLevel${item._id}`}
-                                                                                        onChange={(e) => this.setActionImportanceLevel(e, item._id)}
-                                                                                        value={evaluations?.[item._id]?.actionImportanceLevel ?? item?.actionImportanceLevel}
+                                                                                    <div style={{ display: "inline", marginLeft: "5px" }}>{this.hover?.[`${item?._id}-rating`]}</div>
+                                                                                </div>
+                                                                                <div className="form-group text-sm">
+                                                                                    {/* Code hiển thị: Nếu chưa chọn độ quan trọng mới, hiển thị độ quan trọng trong DB */}
+                                                                                    <span style={{ marginRight: "5px" }}>Độ quan trọng: <strong>{evaluations?.[item?._id]?.actionImportanceLevel ?? item?.actionImportanceLevel}/10</strong></span>
+                                                                                    <Rating
+                                                                                        fractions={2}
+                                                                                        stop={10}
+                                                                                        emptySymbol="fa fa-star-o fa-2x"
+                                                                                        fullSymbol="fa fa-star fa-2x"
+                                                                                        initialRating={evaluations?.[item._id]?.actionImportanceLevel ?? item?.actionImportanceLevel}
+                                                                                        onClick={(value) => {
+                                                                                            this.setActionImportanceLevel(item._id, value)
+                                                                                        }}
+                                                                                        onHover={(value) => {
+                                                                                            this.setHover(item._id, value, "actionImportanceLevel")
+                                                                                        }}
                                                                                     />
-                                                                                </li>
-                                                                                <br/>
-                                                                                <li><a style={{ cursor: "pointer" }} onClick={() => this.evaluationTaskAction(item, task._id, role, 1)}>Gửi đánh giá</a><span> (Đánh giá: <strong>{evaluations?.[item?._id]?.rating ?? item?.rating}</strong> - Độ quan trọng: <strong>{evaluations?.[item?._id]?.actionImportanceLevel ?? item?.actionImportanceLevel})</strong></span></li>
+                                                                                    <div style={{ display: "inline", marginLeft: "5px" }}>{this.hover?.[`${item?._id}-actionImportanceLevel`]}</div>
+                                                                                </div>
+                                                                                <a style={{ cursor: "pointer", fontWeight: '600' }} onClick={() => this.evaluationTaskAction(item, task._id, role, 1)}>Gửi đánh giá</a>
                                                                             </>
                                                                         }
                                                                     </React.Fragment>
@@ -1452,7 +1793,7 @@ class ActionTab extends Component {
                                                                                             <p key={index}>
                                                                                                 <b> {element?.creator?.name} </b>
                                                                                                 {this.getRoleNameInTask(element?.role)}
-                                                                                                <span> Đánh giá:<span className="text-red"> {element?.rating}/10</span> - Độ quan trọng:<span className="text-red"> {element?.actionImportanceLevel}/10</span></span>
+                                                                                                <span> Điểm đánh giá:<span className="text-red"> {element?.rating}/10</span> - Độ quan trọng:<span className="text-red"> {element?.actionImportanceLevel}/10</span></span>
                                                                                             </p>
                                                                                         )
                                                                                     })
@@ -1468,6 +1809,9 @@ class ActionTab extends Component {
                                                                             return <div key={index} className="show-files-task">
                                                                                 {this.isImage(elem.name) ?
                                                                                     <ApiImage
+                                                                                        listImage={listImage}
+                                                                                        arrImageIndex={arrImageIndex}
+                                                                                        index={index}
                                                                                         className="attachment-img files-attach"
                                                                                         style={{ marginTop: "5px" }}
                                                                                         src={elem.url}
@@ -1492,6 +1836,8 @@ class ActionTab extends Component {
                                                                     idQuill={`edit-action-${item._id}`}
                                                                     inputCssClass="text-input-level1" controlCssClass="tool-level2 row"
                                                                     onFilesChange={this.onEditActionFilesChange}
+                                                                    onFilesPaste={this.onEditActionFilesPaste}
+                                                                    onFilesRemote={this.removeEditFile}
                                                                     onFilesError={this.onFilesError}
                                                                     files={newActionEdited.files}
                                                                     text={newActionEdited.descriptionDefault}
@@ -1508,8 +1854,8 @@ class ActionTab extends Component {
 
                                                                 {item.files.length > 0 &&
                                                                     <div className="tool-level1" style={{ marginTop: -15 }}>
-                                                                        {item.files.map(file => {
-                                                                            return <div>
+                                                                        {item.files.map((file, index) => {
+                                                                            return <div key={index}>
                                                                                 <a style={{ cursor: "pointer" }}>{file.name} &nbsp;</a><a style={{ cursor: "pointer" }} className="link-black text-sm btn-box-tool" onClick={() => { this.handleDeleteFile(file._id, file.name, item._id, "action") }}><i className="fa fa-times"></i></a>
                                                                             </div>
                                                                         })}
@@ -1522,6 +1868,8 @@ class ActionTab extends Component {
                                                     {!showSort && showChildComment.some(obj => obj === item._id) &&
                                                         <div>
                                                             {item.comments.map(child => {
+                                                                let arrImageIndex = child.files.map((elem, index) => this.isImage(elem.name) ? index : -1).filter(index => index !== -1);
+                                                                let listImage = child.files.map((elem) => this.isImage(elem.name) ? elem.url : -1).filter(url => url !== -1);
                                                                 return <div key={child._id}>
                                                                     <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + child.creator?.avatar)} alt="User Image" />
                                                                     {editComment !== child._id && // Khi đang edit thì nội dung cũ đi
@@ -1560,6 +1908,9 @@ class ActionTab extends Component {
                                                                                             return <div key={index} className="show-files-task">
                                                                                                 {this.isImage(elem.name) ?
                                                                                                     <ApiImage
+                                                                                                        arrImageIndex={arrImageIndex}
+                                                                                                        listImage={listImage}
+                                                                                                        index={index}
                                                                                                         className="attachment-img files-attach"
                                                                                                         style={{ marginTop: "5px" }}
                                                                                                         src={elem.url}
@@ -1585,6 +1936,8 @@ class ActionTab extends Component {
                                                                                     idQuill={`edit-comment-${child._id}`}
                                                                                     inputCssClass="text-input-level2" controlCssClass="tool-level2 row"
                                                                                     onFilesChange={this.onEditCommentOfActionFilesChange}
+                                                                                    onFilesPaste={this.onEditCommentOfActionFilePaste}
+                                                                                    onFilesRemote={this.removeEditCommentOfActionFilePaste}
                                                                                     onFilesError={this.onFilesError}
                                                                                     files={newCommentOfActionEdited.files}
                                                                                     text={newCommentOfActionEdited.descriptionDefault}
@@ -1624,6 +1977,8 @@ class ActionTab extends Component {
                                                                     imageDropAndPasteQuill={false}
                                                                     inputCssClass="text-input-level2" controlCssClass="tool-level2 row"
                                                                     onFilesChange={(files) => this.onCommentFilesChange(files, item._id)}
+                                                                    onFilesPaste={(files) => this.onCommentFilesPaste(files, item._id)}
+                                                                    onFilesRemote={(index) => this.removeCommentFiles(index, item._id)}
                                                                     onFilesError={this.onFilesError}
                                                                     files={newCommentOfAction[`${item._id}`]?.files}
                                                                     text={newCommentOfAction[`${item._id}`]?.descriptionDefault}
@@ -1654,7 +2009,7 @@ class ActionTab extends Component {
                                 </ShowMoreShowLess>
                                 : null
                             }
-                            {/* Thêm hoạt động cho công việc*/}
+                            {/* Sắp xếo hoạt động CV*/}
                             {showSort ?
                                 <div className="row" style={{ marginTop: 20 }}>
                                     <div className="col-xs-6">
@@ -1666,63 +2021,50 @@ class ActionTab extends Component {
                                 </div>
                                 :
                                 <React.Fragment>
-                                    {role === "responsible" && task &&
-                                        <React.Fragment>
-                                            <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
-                                            <ContentMaker
-                                                idQuill={`add-action-${id}`}
-                                                inputCssClass="text-input-level1" controlCssClass="tool-level1 row"
-                                                onFilesChange={this.onActionFilesChange}
-                                                onFilesError={this.onFilesError}
-                                                files={newAction.files}
-                                                text={newAction.descriptionDefault}
-                                                placeholder={role === "responsible" ? translate("task.task_perform.result") : translate("task.task_perform.enter_action")}
-                                                submitButtonText={role === "responsible" ? translate("general.add") : translate("task.task_perform.create_action")}
-                                                onTextChange={(value, imgs) => {
-                                                    this.setState(state => {
-                                                        return { ...state, newAction: { ...state.newAction, description: value, descriptionDefault: null } }
-                                                    })
-                                                }}
-                                                onSubmit={(e) => { this.submitAction(task._id, taskActions.length) }}
-                                            />
-                                        </React.Fragment>
-                                    }
-
                                     {
+                                        // Đánh giá tất cả các hoạt động CV
                                         this.state.showPopupApproveAllAction ?
                                             (role === "accountable") && taskActions.length > 1 &&
-                                            <React.Fragment>
-                                                <h4 style={{ fontWeight: 600, color: "#616161" }}>Chọn đánh giá cho tất cả hoạt động của bạn </h4>
-                                                <div className="rating-approve-all--wraper">
-                                                    <div style={{ width: "50%" }}>
-                                                        <Rating
-                                                            fractions={2}
-                                                            stop={10}
-                                                            emptySymbol="fa fa-star-o fa-2x"
-                                                            fullSymbol="fa fa-star fa-2x"
-                                                            initialRating={ratingAll ?? 0}
-                                                            onClick={(value) => {
-                                                                this.setValueRatingApproveAll(value);
-                                                            }}
-                                                            onHover={(value) => {
-                                                                this.setHover('all-action', value)
-                                                            }}
-                                                        />
-                                                        <div style={{ display: "inline", marginLeft: "5px" }}>{this.hover['all-action']}</div>
-                                                    </div>
-                                                    <div style={{ width: "50%" }}>
-                                                        <input type="range"
-                                                            min='0'
-                                                            max='10'
-                                                            name={`actionTaskImportanceLevelAll${task?._id}`}
-                                                            onChange={(e) => this.setActionImportanceLevelAll(e)}
-                                                            value={actionImportanceLevelAll ?? 10}
-                                                        />
-                                                    </div>
+                                            <div style={{ borderColor: "#ddd", marginTop: 20 }}>
+                                                <button style={{ marginTop: 7, marginBottom: 7 }} className="btn btn-block btn-default btn-sm" onClick={this.togglePopupApproveAllAction}>Hủy đánh giá tất cả các hoạt động</button>
+
+                                                <div className="form-group text-sm">
+                                                    <span style={{ marginRight: "5px" }}>Điểm đánh giá: <strong>{ratingAll ?? 0}/10</strong></span>
+                                                    <Rating
+                                                        fractions={2}
+                                                        stop={10}
+                                                        emptySymbol="fa fa-star-o fa-2x"
+                                                        fullSymbol="fa fa-star fa-2x"
+                                                        initialRating={ratingAll ?? 0}
+                                                        onClick={(value) => {
+                                                            this.setValueRatingApproveAll(value);
+                                                        }}
+                                                        onHover={(value) => {
+                                                            this.setHover('all-action', value, "rating")
+                                                        }}
+                                                    />
+                                                    <div style={{ display: "inline", marginLeft: "5px" }}>{this.hover?.['all-action-rating']}</div>
                                                 </div>
-                                                <a style={{ cursor: "pointer" }} onClick={() => this.evaluationAllTaskAction(task._id, taskActions)}>Gửi đánh giá</a><span> (Đánh giá: <strong>{ratingAll ?? 0}</strong> - Độ quan trọng: <strong>{actionImportanceLevelAll ?? 10})</strong></span>
-                                                <button style={{ marginTop: '7px' }} className="btn btn-block btn-default btn-sm" onClick={this.togglePopupApproveAllAction}>Hủy đánh giá hoạt động</button>
-                                            </React.Fragment>
+
+                                                <div className="form-group text-sm">
+                                                    <span style={{ marginRight: "5px" }}>Độ quan trọng: <strong>{actionImportanceLevelAll ?? 10}/10</strong></span>
+                                                    <Rating
+                                                        fractions={2}
+                                                        stop={10}
+                                                        emptySymbol="fa fa-star-o fa-2x"
+                                                        fullSymbol="fa fa-star fa-2x"
+                                                        initialRating={actionImportanceLevelAll ?? 10}
+                                                        onClick={(value) => {
+                                                            this.setActionImportanceLevelAll(value)
+                                                        }}
+                                                        onHover={(value) => {
+                                                            this.setHover('all-action', value, "actionImportanceLevel")
+                                                        }}
+                                                    />
+                                                    <div style={{ display: "inline", marginLeft: "5px" }}>{this.hover?.['all-action-actionImportanceLevel']}</div>
+                                                </div>
+                                                <button style={{ marginTop: 7, marginBottom: 7 }} className="btn btn-block btn-default btn-sm" onClick={() => this.evaluationAllTaskAction(task._id, taskActions)}>Gửi đánh giá tất cả các hoạt động</button>
+                                            </div>
                                             : (role === "accountable") && taskActions.length > 1 && <button className="btn btn-block btn-success btn-sm" onClick={this.togglePopupApproveAllAction}>Đánh giá tất cả hoạt động</button>
                                     }
                                     {(role === "responsible" || role === "accountable") && taskActions.length > 1 && <button className="btn btn-block btn-default btn-sm" onClick={this.showSort}>Sắp xếp hoạt động</button>}
@@ -1732,6 +2074,36 @@ class ActionTab extends Component {
 
                         {/* Chuyển qua tab trao đổi */}
                         <div className={selected === "taskComment" ? "active tab-pane" : "tab-pane"} id="taskComment">
+
+                            {/* Thêm bình luận cho công việc*/}
+                            <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="User Image" />
+                            <ContentMaker
+                                idQuill={`add-comment-task-${id}`}
+                                inputCssClass="text-input-level1" controlCssClass="tool-level1 row"
+                                onFilesChange={this.onTaskCommentFilesChange}
+                                onFilesPaste={this.onTaskCommentFilePaste}
+                                onFilesRemote={this.removeTaskCommentFile}
+                                onFilesError={this.onFilesError}
+                                files={newTaskComment.files}
+                                text={newTaskComment.descriptionDefault}
+                                placeholder={translate("task.task_perform.enter_comment")}
+                                submitButtonText={translate("task.task_perform.create_comment")}
+                                onTextChange={(value, imgs) => {
+                                    this.setState(state => {
+                                        return {
+                                            ...state,
+                                            newTaskComment: {
+                                                ...state.newTaskComment,
+                                                description: value,
+                                                descriptionDefault: null
+                                            }
+                                        }
+                                    })
+
+                                }}
+                                onSubmit={(e) => { this.submitTaskComment(task._id) }}
+                            />
+
                             {typeof taskComments !== 'undefined' && taskComments.length !== 0 ?
                                 <ShowMoreShowLess
                                     id={`taskComment${id}`}
@@ -1740,6 +2112,8 @@ class ActionTab extends Component {
                                 >
                                     {
                                         taskComments.map((item, index) => {
+                                            let arrImageIndex = item.files.map((elem, index) => this.isImage(elem.name) ? index : -1).filter(index => index !== -1);
+                                            let listImage = item.files.map((elem) => this.isImage(elem.name) ? elem.url : -1).filter(url => url !== -1);
                                             return (
                                                 <div key={item._id} className={index > 3 ? "hide-component" : ""}>
                                                     <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + item.creator?.avatar)} alt="User Image" />
@@ -1779,6 +2153,9 @@ class ActionTab extends Component {
                                                                                 return <div key={index} className="show-files-task">
                                                                                     {this.isImage(elem.name) ?
                                                                                         <ApiImage
+                                                                                            arrImageIndex={arrImageIndex}
+                                                                                            listImage={listImage}
+                                                                                            index={index}
                                                                                             className="attachment-img files-attach"
                                                                                             style={{ marginTop: "5px" }}
                                                                                             src={elem.url}
@@ -1805,6 +2182,8 @@ class ActionTab extends Component {
                                                                     idQuill={`edit-content-${item._id}`}
                                                                     inputCssClass="text-input-level1" controlCssClass="tool-level2 row"
                                                                     onFilesChange={this.onEditTaskCommentFilesChange}
+                                                                    onFilesPaste={this.onEditTaskCommentFilePaste}
+                                                                    onFilesRemote={this.removeEditTaskCommentFile}
                                                                     onFilesError={this.onFilesError}
                                                                     files={newTaskCommentEdited.files}
                                                                     text={newTaskCommentEdited.descriptionDefault}
@@ -1835,6 +2214,8 @@ class ActionTab extends Component {
                                                     {showChildComment.some(x => x === item._id) &&
                                                         <div className="comment-content-child">
                                                             {item.comments.map(child => {
+                                                                let arrImageIndex = child.files.map((elem, index) => this.isImage(elem.name) ? index : -1).filter(index => index !== -1);
+                                                                let listImage = child.files.map((elem) => this.isImage(elem.name) ? elem.url : -1).filter(url => url !== -1);
                                                                 return <div key={child._id}>
                                                                     <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + child.creator?.avatar)} alt="User Image" />
                                                                     {editCommentOfTaskComment !== child._id && // Đang edit thì ẩn đi
@@ -1872,6 +2253,9 @@ class ActionTab extends Component {
                                                                                                     return <div key={index} className="show-files-task">
                                                                                                         {this.isImage(elem.name) ?
                                                                                                             <ApiImage
+                                                                                                                arrImageIndex={arrImageIndex}
+                                                                                                                listImage={listImage}
+                                                                                                                index={index}
                                                                                                                 className="attachment-img files-attach"
                                                                                                                 style={{ marginTop: "5px" }}
                                                                                                                 src={elem.url}
@@ -1898,6 +2282,8 @@ class ActionTab extends Component {
                                                                                     idQuill={`edit-child-comment-${child._id}`}
                                                                                     inputCssClass="text-input-level2" controlCssClass="tool-level2 row"
                                                                                     onFilesChange={this.onEditCommentOfTaskCommentFilesChange}
+                                                                                    onFilesPaste={this.onEditCommentOfTaskCommentFilesPaste}
+                                                                                    onFilesRemote={this.removeEditCommentOfTaskCommentFiles}
                                                                                     onFilesError={this.onFilesError}
                                                                                     files={newCommentOfTaskCommentEdited.files}
                                                                                     text={newCommentOfTaskCommentEdited.descriptionDefault}
@@ -1934,6 +2320,8 @@ class ActionTab extends Component {
                                                                     idQuill={`add-child-comment-${item._id}`}
                                                                     inputCssClass="text-input-level2" controlCssClass="tool-level2 row"
                                                                     onFilesChange={(files) => this.onCommentOfTaskCommentFilesChange(item._id, files)}
+                                                                    onFilesPaste={(files) => this.onCommentOfTaskCommentFilesPaste(item._id, files)}
+                                                                    onFilesRemote={(files) => this.removeCommentOfTaskCommentFiles(item._id, files)}
                                                                     onFilesError={this.onFilesError}
                                                                     files={newCommentOfTaskComment[`${item._id}`]?.files}
                                                                     text={newCommentOfTaskComment[`${item._id}`]?.descriptionDefault}
@@ -1961,32 +2349,6 @@ class ActionTab extends Component {
                                     }
                                 </ShowMoreShowLess> : null
                             }
-                            {/* Thêm bình luận cho công việc*/}
-                            <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="User Image" />
-                            <ContentMaker
-                                idQuill={`add-comment-task-${id}`}
-                                inputCssClass="text-input-level1" controlCssClass="tool-level1 row"
-                                onFilesChange={this.onTaskCommentFilesChange}
-                                onFilesError={this.onFilesError}
-                                files={newTaskComment.files}
-                                text={newTaskComment.descriptionDefault}
-                                placeholder={translate("task.task_perform.enter_comment")}
-                                submitButtonText={translate("task.task_perform.create_comment")}
-                                onTextChange={(value, imgs) => {
-                                    this.setState(state => {
-                                        return {
-                                            ...state,
-                                            newTaskComment: {
-                                                ...state.newTaskComment,
-                                                description: value,
-                                                descriptionDefault: null
-                                            }
-                                        }
-                                    })
-
-                                }}
-                                onSubmit={(e) => { this.submitTaskComment(task._id) }}
-                            />
                         </div>
 
 
@@ -2000,6 +2362,8 @@ class ActionTab extends Component {
                                     >
                                         {
                                             documents.map((item, index) => {
+                                                let arrImageIndex = item.files.map((elem, index) => this.isImage(elem.name) ? index : -1).filter(index => index !== -1);
+                                                let listImage = item.files.map((elem) => this.isImage(elem.name) ? elem.url : -1).filter(url => url !== -1);
                                                 return (
                                                     <React.Fragment key={`documents-${item._id}`}>
                                                         {showEditTaskFile !== item._id &&
@@ -2036,6 +2400,9 @@ class ActionTab extends Component {
                                                                                     <div key={index} className="show-files-task">
                                                                                         {this.isImage(elem.name) ?
                                                                                             <ApiImage
+                                                                                                arrImageIndex={arrImageIndex}
+                                                                                                listImage={listImage}
+                                                                                                index={index}
                                                                                                 className="attachment-img files-attach"
                                                                                                 style={{ marginTop: "5px" }}
                                                                                                 src={elem.url}
@@ -2062,6 +2429,8 @@ class ActionTab extends Component {
                                                                         idQuill={`edit-file-${item._id}`}
                                                                         inputCssClass="text-input-level1" controlCssClass="tool-level2 row"
                                                                         onFilesChange={this.onEditFileTask}
+                                                                        onFilesPaste={this.onEditFileTaskPaste}
+                                                                        onFilesRemote={this.removeEditFileTaskPaste}
                                                                         onFilesError={this.onFilesError}
                                                                         files={fileTaskEdited.files}
                                                                         text={fileTaskEdited.descriptionDefault}
@@ -2100,6 +2469,8 @@ class ActionTab extends Component {
                                         idQuill={`upload-file-${id}`}
                                         inputCssClass="text-input-level1" controlCssClass="tool-level1"
                                         onFilesChange={this.onTaskFilesChange}
+                                        onFilesPaste={this.onTaskFilesPaste}
+                                        onFilesRemote={this.removeTaskFilesPaste}
                                         onFilesError={this.onFilesError}
                                         files={taskFiles.files}
                                         text={taskFiles.descriptionDefault}

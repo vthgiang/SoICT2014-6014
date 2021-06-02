@@ -146,14 +146,14 @@ exports.createNewSalesOrder = async (userId, companyId, data, portal) => {
     return { salesOrder }
 }
 
-exports.getAllSalesOrders = async (userId, query, portal) => {
+exports.getAllSalesOrders = async (userId, query, portal,getAll = false) => {
     //Lấy cấp dưới người ngày quản lý (bao gồm cả người này và các nhân viên phòng ban con)
     let users = await BusinessDepartmentServices.getAllRelationsUser(userId, query.currentRole, portal);
 
     let option = {};
     let { page, limit, code, status, customer } = query;
 
-    if (users.length) {
+    if (users.length && !getAll ) {
         option = {
             $or: [{ creator: users },
             { approvers: { $elemMatch: { approver: userId } } }],

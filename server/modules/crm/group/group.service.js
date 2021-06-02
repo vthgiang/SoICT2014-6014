@@ -9,6 +9,8 @@ exports.createGroup = async (portal, companyId, userId, data) => {
         code: code,
         name: name,
         description: description ? description : '',
+        updatedBy:userId,
+        updatedAt: new Date()
     })
 
     const getNewGroup = await Group(connect(DB_CONNECTION, portal)).findById(newGroup._id);
@@ -45,7 +47,8 @@ exports.editGroup = async (portal, companyId, id, data, userId) => {
 
     await Group(connect(DB_CONNECTION, portal)).findByIdAndUpdate(id, {
         $set: {
-            updatedBy: userId,
+            updatedBy:userId,
+            updatedAt: new Date(),
             code: code,
             name: name,
             description: description ? description : '',

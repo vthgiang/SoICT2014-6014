@@ -75,7 +75,7 @@ function GeneralTab(props) {
                 {/* Ảnh đại diện */}
                 <div className="col-lg-4 col-md-4 col-ms-12 col-xs-12" style={{ textAlign: 'center' }}>
                     <div>
-                        {avatar && <ApiImage className="attachment-img avarta" id={`avater-imform-${id}`} src={`.${avatar}`} />}
+                        {avatar && <ApiImage className="attachment-img" id={`avater-imform-${id}`} src={`.${avatar}`} style={{ width: "200px", height: "240px", border: "2px solid #ddd", cursor: "pointer", objectFit: "cover" }} />}
                     </div>
                 </div>
                 <div className="pull-right col-lg-8 col-md-8 col-ms-12 col-xs-12">

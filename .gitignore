@@ -5,3 +5,4 @@
 /server/seed/initSampleCompanyDB.js
 /server/seed/initOrganizationalUnitKPIData.js
 yarn.lock
+/logs

@@ -1,182 +1,179 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { CompanyActions } from '../redux/actions';
 import ValidationHelper from '../../../../helpers/validationHelper';
 import { ErrorLabel, DialogModal } from '../../../../common-components';
 
-class CompanyEditForm extends Component {
+function CompanyEditForm(props) {
 
-    constructor(props) {
-        super(props);
+    const [state, setState] = useState({})
 
-        this.state = {}
-    }
-
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.companyId !== prevState.companyId) {
-            return {
-                ...prevState,
-                companyId: nextProps.companyId,
-                companyName: nextProps.companyName,
-                companyShortName: nextProps.companyShortName,
-                companyDescription: nextProps.companyDescription,
-                companyLog: nextProps.companyLog,
-                companyLinks: nextProps.companyLinks,
-                companyActive: nextProps.companyActive,
-                companyEmail: nextProps.companyEmail,
+    useEffect(() => {
+        if (props.companyId !== state.companyId) {
+            setState({
+                ...state,
+                companyId: props.companyId,
+                companyName: props.companyName,
+                companyShortName: props.companyShortName,
+                companyDescription: props.companyDescription,
+                companyLog: props.companyLog,
+                companyLinks: props.companyLinks,
+                companyActive: props.companyActive,
+                companyEmail: props.companyEmail,
                 nameError: undefined,
                 shortNameError: undefined,
                 descriptionError: undefined,
                 emailError: undefined
-            } 
-        } else {
-            return null;
+            })
+        }
+    }, [props.companyId])
+
+    // Luu du lieu ve cong ty
+    const save = () => {
+        const data = {
+            name: state.companyName,
+            shortName: state.companyShortName,
+            log: state.companyLog,
+            description: state.companyDescription,
+            email: state.companyEmail,
+            active: state.companyActive
+        };
+
+        if (isFormValidated()) {
+            return props.editCompany(state.companyId, data);
         }
     }
 
-    // Luu du lieu ve cong ty
-    save = () => {
-        const data = { 
-            name: this.state.companyName, 
-            shortName: this.state.companyShortName, 
-            log: this.state.companyLog, 
-            description: this.state.companyDescription, 
-            email: this.state.companyEmail, 
-            active: this.state.companyActive
-        };
-
-        if (this.isFormValidated()) {
-            return this.props.editCompany(this.state.companyId, data);
-        } 
-    }
-
     // Xu ly handle log va active
-    handleActive = (e) => {
+    const handleActive = (e) => {
         const value = e.target.value;
-        this.setState({
+        setState({
+            ...state,
             companyActive: value
         });
     }
 
-    handleLog = (e) => {
+    const handleLog = (e) => {
         const value = e.target.value;
-        this.setState({
+        setState({
+            ...state,
             companyLog: value
         });
     }
 
-    handleChangeName = (e) => {
-        let {value} = e.target;
-        let {translate} = this.props;
-        let {message} = ValidationHelper.validateName(translate, value, 4, 255);
-        this.setState({ 
+    const handleChangeName = (e) => {
+        let { value } = e.target;
+        let { translate } = props;
+        let { message } = ValidationHelper.validateName(translate, value, 4, 255);
+        setState({
+            ...state,
             companyName: value,
             nameError: message
         });
     }
 
-    handleChangeDescription = (e) => {
-        let {value} = e.target;
-        let {translate} = this.props;
-        let {message} = ValidationHelper.validateDescription(translate, value);
-        this.setState({ 
+    const handleChangeDescription = (e) => {
+        let { value } = e.target;
+        let { translate } = props;
+        let { message } = ValidationHelper.validateDescription(translate, value);
+        setState({
+            ...state,
             companyDescription: value,
             descriptionError: message
         });
     }
 
-    handleChangeEmail = (e) => {
-        let {value} = e.target;
-        let {translate} = this.props;
-        let {message} = ValidationHelper.validateEmail(translate, value);
-        this.setState({ 
-            companyEmail: value,    
-            emailError: message 
+    const handleChangeEmail = (e) => {
+        let { value } = e.target;
+        let { translate } = props;
+        let { message } = ValidationHelper.validateEmail(translate, value);
+        setState({
+            ...state,
+            companyEmail: value,
+            emailError: message
         });
     }
 
-    isFormValidated = () => {
-        let {companyName, companyShortName, companyDescription, companyEmail} = this.state;
-        let {translate} = this.props;
-        if(
-            !ValidationHelper.validateName(translate, companyName).status  || 
+    const isFormValidated = () => {
+        let { companyName, companyShortName, companyDescription, companyEmail } = state;
+        let { translate } = props;
+        if (
+            !ValidationHelper.validateName(translate, companyName).status ||
             !ValidationHelper.validateName(translate, companyShortName).status ||
-            !ValidationHelper.validateEmail(translate, companyEmail).status  || 
+            !ValidationHelper.validateEmail(translate, companyEmail).status ||
             !ValidationHelper.validateDescription(translate, companyDescription).status
         ) return false;
         return true;
     }
 
-    render() { 
-        const { translate, company } = this.props;
-        const {
-            // Phần edit nội dung của công ty
-            companyName, 
-            companyShortName, 
-            companyDescription, 
-            companyLog, 
-            companyActive, 
-            companyEmail, 
-            nameError, 
-            shortNameError, 
-            descriptionError, 
-            emailError,
-        } = this.state;
+    const { translate, company } = props;
+    const {
+        // Phần edit nội dung của công ty
+        companyName,
+        companyShortName,
+        companyDescription,
+        companyLog,
+        companyActive,
+        companyEmail,
+        nameError,
+        shortNameError,
+        descriptionError,
+        emailError,
+    } = state;
 
-        return ( 
-            <React.Fragment>
-                <DialogModal
-                    modalID="modal-edit-company"
-                    formID="form-edit-company" isLoading={company.isLoading}
-                    title={translate('system_admin.company.edit')}
-                    func={this.save}
-                    disableSubmit={!this.isFormValidated()}
-                >
-                    <form id="form-edit-company">
-                        <div className="row">
-                            <div className={`form-group col-sm-9 ${nameError===undefined?"":"has-error"}`}>
-                                <label>{ translate('system_admin.company.table.name') }<span className="text-red"> * </span></label>
-                                <input type="text" className="form-control" onChange={ this.handleChangeName } value={ companyName }/>
-                                <ErrorLabel content={nameError}/>
-                            </div>
-                            <div className="form-group col-sm-3">
-                                <label>{ translate('system_admin.company.table.service') }<span className="text-red"> * </span></label>
-                                <select className="form-control" onChange={ this.handleActive } value={companyActive}>
-                                    <option key='1' value={true}>{ translate('system_admin.company.on') }</option>
-                                    <option key='2' value={false}>{ translate('system_admin.company.off') }</option>
-                                </select>
-                            </div>
+    return (
+        <React.Fragment>
+            <DialogModal
+                modalID="modal-edit-company"
+                formID="form-edit-company" isLoading={company.isLoading}
+                title={translate('system_admin.company.edit')}
+                func={save}
+                disableSubmit={!isFormValidated()}
+            >
+                <form id="form-edit-company">
+                    <div className="row">
+                        <div className={`form-group col-sm-9 ${nameError === undefined ? "" : "has-error"}`}>
+                            <label>{translate('system_admin.company.table.name')}<span className="text-red"> * </span></label>
+                            <input type="text" className="form-control" onChange={handleChangeName} value={companyName} />
+                            <ErrorLabel content={nameError} />
+                        </div>
+                        <div className="form-group col-sm-3">
+                            <label>{translate('system_admin.company.table.service')}<span className="text-red"> * </span></label>
+                            <select className="form-control" onChange={handleActive} value={companyActive}>
+                                <option key='1' value={true}>{translate('system_admin.company.on')}</option>
+                                <option key='2' value={false}>{translate('system_admin.company.off')}</option>
+                            </select>
+                        </div>
 
-                            <div className={`form-group col-sm-9 ${shortNameError===undefined?"":"has-error"}`}>
-                                <label>{ translate('system_admin.company.table.short_name') }</label>
-                                <input type="text" className="form-control" value={ companyShortName } disabled={true}/>
-                                <ErrorLabel content={shortNameError}/>
-                            </div>
-                            <div className="form-group col-sm-3">
-                                <label>{ translate('system_admin.company.table.log') }<span className="text-red"> * </span></label>
-                                <select className="form-control" onChange={ this.handleLog } value={companyLog}>
-                                    <option key='1' value={true}>{ translate('system_admin.company.on') }</option>
-                                    <option key='2' value={false}>{ translate('system_admin.company.off') }</option>
-                                </select>
-                            </div>
+                        <div className={`form-group col-sm-9 ${shortNameError === undefined ? "" : "has-error"}`}>
+                            <label>{translate('system_admin.company.table.short_name')}</label>
+                            <input type="text" className="form-control" value={companyShortName} disabled={true} />
+                            <ErrorLabel content={shortNameError} />
                         </div>
-                        
-                        <div className={`form-group ${emailError===undefined?"":"has-error"}`}>
-                            <label>{ translate('system_admin.company.table.super_admin') }<span className="text-red"> * </span></label>
-                            <input type="email" className="form-control" onChange={ this.handleChangeEmail } value={companyEmail}/>
-                            <ErrorLabel content={emailError}/>
+                        <div className="form-group col-sm-3">
+                            <label>{translate('system_admin.company.table.log')}<span className="text-red"> * </span></label>
+                            <select className="form-control" onChange={handleLog} value={companyLog}>
+                                <option key='1' value={true}>{translate('system_admin.company.on')}</option>
+                                <option key='2' value={false}>{translate('system_admin.company.off')}</option>
+                            </select>
                         </div>
-                        <div className={`form-group ${descriptionError===undefined?"":"has-error"}`}>
-                            <label>{ translate('system_admin.company.table.description') }<span className="text-red"> * </span></label>
-                            <textarea type="text" className="form-control" onChange={ this.handleChangeDescription } value={companyDescription}/>
-                            <ErrorLabel content={descriptionError}/>
-                        </div>
-                    </form>
-                </DialogModal>
-            </React.Fragment>
-         );
-    }
+                    </div>
+
+                    <div className={`form-group ${emailError === undefined ? "" : "has-error"}`}>
+                        <label>{translate('system_admin.company.table.super_admin')}<span className="text-red"> * </span></label>
+                        <input type="email" className="form-control" onChange={handleChangeEmail} value={companyEmail} />
+                        <ErrorLabel content={emailError} />
+                    </div>
+                    <div className={`form-group ${descriptionError === undefined ? "" : "has-error"}`}>
+                        <label>{translate('system_admin.company.table.description')}<span className="text-red"> * </span></label>
+                        <textarea type="text" className="form-control" onChange={handleChangeDescription} value={companyDescription} />
+                        <ErrorLabel content={descriptionError} />
+                    </div>
+                </form>
+            </DialogModal>
+        </React.Fragment>
+    );
 }
 
 function mapState(state) {

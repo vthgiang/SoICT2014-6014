@@ -273,14 +273,14 @@ function KPIUnitManager(props) {
         if (data) {
             data = data.map((x, index) => {
 
-                let fullName = x.creator.name;
-                let email = x.creator.email;
-                let automaticPoint = (x.automaticPoint === null) ? "Chưa đánh giá" : parseInt(x.automaticPoint);
-                let employeePoint = (x.employeePoint === null) ? "Chưa đánh giá" : parseInt(x.employeePoint);
-                let approverPoint = (x.approvedPoint === null) ? "Chưa đánh giá" : parseInt(x.approvedPoint);
-                let date = new Date(x.date);
-                let status = checkStatusKPI(x.status);
-                let numberTarget = parseInt(x.kpis.length);
+                let fullName = x?.creator?.name;
+                let email = x?.creator?.email;
+                let automaticPoint = (x?.automaticPoint === null) ? "Chưa đánh giá" : parseInt(x?.automaticPoint);
+                let employeePoint = (x?.employeePoint === null) ? "Chưa đánh giá" : parseInt(x?.employeePoint);
+                let approverPoint = (x?.approvedPoint === null) ? "Chưa đánh giá" : parseInt(x?.approvedPoint);
+                let date = new Date(x?.date);
+                let status = checkStatusKPI(x?.status);
+                let numberTarget = parseInt(x?.kpis?.length);
 
                 return {
                     STT: index + 1,
@@ -571,5 +571,4 @@ const actionCreators = {
     getAllKPIUnit: managerActions.getAllKPIUnit,
     getChildrenOfOrganizationalUnitsAsTree: DashboardEvaluationEmployeeKpiSetAction.getChildrenOfOrganizationalUnitsAsTree,
 };
-const connectedKPIUnitManager = connect(mapState, actionCreators)(withTranslate(KPIUnitManager));
-export { connectedKPIUnitManager as KPIUnitManager };
+export default connect(mapState, actionCreators)(withTranslate(KPIUnitManager));

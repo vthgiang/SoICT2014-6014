@@ -13,7 +13,8 @@ function GeneralTab(props) {
     const [state, setState] = useState({
             detailInfo: [],
             isObj: true,
-            defaultAvatar: "image/asset_blank.jpg"
+            defaultAvatar: "image/asset_blank.jpg",
+            assetType: []
     })
 
     const [prevProps, setPrevProps] = useState({
@@ -192,8 +193,37 @@ function GeneralTab(props) {
                 errorOnAssetType: message,
             }
         });
-        props.handleChange("assetType", value);
+        props.handleChange("assetType", value)
     }
+    
+    const handleAddDefaultInfo = () => {
+        const {assetType} = state
+        let listAssetTypes = []
+        if (assetType){
+            listAssetTypes= props.assetType.listAssetTypes.filter((type) =>{
+                return assetType.indexOf(type.id) > -1
+            })
+        }
+        let defaultInfo = []
+        let nameFieldList = []
+        
+        for(let i = 0; i < listAssetTypes.length; i++){
+            for(let j = 0; j < listAssetTypes[i].defaultInformation.length; j ++)
+                if(nameFieldList.indexOf(listAssetTypes[i].defaultInformation[j].nameField) === -1){
+                    defaultInfo.push({ nameField: listAssetTypes[i].defaultInformation[j].nameField, value: "" })
+                    nameFieldList.push(listAssetTypes[i].defaultInformation[j].nameField)
+                }
+        }
+
+        setState(state => {
+            return{
+                ...state,
+                detailInfo : defaultInfo
+            }
+        })
+    }
+    
+   
 
     /**
      * Bắt sự kiện thay đổi ngày nhập
@@ -496,9 +526,11 @@ function GeneralTab(props) {
         }
     };
 
-    if (state.id !== props.id
-        || state.assignedToUser !== props.assignedToUser
-        || state.assignedToOrganizationalUnit !== props.assignedToOrganizationalUnit){
+    console.log("7777", prevProps.assignedToUser !== props.assignedToUser, props.assignedToUser === null)
+    if (prevProps.id !== props.id
+        || prevProps.assignedToUser !== props.assignedToUser
+        || prevProps.assignedToOrganizationalUnit !== props.assignedToOrganizationalUnit){
+            console.log("6666", props.assignedToUser)
             setState(state => {
                 return{
                     ...state,
@@ -538,8 +570,10 @@ function GeneralTab(props) {
                     errorOnValue: undefined,
                 }
             })
+            setPrevProps(props)
         }
     
+        console.log("555", state.assignedToUser)
         const { id, translate, user, assetsManager, role, department, assetType } = props;
         const {
             img, defaultAvatar, code, assetName, assetTypes, group, serial, purchaseDate, warrantyExpirationDate, managedBy, isObj,
@@ -580,7 +614,7 @@ function GeneralTab(props) {
                                 img ?
                                     < ApiImage className="attachment-img avarta" id={`avatar-imform-${id}`} src={img} />
                                     :
-                                    <img className="customer-avatar" src={defaultAvatar} />
+                                    <img className="customer-avatar" src={defaultAvatar} style={{height:'100%', width:'100%'}}/>
                             }
                         </div>
                         <div className="upload btn btn-default ">
@@ -755,17 +789,15 @@ function GeneralTab(props) {
                                 {/* Người sử dụng */}
                                 <div className={`form-group`}>
                                     <label>{translate('asset.general_information.user')}</label>
-                                    <div id="assignedToUserBox">
-                                        <SelectBox
-                                            id={`assignedToUserBox${assignedToUser}`}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            value={assignedToUser ? assignedToUser : ""}
-                                            items={[{ value: 'null', text: 'Chưa có người được giao sử dụng' }, ...userlist.map(x => { return { value: x.id, text: x.name + " - " + x.email } })]}
-                                            multiple={false}
-                                            disabled
-                                        />
-                                    </div>
+                                    {console.log("assignedToUser", assignedToUser)}
+                                    <SelectBox
+                                        id={`assignedToUserBox${id}`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        value={assignedToUser ?? -1}
+                                        items={[{ value: -1, text: 'Chưa có người được giao sử dụng' }, ...userlist.map(x => { return { value: x.id, text: x.name + " - " + x.email } })]}
+                                        disabled
+                                    />
                                 </div>
 
                                 {/* Đơn vị sử dụng */}
@@ -776,8 +808,8 @@ function GeneralTab(props) {
                                             id={`assignedToOrganizationalUnitBox${assignedToOrganizationalUnit}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
-                                            items={[{ value: 'null', text: 'Chưa có đơn vị được giao sử dụng' }, ...departmentlist.map(x => { return { value: x._id, text: x.name } })]}
-                                            value={assignedToOrganizationalUnit ? assignedToOrganizationalUnit : ""}
+                                            items={[{ value: -1, text: 'Chưa có đơn vị được giao sử dụng' }, ...departmentlist.map(x => { return { value: x._id, text: x.name } })]}
+                                            value={assignedToOrganizationalUnit ?? -1}
                                             multiple={false}
                                             disabled
                                         />
@@ -815,6 +847,7 @@ function GeneralTab(props) {
 
                         {/* Thông tin chi tiết */}
                         <div className="col-md-12">
+                        <button style={{ marginTop: 2, marginBottom: 10, marginRight: 15 }} type="submit" className="btn btn-primary pull-right" onClick={handleAddDefaultInfo} title={translate('manage_asset.add_default_title')}>{translate('manage_asset.add_default')}</button>
                             <label>{translate('asset.general_information.asset_properties')}:<a style={{ cursor: "pointer" }} title={translate('asset.general_information.asset_properties')}><i className="fa fa-plus-square" style={{ color: "#28A745", marginLeft: 5 }}
                                 onClick={handleAddDetailInfo} /></a></label>
 
@@ -870,7 +903,7 @@ function mapState(state) {
 
 const actionCreators = {
     getUser: UserActions.get,
-    getAssetType: AssetTypeActions.searchAssetTypes,
+    getAssetType: AssetTypeActions.getAssetTypes,
 };
 const generalTab = connect(mapState, actionCreators)(withTranslate(GeneralTab));
 export { generalTab as GeneralTab };

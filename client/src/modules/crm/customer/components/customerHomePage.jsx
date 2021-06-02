@@ -19,7 +19,7 @@ import useDeepCompareEffect from 'use-deep-compare-effect';
 import { CrmCareTypeActions } from '../../careType/redux/action';
 function CustomerHomePage(props) {
     const tableId = "table-manage-crm-customer";
-    const defaultConfig = { limit: 6 }
+    const defaultConfig = { limit: 10 }
     const limit = getTableConfiguration(tableId, defaultConfig).limit;
 
     const [limitState, setLimitState] = useState(limit);
@@ -38,8 +38,6 @@ function CustomerHomePage(props) {
     const [state, setState] = useState({
         limit: limit,
         page: 0,
-        option: 'name',
-        value: '',
         tableId: tableId,
 
     });
@@ -155,22 +153,20 @@ function CustomerHomePage(props) {
         await setState(newState);
     }
 
-    const setPage = (pageNumber) => {
-
-        let newPage = (pageNumber - 1) * (limit);
-        setPageState(parseInt(newPage));
-        props.getCustomers(this.state);
+    const setPage = async  (pageNumber) => {
+        const newState = {... state, page :  (pageNumber - 1) * (state.limit)} ;
+        await setState(newState);
+        props.getCustomers(newState);
 
     }
 
     const setLimit = (number) => {
         setLimitState(number);
         const data = {
-            limit: number,
-            page: this.state.page,
-            key: this.state.option,
-            value: this.state.value
+           ...state,
+           limit:number
         };
+        setState(data);
         props.getCustomers(data);
     }
 
@@ -262,7 +258,7 @@ function CustomerHomePage(props) {
     let pageTotal = (crm.customers.totalDocs % limit === 0) ?
         parseInt(crm.customers.totalDocs / limit) :
         parseInt((crm.customers.totalDocs / limit) + 1); 
-    let cr_page = parseInt((page / limit) + 1);
+    let cr_page = parseInt((state.page / limit) + 1);
 
     //lay danh sach nhan vien
     let unitMembers;
@@ -335,6 +331,14 @@ function CustomerHomePage(props) {
 
                 {/* search form */}
                 <div className="form-inline" >
+                    {/* tim kiem theo ma khach hang */}
+                    <div className="form-group">
+                        <label className="form-control-static">Mã khách hàng</label>
+                        <input className="form-control" type="text"
+                            name="customerCode" onChange={handleSearchByCustomerCode}
+                            placeholder={`Mã khách hàng`}
+                        />
+                    </div>
                     <div className="form-group unitSearch">
                         {/* Tìm kiếm khách hàng theo người quản lý */}
                         <label>{translate('crm.customer.owner')}</label>
@@ -349,17 +353,11 @@ function CustomerHomePage(props) {
                                 }
                                 onChange={handleSearchByOwner}
                                 multiple={false}
+                                options={{ nonSelectedText: ('Chọn nhân viên quản lý ') , 
+                                allSelectedText: translate(`task.task_management.select_all_department`) }}
                             />
                         }
                     </div>
-                    <div className="form-group">
-                        <label className="form-control-static">Mã khách hàng</label>
-                        <input className="form-control" type="text"
-                            name="customerCode" onChange={handleSearchByCustomerCode}
-                            placeholder={`Mã khách hàng`}
-                        />
-                    </div>
-
                 </div>
 
                 <div className="form-inline">

@@ -230,14 +230,14 @@ function UsageLogTab(props) {
             usageId: assignedToUser,
         }
 
-        if (props.assetId) {
-            await props.recallAsset(assetId, data);
-        }
-        await props.handleRecallAsset({
+        props.handleRecallAsset({
             assignedToUser: null,
             assignedToOrganizationalUnit: null,
             status: "ready_to_use",
         })
+        if (props.assetId) {
+            await props.recallAsset(assetId, data);
+        }
     }
     
     if(prevProps.id !== props.id || prevProps.typeRegisterForUse !== props.typeRegisterForUse){

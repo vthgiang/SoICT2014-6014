@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import parse from 'html-react-parser';
 import Swal from 'sweetalert2';
-
+import moment from 'moment';
 import { DataTableSetting, DatePicker, PaginateBar, SelectBox, SelectMulti, Tree, TreeTable, ExportExcel } from '../../../../common-components';
 import { getFormatDateFromTime } from '../../../../helpers/stringMethod';
 import { getProjectName } from '../../../../helpers/taskModuleHelpers';
@@ -13,18 +13,19 @@ import { DepartmentActions } from '../../../super-admin/organizational-unit/redu
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { performTaskAction } from "../../task-perform/redux/actions";
 import { taskManagementActions } from '../redux/actions';
-import { ProjectActions } from "../../../project/redux/actions";
+import { ProjectActions } from "../../../project/projects/redux/actions";
 import { TaskAddModal } from './taskAddModal';
 import { ModalPerform } from '../../task-perform/component/modalPerform';
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
 import { convertDataToExportData, getTotalTimeSheetLogs, formatPriority, formatStatus } from './functionHelpers';
 import TaskListView from './taskListView';
+
 class TaskManagement extends Component {
     constructor(props) {
         let userId = getStorage("userId");
         super(props);
         const tableId = "tree-table-task-management";
-        const defaultConfig = { limit: 20, hiddenColumns: ["2", "7", "8"] }
+        const defaultConfig = { limit: 20, hiddenColumns: ["2", "3", "4", "7", "8"] }
         const limit = getTableConfiguration(tableId, defaultConfig).limit;
         // lấy giá trị từ dashboard công việc cá nhân
         const stateFromTaskDashboard = JSON.parse(localStorage.getItem("stateFromTaskDashboard"));
@@ -463,6 +464,27 @@ class TaskManagement extends Component {
         }
     }
 
+    convertDataProgress = (progress = 0, startDate, endDate) => {
+        let now = moment(new Date());
+        let end = moment(endDate);
+        let start = moment(startDate);
+        let period = end.diff(start);
+        let upToNow = now.diff(start);
+        let barColor = "";
+        if (now.diff(end) > 0) barColor = "red";
+        else if (period * progress / 100 - upToNow >= 0) barColor = "lime";
+        else barColor = "gold";
+        return (
+            <div >
+                <div className="progress" style={{ backgroundColor: 'rgb(221, 221, 221)', textAlign: "center" }}>
+                    <span style={{ position: "absolute" }}>{progress + '%'}</span>
+                    <div role="progressbar" className="progress-bar" aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100} style={{ width: `${progress + '%'}`, maxWidth: "100%", minWidth: "0%", backgroundColor: barColor }} >
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
     render() {
         const { tasks, user, translate, project } = this.props;
         const { currentTaskId, currentPage, currentTab, parentTask, startDate, endDate, perPage, status, monthTimeSheetLog, tableId, responsibleEmployees, creatorTime, projectSearch } = this.state;
@@ -510,7 +532,7 @@ class TaskManagement extends Component {
                     startDate: getFormatDateFromTime(dataTemp[n].startDate, 'dd-mm-yyyy'),
                     endDate: getFormatDateFromTime(dataTemp[n].endDate, 'dd-mm-yyyy'),
                     status: this.checkTaskRequestToClose(dataTemp[n]),
-                    progress: dataTemp[n].progress ? dataTemp[n].progress + "%" : "0%",
+                    progress: this.convertDataProgress(dataTemp[n].progress, dataTemp[n].startDate, dataTemp[n].endDate),
                     totalLoggedTime: getTotalTimeSheetLogs(dataTemp[n].timesheetLogs),
                     parent: dataTemp[n].parent ? dataTemp[n].parent._id : null
                 }
@@ -917,6 +939,5 @@ const actionCreators = {
     getAllDepartment: DepartmentActions.get,
     getProjectsDispatch: ProjectActions.getProjectsDispatch,
 };
-const translateTaskManagement = connect(mapState, actionCreators)(withTranslate(TaskManagement));
-export { translateTaskManagement as TaskManagement };
+export default connect(mapState, actionCreators)(withTranslate(TaskManagement));
 

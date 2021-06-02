@@ -72,16 +72,16 @@ function ContractTab(props) {
             return {
                 ...state,
                 id: props.id,
-                contracts: props.employee ? props.employee.contracts : [],
-                contractEndDate: props.employee ? props.employee.contractEndDate : '',
-                contractType: props.employee ? props.employee.contractType : '',
-                courses: props.employee ? props.employee.courses : [],
+                contracts: props.employee?.contracts ? props.employee.contracts : [],
+                contractEndDate: props.employee?.contractEndDate ? props.employee.contractEndDate : '',
+                contractType: props.employee?.contractType ? props.employee.contractType : '',
+                courses: props.courses,
                 pageCreate: props.pageCreate,
                 organizationalUnits: props.organizationalUnits,
                 roles: props.roles
             }
         })
-    }, [props.id, props.employee?.contracts, props.employee?.courses])
+    }, [props.id, props.employee?.contracts, props.courses])
 
     useEffect(() => {
         if (state.contracts && state.contracts?.length !== 0) {

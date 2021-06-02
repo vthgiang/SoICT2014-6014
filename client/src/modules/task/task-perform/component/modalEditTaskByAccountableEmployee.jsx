@@ -235,7 +235,6 @@ class ModalEditTaskByAccountableEmployee extends Component {
     handleChangeTextInfo = async (e) => {
         let value = e.target.value;
         let name = e.target.name;
-        console.log('name-val', name, value);
         await this.setState(state => {
             state.info[`${name}`] = {
                 value: value,
@@ -250,7 +249,6 @@ class ModalEditTaskByAccountableEmployee extends Component {
     }
 
     handleInfoDateChange = (value, code) => {
-        console.log('value', value);
         this.setState(state => {
             state.info[`${code}`] = {
                 value: value,
@@ -612,10 +610,10 @@ class ModalEditTaskByAccountableEmployee extends Component {
     }
 
     handleTaskDescriptionChange = (value, imgs) => {
-        this.validateTaskDescription(value, true);
+        this.validateTaskDescription(value, imgs, true);
     }
 
-    validateTaskDescription = (value, willUpdateState) => {
+    validateTaskDescription = (value, imgs, willUpdateState) => {
         let { translate } = this.props;
         let errorMessage = undefined;
         // if (value === "") {
@@ -626,6 +624,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                 return {
                     ...state,
                     taskDescription: value,
+                    taskDescriptionImages: imgs,
                     errorTaskDescription: errorMessage,
                 }
             })
@@ -770,7 +769,6 @@ class ModalEditTaskByAccountableEmployee extends Component {
                 parent: state.parentTask ? state.parentTask._id : "",
             }
         })
-        console.log('abpernt', this.state.parent);
     }
 
     handleSelectedPriority = (value) => {
@@ -854,11 +852,14 @@ class ModalEditTaskByAccountableEmployee extends Component {
         }
         let startDateTask = this.convertDateTime(this.state.startDate, this.state.startTime);
         let endDateTask = this.convertDateTime(this.state.endDate, this.state.endTime);
+        let imageDescriptions = QuillEditor.convertImageBase64ToFile(this.state.taskDescriptionImages)
+        
         let data = {
             listInfo: this.state.listInfo,
 
             name: this.state.taskName,
             description: this.state.taskDescription,
+            imageDescriptions: imageDescriptions,
             status: this.state.statusOptions,
             priority: this.state.priorityOptions,
             formula: this.state.formula,
@@ -939,7 +940,6 @@ class ModalEditTaskByAccountableEmployee extends Component {
         let startDate = this.convertDateTime(this.state.startDate, this.state.startTime);
         let endDate = this.convertDateTime(this.state.endDate, value);
         let err;
-        console.log('startDate > endDate', startDate > endDate, startDate, endDate);
         if (value.trim() === "") {
             err = translate('task.task_management.add_err_empty_end_date');
         }
@@ -958,13 +958,10 @@ class ModalEditTaskByAccountableEmployee extends Component {
     convertDateTime = (date, time) => {
         let splitter = date.split("-");
         let strDateTime = `${splitter[2]}-${splitter[1]}-${splitter[0]} ${time}`;
-        // console.log('str Date time', strDateTime);
         return new Date(strDateTime);
     }
 
     render() {
-        console.log('new edit Task', this.state);
-
         const { user, tasktemplates, department, translate, project } = this.props;
         const { task, organizationalUnit, collaboratedWithOrganizationalUnits, errorOnEndDate, errorOnStartDate, errorTaskName, errorTaskDescription, errorOnFormula, taskName, taskDescription, statusOptions, priorityOptions, taskDescriptionDefault,
             startDate, endDate, startTime, endTime, formula, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees, inactiveEmployees, parent, parentTask
@@ -1189,15 +1186,15 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                     <ErrorLabel content={errorOnFormula} />
 
                                     <br />
-                                    <div><span style={{ fontWeight: 800 }}>Ví dụ: </span>progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100</div>
+                                    <div><span style={{ fontWeight: 800 }}>Ví dụ: </span>progress / (daysUsed / totalDays) - (sumRatingOfFailedActions / sumRatingOfAllActions) * 100</div>
                                     <br />
                                     <div><span style={{ fontWeight: 800 }}>{translate('task_template.parameters')}:</span></div>
                                     <div><span style={{ fontWeight: 600 }}>daysOverdue</span> - Thời gian quá hạn (ngày)</div>
                                     <div><span style={{ fontWeight: 600 }}>daysUsed</span> - Thời gian làm việc tính đến ngày đánh giá (ngày)</div>
                                     <div><span style={{ fontWeight: 600 }}>totalDays</span> - Thời gian từ ngày bắt đầu đến ngày kết thúc công việc (ngày)</div>
                                     <div><span style={{ fontWeight: 600 }}>averageActionRating</span> - Trung bình điểm đánh giá (rating) hoạt động của công việc</div>
-                                    <div><span style={{ fontWeight: 600 }}>numberOfFailedActions</span> - Số hoạt động không đạt (rating &lt; 5)</div>
-                                    <div><span style={{ fontWeight: 600 }}>numberOfPassedActions</span> - Số hoạt động đạt (rating &ge; 5)</div>
+                                    <div><span style={{ fontWeight: 600 }}>sumRatingOfFailedActions</span> - Tổng các tích điểm hoạt động và độ quan trọng hoạt động của các hoạt động không đạt (rating &lt; 5)</div>
+                                    <div><span style={{ fontWeight: 600 }}>sumRatingOfAllActions</span> - Tổng các tích điểm hoạt động và độ quan trọng hoạt động của tất cả hoạt động</div>
                                     <div><span style={{ fontWeight: 600 }}>progress</span> - % Tiến độ công việc (0-100)</div>
                                     <div><span style={{ fontWeight: 600 }}>p1, p2,...</span> - Thông tin công việc kiểu số (Chỉ có với các công việc theo mẫu)</div>
                                 </div>
@@ -1217,6 +1214,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                 role={role}
                                 perform={perform}
                                 value={this.state}
+                                progress={this.state.progress}
                             />
                             <fieldset className="scheduler-border">
                                 <legend className="scheduler-border">{translate('task.task_management.edit_member_info')}</legend>

@@ -61,20 +61,112 @@ class ApiImage extends Component {
         return false;
     }
 
-    showImage = () => {
-        const { alt = "File not available", showImg = true } = this.props;
-        let { image } = this.state;
+    showImage = (index, image) => {
+        const { alt = "File not available", showImg = true, arrImageIndex } = this.props;
+        let haveNextImage = index < arrImageIndex?.[arrImageIndex.length - 1] ? true : false;
+        let havePreviousImage = index > arrImageIndex?.[0] ? true : false;
+
+        let showNextImage = () => {
+            this.showNextImage(index);
+        }
+
+        let showPreviousImage = () => {
+            this.showPreviousImage(index);
+        }
+
+        let handleKeyDown = (e) => {
+            this.handleKeyDown(e, index);
+        }
+
+        if (arrImageIndex && arrImageIndex.length > 0) {
+            document.addEventListener("keydown", handleKeyDown);
+        }
 
         if (showImg) {
             Swal.fire({
-                html: `<img src=${image} alt=${alt} style="max-width: 100%; max-height: 100%" />`,
+                html:
+                    '<button type="button" role="button" style="visibility: hidden; padding: 5px 20px;" id ="showPrevious">' + '<' + '</button>' +
+                    '&emsp;' + '<button type="button" role="button" style="visibility: hidden;padding: 5px 20px;" id ="showNext">' + '>' + '</button>' + '<br/>' +
+                    '<br/>' + `<img src=${image} alt=${alt} style="max-width: 100%; max-height: 100%" />`,
                 width: 'auto',
                 showCloseButton: true,
                 showConfirmButton: false,
+                showCancelButton: false,
+                showClass: {
+                    backdrop: 'swal2-noanimation',
+                    popup: '',
+                    icon: ''
+                },
+                hideClass: {
+                    popup: '',
+                }
+            }).then((result) => {
+                if (arrImageIndex && arrImageIndex.length > 0) {
+                    document.removeEventListener("keydown", handleKeyDown);
+                }
+
+                if (haveNextImage) {
+                    showNext.removeEventListener('click', showNextImage);
+                }
+
+                if (havePreviousImage) {
+                    showPrevious.removeEventListener('click', showPreviousImage);
+                }
             })
+        }
+
+        let showNext = document.getElementById("showNext");
+        let showPrevious = document.getElementById("showPrevious");
+
+        if (haveNextImage) {
+            showNext.style.visibility = "visible";
+            showNext.addEventListener('click', showNextImage);
+        }
+
+        if (havePreviousImage) {
+            showPrevious.style.visibility = "visible";
+            showPrevious.addEventListener('click', showPreviousImage);
         }
     }
 
+    handleKeyDown = (e, index) => {
+        if (e.key === "ArrowLeft") this.showPreviousImage(index);
+        if (e.key === "ArrowRight") this.showNextImage(index);
+        if (e.key === "Enter" || e.key === "Escape" || e.key === " " || e.key === "Spacebar") {
+            e.preventDefault();
+            Swal.close();
+        }
+    }
+
+    showNextImage = async (index) => {
+        Swal.close();
+        const { arrImageIndex, listImage } = this.props;
+        let i = arrImageIndex.findIndex((e) => e === index)
+        if (i < arrImageIndex.length - 1) {
+            let newIndex = arrImageIndex[i + 1];
+            let src = listImage[i + 1];
+            if ((src.search(';base64,') < 0) && !this.props.auth.showFiles.find(x => x.fileName === src).file) {
+                await this.props.downloadFile(src, `${src}`, false);
+            }
+            let image = await this.props.auth.showFiles.find(x => x.fileName === src).file;
+            this.showImage(newIndex, image);
+        }
+    }
+
+    showPreviousImage = async (index) => {
+        Swal.close();
+        const { arrImageIndex, listImage } = this.props;
+        let i = arrImageIndex.findIndex((e) => e === index)
+        if (i > 0) {
+            let newIndex = arrImageIndex[i - 1];
+            let src = listImage[i - 1];
+            if ((src.search(';base64,') < 0) && !this.props.auth.showFiles.find(x => x.fileName === src).file) {
+                await this.props.downloadFile(src, `${src}`, false);
+            }
+            let image = await this.props.auth.showFiles.find(x => x.fileName === src).file;
+            this.showImage(newIndex, image);
+        }
+    }
 
     render() {
         const { className, style = { cursor: "pointer" }, alt = "File not available", file, requestDownloadFile } = this.props;
@@ -83,7 +175,7 @@ class ApiImage extends Component {
 
         return (
             <React.Fragment>
-                <img className={className} style={style} src={image} alt={alt} onClick={this.showImage} />
+                <img className={className} style={style} src={image} alt={alt} onClick={() => this.showImage(this.props.index, this.state.image)} />
                 {file && <a style={{ marginTop: "2px", cursor: "pointer" }} onClick={(e) => requestDownloadFile(e, file.url, file.name)}> {file.name} </a>}
             </React.Fragment>
         );

@@ -141,9 +141,6 @@ function CrmGroup(props) {
                                         <td style={{ textAlign: 'center' }}>
                                             <a className="text-green" onClick={() => handleInfoGroup(gr._id)}><i className="material-icons">visibility</i></a>
                                             <a className="text-yellow" onClick={() => handleEditGroup(gr._id)}><i className="material-icons">edit</i></a>
-                                            <a className="text-green"
-                                                onClick={() => handleCreateCareAction(gr._id)}
-                                            ><i className="material-icons">add_comment</i></a>
                                             <ConfirmNotification
                                                 icon="question"
                                                 title="Xóa thông tin về khách hàng"

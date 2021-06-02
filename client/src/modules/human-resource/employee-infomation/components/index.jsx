@@ -1,20 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
-import { AuthActions } from "../../../auth/redux/actions";
-import { DepartmentActions } from "../../../super-admin/organizational-unit/redux/actions";
-import { DepartmentServices } from "../../../super-admin/organizational-unit/redux/services";
-import { RoleActions } from "../../../super-admin/role/redux/actions";
-import { role } from "../../../super-admin/role/redux/reducers";
 import { UserActions } from "../../../super-admin/user/redux/actions";
 import { UserServices } from "../../../super-admin/user/redux/services";
-import { RootRoleActions } from "../../../system-admin/root-role/redux/actions";
-import { taskManagementActions } from "../../../task/task-management/redux/actions";
-
+import DetailUser from "./detailUser";
+import { SelectBox } from "../../../../common-components"
+import { SelectMulti, DatePicker } from '../../../../common-components';
 
 function EmployeeInfomation(props) {
-    const [data, setData] = useState([])
-    const { tasks } = props
+    const { user } = props
+    const [currentUser, setCurrentUser] = useState()
+    const [idUser, setIdUser] = useState("")
+    const [listUsers, setListUsers] = useState([])
     const formatDate = (date, monthYear = false) => {
         if (date) {
             let d = new Date(date),
@@ -33,106 +30,113 @@ function EmployeeInfomation(props) {
         }
         return date;
     };
-    const [month, setMonth] = useState(formatDate(Date.now(), true))
-    useEffect(async () => {
-        // console.log(props.user);
+    let date = new Date()
+    let _startDate = formatDate(date.setMonth(new Date().getMonth() - 6), true);
+    const [state, setState] = useState({
+        startDate: _startDate,
+        endDate: formatDate(Date.now(), true)
+    })
+    const [search, setSearch] = useState(0)
+    const handleSunmitSearch = () => {
+        setSearch(search + 1)
+    }
+    const handleStartMonthChange = (value) => {
+        setState({
+            ...state,
+            startDate: value
+        })
+    }
 
+    const handleEndMonthChange = (value) => {
+        setState({
+            ...state,
+            endDate: value,
+        })
+    }
+    useEffect(() => {
         let currentRole = localStorage.getItem("currentRole")
-        props.show(currentRole)
-        UserServices.getRoleSameDepartmentOfUser(currentRole)
-            .then(async res => {
-                console.log(res.data);
-                let data = [res.data.content.employees[0].id, res.data.content.deputyManagers[0].id]
-                await UserServices.getAllEmployeeOfUnitByRole(data)
-                    .then(res => {
-                        // let data1=data.concat(res.data.content)
-                        setData(res.data.content)
-                    })
-                // await UserServices.getAllEmployeeOfUnitByRole(res.data.content.deputyManagers[0].id)
-                // .then(res=>{
-                //     let data1=data.concat(res.data.content)
-                //     setData(data1)
-                // })
-                // await UserServices.getAllEmployeeOfUnitByRole(res.data.content.managers[0].id)
-                // .then(res=>{
-                //     let data1=data.concat(res.data.content)
-                //     setData(data1)
-                // })
-                // res.data.content.employees
-            })
-        DepartmentServices.getDepartmentsThatUserIsManager()
-            .then(res => {
-                console.log(res.data.content[0]._id)
-                let partMonth = month.split('-');
-                let monthNew = [partMonth[1], partMonth[0]].join('-');
-                props.getTaskInOrganizationUnitByMonth(res.data.content[0]._id, monthNew, monthNew)
-            }
-            )
-        // props.getDepartmentsThatUserIsManager()
+        props.getAllUserSameDepartment(currentRole)
     }, [])
-    // if (tasks.organizationUnitTasks){
-    //     let taskListByStatus = tasks.organizationUnitTasks ? tasks.organizationUnitTasks.tasks : null;
-    //     let listEmployee = data.employees;
-    //     let maxTask = 1;
-    //     let employeeTasks = [], employeeOvertime = [], employeeHoursOff = [];
-    //     for (let i in listEmployee) {
-    //         let tasks = [];
-    //         let accountableTask = [], consultedTask = [], responsibleTask = [], informedTask = [];
-    //         taskListByStatus && taskListByStatus.forEach(task => {
-    //             if (task.accountableEmployees?.includes(listEmployee[i]?.userId?._id)) {
-    //                 accountableTask = [...accountableTask, task._id]
-    //             }
-    //             if (task.consultedEmployees?.includes(listEmployee[i]?.userId?._id)) {
-    //                 consultedTask = [...consultedTask, task._id]
-    //             }
-    //             if (task.responsibleEmployees?.includes(listEmployee[i]?.userId?._id)) {
-    //                 responsibleTask = [...responsibleTask, task._id]
-    //             }
-    //             if (task.informedEmployees?.includes(listEmployee[i]?.userId?._id)) {
-    //                 informedTask = [...informedTask, task._id]
-    //             }
-    //         });
-    //         tasks = tasks.concat(accountableTask).concat(consultedTask).concat(responsibleTask).concat(informedTask);
-    //         let totalTask = tasks.filter(function (item, pos) {
-    //             return tasks.indexOf(item) === pos;
-    //         })
-    //         if (totalTask.length > maxTask) {
-    //             maxTask = totalTask
-    //         };
+    const { userdepartments } = user
+    const { translate } = props
+    let listUser = [], list = []
+    if (userdepartments) {
+        const { deputyManagers, employees, managers } = userdepartments
+        let keyDeputyManagers = Object.keys(deputyManagers)
+        let keyEmployees = Object.keys(employees)
+        if (employees[keyEmployees[0]]) {
+            listUser = listUser.concat(employees[keyEmployees[0]].members)
+            list = employees[keyEmployees[0]].members.map(category => { return { value: category._id, text: category.name } });
+        }
+        if (deputyManagers[keyDeputyManagers[0]]) {
+            listUser = listUser.concat(deputyManagers[keyDeputyManagers[0]].members)
+            list = list.concat(deputyManagers[keyDeputyManagers[0]].members.map(category => { return { value: category._id, text: category.name } }));
+        }
+        if (JSON.stringify(listUser) !== JSON.stringify(listUsers)) {
+            setListUsers(listUser)
+        }
+        if (!currentUser && listUsers) {
+            setCurrentUser(listUsers[0])
+        }
+    }
+    const handchangeUser = (data) => {
+        let dataUser = listUsers.find(value => value._id === data[0])
+        setCurrentUser(dataUser)
+        setIdUser(data[0])
+    }
 
-    //         employeeTasks = [...employeeTasks, {
-    //             _id: listEmployee[i]?.userId?._id,
-    //             name: listEmployee[i]?.userId?.name,
-    //             accountableTask: accountableTask.length,
-    //             consultedTask: consultedTask.length,
-    //             responsibleTask: responsibleTask.length,
-    //             informedTask: informedTask.length,
-    //             totalTask: totalTask.length
-    //         }]
-    //     };
-
-    //     if (employeeTasks.length !== 0) {
-    //         employeeTasks = employeeTasks.sort((a, b) => b.totalTask - a.totalTask);
-    //     };
-
-    //     /* Lấy tổng số công việc làm trong tháng của nhân viên */
-    //     let totalTask = 0, accountableTask = 0, consultedTask = 0, responsibleTask = 0, informedTask = 0;
-    //     let taskPersonal = employeeTasks.find(x => x._id === localStorage.getItem("userId"));
-    //     if (taskPersonal) {
-    //         totalTask = taskPersonal.totalTask;
-    //         accountableTask = taskPersonal.accountableTask;
-    //         consultedTask = taskPersonal.consultedTask;
-    //         responsibleTask = taskPersonal.responsibleTask;
-    //         informedTask = taskPersonal.informedTask;
-
-    //     }
-
-    // }
     return (
-        <div><p>Trang thông tin nhân viên</p>
-            {data && data.map(value => {
-                return <div>{value.userId.name}</div>
-            })}
+        <div>
+            <div className="qlcv" style={{ textAlign: "left" }}>
+                <div className="form-inline" >
+
+                    <div class="form-group" >
+                        <label class="form-control-static" >Nhân viên</label>
+                        {
+                            listUser &&
+                            <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                                id={`select-box-edit-name`}
+                                className="form-control select2"
+                                style={{ width: "auto" }}
+                                items={list}
+                                value={currentUser ? currentUser._id : null}
+                                onChange={handchangeUser}
+                                multiple={false}
+                                options={{ placeholder: "chọn nhân viên" }}
+                            />
+                        }
+
+                    </div>
+                    <div className="form-group">
+                        <label style={{ width: "auto" }}>Từ ngày</label>
+                        <DatePicker
+                            id="form-month-annual-leave"
+                            dateFormat="month-year"
+                            deleteValue={false}
+                            value={state.startDate}
+                            onChange={handleStartMonthChange}
+                        />
+                    </div>
+                    <div className='form-group'>
+                        <label style={{ width: "auto" }}>Đến ngày</label>
+                        <DatePicker
+                            id="to-month-annual-leave"
+                            dateFormat="month-year"
+                            deleteValue={false}
+                            value={state.endDate}
+                            onChange={handleEndMonthChange}
+                        />
+                    </div>
+                    <button type="button" className="btn btn-success" title={translate('general.search')} onClick={() => handleSunmitSearch()} >{translate('general.search')}</button>
+
+                </div>
+            </div>
+
+            {
+                currentUser &&
+                <DetailUser user={currentUser} id={userdepartments._id} state={state} search={search} ></DetailUser>
+            }
+
         </div>
     )
 }
@@ -143,12 +147,8 @@ function mapState(state) {
 }
 
 const mapDispatchToProps = {
-    getAllUser: UserActions.getAllUserOfCompany,
-    show: RoleActions.show,
-    getRoleSameDepartment: UserActions.getRoleSameDepartment,
-    getAllEmployeeOfUnitByRole: UserActions.getAllEmployeeOfUnitByRole,
-    getDepartmentsThatUserIsManager: DepartmentActions.getDepartmentsThatUserIsManager,
-    getTaskInOrganizationUnitByMonth: taskManagementActions.getTaskInOrganizationUnitByMonth
+    getChildrenOfOrganizationalUnitsAsTree: UserActions.getChildrenOfOrganizationalUnitsAsTree,
+    getAllUserSameDepartment: UserActions.getAllUserSameDepartment,
 }
 
 

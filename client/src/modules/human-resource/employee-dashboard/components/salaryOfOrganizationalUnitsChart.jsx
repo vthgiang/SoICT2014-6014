@@ -51,9 +51,9 @@ const SalaryOfOrganizationalUnitsChart = (props) => {
         let chart = c3.generate({
             bindto: salaryChart.current,
             data: {
-                columns: [],
-                hide: true,
+                columns: [[data.nameData, ...data.data1]],
                 type: 'bar',
+                labels: true,
             },
             padding: {
                 bottom: 20,
@@ -74,20 +74,14 @@ const SalaryOfOrganizationalUnitsChart = (props) => {
                 }
             }
         });
-
-        setTimeout(function () {
-            chart.load({
-                columns: [[data.nameData, ...data.data1]],
-            });
-        }, 100);
     };
 
     const { translate, salary, department } = props;
 
-    const { monthShow } = props;
+    const { monthShow, organizationalUnits } = props;
     const { unit } = state;
 
-    let organizationalUnitsName = department.list.map(x => { return { _id: x._id, name: x.name, salary: 0 } });
+    let organizationalUnitsName = department?.list?.filter(item => organizationalUnits.includes(item?._id))?.map(x => { return { _id: x._id, name: x.name, salary: 0 } });
     let data = salary.listSalaryByMonth;
     if (data.length !== 0) {
         data = data.map(x => {
@@ -143,17 +137,20 @@ const SalaryOfOrganizationalUnitsChart = (props) => {
                         {` tháng ${monthShow}`}
                     </div>
                 </div>
-                <div className="box-body">
-                    <div className="box-tools pull-right" >
+                {salary.isLoading
+                    ? <div style={{ marginLeft: "5px" }}>{translate('general.loading')}</div>
+                    : <div className="box-body">
+                        <div className="box-tools pull-right" >
 
-                        <div className="btn-group pull-right">
-                            <button type="button" className={`btn btn-xs ${unit ? "active" : "btn-danger"}`} onClick={() => handleChangeUnitChart(false)}>Triệu</button>
-                            <button type="button" className={`btn btn-xs ${unit ? 'btn-danger' : "active"}`} onClick={() => handleChangeUnitChart(true)}>Tỷ</button>
+                            <div className="btn-group pull-right">
+                                <button type="button" className={`btn btn-xs ${unit ? "active" : "btn-danger"}`} onClick={() => handleChangeUnitChart(false)}>Triệu</button>
+                                <button type="button" className={`btn btn-xs ${unit ? 'btn-danger' : "active"}`} onClick={() => handleChangeUnitChart(true)}>Tỷ</button>
+                            </div>
+                            <p className="pull-right" style={{ marginBottom: 0, marginRight: 10 }} > < b > ĐV tính</b></p >
                         </div>
-                        <p className="pull-right" style={{ marginBottom: 0, marginRight: 10 }} > < b > ĐV tính</b></p >
+                        <div ref={salaryChart}></div>
                     </div>
-                    <div ref={salaryChart}></div>
-                </div>
+                }
             </div>
         </React.Fragment>
     )

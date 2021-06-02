@@ -184,7 +184,8 @@ const LoadTaskOrganizationChart = (props) => {
                     titleX,
                     dataChart
                 ],
-                type: 'bar'
+                type: 'bar',
+                labels: true,
             },
 
             padding: {
@@ -276,20 +277,22 @@ const LoadTaskOrganizationChart = (props) => {
                     </div>
                 </div>
                 <div className="box-body">
-                    { (tasks?.organizationUnitTasks && typeChart === "followTime") || tasks?.organizationUnitTasksInMonth
-                        ? <section id={"weightTaskOrganizationChart"} className="c3-chart-container enable-pointer">
-                            <div id="weightTaskOrganization"></div>
-                            { typeChart === "followTime" 
-                                && <CustomLegendC3js
-                                    chart={ref.current.chart}
-                                    chartId={"weightTaskOrganizationChart"}
-                                    legendId={"weightTaskOrganizationChartLegend"}
-                                    title={`${translate('general.list_unit')} (${dataChart?.length > 0 ? dataChart?.length : 0})`}
-                                    dataChartLegend={dataChart && dataChart.map(item => item[0])}
-                                />
-                            }
-                        </section>  
-                        : <section>{translate('kpi.organizational_unit.dashboard.no_data')}</section>
+                    { tasks.isLoading 
+                        ? <p>{translate('general.loading')}</p>
+                        : (tasks?.organizationUnitTasks && typeChart === "followTime") || tasks?.organizationUnitTasksInMonth
+                            ? <section id={"weightTaskOrganizationChart"} className="c3-chart-container enable-pointer">
+                                <div id="weightTaskOrganization"></div>
+                                { typeChart === "followTime" 
+                                    && <CustomLegendC3js
+                                        chart={ref.current.chart}
+                                        chartId={"weightTaskOrganizationChart"}
+                                        legendId={"weightTaskOrganizationChartLegend"}
+                                        title={`${translate('general.list_unit')} (${dataChart?.length > 0 ? dataChart?.length : 0})`}
+                                        dataChartLegend={dataChart && dataChart.map(item => item[0])}
+                                    />
+                                }
+                            </section>  
+                            : <section>{translate('kpi.organizational_unit.dashboard.no_data')}</section>
                     }   
                 </div>
             </div>

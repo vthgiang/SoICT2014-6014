@@ -7,6 +7,10 @@ const CustomerCareSchema = new Schema({
         type: Schema.Types.ObjectId,//người tạo hoạt động
         ref: 'User',
     },
+    updatedBy: {
+        type: Schema.Types.ObjectId,//người tạo hoạt động
+        ref: 'User',
+    },
     name: { //tên công việc chăm sóc khách hàng
         type: String,
         required: true

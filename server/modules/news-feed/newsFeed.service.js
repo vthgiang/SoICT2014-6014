@@ -89,7 +89,7 @@ exports.createNewsFeed = async (portal, data) => {
     if (relatedUsers?.length > 0) {
         relatedUsers.map(user => {
             const arr = CONNECTED_CLIENTS.filter(
-                (client) => client.userId === user.toString()
+                (client) => client.userId === user?.toString()
             );
             if (arr.length === 1)
                 SOCKET_IO.to(arr[0].socketId).emit("news feed", newsFeed);

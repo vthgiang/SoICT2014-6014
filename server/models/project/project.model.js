@@ -5,12 +5,18 @@ const mongoosePaginate = require('mongoose-paginate-v2');
 
 const ProjectSchema = new Schema(
     {
-        code: {
-            type: String,
-            default: generateUniqueCode('PJ', 'v1')
-        },
+        // code: {
+        //     type: String,
+        //     default: generateUniqueCode('PJ', 'v1')
+        // },
         name: {
             type: String
+        },
+        projectType: {
+            // có 2 loại: 1: không ràng buộc, 2: phương pháp CPM
+            type: Number,
+            default: 1,
+            enum: [1, 2],
         },
         description: {
             type: String,
@@ -32,13 +38,6 @@ const ProjectSchema = new Schema(
         },
         endDate: {
             type: Date,
-        },
-        actualEndDate: {
-            type: Date,
-        },
-        // Chi phí ước lượng cho toàn bộ dự án
-        estimatedCost: {
-            type: Number,
         },
         // Đơn vị thời gian của project
         unitTime: {
@@ -109,6 +108,10 @@ const ProjectSchema = new Schema(
         // Ngân sách cho dự án sau khi 1 change request được accept
         budgetChangeRequest: {
             type: Number,
+        },
+        // Thời điểm dự kiến kết thúc dự án sau khi 1 change request được accept
+        endDateRequest: {
+            type: Date,
         }
     },
     {

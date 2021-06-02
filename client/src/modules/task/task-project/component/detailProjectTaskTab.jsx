@@ -24,10 +24,13 @@ import parse from 'html-react-parser';
 import { TaskAddModal } from '../../task-management/component/taskAddModal';
 import { ModalAddTaskTemplate } from '../../task-template/component/addTaskTemplateModal';
 
-import { ProjectActions } from "../../../project/redux/actions";
+import { ProjectActions } from "../../../project/projects/redux/actions";
 import { ROOT_ROLE } from '../../../../helpers/constants';
 import dayjs from 'dayjs';
 import { RequestToCloseProjectTaskModal } from './requestToCloseProjectTaskModal';
+import { ModalRequestEditProjectTaskEmployee } from './modalRequestEditProjectTaskEmployee';
+import { checkIfAbleToCRUDProject, getCurrentProjectDetails } from '../../../project/projects/components/functionHelper';
+import { ModalRequestChangeStatusProjectTask } from './modalRequestChangeStatusProjectTask';
 class DetailProjectTaskTab extends Component {
 
     constructor(props) {
@@ -49,6 +52,7 @@ class DetailProjectTaskTab extends Component {
             CONSULTED: { name: translate('task.task_management.consulted'), value: "consulted" },
             CREATOR: { name: translate('task.task_management.creator'), value: "creator" },
             INFORMED: { name: translate('task.task_management.informed'), value: "informed" },
+            PROJECT_MANAGER: { name: 'Người quản lý dự án', value: "accountable" },
         };
 
         this.EMPLOYEE_SELECT_BOX = [];
@@ -122,6 +126,10 @@ class DetailProjectTaskTab extends Component {
                         roles.push(this.ROLE.INFORMED);
                     }
 
+                    if (checkIfAbleToCRUDProject({ project: this.props.project, user: this.props.user, currentProjectId: task.taskProject })) {
+                        roles.push(this.ROLE.PROJECT_MANAGER);
+                    }
+
                     if (userId === task.creator._id) {
                         roles.push(this.ROLE.CREATOR);
                     }
@@ -152,8 +160,11 @@ class DetailProjectTaskTab extends Component {
 
     componentDidMount() {
         const { currentRole } = this.state;
-        this.props.getProjectsDispatch({ calledId: "" });
+        console.log('this.props.task', this.props.task)
+        // this.props.getProjectsDispatch({ calledId: "" });
         this.props.showInfoRole(currentRole);
+        this.props.getTasksByProject(this.props.task?.taskProject);
+        this.props.getProjectsDispatch({ calledId: "user_all", userId: getStorage('userId') });
     }
 
     handleChangeCollapseInfo = async () => {
@@ -703,15 +714,34 @@ class DetailProjectTaskTab extends Component {
         return dayjs(date).format("DD-MM-YYYY hh:mm A")
     }
 
+    handleShowChangeRequestEditTask = (id) => {
+        this.setState(state => {
+            return {
+                ...state,
+                showEdit: id
+            }
+        });
+        setTimeout(() => {
+            window.$(`#modal-request-edit-project-task-accountable-${id}`).modal('show');
+        }, 10);
+    }
+
+    handleShowChangeStatusTask = (id) => {
+        setTimeout(() => {
+            window.$(`#modal-request-change-currentStatus-project-task-${id}`).modal('show');
+        })
+    }
+
     render() {
         const { tasks, performtasks, user, translate, role, project } = this.props;
         const { showToolbar, id, isProcess } = this.props; // props form parent component ( task, id, showToolbar, onChangeTaskRole() )
         const { currentUser, roles, currentRole, collapseInfo,
             showEdit, showEndTask, showEvaluate, showRequestClose,
             showMore, showCopy, showSaveAsTemplate
-        } = this.state
+        } = this.state;
 
         let task;
+        const currentProjectTasks = this.props.tasks && this.props.tasks.tasksbyproject;
         let codeInProcess, typeOfTask, statusTask, checkInactive = true, evaluations, evalList = [];
         // Các biến dùng trong phần Nhắc Nhở
         let warning = false, checkEvaluate, checkConfirmTask, checkEvaluationTaskAction, checkEvaluationTaskAndKpiLink, checkDeadlineForEvaluation, checkConfirmAssginOfOrganizationalUnit;
@@ -851,6 +881,8 @@ class DetailProjectTaskTab extends Component {
         const checkCurrentRoleIsManager = role && role.item &&
             role.item.parents.length > 0 && role.item.parents.filter(o => o.name === ROOT_ROLE.MANAGER)
 
+        const projectDetail = getCurrentProjectDetails(this.props.project, task?.taskProject);
+
         return (
             <React.Fragment>
                 {(showToolbar) &&
@@ -862,6 +894,18 @@ class DetailProjectTaskTab extends Component {
                         {((currentRole === "responsible" || currentRole === "accountable") && checkInactive) &&
                             <a className="btn btn-app" onClick={() => this.handleShowEdit(id, currentRole, checkHasAccountable)} title="Chỉnh sửa thông tin chung">
                                 <i className="fa fa-edit" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_edit')}
+                            </a>
+                        }
+                        {
+                            currentRole === "accountable" && task && statusTask !== "finished" && checkHasAccountable &&
+                            <a className="btn btn-app" onClick={() => this.handleShowChangeRequestEditTask(id)} title={'Yêu cầu cập nhật nguồn lực'}>
+                                <i className="fa fa-wrench" style={{ fontSize: "16px" }}></i>{'Yêu cầu cập nhật nguồn lực'}
+                            </a>
+                        }
+                        {
+                            task && statusTask !== "finished" && statusTask !== "delayed" && statusTask !== "canceled" && (currentRole === "accountable" && checkInactive) && checkHasAccountable
+                            && <a className="btn btn-app" onClick={() => this.handleShowChangeStatusTask(id)} title={'Yêu cầu hoãn huỷ'}>
+                                <i className="fa fa-power-off" style={{ fontSize: "16px" }}></i>{'Yêu cầu hoãn huỷ'}
                             </a>
                         }
                         {
@@ -898,16 +942,11 @@ class DetailProjectTaskTab extends Component {
                         } */}
 
                         {task && statusTask !== "finished" && ((currentRole === "responsible" || currentRole === "accountable") && checkInactive) && checkHasAccountable
-                            && <a className="btn btn-app" onClick={() => this.handleShowRequestCloseTask(id)} title={'Kết thúc công việc'}>
-                                <i className="fa fa-external-link-square" style={{ fontSize: "16px" }}></i>{'Kết thúc công việc'}
+                            && <a className="btn btn-app" onClick={() => this.handleShowRequestCloseTask(id)} title={'Đánh giá kết thúc công việc'}>
+                                <i className="fa fa-calendar-check-o" style={{ fontSize: "16px" }}></i>{'Đánh giá kết thúc công việc'}
                             </a>
                         }
 
-                        {/* {task && statusTask !== "finished" && (((currentRole === "responsible" && task?.requestToCloseTask?.requestStatus !== 3) || (currentRole === "accountable" && task?.requestToCloseTask?.requestStatus === 1)) && checkInactive) && checkHasAccountable
-                            && <a className="btn btn-app" onClick={() => this.handleShowRequestCloseTask(id)} title={'Kết thúc công việc'}>
-                                <i className="fa fa-external-link-square" style={{ fontSize: "16px" }}></i>{'Kết thúc công việc'}
-                            </a>
-                        } */}
                         {task && statusTask !== "inprocess" && statusTask !== "wait_for_approval" && checkInactive
                             && <a className="btn btn-app" onClick={() => this.handleOpenTaskAgain(id)} title={translate('task.task_perform.open_task_again')}>
                                 <i className="fa fa-rocket" style={{ fontSize: "16px" }}></i>{translate('task.task_perform.open_task_again')}
@@ -1076,7 +1115,7 @@ class DetailProjectTaskTab extends Component {
 
                                 <div><strong>{translate('task.task_management.detail_link')}:</strong> <a href={`/task?taskId=${task._id}`} target="_blank">{task.name}</a></div>
                                 <div><strong>Dự án:</strong> {task && task.taskProject && this.props.project.data.list.length !== 0 &&
-                                    this.props.project.data.list.find(projectItem => String(projectItem._id) === String(task.taskProject)).name}
+                                    this.props.project.data.list.find(projectItem => String(projectItem._id) === String(task?.taskProject)).name}
                                 </div>
                                 <div><strong>{translate('task.task_management.detail_time')}:</strong> {this.formatTime(task && task.startDate)} <i className="fa fa-fw fa-caret-right"></i> {this.formatTime(task && task.endDate)} </div>
                                 {/* <div><strong>{translate('task.task_management.unit_manage_task')}:</strong> {task && task.organizationalUnit ? task.organizationalUnit.name : translate('task.task_management.err_organizational_unit')}</div> */}
@@ -1359,6 +1398,16 @@ class DetailProjectTaskTab extends Component {
                     />
                 }
 
+                {
+                    (id && showEdit === id) && currentRole === "accountable" &&
+                    <ModalRequestEditProjectTaskEmployee
+                        id={id}
+                        task={task && task}
+                        currentProjectTasks={currentProjectTasks && currentProjectTasks}
+                        projectDetail={projectDetail && projectDetail}
+                    />
+                }
+
                 {/* {
                     (id && showEvaluate === id) &&
                     <EvaluationProjectModal
@@ -1401,6 +1450,14 @@ class DetailProjectTaskTab extends Component {
                         hasAccountable={checkHasAccountable}
                     />
                 }
+                {
+                    id && currentRole === "accountable" && checkHasAccountable &&
+                    <ModalRequestChangeStatusProjectTask
+                        id={id}
+                        task={task && task}
+                        currentProjectTasks={currentProjectTasks && currentProjectTasks}
+                    />
+                }
             </React.Fragment>
         );
     }
@@ -1426,6 +1483,7 @@ const actionGetState = { //dispatchActionToProps
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
     getProjectsDispatch: ProjectActions.getProjectsDispatch,
     openTaskAgain: performTaskAction.openTaskAgain,
+    getTasksByProject: taskManagementActions.getTasksByProject,
 
     showInfoRole: RoleActions.show,
 }

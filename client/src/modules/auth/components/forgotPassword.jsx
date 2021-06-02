@@ -1,4 +1,4 @@
-import React, { useEffect,useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { AuthActions } from '../redux/actions';
 import { withTranslate } from 'react-redux-multilingual';
@@ -6,7 +6,7 @@ import { withTranslate } from 'react-redux-multilingual';
 const ForgotPassword = (props) => {
     const [state, setState] = useState({});
 
-   
+
 
     const handleChange = (e) => {
         const target = e.target;
@@ -20,7 +20,7 @@ const ForgotPassword = (props) => {
 
     const forgotPassword = () => {
         props.forgotPassword({
-            
+
             portal: state.portal,
             email: state.email,
             password2: state.password2
@@ -38,7 +38,7 @@ const ForgotPassword = (props) => {
                         <h4 className="modal-title">{translate('form.reset_password')}</h4>
                     </div>
                     {
-                        !auth.forgotPassword ?
+                        !auth.forgot_password ?
                             <React.Fragment>
                                 <div className="modal-body">
                                     <div className="form-group">

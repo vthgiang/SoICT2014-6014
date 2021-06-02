@@ -162,13 +162,13 @@ const EmployeeEditFrom = (props) => {
                     commendations: props.employeesInfo?.commendations,
                     disciplines: props.employeesInfo?.disciplines,
                     courses: props.employeesInfo?.courses,
-                    roles: props.employeesInfo?.roles?.length > 0 && props.employeesInfo?.roles.map(x => x?.roleId?.id),
+                    roles: props.employeesInfo?.roles?.length > 0 ? props.employeesInfo?.roles.map(x => x?.roleId?.id) : [],
                     organizationalUnits: props.employeesInfo?.organizationalUnits?.length > 0 && props.employeesInfo?.organizationalUnits.map(x => x._id),
                     houseHold: props.employeesInfo?.employees?.[0]?.houseHold
                 });
             };
         }
-        shouldUpdate()
+        shouldUpdate();
         return () => {
             mountedRef.current = false;
         }
@@ -891,11 +891,9 @@ const EmployeeEditFrom = (props) => {
         const { employee } = state;
         let result = true;
         if (employee) {
-            result = validatorInput(employee.employeeNumber) && validatorInput(employee.employeeTimesheetId) &&
-                validatorInput(employee.fullName) && validatorInput(employee.birthdate) &&
-                validatorInput(employee.emailInCompany) && validatorInput(employee.identityCardNumber) &&
-                validatorInput(employee.identityCardDate) && validatorInput(employee.identityCardAddress) &&
-                validatorInput(employee.phoneNumber) && validatorInput(employee.temporaryResidence);
+            result = validatorInput(employee.employeeNumber) &&
+                validatorInput(employee.fullName);
+
             if (employee.healthInsuranceStartDate && employee.healthInsuranceEndDate) {
                 if (new Date(employee.healthInsuranceEndDate).getTime() < new Date(employee.healthInsuranceStartDate).getTime()) {
                     return false;

@@ -104,5 +104,4 @@ function mapState(state) {
 const actionCreators = {
     getAllTarget: evaluateActions.getAllTargetByUnitId,
 };
-const connectedKPIUnitEvaluate = connect(mapState, actionCreators)(KPIUnitEvaluate);
-export { connectedKPIUnitEvaluate as KPIUnitEvaluate };
+export default connect(mapState, actionCreators)(KPIUnitEvaluate);

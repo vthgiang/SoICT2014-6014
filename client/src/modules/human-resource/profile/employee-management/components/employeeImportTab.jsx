@@ -52,7 +52,7 @@ const EmployeeImportTab = (props) => {
 
     const { translate } = props;
 
-    const { id, className = "tab-pane", listFields = [], teamplateImport, configuration, rowErrorOfReducer, dataOfReducer, configTableWidth, showTableWidth, handleImport, textareaRow } = props;
+    const { id, className = "tab-pane", listFields = [], teamplateImport, configuration, rowErrorOfReducer, dataOfReducer, configTableWidth, showTableWidth, handleImport, textareaRow, handleImportUpdate } = props;
 
     let { limit, page, importData, rowError, configData, checkFileImport } = state;
 
@@ -130,7 +130,8 @@ const EmployeeImportTab = (props) => {
                     </div>
 
                     <div className="form-group col-md-8 col-xs-12">
-                        <button type="button" className="pull-right btn btn-success" onClick={handleImport} disabled={!isFormValidated()}>Import excel</button>
+                        {handleImportUpdate && <button type="button" className="pull-right btn btn-success" onClick={handleImportUpdate} disabled={!isFormValidated()} style={{ marginLeft: "5px" }}>{translate("table.update")}</button>}
+                        <button type="button" className="pull-right btn btn-success" onClick={handleImport} disabled={!isFormValidated()}>{translate("modal.create")}</button>
                     </div>
 
                     {/* Hiện thị data import */}

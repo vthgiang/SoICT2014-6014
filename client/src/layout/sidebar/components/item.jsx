@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
+import store from '../../../redux/store'
 class Item extends Component {
     constructor(props) {
         super(props);
@@ -30,7 +31,12 @@ class Item extends Component {
             {
                 this.checkURL(item.path, links) &&
                 <li className={window.location.pathname === item.path ? "active" : ""}>
-                    <Link to={item.path}>
+                    <Link 
+                        to={item.path} 
+                        onClick={() => { 
+                            store.dispatch({ type: 'SWITCH_PAGE' });
+                        }}
+                    >
                         <i className={item.icon} /> <span>{translate(item.name)}</span>
                     </Link>
                 </li>

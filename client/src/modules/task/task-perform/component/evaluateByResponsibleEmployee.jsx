@@ -1339,6 +1339,7 @@ class EvaluateByResponsibleEmployee extends Component {
                                     perform={perform}
                                     id={id}
                                     value={this.state}
+                                    progress={this.state.progress}
                                 />
                             </div>
 

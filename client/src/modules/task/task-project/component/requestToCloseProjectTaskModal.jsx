@@ -8,10 +8,13 @@ import { DialogModal, QuillEditor, SelectBox } from '../../../../common-componen
 import { performTaskAction } from '../../task-perform/redux/actions';
 import { EvaluateByResponsibleEmployeeProject } from './evaluateByResponsibleEmployeeProject';
 import { EvaluateByAccountableEmployeeProject } from './evaluateByAccountableEmployeeProject';
+import { getStorage } from '../../../../config';
+import { isUserInCurrentTask } from '../../../project/projects/components/functionHelper';
 
 function RequestToCloseProjectTaskModal(props) {
     const { id, role, task, translate, performtasks } = props;
     const [status, setStatus] = useState(task?.requestToCloseTask?.taskStatus ? task.requestToCloseTask.taskStatus : 'finished');
+    const userId = getStorage('userId');
     const [description, setDescription] = useState();
     const [descriptionDefault, setDescriptionDefault] = useState();
     const [resData, setResData] = useState();
@@ -43,7 +46,7 @@ function RequestToCloseProjectTaskModal(props) {
     }
 
     const sendRequestCloseTask = () => {
-        props.evaluateTaskByResponsibleEmployeesProject(resData, task._id);
+        // props.evaluateTaskByResponsibleEmployeesProject(resData, task._id);
         props.requestAndApprovalCloseTask(id, {
             taskStatus: status,
             description: description,
@@ -60,10 +63,10 @@ function RequestToCloseProjectTaskModal(props) {
     }
 
     const approvalRequestCloseTask = async () => {
-        for (let i = 0; i < accData.resEvalArr.length; i++) {
-            await props.evaluateTaskByResponsibleEmployeesProject(accData.resEvalArr[i], task._id);
-        }
-        await props.evaluateTaskByAccountableEmployeesProject(accData.accData, task._id)
+        // for (let i = 0; i < accData.resEvalArr.length; i++) {
+        //     await props.evaluateTaskByResponsibleEmployeesProject(accData.resEvalArr[i], task._id);
+        // }
+        // await props.evaluateTaskByAccountableEmployeesProject(accData.accData, task._id)
         await props.requestAndApprovalCloseTask(id, {
             requestedBy: requestToCloseTask && requestToCloseTask.requestedBy,
             taskStatus: status,
@@ -191,7 +194,7 @@ function RequestToCloseProjectTaskModal(props) {
                 {role === "responsible" &&
                     <EvaluateByResponsibleEmployeeProject role={role} task={task} handleSaveResponsibleData={handleSaveResponsibleData} />
                 }
-                {role === "accountable" &&
+                {role === "accountable" && isUserInCurrentTask(userId, task) &&
                     <EvaluateByAccountableEmployeeProject role={role} task={task} handleSaveAccountableData={handleSaveAccountableData} handleSaveResponsibleData={handleSaveResponsibleData} />
                 }
 

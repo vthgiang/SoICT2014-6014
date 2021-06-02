@@ -131,6 +131,7 @@ const AnnualLeaveChartAndTable = (props) => {
                 x: 'x',
                 columns: [["x", ...data.ratioX], ['data1', ...data.data1], ['data2', ...data.data2]],
                 type: 'bar',
+                labels: true,
                 names: {
                     data1: data.nameData1,
                     data2: data.nameData2,
@@ -300,9 +301,12 @@ const AnnualLeaveChartAndTable = (props) => {
                         </div>
                     }
                     <div className="dashboard_box_body">
-                        {!annualLeave.beforAndAfterOneWeeks.length &&
-                            'Không có đơn xin nghỉ phép nào'}
-                        <div ref={barChartAndTable}></div>
+                        {annualLeave.isLoading
+                            ? <div>{translate('general.loading')}</div>
+                            : annualLeave.beforAndAfterOneWeeks.length 
+                                ? <div ref={barChartAndTable}></div>
+                                : <div>{translate('kpi.organizational_unit.dashboard.no_data')}</div>
+                        }
                     </div>
                     <div id="annualLeave-table">
                         <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 20 }}>
@@ -315,17 +319,20 @@ const AnnualLeaveChartAndTable = (props) => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {listAnnual && listAnnual.length &&
-                                    listAnnual.map(x => {
-                                        return (
-                                            <tr key={x.id}>
-                                                <td>{x.name}</td>
-                                                <td>{x.countPrev}</td>
-                                                <td>{x.countCurrent}</td>
-                                                <td>{x.countNext}</td>
-                                            </tr>
-                                        )
-                                    })
+                                {annualLeave.isLoading
+                                    ? <td colspan="4">{translate('general.loading')}</td>
+                                    : listAnnual?.length 
+                                        ? listAnnual.map(x => {
+                                            return (
+                                                <tr key={x.id}>
+                                                    <td>{x.name}</td>
+                                                    <td>{x.countPrev}</td>
+                                                    <td>{x.countCurrent}</td>
+                                                    <td>{x.countNext}</td>
+                                                </tr>
+                                            )
+                                        })
+                                        : <td colspan="4">{translate('kpi.organizational_unit.dashboard.no_data')}</td>
                                 }
                             </tbody>
                         </table>

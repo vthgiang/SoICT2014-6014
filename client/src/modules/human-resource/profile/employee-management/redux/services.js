@@ -80,10 +80,13 @@ function updateInformationEmployee(id, data) {
  * Xoá thông tin nhân viên
  * @id : id thông tin nhân viên cần xoá
  */
-function deleteEmployee(id) {
+function deleteEmployee(id, email) {
     return sendRequest({
         url: `${ process.env.REACT_APP_SERVER }/employee/employees/${id}`,
         method: 'DELETE',
+        params: {
+            emailInCompany: email
+        },
     }, true, true, 'human_resource.profile.employee_management');
 }
 

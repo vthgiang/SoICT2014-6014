@@ -70,7 +70,7 @@ const LoadTaskChart = (props) => {
                                 improcessDay = 0;
                             }
                             data[j] += Math.round(improcessDay /
-                                (improcessTask[i].accountableEmployees.length + improcessTask[i].consultedEmployees.length + improcessTask[i].responsibleEmployees.length))
+                                (improcessTask?.[i]?.accountableEmployees?.length + improcessTask?.[i]?.consultedEmployees?.length + improcessTask?.[i]?.responsibleEmployees?.length))
                         }
                     }
 
@@ -134,31 +134,28 @@ const LoadTaskChart = (props) => {
 
     return (
         <React.Fragment>
-            <section className="form-inline" style={{ textAlign: "right" }}>
-                {/* Chọn trạng thái công việc */}
-                <div className="form-group">
-                    <label style={{ minWidth: "150px" }}>{translate('task.task_management.role')}</label>
-
-                    <SelectMulti id="multiRole"
-                        items={[
-                            { value: "res", text: translate('task.task_management.responsible') },
-                            { value: "acc", text: translate('task.task_management.accountable') },
-                            { value: "con", text: translate('task.task_management.consulted') },
-                        ]}
-                        onChange={handleSelectStatus}
-                        options={{ nonSelectedText: translate('task.task_management.select_all_role'), allSelectedText: translate('task.task_management.select_all_role') }}
-                        value={role}
-                    >
-                    </SelectMulti>
-
-                </div>
-                <div className="form-group">
+            <div className="qlcv">
+                <div className="form-inline">
+                    {/* Chọn trạng thái công việc */}
+                    <div className="form-group">
+                        <label style={{ width: "auto" }}>{translate('task.task_management.role')}</label>
+                        <SelectMulti id="multiRole"
+                            items={[
+                                { value: "res", text: translate('task.task_management.responsible') },
+                                { value: "acc", text: translate('task.task_management.accountable') },
+                                { value: "con", text: translate('task.task_management.consulted') },
+                            ]}
+                            onChange={handleSelectStatus}
+                            options={{ nonSelectedText: translate('task.task_management.select_all_role'), allSelectedText: translate('task.task_management.select_all_role') }}
+                            value={role}
+                        >
+                        </SelectMulti>
+                    </div>
                     <button className="btn btn-success"
                         onClick={handleSearchData}
                     >{translate('task.task_management.filter')}</button>
                 </div>
-            </section>
-
+            </div>
             <section id="weight_task_chart"></section>
         </React.Fragment>
     )

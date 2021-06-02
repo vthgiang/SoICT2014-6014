@@ -3,15 +3,17 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import parse from 'html-react-parser';
+import Swal from 'sweetalert2';
 
 import { kpiMemberActions } from '../redux/actions';
 
-import { DataTableSetting, ExportExcel, ToolTip, SlimScroll } from '../../../../../common-components';
+import { ExportExcel, ToolTip, SlimScroll } from '../../../../../common-components';
 
 import { DialogModal } from '../../../../../common-components/index';
 import { ModalDetailTask } from '../../../../task/task-dashboard/task-personal-dashboard/modalDetailTask';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 import { EmployeeKpiOverviewModal } from "../../../employee/management/component/employeeKpiOverviewModal";
+import { showWeeklyPoint } from '../../../employee/management/component/functionHelpers'
 
 // import './tableCSS.css';
 
@@ -293,6 +295,7 @@ function EmployeeKpiEvaluateModal(props) {
                 return translate('task.task_management.canceled');
         }
     }
+
     if (kpimembers.tasks) {
         myTask = kpimembers.tasks;
 
@@ -379,10 +382,14 @@ function EmployeeKpiEvaluateModal(props) {
                                                 <span> {item.weight}/100</span>
                                             </div>
                                             <div>
-                                                <label>{translate('kpi.evaluation.employee_evaluation.point_field')}:</label>
+                                                <label>{translate('task.task_management.eval_of')}{` (${translate('kpi.evaluation.dashboard.auto_point')} - ${translate('kpi.evaluation.dashboard.employee_point')} - ${translate('kpi.evaluation.dashboard.approve_point')})`}:</label>
                                                 <span> {item.automaticPoint ? item.automaticPoint : translate('kpi.evaluation.employee_evaluation.not_avaiable')}</span>
                                                 <span> - {item.employeePoint ? item.employeePoint : translate('kpi.evaluation.employee_evaluation.not_avaiable')}</span>
                                                 <span> - {item.approvedPoint ? item.approvedPoint : translate('kpi.evaluation.employee_evaluation.not_avaiable')}</span>
+                                            </div>
+                                            <div>
+                                                <label>{translate('kpi.evaluation.employee_evaluation.weekly_point')}:</label>
+                                                <a style={{ cursor: 'pointer' }} onClick={() => showWeeklyPoint(translate, item?.weeklyEvaluations)}> {translate('general.detail')}</a>
                                             </div>
                                             {item.updatedAt &&
                                                 <div>
@@ -420,7 +427,7 @@ function EmployeeKpiEvaluateModal(props) {
                                                                 <td>{itemTask.startDate ? formatDate(itemTask.startDate) : ""}<br /> <i className="fa fa-angle-double-down"></i><br /> {itemTask.endDate ? formatDate(itemTask.endDate) : ""}</td>
                                                                 <td>{formatTaskStatus(translate, itemTask.status)}</td>
                                                                 <td>{itemTask.results.contribution ? itemTask.results.contribution : 0}%</td>
-                                                                <td>{itemTask.results.automaticPoint + '-' + itemTask.results.employeePoint + '-' + itemTask.results.approvedPoint}</td>
+                                                                <td title={`${translate('kpi.evaluation.dashboard.auto_point')} - ${translate('kpi.evaluation.dashboard.employee_point')} - ${translate('kpi.evaluation.dashboard.approve_point')}`}>{itemTask.results.automaticPoint + '-' + itemTask.results.employeePoint + '-' + itemTask.results.approvedPoint}</td>
                                                                 <td>
                                                                     {points && tasks && 
                                                                         <React.Fragment>

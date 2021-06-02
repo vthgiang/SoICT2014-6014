@@ -86,6 +86,7 @@ function LineBarChartDetailForm(props) {
                 x: 'x',
                 columns: newData,
                 type: 'bar',
+                labels: true,
                 types: typeChart,
             },
             bar: {
