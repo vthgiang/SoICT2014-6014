@@ -19,7 +19,34 @@ const TransportDepartmentServices = require("../transportDepartment/transportDep
  */
 exports.createTransportPlan = async (portal, data) => {
     let newTransportPlan;
-    if (data && data.length !== 0) {        
+    if (data && data.length !== 0) {
+        let department;
+        if(data.currentRole){
+            let currentRole = data.currentRole;
+            let allDepartments = await TransportDepartmentServices.getAllTransportDepartments(portal);
+            // kiểm tra role hiện tại tạo ở phòng ban nào đã liên kết
+            if (allDepartments && allDepartments.data && allDepartments.data.length !==0){
+                allDepartments.data.map(item => {
+                    let listRoleApproverOrganizationalUnit = item.type.filter(r => Number(r.roleTransport) === 1);
+                    
+                    if (listRoleApproverOrganizationalUnit && listRoleApproverOrganizationalUnit.length !==0){
+                        listRoleApproverOrganizationalUnit.map(organization => {
+                            
+                            if (organization.roleOrganizationalUnit && organization.roleOrganizationalUnit.length !==0){
+                                organization.roleOrganizationalUnit.map(roleOrganizationalUnit => {
+                                    
+                                    if (String(roleOrganizationalUnit._id) === String(currentRole)){
+                                        department = item._id; // transportDepartment tương ứng
+                                    }   
+                                })
+                            }
+                            
+                        })
+                    }
+                })
+            }
+        }
+
         newTransportPlan = await TransportPlan(connect(DB_CONNECTION, portal)).create({
         code: data.code,
         supervisor: data.supervisor,
@@ -30,6 +57,7 @@ exports.createTransportPlan = async (portal, data) => {
         endTime: data.endDate,
         transportRequirements: data.transportRequirements,
         transportVehicles: data.transportVehicles,
+        department: department,
         });
         // Nếu có requirements đi kèm {transportRequirements: [id, id, id...]}
         if (data.transportRequirements && data.transportRequirements.length!==0){
@@ -62,8 +90,7 @@ exports.createTransportPlan = async (portal, data) => {
         {
             path: 'supervisor'
         }
-    ])
-    ;;
+    ]);
     return transportPlan;
 }
 
@@ -84,6 +111,7 @@ exports.getAllTransportPlans = async (portal, data) => {
     //     }
     // }
     let currentUserId = data.currentUserId;
+    let currentRole = data.currentRole;
     let page, limit;
     if (data.page && data.limit){
         page= data.page;
@@ -106,11 +134,42 @@ exports.getAllTransportPlans = async (portal, data) => {
             },
             {
                 path: 'creator'
+            },
+            {
+                path: 'department',
+                populate: {
+                    path: 'type.roleOrganizationalUnit',
+                    populate: [{
+                        path: "users",
+                        populate: [{
+                            path: "userId"
+                        }]
+                    }]
+                }
             }
         ])
         // .skip((page - 1) * limit)
         // .limit(limit);
-    
+    // filter kế hoạch có role hiện tại trong department
+    plans = plans.filter(plan => {
+        let department = plan.department;
+        let flag = false;
+        if (department){
+            if (department.type && department.type.length !==0){
+                department.type.map(x => {
+                    if (x.roleOrganizationalUnit && x.roleOrganizationalUnit.length !==0){
+                        x.roleOrganizationalUnit.map(organization => {
+                            if (String(organization._id) === currentRole){
+                                flag = true;
+                            }
+                        })
+                    }
+                })
+            }
+        };
+        return flag;
+    })
+
     let res = [];
     // Lấy danh sách người phê duyệt, xếp lịch
     let headerUser = await TransportDepartmentServices.getUserByRole(portal, {currentUserId: currentUserId, role: 1});

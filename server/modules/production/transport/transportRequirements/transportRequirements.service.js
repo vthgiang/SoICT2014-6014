@@ -114,6 +114,18 @@ exports.getAllTransportRequirements = async (portal, data) => {
                     path: 'supervisor'
                 }
             })
+            .populate({
+                path: 'department',
+                populate: {
+                    path: 'type.roleOrganizationalUnit',
+                    populate: [{
+                        path: "users",
+                        populate: [{
+                            path: "userId"
+                        }]
+                    }]
+                }
+            })
             .skip((page - 1) * limit)
             .limit(limit);
     }

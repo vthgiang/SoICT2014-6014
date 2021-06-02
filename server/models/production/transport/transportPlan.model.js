@@ -20,6 +20,11 @@ const TransportPlanSchema = new Schema({
     status: { // Trạng thái kế hoạch hiện tại 1: Cần xếp hàng, xếp lộ trình, 2: Có thể tiến hành, 3: Đang tiến hành, 4: Đã hoàn thành
         type: Number,
     },
+    department: {
+        type: Schema.Types.ObjectId,
+        ref: 'TransportDepartment',
+        required: true,
+    },
     transportRequirements: [{
             type: Schema.Types.ObjectId,
             ref: 'TransportRequirement',

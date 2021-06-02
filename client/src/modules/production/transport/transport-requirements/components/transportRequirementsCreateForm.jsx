@@ -312,7 +312,7 @@ function TransportRequirementsCreateForm(props) {
                         
                         if (organization.roleOrganizationalUnit && organization.roleOrganizationalUnit.length !==0){
                             organization.roleOrganizationalUnit.map(roleOrganizationalUnit => {
-                                console.log(roleOrganizationalUnit);
+                                
                                 if (roleOrganizationalUnit.users && roleOrganizationalUnit.users.length !== 0){
                                     roleOrganizationalUnit.users.map(user => {
                                         

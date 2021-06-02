@@ -21,6 +21,7 @@ function getAllTransportPlans(queryData) {
                 page: queryData !== undefined ? queryData.page : null,
                 limit: queryData !== undefined ? queryData.limit : null,
                 currentUserId: localStorage.getItem('userId'),
+                currentRole: localStorage.getItem('currentRole'),
             }
         },
          false, // Nếu có truy vấn thành công thì không hiện thông báo
