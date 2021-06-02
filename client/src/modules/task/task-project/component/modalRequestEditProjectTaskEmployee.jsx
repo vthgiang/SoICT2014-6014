@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { DatePicker, DialogModal, ErrorLabel, SelectBox, TimePicker } from '../../../../common-components';
 import moment from 'moment'
 import { checkIfHasCommonItems, checkIsNullUndefined, getSalaryFromUserId, numberWithCommas } from '../../task-management/component/functionHelpers';
-import { convertUserIdToUserName, getCurrentProjectDetails, getEstimateHumanCostFromParams, getEstimateMemberCost, getMaxMinDateInArr, getNearestIntegerNumber, getNewTasksListAfterCR, getProjectParticipants, handleWeekendAndWorkTime, MILISECS_TO_DAYS, MILISECS_TO_HOURS, processAffectedTasksChangeRequest, getEstimateCostOfProject, getEndDateOfProject } from '../../../project/projects/components/functionHelper';
+import { convertUserIdToUserName, getCurrentProjectDetails, getEstimateHumanCostFromParams, getEstimateMemberCost, getMaxMinDateInArr, getNearestIntegerNumber, getNewTasksListAfterCR, getProjectParticipants, handleWeekendAndWorkTime, MILISECS_TO_DAYS, MILISECS_TO_HOURS, processAffectedTasksChangeRequest, getEstimateCostOfProject, getEndDateOfProject, getRecursiveRelevantTasks } from '../../../project/projects/components/functionHelper';
 import ValidationHelper from '../../../../helpers/validationHelper';
 import { TaskFormValidator } from '../../task-management/component/taskFormValidator';
 import dayjs from 'dayjs';
@@ -76,8 +76,8 @@ const ModalRequestEditProjectTaskEmployee = (props) => {
         },
         currentRole: getStorage('currentRole'),
     });
-    const [startTime, setStartTime] = useState(task?.startDate ? moment(task?.startDate).format('H:mm A') : '08:00 AM');
-    const [endTime, setEndTime] = useState(task?.endDate ? moment(task?.endDate).format('H:mm A') : '05:30 PM');
+    const [startTime, setStartTime] = useState(task?.startDate ? moment(task?.startDate).format('h:mm A') : '08:00 AM');
+    const [endTime, setEndTime] = useState(task?.endDate ? moment(task?.endDate).format('h:mm A') : '05:30 PM');
     const { editTask } = state;
     const { estimateNormalTime, estimateOptimisticTime, estimateNormalCost, estimateMaxCost, estimateAssetCost, responsibleEmployees, accountableEmployees,
         totalResWeight, totalAccWeight, currentResWeightArr, currentAccWeightArr, estimateHumanCost } = editTask;
@@ -100,7 +100,7 @@ const ModalRequestEditProjectTaskEmployee = (props) => {
 
     const convertDateTime = (date, time) => {
         let splitter = date.split("-");
-        let strDateTime = `${splitter[2]}/${splitter[1]}/${splitter[0]} ${time}`;
+        let strDateTime = `${splitter[2]}/${splitter[1]}/${splitter[0]} ${time.replace(/CH/g, 'PM').replace(/SA/g, 'AM')}`;
         return dayjs(strDateTime).format('YYYY/MM/DD HH:mm:ss');
     }
 
@@ -120,7 +120,7 @@ const ModalRequestEditProjectTaskEmployee = (props) => {
         }
         const curEndDateTime = taskItem ? handleWeekendAndWorkTime(projectDetail, taskItem).endDate : '';
         const curEndDate = curEndDateTime ? moment(curEndDateTime).format('DD-MM-YYYY') : state.editTask.endDate;
-        const curEndTime = curEndDateTime ? moment(curEndDateTime).format('H:mm A') : endTime;
+        const curEndTime = curEndDateTime ? moment(curEndDateTime).format('h:mm A').replace(/CH/g, 'PM').replace(/SA/g, 'AM') : endTime;
         const currentNewTask = {
             ...state.editTask,
             startDate: value,
@@ -147,7 +147,7 @@ const ModalRequestEditProjectTaskEmployee = (props) => {
         }
         const curEndDateTime = taskItem ? handleWeekendAndWorkTime(projectDetail, taskItem).endDate : '';
         const curEndDate = curEndDateTime ? moment(curEndDateTime).format('DD-MM-YYYY') : state.editTask.endDate;
-        const curEndTime = curEndDateTime ? moment(curEndDateTime).format('H:mm A') : endTime;
+        const curEndTime = curEndDateTime ? moment(curEndDateTime).format('h:mm A').replace(/CH/g, 'PM').replace(/SA/g, 'AM') : endTime;
         const currentNewTask = {
             ...state.editTask,
             endDate: curEndDate,
@@ -312,7 +312,7 @@ const ModalRequestEditProjectTaskEmployee = (props) => {
             }
             const curEndDateTime = taskItem ? handleWeekendAndWorkTime(projectDetail, taskItem).endDate : '';
             const curEndDate = curEndDateTime ? moment(curEndDateTime).format('DD-MM-YYYY') : state.editTask.endDate;
-            const curEndTime = curEndDateTime ? moment(curEndDateTime).format('H:mm A') : endTime;
+            const curEndTime = curEndDateTime ? moment(curEndDateTime).format('h:mm A').replace(/CH/g, 'PM').replace(/SA/g, 'AM') : endTime;
 
             const predictEstimateOptimisticTime = String(Number(value)) === 'NaN' || Number(value) === 0 || Number(value) === 1
                 ? '0' : Number(value) === 2 ? '1' : (Number(value) - 2).toString()
@@ -468,7 +468,7 @@ const ModalRequestEditProjectTaskEmployee = (props) => {
         console.log('preceedingTasksEndDateArr', preceedingTasksEndDateArr)
         const latestStartDate = getMaxMinDateInArr(preceedingTasksEndDateArr, 'max');
         const curStartDate = moment(latestStartDate).format('DD-MM-YYYY');
-        const curStartTime = moment(latestStartDate).format('H:mm A');
+        const curStartTime = moment(latestStartDate).format('h:mm A');
         const taskItem = editTask.estimateNormalTime && {
             startDate: latestStartDate,
             endDate: undefined,
@@ -476,7 +476,7 @@ const ModalRequestEditProjectTaskEmployee = (props) => {
         }
         const curEndDateTime = taskItem ? handleWeekendAndWorkTime(projectDetail, taskItem).endDate : '';
         const curEndDate = curEndDateTime ? moment(curEndDateTime).format('DD-MM-YYYY') : state.editTask.endDate;
-        const curEndTime = curEndDateTime ? moment(curEndDateTime).format('H:mm A') : endTime;
+        const curEndTime = curEndDateTime ? moment(curEndDateTime).format('h:mm A').replace(/CH/g, 'PM').replace(/SA/g, 'AM') : endTime;
         console.log('curStartDate', curStartDate)
         console.log('curStartTime', curStartTime)
         editTask.preceedingTasks.length > 0 && setStartTime(curStartTime);
@@ -523,7 +523,6 @@ const ModalRequestEditProjectTaskEmployee = (props) => {
         }
     }, [editTask.currentLatestStartDate, editTask.startDate, startTime])
 
-    // console.log('task task task', task);
     const save = async () => {
         const { editTask } = state;
         let startDateTask = moment(convertDateTime(editTask.startDate, startTime)).format();
@@ -554,21 +553,8 @@ const ModalRequestEditProjectTaskEmployee = (props) => {
             endDate: endDateTask,
         }
         console.log('editTaskFormatted', editTaskFormatted)
-        let allTasksNodeRelationArr = [];
         // Hàm đệ quy để lấy tất cả những tasks có liên quan tới task hiện tại
-        const getAllRelationTasks = (currentProjectTasksFormatPreceedingTasks, currentTask) => {
-            const preceedsContainCurrentTask = currentProjectTasksFormatPreceedingTasks.filter((taskItem) => {
-                return taskItem.preceedingTasks.includes(currentTask._id)
-            });
-            for (let preConItem of preceedsContainCurrentTask) {
-                allTasksNodeRelationArr.push(preConItem);
-                getAllRelationTasks(currentProjectTasksFormatPreceedingTasks, preConItem);
-            }
-            if (!preceedsContainCurrentTask || preceedsContainCurrentTask.length === 0) {
-                return;
-            }
-        }
-        getAllRelationTasks(currentProjectTasksFormatPreceedingTasks, editTaskFormatted);
+        const allTasksNodeRelationArr = getRecursiveRelevantTasks(currentProjectTasksFormatPreceedingTasks, editTaskFormatted);
         allTasksNodeRelationArr.unshift({
             ...task,
             preceedingTasks: task.preceedingTasks.map((preItem) => preItem.task._id),
@@ -635,8 +621,8 @@ const ModalRequestEditProjectTaskEmployee = (props) => {
         if (newAffectedTasksList.length > 0) {
             await props.createProjectChangeRequestDispatch({
                 creator: getStorage('userId'),
-                name: `Chỉnh sửa công việc ${task?.name}`,
-                description: `Chỉnh sửa công việc ${task?.name}`,
+                name: `Chỉnh sửa công việc "${task?.name}"`,
+                description: `Chỉnh sửa công việc "${task?.name}"`,
                 requestStatus: 1,
                 type: 'edit_task',
                 currentTask,
@@ -657,7 +643,7 @@ const ModalRequestEditProjectTaskEmployee = (props) => {
             <DialogModal
                 modalID={`modal-request-edit-project-task-accountable-${task?._id}`}
                 formID={`form-request-edit-project-task-accountable-${task?._id}`}
-                title={`Yêu cầu chỉnh sửa công việc với tư cách phê duyệt`}
+                title={`Yêu cầu chỉnh sửa nguồn lực với tư cách phê duyệt`}
                 hasSaveButton={true}
                 func={save}
                 size={100}
