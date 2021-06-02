@@ -584,120 +584,40 @@ exports.editTimeSheetLog = async (portal, taskId, timesheetlogId, data) => {
         ]);
 }
 
+
+const stopTimeSheetLogAllDevices = (taskId, user) => {
+    // tự động tắt bấm giờ 1 công việc khi mở nhiều tab, trình duyệt,
+    const userIdReceive = user._id;
+    let socketIdOfUserReceive = [];
+    CONNECTED_CLIENTS.forEach(o => {
+        if (o.userId === userIdReceive) {
+            socketIdOfUserReceive = [...socketIdOfUserReceive, o.socketId];
+        }
+    })
+
+    if (socketIdOfUserReceive.length > 0) {
+        socketIdOfUserReceive.forEach(obj => {
+            SOCKET_IO.to(obj).emit("stop timers", {
+                taskId: taskId,
+                stopTimerAllDevices: true
+            });
+        })
+    }
+}
+
 /**
  * Dừng bấm giờ: Lưu thời gian kết thúc và số giờ chạy (endTime và time)
  */
 exports.stopTimesheetLog = async (portal, params, body, user) => {
-    let stoppedAt;
-    let timer, duration;
-
-    // Add log timer
-    if (body.addlogStartedAt && body.addlogStoppedAt) {
-        let getAddlogStartedAt = new Date(body.addlogStartedAt);
-        let getAddlogStoppedAt = new Date(body.addlogStoppedAt);
-
-        // Lưu vào timeSheetLog
-        duration = new Date(getAddlogStoppedAt).getTime() - new Date(getAddlogStartedAt).getTime();
-        const addLogTime = {
-            startedAt: getAddlogStartedAt,
-            stoppedAt: getAddlogStoppedAt,
-            duration,
-            autoStopped: body.autoStopped,
-            description: body.addlogDescription,
-            creator: user._id,
-        }
-        timer = await Task(connect(DB_CONNECTION, portal)).findByIdAndUpdate(
-            params.taskId,
-            { $push: { timesheetLogs: addLogTime } },
-            { new: true }
-        ).populate({ path: "timesheetLogs.creator", select: "name" });
-
-    } else {
-        if (body.autoStopped === 1) {
-            stoppedAt = new Date();
-        } else {
-            stoppedAt = new Date(body.stoppedAt);
-        }
-
-        // Lưu vào timeSheetLog
-        duration = new Date(stoppedAt).getTime() - new Date(body.startedAt).getTime();
-        let checkDurationValid = duration / (60 * 60 * 1000);
-
-        // Lấy thông tin của timeSheetLog đã start trước đó
-        const getTime = await Task(connect(DB_CONNECTION, portal)).findOne({ _id: params.taskId, "timesheetLogs._id": body.timesheetLog }, { timesheetLogs: 1 })
-        let currentTimeSheet = getTime.timesheetLogs.filter(o => o._id.toString() === body.timesheetLog.toString());
-
-        await Task(connect(DB_CONNECTION, portal)).findOneAndUpdate({ _id: params.taskId, "taskActions._id": body.taskActionStartTimer },
-            {
-                $push: {
-                    "taskActions.$.timesheetLogs": {
-                        startedAt: currentTimeSheet[0].startedAt,
-                        creator: currentTimeSheet[0].creator,
-                        acceptLog: checkDurationValid > 24 ? false : true,
-                        autoStopped: body.autoStopped,
-                        description: body.description,
-                        duration: duration,
-                        stoppedAt: stoppedAt,
-                    }
-                }
-            }
-        )
-
-        timer = await Task(connect(DB_CONNECTION, portal))
-            .findOneAndUpdate(
-                { _id: params.taskId, "timesheetLogs._id": body.timesheetLog },
-                {
-                    $set: {
-                        "timesheetLogs.$.stoppedAt": stoppedAt, // Date
-                        "timesheetLogs.$.duration": duration, // mileseconds
-                        "timesheetLogs.$.description": body.description,
-                        "timesheetLogs.$.autoStopped": body.autoStopped, // ghi nhận tắt bấm giờ tự động hay không?
-                        "timesheetLogs.$.acceptLog": checkDurationValid > 24 ? false : true, // tự động check nếu thời gian quá 24 tiếng thì đánh là không hợp lệ
-                    }
-                },
-                { new: true }
-            )
-            .populate({ path: "timesheetLogs.creator", select: "name" });
-    }
-
-    // Lưu vào hoursSpentOnTask
-    let newTotalHoursSpent = timer.hoursSpentOnTask.totalHoursSpent + duration;
-    let contributions = timer.hoursSpentOnTask.contributions;
-    let check = true;
-    let newContributions = contributions.map((item) => {
-        if (item.employee && item.employee.toString() === body.employee) {
-            check = false;
-            return {
-                employee: body.employee,
-                hoursSpent: item.hoursSpent + duration,
-            };
-        } else {
-            return item;
-        }
-    });
-    if (check) {
-        let contributionEmployee = {
-            employee: body.employee,
-            hoursSpent: duration,
-        };
-        if (!newContributions) {
-            newContributions = [];
-        }
-        newContributions.push(contributionEmployee);
-    }
-
-    let newTask = await Task(connect(DB_CONNECTION, portal)).findOneAndUpdate(
-        { _id: params.taskId },
+    if(body.type && body.type === "cancel"){
+        const cancelTimer = await Task(connect(DB_CONNECTION, portal)).findOneAndUpdate(
+        { _id: params.taskId, "timesheetLogs._id": body.timesheetLog, "timesheetLogs.creator" : body.employee },
         {
-            $set: {
-                "hoursSpentOnTask.totalHoursSpent": newTotalHoursSpent,
-                "hoursSpentOnTask.contributions": newContributions,
+            $pull: {
+                timesheetLogs: { _id: body.timesheetLog},
             },
-        }
-    );
-    newTask = await Task(connect(DB_CONNECTION, portal))
-        .findById(params.taskId)
-        .populate([
+        },
+        { new: true }).populate([
             { path: "parent", select: "name" },
             { path: "taskTemplate", select: "formula" },
             { path: "organizationalUnit" },
@@ -816,28 +736,249 @@ exports.stopTimesheetLog = async (portal, params, body, user) => {
             },
             { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
             { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
-        ]);
-    newTask.evaluations.reverse();
-
-    // tự động tắt bấm giờ 1 công việc khi mở nhiều tab, trình duyệt,
-    const userIdReceive = user._id;
-    let socketIdOfUserReceive = [];
-    CONNECTED_CLIENTS.forEach(o => {
-        if (o.userId === userIdReceive) {
-            socketIdOfUserReceive = [...socketIdOfUserReceive, o.socketId];
-        }
-    })
-
-    if (socketIdOfUserReceive.length > 0) {
-        socketIdOfUserReceive.forEach(obj => {
-            SOCKET_IO.to(obj).emit("stop timers", {
-                taskId: params.taskId,
-                stopTimerAllDevices: true
-            });
-        })
+        ])
+    
+        cancelTimer.evaluations.reverse();
+        // Tắt modal đếm giờ nếu công việc mở ở nhiều trinh duyệt
+        stopTimeSheetLogAllDevices(params.taskId, user)
+        return cancelTimer;
     }
+    else{
+        let stoppedAt;
+        let timer, duration;
 
-    return newTask;
+        // Add log timer
+        if (body.addlogStartedAt && body.addlogStoppedAt) {
+            let getAddlogStartedAt = new Date(body.addlogStartedAt);
+            let getAddlogStoppedAt = new Date(body.addlogStoppedAt);
+
+            // Lưu vào timeSheetLog
+            duration = new Date(getAddlogStoppedAt).getTime() - new Date(getAddlogStartedAt).getTime();
+            const addLogTime = {
+                startedAt: getAddlogStartedAt,
+                stoppedAt: getAddlogStoppedAt,
+                duration,
+                autoStopped: body.autoStopped,
+                description: body.addlogDescription,
+                creator: user._id,
+            }
+            timer = await Task(connect(DB_CONNECTION, portal)).findByIdAndUpdate(
+                params.taskId,
+                { $push: { timesheetLogs: addLogTime } },
+                { new: true }
+            ).populate({ path: "timesheetLogs.creator", select: "name" });
+
+        } else {
+            if (body.autoStopped === 1) {
+                stoppedAt = new Date();
+            } else {
+                stoppedAt = new Date(body.stoppedAt);
+            }
+
+            // Lưu vào timeSheetLog
+            duration = new Date(stoppedAt).getTime() - new Date(body.startedAt).getTime();
+            let checkDurationValid = duration / (60 * 60 * 1000);
+
+            // Lấy thông tin của timeSheetLog đã start trước đó
+            const getTime = await Task(connect(DB_CONNECTION, portal)).findOne({ _id: params.taskId, "timesheetLogs._id": body.timesheetLog }, { timesheetLogs: 1 })
+            let currentTimeSheet = getTime.timesheetLogs.filter(o => o._id.toString() === body.timesheetLog.toString());
+
+            await Task(connect(DB_CONNECTION, portal)).findOneAndUpdate({ _id: params.taskId, "taskActions._id": body.taskActionStartTimer },
+                {
+                    $push: {
+                        "taskActions.$.timesheetLogs": {
+                            startedAt: currentTimeSheet[0].startedAt,
+                            creator: currentTimeSheet[0].creator,
+                            acceptLog: checkDurationValid > 24 ? false : true,
+                            autoStopped: body.autoStopped,
+                            description: body.description,
+                            duration: duration,
+                            stoppedAt: stoppedAt,
+                        }
+                    }
+                }
+            )
+
+            timer = await Task(connect(DB_CONNECTION, portal))
+                .findOneAndUpdate(
+                    { _id: params.taskId, "timesheetLogs._id": body.timesheetLog },
+                    {
+                        $set: {
+                            "timesheetLogs.$.stoppedAt": stoppedAt, // Date
+                            "timesheetLogs.$.duration": duration, // mileseconds
+                            "timesheetLogs.$.description": body.description,
+                            "timesheetLogs.$.autoStopped": body.autoStopped, // ghi nhận tắt bấm giờ tự động hay không?
+                            "timesheetLogs.$.acceptLog": checkDurationValid > 24 ? false : true, // tự động check nếu thời gian quá 24 tiếng thì đánh là không hợp lệ
+                        }
+                    },
+                    { new: true }
+                )
+                .populate({ path: "timesheetLogs.creator", select: "name" });
+        }
+
+        // Lưu vào hoursSpentOnTask
+        let newTotalHoursSpent = timer.hoursSpentOnTask.totalHoursSpent + duration;
+        let contributions = timer.hoursSpentOnTask.contributions;
+        let check = true;
+        let newContributions = contributions.map((item) => {
+            if (item.employee && item.employee.toString() === body.employee) {
+                check = false;
+                return {
+                    employee: body.employee,
+                    hoursSpent: item.hoursSpent + duration,
+                };
+            } else {
+                return item;
+            }
+        });
+        if (check) {
+            let contributionEmployee = {
+                employee: body.employee,
+                hoursSpent: duration,
+            };
+            if (!newContributions) {
+                newContributions = [];
+            }
+            newContributions.push(contributionEmployee);
+        }
+
+        let newTask = await Task(connect(DB_CONNECTION, portal)).findOneAndUpdate(
+            { _id: params.taskId },
+            {
+                $set: {
+                    "hoursSpentOnTask.totalHoursSpent": newTotalHoursSpent,
+                    "hoursSpentOnTask.contributions": newContributions,
+                },
+            }
+        );
+        newTask = await Task(connect(DB_CONNECTION, portal))
+            .findById(params.taskId)
+            .populate([
+                { path: "parent", select: "name" },
+                { path: "taskTemplate", select: "formula" },
+                { path: "organizationalUnit" },
+                { path: "collaboratedWithOrganizationalUnits.organizationalUnit" },
+                {
+                    path:
+                        "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator inactiveEmployees",
+                    select: "name email _id active avatar",
+                },
+                {
+                    path: "evaluations.results.employee",
+                    select: "name email _id active",
+                },
+                {
+                    path: "evaluations.results.organizationalUnit",
+                    select: "name _id",
+                },
+                { path: "evaluations.results.kpis" },
+                { path: "taskActions.creator", select: "name email avatar" },
+                {
+                    path: "taskActions.comments.creator",
+                    select: "name email avatar",
+                },
+                { path: "commentsInProcess.creator", select: "name email avatar" },
+                {
+                    path: "commentsInProcess.comments.creator",
+                    select: "name email avatar",
+                },
+                {
+                    path: "taskActions.evaluations.creator",
+                    select: "name email avatar ",
+                },
+                { path: "taskComments.creator", select: "name email avatar" },
+                {
+                    path: "taskComments.comments.creator",
+                    select: "name email avatar",
+                },
+                { path: "documents.creator", select: "name email avatar" },
+                { path: "followingTasks.task" },
+                {
+                    path: "preceedingTasks.task",
+                    populate: [
+                        {
+                            path: "commentsInProcess.creator",
+                            select: "name email avatar",
+                        },
+                        {
+                            path: "commentsInProcess.comments.creator",
+                            select: "name email avatar",
+                        },
+                    ],
+                },
+                { path: "timesheetLogs.creator", select: "name avatar _id email" },
+                { path: "hoursSpentOnTask.contributions.employee", select: "name" },
+                {
+                    path: "process",
+                    populate: {
+                        path: "tasks",
+                        populate: [
+                            { path: "parent", select: "name" },
+                            { path: "taskTemplate", select: "formula" },
+                            { path: "organizationalUnit" },
+                            {
+                                path:
+                                    "collaboratedWithOrganizationalUnits.organizationalUnit",
+                            },
+                            {
+                                path:
+                                    "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
+                                select: "name email _id active avatar",
+                            },
+                            {
+                                path: "evaluations.results.employee",
+                                select: "name email _id active",
+                            },
+                            {
+                                path: "evaluations.results.organizationalUnit",
+                                select: "name _id",
+                            },
+                            { path: "evaluations.results.kpis" },
+                            {
+                                path: "taskActions.creator",
+                                select: "name email avatar",
+                            },
+                            {
+                                path: "taskActions.comments.creator",
+                                select: "name email avatar",
+                            },
+                            {
+                                path: "taskActions.evaluations.creator",
+                                select: "name email avatar ",
+                            },
+                            {
+                                path: "taskComments.creator",
+                                select: "name email avatar",
+                            },
+                            {
+                                path: "taskComments.comments.creator",
+                                select: "name email avatar",
+                            },
+                            {
+                                path: "documents.creator",
+                                select: "name email avatar",
+                            },
+                            { path: "process" },
+                            {
+                                path: "commentsInProcess.creator",
+                                select: "name email avatar",
+                            },
+                            {
+                                path: "commentsInProcess.comments.creator",
+                                select: "name email avatar",
+                            },
+                        ],
+                    },
+                },
+                { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
+                { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
+            ]);
+        newTask.evaluations.reverse();
+
+        // tự động tắt bấm giờ 1 công việc khi mở nhiều tab, trình duyệt,
+        stopTimeSheetLogAllDevices(params.taskId, user)
+        return newTask;
+    }
 };
 
 /** Lấy các nhân viên đang bấm giờ trong 1 đơn vị */
