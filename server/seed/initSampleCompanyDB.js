@@ -69,7 +69,11 @@ const {
     ManufacturingMill,
     ManufacturingPlan,
     ManufacturingCommand,
-    WorkSchedule
+    WorkSchedule,
+
+    TransportRequirement,
+    TransportDepartment,
+
 } = require("../models");
 
 require("dotenv").config();
@@ -201,6 +205,9 @@ const initSampleCompanyDB = async () => {
         if (!db.models.ManufacturingMill) ManufacturingMill(db);
         if (!db.models.ManufacturingPlan) ManufacturingPlan(db);
         if (!db.models.ManufacturingCommand) ManufacturingCommand(db);
+
+        if (!db.models.TransportDepartment) TransportDepartment(db);
+        if (!db.models.TransportRequirement) TransportRequirement(db);
 
         // console.log("models_list", db.models);
     };
@@ -548,6 +555,23 @@ const initSampleCompanyDB = async () => {
         type: roleChucDanh._id,
     });
 
+    // Khởi tạo role cho đơn vị vận chuyển
+    const vcNvVanChuyen = await Role(vnistDB).create({
+        parents: [roleEmployee._id],
+        name: "Nhân viên vận chuyển - miền bắc",
+        type: roleChucDanh._id,
+    });
+    const vcNvGiamSat = await Role(vnistDB).create({
+        parents: [roleEmployee._id],
+        name: "Nhân viên giám sát - miền bắc",
+        type: roleChucDanh._id,
+    });
+    const vcTruongPhong = await Role(vnistDB).create({
+        parents: [roleManager._id],
+        name: "Trưởng phòng vận chuyển phía bắc",
+        type: roleChucDanh._id,
+    });
+
     console.log("Dữ liệu các phân quyền cho công ty VNIST");
 
     /**
@@ -720,6 +744,38 @@ const initSampleCompanyDB = async () => {
             roleId: nvPhongCSKH._id,
         },
 
+        // Đơn vị vận chuyển-------------------------------------------------
+        {   
+            // nva trưởng phòng vận chuyển phía bắc
+            userId: users[2]._id,
+            roleId: vcTruongPhong._id,
+        },
+        {
+            // admin nhân viên giám sát phía bắc,
+            userId: users[1]._id,
+            roleId: vcNvGiamSat._id,
+        },
+        {
+            // tvb nhân viên giám sát phía bắc
+            userId: users[3]._id,
+            roleId: vcNvGiamSat._id,
+        },
+        {
+            // vtv nhân viên vận chuyển phía bắc
+            userId: users[4]._id,
+            roleId: vcNvVanChuyen._id,
+        },
+        {
+            // nvd nhân viên vận chuyển phía bắc
+            userId: users[5]._id,
+            roleId: vcNvVanChuyen._id,
+        },
+        {
+            // tte nhân viên vận chuyển phía bắc
+            userId: users[6]._id,
+            roleId: vcNvVanChuyen._id,
+        }
+
     ]);
 
     /**
@@ -851,6 +907,17 @@ const initSampleCompanyDB = async () => {
         employees: [nvNhaMayTPCN._id],
         parent: Directorate._id,
     });
+
+    // Vận chuyển
+    const phongVanChuyen = await OrganizationalUnit(vnistDB).create({
+        name: "Phòng vận chuyển miền bắc",
+        description:
+            "Đơn vị vận chuyển khu vực miền bắc của Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
+        managers: [vcTruongPhong._id],
+        deputyManagers: [],
+        employees: [vcNvGiamSat._id, vcNvVanChuyen._id],
+        parent: Directorate._id,
+    })
 
     const phongkehoach = await OrganizationalUnit(vnistDB).create({
         name: "Phòng kế hoạch",
@@ -6806,6 +6873,66 @@ const initSampleCompanyDB = async () => {
 
     ]);
     console.log("Khởi tạo xong danh sách thông tin báo giá");
+
+    //------------------------- Dữ liệu vận chuyển -------------------------------------//
+    const transportDepartment = await TransportDepartment(vnistDB).insertMany({
+        organizationalUnit: phongVanChuyen._id,
+        type: [
+            {
+                roleOrganizationalUnit: vcTruongPhong._id,  
+                roleTransport: 1,
+            },
+            {
+                roleOrganizationalUnit: vcNvGiamSat._id,  
+                roleTransport: 2,
+            },
+            {
+                roleOrganizationalUnit: vcNvVanChuyen._id,  
+                roleTransport: 3,
+            },
+        ]
+    })
+
+    const transportRequirement = await TransportRequirement(vnistDB).insertMany([
+        {
+            geocode: {
+                fromAddress: {
+                    lat: 21.1256643,
+                    lng: 105.4758682
+                },
+                toAddress: {
+                    lat: 20.6639930000001,
+                    lng: 105.787069
+                }
+            },
+            status: 1,
+            code: "YCVC20210602.244971",
+            type: 5,
+            creator: users[7]._id,
+            fromAddress: "Sơn tây hà nội",
+            toAddress: "thanh oai hà nội",
+            goods: [
+                {
+                    good: listGood[2]._id,
+                    quantity: 100,
+                    volume: 100,
+                    payload: 100
+                }
+            ],
+            timeRequests: [
+                {
+                    timeRequest: (new Date()).toISOString(),
+                    description: "",
+                }
+            ],
+            volume: 100,
+            payload: 100,
+            approver: users[2]._id,
+            department: transportDepartment[0]._id,          
+        }
+    ])
+
+    console.log("Khởi tạo xong dữ liệu vận chuyển");
     
     /*---------------------------------------------------------------------------------------------
       -----------------------------------------------------------------------------------------------
