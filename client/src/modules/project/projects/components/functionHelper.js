@@ -564,7 +564,7 @@ export const getActualMemberCostOfTask = (task, projectDetail, userId) => {
     return actualNormalMemberCost;
 }
 
-export const renderLongListUsers = (list, limit = 10) => {
+export const renderLongList = (list, limit = 10) => {
     if (!list) return '';
     if (list.length > limit) {
         const newList = list.filter((item, index) => index < limit);
@@ -577,4 +577,33 @@ export const renderLongListUsers = (list, limit = 10) => {
 export const renderProjectTypeText = (projectType) => {
     if (projectType === 1) return "Đơn giản"
     return "Phương pháp CPM";
+}
+
+export const isUserInCurrentTask = (userId, task) => {
+    return task.accountableEmployees.find((accItem) => {
+        return (String(accItem) === userId) || (String(accItem.id) === userId)
+    }) || task.responsibleEmployees.find((resItem) => {
+        return (String(resItem) === userId) || (String(resItem.id) === userId)
+    })
+}
+
+export const getRecursiveRelevantTasks = (tasksList, currentTask) => {
+    let allTasksNodeRelationArr = [];
+    // Hàm đệ quy để lấy tất cả những tasks có liên quan tới task hiện tại
+    const getAllRelationTasks = (tasksList, currentTask) => {
+        const preceedsContainCurrentTask = tasksList.filter((taskItem) => {
+            return taskItem.preceedingTasks.includes(currentTask._id)
+        });
+        for (let preConItem of preceedsContainCurrentTask) {
+            if (!allTasksNodeRelationArr.includes(preConItem)) {
+                allTasksNodeRelationArr.push(preConItem);
+            }
+            getAllRelationTasks(tasksList, preConItem);
+        }
+        if (!preceedsContainCurrentTask || preceedsContainCurrentTask.length === 0) {
+            return;
+        }
+    }
+    getAllRelationTasks(tasksList, currentTask);
+    return allTasksNodeRelationArr;
 }

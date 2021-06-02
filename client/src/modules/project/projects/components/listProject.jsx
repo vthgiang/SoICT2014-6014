@@ -8,7 +8,7 @@ import ProjectDetailForm from './detailProject';
 import { ProjectActions } from '../redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { getStorage } from "../../../../config";
-import { checkIfAbleToCRUDProject, renderLongListUsers, renderProjectTypeText } from "./functionHelper";
+import { checkIfAbleToCRUDProject, renderLongList, renderProjectTypeText } from "./functionHelper";
 import { taskManagementActions } from "../../../task/task-management/redux/actions";
 import { DepartmentActions } from "../../../super-admin/organizational-unit/redux/actions";
 
@@ -205,7 +205,7 @@ function ListProject(props) {
                                             <td>{renderProjectTypeText(projectItem?.projectType)}</td>
                                             <td>{projectItem?.creator?.name}</td>
                                             <td>{projectItem?.projectManager.map(o => o.name).join(", ")}</td>
-                                            <td>{renderLongListUsers(projectItem?.responsibleEmployees.map(o => o.name))}</td>
+                                            <td>{renderLongList(projectItem?.responsibleEmployees.map(o => o.name))}</td>
                                             <td style={{ textAlign: "center" }}>
                                                 <a className="edit text-green" style={{ width: '5px' }} onClick={() => handleShowDetailInfo(projectItem)}><i className="material-icons">visibility</i></a>
                                                 {checkIfAbleToCRUDProject({ project, user, currentProjectId: projectItem._id }) && <a className="edit text-yellow" style={{ width: '5px' }} onClick={() => handleEdit(projectItem)}><i className="material-icons">edit</i></a>}

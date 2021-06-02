@@ -382,41 +382,54 @@ exports.updateStatusProjectChangeRequest = async (portal, changeRequestId, reque
             requestStatus,
         }
     }, { new: true });
-    // nếu requestStatus là đồng ý thì thực thi
+    // Nếu requestStatus là đồng ý thì thực thi
     if (Number(requestStatus) === 3) {
-        // Cập nhật + Tạo mới task nếu có
-        for (let affectedItem of updateCRStatusResult.affectedTasksList) {
-            // Nếu task cần edit
-            if (affectedItem.task) {
-                await Task(connect(DB_CONNECTION, portal)).findByIdAndUpdate(affectedItem.task, {
-                    $set: {
-                        preceedingTasks: affectedItem.new.preceedingTasks,
-                        startDate: affectedItem.new.startDate,
-                        startDate: affectedItem.new.startDate,
-                        endDate: affectedItem.new.endDate,
-                        estimateNormalTime: affectedItem.new.estimateNormalTime,
-                        estimateOptimisticTime: affectedItem.new.estimateOptimisticTime,
-                        estimateNormalCost: affectedItem.new.estimateNormalCost,
-                        estimateMaxCost: affectedItem.new.estimateMaxCost,
-                        actorsWithSalary: affectedItem.new.actorsWithSalary,
-                        responsibleEmployees: affectedItem.new.responsibleEmployees,
-                        accountableEmployees: affectedItem.new.accountableEmployees,
-                        totalResWeight: affectedItem.new.totalResWeight,
-                        estimateAssetCost: affectedItem.new.estimateAssetCost,
-                    }
-                }, { new: true });
-            }
-            // Nếu affectedItem.task là dạng undefined
-            else {
-                await createProjectTask(portal, updateCRStatusResult.currentTask);
-            }
+        // Nếu là dạng normal thì bỏ qua
+        if (updateCRStatusResult.type === 'normal') {}
+        // Nếu là dạng update trạng thái hoãn huỷ công việc
+        else if (updateCRStatusResult.type === 'update_status_task') {
+            const affectedItem = updateCRStatusResult.affectedTasksList[0];
+            await Task(connect(DB_CONNECTION, portal)).findByIdAndUpdate(affectedItem.task, {
+                $set: {
+                    status: affectedItem.new.status,
+                }
+            }, { new: true });
         }
-        await Project(connect(DB_CONNECTION, portal)).findByIdAndUpdate(updateCRStatusResult.taskProject, {
-            $set: {
-                budgetChangeRequest: updateCRStatusResult.baseline.newCost,
-                endDateRequest: updateCRStatusResult.baseline.newEndDate,
+        // Nếu là dạng edit_task hoặc add_task
+        else {
+            for (let affectedItem of updateCRStatusResult.affectedTasksList) {
+                // Nếu task cần edit
+                if (affectedItem.task) {
+                    await Task(connect(DB_CONNECTION, portal)).findByIdAndUpdate(affectedItem.task, {
+                        $set: {
+                            preceedingTasks: affectedItem.new.preceedingTasks,
+                            startDate: affectedItem.new.startDate,
+                            startDate: affectedItem.new.startDate,
+                            endDate: affectedItem.new.endDate,
+                            estimateNormalTime: affectedItem.new.estimateNormalTime,
+                            estimateOptimisticTime: affectedItem.new.estimateOptimisticTime,
+                            estimateNormalCost: affectedItem.new.estimateNormalCost,
+                            estimateMaxCost: affectedItem.new.estimateMaxCost,
+                            actorsWithSalary: affectedItem.new.actorsWithSalary,
+                            responsibleEmployees: affectedItem.new.responsibleEmployees,
+                            accountableEmployees: affectedItem.new.accountableEmployees,
+                            totalResWeight: affectedItem.new.totalResWeight,
+                            estimateAssetCost: affectedItem.new.estimateAssetCost,
+                        }
+                    }, { new: true });
+                }
+                // Nếu affectedItem.task là dạng undefined => Dạng add_task
+                else {
+                    await createProjectTask(portal, updateCRStatusResult.currentTask);
+                }
             }
-        }, { new: true });
+            await Project(connect(DB_CONNECTION, portal)).findByIdAndUpdate(updateCRStatusResult.taskProject, {
+                $set: {
+                    budgetChangeRequest: updateCRStatusResult.baseline.newCost,
+                    endDateRequest: updateCRStatusResult.baseline.newEndDate,
+                }
+            }, { new: true });
+        }
     }
     // query lại danh sách projectChangeRequest
     const projectChangeRequestsList = await ProjectChangeRequest(connect(DB_CONNECTION, portal)).find({
