@@ -6930,40 +6930,98 @@ const initSampleCompanyDB = async () => {
             documents: [],
             unitsProducedDuringTheYears: [],
             informations: [],
-          }
+          },
+        {
+            assetType: [listAssetType[23]._id],
+            readByRoles: [vcTruongPhong._id],
+            cost: 0,
+            usefulLife: 0,
+            startDepreciation: null,
+            residualValue: null,
+            company: vnist._id,
+            avatar: "",
+            assetName: "Xe tải 2 ",
+            code: "VVTM20210603.182182",
+            serial: "1234",
+            group: "vehicle",
+            purchaseDate: (new Date()).toISOString(),
+            warrantyExpirationDate: (transportGetNextNDates(101)).toISOString(),
+            managedBy: users[1]._id,
+            assignedToUser: null,
+            assignedToOrganizationalUnit: null,
+            location: null,
+            status: "ready_to_use",
+            typeRegisterForUse: 3,
+            description: "",
+            detailInfo: [
+                {
+                    nameField: "volume",
+                    value: "20"
+                },
+                {
+                    
+                    nameField: "payload",
+                    value: "2000"
+                }
+            ],
+            depreciationType: "none",
+            maintainanceLogs: [],
+            usageLogs: [],
+            incidentLogs: [],
+            locationLogs: [],
+            disposalDate: null,
+            disposalType: "",
+            disposalCost: null,
+            disposalDesc: "",
+            documents: [],
+            unitsProducedDuringTheYears: [],
+            informations: [],
+        }
+    ])
+
+    const transportDepartment = await TransportDepartment(vnistDB).insertMany([
+        {
+            organizationalUnit: phongVanChuyen._id,
+            type: [
+                {
+                    roleOrganizationalUnit: vcTruongPhong._id,  
+                    roleTransport: 1,
+                },
+                {
+                    roleOrganizationalUnit: vcNvGiamSat._id,  
+                    roleTransport: 2,
+                },
+                {
+                    roleOrganizationalUnit: vcNvVanChuyen._id,  
+                    roleTransport: 3,
+                },
+            ]
+        }
     ])
 
     const transportVehicle = await TransportVehicle(vnistDB).insertMany([
         {
             asset: newTransportAssetVehicle[0]._id,
-            code: "VVTM20210603.182181",
+            code: newTransportAssetVehicle[0].code,
             name: newTransportAssetVehicle[0].assetName,
             payload:3000,
             volume:16,
-            usable:1
+            usable:1,
+            department: transportDepartment[0]._id,
+        },
+        {
+            asset: newTransportAssetVehicle[1]._id,
+            code: newTransportAssetVehicle[1].code,
+            name: newTransportAssetVehicle[1].assetName,
+            payload:2000,
+            volume:20,
+            usable:1,
+            department: transportDepartment[0]._id,
         }
     ])
 
-    const transportDepartment = await TransportDepartment(vnistDB).insertMany({
-        organizationalUnit: phongVanChuyen._id,
-        type: [
-            {
-                roleOrganizationalUnit: vcTruongPhong._id,  
-                roleTransport: 1,
-            },
-            {
-                roleOrganizationalUnit: vcNvGiamSat._id,  
-                roleTransport: 2,
-            },
-            {
-                roleOrganizationalUnit: vcNvVanChuyen._id,  
-                roleTransport: 3,
-            },
-        ]
-    })
-
     const transportRequirement = await TransportRequirement(vnistDB).insertMany([
-        {
+        { //0
             geocode: {
                 fromAddress: {
                     lat: 21.1256643,
@@ -6998,7 +7056,223 @@ const initSampleCompanyDB = async () => {
             payload: 100,
             approver: users[2]._id,
             department: transportDepartment[0]._id,          
-        }
+        },
+        { //1
+            geocode: {
+            fromAddress: {
+                lat: 11.20385642,
+                lng: 107.356440853
+            },
+            toAddress: {
+                lat: 11.3130384470001,
+                lng: 106.024041001
+            }
+            },
+            status: 1,
+            code: "YCVC20210602.224869",
+            type: 5,
+            creator: users[6]._id,
+            fromAddress: "định quán đồng nai",
+            toAddress: "châu thành tây ninh",
+            goods: [
+                {
+                    good: listGood[1]._id,
+                    quantity: 10,
+                    volume: 10,
+                    payload: 10
+                }
+            ],
+            timeRequests: [
+                {
+                    timeRequest: transportGetNextNDates(6),
+                    description: ""
+                }
+            ],
+            volume: 10,
+            payload: 10,
+            approver: users[2]._id,
+            department: transportDepartment[0]._id,
+        },
+        { //2
+            geocode: {
+            fromAddress: {
+                lat: 20.9991964035554,
+                lng: 105.845662549979
+            },
+            toAddress: {
+                lat: 20.988961633,
+                lng: 105.628865767
+            }
+            },
+            status: 1,
+            code: "YCVC20210602.185942",
+            type: 5,
+            creator: users[8]._id,
+            fromAddress: "Trần đại nghĩa hai bà trưng hà nội",
+            toAddress: "ngọc mỹ quốc oai hà nội",
+            goods: [
+                {
+                    good: listGood[3]._id,
+                    quantity: 10,
+                    volume: 10,
+                    payload: 10
+                }
+            ],
+            timeRequests: [
+                {
+                    timeRequest: transportGetNextNDates(7),
+                    description: ""
+                }
+            ],
+            volume: 10,
+            payload: 10,
+            approver: users[2]._id,
+            department: transportDepartment[0]._id,
+        }, 
+        { //3
+            geocode: {
+                fromAddress: {
+                    lat: 21.0077937,
+                    lng: 105.84602459
+                },
+                toAddress: {
+                    lat: 21.005383514547,
+                    lng: 105.93770476731
+                }
+            },
+            status: 1,
+            code: "YCVC20210602.141576",
+            type: 5,
+            creator: users[7]._id,
+            fromAddress: "vĩnh phú hai bà trưng hà nội",
+            toAddress: "trâu quỳ gia lâm hà nội",
+            goods: [
+                {
+                    good: listGood[3]._id,
+                    quantity: 10,
+                    volume: 100,
+                    payload: 100
+                }
+            ],
+            timeRequests: [
+                {
+                    timeRequest: (transportGetNextNDates(14)).toISOString(),
+                    description: "",
+                }
+            ],
+            volume: 100,
+            payload: 100,
+            approver: users[2]._id,
+            department: transportDepartment[0]._id,          
+        },
+        { //4
+            geocode: {
+                fromAddress: {
+                    lat: 21.032005984,
+                    lng: 105.909988812
+                },
+                toAddress: {
+                    lat: 20.984650683,
+                    lng: 105.842763967
+                }
+            },
+            status: 1,
+            code: "YCVC20210602.257818",
+            type: 5,
+            creator: users[7]._id,
+            fromAddress: "long biên hà nội",
+            toAddress: "kim đồng giáp bát hà nội",
+            goods: [
+                {
+                    good: listGood[3]._id,
+                    quantity: 10,
+                    volume: 100,
+                    payload: 100
+                }
+            ],
+            timeRequests: [
+                {
+                    timeRequest: (transportGetNextNDates(4)).toISOString(),
+                    description: "",
+                }
+            ],
+            volume: 100,
+            payload: 100,
+            approver: users[2]._id,
+            department: transportDepartment[0]._id,          
+        },
+        { //5
+            geocode: {
+                fromAddress: {
+                    lat: 20.9830403964559,
+                    lng: 105.73100465623
+                },
+                toAddress: {
+                    lat: 20.997942715,
+                    lng: 105.816376617
+                }
+            },
+            status: 1,
+            code: "YCVC20210602.257918",
+            type: 5,
+            creator: users[7]._id,
+            fromAddress: "la phù hoài đức hà nội",
+            toAddress: "thanh xuân hà nội",
+            goods: [
+                {
+                    good: listGood[3]._id,
+                    quantity: 10,
+                    volume: 100,
+                    payload: 100
+                }
+            ],
+            timeRequests: [
+                {
+                    timeRequest: (transportGetNextNDates(4)).toISOString(),
+                    description: "",
+                }
+            ],
+            volume: 100,
+            payload: 100,
+            approver: users[2]._id,
+            department: transportDepartment[0]._id,          
+        },
+        { //6
+            geocode: {
+                fromAddress: {
+                    lat: 20.9826710470001,
+                    lng: 105.825478283
+                },
+                toAddress: {
+                    lat: 21.0874567001676,
+                    lng: 105.661148675343
+                }
+            },
+            status: 1,
+            code: "YCVC20210602.181053",
+            type: 5,
+            creator: users[7]._id,
+            fromAddress: "hoàng mai hà nội",
+            toAddress: "nguyễn thái học hà nội",
+            goods: [
+                {
+                    good: listGood[3]._id,
+                    quantity: 10,
+                    volume: 100,
+                    payload: 100
+                }
+            ],
+            timeRequests: [
+                {
+                    timeRequest: (transportGetNextNDates(8)).toISOString(),
+                    description: "",
+                }
+            ],
+            volume: 100,
+            payload: 100,
+            approver: users[2]._id,
+            department: transportDepartment[0]._id,          
+        },
     ])
 
     console.log("Khởi tạo xong dữ liệu vận chuyển");

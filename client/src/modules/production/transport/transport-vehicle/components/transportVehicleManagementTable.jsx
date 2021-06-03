@@ -108,6 +108,7 @@ function TransportVehicleManagementTable(props) {
             volume: vehicle.volume,
             transportPlan: "",
             vehicleId: vehicle._id,
+            currentRole: localStorage.getItem('currentRole'),
         }
         if (transportVehicle){
             if (transportVehicle.lists && transportVehicle.lists.length !==0){

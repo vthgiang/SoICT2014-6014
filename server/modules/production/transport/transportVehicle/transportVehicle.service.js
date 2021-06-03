@@ -6,6 +6,7 @@ const {
     connect
 } = require(`../../../../helpers/dbHelper`);
 const TransportPlanServices = require('../transportPlan/transportPlan.service')
+const TransportDepartment = require('../transportDepartment/transportDepartment.service')
 
 /**
  * Lưu lại xe từ module asset, nếu đã có xe thì ko lưu mới
@@ -25,8 +26,10 @@ const TransportPlanServices = require('../transportPlan/transportPlan.service')
  */
 exports.createTransportVehicle = async (portal, data) => {
     let assetId = data.id;
+    let currentRole = data.currentRole;
+    let department = TransportDepartment.getDepartmentByRole(portal, currentRole);
     let newTransportVehicle;
-    let oldTransportVehicle = await TransportVehicle(connect(DB_CONNECTION, portal)).findOne({asset: assetId});
+    let oldTransportVehicle = await TransportVehicle(connect(DB_CONNECTION, portal)).findOne({asset: assetId, department: department._id});
     
     if (!oldTransportVehicle) {
         newTransportVehicle = await TransportVehicle(connect(DB_CONNECTION, portal)).create({
@@ -37,6 +40,7 @@ exports.createTransportVehicle = async (portal, data) => {
             volume: data.volume,
             // transportPlan: data.transportPlan,
             usable: 1,
+            department: department._id,
         });
     }
     else {
@@ -79,10 +83,13 @@ exports.getAllTransportVehicles = async (portal, data) => {
     //         }
     //     }
     // }
-
+    let currentRole = data.currentRole;
+    let department = TransportDepartment.getDepartmentByRole(portal, currentRole);
     let page, limit;
     page = data?.page ? Number(data.page) : 1;
     limit = data?.limit ? Number(data.limit) : 200;
+    
+    keySearch = {department: department._id}
 
     let totalList = await TransportVehicle(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
     let vehicles = await TransportVehicle(connect(DB_CONNECTION, portal)).find(keySearch)

@@ -232,3 +232,23 @@ exports.getUserByRole = async (portal, data) => {
     }
     return {list: res, role: role};
 }
+
+exports.getDepartmentByRole = async (portal, currentRole) => {
+    let listDepartments = await this.getAllTransportDepartments(portal);
+    listDepartments = listDepartments.data; 
+    let res;
+    listDepartments.map(item => {
+        if (item.type && item.type.length !==0){
+            item.map(type => {
+                if (type.roleOrganizationalUnit && type.roleOrganizationalUnit.length !==0){
+                    type.roleOrganizationalUnit.map(role => {
+                        if (String(role) === String(currentRole)){
+                            res = item;
+                        }
+                    })
+                }
+            })
+        }
+    })
+    return res;
+}
