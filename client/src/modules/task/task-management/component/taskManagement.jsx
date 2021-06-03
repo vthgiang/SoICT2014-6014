@@ -176,7 +176,6 @@ class TaskManagement extends Component {
         let progress = currentTasks.progress;
         let action = currentTasks.taskActions.filter(item => item.creator); // Nếu công việc theo mẫu, chưa hoạt động nào được xác nhận => cho xóa
 
-        if (action.length === 0 && progress === 0) {
             Swal.fire({
                 title: `Bạn có chắc chắn muốn xóa công việc "${currentTasks.name}"?`,
                 icon: 'warning',
@@ -191,14 +190,7 @@ class TaskManagement extends Component {
                 }
             })
 
-        }
-        else {
-            Swal.fire({
-                title: translate('task.task_management.confirm_delete'),
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Xác nhận'
-            })
-        }
+        
     }
 
     handleGetDataPagination = async (index) => {
