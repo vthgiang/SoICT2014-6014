@@ -37,7 +37,7 @@ function createTransportRequirement(data) {
         },
         true,
         true,
-        "manage_transport"
+        "manage_transport.transportRequirement"
     )
 }
 
@@ -62,7 +62,7 @@ function editTransportRequirement(id, data) {
         },
         true,
         true,
-        "manage_transport"
+        "manage_transport.transportRequirement"
     )
 }
 
@@ -74,6 +74,6 @@ function deleteTransportRequirement(id) {
         },
         true,
         true,
-        "manage_transport"
+        "manage_transport.transportRequirement"
     )
 }

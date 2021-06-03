@@ -85,6 +85,16 @@ function TransportRequirementsCreateForm(props) {
     // })
 
     const { translate} = props;
+
+    const isFormValidated = () => {
+        if (state.value && requirementsForm.code && requirementsForm.info?.customer1AddressTransport &&  requirementsForm.info?.customer2AddressTransport
+            && requirementsForm.goods && requirementsForm.goods.length !==0
+            && requirementsForm.approver && requirementsForm.department){
+                return true;
+            }
+        return false;
+        
+    }
     /**
      * Hàm dùng để lưu thông tin của form và gọi service tạo mới ví dụ
      */
@@ -217,9 +227,9 @@ function TransportRequirementsCreateForm(props) {
     }
 
     useEffect(() => {
-        // props.getCustomers();
-        // props.getBillsByType({ page:1, limit:30, group: parseInt(state.billGroup), managementLocation: localStorage.getItem("currentRole") });
-        console.log(state, " okkkkkkkkkkkk")
+        // // props.getCustomers();
+        // // props.getBillsByType({ page:1, limit:30, group: parseInt(state.billGroup), managementLocation: localStorage.getItem("currentRole") });
+        // console.log(state, " okkkkkkkkkkkk")
         if(!billFromStockModules)props.getBillsByType({ group: parseInt(state.billGroup), managementLocation: localStorage.getItem("currentRole") });
     },[state])
 
@@ -417,11 +427,11 @@ function TransportRequirementsCreateForm(props) {
                 modalID="modal-create-transport-requirements" 
                 isLoading={false}
                 formID="form-create-transport-requirements"
-                title={translate('manage_transport.add_requirements')}
-                // msg_success={translate('manage_example.add_success')}
-                // msg_faile={translate('manage_example.add_fail')}
+                title={translate('manage_transport.transportRequirement.add_requirements')}
+                // msg_success={translate('manage_transport.add_success')}
+                // msg_faile={translate('manage_transport.add_fail')}
                 func={save}
-                // disableSubmit={!isFormValidated()}
+                disableSubmit={!isFormValidated()}
                 size={100}
                 maxWidth={500}
             >

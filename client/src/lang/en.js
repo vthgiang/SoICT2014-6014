@@ -4212,7 +4212,12 @@ export default {
         },
 
         manage_transport: {
-            add_requirements: "Add a new requirement",
+            transportRequirement: {
+                add_requirements: "Add a new transport requirement",                
+                add_success: "Created new transport requirement",                
+                edit_success: "Edited transport requirement",
+                delete_success: "Deleted transport requirement",
+            }
         },
 
         // Quản lý dự án

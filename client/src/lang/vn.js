@@ -5762,7 +5762,12 @@ export default {
             }
         },
         manage_transport: {
-            add_requirements: "Thêm yêu cầu vận chuyển",
+            transportRequirement: {
+                add_requirements: "Thêm yêu cầu vận chuyển",
+                add_success: "Tạo yêu cầu vận chuyển thành công",
+                edit_success: "Chỉnh sửa yêu cầu vận chuyển thành công",
+                delete_success: "Đã xóa yêu cầu vận chuyển",
+            },
         },
 
         // Quản lý dự án

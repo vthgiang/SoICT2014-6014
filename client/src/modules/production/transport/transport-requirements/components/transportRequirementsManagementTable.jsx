@@ -163,6 +163,7 @@ function TransportRequirementsManagementTable(props) {
         <React.Fragment>
             <TransportRequirementsCreateForm 
                 requirements={requirements}
+                key = {transportRequirements}
             />
             <TransportRequirementsViewDetails
                 curentTransportRequirementDetail={curentTransportRequirementDetail}

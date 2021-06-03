@@ -71,7 +71,7 @@ function TransportRequirementsEditForm(props) {
                         payload: item.payload,
                         quantity: item.quantity,
                         volume: item.volume,
-                        good: item._id,
+                        good: item.good?._id,
                     })
 
                     totalPayload+=item.payload;
@@ -89,13 +89,7 @@ function TransportRequirementsEditForm(props) {
             geocode: requirementsForm.geocode,
         };
         editTransportRequirement(curentTransportRequirementDetail._id, data);
-        setRequirementsForm({})
     }
-
-     useEffect(() => {
-        // props.getCustomers();
-        // props.getBillsByType({ page:1, limit:30, group: parseInt(state.billGroup), managementLocation: localStorage.getItem("currentRole") });
-    },[state])
 
     // Khởi tạo giá trị ban đầu
     useEffect(() => {
