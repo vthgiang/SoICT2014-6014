@@ -176,21 +176,21 @@ class TaskManagement extends Component {
         let progress = currentTasks.progress;
         let action = currentTasks.taskActions.filter(item => item.creator); // Nếu công việc theo mẫu, chưa hoạt động nào được xác nhận => cho xóa
 
-            Swal.fire({
-                title: `Bạn có chắc chắn muốn xóa công việc "${currentTasks.name}"?`,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                cancelButtonText: this.props.translate('general.no'),
-                confirmButtonText: this.props.translate('general.yes'),
-            }).then((result) => {
-                if (result.value) {
-                    this.props.deleteTaskById(id);
-                }
-            })
+        Swal.fire({
+            title: `Bạn có chắc chắn muốn xóa công việc "${currentTasks.name}"?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            cancelButtonText: this.props.translate('general.no'),
+            confirmButtonText: this.props.translate('general.yes'),
+        }).then((result) => {
+            if (result.value) {
+                this.props.deleteTaskById(id);
+            }
+        })
 
-        
+
     }
 
     handleGetDataPagination = async (index) => {
@@ -468,8 +468,8 @@ class TaskManagement extends Component {
         else barColor = "gold";
         return (
             <div >
-                <div className="progress" style={{ backgroundColor: 'rgb(221, 221, 221)', textAlign: "center" }}>
-                    <span style={{ position: "absolute" }}>{progress + '%'}</span>
+                <div className="progress" style={{ backgroundColor: 'rgb(221, 221, 221)', textAlign: "right", borderRadius: '3px' }}>
+                    <span style={{ fontSize: '13px', marginRight: '5px' }}>{progress + '%'}</span>
                     <div role="progressbar" className="progress-bar" aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100} style={{ width: `${progress + '%'}`, maxWidth: "100%", minWidth: "0%", backgroundColor: barColor }} >
                     </div>
                 </div>
