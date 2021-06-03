@@ -6,12 +6,12 @@ import { PrivateRoute } from "./privateRoute";
 import { AuthRoute } from "./authRoute";
 
 import Layout from "../layout/layout";
+import Login from "../modules/auth/components/login"
+import Introduction from "../modules/intro/components"
+import ResetPassword from "../modules/auth/components/resetPasswordNew"
 
 const Home = lazy(() => import("../modules/home/components"))
 const NotFound = lazy(() => import("../modules/not-found/components"))
-const Login = lazy(() => import("../modules/auth/components/login"))
-const ResetPassword = lazy(() => import("../modules/auth/components/resetPasswordNew"))
-const Introduction = lazy(() => import("../modules/intro/components"))
 const ManageDocument = lazy(() => import("../modules/document/components/administration"))
 const Document = lazy(() => import("../modules/document/components/user"))
 
@@ -90,11 +90,11 @@ const EmployeeAssetManagement = lazy(() => import("../modules/asset/user/asset-m
 const TaskReportManager = lazy(() => import("../modules/report/task-report/components/taskReportManager"))
 
 //warehouse
-const InventoryDashBoard = lazy(() => import("../modules/production/warehouse/dashboard-inventory/component"))
-const BillDashBoard = lazy(() => import("../modules/production/warehouse/dashboard-bill/component"))
-const CategoryManagement = lazy(() => import("../modules/production/common-production/category-management/component"))
-const GoodManagement = lazy(() => import("../modules/production/common-production/good-management/component"))
-const StockManagement = lazy(() => import("../modules/production/warehouse/stock-management/component"))
+const InventoryDashBoard = lazy(() => import("../modules/production/warehouse/dashboard-inventory/components"))
+const BillDashBoard = lazy(() => import("../modules/production/warehouse/dashboard-bill/components"))
+const CategoryManagement = lazy(() => import("../modules/production/common-production/category-management/components"))
+const GoodManagement = lazy(() => import("../modules/production/common-production/good-management/components"))
+const StockManagement = lazy(() => import("../modules/production/warehouse/stock-management/components"))
 const BinLocationManagement = lazy(() => import("../modules/production/warehouse/bin-location-management/components"))
 const BillManagement = lazy(() => import("../modules/production/warehouse/bill-management/components"))
 const InventoryManagement = lazy(() => import("../modules/production/warehouse/inventory-management/components"))

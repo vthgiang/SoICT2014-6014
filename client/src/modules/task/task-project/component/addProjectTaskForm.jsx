@@ -57,6 +57,7 @@ const AddProjectTaskForm = (props) => {
     });
     const [startTime, setStartTime] = useState('08:00 AM');
     const [endTime, setEndTime] = useState('05:30 PM');
+    const [tempEndDate, setTempEndDate] = useState('');
     const [description, setDescription] = useState('');
 
     const { id, newTask } = state;
@@ -65,7 +66,6 @@ const AddProjectTaskForm = (props) => {
     const { tasktemplates, user, translate, tasks, department, project, isProcess, info, role, currentProjectTasks } = props;
     const projectDetail = getCurrentProjectDetails(project);
     const listUsers = user && user.usersInUnitsOfCompany ? getEmployeeSelectBoxItems(user.usersInUnitsOfCompany) : []
-    const timePickerRef = useRef(null);
     const initTasksToChoose = currentProjectTasks ? currentProjectTasks?.map(item => ({
         value: item._id,
         text: item.name
@@ -91,7 +91,7 @@ const AddProjectTaskForm = (props) => {
 
     const convertDateTime = (date, time) => {
         let splitter = date.split("-");
-        let strDateTime = `${splitter[2]}/${splitter[1]}/${splitter[0]} ${time}`;
+        let strDateTime = `${splitter[2]}/${splitter[1]}/${splitter[0]} ${time.replace(/CH/g, 'PM').replace(/SA/g, 'AM')}`;
         return dayjs(strDateTime).format('YYYY/MM/DD HH:mm:ss');
     }
 
@@ -161,7 +161,7 @@ const AddProjectTaskForm = (props) => {
         }
         const curEndDateTime = taskItem ? handleWeekendAndWorkTime(projectDetail, taskItem).endDate : '';
         const curEndDate = curEndDateTime ? moment(curEndDateTime).format('DD-MM-YYYY') : state.newTask.endDate;
-        const curEndTime = curEndDateTime ? moment(curEndDateTime).format('H:mm A') : endTime;
+        const curEndTime = curEndDateTime ? moment(curEndDateTime).format('hh:mm A').replace(/CH/g, 'PM').replace(/SA/g, 'AM') : endTime;
         const currentNewTask = {
             ...state.newTask,
             startDate: value,
@@ -193,21 +193,13 @@ const AddProjectTaskForm = (props) => {
         }
         const curEndDateTime = taskItem ? handleWeekendAndWorkTime(projectDetail, taskItem).endDate : '';
         const curEndDate = curEndDateTime ? moment(curEndDateTime).format('DD-MM-YYYY') : state.newTask.endDate;
-        const curEndTime = curEndDateTime ? moment(curEndDateTime).format('H:mm A') : endTime;
-        const currentNewTask = {
-            ...state.newTask,
-            endDate: curEndDate,
-        }
+        const curEndTime = curEndDateTime ? moment(curEndDateTime).format('hh:mm A').replace(/CH/g, 'PM').replace(/SA/g, 'AM') : endTime;
+        setTempEndDate(curEndDate);
         setStartTime(value);
         setEndTime(curEndTime);
-        setState({
-            ...state,
-            newTask: currentNewTask,
-        });
         setTimeout(() => {
             props.handleChangeStartTime(value);
             props.handleChangeEndTime(curEndTime);
-            props.handleChangeTaskData(currentNewTask);
         }, 10);
     }
 
@@ -421,8 +413,9 @@ const AddProjectTaskForm = (props) => {
                 estimateNormalTime: currentEstimateNormalTime,
             }
             const curEndDateTime = taskItem ? handleWeekendAndWorkTime(projectDetail, taskItem).endDate : '';
+            console.log('curEndDateTime', curEndDateTime)
             const curEndDate = curEndDateTime ? moment(curEndDateTime).format('DD-MM-YYYY') : state.newTask.endDate;
-            const curEndTime = curEndDateTime ? moment(curEndDateTime).format('H:mm A') : endTime;
+            const curEndTime = curEndDateTime ? moment(curEndDateTime).format('hh:mm A').replace(/CH/g, 'PM').replace(/SA/g, 'AM') : endTime;
 
             const predictEstimateOptimisticTime = String(Number(value)) === 'NaN' || Number(value) === 0 || Number(value) === 1
                 ? '0' : Number(value) === 2 ? '1' : (Number(value) - 2).toString()
@@ -623,7 +616,7 @@ const AddProjectTaskForm = (props) => {
         })
         const latestStartDate = getMaxMinDateInArr(preceedingTasksEndDateArr, 'max');
         const curStartDate = moment(latestStartDate).format('DD-MM-YYYY');
-        const curStartTime = moment(latestStartDate).format('H:mm A');
+        const curStartTime = moment(latestStartDate).format('hh:mm A').replace(/CH/g, 'PM').replace(/SA/g, 'AM');
         newTask.preceedingTasks.length > 0 && setStartTime(curStartTime);
         newTask.preceedingTasks.length > 0 && setState({
             ...state,
@@ -634,14 +627,22 @@ const AddProjectTaskForm = (props) => {
             },
 
         })
-        newTask.preceedingTasks.length > 0 && setTimeout(() => {
+        if (newTask.preceedingTasks.length > 0) {
             props.handleChangeStartTime(curStartTime);
             props.handleChangeTaskData({
                 ...state.newTask,
                 currentLatestStartDate: latestStartDate,
                 startDate: curStartDate,
             })
-        }, 10);
+        }
+        // newTask.preceedingTasks.length > 0 && setTimeout(() => {
+        //     props.handleChangeStartTime(curStartTime);
+        //     props.handleChangeTaskData({
+        //         ...state.newTask,
+        //         currentLatestStartDate: latestStartDate,
+        //         startDate: curStartDate,
+        //     })
+        // }, 10);
     }, [newTask.preceedingTasks])
 
     // Khi followingTasksList có sự thay đổi thì preceedingTasksList cũng phải thay đổi theo
@@ -676,7 +677,9 @@ const AddProjectTaskForm = (props) => {
 
     useEffect(() => {
         const curStartDateTime = convertDateTime(newTask.startDate, startTime);
-        if (newTask.currentLatestStartDate && newTask.preceedingTasks.length > 0 && moment(curStartDateTime).isBefore(newTask.currentLatestStartDate)) {
+        console.log('curStartDateTime', curStartDateTime, 'newTask.currentLatestStartDate', newTask.currentLatestStartDate)
+        if (newTask.currentLatestStartDate && newTask.preceedingTasks.length > 0
+            && moment(curStartDateTime).isBefore(moment(newTask.currentLatestStartDate).set('second', 0))) {
             setState({
                 ...state,
                 newTask: {
@@ -684,8 +687,28 @@ const AddProjectTaskForm = (props) => {
                     errorOnStartDate: `Thời điểm bắt đầu phải sau thời gian kết thúc của công việc tiền nhiệm: ${moment(newTask.currentLatestStartDate).format('HH:mm DD/MM/YYYY')}`
                 }
             })
+        } else {
+            setState({
+                ...state,
+                newTask: {
+                    ...state.newTask,
+                    errorOnStartDate: undefined,
+                }
+            })
         }
     }, [newTask.currentLatestStartDate, newTask.startDate, startTime])
+
+    useEffect(() => {
+        const currentNewTask = {
+            ...state.newTask,
+            endDate: tempEndDate,
+        }
+        setState({
+            ...state,
+            newTask: currentNewTask,
+        });
+        props.handleChangeTaskData(currentNewTask);
+    }, [tempEndDate])
 
     return (
         <React.Fragment>
@@ -719,7 +742,7 @@ const AddProjectTaskForm = (props) => {
 
                         <div className={'row'}>
                             {/* Tên công việc */}
-                            <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 form-group ${newTask.errorOnName === undefined ? "" : "has-error"}`}>
+                            <div className={`col-lg-12 col-md-12 col-ms-12 col-xs-12 form-group ${newTask.errorOnName === undefined ? "" : "has-error"}`}>
                                 <label>{translate('task.task_management.name')}<span className="text-red">*</span></label>
                                 <input type="Name" className="form-control" placeholder={translate('task.task_management.name')} value={(newTask.name)} onChange={handleChangeTaskName} />
                                 <ErrorLabel content={newTask.errorOnName} />
@@ -877,8 +900,7 @@ const AddProjectTaskForm = (props) => {
                                     onChange={handleChangeTaskStartDate}
                                 />
                                 <TimePicker
-                                    ref={timePickerRef}
-                                    id={`time-picker-1-${id}-${props.id}`}
+                                    id={`time-picker-project-add-task`}
                                     value={startTime}
                                     onChange={handleStartTimeChange}
                                 />

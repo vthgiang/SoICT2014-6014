@@ -4,7 +4,7 @@ import Swal from 'sweetalert2';
 import { withTranslate } from 'react-redux-multilingual';
 import { DataTableSetting, DatePicker, PaginateBar, SelectBox, SelectMulti, TreeTable, ExportExcel, Tree } from '../../../../common-components';
 import { getFormatDateFromTime } from '../../../../helpers/stringMethod';
-
+import moment from 'moment';
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { DashboardEvaluationEmployeeKpiSetAction } from '../../../kpi/evaluation/dashboard/redux/actions';
@@ -496,20 +496,41 @@ class TaskManagementOfUnit extends Component {
         let progress = currentTasks.progress;
         let action = currentTasks.taskActions.filter(item => item.creator); // Nếu công việc theo mẫu, chưa hoạt động nào được xác nhận => cho xóa
 
-            Swal.fire({
-                title: `Bạn có chắc chắn muốn xóa công việc "${currentTasks.name}"?`,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                cancelButtonText: this.props.translate('general.no'),
-                confirmButtonText: this.props.translate('general.yes'),
-            }).then((result) => {
-                if (result.value) {
-                    this.props.deleteTaskById(id);
-                }
-            })
+        Swal.fire({
+            title: `Bạn có chắc chắn muốn xóa công việc "${currentTasks.name}"?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            cancelButtonText: this.props.translate('general.no'),
+            confirmButtonText: this.props.translate('general.yes'),
+        }).then((result) => {
+            if (result.value) {
+                this.props.deleteTaskById(id);
+            }
+        })
 
+    }
+
+    convertDataProgress = (progress = 0, startDate, endDate) => {
+        let now = moment(new Date());
+        let end = moment(endDate);
+        let start = moment(startDate);
+        let period = end.diff(start);
+        let upToNow = now.diff(start);
+        let barColor = "";
+        if (now.diff(end) > 0) barColor = "red";
+        else if (period * progress / 100 - upToNow >= 0) barColor = "lime";
+        else barColor = "gold";
+        return (
+            <div >
+                <div className="progress" style={{ backgroundColor: 'rgb(221, 221, 221)', textAlign: "right", borderRadius: '3px' }}>
+                    <span style={{ fontSize: '13px', marginRight: '5px' }}>{progress + '%'}</span>
+                    <div role="progressbar" className="progress-bar" aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100} style={{ width: `${progress + '%'}`, maxWidth: "100%", minWidth: "0%", backgroundColor: barColor }} >
+                    </div>
+                </div>
+            </div>
+        )
     }
 
     render() {
@@ -559,14 +580,14 @@ class TaskManagementOfUnit extends Component {
                     startDate: getFormatDateFromTime(dataTemp[n].startDate, 'dd-mm-yyyy'),
                     endDate: getFormatDateFromTime(dataTemp[n].endDate, 'dd-mm-yyyy'),
                     status: formatStatus(translate, dataTemp[n].status),
-                    progress: dataTemp[n].progress ? dataTemp[n].progress : 0,
+                    progress: this.convertDataProgress(dataTemp[n].progress, dataTemp[n].startDate, dataTemp[n].endDate),
                     totalLoggedTime: getTotalTimeSheetLogs(dataTemp[n].timesheetLogs),
                     parent: dataTemp[n].parent ? dataTemp[n].parent._id : null
                 }
             }
 
             for (let i in data) {
-                data[i] = { ...data[i], action: ["edit","delete"] }
+                data[i] = { ...data[i], action: ["edit", "delete"] }
             }
         }
 

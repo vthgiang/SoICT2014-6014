@@ -107,11 +107,11 @@ exports.createManufacturingPlan = async (data, portal) => {
     let manufacturingPlan = await ManufacturingPlan(connect(DB_CONNECTION, portal))
         .findById(newManufacturingPlan._id)
         .populate([{
-            path: "creator"
+            path: "creator", select: "_id name email avatar"
         }, {
             path: "manufacturingCommands"
         }, {
-            path: 'approvers.approver',
+            path: 'approvers.approver', select: "_id name email avatar"
         }]);
     for (let i = 0; i < manufacturingCommands.length; i++) {
         manufacturingCommands[i].manufacturingPlan = newManufacturingPlan._id;
@@ -254,7 +254,7 @@ exports.getAllManufacturingPlans = async (query, portal) => {
             }, {
                 path: "manufacturingCommands"
             }, {
-                path: "approvers.approver"
+                path: "approvers.approver", select: "_id name email avatar"
             }]).sort({
                 "updatedAt": "desc"
             });
@@ -348,7 +348,7 @@ exports.getManufacturingPlanById = async (id, portal) => {
         }, {
             path: 'goods.good'
         }, {
-            path: 'approvers.approver',
+            path: 'approvers.approver', select: "_id name email avatar"
         }, {
             path: 'creator', select:" id name email avatar"
         }]);

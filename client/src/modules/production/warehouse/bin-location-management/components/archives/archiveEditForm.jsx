@@ -1,48 +1,44 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { BinLocationActions } from '../../redux/actions';
 
 import { SelectBox, TreeSelect, ErrorLabel, DialogModal } from '../../../../../../common-components';
-class ArchiveEditForm extends Component {
-    constructor(props) {
-        super(props);
-        this.EMPTY_GOOD = {
-            good: '',
-            capacity: '',
-            contained: ''
-        }
-        this.state = {
-            currentRole: localStorage.getItem("currentRole"),
-            binEnableGoods: [],
-            good: Object.assign({}, this.EMPTY_GOOD),
-            editInfo: false,
-        }
+
+function ArchiveEditForm(props) {
+
+    const EMPTY_GOOD = {
+        good: '',
+        capacity: '',
+        contained: ''
     }
 
-    static getDerivedStateFromProps(props, state) {
-        if (props.binId !== state.binId) {
-            return {
-                ...state,
-                binId: props.binId,
-                binStatus: props.binStatus,
-                binCapacity: props.binCapacity,
-                binContained: props.binContained,
-                binEnableGoods: props.binEnableGoods,
-                binParent: props.binParent,
-                binUnit: props.binUnit,
-                page: props.page,
-                limit: props.limit,
-                errorGood: undefined,
-                errorCapacity: undefined
-            }
-        } else {
-            return null;
-        }
-    }
+    const [state, setState] = useState({
+        currentRole: localStorage.getItem("currentRole"),
+        binEnableGoods: [],
+        good: Object.assign({}, EMPTY_GOOD),
+        editInfo: false,
+    })
 
-    getAllDepartment = () => {
-        let { translate, department } = this.props;
+    useEffect(() => {
+        setState({
+            ...state,
+            binId: props.binId,
+            binStatus: props.binStatus,
+            binCapacity: props.binCapacity,
+            binContained: props.binContained,
+            binEnableGoods: props.binEnableGoods,
+            binParent: props.binParent,
+            binUnit: props.binUnit,
+            page: props.page,
+            limit: props.limit,
+            errorGood: undefined,
+            errorCapacity: undefined
+        })
+    }, [props.binId])
+
+    const getAllDepartment = () => {
+        let { translate, department } = props;
         let manageDepartmentArr = [{ value: '', text: translate('manage_warehouse.bin_location_management.choose_department') }];
 
         department.list.map(item => {
@@ -55,8 +51,8 @@ class ArchiveEditForm extends Component {
         return manageDepartmentArr;
     }
 
-    getAllGoods = () => {
-        let { translate, goods } = this.props;
+    const getAllGoods = () => {
+        let { translate, goods } = props;
         let goodArr = [{ value: '', text: translate('manage_warehouse.bin_location_management.choose_good') }];
 
         goods.listALLGoods.map(item => {
@@ -69,204 +65,182 @@ class ArchiveEditForm extends Component {
         return goodArr;
     }
 
-    handleGoodChange = (value) => {
+    const handleGoodChange = (value) => {
         let good = value[0];
-        this.validateGood(good, true);
+        validateGood(good, true);
     }
 
-    validateGood = (value, willUpdateState = true) => {
-        const dataGood = this.getAllGoods();
-        
+    const validateGood = (value, willUpdateState = true) => {
+        const dataGood = getAllGoods();
+
         let msg = undefined;
-        const { translate } = this.props;
-        let { good } = this.state;
-        if(!value){
+        const { translate } = props;
+        let { good } = state;
+        if (!value) {
             msg = translate('manage_warehouse.bin_location_management.validate_good');
         }
         if (willUpdateState) {
-        let goodName = dataGood.find(x=>x.value === value);
-            good.good = {_id:value,name:goodName.text};
-            this.setState(state => {
-                return {
-                    ...state,
-                    good:{...good},
-                    errorGood: msg
-                }
+            let goodName = dataGood.find(x => x.value === value);
+            good.good = { _id: value, name: goodName.text };
+            setState({
+                ...state,
+                good: { ...good },
+                errorGood: msg
             });
         }
         return msg === undefined;
     }
 
-    handleContainedChange = (e) => {
+    const handleContainedChange = (e) => {
         let value = e.target.value;
-        this.state.good.contained = value;
-        this.setState(state => {
-            return {
-                ...state
-            }
+        state.good.contained = value;
+        setState({
+            ...state
         })
     }
 
-    handleCapacityChange = (e) => {
+    const handleCapacityChange = (e) => {
         let value = e.target.value;
-        this.validateCapacity(value, true);
+        validateCapacity(value, true);
     }
 
-    validateCapacity = (value, willUpdateState = true) => {
+    const validateCapacity = (value, willUpdateState = true) => {
         let msg = undefined;
-        const { translate } = this.props;
-        
-        if(!value) {
+        const { translate } = props;
+
+        if (!value) {
             msg = translate('manage_warehouse.bin_location_management.validate_capacity');
         }
 
-        if(willUpdateState){
-            this.state.good.capacity = value;
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorCapacity: msg
-                }
+        if (willUpdateState) {
+            state.good.capacity = value;
+            setState({
+                ...state,
+                errorCapacity: msg
             })
         }
         return msg === undefined;
     }
 
-    isGoodsValidated = () => {
-        let result = 
-            this.validateGood(this.state.good.good, false)
-        return result;
-    }
-
-    isFormValidated = () => {
+    const isGoodsValidated = () => {
         let result =
-            this.validateContainedTotal(this.state.binContained, false)
+            validateGood(state.good.good, false)
         return result;
     }
 
-    handleAddGood = async (e) => {
+    const isFormValidated = () => {
+        let result =
+            validateContainedTotal(state.binContained, false)
+        return result;
+    }
+
+    const handleAddGood = async (e) => {
         e.preventDefault();
-        await this.setState(state => {
-            let binEnableGoods = [ ...(this.state.binEnableGoods), state.good ];
-            return {
-                ...state,
-                binEnableGoods: binEnableGoods,
-                good: Object.assign({}, this.EMPTY_GOOD)
-            }
+        let binEnableGoods = [...(state.binEnableGoods), state.good];
+        await setState({
+            ...state,
+            binEnableGoods: binEnableGoods,
+            good: Object.assign({}, EMPTY_GOOD)
         })
     }
 
-    handleClearGood = () => {
-        this.setState(state => {
-            return {
-                ...state,
-                good: Object.assign({}, this.EMPTY_GOOD)
-            }
+    const handleClearGood = () => {
+        setState({
+            ...state,
+            good: Object.assign({}, EMPTY_GOOD)
         })
     }
 
-    handleEditGood = (good, index) => {
-        this.setState(state => {
-            return {
-                ...state,
-                editInfo: true,
-                indexInfo: index,
-                good: Object.assign({}, good)
-            }
+    const handleEditGood = (good, index) => {
+        setState({
+            ...state,
+            editInfo: true,
+            indexInfo: index,
+            good: Object.assign({}, good)
         })
     }
 
-    handleSaveEditGood = async (e) => {
+    const handleSaveEditGood = async (e) => {
         e.preventDefault();
-        const { indexInfo, binEnableGoods } = this.state;
+        const { indexInfo, binEnableGoods } = state;
         let newEnableGoods;
-        if(binEnableGoods){
+        if (binEnableGoods) {
             newEnableGoods = binEnableGoods.map((item, index) => {
-                return (index === indexInfo) ? this.state.good : item
+                return (index === indexInfo) ? state.good : item
             })
         }
 
-        await this.setState(state => {
-            return {
-                ...state,
-                editInfo: false,
-                binEnableGoods: newEnableGoods,
-                good: Object.assign({}, this.EMPTY_GOOD)
-            }
+        await setState({
+            ...state,
+            editInfo: false,
+            binEnableGoods: newEnableGoods,
+            good: Object.assign({}, EMPTY_GOOD)
         })
     }
 
-    handleCancelEditGood = (e) => {
+    const handleCancelEditGood = (e) => {
         e.preventDefault();
-        this.setState(state => {
-            return {
-                ...state,
-                editInfo: false,
-                good: Object.assign({}, this.EMPTY_GOOD)
-            }
+        setState({
+            ...state,
+            editInfo: false,
+            good: Object.assign({}, EMPTY_GOOD)
         })
     }
 
-    handleDeleteGood = async (index) => {
-        let { binEnableGoods } = this.state;
+    const handleDeleteGood = async (index) => {
+        let { binEnableGoods } = state;
         let newEnableGoods;
-        if(binEnableGoods) {
+        if (binEnableGoods) {
             newEnableGoods = binEnableGoods.filter((item, x) => index !== x)
         }
 
-        this.setState(state => {
-            return {
-                ...state,
-                binEnableGoods: newEnableGoods
-            }
+        setState({
+            ...state,
+            binEnableGoods: newEnableGoods
         })
     }
 
-    handleStatusChange = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                binStatus: value[0]
-            }
+    const handleStatusChange = (value) => {
+        setState({
+            ...state,
+            binStatus: value[0]
         })
     }
 
 
-    handleContainedTotalChange = (e) => {
+    const handleContainedTotalChange = (e) => {
         let value = e.target.value;
-        this.validateContainedTotal(value, true);
+        validateContainedTotal(value, true);
     }
 
-    validateContainedTotal = (value, willUpdateState = true) => {
+    const validateContainedTotal = (value, willUpdateState = true) => {
         let msg = undefined;
-        const { translate } = this.props;
-        
-        if(!value) {
+        const { translate } = props;
+
+        if (!value) {
             msg = translate('manage_warehouse.bin_location_management.validate_capacity');
         }
 
-        if(Number(value) > Number(this.state.binCapacity)) {
-            msg = `Không thể vượt qua công suất chứa ${this.state.binCapacity} ${this.state.binUnit}`;
+        if (Number(value) > Number(state.binCapacity)) {
+            msg = `Không thể vượt qua công suất chứa ${state.binCapacity} ${state.binUnit}`;
         }
 
-        if(willUpdateState){
-            this.setState(state => {
-                return {
-                    ...state,
-                    binContained: value,
-                    errorContained: msg
-                }
+        if (willUpdateState) {
+            setState({
+                ...state,
+                binContained: value,
+                errorContained: msg
             })
         }
         return msg === undefined;
     }
 
-    save = async () => {
-        const { binId, binContained, binEnableGoods, binStatus, binParent, page, limit, currentRole } = this.state;
+    const save = async () => {
+        const { binId, binContained, binEnableGoods, binStatus, binParent, page, limit, currentRole } = state;
 
         let array = [];
 
-        await this.props.editBinLocation(binId, {
+        await props.editBinLocation(binId, {
             status: binStatus,
             enableGoods: binEnableGoods,
             parent: binParent,
@@ -274,13 +248,12 @@ class ArchiveEditForm extends Component {
             array: array
         });
 
-        await this.props.getChildBinLocations({ page, limit, managementLocation: currentRole })
+        await props.getChildBinLocations({ page, limit, managementLocation: currentRole })
     }
 
-    render() {
-        const { translate, binLocations } = this.props;
-        const { binStatus, binContained, binEnableGoods, errorCapacity, errorGood, good, errorContained } = this.state;
-        const dataGoods = this.getAllGoods();
+    const { translate, binLocations } = props;
+        const { binStatus, binContained, binEnableGoods, errorCapacity, errorGood, good, errorContained } = state;
+        const dataGoods = getAllGoods();
 
         return (
             <React.Fragment>
@@ -290,8 +263,8 @@ class ArchiveEditForm extends Component {
                     title={translate('manage_warehouse.bin_location_management.edit_title')}
                     msg_success={translate('manage_warehouse.bin_location_management.edit_success')}
                     msg_faile={translate('manage_warehouse.bin_location_management.edit_faile')}
-                    disableSubmit={!this.isFormValidated()}
-                    func={this.save}
+                    disableSubmit={!isFormValidated()}
+                    func={save}
                     size={75}
                 >
                     <form id={`form-edit-archive-stock`} >
@@ -311,7 +284,7 @@ class ArchiveEditForm extends Component {
                                             { value: '4', text: translate('manage_warehouse.bin_location_management.4.status') },
                                             { value: '5', text: translate('manage_warehouse.bin_location_management.5.status') },
                                         ]}
-                                        onChange={this.handleStatusChange}    
+                                        onChange={handleStatusChange}    
                                         multiple={false}
                                     />
                                 </div>
@@ -319,7 +292,7 @@ class ArchiveEditForm extends Component {
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group ${!errorContained ? "" : "has-error"}`}>
                                     <label>{translate('manage_warehouse.bin_location_management.contained')}<span className="attention"> * </span></label>
-                                    <input type="number" className="form-control" value={binContained ? binContained : ""} onChange={this.handleContainedTotalChange} />
+                                    <input type="number" className="form-control" value={binContained ? binContained : ""} onChange={handleContainedTotalChange} />
                                     <ErrorLabel content = { errorContained }/>
                                 </div>
                             </div>
@@ -335,7 +308,7 @@ class ArchiveEditForm extends Component {
                                         style={{ width: "100%" }}
                                         value={good.good._id ? good.good._id : { value: '', text: translate('manage_warehouse.bin_location_management.choose_good') }}
                                         items={dataGoods}
-                                        onChange={this.handleGoodChange}
+                                        onChange={handleGoodChange}
                                         multiple={false}
                                     />
                                     <ErrorLabel content = { errorGood }/>
@@ -343,26 +316,26 @@ class ArchiveEditForm extends Component {
                                 <div className={`form-group`}>
                                     <label className="control-label">{translate('manage_warehouse.bin_location_management.contained')}</label>
                                     <div>
-                                        <input type="number" className="form-control" value={good.contained} disabled placeholder={translate('manage_warehouse.good_management.contained')} onChange={this.handleContainedChange} />
+                                        <input type="number" className="form-control" value={good.contained} disabled placeholder={translate('manage_warehouse.good_management.contained')} onChange={handleContainedChange} />
                                     </div>
                                 </div>
                                 <div className={`form-group ${!errorCapacity ? "" : "has-error"}`}>
                                     <label className="control-label">{translate('manage_warehouse.bin_location_management.max_quantity')}</label>
                                     <div>
-                                        <input type="number" className="form-control" value={good.capacity} placeholder={translate('manage_warehouse.good_management.max_quantity')} onChange={this.handleCapacityChange} />
+                                        <input type="number" className="form-control" value={good.capacity} placeholder={translate('manage_warehouse.good_management.max_quantity')} onChange={handleCapacityChange} />
                                     </div>
                                     <ErrorLabel content = { errorCapacity }/>
                                 </div>
 
                                 <div className="pull-right" style={{marginBottom: "10px"}}>
-                                    {this.state.editInfo ?
+                                    {state.editInfo ?
                                         <React.Fragment>
-                                            <button className="btn btn-success" onClick={this.handleCancelEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.cancel_editing')}</button>
-                                            <button className="btn btn-success" disabled={!this.isGoodsValidated()} onClick={this.handleSaveEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.save')}</button>
+                                            <button className="btn btn-success" onClick={handleCancelEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.cancel_editing')}</button>
+                                            <button className="btn btn-success" disabled={!isGoodsValidated()} onClick={handleSaveEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.save')}</button>
                                         </React.Fragment>:
-                                        <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!this.isGoodsValidated()} onClick={this.handleAddGood}>{translate('task_template.add')}</button>
+                                        <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!isGoodsValidated()} onClick={handleAddGood}>{translate('task_template.add')}</button>
                                     }
-                                    <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={this.handleClearGood}>{translate('task_template.delete')}</button>
+                                    <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={handleClearGood}>{translate('task_template.delete')}</button>
                                 </div>
 
                                 <table className="table table-bordered">
@@ -382,8 +355,8 @@ class ArchiveEditForm extends Component {
                                                     <td>{x.contained}</td>
                                                     <td>{x.capacity}</td>
                                                     <td>
-                                                        <a href="#abc" className="edit" title={translate('general.edit')} onClick={() => this.handleEditGood(x, index)}><i className="material-icons"></i></a>
-                                                        <a href="#abc" className="delete" title={translate('general.delete')} onClick={() => this.handleDeleteGood(index)}><i className="material-icons"></i></a>
+                                                        <a href="#abc" className="edit" title={translate('general.edit')} onClick={() => handleEditGood(x, index)}><i className="material-icons"></i></a>
+                                                        <a href="#abc" className="delete" title={translate('general.delete')} onClick={() => handleDeleteGood(index)}><i className="material-icons"></i></a>
                                                     </td>
                                                 </tr>
                                             )   
@@ -397,7 +370,6 @@ class ArchiveEditForm extends Component {
                 </DialogModal>
             </React.Fragment>
         );
-    }
 }
 
 const mapStateToProps = state => state;

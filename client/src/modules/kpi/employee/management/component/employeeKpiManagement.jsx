@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
 
-import { DataTableSetting, ExportExcel, PaginateBar, DatePicker, SelectBox } from '../../../../../common-components';
+import { DataTableSetting, ExportExcel, PaginateBar, DatePicker, SelectBox, ToolTip } from '../../../../../common-components';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 
 import { UserActions } from "../../../../super-admin/user/redux/actions";
@@ -402,10 +402,15 @@ function KPIPersonalManager(props) {
                             <td>{formatDate(item.date)}</td>
                             <td>{checkStatusKPI(item.status)}</td>
                             <td>{item.kpis.length}</td>
-                            <td title={`${translate('kpi.evaluation.dashboard.auto_point')} - ${translate('kpi.evaluation.dashboard.employee_point')} - ${translate('kpi.evaluation.dashboard.approve_point')}`}>
-                                <strong>{item?.automaticPoint !== null && item?.automaticPoint >= 0 ? item.automaticPoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')} - </strong>
-                                <strong>{item?.employeePoint !== null && item?.employeePoint >= 0 ? item.employeePoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')} - </strong>
-                                <strong>{item?.approvedPoint !== null && item?.approvedPoint >= 0 ? item.approvedPoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')}</strong>
+                            <td>
+                                <ToolTip 
+                                    type={'text_tooltip'}
+                                    dataTooltip={`${translate('kpi.evaluation.dashboard.auto_point')} - ${translate('kpi.evaluation.dashboard.employee_point')} - ${translate('kpi.evaluation.dashboard.approve_point')}`}
+                                >
+                                    <strong>{item?.automaticPoint !== null && item?.automaticPoint >= 0 ? item.automaticPoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')} - </strong>
+                                    <strong>{item?.employeePoint !== null && item?.employeePoint >= 0 ? item.employeePoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')} - </strong>
+                                    <strong>{item?.approvedPoint !== null && item?.approvedPoint >= 0 ? item.approvedPoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')}</strong>
+                                </ToolTip>
                             </td>
                             <td style={{ textAlign: "center" }}>
                                 <a style={{ cursor: 'pointer' }} onClick={() => showWeeklyPoint(translate, item?.weeklyEvaluations)}> {translate('general.detail')}</a>

@@ -92,6 +92,14 @@ class ApiImage extends Component {
                 showCloseButton: true,
                 showConfirmButton: false,
                 showCancelButton: false,
+                showClass: {
+                    backdrop: 'swal2-noanimation',
+                    popup: '',
+                    icon: ''
+                },
+                hideClass: {
+                    popup: '',
+                }
             }).then((result) => {
                 if (arrImageIndex && arrImageIndex.length > 0) {
                     document.removeEventListener("keydown", handleKeyDown);
@@ -131,8 +139,8 @@ class ApiImage extends Component {
     }
 
     showNextImage = async (index) => {
-        const { arrImageIndex, listImage } = this.props;
         Swal.close();
+        const { arrImageIndex, listImage } = this.props;
         let i = arrImageIndex.findIndex((e) => e === index)
         if (i < arrImageIndex.length - 1) {
             let newIndex = arrImageIndex[i + 1];
@@ -146,8 +154,8 @@ class ApiImage extends Component {
     }
 
     showPreviousImage = async (index) => {
-        const { arrImageIndex, listImage } = this.props;
         Swal.close();
+        const { arrImageIndex, listImage } = this.props;
         let i = arrImageIndex.findIndex((e) => e === index)
         if (i > 0) {
             let newIndex = arrImageIndex[i - 1];

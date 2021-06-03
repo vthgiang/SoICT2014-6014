@@ -90,6 +90,7 @@ function KpiUser(props) {
     }
     return (
         <div id="id">
+        <h3 class="title">KPI nhân viên</h3>
         </div>
     )
 }

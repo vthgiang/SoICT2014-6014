@@ -5,15 +5,16 @@ import { formatDate } from "../../../../../../helpers/formatDate";
 import { capitalize } from "../../../../../../helpers/stringMethod";
 import "../quote.css";
 
-class DiscountsOfQuoteDetail extends Component {
-    getBonusGoodTitle = (bonusGoods) => {
+function DiscountsOfQuoteDetail(props) {
+
+    const getBonusGoodTitle = (bonusGoods) => {
         let dataMap = bonusGoods.map((item) => {
             return item.quantityOfBonusGood + " " + item.good.baseUnit + " " + item.good.name;
         });
         return dataMap.join(", ");
     };
 
-    getNameDiscountForGood = (formality, discount) => {
+    const getNameDiscountForGood = (formality, discount) => {
         let title = "";
 
         switch (parseInt(formality)) {
@@ -29,12 +30,11 @@ class DiscountsOfQuoteDetail extends Component {
             case 3:
                 title =
                     title +
-                    `Miễn phí vận chuyển ${
-                        discount.maximumFreeShippingCost ? ", tối đa" + formatCurrency(discount.maximumFreeShippingCost) : ""
+                    `Miễn phí vận chuyển ${discount.maximumFreeShippingCost ? ", tối đa" + formatCurrency(discount.maximumFreeShippingCost) : ""
                     } (vnđ)`;
                 break;
             case 4:
-                title = title + `Tặng ${discount.bonusGoods ? this.getBonusGoodTitle(discount.bonusGoods) : ""}`;
+                title = title + `Tặng ${discount.bonusGoods ? getBonusGoodTitle(discount.bonusGoods) : ""}`;
                 break;
             default:
                 break;
@@ -42,47 +42,45 @@ class DiscountsOfQuoteDetail extends Component {
         return capitalize(title);
     };
 
-    render() {
-        const { discountsOfQuoteDetail } = this.props;
-        console.log("discountsOfQuoteDetail", discountsOfQuoteDetail);
-        return (
-            <DialogModal
-                modalID="modal-detail-quote-discounts"
-                isLoading={false}
-                formID="form-detail-quote-discounts"
-                title={"Chi tiết giảm giá áp dụng với giá trị đơn hàng"}
-                size="50"
-                hasSaveButton={false}
-                hasNote={false}
-            >
-                {!discountsOfQuoteDetail.length ? (
-                    <div style={{ display: "flex", alignItems: "center" }}>
-                        <i className="fa fa-frown-o text-warning" style={{ fontSize: "20px" }}></i> &ensp; <span>Chưa có khuyến mãi nào</span>
-                    </div>
-                ) : (
-                    discountsOfQuoteDetail.map((item) => {
-                        return (
-                            <div>
-                                <div style={{ display: "flex", alignItems: "center" }}>
-                                    <i className="fa fa-gift text-warning"></i> &ensp; <strong>{item.name}</strong>
-                                </div>
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        padding: "5px 0px 5px 20px",
-                                    }}
-                                >
-                                    <i className="fa fa-genderless text-success"></i>&ensp;
-                                    {this.getNameDiscountForGood(item.formality, item)}
-                                </div>
+    const { discountsOfQuoteDetail } = props;
+    console.log("discountsOfQuoteDetail", discountsOfQuoteDetail);
+    return (
+        <DialogModal
+            modalID="modal-detail-quote-discounts"
+            isLoading={false}
+            formID="form-detail-quote-discounts"
+            title={"Chi tiết giảm giá áp dụng với giá trị đơn hàng"}
+            size="50"
+            hasSaveButton={false}
+            hasNote={false}
+        >
+            {!discountsOfQuoteDetail.length ? (
+                <div style={{ display: "flex", alignItems: "center" }}>
+                    <i className="fa fa-frown-o text-warning" style={{ fontSize: "20px" }}></i> &ensp; <span>Chưa có khuyến mãi nào</span>
+                </div>
+            ) : (
+                discountsOfQuoteDetail.map((item) => {
+                    return (
+                        <div>
+                            <div style={{ display: "flex", alignItems: "center" }}>
+                                <i className="fa fa-gift text-warning"></i> &ensp; <strong>{item.name}</strong>
                             </div>
-                        );
-                    })
-                )}
-            </DialogModal>
-        );
-    }
+                            <div
+                                style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    padding: "5px 0px 5px 20px",
+                                }}
+                            >
+                                <i className="fa fa-genderless text-success"></i>&ensp;
+                                    {getNameDiscountForGood(item.formality, item)}
+                            </div>
+                        </div>
+                    );
+                })
+            )}
+        </DialogModal>
+    );
 }
 
 export default DiscountsOfQuoteDetail;

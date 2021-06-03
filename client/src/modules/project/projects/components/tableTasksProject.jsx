@@ -220,7 +220,7 @@ const TableTasksProject = (props) => {
                         currentProjectTasks.map((taskItem, index) => (
                             <tr key={index}>
                                 <td>{taskItem?.name}</td>
-                                <td>{processPreceedingTasks(taskItem?.preceedingTasks)}</td>
+                                <td style={{ maxWidth: 350 }}>{processPreceedingTasks(taskItem?.preceedingTasks)}</td>
                                 <td>{taskItem?.responsibleEmployees.map(o => o.name).join(", ")}</td>
                                 <td>{taskItem?.accountableEmployees?.map(o => o.name).join(", ")}</td>
                                 <td>{formatTaskStatus(translate, taskItem?.status)}</td>

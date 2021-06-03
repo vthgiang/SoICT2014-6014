@@ -66,7 +66,7 @@ function EvaluateByAccountableEmployee(props) {
     }, [])
 
     // Nếu props.id thay đổi thì cập nhật lai state
-    if (props.id !== id) {
+    if (props.id !== state.id) {
         setState({
             ...state,
             id: props.id,
@@ -88,14 +88,15 @@ function EvaluateByAccountableEmployee(props) {
 
     // Sau khi cập nhật id mới, cập nhật lại state
     useEffect(() => {
-        let data = getData(date);
-        if (date) {
-            props.getAllKpiSetsOrganizationalUnitByMonth(userId, unit, date);
+        let data = getData(props.date);
+        if (props.date) {
+            props.getAllKpiSetsOrganizationalUnitByMonth(userId, unit, props.date);
         }
 
         setState({
             ...state,
-            isEval: isEval,
+            id: id,
+            isEval: props.isEval,
             task: data.task,
             userId: data.userId,
             info: data.info,
@@ -1564,6 +1565,7 @@ function EvaluateByAccountableEmployee(props) {
             ...state,
             oldAutoPoint: state.autoPoint,
         });
+        console.log("state", state)
         // props.handleChangeDataStatus(1); // 1 = DATA_STATUS.QUERYING
         props.handleChangeShowEval(state.id);
         props.handleChangeEnableAddItem(state.id);
@@ -1663,47 +1665,50 @@ function EvaluateByAccountableEmployee(props) {
                                     </div>
                                 </div>
                             </div>
-                            <div className="row">
-                                {/* ngày đánh giá tháng trc hoặc ngày bắt đầu làm việc */}
-                                <div className="col-md-6">
-                                    <div className={`form-group ${errorOnStartDate === undefined ? "" : "has-error"}`}>
-                                        <label>{translate('task.task_management.eval_from')}<span className="text-red">*</span></label>
+                            {evaluatingMonth &&
+                                <div className="row">
+                                    {/* ngày đánh giá tháng trc hoặc ngày bắt đầu làm việc */}
+                                    <div className="col-md-6">
+                                        <div className={`form-group ${errorOnStartDate === undefined ? "" : "has-error"}`}>
+                                            <label>{translate('task.task_management.eval_from')}<span className="text-red">*</span></label>
+                                            <DatePicker
+                                                id={`start_date_${id}_${perform}`}
+                                                value={startDate}
+                                                onChange={handleStartDateChange}
+                                                disabled={disabled}
+                                            />
+                                            < TimePicker
+                                                id={`time-picker-1-start-time-${id}-${perform}-${props.id}`}
+                                                value={startTime}
+                                                onChange={handleStartTimeChange}
+                                            />
+                                            <ErrorLabel content={errorOnStartDate} />
+                                        </div>
+                                    </div>
+                                    {/* ngày đánh giá */}
+                                    <div className={`form-group col-md-6 ${errorOnEndDate === undefined ? "" : "has-error"}`}>
+                                        <label>
+                                            {translate('task.task_management.eval_to')}<span className="text-red">*</span>
+                                            <span className="pull-right" style={{ fontWeight: "normal", marginLeft: 10 }}>
+                                                <a style={{ cursor: "pointer" }} onClick={() => getEndTask()}>Lấy thời điểm kết thúc công việc</a>
+                                            </span>
+                                        </label>
                                         <DatePicker
-                                            id={`start_date_${id}_${perform}`}
-                                            value={startDate}
-                                            onChange={handleStartDateChange}
+                                            id={`end_date_${perform}-${id}`}
+                                            value={endDate}
+                                            onChange={handleEndDateChange}
                                             disabled={disabled}
                                         />
                                         < TimePicker
-                                            id={`time-picker-1-start-time-${id}-${perform}-${props.id}`}
-                                            value={startTime}
-                                            onChange={handleStartTimeChange}
+                                            id={`time-picker-2-end-time-${id}-${perform}-${props.id}`}
+                                            value={endTime}
+                                            onChange={handleEndTimeChange}
                                         />
-                                        <ErrorLabel content={errorOnStartDate} />
+                                        <ErrorLabel content={errorOnEndDate} />
                                     </div>
                                 </div>
-                                {/* ngày đánh giá */}
-                                <div className={`form-group col-md-6 ${errorOnEndDate === undefined ? "" : "has-error"}`}>
-                                    <label>
-                                        {translate('task.task_management.eval_to')}<span className="text-red">*</span>
-                                        <span className="pull-right" style={{ fontWeight: "normal", marginLeft: 10 }}>
-                                            <a style={{ cursor: "pointer" }} onClick={() => getEndTask()}>Lấy thời điểm kết thúc công việc</a>
-                                        </span>
-                                    </label>
-                                    <DatePicker
-                                        id={`end_date_${perform}-${id}`}
-                                        value={endDate}
-                                        onChange={handleEndDateChange}
-                                        disabled={disabled}
-                                    />
-                                    < TimePicker
-                                        id={`time-picker-2-end-time-${id}-${perform}-${props.id}`}
-                                        value={endTime}
-                                        onChange={handleEndTimeChange}
-                                    />
-                                    <ErrorLabel content={errorOnEndDate} />
-                                </div>
-                            </div>
+                            }
+
                             {/* Đơn vị đánh giá */}
                             <div className="form-group">
                                 <label>{translate('task.task_management.unit_evaluate')}</label>

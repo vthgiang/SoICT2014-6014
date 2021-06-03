@@ -201,7 +201,6 @@ function getChildrenOfOrganizationalUnitsAsTree(id) {
 
 // Get all user in organizational unit of company
 function getAllUserInAllUnitsOfCompany() {
-    console.log('Helllooooooooo')
     return sendRequest(
         {
             url: `${process.env.REACT_APP_SERVER}/user/users`,

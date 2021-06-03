@@ -111,7 +111,7 @@ exports.copyKPI = async (portal, id, data) => {
         employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
             .findById(newEmployeeKpiSet)
             .populate("organizationalUnit")
-            .populate("approver")
+            .populate({path: "approver", select: "_id name email avatar"})
             .populate({path: "creator", select :"_id name email avatar"})
             .populate({ path: "kpis", populate: { path: 'parent' } })
 

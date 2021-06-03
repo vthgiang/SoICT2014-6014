@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
+import store from '../../../redux/store'
+
 class GroupItem extends Component {
     constructor(props) {
         super(props);
@@ -54,7 +56,12 @@ class GroupItem extends Component {
                                     if (this.checkURL(item.path, links))
                                         return (
                                             <li key={key} className={window.location.pathname === item.path ? "active" : ""}>
-                                                <Link to={item.path}>
+                                                <Link 
+                                                    to={item.path}
+                                                    onClick={() => { 
+                                                        store.dispatch({ type: 'SWITCH_PAGE' });
+                                                    }}
+                                                >
                                                     <i className={item.icon} />
                                                     {translate(`${item.name}`)}
                                                 </Link>

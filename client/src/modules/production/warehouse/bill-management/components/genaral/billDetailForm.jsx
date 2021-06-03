@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
 import { formatDate, formatFullDate } from '../../../../../../helpers/formatDate';
@@ -8,34 +8,28 @@ import { translate } from 'react-redux-multilingual/lib/utils';
 import QuantityLotDetailForm from './quantityLotDetail';
 import BillLogs from './billLogs';
 
-class BillDetailForm extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
+function BillDetailForm(props) {
+    const [state, setState] = useState({
 
-        }
-    }
+    })
 
-    handleShowDetailQuantity = async (lot) => {
-        await this.setState(state => {
-            return {
-                ...state,
-                quantityDetail: lot
-            }
+    const handleShowDetailQuantity = async (lot) => {
+        await setState({
+            ...state,
+            quantityDetail: lot
         })
 
         window.$('#modal-detail-lot-quantity').modal('show');
     }
 
-    handleViewVersion = (e) => {
+    const handleViewVersion = (e) => {
         e.preventDefault();
         window.$('#modal-detail-logs-version-bill').modal('show');
     }
 
-    render() {
-        const { translate, bills } = this.props;
+    const { translate, bills } = props;
         const { billDetail } = bills;
-        const { quantityDetail } = this.state;
+        const { quantityDetail } = state;
         return (
             <React.Fragment>
                 <DialogModal
@@ -255,9 +249,9 @@ class BillDetailForm extends Component {
                                                         <td>{x.good ? x.good.code : ''}</td>
                                                         <td>{x.good ? x.good.name : ''}</td>
                                                         <td>{x.good ? x.good.baseUnit : ''}</td>
-                                                        {billDetail.group !== '3' && <td>{x.quantity} <a href="#" onClick={() => this.handleShowDetailQuantity(x)}> (Chi tiết)</a></td>}
+                                                        {billDetail.group !== '3' && <td>{x.quantity} <a href="#" onClick={() => handleShowDetailQuantity(x)}> (Chi tiết)</a></td>}
                                                         {billDetail.group === '3' && <td>{x.quantity}</td>}
-                                                        {billDetail.group === '3' && <td>{x.returnQuantity} <a href="#" onClick={() => this.handleShowDetailQuantity(x)}> (Chi tiết)</a></td>}
+                                                        {billDetail.group === '3' && <td>{x.returnQuantity} <a href="#" onClick={() => handleShowDetailQuantity(x)}> (Chi tiết)</a></td>}
                                                         {billDetail.group === '4' && <td>{x.realQuantity}</td>}
                                                         {billDetail.group === '4' && <td>{x.damagedQuantity}</td>}
                                                         <td>{x.description}</td>
@@ -268,7 +262,7 @@ class BillDetailForm extends Component {
                                     </table>
                                 </fieldset>
                                 <div className="pull-right" style={{ marginBottom: "10px" }}>
-                                    <button className="btn btn-success" style={{ marginLeft: "10px" }} onClick={this.handleViewVersion}>{translate('manage_warehouse.bill_management.view_version')}</button>
+                                    <button className="btn btn-success" style={{ marginLeft: "10px" }} onClick={handleViewVersion}>{translate('manage_warehouse.bill_management.view_version')}</button>
                                 </div>
                             </div>
                         </div>
@@ -276,7 +270,6 @@ class BillDetailForm extends Component {
                 </DialogModal>
             </React.Fragment>
         );
-    }
 }
 
 const mapStateToProps = state => state;

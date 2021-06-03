@@ -1,19 +1,18 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { DialogModal } from "../../../../../../../common-components";
 
-class CreateSlaForGood extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            goodId: "",
-        };
-    }
+function CreateSlaForGood(props) {
 
-    handleSlaChange = (item, e) => {
-        let { slasOfGoodChecked, slasOfGood } = this.props;
-        const { handleSlasOfGoodChange } = this.props;
+    const [state, setState] = useState({
+        goodId: "",
+    })
+
+
+    const handleSlaChange = (item, e) => {
+        let { slasOfGoodChecked, slasOfGood } = props;
+        const { handleSlasOfGoodChange } = props;
         let { id, checked } = e.target;
 
         let slaId = id.split("-")[0];
@@ -33,11 +32,11 @@ class CreateSlaForGood extends Component {
             }
         }
         slasOfGoodChecked[`${id}`] = checked;
-        this.props.setSlasOfGoodChecked(slasOfGoodChecked);
+        props.setSlasOfGoodChecked(slasOfGoodChecked);
     };
 
-    getSlaOptions = (item) => {
-        let { slasOfGoodChecked } = this.props;
+    const getSlaOptions = (item) => {
+        let { slasOfGoodChecked } = props;
         let { descriptions } = item;
         return (
             <div style={{ paddingLeft: "2rem" }}>
@@ -49,7 +48,7 @@ class CreateSlaForGood extends Component {
                                 className={`form-check-input`}
                                 id={`${item._id}-${index}`}
                                 checked={slasOfGoodChecked[`${item._id}-${index}`]}
-                                onChange={(e) => this.handleSlaChange(item, e)}
+                                onChange={(e) => handleSlaChange(item, e)}
                                 style={{ minWidth: "20px" }}
                                 key={index}
                             />
@@ -63,50 +62,48 @@ class CreateSlaForGood extends Component {
         );
     };
 
-    render() {
-        let { listSlasByGoodId } = this.props.goods.goodItems;
-        return (
-            <React.Fragment>
-                <a
-                    style={{
-                        cursor: "pointer",
-                    }}
-                    data-toggle="modal"
-                    data-backdrop="static"
-                    href={"#modal-add-quote-sla-for-good"}
-                >
-                    Chọn cam kết chất lượng
+    let { listSlasByGoodId } = props.goods.goodItems;
+    return (
+        <React.Fragment>
+            <a
+                style={{
+                    cursor: "pointer",
+                }}
+                data-toggle="modal"
+                data-backdrop="static"
+                href={"#modal-add-quote-sla-for-good"}
+            >
+                Chọn cam kết chất lượng
                 </a>
-                <DialogModal
-                    modalID={`modal-add-quote-sla-for-good`}
-                    isLoading={false}
-                    title={"Chọn cam kết chất lượng"}
-                    hasSaveButton={false}
-                    hasNote={false}
-                    size="50"
-                    style={{ backgroundColor: "green" }}
-                >
-                    {!listSlasByGoodId.length ? (
-                        <div style={{ display: "flex", alignItems: "center" }}>
-                            <i className="fa fa-frown-o text-warning" style={{ fontSize: "20px" }}></i> &ensp;{" "}
-                            <span>Không có cam kết nào cho sản phẩm này</span>
-                        </div>
-                    ) : (
-                        listSlasByGoodId.map((item) => {
-                            return (
-                                <div>
-                                    <div style={{ display: "flex", alignItems: "center" }}>
-                                        <i className="fa fa-check-square-o text-warning"></i> &ensp; <strong>{item.title}</strong>
-                                    </div>
-                                    {this.getSlaOptions(item)}
+            <DialogModal
+                modalID={`modal-add-quote-sla-for-good`}
+                isLoading={false}
+                title={"Chọn cam kết chất lượng"}
+                hasSaveButton={false}
+                hasNote={false}
+                size="50"
+                style={{ backgroundColor: "green" }}
+            >
+                {!listSlasByGoodId.length ? (
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                        <i className="fa fa-frown-o text-warning" style={{ fontSize: "20px" }}></i> &ensp;{" "}
+                        <span>Không có cam kết nào cho sản phẩm này</span>
+                    </div>
+                ) : (
+                    listSlasByGoodId.map((item) => {
+                        return (
+                            <div>
+                                <div style={{ display: "flex", alignItems: "center" }}>
+                                    <i className="fa fa-check-square-o text-warning"></i> &ensp; <strong>{item.title}</strong>
                                 </div>
-                            );
-                        })
-                    )}
-                </DialogModal>
-            </React.Fragment>
-        );
-    }
+                                {getSlaOptions(item)}
+                            </div>
+                        );
+                    })
+                )}
+            </DialogModal>
+        </React.Fragment>
+    );
 }
 
 function mapStateToProps(state) {

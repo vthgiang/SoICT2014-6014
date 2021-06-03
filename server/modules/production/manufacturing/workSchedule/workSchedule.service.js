@@ -249,7 +249,7 @@ exports.createWorkSchedule = async (data, portal) => {
                 .populate([{
                     path: 'manufacturingMill'
                 }, {
-                    path: 'user'
+                    path: 'user', select: "_id name email avatar"
                 }])
             workSchedules.push(workSchedule);
         }
@@ -543,7 +543,7 @@ exports.getWorkerFromArraySchedules = async (query, portal) => {
             $in: arrayMonth
         }
     }).populate([{
-        path: "user"
+        path: "user", select: "_id name email avatar"
     }]);
     // Xử lý tìm ra các lịch rảnh trong các ca truyền vào
     let listWorkSchedules = [];

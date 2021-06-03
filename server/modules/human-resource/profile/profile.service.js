@@ -1151,7 +1151,24 @@ exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company)
         // Kiểm tra nhân viên được edit  có tài khoản người dùng hay chưa.
         const oldUser = await User(connect(DB_CONNECTION, portal)).findOne({
             email: oldMailInCompany
+        }).populate([
+            {
+                path: "roles",
+                populate: {
+                    path: "roleId",
+                    populate: { path: "type"},
+                },
+            },
+        ]);
+
+        let rootRole = [];
+        oldUser && oldUser.roles && oldUser.roles.length > 0 && oldUser.roles.forEach(o => {
+            if (o?.roleId?.type?.name === "Root" || o?.roleId?.type?.name === "Company-Defined")
+                rootRole = [...rootRole, o.roleId._id];
         })
+        if (roles && roles.length > 0) {
+            roles = [...roles, ...rootRole];
+        }
 
         // Nếu email mới chưa trùng trong bảng user và employees đang chỉnh sửa đã có tài khoản đăng nhạp vào hệ thống.
         if ((!user || user && employee.emailInCompany === oldUser.email) && oldUser) {

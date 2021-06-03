@@ -1,6 +1,6 @@
 const nodemailer = require("nodemailer");
 const user = 'vnist.qlcv@gmail.com';
-const pass = 'Vnist123@1234';
+const pass = 'Vnist1234@1234';
 exports.sendEmail = (to, subject, text, html) => {
     var transporter = nodemailer.createTransport({
         service: 'Gmail',
@@ -9,9 +9,11 @@ exports.sendEmail = (to, subject, text, html) => {
     var mainOptions = {
         from: user,
         to: to,
+        inReplyTo: to,
         subject: subject,
         text: text,
-        html: html
+        html: html,
+        messageId: to
     }
 
     transporter.sendMail(mainOptions);

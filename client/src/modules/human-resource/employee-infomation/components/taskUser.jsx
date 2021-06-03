@@ -148,7 +148,7 @@ function TaskUser(props) {
                 <div className="col-xs-12">
                     <div className="box box-primary">
                         <div className="box-header with-border">
-                            <div class="title">Công việc {nameTask}</div>
+                            <h3 class="title">Công việc {nameTask}</h3>
                         </div>
                         <table className="table table-striped table-bordered table-hover box-body">
 

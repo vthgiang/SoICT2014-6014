@@ -131,13 +131,21 @@ exports.searchUseRequests = async (portal, company, query) => {
 
     var totalList = await RecommendDistribute(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
     var listRecommendDistributes = await RecommendDistribute(connect(DB_CONNECTION, portal)).find(keySearch)
-        .populate({ path: 'asset proponent approver' }).sort({ 'createdAt': 'desc' })
+        .populate([
+            {path: "asset" },
+            {path: "proponent approver", select: "_id name email avatar"}
+        ])
+        .sort({ 'createdAt': 'desc' })
         .skip(page ? parseInt(page) : 0)
         .limit(limit ? parseInt(limit) : 0);
 
     if (managedBy) {
         recommendDistributes = await RecommendDistribute(connect(DB_CONNECTION, portal)).find(keySearch)
-            .populate({ path: 'asset proponent approver' }).sort({ 'createdAt': 'desc' });
+            .populate([
+                {path: "asset" },
+                {path: "proponent approver", select: "_id name email avatar"}
+            ])
+            .sort({ 'createdAt': 'desc' });
 
         let tempListRecommendDistributes = recommendDistributes.filter(item =>
             item.asset && item.asset.managedBy && item.asset.managedBy.toString() === managedBy);
@@ -154,7 +162,11 @@ exports.searchUseRequests = async (portal, company, query) => {
  * @data: du lieu tai san
  */
 exports.getUseRequestByAsset = async (portal, data) => {
-    var listRecommendDistributes = await RecommendDistribute(connect(DB_CONNECTION, portal)).find({ asset: data.assetId }).populate({ path: 'asset proponent approver' }).sort({ 'createdAt': 'desc' });
+    var listRecommendDistributes = await RecommendDistribute(connect(DB_CONNECTION, portal)).find({ asset: data.assetId })
+        .populate([
+                {path: "asset" },
+                {path: "proponent approver", select: "_id name email avatar"}
+            ]).sort({ 'createdAt': 'desc' });
     return listRecommendDistributes;
 }
 
@@ -192,7 +204,11 @@ exports.createUseRequest = async (portal, company, data) => {
         status: data.status,
     });
 
-    const findRecommend = await RecommendDistribute(connect(DB_CONNECTION, portal)).findOne({_id:  mongoose.Types.ObjectId(createRecommendDistribute._id) }).populate({ path: 'asset proponent approver' });
+    const findRecommend = await RecommendDistribute(connect(DB_CONNECTION, portal)).findOne({ _id: mongoose.Types.ObjectId(createRecommendDistribute._id) })
+        .populate([
+            {path: "asset" },
+            {path: "proponent approver", select: "_id name email avatar"}
+            ])
     let asset = await Asset(connect(DB_CONNECTION, portal)).findById({
         _id: data.asset,
     }).populate({ path: 'assetType' });

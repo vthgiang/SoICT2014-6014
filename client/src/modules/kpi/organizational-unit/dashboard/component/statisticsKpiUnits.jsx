@@ -12,7 +12,7 @@ import './kpiUnit.css';
 const StatisticsKpiUnits = (props) => {
     const { translate, managerKpiUnit, auth } = props;
     const { type } = props
-    const KIND_OF_POINT = {AUTOMATIC: 1, EMPLOYEE: 2, APPROVED: 3};
+    const KIND_OF_POINT = { AUTOMATIC: 1, EMPLOYEE: 2, APPROVED: 3 };
     const [state, setState] = useState(() => {
         let d = new Date(),
             month = d.getMonth() + 1,
@@ -33,7 +33,7 @@ const StatisticsKpiUnits = (props) => {
     const { role, date, defaultDate } = state;
     const [kindOfPoint, setKindOfPoint] = useState(KIND_OF_POINT.AUTOMATIC)
     const monthRef = useRef(date)
-    
+
     useEffect(() => {
         let infoSearch = {
             organizationalUnit: props.organizationalUnitIds,
@@ -83,7 +83,7 @@ const StatisticsKpiUnits = (props) => {
                         <div className="fillmult" data-width={`${data.kpi.approvedPoint}%`} style={{ width: `${data.kpi.approvedPoint}%`, backgroundColor: data.kpi.approvedPoint < 50 ? "#dc0000" : "rgb(76 179 99)" }}></div>
                         <a title={titleShow} className="perc">{`${!pointShow && pointShow !== 0 ? translate('kpi.evaluation.employee_evaluation.not_avaiable') : pointShow + '/100'}`}</a>
                     </div>
-                    <p className="kpi-number-target"><span style={{ marginRight: '5px' }}>số mục tiêu:</span> <span>{data.kpi?.kpis?.length}</span></p>
+                    <p className="kpi-number-target"><span style={{ marginRight: '5px' }}>số mục tiêu:</span> <span style={{ fontWeight: 'bold' }}>{data.kpi?.kpis?.length}</span></p>
                 </div>
             </div>
         )
@@ -194,38 +194,38 @@ const StatisticsKpiUnits = (props) => {
                         <button type="button" className="btn btn-success" onClick={handleSearchKpiUnits} >{translate('kpi.evaluation.employee_evaluation.search')}</button>
                     </>
                 }
-                
-                { checkHasComponent('refresh-kpi-unit-in-dashboard') && <button type="button" className="btn btn-success" onClick={handleRefreshKpiUnits} style={{ marginLeft: '5px' }}>{translate('task.task_management.detail_refresh')}</button> }
+
+                {checkHasComponent('refresh-kpi-unit-in-dashboard') && <button type="button" className="btn btn-success" onClick={handleRefreshKpiUnits} style={{ marginLeft: '5px' }}>{translate('task.task_management.detail_refresh')}</button>}
             </div>
-            
-            <section className="box-body" style={{textAlign: "right"}}>
+
+            <section className="box-body" style={{ textAlign: "right" }}>
                 <div className="btn-group">
                     <button type="button"
-                            className={`btn btn-xs ${kindOfPoint === KIND_OF_POINT.AUTOMATIC ? 'btn-danger' : null}`}
-                            onClick={() => handleSelectKindOfPoint(KIND_OF_POINT.AUTOMATIC)}>{translate('kpi.evaluation.dashboard.auto_point')}</button>
+                        className={`btn btn-xs ${kindOfPoint === KIND_OF_POINT.AUTOMATIC ? 'btn-danger' : null}`}
+                        onClick={() => handleSelectKindOfPoint(KIND_OF_POINT.AUTOMATIC)}>{translate('kpi.evaluation.dashboard.auto_point')}</button>
                     <button type="button"
-                            className={`btn btn-xs ${kindOfPoint === KIND_OF_POINT.EMPLOYEE ? 'btn-danger' : null}`}
-                            onClick={() => handleSelectKindOfPoint(KIND_OF_POINT.EMPLOYEE)}>{translate('kpi.evaluation.dashboard.employee_point')}</button>
+                        className={`btn btn-xs ${kindOfPoint === KIND_OF_POINT.EMPLOYEE ? 'btn-danger' : null}`}
+                        onClick={() => handleSelectKindOfPoint(KIND_OF_POINT.EMPLOYEE)}>{translate('kpi.evaluation.dashboard.employee_point')}</button>
                     <button type="button"
-                            className={`btn btn-xs ${kindOfPoint === KIND_OF_POINT.APPROVED ? 'btn-danger' : null}`}
-                            onClick={() => handleSelectKindOfPoint(KIND_OF_POINT.APPROVED)}>{translate('kpi.evaluation.dashboard.approve_point')}</button>
+                        className={`btn btn-xs ${kindOfPoint === KIND_OF_POINT.APPROVED ? 'btn-danger' : null}`}
+                        onClick={() => handleSelectKindOfPoint(KIND_OF_POINT.APPROVED)}>{translate('kpi.evaluation.dashboard.approve_point')}</button>
                 </div>
             </section>
-            
+
             {
                 managerKpiUnit?.isLoading
-                ? <div>{translate('general.loading')}</div>
-                : treeKpiUnits 
-                    ? treeKpiUnits.map((tree, index) =>
-                        <div key={index} className="tf-tree example" style={{ display: 'flex', justifyContent: 'flex-start', marginTop: '50px' }}>
-                            <ul>
-                                {
-                                    displayTreeView(translate, tree, kindOfPoint)
-                                }
-                            </ul>
-                        </div>
-                    )
-                    : <div>{translate('kpi.organizational_unit.dashboard.no_data')}</div>
+                    ? <div>{translate('general.loading')}</div>
+                    : treeKpiUnits
+                        ? treeKpiUnits.map((tree, index) =>
+                            <div key={index} className="tf-tree example" style={{ display: 'flex', justifyContent: 'flex-start', marginTop: '20px', paddingTop: '10px', paddingBottom: '10px' }}>
+                                <ul>
+                                    {
+                                        displayTreeView(translate, tree, kindOfPoint)
+                                    }
+                                </ul>
+                            </div>
+                        )
+                        : <div>{translate('kpi.organizational_unit.dashboard.no_data')}</div>
             }
         </div>
     )

@@ -38,6 +38,7 @@ function DetailUser(props) {
     let endDate = [partMonth2[1], partMonth2[0]].join('-');
     return (
         <div className="nav-tabs-custom">
+        <div className="col-xs-12">
             <ul className="nav nav-tabs">
                 <li className="active"><a href="#task" data-toggle="tab" onClick={() => handleNavTabs()}>Công việc nhân viên</a></li>
                 <li><a href="#asset" data-toggle="tab" onClick={() => handleNavTabs(true)}>Tài sản nhân viên</a></li>
@@ -45,6 +46,7 @@ function DetailUser(props) {
                 <li><a href="#kpi" data-toggle="tab" onClick={() => handleNavTabs(true)}>KPI nhân viên</a></li>
                 <li><a href="#annualLeave" data-toggle="tab" onClick={() => handleNavTabs(true)}>Nghỉ phép-Tăng ca</a></li>
             </ul>
+            </div>
             <div className="tab-content ">
                 <div className="tab-pane active" id="task">
                     <TaskUser user={props.user} unitId={props.id} startDate={startDate} endDate={endDate} search={search} changeTask={handleNameTask}></TaskUser>
@@ -54,7 +56,7 @@ function DetailUser(props) {
                         <div className="col-xs-12">
                             <div className="box box-primary">
                                 <div className="box-header with-border">
-                                    <div class="title">Tài sản quản lý</div>
+                                    <h3 class="title">Tài sản quản lý</h3>
                                 </div>
                                 <AssetsManagedByUser user={props.user} unitId={props.id} type="quản lý" ></AssetsManagedByUser>
                             </div>
@@ -64,7 +66,7 @@ function DetailUser(props) {
                         <div className="col-xs-12">
                             <div className="box box-primary">
                                 <div className="box-header with-border">
-                                    <div class="title">Tài sản sử dụng</div>
+                                    <h3 class="title">Tài sản sử dụng</h3>
                                 </div>
                                 <AssetsManagedByUser user={props.user} unitId={props.id} type="sử dụng" ></AssetsManagedByUser>
                             </div>
@@ -76,7 +78,7 @@ function DetailUser(props) {
                         <div className="col-xs-12">
                             <div className="box box-primary">
                                 <div className="box-header with-border">
-                                    <div class="title">Thông tin khen thưởng</div>
+                                    <h3 class="title">Thông tin khen thưởng</h3>
                                 </div>
                                 <CommendationUser user={props.user} unitId={props.id} email={email} startDate={startDate} endDate={endDate} search={search} ></CommendationUser>
                             </div>
@@ -86,7 +88,7 @@ function DetailUser(props) {
                         <div className="col-xs-12">
                             <div className="box box-primary">
                                 <div className="box-header with-border">
-                                    <div class="title">Thông tin kỷ luật</div>
+                                    <h3 class="title">Thông tin kỷ luật</h3>
                                 </div>
                                 <DisciplineUser user={props.user} unitId={props.id} email={email} startDate={startDate} endDate={endDate} search={search}></DisciplineUser>
                             </div>
@@ -94,6 +96,7 @@ function DetailUser(props) {
                     </div>
                 </div>
                 <div className="tab-pane" id="kpi">
+                <h3 class="title">KPI nhân viên</h3>
                     <KpiUser user={props.user} unitId={props.id} startDate={startDate} endDate={endDate} search={search} ></KpiUser>
                 </div>
                 <div className="tab-pane" id="annualLeave">

@@ -78,8 +78,8 @@ exports.authFunc = (checkPage = true) => {
                  * Nếu hai fingerprint này giống nhau -> token được tạo ra và gửi đi từ cùng một trình duyệt trên cùng 1 thiết bị
                  * Nếu hai fingerprint này khác nhau -> token đã bị lấy cắp và gửi từ một trình duyệt trên thiết bị khác
                  */
-                if (verified.fingerprint !== fingerprint)
-                    throw ["fingerprint_invalid"]; // phát hiện lỗi client copy jwt và paste vào localstorage của trình duyệt để không phải đăng nhập
+                // if (verified.fingerprint !== fingerprint)
+                //     throw ["fingerprint_invalid"]; // phát hiện lỗi client copy jwt và paste vào localstorage của trình duyệt để không phải đăng nhập
 
                 /**
                  * Kiểm tra xem current role có đúng với người dùng hay không?

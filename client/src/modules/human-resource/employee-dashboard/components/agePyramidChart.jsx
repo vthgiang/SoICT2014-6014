@@ -155,7 +155,6 @@ const AgePyramidChart = (props) => {
 
     let organizationalUnitsName;
     if (organizationalUnits && department?.list) {
-        console.log(department.list, organizationalUnits)
         organizationalUnitsName = department.list.filter(x => organizationalUnits.includes(x._id));
         organizationalUnitsName = organizationalUnitsName.map(x => x.name);
     }

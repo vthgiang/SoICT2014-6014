@@ -237,27 +237,35 @@ function TakeLeaveUser(props) {
     }
     let nameChart = `${translate('human_resource.dashboard_personal.trend_of_work')}`
     return (
-        <div className="nav-tabs-custom">
-            <ul className="nav nav-tabs">
-                <li><a>{translate('human_resource.annual_leave.approved_letter')} : {listAnnualLeaveOfNumberMonth ? listAnnualLeaveOfNumberMonth.length : 0} </a></li>
-                <li><a>Số buổi nghỉ phép còn lại : {listAnnualLeaveOfNumberMonth ? 11 - listAnnualLeaveOfNumberMonth.length : 11}</a></li>
-                <li><a>{translate('human_resource.timesheets.total_timesheets')} : {totalHours}</a></li>
-                <li><a>{translate('human_resource.timesheets.total_over_time')} : {overTime}</a></li>
-                <li><a>{translate('human_resource.timesheets.total_hours_off')} : {hoursOff}</a></li>
-            </ul>
-            
-            { showAnnualLeaveUser(listAnnualLeaveOfNumberMonth, showAnnualLeave)}
-            { showTimeSheetsUser(listTimesheetsByEmployeeIdAndTime, showOverTimeAndHourTime)}
-            <h3 className="box-title">{`${nameChart} ${props.startDate}`}<i className="fa fa-fw fa-caret-right"></i>{props.endDate}</h3>
-            <div className="dashboard_box_body">
-                <p className="pull-left" style={{ marginBottom: 0 }}><b>ĐV tính: Số giờ</b></p>
-                <div className="box-tools pull-right">
-                    <div className="btn-group pull-rigth">
-                        <button type="button" className={`btn btn-xs ${lineChart ? "active" : "btn-danger"}`} onClick={() => handleChangeViewChart(false)}>Bar chart</button>
-                        <button type="button" className={`btn btn-xs ${lineChart ? 'btn-danger' : "active"}`} onClick={() => handleChangeViewChart(true)}>Line chart</button>
+        <div className="row">
+            <div className="nav-tabs-custom">
+                <div className="col-xs-12">
+
+                    <h3 class="title">Nghỉ phép và tăng ca</h3>
+
+                    <div className="box box-primary">
+                        <ul className="nav nav-tabs">
+                            <li><a>{translate('human_resource.annual_leave.approved_letter')} : {listAnnualLeaveOfNumberMonth ? listAnnualLeaveOfNumberMonth.length : 0} </a></li>
+                            <li><a>Số buổi nghỉ phép còn lại : {listAnnualLeaveOfNumberMonth ? 11 - listAnnualLeaveOfNumberMonth.length : 11}</a></li>
+                            <li><a>{translate('human_resource.timesheets.total_timesheets')} : {totalHours}</a></li>
+                            <li><a>{translate('human_resource.timesheets.total_over_time')} : {overTime}</a></li>
+                            <li><a>{translate('human_resource.timesheets.total_hours_off')} : {hoursOff}</a></li>
+                        </ul>
+                        {showAnnualLeaveUser(listAnnualLeaveOfNumberMonth, showAnnualLeave)}
+                        {showTimeSheetsUser(listTimesheetsByEmployeeIdAndTime, showOverTimeAndHourTime)}
+                        <h3 className="box-title">{`${nameChart} ${props.startDate}`}<i className="fa fa-fw fa-caret-right"></i>{props.endDate}</h3>
+                        <div className="dashboard_box_body">
+                            <p className="pull-left" style={{ marginBottom: 0 }}><b>ĐV tính: Số giờ</b></p>
+                            <div className="box-tools pull-right">
+                                <div className="btn-group pull-rigth">
+                                    <button type="button" className={`btn btn-xs ${lineChart ? "active" : "btn-danger"}`} onClick={() => handleChangeViewChart(false)}>Bar chart</button>
+                                    <button type="button" className={`btn btn-xs ${lineChart ? 'btn-danger' : "active"}`} onClick={() => handleChangeViewChart(true)}>Line chart</button>
+                                </div>
+                            </div>
+                            <div id="trendWork"></div>
+                        </div>
                     </div>
                 </div>
-                <div id="trendWork"></div>
             </div>
         </div>
     )
