@@ -852,7 +852,7 @@ class AddTaskForm extends Component {
                                     <TreeSelect
                                         id={`select-task-project-task-${id}`}
                                         mode='radioSelect'
-                                        data={project?.data?.list}
+                                        data={project?.data?.list?.filter((projectItem) => projectItem.projectType === 1)}
                                         handleChange={this.handleTaskProject}
                                         value={[newTask.taskProject]}
                                         action={checkCurrentRoleIsManager && checkCurrentRoleIsManager.length > 0 ? () => { window.$('#modal-create-project').modal('show') } : null}
