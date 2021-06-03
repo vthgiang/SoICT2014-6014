@@ -76,7 +76,7 @@ table.tableTest {
     word-break: keep-all !important;
   }
   
-table.tableTest th, td {
+table.tableTest th td {
     text-align: left;
     padding: 8px;
     word-break: keep-all;

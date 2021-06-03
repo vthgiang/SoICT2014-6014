@@ -141,11 +141,9 @@ function TransportVehicleManagementTable(props) {
     }
     const selectVehicle = (index, vehicle) => {
         let value;
-        console.log("vvvvvv")
         if (getTickboxStatus(vehicle)==="iconactive"){
             value = "iconinactive";
             handleDeleteVehicle(vehicle);
-            console.log("aaaaa");
         }
         else {
             value = "iconactive";
@@ -176,7 +174,6 @@ function TransportVehicleManagementTable(props) {
                             <th>{"Tên phương tiện"}</th>
                             <th>{"Trọng tải"}</th>
                             <th>{"Thể tích"}</th>
-                            <th>{"Hành động"}</th>
                             <th>{"Chọn"}</th>
                         </tr>
                     </thead>
@@ -191,7 +188,7 @@ function TransportVehicleManagementTable(props) {
                                         <td>{vehicle.assetName}</td>
                                         <td>{vehicle.payload}</td>
                                         <td>{vehicle.volume}</td>
-                                        <td style={{ textAlign: "center" }}>
+                                        {/* <td style={{ textAlign: "center" }}> */}
                                             {/* <a className="edit text-green" style={{ width: '5px' }} title={"Thông tin xe"} 
                                                 // onClick={() => handleShowDetailInfo(example)}
                                             >
@@ -210,7 +207,7 @@ function TransportVehicleManagementTable(props) {
                                                 }}
                                                 func={handleDelete}
                                             /> */}
-                                        </td>
+                                        {/* </td> */}
                                         <td key={index} className="tooltip-checkbox">
                                             <span className={"icon " + getTickboxStatus(vehicle)}
                                                 // title={translate(`manufacturing.work_schedule.${command.status}.content`)} 

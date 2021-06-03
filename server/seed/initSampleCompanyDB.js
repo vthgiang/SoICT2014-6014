@@ -74,6 +74,8 @@ const {
     TransportRequirement,
     TransportDepartment,
     TransportVehicle,
+    TransportPlan,
+    TransportSchedule,
 
 } = require("../models");
 
@@ -210,6 +212,8 @@ const initSampleCompanyDB = async () => {
         if (!db.models.TransportDepartment) TransportDepartment(db);
         if (!db.models.TransportVehicle) TransportVehicle(db);
         if (!db.models.TransportRequirement) TransportRequirement(db);
+        if (!db.models.TransportPlan) TransportPlan(db);
+        if (!db.models.TransportSchedule) TransportSchedule(db);
 
         // console.log("models_list", db.models);
     };
@@ -7032,7 +7036,7 @@ const initSampleCompanyDB = async () => {
                     lng: 105.787069
                 }
             },
-            status: 1,
+            status: 3,
             code: "YCVC20210602.244971",
             type: 5,
             creator: users[7]._id,
@@ -7104,7 +7108,7 @@ const initSampleCompanyDB = async () => {
                 lng: 105.628865767
             }
             },
-            status: 1,
+            status: 3,
             code: "YCVC20210602.185942",
             type: 5,
             creator: users[8]._id,
@@ -7273,6 +7277,98 @@ const initSampleCompanyDB = async () => {
             approver: users[2]._id,
             department: transportDepartment[0]._id,          
         },
+    ])
+
+    const transportPlan = await TransportPlan(vnistDB).insertMany([
+        {
+            transportRequirements: [transportRequirement[0]._id, transportRequirement[2]._id],
+            code: "KHVC20210603.237299",
+            supervisor: users[3]._id,
+            creator: users[2]._id,
+            name: "Kế hoạch vận chuyển seed",
+            status: 2,
+            startTime: transportGetNextNDates(4),
+            endTime: transportGetNextNDates(4),
+            transportVehicles: [
+              {
+                vehicle: transportVehicle[0]._id,
+                carriers: [
+                  {
+                    carrier: users[4]._id,
+                    pos: 1,
+                  },
+                  {
+                    carrier: users[5]._id,
+                  }
+                ]
+              },
+              {
+                vehicle: transportVehicle[1]._id,
+                carriers: [
+                  {
+                    
+                    carrier: users[6]._id,
+                    pos: 1
+                  }
+                ]
+              }
+            ],
+            department: transportDepartment[0]._id,
+          }
+    ])
+    await TransportRequirement(vnistDB).updateOne({ _id: transportRequirement[0]._id }, { $set: { transportPlan: transportPlan[0]._id }});
+    await TransportRequirement(vnistDB).updateOne({ _id: transportRequirement[2]._id }, { $set: { transportPlan: transportPlan[0]._id }});
+
+    const transportSchedule = await TransportSchedule(vnistDB).insertMany([
+        {
+            transportPlan: transportPlan[0]._id,
+            route: [
+              {
+                transportVehicle: transportVehicle[1]._id,
+                routeOrdinal: [
+                  {
+                    transportRequirement: transportRequirement[2]._id,
+                    type: 1,
+                    distance: 0,
+                    duration: 0
+                  },
+                  {
+                    transportRequirement: transportRequirement[2]._id,
+                    type: 2,
+                    distance: 26,
+                    duration: 61
+                  }
+                ]
+              },
+              {
+                transportVehicle:transportVehicle[0]._id,
+                routeOrdinal: [
+                  {
+                    transportRequirement: transportRequirement[0]._id,
+                    type: 1,
+                    distance: 0,
+                    duration: 0
+                  },
+                  {
+                    transportRequirement: transportRequirement[0]._id,
+                    type: 2,
+                    distance: 75,
+                    duration: 174
+                  }
+                ]
+              }
+            ],
+            transportVehicles: [
+              {
+                transportRequirements: [transportRequirement[0]._id],
+                transportVehicle: transportVehicle[0]._id,
+              },
+              {
+                transportRequirements: [transportRequirement[2]._id],
+                transportVehicle: transportVehicle[1]._id,
+              }
+            ],
+          }
     ])
 
     console.log("Khởi tạo xong dữ liệu vận chuyển");

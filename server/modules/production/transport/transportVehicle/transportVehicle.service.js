@@ -59,7 +59,6 @@ exports.createTransportVehicle = async (portal, data) => {
  * @returns 
  */
 exports.editTransportVehicle = async (portal, id, data) => {
-    console.log(id, data)
     let oldTransportVehicle = await TransportVehicle(connect(DB_CONNECTION, portal)).findById(id);
 
     if (!oldTransportVehicle) {
@@ -84,7 +83,7 @@ exports.getAllTransportVehicles = async (portal, data) => {
     //     }
     // }
     let currentRole = data.currentRole;
-    let department = TransportDepartment.getDepartmentByRole(portal, currentRole);
+    let department = await TransportDepartment.getDepartmentByRole(portal, currentRole);
     let page, limit;
     page = data?.page ? Number(data.page) : 1;
     limit = data?.limit ? Number(data.limit) : 200;
