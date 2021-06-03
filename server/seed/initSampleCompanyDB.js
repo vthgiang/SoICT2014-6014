@@ -73,6 +73,7 @@ const {
 
     TransportRequirement,
     TransportDepartment,
+    TransportVehicle,
 
 } = require("../models");
 
@@ -207,6 +208,7 @@ const initSampleCompanyDB = async () => {
         if (!db.models.ManufacturingCommand) ManufacturingCommand(db);
 
         if (!db.models.TransportDepartment) TransportDepartment(db);
+        if (!db.models.TransportVehicle) TransportVehicle(db);
         if (!db.models.TransportRequirement) TransportRequirement(db);
 
         // console.log("models_list", db.models);
@@ -6875,6 +6877,73 @@ const initSampleCompanyDB = async () => {
     console.log("Khởi tạo xong danh sách thông tin báo giá");
 
     //------------------------- Dữ liệu vận chuyển -------------------------------------//
+
+    const transportGetNextNDates = (n) => {
+        let currentDate = new Date();
+        currentDate.setDate(currentDate.getDate()+n);
+        return new Date(currentDate);
+    }
+
+    const newTransportAssetVehicle = await Asset(vnistDB).insertMany([
+        {
+            assetType: [listAssetType[23]._id],
+            readByRoles: [vcTruongPhong._id],
+            cost: 0,
+            usefulLife: 0,
+            startDepreciation: null,
+            residualValue: null,
+            company: vnist._id,
+            avatar: "",
+            assetName: "Xe tải 1 ",
+            code: "VVTM20210603.182181",
+            serial: "123",
+            group: "vehicle",
+            purchaseDate: (new Date()).toISOString(),
+            warrantyExpirationDate: (transportGetNextNDates(100)).toISOString(),
+            managedBy: users[1]._id,
+            assignedToUser: null,
+            assignedToOrganizationalUnit: null,
+            location: null,
+            status: "ready_to_use",
+            typeRegisterForUse: 3,
+            description: "",
+            detailInfo: [
+              {
+                nameField: "volume",
+                value: "16"
+              },
+              {
+                
+                nameField: "payload",
+                value: "3000"
+              }
+            ],
+            depreciationType: "none",
+            maintainanceLogs: [],
+            usageLogs: [],
+            incidentLogs: [],
+            locationLogs: [],
+            disposalDate: null,
+            disposalType: "",
+            disposalCost: null,
+            disposalDesc: "",
+            documents: [],
+            unitsProducedDuringTheYears: [],
+            informations: [],
+          }
+    ])
+
+    const transportVehicle = await TransportVehicle(vnistDB).insertMany([
+        {
+            asset: newTransportAssetVehicle[0]._id,
+            code: "VVTM20210603.182181",
+            name: newTransportAssetVehicle[0].assetName,
+            payload:3000,
+            volume:16,
+            usable:1
+        }
+    ])
+
     const transportDepartment = await TransportDepartment(vnistDB).insertMany({
         organizationalUnit: phongVanChuyen._id,
         type: [
@@ -6921,7 +6990,7 @@ const initSampleCompanyDB = async () => {
             ],
             timeRequests: [
                 {
-                    timeRequest: (new Date()).toISOString(),
+                    timeRequest: (transportGetNextNDates(5)).toISOString(),
                     description: "",
                 }
             ],
