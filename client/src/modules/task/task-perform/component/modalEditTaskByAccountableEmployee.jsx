@@ -1080,7 +1080,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                         <TreeSelect
                                             id={`select-task-project-task-edit-by-accountable-${id}`}
                                             mode='radioSelect'
-                                            data={project.data?.list}
+                                            data={project?.data?.list?.filter((projectItem) => projectItem.projectType === 1)}
                                             handleChange={this.handleTaskProject}
                                             value={[taskProjectName]}
                                         />
