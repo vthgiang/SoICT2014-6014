@@ -1417,8 +1417,78 @@ const initHumanResourceForProjectData = async () => {
         })
     }).flat();
 
-    const newEmptyProjectType1 = {
-        name: 'Dự án test không ràng buộc',
+    const newEmptyProject1Type1 = {
+        name: 'Dự án test không ràng buộc 1',
+        projectType: 1,
+        "unitTime": "days",
+        "unitCost": "VND",
+        "status": "inprocess",
+        "startDate": new Date("2021-04-16T00:00:00Z"),
+        "endDate": new Date("2021-07-23T00:00:00Z"),
+        "description": "Dự án này có danh sách công việc không bị ràng buộc bởi tham số gì",
+        projectManager: [
+            projectManager._id,
+        ],
+        creator: projectManager._id,
+        responsibleEmployees: newResponsibleEmployees,
+        responsibleEmployeesWithUnit: newResponsibleEmployeesWithUnit,
+    }
+
+    const newEmptyProject2Type1 = {
+        name: 'Dự án test không ràng buộc 2',
+        projectType: 1,
+        "unitTime": "days",
+        "unitCost": "VND",
+        "status": "inprocess",
+        "startDate": new Date("2021-04-16T00:00:00Z"),
+        "endDate": new Date("2021-07-23T00:00:00Z"),
+        "description": "Dự án này có danh sách công việc không bị ràng buộc bởi tham số gì",
+        projectManager: [
+            projectManager._id,
+        ],
+        creator: projectManager._id,
+        responsibleEmployees: newResponsibleEmployees,
+        responsibleEmployeesWithUnit: newResponsibleEmployeesWithUnit,
+    }
+    
+    const newEmptyProject3Type1 = {
+        name: 'Dự án test không ràng buộc 3',
+        projectType: 1,
+        "unitTime": "days",
+        "unitCost": "VND",
+        "status": "inprocess",
+        "startDate": new Date("2021-04-16T00:00:00Z"),
+        "endDate": new Date("2021-07-23T00:00:00Z"),
+        "description": "Dự án này có danh sách công việc không bị ràng buộc bởi tham số gì",
+        projectManager: [
+            projectManager._id,
+        ],
+        creator: projectManager._id,
+        responsibleEmployees: newResponsibleEmployees,
+        responsibleEmployeesWithUnit: newResponsibleEmployeesWithUnit,
+    }
+
+    
+    const newEmptyProject4Type1 = {
+        name: 'Dự án test không ràng buộc 4',
+        projectType: 1,
+        "unitTime": "days",
+        "unitCost": "VND",
+        "status": "inprocess",
+        "startDate": new Date("2021-04-16T00:00:00Z"),
+        "endDate": new Date("2021-07-23T00:00:00Z"),
+        "description": "Dự án này có danh sách công việc không bị ràng buộc bởi tham số gì",
+        projectManager: [
+            projectManager._id,
+        ],
+        creator: projectManager._id,
+        responsibleEmployees: newResponsibleEmployees,
+        responsibleEmployeesWithUnit: newResponsibleEmployeesWithUnit,
+    }
+
+    
+    const newEmptyProject5Type1 = {
+        name: 'Dự án test không ràng buộc 5',
         projectType: 1,
         "unitTime": "days",
         "unitCost": "VND",
@@ -1472,7 +1542,11 @@ const initHumanResourceForProjectData = async () => {
 
     const projectDataInsertedDB = await Project(vnistDB).insertMany([
         drugRNDProject,
-        newEmptyProjectType1,
+        newEmptyProject1Type1,
+        newEmptyProject2Type1,
+        newEmptyProject3Type1,
+        newEmptyProject4Type1,
+        newEmptyProject5Type1,
         newEmptyProjectType2,
     ]);
 
@@ -1669,7 +1743,7 @@ const initHumanResourceForProjectData = async () => {
         if (moment(endDate).isSameOrBefore(moment())) {
             const isFinished = getRandomIntFromInterval(0, 1);
             // const isFinished = 1;
-            progress = 100;
+            progress = isFinished ? 100 : getRandomIntFromInterval(80, 100);
             actualCost = getRandomIntFromInterval(Math.floor(estimateNormalCost * 0.5), Math.floor(estimateNormalCost * 1.5));
             responsibleSalaryWithCost = responsibleSalary.map((resSalItem) => {
                 const tempActualCost = actualCost * resSalItem.weight / 100;
@@ -1746,6 +1820,26 @@ const initHumanResourceForProjectData = async () => {
                     accountableEmployees: accPointArr,
                 }
             }
+        }
+        else if (moment(startDate).isSameOrBefore(moment()) && moment(endDate).isAfter(moment())) {
+            progress = getRandomIntFromInterval(10, 60);
+            actualCost = getRandomIntFromInterval(Math.floor(estimateNormalCost * 0.5), Math.floor(estimateNormalCost * 1.5));
+            responsibleSalaryWithCost = responsibleSalary.map((resSalItem) => {
+                const tempActualCost = actualCost * resSalItem.weight / 100;
+                const resActualCost = Math.floor(tempActualCost - getRandomIntFromInterval(Math.floor(tempActualCost / 100), Math.floor(tempActualCost / 10)));
+                return {
+                    ...resSalItem,
+                    actualCost: resActualCost,
+                };
+            });
+            accountableSalaryWithCost = accountableSalary.map((accSalItem) => {
+                const tempActualCost = actualCost * accSalItem.weight / 100;
+                const accActualCost = Math.floor(tempActualCost - getRandomIntFromInterval(Math.floor(tempActualCost / 100), Math.floor(tempActualCost / 10)));
+                return {
+                    ...accSalItem,
+                    actualCost: accActualCost,
+                };
+            });
         }
 
         return {

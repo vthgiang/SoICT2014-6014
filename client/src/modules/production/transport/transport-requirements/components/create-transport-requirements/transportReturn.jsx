@@ -19,7 +19,7 @@ function TransportReturn(props) {
     })
 
     useEffect(() => {
-        console.log(currentBill, " currentBilliiiiiiiiiiiiiiiii")
+        // console.log(currentBill, " currentBilliiiiiiiiiiiiiiiii")
         if (currentBill){
             setFormValue({
                 stockCode: currentBill.fromStock?.code,
@@ -45,7 +45,7 @@ function TransportReturn(props) {
     return (
         <React.Fragment>
             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6" style={{ padding: 10, height: "100%" }}>
+                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6" style={{ padding: 0, height: "100%" }}>
                     <fieldset className="scheduler-border" style={{ height: "100%" }}>
                         <legend className="scheduler-border">Thông tin khách hàng</legend>
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ padding: 0 }}>
@@ -109,7 +109,7 @@ function TransportReturn(props) {
                 </div>
         
         
-                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6" style={{ padding: 10, height: "100%" }}>
+                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6" style={{ padding: 0, height: "100%" }}>
                         <fieldset className="scheduler-border" style={{ height: "100%" }}>
                             <legend className="scheduler-border">Thông tin kho</legend>
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ padding: 0 }}>

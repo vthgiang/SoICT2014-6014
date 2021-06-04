@@ -41,6 +41,11 @@ const TransportVehicleSchema = new Schema({ // Phương tiện vận tải (lấ
     volume: {
         type: Number,
         required: true,
+    },
+    department: {
+        type: Schema.Types.ObjectId,
+        ref: 'TransportDepartment',
+        required: true,
     }
 });
 

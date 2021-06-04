@@ -24,7 +24,21 @@ function createProjectChangeRequestDispatch(changeRequest) {
 }
 
 function getListProjectChangeRequestsDispatch(data) {
-    console.log('data', data)
+    if (data.calledId === 'paginate') {
+        return (dispatch) => {
+            dispatch({ type: ChangeRequestConstants.GET_PAGINATE_LIST_PROJECT_CHANGE_REQUESTS });
+            ChangeRequestServices.getListProjectChangeRequestsAPI(data)
+                .then((res) => {
+                    dispatch({
+                        type: ChangeRequestConstants.GET_PAGINATE_LIST_PROJECT_CHANGE_REQUESTS_SUCCESS,
+                        payload: res.data.content,
+                    });
+                })
+                .catch((err) => {
+                    dispatch({ type: ChangeRequestConstants.GET_PAGINATE_LIST_PROJECT_CHANGE_REQUESTS_FAILE });
+                });
+        };
+    }
     return (dispatch) => {
         dispatch({ type: ChangeRequestConstants.GET_LIST_PROJECT_CHANGE_REQUESTS });
         ChangeRequestServices.getListProjectChangeRequestsAPI(data)

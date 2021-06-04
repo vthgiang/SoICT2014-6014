@@ -17,12 +17,14 @@ function getAllTransportRequirements(queryData) {
                 limit: queryData !== undefined ? queryData.limit : null,
                 // page: 1,
                 // limit: 100,
-                status: queryData !== undefined ? queryData.status : null
+                status: queryData !== undefined ? queryData.status : null,
+                currentUserId: localStorage.getItem('userId'),
+                currentRole: localStorage.getItem('currentRole'),
             }
         },
          false, // Nếu có truy vấn thành công thì không hiện thông báo
          true, // Nếu có truy vấn thất bại thì hiện thông báo
-         "transport.requirements"
+         "manage_transport.transportRequirement"
     );
 }
 
@@ -35,7 +37,7 @@ function createTransportRequirement(data) {
         },
         true,
         true,
-        "manage_transport"
+        "manage_transport.transportRequirement"
     )
 }
 
@@ -47,7 +49,7 @@ function getDetailTransportRequirement(id) {
         },
         false,
         true,
-        'manage_transport'
+        'manage_transport.transportRequirement'
     )
 }
 
@@ -60,7 +62,7 @@ function editTransportRequirement(id, data) {
         },
         true,
         true,
-        "manage_transport"
+        "manage_transport.transportRequirement"
     )
 }
 
@@ -72,6 +74,6 @@ function deleteTransportRequirement(id) {
         },
         true,
         true,
-        "manage_transport"
+        "manage_transport.transportRequirement"
     )
 }

@@ -9,9 +9,21 @@ function SortableComponent(props) {
 		transportRequirements,
 		routeOrdinal,
 		callBackStateOrdinalAddress,
-		callBackToSetLocationsOnMap
+		callBackToSetLocationsOnMap,
+		callBackAddressList
 		} = props
-
+	/**
+	 * [{
+	 * 	address: "",
+	 * 	addressType: "",
+	 * 	distance: 0,
+	 * 	duration: 0,
+	 * 	geocodeAddress: {lat: , lng: }
+	 * 	payload, volume
+	 * 	transportRequirement: {}
+	 * 	transportRequirementId
+	 * }]
+	 */
 	const [addressList, setAddressList] = useState([]);
 	const [distance, setDistance] = useState([]);
 	const [duration, setDuration] = useState([]);
@@ -77,12 +89,12 @@ function SortableComponent(props) {
 			transportRequirements.map((item, index) => {
 				addressData.push({
 					transportRequirement: item,
-					transportRequirementId: item._id,
-					address: item.fromAddress,
-					geocodeAddress: item.geocode.fromAddress,
+					transportRequirementId: item?._id,
+					address: item?.fromAddress,
+					geocodeAddress: item?.geocode?.fromAddress,
 					addressType: 1,
-					payload: item.payload,
-					volume: item.volume
+					payload: item?.payload,
+					volume: item?.volume
 				},
 				{
 					transportRequirement: item,
@@ -137,6 +149,9 @@ function SortableComponent(props) {
 		if (addressList && addressList.length!==0 && transportVehicle){
 			callBackStateOrdinalAddress(addressList, transportVehicle._id);
 			callBackToSetLocationsOnMap(addressList);
+			if(callBackAddressList){
+				callBackAddressList([...addressList]);
+			}
 		}
 	}, [addressList])
 
@@ -286,12 +301,14 @@ function SortableComponent(props) {
 export {SortableComponent}
 
 const SortableList = SortableContainer(({items}) => {
+	// console.log(items, " day la itemmmmmmmmmmmmmm")
   return (
     <div className={"test1"}>
       {items.map((item, index) => (
 		<SortableItem 
 			key={`item-${index}`} 
-			index={index} 
+			index={index}
+			stt={index} 
 			value={item} 
 		/>
       ))}
@@ -299,16 +316,32 @@ const SortableList = SortableContainer(({items}) => {
   );
 });
 
-const SortableItem = SortableElement(({value}) =>
-    <div class="address-element" style={{margin: "10px", cursor: "pointer"}}>
+const SortableItem = SortableElement((props) =>
+{
+let {value, index, stt} = props
+const getTypeTransportRequirement = (value) => {
+	if (Number(value) === 1) return "Nhận";
+	return "Giao";
+}
+return(
+    <div className="address-element" style={{margin: "10px", cursor: "pointer"}}>
+		<div>
+			{"STT: "+ (stt+1)}
+		</div>
 		<div>
 			{"Địa chỉ: "+ value.address}
 		</div>		
 		<div>
-			{"Loai: "+ value.addressType}
+			{"Loai: "+ getTypeTransportRequirement(value.addressType)}
 		</div>
 		<div>
-			{"id: "+ value.transportRequirementId}
+			{"id: "+ value.transportRequirement?.code}
+		</div>
+		<div>
+			{"Trọng lượng: "+ value.payload}
+		</div>
+		<div>
+			{"Thể tích: "+ value.volume}
 		</div>
 		<div>
 			{"Khoảng cách: "+value.distance}
@@ -317,5 +350,6 @@ const SortableItem = SortableElement(({value}) =>
 			{"Thời gian: " + value.duration}
 		</div>
 	</div>
-
+)
+}
 );

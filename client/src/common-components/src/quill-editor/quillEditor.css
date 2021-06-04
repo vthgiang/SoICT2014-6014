@@ -11,3 +11,8 @@
 .ql-disabled .ql-editor {
     padding: 0px !important;
 }
+
+/* swal */
+.swal2-content.quill-editor {
+    text-align: unset !important;
+}

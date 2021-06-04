@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 
 import { TransportManageRouteMainPage } from '../components/transportManageRouteMainPage'
+import { TransportProcessMainPage } from '../components/transportProcessMainPage'
 
 class TransportRoute extends Component {
     constructor(props) {
@@ -11,7 +12,7 @@ class TransportRoute extends Component {
         return (
             <div className="box" style={{ minHeight: "450px" }}>
                 <div className="box-body">
-                    <TransportManageRouteMainPage />
+                    <TransportProcessMainPage />
                 </div>
             </div>
         );

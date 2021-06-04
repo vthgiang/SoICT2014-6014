@@ -524,8 +524,8 @@ class TaskManagementOfUnit extends Component {
         else barColor = "gold";
         return (
             <div >
-                <div className="progress" style={{ backgroundColor: 'rgb(221, 221, 221)', textAlign: "right", borderRadius: '3px' }}>
-                    <span style={{ fontSize: '13px', marginRight: '5px' }}>{progress + '%'}</span>
+                <div className="progress" style={{ backgroundColor: 'rgb(221, 221, 221)', textAlign: "right", borderRadius: '3px', position: 'relative' }}>
+                    <span style={{ position: 'absolute', right: '1px', fontSize: '13px', marginRight: '5px' }}>{progress + '%'}</span>
                     <div role="progressbar" className="progress-bar" aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100} style={{ width: `${progress + '%'}`, maxWidth: "100%", minWidth: "0%", backgroundColor: barColor }} >
                     </div>
                 </div>
