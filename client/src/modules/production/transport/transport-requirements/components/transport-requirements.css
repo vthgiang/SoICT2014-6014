@@ -1,3 +1,10 @@
+.transport-row-eq-height{
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    margin-bottom: 21px;
+}
 .breadcrumbs {
     overflow: hidden;
     width: 100%;

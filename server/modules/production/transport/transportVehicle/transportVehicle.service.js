@@ -87,16 +87,20 @@ exports.getAllTransportVehicles = async (portal, data) => {
     let page, limit;
     page = data?.page ? Number(data.page) : 1;
     limit = data?.limit ? Number(data.limit) : 200;
-    
-    keySearch = {department: department._id}
+    let vehicles = [];
+    let totalList = 0;
+    if (department){
+        keySearch = {department: department._id}
 
-    let totalList = await TransportVehicle(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
-    let vehicles = await TransportVehicle(connect(DB_CONNECTION, portal)).find(keySearch)
-        .populate([{
-            path: "asset"
-        }])
-        .skip((page - 1) * limit)
-        .limit(limit);
+        totalList = await TransportVehicle(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
+        vehicles = await TransportVehicle(connect(DB_CONNECTION, portal)).find(keySearch)
+            .populate([{
+                path: "asset"
+            }])
+            .skip((page - 1) * limit)
+            .limit(limit);
+    }
+    
     return { 
         data: vehicles, 
         totalList 

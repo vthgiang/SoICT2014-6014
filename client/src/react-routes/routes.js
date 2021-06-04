@@ -2421,12 +2421,12 @@ class Routes extends Component {
 
                     <PrivateRoute
                         isLoading={false}
-                        key={"manage-transport-requirements"}
+                        key={"manage-transport-requirement"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
                             {
                                 link: "/manage-transport-requirement", // url trang
-                                name: "manage_transport_requirement", // tên trang
+                                name: "manage_transport_requirements", // tên trang
                                 icon: " fa fa-calendar-o ",
                             },
                         ]}
@@ -2434,7 +2434,7 @@ class Routes extends Component {
                         exact={true}
                         link={"/manage-transport-requirement"}
                         path={"/manage-transport-requirement"}
-                        pageName={"manage_transport_requirement"}
+                        pageName={"manage_transport_requirements"}
                         layout={Layout}
                         component={TransportRequirement} // component ứng với trang, tạo ở bước 1
                     />

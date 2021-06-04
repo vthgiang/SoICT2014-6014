@@ -1411,7 +1411,7 @@ const LINKS = [{
 },
 // Quan li van chuyen transport
 {
-    url: "/manage-transport-requirements",
+    url: "/manage-transport-requirement",
     description: "Quản lý yêu cầu vận chuyển",
     category: LINK_CATEGORY.TRANSPORT.name,
     roles: [

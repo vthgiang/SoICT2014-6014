@@ -65,9 +65,11 @@ function TransportGeneralInfoShip(props) {
 
     return (
         <React.Fragment>
-            {/* <div class="row row-equal-height" style="margin-top: 0px;"> */}
+            
+            {/* <div class="row-equal-height" style={{marginTop: "0px"}}> */}
             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6" style={{ padding: 0, height: "100%" }}>
+                <div class="transport-row-eq-height">
+                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6" style={{ padding: 0}}>
                         <fieldset className="scheduler-border" style={{ height: "100%" }}>
                             <legend className="scheduler-border">Thông tin kho</legend>
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ padding: 0 }}>
@@ -114,7 +116,7 @@ function TransportGeneralInfoShip(props) {
                       
                     </div>
 
-                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6" style={{ padding: 0, height: "100%" }}>
+                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6" style={{ padding: 0}}>
                         <fieldset className="scheduler-border" style={{ height: "100%" }}>
                             <legend className="scheduler-border">Thông tin khách hàng</legend>
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ padding: 0 }}>
@@ -178,7 +180,7 @@ function TransportGeneralInfoShip(props) {
                       
                     </div>
                 </div>
-                {/* </div> */}
+                </div>
         </React.Fragment>
     );
 }

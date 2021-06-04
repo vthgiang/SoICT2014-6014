@@ -7,7 +7,6 @@ import { formatToTimeZoneDate } from '../../../../../helpers/formatDate'
 import ValidationHelper from '../../../../../helpers/validationHelper';
 import {generateCode} from '../../../../../helpers/generateCode'
 
-import { TransportGeneralInfo } from './create-transport-requirements/transportGeneralInfo';
 import { TransportRequirementsViewDetails } from './transportRequirementsViewDetails';
 import { TransportGeneralInfoShip } from './create-transport-requirements/transportGeneralInfoShip';
 import { TransportReturn } from './create-transport-requirements/transportReturn';

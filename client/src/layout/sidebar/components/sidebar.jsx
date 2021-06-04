@@ -741,7 +741,7 @@ class SideBar extends Component {
                                         {
                                             name: "menu.manage_transport_requirements",
                                             icon: "fa fa-calendar-o",
-                                            path: "/manage-transport-requirements",
+                                            path: "/manage-transport-requirement",
                                         },
                                         {
                                             name: "menu.manage_transport_plan",

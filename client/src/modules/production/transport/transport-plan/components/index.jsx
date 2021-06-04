@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { TransportPlanManagementTable } from './transportPlanManagementTable';
-import { TransportArrangePlan } from './transportArrangePlan';
+// import { TransportArrangePlan } from './transportArrangePlan';
 import { TransportVehicleManagementTable } from '../../transport-vehicle/components/transportVehicleManagementTable';
 import { TransportVehicle } from '../../transport-vehicle/components/transportVehicle'
 import { TransportEmployee } from '../../transport-vehicle/components/transportEmployee'
