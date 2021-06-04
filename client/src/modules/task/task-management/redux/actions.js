@@ -224,7 +224,7 @@ function getCreatorTaskByUser(unit, number, perPage, status, priority, special, 
 function getPaginateTasksByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime = false, calledId = null) {
     return dispatch => {
         dispatch({
-            type: taskManagementConstants.GET_PAGINATE_TASK_BYUSER_REQUEST, 
+            type: taskManagementConstants.GET_PAGINATE_TASK_BYUSER_REQUEST,
             calledId: calledId,
         });
 
@@ -259,13 +259,13 @@ function getPaginateTasksByUser(unit, number, perPage, status, priority, special
  * @param {*} endDate kết thúc công việc
  */
 
-function getPaginateTasks(role, unit, number, perPage, status, priority, special, name, startDate, endDate, responsibleEmployees, accountableEmployees, creatorEmployees, creatorTime, projectSearch, startDateAfter, endDateBefore, aPeriodOfTime = false) {
+function getPaginateTasks(data) {
     return dispatch => {
         dispatch({
-            type: taskManagementConstants.GET_PAGINATE_TASK_REQUEST, 
+            type: taskManagementConstants.GET_PAGINATE_TASK_REQUEST,
         });
 
-        taskManagementService.getPaginateTasks(role, unit, number, perPage, status, priority, special, name, startDate, endDate,responsibleEmployees,accountableEmployees, creatorEmployees,creatorTime,projectSearch, startDateAfter, endDateBefore, aPeriodOfTime)
+        taskManagementService.getPaginateTasks(data)
             .then(res => {
                 dispatch({
                     type: taskManagementConstants.GET_PAGINATE_TASK_SUCCESS,
@@ -471,17 +471,17 @@ function getTaskAnalysOfUser(userId, type) {
         dispatch({ type: taskManagementConstants.GET_TASK_ANALYS_OF_USER_REQUEST });
         return new Promise((resolve, reject) => {
             taskManagementService.getTaskAnalysOfUser(userId, type)
-            .then(res => {
-                dispatch({
-                    type: taskManagementConstants.GET_TASK_ANALYS_OF_USER_SUCCESS,
-                    payload: res.data.content
+                .then(res => {
+                    dispatch({
+                        type: taskManagementConstants.GET_TASK_ANALYS_OF_USER_SUCCESS,
+                        payload: res.data.content
+                    });
+                    resolve(res)
+                })
+                .catch(error => {
+                    dispatch({ type: taskManagementConstants.GET_TASK_ANALYS_OF_USER_FAILE, error });
+                    reject(error);
                 });
-                resolve(res)
-            })
-            .catch(error => {
-                dispatch({ type: taskManagementConstants.GET_TASK_ANALYS_OF_USER_FAILE, error });
-                reject(error);
-            });
         })
     }
 }
@@ -539,7 +539,7 @@ function getAllUserTimeSheet(month, year) {
  * @param {*} task dữ liệu task mới thêm
  */
 
- function addProjectTask(task) {
+function addProjectTask(task) {
     return dispatch => {
         dispatch({ type: taskManagementConstants.ADDNEW_TASK_REQUEST, task });
 
@@ -561,18 +561,37 @@ function getAllUserTimeSheet(month, year) {
 /**
  * get task by user and projectId
  */
-function getTasksByProject(projectId) {
+function getTasksByProject(projectId, page = undefined, perPage = undefined) {
+    if (!page && !perPage) {
+        return dispatch => {
+            dispatch({ 
+                type: taskManagementConstants.GETTASK_BYPROJECT_REQUEST,
+            });
+            taskManagementService.getTasksByProject(projectId)
+                .then(res => {
+                    dispatch({
+                        type: taskManagementConstants.GETTASK_BYPROJECT_SUCCESS,
+                        payload: res.data.content
+                    });
+                })
+                .catch(error => {
+                    dispatch({ type: taskManagementConstants.GETTASK_BYPROJECT_FAILURE, error });
+                });
+        };
+    }
     return dispatch => {
-        dispatch({ type: taskManagementConstants.GETTASK_BYPROJECT_REQUEST });
-        taskManagementService.getTasksByProject(projectId)
+        dispatch({ 
+            type: taskManagementConstants.GETTASK_BYPROJECT_PAGINATE_REQUEST,
+        });
+        taskManagementService.getTasksByProject(projectId, page, perPage)
             .then(res => {
                 dispatch({
-                    type: taskManagementConstants.GETTASK_BYPROJECT_SUCCESS,
+                    type: taskManagementConstants.GETTASK_BYPROJECT_PAGINATE_SUCCESS,
                     payload: res.data.content
                 });
             })
             .catch(error => {
-                dispatch({ type: taskManagementConstants.GETTASK_BYPROJECT_FAILURE, error });
+                dispatch({ type: taskManagementConstants.GETTASK_BYPROJECT_PAGINATE_FAILURE, error });
             });
     };
 }

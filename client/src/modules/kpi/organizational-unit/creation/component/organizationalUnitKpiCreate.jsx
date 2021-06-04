@@ -304,7 +304,6 @@ function OrganizationalUnitKpiCreate(props) {
         })
 
         if (infoSearch?.organizationalUnitId && infoSearch?.month && infoSearch?.month !== '') {
-            console.log(infoSearch?.organizationalUnitId ,infoSearch?.month, infoSearch?.organizationalUnit)
             props.getCurrentKPIUnit(currentRole, infoSearch?.organizationalUnitId, infoSearch?.month);
             props.getKPIParent({
                 roleId: currentRole,

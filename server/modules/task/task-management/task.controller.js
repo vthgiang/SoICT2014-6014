@@ -67,7 +67,7 @@ exports.getTasks = async (req, res) => {
 exports.getTaskEvaluations = async (req, res) => {
     try {
         let taskEvaluation = await TaskManagementService.getTaskEvaluations(req.portal, req.query);
-        
+
         await Logger.info(req.user.email, 'get_task_evaluattions', req.portal);
         res.status(200).json({
             success: true,
@@ -331,6 +331,7 @@ getPaginatedTasks = async (req, res) => {
             creatorEmployees: req.query.creatorEmployees,
             creatorTime: req.query.creatorTime,
             projectSearch: req.query.projectSearch,
+            tags: req.query.tags
         };
 
         let tasks = await TaskManagementService.getPaginatedTasks(req.portal, task);
@@ -442,7 +443,8 @@ exports.createTask = async (req, res) => {
                 }
             })
         }
-        var tasks = await TaskManagementService.createTask(req.portal, req.body);
+        let body = JSON.parse(req.body.data)
+        var tasks = await TaskManagementService.createTask(req.portal, body);
         var task = tasks.task;
         var user = tasks.user.filter(user => user !== req.user._id); //lọc thông tin người tạo ra khỏi danh sách sẽ gửi thông báo
 
@@ -586,7 +588,6 @@ exports.createProjectTasksFromCPM = async (req, res) => {
         let endDateOfProject = req.body[0]?.endDate;
         for (let currentTask of req.body) {
             if (currentTask.preceedingTasks.length > 0) {
-                console.log('currentTask.preceedingTasks', currentTask.preceedingTasks)
                 let currentNewPreceedingTasks = [];
                 for (let currentPreceedingItem of currentTask.preceedingTasks) {
                     const localPreceedingItem = req.body.find(item => item.code === currentPreceedingItem.task);
@@ -605,7 +606,6 @@ exports.createProjectTasksFromCPM = async (req, res) => {
                     preceedingTasks: currentNewPreceedingTasks,
                 }
             }
-            // console.log(currentTask)
             var tasks = await TaskManagementService.createProjectTask(req.portal, currentTask);
             var task = tasks.task;
             var user = tasks.user.filter(user => user !== req.user._id); // Lọc thông tin người tạo ra khỏi danh sách sẽ gửi thông báo
@@ -644,12 +644,10 @@ exports.createProjectTasksFromCPM = async (req, res) => {
             await Logger.info(req.user.email, 'create_tasks_list_excel_cpm', req.portal)
 
             totalProjectBudget += currentTask.estimateNormalCost;
-            console.log(currentTask.endDate, endDateOfProject, moment(currentTask.endDate).isAfter(moment(endDateOfProject)))
             if (moment(currentTask.endDate).isAfter(moment(endDateOfProject))) {
                 endDateOfProject = currentTask.endDate;
             }
         }
-        console.log(endDateOfProject);
 
         await Project(connect(DB_CONNECTION, req.portal)).findByIdAndUpdate(req.body[0].taskProject, {
             $set: {
@@ -725,7 +723,6 @@ exports.getSubTask = async (req, res) => {
  */
 exports.editTaskByResponsibleEmployees = async (req, res) => {
     try {
-        console.log(req.body.description)
         var task = await TaskManagementService.editTaskByResponsibleEmployees(req.portal, req.body, req.params.id);
         var user = task.user;
         var tasks = task.tasks;
@@ -1048,8 +1045,8 @@ exports.getAllUserTimeSheet = async (req, res) => {
 getTasksByProject = async (req, res) => {
     try {
         let portal = req.portal;
-        let { projectId } = req.query;
-        let tasksResult = await TaskManagementService.getTasksByProject(portal, projectId);
+        let { projectId, page, perPage } = req.query;
+        let tasksResult = await TaskManagementService.getTasksByProject(portal, projectId, page, perPage);
 
         await Logger.info(req.user.email, 'get_tasks_by_project_success', req.portal)
         res.status(200).json({
@@ -1058,6 +1055,7 @@ getTasksByProject = async (req, res) => {
             content: tasksResult
         })
     } catch (error) {
+        console.log('get_tasks_by_project_faile', error)
         await Logger.error(req.user.email, 'get_tasks_by_project_faile', req.portal)
         res.status(400).json({
             success: false,

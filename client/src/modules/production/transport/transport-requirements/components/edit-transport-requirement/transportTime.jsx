@@ -13,7 +13,7 @@ import { GoodActions} from '../../../../common-production/good-management/redux/
 import { validate } from 'uuid';
 
 function TransportTime(props) {
-    const {callBackState, timeRequested} = props;
+    const {callBackState, timeRequested, componentId} = props;
 
     const [currentTime, setCurrentTime] = useState({
         time: "",
@@ -75,7 +75,7 @@ function TransportTime(props) {
                                         <span className="attention"> * </span>
                                     </label>
                                     <DatePicker
-                                        id={`expected_date2`}
+                                        id={componentId?componentId:`expected_date2`}
                                         value={currentTime.time}
                                         onChange={handleTimeChange}
                                         disabled={false}

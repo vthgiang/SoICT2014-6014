@@ -10,6 +10,7 @@ import { LocationMap } from './map/locationMap'
 import { TransportVehicleAndCarrierSelect } from "./transport-plan-edit/transportVehicleAndCarrierSelect"
 
 import { transportPlanActions } from '../redux/actions';
+import { transportDepartmentActions } from '../../transport-department/redux/actions'
 import { transportRequirementsActions } from '../../transport-requirements/redux/actions'
 
 import {} from './transport-plan.css'
@@ -17,7 +18,7 @@ import {} from './transport-plan.css'
 function TransportPlanEditForm(props) {
     let allTransportRequirements;
     let {transportRequirements, currentDateClient, currentTransportPlan,
-        reloadRequirementTable, reloadOtherEditForm
+        reloadRequirementTable, reloadOtherEditForm, transportDepartment
     } = props;
     const [formSchedule, setFormSchedule] = useState({
         code: "",
@@ -47,8 +48,10 @@ function TransportPlanEditForm(props) {
         console.log(formSchedule)
         let data = {
             code: formSchedule?.code,
+            name: formSchedule?.name,
             startTime: formSchedule?.startDate,
             endTime: formSchedule?.endDate,
+            supervisor: formSchedule?.supervisor?._id,
             transportRequirements: formSchedule?.transportRequirements?formSchedule.transportRequirements:listSelectedRequirements,
             transportVehicles: formSchedule?.transportVehicles?formSchedule.transportVehicles:listChosenVehicleCarrier,
         }
@@ -120,6 +123,29 @@ function TransportPlanEditForm(props) {
         }
     }
 
+    const getSupervisor = () => {
+        let supervisorList = [];
+        if (transportDepartment && transportDepartment.listUser && transportDepartment.listUser.length!==0){
+            let listUser = transportDepartment.listUser.filter(r=>Number(r.role) === 2);
+            if (listUser && listUser.length!==0 && listUser[0].list && listUser[0].list.length!==0){
+                listUser[0].list.map(userId => {
+                    supervisorList.push({
+                        value: userId._id,
+                        text: userId.name,
+                    });
+                })
+            }
+        }
+        return supervisorList;
+    }
+
+    const handleSupervisorChange = (value) => {
+        setFormSchedule({
+            ...formSchedule,
+            supervisor: value[0],
+        })
+    }
+
     useEffect(() => {
         props.getAllTransportRequirements({page:1, limit: 100, status:2})
     }, [reloadRequirementTable])
@@ -129,6 +155,8 @@ function TransportPlanEditForm(props) {
                 startDate: currentTransportPlan.startTime,
                 endDate: currentTransportPlan.endTime,
                 code: currentTransportPlan.code,
+                name: currentTransportPlan.name,
+                supervisor: currentTransportPlan.supervisor._id,
             });
 
             let idArr = []
@@ -173,6 +201,9 @@ function TransportPlanEditForm(props) {
             console.log(currentTransportPlan)
         }
     }, [currentTransportPlan])
+    useEffect(() => {
+        props.getUserByRole({currentUserId: localStorage.getItem('userId'), role: 2})
+    }, [])
     useEffect(() => {
         // console.log(formSchedule, " day la form schedule");
     }, [formSchedule])
@@ -266,147 +297,170 @@ function TransportPlanEditForm(props) {
                 <div className="tab-content">
                     <div className="tab-pane active" id="plan-list-transport-requirement-edit">
                         <div className="box-body">
-                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            
+                            <div className="box box-solid">
+                                <div className="box-body qlcv">
+                                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 
-                                <div className="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                                        <div className="col-xs-12 col-sm-12 col-md-4 col-lg-4">
 
-                                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                            <div className="form-group">
-                                                <label>
-                                                    Mã lịch trình <span className="attention"> </span>
-                                                </label>
-                                                <input type="text" className="form-control" disabled={true} 
-                                                    value={formSchedule.code}
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                            <div className={`form-group`}>
-                                                <label>
-                                                    Người phụ trách
-                                                    <span className="attention"> * </span>
-                                                </label>
-                                                <input type="text" className="form-control" disabled={false} 
-                                                />
-                                                {/* <SelectBox
-                                                    id={`select-type-requirement`}
-                                                    className="form-control select2"
-                                                    style={{ width: "100%" }}
-                                                    value={"5"}
-                                                    // items={requirements}
-                                                    // onChange={handleTypeRequirementChange}
-                                                    multiple={false}
-                                                /> */}
-                                            </div>
-                                        </div>
+                                                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                    <div className="form-group">
+                                                        <label>
+                                                            Mã kế hoạch <span className="attention"> </span>
+                                                        </label>
+                                                        <input type="text" className="form-control" disabled={true} 
+                                                            value={formSchedule.code}
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                    <div className="form-group">
+                                                        <label>
+                                                            Tên kế hoạch <span className="attention"> </span>
+                                                        </label>
+                                                        <input type="text" className="form-control" disabled={true} 
+                                                            value={formSchedule.name}
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                    <div className={`form-group`}>
+                                                        <label>
+                                                            Người phụ trách giám sát
+                                                            <span className="attention"> * </span>
+                                                        </label>
+                                                        <SelectBox
+                                                            id={`select-supervisor-edit`}
+                                                            className="form-control select2"
+                                                            style={{ width: "100%" }}
+                                                            value={formSchedule.supervisor}
+                                                            items={getSupervisor()}
+                                                            onChange={handleSupervisorChange}
+                                                            multiple={false}
+                                                        />
+                                                    </div>
+                                                </div>
 
-                                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                            <div className="form-group">
-                                                <label>
-                                                    Ngày bắt đầu <span className="attention"> * </span>
-                                                </label>
-                                                <DatePicker
-                                                    id={`start_date_edit`}
-                                                    value={formatDate(formSchedule.startDate)}
-                                                    // onChange={handleStartDateChange}
-                                                    disabled={true}
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                            <div className={`form-group`}>
-                                                <label>
-                                                    Ngày kết thúc
-                                                    <span className="attention"> * </span>
-                                                </label>
-                                                <DatePicker
-                                                    id={`end_date_edit`}
-                                                    value={formatDate(formSchedule.endDate)}
-                                                    // onChange={handleEndDateChange}
-                                                    disabled={true}
-                                                />
-                                            </div>
-                                        </div>
+                                                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                    <div className="form-group">
+                                                        <label>
+                                                            Ngày bắt đầu <span className="attention"> * </span>
+                                                        </label>
+                                                        <DatePicker
+                                                            id={`start_date_edit`}
+                                                            value={formatDate(formSchedule.startDate)}
+                                                            // onChange={handleStartDateChange}
+                                                            disabled={true}
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                    <div className={`form-group`}>
+                                                        <label>
+                                                            Ngày kết thúc
+                                                            <span className="attention"> * </span>
+                                                        </label>
+                                                        <DatePicker
+                                                            id={`end_date_edit`}
+                                                            value={formatDate(formSchedule.endDate)}
+                                                            // onChange={handleEndDateChange}
+                                                            disabled={true}
+                                                        />
+                                                    </div>
+                                                </div>
 
-                                </div>
-                                <div className="col-xs-12 col-sm-12 col-md-8 col-lg-8">
-                                    {
-                                        (listRequirements && listRequirements.length!==0)
-                                        // &&
-                                        // <LocationMap 
-                                        //     locations = {listSelectedRequirementsLocation}
-                                        //     loadingElement={<div style={{height: `100%`}}/>}
-                                        //     containerElement={<div style={{height: "40vh"}}/>}
-                                        //     mapElement={<div style={{height: `100%`}}/>}
-                                        // />
-                                    }
+                                        </div>
+                                        <div className="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+                                            {
+                                                (listRequirements && listRequirements.length!==0)
+                                                &&
+                                                <LocationMap 
+                                                    locations = {listSelectedRequirementsLocation}
+                                                    loadingElement={<div style={{height: `100%`}}/>}
+                                                    containerElement={<div style={{height: "45vh", marginTop: '20px'}}/>}
+                                                    mapElement={<div style={{height: `100%`}}/>}
+                                                    defaultZoom={10}
+                                                    defaultCenter={listSelectedRequirementsLocation[0]?.locations}
+                                                />
+                                            }
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        {
-                            listRequirements && listRequirements.length!==0
-                            &&
-                            <table id={"1"} className="table table-striped table-bordered table-hover">
-                                <thead>
-                                    <tr>
-                                        <th className="col-fixed" style={{ width: 60 }}>{"STT"}</th>
-                                        <th>{"Mã yêu cầu"}</th>
-                                        <th>{"Loại yêu cầu"}</th>
-                                        <th>{"Địa chỉ nhận hàng"}</th>
-                                        <th>{"Địa chỉ giao hàng"}</th>
-                                        <th>{"Ngày tạo"}</th>
-                                        <th>{"Ngày mong muốn vận chuyển"}</th>
-                                        <th>{"Trạng thái"}</th>
-                                        <th>{"Hành động"}</th>
-                                        {/* <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
-                                            <DataTableSetting
-                                                tableId={tableId}
-                                                columnArr={[
-                                                    translate('manage_example.index'),
-                                                    translate('manage_example.exampleName'),
-                                                    translate('manage_example.description'),
-                                                ]}
-                                                setLimit={setLimit}
-                                            />
-                                        </th> */}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {(listRequirements && listRequirements.length !== 0) &&
-                                        listRequirements.map((x, index) => (
-                                            x &&
-                                            <tr key={index}>
-                                                <td>{index+1}</td>
-                                                <td>{x.code}</td>
-                                                <td>{x.type}</td>
-                                                <td>{x.fromAddress}</td>
-                                                <td>{x.toAddress}</td>
-                                                <td>{x.createdAt ? formatDate(x.createdAt) : ""}</td>
-                                                <td>
-                                                    {
-                                                        (x.timeRequests && x.timeRequests.length!==0)
-                                                        && x.timeRequests.map((timeRequest, index2)=>(
-                                                            <div key={index+" "+index2}>
-                                                                {index2+1+"/ "+formatDate(timeRequest.timeRequest)}
-                                                            </div>
-                                                        ))
-                                                    }
-                                                </td>
-                                                <td>{x.status}</td>
-                                                <td style={{ textAlign: "center" }} className="tooltip-checkbox">
-                                                    <span className={"icon "
-                                                    +getStatusTickBox(x)
-                                                }
-                                                    title={"alo"} 
-                                                    onClick={() => handleSelectRequirement(x)}
-                                                    >
-                                                    </span>
-                                                </td>
+
+                            <div className="box box-solid">
+                                <div className="box-header">
+                                    <div className="box-title">{"Danh sách nhiệm vụ vận chuyển"}</div>
+                                </div>
+                                <div className="box-body qlcv">
+                                {
+                                    listRequirements && listRequirements.length!==0
+                                    &&
+                                    <table id={"1"} className="table table-striped table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th className="col-fixed" style={{ width: 60 }}>{"STT"}</th>
+                                                <th>{"Mã yêu cầu"}</th>
+                                                <th>{"Loại yêu cầu"}</th>
+                                                <th>{"Địa chỉ nhận hàng"}</th>
+                                                <th>{"Địa chỉ giao hàng"}</th>
+                                                <th>{"Ngày tạo"}</th>
+                                                <th>{"Ngày mong muốn vận chuyển"}</th>
+                                                <th>{"Trạng thái"}</th>
+                                                <th>{"Hành động"}</th>
+                                                {/* <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
+                                                    <DataTableSetting
+                                                        tableId={tableId}
+                                                        columnArr={[
+                                                            translate('manage_example.index'),
+                                                            translate('manage_example.exampleName'),
+                                                            translate('manage_example.description'),
+                                                        ]}
+                                                        setLimit={setLimit}
+                                                    />
+                                                </th> */}
                                             </tr>
-                                        ))
-                                    }
-                                </tbody>
-                            </table>
-                        }
+                                        </thead>
+                                        <tbody>
+                                            {(listRequirements && listRequirements.length !== 0) &&
+                                                listRequirements.map((x, index) => (
+                                                    x &&
+                                                    <tr key={index}>
+                                                        <td>{index+1}</td>
+                                                        <td>{x.code}</td>
+                                                        <td>{x.type}</td>
+                                                        <td>{x.fromAddress}</td>
+                                                        <td>{x.toAddress}</td>
+                                                        <td>{x.createdAt ? formatDate(x.createdAt) : ""}</td>
+                                                        <td>
+                                                            {
+                                                                (x.timeRequests && x.timeRequests.length!==0)
+                                                                && x.timeRequests.map((timeRequest, index2)=>(
+                                                                    <div key={index+" "+index2}>
+                                                                        {index2+1+"/ "+formatDate(timeRequest.timeRequest)}
+                                                                    </div>
+                                                                ))
+                                                            }
+                                                        </td>
+                                                        <td>{x.status}</td>
+                                                        <td style={{ textAlign: "center" }} className="tooltip-checkbox">
+                                                            <span className={"icon "
+                                                            +getStatusTickBox(x)
+                                                        }
+                                                            title={"alo"} 
+                                                            onClick={() => handleSelectRequirement(x)}
+                                                            >
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                ))
+                                            }
+                                        </tbody>
+                                    </table>
+                                }
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div className="tab-pane" id="plan-transport-vehicle-carrier-edit">
@@ -431,14 +485,15 @@ function TransportPlanEditForm(props) {
 }
 
 function mapState(state) {
-    const {transportRequirements} = state;
-    return {transportRequirements}
+    const {transportRequirements, transportDepartment} = state;
+    return {transportRequirements, transportDepartment}
 }
 
 const actions = {
     getAllTransportRequirements: transportRequirementsActions.getAllTransportRequirements,
     createTransportPlan: transportPlanActions.createTransportPlan,
     editTransportPlan: transportPlanActions.editTransportPlan,
+    getUserByRole: transportDepartmentActions.getUserByRole,
 }
 
 const connectedTransportPlanEditForm = connect(mapState, actions)(withTranslate(TransportPlanEditForm));

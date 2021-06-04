@@ -308,7 +308,7 @@ function ArrangeVehiclesAndGoods(props) {
             // />
         }
         {
-            (!allTransportVehicle || !(allTransportVehicle.length!==0))
+            (currentTransportPlan._id !=="0"&&(!allTransportVehicle || !(allTransportVehicle.length!==0)))
             &&
             <h1>Kế hoạch chưa có phương tiện vận chuyển</h1>
         }               

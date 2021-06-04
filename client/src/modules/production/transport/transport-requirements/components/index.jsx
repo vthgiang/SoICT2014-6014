@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { TransportRequirementsManagementTable } from './transportRequirementsManagementTable';
+import './transport-requirements.css';
 class TransportRequirements extends Component {
     constructor(props) {
         super(props);

@@ -4,6 +4,7 @@ import { transportDepartmentServices } from './services';
 export const transportDepartmentActions = {
     getAllTransportDepartments,
     createTransportDepartment,
+    getUserByRole,
 }
 
 function getAllTransportDepartments(queryData) {
@@ -49,4 +50,27 @@ function createTransportDepartment(data) {
                 });
             });
     }
+}
+
+function getUserByRole(queryData) {
+    return (dispatch) => {
+        dispatch({
+            type: transportDepartmentConstants.GET_USER_BY_ROLE_REQUEST
+        });
+
+        transportDepartmentServices
+            .getUserByRole(queryData)
+            .then((res) => {
+                dispatch({
+                    type: transportDepartmentConstants.GET_USER_BY_ROLE_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch((error) => {
+                dispatch({
+                    type: transportDepartmentConstants.GET_USER_BY_ROLE_FAILURE,
+                    error
+                });
+            });
+    } 
 }

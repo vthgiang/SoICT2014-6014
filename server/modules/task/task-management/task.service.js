@@ -218,7 +218,7 @@ exports.getTaskEvaluations = async (portal, data) => {
                 accountableEmployees: item.accountableEmployees,
                 responsibleEmployees: item.responsibleEmployees,
                 status: item.status,
-                date:item.evaluatingMonth,
+                date: item.evaluatingMonth,
                 startDate: item.startDate,
                 endDate: item.endDate,
                 priority: item.priority,
@@ -229,7 +229,7 @@ exports.getTaskEvaluations = async (portal, data) => {
             };
         });
 
-// console.log("newResult",newResult);
+        // console.log("newResult",newResult);
         // newResult.map(o => {
         //     if (o.taskInformations.some(item => (item.filter === true))) {
         //         return o;
@@ -251,7 +251,7 @@ exports.getTaskEvaluations = async (portal, data) => {
 exports.getPaginatedTasks = async (portal, task) => {
     let { perPage, number, role, user, organizationalUnit, status, priority, special, name,
         startDate, endDate, startDateAfter, endDateBefore, responsibleEmployees,
-        accountableEmployees, creatorEmployees, creatorTime, projectSearch } = task;
+        accountableEmployees, creatorEmployees, creatorTime, projectSearch, tags } = task;
     let taskList;
     perPage = Number(perPage);
     let page = Number(number);
@@ -279,7 +279,7 @@ exports.getPaginatedTasks = async (portal, task) => {
         $or: roleArr,
         isArchived: false
     };
-    let keySearchSpecial = {}, keySeachDateTime = {};
+    let keySearchSpecial = {}, keySeachDateTime = {}, keyTags = {};
 
     if (organizationalUnit) {
         keySearch = {
@@ -534,12 +534,24 @@ exports.getPaginatedTasks = async (portal, task) => {
         }
     }
 
+    if (tags?.length > 0) {
+        let textSearch = ""
+        tags.map(item => {
+            textSearch = textSearch + " " + item
+        })
+
+        keyTags = {
+            ...keyTags,
+            $text: { $search: textSearch.trim() }
+        }
+    }
 
     let optionQuery = {
         $and: [
             keySearch,
             keySeachDateTime,
-            keySearchSpecial
+            keySearchSpecial,
+            keyTags
         ]
     }
 
@@ -2069,6 +2081,7 @@ exports.createTask = async (portal, task) => {
         informedEmployees: task.informedEmployees,
         confirmedByEmployees: task.responsibleEmployees.concat(task.accountableEmployees).concat(task.consultedEmployees).includes(task.creator) ? task.creator : [],
         taskProject,
+        tags: task.tags
     });
 
     if (newTask.taskTemplate !== null) {
@@ -2890,8 +2903,26 @@ exports.getAllUserTimeSheet = async (portal, month, year) => {
     return allTS;
 }
 
-exports.getTasksByProject = async (portal, projectId) => {
-    let tasks = await Task(connect(DB_CONNECTION, portal))
+exports.getTasksByProject = async (portal, projectId, page, perPage) => {
+    let tasks;
+    let totalList = await Task(connect(DB_CONNECTION, portal)).countDocuments({ taskProject: projectId });
+    if (page && perPage) {
+        tasks = await Task(connect(DB_CONNECTION, portal))
+            .find({ taskProject: projectId }).skip((Number(page) - 1) * Number(perPage)).limit(Number(perPage))
+            .populate({ path: "responsibleEmployees", select: "_id name" })
+            .populate({ path: "accountableEmployees", select: "_id name" })
+            .populate({ path: "consultedEmployees", select: "_id name" })
+            .populate({ path: "informedEmployees", select: "_id name" })
+            .populate({ path: "creator", select: "_id name" })
+            .populate({ path: "preceedingTasks", select: "_id name" })
+            .populate({ path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" })
+            .populate({ path: "overallEvaluation.accountableEmployees.employee", select: "_id name" });
+        return {
+            docs: tasks,
+            totalDocs: totalList,
+        }
+    }
+    tasks = await Task(connect(DB_CONNECTION, portal))
         .find({ taskProject: projectId })
         .populate({ path: "responsibleEmployees", select: "_id name" })
         .populate({ path: "accountableEmployees", select: "_id name" })

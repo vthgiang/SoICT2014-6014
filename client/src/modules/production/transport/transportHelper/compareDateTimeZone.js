@@ -5,7 +5,7 @@
 export const isTimeZoneDateSmaller = (date1, date2) => { //Ngày bắt đầu trước ngày kết thúc
     let startTimeZoneDate = new Date(date1);
     let endTimeZoneDate = new Date(date2);
-    startTimeZoneDate.setHours(11,0,1);
+    startTimeZoneDate.setHours(12,0,1);
     endTimeZoneDate.setHours(10,0,1);
     if (startTimeZoneDate.getTime() < endTimeZoneDate.getTime()) {
         return true
@@ -34,4 +34,11 @@ export const getListDateBetween = (startDate, endDate) => {
         if (k>100) break;
     }
     return result;
+}
+
+export const isDateEqual = (date1, date2) => {
+    const d1 = new Date(date1);
+    const d2 = new Date(date2);
+    if (d1.getDate() === d2.getDate() && d1.getMonth()===d2.getMonth() && d1.getFullYear()===d2.getFullYear()) return true;
+    else return false;
 }

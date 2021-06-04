@@ -8,7 +8,7 @@ import { formatDate } from "../../../../../helpers/formatDate"
 
 import { TransportManageVehicleProcess } from "./transportManageVehicleProcess"
 
-import { TransportDetailRoute } from "./transportDetailRoute"
+import { TransportDetailRoute } from "./transportListMissionProcess"
 import { TransportDetailMap } from "./transportDetailMap"
 
 import { transportPlanActions } from "../../transport-plan/redux/actions"
@@ -81,10 +81,12 @@ function TransportManageRouteMainPage(props) {
         ];        
         if (allTransportPlans) {
             allTransportPlans.map((item) => {
-                listTransportPlans.push({
-                    value: item._id,
-                    text: item.code,
-                });
+                if(String(item.status)!=="1"){
+                    listTransportPlans.push({
+                        value: item._id,
+                        text: item.code+" - "+item.name,
+                    });
+                }
             });
         }
         return listTransportPlans;
@@ -114,6 +116,7 @@ function TransportManageRouteMainPage(props) {
                 })
             }
         }
+        console.log(length,longestRoute);
         return length/longestRoute * 100;
     }
 
@@ -136,7 +139,7 @@ function TransportManageRouteMainPage(props) {
     }
 
     const getCarriers = (vehicleId) => {
-        let carriers = "";
+        let listCarriers = "";
         if (currentTransportPlan && currentTransportPlan.transportVehicles && currentTransportPlan.transportVehicles.length!==0){
             let transportVehicles = currentTransportPlan.transportVehicles.filter(r => String(r.vehicle?._id) === String(vehicleId));
             if (transportVehicles && transportVehicles.length!==0){
@@ -145,18 +148,18 @@ function TransportManageRouteMainPage(props) {
                     let carrier_driver = carriers.filter(c => String(c.pos) !== "1");
                     if (carrier_driver && carrier_driver.length!==0){
                         carrier_driver.map((cd, indexcd) => {
-                            if (cd.carrier){
+                            if (cd.carrier && cd.carrier.name){
                                 if (indexcd !==0){
-                                    carriers = carriers.concat(", ")
+                                    listCarriers = listCarriers.concat(", ")
                                 }
-                                carriers = carriers.concat(cd.carrier.name);
+                                listCarriers = listCarriers.concat(cd.carrier.name);
                             }
                         })
                     }
                 }
             }
         };
-        return carriers;
+        return listCarriers;
     }
     // setInterval(()=>{     
     //     navigator.geolocation.getCurrentPosition(success);
@@ -281,15 +284,17 @@ function TransportManageRouteMainPage(props) {
     useEffect(() => {
         // console.log(currentTransportSchedule, " allll")
         if (currentTransportSchedule && currentTransportSchedule.route && currentTransportSchedule.route.length!==0){
+            let resLength = 0;
             currentTransportSchedule.route.map(r => {
                 if (r.routeOrdinal && r.routeOrdinal.length!==0){
                     let length = 0;
                     r.routeOrdinal.map(routeOrdinal => {
                         length += routeOrdinal.distance?routeOrdinal.distance:0;
                     })
-                    setLongestRoute(length);
+                    if (length > resLength) resLength = length;
                 }
             })
+            setLongestRoute(resLength);
         }
     }, [currentTransportSchedule])
 
@@ -339,11 +344,17 @@ function TransportManageRouteMainPage(props) {
                         </div>
                 </div>
                 {
-                    (currentTransportSchedule && currentTransportSchedule.route && currentTransportSchedule.route.length !== 0)
+                    (currentTransportPlan._id!=="0" && currentTransportSchedule && currentTransportSchedule.route && currentTransportSchedule.route.length !== 0)
                     && currentTransportSchedule.route.map((item,index) =>(
                         item &&
-                        <fieldset className="scheduler-border" style={{ height: "100%" }}>
-                            <legend className="scheduler-border">{item.transportVehicle?.name}</legend>
+                        // <fieldset className="scheduler-border" style={{ height: "100%" }}>
+                        //     <legend className="scheduler-border">{item.transportVehicle?.name}</legend>
+            <div className="box box-solid">
+                {/* <div className="box-header"> */}
+                    {/* <div className="box-title">{item.transportVehicle?.name +" - " +item.transportVehicle?.code}</div> */}
+                {/* </div> */}
+
+                <div className="box-body qlcv">
                             <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                                 <table>
                                     <tbody>
@@ -415,7 +426,9 @@ function TransportManageRouteMainPage(props) {
                                     timelineBarWidth={getBarWidth(item)}
                                 />
                             </div>
-                        </fieldset>
+                </div>
+            </div>
+                        // </fieldset>
                     ))
                 }
                 

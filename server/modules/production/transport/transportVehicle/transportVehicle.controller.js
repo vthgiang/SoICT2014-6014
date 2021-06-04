@@ -79,7 +79,7 @@ exports.editTransportVehicle = async (req, res) => {
             await Log.info(req.user.email, "UPDATED_TRANSPORT_VEHICLE", req.portal);
             res.status(200).json({
                 success: true,
-                messages: ["edit_transport_vehicle_success"],
+                messages: ["edit_success"],
                 content: updatedTransportVehicle
             });
         } else {
@@ -91,7 +91,7 @@ exports.editTransportVehicle = async (req, res) => {
 
         res.status(400).json({
             success: false,
-            messages: ["edit_transport_vehicle_fail"],
+            messages: ["edit_fail"],
             content: error.message
         });
     }

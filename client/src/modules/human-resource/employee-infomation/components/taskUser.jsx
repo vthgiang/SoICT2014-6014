@@ -105,7 +105,7 @@ function TaskUser(props) {
                 console.log(x);
                 return (
                     <tr key={index}>
-                        <td>{x.name}</td>
+                        <td><a href={`/task?taskId=${x._id}`} target="_blank">{x.name}</a></td>
                         <td>{x.project || null}</td>
                         <td>{formatPriority(translate, x.priority)}</td>
                         <td>{formatStatus(translate, x.status)}</td>

@@ -313,7 +313,7 @@ function getPaginatedTasksByOrganizationalUnit(data) {
  * @param {*} endDate kết thúc công việc
  */
 
-function getPaginateTasks(role, unit, number, perPage, status, priority, special, name, startDate, endDate, responsibleEmployees, accountableEmployees, creatorEmployees, creatorTime, projectSearch, startDateAfter, endDateBefore, aPeriodOfTime) {
+function getPaginateTasks(data) {
     var user = getStorage("userId");
 
     return sendRequest({
@@ -321,25 +321,26 @@ function getPaginateTasks(role, unit, number, perPage, status, priority, special
         method: 'GET',
         params: {
             type: 'choose_multi_role',
-            unit: unit,
+            unit: data?.unit,
             user: user,
-            role: role,
-            number: number,
-            perPage: perPage,
-            status: status,
-            priority: priority,
-            special: special,
-            name: name,
-            startDate: startDate,
-            endDate: endDate,
-            responsibleEmployees: responsibleEmployees,
-            accountableEmployees: accountableEmployees,
-            creatorEmployees: creatorEmployees,
-            creatorTime: creatorTime,
-            projectSearch: projectSearch,
-            startDateAfter: startDateAfter,
-            endDateBefore: endDateBefore,
-            aPeriodOfTime: aPeriodOfTime
+            role: data?.role,
+            number: data?.number,
+            perPage: data?.perPage,
+            status: data?.status,
+            priority: data?.priority,
+            special: data?.special,
+            name: data?.name,
+            startDate: data?.startDate,
+            endDate: data?.endDate,
+            responsibleEmployees: data?.responsibleEmployees,
+            accountableEmployees: data?.accountableEmployees,
+            creatorEmployees: data?.creatorEmployees,
+            creatorTime: data?.creatorTime,
+            projectSearch: data?.projectSearch,
+            startDateAfter: data?.startDateAfter,
+            endDateBefore: data?.endDateBefore,
+            aPeriodOfTime: data?.aPeriodOfTime,
+            tags: data?.tags
         }
     }, false, true, 'task.task_management');
 }
@@ -350,7 +351,6 @@ function getPaginateTasks(role, unit, number, perPage, status, priority, special
  */
 
 function addNewTask(newTask) {
-    console.log('newTask', newTask)
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/task/tasks`,
         method: 'POST',
@@ -484,10 +484,10 @@ function addNewProjectTask(newTask) {
     }, true, true, 'task.task_management');
 }
 
-function getTasksByProject(projectId) {
+function getTasksByProject(projectId, page = undefined, perPage = undefined) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/task/tasks`,
         method: 'GET',
-        params: { type: 'project', projectId }
+        params: { type: 'project', projectId, page, perPage }
     }, false, true, 'task.task_management');
 }

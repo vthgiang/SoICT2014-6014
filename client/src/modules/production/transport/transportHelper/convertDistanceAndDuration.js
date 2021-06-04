@@ -53,7 +53,7 @@ export const convertDistanceToKm = (distance) => {
     return distanceToKm;
 }
 
-const reverseConvertTimeToMinutes = (timeToMinutes) => {
+export const reverseConvertTimeToMinutes = (timeToMinutes) => {
     let result = ""
     if (!timeToMinutes || String(timeToMinutes) === "") return "0"
     if (timeToMinutes>=24*60){
@@ -69,6 +69,33 @@ const reverseConvertTimeToMinutes = (timeToMinutes) => {
 }
 
 export const reverseConvertDistanceToKm = (distance) => {
-    if (!distance || String(distance) === "0") return "0";
-    return distance+ " km";
+    let res;
+    if (!distance || String(distance) === "0") {
+        res= "0 km"
+    }
+    else{
+        res = distance+ " km"
+    }
+    return res;
+}
+
+export const convertStringNavigatorGeocode = (currentLocation) => {
+    let lat = -1;
+    let lng = -1;
+    if (currentLocation){
+        console.log(currentLocation);
+        console.log(typeof currentLocation);
+        let a1 = currentLocation.indexOf("lat");
+        let a2 = currentLocation.indexOf(",");
+        let b1 = currentLocation.indexOf("lng");
+        let b2 = currentLocation.indexOf("}");
+        try {
+            lat = parseFloat(currentLocation.slice(a1+5,a2));
+            lng = parseFloat(currentLocation.slice(b1+5,b2));
+        } catch (error) {
+            lat = -1;
+            lng = -1;
+        }
+    }
+    return {lat, lng}
 }
