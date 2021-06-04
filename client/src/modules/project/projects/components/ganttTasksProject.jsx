@@ -7,10 +7,13 @@ import moment from 'moment';
 import { ProjectGantt } from '../../../../common-components/src/gantt/projectGantt';
 import { getDurationWithoutSatSun } from './functionHelper';
 import { numberWithCommas } from '../../../task/task-management/component/functionHelpers';
+import { performTaskAction } from '../../../task/task-perform/redux/actions';
+import { ModalDetailTask } from '../../../task/task-dashboard/task-personal-dashboard/modalDetailTask';
 
 const GanttTasksProject = (props) => {
-    const currentProjectId = window.location.href.split('?id=')[1];
-    const { translate, currentProjectTasks, user, project } = props;
+    const currentProjectId = window.location.href.split('?id=')[1].split('#')?.[0];
+    const { translate, currentProjectTasks, user, project, tasks } = props;
+    const task = tasks && tasks.task;
     const [currentZoom, setCurrentZoom] = useState(translate('system_admin.system_setting.backup.date'));
     const [dataTask, setDataTask] = useState({
         data: [],
@@ -22,6 +25,12 @@ const GanttTasksProject = (props) => {
     const handleZoomChange = (zoom) => {
         setCurrentZoom(zoom);
         setDataTask(getDataTask(zoom));
+    }
+    const attachEvent = (id) => {
+        if (!RegExp(/baseline/g).test(String(id))) {
+            props.getTaskById(id);
+            window.$(`#modal-detail-task-Employee`).modal('show');
+        }
     }
 
     useEffect(() => {
@@ -99,9 +108,25 @@ const GanttTasksProject = (props) => {
                     responsible: `${taskItem.responsibleEmployees.map(resItem => resItem.name).join(', ')}`,
                     customDuration: numberWithCommas(duration),
                     start_date: moment(taskItem.startDate).format("YYYY-MM-DD HH:mm"),
-                    end_date: moment(taskItem.endDate).format("YYYY-MM-DD HH:mm"),
-                    progress: taskItem.status === "inprocess" ? taskItem.progress / 100 : 0,
+                    end_date: (taskItem.actualEndDate && taskItem.status === 'finished')
+                        ? moment(taskItem.actualEndDate).format("YYYY-MM-DD HH:mm")
+                        : (moment().isBefore(moment(taskItem.startDate)) ? moment(taskItem.startDate).format("YYYY-MM-DD HH:mm") : moment().format("YYYY-MM-DD HH:mm")),
+                    progress: taskItem.progress / 100,
                     process,
+                    parent: '0',
+                    status: taskItem.status,
+                });
+                data.push({
+                    id: `${taskItem._id}-baseline`,
+                    text: ``,
+                    taskName: ``,
+                    baselineName: `${taskItem.name}`,
+                    responsible: ``,
+                    customDuration: null,
+                    start_date: moment(taskItem.startDate).format("YYYY-MM-DD HH:mm"),
+                    end_date: moment(taskItem.endDate).format("YYYY-MM-DD HH:mm"),
+                    progress: 0,
+                    process: -1,
                     parent: '0',
                 })
 
@@ -138,7 +163,9 @@ const GanttTasksProject = (props) => {
                         status={taskStatus}
                         line={dataTask.line}
                         onZoomChange={handleZoomChange}
+                        attachEvent={attachEvent}
                     />
+                    {<ModalDetailTask action={'Employee'} task={task} />}
                     <div className="form-inline" style={{ textAlign: 'center' }}>
                         <div className="form-group">
                             <div id="in-time"></div>
@@ -160,13 +187,14 @@ const GanttTasksProject = (props) => {
 }
 
 function mapStateToProps(state) {
-    const { project, user } = state;
-    return { project, user }
+    const { project, user, tasks } = state;
+    return { project, user, tasks }
 }
 
 const mapDispatchToProps = {
     getProjectsDispatch: ProjectActions.getProjectsDispatch,
     deleteProjectDispatch: ProjectActions.deleteProjectDispatch,
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
+    getTaskById: performTaskAction.getTaskById,
 }
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(GanttTasksProject));

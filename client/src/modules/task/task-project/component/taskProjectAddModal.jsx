@@ -208,7 +208,6 @@ const actionCreators = {
     addTask: taskManagementActions.addTask,
     addProjectTask: taskManagementActions.addProjectTask,
     getProjectsDispatch: ProjectActions.getProjectsDispatch,
-    getTasksByProject: taskManagementActions.getTasksByProject,
     createProjectChangeRequestDispatch: ChangeRequestActions.createProjectChangeRequestDispatch,
 
     showInfoRole: RoleActions.show,
