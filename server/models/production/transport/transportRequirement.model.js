@@ -89,6 +89,12 @@ const TransportRequirementSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Bill',
     },
+    detail1: { // Chi tiết nhiệm vụ ở điểm đi
+        type: String,
+    },
+    detail2: { // Chi tiết nhiệm vụ tại điểm đến
+        type: String,
+    },
     payload: { // Khối lượng hàng hóa của cả yêu cầu vận chuyển
         type: Number,
         required: true,
@@ -163,29 +169,6 @@ const TransportRequirementSchema = new Schema({
             }            
         }
     },
-    // historyTransport: [{ // Trạng thái vận chuyển, trạng thái
-    //     status: { // 1: đã lấy được hàng, 2: chưa lấy được hàng, 3: đã giao được hàng, 4: chưa giao được hàng
-    //         type: Number,
-    //     },
-    //     detail: { // Lý do nếu chưa lấy, chưa giao được hàng, chi tiết thêm
-    //         type: String,
-    //     },
-    //     time: {
-    //         type: Date,
-    //     },
-    //     locate: { // Vị trí hiện tại người báo cáo
-    //         lat: {
-    //             type: Number,
-    //         },
-    //         lng: {
-    //             type: Number,
-    //         }
-    //     },
-    //     carrier: {
-    //         type: Schema.Types.ObjectId,
-    //         ref: 'User'
-    //     }
-    // }],
     approver: {
         type: Schema.Types.ObjectId,
         ref: 'User'

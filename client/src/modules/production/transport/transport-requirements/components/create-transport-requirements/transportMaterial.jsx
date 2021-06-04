@@ -8,10 +8,10 @@ import ValidationHelper from '../../../../../../helpers/validationHelper';
 function TransportMaterial(props) {
     return (
         <React.Fragment>
-            <div class="row row-equal-height">
                 
             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6" style={{ padding: 0, height: "100%" }}>
+                <div className="transport-row-eq-height">
+                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6" style={{ padding: 0}}>
                     <fieldset className="scheduler-border" style={{ height: "100%" }}>
                         <legend className="scheduler-border">Thông tin kho xưởng</legend>
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ padding: 0 }}>
@@ -67,7 +67,7 @@ function TransportMaterial(props) {
                 </div>
         
         
-                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6" style={{ padding: 0, height: "100%" }}>
+                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6" style={{ padding: 0}}>
                         <fieldset className="scheduler-border" style={{ height: "100%" }}>
                             <legend className="scheduler-border">Thông tin kho</legend>
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ padding: 0 }}>

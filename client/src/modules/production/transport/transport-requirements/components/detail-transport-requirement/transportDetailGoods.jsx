@@ -17,8 +17,6 @@ function TransportDetailGoods(props) {
 
     return (
         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-        <fieldset className="scheduler-border">
-            <legend className="scheduler-border">{"Thông tin hàng hóa"}</legend>
             <div className="row">
                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <table className="table table-striped">
@@ -76,7 +74,6 @@ function TransportDetailGoods(props) {
                 
                 </div>
             </div>
-        </fieldset>
         </div>
 
     

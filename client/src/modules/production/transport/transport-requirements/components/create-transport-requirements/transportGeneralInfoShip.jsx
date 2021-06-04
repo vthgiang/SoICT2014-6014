@@ -68,7 +68,7 @@ function TransportGeneralInfoShip(props) {
             
             {/* <div class="row-equal-height" style={{marginTop: "0px"}}> */}
             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <div class="transport-row-eq-height">
+                <div className="transport-row-eq-height">
                     <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6" style={{ padding: 0}}>
                         <fieldset className="scheduler-border" style={{ height: "100%" }}>
                             <legend className="scheduler-border">Thông tin kho</legend>

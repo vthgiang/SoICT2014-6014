@@ -117,6 +117,7 @@ function TransportRequirementsManagementTable(props) {
      * @param {*} example thông tin của ví dụ cần xem
      */
     const handleShowDetailInfo = (transportRequirement) => {
+        console.log(transportRequirement, " day la transportrequirement")
         setState({
             ...state,
             curentTransportRequirementDetail: transportRequirement,

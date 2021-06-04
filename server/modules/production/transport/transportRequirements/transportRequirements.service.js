@@ -60,7 +60,13 @@ exports.createTransportRequirement = async (portal, data, userId) => {
         }
         if (data.bill){
             newTransportRequirementData.bill = data.bill;
-        }
+        };
+        if (data.detail1){
+            newTransportRequirementData.detail1 = data.detail1;
+        };
+        if (data.detail2){
+            newTransportRequirementData.detail2 = data.detail2;
+        };
         newTransportRequirement = await TransportRequirement(connect(DB_CONNECTION, portal)).create(newTransportRequirementData);
         
     }
@@ -117,7 +123,7 @@ exports.getAllTransportRequirements = async (portal, data) => {
             .populate({
                 path: 'department',
                 populate: {
-                    path: 'type.roleOrganizationalUnit',
+                    path: 'type.roleOrganizationalUnit organizationalUnit',
                     populate: [{
                         path: "users",
                         populate: [{
@@ -151,7 +157,7 @@ exports.getAllTransportRequirements = async (portal, data) => {
             .populate({
                 path: 'department',
                 populate: {
-                    path: 'type.roleOrganizationalUnit',
+                    path: 'type.roleOrganizationalUnit organizationalUnit',
                     populate: [{
                         path: "users",
                         populate: [{
