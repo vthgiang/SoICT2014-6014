@@ -16,7 +16,7 @@ function getTransportScheduleByPlanId(planId) {
         },
         false,
         true,
-        'manage_transport'
+        'manage_transport.transportCommand'
     )
 }
 
@@ -29,7 +29,7 @@ function editTransportScheduleByPlanId(planId, data) {
         },
         true,
         true,
-        "manage_transport"
+        "manage_transport.transportCommand"
     )
 }
 
@@ -49,19 +49,7 @@ function changeTransportRequirementProcess(data) {
         },
         true,
         true,
-        "manage_transport"
-    )
-}
-
-function deleteTransportRequirement(id) {
-    return sendRequest(
-        {
-            url: `${process.env.REACT_APP_SERVER}/transport-requirement/${id}`,
-            method: "DELETE"
-        },
-        true,
-        true,
-        "manage_transport"
+        "manage_transport.transportCommand"
     )
 }
 
@@ -74,7 +62,7 @@ function driverSendMessage(data) {
         },
         false,
         true,
-        "manage_transport"
+        "manage_transport.transportCommand"
     )  
 }
 
@@ -86,12 +74,11 @@ function getTransportScheduleByCarrierId(carrierId) {
         },
         false,
         true,
-        'manage_transport'
+        'manage_transport.transportCommand'
     )
 }
 
 function changeTransportStatusByCarrierId(carrierId, data) {
-    console.log(data, "aaaaaaa")
     return sendRequest(
         {
             url: `${process.env.REACT_APP_SERVER}/transport-schedule/change-transport-status-by-carrier-id/${carrierId}`,
@@ -100,6 +87,6 @@ function changeTransportStatusByCarrierId(carrierId, data) {
         },
         true,
         true,
-        'manage_transport'
+        'manage_transport.transportCommand'
     )
 }

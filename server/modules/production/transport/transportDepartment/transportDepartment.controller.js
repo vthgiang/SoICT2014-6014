@@ -45,3 +45,25 @@ exports.getAllTransportDepartments = async (req, res) => {
         });
     }
 }
+
+exports.getUserByRole = async (req, res) => {
+    try {
+        let data;
+        data = await TransportDepartment.getUserByRole(req.portal, req.query);
+
+        await Log.info(req.user.email, "GET_USER_BY_ROLE", req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ["success"],
+            content: data
+        });
+    } catch (error) {
+        await Log.error(req.user.email, "GET_USER_BY_ROLE", req.portal);
+
+        res.status(400).json({
+            success: false,
+            messages: ["fail"],
+            content: error.message
+        });
+    }
+}

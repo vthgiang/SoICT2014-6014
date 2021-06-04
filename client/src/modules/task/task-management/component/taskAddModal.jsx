@@ -75,15 +75,8 @@ function TaskAddModal(props) {
         }
         let formData = new FormData();
 
-        for (let key in data) {
-            if (data?.[key] && Array.isArray(data[key])) {
-                data[key].forEach(x => {
-                    formData.append(key, x);
-                })
-            } else {
-                formData.append(key, data?.[key]);
-            }
-        }
+        formData.append("data", JSON.stringify(data))
+
         imageDescriptions && imageDescriptions.forEach(x => {
             formData.append("files", x);
         })

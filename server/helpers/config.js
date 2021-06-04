@@ -242,6 +242,13 @@ const COMPONENTS = [{
     links: [
         '/manufacturing-dashboard'
     ]
+}, {
+    name: 'create-transport-plan',
+    description: 'Tạo kế hoạch vận chuyển',
+    roles: [],
+    links: [
+        '/manage-transport-plan'
+    ]
 }];
 
 const getComponentsInLink = (link) => {
@@ -1404,7 +1411,7 @@ const LINKS = [{
 },
 // Quan li van chuyen transport
 {
-    url: "/manage-transport-requirements",
+    url: "/manage-transport-requirement",
     description: "Quản lý yêu cầu vận chuyển",
     category: LINK_CATEGORY.TRANSPORT.name,
     roles: [
@@ -1433,15 +1440,6 @@ const LINKS = [{
 {
     url: "/manage-transport-vehicle",
     description: "Phương tiện vận chuyển",
-    category: LINK_CATEGORY.TRANSPORT.name,
-    roles: [
-        ROOT_ROLES.SUPER_ADMIN.name,
-        ROOT_ROLES.ADMIN.name
-    ]
-},
-{
-    url: "/manage-transport-human",
-    description: "Nhân viên vận chuyển",
     category: LINK_CATEGORY.TRANSPORT.name,
     roles: [
         ROOT_ROLES.SUPER_ADMIN.name,

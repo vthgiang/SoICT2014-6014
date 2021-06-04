@@ -52,7 +52,7 @@
     left: 50%;
     transform: translateX(-50%);
     background-color: #ddd;
-    width: 20em;
+    width: 7em;
     padding: 5px 10px;
     border-radius: 15px;
     text-align: center;
@@ -75,13 +75,26 @@
     background-color: #28A745;
   }
   
-  .timeline-item-transport.active .timeline-contain {
+  .timeline-item-transport.active .timeline-contain-transport {
     color: #fff;
     background-color: #28A745;
   }
   
   .timeline-item-transport.active .timeline-contain-transport::before {
     background-color: #28A745;
+  }
+
+  .timeline-item-transport.active2::before {
+    background-color: red;
+  }
+  
+  .timeline-item-transport.active2 .timeline-contain-transport {
+    color: #fff;
+    background-color: red;
+  }
+  
+  .timeline-item-transport.active2 .timeline-contain-transport::before {
+    background-color: red;
   }
 
   /* style page cau hinh chung */

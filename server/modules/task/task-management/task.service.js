@@ -251,7 +251,7 @@ exports.getTaskEvaluations = async (portal, data) => {
 exports.getPaginatedTasks = async (portal, task) => {
     let { perPage, number, role, user, organizationalUnit, status, priority, special, name,
         startDate, endDate, startDateAfter, endDateBefore, responsibleEmployees,
-        accountableEmployees, creatorEmployees, creatorTime, projectSearch } = task;
+        accountableEmployees, creatorEmployees, creatorTime, projectSearch, tags } = task;
     let taskList;
     perPage = Number(perPage);
     let page = Number(number);
@@ -279,7 +279,7 @@ exports.getPaginatedTasks = async (portal, task) => {
         $or: roleArr,
         isArchived: false
     };
-    let keySearchSpecial = {}, keySeachDateTime = {};
+    let keySearchSpecial = {}, keySeachDateTime = {}, keyTags = {};
 
     if (organizationalUnit) {
         keySearch = {
@@ -534,12 +534,24 @@ exports.getPaginatedTasks = async (portal, task) => {
         }
     }
 
+    if (tags?.length > 0) {
+        let textSearch = ""
+        tags.map(item => {
+            textSearch = textSearch + " " + item
+        })
+
+        keyTags = {
+            ...keyTags,
+            $text: { $search: textSearch.trim() }
+        }
+    }
 
     let optionQuery = {
         $and: [
             keySearch,
             keySeachDateTime,
-            keySearchSpecial
+            keySearchSpecial,
+            keyTags
         ]
     }
 
@@ -2069,6 +2081,7 @@ exports.createTask = async (portal, task) => {
         informedEmployees: task.informedEmployees,
         confirmedByEmployees: task.responsibleEmployees.concat(task.accountableEmployees).concat(task.consultedEmployees).includes(task.creator) ? task.creator : [],
         taskProject,
+        tags: task.tags
     });
 
     if (newTask.taskTemplate !== null) {

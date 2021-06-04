@@ -12,7 +12,7 @@ import { GoodActions} from '../../../../common-production/good-management/redux/
 import { validate } from 'uuid';
 
 function TransportGoods(props) {
-    const {goods, callBackState} = props;
+    const {goods, callBackState, translate} = props;
 
     const [currentGood, setCurrentGood] = useState({});
 
@@ -126,6 +126,7 @@ function TransportGoods(props) {
      */
     const handleAddGood = (e) => {
         e.preventDefault();
+        let currentListGoods = [...listGoodsChosen];
         let good = {
             _id: currentGood._id,
             code: currentGood.code ? currentGood.code : "",
@@ -134,7 +135,34 @@ function TransportGoods(props) {
             volume: currentGood.volume,
             payload: currentGood.weight,
         }
-        setListGoodsChosen(listGoodsChosen => [...listGoodsChosen, good]);
+        if (currentListGoods && currentListGoods.length!==0){
+            let flag=false;
+            for (let i=0;i<currentListGoods.length;i++){
+                if (String(currentListGoods[i]._id) === String(good._id)){
+                    currentListGoods[i].quantity += good.quantity;
+                    currentListGoods[i].payload += good.payload;
+                    currentListGoods[i].volume += good.volume;
+                    flag = true;
+                    break;
+                }
+                
+            }
+            if (!flag){
+                currentListGoods.push(good);
+            }
+            setListGoodsChosen(currentListGoods);
+        }
+        else{
+            setListGoodsChosen([good]);
+        }
+        // setListGoodsChosen(listGoodsChosen => [...listGoodsChosen, good]);
+    }
+    const handleDeleteGood = (good) => {
+        let currentListGoods = [...listGoodsChosen];
+        if (currentListGoods && currentListGoods.length!==0){
+            let newListGoodsChosen = currentListGoods.filter(r=> String(r._id)!==String(good._id));
+            setListGoodsChosen(newListGoodsChosen);
+        }
     }
     useEffect(() => {
         if(goods && goods.length!==0){
@@ -263,7 +291,9 @@ function TransportGoods(props) {
                                     <th>{"Mã sản phẩm"}</th>
                                     <th>{"Tên sản phẩm"}</th>
                                     <th>{"Số lượng"}</th>
-                                    <th>{"Khối lượng vận chuyển"}</th>
+                                    <th>{"Khối lượng"}</th>
+                                    <th>{"Thể tích"}</th>
+                                    <th>{"Hành động"}</th>
                                     {/* <th>{translate("manufacturing.plan.base_unit")}</th>
                                     <th>{translate("manufacturing.plan.quantity_good_inventory")}</th>
                                     <th>{translate("manufacturing.plan.quantity")}</th>
@@ -274,7 +304,7 @@ function TransportGoods(props) {
                                 {listGoodsChosen && listGoodsChosen.length === 0 ? (
                                     <tr>
                                         {/* <td colSpan={7}>{translate("general.no_data")}</td> */}
-                                        <td colSpan={5}>{"Không có dữ liệu"}</td>
+                                        <td colSpan={7}>{"Không có dữ liệu"}</td>
                                     </tr>
                                 ) : (
                                     listGoodsChosen.map((x, index) => (
@@ -284,24 +314,17 @@ function TransportGoods(props) {
                                                 <td>{x.name}</td>
                                                 <td>{x.quantity}</td>
                                                 <td>{x.volume}</td>
-                                                {/* <td>
-                                                    <a
-                                                        href="#abc"
-                                                        className="edit"
-                                                        title={translate("general.edit")}
-                                                        onClick={() => this.handleEditGood(x, index)}
-                                                    >
-                                                        <i className="material-icons"></i>
-                                                    </a>
+                                                <td>{x.payload}</td>
+                                                <td>
                                                     <a
                                                         href="#abc"
                                                         className="delete"
                                                         title={translate("general.delete")}
-                                                        onClick={() => this.handleDeleteGood(index)}
+                                                        onClick={() => handleDeleteGood(x)}
                                                     >
                                                         <i className="material-icons"></i>
                                                     </a>
-                                                </td> */}
+                                                </td>
                                             </tr>
                                         ))
                                     )}

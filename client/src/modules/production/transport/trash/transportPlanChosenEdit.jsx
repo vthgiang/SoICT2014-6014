@@ -3,13 +3,13 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 
-import { formatDate } from "../../../../../helpers/formatDate"
-import { DialogModal, ErrorLabel } from '../../../../../common-components';
-import ValidationHelper from '../../../../../helpers/validationHelper';
-import { transportRequirementsActions } from "../../transport-requirements/redux/actions";
-import { transportPlanActions } from "../redux/actions"
-import {SimpleMap} from './map/map'
-import { MapContainer } from './map/maphook'
+import { formatDate } from "../../../../helpers/formatDate"
+import { DialogModal, ErrorLabel } from '../../../../common-components';
+import ValidationHelper from '../../../../helpers/validationHelper';
+import { transportRequirementsActions } from "../transport-requirements/redux/actions";
+import { transportPlanActions } from "../transport-plan/redux/actions"
+import {SimpleMap} from '../transport-plan/components/map/map'
+import { MapContainer } from '../transport-plan/components/map/maphook'
 
 function TransportPlanChosenEdit(props) {
     let {allTransportPlans, 
