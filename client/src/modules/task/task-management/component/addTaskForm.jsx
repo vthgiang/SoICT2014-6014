@@ -9,7 +9,7 @@ import { UserActions } from '../../../super-admin/user/redux/actions';
 import { taskTemplateActions } from '../../task-template/redux/actions';
 import { taskManagementActions } from '../redux/actions';
 
-import { DatePicker, TimePicker, SelectBox, ErrorLabel, ToolTip, TreeSelect, QuillEditor } from '../../../../common-components';
+import { DatePicker, TimePicker, SelectBox, ErrorLabel, ToolTip, TreeSelect, QuillEditor, InputTags } from '../../../../common-components';
 import { TaskFormValidator } from './taskFormValidator';
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import ModalAddProject from '../../../project/projects/components/createProject';
@@ -39,6 +39,7 @@ class AddTaskForm extends Component {
                 taskTemplate: "",
                 parent: "",
                 taskProject: "",
+                tags: []
             },
             startTime: "08:00 AM",
             endTime: "05:30 PM",
@@ -425,6 +426,17 @@ class AddTaskForm extends Component {
                 taskProject: selected[0]
             }
         }, () => this.props.handleChangeTaskData(this.state.newTask))
+    }
+
+    handleTaskTags = (value) => {
+        this.setState({
+            newTask: {
+                ...this.state.newTask,
+                tags: value
+            }
+        }, () => {
+            this.props.handleChangeTaskData(this.state.newTask)
+        })
     }
 
     // convert ISODate to String dd-mm-yyyy
@@ -860,6 +872,15 @@ class AddTaskForm extends Component {
                                     />
                                 </div>
                             }
+
+                            <div className="form-group">
+                                <label>Tags</label>
+                                <InputTags
+                                    id={`tagsinput-${id}`}
+                                    onChange={this.handleTaskTags}
+                                    value={newTask?.tags}
+                                />
+                            </div>
                         </fieldset>
                     </div>
                 </div>

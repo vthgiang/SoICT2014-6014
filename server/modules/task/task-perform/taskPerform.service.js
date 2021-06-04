@@ -1042,11 +1042,6 @@ exports.getCurrentTaskTimesheetLogOfEmployeeInOrganizationalUnit = async (portal
  * Thêm bình luận của hoạt động
  */
 exports.createCommentOfTaskAction = async (portal, params, body, files, user) => {
-    console.log('params',params);
-    console.log('body',body);
-    console.log('user',user)
-    console.log('file',files);
-   
     let commentOfTaskAction = await Task(connect(DB_CONNECTION, portal)).findOneAndUpdate(
         { _id: params.taskId, "taskActions._id": params.actionId },
         {
