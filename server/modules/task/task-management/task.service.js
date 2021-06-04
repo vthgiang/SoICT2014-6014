@@ -218,7 +218,7 @@ exports.getTaskEvaluations = async (portal, data) => {
                 accountableEmployees: item.accountableEmployees,
                 responsibleEmployees: item.responsibleEmployees,
                 status: item.status,
-                date:item.evaluatingMonth,
+                date: item.evaluatingMonth,
                 startDate: item.startDate,
                 endDate: item.endDate,
                 priority: item.priority,
@@ -229,7 +229,7 @@ exports.getTaskEvaluations = async (portal, data) => {
             };
         });
 
-// console.log("newResult",newResult);
+        // console.log("newResult",newResult);
         // newResult.map(o => {
         //     if (o.taskInformations.some(item => (item.filter === true))) {
         //         return o;
@@ -2890,8 +2890,26 @@ exports.getAllUserTimeSheet = async (portal, month, year) => {
     return allTS;
 }
 
-exports.getTasksByProject = async (portal, projectId) => {
-    let tasks = await Task(connect(DB_CONNECTION, portal))
+exports.getTasksByProject = async (portal, projectId, page, perPage) => {
+    let tasks;
+    let totalList = await Task(connect(DB_CONNECTION, portal)).countDocuments({ taskProject: projectId });
+    if (page && perPage) {
+        tasks = await Task(connect(DB_CONNECTION, portal))
+            .find({ taskProject: projectId }).skip((Number(page) - 1) * Number(perPage)).limit(Number(perPage))
+            .populate({ path: "responsibleEmployees", select: "_id name" })
+            .populate({ path: "accountableEmployees", select: "_id name" })
+            .populate({ path: "consultedEmployees", select: "_id name" })
+            .populate({ path: "informedEmployees", select: "_id name" })
+            .populate({ path: "creator", select: "_id name" })
+            .populate({ path: "preceedingTasks", select: "_id name" })
+            .populate({ path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" })
+            .populate({ path: "overallEvaluation.accountableEmployees.employee", select: "_id name" });
+        return {
+            docs: tasks,
+            totalDocs: totalList,
+        }
+    }
+    tasks = await Task(connect(DB_CONNECTION, portal))
         .find({ taskProject: projectId })
         .populate({ path: "responsibleEmployees", select: "_id name" })
         .populate({ path: "accountableEmployees", select: "_id name" })

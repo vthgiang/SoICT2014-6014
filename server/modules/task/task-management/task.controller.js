@@ -67,7 +67,7 @@ exports.getTasks = async (req, res) => {
 exports.getTaskEvaluations = async (req, res) => {
     try {
         let taskEvaluation = await TaskManagementService.getTaskEvaluations(req.portal, req.query);
-        
+
         await Logger.info(req.user.email, 'get_task_evaluattions', req.portal);
         res.status(200).json({
             success: true,
@@ -1048,8 +1048,8 @@ exports.getAllUserTimeSheet = async (req, res) => {
 getTasksByProject = async (req, res) => {
     try {
         let portal = req.portal;
-        let { projectId } = req.query;
-        let tasksResult = await TaskManagementService.getTasksByProject(portal, projectId);
+        let { projectId, page, perPage } = req.query;
+        let tasksResult = await TaskManagementService.getTasksByProject(portal, projectId, page, perPage);
 
         await Logger.info(req.user.email, 'get_tasks_by_project_success', req.portal)
         res.status(200).json({
@@ -1058,6 +1058,7 @@ getTasksByProject = async (req, res) => {
             content: tasksResult
         })
     } catch (error) {
+        console.log('get_tasks_by_project_faile', error)
         await Logger.error(req.user.email, 'get_tasks_by_project_faile', req.portal)
         res.status(400).json({
             success: false,

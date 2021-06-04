@@ -10,20 +10,21 @@ import { taskManagementActions } from "../../../task/task-management/redux/actio
 import { renderLongList } from "../../projects/components/functionHelper";
 
 function ListProjectEvaluation(props) {
+    const tableId = "project-statistical-table";
     // Khởi tạo state
     const [state, setState] = useState({
-        exampleName: "",
+        projectName: "",
         page: 1,
-        limit: 5,
+        perPage: 5,
         currentRow: null,
         projectDetail: null,
     })
     const { project, translate, user } = props;
     const userId = getStorage("userId");
-    const { projectName, page, limit, currentRow, projectDetail } = state;
+    const { projectName, page, perPage, currentRow, projectDetail } = state;
 
     useEffect(() => {
-        props.getProjectsDispatch({ calledId: "paginate", page, limit, userId });
+        props.getProjectsDispatch({ calledId: "paginate", page, perPage, userId, projectName });
         props.getProjectsDispatch({ calledId: "user_all", userId });
         props.getAllUserInAllUnitsOfCompany();
     }, [])
@@ -37,11 +38,7 @@ function ListProjectEvaluation(props) {
     }
 
     const handleSubmitSearch = () => {
-        props.getProjectsDispatch({
-            projectName,
-            limit,
-            page: 1
-        });
+        props.getProjectsDispatch({ calledId: "paginate", page: 1, perPage, userId, projectName });
         setState({
             ...state,
             page: 1
@@ -54,25 +51,16 @@ function ListProjectEvaluation(props) {
             page: parseInt(pageNumber)
         });
 
-        props.getProjectsDispatch({
-            callId: "paginate",
-            projectName,
-            limit,
-            page: parseInt(pageNumber)
-        });
+        props.getProjectsDispatch({ calledId: "paginate", page: parseInt(pageNumber), perPage, userId, projectName });
     }
 
     const setLimit = (number) => {
         setState({
             ...state,
-            limit: parseInt(number),
+            perPage: parseInt(number),
             page: 1
         });
-        props.getProjectsDispatch({
-            projectName,
-            limit: parseInt(number),
-            page: 1
-        });
+        props.getProjectsDispatch({ calledId: "paginate", page: 1, perPage: parseInt(number), userId, projectName });
     }
 
     const handleShowDetailInfo = async (projectItem) => {
@@ -89,13 +77,12 @@ function ListProjectEvaluation(props) {
         }, 100);
     }
 
-
     let lists = [];
     if (project) {
         lists = project.data.paginate
     }
 
-    const totalPage = project && project.data.totalPage;
+    const totalPage = project && Math.ceil(project.data.totalDocs / perPage);
 
     return (
         <React.Fragment>
@@ -121,13 +108,24 @@ function ListProjectEvaluation(props) {
 
                     </div>
 
-                    <table id="project-table" className="table table-bordered table-hover">
+                    <table id={tableId} className="table table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th>{translate('project.name')}</th>
                                 <th>{translate('project.creator')}</th>
                                 <th>{translate('project.manager')}</th>
-                                <th>{translate('project.member')}</th>
+                                <th>{translate('project.member')}
+                                    <DataTableSetting
+                                        tableId={tableId}
+                                        columnArr={[
+                                            translate('project.name'),
+                                            translate('project.creator'),
+                                            translate('project.manager'),
+                                            translate('project.member'),
+                                        ]}
+                                        setLimit={setLimit}
+                                    />
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -137,7 +135,7 @@ function ListProjectEvaluation(props) {
                                         <td>{projectItem?.name}</td>
                                         <td>{projectItem?.creator?.name}</td>
                                         <td>{projectItem?.projectManager.map(o => o.name).join(", ")}</td>
-                                        <td>{renderLongList(projectItem?.responsibleEmployees.map(o => o.name))}</td>
+                                        <td style={{ textAlign: 'start', maxWidth: 450 }}>{renderLongList(projectItem?.responsibleEmployees.map(o => o.name))}</td>
                                     </tr>
                                 ))
                             }
@@ -147,11 +145,11 @@ function ListProjectEvaluation(props) {
                     {/* PaginateBar */}
                     {project && project.isLoading ?
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                        (typeof lists === 'undefined' || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                        (!lists || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
                     <PaginateBar
                         pageTotal={totalPage ? totalPage : 0}
-                        currentPage={project.data.page}
+                        currentPage={page}
                         display={lists && lists.length !== 0 && lists.length}
                         total={project && project.data.totalDocs}
                         func={setPage}

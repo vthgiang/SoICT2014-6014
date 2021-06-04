@@ -44,3 +44,95 @@
     display: block !important;
     transition: 0.5s;
 } 
+
+
+.content-list-view{
+    max-width: 1200px;
+    display: flex;
+    display: -ms-flexbox;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -ms-flex-align: center;
+}
+.content-list-view .gird{
+    display: grid;
+    row-gap: 25px;
+    grid-template-columns: minmax(0,1fr);
+}
+
+.content-list-view .gird .item, .item2, .item3{
+    font-size: 13px;
+    line-height: 25px;
+    color: #505050;
+    padding: 15px;
+    background-color: #fdfdfd;
+    border-radius: 3px;
+    box-sizing: border-box;
+    box-shadow: 0 0 1px #616060;
+}
+
+
+.item:nth-child(even) {
+    background-color: #f9f9f9 !important;
+}
+
+.item2:nth-child(odd){
+    background-color: #f9f9f9;
+}
+
+.item3:nth-child(even) {
+    background-color: #f9f9f9 !important;
+}
+
+
+.content-list-view .gird .item .priority-task-wraper, .progress-task-wraper, .content-list-view .gird .item2 .priority-task-wraper, .progress-task-wraper, .content-list-view .gird .item3 .priority-task-wraper, .progress-task-wraper {
+    display: flex;
+    align-items: center;
+    margin-top: 5px;
+}
+
+.content-list-view .gird .item .role-in-task, .content-list-view .gird .item2 .role-in-task, .content-list-view .gird .item3 .role-in-task {
+    margin-top: 5px;
+}
+.content-list-view .gird .item .task-name, .content-list-view .gird .item2 .task-name, .content-list-view .gird .item3 .task-name {
+    display: block;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    font-size: 18px;
+    font-weight: bold;
+}
+.content-list-view .gird .item .action, .content-list-view .gird .item2 .action, .content-list-view .gird .item3 .action {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
+
+.progress-task-wraper .progress-task{
+    position: relative;
+    width: 60%;
+    height: 13px;
+    background-color:rgb(177 177 177 / 50%);
+    border-radius: 4px;
+}
+
+.progress-task-wraper .progress-task .fillmult{
+    height: 100%;
+    border-radius: 4px;
+}
+
+.progress-task-wraper .progress-task .perc{
+    position: absolute;
+    display: inline;
+    top: 0;
+    line-height: 12px;
+    right: 10px;
+    font-size: 11px;
+}
+
+
+.grid-wraper{
+    display: grid;
+    grid-column-gap: 25px;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    align-items: start;
+}
