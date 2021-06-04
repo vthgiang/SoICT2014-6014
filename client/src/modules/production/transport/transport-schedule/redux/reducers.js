@@ -41,6 +41,7 @@ export function transportSchedule(state = initialState, action) {
             }
         case transportScheduleConstants.GET_TRANSPORT_SCHEDULE_BY_PLAN_ID_SUCCESS:
         case transportScheduleConstants.CHANGE_TRANSPORT_REQUIREMENT_PROCESS_SUCCESS:
+        case transportScheduleConstants.EDIT_TRANSPORT_SCHEDULE_BY_PLAN_ID_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
@@ -53,16 +54,16 @@ export function transportSchedule(state = initialState, action) {
                 isLoading: false,
                 transportScheduleByCarrierId: action.payload,
             }
-        case transportScheduleConstants.EDIT_TRANSPORT_SCHEDULE_BY_PLAN_ID_SUCCESS:
-            // index = findIndex(state.lists, action.payload._id);
-            // if (index !== -1) {
-            //     state.lists[index] = action.payload
+        // case transportScheduleConstants.EDIT_TRANSPORT_SCHEDULE_BY_PLAN_ID_SUCCESS:
+            // // index = findIndex(state.lists, action.payload._id);
+            // // if (index !== -1) {
+            // //     state.lists[index] = action.payload
+            // // }
+            // return {
+            //     ...state,
+            //     isLoading: false,
+            //     currentTransportScheduleAfterEdit: action.payload,
             // }
-            return {
-                ...state,
-                isLoading: false,
-                currentTransportScheduleAfterEdit: action.payload,
-            }
 		default:
             		return state
     }

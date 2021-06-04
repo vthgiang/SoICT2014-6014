@@ -6,30 +6,17 @@ import { DataTableSetting, DeleteNotification, PaginateBar, SelectBox, DialogMod
 
 import { formatDate } from "../../../../../helpers/formatDate"
 
-import { TransportDialogMissionReport } from "./transport-process-mission/transportDialogMissionReport"
-
 import { transportPlanActions } from "../../transport-plan/redux/actions"
 import { transportScheduleActions } from "../../transport-schedule/redux/actions";
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 import { convertJsonObjectToFormData } from '../../../../../helpers/jsonObjectToFormDataObjectConverter'
 
-import './timeLine.css';
+import { getTypeRequirement, getTransportStatus } from '../../transportHelper/getTextFromValue'
 
-function TransportDetailRouteListMission(props) {
+function TransportDetailRoute(props) {
     let {currentVehicleRoute, transportPlanId, transportPlan} = props;
     const [currentVehicle, setCurrentVehicle] = useState([])
     const [driver, setDriver] = useState()
-
-    const handleShowReportMission = (routeOrdinal_i) => {
-        let data = {
-            planId: transportPlanId,
-            requirementId: routeOrdinal_i.transportRequirement._id,
-            status: 1,
-            description: " "
-        }
-        props.changeTransportRequirementProcess(data);
-        window.$(`#modal-report-process`).modal('show');
-    }
 
     useEffect(() => {
         if(transportPlanId){
@@ -63,7 +50,16 @@ function TransportDetailRouteListMission(props) {
     }, [currentVehicleRoute])
     return (
         <React.Fragment>
-            <TransportDialogMissionReport />
+            <DialogModal
+                modalID={`modal-detail-route-manage`}
+                title={"Các nhiệm vụ cụ thể"}
+                formID={`modal-detail-route-manage`}
+                size={100}
+                maxWidth={500}
+                hasSaveButton={false}
+                hasNote={false}
+            >
+                <form id={`modal-detail-route-manage`}>
             <div>
                 <div>Tài xế: {driver?.carrier?.name}</div>
             </div>
@@ -77,7 +73,6 @@ function TransportDetailRouteListMission(props) {
                         <th>{"Địa chỉ"}</th>
                         <th>{"Nhiệm vụ"}</th>
                         <th>{"Trạng thái"}</th>
-                        <th>{"TransportStatus"}</th>
                         <th>{"Hành động"}</th>
                         {/* <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
                             <DataTableSetting
@@ -100,13 +95,12 @@ function TransportDetailRouteListMission(props) {
                             <tr key={index}>
                                 <td>{index+1}</td>
                                 <td>{routeOrdinal.transportRequirement?.code}</td>
-                                <td>{routeOrdinal.transportRequirement?.type}</td>
+                                <td>{routeOrdinal.transportRequirement?.type ? getTypeRequirement(routeOrdinal.transportRequirement.type):" "}</td>
                                 <td>{(String(routeOrdinal.type)==="1")?routeOrdinal.transportRequirement?.fromAddress:routeOrdinal.transportRequirement?.toAddress}</td>
                                 <td>{(String(routeOrdinal.type)==="1")?"Nhận hàng":"Trả hàng"}</td>
                                 <td>
-                                    {routeOrdinal.transportRequirement?.transportStatus?.status}
+                                    {getTransportStatus(routeOrdinal)}
                                 </td>
-                                <td>{"Chưa hoàn thành"}</td>
                                 <td style={{ textAlign: "center" }}>
                                     <a className="edit text-green" style={{ width: '5px' }} 
                                         // title={translate('manage_example.detail_info_example')} 
@@ -117,21 +111,14 @@ function TransportDetailRouteListMission(props) {
                                             visibility
                                         </i>
                                     </a>
-                                    <a className="edit text-blue" style={{ width: '5px' }} 
-                                        // title={translate('manage_example.detail_info_example')} 
-                                        title={'Báo cáo nhiện vụ vận chuyển'}
-                                        onClick={() => handleShowReportMission(routeOrdinal)}
-                                    >
-                                        <i className="material-icons">
-                                            assignment_turned_in
-                                        </i>
-                                    </a>
                                 </td>
                             </tr>
                         ))
                     }
                 </tbody>
             </table>
+                </form>
+            </DialogModal>
         </React.Fragment>
     )
 }
@@ -148,5 +135,5 @@ const actions = {
     getDetailTransportPlan: transportPlanActions.getDetailTransportPlan,
 }
 
-const connectedTransportDetailRouteListMission = connect(mapState, actions)(withTranslate(TransportDetailRouteListMission));
-export { connectedTransportDetailRouteListMission as TransportDetailRouteListMission };
+const connectedTransportDetailRoute = connect(mapState, actions)(withTranslate(TransportDetailRoute));
+export { connectedTransportDetailRoute as TransportDetailRoute };

@@ -7,6 +7,9 @@ import BillDetailForm from '../genaral/billDetailForm';
 import GoodIssueEditForm from './goodIssueEditForm';
 import GoodIssueCreateForm from './goodIssueCreateForm';
 import QualityControlForm from '../genaral/quatityControlForm';
+
+import {TransportRequirementsCreateForm} from '../../../../transport/transport-requirements/components/transportRequirementsCreateForm'
+
 import { getTableConfiguration } from '../../../../../../helpers/tableConfiguration';
 function IssueManagement(props) {
     const tableId = "issue-manager-table";
@@ -31,9 +34,22 @@ function IssueManagement(props) {
             ...state,
             currentRow: bill
         })
-
+        
         window.$('#modal-edit-bill-issue').modal('show');
     }
+
+    // handleCreateTransportRequirement = async (bill) => {
+    //     await this.setState(state => {
+    //         return{
+    //             ...state,
+    //             billTransport: bill
+
+    //         }
+    //     })        
+    //     window.$('#modal-create-transport-requirements').modal('show');
+    // }
+    // <TransportRequirementsCreateForm 
+    //                      billFromStockModules={this.state.billTransport}
 
     const findIndexOfStaff = (array, id) => {
         let result = -1;

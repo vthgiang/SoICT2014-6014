@@ -20,9 +20,12 @@ function TransportManageVehicleProcess(props) {
      */
     const {route, timelineBarWidth} = props
     let totalDistance = 0;
+    let totalTime = 0;
 
     //Vị trí các điểm trên timeline bar - sử dụng để marginLeft
     const [timelineItemPos, setTimelineItemPos] = useState([])
+
+    const [processBarLen, setProcessBarLen] = useState(0);
     useEffect(() => {
         if (route){
             let barWidth = timelineBarWidth?timelineBarWidth:100
@@ -39,29 +42,101 @@ function TransportManageVehicleProcess(props) {
                     currentTimelineItemDistance+= routeOrdinal.distance;
                     // timelineItem.push((currentTimelineItemDistance/totalDistance)*barWidth);
                     timelineItem.push((routeOrdinal.distance/totalDistance)*100);
+                    if (String(routeOrdinal.type) === "1"){
+                        if (String(routeOrdinal.transportRequirement?.transportStatus?.fromAddress?.status) === "1"){
+                           setProcessBarLen(currentTimelineItemDistance/totalDistance * 100);
+                        }
+                    }
+                    else {
+                        if (String(routeOrdinal.transportRequirement?.transportStatus?.toAddress?.status) === "1"){
+                            setProcessBarLen(currentTimelineItemDistance/totalDistance * 100);
+                        }
+                    }
                 });
                 setTimelineItemPos(timelineItem)
             }
         }
+        // console.log(route, " kkkkkkkkkkkkkkkkkkk")
     }, [route, timelineBarWidth])
+
+    useEffect(() => {
+        console.log(processBarLen, " ooooooooooooooooooooooooooooooo")
+    }, [processBarLen])
 
     // useEffect(() => {
     //     console.log(timelineItemPos);
     // }, [timelineItemPos])
+    const getTimeLineItemStatus = (routeOrdinal, index) => {
+        let res = " ";
+        if (routeOrdinal && routeOrdinal.transportRequirement && routeOrdinal.transportRequirement.transportStatus) {
+            if (String(routeOrdinal.type) === "1"){
+                if (String(routeOrdinal.transportRequirement.transportStatus.fromAddress?.status) === "1"){
+                    res = "active";
+                }
+                else
+                    if (String(routeOrdinal.transportRequirement.transportStatus.fromAddress?.status) === "2"){
+                        res = "active2";
+                    }
+                    else res = " "
+            }
+            else {
+                if (String(routeOrdinal.transportRequirement.transportStatus.toAddress?.status) === "1"){
+                    res =  "active";
+                }
+                else
+                    if (String(routeOrdinal.transportRequirement.transportStatus.toAddress?.status) === "2"){
+                        res =  "active2";
+                    }
+                    else res = " "
+            }
+        }
+        return res;
+    }
 
-   return (
+    const getTimeTransport = (routeOrdinal, index) => {
+        let res = " ";
+        if (routeOrdinal && routeOrdinal.transportRequirement && routeOrdinal.transportRequirement.transportStatus) {
+            if (String(routeOrdinal.type) === "1"){
+                if (routeOrdinal.transportRequirement.transportStatus.fromAddress?.time){
+                    try {
+                        let t = new Date(routeOrdinal.transportRequirement.transportStatus.fromAddress.time);
+                        res = t.getHours()+":"+t.getMinutes()+"p";
+                    } catch (error) {
+                        res = routeOrdinal.transportRequirement.transportStatus.fromAddress.time;
+                    }
+                }
+            }
+            else {
+                if (routeOrdinal.transportRequirement.transportStatus.toAddress?.time){
+                    try {
+                        let t = new Date(routeOrdinal.transportRequirement.transportStatus.toAddress.time);
+                        res = t.getHours()+":"+t.getMinutes()+"p";
+                    } catch (error) {
+                        res = routeOrdinal.transportRequirement.transportStatus.toAddress.time;
+                    }
+                }
+            }
+        }
+        return res;
+    }
+
+    return (
         <div className="timeline-transport" style={{width: timelineBarWidth+"%"}}>
-            <div className="timeline-progress" style={{ width: `100%` }}></div>
+            <div className="timeline-progress" style={{ width: processBarLen +'%' }}></div>
             <div className="timeline-items-transport">
             {
                 (route && route.routeOrdinal && route.routeOrdinal.length !== 0)
                 && route.routeOrdinal.map((routeOrdinal, index) => (
                     <div key={"--"+ index} 
                         // className={`timeline-item ${o.active ? 'active' : ''}`}
-                        className={`timeline-item-transport`}
+                        className={`timeline-item-transport ` +getTimeLineItemStatus(routeOrdinal, index)}
                         style={{marginLeft: `calc( ${timelineItemPos[index]}% - ${index===0?"10":"20"}px)`}}
                     >
-                        {/* <div className="timeline-contain-transport">{String(routeOrdinal.type) === "1" ? routeOrdinal.transportRequirement?.fromAddress: routeOrdinal.transportRequirement?.toAddress}</div> */}
+                        {
+                            getTimeLineItemStatus(routeOrdinal, index) !== " "
+                            && 
+                            <div className="timeline-contain-transport">{getTimeTransport(routeOrdinal, index)}</div>
+                        }
                     </div>
                 ))
             }

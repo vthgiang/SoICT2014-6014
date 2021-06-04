@@ -983,7 +983,7 @@ exports.links = [
 
     //transport
     {
-        url: '/manage-transport-requirements',
+        url: '/manage-transport-requirement',
         apis: ['@all']
     },
     {
@@ -996,10 +996,6 @@ exports.links = [
     },
     {
         url: '/manage-transport-vehicle',
-        apis: ['@all']
-    },
-    {
-        url: '/manage-transport-human',
         apis: ['@all']
     },
     {

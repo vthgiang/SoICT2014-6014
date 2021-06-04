@@ -19,6 +19,11 @@ const TransportRequirementSchema = new Schema({
         ref: 'User',
         required: true
     },
+    department: { // Phòng ban phụ trách
+        type: Schema.Types.ObjectId,
+        ref: 'TransportDepartment',
+        required: true,
+    },
     customer: { // Khách hàng
         type: Schema.Types.ObjectId,
         ref: 'Customer',
@@ -110,32 +115,77 @@ const TransportRequirementSchema = new Schema({
             },
         },
     },
-    transportStatus: { // Trạng thái vận chuyển -  1: đã lấy được hàng, 2: chưa lấy được hàng, 3: đã giao được hàng, 4: chưa giao được hàng (đang vận chuyển)
-        type: Number,
-    },
-    historyTransport: [{ // Trạng thái vận chuyển, trạng thái
-        status: { // 1: đã lấy được hàng, 2: chưa lấy được hàng, 3: đã giao được hàng, 4: chưa giao được hàng
-            type: Number,
-        },
-        detail: { // Lý do nếu chưa lấy, chưa giao được hàng, chi tiết thêm
-            type: String,
-        },
-        time: {
-            type: Date,
-        },
-        locate: { // Vị trí hiện tại người báo cáo
-            lat: {
+    transportStatus: { // Trạng thái vận chuyển (khi đang thực hiện)
+        fromAddress: { // Điểm lấy hàng
+            status: { // Trạng thái: 1- đã lấy, 2- không lấy được hàng
                 type: Number,
             },
-            lng: {
-                type: Number,
+            detail: { // Mô tả chi tiết
+                type: String,
+            }, 
+            locate: { // Vị trí lái xe khi gửi báo cáo
+                lat: { // Vĩ độ
+                    type: Number,
+                },
+                lng: { // Kinh độ
+                    type: Number,
+                },
+            },
+            time: { // Thời gian khi gửi báo cáo
+                type: Date
+            },
+            carrier: { // Id tài xế
+                type: Schema.Types.ObjectId,
+                ref: 'User'
             }
         },
-        carrier: {
-            type: Schema.Types.ObjectId,
-            ref: 'User'
+        toAddress: { // Điểm giao hàng
+            status: {
+                type: Number,
+            },
+            detail: {
+                type: String,
+            }, 
+            locate: {
+                lat: {
+                    type: Number,
+                },
+                lng: {
+                    type: Number,
+                },
+            },
+            time: {
+                type: Date
+            },
+            carrier: {
+                type: Schema.Types.ObjectId,
+                ref: 'User'
+            }            
         }
-    }],
+    },
+    // historyTransport: [{ // Trạng thái vận chuyển, trạng thái
+    //     status: { // 1: đã lấy được hàng, 2: chưa lấy được hàng, 3: đã giao được hàng, 4: chưa giao được hàng
+    //         type: Number,
+    //     },
+    //     detail: { // Lý do nếu chưa lấy, chưa giao được hàng, chi tiết thêm
+    //         type: String,
+    //     },
+    //     time: {
+    //         type: Date,
+    //     },
+    //     locate: { // Vị trí hiện tại người báo cáo
+    //         lat: {
+    //             type: Number,
+    //         },
+    //         lng: {
+    //             type: Number,
+    //         }
+    //     },
+    //     carrier: {
+    //         type: Schema.Types.ObjectId,
+    //         ref: 'User'
+    //     }
+    // }],
     approver: {
         type: Schema.Types.ObjectId,
         ref: 'User'

@@ -2,6 +2,9 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const TransportScheduleSchema = new Schema({
+    // name: {
+    //     type: String
+    // },
     transportPlan: {
         type: Schema.Types.ObjectId,
         ref: 'TransportPlan',

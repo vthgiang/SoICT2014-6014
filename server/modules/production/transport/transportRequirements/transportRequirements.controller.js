@@ -24,35 +24,10 @@ exports.createTransportRequirement = async (req, res) => {
     }
 }
 
-// Lấy ra đầy đủ thông tin tất cả các dịch vụ
-// exports.getExamples = async (req, res) => {
-//     try {
-//         data = await ExampleService.getExamples(req.portal, req.query);
-
-//         await Log.info(req.user.email, "GET_ALL_EXAMPLES", req.portal);
-
-//         res.status(200).json({
-//             success: true,
-//             messages: ["get_all_examples_success"],
-//             content: data
-//         });
-//     } catch (error) {
-//         console.log(error)
-//         await Log.error(req.user.email, "GET_ALL_EXAMPLES", req.portal);
-
-//         res.status(400).json({
-//             success: false,
-//             messages: ["get_all_examples_fail"],
-//             content: error.message
-//         });
-//     }
-// }
-
 //  Lấy ra Ví dụ theo id
 exports.getTransportRequirementById = async (req, res) => {
     try {
         let { id } = req.params;
-        console.log("dasdsad");
         let transportRequirement = await TransportRequirementService.getTransportRequirementById(req.portal, id);
         if (transportRequirement !== -1) {
             await Log.info(req.user.email, "GET_TRANPORT_REQUIREMENT_BY_ID", req.portal);
@@ -85,7 +60,7 @@ exports.editTransportRequirement = async (req, res) => {
             await Log.info(req.user.email, "UPDATED_TRANSPORT_REQUIREMENT", req.portal);
             res.status(200).json({
                 success: true,
-                messages: ["edit_transport_requirement_success"],
+                messages: ["edit_success"],
                 content: updatedTransportRequirement
             });
         } else {
@@ -97,7 +72,7 @@ exports.editTransportRequirement = async (req, res) => {
 
         res.status(400).json({
             success: false,
-            messages: ["edit_transport_requirement_fail"],
+            messages: ["edit_fail"],
             content: error.message
         });
     }
