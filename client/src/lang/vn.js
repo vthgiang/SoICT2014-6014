@@ -282,7 +282,6 @@ export default {
             manage_transport_plan: "Kế hoạch vận chuyển",
             manage_transport_schedule: "Lệnh vận chuyển",
             manage_transport_vehicle: "Phương tiện vận chuyển",
-            manage_transport_human: "Nhân viên vận chuyển",
             manage_transport_route: "Hành trình vận chuyển",
             manage_transport_department: "Phân vai trò đơn vị vận chuyển",
             carrier_today_transport_mission: "Nhiệm vụ vận chuyển",
@@ -5765,9 +5764,30 @@ export default {
             transportRequirement: {
                 add_requirements: "Thêm yêu cầu vận chuyển",
                 add_success: "Tạo yêu cầu vận chuyển thành công",
+                add_fail: "Tạo yêu cầu vận chuyển thất bại",
                 edit_success: "Chỉnh sửa yêu cầu vận chuyển thành công",
+                edit_fail: "Chỉnh sửa yêu cầu vận chuyển thất bại",
                 delete_success: "Đã xóa yêu cầu vận chuyển",
+                delete_fail: "Xóa yêu cầu vận chuyển thất bại",
             },
+            transportPlan: {
+                add_success: "Đã tạo kế hoạch vận chuyển",
+                add_fail: "Tạo kế hoạch vận chuyển thất bại",
+                edit_success: "Đã chỉnh sửa kế hoạch vận chuyển",
+                edit_fail: "Chỉnh sửa kế hoạch vận chuyển thất bại",
+                delete_success: "Đã xóa kế hoạch vận chuyển",
+                delete_fail: "Xóa kế hoạch vận chuyển thất bại",
+            },
+            transportCommand: {
+                edit_success: "Đã chỉnh sửa lệnh vận chuyển",
+                edit_fail: "Chỉnh sửa lệnh vận chuyển thất bại",
+            },
+            transportVehicle: {
+                add_success: "Đã thêm phương tiện",
+                add_fail: "Thêm phương tiện thất bại",
+                edit_success: "Đã chỉnh sửa trạng thái phương tiện",
+                edit_fail: "Chỉnh sửa trạng thái phương tiện thất bại",
+            }
         },
 
         // Quản lý dự án

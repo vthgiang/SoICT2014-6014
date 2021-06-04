@@ -21,7 +21,7 @@ function getAllTransportVehicles(queryData) {
         },
          false, // Nếu có truy vấn thành công thì không hiện thông báo
          true, // Nếu có truy vấn thất bại thì hiện thông báo
-         "transport.vehicle"
+         "manage_transport.transportVehicle"
     );
 }
 
@@ -34,7 +34,7 @@ function createTransportVehicle(data) {
         },
         true,
         true,
-        "manage_transport"
+        "manage_transport.transportVehicle"
     )
 }
 
@@ -47,7 +47,7 @@ function createTransportPlanVehicleNotDuplicate(id, data) {
         },
         true,
         true,
-        "manage_transport"
+        "manage_transport.transportVehicle"
     )    
 }
 
@@ -61,6 +61,6 @@ function editTransportVehicle(id, data) {
         },
         true,
         true,
-        "manage_transport"
+        "manage_transport.transportVehicle"
     )     
 }

@@ -262,9 +262,8 @@ export default {
             manage_transport: "Manage transport",
             manage_transport_requirements: "Manage transport requirements",
             manage_transport_plan: "Manage transport plan",
-            manage_transport_schedule: "Manage transport schedule",
+            manage_transport_schedule: "Manage transport command",
             manage_transport_vehicle: "Manage transport vehical",
-            manage_transport_human: "Manage transport human",
             manage_transport_route: "Manage transport route",
             manage_transport_department: "Manage transport department",
             carrier_today_transport_mission: "Transporting missions today",
@@ -4214,9 +4213,30 @@ export default {
         manage_transport: {
             transportRequirement: {
                 add_requirements: "Add a new transport requirement",                
-                add_success: "Created new transport requirement",                
+                add_success: "Created new transport requirement",
+                add_fail: "Create new transport requirement fail",                
                 edit_success: "Edited transport requirement",
+                edit_fail: "Edit transport requirement fail",
                 delete_success: "Deleted transport requirement",
+                delete_fail: "Delete transport requirement fail",
+            },
+            transportPlan: {                
+                add_success: "Created new transport plan",
+                add_fail: "Create new transport plan fail",
+                edit_success: "Edited transport plan",
+                edit_fail: "Edit transport plan fail",
+                delete_success: "Deleted transport plan",
+                delete_fail: "Delete transport plan fail",
+            },
+            transportCommand: {
+                edit_success: "Edited transport command",
+                edit_fail: "Edit transport command fail",
+            },            
+            transportVehicle: {
+                add_success: "Added vehicle success",
+                add_fail: "Add vehicle fail",
+                edit_success: "Edited vehicle status",
+                edit_fail: "Edit vehicle status fail",
             }
         },
 

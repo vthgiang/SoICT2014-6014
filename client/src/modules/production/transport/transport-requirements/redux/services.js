@@ -24,7 +24,7 @@ function getAllTransportRequirements(queryData) {
         },
          false, // Nếu có truy vấn thành công thì không hiện thông báo
          true, // Nếu có truy vấn thất bại thì hiện thông báo
-         "transport.requirements"
+         "manage_transport.transportRequirement"
     );
 }
 
@@ -49,7 +49,7 @@ function getDetailTransportRequirement(id) {
         },
         false,
         true,
-        'manage_transport'
+        'manage_transport.transportRequirement'
     )
 }
 

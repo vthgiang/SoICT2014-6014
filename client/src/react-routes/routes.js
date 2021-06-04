@@ -143,11 +143,10 @@ const ManufacturingDashboard = lazy(() => import("../modules/production/manufact
 const ManufacturingLot = lazy(() => import("../modules/production/manufacturing/manufacturing-lot/components"))
 
 // Transport Managements
-const TransportRequirements = lazy(() => import("../modules/production/transport/transport-requirements/components"))
+const TransportRequirement = lazy(() => import("../modules/production/transport/transport-requirements/components"))
 const TransportPlan = lazy(() => import("../modules/production/transport/transport-plan/components"))
 const TransportSchedule = lazy(() => import("../modules/production/transport/transport-schedule/components"))
 const TransportVehicle = lazy(() => import("../modules/production/transport/transport-vehicle/components"))
-const TransportHuman = lazy(() => import("../modules/production/transport/transport-human/components"))
 const TransportRoute = lazy(() => import("../modules/production/transport/transport-route/components"))
 const TransportDepartment = lazy(() => import("../modules/production/transport/transport-department/components"))
 const CarrierTodayTransportMission = lazy(() => import("../modules/production/transport/carrier-today-transport-mission/components"))
@@ -2426,18 +2425,18 @@ class Routes extends Component {
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
                             {
-                                link: "/manage-transport-requirements", // url trang
-                                name: "manage_transport_requirements", // tên trang
+                                link: "/manage-transport-requirement", // url trang
+                                name: "manage_transport_requirement", // tên trang
                                 icon: " fa fa-calendar-o ",
                             },
                         ]}
                         auth={auth}
                         exact={true}
-                        link={"/manage-transport-requirements"}
-                        path={"/manage-transport-requirements"}
-                        pageName={"manage_transport_requirements"}
+                        link={"/manage-transport-requirement"}
+                        path={"/manage-transport-requirement"}
+                        pageName={"manage_transport_requirement"}
                         layout={Layout}
-                        component={TransportRequirements} // component ứng với trang, tạo ở bước 1
+                        component={TransportRequirement} // component ứng với trang, tạo ở bước 1
                     />
                     <PrivateRoute
                         isLoading={false}
@@ -2495,25 +2494,6 @@ class Routes extends Component {
                         pageName={"manage_transport_vehicle"}
                         layout={Layout}
                         component={TransportVehicle} // component ứng với trang, tạo ở bước 1
-                    />
-                    <PrivateRoute
-                        isLoading={false}
-                        key={"manage-transport-human"}
-                        arrPage={[
-                            { link: "/", name: "home", icon: "fa fa-home" },
-                            {
-                                link: "/manage-transport-human", // url trang
-                                name: "manage_transport_human", // tên trang
-                                icon: " fa fa-calendar-o ",
-                            },
-                        ]}
-                        auth={auth}
-                        exact={true}
-                        link={"/manage-transport-human"}
-                        path={"/manage-transport-human"}
-                        pageName={"manage_transport_human"}
-                        layout={Layout}
-                        component={TransportHuman} // component ứng với trang, tạo ở bước 1
                     />
                     <PrivateRoute
                         isLoading={false}

@@ -1447,15 +1447,6 @@ const LINKS = [{
     ]
 },
 {
-    url: "/manage-transport-human",
-    description: "Nhân viên vận chuyển",
-    category: LINK_CATEGORY.TRANSPORT.name,
-    roles: [
-        ROOT_ROLES.SUPER_ADMIN.name,
-        ROOT_ROLES.ADMIN.name
-    ]
-},
-{
     url: "/manage-transport-route",
     description: "Hành trình vận chuyển",
     category: LINK_CATEGORY.TRANSPORT.name,

@@ -777,12 +777,7 @@ class SideBar extends Component {
                                         //     name: "menu.carrier_all_times_transport_mission",
                                         //     icon: "fa fa-calendar-o",
                                         //     path: "/carrier-all-times-transport-mission", 
-                                        // },                                        
-                                        // {
-                                        //     name: "menu.manage_transport_human",
-                                        //     icon: "fa fa-calendar-o",
-                                        //     path: "/manage-transport-human",
-                                        // },
+                                        // }, 
                                     ]
                                 }}
                             />
