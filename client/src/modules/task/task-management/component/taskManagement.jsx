@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import parse from 'html-react-parser';
 import Swal from 'sweetalert2';
 import moment from 'moment';
-import { DataTableSetting, DatePicker, PaginateBar, SelectBox, SelectMulti, Tree, TreeTable, ExportExcel } from '../../../../common-components';
+import { DataTableSetting, DatePicker, PaginateBar, SelectBox, SelectMulti, Tree, TreeTable, ExportExcel, InputTags } from '../../../../common-components';
 import { getFormatDateFromTime } from '../../../../helpers/stringMethod';
 import { getProjectName } from '../../../../helpers/taskModuleHelpers';
 import { getStorage } from '../../../../config';
@@ -54,16 +54,40 @@ class TaskManagement extends Component {
                 creator: userId,
                 task: ""
             },
-            monthTimeSheetLog: ''
+            monthTimeSheetLog: '',
+            tags: []
         };
     }
 
     componentDidMount() {
         const { perPage, currentPage } = this.state;
         const userId = getStorage('userId');
+
+        let data = {
+            role: this.state.currentTab, 
+            unit: [], 
+            number: currentPage, 
+            perPage: perPage, 
+            status: this.state.status, 
+            priority: null, 
+            special: null, 
+            name: null, 
+            startDate: null, 
+            endDate: null, 
+            responsibleEmployees: null, 
+            accountableEmployees: null, 
+            creatorEmployees: null, 
+            creatorTime: null, 
+            projectSearch: null, 
+            startDateAfter: null, 
+            endDateBefore: null, 
+            aPeriodOfTime: false, 
+            tags: []
+        }
+
         this.props.getDepartment();
         this.props.getAllDepartment();
-        this.props.getPaginateTasks(this.state.currentTab, [], currentPage, perPage, this.state.status, null, null, null, null, null, null, null, null, null, null);
+        this.props.getPaginateTasks(data);
         this.props.getProjectsDispatch({ calledId: "" });
     }
 
@@ -194,7 +218,13 @@ class TaskManagement extends Component {
     }
 
     handleGetDataPagination = async (index) => {
-        let { organizationalUnit, status, priority, special, name, startDate, endDate, responsibleEmployees, accountableEmployees, creatorEmployees, creatorTime, projectSearch } = this.state;
+        let { 
+            organizationalUnit, status, priority, 
+            special, name, startDate, endDate, 
+            responsibleEmployees, accountableEmployees, 
+            creatorEmployees, creatorTime, 
+            projectSearch, tags
+        } = this.state;
 
         let oldCurrentPage = this.state.currentPage;
         let perPage = this.state.perPage;
@@ -204,13 +234,34 @@ class TaskManagement extends Component {
         })
         let newCurrentPage = this.state.currentPage;
         if (oldCurrentPage !== index) {
-            let content = this.state.currentTab;
-            this.props.getPaginateTasks(content, organizationalUnit, newCurrentPage, perPage, status, priority, special, name, startDate, endDate, responsibleEmployees, accountableEmployees, creatorEmployees, creatorTime, projectSearch);
+            let data = {
+                role: this.state.currentTab, 
+                unit: organizationalUnit, 
+                number: newCurrentPage, 
+                perPage: perPage, 
+                status: status, 
+                priority: priority, 
+                special: special, 
+                name: name, 
+                startDate: startDate, 
+                endDate: endDate, 
+                responsibleEmployees: responsibleEmployees, 
+                accountableEmployees: accountableEmployees, 
+                creatorEmployees: creatorEmployees, 
+                creatorTime: creatorTime, 
+                projectSearch: projectSearch, 
+                startDateAfter: null, 
+                endDateBefore: null, 
+                aPeriodOfTime: false, 
+                tags: tags
+            }
+
+            this.props.getPaginateTasks(data);
         };
     }
 
     nextPage = async (pageTotal) => {
-        let { organizationalUnit, status, priority, special, name, startDate, endDate, responsibleEmployees, accountableEmployees, creatorEmployees, perPage, creatorTime, projectSearch } = this.state;
+        let { organizationalUnit, status, priority, special, name, startDate, endDate, responsibleEmployees, accountableEmployees, creatorEmployees, perPage, creatorTime, projectSearch, tags } = this.state;
 
         let oldCurrentPage = this.state.currentPage;
         await this.setState(state => {
@@ -221,13 +272,33 @@ class TaskManagement extends Component {
         })
         let newCurrentPage = this.state.currentPage;
         if (oldCurrentPage !== newCurrentPage) {
-            let content = this.state.currentTab;
-            this.props.getPaginateTasks(content, organizationalUnit, newCurrentPage, perPage, status, priority, special, name, startDate, endDate, responsibleEmployees, accountableEmployees, creatorEmployees, creatorTime, projectSearch);
+            let data = {
+                role: this.state.currentTab, 
+                unit: organizationalUnit, 
+                number: newCurrentPage, 
+                perPage: perPage, 
+                status: status, 
+                priority: priority, 
+                special: special, 
+                name: name, 
+                startDate: startDate, 
+                endDate: endDate, 
+                responsibleEmployees: responsibleEmployees, 
+                accountableEmployees: accountableEmployees, 
+                creatorEmployees: creatorEmployees, 
+                creatorTime: creatorTime, 
+                projectSearch: projectSearch, 
+                startDateAfter: null, 
+                endDateBefore: null, 
+                aPeriodOfTime: false, 
+                tags: tags
+            }
+            this.props.getPaginateTasks(data);
         };
     }
 
     backPage = async () => {
-        let { organizationalUnit, status, priority, special, name, startDate, endDate, responsibleEmployees, accountableEmployees, creatorEmployees, perPage, creatorTime, projectSearch } = this.state;
+        let { organizationalUnit, status, priority, special, name, startDate, endDate, responsibleEmployees, accountableEmployees, creatorEmployees, perPage, creatorTime, projectSearch, tags } = this.state;
 
         let oldCurrentPage = this.state.currentPage;
         await this.setState(state => {
@@ -238,16 +309,57 @@ class TaskManagement extends Component {
         })
         let newCurrentPage = this.state.currentPage;
         if (oldCurrentPage !== newCurrentPage) {
-            let content = this.state.currentTab;
-            this.props.getPaginateTasks(content, organizationalUnit, newCurrentPage, perPage, status, priority, special, name, startDate, endDate, responsibleEmployees, accountableEmployees, creatorEmployees, creatorTime, projectSearch);
+            let data = {
+                role: this.state.currentTab, 
+                unit: organizationalUnit, 
+                number: newCurrentPage, 
+                perPage: perPage, 
+                status: status, 
+                priority: priority, 
+                special: special, 
+                name: name, 
+                startDate: startDate, 
+                endDate: endDate, 
+                responsibleEmployees: responsibleEmployees, 
+                accountableEmployees: accountableEmployees, 
+                creatorEmployees: creatorEmployees, 
+                creatorTime: creatorTime, 
+                projectSearch: projectSearch, 
+                startDateAfter: null, 
+                endDateBefore: null, 
+                aPeriodOfTime: false, 
+                tags: tags
+            }
+            this.props.getPaginateTasks(data);
         };
     }
 
     handleGetDataPerPage = (perPage) => {
-        let { organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, responsibleEmployees, accountableEmployees, creatorEmployees, creatorTime, projectSearch } = this.state;
+        let { organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, responsibleEmployees, accountableEmployees, creatorEmployees, creatorTime, projectSearch, tags } = this.state;
 
-        let content = this.state.currentTab;
-        this.props.getPaginateTasks(content, organizationalUnit, 1, perPage, status, priority, special, name, startDate, endDate, responsibleEmployees, accountableEmployees, creatorEmployees, creatorTime, projectSearch);
+        let data = {
+            role: this.state.currentTab, 
+            unit: organizationalUnit, 
+            number: 1, 
+            perPage: perPage, 
+            status: status, 
+            priority: priority, 
+            special: special, 
+            name: name, 
+            startDate: startDate, 
+            endDate: endDate, 
+            responsibleEmployees: responsibleEmployees, 
+            accountableEmployees: accountableEmployees, 
+            creatorEmployees: creatorEmployees, 
+            creatorTime: creatorTime, 
+            projectSearch: projectSearch, 
+            startDateAfter: null, 
+            endDateBefore: null, 
+            aPeriodOfTime: false, 
+            tags: tags
+        }
+
+        this.props.getPaginateTasks(data);
 
         this.setState({
             currentPage: 1
@@ -256,7 +368,7 @@ class TaskManagement extends Component {
 
     handleUpdateData = () => {
         const { translate } = this.props;
-        let { organizationalUnit, status, priority, special, name, startDate, endDate, responsibleEmployees, perPage, accountableEmployees, creatorEmployees, creatorTime, projectSearch } = this.state;
+        let { organizationalUnit, status, priority, special, name, startDate, endDate, responsibleEmployees, perPage, accountableEmployees, creatorEmployees, creatorTime, projectSearch, tags } = this.state;
         let startMonth, endMonth;
 
         if (startDate && endDate) {
@@ -272,9 +384,30 @@ class TaskManagement extends Component {
                 confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm'),
             })
         } else {
-            let content = this.state.currentTab;
+            let data = {
+                role: this.state.currentTab, 
+                unit: organizationalUnit, 
+                number: 1, 
+                perPage: perPage, 
+                status: status, 
+                priority: priority, 
+                special: special, 
+                name: name, 
+                startDate: startDate, 
+                endDate: endDate, 
+                responsibleEmployees: responsibleEmployees, 
+                accountableEmployees: accountableEmployees, 
+                creatorEmployees: creatorEmployees, 
+                creatorTime: creatorTime, 
+                projectSearch: projectSearch, 
+                startDateAfter: null, 
+                endDateBefore: null, 
+                aPeriodOfTime: false, 
+                tags: tags
+            }
 
-            this.props.getPaginateTasks(content, organizationalUnit, 1, perPage, status, priority, special, name, startDate, endDate, responsibleEmployees, accountableEmployees, creatorEmployees, creatorTime, projectSearch);
+            console.log("7777", data)
+            this.props.getPaginateTasks(data);
         }
 
         this.setState({
@@ -447,6 +580,13 @@ class TaskManagement extends Component {
         })
     }
 
+    handleTaskTags = (value) => {
+        console.log(value)
+        this.setState({
+            tags: value,
+        })
+    }
+
     checkTaskRequestToClose = (task) => {
         const { translate } = this.props;
         if (task.requestToCloseTask && task.requestToCloseTask.requestStatus === 1) {
@@ -479,7 +619,13 @@ class TaskManagement extends Component {
 
     render() {
         const { tasks, user, translate, project } = this.props;
-        const { currentTaskId, currentPage, currentTab, parentTask, startDate, endDate, perPage, status, monthTimeSheetLog, tableId, responsibleEmployees, creatorTime, projectSearch } = this.state;
+        const { currentTaskId, currentPage, currentTab, 
+            parentTask, startDate, endDate, perPage, 
+            status, monthTimeSheetLog, tableId, 
+            responsibleEmployees, creatorTime, 
+            projectSearch, tags
+        } = this.state;
+
         let currentTasks, units = [];
 
         if (tasks) {
@@ -817,6 +963,15 @@ class TaskManagement extends Component {
                                     options={{ minimumResultsForSearch: 100 }}
                                 >
                                 </SelectBox>
+                            </div>
+
+                            <div className="form-group">
+                                <label>Tags</label>
+                                <InputTags
+                                    id={`task-personal`}
+                                    onChange={this.handleTaskTags}
+                                    value={tags}
+                                />
                             </div>
 
                             <div className="form-group">
