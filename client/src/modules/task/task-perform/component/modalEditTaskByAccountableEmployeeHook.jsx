@@ -123,35 +123,7 @@ function ModalEditTaskByAccountableEmployee(props) {
 
         let startTime = formatTime(task.startDate);
         let endTime = formatTime(task.endDate);
-        let a = {
-            listInactive: listInactive,
-            userId: userId,
-            task: task,
-            info: info,
-            taskName: taskName,
-            taskDescription: taskDescription,
-            taskDescriptionDefault: taskDescription,
-            organizationalUnit: organizationalUnit,
-            collaboratedWithOrganizationalUnits: collaboratedWithOrganizationalUnits,
-            statusOptions: statusOptions,
-            priorityOptions: priorityOptions,
-            progress: progress,
-            formula: formula,
-            parent: parent,
-            parentTask: parentTask,
-            taskProjectName: taskProject,
-            startDate: startDate,
-            endDate: endDate,
-            startTime: startTime,
-            endTime: endTime,
-            responsibleEmployees: responsibleEmployees,
-            accountableEmployees: accountableEmployees,
-            consultedEmployees: consultedEmployees,
-            informedEmployees: informedEmployees,
-            inactiveEmployees: inactiveEmployees,
-            errorInfo: {},
-        }
-        console.log("a đây nè", a)
+
         return {
             listInactive: listInactive,
             userId: userId,
@@ -183,14 +155,13 @@ function ModalEditTaskByAccountableEmployee(props) {
     }
 
     useEffect(() => {
-        console.log("state", state)
         props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
         // unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime = false, calledId = null
         props.getPaginateTasksByUser([], "1", "5", [], [], [], null, null, null, null, null, false, "listSearch");
     }, [])
 
     if (props.id !== state.id) {
-        return {
+        setState({
             ...state,
             id: props.id,
 
@@ -204,7 +175,7 @@ function ModalEditTaskByAccountableEmployee(props) {
             errorInfo: {},
             errorOnStartDate: undefined,
             errorOnEndDate: undefined,
-        }
+        })
     }
 
 
