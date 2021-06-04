@@ -442,143 +442,121 @@ function TransportVehicleAndCarrierSelect(props) {
     return (
         <React.Fragment>
             <div className="box-body">
-                {
-                listVehiclesUsable && listVehiclesUsable.length!==0
-                &&
-                <table id={"1"} className="table table-striped table-bordered table-hover">
-                    <thead>
-                        <tr>
-                            <th className="col-fixed" style={{ width: 60 }}>{"STT"}</th>
-                            <th>{"Mã xe"}</th>
-                            <th>{"Tên xe"}</th>
-                            <th>{"Trọng tải"}</th>
-                            <th>{"Thể tích thùng"}</th>
-                            <th>{"Tài xế"}</th>
-                            <th style={{width: '200px'}}>{"Nhân viên đi cùng"}</th>
-                            <th >{"Hành động"}</th>
-                            {/* <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
-                                <DataTableSetting
-                                    tableId={tableId}
-                                    columnArr={[
-                                        translate('manage_example.index'),
-                                        translate('manage_example.exampleName'),
-                                        translate('manage_example.description'),
-                                    ]}
-                                    setLimit={setLimit}
-                                />
-                            </th> */}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {(listVehiclesUsable && listVehiclesUsable.length !== 0) &&
-                            listVehiclesUsable.map((x, index) => (
-                                x &&
-                                <tr key={index}>
-                                    <td>{index+1}</td>
-                                    <td>{x.code}</td>
-                                    <td>{x.name}</td>
-                                    <td>{x.payload}</td>
-                                    <td>{x.volume}</td>
-                                    <td>
-                                        <SelectBox
-                                            id={x._id}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            value={getCurrentDriver(x._id)}
-                                            items={getAllDriver(x._id)}
-                                            onChange={handleDriverChange}
-                                            multiple={false}
+                <div className="box box-solid">
+                    <div className="box-header">
+                        <div className="box-title">{"Danh sách phương tiện có thể sử dụng ngày: "+ formatDate(startTime)}</div>                                
+                    </div>
+                    <div className="box-body qlcv">                             
+                        
+                    {
+                        listVehiclesUsable && listVehiclesUsable.length!==0
+                        &&
+                        <table id={"1"} className="table table-striped table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th className="col-fixed" style={{ width: 60 }}>{"STT"}</th>
+                                    <th>{"Mã xe"}</th>
+                                    <th>{"Tên xe"}</th>
+                                    <th>{"Trọng tải"}</th>
+                                    <th>{"Thể tích thùng"}</th>
+                                    <th>{"Tài xế"}</th>
+                                    <th style={{width: '200px'}}>{"Nhân viên đi cùng"}</th>
+                                    <th >{"Hành động"}</th>
+                                    {/* <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
+                                        <DataTableSetting
+                                            tableId={tableId}
+                                            columnArr={[
+                                                translate('manage_example.index'),
+                                                translate('manage_example.exampleName'),
+                                                translate('manage_example.description'),
+                                            ]}
+                                            setLimit={setLimit}
                                         />
-                                    </td>
-                                    <td>
-                                        <SelectBox
-                                            id={x._id+"1"}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            value={getCurrentCarriers(x._id)}
-                                            items={getAllCarriers(x._id)}
-                                            onChange={handleCarriersChange}
-                                            multiple={true}
-                                        />
-                                    </td>
-                                    
-                                    <td style={{ textAlign: "center" }} className="tooltip-checkbox">
-                                        <span className={"icon "
-                                        +getStatusTickBox(x)
-                                    }
-                                        title={"alo"} 
-                                        onClick={() => handleSelectVehicle(x)}
-                                        >
-                                        </span>
-                                    </td>
+                                    </th> */}
                                 </tr>
-                            ))
-                        }
-                    </tbody>
-                </table>
-            }
-
-            {
-                listCarriersUsable && listCarriersUsable.length!==0
-                &&
-                <table id={"1"} className="table table-striped table-bordered table-hover">
-                    <thead>
-                        <tr>
-                            <th className="col-fixed" style={{ width: 60 }}>{"STT"}</th>
-                            <th>{"Tên nhân viên"}</th>
-                            <th>{"Email"}</th>
-                            <th>{"Thể tích thùng"}</th>
-                            <th>{"Hành động"}</th>
-                            {/* <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
-                                <DataTableSetting
-                                    tableId={tableId}
-                                    columnArr={[
-                                        translate('manage_example.index'),
-                                        translate('manage_example.exampleName'),
-                                        translate('manage_example.description'),
-                                    ]}
-                                    setLimit={setLimit}
-                                />
-                            </th> */}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {(listCarriersUsable && listCarriersUsable.length !== 0) &&
-                            listCarriersUsable.map((x, index) => (
-                                x &&
-                                <tr key={index}>
-                                    <td>{index+1}</td>
-                                    <td>{x.name}</td>
-                                    <td>{x.email}</td>
-                                    <td>{x._id}</td>
-                                    {/* <td>{x.volume}</td> */}
-                                    {/* <td>{x.createdAt ? formatDate(x.createdAt) : ""}</td> */}
-                                    <td>
-                                        {
-                                            // (x.timeRequests && x.timeRequests.length!==0)
-                                            // && x.timeRequests.map((timeRequest, index2)=>(
-                                            //     <div key={index+" "+index2}>
-                                            //         {index2+1+"/ "+formatDate(timeRequest.timeRequest)}
-                                            //     </div>
-                                            // ))
-                                        }
-                                    </td>
-                                    {/* <td>{x.status}</td> */}
-                                    <td style={{ textAlign: "center" }} className="tooltip-checkbox">
-                                        <span className={"icon "
-                                        // +getStatusTickBox(x)
-                                    }
-                                        title={"alo"} 
-                                        // onClick={() => handleSelectRequirement(x)}
-                                        >
-                                        </span>
-                                    </td>
+                            </thead>
+                            <tbody>
+                                {(listVehiclesUsable && listVehiclesUsable.length !== 0) &&
+                                    listVehiclesUsable.map((x, index) => (
+                                        x &&
+                                        <tr key={index + "xe"}>
+                                            <td>{index+1}</td>
+                                            <td>{x.code}</td>
+                                            <td>{x.name}</td>
+                                            <td>{x.payload}</td>
+                                            <td>{x.volume}</td>
+                                            <td>
+                                                <SelectBox
+                                                    id={x._id}
+                                                    className="form-control select2"
+                                                    style={{ width: "100%" }}
+                                                    value={getCurrentDriver(x._id)}
+                                                    items={getAllDriver(x._id)}
+                                                    onChange={handleDriverChange}
+                                                    multiple={false}
+                                                />
+                                            </td>
+                                            <td>
+                                                <SelectBox
+                                                    id={x._id+"1"}
+                                                    className="form-control select2"
+                                                    style={{ width: "100%" }}
+                                                    value={getCurrentCarriers(x._id)}
+                                                    items={getAllCarriers(x._id)}
+                                                    onChange={handleCarriersChange}
+                                                    multiple={true}
+                                                />
+                                            </td>
+                                            
+                                            <td style={{ textAlign: "center" }} className="tooltip-checkbox">
+                                                <span className={"icon "
+                                                +getStatusTickBox(x)
+                                            }
+                                                title={"alo"} 
+                                                onClick={() => handleSelectVehicle(x)}
+                                                >
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    ))
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    </div>
+                </div>
+                <div className="box box-solid">
+                    <div className="box-header">
+                        <div className="box-title">{"Danh sách nhân viên"}</div>                                
+                    </div>
+                    <div className="box-body qlcv"> 
+                    {
+                        listCarriersUsable && listCarriersUsable.length!==0
+                        &&
+                        <table id={"2"} className="table table-striped table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th className="col-fixed" style={{ width: 60 }}>{"STT"}</th>
+                                    <th>{"Tên nhân viên"}</th>
+                                    <th>{"Email"}</th>
                                 </tr>
-                            ))
-                        }
-                    </tbody>
-                </table>
-            }
+                            </thead>
+                            <tbody>
+                                {(listCarriersUsable && listCarriersUsable.length !== 0) &&
+                                    listCarriersUsable.map((x, index) => (
+                                        x &&
+                                        <tr key={index}>
+                                            <td>{index+1}</td>
+                                            <td>{x.name}</td>
+                                            <td>{x.email}</td>                                    
+                                        </tr>
+                                    ))
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    </div>
+                </div>
             </div>
         </React.Fragment>
     );

@@ -5,11 +5,12 @@ import { ButtonModal, DialogModal, ErrorLabel, DatePicker, SelectBox } from '../
 import { withTranslate } from 'react-redux-multilingual';
 import ValidationHelper from '../../../../../helpers/validationHelper';
 
-import {TransportDetailNewOne} from './detail-transport-requirement/transportDetailNewOne'
-import {TransportDetailGoods} from './detail-transport-requirement/transportDetailGoods'
+import { TransportDetailNewOne } from './detail-transport-requirement/transportDetailNewOne'
+import { TransportDetailGoods } from './detail-transport-requirement/transportDetailGoods'
+import { TransportDetailTime } from './detail-transport-requirement/transportDetailTime'
 
 import { formatDate } from '../../../../../helpers/formatDate'
-import { getTypeRequirement, getTransportRequirementStatus } from '../../transportHelper/getTextFromValue'
+import { getTypeRequirement, getTransportRequirementStatus, getPlanStatus } from '../../transportHelper/getTextFromValue'
 import { MapContainer } from '../../transportHelper/googleReactMap/mapContainer'
 import { exampleActions } from '../redux/actions';
 
@@ -63,6 +64,8 @@ function TransportRequirementsViewDetails(props) {
                 departmentName: curentTransportRequirementDetail.department?.organizationalUnit?.name,
                 approver: curentTransportRequirementDetail.approver?.name,
                 approver_email: curentTransportRequirementDetail.approver?.email,
+                timeRequests: curentTransportRequirementDetail.timeRequests,
+                transportPlan: curentTransportRequirementDetail.transportPlan,
             })
         }
     }, [curentTransportRequirementDetail])
@@ -100,10 +103,11 @@ function TransportRequirementsViewDetails(props) {
 
                     <div className="box box-solid">
                         <div className="box-header">
-                            <div className="box-title">{"Thông tin chung"}</div>
+                            <div className="box-title">{"Thông tin vận chuyển"}</div>
                         </div>
                         <div className="box-body qlcv">
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6" id="transport-detail-container-map">
                                 <p><strong>{"Mã yêu cầu vận chuyển: "}&emsp;</strong> {detailRequirement.code}</p>
                                 <p><strong>{"Loại vận chuyển: "}&emsp;</strong> {detailRequirement.type}</p>
                                 <p><strong>{"Trạng thái: "}&emsp;</strong> {detailRequirement.status}</p>
@@ -111,21 +115,12 @@ function TransportRequirementsViewDetails(props) {
                                 <p><strong>{"Ngày tạo: "}&emsp;</strong> {detailRequirement.creator_date}</p>
                                 <p><strong>{"Đơn vị chịu trách nhiệm: "}&emsp;</strong>{detailRequirement.departmentName}</p>
                                 <p><strong>{"Người xử lí yêu cầu: "}&emsp;</strong>{detailRequirement.approver} &emsp;{" - "}&emsp; {detailRequirement.approver_email}</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="box box-solid">
-                        <div className="box-header">
-                            <div className="box-title">{"Thông tin vận chuyển"}</div>
-                        </div>
-                        <div className="box-body qlcv">                            
-                            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6" id="transport-detail-container-map">
+                                
                                 <TransportDetailNewOne 
                                     curentTransportRequirementDetail = {curentTransportRequirementDetail}
                                 />
                             </div>
-                            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6" id="transport-detail-container-map">
+                            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <MapContainer 
                                     loadingElement={<div style={{height: map.height+'px'}}/>}
                                     // containerElement={containerElement || <div style={{height: "80vh"}}/>}
@@ -135,19 +130,54 @@ function TransportRequirementsViewDetails(props) {
                                     // defaultCenter={defaultCenter || {lat: 21.078017641, lng: 105.70710958}}
                                     defaultZoom={8}
                                     nonDirectLocations={map.nonDirectLocations?map.nonDirectLocations:[]}
-                                    />
+                                />
+                            </div>
                             </div>
                         </div>
                     </div>
 
+                   
                     <div className="box box-solid">
                         <div className="box-header">
-                            <div className="box-title">{"Thông tin hàng hóa"}</div>                                
+                            <div className="box-title">{"Hàng hóa"}</div>                                
                         </div>
                         <div className="box-body qlcv">
                             <TransportDetailGoods
                                 listGoodsChosen = {curentTransportRequirementDetail?.goods}
                             />
+                        </div>
+                    </div>
+
+                    <div className="box box-solid">
+                        <div className="box-header">
+                            <div className="box-title">{"Thời gian mong muốn"}</div>                                
+                        </div>
+                        <div className="box-body qlcv">
+                            <TransportDetailTime
+                                listTimeChosen = {curentTransportRequirementDetail?.timeRequests}
+                            />
+                        </div>
+                    </div>
+                    <div className="box box-solid">
+                        <div className="box-header">
+                            <div className="box-title">{"Tiến độ thực hiện"}</div>                                
+                        </div>
+                        <div className="box-body qlcv">
+                            {
+                                (curentTransportRequirementDetail && !curentTransportRequirementDetail.transportPlan)
+                                &&
+                                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <p><strong>{"Trạng thái: "} &emsp;</strong> {"Chưa lên kế hoạch"}</p>
+                                </div>
+                            }
+                            {
+                                curentTransportRequirementDetail && curentTransportRequirementDetail.transportPlan
+                                &&
+                                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <p><strong>{"Ngày thực hiện dự kiến: "} &emsp;</strong> {formatDate(curentTransportRequirementDetail.transportPlan.startTime)}</p>
+                                    <p><strong>{"Trạng thái: "} &emsp;</strong> {getPlanStatus(curentTransportRequirementDetail.transportPlan.status)}</p>
+                                </div>
+                            }                                
                         </div>
                     </div>
                 </div>

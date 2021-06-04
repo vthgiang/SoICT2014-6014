@@ -19,7 +19,7 @@ function TransportDetailGoods(props) {
         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
             <div className="row">
                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                    <table className="table table-striped">
+                    <table className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th>{"Số thứ tự"}</th>

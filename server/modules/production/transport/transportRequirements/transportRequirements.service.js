@@ -79,7 +79,10 @@ exports.createTransportRequirement = async (portal, data, userId) => {
                                 {
                                     path: 'approver'
                                 }
-                            ]);
+                            ])                            
+                            .populate({
+                                path: 'goods.good'
+                            });
     return requirement;
 }
 
