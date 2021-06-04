@@ -8,8 +8,10 @@ import ValidationHelper from '../../../../../helpers/validationHelper';
 
 import { LocationMap } from './map/locationMap'
 import { TransportVehicleAndCarrierSelect } from './transport-plan-create/transportVehicleAndCarrierSelect'
+import { TransportVehicleCarrier2 } from './transportVehicleCarrier2'
 
 import { transportPlanActions } from '../redux/actions';
+import { transportDepartmentActions } from '../../transport-department/redux/actions'
 import { transportRequirementsActions } from '../../transport-requirements/redux/actions'
 import { getTypeRequirement } from '../../transportHelper/getTextFromValue'
 
@@ -17,11 +19,13 @@ import {} from './transport-plan.css'
 
 function TransportPlanCreateForm(props) {
     // let allTransportRequirements;
-    let {transportRequirements} = props;
+    let {transportRequirements, transportDepartment, transportPlan} = props;
     const [formSchedule, setFormSchedule] = useState({
         code: "",
         startDate: "",
         endDate: "",
+        name: "Kế hoạch vận chuyển",
+        supervisor: "title"
     });
 
     /**
@@ -41,7 +45,15 @@ function TransportPlanCreateForm(props) {
     const [listSelectedRequirementsLocation, setListSelectedRequirementsLocation] = useState([])
     const handleClickCreateCode = () => {
         setFormSchedule({
+            ...formSchedule,
             code: generateCode("KHVC"),
+        })
+    }
+
+    const handlePlanNameChange = (e) => {
+        setFormSchedule({
+            ...formSchedule,
+            name: e.target.value,
         })
     }
 
@@ -59,8 +71,42 @@ function TransportPlanCreateForm(props) {
             endDate: formatToTimeZoneDate(value),
         })
     }
+
+    const getSupervisor = () => {
+        let supervisorList = [{
+            value: "title",
+            text: "Chọn người giám sát"
+        }];
+        if (transportDepartment && transportDepartment.listUser && transportDepartment.listUser.length!==0){
+            let listUser = transportDepartment.listUser.filter(r=>Number(r.role) === 2);
+            if (listUser && listUser.length!==0 && listUser[0].list && listUser[0].list.length!==0){
+                listUser[0].list.map(userId => {
+                    supervisorList.push({
+                        value: userId._id,
+                        text: userId.name,
+                    });
+                })
+            }
+        }
+        return supervisorList;
+    }
+
+    const handleSupervisorChange = (value) => {
+        setFormSchedule({
+            ...formSchedule,
+            supervisor: value[0],
+        })
+    }
+
     const save = () => {
-        props.createTransportPlan(formSchedule);
+        props.createTransportPlan({...formSchedule, creator: localStorage.getItem('userId'), currentRole: localStorage.getItem('currentRole')});
+        setFormSchedule({
+            code: "",
+            startDate: "",
+            endDate: "",
+            name: "Kế hoạch vận chuyển",
+            supervisor: "title"
+        })
     }
     
     /**
@@ -108,7 +154,7 @@ function TransportPlanCreateForm(props) {
         else{
             arr.push(requirement._id);
         }
-        console.log(arr);
+        // console.log(arr);
         setListSelectedRequirements(arr);
     }
 
@@ -133,6 +179,9 @@ function TransportPlanCreateForm(props) {
     // useEffect(() => {
     //     console.log(formSchedule, " day la form schedule");
     // }, [formSchedule])
+    useEffect(() => {
+        props.getUserByRole({currentUserId: localStorage.getItem('userId'), role: 2})
+    }, [])
     useEffect(() => {
         props.getAllTransportRequirements({page: 1, limit: 100, status: "2"})
     }, [formSchedule.startDate, formSchedule.endDate])
@@ -165,7 +214,7 @@ function TransportPlanCreateForm(props) {
             &&listSelectedRequirements && listSelectedRequirements.length !==0){
             listRequirements.map((item, index) => {
                 if (listSelectedRequirements.indexOf(item._id) >=0){
-                    console.log(item, "otem");
+                    // console.log(item, "otem");
                     locationArr.push(
                         {
                             name: String(index+1),
@@ -185,7 +234,7 @@ function TransportPlanCreateForm(props) {
                 }
             })
         }
-        console.log(locationArr, " ar")
+        // console.log(locationArr, " ar")
         setListSelectedRequirementsLocation(locationArr);
     }, [listSelectedRequirements])
 
@@ -208,7 +257,7 @@ function TransportPlanCreateForm(props) {
                 modalID="modal-create-transport-plan" 
                 isLoading={false}
                 formID="form-create-transport-requirements"
-                title={"Thêm lịch vận chuyển"}
+                title={"Thêm kế hoạch vận chuyển"}
                 msg_success={"success"}
                 msg_faile={"fail"}
                 func={save}
@@ -219,11 +268,18 @@ function TransportPlanCreateForm(props) {
             <form id="form-create-transport-requirements" >
             <div className="nav-tabs-custom">
                 <ul className="nav nav-tabs">
-                    <li className="active"><a href="#plan-list-transport-requirement" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Kế hoạch vận chuyển"}</a></li>
-                    <li><a href="#plan-transport-vehicle-carrier" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Xếp kế hoạch vận chuyển"}</a></li>
+                    <li className="active"><a href="#plan-list-transport-carrier" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Thống kê phương tiện và nhân viên"}</a></li>
+                    <li><a href="#plan-list-transport-requirement" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Chọn yêu cầu vận chuyển"}</a></li>
+                    <li><a href="#plan-transport-vehicle-carrier" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Chọn phương tiện và nhân viên"}</a></li>
                 </ul>
                 <div className="tab-content">
-                    <div className="tab-pane active" id="plan-list-transport-requirement">
+                <div className="tab-pane active" id="plan-list-transport-carrier">
+                    <TransportVehicleCarrier2 
+                        transportPlan = {transportPlan}
+                        // key={transportPlan}
+                    />
+                </div>                
+                    <div className="tab-pane" id="plan-list-transport-requirement">
                         <div className="box-body">
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 
@@ -232,7 +288,7 @@ function TransportPlanCreateForm(props) {
                                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                             <div className="form-group">
                                                 <label>
-                                                    Mã lịch trình <span className="attention"> </span>
+                                                    Mã kế hoạch <span className="attention"> </span>
                                                 </label>
                                                 <input type="text" className="form-control" disabled={true} 
                                                     value={formSchedule.code}
@@ -240,22 +296,31 @@ function TransportPlanCreateForm(props) {
                                             </div>
                                         </div>
                                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                            <div className={`form-group`}>
+                                            <div className="form-group">
                                                 <label>
-                                                    Người phụ trách
-                                                    <span className="attention"> * </span>
+                                                    Tên kế hoạch <span className="attention"> </span>
                                                 </label>
                                                 <input type="text" className="form-control" disabled={false} 
+                                                    value={formSchedule.name}
+                                                    onChange={handlePlanNameChange}
                                                 />
-                                                {/* <SelectBox
+                                            </div>
+                                        </div>
+                                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                            <div className={`form-group`}>
+                                                <label>
+                                                    Người phụ trách giám sát
+                                                    <span className="attention"> * </span>
+                                                </label>
+                                                <SelectBox
                                                     id={`select-type-requirement`}
                                                     className="form-control select2"
                                                     style={{ width: "100%" }}
-                                                    value={"5"}
-                                                    // items={requirements}
-                                                    // onChange={handleTypeRequirementChange}
+                                                    value={formSchedule.supervisor}
+                                                    items={getSupervisor()}
+                                                    onChange={handleSupervisorChange}
                                                     multiple={false}
-                                                /> */}
+                                                />
                                             </div>
                                         </div>
 
@@ -265,8 +330,8 @@ function TransportPlanCreateForm(props) {
                                                     Ngày bắt đầu <span className="attention"> * </span>
                                                 </label>
                                                 <DatePicker
-                                                    id={`start_date`}
-                                                    value={formSchedule.startDate}
+                                                    id={`start_date1`}
+                                                    value={formatDate(formSchedule.startDate)}
                                                     onChange={handleStartDateChange}
                                                     disabled={false}
                                                 />
@@ -279,8 +344,8 @@ function TransportPlanCreateForm(props) {
                                                     <span className="attention"> * </span>
                                                 </label>
                                                 <DatePicker
-                                                    id={`end_date`}
-                                                    value={formSchedule.endDate}
+                                                    id={`end_date1`}
+                                                    value={formatDate(formSchedule.endDate)}
                                                     onChange={handleEndDateChange}
                                                     disabled={false}
                                                 />
@@ -291,13 +356,14 @@ function TransportPlanCreateForm(props) {
                                 <div className="col-xs-12 col-sm-12 col-md-8 col-lg-8">
                                     {
                                         (listRequirements && listRequirements.length!==0)
-                                        // &&
-                                        // <LocationMap 
-                                        //     locations = {listSelectedRequirementsLocation}
-                                        //     loadingElement={<div style={{height: `100%`}}/>}
-                                        //     containerElement={<div style={{height: "40vh"}}/>}
-                                        //     mapElement={<div style={{height: `100%`}}/>}
-                                        // />
+                                        &&
+                                        <LocationMap 
+                                            locations = {listSelectedRequirementsLocation}
+                                            loadingElement={<div style={{height: `100%`}}/>}
+                                            containerElement={<div style={{height: "50vh"}}/>}
+                                            mapElement={<div style={{height: `100%`}}/>}
+                                            defaultZoom={11}
+                                        />
                                     }
                                 </div>
                             </div>
@@ -333,7 +399,7 @@ function TransportPlanCreateForm(props) {
                                     {(listRequirements && listRequirements.length !== 0) &&
                                         listRequirements.map((x, index) => (
                                             x &&
-                                            <tr key={index}>
+                                            <tr key={index+x._id}>
                                                 <td>{index+1}</td>
                                                 <td>{x.code}</td>
                                                 <td>{getTypeRequirement(x.type)}</td>
@@ -388,13 +454,15 @@ function TransportPlanCreateForm(props) {
 }
 
 function mapState(state) {
-    const {transportRequirements} = state;
-    return {transportRequirements}
+    const {transportRequirements, transportDepartment} = state;
+    // console.log(transportDepartment);
+    return {transportRequirements, transportDepartment}
 }
 
 const actions = {
     getAllTransportRequirements: transportRequirementsActions.getAllTransportRequirements,
     createTransportPlan: transportPlanActions.createTransportPlan,
+    getUserByRole: transportDepartmentActions.getUserByRole,
 }
 
 const connectedTransportPlanCreateForm = connect(mapState, actions)(withTranslate(TransportPlanCreateForm));

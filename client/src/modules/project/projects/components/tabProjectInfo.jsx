@@ -36,7 +36,7 @@ const TabProjectInfo = (props) => {
                         </div>
                     }
                     {
-                        projectDetail?.budget &&
+                        projectDetail?.budgetChangeRequest &&
                         <div>
                             <strong>Chi phí ước lượng dự kiến - hiện tại:</strong>
                             <a>{numberWithCommas(projectDetail?.budgetChangeRequest)} VND</a>

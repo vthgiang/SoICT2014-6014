@@ -15,6 +15,8 @@ import { transportProcessActions } from "../../transport-route/redux/actions"
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 import { convertJsonObjectToFormData } from '../../../../../helpers/jsonObjectToFormDataObjectConverter'
 
+import { getTypeRequirement } from '../../transportHelper/getTextFromValue'
+
 function CarrierMissionManagementTable(props) {
     let {transportPlanId, transportPlan, transportSchedule, socket, sendCurrentLocate} = props;
     const [transportScheduleByCarrierId, setTransportScheduleByCarrierId] = useState()
@@ -26,19 +28,20 @@ function CarrierMissionManagementTable(props) {
     
     const [sendCurrentLocateTimer, setSendCurrentLocateTimer] = useState([]);
     const [ currentPosition, setCurrentPosition ] = useState({});
+    const [currentPlanId, setCurrentPlanId] = useState();
 
     const handleCarrierDateChange = (value) => {
         setCurrentDate(formatToTimeZoneDate(value));
     }
-    const handleShowMissionReport = (misssion) => {
-        setCurrentMission(misssion);
+    const handleShowMissionReport = (mission, index) => {
+        setCurrentMission(mission)
         window.$(`#modal-carrier-report-process`).modal('show');
     }
 
     const getTransportStatus = (routeOrdinal) => {
         if (routeOrdinal && routeOrdinal.transportRequirement && routeOrdinal.transportRequirement.transportStatus) {
             if (String(routeOrdinal.type) === "1"){
-                if (String(routeOrdinal.transportRequirement.transportStatus) !== "2"){
+                if (String(routeOrdinal.transportRequirement.transportStatus.fromAddress?.status) === "1"){
                     return "Đã lấy được hàng";
                 }
                 else {
@@ -46,7 +49,7 @@ function CarrierMissionManagementTable(props) {
                 }
             }
             else {
-                if (String(routeOrdinal.transportRequirement.transportStatus) === "3"){
+                if (String(routeOrdinal.transportRequirement.transportStatus.toAddress?.status) === "1"){
                     return "Đã giao hàng";
                 }
                 else {
@@ -179,6 +182,8 @@ function CarrierMissionManagementTable(props) {
                     ){
                         flag = true;
                         setCurrentVehicleRoute(item.route);
+                        setCurrentPlanId(item.transportPlan._id);
+                        console.log(item.transportPlan);
                     }
                 }
             })
@@ -191,6 +196,7 @@ function CarrierMissionManagementTable(props) {
             {/* <TransportDialogMissionReport /> */}
                 <CarrierMissionReport
                     currentMission={currentMission}
+                    currentPlanId={currentPlanId}
                 />
                 <div className="form-inline">
                     <div className="form-group">
@@ -216,7 +222,6 @@ function CarrierMissionManagementTable(props) {
                         <th>{"Địa chỉ"}</th>
                         <th>{"Nhiệm vụ"}</th>
                         <th>{"Trạng thái"}</th>
-                        <th>{"TransportStatus"}</th>
                         <th>{"Hành động"}</th>
                         {/* <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
                             <DataTableSetting
@@ -239,14 +244,14 @@ function CarrierMissionManagementTable(props) {
                             <tr key={index}>
                                 <td>{index+1}</td>
                                 <td>{routeOrdinal.transportRequirement?.code}</td>
-                                <td>{routeOrdinal.transportRequirement?.type}</td>
+                                <td>{getTypeRequirement(routeOrdinal.transportRequirement?.type)}</td>
                                 <td>{(String(routeOrdinal.type)==="1")?routeOrdinal.transportRequirement?.fromAddress:routeOrdinal.transportRequirement?.toAddress}</td>
                                 <td>{(String(routeOrdinal.type)==="1")?"Nhận hàng":"Trả hàng"}</td>
                                 <td>
                                     {/* {routeOrdinal.transportRequirement?.transportStatus} */}
                                     {getTransportStatus(routeOrdinal)}
                                 </td>
-                                <td>{"Chưa hoàn thành"}</td>
+                                {/* <td>{"Chưa hoàn thành"}</td> */}
                                 <td style={{ textAlign: "center" }}>
                                     <a className="edit text-green" style={{ width: '5px' }} 
                                         // title={translate('manage_example.detail_info_example')} 
@@ -260,7 +265,7 @@ function CarrierMissionManagementTable(props) {
                                     <a className="edit text-blue" style={{ width: '5px' }} 
                                         // title={translate('manage_example.detail_info_example')} 
                                         title={'Báo cáo nhiện vụ vận chuyển'}
-                                        onClick={() => handleShowMissionReport(routeOrdinal)}
+                                        onClick={() => handleShowMissionReport(routeOrdinal, index)}
                                     >
                                         <i className="material-icons">
                                             assignment_turned_in

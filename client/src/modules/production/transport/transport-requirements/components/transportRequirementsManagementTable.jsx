@@ -11,7 +11,7 @@ import { TransportRequirementsEditForm } from './transportRequirementsEditForm'
 import { transportRequirementsActions } from "../redux/actions";
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 
-import {getTypeRequirement} from '../../transportHelper/getTextFromValue'
+import {getTypeRequirement, getTransportRequirementStatus} from '../../transportHelper/getTextFromValue'
 
 function TransportRequirementsManagementTable(props) {
     const getTableId = "table-manage-transport-requirements-hooks";
@@ -48,23 +48,6 @@ function TransportRequirementsManagementTable(props) {
             text: "Khác",
         }
     ];
-    const statusTransport = [
-        {
-            value: "1", text: "Chờ phê duyệt"
-        },
-        {
-            value: "2", text: "Chờ xếp lịch"
-        },
-        {
-            value: "3", text: "Chờ vận chuyển"
-        },
-        {
-            value: "4", text: "Đang vận chuyển"
-        },
-        {
-            value: "5", text: "Đã vận chuyển"
-        }
-    ]
     // Khởi tạo state
     const [state, setState] = useState({
         exampleName: "",
@@ -121,6 +104,14 @@ function TransportRequirementsManagementTable(props) {
     const handleShowApprove = (requirement) => {
         props.editTransportRequirement(requirement._id, {status: 2})
     }
+    const checkApprover = (requirement) => {
+        console.log(String(localStorage.getItem("userId") === String(requirement.approver?._id)), " aaaaaaaaaaaaaaaaaaaaa")
+        if (String(localStorage.getItem("userId")) === String(requirement.approver?._id)){
+            return 1;
+        }
+        else
+        return 2;
+    }
     /**
      * Hàm xử lý khi click xem chi tiết một ví dụ
      * @param {*} example thông tin của ví dụ cần xem
@@ -148,18 +139,6 @@ function TransportRequirementsManagementTable(props) {
         })
     }
 
-    const getStatusTransport = (status) => {
-        let res="";
-        if (status && statusTransport){
-            statusTransport.map(item => {
-                if (item.value === String(status)){
-                    res = item.text;
-                }
-            })
-        }
-        return res;
-    }
-
     const getDisplayLength = () => {
         let res = 0;
         if (allTransportRequirements && allTransportRequirements.length!==0){
@@ -184,6 +163,7 @@ function TransportRequirementsManagementTable(props) {
         <React.Fragment>
             <TransportRequirementsCreateForm 
                 requirements={requirements}
+                key = {transportRequirements}
             />
             <TransportRequirementsViewDetails
                 curentTransportRequirementDetail={curentTransportRequirementDetail}
@@ -193,16 +173,16 @@ function TransportRequirementsManagementTable(props) {
                 editTransportRequirement={editTransportRequirement}
             />
             <div className="box-body qlcv">
-                {/* <div className="form-inline"> */}
+                <div className="form-inline">
                     {/* Tìm kiếm */}
-                    {/* <div className="form-group">
+                    <div className="form-group">
                         <label className="form-control-static">{translate('manage_example.exampleName')}</label>
-                        <input type="text" className="form-control" name="exampleName" onChange={handleChangeExampleName} placeholder={translate('manage_example.exampleName')} autoComplete="off" />
+                        <input type="text" className="form-control" name="exampleName" placeholder={translate('manage_example.exampleName')} autoComplete="off" />
                     </div>
                     <div className="form-group">
-                        <button type="button" className="btn btn-success" title={translate('manage_example.search')} onClick={() => handleSubmitSearch()}>{translate('manage_example.search')}</button>
-                    </div> */}
-                {/* </div> */}
+                        <button type="button" className="btn btn-success" title={translate('manage_example.search')} >{translate('manage_example.search')}</button>
+                    </div>
+                </div>
 
                 {/* Danh sách các yêu cầu */}
                 <table id={tableId} className="table table-striped table-bordered table-hover">
@@ -214,6 +194,7 @@ function TransportRequirementsManagementTable(props) {
                             <th>{"Địa chỉ nhận hàng"}</th>
                             <th>{"Địa chỉ giao hàng"}</th>
                             <th>{"Người tạo"}</th>
+                            <th>{"Người xử lí yêu cầu"}</th>
                             <th>{"Trạng thái"}</th>
                             <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
                                 <DataTableSetting
@@ -248,7 +229,8 @@ function TransportRequirementsManagementTable(props) {
                                     <td>{x.fromAddress}</td>
                                     <td>{x.toAddress}</td>
                                     <td>{x.creator ? x.creator.name : ""}</td>
-                                    <td>{getStatusTransport(x.status)}</td>
+                                    <td>{x.approver ? x.approver.name: ""}</td>
+                                    <td>{getTransportRequirementStatus(x.status)}</td>
                                     <td style={{ textAlign: "center" }}>
                                         <a className="edit text-green" style={{ width: '5px' }} 
                                             // title={translate('manage_example.detail_info_example')} 
@@ -275,7 +257,8 @@ function TransportRequirementsManagementTable(props) {
                                         }
                                         {
                                         // this.checkUserForApprove(item) === 1 && 
-                                        String(x.status) === "1" && (
+                                        (String(x.status)==="1"&&checkApprover(x) === 1)
+                                        &&(
                                             <a
                                                 onClick={() => handleShowApprove(x)}
                                                 className="add text-success"
@@ -326,7 +309,6 @@ function TransportRequirementsManagementTable(props) {
 
 function mapState(state) {
     const {transportRequirements} = state;
-    console.log(transportRequirements, " oooooo")
     return { transportRequirements }
 }
 

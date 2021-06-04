@@ -146,7 +146,6 @@ const actionCreators = {
     addTask: taskManagementActions.addTask,
     addProjectTask: taskManagementActions.addProjectTask,
     getProjectsDispatch: ProjectActions.getProjectsDispatch,
-    getTasksByProject: taskManagementActions.getTasksByProject,
 };
 
 const connectedModalAddTask = connect(mapStateToProps, actionCreators)(withTranslate(TaskAddModal));

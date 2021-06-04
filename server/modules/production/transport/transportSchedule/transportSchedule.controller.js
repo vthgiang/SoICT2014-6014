@@ -35,7 +35,7 @@ exports.editTransportScheduleByPlanId = async (req, res) => {
             await Log.info(req.user.email, "UPDATED_TRANSPORT_SCHEDULE", req.portal);
             res.status(200).json({
                 success: true,
-                messages: ["edit_transport_schedule_success"],
+                messages: ["edit_success"],
                 content: updatedTransportRoute
             });
         } else {
@@ -47,7 +47,7 @@ exports.editTransportScheduleByPlanId = async (req, res) => {
 
         res.status(400).json({
             success: false,
-            messages: ["edit_transport_schedule_fail"],
+            messages: ["edit_fail"],
             content: error.message
         });
     }
@@ -55,7 +55,6 @@ exports.editTransportScheduleByPlanId = async (req, res) => {
 
 exports.changeTransportRequirementProcess = async (req, res) => {
     try {
-        console.log(req.body, " aaaaaaaaaaaaaaaaaa")
         let data= req.body;
         let transportRoute = await TransportScheduleServices.changeTransportRequirementProcess(req.portal, data);
         if (transportRoute !== -1) {

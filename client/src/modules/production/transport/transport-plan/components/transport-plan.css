@@ -76,7 +76,7 @@ table.tableTest {
     word-break: keep-all !important;
   }
   
-table.tableTest th, td {
+table.tableTest th td {
     text-align: left;
     padding: 8px;
     word-break: keep-all;
@@ -94,4 +94,8 @@ table.tableTest th.first-column {
 .transport-special-row tr:nth-child(2n):not(2) {
     /* border-bottom: 2px solid rgb(0, 162, 255); */
     background: #a7cde4;
+}
+
+.transport-table-carrier-vehicle-label {
+    font-size: 18px;
 }

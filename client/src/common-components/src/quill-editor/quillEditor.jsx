@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import parse from 'html-react-parser';
+import Swal from 'sweetalert2';
 
 import { configQuillEditor } from './configQuillEditor';
 import { ToolbarQuillEditor } from './toolbarQuillEditor';
@@ -25,7 +26,7 @@ class QuillEditor extends Component {
         const { id, isText = false, quillValueDefault, 
             toolbar = true, maxHeight = 200,
             enableEdit = true, placeholder = null,
-            enableDropImage = true
+            enableDropImage = true, showDetail = false
         } = this.props;
 
         // Khởi tạo Quill Editor trong thẻ có id = id truyền vào
@@ -157,6 +158,20 @@ class QuillEditor extends Component {
                 quill.enable(enableEdit);
             }
         }
+
+        // Bắt sự kiện phóng to nội dung
+        if (showDetail) {
+            window.$(`#editor-container${id}`).on("click", () => {
+                Swal.fire({
+                    html: quill?.container?.firstChild?.innerHTML,
+                    width: "75%",
+                    customClass: {
+                        content: "quill-editor"
+                    }
+                })
+            })
+        }
+        
 
         this.setState({
             quill: quill

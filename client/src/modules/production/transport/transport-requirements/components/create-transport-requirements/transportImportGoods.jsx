@@ -5,9 +5,13 @@ import { ButtonModal, DialogModal, ErrorLabel, DatePicker, SelectBox } from '../
 import { withTranslate } from 'react-redux-multilingual';
 import ValidationHelper from '../../../../../../helpers/validationHelper';
 
+import { worksActions } from "../../../../manufacturing/manufacturing-works/redux/actions"
+
 function TransportImportGoods(props) {
 
-    let {currentBill, callBackGeneralInfo} = props;
+    let {currentBill, callBackGeneralInfo,
+        manufacturingWorks,
+    } = props;
     const [formValue, setFormValue] = useState({
         stockCode: "",
         stockName: "",
@@ -15,40 +19,57 @@ function TransportImportGoods(props) {
         billCreator:"",
         millCode: "",
         millName: "",
-        customerPhone: "",
-        customerEmail: "",
-        customerAddress: "",
+        worksCode: "",
+        worksName: "",
+        worksAddress: "",
     })
     useEffect(() => {
         if (currentBill){
             setFormValue({
+                ...formValue,
                 stockCode: currentBill.fromStock?.code,
                 billCreator: currentBill.creator?.name,
                 stockName: currentBill.fromStock?.name,
                 stockAddress: currentBill.fromStock?.address,
                 millCode: currentBill.manufacturingMill?.code,
                 millName: currentBill.manufacturingMill?.name,
-                customerPhone: currentBill.customer?.mobilephoneNumber,
-                customerEmail: currentBill.customer?.email,
-                customerAddress: currentBill.customer?.address,
             })
+            if (currentBill.manufacturingMill){
+                if (currentBill.manufacturingMill.manufacturingWorks){
+                    let worksId = currentBill.manufacturingMill.manufacturingWorks.id?currentBill.manufacturingMill.manufacturingWorks.id:currentBill.manufacturingMill.manufacturingWorks;
+                    console.log(worksId, " lolololololo")
+                    props.getDetailManufacturingWorks(worksId);
+                }
+            }
         }
     },[currentBill])
+    useEffect(() => {
+        if (manufacturingWorks){
+            if (manufacturingWorks.currentWorks){
+                setFormValue({
+                    ...formValue,
+                    worksCode: manufacturingWorks.currentWorks.code,
+                    worksName: manufacturingWorks.currentWorks.name,
+                    worksAddress: manufacturingWorks.currentWorks.address,
+                })
+            }
+        }
+    }, [manufacturingWorks])
 
-    // useEffect(() => {
-    //     if (formValue){
-    //         let data = {
-    //             customer1AddressTransport: formValue.stockAddress,
-    //             customer2AddressTransport: formValue.customerAddress,
-    //         }
-    //         callBackGeneralInfo(data);
-    //     }
-    // }, [formValue])
+    useEffect(() => {
+        if (formValue){
+            let data = {
+                customer1AddressTransport: formValue.worksAddress,
+                customer2AddressTransport: formValue.stockAddress,
+            }
+            callBackGeneralInfo(data);
+        }
+    }, [formValue])
 
     return (
         <React.Fragment>
             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6" style={{ padding: 10, height: "100%" }}>
+                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6" style={{ padding: 0, height: "100%" }}>
                     <fieldset className="scheduler-border" style={{ height: "100%" }}>
                         <legend className="scheduler-border">Thông tin xưởng sản xuất</legend>
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ padding: 0 }}>
@@ -77,28 +98,32 @@ function TransportImportGoods(props) {
                         <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
                             <div className={`form-group`}>
                                 <label>
-                                    Số điện thoại
+                                    Mã nhà máy
                                     <span className="attention"> * </span>
                                 </label>
-                                <input type="text" className="form-control"/>
+                                <input type="text" className="form-control"
+                                    value={formValue.worksCode}
+                                />
                         
                             </div>
                         </div>
                         <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8">
                             <div className="form-group">
                                 <label>
-                                    Email <span className="attention"> </span>
+                                    Tên nhà máy <span className="attention"> </span>
                                 </label>
-                                <input type="text" className="form-control" disabled={false} />
+                                <input type="text" className="form-control" disabled={false} 
+                                    value={formValue.worksName}/>
                             </div>
                         </div>
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                             <div className={`form-group`}>
                                 <label>
-                                    Địa chỉ nhận hàng
+                                    Địa chỉ nhà máy
                                     <span className="attention"> * </span>
                                 </label>
-                                <textarea type="text" className="form-control" />
+                                <textarea type="text" className="form-control" 
+                                    value={formValue.worksAddress}/>
                             </div>
                         </div>
                     </fieldset>
@@ -106,7 +131,7 @@ function TransportImportGoods(props) {
                 </div>
         
         
-                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6" style={{ padding: 10, height: "100%" }}>
+                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6" style={{ padding: 0, height: "100%" }}>
                         <fieldset className="scheduler-border" style={{ height: "100%" }}>
                             <legend className="scheduler-border">Thông tin kho</legend>
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ padding: 0 }}>
@@ -154,13 +179,14 @@ function TransportImportGoods(props) {
 }
 
 function mapState(state) {
-    const example = state.example1;
-    return { example }
+    const {manufacturingWorks} = state;
+    return { manufacturingWorks }
 }
 
 const actions = {
     // createExample: exampleActions.createExample,
     // getExamples: exampleActions.getExamples,
+    getDetailManufacturingWorks: worksActions.getDetailManufacturingWorks
 }
 
 const connectedTransportImportGoods = connect(mapState, actions)(withTranslate(TransportImportGoods));

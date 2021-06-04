@@ -13,6 +13,9 @@ function TransportDepartmentManagementTable(props) {
         props.getAllTransportDepartments({page: 1, limit: 100})
     }, [])
 
+    const handleShowDetailBusinessDepartment = (businessDepartment) => {
+        console.log(businessDepartment, " okkkkkk")
+    }
     return (
         <React.Fragment>
             <div className="box-body qlcv">
@@ -52,9 +55,9 @@ function TransportDepartmentManagementTable(props) {
                                             <a
                                                 style={{ width: "5px" }}
                                                 title={"Xem chi tiết"}
-                                                // onClick={() => {
-                                                //     this.handleShowDetailBusinessDepartment(businessDepartment);
-                                                // }}
+                                                onClick={() => {
+                                                    handleShowDetailBusinessDepartment(businessDepartment);
+                                                }}
                                             >
                                                 <i className="material-icons">view_list</i>
                                             </a>

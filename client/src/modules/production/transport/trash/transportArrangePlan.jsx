@@ -2,14 +2,14 @@ import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 
-import { DataTableSetting, DeleteNotification, PaginateBar, SelectBox } from "../../../../../common-components";
-import { formatToTimeZoneDate } from "../../../../../helpers/formatDate"
+import { DataTableSetting, DeleteNotification, PaginateBar, SelectBox } from "../../../../common-components";
+import { formatToTimeZoneDate } from "../../../../helpers/formatDate"
 
 import { TransportPlanChosenEdit } from './transportPlanChosenEdit'
 
-import { transportRequirementsActions } from "../../transport-requirements/redux/actions";
-import { transportPlanActions } from "../redux/actions"
-import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
+import { transportRequirementsActions } from "../transport-requirements/redux/actions";
+import { transportPlanActions } from "../transport-plan/redux/actions"
+import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
 
 function TransportArrangePlan(props) {
     const getTableId = "table-manage-transport-requirements-hooks";

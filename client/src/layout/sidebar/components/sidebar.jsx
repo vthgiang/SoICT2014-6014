@@ -733,15 +733,15 @@ class SideBar extends Component {
                                     name: "menu.manage_transport",
                                     icon: "fa fa-truck",
                                     list: [
-                                        {
-                                            name: "menu.manufacturing_dashboard",
-                                            icon: "fa fa-dashboard",
-                                            path: "/manufacturing-dashboard",
-                                        },
+                                        // {
+                                        //     name: "menu.manufacturing_dashboard",
+                                        //     icon: "fa fa-dashboard",
+                                        //     path: "/manufacturing-dashboard",
+                                        // },
                                         {
                                             name: "menu.manage_transport_requirements",
                                             icon: "fa fa-calendar-o",
-                                            path: "/manage-transport-requirements",
+                                            path: "/manage-transport-requirement",
                                         },
                                         {
                                             name: "menu.manage_transport_plan",
@@ -773,16 +773,11 @@ class SideBar extends Component {
                                             icon: "fa fa-calendar-o",
                                             path: "/carrier-today-transport-mission", 
                                         },
-                                        {
-                                            name: "menu.carrier_all_times_transport_mission",
-                                            icon: "fa fa-calendar-o",
-                                            path: "/carrier-all-times-transport-mission", 
-                                        },                                        
                                         // {
-                                        //     name: "menu.manage_transport_human",
+                                        //     name: "menu.carrier_all_times_transport_mission",
                                         //     icon: "fa fa-calendar-o",
-                                        //     path: "/manage-transport-human",
-                                        // },
+                                        //     path: "/carrier-all-times-transport-mission", 
+                                        // }, 
                                     ]
                                 }}
                             />
