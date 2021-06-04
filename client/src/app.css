@@ -749,3 +749,15 @@ div.notification-title ::after {
     margin-right: 5px;
     background-color: rgb(75, 84, 92);
 }
+
+/* Swal */
+.swal2-content img {
+    width: 100%;
+}
+.swal2-popup.swal2-modal.swal2-show {
+    max-height: 80vh;
+}
+.swal2-content {
+    overflow-y: auto;
+    max-height: 100%;
+}

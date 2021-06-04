@@ -7,7 +7,7 @@ import { UserActions } from '../../../super-admin/user/redux/actions';
 import { RoleActions } from '../../../super-admin/role/redux/actions';
 
 import { ModalEditTaskByResponsibleEmployee } from './modalEditTaskByResponsibleEmployee';
-import { ModalEditTaskByAccountableEmployee } from './modalEditTaskByAccountableEmployee';
+import { ModalEditTaskByAccountableEmployee } from './modalEditTaskByAccountableEmployeeHook';
 import { HoursSpentOfEmployeeChart } from './hourSpentOfEmployeeChart';
 import { CollaboratedWithOrganizationalUnits } from './collaboratedWithOrganizationalUnits';
 
@@ -1166,6 +1166,7 @@ class DetailTaskTab extends Component {
                                             maxHeight={180}
                                             enableDropImage={false}
                                             enableEdit={false}
+                                            showDetail={true}
                                         />
                                     </ShowMoreShowLess>
                                 </div>
