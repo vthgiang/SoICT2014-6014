@@ -336,7 +336,8 @@ exports.getAllManufacturingCommands = async (query, user, portal) => {
                 }, {
                     path: "qualityControlStaffs.staff"
                 }, {
-                    path: "approvers.approver"
+                    path: "approvers.approver",
+                    select: "_id name email avatar"
                 }],
                 sort: {
                     "updatedAt": "desc"
@@ -367,7 +368,8 @@ exports.getManufacturingCommandById = async (id, portal) => {
         }, {
             path: "creator"
         }, {
-            path: "approvers.approver"
+            path: "approvers.approver",
+            select: "_id name email avatar"
         }, {
             path: "good",
             select: "code name baseUnit materials",

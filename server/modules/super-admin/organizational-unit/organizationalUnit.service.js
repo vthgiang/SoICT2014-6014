@@ -18,7 +18,8 @@ exports.getOrganizationalUnits = async (portal, id) => {
                 populate: [{
                     path: "users",
                     populate: [{
-                        path: "userId"
+                        path: "userId",
+                        select: "_id name email avatar"
                     }]
                 }]
             },
@@ -27,7 +28,8 @@ exports.getOrganizationalUnits = async (portal, id) => {
                 populate: [{
                     path: "users",
                     populate: [{
-                        path: "userId"
+                        path: "userId",
+                        select: "_id name email avatar"
                     }]
                 }]
             },
@@ -36,7 +38,8 @@ exports.getOrganizationalUnits = async (portal, id) => {
                 populate: [{
                     path: "users",
                     populate: [{
-                        path: "userId"
+                        path: "userId",
+                        select: "_id name email avatar"
                     }]
                 }]
             }
@@ -51,9 +54,9 @@ exports.getOrganizationalUnit = async (portal, id) => {
     return await OrganizationalUnit(connect(DB_CONNECTION, portal))
         .findById(id)
         .populate([
-            { path: 'managers', populate: { path: 'users', populate: { path: 'userId' } } },
-            { path: 'deputyManagers', populate: { path: 'users', populate: { path: 'userId' } } },
-            { path: 'employees', populate: { path: 'users', populate: { path: 'userId' } } }
+            { path: 'managers', populate: { path: 'users', populate: { path: 'userId', select: "_id name email avatar" } } },
+            { path: 'deputyManagers', populate: { path: 'users', populate: { path: 'userId', select: "_id name email avatar" } } },
+            { path: 'employees', populate: { path: 'users', populate: { path: 'userId', select: "_id name email avatar" } } }
         ]);
 }
 

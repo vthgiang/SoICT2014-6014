@@ -1,17 +1,16 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import { withTranslate } from "react-redux-multilingual";
 import { connect } from "react-redux";
 import { DialogModal } from "../../../../../common-components";
 import { formatDate } from "../../../../../helpers/formatDate";
-class BusinessDepartmentDetailForm extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {};
-    }
 
-    render() {
-        const { businessDepartmentDetail } = this.props;
+function BusinessDepartmentDetailForm (props) {
+    
+        const [state, setState] = useState({});
+        
+        const { businessDepartmentDetail } = props;
         const roleConvert = ["title", "Kinh doanh", "Quản lý bán hàng", "Kế toán"];
+
         return (
             <React.Fragment>
                 <DialogModal
@@ -63,6 +62,5 @@ class BusinessDepartmentDetailForm extends Component {
             </React.Fragment>
         );
     }
-}
 
 export default connect(null, null)(withTranslate(BusinessDepartmentDetailForm));

@@ -2364,7 +2364,7 @@ exports.addTaskLog = async (portal, taskId, body) => {
             { $push: { logs: log } },
             { new: true }
         )
-        .populate({ path: "logs.creator", select: "_id name emmail avatar" });
+        .populate({ path: "logs.creator", select: "_id name email avatar" });
 
     let taskLog = await this.getTaskLog(portal, taskId);
 
@@ -2465,7 +2465,7 @@ exports.createDescriptionEvaluationTaskLogs = async (portal, userId, newTask, ol
 exports.getTaskLog = async (portal, taskId) => {
     let task = await Task(connect(DB_CONNECTION, portal))
         .findById(taskId)
-        .populate("logs.creator");
+        .populate({path: "logs.creator", select: "_id name email avatar"});
 
     return task.logs.reverse();
 };
