@@ -13,27 +13,28 @@ import { taskManagementActions } from "../../../task/task-management/redux/actio
 import { DepartmentActions } from "../../../super-admin/organizational-unit/redux/actions";
 
 function ListProject(props) {
+    const tableId = 'project-table';
     // Khởi tạo state
     const [state, setState] = useState({
-        exampleName: "",
+        projectName: "",
         page: 1,
-        limit: 5,
+        perPage: 5,
         currentRow: null,
         projectDetail: null,
     })
     const { project, translate, user, tasks } = props;
     const userId = getStorage("userId");
-    const { projectName, page, limit, currentRow, projectDetail } = state;
+    const { projectName, page, perPage, currentRow, projectDetail } = state;
 
     useEffect(() => {
-        props.getProjectsDispatch({ calledId: "paginate", page, limit, userId });
+        props.getProjectsDispatch({ calledId: "paginate", page, perPage, userId, projectName });
         props.getProjectsDispatch({ calledId: "user_all", userId });
         props.getAllUserInAllUnitsOfCompany();
     }, [])
 
     // Sau khi add project mới hoặc edit project thì call lại tất cả list project
     const handleAfterCreateProject = () => {
-        props.getProjectsDispatch({ calledId: "paginate", page, limit, userId });
+        props.getProjectsDispatch({ calledId: "paginate", page, perPage, userId, projectName });
         props.getProjectsDispatch({ calledId: "user_all", userId });
     }
 
@@ -46,11 +47,7 @@ function ListProject(props) {
     }
 
     const handleSubmitSearch = () => {
-        props.getProjectsDispatch({
-            projectName,
-            limit,
-            page: 1
-        });
+        props.getProjectsDispatch({ calledId: "paginate", page: 1, perPage, userId, projectName });
         setState({
             ...state,
             page: 1
@@ -63,25 +60,16 @@ function ListProject(props) {
             page: parseInt(pageNumber)
         });
 
-        props.getProjectsDispatch({
-            callId: "paginate",
-            projectName,
-            limit,
-            page: parseInt(pageNumber)
-        });
+        props.getProjectsDispatch({ calledId: "paginate", page: parseInt(pageNumber), perPage, userId, projectName });
     }
 
     const setLimit = (number) => {
         setState({
             ...state,
-            limit: parseInt(number),
+            perPage: parseInt(number),
             page: 1
         });
-        props.getProjectsDispatch({
-            projectName,
-            limit: parseInt(number),
-            page: 1
-        });
+        props.getProjectsDispatch({ calledId: "paginate", page: 1, perPage: parseInt(number), userId, projectName });
     }
 
     const handleShowDetailInfo = (projectItem) => {
@@ -109,7 +97,7 @@ function ListProject(props) {
         props.deleteProjectDispatch(id);
         props.getProjectsDispatch({
             projectName,
-            limit,
+            perPage,
             page: project && project.lists && project.lists.length === 1 ? page - 1 : page
         });
     }
@@ -123,7 +111,7 @@ function ListProject(props) {
         lists = project.data.paginate
     }
 
-    const totalPage = project && project.data.totalPage;
+    const totalPage = project && Math.ceil(project.data.totalDocs / perPage);
 
     return (
         <React.Fragment>
@@ -140,8 +128,6 @@ function ListProject(props) {
                 handleAfterCreateProject={handleAfterCreateProject}
             />
             <ProjectCreateForm
-                page={page}
-                limit={limit}
                 handleAfterCreateProject={handleAfterCreateProject}
             />
 
@@ -151,7 +137,7 @@ function ListProject(props) {
                         {/* Tìm kiếm */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('project.name')}</label>
-                            <input type="text" className="form-control" name="exampleName" onChange={handleChangeProjectName} placeholder={translate('project.name')} autoComplete="off" />
+                            <input type="text" className="form-control" name="projectName" onChange={handleChangeProjectName} placeholder={translate('project.name')} autoComplete="off" />
                         </div>
                         <div className="form-group">
                             <button type="button" className="btn btn-success" title={translate('manage_example.search')} onClick={() => handleSubmitSearch()}>{translate('manage_example.search')}</button>
@@ -170,7 +156,7 @@ function ListProject(props) {
 
                     </div>
 
-                    <table id="project-table" className="table table-striped table-bordered table-hover">
+                    <table id={tableId} className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th>{translate('project.name')}</th>
@@ -181,15 +167,14 @@ function ListProject(props) {
                                 <th style={{ width: "120px", textAlign: "center" }}>
                                     {translate('table.action')}
                                     <DataTableSetting
-                                        tableId="example-table"
+                                        tableId={tableId}
                                         columnArr={[
-                                            translate('manage_example.index'),
-                                            translate('manage_example.exampleName'),
-                                            translate('manage_example.description'),
-                                            "Mã số",
+                                            translate('project.name'),
+                                            'Hình thức quản lý',
+                                            translate('project.creator'),
+                                            translate('project.manager'),
+                                            translate('project.member'),
                                         ]}
-                                        limit={limit}
-                                        hideColumnOption={true}
                                         setLimit={setLimit}
                                     />
                                 </th>
@@ -205,7 +190,7 @@ function ListProject(props) {
                                             <td>{renderProjectTypeText(projectItem?.projectType)}</td>
                                             <td>{projectItem?.creator?.name}</td>
                                             <td>{projectItem?.projectManager.map(o => o.name).join(", ")}</td>
-                                            <td>{renderLongList(projectItem?.responsibleEmployees.map(o => o.name))}</td>
+                                            <td style={{ maxWidth: 450 }}>{renderLongList(projectItem?.responsibleEmployees.map(o => o.name))}</td>
                                             <td style={{ textAlign: "center" }}>
                                                 <a className="edit text-green" style={{ width: '5px' }} onClick={() => handleShowDetailInfo(projectItem)}><i className="material-icons">visibility</i></a>
                                                 {checkIfAbleToCRUDProject({ project, user, currentProjectId: projectItem._id }) && <a className="edit text-yellow" style={{ width: '5px' }} onClick={() => handleEdit(projectItem)}><i className="material-icons">edit</i></a>}
@@ -229,11 +214,11 @@ function ListProject(props) {
                     {/* PaginateBar */}
                     {project && project.isLoading ?
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                        (typeof lists === 'undefined' || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                        (!lists || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
                     <PaginateBar
                         pageTotal={totalPage ? totalPage : 0}
-                        currentPage={project.data.page}
+                        currentPage={page}
                         display={lists && lists.length !== 0 && lists.length}
                         total={project && project.data.totalDocs}
                         func={setPage}

@@ -360,7 +360,6 @@ const mapDispatchToProps = {
     getProjectsDispatch: ProjectActions.getProjectsDispatch,
     deleteProjectDispatch: ProjectActions.deleteProjectDispatch,
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
-    getTasksByProject: taskManagementActions.getTasksByProject,
     getRoleSameDepartment: UserActions.getRoleSameDepartment,
     createProjectTasksFromCPMDispatch: SchedulingProjectsActions.createProjectTasksFromCPMDispatch,
 }

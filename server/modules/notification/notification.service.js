@@ -23,6 +23,7 @@ exports.getAllManualNotifications = async (portal, creator) => {
         .populate([
             {
                 path: "users",
+                select: "_id name email avatar"
             },
             {
                 path: "organizationalUnits",
@@ -54,7 +55,7 @@ exports.paginateManualNotifications = async (portal, creator, data) => {
             },
             populate: [
                 {
-                    path: "users",
+                    path: "users", select: "_id name email avatar"
                 },
                 {
                     path: "organizationalUnits",
@@ -99,7 +100,7 @@ exports.createManualNotification = async (portal, data, files) => {
         .findById(notify._id)
         .populate([
             {
-                path: "users",
+                path: "users", select: "_id name email avatar"
             },
             {
                 path: "organizationalUnits",

@@ -152,7 +152,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
 
 
     componentDidMount() {
-        this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
+        this.props.getAllUserInAllUnitsOfCompany();
         // unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime = false, calledId = null
         this.props.getPaginateTasksByUser([], "1", "5", [], [], [], null, null, null, null, null, false, "listSearch");
     }
@@ -853,7 +853,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
         let startDateTask = this.convertDateTime(this.state.startDate, this.state.startTime);
         let endDateTask = this.convertDateTime(this.state.endDate, this.state.endTime);
         let imageDescriptions = QuillEditor.convertImageBase64ToFile(this.state.taskDescriptionImages)
-        
+
         let data = {
             listInfo: this.state.listInfo,
 
@@ -1013,11 +1013,11 @@ class ModalEditTaskByAccountableEmployee extends Component {
             { value: "canceled", text: translate('task.task_management.canceled') },
         ];
 
-        let usersOfChildrenOrganizationalUnit;
-        if (user && user.usersOfChildrenOrganizationalUnit) {
-            usersOfChildrenOrganizationalUnit = user.usersOfChildrenOrganizationalUnit;
+        let usersInUnitsOfCompany;
+        if (user && user.usersInUnitsOfCompany) {
+            usersInUnitsOfCompany = user.usersInUnitsOfCompany;
         }
-        let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
+        let unitMembers = getEmployeeSelectBoxItems(usersInUnitsOfCompany);
         let listDepartment = department?.list;
 
         return (
@@ -1080,7 +1080,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                         <TreeSelect
                                             id={`select-task-project-task-edit-by-accountable-${id}`}
                                             mode='radioSelect'
-                                            data={project.data?.list}
+                                            data={project?.data?.list?.filter((projectItem) => projectItem.projectType === 1)}
                                             handleChange={this.handleTaskProject}
                                             value={[taskProjectName]}
                                         />
@@ -1374,7 +1374,7 @@ function mapStateToProps(state) {
 }
 
 const actionGetState = { //dispatchActionToProps
-    getAllUserSameDepartment: UserActions.getAllUserSameDepartment,
+    getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
     editTaskByAccountableEmployees: performTaskAction.editTaskByAccountableEmployees,
     getPaginateTasksByUser: taskManagementActions.getPaginateTasksByUser,
 }

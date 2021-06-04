@@ -9,9 +9,11 @@ exports.sendEmail = (to, subject, text, html) => {
     var mainOptions = {
         from: user,
         to: to,
+        inReplyTo: to,
         subject: subject,
         text: text,
-        html: html
+        html: html,
+        messageId: to
     }
 
     transporter.sendMail(mainOptions);

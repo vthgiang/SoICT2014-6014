@@ -20,22 +20,8 @@ const { createProjectTask } = require('../task/task-management/task.service');
 const MILISECS_TO_DAYS = 86400000;
 
 exports.get = async (portal, query) => {
-    let { page, limit, userId } = query;
+    let { page, perPage, userId, projectName } = query;
     let options = {};
-    if (query.limit) {
-        // options = {
-        //     ...options,
-        //     limit: query.limit
-        // }
-        // limit = query.lim
-    }
-
-    if (query.page) {
-        // options = {
-        //     ...options,
-        //     page: query.page
-        // }
-    }
     options = userId ? {
         ...options,
         $or: [
@@ -44,18 +30,39 @@ exports.get = async (portal, query) => {
             { 'creator': userId }
         ]
     } : {};
+
+    if (projectName && projectName.toString().trim()) {
+        options = {
+            ...options,
+            name: {
+                $regex: projectName,
+                $options: "i"
+            }
+        }
+    }
+
     let project;
+
+    let totalList = await Project(connect(DB_CONNECTION, portal)).countDocuments(options);
     if (query.calledId === "paginate") {
+        let currentPage, currentPerPage;
+        console.log('page, perPage', page, perPage)
+        currentPage = page ? Number(page) : 1;
+        currentPerPage = perPage ? Number(perPage) : 5;
+        console.log('currentPage, currentPerPage', currentPage, currentPerPage)
+        console.log('options', options)
+
         project = await Project(
             connect(DB_CONNECTION, portal)
-        ).paginate(options, {
-            page, limit,
-            populate: [
-                { path: "responsibleEmployees", select: "_id name email" },
-                { path: "projectManager", select: "_id name email" },
-                { path: "creator", select: "_id name email" }
-            ]
-        });
+        ).find(options).skip((currentPage - 1) * currentPerPage).limit(currentPerPage)
+            .populate({ path: "responsibleEmployees", select: "_id name email" })
+            .populate({ path: "projectManager", select: "_id name email" })
+            .populate({ path: "creator", select: "_id name email" });
+        console.log('project', project)
+        return {
+            docs: project,
+            totalDocs: totalList,
+        }
     }
     else {
         project = await Project(connect(DB_CONNECTION, portal)).find(options)
@@ -63,6 +70,7 @@ exports.get = async (portal, query) => {
             .populate({ path: "projectManager", select: "_id name email" })
             .populate({ path: "creator", select: "_id name email" })
     }
+    // console.log('project2222222', project)
     return project;
 }
 
@@ -356,9 +364,27 @@ exports.getSalaryMembers = async (portal, data) => {
 }
 
 exports.getListProjectChangeRequests = async (portal, query) => {
-    let { page, limit, projectId } = query;
-    // console.log(changeRequest);
-    const projectChangeRequestsList = await ProjectChangeRequest(connect(DB_CONNECTION, portal)).find({
+    let { page, perPage, projectId } = query;
+    console.log('page, perPage, projectId', page, perPage, projectId)
+    let projectChangeRequestsList;
+    let totalList = await ProjectChangeRequest(connect(DB_CONNECTION, portal)).countDocuments({
+        taskProject: projectId,
+    });
+    if (query.calledId === "paginate") {
+        let currentPage = Number(page), currentPerPage = Number(perPage);
+        console.log('currentPage, currentPerPage', currentPage, currentPerPage)
+
+        projectChangeRequestsList = await ProjectChangeRequest(connect(DB_CONNECTION, portal)).find({
+            taskProject: projectId,
+        }).skip((currentPage - 1) * currentPerPage).limit(currentPerPage)
+        .populate({ path: "creator", select: "_id name email" });
+
+        return {
+            docs: projectChangeRequestsList,
+            totalDocs: totalList,
+        }
+    }
+    projectChangeRequestsList = await ProjectChangeRequest(connect(DB_CONNECTION, portal)).find({
         taskProject: projectId,
     }).populate({ path: "creator", select: "_id name email" });
     console.log('Lấy danh sách CR', projectChangeRequestsList.length)
@@ -385,7 +411,7 @@ exports.updateStatusProjectChangeRequest = async (portal, changeRequestId, reque
     // Nếu requestStatus là đồng ý thì thực thi
     if (Number(requestStatus) === 3) {
         // Nếu là dạng normal thì bỏ qua
-        if (updateCRStatusResult.type === 'normal') {}
+        if (updateCRStatusResult.type === 'normal') { }
         // Nếu là dạng update trạng thái hoãn huỷ công việc
         else if (updateCRStatusResult.type === 'update_status_task') {
             const affectedItem = updateCRStatusResult.affectedTasksList[0];

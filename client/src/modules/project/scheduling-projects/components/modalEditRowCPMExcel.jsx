@@ -594,7 +594,6 @@ const mapDispatchToProps = {
     getProjectsDispatch: ProjectActions.getProjectsDispatch,
     deleteProjectDispatch: ProjectActions.deleteProjectDispatch,
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
-    getTasksByProject: taskManagementActions.getTasksByProject,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ModalEditRowCPMExcel))
