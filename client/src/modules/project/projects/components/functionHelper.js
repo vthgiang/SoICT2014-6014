@@ -20,7 +20,7 @@ export const checkIfAbleToCRUDProject = ({ project, user, currentProjectId }) =>
 }
 
 export const getCurrentProjectDetails = (project, projectId = undefined, type = 'user_all') => {
-    const currentProjectId = projectId || window.location.href.split('?id=')[1];
+    const currentProjectId = projectId || window.location.href.split('?id=')[1].split('#')?.[0];
     const projectDetail = type === 'user_all'
         ? project?.data?.listbyuser?.filter(item => item._id === currentProjectId)?.[0]
         : project?.data?.list?.filter(item => item._id === currentProjectId)?.[0];

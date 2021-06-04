@@ -24,7 +24,7 @@ const ProjectDetailPage = (props) => {
     const userId = getStorage("userId");
     // const [projectDetail, setProjectDetail] = useState(getCurrentProjectDetails(project));
     let projectDetail = getCurrentProjectDetails(project);
-    const currentProjectId = window.location.href.split('?id=')[1];
+    const currentProjectId = window.location.href.split('?id=')[1].split('#')?.[0];
 
     useEffect(() => {
         props.getProjectsDispatch({ calledId: "user_all", userId });
@@ -32,7 +32,7 @@ const ProjectDetailPage = (props) => {
         props.getDepartment();
         props.getAllUserInAllUnitsOfCompany();
         props.getTasksByProject(currentProjectId);
-        props.getListProjectChangeRequestsDispatch(currentProjectId);
+        props.getListProjectChangeRequestsDispatch({ projectId: currentProjectId });
     }, [])
 
     const handleOpenCreateProjectTask = () => {
@@ -68,8 +68,8 @@ const ProjectDetailPage = (props) => {
     const handleAfterCreateProject = async () => {
         await props.getProjectsDispatch({ calledId: "user_all", userId });
         await props.getTasksByProject(currentProjectId);
-        // console.log('project', project)
         projectDetail = getCurrentProjectDetails(project);
+        await props.getListProjectChangeRequestsDispatch({ projectId: currentProjectId });
     }
 
     return (
@@ -92,7 +92,7 @@ const ProjectDetailPage = (props) => {
                         style={{ paddingTop: 8, marginRight: 8 }}
                         onClick={() => {
                             props.getTasksByProject(currentProjectId);
-                            props.getListProjectChangeRequestsDispatch(currentProjectId);
+                            props.getListProjectChangeRequestsDispatch({ projectId: currentProjectId });
                         }}
                     >
                         <span className="material-icons">refresh</span>
@@ -142,7 +142,7 @@ const ProjectDetailPage = (props) => {
                                 {/* Button thêm mới */}
                                 {
                                     projectDetail?.projectType === 1 &&
-                                    <TaskAddModal onHandleReRender={onHandleReRender} projectId={projectDetail._id}/>
+                                    <TaskAddModal onHandleReRender={onHandleReRender} projectId={projectDetail._id} />
                                 }
                                 {
                                     projectDetail?.projectType === 1 &&
@@ -190,7 +190,9 @@ const ProjectDetailPage = (props) => {
                                 <LazyLoadComponent
                                     key="TableTasksProject"
                                 >
-                                    <TableTasksProject currentProjectTasks={currentProjectTasks} />
+                                    <TableTasksProject
+                                        currentProjectTasks={currentProjectTasks}
+                                    />
                                 </LazyLoadComponent>
                             </div>
 

@@ -12,19 +12,46 @@ import ModalChangeRequestInfo from './modalChangeRequestInfo';
 import { getStorage } from '../../../../config';
 import { ChangeRequestActions } from '../../change-requests/redux/actions';
 import ModalCreateChangeRequest from '../../change-requests/components/modalCreateChangeRequest';
+import { DataTableSetting, PaginateBar } from '../../../../common-components';
 
 const TabChangeRequestProject = (props) => {
+    const tableId = 'project-change-requests-table';
+    // Khởi tạo state
+    const [state, setState] = useState({
+        changeRequestName: "",
+        page: 1,
+        perPage: 5,
+    })
     const { translate, project, currentProjectTasks, user, changeRequest } = props;
     const currentChangeRequestsList = changeRequest && changeRequest.changeRequests;
     const projectDetail = getCurrentProjectDetails(project);
-    const currentProjectId = window.location.href.split('?id=')[1];
+    const currentProjectId = window.location.href.split('?id=')[1].split('#')?.[0];
     const [currentRow, setCurrentRow] = useState();
     const [currentChangeRequestId, setCurrentChangeRequestId] = useState('');
+    const { changeRequestName, page, perPage } = state;
 
-    // console.log('project', project)
-    // useEffect(() => {
-    //     console.log('-------------------')
-    // }, [project?.changeRequests])
+    let lists = [];
+    if (changeRequest) {
+        lists = changeRequest.changeRequestsPaginate
+    }
+    const totalPage = changeRequest && Math.ceil(changeRequest.totalDocs / perPage);
+
+    const setPage = (pageNumber) => {
+        setState({
+            ...state,
+            page: parseInt(pageNumber)
+        });
+        props.getListProjectChangeRequestsDispatch({ projectId: currentProjectId, calledId: 'paginate', page: parseInt(pageNumber), perPage });
+    }
+
+    const setLimit = (number) => {
+        setState({
+            ...state,
+            perPage: parseInt(number),
+            page: 1
+        });
+        props.getListProjectChangeRequestsDispatch({ projectId: currentProjectId, calledId: 'paginate', page: 1, perPage: parseInt(number) });
+    }
 
     const renderStatus = (statusValue) => {
         switch (statusValue) {
@@ -35,6 +62,7 @@ const TabChangeRequestProject = (props) => {
             default: return 'Chưa yêu cầu';
         }
     }
+
 
     const updateListRequests = (currentChangeRequestsList, currentProjectTasks) => {
         // Nếu projectTasks không có gì thì không xử lý tiếp nữa
@@ -192,10 +220,6 @@ const TabChangeRequestProject = (props) => {
         }
     }
 
-    useEffect(() => {
-        updateListRequests(currentChangeRequestsList, currentProjectTasks)
-    }, [currentProjectTasks])
-
     const handleApprove = (changeRequestId) => {
         setCurrentChangeRequestId(changeRequestId);
         const message = "Bạn có muốn phê duyệt yêu cầu thay đổi này?"
@@ -321,6 +345,20 @@ const TabChangeRequestProject = (props) => {
         }, 10);
     }
 
+    useEffect(() => {
+        updateListRequests(currentChangeRequestsList, currentProjectTasks)
+    }, [currentProjectTasks])
+
+    useEffect(() => {
+        props.getListProjectChangeRequestsDispatch({ projectId: currentProjectId, calledId: 'paginate', page, perPage });
+        props.getListProjectChangeRequestsDispatch({ projectId: currentProjectId });
+    }, [])
+
+    
+    useEffect(() => {
+        props.getListProjectChangeRequestsDispatch({ projectId: currentProjectId, calledId: 'paginate', page, perPage });
+    }, [changeRequest.changeRequests])
+
     return (
         <React.Fragment>
             <div className="box">
@@ -345,7 +383,7 @@ const TabChangeRequestProject = (props) => {
                             >Tạo yêu cầu thay đổi</button>
                         </div>
                     </div>
-                    <table id="project-table" className="table table-striped table-bordered table-hover">
+                    <table id={tableId} className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th>Tên yêu cầu</th>
@@ -354,14 +392,25 @@ const TabChangeRequestProject = (props) => {
                                 <th>Mô tả yêu cầu</th>
                                 <th>Những công việc bị ảnh hưởng</th>
                                 <th>Trạng thái yêu cầu</th>
-                                <th>
-                                    {translate('table.action')}
+                                <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
+                                    <DataTableSetting
+                                        tableId={tableId}
+                                        columnArr={[
+                                            'Tên yêu cầu',
+                                            'Người tạo yêu cầu',
+                                            'Thời gian tạo yêu cầu',
+                                            'Mô tả yêu cầu',
+                                            'Những công việc bị ảnh hưởng',
+                                            'Trạng thái yêu cầu',
+                                        ]}
+                                        setLimit={setLimit}
+                                    />
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
-                            {currentProjectTasks && (currentChangeRequestsList && currentChangeRequestsList.length !== 0) &&
-                                currentChangeRequestsList.map((CRItem, index) => (
+                            {currentProjectTasks && (lists && lists.length !== 0) &&
+                                lists.map((CRItem, index) => (
                                     <tr key={index}>
                                         <td>{CRItem?.name}</td>
                                         <td>{CRItem?.creator?.name}</td>
@@ -390,6 +439,19 @@ const TabChangeRequestProject = (props) => {
                             }
                         </tbody>
                     </table>
+
+                     {/* PaginateBar */}
+                     {changeRequest && changeRequest.isLoading ?
+                        <div className="table-info-panel">{translate('confirm.loading')}</div> :
+                        (!lists || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                    }
+                    <PaginateBar
+                        pageTotal={totalPage ? totalPage : 0}
+                        currentPage={page}
+                        display={lists && lists.length !== 0 && lists.length}
+                        total={changeRequest && changeRequest.totalDocs}
+                        func={setPage}
+                    />
                 </div>
             </div>
         </React.Fragment>
@@ -407,5 +469,6 @@ const mapDispatchToProps = {
     updateStatusProjectChangeRequestDispatch: ChangeRequestActions.updateStatusProjectChangeRequestDispatch,
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
     getTasksByProject: taskManagementActions.getTasksByProject,
+    getListProjectChangeRequestsDispatch: ChangeRequestActions.getListProjectChangeRequestsDispatch,
 }
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(TabChangeRequestProject));

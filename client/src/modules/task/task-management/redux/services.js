@@ -484,10 +484,10 @@ function addNewProjectTask(newTask) {
     }, true, true, 'task.task_management');
 }
 
-function getTasksByProject(projectId) {
+function getTasksByProject(projectId, page = undefined, perPage = undefined) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/task/tasks`,
         method: 'GET',
-        params: { type: 'project', projectId }
+        params: { type: 'project', projectId, page, perPage }
     }, false, true, 'task.task_management');
 }
