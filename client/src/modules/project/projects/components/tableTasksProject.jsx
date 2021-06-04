@@ -16,20 +16,22 @@ import moment from 'moment';
 import { getTotalTimeSheetLogs } from '../../../task/task-management/component/functionHelpers';
 
 const TableTasksProject = (props) => {
+    const tableId = "tasks-project-table";
     const [state, setState] = useState({
         taskName: "",
         page: 1,
-        limit: 5,
+        perPage: 6,
         currentTaskId: null,
     })
-    const currentProjectId = window.location.href.split('?id=')[1];
+    const currentProjectId = window.location.href.split('?id=')[1].split('#')?.[0];
     const userId = getStorage('userId');
-    const { translate, currentProjectTasks, user, project, performtasks } = props;
-    const { page, limit, taskName, currentTaskId } = state;
+    const { translate, currentProjectTasks, user, project, performtasks, tasks } = props;
+    const { page, perPage, taskName, currentTaskId } = state;
     let units = []
     if (user) units = user.organizationalUnitsOfUser;
 
     useEffect(() => {
+        props.getTasksByProject(currentProjectId, page, perPage);
         props.getAllUserInAllUnitsOfCompany();
     }, [])
 
@@ -61,7 +63,7 @@ const TableTasksProject = (props) => {
     // const handleSubmitSearch = () => {
     //     props.getExamples({
     //         taskName,
-    //         limit,
+    //         perPage,
     //         page: 1
     //     });
     //     setState({
@@ -70,42 +72,21 @@ const TableTasksProject = (props) => {
     //     });
     // }
 
-    // const setPage = (pageNumber) => {
-    //     setState({
-    //         ...state,
-    //         page: parseInt(pageNumber)
-    //     });
+    const setPage = (pageNumber) => {
+        setState({
+            ...state,
+            page: parseInt(pageNumber)
+        });
+        props.getTasksByProject(currentProjectId, parseInt(pageNumber), perPage);
+    }
 
-    //     props.getProjectsDispatch({
-    //         callId: "paginate",
-    //         taskName,
-    //         limit,
-    //         page: parseInt(pageNumber)
-    //     });
-    // }
-
-    // const setLimit = (number) => {
-    //     setState({
-    //         ...state,
-    //         limit: parseInt(number),
-    //         page: 1
-    //     });
-    //     props.getTasksByProject({
-    //         taskName,
-    //         limit: parseInt(number),
-    //         page: 1
-    //     });
-    // }
-
-    const handleDelete = async (id) => {
-        // props.deleteProjectDispatch(id);
-        // props.getProjectsDispatch({
-        //     taskName,
-        //     limit,
-        //     page: project && project.lists && project.lists.length === 1 ? page - 1 : page
-        // });
-        await props.deleteTaskById(id);
-        await props.getTasksByProject(currentProjectId);
+    const setLimit = (number) => {
+        setState({
+            ...state,
+            perPage: parseInt(number),
+            page: 1
+        });
+        props.getTasksByProject(currentProjectId, 1, parseInt(number));
     }
 
     const handleShowDetailInfo = (id) => {
@@ -118,18 +99,18 @@ const TableTasksProject = (props) => {
     }
 
     const processPreceedingTasks = (preceedingTasks) => {
-        if (preceedingTasks.length === 0) return '';
+        if (!currentProjectTasks || preceedingTasks.length === 0) return '';
         const resultArr = preceedingTasks.map(preceedingTaskItem => {
             return currentProjectTasks.find(item => item._id === preceedingTaskItem.task)?.name;
         })
         return resultArr.join(", ");
     }
-    // let lists = [];
-    // if (project) {
-    //     lists = project.data.paginate
-    // }
+    let lists = [];
+    if (tasks) {
+        lists = tasks.tasksbyprojectpaginate
+    }
 
-    // const totalPage = project && project.data.totalPage;
+    const totalPage = tasks && Math.ceil(tasks.totalDocs / perPage);
 
     const funcStartTimer = async (taskId, overrideTSLog = 'no') => {
         let timer = {
@@ -179,6 +160,10 @@ const TableTasksProject = (props) => {
         return null;
     }
 
+    useEffect(() => {
+        props.getTasksByProject(currentProjectId, page, perPage);
+    }, [tasks.tasksbyproject])
+
     return (
         <React.Fragment>
             {
@@ -188,7 +173,7 @@ const TableTasksProject = (props) => {
                 /> : null
             }
 
-            <table id="project-table" className="table table-striped table-bordered table-hover">
+            <table id={tableId} className="table table-striped table-bordered table-hover">
                 <thead>
                     <tr>
                         <th>{translate('task.task_management.col_name')}</th>
@@ -204,20 +189,27 @@ const TableTasksProject = (props) => {
                         <th style={{ width: "120px", textAlign: "center" }}>
                             {translate('table.action')}
                             <DataTableSetting
-                                tableId="example-table"
+                                tableId={tableId}
                                 columnArr={[
-                                    translate('manage_example.index'),
-                                    translate('manage_example.exampleName'),
-                                    translate('manage_example.description'),
-                                    "Mã số",
+                                    translate('task.task_management.col_name'),
+                                    translate('project.task_management.preceedingTask'),
+                                    translate('task.task_management.responsible'),
+                                    translate('task.task_management.accountable'),
+                                    translate('task.task_management.col_status'),
+                                    'Thời điểm bắt đầu',
+                                    'Thời điểm kết thúc dự kiến',
+                                    'Thời điểm kết thúc thực tế',
+                                    'Thời điểm bấm giờ',
+                                    translate('task.task_management.col_progress'),
                                 ]}
+                                setLimit={setLimit}
                             />
                         </th>
                     </tr>
                 </thead>
                 <tbody>
-                    {(currentProjectTasks && currentProjectTasks.length !== 0) &&
-                        currentProjectTasks.map((taskItem, index) => (
+                    {(lists && lists.length !== 0) &&
+                        lists.map((taskItem, index) => (
                             <tr key={index}>
                                 <td>{taskItem?.name}</td>
                                 <td style={{ maxWidth: 350 }}>{processPreceedingTasks(taskItem?.preceedingTasks)}</td>
@@ -232,20 +224,25 @@ const TableTasksProject = (props) => {
                                 <td style={{ textAlign: "center" }}>
                                     <a className="edit text-yellow" style={{ width: '5px' }} onClick={() => handleShowDetailInfo(taskItem?._id)}><i className="material-icons">edit</i></a>
                                     {renderTimerButton(taskItem)}
-                                    {/* <DeleteNotification
-                                        content={translate('task.task_management.action_delete')}
-                                        data={{
-                                            id: taskItem?._id,
-                                            info: taskItem?.name
-                                        }}
-                                        func={handleDelete}
-                                    /> */}
                                 </td>
                             </tr>
                         ))
                     }
                 </tbody>
             </table>
+
+            {/* PaginateBar */}
+            {tasks && tasks.isLoading ?
+                <div className="table-info-panel">{translate('confirm.loading')}</div> :
+                (!lists || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+            }
+            <PaginateBar
+                pageTotal={totalPage ? totalPage : 0}
+                currentPage={page}
+                display={lists && lists.length !== 0 && lists.length}
+                total={tasks && tasks.totalDocs}
+                func={setPage}
+            />
         </React.Fragment>
     );
 }

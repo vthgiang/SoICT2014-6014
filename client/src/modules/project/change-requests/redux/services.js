@@ -43,13 +43,15 @@ function updateStatusProjectChangeRequestAPI(data) {
 /**
  * lấy danh sách các change requests cho project
  */
-function getListProjectChangeRequestsAPI(projectId) {
-    // console.log('taskProject', projectId)
+function getListProjectChangeRequestsAPI({ projectId, page, perPage, calledId }) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/projects/project/change-requests/${projectId}`,
         method: 'GET',
         params: {
             projectId,
+            page,
+            perPage,
+            calledId,
         },
     }, false, true, 'project');
 }
