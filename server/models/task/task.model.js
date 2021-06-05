@@ -133,6 +133,9 @@ const TaskSchema = new Schema(
         description: {
             type: String,
         },
+        tags: [{
+            type: String
+        }],
         startDate: {
             type: Date,
         },

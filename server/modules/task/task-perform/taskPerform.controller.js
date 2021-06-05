@@ -138,7 +138,6 @@ exports.stopTimesheetLog = async (req, res) => {
             content: timer
         })
     } catch (error) {
-        console.log('error', error);
         await Logger.error(req.user.email, 'stop_timer_faile', req.portal)
         res.status(400).json({
             success: false,
@@ -1054,7 +1053,6 @@ editTaskByAccountableEmployees = async (req, res) => {
             }
         })
     } catch (error) {
-        console.log('edit task error', error)
         await Logger.error(req.user.email, ` edit task `, req.portal);
         res.status(400).json({
             success: false,
@@ -1522,7 +1520,6 @@ requestAndApprovalCloseTask = async (req, res) => {
             content: task
         })
     } catch (error) {
-        console.log('error request close task', error)
         let message = data?.type + '_close_task_failure';
         await Logger.error(req.user.email, ` request close task `, req.portal);
         res.status(400).json({

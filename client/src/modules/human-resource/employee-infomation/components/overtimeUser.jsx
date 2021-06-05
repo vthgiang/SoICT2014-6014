@@ -91,6 +91,7 @@ function TakeLeaveUser(props) {
                             })
                         }
                     </tbody>
+
                 </table>
                 {
                     showAnnualLeave.isLoading ?
@@ -103,6 +104,10 @@ function TakeLeaveUser(props) {
     const showTimeSheetsUser = (listTimesheetsByEmployeeIdAndTime, showOverTimeAndHourTime) => {
         return (
             <React.Fragment>
+                <div className="box-header with-border">
+                    <div className="title">Thời gian tăng ca</div>
+                </div>
+
                 <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
                     <thead>
                         <tr>
@@ -244,6 +249,7 @@ function TakeLeaveUser(props) {
                     <h3 class="title">Nghỉ phép và tăng ca</h3>
 
                     <div className="box box-primary">
+
                         <ul className="nav nav-tabs">
                             <li><a>{translate('human_resource.annual_leave.approved_letter')} : {listAnnualLeaveOfNumberMonth ? listAnnualLeaveOfNumberMonth.length : 0} </a></li>
                             <li><a>Số buổi nghỉ phép còn lại : {listAnnualLeaveOfNumberMonth ? 11 - listAnnualLeaveOfNumberMonth.length : 11}</a></li>
@@ -251,8 +257,13 @@ function TakeLeaveUser(props) {
                             <li><a>{translate('human_resource.timesheets.total_over_time')} : {overTime}</a></li>
                             <li><a>{translate('human_resource.timesheets.total_hours_off')} : {hoursOff}</a></li>
                         </ul>
+                        <div className="box-header with-border">
+                            <div className="title">Thời gian nghỉ phép</div>
+                        </div>
+
                         {showAnnualLeaveUser(listAnnualLeaveOfNumberMonth, showAnnualLeave)}
                         {showTimeSheetsUser(listTimesheetsByEmployeeIdAndTime, showOverTimeAndHourTime)}
+
                         <h3 className="box-title">{`${nameChart} ${props.startDate}`}<i className="fa fa-fw fa-caret-right"></i>{props.endDate}</h3>
                         <div className="dashboard_box_body">
                             <p className="pull-left" style={{ marginBottom: 0 }}><b>ĐV tính: Số giờ</b></p>

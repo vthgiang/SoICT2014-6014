@@ -8,11 +8,14 @@ import { Loading, ErrorLabel } from '../../../common-components';
 import ServerResponseAlert from '../../alert/components/serverResponseAlert';
 import { toast } from 'react-toastify';
 import ValidationHelper from '../../../helpers/validationHelper';
+
+import ReCAPTCHA from "react-google-recaptcha";
 // import { generateCharacter } from "../../../helpers/generateCode";
 import './login.css';
 function ResetPasswordNew(props) {
     const [state, setState] = useState({
-        otp: ""
+        otp: "",
+        isVerified: false
     })
 
     // const [verify, setVerify] = useState(() => {
@@ -20,6 +23,8 @@ function ResetPasswordNew(props) {
     // });
 
     // const canvasRef = useRef(null);
+
+
 
     const [forgotPwd, setForgotPwd] = useState({
         errorOnPortal: undefined,
@@ -123,15 +128,43 @@ function ResetPasswordNew(props) {
         })
     }
 
+
+    const verifyCaptchar = (response) => {
+        if (response) {
+            setState({
+                isVerified: true
+            })
+            toast.success(
+                <ServerResponseAlert
+                    type='success'
+                    title='general.success'
+                    content={['Verify successful']}
+                />,
+                { containerId: 'toast-notification' });
+        }
+    }
     const handleForgotPassword = () => {
         const { portal, email, password2 } = forgotPwd;
+        if (!state.isVerified) {
+            toast.error(
+                <ServerResponseAlert
+                    type='error'
+                    title='general.error'
+                    content={['Please verify you are not a robot']}
+                />,
+                { containerId: 'toast-notification' });
+            return false;
+
+            }
         if (isFormValidated)
+
             props.forgotPassword({
                 portal: portal,
                 email: email,
                 password2: password2
             });
     }
+
 
 
     // const handleChangeCapcha = () => {
@@ -149,9 +182,12 @@ function ResetPasswordNew(props) {
     const isFormValidated = () => {
         const { portal, email } = forgotPwd;
         let { translate } = props;
+
+
         if (
             !ValidationHelper.validateEmpty(translate, portal).status ||
             !ValidationHelper.validateEmail(translate, email).status
+
         ) return false;
         return true;
     }
@@ -179,13 +215,17 @@ function ResetPasswordNew(props) {
                     <label>{translate(`auth.profile.confirm`)}</label><span className="text-red">*</span>
                     <input name="confirm" type="password" className="form-control" onChange={handleChange} placeholder={"Xác nhận mật khẩu mới"} />
                 </div>
+
                 <div className="row">
                     <div className="col-xs-6">
                     </div>
                     <div className="col-xs-6">
                         <a className="btn btn-default" href="/login">{translate(`general.cancel`)}</a>
                         <button className="btn btn-primary pull-right" onClick={resetPassword}>{translate(`general.accept`)}</button>
+
                     </div>
+
+
                 </div>
             </div>
         )
@@ -221,6 +261,7 @@ function ResetPasswordNew(props) {
                     <label>{translate('form.password2')}</label>
                     <input type="password" className="form-control" name="password2" onChange={handleChangePassword2} placeholder={"Nhập mật khẩu cấp 2 nếu có"} />
                 </div>
+
                 {/* <div className="dx-login-line" style={{ fontSize: '14px', marginBottom: '10px' }}>
                     <label>Mã kiểm tra</label>
                     <div>
@@ -229,14 +270,24 @@ function ResetPasswordNew(props) {
                         <button onClick={handleRefreshCode}>Làm mới</button>
                     </div>
                 </div> */}
+
+
+                <ReCAPTCHA
+                    sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+                    onChange={verifyCaptchar}
+
+                />
                 <div className="row">
                     <div className="col-xs-6">
                     </div>
                     <div className="col-xs-6">
+
                         <a className="btn btn-default" href={"/login"}>{translate(`general.cancel`)}</a>
                         <button className="btn btn-primary pull-right" onClick={handleForgotPassword} disabled={!isFormValidated()}>{translate(`general.accept`)}</button>
+
                     </div>
                 </div>
+
             </div>
         )
     }

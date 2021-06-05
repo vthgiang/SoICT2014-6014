@@ -9,12 +9,21 @@ exports.sendEmail = (to, subject, text, html) => {
     var mainOptions = {
         from: user,
         to: to,
-        inReplyTo: to,
+        // inReplyTo: messageId,  
         subject: subject,
         text: text,
         html: html,
-        messageId: to
+        // messageId: to 
     }
 
-    transporter.sendMail(mainOptions);
+    transporter.sendMail(mainOptions,(err,success)=>{
+        if (success) {
+            console.log(success);
+            let messageId=success.messageId;
+            console.log(messageId);
+        }
+        if (err) {
+            console.log(err)
+        }
+    });
 }

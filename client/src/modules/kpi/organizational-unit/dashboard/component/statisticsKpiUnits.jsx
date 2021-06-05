@@ -53,15 +53,15 @@ const StatisticsKpiUnits = (props) => {
 
         switch (kindOfPoint) {
             case KIND_OF_POINT.AUTOMATIC:
-                pointShow = data.kpi.automaticPoint
+                pointShow = data?.kpi?.automaticPoint
                 titleShow = translate('kpi.evaluation.dashboard.auto_point')
                 break
             case KIND_OF_POINT.EMPLOYEE:
-                pointShow = data.kpi.employeePoint
+                pointShow = data?.kpi?.employeePoint
                 titleShow = translate('kpi.evaluation.dashboard.employee_point')
                 break
             case KIND_OF_POINT.APPROVED:
-                pointShow = data.kpi.approvedPoint
+                pointShow = data?.kpi?.approvedPoint
                 titleShow = translate('kpi.evaluation.dashboard.approve_point')
                 break
         }
@@ -168,7 +168,6 @@ const StatisticsKpiUnits = (props) => {
                     kpi: {
                         ...o,
                     }
-
                 }
             ]
         })
@@ -177,7 +176,7 @@ const StatisticsKpiUnits = (props) => {
 
     return (
         <div className="box-body">
-            <div className="form-inline" >
+            <div className="form-inline" style={type === "for-admin" ? { marginBottom: "30px" } : {}}>
                 {
                     !(type === "for-admin")
                     && <>
@@ -194,11 +193,13 @@ const StatisticsKpiUnits = (props) => {
                         <button type="button" className="btn btn-success" onClick={handleSearchKpiUnits} >{translate('kpi.evaluation.employee_evaluation.search')}</button>
                     </>
                 }
-
-                {checkHasComponent('refresh-kpi-unit-in-dashboard') && <button type="button" className="btn btn-success" onClick={handleRefreshKpiUnits} style={{ marginLeft: '5px' }}>{translate('task.task_management.detail_refresh')}</button>}
+                
+                { checkHasComponent('refresh-kpi-unit-in-dashboard') 
+                    && <button type="button" className="btn btn-primary pull-right" onClick={handleRefreshKpiUnits}>{translate('task.task_management.detail_refresh')}</button> 
+                }
             </div>
 
-            <section className="box-body" style={{ textAlign: "right" }}>
+            <section className="box-body" style={{ textAlign: "right", marginRight: "-10px" }}>
                 <div className="btn-group">
                     <button type="button"
                         className={`btn btn-xs ${kindOfPoint === KIND_OF_POINT.AUTOMATIC ? 'btn-danger' : null}`}

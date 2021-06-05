@@ -40,8 +40,9 @@ function DisciplineUser(props) {
     let { listDisciplines } = discipline
     return (
         <React.Fragment>
+        
             <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
-                <thead>
+                <thead>               
                     <tr>
                         <th>{translate('human_resource.commendation_discipline.discipline.table.start_date')}</th>
                         <th>{translate('human_resource.commendation_discipline.discipline.table.end_date')}</th>
