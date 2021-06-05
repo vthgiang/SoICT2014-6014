@@ -129,7 +129,7 @@ function TransportRequirementsCreateForm(props) {
                 }
             );
         }
-
+        console.log(requirementsForm.goods, " good")
         let data = {
             status: 1,
             code: requirementsForm.code,

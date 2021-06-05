@@ -58,8 +58,7 @@ function TransportPlanCreateForm(props) {
         return false;
     }
 
-    const handleClickCreateCode = () => {        
-        props.getUserByRole({currentUserId: localStorage.getItem('userId'), role: 2})
+    const handleClickCreateCode = () => {
         setFormSchedule({
             ...formSchedule,
             code: generateCode("KHVC"),
@@ -196,7 +195,7 @@ function TransportPlanCreateForm(props) {
     //     console.log(formSchedule, " day la form schedule");
     // }, [formSchedule])
     useEffect(() => {
-        props.getUserByRole({currentUserId: localStorage.getItem('userId'), role: 2})
+        // props.getUserByRole({currentUserId: localStorage.getItem('userId'), role: 2}); 
     }, [])
     useEffect(() => {
         props.getAllTransportRequirements({page: 1, limit: 100, status: "2"})
@@ -471,7 +470,7 @@ function TransportPlanCreateForm(props) {
 
 function mapState(state) {
     const {transportRequirements, transportDepartment} = state;
-    console.log(transportDepartment);
+    // console.log(transportDepartment);
     return {transportRequirements, transportDepartment}
 }
 

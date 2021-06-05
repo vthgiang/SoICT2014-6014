@@ -46,10 +46,10 @@ function TransportVehicleAndCarrierSelect(props) {
     const [listVehiclesUsable, setListVehiclesUsable] = useState();
     useEffect(() => {
         // Lấy tất cả plans đã có để kiểm tra xe và người có bị trùng lặp không
-        props.getAllTransportDepartments();
-        props.getAllTransportVehicles();
-        props.getAllTransportPlans();
-        props.getUserByRole({currentUserId: localStorage.getItem('userId'), role: 3})
+        // props.getAllTransportDepartments();
+        // props.getAllTransportVehicles();
+        // props.getAllTransportPlans();
+        // props.getUserByRole({currentUserId: localStorage.getItem('userId'), role: 3})
     }, [])
 
     useEffect(() => {
@@ -97,7 +97,6 @@ function TransportVehicleAndCarrierSelect(props) {
                     })
                 }
             }
-            // console.log(carriersList, " opppppppppppppppppppppppppppppppppppppppppppppppppppppp")
             if (transportPlan && transportPlan.lists && transportPlan.lists.length!==0){
                 transportPlan.lists.map(plan => {
                     // nếu có kế hoạch khác bị trùng thời gian
@@ -568,10 +567,10 @@ function mapState(state) {
     return { transportDepartment, transportVehicle, transportPlan }
 }
 const actions = {
-    getAllTransportDepartments: transportDepartmentActions.getAllTransportDepartments,
-    getAllTransportVehicles: transportVehicleActions.getAllTransportVehicles,
-    getAllTransportPlans: transportPlanActions.getAllTransportPlans,
-    getUserByRole: transportDepartmentActions.getUserByRole,
+    // getAllTransportDepartments: transportDepartmentActions.getAllTransportDepartments,
+    // getAllTransportVehicles: transportVehicleActions.getAllTransportVehicles,
+    // getAllTransportPlans: transportPlanActions.getAllTransportPlans,
+    // getUserByRole: transportDepartmentActions.getUserByRole,
 }
 const connectedTransportVehicleAndCarrierSelect = connect(mapState, actions)(withTranslate(TransportVehicleAndCarrierSelect));
 export { connectedTransportVehicleAndCarrierSelect as TransportVehicleAndCarrierSelect };
