@@ -126,7 +126,26 @@ exports.getUsers = async (portal, company, query) => {
             return users;
         }
     } else if (unitId) {
-        return getAllUserInUnitAndItsSubUnits(portal, unitId);
+        if (query.type === 'unitId') {
+            return getAllUserInUnitAndItsSubUnits(portal, unitId);
+        } else {
+            let department = await OrganizationalUnit(connect(DB_CONNECTION, portal))
+                .findOne({
+                    $or: [
+                        {
+                            managers: unitId,
+                        },
+                        {
+                            deputyManagers: unitId,
+                        },
+                        {
+                            employees: unitId,
+                        },
+                    ],
+                });
+
+            return getAllUserInUnitAndItsSubUnits(portal, department?._id);
+        }
     }
 };
 
