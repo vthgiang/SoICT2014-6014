@@ -1166,7 +1166,11 @@ class DetailTaskTab extends Component {
                                             maxHeight={180}
                                             enableDropImage={false}
                                             enableEdit={false}
-                                            showDetail={true}
+                                            showDetail={{
+                                                enable: true,
+                                                titleShowDetail: translate('task.task_management.detail_description'),
+                                                width: "75%"
+                                            }}
                                         />
                                     </ShowMoreShowLess>
                                 </div>

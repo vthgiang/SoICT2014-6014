@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-
+import { withTranslate } from 'react-redux-multilingual';
 import parse from 'html-react-parser';
 import Swal from 'sweetalert2';
 
@@ -23,6 +23,7 @@ class QuillEditor extends Component {
     
 
     componentDidMount() {
+        const { translate } = this.props
         const { id, isText = false, quillValueDefault, 
             toolbar = true, maxHeight = 200,
             enableEdit = true, placeholder = null,
@@ -160,11 +161,12 @@ class QuillEditor extends Component {
         }
 
         // Bắt sự kiện phóng to nội dung
-        if (showDetail) {
-            window.$(`#editor-container${id}`).on("click", () => {
+        if (showDetail?.enable) {
+            window.$(`#editor-container${id}`).on("dblclick", () => {
                 Swal.fire({
+                    title: showDetail?.titleShowDetail ?? translate('general.detail'),
                     html: quill?.container?.firstChild?.innerHTML,
-                    width: "75%",
+                    width: showDetail?.width ?? "75%",
                     customClass: {
                         content: "quill-editor"
                     }
@@ -338,5 +340,5 @@ const actions = {
     downloadFile: AuthActions.downloadFile
 }
 
-const connectedQuillEditor = connect(mapState, actions)(QuillEditor);
+const connectedQuillEditor = connect(mapState, actions)(withTranslate(QuillEditor));
 export { connectedQuillEditor as QuillEditor }
