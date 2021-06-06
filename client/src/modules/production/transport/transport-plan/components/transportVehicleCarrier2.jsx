@@ -62,9 +62,9 @@ function TransportVehicleCarrier2(props) {
 
     useEffect(() => {
         // Lấy tất cả plans đã có để kiểm tra xe và người có bị trùng lặp không
-        props.getAllTransportDepartments();
-        props.getAllTransportVehicles();        
-        props.getUserByRole({currentUserId: localStorage.getItem('userId'), role: 3})
+        // props.getAllTransportDepartments();       
+        // props.getAllTransportVehicles();
+        // props.getUserByRole({currentUserId: localStorage.getItem('userId'), role: 3})
     }, [transportPlan])
 
     useEffect(() => {
@@ -436,9 +436,9 @@ function mapState(state) {
 }
 
 const actions = {
-    getAllTransportDepartments: transportDepartmentActions.getAllTransportDepartments,
-    getAllTransportVehicles: transportVehicleActions.getAllTransportVehicles,
-    getUserByRole: transportDepartmentActions.getUserByRole,
+    // getAllTransportDepartments: transportDepartmentActions.getAllTransportDepartments,
+    // getAllTransportVehicles: transportVehicleActions.getAllTransportVehicles,
+    // getUserByRole: transportDepartmentActions.getUserByRole,
 }
 
 const connectedTransportVehicleCarrier2 = connect(mapState, actions)(withTranslate(TransportVehicleCarrier2));

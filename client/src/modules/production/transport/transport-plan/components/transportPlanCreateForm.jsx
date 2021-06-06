@@ -43,6 +43,21 @@ function TransportPlanCreateForm(props) {
      * Danh sách vị trí tọa độ tương ứng với transportrequirements
      */
     const [listSelectedRequirementsLocation, setListSelectedRequirementsLocation] = useState([])
+
+    const isFormValidated = () => {
+        if (formSchedule.startDate !=="" && formSchedule.endDate !=="" && formSchedule.supervisor !=="title" && formSchedule.name!==""){
+            let startTime = new Date(formSchedule.startDate);
+            startTime.setHours(10,10,10);
+            let endTime = new Date(formSchedule.endDate);
+            endTime.setHours(15,15,15);
+            if (startTime.getTime() < endTime.getTime()){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     const handleClickCreateCode = () => {
         setFormSchedule({
             ...formSchedule,
@@ -180,7 +195,7 @@ function TransportPlanCreateForm(props) {
     //     console.log(formSchedule, " day la form schedule");
     // }, [formSchedule])
     useEffect(() => {
-        props.getUserByRole({currentUserId: localStorage.getItem('userId'), role: 2})
+        // props.getUserByRole({currentUserId: localStorage.getItem('userId'), role: 2}); 
     }, [])
     useEffect(() => {
         props.getAllTransportRequirements({page: 1, limit: 100, status: "2"})
@@ -261,7 +276,7 @@ function TransportPlanCreateForm(props) {
                 msg_success={"success"}
                 msg_faile={"fail"}
                 func={save}
-                // disableSubmit={!isFormValidated()}
+                disableSubmit={!isFormValidated()}
                 size={100}
                 maxWidth={500}
             >

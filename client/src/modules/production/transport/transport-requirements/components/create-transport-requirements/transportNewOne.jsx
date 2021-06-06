@@ -16,6 +16,8 @@ function TransportNewOne(props) {
         customer1Email: "",
         customer1Address: "",
         customer1AddressTransport: "",
+        newOneDetail1: "",
+        
 
         customer2: "",
         customer2Name: "",
@@ -23,6 +25,7 @@ function TransportNewOne(props) {
         customer2Email: "",
         customer2Address: "",
         customer2AddressTransport: "",
+        newOneDetail2: "",
     });
 
     const handleCustomer1Change = (e) => {
@@ -56,10 +59,15 @@ function TransportNewOne(props) {
         })
     }
     const handleCustomer1AddressTransportChange = (e) => {
-        console.log(e.target.value);
         setFormInfo({
             ...formInfo,
             customer1AddressTransport: e.target.value,
+        })
+    }
+    const handlecustomer1DetailChange = (e) => {
+        setFormInfo({
+            ...formInfo,
+            newOneDetail1: e.target.value,
         })
     }
     const handleCustomer2Change = (e) => {
@@ -98,6 +106,12 @@ function TransportNewOne(props) {
         setFormInfo({
             ...formInfo,
             customer2AddressTransport: e.target.value,
+        })
+    }
+    const handlecustomer2DetailChange = (e) => {
+        setFormInfo({
+            ...formInfo,
+            newOneDetail2: e.target.value,
         })
     }
     
@@ -141,8 +155,8 @@ function TransportNewOne(props) {
                                 Chi tiết
                             </label>
                             <textarea type="text" className="form-control"
-                                // value={formInfo.customer1AddressTransport}
-                                // onChange={handleCustomer1AddressTransportChange}
+                                value={formInfo.newOneDetail1}
+                                onChange={handlecustomer1DetailChange}
                             />
                         </div>
                     </div>                      
@@ -173,8 +187,8 @@ function TransportNewOne(props) {
                                 Chi tiết
                             </label>
                             <textarea type="text" className="form-control"
-                                // value={formInfo.customer1AddressTransport}
-                                // onChange={handleCustomer1AddressTransportChange}
+                                value={formInfo.newOneDetail2}
+                                onChange={handlecustomer2DetailChange}
                             />
                         </div>
                     </div>                    

@@ -278,7 +278,7 @@ function ArrangeVehiclesAndGoods(props) {
                                 (allTransportVehicle && allTransportVehicle.length !== 0) &&
                                 allTransportVehicle.map((item, index) => (
                                     item &&
-                                    <td>{"Trọng tải: " + item.vehicle.payload}</td>
+                                    <td key={index+"trongtai"}>{"Trọng tải: " + item.vehicle.payload}</td>
                                 ))
                             }
                         </tr>
@@ -287,7 +287,7 @@ function ArrangeVehiclesAndGoods(props) {
                                 (allTransportVehicle && allTransportVehicle.length !== 0) &&
                                 allTransportVehicle.map((item, index) => (
                                     item &&
-                                    <td>{"Thể tích thùng: " + item.vehicle.volume}</td>
+                                    <td key={index+"thetich"}>{"Thể tích thùng: " + item.vehicle.volume}</td>
                                 ))
                             }
                         </tr>
@@ -297,7 +297,7 @@ function ArrangeVehiclesAndGoods(props) {
                             (transportArrangeRequirements && transportArrangeRequirements.length !==0) &&
                             transportArrangeRequirements.map((item, index) => (
                                 item &&
-                                <tr className="word-no-break">
+                                <tr key={index + "tt"} className="word-no-break">
                                 <td>
                                     {index+1}
                                 </td>

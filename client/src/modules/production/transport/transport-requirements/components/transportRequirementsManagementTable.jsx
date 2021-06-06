@@ -117,6 +117,7 @@ function TransportRequirementsManagementTable(props) {
      * @param {*} example thông tin của ví dụ cần xem
      */
     const handleShowDetailInfo = (transportRequirement) => {
+        console.log(transportRequirement, " day la transportrequirement")
         setState({
             ...state,
             curentTransportRequirementDetail: transportRequirement,
@@ -176,8 +177,8 @@ function TransportRequirementsManagementTable(props) {
                 <div className="form-inline">
                     {/* Tìm kiếm */}
                     <div className="form-group">
-                        <label className="form-control-static">{translate('manage_example.exampleName')}</label>
-                        <input type="text" className="form-control" name="exampleName" placeholder={translate('manage_example.exampleName')} autoComplete="off" />
+                        <label className="form-control-static">{"Mã yêu cầu"}</label>
+                        <input type="text" className="form-control" name="exampleName" placeholder={"Mã yêu cầu"} autoComplete="off" />
                     </div>
                     <div className="form-group">
                         <button type="button" className="btn btn-success" title={translate('manage_example.search')} >{translate('manage_example.search')}</button>

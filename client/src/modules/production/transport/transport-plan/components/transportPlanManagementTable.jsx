@@ -12,6 +12,8 @@ import { TransportPlanDetailInfo } from "./transportPlanDetailInfo"
 import { TransportVehicleAndCarrierListed } from "./transportVehicleAndCarrierListed"
 import { TransportVehicleCarrier2 } from "./transportVehicleCarrier2"
 import { transportPlanActions } from "../redux/actions"
+import { transportVehicleActions } from '../../transport-vehicle/redux/actions'
+import { transportDepartmentActions } from "../../transport-department/redux/actions"
 // import { transportRequirementsActions } from "../redux/actions";
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 // import { convertJsonObjectToFormData } from '../../../../../helpers/jsonObjectToFormDataObjectConverter'
@@ -64,7 +66,11 @@ function TransportPlanManagementTable(props) {
     }, [pageStatus])
 
     useEffect(() => {
-        console.log(totalPage, " hihi");
+        // console.log(totalPage, " hihi");
+        console.log(transportPlan);        
+        props.getAllTransportVehicles();
+        props.getUserByRole({currentUserId: localStorage.getItem('userId'), role: 2});
+        props.getUserByRole({currentUserId: localStorage.getItem('userId'), role: 3});
     }, [transportPlan])
     const handleDelete = (id) => {
         props.deleteTransportPlan(id);
@@ -270,13 +276,16 @@ function TransportPlanManagementTable(props) {
 function mapState(state) {
     const allTransportPlans = state.transportPlan.lists;
     const {transportPlan, auth} = state
-    console.log(transportPlan);
+    // console.log(transportPlan);
     return { allTransportPlans, transportPlan, auth }
 }
 
 const actions = {
     getAllTransportPlans: transportPlanActions.getAllTransportPlans,
     deleteTransportPlan: transportPlanActions.deleteTransportPlan,
+    getAllTransportVehicles: transportVehicleActions.getAllTransportVehicles,
+    getAllTransportDepartments: transportDepartmentActions.getAllTransportDepartments,
+    getUserByRole: transportDepartmentActions.getUserByRole,
     // getAllUserOfCompany: UserActions.getAllUserOfCompany,
 }
 

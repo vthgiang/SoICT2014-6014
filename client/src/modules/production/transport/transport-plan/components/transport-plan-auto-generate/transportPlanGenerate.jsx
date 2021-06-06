@@ -105,6 +105,7 @@ function TransportPlanGenerate(props) {
             endDate: transportPlan.endTime,
             supervisor: transportPlan.supervisor?._id,
             creator: localStorage.getItem('userId'),
+            currentRole: localStorage.getItem('currentRole'),
         }
         let transportRequirements = [];
         if (transportPlan && transportPlan.transportRequirements && transportPlan.transportRequirements.length!==0){
@@ -158,9 +159,9 @@ function TransportPlanGenerate(props) {
             allPlans: allPlans,
         })
         props.getAllTransportRequirements({page: 1, limit: 100, status: "2"})
-        props.getUserByRole({currentUserId: localStorage.getItem('userId'), role: 2})
-        props.getUserByRole({currentUserId: localStorage.getItem('userId'), role: 3})
-        props.getAllTransportVehicles();
+        // props.getUserByRole({currentUserId: localStorage.getItem('userId'), role: 2})
+        // props.getUserByRole({currentUserId: localStorage.getItem('userId'), role: 3})
+        // props.getAllTransportVehicles();
     }, [transportPlan]);
 
     useEffect(() => {

@@ -129,7 +129,7 @@ function TransportRequirementsCreateForm(props) {
                 }
             );
         }
-
+        console.log(requirementsForm.goods, " good")
         let data = {
             status: 1,
             code: requirementsForm.code,
@@ -149,6 +149,10 @@ function TransportRequirementsCreateForm(props) {
         }
         if (state.value !== "5"){
             data.bill = currentBill.id;
+        }
+        if (state.value === "5"){
+            data.detail1 = requirementsForm.info?.newOneDetail1;
+            data.detail2 = requirementsForm.info?.newOneDetail2;
         }
         props.createTransportRequirement(data)
     }
