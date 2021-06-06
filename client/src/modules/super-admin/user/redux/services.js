@@ -208,6 +208,7 @@ function getAllUserInAllUnitsOfCompany() {
             method: "GET",
             params: {
                 unitId: -1,
+                type: 'unitId'
             },
         },
         false,
