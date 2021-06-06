@@ -5,7 +5,7 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { managerActions } from '../../management/redux/actions';
 
-import { DatePicker } from '../../../../../common-components'
+import { DatePicker, ToolTip } from '../../../../../common-components'
 
 import './kpiUnit.css';
 
@@ -176,7 +176,7 @@ const StatisticsKpiUnits = (props) => {
 
     return (
         <div className="box-body">
-            <div className="form-inline" style={type === "for-admin" ? { marginBottom: "30px" } : {}}>
+            <div className="form-inline">
                 {
                     !(type === "for-admin")
                     && <>
@@ -193,13 +193,9 @@ const StatisticsKpiUnits = (props) => {
                         <button type="button" className="btn btn-success" onClick={handleSearchKpiUnits} >{translate('kpi.evaluation.employee_evaluation.search')}</button>
                     </>
                 }
-                
-                { checkHasComponent('refresh-kpi-unit-in-dashboard') 
-                    && <button type="button" className="btn btn-primary pull-right" onClick={handleRefreshKpiUnits}>{translate('task.task_management.detail_refresh')}</button> 
-                }
             </div>
 
-            <section className="box-body" style={{ textAlign: "right", marginRight: "-10px" }}>
+            <section className="box-body" style={{ textAlign: "right" }}>
                 <div className="btn-group">
                     <button type="button"
                         className={`btn btn-xs ${kindOfPoint === KIND_OF_POINT.AUTOMATIC ? 'btn-danger' : null}`}
@@ -211,6 +207,18 @@ const StatisticsKpiUnits = (props) => {
                         className={`btn btn-xs ${kindOfPoint === KIND_OF_POINT.APPROVED ? 'btn-danger' : null}`}
                         onClick={() => handleSelectKindOfPoint(KIND_OF_POINT.APPROVED)}>{translate('kpi.evaluation.dashboard.approve_point')}</button>
                 </div>
+                { checkHasComponent('refresh-kpi-unit-in-dashboard') 
+                    && <ToolTip
+                        type="text_tooltip"
+                        dataTooltip={[
+                            ` ${translate('kpi.evaluation.employee_evaluation.refresh_all_kpis')}`,
+                        ]}
+                    >
+                        <a onClick={() => handleRefreshKpiUnits()}>
+                            <i className="fa fa-refresh" style={{ fontSize: "22px", verticalAlign: "top", color: '#06c', cursor: 'pointer', marginLeft: '10px' }} />
+                        </a>
+                    </ToolTip>
+                }
             </section>
 
             {

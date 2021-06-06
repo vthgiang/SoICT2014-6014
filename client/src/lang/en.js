@@ -3748,7 +3748,9 @@ export default {
                     formula: "Formula",
                     explain_automatic_point: "Explain automatic value",
                     cal_all_kpis: 'Calculator all kpi',
+                    refresh_all_kpis: 'Calculator all organizational unit KPI',
                     update_task_importance: `(*)Update task importance level and Calculator KPI point`,
+                    cal_all_kpis_title: `(*)Update task importance level and Calculator all KPI point`,
 
                 },
 

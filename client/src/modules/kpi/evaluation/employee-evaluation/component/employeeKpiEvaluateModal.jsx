@@ -330,9 +330,16 @@ function EmployeeKpiEvaluateModal(props) {
                     <div className={"tab-pane row row-equal-height"} id="evaluate">
                         <div className="col-xs-12 col-sm-4">
                             <div className="form-group">
-                                <button className="btn btn-success" style={{ width: "100%" }} onClick={() => handleSetPointAllKPI()}>
-                                    {translate('kpi.evaluation.employee_evaluation.cal_all_kpis')}
-                                </button>
+                                <ToolTip
+                                    type="text_tooltip"
+                                    dataTooltip={[
+                                        ` ${translate('kpi.evaluation.employee_evaluation.cal_all_kpis_title')}`,
+                                    ]}
+                                >
+                                    <button className="btn btn-success" style={{ width: "100%" }} onClick={() => handleSetPointAllKPI()}>
+                                        {translate('kpi.evaluation.employee_evaluation.cal_all_kpis')}
+                                    </button>
+                                </ToolTip>
                             </div>
                             <div className="box box-solid" style={{ border: "1px solid #ecf0f6", borderBottom: "none" }}>
                                 <div className="box-header with-border">
@@ -356,17 +363,18 @@ function EmployeeKpiEvaluateModal(props) {
                             <div className="form-inline pull-right">
                                 {
                                     currentKpi &&
-                                    <button className="btn btn-success" onClick={() => handleSetPointKPI()}>
-                                        {translate('kpi.evaluation.employee_evaluation.calc_kpi_point')}
-                                        <ToolTip
-                                            type="icon_tooltip"
-                                            dataTooltip={[
-                                                ` ${translate('kpi.evaluation.employee_evaluation.update_task_importance')} ${currentKpi ? currentKpi.name : ""}`,
-                                            ]}
-                                        />
-                                    </button>
+                                    <ToolTip
+                                        type="text_tooltip"
+                                        dataTooltip={[
+                                            ` ${translate('kpi.evaluation.employee_evaluation.update_task_importance')} ${currentKpi ? currentKpi.name : ""}`,
+                                        ]}
+                                    >
+                                        <button className="btn btn-success" onClick={() => handleSetPointKPI()}>
+                                            {translate('kpi.evaluation.employee_evaluation.calc_kpi_point')}
+                                        </button>
+                                    </ToolTip>
                                 }
-                                {exportData && <ExportExcel id="export-employee-kpi-evaluate-detail-kpi" exportData={exportData} style={{ marginTop: 5 }} />}
+                                {exportData && <ExportExcel id="export-employee-kpi-evaluate-detail-kpi" exportData={exportData} />}
                             </div>
                             {list && list.map(item => {
                                 if (item._id === content) 

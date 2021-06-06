@@ -4047,7 +4047,9 @@ export default {
                     old_value: "Giá trị cũ",
                     auto_value: "Giá trị tự động",
                     cal_all_kpis: 'Tính điểm toàn bộ KPI',
+                    refresh_all_kpis: 'Tính lại điểm KPI các đơn vị',
                     update_task_importance: `(*)Cập nhật độ quan trọng công việc và Tính điểm KPI `,
+                    cal_all_kpis_title: `(*)Cập nhật độ quan trọng công việc và Tính điểm tất cả KPI `,
 
                     /**
                      * Management

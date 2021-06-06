@@ -85,8 +85,8 @@ class ToolTip extends Component {
     }
 
     displayTextTooltip = (data) => {
-        return <Tooltip placement="top" overlay={data}>
-            <span>{this.props.children}</span>
+        return <Tooltip placement="top" overlay={<span>{data}</span>}>
+            {this.props.children}
         </Tooltip>
     }
 
