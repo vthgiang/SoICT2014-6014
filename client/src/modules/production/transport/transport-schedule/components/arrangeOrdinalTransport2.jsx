@@ -173,6 +173,7 @@ function ArrangeOrdinalTransport(props) {
                                 routeOrdinal={getScheduleRouteOrdinal(item)}
                                 callBackStateOrdinalAddress={callBackStateOrdinalAddress}
                                 key ={index+"distri"}
+                                indexComponent={index}
                             />
                         ))
                     }

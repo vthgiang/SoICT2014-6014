@@ -14,7 +14,7 @@ import '../arrangeOrdinalTransport.css'
 
 function ArrangeOrdinalTransportOneVehicle(props) {
 
-    let {item, routeOrdinal, callBackStateOrdinalAddress} = props;
+    let {item, routeOrdinal, callBackStateOrdinalAddress, indexComponent} = props;
     
     /**
      * Lưu vị trí tọa độ các điểm hiện tại, chờ cập nhật bản đồ
@@ -34,7 +34,9 @@ function ArrangeOrdinalTransportOneVehicle(props) {
         posMaxPayload: 0,
         posMaxVolume: 0,
     })
-
+    useEffect(()=> {
+        console.log("okkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk", indexComponent)
+    }, [indexComponent])
     const [activeMapState, setActiveMapState] = useState();
     /**
      * addressList của component con
@@ -51,7 +53,7 @@ function ArrangeOrdinalTransportOneVehicle(props) {
             let locationsList = [];
             addressOrdinalList.map((item, index) => {
                 locationsList.push({
-                    name: String(index),
+                    name: String(index+1),
                     location: {
                         lat: item.geocodeAddress.lat,
                         lng: item.geocodeAddress.lng,
@@ -197,6 +199,7 @@ function ArrangeOrdinalTransportOneVehicle(props) {
                             mapElement={<div style={{height: `100%`}}/>}
                             defaultZoom={11}
                             // locations={activeMapState}
+                            indexComponent={indexComponent}
                         />
                     }
                 </div>

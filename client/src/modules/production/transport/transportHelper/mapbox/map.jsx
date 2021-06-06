@@ -5,63 +5,68 @@ import axios from 'axios'
 import './mapstyles.css';
 function MapContainer(props) {
 
-    const {locations, driverLocation, nonDirectLocations, zoom} = props;
+    const {locations, driverLocation, nonDirectLocations, zoom, indexComponent} = props;
 
     const mapContainer = useRef(null);
     // const map = useRef(null);
     const [map1,setMap] = useState(null);
+
+    let delayLoadDirect = useRef(null);
+
+    let currentMap = useRef(null);
+
+    let checkMapLoaded = useRef(0);
     
     const [center, setCenter] = useState({lng: 100, lat: 20})
 
     const [direction, setDirection] = useState();
 
     const [listMarker, setListMarker] = useState([]);
+
+    let routeId = "route" + indexComponent;
+
     const [routeLayer, setRouteLayer] = useState();
     mapboxgl.accessToken = "pk.eyJ1Ijoia2llbm5kdHZuaXN0IiwiYSI6ImNrcGprZGFvcjExcGUybmprYjZkYzFyOWsifQ.vWflR8QYCqpVNlLhO_TR6g"
-    // useEffect(() => {
-        
-    //     const map = new mapboxgl.Map({
-    //         container: mapContainer.current,
-    //         style: 'mapbox://styles/mapbox/streets-v8',
-    //         center: [100, 20],
-    //         zoom: 8,
-    //     });
-
-    //     let nav = new mapboxgl.NavigationControl();
-    //     map.addControl(nav, 'bottom-right');
-
-    //     // var req = new XMLHttpRequest();
-    //     // req.responseType = 'json';
-    //     // req.open('GET', url, true);
-    //     // req.onload  = function() {
-    //     //     var jsonResponse = req.response;
-    //     //     var distance = jsonResponse.routes[0].distance*0.001;
-    //     //     var duration = jsonResponse.routes[0].duration/60;
-    //     //     var steps = jsonResponse.routes[0].legs[0].steps;
-    //     //     var coords = jsonResponse.routes[0].geometry;
-    //     //   //  console.log(steps);
-    //     // console.log(coords, " haaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-    //     // }
-        
-    //     setMap(map);
-    // }, []);
 
     useEffect(() => {
-        let timeCount = setTimeout(() => {
-
-        // Xóa bỏ hết các lít marker cũ
-        // let map = map1;
-        // if (!map){
-            let map = new mapboxgl.Map({
+        
+        if (delayLoadDirect.current){
+            clearTimeout(delayLoadDirect.current);
+        }
+        delayLoadDirect.current = setTimeout(() =>{
+        if (!currentMap.current){
+            let center = {
+                lat: 21.022177879987648, 
+                lng: 105.81717955779875
+            };
+            if (driverLocation && driverLocation.length!==0){
+                center = driverLocation[0].location;
+            }
+            else {
+                if (locations && locations.length !==0){
+                    center = locations[0].location;
+                }
+                else {
+                    if (nonDirectLocations && nonDirectLocations.length!==0){
+                        center = nonDirectLocations[0].location;
+                    }
+                }
+            }
+            currentMap.current = new mapboxgl.Map({
                 container: mapContainer.current,
                 style: 'mapbox://styles/mapbox/streets-v8',
-                center: [100, 20],
+                center: center,
                 zoom: 8,
             });
     
             let nav = new mapboxgl.NavigationControl();
-            map.addControl(nav, 'bottom-right');
-            setMap(map);
+            currentMap.current.addControl(nav, 'bottom-right');
+            // setMap(currentMap.current);
+            checkMapLoaded.current = 0;
+        }
+        // if (currentMap.current.getSource('route')) {
+        //     currentMap.current.removeLayer('route');
+        //     currentMap.current.removeSource('route')
         // }
         if (listMarker && listMarker.length!==0){
             listMarker.map(marker => {
@@ -84,7 +89,7 @@ function MapContainer(props) {
                   }) // add popups
                   .setHTML(`<p class="transport-text-popup-map">${item.name?item.name:""}</p>`)
                   .setMaxWidth(30))
-                .addTo(map)
+                .addTo(currentMap.current)
                 .togglePopup();
                 newListMarker.push(marker);
             })
@@ -106,7 +111,7 @@ function MapContainer(props) {
                   }) // add popups
                   .setHTML(`<p class="transport-text-popup-map">C</p>`)
                   .setMaxWidth(30))
-                .addTo(map)
+                .addTo(currentMap.current)
                 .togglePopup();
                 newListMarker.push(marker);
                 listGeocodeDirection+=item.location.lng + "," + item.location.lat + ";";
@@ -128,13 +133,15 @@ function MapContainer(props) {
                   }) // add popups
                   .setHTML(`<p class="transport-text-popup-map">${item.name?item.name:""}</p>`)
                   .setMaxWidth(30))
-                .addTo(map)
+                .addTo(currentMap.current)
                 .togglePopup();
                 newListMarker.push(marker);
                 listGeocodeDirection+=item.location.lng + "," + item.location.lat + ";";
             })
         }
+        setListMarker(newListMarker);
         if (listGeocodeDirection !== ""){
+
             listGeocodeDirection = listGeocodeDirection.substring(0, listGeocodeDirection.length-1);
 
             let url = 'https://api.mapbox.com/directions/v5/mapbox/driving/'+ listGeocodeDirection
@@ -156,21 +163,38 @@ function MapContainer(props) {
             }
             catch(e){
                 console.log(e);
-            }    
+            }
+             
         }
         
-    }, 2000)
+            }, 2000)   
     }, [props])
-
+    const removeLayer = (id) => {
+        if (map1 && map1.getSource(id)) {
+            map1.removeLayer(id);
+            map1.removeSource(id);
+        }
+    }
     useEffect(() => {
-        if (direction){
-            if (map1.getSource('route')) {
-                map1.removeLayer('route');
-                map1.removeSource('route')
-            } else{
-                map1.on('load', () => {
-                    map1.addLayer({
-                        "id": "route",
+        if (direction && currentMap.current){            
+            // if (currentMap.current.getSource("route")) {
+            //     currentMap.current.removeLayer("route");
+            //     currentMap.current.removeSource("route")
+            // } else{                
+                currentMap.current.on('load', () => {
+                    checkMapLoaded.current = 1;
+                    console.log("da vao loadddddddddddddd");
+                    
+                })
+                console.log(checkMapLoaded.current, " hahahahah")
+                if (checkMapLoaded.current === 1){
+                    while (currentMap.current.getSource(routeId)){                
+                        currentMap.current.removeLayer(routeId);
+                        currentMap.current.removeSource(routeId)
+                        console.log("da xoa route cu");
+                    }
+                    currentMap.current.addLayer({
+                        "id": routeId,
                         "type": "line",
                         "source": {
                             "type": "geojson",
@@ -186,17 +210,19 @@ function MapContainer(props) {
                         },
                         "paint": {
                             "line-color": "#1db7dd",
-                            "line-width": 8,
+                            "line-width": 6,
                             "line-opacity": 0.8
                         }
                     });
-                    setRouteLayer() // =====================
-                })
+                    console.log("okkkk")
+                    
+                };
+                }
                 
-            };
             
-        }
-    }, [direction])
+        // }
+        // return removeLayer('route');
+    }, [direction, currentMap.current, checkMapLoaded.current])
     return (
             <div ref={mapContainer} className="map-container" style={{height: "400px", width: "100%"}} />
         );
