@@ -77,11 +77,6 @@ function CreateEmployeeKpiSet(props) {
         const { createEmployeeKpiSet, createKpiUnit } = props;
         const { month, currentRole } = state;
 
-        // Không re-render khi lựa chọn tháng ở DatePiker
-        // if (state.month !== month || state.month === '') {
-        //     return false;
-        // }
-
         // Lấy thông tin đơn vị cha
         if (createKpiUnit?.currentKPI?.organizationalUnit?.parent && props.department && !props.department.unitLoading && !props.department.unit) {
             props.getOrganizationalUnit(createKpiUnit?.currentKPI?.organizationalUnit?.parent);
@@ -551,7 +546,7 @@ function CreateEmployeeKpiSet(props) {
                                     }
 
                                     {/* Xóa tập KPI này */}
-                                    <a className="btn btn-app" onClick={checkOrganizationalUnitKpi() ? () => handleDeleteEmployeeKpiSet(currentKPI._id, currentKPI.status) : () => handleStartOrganizationalUnitKpi()} title="Xóa KPI tháng">
+                                    <a className="btn btn-app" onClick={() => handleDeleteEmployeeKpiSet(currentKPI._id, currentKPI.status)} title="Xóa KPI tháng">
                                         <i className="fa fa-trash" style={{ fontSize: "16px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.general_information.delete')}
                                     </a>
 

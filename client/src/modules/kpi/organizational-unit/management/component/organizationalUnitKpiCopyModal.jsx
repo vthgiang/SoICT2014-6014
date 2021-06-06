@@ -18,7 +18,7 @@ function ModalCopyKPIUnit (props) {
     const { kpiId, idunit, monthDefault, approverDefault, type = TYPE.DEFAULT, kpiunit, organizationalUnitSelect } = props;
     
     const [state, setState] = useState({
-
+        kpiId: undefined
     });
     const { month, errorOnDate, approver, listKpiUnit, organizationalUnitId } = state;
 
@@ -34,7 +34,7 @@ function ModalCopyKPIUnit (props) {
             ...state,
             kpiId: props.kpiId,
             listKpiUnit: listKpiUnit,
-            organizationalUnitId: props.kpiunit?.organizationalUnit?._id,
+            organizationalUnitId: props.kpiunit?.organizationalUnit?._id ?? organizationalUnitSelect?.[0]?.id,  // trường hợp không có đơn vị cha
             month: props.monthDefault
         })
     }
@@ -81,7 +81,7 @@ function ModalCopyKPIUnit (props) {
             ...state,
             kpiId: props.kpiId,
             listKpiUnit: listKpiUnit,
-            organizationalUnitId: props.kpiunit?.organizationalUnit?._id
+            organizationalUnitId: props.kpiunit?.organizationalUnit?._id ?? organizationalUnitSelect?.[0]?.id   // trường hợp không có đơn vị cha
         })
     }, [props.kpiId])
 
