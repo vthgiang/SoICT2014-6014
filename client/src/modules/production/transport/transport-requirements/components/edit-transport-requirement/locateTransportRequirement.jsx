@@ -4,7 +4,8 @@ import { withTranslate } from "react-redux-multilingual";
 
 import { DataTableSetting, DeleteNotification, PaginateBar } from "../../../../../../common-components";
 
-import { MapContainer } from "../../../transportHelper/map/googleMap"
+// import { MapContainer } from "../../../transportHelper/map/googleMap"
+import { MapContainer } from "../../../transportHelper/mapbox/map"
 
 import { getAddressName } from "../../../transportHelper/getAddressNameGoogleMap"
 
@@ -202,6 +203,7 @@ function LocateTransportRequirement(props) {
 }
 
 function mapState(state) {
+    return {}
 }
 
 const actions = {

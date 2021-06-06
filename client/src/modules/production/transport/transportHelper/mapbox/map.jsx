@@ -5,7 +5,7 @@ import axios from 'axios'
 import './mapstyles.css';
 function MapContainer(props) {
 
-    const {locations, driverLocation, nonDirectLocations, zoom, indexComponent, mapHeight} = props;
+    const {locations, driverLocation, nonDirectLocations, zoom, indexComponent, mapHeight, callBackLatLng} = props;
 
     let routeId = "route" + indexComponent;
 
@@ -70,6 +70,20 @@ function MapContainer(props) {
         currentMap.current.once('idle',function(){
             currentMap.current.resize()
             })
+
+        // call back geocode khi click map
+        if (callBackLatLng){
+            currentMap.current.on('click', function (e) {
+                callBackLatLng({
+                    lat: e.lngLat.lat, 
+                    lng: e.lngLat.lng
+                });
+                currentMap.current.flyTo({
+                    center: e.lngLat
+                });
+                
+            });
+        }
         // Xóa bỏ marker cũ
         if (listMarker && listMarker.length!==0){
             listMarker.map(marker => {
