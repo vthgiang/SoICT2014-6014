@@ -24,19 +24,17 @@ function ResultsOfAllOrganizationalUnitKpiChart(props) {
     const refMultiLineChart = React.createRef();
     const chart = useRef()
 
-    const DATA_STATUS = {NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3};
     const KIND_OF_POINT = {AUTOMATIC: 1, EMPLOYEE: 2, APPROVED: 3};
 
     const [state, setState] = useState({
         userRoleId: localStorage.getItem("currentRole"),
         startDate: INFO_SEARCH.startDate,
         endDate: INFO_SEARCH.endDate,
-        dataStatus: DATA_STATUS.QUERYING,
         kindOfPoint: KIND_OF_POINT.AUTOMATIC
     });
 
     const {createKpiUnit, translate} = props;
-    const {dataChart, kindOfPoint} = state;
+    const { kindOfPoint } = state;
     let organizationalUnitKpiSetsOfChildUnit;
 
     useEffect(() => {
@@ -45,11 +43,6 @@ function ResultsOfAllOrganizationalUnitKpiChart(props) {
 
     useEffect(() => {
         props.getAllOrganizationalUnitKpiSetByTimeOfChildUnit(state.userRoleId, state.startDate, state.endDate);
-
-        setState({
-            ...state,
-            dataStatus: DATA_STATUS.QUERYING,
-        });
     }, [state.startDate, state.endDate]);
 
     useEffect(() => {
@@ -61,10 +54,8 @@ function ResultsOfAllOrganizationalUnitKpiChart(props) {
     }, [state.kindOfPoint]);
 
     useEffect(() => {
-            console.log("8888")
-            multiLineChart();
-          
-    });
+        multiLineChart();
+    }, [JSON.stringify(props)]);
 
     const handleSelectKindOfPoint = (value) => {
         setState({
@@ -184,7 +175,6 @@ function ResultsOfAllOrganizationalUnitKpiChart(props) {
             xs = Object.assign(xs, temporary);
         }
 
-        console.log(refMultiLineChart.current)
         chart.current = c3.generate({
             bindto: refMultiLineChart.current,
 
