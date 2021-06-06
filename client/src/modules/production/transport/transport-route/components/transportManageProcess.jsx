@@ -51,7 +51,11 @@ function TransportManageProcess(props) {
      * @param {*} route 
      */
     const handleShowDetailMap = (route) => {
-        if (currentTransportPlan && Number(currentTransportPlan.status) === 4){
+        console.log("okkkk");
+        console.log(currentTransportPlan);
+        // if (currentTransportPlan && Number(currentTransportPlan.status) === 4){
+            
+        if (currentTransportPlan){
             setCurrentVehicleRoute(route);
             setGetLocateOnMap(true);
             props.startLocate({manageId: localStorage.getItem("userId"), driverId: getDriver(route.transportVehicle?._id)?.id})
@@ -294,12 +298,12 @@ function TransportManageProcess(props) {
                             transportPlanId = {currentTransportPlan?._id}
                         />
                     }
-                    {/* <TransportDetailMap
+                    <TransportDetailMap
                         currentVehicleRoute = {currentVehicleRoute}
                         getLocateOnMap={getLocateOnMap}
                         stopGetLocateOnMap = {stopGetLocateOnMap}
                         currentLocationOnMap = {currentLocationOnMap}
-                    /> */}
+                    />
                     {
                         (currentTransportPlan && currentTransportSchedule && currentTransportSchedule.route && currentTransportSchedule.route.length !== 0)
                         && currentTransportSchedule.route.map((item,index) =>(

@@ -5,17 +5,18 @@ import axios from 'axios'
 import './mapstyles.css';
 function MapContainer(props) {
 
-    const {locations, driverLocation, nonDirectLocations, zoom, indexComponent} = props;
+    const {locations, driverLocation, nonDirectLocations, zoom, indexComponent, mapHeight} = props;
+
+    let routeId = "route" + indexComponent;
 
     const mapContainer = useRef(null);
     // const map = useRef(null);
-    const [map1,setMap] = useState(null);
 
     let delayLoadDirect = useRef(null);
 
     let currentMap = useRef(null);
 
-    let checkMapLoaded = useRef(0);
+    const [checkMapLoaded, setCheckMapLoaded] = useState(0); 
     
     const [center, setCenter] = useState({lng: 100, lat: 20})
 
@@ -23,9 +24,7 @@ function MapContainer(props) {
 
     const [listMarker, setListMarker] = useState([]);
 
-    let routeId = "route" + indexComponent;
 
-    const [routeLayer, setRouteLayer] = useState();
     mapboxgl.accessToken = "pk.eyJ1Ijoia2llbm5kdHZuaXN0IiwiYSI6ImNrcGprZGFvcjExcGUybmprYjZkYzFyOWsifQ.vWflR8QYCqpVNlLhO_TR6g"
 
     useEffect(() => {
@@ -54,24 +53,34 @@ function MapContainer(props) {
             }
             currentMap.current = new mapboxgl.Map({
                 container: mapContainer.current,
-                style: 'mapbox://styles/mapbox/streets-v8',
+                style: 'mapbox://styles/mapbox/streets-v11',
                 center: center,
-                zoom: 8,
+                zoom: zoom?zoom:8,
             });
     
+            currentMap.current.addControl(new mapboxgl.FullscreenControl(), 'bottom-right');
+
             let nav = new mapboxgl.NavigationControl();
             currentMap.current.addControl(nav, 'bottom-right');
+            
             // setMap(currentMap.current);
-            checkMapLoaded.current = 0;
+            setCheckMapLoaded(0);
+            console.log("da tao map");
         }
-        // if (currentMap.current.getSource('route')) {
-        //     currentMap.current.removeLayer('route');
-        //     currentMap.current.removeSource('route')
-        // }
+        currentMap.current.once('idle',function(){
+            currentMap.current.resize()
+            })
+        // Xóa bỏ marker cũ
         if (listMarker && listMarker.length!==0){
             listMarker.map(marker => {
                 marker.remove();
             })
+        }
+        // Xóa bỏ direction cũ
+        while (currentMap.current.getSource(routeId)){                
+            currentMap.current.removeLayer(routeId);
+            currentMap.current.removeSource(routeId)
+            console.log("da xoa route cu");
         }
         let newListMarker = [];
         if (nonDirectLocations && nonDirectLocations.length !==0){
@@ -95,9 +104,9 @@ function MapContainer(props) {
             })
         }
         let listGeocodeDirection="";
-
+        let countAddress = 0;
         if (driverLocation && driverLocation.length!==0){
-            locations.map((item,index) => {
+            driverLocation.map((item,index) => {
                 let marker = new mapboxgl.Marker({
                     color: "red"
                 })
@@ -115,6 +124,7 @@ function MapContainer(props) {
                 .togglePopup();
                 newListMarker.push(marker);
                 listGeocodeDirection+=item.location.lng + "," + item.location.lat + ";";
+                countAddress++;
             })
         }
 
@@ -137,10 +147,11 @@ function MapContainer(props) {
                 .togglePopup();
                 newListMarker.push(marker);
                 listGeocodeDirection+=item.location.lng + "," + item.location.lat + ";";
+                countAddress++;
             })
         }
         setListMarker(newListMarker);
-        if (listGeocodeDirection !== ""){
+        if (listGeocodeDirection !== "" && countAddress >1){
 
             listGeocodeDirection = listGeocodeDirection.substring(0, listGeocodeDirection.length-1);
 
@@ -169,25 +180,24 @@ function MapContainer(props) {
         
             }, 2000)   
     }, [props])
-    const removeLayer = (id) => {
-        if (map1 && map1.getSource(id)) {
-            map1.removeLayer(id);
-            map1.removeSource(id);
-        }
-    }
-    useEffect(() => {
+
+    useEffect(() => {     
+        if (currentMap.current){
+
+            currentMap.current.on('load', () => {
+                
+                setCheckMapLoaded(1);
+                console.log("da vao loadddddddddddddd");
+                currentMap.current.resize();
+            })
+        }    
         if (direction && currentMap.current){            
             // if (currentMap.current.getSource("route")) {
             //     currentMap.current.removeLayer("route");
             //     currentMap.current.removeSource("route")
-            // } else{                
-                currentMap.current.on('load', () => {
-                    checkMapLoaded.current = 1;
-                    console.log("da vao loadddddddddddddd");
-                    
-                })
-                console.log(checkMapLoaded.current, " hahahahah")
-                if (checkMapLoaded.current === 1){
+            // } else{       
+                console.log(checkMapLoaded, " hahahahah")
+                if (checkMapLoaded === 1){
                     while (currentMap.current.getSource(routeId)){                
                         currentMap.current.removeLayer(routeId);
                         currentMap.current.removeSource(routeId)
@@ -222,45 +232,12 @@ function MapContainer(props) {
             
         // }
         // return removeLayer('route');
-    }, [direction, currentMap.current, checkMapLoaded.current])
+    }, [direction, currentMap.current, checkMapLoaded, props])
     return (
-            <div ref={mapContainer} className="map-container" style={{height: "400px", width: "100%"}} />
+        <div style={{height: mapHeight?mapHeight:"400px", width: "100%"}}>
+            <div ref={mapContainer} className="map-container" style={{height: "100%", width: "100%"}} />
+
+        </div>
         );
 }
-
-// function App() {
-//     const mapContainer = useRef(null);
-//     const map = useRef(null);
-//     const [lng, setLng] = useState(105.4758682);
-//     const [lat, setLat] = useState(21.1256643);
-//     const [zoom, setZoom] = useState(10);
-//     mapboxgl.accessToken = "pk.eyJ1Ijoia2llbm5kdHZuaXN0IiwiYSI6ImNrcGprZGFvcjExcGUybmprYjZkYzFyOWsifQ.vWflR8QYCqpVNlLhO_TR6g"
-//     useEffect(() => {
-//         if (map.current) return; // initialize map only once
-//         map.current = new mapboxgl.Map({
-//             container: mapContainer.current,
-//             style: 'mapbox://styles/mapbox/streets-v11',
-//             center: [lng, lat],
-//             zoom: zoom,
-//         });
-//         let marker = new mapboxgl.Marker({
-//             // color: "#FFFFFF", anchor: "bottom"
-//             accessToken: mapboxgl.accessToken
-//         })
-//         .setLngLat([105.4758682, 21.1256643])
-//         marker.addTo(map.current);
-        
-//     }, []);
-//     // useEffect(() => {
-//     //     if (map.current){
-//     //     }
-//     // }, [map])
-//     return (
-//         <div className="App">
-//             <header className="App-header">
-//             <div ref={mapContainer} className="map-container" style={{height: "100vh", width: "100%"}} />
-//             </header>
-//         </div>
-//         );
-// }
 export {MapContainer};

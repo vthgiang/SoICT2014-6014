@@ -11,7 +11,8 @@ import { TransportDetailTime } from './detail-transport-requirement/transportDet
 
 import { formatDate } from '../../../../../helpers/formatDate'
 import { getTypeRequirement, getTransportRequirementStatus, getPlanStatus } from '../../transportHelper/getTextFromValue'
-import { MapContainer } from '../../transportHelper/googleReactMap/mapContainer'
+// import { MapContainer } from '../../transportHelper/googleReactMap/mapContainer'
+import { MapContainer } from '../../transportHelper/mapbox/map'
 import { exampleActions } from '../redux/actions';
 
 function TransportRequirementsViewDetails(props) {
@@ -130,6 +131,7 @@ function TransportRequirementsViewDetails(props) {
                                     // defaultCenter={defaultCenter || {lat: 21.078017641, lng: 105.70710958}}
                                     defaultZoom={8}
                                     nonDirectLocations={map.nonDirectLocations?map.nonDirectLocations:[]}
+                                    mapHeight={map.height+'px'}
                                 />
                             </div>
                             </div>

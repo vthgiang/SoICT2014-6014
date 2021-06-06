@@ -10,7 +10,9 @@ import { getTableConfiguration } from '../../../../../helpers/tableConfiguration
 import { convertJsonObjectToFormData } from '../../../../../helpers/jsonObjectToFormDataObjectConverter'
 
 import { convertStringNavigatorGeocode } from '../../transportHelper/convertDistanceAndDuration'
-import { MapContainer } from "../../transportHelper/googleReactMap/mapContainer"
+// import { MapContainer } from "../../transportHelper/googleReactMap/mapContainer"
+
+import { MapContainer } from "../../transportHelper/mapbox/map"
 
 function TransportDetailMap(props) {
     let {currentVehicleRoute, transportPlanId, socket, getLocateOnMap, stopGetLocateOnMap, currentLocationOnMap} = props;
@@ -151,14 +153,17 @@ function TransportDetailMap(props) {
                 afterClose={stopGetLocateOnMap}
             >
                 <form id={`modal-detail-map`}>
-                    <div style={{height: "600px"}}>
+                    {/* <div style={{height: "600px"}}> */}
 
                         <MapContainer
                             driverLocation={driverLocation}
                             locations={locations}
                             nonDirectLocations={nonDirectLocations}
+                            mapHeight={"700px"}
+                            zoom={11}
+                            indexComponent={"process"}
                         />
-                    </div>
+                    {/* </div> */}
                 </form>
             </DialogModal>
         </React.Fragment>
