@@ -134,7 +134,7 @@ const TaskSchema = new Schema(
             type: String,
         },
         tags: [{
-            type: String
+            type: String  
         }],
         startDate: {
             type: Date,
@@ -921,8 +921,12 @@ const TaskSchema = new Schema(
     }
 );
 
+TaskSchema.index({ tags: "text" });
+
 module.exports = (db) => {
-    if (!db.models.Task) return db.model("Task", TaskSchema);
+    if (!db.models.Task) {
+        return db.model("Task", TaskSchema);
+    }
     return db.models.Task;
 };
 
