@@ -82,7 +82,8 @@ export default {
             need_to_do_chart: "The chart shows the number of to-do tasks",
             urgent_task_amount: "The number of urgent tasks",
             need_to_do_task_amount: "The number of tasks to do",
-            list_employe_timing: "List of employees who are timing"
+            list_employe_timing: "List of employees who are timing",
+            statistics_task_unit: "Statistics Of Task In Units Chart"
         },
 
         menu: {
