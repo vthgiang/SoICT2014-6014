@@ -13,7 +13,9 @@ class ContentMaker extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            showDropFileHere: false
+            showDropFileHere: false,
+            file:[],
+            filepaste:[]
         };
     }
 
@@ -48,11 +50,40 @@ class ContentMaker extends Component {
     handlePaste = e => {
         if (e.clipboardData.files.length) {
             const fileObject = e.clipboardData.files[0];
-            if (this.props.onFilesPaste){
-                this.props.onFilesPaste(fileObject)
+            this.setState({
+                filepaste : [...this.state.filepaste,fileObject]
+            }) 
+            let files= [...this.state.file,fileObject]
+            this.setState({file:files})
+            if (this.props.onFilesChange){
+                this.props.onFilesChange(files)
             }
         }
     };
+    onActionFilesChange = (files) => {
+        let listfiles = [...files, ...this.state.filepaste]
+        this.setState({
+            file:listfiles
+        })
+        if (this.props.onFilesChange){
+            this.props.onFilesChange(listfiles)
+        }
+    }
+    onFilesRemote = (index) => {
+        let files = this.state.file
+        let fileRemove = files.splice(index, 1)
+        this.setState(state => {
+            return {
+                ...state,
+                filepaste: state.filepaste.filter(value => value.lastModified !== fileRemove[0].lastModified),
+                file: files
+            }
+        })
+        console.log(files);
+        if (this.props.onFilesChange){
+            this.props.onFilesChange(files)
+        }
+    }
     render() {
         const { translate } = this.props;
         const {
@@ -67,14 +98,13 @@ class ContentMaker extends Component {
                 <Files
                     ref='fileComponent'
                     className='files-dropzone-list'
-                    onChange={onFilesChange}
+                    onChange={this.onActionFilesChange}
                     onError={onFilesError}
                     multiple={multiple}
                     maxFiles={maxFiles}
                     maxFileSize={maxFileSize}
                     minFileSize={minFileSize}
                     clickable={clickable}
-                    files={files}
                 >
                     <QuillEditor
                         id={idQuill}
@@ -97,7 +127,9 @@ class ContentMaker extends Component {
                         <a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={(e) => this.refs.fileComponent.openFileChooser()}>{translate("task.task_perform.attach_file")}&nbsp;&nbsp;&nbsp;&nbsp;</a>
                         <a style={{ cursor: "pointer" }} className="link-black text-sm" disabled={disabledSubmit} onClick={(e) => {
                             onSubmit(e);
-                            this.refs.fileComponent.removeFiles(); // Xóa các file đã chọn sau khi submit
+                            this.refs.fileComponent.removeFiles(); 
+                            this.setState({filepaste:[]})
+                            // Xóa các file đã chọn sau khi submit
                         }}>
                             {submitButtonText}&nbsp;&nbsp;&nbsp;
                         </a>
@@ -118,7 +150,7 @@ class ContentMaker extends Component {
                                             </React.Fragment>
                                             :
                                             <div className='files-list-item-preview-extension'>{file.extension}</div>}
-                                        <a style={{ cursor: "pointer" }} className="pull-right btn-box-tool" onClick={(e) => { this.refs.fileComponent.removeFile(file); if(this.props.onFilesRemote) this.props.onFilesRemote(index) }}><i className="fa fa-times"></i></a>
+                                        <a style={{ cursor: "pointer" }} className="pull-right btn-box-tool" onClick={(e) => { this.refs.fileComponent.removeFile(file); this.onFilesRemote(index) }}><i className="fa fa-times"></i></a>
                                     </div>
                                     <div className='files-list-item-content'>
                                         <div className='files-list-item-content-item files-list-item-content-item-1'>{file.name}</div>
