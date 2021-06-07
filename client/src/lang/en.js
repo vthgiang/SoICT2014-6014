@@ -37,6 +37,7 @@ export default {
             month: "in",
             value: "Value",
             export: 'Export',
+            add_tag: "Add a tag",
             auth_alert: {
                 title: "Current Session invalid. Please log in again",
                 reason: "Reasons maybe:",
