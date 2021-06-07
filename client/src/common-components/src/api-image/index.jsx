@@ -89,6 +89,7 @@ class ApiImage extends Component {
                     '&emsp;' + '<button type="button" role="button" style="visibility: hidden;padding: 5px 20px;" id ="showNext">' + '>' + '</button>' + '<br/>' +
                     '<br/>' + `<img src=${image} alt=${alt} style="max-width: 100%; max-height: 100%" />`,
                 width: 'auto',
+                stopKeydownPropagation: false,
                 showCloseButton: true,
                 showConfirmButton: false,
                 showCancelButton: false,
