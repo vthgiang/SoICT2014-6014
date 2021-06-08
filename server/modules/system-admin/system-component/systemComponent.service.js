@@ -87,10 +87,10 @@ exports.createSystemComponent = async (name, description, links, roles) => {
             description,
             links: companyLinks.map((link) => link._id),
         });
-        for (let i = 0; i < companyLinks.length; i++) {
+        for (let x = 0; x < companyLinks.length; x++) {
             let companyLink = await Link(
                 connect(DB_CONNECTION, companyList[i].shortName)
-            ).findById(companyLinks[i]._id);
+            ).findById(companyLinks[x]._id);
             if (companyLink) {
                 companyLink.components.push(companyComponent._id);
                 await companyLink.save();
