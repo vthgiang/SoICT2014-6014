@@ -130,8 +130,6 @@ function ModalEditTaskByResponsibleEmployee(props) {
                 let res = evaluations.results.find(e => (String(e.employee._id) === String(idUser) && String(e.role) === "responsible"));
                 if (res) point = res.employeePoint ? res.employeePoint : undefined;
             }
-
-
             date = formatDate(evaluations.date);
 
         }
