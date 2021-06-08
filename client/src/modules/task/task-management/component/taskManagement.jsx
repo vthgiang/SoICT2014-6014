@@ -64,24 +64,24 @@ class TaskManagement extends Component {
         const userId = getStorage('userId');
 
         let data = {
-            role: this.state.currentTab, 
-            unit: [], 
-            number: currentPage, 
-            perPage: perPage, 
-            status: this.state.status, 
-            priority: null, 
-            special: null, 
-            name: null, 
-            startDate: null, 
-            endDate: null, 
-            responsibleEmployees: null, 
-            accountableEmployees: null, 
-            creatorEmployees: null, 
-            creatorTime: null, 
-            projectSearch: null, 
-            startDateAfter: null, 
-            endDateBefore: null, 
-            aPeriodOfTime: false, 
+            role: this.state.currentTab,
+            unit: [],
+            number: currentPage,
+            perPage: perPage,
+            status: this.state.status,
+            priority: null,
+            special: null,
+            name: null,
+            startDate: null,
+            endDate: null,
+            responsibleEmployees: null,
+            accountableEmployees: null,
+            creatorEmployees: null,
+            creatorTime: null,
+            projectSearch: null,
+            startDateAfter: null,
+            endDateBefore: null,
+            aPeriodOfTime: false,
             tags: []
         }
 
@@ -218,11 +218,11 @@ class TaskManagement extends Component {
     }
 
     handleGetDataPagination = async (index) => {
-        let { 
-            organizationalUnit, status, priority, 
-            special, name, startDate, endDate, 
-            responsibleEmployees, accountableEmployees, 
-            creatorEmployees, creatorTime, 
+        let {
+            organizationalUnit, status, priority,
+            special, name, startDate, endDate,
+            responsibleEmployees, accountableEmployees,
+            creatorEmployees, creatorTime,
             projectSearch, tags
         } = this.state;
 
@@ -235,24 +235,24 @@ class TaskManagement extends Component {
         let newCurrentPage = this.state.currentPage;
         if (oldCurrentPage !== index) {
             let data = {
-                role: this.state.currentTab, 
-                unit: organizationalUnit, 
-                number: newCurrentPage, 
-                perPage: perPage, 
-                status: status, 
-                priority: priority, 
-                special: special, 
-                name: name, 
-                startDate: startDate, 
-                endDate: endDate, 
-                responsibleEmployees: responsibleEmployees, 
-                accountableEmployees: accountableEmployees, 
-                creatorEmployees: creatorEmployees, 
-                creatorTime: creatorTime, 
-                projectSearch: projectSearch, 
-                startDateAfter: null, 
-                endDateBefore: null, 
-                aPeriodOfTime: false, 
+                role: this.state.currentTab,
+                unit: organizationalUnit,
+                number: newCurrentPage,
+                perPage: perPage,
+                status: status,
+                priority: priority,
+                special: special,
+                name: name,
+                startDate: startDate,
+                endDate: endDate,
+                responsibleEmployees: responsibleEmployees,
+                accountableEmployees: accountableEmployees,
+                creatorEmployees: creatorEmployees,
+                creatorTime: creatorTime,
+                projectSearch: projectSearch,
+                startDateAfter: null,
+                endDateBefore: null,
+                aPeriodOfTime: false,
                 tags: tags
             }
 
@@ -273,24 +273,24 @@ class TaskManagement extends Component {
         let newCurrentPage = this.state.currentPage;
         if (oldCurrentPage !== newCurrentPage) {
             let data = {
-                role: this.state.currentTab, 
-                unit: organizationalUnit, 
-                number: newCurrentPage, 
-                perPage: perPage, 
-                status: status, 
-                priority: priority, 
-                special: special, 
-                name: name, 
-                startDate: startDate, 
-                endDate: endDate, 
-                responsibleEmployees: responsibleEmployees, 
-                accountableEmployees: accountableEmployees, 
-                creatorEmployees: creatorEmployees, 
-                creatorTime: creatorTime, 
-                projectSearch: projectSearch, 
-                startDateAfter: null, 
-                endDateBefore: null, 
-                aPeriodOfTime: false, 
+                role: this.state.currentTab,
+                unit: organizationalUnit,
+                number: newCurrentPage,
+                perPage: perPage,
+                status: status,
+                priority: priority,
+                special: special,
+                name: name,
+                startDate: startDate,
+                endDate: endDate,
+                responsibleEmployees: responsibleEmployees,
+                accountableEmployees: accountableEmployees,
+                creatorEmployees: creatorEmployees,
+                creatorTime: creatorTime,
+                projectSearch: projectSearch,
+                startDateAfter: null,
+                endDateBefore: null,
+                aPeriodOfTime: false,
                 tags: tags
             }
             this.props.getPaginateTasks(data);
@@ -310,24 +310,24 @@ class TaskManagement extends Component {
         let newCurrentPage = this.state.currentPage;
         if (oldCurrentPage !== newCurrentPage) {
             let data = {
-                role: this.state.currentTab, 
-                unit: organizationalUnit, 
-                number: newCurrentPage, 
-                perPage: perPage, 
-                status: status, 
-                priority: priority, 
-                special: special, 
-                name: name, 
-                startDate: startDate, 
-                endDate: endDate, 
-                responsibleEmployees: responsibleEmployees, 
-                accountableEmployees: accountableEmployees, 
-                creatorEmployees: creatorEmployees, 
-                creatorTime: creatorTime, 
-                projectSearch: projectSearch, 
-                startDateAfter: null, 
-                endDateBefore: null, 
-                aPeriodOfTime: false, 
+                role: this.state.currentTab,
+                unit: organizationalUnit,
+                number: newCurrentPage,
+                perPage: perPage,
+                status: status,
+                priority: priority,
+                special: special,
+                name: name,
+                startDate: startDate,
+                endDate: endDate,
+                responsibleEmployees: responsibleEmployees,
+                accountableEmployees: accountableEmployees,
+                creatorEmployees: creatorEmployees,
+                creatorTime: creatorTime,
+                projectSearch: projectSearch,
+                startDateAfter: null,
+                endDateBefore: null,
+                aPeriodOfTime: false,
                 tags: tags
             }
             this.props.getPaginateTasks(data);
@@ -338,24 +338,24 @@ class TaskManagement extends Component {
         let { organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, responsibleEmployees, accountableEmployees, creatorEmployees, creatorTime, projectSearch, tags } = this.state;
 
         let data = {
-            role: this.state.currentTab, 
-            unit: organizationalUnit, 
-            number: 1, 
-            perPage: perPage, 
-            status: status, 
-            priority: priority, 
-            special: special, 
-            name: name, 
-            startDate: startDate, 
-            endDate: endDate, 
-            responsibleEmployees: responsibleEmployees, 
-            accountableEmployees: accountableEmployees, 
-            creatorEmployees: creatorEmployees, 
-            creatorTime: creatorTime, 
-            projectSearch: projectSearch, 
-            startDateAfter: null, 
-            endDateBefore: null, 
-            aPeriodOfTime: false, 
+            role: this.state.currentTab,
+            unit: organizationalUnit,
+            number: 1,
+            perPage: perPage,
+            status: status,
+            priority: priority,
+            special: special,
+            name: name,
+            startDate: startDate,
+            endDate: endDate,
+            responsibleEmployees: responsibleEmployees,
+            accountableEmployees: accountableEmployees,
+            creatorEmployees: creatorEmployees,
+            creatorTime: creatorTime,
+            projectSearch: projectSearch,
+            startDateAfter: null,
+            endDateBefore: null,
+            aPeriodOfTime: false,
             tags: tags
         }
 
@@ -385,24 +385,24 @@ class TaskManagement extends Component {
             })
         } else {
             let data = {
-                role: this.state.currentTab, 
-                unit: organizationalUnit, 
-                number: 1, 
-                perPage: perPage, 
-                status: status, 
-                priority: priority, 
-                special: special, 
-                name: name, 
-                startDate: startDate, 
-                endDate: endDate, 
-                responsibleEmployees: responsibleEmployees, 
-                accountableEmployees: accountableEmployees, 
-                creatorEmployees: creatorEmployees, 
-                creatorTime: creatorTime, 
-                projectSearch: projectSearch, 
-                startDateAfter: null, 
-                endDateBefore: null, 
-                aPeriodOfTime: false, 
+                role: this.state.currentTab,
+                unit: organizationalUnit,
+                number: 1,
+                perPage: perPage,
+                status: status,
+                priority: priority,
+                special: special,
+                name: name,
+                startDate: startDate,
+                endDate: endDate,
+                responsibleEmployees: responsibleEmployees,
+                accountableEmployees: accountableEmployees,
+                creatorEmployees: creatorEmployees,
+                creatorTime: creatorTime,
+                projectSearch: projectSearch,
+                startDateAfter: null,
+                endDateBefore: null,
+                aPeriodOfTime: false,
                 tags: tags
             }
 
@@ -619,10 +619,10 @@ class TaskManagement extends Component {
 
     render() {
         const { tasks, user, translate, project } = this.props;
-        const { currentTaskId, currentPage, currentTab, 
-            parentTask, startDate, endDate, perPage, 
-            status, monthTimeSheetLog, tableId, 
-            responsibleEmployees, creatorTime, 
+        const { currentTaskId, currentPage, currentTab,
+            parentTask, startDate, endDate, perPage,
+            status, monthTimeSheetLog, tableId,
+            responsibleEmployees, creatorTime,
             projectSearch, tags
         } = this.state;
 

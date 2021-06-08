@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { AuthActions } from '../../../modules/auth/redux/actions';
+import { isArray } from 'lodash';
 
 class ApiImage extends Component {
     static DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
@@ -78,15 +79,13 @@ class ApiImage extends Component {
             this.handleKeyDown(e, index);
         }
 
-        if (arrImageIndex && arrImageIndex.length > 0) {
-            document.addEventListener("keydown", handleKeyDown);
-        }
-
         if (showImg) {
             Swal.fire({
                 html:
-                    '<button type="button" role="button" style="visibility: hidden; padding: 5px 20px;" id ="showPrevious">' + '<' + '</button>' +
-                    '&emsp;' + '<button type="button" role="button" style="visibility: hidden;padding: 5px 20px;" id ="showNext">' + '>' + '</button>' + '<br/>' +
+                    '<button role="button" style="padding: 3px 15px;background-color: rgb(48, 133, 214);visibility:hidden" id ="showPrevious">'
+                    + '<i class="fa fa-long-arrow-left" style="font-size:17px;color:white">' + '</i>' + '</button>' + '&emsp;'
+                    + '<button role="button" style="padding: 3px 15px;background-color: rgb(48, 133, 214);visibility:hidden" id ="showNext">'
+                    + '<i class="fa fa-long-arrow-right" style="font-size:17px;color: white">' + '</i>' + '</button>' + '<br/>' +
                     '<br/>' + `<img src=${image} alt=${alt} style="max-width: 100%; max-height: 100%" />`,
                 width: 'auto',
                 stopKeydownPropagation: false,
@@ -119,20 +118,36 @@ class ApiImage extends Component {
         let showNext = document.getElementById("showNext");
         let showPrevious = document.getElementById("showPrevious");
 
-        if (haveNextImage) {
+        if (arrImageIndex && arrImageIndex.length > 0) {
+            document.addEventListener("keydown", handleKeyDown);
             showNext.style.visibility = "visible";
+            showPrevious.style.visibility = "visible";
+        }
+
+
+        if (haveNextImage) {
             showNext.addEventListener('click', showNextImage);
+        }
+        else {
+            showNext.disabled = true;
+            showNext.style.cursor = "not-allowed";
+            showNext.style.opacity = "0.6";
         }
 
         if (havePreviousImage) {
-            showPrevious.style.visibility = "visible";
             showPrevious.addEventListener('click', showPreviousImage);
+        }
+        else {
+            showPrevious.disabled = true;
+            showPrevious.style.cursor = "not-allowed";
+            showPrevious.style.opacity = "0.6";
         }
     }
 
     handleKeyDown = (e, index) => {
-        if (e.key === "ArrowLeft") this.showPreviousImage(index);
-        if (e.key === "ArrowRight") this.showNextImage(index);
+        const { arrImageIndex } = this.props;
+        if (e.key === "ArrowLeft" && index > arrImageIndex[0]) this.showPreviousImage(index);
+        if (e.key === "ArrowRight" && index < arrImageIndex[arrImageIndex.length - 1]) this.showNextImage(index);
         if (e.key === "Enter" || e.key === "Escape" || e.key === " " || e.key === "Spacebar") {
             e.preventDefault();
             Swal.close();
