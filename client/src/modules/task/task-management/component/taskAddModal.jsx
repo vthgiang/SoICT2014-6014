@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, QuillEditor } from '../../../../common-components';
+import { DialogModal, QuillEditor, convertImageBase64ToFile } from '../../../../common-components';
 import { getStorage } from '../../../../config';
 import { ProjectActions } from '../../../project/projects/redux/actions';
 import { taskManagementActions } from '../redux/actions';
@@ -64,7 +64,7 @@ function TaskAddModal(props) {
         const { newTask, startTime, endTime } = state;
         let startDateTask = convertDateTime(newTask.startDate, startTime);
         let endDateTask = convertDateTime(newTask.endDate, endTime);
-        let imageDescriptions = QuillEditor.convertImageBase64ToFile(newTask?.imgs)
+        let imageDescriptions = convertImageBase64ToFile(newTask?.imgs)
 
         let data = {
             ...newTask,

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 
-import { DialogModal, ErrorLabel, SelectBox, DatePicker, QuillEditor, TreeSelect, TimePicker } from '../../../../common-components/';
+import { DialogModal, ErrorLabel, SelectBox, DatePicker, QuillEditor, TreeSelect, TimePicker, convertImageBase64ToFile } from '../../../../common-components/';
 import { getStorage } from "../../../../config";
 
 import { UserActions } from "../../../super-admin/user/redux/actions";
@@ -852,7 +852,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
         }
         let startDateTask = this.convertDateTime(this.state.startDate, this.state.startTime);
         let endDateTask = this.convertDateTime(this.state.endDate, this.state.endTime);
-        let imageDescriptions = QuillEditor.convertImageBase64ToFile(this.state.taskDescriptionImages)
+        let imageDescriptions = convertImageBase64ToFile(this.state.taskDescriptionImages)
 
         let data = {
             listInfo: this.state.listInfo,
