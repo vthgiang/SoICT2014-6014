@@ -1,3 +1,24 @@
+/* css nút chọn file */
+div.upload {
+    position: relative;
+    overflow: hidden;
+}
+input.upload {
+    position: absolute;
+    font-size: 50px;
+    opacity: 0;
+    right: 0;
+    top: 0;
+}
+input#file {
+    position: absolute;
+    font-size: 50px;
+    opacity: 0;
+    right: 0;
+    top: 0;
+}
+
+/* css danh sách file */
 .list-upload-file-cmc{
     border: 1px solid  #3c8dbc;
     padding: 10px 10px 0px 10px;
