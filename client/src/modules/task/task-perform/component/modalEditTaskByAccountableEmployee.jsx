@@ -155,7 +155,7 @@ function ModalEditTaskByAccountableEmployee(props) {
     }
 
     useEffect(() => {
-        props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
+        props.getAllUserInAllUnitsOfCompany();
         // unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime = false, calledId = null
         props.getPaginateTasksByUser([], "1", "5", [], [], [], null, null, null, null, null, false, "listSearch");
     }, [])
@@ -979,11 +979,11 @@ function ModalEditTaskByAccountableEmployee(props) {
         { value: "canceled", text: translate('task.task_management.canceled') },
     ];
 
-    let usersOfChildrenOrganizationalUnit;
-    if (user && user.usersOfChildrenOrganizationalUnit) {
-        usersOfChildrenOrganizationalUnit = user.usersOfChildrenOrganizationalUnit;
+    let usersInUnitsOfCompany;
+    if (user && user.usersInUnitsOfCompany) {
+        usersInUnitsOfCompany = user.usersInUnitsOfCompany;
     }
-    let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
+    let unitMembers = getEmployeeSelectBoxItems(usersInUnitsOfCompany);
     let listDepartment = department?.list;
 
     return (
