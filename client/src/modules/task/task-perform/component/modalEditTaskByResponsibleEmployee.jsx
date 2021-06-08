@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 
-import { DialogModal, ErrorLabel, QuillEditor, TreeSelect } from '../../../../common-components/';
+import { DialogModal, ErrorLabel, QuillEditor, TreeSelect, convertImageBase64ToFile } from '../../../../common-components/';
 import { getStorage } from "../../../../config";
 
 import { TaskInformationForm } from './taskInformationForm';
@@ -388,7 +388,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
 
     save = () => {
         let taskId = this.props.id;
-        let imageDescriptions = QuillEditor.convertImageBase64ToFile(this.state.taskDescriptionImages)
+        let imageDescriptions = convertImageBase64ToFile(this.state.taskDescriptionImages)
 
         let data = {
             listInfo: this.state.listInfo,
