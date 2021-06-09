@@ -671,7 +671,7 @@ function DashboardUnitForAdmin(props) {
                                 <div className="box box-primary">
                                     <div className="box-header with-border">
                                         <div className="box-title">
-                                            {translate('dashboard_unit.statistics_task_unit')}
+                                            {translate('dashboard_unit.statistics_task_unit')} {monthTitle}
                                             {
                                                 organizationalUnits && organizationalUnits.length < 2 ?
                                                     <>
@@ -715,7 +715,7 @@ function DashboardUnitForAdmin(props) {
                                     <div className="box-body">
                                         {
                                             organizationalUnits &&
-                                            <StatisticsKpiUnits organizationalUnitIds={organizationalUnits} monthStatistics={month} type="for-admin"/>
+                                            <StatisticsKpiUnits organizationalUnitIds={organizationalUnits} month={month} type="for-admin"/>
                                         }
                                     </div>
                                 </div>

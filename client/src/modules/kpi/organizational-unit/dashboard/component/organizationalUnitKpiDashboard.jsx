@@ -20,22 +20,19 @@ import { showListInSwal } from '../../../../../helpers/showListInSwal';
 function OrganizationalUnitKpiDashboard(props) {
     const today = new Date();
 
-    const DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
-    const DATA_SEARCH = {
-        organizationalUnitId: null,
-        month: today.getFullYear() + '-' + (today.getMonth() + 1),
-        date: (today.getMonth() + 1) + '-' + today.getFullYear(),
-    };
-
     const [state, setState] = useState({
         currentRole: null,
-        organizationalUnitId: DATA_SEARCH.organizationalUnitId,
+        organizationalUnitId: null,
 
         currentYear: new Date().getFullYear(),
-        month: DATA_SEARCH.month,
-        date: DATA_SEARCH.date,
+        month: today.getFullYear() + '-' + (today.getMonth() + 1),
+        date: (today.getMonth() + 1) + '-' + today.getFullYear(),
 
-        dataStatus: DATA_STATUS.NOT_AVAILABLE,
+        infoSearch: {
+            organizationalUnitId: null,
+            month: today.getFullYear() + '-' + (today.getMonth() + 1),
+            date: (today.getMonth() + 1) + '-' + today.getFullYear(),
+        },
 
         childUnitChart: 1,
     });
@@ -46,36 +43,21 @@ function OrganizationalUnitKpiDashboard(props) {
         setState( {
             ...state,
             currentRole: localStorage.getItem('currentRole'),
-            dataStatus: DATA_STATUS.QUERYING
         })
     },[]);
 
     useEffect(() => {
-        if (state.currentRole !== localStorage.getItem('currentRole')) {
-            props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
-
-            setState( {
+        if (props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
+            setState({
                 ...state,
-                dataStatus: DATA_STATUS.QUERYING,
-                organizationalUnitId: null,
-                childUnitChart: 1
-            });
-
-        }
-    }, [state.currentRole])
-
-    useEffect(() => {
-
-        if (state.dataStatus === DATA_STATUS.QUERYING) {
-            if (props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
-                setState({
-                    ...state,
-                    dataStatus: DATA_STATUS.AVAILABLE,
+                organizationalUnitId: props.dashboardEvaluationEmployeeKpiSet?.childrenOrganizationalUnit?.id,
+                infoSearch: {
+                    ...state.infoSearch,
                     organizationalUnitId: props.dashboardEvaluationEmployeeKpiSet?.childrenOrganizationalUnit?.id,
-                })
-            }
+                }
+            })
         }
-    });
+    }, [JSON.stringify(props.dashboardEvaluationEmployeeKpiSet?.childrenOrganizationalUnit)]);
 
     const handleSelectTypeChildUnit = (value) => {
         setState( {
@@ -85,21 +67,33 @@ function OrganizationalUnitKpiDashboard(props) {
     };
 
     const handleSelectOrganizationalUnitId = (value) => {
-        DATA_SEARCH.organizationalUnitId = value[0];
+        setState({
+            ...state,
+            infoSearch: {
+                ...state.infoSearch,
+                organizationalUnitId: value[0]
+            }
+        })
     };
 
     const handleSelectMonth = async (value) => {
         let month = value.slice(3, 7) + '-' + value.slice(0, 2);
-        DATA_SEARCH.month = month;
-        DATA_SEARCH.date = value;
+        setState({
+            ...state,
+            infoSearch: {
+                ...state.infoSearch,
+                month: month,
+                date: value
+            }
+        })
     };
 
     const handleSearchData = () => {
         setState( {
             ...state,
-            organizationalUnitId: DATA_SEARCH.organizationalUnitId,
-            month: DATA_SEARCH.month,
-            date: DATA_SEARCH.date
+            organizationalUnitId: state?.infoSearch?.organizationalUnitId,
+            month: state?.infoSearch?.month,
+            date: state?.infoSearch?.date
         })
     };
 
@@ -151,7 +145,7 @@ function OrganizationalUnitKpiDashboard(props) {
         month, date, resultsOfOrganizationalUnitKpiChartData,
         resultsOfAllOrganizationalUnitsKpiChartData,
         statisticsOfOrganizationalUnitKpiResultChartData,
-        organizationalUnitOfChartAllKpis,
+        organizationalUnitOfChartAllKpis, infoSearch
     } = state;
     let childOrganizationalUnit, childrenOrganizationalUnit, childrenOrganizationalUnitLoading;
     let organizationalUnitSelectBox, typeChartSelectBox, currentOrganizationalUnit;
@@ -253,7 +247,7 @@ function OrganizationalUnitKpiDashboard(props) {
                                     items={organizationalUnitSelectBox}
                                     multiple={false}
                                     onChange={handleSelectOrganizationalUnitId}
-                                    value={DATA_SEARCH.organizationalUnitId}
+                                    value={infoSearch?.organizationalUnitId}
                                 />
                             </div>
                             }
@@ -268,7 +262,7 @@ function OrganizationalUnitKpiDashboard(props) {
                                 />
                             </div>
 
-                            <button type="button" className="btn btn-success" onClick={handleSearchData}>{translate('kpi.evaluation.dashboard.analyze')}</button>
+                            <button type="button" className="btn btn-success" onClick={() => handleSearchData()}>{translate('kpi.evaluation.dashboard.analyze')}</button>
                         </div>
                     </div>
 
@@ -305,10 +299,10 @@ function OrganizationalUnitKpiDashboard(props) {
                                         JSON.stringify({
                                             organizationalUnit: organizationalUnitIds,
                                             status: ["0"],
-                                            startDate: state.endMonth,
-                                            endDate: state.endMonth,
-                                            startDateDefault: [state?.endMonth?.slice(5), state?.endMonth?.slice(0, 4)].join('-'),
-                                            endDateDefault: [state?.endMonth?.slice(5), state?.endMonth?.slice(0, 4)].join('-')
+                                            startDate: state.month,
+                                            endDate: state.month,
+                                            defaultStartDate: [state?.month?.slice(5), state?.month?.slice(0, 4)].join('-'),
+                                            defaultEndDate: [state?.month?.slice(5), state?.month?.slice(0, 4)].join('-')
                                         }))} 
                                         target="_blank" rel="noopener noreferrer"
                                     >
@@ -328,10 +322,10 @@ function OrganizationalUnitKpiDashboard(props) {
                                         JSON.stringify({
                                             organizationalUnit: organizationalUnitIds,
                                             status: ["1"],
-                                            startDate: state.endMonth,
-                                            endDate: state.endMonth,
-                                            startDateDefault: [state?.endMonth?.slice(5), state?.endMonth?.slice(0, 4)].join('-'),
-                                            endDateDefault: [state?.endMonth?.slice(5), state?.endMonth?.slice(0, 4)].join('-')
+                                            startDate: state.month,
+                                            endDate: state.month,
+                                            defaultStartDate: [state?.month?.slice(5), state?.month?.slice(0, 4)].join('-'),
+                                            defaultEndDate: [state?.month?.slice(5), state?.month?.slice(0, 4)].join('-')
                                         }))} 
                                         target="_blank" rel="noopener noreferrer"
                                     >
@@ -346,11 +340,14 @@ function OrganizationalUnitKpiDashboard(props) {
                         <div className="col-md-12">
                             <div className="box box-primary">
                                 <div className="box-header with-border">
-                                    <div className="box-title">Biểu đồ thống kê điểm KPI giữa các đơn vị</div>
+                                    <div className="box-title">Biểu đồ thống kê điểm KPI giữa các đơn vị {translate('general.month')} {date}</div>
                                 </div>
                                 {
                                     organizationalUnitIds &&
-                                    <StatisticsKpiUnits organizationalUnitIds={organizationalUnitIds} />
+                                    <StatisticsKpiUnits 
+                                        organizationalUnitIds={organizationalUnitIds} 
+                                        month={month}
+                                    />
                                 }
                             </div>
                         </div>
@@ -409,7 +406,7 @@ function OrganizationalUnitKpiDashboard(props) {
                                         <div className="box-title">{translate('kpi.organizational_unit.dashboard.distributive')} {currentOrganizationalUnit} {translate('general.month')} {date}</div>
                                     </div>
                                     <div className="box-body">
-                                        {childOrganizationalUnit && (state.dataStatus === DATA_STATUS.AVAILABLE)
+                                        {childOrganizationalUnit 
                                         &&
                                         <DistributionOfOrganizationalUnitKpiChart
                                             organizationalUnitId={organizationalUnitId}
@@ -459,13 +456,11 @@ function OrganizationalUnitKpiDashboard(props) {
                                         {resultsOfOrganizationalUnitKpiChartData && <ExportExcel type="link" id="export-organizational-unit-kpi-results-chart" exportData={resultsOfOrganizationalUnitKpiChartData} style={{ marginLeft: 10 }} />}
                                     </div>
                                     <div className="box-body qlcv">
-                                        {(state.dataStatus === DATA_STATUS.AVAILABLE) &&
                                         <ResultsOfOrganizationalUnitKpiChart
                                             organizationalUnitId={organizationalUnitId}
                                             organizationalUnit={childOrganizationalUnit}
                                             onDataAvailable={handleResultsOfOrganizationalUnitKpiChartDataAvailable}
                                         />
-                                        }
                                     </div>
                                 </div>
                             </div>

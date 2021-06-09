@@ -1,17 +1,16 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux';
 import arrayToTree from 'array-to-tree';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { managerActions } from '../../management/redux/actions';
 
-import { DatePicker, ToolTip } from '../../../../../common-components'
+import { ToolTip } from '../../../../../common-components'
 
 import './kpiUnit.css';
 
 const StatisticsKpiUnits = (props) => {
     const { translate, managerKpiUnit, auth } = props;
-    const { type } = props
     const KIND_OF_POINT = { AUTOMATIC: 1, EMPLOYEE: 2, APPROVED: 3 };
     const [state, setState] = useState(() => {
         let d = new Date(),
@@ -26,13 +25,10 @@ const StatisticsKpiUnits = (props) => {
 
         return {
             role: localStorage.getItem('currentRole'),
-            date: new Date([year, endMonth].join('-')),
-            defaultDate: [endMonth, year].join('-')
         }
     });
-    const { role, date, defaultDate } = state;
+    const { role } = state;
     const [kindOfPoint, setKindOfPoint] = useState(KIND_OF_POINT.AUTOMATIC)
-    const monthRef = useRef(date)
 
     useEffect(() => {
         let infoSearch = {
@@ -41,12 +37,12 @@ const StatisticsKpiUnits = (props) => {
             status: -1,
             perPage: 10000,
             page: 1,
-            startDate: date,
-            endDate: date,
+            startDate: props.month,
+            endDate: props.month,
         };
 
         props.getAllKPIUnit(infoSearch);
-    }, [JSON.stringify(props.organizationalUnitIds)])
+    }, [JSON.stringify(props.organizationalUnitIds), JSON.stringify(props.month)])
 
     const showNodeContent = (translate, data, kindOfPoint) => {
         let pointShow, titleShow;
@@ -118,34 +114,10 @@ const StatisticsKpiUnits = (props) => {
         setKindOfPoint(Number(value))
     };
 
-    const handleSelectDateStatistics = (date) => {
-        let month = date.slice(3, 7) + '-' + date.slice(0, 2);
-        monthRef.current = month
-    };
-
-    const handleSearchKpiUnits = () => {
-        setState({
-            ...state,
-            date: monthRef.current
-        })
-
-        let infoSearch = {
-            organizationalUnit: props.organizationalUnitIds,
-            role: role,
-            status: -1,
-            perPage: 10000,
-            page: 1,
-            startDate: monthRef.current,
-            endDate: monthRef.current,
-        };
-
-        props.getAllKPIUnit(infoSearch);
-    };
-
     const handleRefreshKpiUnits = () => {
         let kpiUnitSet = managerKpiUnit?.kpis?.map(item => item?._id)
 
-        props.calculateKPIUnit(kpiUnitSet, date);
+        props.calculateKPIUnit(kpiUnitSet, props.month);
     };
 
     const checkHasComponent = (name) => {
@@ -176,25 +148,6 @@ const StatisticsKpiUnits = (props) => {
 
     return (
         <div className="box-body">
-            <div className="form-inline">
-                {
-                    !(type === "for-admin")
-                    && <>
-                        <label style={{ width: 'auto', marginRight: '10px' }}>Tháng</label>
-                        <div className="form-group" style={{ marginRight: '10px' }}>
-                            <DatePicker
-                                id="monthFilterResultKpi"
-                                dateFormat="month-year"
-                                value={defaultDate}
-                                onChange={handleSelectDateStatistics}
-                                disabled={false}
-                            />
-                        </div>
-                        <button type="button" className="btn btn-success" onClick={handleSearchKpiUnits} >{translate('kpi.evaluation.employee_evaluation.search')}</button>
-                    </>
-                }
-            </div>
-
             <section className="box-body" style={{ textAlign: "right" }}>
                 <div className="btn-group">
                     <button type="button"
