@@ -589,14 +589,67 @@ class TaskManagement extends Component {
 
     checkTaskRequestToClose = (task) => {
         const { translate } = this.props;
+        let statusColor = "";
+        switch (task.status) {
+            case "inprocess":
+                statusColor = "#385898";
+                break;
+            case "canceled":
+                statusColor = "#e86969";
+                break;
+            case "delayed":
+                statusColor = "#db8b0b";
+                break;
+            case "finished":
+                statusColor = "#31b337";
+                break;
+            default:
+                statusColor = "#333";
+        }
         if (task.requestToCloseTask && task.requestToCloseTask.requestStatus === 1) {
-            return `${translate('task.task_management.inprocess')} - ${translate('task.task_management.requested_to_close')} `
-        } else {
-            return formatStatus(translate, task.status)
+            return (
+                <div>
+                    <span style={{ color: "#385898" }}>{translate('task.task_management.inprocess')}</span>&nbsp; - &nbsp;
+                    <span style={{ color: "#333" }}>{translate('task.task_management.requested_to_close')}</span>
+                </div>
+            )
+        }
+        else {
+            return (
+                <div>
+                    <span style={{ color: statusColor }}>{formatStatus(translate, task.status)}</span>
+                </div>
+            )
         }
     }
 
-    convertDataProgress = (progress = 0, startDate, endDate) => {
+    convertPriorityData = (priority) => {
+        const { translate } = this.props;
+        let priorityColor = "";
+        switch (priority) {
+            case 5:
+                priorityColor = "#ff0707";
+                break;
+            case 4:
+                priorityColor = "#ff5707";
+                break;
+            case 3:
+                priorityColor = "#28A745";
+                break;
+            case 2:
+                priorityColor = "#ffa707";
+                break;
+            default:
+                priorityColor = "#808080"
+        }
+        return (
+            <div >
+                <span style={{ color: priorityColor }}> {formatPriority(translate, priority)}</span>
+            </div>
+        )
+    }
+
+    convertProgressData = (progress = 0, startDate, endDate) => {
         let now = moment(new Date());
         let end = moment(endDate);
         let start = moment(startDate);
@@ -607,11 +660,9 @@ class TaskManagement extends Component {
         else if (period * progress / 100 - upToNow >= 0) barColor = "lime";
         else barColor = "gold";
         return (
-            <div >
-                <div className="progress" style={{ backgroundColor: 'rgb(221, 221, 221)', textAlign: "right", borderRadius: '3px', position: 'relative' }}>
-                    <span style={{ position: 'absolute', right: '1px', fontSize: '13px', marginRight: '5px' }}>{progress + '%'}</span>
-                    <div role="progressbar" className="progress-bar" aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100} style={{ width: `${progress + '%'}`, maxWidth: "100%", minWidth: "0%", backgroundColor: barColor }} >
-                    </div>
+            <div className="progress" style={{ backgroundColor: 'rgb(221, 221, 221)', textAlign: "right", borderRadius: '3px', position: 'relative' }}>
+                <span style={{ position: 'absolute', right: '1px', fontSize: '13px', marginRight: '5px' }}>{progress + '%'}</span>
+                <div role="progressbar" className="progress-bar" aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100} style={{ width: `${progress + '%'}`, maxWidth: "100%", minWidth: "0%", backgroundColor: barColor }} >
                 </div>
             </div>
         )
@@ -663,14 +714,14 @@ class TaskManagement extends Component {
                     description: dataTemp[n].description ? parse(dataTemp[n].description) : null,
                     organization: dataTemp[n].organizationalUnit ? dataTemp[n].organizationalUnit.name : translate('task.task_management.err_organizational_unit'),
                     project: dataTemp[n].taskProject ? getProjectName(dataTemp[n].taskProject, project.data && project.data.list) : null,
-                    priority: formatPriority(translate, dataTemp[n].priority),
+                    priority: this.convertPriorityData(dataTemp[n].priority),
                     responsibleEmployees: dataTemp[n].responsibleEmployees ? dataTemp[n].responsibleEmployees.map(o => o.name).join(', ') : null,
                     accountableEmployees: dataTemp[n].accountableEmployees ? dataTemp[n].accountableEmployees.map(o => o.name).join(', ') : null,
                     creatorEmployees: dataTemp[n].creator ? dataTemp[n].creator.name : null,
                     startDate: getFormatDateFromTime(dataTemp[n].startDate, 'dd-mm-yyyy'),
                     endDate: getFormatDateFromTime(dataTemp[n].endDate, 'dd-mm-yyyy'),
                     status: this.checkTaskRequestToClose(dataTemp[n]),
-                    progress: this.convertDataProgress(dataTemp[n].progress, dataTemp[n].startDate, dataTemp[n].endDate),
+                    progress: this.convertProgressData(dataTemp[n].progress, dataTemp[n].startDate, dataTemp[n].endDate),
                     totalLoggedTime: getTotalTimeSheetLogs(dataTemp[n].timesheetLogs),
                     parent: dataTemp[n].parent ? dataTemp[n].parent._id : null
                 }

@@ -82,9 +82,9 @@ class ApiImage extends Component {
         if (showImg) {
             Swal.fire({
                 html:
-                    '<button role="button" style="padding: 3px 15px;background-color: rgb(48, 133, 214);visibility:hidden" id ="showPrevious">'
+                    '<button class="btn" role="button" style="padding: 3px 15px;background-color: rgb(48, 133, 214);visibility:hidden" id ="showPrevious">'
                     + '<i class="fa fa-long-arrow-left" style="font-size:17px;color:white">' + '</i>' + '</button>' + '&emsp;'
-                    + '<button role="button" style="padding: 3px 15px;background-color: rgb(48, 133, 214);visibility:hidden" id ="showNext">'
+                    + '<button class="btn" role="button" style="padding: 3px 15px;background-color: rgb(48, 133, 214);visibility:hidden" id ="showNext">'
                     + '<i class="fa fa-long-arrow-right" style="font-size:17px;color: white">' + '</i>' + '</button>' + '<br/>' +
                     '<br/>' + `<img src=${image} alt=${alt} style="max-width: 100%; max-height: 100%" />`,
                 width: 'auto',
