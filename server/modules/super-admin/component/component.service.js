@@ -9,7 +9,6 @@ exports.getComponents = async (portal, query) => {
     
     let optionExpression = (type === 'active') ? {deleteSoft: false} : {};
 
-
     if (!page && !limit && !currentRole && !linkId){
         return await Component(connect(DB_CONNECTION, portal))
             .find(optionExpression)
