@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { getStorage } from '../../../../config';
-import { ErrorLabel, DatePicker, SelectBox, QuillEditor, TimePicker } from '../../../../common-components/index';
+import { ErrorLabel, DatePicker, SelectBox, QuillEditor, TimePicker, ShowMoreShowLess } from '../../../../common-components/index';
 import { performTaskAction } from '../redux/actions';
 import { managerKpiActions } from '../../../kpi/employee/management/redux/actions';
 import { TaskInformationForm } from './taskInformationForm';
@@ -1084,11 +1084,9 @@ function EvaluateByAccountableEmployee(props) {
     // hàm cập nhật tùy chọn trạng thái lấy thông tin công việc
     const handleChangeSaveInfo = async (e) => {
         let { checked } = e.target;
-        await setState(state => {
-            return {
-                ...state,
-                checkSave: checked,
-            }
+        await setState({
+            ...state,
+            checkSave: checked,
         });
     }
 
@@ -1802,18 +1800,23 @@ function EvaluateByAccountableEmployee(props) {
                                         <strong>{translate('task.task_management.action_not_rating')}:&nbsp;&nbsp;</strong>
                                         {
                                             actionsNotRating?.length === 0 ? translate('task.task_management.no_action') :
-                                                actionsNotRating?.map((item, index) => (
-                                                    <div>
-                                                        <span key={index}>
-                                                            ({index + 1})&nbsp;&nbsp;
-                                                        <QuillEditor
-                                                                id={`evaluateByAccountable${item._id}${props.id}`}
-                                                                quillValueDefault={item.description}
-                                                                isText={true}
-                                                            />
-                                                        </span>
-                                                    </div>
-                                                ))
+                                                <ShowMoreShowLess
+                                                    id={`actionsNotRating${id}`}
+                                                    styleShowMoreLess={{ display: "inline-block", marginBottom: 15, marginTop: 15 }}
+                                                >
+                                                    {actionsNotRating?.map((item, index) => (
+                                                        <div className={`item-box ${index > 3 ? "hide-component" : ""}`}>
+                                                            <span key={index}>
+                                                                ({index + 1})&nbsp;&nbsp;
+                                                                <QuillEditor
+                                                                    id={`evaluateByAccountable${item._id}${props.id}`}
+                                                                    quillValueDefault={item.description}
+                                                                    isText={true}
+                                                                />
+                                                            </span>
+                                                        </div>
+                                                    ))}
+                                                </ShowMoreShowLess>
                                         }
                                     </div>
                                 </div>
