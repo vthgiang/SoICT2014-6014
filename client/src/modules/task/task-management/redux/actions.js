@@ -564,7 +564,7 @@ function addProjectTask(task) {
 function getTasksByProject(projectId, page = undefined, perPage = undefined) {
     if (!page && !perPage) {
         return dispatch => {
-            dispatch({ 
+            dispatch({
                 type: taskManagementConstants.GETTASK_BYPROJECT_REQUEST,
             });
             taskManagementService.getTasksByProject(projectId)
@@ -580,7 +580,7 @@ function getTasksByProject(projectId, page = undefined, perPage = undefined) {
         };
     }
     return dispatch => {
-        dispatch({ 
+        dispatch({
             type: taskManagementConstants.GETTASK_BYPROJECT_PAGINATE_REQUEST,
         });
         taskManagementService.getTasksByProject(projectId, page, perPage)

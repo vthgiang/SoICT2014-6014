@@ -959,7 +959,7 @@ const AddProjectTaskForm = (props) => {
                                 {getProjectParticipants(projectDetail) &&
                                     <SelectBox
                                         id={`responsible-select-box${newTask.taskTemplate}-${id}`}
-                                        className="form-control select2"
+                                        className="form-control select"
                                         style={{ width: "100%" }}
                                         items={getProjectParticipants(projectDetail)}
                                         onChange={handleChangeTaskResponsibleEmployees}
@@ -976,7 +976,7 @@ const AddProjectTaskForm = (props) => {
                                 {getProjectParticipants(projectDetail) &&
                                     <SelectBox
                                         id={`accounatable-select-box${newTask.taskTemplate}-${id}`}
-                                        className="form-control select2"
+                                        className="form-control select"
                                         style={{ width: "100%" }}
                                         items={getProjectParticipants(projectDetail)}
                                         onChange={handleChangeTaskAccountableEmployees}
