@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import { connect } from 'react-redux';
 import { DataTableSetting, DatePicker, PaginateBar, SelectBox, SelectMulti, Tree, TreeTable, ExportExcel, DeleteNotification } from '../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
@@ -160,10 +160,6 @@ const TableTasksProject = (props) => {
         return null;
     }
 
-    useEffect(() => {
-        props.getTasksByProject(currentProjectId, page, perPage);
-    }, [tasks.tasksbyproject])
-
     return (
         <React.Fragment>
             {
@@ -260,3 +256,8 @@ const mapDispatchToProps = {
     startTimer: performTaskAction.startTimerTask,
 }
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(TableTasksProject));
+// export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(
+//     memo(TableTasksProject, (prev, next) => {
+//         return prev.tasks.tasksbyproject === next.tasks.tasksbyproject
+//     })
+// ));

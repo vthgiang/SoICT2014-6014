@@ -134,7 +134,9 @@ const ProjectDetailPage = (props) => {
                                 <div className="pull-right" style={{ marginTop: 15, marginRight: 10 }}>
                                     <button title="Tải lại danh sách công việc" type="button" className="pull-right"
                                         style={{ display: 'flex', height: 35, justifyContent: 'center', alignItems: 'center' }}
-                                        onClick={() => props.getTasksByProject(currentProjectId)}
+                                        onClick={() => {
+                                            props.getTasksByProject(currentProjectId)
+                                        }}
                                     >
                                         <span className="material-icons">refresh</span>
                                     </button>
@@ -167,15 +169,13 @@ const ProjectDetailPage = (props) => {
                                 {
                                     projectDetail?.projectType === 2 &&
                                     currentProjectTasks && currentProjectTasks.length > 0 &&
-                                    <TaskProjectAddModal onHandleReRender={onHandleReRender} currentProjectTasks={currentProjectTasks} parentTask={parentTask} />
-                                }
-                                {
-                                    projectDetail?.projectType === 2 &&
-                                    currentProjectTasks && currentProjectTasks.length > 0 &&
-                                    <button type="button" className="btn btn-success pull-right" onClick={handleOpenCreateProjectTask}
-                                        title={`Tạo công việc mới bằng tay`}>
-                                        Tạo công việc mới bằng tay
+                                    <>
+                                        <TaskProjectAddModal onHandleReRender={onHandleReRender} currentProjectTasks={currentProjectTasks} parentTask={parentTask} />
+                                        <button type="button" className="btn btn-success pull-right" onClick={handleOpenCreateProjectTask}
+                                            title={`Tạo công việc mới bằng tay`}>
+                                            Tạo công việc mới bằng tay
                                     </button>
+                                    </>
                                 }
                             </div>
                         </div>

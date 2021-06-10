@@ -595,7 +595,6 @@ export function tasks(state = {
         case taskManagementConstants.GETTASK_BYPROJECT_REQUEST:
             return {
                 ...state,
-                tasksbyproject: null,
                 isLoading: true
             };
         case taskManagementConstants.GETTASK_BYPROJECT_SUCCESS:
