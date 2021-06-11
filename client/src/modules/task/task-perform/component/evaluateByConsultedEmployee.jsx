@@ -538,7 +538,7 @@ function EvaluateByConsultedEmployee(props) {
 
     const convertDateTime = (date, time) => {
         let splitter = date.split("-");
-        let strDateTime = `${splitter[2]}-${splitter[1]}-${splitter[0]} ${time}`;
+        let strDateTime = `${splitter[2]}/${splitter[1]}/${splitter[0]} ${time}`;
         return new Date(strDateTime);
     }
 
