@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 
-import { DialogModal, ErrorLabel, SelectBox, DatePicker, QuillEditor, TreeSelect, TimePicker, convertImageBase64ToFile } from '../../../../common-components/';
+import { DialogModal, ErrorLabel, SelectBox, DatePicker, QuillEditor, TreeSelect, TimePicker, convertImageBase64ToFile, ToolTip } from '../../../../common-components/';
 import { getStorage } from "../../../../config";
 
 import { UserActions } from "../../../super-admin/user/redux/actions";
@@ -1026,7 +1026,12 @@ function ModalEditTaskByAccountableEmployee(props) {
                                     <ErrorLabel content={errorTaskDescription} />
                                 </div>
                                 <div className="form-group">
-                                    <label>{translate('task.task_management.add_parent_task')}</label>
+                                    <label>{translate('task.task_management.add_parent_task')}
+                                        <ToolTip
+                                            type={"icon_tooltip"}
+                                            dataTooltip={[translate('task.task_management.search_task_by_typing')]}
+                                        />
+                                    </label>
                                     <SelectBox
                                         id={`select-parent-${perform}-${role}`}
                                         className="form-control select2"
