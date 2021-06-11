@@ -24,12 +24,15 @@
 }
 
 .timesheet-box .time {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     font-size: 1.4em;
     font-weight: bold;
 }
 
 .timesheet-box .task-name{
-    margin-top: 5px;
+    margin-top: 10px;
     text-align: center;
     margin-bottom: 15px;
     font-size: 16px;
