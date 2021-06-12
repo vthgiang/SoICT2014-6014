@@ -25,7 +25,6 @@
 
 .timesheet-box .time {
     display: flex;
-    align-items: center;
     justify-content: space-between;
     font-size: 1.4em;
     font-weight: bold;

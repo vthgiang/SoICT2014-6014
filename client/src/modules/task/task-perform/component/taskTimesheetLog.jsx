@@ -45,6 +45,7 @@ class TaskTimesheetLog extends Component {
             showInputs: false
         })
     }
+
     componentDidMount = () => {
         this.setState({ showEndDate: false });
         this.callApi();
@@ -354,13 +355,14 @@ class TaskTimesheetLog extends Component {
                                     </span>
                                     <span>&nbsp;&nbsp; {this.showTiming(a)}</span>
                                 </div>
-                                <div style={{ display: 'flex' }}>
-                                    {
-                                        this.state.showModal === auth.user.id &&
-                                        <i style={{ cursor: 'pointer', marginRight: '20px', color: "#385899" }} className="fa fa-window-minimize" aria-hidden="true" onClick={this.resumeTimer}></i>
-                                    }
-                                    <a style={{}} href={`/task?taskId=${currentTimer._id}`}><i className="fa fa-arrow-circle-right"></i></a>
-                                </div>
+                                {
+                                    this.state.showModal === auth.user.id &&
+                                    <i style={{ cursor: 'pointer', color: "#385899", fontSize: '14px' }} className="fa fa-window-minimize" aria-hidden="true" onClick={this.resumeTimer}></i>
+                                }
+                                {
+                                    (this.state.showModal === auth.user.id) === false &&
+                                    <a href={`/task?taskId=${currentTimer._id}`}><i className="fa fa-arrow-circle-right"></i></a>
+                                }
                             </div>
                             {this.state.showModal === auth.user.id &&
                                 <React.Fragment>
