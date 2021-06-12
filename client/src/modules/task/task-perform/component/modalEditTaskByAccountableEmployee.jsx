@@ -646,15 +646,16 @@ function ModalEditTaskByAccountableEmployee(props) {
             let endDate = convertDateTime(state.endDate, state.endTime);
             if (startDate > endDate) {
                 msg = translate('task.task_management.add_err_end_date');
+            } else {
+                if (state.errorOnEndDate)
+                    state.errorOnEndDate = undefined
             }
         }
         if (willUpdateState) {
-            setState(state => {
-                return {
-                    ...state,
-                    startDate: value,
-                    errorOnStartDate: msg,
-                };
+            setState({
+                ...state,
+                startDate: value,
+                errorOnStartDate: msg
             });
         }
         return msg === undefined;
@@ -674,11 +675,14 @@ function ModalEditTaskByAccountableEmployee(props) {
             let endDate = convertDateTime(value, state.endTime);
             if (startDate > endDate) {
                 msg = translate('task.task_management.add_err_end_date');
+            } else {
+                if (state.errorOnStartDate)
+                    state.errorOnStartDate = undefined
             }
         }
         if (willUpdateState) {
-            state.endDate = value;
-            state.errorOnEndDate = msg;
+            state.endDate = value
+            state.errorOnEndDate = msg
             setState({
                 ...state,
             });
@@ -734,7 +738,7 @@ function ModalEditTaskByAccountableEmployee(props) {
         }
         return errorMessage === undefined;
     }
-
+    console.log("state", state)
     const isFormValidated = () => {
         let { info, errorInfo } = state;
         let check = true;
