@@ -34,6 +34,7 @@ function MapContainer(props) {
         }
         delayLoadDirect.current = setTimeout(() =>{
         if (!currentMap.current){
+            if (!mapContainer.current) return;
             let center = {
                 lat: 21.022177879987648, 
                 lng: 105.81717955779875
@@ -193,7 +194,7 @@ function MapContainer(props) {
         }
         
             }, 2000)   
-    }, [props])
+    }, [props,  mapContainer.current])
 
     useEffect(() => {     
         if (currentMap.current){
