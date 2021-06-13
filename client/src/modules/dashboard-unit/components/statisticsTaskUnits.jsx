@@ -71,7 +71,7 @@ function StatisticsTaskUnits (props) {
                         <div className="fillmult" data-width={`${pointShow}%`} style={{ width: `${pointShow}%`, backgroundColor: pointShow < 50 ? "#dc0000" : "rgb(76 179 99)" }}></div>
                         <a title={titleShow} className="perc">{`${!pointShow && pointShow !== 0 ? translate('kpi.evaluation.employee_evaluation.not_avaiable') : pointShow + '/100'}`}</a>
                     </div>
-                    <a className="kpi-number-target" data-toggle="modal" data-target="#modal-task-detail" data-backdrop="static" data-keyboard="false" onClick={() => handleShowTask(data.tasks)} style={{ fontSize: "13px", cursor: "pointer" }}>{translate('kpi.organizational_unit.dashboard.trend_chart.amount_tasks')}: {data?.tasks?.length}</a>
+                    <a className="kpi-number-target" data-toggle="modal" data-target="#modal-task-detail" data-backdrop="static" data-keyboard="false" onClick={() => handleShowTask(data.tasks)} style={{ fontSize: "12px", fontWeight: "600", cursor: "pointer" }}>{translate('kpi.organizational_unit.dashboard.trend_chart.amount_tasks')}: {data?.tasks?.length}</a>
                 </div>
             </div>
         )

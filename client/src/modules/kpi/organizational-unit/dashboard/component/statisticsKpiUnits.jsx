@@ -167,9 +167,9 @@ const StatisticsKpiUnits = (props) => {
                             ` ${translate('kpi.evaluation.employee_evaluation.refresh_all_kpis')}`,
                         ]}
                     >
-                        <a onClick={() => handleRefreshKpiUnits()}>
-                            <i className="fa fa-refresh" style={{ fontSize: "22px", verticalAlign: "top", color: '#06c', cursor: 'pointer', marginLeft: '10px' }} />
-                        </a>
+                        <i className="material-icons" onClick={() => handleRefreshKpiUnits()} style={{ fontSize: "22px", verticalAlign: "top", color: '#06c', cursor: 'pointer', marginLeft: '10px' }}>
+                            refresh
+                        </i>
                     </ToolTip>
                 }
             </section>
