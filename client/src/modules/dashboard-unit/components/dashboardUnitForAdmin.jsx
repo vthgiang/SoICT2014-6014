@@ -452,7 +452,12 @@ function DashboardUnitForAdmin(props) {
             html: `<h3 style="color: red"><div>Thống kê điểm công việc giữa các đơn vị</div> </h3>
             <div style="font-size: 1.3em; text-align: left; margin-top: 15px; line-height: 1.7">
             <p>Biểu đồ này cho biết điểm tự động trung bình theo thời gian thực hiện công việc của từng đơn vị.</b></p>
-            <p>Điểm trung bình = Tổng (điểm tự động * thời gian thực hiện trong lần đánh giá) / Tổng (thời gian trong lần đánh giá)</p>
+            <p>Cách tính:</p>
+            <ul>
+                <li>Lấy n công việc đã tạo đánh giá trong tháng hiện tại của 1 đơn vị</li>
+                <li>Tính tổng (điểm tự động x thời gian thực hiện trong lần đánh giá) của từng công việc</li>
+                <li>Điểm trung bình = Tổng trên / Tổng (thời gian trong lần đánh giá của từng công việc)</p></li>
+            </ul>
             </div>`,
             width: "50%",
         })
