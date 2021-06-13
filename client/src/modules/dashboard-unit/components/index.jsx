@@ -32,7 +32,9 @@ class DashboardUnit extends Component {
             childOrganizationalUnit = [{
                 'name': childrenOrganizationalUnit.name,
                 'id': childrenOrganizationalUnit.id,
-                'deputyManager': childrenOrganizationalUnit.deputyManager
+                'managers': childrenOrganizationalUnit.managers,
+                'employees': childrenOrganizationalUnit.employees,
+                'deputyManagers': childrenOrganizationalUnit.deputyManagers
             }]
             temporaryChild = childrenOrganizationalUnit.children;
 
@@ -41,7 +43,9 @@ class DashboardUnit extends Component {
                     childOrganizationalUnit = childOrganizationalUnit.concat({
                         'name': x.name,
                         'id': x.id,
-                        'deputyManager': x.deputyManager
+                        'managers': x.managers,
+                        'employees': x.employees,
+                        'deputyManagers': x.deputyManagers
                     });
                 })
 
