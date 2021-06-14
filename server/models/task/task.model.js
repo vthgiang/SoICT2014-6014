@@ -458,7 +458,7 @@ const TaskSchema = new Schema(
         formula: {
             type: String,
             default:
-                "progress / (daysUsed / totalDays) - (sumRatingOfFailedActions / sumRatingOfAllActions) * 100",
+                "progress / (daysUsed / totalDays) - 0.5 * (10 - (averageActionRating)) * 10",
         },
         progress: {
             // % Hoàn thành thành công việc
