@@ -43,7 +43,6 @@ function ModalShowAutoPointInfo(props) {
     const { translate } = props;
     const { task, progress, date, time, info, autoPoint } = props; // props from parent component
 
-    console.log('props', props);
     let progressTask = (progress === undefined || progress === "") ? undefined : progress;
     let taskInformations = task.taskInformations;
     // let splitter = date.split('-');
@@ -55,13 +54,11 @@ function ModalShowAutoPointInfo(props) {
     let daysUsed = evaluationsDate.getTime() - startDate.getTime(); // + 86400000;
     let daysOverdue = (daysUsed - totalDays > 0) ? daysUsed - totalDays : 0;
 
-    console.log('daysUsed 1', daysUsed);
     // chuyển về đơn vị ngày
     totalDays = totalDays / 86400000;
     daysUsed = daysUsed / 86400000;
     daysOverdue = daysOverdue / 86400000;
 
-    console.log('daysUsed 2', daysUsed);
     if (daysUsed <= 0) daysUsed = 0.5;
 
     // Các hoạt động (chỉ lấy những hoạt động đã đánh giá)
@@ -127,13 +124,13 @@ function ModalShowAutoPointInfo(props) {
         if (formula.includes("numberOfPassedActions")) checkFormulaHasPassedAction = true;
         if (formula.includes("averageActionRating")) checkFormulaHasAverageActionRating = true;
 
-        formula = formula.replace(/daysOverdue/g, `(${daysOverdue})`);
-        formula = formula.replace(/totalDays/g, `(${totalDays})`);
-        formula = formula.replace(/daysUsed/g, `(${daysUsed})`);
-        formula = formula.replace(/averageActionRating/g, `(${averageActionRating})`);
-        formula = formula.replace(/numberOfFailedActions/g, `(${numberOfFailedActions})`);
-        formula = formula.replace(/numberOfPassedActions/g, `(${numberOfPassedActions})`);
-        formula = formula.replace(/progress/g, `(${progressTask})`);
+        formula = formula.replace(/daysOverdue/g, `${daysOverdue}`);
+        formula = formula.replace(/totalDays/g, `${totalDays}`);
+        formula = formula.replace(/daysUsed/g, `${daysUsed}`);
+        formula = formula.replace(/averageActionRating/g, `${averageActionRating}`);
+        formula = formula.replace(/numberOfFailedActions/g, `${numberOfFailedActions}`);
+        formula = formula.replace(/numberOfPassedActions/g, `${numberOfPassedActions}`);
+        formula = formula.replace(/progress/g, `${progressTask}`);
 
         // automaticPoint = eval(formula);
         // thay mã code bằng giá trị(chỉ dùng cho kiểu số)
@@ -164,13 +161,13 @@ function ModalShowAutoPointInfo(props) {
         if (formula.includes("averageActionRating")) checkFormulaHasAverageActionRating = true;
 
         // thay các biến bằng giá trị
-        formula = formula.replace(/daysOverdue/g, `(${daysOverdue})`);
-        formula = formula.replace(/totalDays/g, `(${totalDays})`);
-        formula = formula.replace(/daysUsed/g, `(${daysUsed})`);
-        formula = formula.replace(/averageActionRating/g, `(${averageActionRating})`);
-        formula = formula.replace(/numberOfFailedActions/g, `(${numberOfFailedActions})`);
-        formula = formula.replace(/numberOfPassedActions/g, `(${numberOfPassedActions})`);
-        formula = formula.replace(/progress/g, `(${progressTask})`);
+        formula = formula.replace(/daysOverdue/g, `${daysOverdue}`);
+        formula = formula.replace(/totalDays/g, `${totalDays}`);
+        formula = formula.replace(/daysUsed/g, `${daysUsed}`);
+        formula = formula.replace(/averageActionRating/g, `${averageActionRating}`);
+        formula = formula.replace(/numberOfFailedActions/g, `${numberOfFailedActions}`);
+        formula = formula.replace(/numberOfPassedActions/g, `${numberOfPassedActions}`);
+        formula = formula.replace(/progress/g, `${progressTask}`);
 
         // thay mã code bằng giá trị(chỉ dùng cho kiểu số)
         for (let i in taskInformations) {
@@ -198,13 +195,12 @@ function ModalShowAutoPointInfo(props) {
     };
 
     let automaticPoint = AutomaticTaskPointCalculator.calcAutoPoint(taskInfo);
-    console.log('auto', automaticPoint);
     if (isNaN(automaticPoint)) automaticPoint = undefined
     let calcAuto = automaticPoint;
 
     let result;
     if (calcAuto < 0) {
-        result = `${calcAuto} ${translate('task.task_management.explain')}`;
+        result = 0;
     }
     else if (calcAuto >= 0) {
         result = calcAuto

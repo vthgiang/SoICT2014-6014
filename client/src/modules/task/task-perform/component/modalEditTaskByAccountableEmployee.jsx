@@ -738,7 +738,6 @@ function ModalEditTaskByAccountableEmployee(props) {
         }
         return errorMessage === undefined;
     }
-    console.log("state", state)
     const isFormValidated = () => {
         let { info, errorInfo } = state;
         let check = true;
