@@ -1160,7 +1160,8 @@ function ModalEditTaskByAccountableEmployee(props) {
                                 <ErrorLabel content={errorOnFormula} />
 
                                 <br />
-                                <div><span style={{ fontWeight: 800 }}>Ví dụ: </span>progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100</div>
+                                <div><span style={{ fontWeight: 800 }}>Ví dụ 1: </span>progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100</div>
+                                <div><span style={{ fontWeight: 800 }}>Ví dụ 2: </span>progress / (daysUsed / totalDays) - (10 - averageActionRating) * 10</div>
                                 <br />
                                 <div><span style={{ fontWeight: 800 }}>{translate('task_template.parameters')}:</span></div>
                                 <div><span style={{ fontWeight: 600 }}>daysOverdue</span> - Thời gian quá hạn (ngày)</div>

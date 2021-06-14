@@ -134,7 +134,7 @@ const TaskSchema = new Schema(
             type: String,
         },
         tags: [{
-            type: String  
+            type: String
         }],
         startDate: {
             type: Date,
@@ -458,7 +458,7 @@ const TaskSchema = new Schema(
         formula: {
             type: String,
             default:
-                "progress / (daysUsed / totalDays) - 0.5 * (10 - (averageActionRating)) * 10",
+                "progress / (daysUsed / totalDays) - (10 - averageActionRating) * 10",
         },
         progress: {
             // % Hoàn thành thành công việc
