@@ -2650,7 +2650,7 @@ exports.getIdEvaluationOfThisMonth = async (portal, taskId) => {
  * edit task by responsible employee
  */
 exports.editTaskByResponsibleEmployees = async (portal, data, taskId) => {
-    let { name, description, kpi, user, progress, info, date, listInfo, taskProject } = data;
+    let { name, description, kpi, user, progress, info, date, listInfo, taskProject, tags } = data;
     let evaluateId;
 
     let listInfoTask = [];
@@ -2682,6 +2682,8 @@ exports.editTaskByResponsibleEmployees = async (portal, data, taskId) => {
         }
     }
 
+    console.log(tags)
+
     await Task(connect(DB_CONNECTION, portal)).updateOne(
         { _id: taskId },
         {
@@ -2690,6 +2692,7 @@ exports.editTaskByResponsibleEmployees = async (portal, data, taskId) => {
                 description: description,
                 progress: progress,
                 taskProject: taskProject ?? undefined,
+                tags: tags
             },
         },
         { $new: true }
@@ -2907,6 +2910,7 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
         collaboratedWithOrganizationalUnits,
         listInfo,
         taskProject,
+        tags
     } = data;
 
     // Chuẩn hóa parent
@@ -2970,7 +2974,7 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
                 formula: formula,
                 parent: parent,
                 taskProject: taskProject ?? undefined,
-
+                tags: tags,
                 startDate: new Date(startDate),
                 endDate: new Date(endDate),
 
