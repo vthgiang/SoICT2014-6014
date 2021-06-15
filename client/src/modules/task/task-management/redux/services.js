@@ -293,7 +293,8 @@ function getPaginatedTasksByOrganizationalUnit(data) {
             responsibleEmployees: data?.responsibleEmployees,
             accountableEmployees: data?.accountableEmployees,
             creatorEmployees: data?.creatorEmployees,
-            organizationalUnitRole: data?.organizationalUnitRole
+            organizationalUnitRole: data?.organizationalUnitRole,
+            tags: data?.tags
         }
     }, false, true, 'task.task_management');
 }

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Swal from 'sweetalert2';
 import { withTranslate } from 'react-redux-multilingual';
-import { DataTableSetting, DatePicker, PaginateBar, SelectBox, SelectMulti, TreeTable, ExportExcel, Tree } from '../../../../common-components';
+import { DataTableSetting, DatePicker, PaginateBar, InputTags, SelectMulti, TreeTable, ExportExcel, Tree } from '../../../../common-components';
 import { getFormatDateFromTime } from '../../../../helpers/stringMethod';
 import moment from 'moment';
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
@@ -35,7 +35,8 @@ class TaskManagementOfUnit extends Component {
             name: "",
             startDate: "",
             endDate: "",
-            organizationalUnitRole: ['management', 'collabration']
+            organizationalUnitRole: ['management', 'collabration'],
+            tags: []
         };
     }
 
@@ -176,7 +177,7 @@ class TaskManagementOfUnit extends Component {
 
     handleGetDataPagination = async (index) => {
         let { organizationalUnit, status, priority, special, name,
-            startDate, endDate, responsibleEmployees,
+            startDate, endDate, responsibleEmployees, tags,
             accountableEmployees, creatorEmployees, organizationalUnitRole
         } = this.state;
 
@@ -204,14 +205,15 @@ class TaskManagementOfUnit extends Component {
                 responsibleEmployees: responsibleEmployees,
                 accountableEmployees: accountableEmployees,
                 creatorEmployees: creatorEmployees,
-                organizationalUnitRole: organizationalUnitRole
+                organizationalUnitRole: organizationalUnitRole,
+                tags: tags
             });
         };
     }
 
     nextPage = async (pageTotal) => {
         let { organizationalUnit, status, priority, special, name,
-            startDate, endDate, responsibleEmployees,
+            startDate, endDate, responsibleEmployees, tags,
             accountableEmployees, creatorEmployees, perPage, organizationalUnitRole
         } = this.state;
 
@@ -237,14 +239,15 @@ class TaskManagementOfUnit extends Component {
                 responsibleEmployees: responsibleEmployees,
                 accountableEmployees: accountableEmployees,
                 creatorEmployees: creatorEmployees,
-                organizationalUnitRole: organizationalUnitRole
+                organizationalUnitRole: organizationalUnitRole,
+                tags: tags
             });
         };
     }
 
     backPage = async () => {
         let { organizationalUnit, status, priority, special, name,
-            startDate, endDate, responsibleEmployees,
+            startDate, endDate, responsibleEmployees, tags, 
             accountableEmployees, creatorEmployees, perPage, organizationalUnitRole
         } = this.state;
 
@@ -270,7 +273,8 @@ class TaskManagementOfUnit extends Component {
                 responsibleEmployees: responsibleEmployees,
                 accountableEmployees: accountableEmployees,
                 creatorEmployees: creatorEmployees,
-                organizationalUnitRole: organizationalUnitRole
+                organizationalUnitRole: organizationalUnitRole,
+                tags: tags
             });
         };
     }
@@ -293,7 +297,7 @@ class TaskManagementOfUnit extends Component {
 
     handleGetDataPerPage = (perPage) => {
         let { organizationalUnit, status, priority, special, name,
-            startDate, endDate, responsibleEmployees,
+            startDate, endDate, responsibleEmployees, tags,
             accountableEmployees, creatorEmployees, organizationalUnitRole
         } = this.state;
 
@@ -310,7 +314,8 @@ class TaskManagementOfUnit extends Component {
             responsibleEmployees: responsibleEmployees,
             accountableEmployees: accountableEmployees,
             creatorEmployees: creatorEmployees,
-            organizationalUnitRole: organizationalUnitRole
+            organizationalUnitRole: organizationalUnitRole,
+            tags: tags
         });
 
         this.setState(state => {
@@ -323,7 +328,7 @@ class TaskManagementOfUnit extends Component {
 
     handleUpdateData = () => {
         const { translate } = this.props;
-        let { organizationalUnit, status, priority, special,
+        let { organizationalUnit, status, priority, special, tags,
             name, startDate, endDate, perPage, organizationalUnitRole,
             responsibleEmployees, accountableEmployees, creatorEmployees
         } = this.state;
@@ -357,7 +362,8 @@ class TaskManagementOfUnit extends Component {
                 responsibleEmployees: responsibleEmployees,
                 accountableEmployees: accountableEmployees,
                 creatorEmployees: creatorEmployees,
-                organizationalUnitRole: organizationalUnitRole
+                organizationalUnitRole: organizationalUnitRole,
+                tags: tags
             });
         }
 
@@ -490,6 +496,13 @@ class TaskManagementOfUnit extends Component {
             creatorEmployees: value,
         })
     }
+
+    handleTaskTags = (value) => {
+        this.setState({
+            tags: value,
+        })
+    }
+
     handleDelete = async (id) => {
         const { tasks, translate } = this.props;
         let currentTasks = tasks.tasks.find(task => task._id === id);
@@ -588,7 +601,7 @@ class TaskManagementOfUnit extends Component {
     render() {
         const { tasks, user, translate, dashboardEvaluationEmployeeKpiSet } = this.props;
         const { selectBoxUnit, currentTaskId, currentPage, startDate,
-            endDate, perPage, status,
+            endDate, perPage, status, tags,
             organizationalUnit, tableId, organizationalUnitRole
         } = this.state;
         let currentTasks, units = [];
@@ -806,6 +819,15 @@ class TaskManagementOfUnit extends Component {
                                         value={""} // giá trị mặc định cho datePicker    
                                         onChange={this.handleChangeEndDate}
                                         disabled={false}                     // sử dụng khi muốn disabled, mặc định là false
+                                    />
+                                </div>
+
+                                <div className="form-group">
+                                    <label>Tags</label>
+                                    <InputTags
+                                        id={`task-unit`}
+                                        onChange={this.handleTaskTags}
+                                        value={tags}
                                     />
                                 </div>
 

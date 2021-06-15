@@ -1386,7 +1386,7 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (portal, task) => {
  */
 exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by_user") => {
     var { perPage, page, user, organizationalUnit, status, priority, special, name,
-        startDate, endDate, responsibleEmployees,
+        startDate, endDate, responsibleEmployees, tags,
         accountableEmployees, creatorEmployees, organizationalUnitRole
     } = task;
     var tasks;
@@ -1497,7 +1497,7 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
     }
 
 
-    let keySearchSpecial = {}, keySeachDateTime = {};
+    let keySearchSpecial = {}, keySeachDateTime = {}, keyTags = {};
 
     if (organizationalUnit) {
         if (type === "paginated_task_by_unit") {
@@ -1660,11 +1660,25 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
         }
     }
 
+    if (tags?.length > 0) {
+        let textSearch = ""
+        tags.map(item => {
+            textSearch = textSearch + " " + item
+        })
+
+        keyTags = {
+            ...keyTags,
+            $text: { $search: textSearch.trim() }
+        }
+    }
+
+    console.log(keyTags)
     tasks = await Task(connect(DB_CONNECTION, portal)).find({
         $and: [
             keySearch,
             keySearchSpecial,
-            keySeachDateTime
+            keySeachDateTime,
+            keyTags
         ]
     }).sort({ 'createdAt': -1 })
         .skip(perPage * (page - 1)).limit(perPage)
