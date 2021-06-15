@@ -321,11 +321,12 @@ function KPIPersonalManager(props) {
                 <div className="form-inline">
                     {/**Chọn ngày bắt đầu */}
                     <div className="form-group">
-                        <label>{translate('kpi.evaluation.employee_evaluation.from')}:</label>
-                        <DatePicker id='start_date'
-                                    value={startDateDefault}
-                                    onChange={handleStartDateChange}
-                                    dateFormat="month-year"
+                        <label>{translate('kpi.evaluation.employee_evaluation.from')}</label>
+                        <DatePicker 
+                            id='start_date'
+                            value={startDateDefault}
+                            onChange={handleStartDateChange}
+                            dateFormat="month-year"
                         />
                     </div>
 
@@ -343,7 +344,7 @@ function KPIPersonalManager(props) {
 
                 <div className="form-inline">
                     <div className="form-group">
-                        <label>{translate('general.status')}:</label>
+                        <label>{translate('general.status')}</label>
                         <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
                             id={`status-kpi`}
                             style={{ width: "100%" }}
