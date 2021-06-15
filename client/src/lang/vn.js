@@ -4118,9 +4118,9 @@ export default {
                     "Lấy điểm hệ thống cho KPI thành công",
                 get_system_point_fail: "Lấy điểm hệ thống cho KPI lỗi",
                 set_task_importance_level_success:
-                    "Thêm độ quan trọng cho công việc thành công",
+                    "Thêm độ quan trọng cho công việc và tính KPI thành công",
                 set_task_importance_level_fail:
-                    "Thêm độ quan trọng cho công việc lỗi",
+                    "Thêm độ quan trọng cho công việc và tính KPI lỗi",
                 set_point_kpi_success:
                     "Tính điểm tất cả kpi thành công",
                 set_point_kpi_fail:
