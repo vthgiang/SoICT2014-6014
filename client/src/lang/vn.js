@@ -84,7 +84,8 @@ export default {
             need_to_do_chart: "Công việc cần làm",
             urgent_task_amount: "Số công việc khẩn cấp",
             need_to_do_task_amount: "Số công việc cần làm",
-            list_employe_timing: "Danh sách nhân viên đang bấm giờ"
+            list_employe_timing: "Danh sách nhân viên đang bấm giờ",
+            statistics_task_unit: "Biểu đồ thống kê điểm công việc"
         },
 
         menu: {
@@ -3216,7 +3217,9 @@ export default {
                 calc_average_action_rating:
                     "Trung bình cộng điểm đánh giá hoạt động",
                 calc_failed_action_rating:
-                    "Tổng các tích điểm hoạt động và độ quan trọng hoạt động của các hoạt động không đạt (rating < 5)",
+                    "Số hoạt động không đạt (rating < 5)",
+                calc_passed_action_rating:
+                    "Số hoạt động đạt (rating >= 5)",
                 calc_all_action_rating: "Tổng các tích điểm hoạt động và độ quan trọng hoạt động của tất cả hoạt động",
                 calc_progress: "Tiến độ công việc",
                 calc_new_formula: "Công thức hiện tại",
@@ -4115,9 +4118,9 @@ export default {
                     "Lấy điểm hệ thống cho KPI thành công",
                 get_system_point_fail: "Lấy điểm hệ thống cho KPI lỗi",
                 set_task_importance_level_success:
-                    "Thêm độ quan trọng cho công việc thành công",
+                    "Thêm độ quan trọng cho công việc và tính KPI thành công",
                 set_task_importance_level_fail:
-                    "Thêm độ quan trọng cho công việc lỗi",
+                    "Thêm độ quan trọng cho công việc và tính KPI lỗi",
                 set_point_kpi_success:
                     "Tính điểm tất cả kpi thành công",
                 set_point_kpi_fail:

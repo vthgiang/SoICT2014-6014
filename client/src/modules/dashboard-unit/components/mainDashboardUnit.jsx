@@ -23,6 +23,7 @@ class MainDashboardUnit extends Component {
 
         this.state = {
             month: this.formatDate(Date.now(), true),
+            monthSearch: this.formatDate(Date.now(), false, true),
             monthShow: this.formatDate(Date.now(), true),
             organizationalUnits: [this.props.childOrganizationalUnit[0].id],
             arrayUnitShow: [this.props.childOrganizationalUnit[0].id],
@@ -41,7 +42,7 @@ class MainDashboardUnit extends Component {
      * @param {*} date : Ngày muốn format
      * @param {*} monthYear : true trả về tháng năm, false trả về ngày tháng năm
      */
-    formatDate(date, monthYear = false) {
+    formatDate(date, monthYear = false, yearMonth = false) {
         if (date) {
             let d = new Date(date),
                 month = '' + (d.getMonth() + 1),
@@ -55,6 +56,8 @@ class MainDashboardUnit extends Component {
 
             if (monthYear === true) {
                 return [month, year].join('-');
+            } else if (yearMonth) {
+                return [year, month].join('-');
             } else return [day, month, year].join('-');
         }
         return date;
@@ -90,7 +93,8 @@ class MainDashboardUnit extends Component {
 
         this.setState({
             organizationalUnits: arrayUnitShow,
-            monthShow: month
+            monthShow: month,
+            monthSearch: newMonth
         });
 
         let arrayUnit = arrayUnitShow;
@@ -220,7 +224,7 @@ class MainDashboardUnit extends Component {
 
         const { childOrganizationalUnit } = this.props;
 
-        const { monthShow, month, organizationalUnits, arrayUnitShow, listUnit } = this.state;
+        const { monthShow, month, organizationalUnits, arrayUnitShow, listUnit, monthSearch } = this.state;
 
         let listAllEmployees = (!organizationalUnits || organizationalUnits.length === department.list.length) ?
             employeesManager.listAllEmployees : employeesManager.listEmployeesOfOrganizationalUnits;
@@ -307,6 +311,7 @@ class MainDashboardUnit extends Component {
                                     organizationalUnits={organizationalUnits}
                                     getUnitName={this.getUnitName}
                                     showUnitTask={this.showUnitTask}
+                                    month={monthSearch}
                                 />
                             </div>
                             {/* Tab năng lực nhân viên*/}

@@ -45,6 +45,7 @@ class TaskTimesheetLog extends Component {
             showInputs: false
         })
     }
+
     componentDidMount = () => {
         this.setState({ showEndDate: false });
         this.callApi();
@@ -347,12 +348,21 @@ class TaskTimesheetLog extends Component {
                     <React.Fragment>
                         <div className="timesheet-box" id={currentUser} >
                             <div className="time">
-                                <span>
-                                    <i className="fa fa-cog" aria-hidden="true" style={{ cursor: "pointer" }} title="Cấu hình bấm giờ" onClick={this.handleStopTimer}></i>
-                                    {/* <i className="fa fa-stop-circle-o fa-lg" style={{ color: "red", cursor: "pointer" }} aria-hidden="true" title="Dừng bấm giờ" onClick={this.handleStopTimer}></i> */}
-                                </span>
-                                <span>&nbsp;&nbsp; {this.showTiming(a)}</span>
-                                <a style={{ position: 'absolute', right: '10px' }} href={`/task?taskId=${currentTimer._id}`}><i className="fa fa-arrow-circle-right"></i></a>
+                                <div>
+                                    <span>
+                                        <i className="fa fa-cog" aria-hidden="true" style={{ cursor: "pointer" }} title="Cấu hình bấm giờ" onClick={this.handleStopTimer}></i>
+                                        {/* <i className="fa fa-stop-circle-o fa-lg" style={{ color: "red", cursor: "pointer" }} aria-hidden="true" title="Dừng bấm giờ" onClick={this.handleStopTimer}></i> */}
+                                    </span>
+                                    <span>&nbsp;&nbsp; {this.showTiming(a)}</span>
+                                </div>
+                                {
+                                    this.state.showModal === auth.user.id &&
+                                    <i style={{ cursor: 'pointer', color: "#385899", fontSize: '14px' }} className="fa fa-window-minimize" aria-hidden="true" onClick={this.resumeTimer}></i>
+                                }
+                                {
+                                    (this.state.showModal === auth.user.id) === false &&
+                                    <a href={`/task?taskId=${currentTimer._id}`}><i className="fa fa-arrow-circle-right"></i></a>
+                                }
                             </div>
                             {this.state.showModal === auth.user.id &&
                                 <React.Fragment>
@@ -404,9 +414,9 @@ class TaskTimesheetLog extends Component {
                                         }}
                                     />
                                     <div style={{ width: '100%' }}>
-                                        <button className="btn btn-primary" style={{ marginRight: 5, width: `calc(100% / ${3} - 5px) ` }} disabled={disabled || taskActionStartTimer ? false : true} onClick={this.stopTimer}><i className="fa fa-floppy-o" aria-hidden="true" style={{ color: "#fff", marginRight: '5px' }}></i>Lưu</button>
-                                        <button className="btn btn-primary" style={{ marginRight: 5, width: `calc(100% / ${3} - 5px) ` }} onClick={this.cancelTimer}><i className="fa fa-trash" aria-hidden="true" style={{ color: "#fff", marginRight: '5px' }}></i>Hủy bỏ</button>
-                                        <button className="btn btn-danger" style={{ width: `calc(100% / ${3} - 5px) ` }} onClick={this.resumeTimer}><i className="fa fa-arrow-up" aria-hidden="true" style={{ color: "#fff", marginRight: '5px' }}></i>Thu gọn</button>
+                                        <button className="btn btn-primary" style={{ marginRight: 5, width: `calc(100% / ${2} - 5px) ` }} disabled={disabled || taskActionStartTimer ? false : true} onClick={this.stopTimer}><i className="fa fa-floppy-o" aria-hidden="true" style={{ color: "#fff", marginRight: '5px' }}></i>Lưu</button>
+                                        <button className="btn btn-danger" style={{ width: `calc(100% / ${2} - 5px ` }} onClick={this.cancelTimer}><i className="fa fa-trash" aria-hidden="true" style={{ color: "#fff", marginRight: '5px' }}></i>Hủy bỏ</button>
+                                        {/* <button className="btn btn-success" style={{ width: `calc(100% / ${3} - 5px) ` }} onClick={this.resumeTimer}><i className="fa fa-arrow-up" aria-hidden="true" style={{ color: "#fff", marginRight: '5px' }}></i>Thu gọn</button> */}
                                     </div>
                                 </React.Fragment>
                             }

@@ -276,6 +276,7 @@ function ResultsOfOrganizationalUnitKpiChart(props) {
                 },
             ]
         }
+
         return exportData;
     };
 

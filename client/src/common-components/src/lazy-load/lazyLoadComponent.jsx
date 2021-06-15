@@ -16,7 +16,7 @@ class LazyLoadComponent extends Component {
 
     placeHolder() {
         return (
-            <div className="placeholder" style={{ textAlign: "center" }}>
+            <div className="placeholder" style={{ textAlign: "center", fontSize: "20px" }}>
                 <Loading/>
             </div>
         )

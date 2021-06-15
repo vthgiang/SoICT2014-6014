@@ -512,7 +512,59 @@ class TaskManagementOfUnit extends Component {
 
     }
 
-    convertDataProgress = (progress = 0, startDate, endDate) => {
+    checkTaskRequestToClose = (task) => {
+        const { translate } = this.props;
+        let statusColor = "";
+        switch (task.status) {
+            case "inprocess":
+                statusColor = "#385898";
+                break;
+            case "canceled":
+                statusColor = "#e86969";
+                break;
+            case "delayed":
+                statusColor = "#db8b0b";
+                break;
+            case "finished":
+                statusColor = "#31b337";
+                break;
+            default:
+                statusColor = "#333";
+        }
+        return (
+            <div>
+                <span style={{ color: statusColor }}>{formatStatus(translate, task.status)}</span>
+            </div>
+        )
+    }
+
+    convertPriorityData = (priority) => {
+        const { translate } = this.props;
+        let priorityColor = "";
+        switch (priority) {
+            case 5:
+                priorityColor = "#ff0707";
+                break;
+            case 4:
+                priorityColor = "#ff5707";
+                break;
+            case 3:
+                priorityColor = "#28A745";
+                break;
+            case 2:
+                priorityColor = "#ffa707";
+                break;
+            default:
+                priorityColor = "#808080"
+        }
+        return (
+            <div >
+                <span style={{ color: priorityColor }}> {formatPriority(translate, priority)}</span>
+            </div>
+        )
+    }
+
+    convertProgressData = (progress = 0, startDate, endDate) => {
         let now = moment(new Date());
         let end = moment(endDate);
         let start = moment(startDate);
@@ -573,14 +625,14 @@ class TaskManagementOfUnit extends Component {
                     name: dataTemp[n].name,
                     description: dataTemp?.[n]?.description ? parse(dataTemp[n].description) : "",
                     organization: dataTemp[n].organizationalUnit ? dataTemp[n].organizationalUnit.name : translate('task.task_management.err_organizational_unit'),
-                    priority: formatPriority(translate, dataTemp[n].priority),
+                    priority: this.convertPriorityData(dataTemp[n].priority),
                     responsibleEmployees: dataTemp[n].responsibleEmployees && dataTemp[n].responsibleEmployees.map(o => o.name).join(', '),
                     accountableEmployees: dataTemp[n].accountableEmployees && dataTemp[n].accountableEmployees.map(o => o.name).join(', '),
                     creatorEmployees: dataTemp[n].creator && dataTemp[n].creator.name,
                     startDate: getFormatDateFromTime(dataTemp[n].startDate, 'dd-mm-yyyy'),
                     endDate: getFormatDateFromTime(dataTemp[n].endDate, 'dd-mm-yyyy'),
-                    status: formatStatus(translate, dataTemp[n].status),
-                    progress: this.convertDataProgress(dataTemp[n].progress, dataTemp[n].startDate, dataTemp[n].endDate),
+                    status: this.checkTaskRequestToClose(dataTemp[n]),
+                    progress: this.convertProgressData(dataTemp[n].progress, dataTemp[n].startDate, dataTemp[n].endDate),
                     totalLoggedTime: getTotalTimeSheetLogs(dataTemp[n].timesheetLogs),
                     parent: dataTemp[n].parent ? dataTemp[n].parent._id : null
                 }

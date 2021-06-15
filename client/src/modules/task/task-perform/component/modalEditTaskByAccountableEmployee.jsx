@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 
-import { DialogModal, ErrorLabel, SelectBox, DatePicker, QuillEditor, TreeSelect, TimePicker } from '../../../../common-components/';
+import { DialogModal, ErrorLabel, SelectBox, DatePicker, QuillEditor, TreeSelect, TimePicker, convertImageBase64ToFile, ToolTip } from '../../../../common-components/';
 import { getStorage } from "../../../../config";
 
 import { UserActions } from "../../../super-admin/user/redux/actions";
@@ -17,14 +17,18 @@ import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import Swal from 'sweetalert2'
 import moment from 'moment';
 
-class ModalEditTaskByAccountableEmployee extends Component {
+function ModalEditTaskByAccountableEmployee(props) {
+    const [state, setState] = useState(initState(props.task))
 
-    constructor(props) {
-        super(props);
+    const { user, tasktemplates, department, translate, project } = props;
+    const { tasks, perform, id, role, title, hasAccountable } = props;
 
+    const { task, organizationalUnit, collaboratedWithOrganizationalUnits, errorOnEndDate, errorOnStartDate, errorTaskName, errorTaskDescription, errorOnFormula, taskName, taskDescription, statusOptions, priorityOptions, taskDescriptionDefault,
+        startDate, endDate, startTime, endTime, formula, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees, inactiveEmployees, parent, parentTask
+        , taskProjectName } = state;
+
+    function initState(task) {
         let userId = getStorage("userId");
-
-        let { task } = this.props;
 
         let organizationalUnit = task && task.organizationalUnit?._id;
         let collaboratedWithOrganizationalUnits = task && task.collaboratedWithOrganizationalUnits.map(e => { if (e) return e.organizationalUnit._id });
@@ -44,14 +48,14 @@ class ModalEditTaskByAccountableEmployee extends Component {
             if (taskInfo[i].type === "date") {
                 if (taskInfo[i].value) {
                     info[`${taskInfo[i].code}`] = {
-                        value: this.formatDate(taskInfo[i].value),
+                        value: formatDate(taskInfo[i].value),
                         code: taskInfo[i].code,
                         type: taskInfo[i].type
                     }
                 }
                 else {
                     info[`${taskInfo[i].code}`] = {
-                        value: this.formatDate(Date.now()),
+                        value: formatDate(Date.now()),
                         code: taskInfo[i].code,
                         type: taskInfo[i].type
                     }
@@ -114,13 +118,13 @@ class ModalEditTaskByAccountableEmployee extends Component {
             }
         }
 
-        let startDate = this.formatDate(task.startDate);
-        let endDate = this.formatDate(task.endDate);
+        let startDate = formatDate(task.startDate);
+        let endDate = formatDate(task.endDate);
 
-        let startTime = this.formatTime(task.startDate);
-        let endTime = this.formatTime(task.endDate);
+        let startTime = formatTime(task.startDate);
+        let endTime = formatTime(task.endDate);
 
-        this.state = {
+        return {
             listInactive: listInactive,
             userId: userId,
             task: task,
@@ -146,41 +150,37 @@ class ModalEditTaskByAccountableEmployee extends Component {
             consultedEmployees: consultedEmployees,
             informedEmployees: informedEmployees,
             inactiveEmployees: inactiveEmployees,
-            errorInfo: {},
+            errorInfo: {}
         }
     }
 
-
-    componentDidMount() {
-        this.props.getAllUserInAllUnitsOfCompany();
+    useEffect(() => {
+        props.getAllUserInAllUnitsOfCompany();
         // unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime = false, calledId = null
-        this.props.getPaginateTasksByUser([], "1", "5", [], [], [], null, null, null, null, null, false, "listSearch");
+        props.getPaginateTasksByUser([], "1", "5", [], [], [], null, null, null, null, null, false, "listSearch");
+    }, [])
+
+    if (props.id !== state.id) {
+        setState({
+            ...state,
+            id: props.id,
+
+            errorOnDate: undefined, // Khi nhận thuộc tính mới, cần lưu ý reset lại các gợi ý nhắc lỗi, nếu không các lỗi cũ sẽ hiển thị lại
+            errorOnPoint: undefined,
+            errorOnInfoDate: undefined,
+            errorOnProgress: undefined,
+            errorTaskName: undefined,
+            errorTaskDescription: undefined,
+            errorOnFormula: undefined,
+            errorInfo: {},
+            errorOnStartDate: undefined,
+            errorOnEndDate: undefined,
+        })
     }
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id) {
-            return {
-                ...prevState,
-                id: nextProps.id,
-
-                errorOnDate: undefined, // Khi nhận thuộc tính mới, cần lưu ý reset lại các gợi ý nhắc lỗi, nếu không các lỗi cũ sẽ hiển thị lại
-                errorOnPoint: undefined,
-                errorOnInfoDate: undefined,
-                errorOnProgress: undefined,
-                errorTaskName: undefined,
-                errorTaskDescription: undefined,
-                errorOnFormula: undefined,
-                errorInfo: {},
-                errorOnStartDate: undefined,
-                errorOnEndDate: undefined,
-            }
-        } else {
-            return null;
-        }
-    }
 
     // Function format ngày hiện tại thành dạnh dd-mm-yyyy
-    formatDate = (date) => {
+    function formatDate(date) {
         let d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -195,7 +195,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
     }
 
     // convert ISODate to String hh:mm AM/PM
-    formatTime(date) {
+    function formatTime(date) {
         var d = new Date(date);
         let time = moment(d).format("hh:mm");
         let suffix = " AM";
@@ -205,65 +205,63 @@ class ModalEditTaskByAccountableEmployee extends Component {
         return time + suffix;
     }
 
-    handleChangeProgress = async (e) => {
+    const handleChangeProgress = (e) => {
         let value = parseInt(e.target.value);
-        await this.setState(state => {
-            return {
-                ...state,
-                progress: value,
-                errorOnProgress: this.validatePoint(value)
-            }
+        setState({
+            ...state,
+            progress: value,
+            errorOnProgress: validatePoint(value)
         })
     }
 
-    handleChangeNumberInfo = async (e) => {
+    const handleChangeNumberInfo = (e) => {
         let value = parseInt(e.target.value);
         let name = e.target.name;
-        await this.setState(state => {
+        setState(state => {
             state.info[`${name}`] = {
                 value: value,
                 code: name,
                 type: 'number'
             }
-            state.errorInfo[name] = this.validateNumberInfo(value);
+            state.errorInfo[name] = validateNumberInfo(value);
             return {
                 ...state,
             }
         })
     }
 
-    handleChangeTextInfo = async (e) => {
+    const handleChangeTextInfo = (e) => {
         let value = e.target.value;
         let name = e.target.name;
-        await this.setState(state => {
+        setState(state => {
             state.info[`${name}`] = {
                 value: value,
                 code: name,
                 type: 'text'
             }
-            state.errorInfo[name] = this.validateTextInfo(value);
+            state.errorInfo[name] = validateTextInfo(value);
             return {
                 ...state,
             }
         })
     }
 
-    handleInfoDateChange = (value, code) => {
-        this.setState(state => {
+    const handleInfoDateChange = (value, code) => {
+        setState(state => {
             state.info[`${code}`] = {
                 value: value,
                 code: code,
                 type: 'date'
             }
-            state.errorInfo[code] = this.validateDate(value);
+            state.errorInfo[code] = validateDate(value);
             return {
                 ...state,
             }
         });
     }
 
-    handleSetOfValueChange = async (value, code) => {
-        this.setState(state => {
+    const handleSetOfValueChange = async (value, code) => {
+        setState(state => {
             state.info[`${code}`] = {
                 value: value,
                 code: code,
@@ -275,9 +273,9 @@ class ModalEditTaskByAccountableEmployee extends Component {
         });
     }
 
-    handleInfoBooleanChange = (event) => {
+    const handleInfoBooleanChange = (event) => {
         let { name, value } = event.target;
-        this.setState(state => {
+        setState(state => {
             state.info[`${name}`] = {
                 value: value,
                 code: name,
@@ -290,8 +288,8 @@ class ModalEditTaskByAccountableEmployee extends Component {
     }
 
 
-    validateInfoBoolean = (value, willUpdateState = true) => {
-        let { translate } = this.props;
+    const validateInfoBoolean = (value, willUpdateState = true) => {
+        let { translate } = props;
         let msg = undefined;
         if (value.indexOf("") !== -1) {
             msg = translate('task.task_perform.modal_approve_task.err_empty');
@@ -300,8 +298,8 @@ class ModalEditTaskByAccountableEmployee extends Component {
         return msg;
     }
 
-    validateTextInfo = (value) => {
-        let { translate } = this.props;
+    const validateTextInfo = (value) => {
+        let { translate } = props;
         let msg = undefined;
         if (value === "") {
             msg = translate('task.task_perform.modal_approve_task.err_empty');
@@ -309,8 +307,8 @@ class ModalEditTaskByAccountableEmployee extends Component {
         return msg;
     }
 
-    validateNumberInfo = (value) => {
-        let { translate } = this.props;
+    const validateNumberInfo = (value) => {
+        let { translate } = props;
         let msg = undefined;
 
         if (isNaN(value)) {
@@ -319,7 +317,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
         return msg;
     }
 
-    validateDate = (value, willUpdateState = true) => {
+    const validateDate = (value, willUpdateState = true) => {
         let msg = undefined;
         if (value.trim() === "") {
             msg = "Ngày đánh giá bắt buộc phải chọn";
@@ -328,8 +326,8 @@ class ModalEditTaskByAccountableEmployee extends Component {
         return msg;
     }
 
-    validatePoint = (value) => {
-        let { translate } = this.props;
+    const validatePoint = (value) => {
+        let { translate } = props;
         let msg = undefined;
         if (value < 0 || value > 100) {
             msg = translate('task.task_perform.modal_approve_task.err_range');
@@ -340,35 +338,36 @@ class ModalEditTaskByAccountableEmployee extends Component {
         return msg;
     }
 
-    handleChangeListInfo = async (data) => {
-        await this.setState({ listInfo: data })
+    const handleChangeListInfo = async (data) => {
+        setState({
+            ...state,
+            listInfo: data
+        })
     }
 
-    changeActiveEmployees = async (listInactive) => {
+    const changeActiveEmployees = async (listInactive) => {
         let inactiveEmployees = [];
         for (let i in listInactive) {
             if (listInactive[i].checked === true) {
                 inactiveEmployees.push(listInactive[i].value);
             }
         }
-        await this.setState(state => {
-            return {
-                ...state,
-                inactiveEmployees: inactiveEmployees
-            }
+        await setState({
+            ...state,
+            inactiveEmployees: inactiveEmployees
         });
     }
 
 
-    handleChangeActiveAccountable = async (e, id) => {
-        let { task } = this.state;
+    const handleChangeActiveAccountable = async (e, id) => {
+        let { task } = state;
         let target = e.target;
         let { value, name, checked } = target;
 
-        let numOfResponsible = this.state.responsibleEmployees.length;
-        let numOfAccountable = this.state.accountableEmployees.length;
+        let numOfResponsible = state.responsibleEmployees.length;
+        let numOfAccountable = state.accountableEmployees.length;
 
-        await this.setState(state => {
+        await setState(state => {
             state.listInactive[`${id}`] = {
                 value: value,
                 checked: checked,
@@ -379,7 +378,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
             }
         });
 
-        let numOfInactiveResp = 0, numOfInactiveAcc = 0, listInactive = this.state.listInactive;
+        let numOfInactiveResp = 0, numOfInactiveAcc = 0, listInactive = state.listInactive;
 
         for (let i in listInactive) {
             if (listInactive[i].checked === true) {
@@ -389,7 +388,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
         }
 
         if (numOfAccountable === numOfInactiveAcc) {
-            let { translate } = this.props;
+            let { translate } = props;
             Swal.fire({
                 title: translate('task.task_perform.err_has_accountable'),
                 type: 'Warning',
@@ -398,7 +397,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                 cancelButtonColor: '#d33',
                 confirmButtonText: translate('task.task_perform.confirm'),
             }).then((res) => {
-                this.setState(state => {
+                setState(state => {
                     state.listInactive[`${id}`] = {
                         value: value,
                         checked: false,
@@ -411,7 +410,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
             });
         }
         else if (numOfInactiveResp === numOfResponsible) {
-            let { translate } = this.props;
+            let { translate } = props;
             Swal.fire({
                 title: translate('task.task_perform.err_has_responsible'),
                 type: 'Warning',
@@ -420,7 +419,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                 cancelButtonColor: '#d33',
                 confirmButtonText: translate('task.task_perform.confirm'),
             }).then((res) => {
-                this.setState(state => {
+                setState(state => {
                     state.listInactive[`${id}`] = {
                         value: value,
                         checked: false,
@@ -434,15 +433,15 @@ class ModalEditTaskByAccountableEmployee extends Component {
         }
     }
 
-    handleChangeActiveResponsible = async (e, id) => {
-        let { task } = this.state;
+    const handleChangeActiveResponsible = async (e, id) => {
+        let { task } = state;
         let target = e.target;
         let { value, name, checked } = target;
 
         let numOfResponsible = task.responsibleEmployees.length;
         let numOfAccountable = task.accountableEmployees.length;
 
-        await this.setState(state => {
+        await setState(state => {
             state.listInactive[`${id}`] = {
                 value: value,
                 checked: checked,
@@ -453,7 +452,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
             }
         });
 
-        let numOfInactiveResp = 0, numOfInactiveAcc = 0, listInactive = this.state.listInactive;
+        let numOfInactiveResp = 0, numOfInactiveAcc = 0, listInactive = state.listInactive;
 
         for (let i in listInactive) {
             if (listInactive[i].checked === true) {
@@ -463,7 +462,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
         }
 
         if (numOfInactiveResp === numOfResponsible) {
-            let { translate } = this.props;
+            let { translate } = props;
             Swal.fire({
                 title: translate('task.task_perform.err_has_responsible'),
                 type: 'Warning',
@@ -472,7 +471,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                 cancelButtonColor: '#d33',
                 confirmButtonText: translate('task.task_perform.confirm'),
             }).then((res) => {
-                this.setState(state => {
+                setState(state => {
                     state.listInactive[`${id}`] = {
                         value: value,
                         checked: false,
@@ -485,7 +484,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
             });
         }
         else if (numOfAccountable === numOfInactiveAcc) {
-            let { translate } = this.props;
+            let { translate } = props;
             Swal.fire({
                 title: translate('task.task_perform.err_has_accountable'),
                 type: 'Warning',
@@ -494,7 +493,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                 cancelButtonColor: '#d33',
                 confirmButtonText: translate('task.task_perform.confirm'),
             }).then((res) => {
-                this.setState(state => {
+                setState(state => {
                     state.listInactive[`${id}`] = {
                         value: value,
                         checked: false,
@@ -508,15 +507,15 @@ class ModalEditTaskByAccountableEmployee extends Component {
         }
     }
 
-    handleChangeActiveConsulted = async (e, id) => {
-        let { task } = this.state;
+    const handleChangeActiveConsulted = async (e, id) => {
+        let { task } = state;
         let target = e.target;
         let { value, name, checked } = target;
 
-        let numOfResponsible = this.state.responsibleEmployees.length;
-        let numOfAccountable = this.state.accountableEmployees.length;
+        let numOfResponsible = state.responsibleEmployees.length;
+        let numOfAccountable = state.accountableEmployees.length;
 
-        await this.setState(state => {
+        await setState(state => {
             state.listInactive[`${id}`] = {
                 value: value,
                 checked: checked,
@@ -527,7 +526,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
             }
         });
 
-        let numOfInactiveResp = 0, numOfInactiveAcc = 0, listInactive = this.state.listInactive;
+        let numOfInactiveResp = 0, numOfInactiveAcc = 0, listInactive = state.listInactive;
 
         for (let i in listInactive) {
             if (listInactive[i].checked === true) {
@@ -537,7 +536,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
         }
 
         if (numOfAccountable === numOfInactiveAcc) {
-            let { translate } = this.props;
+            let { translate } = props;
             Swal.fire({
                 title: translate('task.task_perform.err_has_accountable'),
                 type: 'Warning',
@@ -548,7 +547,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
             }).then((res) => {
                 numOfInactiveResp = numOfInactiveResp - 1;
                 numOfInactiveAcc = numOfInactiveAcc - 1;
-                this.setState(state => {
+                setState(state => {
                     state.listInactive[`${id}`] = {
                         value: value,
                         checked: false,
@@ -561,7 +560,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
             });
         }
         else if (numOfInactiveResp === numOfResponsible) {
-            let { translate } = this.props;
+            let { translate } = props;
             Swal.fire({
                 title: translate('task.task_perform.err_has_responsible'),
                 type: 'Warning',
@@ -572,7 +571,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
             }).then((res) => {
                 numOfInactiveResp = numOfInactiveResp - 1;
                 numOfInactiveAcc = numOfInactiveAcc - 1;
-                this.setState(state => {
+                setState(state => {
                     state.listInactive[`${id}`] = {
                         value: value,
                         checked: false,
@@ -586,19 +585,19 @@ class ModalEditTaskByAccountableEmployee extends Component {
         }
     }
 
-    handleTaskNameChange = event => {
+    const handleTaskNameChange = event => {
         let value = event.target.value;
-        this.validateTaskName(value, true);
+        validateTaskName(value, true);
     }
 
-    validateTaskName = (value, willUpdateState) => {
-        let { translate } = this.props;
+    const validateTaskName = (value, willUpdateState) => {
+        let { translate } = props;
         let errorMessage = undefined;
         if (value === "") {
             errorMessage = translate('task.task_perform.modal_approve_task.err_empty');
         }
         if (willUpdateState) {
-            this.setState(state => {
+            setState(state => {
                 return {
                     ...state,
                     taskName: value,
@@ -609,18 +608,18 @@ class ModalEditTaskByAccountableEmployee extends Component {
         return errorMessage === undefined;
     }
 
-    handleTaskDescriptionChange = (value, imgs) => {
-        this.validateTaskDescription(value, imgs, true);
+    const handleTaskDescriptionChange = (value, imgs) => {
+        validateTaskDescription(value, imgs, true);
     }
 
-    validateTaskDescription = (value, imgs, willUpdateState) => {
-        let { translate } = this.props;
+    const validateTaskDescription = (value, imgs, willUpdateState) => {
+        let { translate } = props;
         let errorMessage = undefined;
         // if (value === "") {
         //     errorMessage = translate('task.task_perform.modal_approve_task.err_empty');
         // }
         if (willUpdateState) {
-            this.setState(state => {
+            setState(state => {
                 return {
                     ...state,
                     taskDescription: value,
@@ -633,93 +632,93 @@ class ModalEditTaskByAccountableEmployee extends Component {
     }
 
 
-    handleChangeTaskStartDate = (value) => {
-        this.validateTaskStartDate(value, true);
+    const handleChangeTaskStartDate = (value) => {
+        validateTaskStartDate(value, true);
     }
-    validateTaskStartDate = (value, willUpdateState = true) => {
-        let { translate } = this.props;
-        let msg = TaskFormValidator.validateTaskStartDate(value, this.state.endDate, this.props.translate);
+    const validateTaskStartDate = (value, willUpdateState = true) => {
+        let { translate } = props;
+        let msg = TaskFormValidator.validateTaskStartDate(value, state.endDate, props.translate);
 
         if (value === "") {
             msg = translate('task.task_perform.modal_approve_task.err_empty');
         } else {
-            let startDate = this.convertDateTime(value, this.state.startTime);
-            let endDate = this.convertDateTime(this.state.endDate, this.state.endTime);
+            let startDate = convertDateTime(value, state.startTime);
+            let endDate = convertDateTime(state.endDate, state.endTime);
             if (startDate > endDate) {
                 msg = translate('task.task_management.add_err_end_date');
+            } else {
+                if (state.errorOnEndDate)
+                    state.errorOnEndDate = undefined
             }
         }
         if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    startDate: value,
-                    errorOnStartDate: msg,
-                };
+            setState({
+                ...state,
+                startDate: value,
+                errorOnStartDate: msg
             });
         }
         return msg === undefined;
     }
 
-    handleChangeTaskEndDate = (value) => {
-        this.validateTaskEndDate(value, true);
+    const handleChangeTaskEndDate = (value) => {
+        validateTaskEndDate(value, true);
     }
-    validateTaskEndDate = (value, willUpdateState = true) => {
-        let { translate } = this.props;
-        let msg = TaskFormValidator.validateTaskEndDate(this.state.startDate, value, this.props.translate);
+    const validateTaskEndDate = (value, willUpdateState = true) => {
+        let { translate } = props;
+        let msg = TaskFormValidator.validateTaskEndDate(state.startDate, value, props.translate);
 
         if (value === "") {
             msg = translate('task.task_perform.modal_approve_task.err_empty');
         } else {
-            let startDate = this.convertDateTime(this.state.startDate, this.state.startTime);
-            let endDate = this.convertDateTime(value, this.state.endTime);
+            let startDate = convertDateTime(state.startDate, state.startTime);
+            let endDate = convertDateTime(value, state.endTime);
             if (startDate > endDate) {
                 msg = translate('task.task_management.add_err_end_date');
+            } else {
+                if (state.errorOnStartDate)
+                    state.errorOnStartDate = undefined
             }
         }
         if (willUpdateState) {
-            this.state.endDate = value;
-            this.state.errorOnEndDate = msg;
-            this.setState(state => {
-                return {
-                    ...state,
-                };
+            state.endDate = value
+            state.errorOnEndDate = msg
+            setState({
+                ...state,
             });
         }
         return msg === undefined;
     }
 
-    handleChangeTaskFormula = (event) => {
+    const handleChangeTaskFormula = (event) => {
         let value = event.target.value;
-        this.validateFormula(value, true);
+        validateFormula(value, true);
     }
 
-    validateFormula = (value, willUpdateState = true) => {
-        let { translate } = this.props;
+    const validateFormula = (value, willUpdateState = true) => {
+        let { translate } = props;
         let msg = TaskTemplateFormValidator.validateTaskTemplateFormula(value);
 
         if (value === "") {
             msg = translate('task.task_perform.modal_approve_task.err_empty');
         }
         if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    formula: value,
-                    errorOnFormula: msg,
-                };
+            setState({
+                ...state,
+                formula: value,
+                errorOnFormula: msg,
             });
         }
         return msg === undefined;
     }
 
-    handleTaskProgressChange = event => {
+    const handleTaskProgressChange = event => {
         let value = event.target.value;
-        this.validateTaskProgress(value, true);
+        validateTaskProgress(value, true);
     }
 
-    validateTaskProgress = (value, willUpdateState) => {
-        let { translate } = this.props;
+    const validateTaskProgress = (value, willUpdateState) => {
+        let { translate } = props;
         let errorMessage = undefined;
         if (value === "") {
             errorMessage = translate('task.task_perform.modal_approve_task.err_empty');
@@ -731,19 +730,16 @@ class ModalEditTaskByAccountableEmployee extends Component {
             errorMessage = translate('task.task_perform.modal_approve_task.err_range');
         }
         if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    taskProgress: value,
-                    errorTaskProgress: errorMessage,
-                }
+            setState({
+                ...state,
+                taskProgress: value,
+                errorTaskProgress: errorMessage,
             })
         }
         return errorMessage === undefined;
     }
-
-    isFormValidated = () => {
-        let { info, errorInfo } = this.state;
+    const isFormValidated = () => {
+        let { info, errorInfo } = state;
         let check = true;
         if (Object.keys(errorInfo).length !== 0) {
             for (let i in errorInfo) {
@@ -754,34 +750,30 @@ class ModalEditTaskByAccountableEmployee extends Component {
             }
         }
         // check &&
-        return this.validateTaskName(this.state.taskName, false)
-            && this.validateTaskDescription(this.state.taskDescription, false)
-            && (this.state.errorOnProgress === undefined && this.state.errorOnEndDate === undefined && this.state.errorOnStartDate === undefined && check);
+        return validateTaskName(state.taskName, false)
+            && validateTaskDescription(state.taskDescription, false)
+            && (state.errorOnProgress === undefined && state.errorOnEndDate === undefined && state.errorOnStartDate === undefined && check);
     }
 
-    onSearch = async (txt) => {
+    const onSearch = async (txt) => {
 
-        await this.props.getPaginateTasksByUser([], "1", "5", [], [], [], txt, null, null, null, null, false, "listSearch");
+        await props.getPaginateTasksByUser([], "1", "5", [], [], [], txt, null, null, null, null, false, "listSearch");
 
-        await this.setState(state => {
-            return {
-                ...state,
-                parent: state.parentTask ? state.parentTask._id : "",
-            }
+        await setState({
+            ...state,
+            parent: state.parentTask ? state.parentTask._id : "",
         })
     }
 
-    handleSelectedPriority = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                priorityOptions: value
-            }
+    const handleSelectedPriority = (value) => {
+        setState({
+            ...state,
+            priorityOptions: value
         });
     }
 
-    handleChangeCollaboratedWithOrganizationalUnits = async (value) => {
-        await this.setState(state => {
+    const handleChangeCollaboratedWithOrganizationalUnits = async (value) => {
+        await setState(state => {
             return {
                 ...state,
                 collaboratedWithOrganizationalUnits: value
@@ -789,102 +781,90 @@ class ModalEditTaskByAccountableEmployee extends Component {
         });
     }
 
-    handleSelectedStatus = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                statusOptions: value
-            }
+    const handleSelectedStatus = (value) => {
+        setState({
+            ...state,
+            statusOptions: value
         })
     }
 
-    handleSelectedParent = async (value) => {
+    const handleSelectedParent = async (value) => {
         let val = value[0];
 
-        await this.setState(state => {
-            return {
-                ...state,
-                parent: val,
-            }
+        await setState({
+            ...state,
+            parent: val,
         })
     }
 
-    handleSelectedResponsibleEmployee = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                responsibleEmployees: value
-            }
+    const handleSelectedResponsibleEmployee = (value) => {
+        setState({
+            ...state,
+            responsibleEmployees: value
         });
     }
-    handleSelectedAccountableEmployee = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                accountableEmployees: value
-            }
+    const handleSelectedAccountableEmployee = (value) => {
+        setState({
+            ...state,
+            accountableEmployees: value
         });
     }
-    handleSelectedConsultedEmployee = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                consultedEmployees: value
-            }
+    const handleSelectedConsultedEmployee = (value) => {
+        setState({
+            ...state,
+            consultedEmployees: value
         });
     }
-    handleSelectedInformEmployee = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                informedEmployees: value
-            }
+    const handleSelectedInformEmployee = (value) => {
+        setState({
+            ...state,
+            informedEmployees: value
         });
     }
 
-    save = () => {
-        let listInactive = this.state.listInactive, taskId, inactiveEmployees = [];
-        taskId = this.props.id;
+    const save = () => {
+        let listInactive = state.listInactive, taskId, inactiveEmployees = [];
+        taskId = props.id;
         for (let i in listInactive) {
             if (listInactive[i].checked !== undefined && listInactive[i].checked === true) {
                 inactiveEmployees.push(listInactive[i].value);
             }
         }
-        let startDateTask = this.convertDateTime(this.state.startDate, this.state.startTime);
-        let endDateTask = this.convertDateTime(this.state.endDate, this.state.endTime);
-        let imageDescriptions = QuillEditor.convertImageBase64ToFile(this.state.taskDescriptionImages)
+        let startDateTask = convertDateTime(state.startDate, state.startTime);
+        let endDateTask = convertDateTime(state.endDate, state.endTime);
+        let imageDescriptions = convertImageBase64ToFile(state.taskDescriptionImages)
 
         let data = {
-            listInfo: this.state.listInfo,
+            listInfo: state.listInfo,
 
-            name: this.state.taskName,
-            description: this.state.taskDescription,
+            name: state.taskName,
+            description: state.taskDescription,
             imageDescriptions: imageDescriptions,
-            status: this.state.statusOptions,
-            priority: this.state.priorityOptions,
-            formula: this.state.formula,
-            parent: this.state.parent,
-            user: this.state.userId,
-            progress: this.state.progress,
-            date: this.formatDate(Date.now()),
+            status: state.statusOptions,
+            priority: state.priorityOptions,
+            formula: state.formula,
+            parent: state.parent,
+            user: state.userId,
+            progress: state.progress,
+            date: formatDate(Date.now()),
 
             startDate: startDateTask,
             endDate: endDateTask,
 
-            collaboratedWithOrganizationalUnits: this.state.collaboratedWithOrganizationalUnits,
-            accountableEmployees: this.state.accountableEmployees,
-            consultedEmployees: this.state.consultedEmployees,
-            responsibleEmployees: this.state.responsibleEmployees,
-            informedEmployees: this.state.informedEmployees,
+            collaboratedWithOrganizationalUnits: state.collaboratedWithOrganizationalUnits,
+            accountableEmployees: state.accountableEmployees,
+            consultedEmployees: state.consultedEmployees,
+            responsibleEmployees: state.responsibleEmployees,
+            informedEmployees: state.informedEmployees,
             inactiveEmployees: inactiveEmployees,
-            taskProject: this.state.taskProjectName,
-            info: this.state.info,
+            taskProject: state.taskProjectName,
+            info: state.info,
         }
-        this.props.editTaskByAccountableEmployees(data, taskId);
+        props.editTaskByAccountableEmployees(data, taskId);
     }
 
-    formatPriority = (data) => {
-        const { translate } = this.props;
+    const formatPriority = (data) => {
+        const { translate } = props;
         if (data === 1) return translate('task.task_management.low');
         if (data === 2) return translate('task.task_management.average');
         if (data === 3) return translate('task.task_management.standard');
@@ -892,15 +872,15 @@ class ModalEditTaskByAccountableEmployee extends Component {
         if (data === 5) return translate('task.task_management.urgent');
     }
 
-    formatRole = (data) => {
-        const { translate } = this.props;
+    const formatRole = (data) => {
+        const { translate } = props;
         if (data === "consulted") return translate('task.task_management.consulted');
         if (data === "accountable") return translate('task.task_management.accountable');
         if (data === "responsible") return translate('task.task_management.responsible');
     }
 
-    formatStatus = (data) => {
-        const { translate } = this.props;
+    const formatStatus = (data) => {
+        const { translate } = props;
         if (data === "inprocess") return translate('task.task_management.inprocess');
         else if (data === "wait_for_approval") return translate('task.task_management.wait_for_approval');
         else if (data === "finished") return translate('task.task_management.finished');
@@ -908,17 +888,18 @@ class ModalEditTaskByAccountableEmployee extends Component {
         else if (data === "canceled") return translate('task.task_management.canceled');
     }
 
-    handleTaskProject = (value) => {
+    const handleTaskProject = (value) => {
         value = value.toString();
-        this.setState({
+        setState({
+            ...state,
             taskProjectName: value
         })
     }
 
-    handleStartTimeChange = (value) => {
-        let { translate } = this.props;
-        let startDate = this.convertDateTime(this.state.startDate, value);
-        let endDate = this.convertDateTime(this.state.endDate, this.state.endTime);
+    const handleStartTimeChange = (value) => {
+        let { translate } = props;
+        let startDate = convertDateTime(state.startDate, value);
+        let endDate = convertDateTime(state.endDate, state.endTime);
         let err;
         if (value.trim() === "") {
             err = translate('task.task_management.add_err_empty_end_date');
@@ -926,19 +907,17 @@ class ModalEditTaskByAccountableEmployee extends Component {
         else if (startDate > endDate) {
             err = translate('task.task_management.add_err_end_date');
         }
-        this.setState(state => {
-            return {
-                ...state,
-                startTime: value,
-                errorOnStartDate: err,
-            }
+        setState({
+            ...state,
+            startTime: value,
+            errorOnStartDate: err,
         });
     }
 
-    handleEndTimeChange = (value) => {
-        let { translate } = this.props;
-        let startDate = this.convertDateTime(this.state.startDate, this.state.startTime);
-        let endDate = this.convertDateTime(this.state.endDate, value);
+    const handleEndTimeChange = (value) => {
+        let { translate } = props;
+        let startDate = convertDateTime(state.startDate, state.startTime);
+        let endDate = convertDateTime(state.endDate, value);
         let err;
         if (value.trim() === "") {
             err = translate('task.task_management.add_err_empty_end_date');
@@ -946,389 +925,405 @@ class ModalEditTaskByAccountableEmployee extends Component {
         else if (startDate > endDate) {
             err = translate('task.task_management.add_err_end_date');
         }
-        this.setState(state => {
-            return {
-                ...state,
-                endTime: value,
-                errorOnEndDate: err,
-            }
+        setState({
+            ...state,
+            endTime: value,
+            errorOnEndDate: err,
         });
     }
 
-    convertDateTime = (date, time) => {
+    const convertDateTime = (date, time) => {
         let splitter = date.split("-");
-        let strDateTime = `${splitter[2]}-${splitter[1]}-${splitter[0]} ${time}`;
+        let strDateTime = `${splitter[2]}/${splitter[1]}/${splitter[0]} ${time}`;
         return new Date(strDateTime);
     }
 
-    render() {
-        const { user, tasktemplates, department, translate, project } = this.props;
-        const { task, organizationalUnit, collaboratedWithOrganizationalUnits, errorOnEndDate, errorOnStartDate, errorTaskName, errorTaskDescription, errorOnFormula, taskName, taskDescription, statusOptions, priorityOptions, taskDescriptionDefault,
-            startDate, endDate, startTime, endTime, formula, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees, inactiveEmployees, parent, parentTask
-            , taskProjectName } = this.state;
+    let departmentUsers, usercompanys;
+    if (user.userdepartments) departmentUsers = user.userdepartments;
+    if (user.usercompanys) usercompanys = user.usercompanys;
 
-        const { tasks, perform, id, role, title, hasAccountable } = this.props;
+    // list công việc liên quan.
+    let listParentTask = [{ value: "", text: `--${translate('task.task_management.add_parent_task')}--` }];
 
-        let departmentUsers, usercompanys;
-        if (user.userdepartments) departmentUsers = user.userdepartments;
-        if (user.usercompanys) usercompanys = user.usercompanys;
+    if (tasks.listSearchTasks) {
+        let arr = tasks.listSearchTasks.map(x => { return { value: x._id, text: x.name } });
 
-        // list công việc liên quan.
-        let listParentTask = [{ value: "", text: `--${translate('task.task_management.add_parent_task')}--` }];
+        if (parentTask) {
+            // kiểm tra parent cũ có trong list search hay không
+            let hasParentItem = arr.find(e => e.value === parentTask._id);
 
-        if (tasks.listSearchTasks) {
-            let arr = tasks.listSearchTasks.map(x => { return { value: x._id, text: x.name } });
-
-            if (parentTask) {
-                // kiểm tra parent cũ có trong list search hay không
-                let hasParentItem = arr.find(e => e.value === parentTask._id);
-
-                //không có parent trong arr
-                !hasParentItem && listParentTask.unshift({ value: parentTask._id, text: parentTask.name })
-                for (let i in arr) {
-                    if (arr[i].value === parentTask._id) {
-                        listParentTask.unshift({ value: parentTask._id, text: parentTask.name })
-                    }
-                    else listParentTask.push({ value: arr[i].value, text: arr[i].text })
+            //không có parent trong arr
+            !hasParentItem && listParentTask.unshift({ value: parentTask._id, text: parentTask.name })
+            for (let i in arr) {
+                if (arr[i].value === parentTask._id) {
+                    listParentTask.unshift({ value: parentTask._id, text: parentTask.name })
                 }
-            }
-            else {
-                listParentTask = [...listParentTask, ...arr];
+                else listParentTask.push({ value: arr[i].value, text: arr[i].text })
             }
         }
-
-
-        let priorityArr = [
-            { value: 1, text: translate('task.task_management.low') },
-            { value: 2, text: translate('task.task_management.average') },
-            { value: 3, text: translate('task.task_management.standard') },
-            { value: 4, text: translate('task.task_management.high') },
-            { value: 5, text: translate('task.task_management.urgent') },
-        ];
-        let statusArr = [
-            { value: "inprocess", text: translate('task.task_management.inprocess') },
-            { value: "wait_for_approval", text: translate('task.task_management.wait_for_approval') },
-            { value: "finished", text: translate('task.task_management.finished') },
-            { value: "delayed", text: translate('task.task_management.delayed') },
-            { value: "canceled", text: translate('task.task_management.canceled') },
-        ];
-
-        let usersInUnitsOfCompany;
-        if (user && user.usersInUnitsOfCompany) {
-            usersInUnitsOfCompany = user.usersInUnitsOfCompany;
+        else {
+            listParentTask = [...listParentTask, ...arr];
         }
-        let unitMembers = getEmployeeSelectBoxItems(usersInUnitsOfCompany);
-        let listDepartment = department?.list;
+    }
 
-        return (
-            <div>
-                <React.Fragment>
-                    <DialogModal
-                        size={75}
-                        maxWidth={750}
-                        modalID={hasAccountable ? `modal-edit-task-by-${role}-${id}` : `modal-edit-task-by-${role}-${id}-has-not-accountable`}
-                        formID={`form-edit-task-${role}-${id}`}
-                        title={title}
-                        isLoading={false}
-                        func={this.save}
-                        disableSubmit={!this.isFormValidated()}
-                    >
-                        <form id={`form-edit-task-${role}-${id}`}>
-                            {/*Thông tin cơ bản*/}
-                            <fieldset className="scheduler-border">
-                                <legend className="scheduler-border">{translate('task.task_management.edit_basic_info')}</legend>
-                                <div>
-                                    <div className={`form-group ${errorTaskName === undefined ? "" : "has-error"}`}>
-                                        <label>{translate('task.task_management.name')}<span className="text-red">*</span></label>
-                                        <input type="text"
-                                            value={taskName}
-                                            className="form-control" onChange={this.handleTaskNameChange} />
-                                        <ErrorLabel content={errorTaskName} />
-                                    </div>
-                                    <div
-                                        className={`form-group ${errorTaskDescription === undefined ? "" : "has-error"}`}>
-                                        <label>{translate('task.task_management.detail_description')}</label>
-                                        <QuillEditor
-                                            id={`task-edit-by-accountable-${this.props.id}`}
-                                            table={false}
-                                            embeds={false}
-                                            quillValueDefault={taskDescriptionDefault}
-                                            getTextData={this.handleTaskDescriptionChange}
-                                            maxHeight={180}
-                                            placeholder={"Mô tả công việc"}
-                                        />
-                                        <ErrorLabel content={errorTaskDescription} />
-                                    </div>
-                                    <div className="form-group">
-                                        <label>{translate('task.task_management.add_parent_task')}</label>
-                                        <SelectBox
-                                            id={`select-parent-${perform}-${role}`}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            items={listParentTask}
-                                            multiple={false}
-                                            value={parent}
-                                            onChange={this.handleSelectedParent}
-                                            onSearch={this.onSearch}
-                                        />
-                                    </div>
 
-                                    <div className="form-group">
-                                        <label>
-                                            {translate('task.task_management.project')}
-                                        </label>
-                                        <TreeSelect
-                                            id={`select-task-project-task-edit-by-accountable-${id}`}
-                                            mode='radioSelect'
-                                            data={project?.data?.list?.filter((projectItem) => projectItem.projectType === 1)}
-                                            handleChange={this.handleTaskProject}
-                                            value={[taskProjectName]}
-                                        />
-                                    </div>
+    let priorityArr = [
+        { value: 1, text: translate('task.task_management.low') },
+        { value: 2, text: translate('task.task_management.average') },
+        { value: 3, text: translate('task.task_management.standard') },
+        { value: 4, text: translate('task.task_management.high') },
+        { value: 5, text: translate('task.task_management.urgent') },
+    ];
+    let statusArr = [
+        { value: "inprocess", text: translate('task.task_management.inprocess') },
+        { value: "wait_for_approval", text: translate('task.task_management.wait_for_approval') },
+        { value: "finished", text: translate('task.task_management.finished') },
+        { value: "delayed", text: translate('task.task_management.delayed') },
+        { value: "canceled", text: translate('task.task_management.canceled') },
+    ];
+
+    let usersInUnitsOfCompany;
+    if (user && user.usersInUnitsOfCompany) {
+        usersInUnitsOfCompany = user.usersInUnitsOfCompany;
+    }
+    let unitMembers = getEmployeeSelectBoxItems(usersInUnitsOfCompany);
+    let listDepartment = department?.list;
+
+    return (
+        <div>
+            <React.Fragment>
+                <DialogModal
+                    size={75}
+                    maxWidth={750}
+                    modalID={hasAccountable ? `modal-edit-task-by-${role}-${id}` : `modal-edit-task-by-${role}-${id}-has-not-accountable`}
+                    formID={`form-edit-task-${role}-${id}`}
+                    title={title}
+                    isLoading={false}
+                    func={save}
+                    disableSubmit={!isFormValidated()}
+                >
+                    <form id={`form-edit-task-${role}-${id}`}>
+                        {/*Thông tin cơ bản*/}
+                        <fieldset className="scheduler-border">
+                            <legend className="scheduler-border">{translate('task.task_management.edit_basic_info')}</legend>
+                            <div>
+                                <div className={`form-group ${errorTaskName === undefined ? "" : "has-error"}`}>
+                                    <label>{translate('task.task_management.name')}<span className="text-red">*</span></label>
+                                    <input type="text"
+                                        value={taskName}
+                                        className="form-control" onChange={handleTaskNameChange} />
+                                    <ErrorLabel content={errorTaskName} />
                                 </div>
-                            </fieldset>
-
-                            {/*Thông tin chi tiết*/}
-                            <fieldset className="scheduler-border">
-                                <legend className="scheduler-border">{translate('task.task_management.edit_detail_info')}</legend>
-                                {/* <div> */}
-
-                                {/* Đơn vị phối hợp thực hiện công việc */}
-                                {listDepartment &&
-                                    <div className="form-group">
-                                        <label>{translate('task.task_management.collaborated_with_organizational_units')}</label>
-                                        <SelectBox
-                                            id={`editMultiSelectUnitThatHaveCollaborated-${perform}-${role}`}
-                                            lassName="form-control select2"
-                                            style={{ width: "100%" }}
-                                            items={listDepartment.filter(item => item._id !== organizationalUnit).map(x => {
-                                                return { text: x.name, value: x._id }
-                                            })}
-                                            options={{ placeholder: translate('kpi.evaluation.dashboard.select_units') }}
-                                            onChange={this.handleChangeCollaboratedWithOrganizationalUnits}
-                                            value={collaboratedWithOrganizationalUnits}
-                                            multiple={true}
-                                        />
-                                    </div>
-                                }
-
-                                <div className="row form-group">
-                                    <div className="col-lg-6 col-md-6 col-ms-12 col-xs-12">
-                                        <label>{translate('task.task_management.detail_status')}</label>
-                                        {
-                                            <SelectBox
-                                                id={`select-status-${perform}-${role}`}
-                                                className="form-control select2"
-                                                style={{ width: "100%" }}
-                                                items={statusArr}
-                                                multiple={false}
-                                                value={statusOptions[0]}
-                                                onChange={this.handleSelectedStatus}
-                                            />
-                                        }
-                                    </div>
-
-                                    {/*Mức ưu tiên*/}
-                                    <div className="col-lg-6 col-md-6 col-ms-12 col-xs-12">
-                                        <label>{translate('task.task_management.detail_priority')}</label>
-                                        {
-                                            <SelectBox
-                                                id={`select-priority-${perform}-${role}`}
-                                                className="form-control select2"
-                                                style={{ width: "100%" }}
-                                                items={priorityArr}
-                                                multiple={false}
-                                                value={priorityOptions[0]}
-                                                onChange={this.handleSelectedPriority}
-                                            />
-                                        }
-                                    </div>
-                                </div>
-
-
-                                {/* </div> */}
-                                <div className="row form-group">
-                                    <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnStartDate === undefined ? "" : "has-error"}`}>
-                                        <label className="control-label">{translate('task.task_management.start_date')}<span className="text-red">*</span></label>
-                                        <DatePicker
-                                            id={`datepicker2-startdate-${id}`}
-                                            value={startDate}
-                                            onChange={this.handleChangeTaskStartDate}
-                                        />
-                                        < TimePicker
-                                            id={`time-picker-1-start-time${id}`}
-                                            value={startTime}
-                                            onChange={this.handleStartTimeChange}
-                                        />
-                                        <ErrorLabel content={errorOnStartDate} />
-                                    </div>
-                                    <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnEndDate === undefined ? "" : "has-error"}`}>
-                                        <label className="control-label">{translate('task.task_management.end_date')}<span className="text-red">*</span></label>
-                                        <DatePicker
-                                            id={`datepicker2-enddate-${id}`}
-                                            value={endDate}
-                                            onChange={this.handleChangeTaskEndDate}
-                                        />
-                                        < TimePicker
-                                            id={`time-picker-2-end-time-${id}`}
-                                            value={endTime}
-                                            onChange={this.handleEndTimeChange}
-                                        />
-                                        <ErrorLabel content={errorOnEndDate} />
-                                    </div>
-                                </div>
-                                {/**Công thức tính của mẫu công việc */}
-                                <div className={` form-group ${errorOnFormula === undefined ? "" : "has-error"}`} >
-                                    <label className="control-label" htmlFor="inputFormula">{translate('task_template.formula')}<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" id="inputFormula" placeholder="progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100"
-                                        value={formula} onChange={this.handleChangeTaskFormula}
+                                <div
+                                    className={`form-group ${errorTaskDescription === undefined ? "" : "has-error"}`}>
+                                    <label>{translate('task.task_management.detail_description')}</label>
+                                    <QuillEditor
+                                        id={`task-edit-by-accountable-${props.id}`}
+                                        table={false}
+                                        embeds={false}
+                                        quillValueDefault={taskDescriptionDefault}
+                                        getTextData={handleTaskDescriptionChange}
+                                        maxHeight={180}
+                                        placeholder={"Mô tả công việc"}
                                     />
-                                    <ErrorLabel content={errorOnFormula} />
-
-                                    <br />
-                                    <div><span style={{ fontWeight: 800 }}>Ví dụ: </span>progress / (daysUsed / totalDays) - (sumRatingOfFailedActions / sumRatingOfAllActions) * 100</div>
-                                    <br />
-                                    <div><span style={{ fontWeight: 800 }}>{translate('task_template.parameters')}:</span></div>
-                                    <div><span style={{ fontWeight: 600 }}>daysOverdue</span> - Thời gian quá hạn (ngày)</div>
-                                    <div><span style={{ fontWeight: 600 }}>daysUsed</span> - Thời gian làm việc tính đến ngày đánh giá (ngày)</div>
-                                    <div><span style={{ fontWeight: 600 }}>totalDays</span> - Thời gian từ ngày bắt đầu đến ngày kết thúc công việc (ngày)</div>
-                                    <div><span style={{ fontWeight: 600 }}>averageActionRating</span> - Trung bình điểm đánh giá (rating) hoạt động của công việc</div>
-                                    <div><span style={{ fontWeight: 600 }}>sumRatingOfFailedActions</span> - Tổng các tích điểm hoạt động và độ quan trọng hoạt động của các hoạt động không đạt (rating &lt; 5)</div>
-                                    <div><span style={{ fontWeight: 600 }}>sumRatingOfAllActions</span> - Tổng các tích điểm hoạt động và độ quan trọng hoạt động của tất cả hoạt động</div>
-                                    <div><span style={{ fontWeight: 600 }}>progress</span> - % Tiến độ công việc (0-100)</div>
-                                    <div><span style={{ fontWeight: 600 }}>p1, p2,...</span> - Thông tin công việc kiểu số (Chỉ có với các công việc theo mẫu)</div>
+                                    <ErrorLabel content={errorTaskDescription} />
                                 </div>
-                            </fieldset>
-
-                            <TaskInformationForm
-                                task={task && task}
-
-                                handleChangeProgress={this.handleChangeProgress}
-                                handleInfoBooleanChange={this.handleInfoBooleanChange}
-                                handleInfoDateChange={this.handleInfoDateChange}
-                                handleSetOfValueChange={this.handleSetOfValueChange}
-                                handleChangeNumberInfo={this.handleChangeNumberInfo}
-                                handleChangeTextInfo={this.handleChangeTextInfo}
-                                handleChangeListInfo={this.handleChangeListInfo}
-
-                                role={role}
-                                perform={perform}
-                                value={this.state}
-                                progress={this.state.progress}
-                            />
-                            <fieldset className="scheduler-border">
-                                <legend className="scheduler-border">{translate('task.task_management.edit_member_info')}</legend>
-
-                                {/*Người thực hiện*/}
                                 <div className="form-group">
-                                    <label>{translate('task.task_management.responsible')}</label>
-                                    {unitMembers &&
+                                    <label>{translate('task.task_management.add_parent_task')}
+                                        <ToolTip
+                                            type={"icon_tooltip"}
+                                            dataTooltip={[translate('task.task_management.search_task_by_typing')]}
+                                        />
+                                    </label>
+                                    <SelectBox
+                                        id={`select-parent-${perform}-${role}`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={listParentTask}
+                                        multiple={false}
+                                        value={parent}
+                                        onChange={handleSelectedParent}
+                                        onSearch={onSearch}
+                                    />
+                                </div>
+
+                                <div className="form-group">
+                                    <label>
+                                        {translate('task.task_management.project')}
+                                    </label>
+                                    <TreeSelect
+                                        id={`select-task-project-task-edit-by-accountable-${id}`}
+                                        mode='radioSelect'
+                                        data={project?.data?.list?.filter((projectItem) => projectItem.projectType === 1)}
+                                        handleChange={handleTaskProject}
+                                        value={[taskProjectName]}
+                                    />
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        {/*Thông tin chi tiết*/}
+                        <fieldset className="scheduler-border">
+                            <legend className="scheduler-border">{translate('task.task_management.edit_detail_info')}</legend>
+                            {/* <div> */}
+
+                            {/* Đơn vị phối hợp thực hiện công việc */}
+                            {listDepartment &&
+                                <div className="form-group">
+                                    <label>{translate('task.task_management.collaborated_with_organizational_units')}</label>
+                                    <SelectBox
+                                        id={`editMultiSelectUnitThatHaveCollaborated-${perform}-${role}`}
+                                        lassName="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={listDepartment.filter(item => item._id !== organizationalUnit).map(x => {
+                                            return { text: x.name, value: x._id }
+                                        })}
+                                        options={{ placeholder: translate('kpi.evaluation.dashboard.select_units') }}
+                                        onChange={handleChangeCollaboratedWithOrganizationalUnits}
+                                        value={collaboratedWithOrganizationalUnits}
+                                        multiple={true}
+                                    />
+                                </div>
+                            }
+
+                            <div className="row form-group">
+                                <div className="col-lg-6 col-md-6 col-ms-12 col-xs-12">
+                                    <label>{translate('task.task_management.detail_status')}</label>
+                                    {
                                         <SelectBox
-                                            id={`select-responsible-employee-${perform}-${role}`}
+                                            id={`select-status-${perform}-${role}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
-                                            items={unitMembers}
-                                            onChange={this.handleSelectedResponsibleEmployee}
-                                            multiple={true}
-                                            value={responsibleEmployees}
+                                            items={statusArr}
+                                            multiple={false}
+                                            value={statusOptions[0]}
+                                            onChange={handleSelectedStatus}
                                         />
                                     }
                                 </div>
 
-                                {/*Người phê duyệt*/}
-                                <div className="form-group">
-                                    <label>{translate('task.task_management.accountable')}</label>
-                                    {unitMembers &&
+                                {/*Mức ưu tiên*/}
+                                <div className="col-lg-6 col-md-6 col-ms-12 col-xs-12">
+                                    <label>{translate('task.task_management.detail_priority')}</label>
+                                    {
                                         <SelectBox
-                                            id={`select-accountable-employee-${perform}-${role}`}
+                                            id={`select-priority-${perform}-${role}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
-                                            items={unitMembers}
-                                            onChange={this.handleSelectedAccountableEmployee}
-                                            multiple={true}
-                                            value={accountableEmployees}
+                                            items={priorityArr}
+                                            multiple={false}
+                                            value={priorityOptions[0]}
+                                            onChange={handleSelectedPriority}
                                         />
                                     }
                                 </div>
+                            </div>
 
-                                {/*Người tư vấn */}
-                                <div className="form-group">
-                                    <label>{translate('task.task_management.consulted')}</label>
-                                    {usercompanys &&
-                                        <SelectBox
-                                            id={`select-consulted-employee-${perform}-${role}`}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            items={
-                                                usercompanys.map(x => {
-                                                    return { value: x._id, text: x.name };
-                                                })
-                                            }
-                                            onChange={this.handleSelectedConsultedEmployee}
-                                            multiple={true}
-                                            value={consultedEmployees}
-                                        />
-                                    }
+
+                            {/* </div> */}
+                            <div className="row form-group">
+                                <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnStartDate === undefined ? "" : "has-error"}`}>
+                                    <label className="control-label">{translate('task.task_management.start_date')}<span className="text-red">*</span></label>
+                                    <DatePicker
+                                        id={`datepicker2-startdate-${id}`}
+                                        value={startDate}
+                                        onChange={handleChangeTaskStartDate}
+                                    />
+                                    < TimePicker
+                                        id={`time-picker-1-start-time${id}`}
+                                        value={startTime}
+                                        onChange={handleStartTimeChange}
+                                    />
+                                    <ErrorLabel content={errorOnStartDate} />
                                 </div>
-
-                                {/*Người giám sát*/}
-                                <div className="form-group">
-                                    <label>{translate('task.task_management.informed')}</label>
-                                    {usercompanys &&
-                                        <SelectBox
-                                            id={`select-informed-employee-${perform}-${role}`}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            items={
-                                                usercompanys.map(x => {
-                                                    return { value: x._id, text: x.name };
-                                                })
-                                            }
-                                            onChange={this.handleSelectedInformEmployee}
-                                            multiple={true}
-                                            value={informedEmployees}
-                                        />
-                                    }
+                                <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnEndDate === undefined ? "" : "has-error"}`}>
+                                    <label className="control-label">{translate('task.task_management.end_date')}<span className="text-red">*</span></label>
+                                    <DatePicker
+                                        id={`datepicker2-enddate-${id}`}
+                                        value={endDate}
+                                        onChange={handleChangeTaskEndDate}
+                                    />
+                                    < TimePicker
+                                        id={`time-picker-2-end-time-${id}`}
+                                        value={endTime}
+                                        onChange={handleEndTimeChange}
+                                    />
+                                    <ErrorLabel content={errorOnEndDate} />
                                 </div>
-                            </fieldset>
+                            </div>
+                            {/**Công thức tính của mẫu công việc */}
+                            <div className={` form-group ${errorOnFormula === undefined ? "" : "has-error"}`} >
+                                <label className="control-label" htmlFor="inputFormula">{translate('task_template.formula')}<span className="text-red">*</span></label>
+                                <input type="text" className="form-control" id="inputFormula" placeholder="progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100"
+                                    value={formula} onChange={handleChangeTaskFormula}
+                                />
+                                <ErrorLabel content={errorOnFormula} />
+
+                                <br />
+                                <div><span style={{ fontWeight: 800 }}>Ví dụ 1: </span>progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100</div>
+                                <div><span style={{ fontWeight: 800 }}>Ví dụ 2: </span>progress / (daysUsed / totalDays) - (10 - averageActionRating) * 10</div>
+                                <br />
+                                <div><span style={{ fontWeight: 800 }}>{translate('task_template.parameters')}:</span></div>
+                                <div><span style={{ fontWeight: 600 }}>daysOverdue</span> - Thời gian quá hạn (ngày)</div>
+                                <div><span style={{ fontWeight: 600 }}>daysUsed</span> - Thời gian làm việc tính đến ngày đánh giá (ngày)</div>
+                                <div><span style={{ fontWeight: 600 }}>totalDays</span> - Thời gian từ ngày bắt đầu đến ngày kết thúc công việc (ngày)</div>
+                                <div><span style={{ fontWeight: 600 }}>averageActionRating</span> - Trung bình điểm đánh giá (rating) hoạt động của công việc</div>
+                                <div><span style={{ fontWeight: 600 }}>numberOfFailedActions</span> - Số hoạt động không đạt (rating &lt; 5)</div>
+                                <div><span style={{ fontWeight: 600 }}>numberOfPassedActions</span> - Số hoạt động đạt (rating &ge; 5)</div>
+                                <div><span style={{ fontWeight: 600 }}>progress</span> - % Tiến độ công việc (0-100)</div>
+                                <div><span style={{ fontWeight: 600 }}>p1, p2,...</span> - Thông tin công việc kiểu số (Chỉ có với các công việc theo mẫu)</div>
+                            </div>
+                        </fieldset>
+
+                        <TaskInformationForm
+                            task={task && task}
+
+                            handleChangeProgress={handleChangeProgress}
+                            handleInfoBooleanChange={handleInfoBooleanChange}
+                            handleInfoDateChange={handleInfoDateChange}
+                            handleSetOfValueChange={handleSetOfValueChange}
+                            handleChangeNumberInfo={handleChangeNumberInfo}
+                            handleChangeTextInfo={handleChangeTextInfo}
+                            handleChangeListInfo={handleChangeListInfo}
+
+                            role={role}
+                            perform={perform}
+                            value={state}
+                            progress={state.progress}
+                        />
+                        <fieldset className="scheduler-border">
+                            <legend className="scheduler-border">{translate('task.task_management.edit_member_info')}</legend>
+
+                            {/*Người thực hiện*/}
+                            <div className="form-group">
+                                <label>{translate('task.task_management.responsible')}</label>
+                                {unitMembers &&
+                                    <SelectBox
+                                        id={`select-responsible-employee-${perform}-${role}`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={unitMembers}
+                                        onChange={handleSelectedResponsibleEmployee}
+                                        multiple={true}
+                                        value={responsibleEmployees}
+                                    />
+                                }
+                            </div>
+
+                            {/*Người phê duyệt*/}
+                            <div className="form-group">
+                                <label>{translate('task.task_management.accountable')}</label>
+                                {unitMembers &&
+                                    <SelectBox
+                                        id={`select-accountable-employee-${perform}-${role}`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={unitMembers}
+                                        onChange={handleSelectedAccountableEmployee}
+                                        multiple={true}
+                                        value={accountableEmployees}
+                                    />
+                                }
+                            </div>
+
+                            {/*Người tư vấn */}
+                            <div className="form-group">
+                                <label>{translate('task.task_management.consulted')}</label>
+                                {usercompanys &&
+                                    <SelectBox
+                                        id={`select-consulted-employee-${perform}-${role}`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={
+                                            usercompanys.map(x => {
+                                                return { value: x._id, text: x.name };
+                                            })
+                                        }
+                                        onChange={handleSelectedConsultedEmployee}
+                                        multiple={true}
+                                        value={consultedEmployees}
+                                    />
+                                }
+                            </div>
+
+                            {/*Người giám sát*/}
+                            <div className="form-group">
+                                <label>{translate('task.task_management.informed')}</label>
+                                {usercompanys &&
+                                    <SelectBox
+                                        id={`select-informed-employee-${perform}-${role}`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={
+                                            usercompanys.map(x => {
+                                                return { value: x._id, text: x.name };
+                                            })
+                                        }
+                                        onChange={handleSelectedInformEmployee}
+                                        multiple={true}
+                                        value={informedEmployees}
+                                    />
+                                }
+                            </div>
+                        </fieldset>
 
 
-                            {/* Thành viên rời khỏi công việc */}
-                            <fieldset className="scheduler-border">
-                                <legend className="scheduler-border">{translate('task.task_management.edit_inactive_emp')}</legend>
-                                <div className="form-group">
+                        {/* Thành viên rời khỏi công việc */}
+                        <fieldset className="scheduler-border">
+                            <legend className="scheduler-border">{translate('task.task_management.edit_inactive_emp')}</legend>
+                            <div className="form-group">
 
-                                    <div>
-                                        {/* Thành viên phê duyệt */}
-                                        <div style={{ marginBottom: 15 }}>
-                                            <div style={{ marginBottom: 5 }}><strong>{translate('task.task_management.accountable')}</strong></div>
+                                <div>
+                                    {/* Thành viên phê duyệt */}
+                                    <div style={{ marginBottom: 15 }}>
+                                        <div style={{ marginBottom: 5 }}><strong>{translate('task.task_management.accountable')}</strong></div>
+                                        {
+                                            task.accountableEmployees.map((elem, index) => {
+                                                return <div key={index} style={{ paddingLeft: 20 }}>
+                                                    <label style={{ fontWeight: "normal", margin: "7px 0px" }}>
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={state.listInactive[`${elem._id}`] && state.listInactive[`${elem._id}`].checked === true}
+                                                            value={elem._id}
+                                                            name="accountable" onChange={(e) => handleChangeActiveAccountable(e, elem._id)}
+                                                        />&nbsp;&nbsp;&nbsp;{elem.name}
+                                                    </label>
+                                                </div>
+                                            })
+                                        }
+                                    </div>
+
+                                    <div style={{ marginBottom: 15 }}>
+                                        <div style={{ marginBottom: 5 }}><strong>{translate('task.task_management.responsible')}</strong></div>
+                                        {
+                                            task.responsibleEmployees.map((elem, index) => {
+                                                return <div key={index} style={{ paddingLeft: 20 }}>
+                                                    <label style={{ fontWeight: "normal", margin: "7px 0px" }}>
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={state.listInactive[`${elem._id}`] && state.listInactive[`${elem._id}`].checked === true}
+                                                            value={elem._id}
+                                                            name="responsible" onChange={(e) => handleChangeActiveResponsible(e, elem._id)}
+                                                        />&nbsp;&nbsp;&nbsp;{elem.name}
+                                                    </label>
+                                                    <br />
+                                                </div>
+                                            })
+                                        }
+                                    </div>
+
+                                    {task.consultedEmployees.length !== 0 &&
+                                        <div>
+                                            <div style={{ marginBottom: 5 }}><strong>{translate('task.task_management.consulted')}</strong></div>
                                             {
-                                                task.accountableEmployees.map((elem, index) => {
-                                                    return <div key={index} style={{ paddingLeft: 20 }}>
+                                                task.consultedEmployees.map((elem, key) => {
+                                                    return <div key={key} style={{ paddingLeft: 20 }}>
                                                         <label style={{ fontWeight: "normal", margin: "7px 0px" }}>
                                                             <input
                                                                 type="checkbox"
-                                                                checked={this.state.listInactive[`${elem._id}`] && this.state.listInactive[`${elem._id}`].checked === true}
+                                                                checked={state.listInactive[`${elem._id}`] && state.listInactive[`${elem._id}`].checked === true}
                                                                 value={elem._id}
-                                                                name="accountable" onChange={(e) => this.handleChangeActiveAccountable(e, elem._id)}
-                                                            />&nbsp;&nbsp;&nbsp;{elem.name}
-                                                        </label>
-                                                    </div>
-                                                })
-                                            }
-                                        </div>
-
-                                        <div style={{ marginBottom: 15 }}>
-                                            <div style={{ marginBottom: 5 }}><strong>{translate('task.task_management.responsible')}</strong></div>
-                                            {
-                                                task.responsibleEmployees.map((elem, index) => {
-                                                    return <div key={index} style={{ paddingLeft: 20 }}>
-                                                        <label style={{ fontWeight: "normal", margin: "7px 0px" }}>
-                                                            <input
-                                                                type="checkbox"
-                                                                checked={this.state.listInactive[`${elem._id}`] && this.state.listInactive[`${elem._id}`].checked === true}
-                                                                value={elem._id}
-                                                                name="responsible" onChange={(e) => this.handleChangeActiveResponsible(e, elem._id)}
+                                                                name="consulted" onChange={(e) => handleChangeActiveConsulted(e, elem._id)}
                                                             />&nbsp;&nbsp;&nbsp;{elem.name}
                                                         </label>
                                                         <br />
@@ -1336,36 +1331,15 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                                 })
                                             }
                                         </div>
-
-                                        {task.consultedEmployees.length !== 0 &&
-                                            <div>
-                                                <div style={{ marginBottom: 5 }}><strong>{translate('task.task_management.consulted')}</strong></div>
-                                                {
-                                                    task.consultedEmployees.map((elem, key) => {
-                                                        return <div key={key} style={{ paddingLeft: 20 }}>
-                                                            <label style={{ fontWeight: "normal", margin: "7px 0px" }}>
-                                                                <input
-                                                                    type="checkbox"
-                                                                    checked={this.state.listInactive[`${elem._id}`] && this.state.listInactive[`${elem._id}`].checked === true}
-                                                                    value={elem._id}
-                                                                    name="consulted" onChange={(e) => this.handleChangeActiveConsulted(e, elem._id)}
-                                                                />&nbsp;&nbsp;&nbsp;{elem.name}
-                                                            </label>
-                                                            <br />
-                                                        </div>
-                                                    })
-                                                }
-                                            </div>
-                                        }
-                                    </div>
+                                    }
                                 </div>
-                            </fieldset>
-                        </form>
-                    </DialogModal>
-                </React.Fragment>
-            </div >
-        );
-    }
+                            </div>
+                        </fieldset>
+                    </form>
+                </DialogModal>
+            </React.Fragment>
+        </div >
+    );
 }
 
 function mapStateToProps(state) {

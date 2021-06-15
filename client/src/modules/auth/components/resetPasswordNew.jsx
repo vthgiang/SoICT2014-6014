@@ -273,7 +273,7 @@ function ResetPasswordNew(props) {
 
 
                 <ReCAPTCHA
-                    sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+                    sitekey="6Ld94SMbAAAAANJYglZD8tCajp126HJLOIUiYV8H"
                     onChange={verifyCaptchar}
 
                 />

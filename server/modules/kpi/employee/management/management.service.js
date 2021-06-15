@@ -69,7 +69,8 @@ exports.copyKPI = async (portal, id, data) => {
             .findById(id)
             .populate("organizationalUnit")
             .populate({path: "creator", select :"_id name email avatar"})
-            .populate({ path: "kpis", populate: { path: 'parent' } });
+            .populate({ path: "kpis", populate: { path: 'parent' } })
+            .populate({ path: "logs.creator", select: "_id name email avatar" })
            
         parentUnitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
             .findOne({
@@ -114,6 +115,7 @@ exports.copyKPI = async (portal, id, data) => {
             .populate({path: "approver", select: "_id name email avatar"})
             .populate({path: "creator", select :"_id name email avatar"})
             .populate({ path: "kpis", populate: { path: 'parent' } })
+            .populate({ path: "logs.creator", select: "_id name email avatar" })
 
         return {
             employeeKpiSet: employeeKpiSet,

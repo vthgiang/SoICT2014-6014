@@ -10,7 +10,7 @@ import { kpiMemberActions } from '../redux/actions';
 import { ExportExcel, ToolTip, SlimScroll } from '../../../../../common-components';
 
 import { DialogModal } from '../../../../../common-components/index';
-import { ModalDetailTask } from '../../../../task/task-dashboard/task-personal-dashboard/modalDetailTask';
+import { ModalPerform } from '../../../../task/task-perform/component/modalPerform';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 import { EmployeeKpiOverviewModal } from "../../../employee/management/component/employeeKpiOverviewModal";
 import { showWeeklyPoint } from '../../../employee/management/component/functionHelpers'
@@ -41,9 +41,9 @@ function EmployeeKpiEvaluateModal(props) {
 
     const { kpimembers } = props;
     const { translate, employeeKpiSet } = props;
-    const { taskId, content, contentName, 
-        perPage, points, tasks, 
-        taskImportanceDetail, listKpiId, 
+    const { taskId, content, contentName,
+        perPage, points, tasks,
+        taskImportanceDetail, listKpiId,
         detailKpiId
     } = state;
     let list, myTask, exportData, currentKpi;
@@ -63,7 +63,7 @@ function EmployeeKpiEvaluateModal(props) {
         SlimScroll.addVerticalScrollStyleCSS(detailKpiId, 500, true)
     })
 
-    useEffect( () => {
+    useEffect(() => {
         const { id, dataStatus } = state;
         if (props.employeeKpiSet && props.employeeKpiSet._id !== id) {
             if (props.employeeKpiSet._id) {
@@ -71,7 +71,7 @@ function EmployeeKpiEvaluateModal(props) {
             }
         }
 
-         if (dataStatus === DATA_STATUS.QUERYING) {
+        if (dataStatus === DATA_STATUS.QUERYING) {
             if (props.kpimembers.tasks) {
                 let tasks = props.kpimembers.tasks;
                 let importanceLevels = {};
@@ -86,7 +86,7 @@ function EmployeeKpiEvaluateModal(props) {
                 });
             }
         }
-    
+
     })
 
     function formatDate(date) {
@@ -119,21 +119,21 @@ function EmployeeKpiEvaluateModal(props) {
 
     const handleChangeContent = (id, employeeId, kpiType, name) => {
         async function fecth() {
-        let date = props.employeeKpiSet.date;
-        await props.getTaskById(id, employeeId, date, kpiType);
-        await setState({
-            ...state,
-            content: id,
-            contentName: name,
-            type: kpiType,
-            dataStatus: DATA_STATUS.QUERYING,
-        });
-    }
-    fecth()
+            let date = props.employeeKpiSet.date;
+            await props.getTaskById(id, employeeId, date, kpiType);
+            await setState({
+                ...state,
+                content: id,
+                contentName: name,
+                type: kpiType,
+                dataStatus: DATA_STATUS.QUERYING,
+            });
+        }
+        fecth()
     }
 
     const handleSetPointKPI = () => {
-        
+
         let date = props.employeeKpiSet.date;
         let employeeId = props.employeeKpiSet.creator._id;
         let { tasks, points, type, content } = state;
@@ -184,7 +184,7 @@ function EmployeeKpiEvaluateModal(props) {
     }
 
     const showDetailTaskImportanceCal = async (item) => {
-        await setState( {
+        await setState({
             ...state,
             taskImportanceDetail: item
         })
@@ -193,11 +193,11 @@ function EmployeeKpiEvaluateModal(props) {
     }
 
     const handleClickTaskName = async (id) => {
-        setState( {
+        await setState({
             ...state,
             taskId: id,
         });
-        window.$(`#modal-detail-task-kpi-evaluation`).modal('show');
+        window.$(`#modelPerformTask${id}`).modal('show');
     }
 
     const handleEvaluateTab = () => {
@@ -377,7 +377,7 @@ function EmployeeKpiEvaluateModal(props) {
                                 {exportData && <ExportExcel id="export-employee-kpi-evaluate-detail-kpi" exportData={exportData} />}
                             </div>
                             {list && list.map(item => {
-                                if (item._id === content) 
+                                if (item._id === content)
                                     return <div id={detailKpiId} key={item._id}>
                                         <h4>{`${translate('kpi.evaluation.employee_evaluation.KPI_info')} "${item.name}"`}</h4>
                                         <div style={{ lineHeight: 2 }}>
@@ -437,7 +437,7 @@ function EmployeeKpiEvaluateModal(props) {
                                                                 <td>{itemTask.results.contribution ? itemTask.results.contribution : 0}%</td>
                                                                 <td title={`${translate('kpi.evaluation.dashboard.auto_point')} - ${translate('kpi.evaluation.dashboard.employee_point')} - ${translate('kpi.evaluation.dashboard.approve_point')}`}>{itemTask.results.automaticPoint + '-' + itemTask.results.employeePoint + '-' + itemTask.results.approvedPoint}</td>
                                                                 <td>
-                                                                    {points && tasks && 
+                                                                    {points && tasks &&
                                                                         <React.Fragment>
                                                                             <input type="range"
                                                                                 min='0'
@@ -478,7 +478,10 @@ function EmployeeKpiEvaluateModal(props) {
                                             />
 
                                         }
-                                        {<ModalDetailTask action={'kpi-evaluation'} id={taskId} />}
+                                        {taskId && <ModalPerform
+                                            id={taskId}
+                                        />
+                                        }
                                     </div>;
                                 return true;
                             })}

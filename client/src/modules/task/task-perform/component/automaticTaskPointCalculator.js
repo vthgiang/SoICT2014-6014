@@ -117,15 +117,9 @@ function calcAutoPoint(data) {
     let averageActionRating = !a ? 10 : reduceAction.rating / reduceAction.actionImportanceLevel; // a = 0 thì avg mặc định là 10
     let autoHasActionInfo = progress / (daysUsed / totalDays) - 0.5 * (10 - (averageActionRating)) * 10;
     let automaticPoint = 0;
-    let sumRatingOfFailedActions = 0, sumRatingOfAllActions = 0;
-
-    actions.map((item) => {
-        if (item.rating < 5) {
-            sumRatingOfFailedActions = sumRatingOfFailedActions + item.rating * item.actionImportanceLevel
-        }
-        sumRatingOfAllActions = sumRatingOfAllActions + item.rating * item.actionImportanceLevel
-    });
-
+    let numberOfPassedActions = actions.filter(act => act.rating >= 5).length;
+    let numberOfFailedActions = actions.filter(act => act.rating < 5).length;
+    
     if (!task.formula) {
         if (task.taskTemplate === null || task.taskTemplate === undefined) { // Công việc không theo mẫu
             automaticPoint = a ? autoHasActionInfo : autoDependOnDay;
@@ -139,8 +133,8 @@ function calcAutoPoint(data) {
             formula = formula.replace(/totalDays/g, `(${totalDays})`);
             formula = formula.replace(/daysUsed/g, `(${daysUsed})`);
             formula = formula.replace(/averageActionRating/g, `(${averageActionRating})`);
-            formula = formula.replace(/sumRatingOfFailedActions/g, `${sumRatingOfFailedActions}`);
-            formula = formula.replace(/sumRatingOfAllActions/g, `${sumRatingOfAllActions}`);
+            formula = formula.replace(/numberOfFailedActions/g, `${numberOfFailedActions}`);
+            formula = formula.replace(/numberOfPassedActions/g, `${numberOfPassedActions}`);
             formula = formula.replace(/progress/g, `(${progressTask})`);
 
             // thay mã code bằng giá trị(chỉ dùng cho kiểu số)
@@ -174,8 +168,8 @@ function calcAutoPoint(data) {
             formula = formula.replace(/totalDays/g, `(${totalDays})`);
             formula = formula.replace(/daysUsed/g, `(${daysUsed})`);
             formula = formula.replace(/averageActionRating/g, `(${averageActionRating})`);
-            formula = formula.replace(/sumRatingOfFailedActions/g, `${sumRatingOfFailedActions}`);
-            formula = formula.replace(/sumRatingOfAllActions/g, `${sumRatingOfAllActions}`);
+            formula = formula.replace(/numberOfFailedActions/g, `${numberOfFailedActions}`);
+            formula = formula.replace(/numberOfPassedActions/g, `${numberOfPassedActions}`);
             formula = formula.replace(/progress/g, `(${progressTask})`);
 
             // thay mã code bằng giá trị(chỉ dùng cho kiểu số)
@@ -203,8 +197,8 @@ function calcAutoPoint(data) {
             formula = formula.replace(/totalDays/g, `(${totalDays})`);
             formula = formula.replace(/daysUsed/g, `(${daysUsed})`);
             formula = formula.replace(/averageActionRating/g, `(${averageActionRating})`);
-            formula = formula.replace(/sumRatingOfFailedActions/g, `${sumRatingOfFailedActions}`);
-            formula = formula.replace(/sumRatingOfAllActions/g, `${sumRatingOfAllActions}`);
+            formula = formula.replace(/numberOfFailedActions/g, `${numberOfFailedActions}`);
+            formula = formula.replace(/numberOfPassedActions/g, `${numberOfPassedActions}`);
             formula = formula.replace(/progress/g, `(${progressTask})`);
 
             // thay mã code bằng giá trị(chỉ dùng cho kiểu số)
@@ -250,7 +244,6 @@ function convertIndexPointToNormalPoint(indexPoint) {
 }
 
 function calcProjectTaskPoint(data, getCalcPointsOnly = true) {
-    // console.log('\n--------------');
     const { task, progress, projectDetail, currentTaskActualCost, info } = data;
     const { timesheetLogs, estimateNormalCost, startDate, endDate, actorsWithSalary, responsibleEmployees, estimateAssetCost, accountableEmployees } = task;
     /***************** Yếu tố tiến độ **********************/
@@ -258,7 +251,6 @@ function calcProjectTaskPoint(data, getCalcPointsOnly = true) {
     const totalDuration = task.estimateNormalTime;
     const schedulePerformanceIndex = (Number(progress) / 100) / (usedDuration / totalDuration);
     const taskTimePoint = convertIndexPointToNormalPoint(schedulePerformanceIndex) * (task?.timeWeight || 0.25);
-    // console.log('taskTimePoint', taskTimePoint)
     /***************** Yếu tố chất lượng **********************/
     // Các hoạt động (chỉ lấy những hoạt động đã đánh giá của người phê duyệt)
     let actionsHasRating = task.taskActions.filter(item => (
@@ -275,14 +267,13 @@ function calcProjectTaskPoint(data, getCalcPointsOnly = true) {
     const taskQualityPoint = sumRatingOfAllActions === 0
         ? 0
         : [(sumRatingOfPassedActions / sumRatingOfAllActions) * 100] * (task?.qualityWeight || 0.25);
-    // console.log('taskQualityPoint', taskQualityPoint)
+
     /***************** Yếu tố chi phí **********************/
     let actualCost = 0;
     if (currentTaskActualCost) actualCost = Number(currentTaskActualCost);
     else if (task?.actualCost) actualCost = Number(task.actualCost);
     const costPerformanceIndex = ((Number(progress) / 100) * estimateNormalCost) / (actualCost);
     const taskCostPoint = convertIndexPointToNormalPoint(costPerformanceIndex) * (task?.costWeight || 0.25);
-    // console.log('taskCostPoint', taskCostPoint)
     /***************** Yếu tố chuyên cần **********************/
     let totalTimeLogs = 0;
     if (timesheetLogs && timesheetLogs.length > 0) {
@@ -291,7 +282,6 @@ function calcProjectTaskPoint(data, getCalcPointsOnly = true) {
         }
     }
     const taskDilligencePoint = Math.min((totalTimeLogs / totalDuration) * 100 * (task?.dilligenceWeight || 0.25), 100);
-    // console.log('taskDilligencePoint', taskDilligencePoint)
     let autoTaskPoint = 0;
     let formula;
     if (task.formulaProjectTask) {
@@ -344,7 +334,6 @@ function calcProjectTaskPoint(data, getCalcPointsOnly = true) {
 }
 
 function calcProjectMemberPoint(data, getCalcPointsOnly = true) {
-    // console.log('\n--------------');
     const { task, progress, projectDetail, currentMemberActualCost, info, userId } = data;
     const { timesheetLogs } = task;
     const currentEmployee = task.actorsWithSalary.find((actorSalaryItem) => {
@@ -355,7 +344,6 @@ function calcProjectMemberPoint(data, getCalcPointsOnly = true) {
     const totalDuration = task.estimateNormalTime;
     const schedulePerformanceIndex = (Number(progress) / 100) / (usedDuration / totalDuration);
     const memberTimePoint = convertIndexPointToNormalPoint(schedulePerformanceIndex) * (task?.timeWeight || 0.25);
-    // console.log('memberTimePoint', memberTimePoint)
     /***************** Yếu tố chất lượng **********************/
     // Các hoạt động (chỉ lấy những hoạt động đã đánh giá của người phê duyệt)
     let actionsHasRating = task.taskActions.filter(item => (
@@ -372,7 +360,6 @@ function calcProjectMemberPoint(data, getCalcPointsOnly = true) {
     const memberQualityPoint = sumRatingOfAllActions === 0
         ? 0
         : [(sumRatingOfPassedActions / sumRatingOfAllActions) * 100] * (task?.qualityWeight || 0.25);
-    // console.log('memberQualityPoint', memberQualityPoint)
     /***************** Yếu tố chi phí **********************/
     let actualCost = 0;
     if (currentMemberActualCost) actualCost = Number(currentMemberActualCost);
@@ -380,7 +367,6 @@ function calcProjectMemberPoint(data, getCalcPointsOnly = true) {
     let estimateNormalMemberCost = getEstimateMemberCostOfTask(task, projectDetail, userId);
     const costPerformanceIndex = ((Number(progress) / 100) * estimateNormalMemberCost) / (actualCost);
     const memberCostPoint = convertIndexPointToNormalPoint(costPerformanceIndex) * (task?.costWeight || 0.25);
-    // console.log('memberCostPoint', memberCostPoint)
     /***************** Yếu tố chuyên cần **********************/
     let totalTimeLogs = 0;
     for (let timeSheetItem of timesheetLogs) {
@@ -389,7 +375,6 @@ function calcProjectMemberPoint(data, getCalcPointsOnly = true) {
         }
     }
     const memberDilligencePoint = Math.min((totalTimeLogs / (totalDuration * Number(currentEmployee.weight / 100))) * 100 * (task?.dilligenceWeight || 0.25), 100);
-    // console.log('memberDilligencePoint', memberDilligencePoint)
     let autoMemberPoint = 0;
     let formula;
     if (task.formulaProjectMember) {

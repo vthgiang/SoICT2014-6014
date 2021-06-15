@@ -7,7 +7,7 @@ import { UserActions } from '../../../super-admin/user/redux/actions';
 import { RoleActions } from '../../../super-admin/role/redux/actions';
 
 import { ModalEditTaskByResponsibleEmployee } from './modalEditTaskByResponsibleEmployee';
-import { ModalEditTaskByAccountableEmployee } from './modalEditTaskByAccountableEmployeeHook';
+import { ModalEditTaskByAccountableEmployee } from './modalEditTaskByAccountableEmployee';
 import { HoursSpentOfEmployeeChart } from './hourSpentOfEmployeeChart';
 import { CollaboratedWithOrganizationalUnits } from './collaboratedWithOrganizationalUnits';
 
