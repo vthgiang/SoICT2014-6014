@@ -866,7 +866,7 @@ class AddTaskForm extends Component {
                                         mode='radioSelect'
                                         data={project?.data?.list?.filter((projectItem) => projectItem.projectType === 1)}
                                         handleChange={this.handleTaskProject}
-                                        value={[newTask.taskProject]}
+                                        value={this.props.projectIdFromDetailProject || [newTask.taskProject]}
                                         action={checkCurrentRoleIsManager && checkCurrentRoleIsManager.length > 0 ? () => { window.$('#modal-create-project').modal('show') } : null}
                                         actionIcon={checkCurrentRoleIsManager && checkCurrentRoleIsManager.length > 0 && 'fa fa-plus'}
                                     />
