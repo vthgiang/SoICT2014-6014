@@ -1178,37 +1178,36 @@ class ModalEditTaskByAccountableEmployeeProject extends Component {
                                 {/**Công thức tính của công việc */}
                                 <div className={` form-group ${errorOnFormulaTask === undefined ? "" : "has-error"}`} >
                                     <label className="control-label" htmlFor="inputProjectTaskFormula">Công thức tính điểm công việc tự động<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" id="inputProjectTaskFormula" placeholder="taskTimePoint + taskQualityPoint + taskCostPoint + taskDilligencePoint"
+                                    <input type="text" className="form-control" id="inputProjectTaskFormula" placeholder="taskTimePoint + taskQualityPoint + taskCostPoint"
                                         value={formulaProjectTask} onChange={this.handleChangeTaskFormula}
                                     />
                                     <ErrorLabel content={errorOnFormulaTask} />
 
                                     <br />
-                                    <div><span style={{ fontWeight: 800 }}>Ví dụ: </span>taskTimePoint + taskQualityPoint + taskCostPoint + taskDilligencePoint</div>
+                                    <div><span style={{ fontWeight: 800 }}>Ví dụ: </span>taskTimePoint + taskQualityPoint + taskCostPoint</div>
                                     <br />
                                     <div><span style={{ fontWeight: 800 }}>{translate('task_template.parameters')}:</span></div>
                                     <div><span style={{ fontWeight: 600 }}>taskTimePoint</span> - Điểm yếu tố tiến độ của công việc</div>
                                     <div><span style={{ fontWeight: 600 }}>taskQualityPoint</span> - Điểm yếu tố chất lượng của công việc</div>
                                     <div><span style={{ fontWeight: 600 }}>taskCostPoint</span> - Điểm yếu tố chi phí của công việc</div>
-                                    <div><span style={{ fontWeight: 600 }}>taskDilligencePoint</span> - Điểm yếu tố chuyên cần của công việc</div>
                                     <div><span style={{ fontWeight: 600 }}>p1, p2,...</span> - Thông tin công việc kiểu số</div>
                                 </div>
                                 {/**Công thức tính của thành viên công việc */}
                                 <div className={` form-group ${errorOnFormulaMember === undefined ? "" : "has-error"}`} >
                                     <label className="control-label" htmlFor="inputProjectMemberFormula">Công thức tính điểm thành viên công việc tự động<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" id="inputProjectMemberFormula" placeholder="memberTimePoint + memberQualityPoint + memberCostPoint + memberDilligencePoint"
+                                    <input type="text" className="form-control" id="inputProjectMemberFormula" placeholder="memberTimePoint + memberQualityPoint + memberCostPoint + memberTimedistributionPoint"
                                         value={formulaProjectMember} onChange={this.handleChangeMemberFormula}
                                     />
                                     <ErrorLabel content={errorOnFormulaMember} />
 
                                     <br />
-                                    <div><span style={{ fontWeight: 800 }}>Ví dụ: </span>memberTimePoint + memberQualityPoint + memberCostPoint + memberDilligencePoint</div>
+                                    <div><span style={{ fontWeight: 800 }}>Ví dụ: </span>memberTimePoint + memberQualityPoint + memberCostPoint + memberTimedistributionPoint</div>
                                     <br />
                                     <div><span style={{ fontWeight: 800 }}>{translate('task_template.parameters')}:</span></div>
                                     <div><span style={{ fontWeight: 600 }}>memberTimePoint</span> - Điểm yếu tố tiến độ của công việc</div>
                                     <div><span style={{ fontWeight: 600 }}>memberQualityPoint</span> - Điểm yếu tố chất lượng của công việc</div>
                                     <div><span style={{ fontWeight: 600 }}>memberCostPoint</span> - Điểm yếu tố chi phí của thành viên trong công việc</div>
-                                    <div><span style={{ fontWeight: 600 }}>memberDilligencePoint</span> - Điểm yếu tố chuyên cần của thành viên trong công việc</div>
+                                    <div><span style={{ fontWeight: 600 }}>memberTimedistributionPoint</span> - Điểm yếu tố phân bố thời gian hợp lý của thành viên trong công việc</div>
                                     <div><span style={{ fontWeight: 600 }}>p1, p2,...</span> - Thông tin công việc kiểu số</div>
                                 </div>
                             </fieldset>

@@ -19,14 +19,16 @@ const TableTasksProject = (props) => {
     const tableId = "tasks-project-table";
     const [state, setState] = useState({
         taskName: "",
-        page: 1,
-        perPage: 6,
+        // page: 1,
+        // perPage: 6,
         currentTaskId: null,
     })
+    const [page, setPage] = useState(1);
+    const [perPage, setPerPage] = useState(6);
     const currentProjectId = window.location.href.split('?id=')[1].split('#')?.[0];
     const userId = getStorage('userId');
     const { translate, currentProjectTasks, user, project, performtasks, tasks } = props;
-    const { page, perPage, taskName, currentTaskId } = state;
+    const { taskName, currentTaskId } = state;
     let units = []
     if (user) units = user.organizationalUnitsOfUser;
 
@@ -72,20 +74,19 @@ const TableTasksProject = (props) => {
     //     });
     // }
 
-    const setPage = (pageNumber) => {
-        setState({
-            ...state,
-            page: parseInt(pageNumber)
-        });
+    const setCurrentPage = (pageNumber) => {
+        setPage(parseInt(pageNumber));
         props.getTasksByProject(currentProjectId, parseInt(pageNumber), perPage);
     }
 
     const setLimit = (number) => {
-        setState({
-            ...state,
-            perPage: parseInt(number),
-            page: 1
-        });
+        setPage(1);
+        setPerPage(parseInt(number));
+        // setState({
+        //     ...state,
+        //     perPage: parseInt(number),
+        //     page: 1
+        // });
         props.getTasksByProject(currentProjectId, 1, parseInt(number));
     }
 
@@ -228,7 +229,7 @@ const TableTasksProject = (props) => {
             </table>
 
             {/* PaginateBar */}
-            {tasks && tasks.isLoading ?
+            {tasks && tasks.isProjectPaginateLoading ?
                 <div className="table-info-panel">{translate('confirm.loading')}</div> :
                 (!lists || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
             }
@@ -237,7 +238,7 @@ const TableTasksProject = (props) => {
                 currentPage={page}
                 display={lists && lists.length !== 0 && lists.length}
                 total={tasks && tasks.totalDocs}
-                func={setPage}
+                func={setCurrentPage}
             />
         </React.Fragment>
     );

@@ -613,20 +613,20 @@ export function tasks(state = {
         case taskManagementConstants.GETTASK_BYPROJECT_PAGINATE_REQUEST:
             return {
                 ...state,
-                isLoading: true
+                isProjectPaginateLoading: true
             };
         case taskManagementConstants.GETTASK_BYPROJECT_PAGINATE_SUCCESS:
             return {
                 ...state,
                 tasksbyprojectpaginate: action.payload.docs,
                 totalDocs: action.payload.totalDocs,
-                isLoading: false
+                isProjectPaginateLoading: false
             }
         case taskManagementConstants.GETTASK_BYPROJECT_PAGINATE_FAILURE:
             return {
                 ...state,
                 error: action.error,
-                isLoading: false
+                isProjectPaginateLoading: false
             }
 
         default:
