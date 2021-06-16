@@ -32,7 +32,7 @@ function TaskAddModal(props) {
         currentRole: getStorage('currentRole'),
     })
 
-    const { translate, task, id, parentTask, currentTasks, currentProjectTasks, isProjectForm = false } = props;
+    const { translate, task, id, parentTask, currentTasks, currentProjectTasks, isProjectForm = false, projectId } = props;
 
     const onChangeTaskData = (value) => {
         setState({
@@ -60,7 +60,6 @@ function TaskAddModal(props) {
     }
 
     const handleSubmit = async () => {
-        const { projectId } = props;
         const { newTask, startTime, endTime } = state;
         let startDateTask = convertDateTime(newTask.startDate, startTime);
         let endDateTask = convertDateTime(newTask.endDate, endTime);
@@ -124,6 +123,7 @@ function TaskAddModal(props) {
                     task={task}
                     parentTask={parentTask}
                     currentTasks={currentTasks}
+                    projectIdFromDetailProject={projectId}
                 />
             </DialogModal>
         </React.Fragment>
