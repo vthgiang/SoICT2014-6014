@@ -7,6 +7,7 @@ import { formatToTimeZoneDate, formatDate } from "../../../../../helpers/formatD
 import ValidationHelper from '../../../../../helpers/validationHelper';
 
 import { LocationMap } from './map/locationMap'
+import { MapContainer } from '../../transportHelper/mapbox/map'
 import { TransportVehicleAndCarrierSelect } from './transport-plan-create/transportVehicleAndCarrierSelect'
 import { TransportVehicleCarrier2 } from './transportVehicleCarrier2'
 
@@ -372,12 +373,15 @@ function TransportPlanCreateForm(props) {
                                     {
                                         (listRequirements && listRequirements.length!==0)
                                         &&
-                                        <LocationMap 
-                                            locations = {listSelectedRequirementsLocation}
-                                            loadingElement={<div style={{height: `100%`}}/>}
-                                            containerElement={<div style={{height: "50vh"}}/>}
-                                            mapElement={<div style={{height: `100%`}}/>}
-                                            defaultZoom={11}
+                                        // <LocationMap 
+                                        //     locations = {listSelectedRequirementsLocation}
+                                        //     loadingElement={<div style={{height: `100%`}}/>}
+                                        //     containerElement={<div style={{height: "50vh"}}/>}
+                                        //     mapElement={<div style={{height: `100%`}}/>}
+                                        //     defaultZoom={11}
+                                        // />
+                                        <MapContainer 
+                                            nonDirectLocations={listSelectedRequirementsLocation}
                                         />
                                     }
                                 </div>

@@ -7,6 +7,7 @@ import { formatToTimeZoneDate, formatDate } from "../../../../../helpers/formatD
 import ValidationHelper from '../../../../../helpers/validationHelper';
 
 import { LocationMap } from './map/locationMap'
+import { MapContainer } from '../../transportHelper/mapbox/map'
 import { TransportVehicleAndCarrierSelect } from "./transport-plan-edit/transportVehicleAndCarrierSelect"
 
 import { transportPlanActions } from '../redux/actions';
@@ -375,13 +376,16 @@ function TransportPlanEditForm(props) {
                                             {
                                                 (listRequirements && listRequirements.length!==0)
                                                 &&
-                                                <LocationMap 
-                                                    locations = {listSelectedRequirementsLocation}
-                                                    loadingElement={<div style={{height: `100%`}}/>}
-                                                    containerElement={<div style={{height: "45vh", marginTop: '20px'}}/>}
-                                                    mapElement={<div style={{height: `100%`}}/>}
-                                                    defaultZoom={10}
-                                                    defaultCenter={listSelectedRequirementsLocation[0]?.locations}
+                                                // <LocationMap 
+                                                //     locations = {listSelectedRequirementsLocation}
+                                                //     loadingElement={<div style={{height: `100%`}}/>}
+                                                //     containerElement={<div style={{height: "45vh", marginTop: '20px'}}/>}
+                                                //     mapElement={<div style={{height: `100%`}}/>}
+                                                //     defaultZoom={10}
+                                                //     defaultCenter={listSelectedRequirementsLocation[0]?.locations}
+                                                // />
+                                                <MapContainer 
+                                                    nonDirectLocations = {listSelectedRequirementsLocation}
                                                 />
                                             }
                                         </div>

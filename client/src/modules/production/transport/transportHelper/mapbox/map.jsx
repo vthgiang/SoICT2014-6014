@@ -6,6 +6,7 @@ import './mapstyles.css';
 function MapContainer(props) {
 
     const {locations, driverLocation, nonDirectLocations, zoom, indexComponent, mapHeight, callBackLatLng} = props;
+    // locations: danh sach vi tri co chi duong, driverLocation: vi tri tai xe, nonDirections: vi tri ko chi duong, zoom: phong to map, indexComponent: so thu tu component, mapheight: height map, callBackLatLng: tra ve lat lng khi click map
 
     let routeId = "route" + indexComponent;
 
@@ -26,7 +27,7 @@ function MapContainer(props) {
 
 
     mapboxgl.accessToken = "pk.eyJ1Ijoia2llbm5kdHZuaXN0IiwiYSI6ImNrcGprZGFvcjExcGUybmprYjZkYzFyOWsifQ.vWflR8QYCqpVNlLhO_TR6g"
-
+    //https://account.mapbox.com/ tạo tài khoản, accessToken là public token
     useEffect(() => {
         
         if (delayLoadDirect.current){
