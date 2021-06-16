@@ -33,6 +33,22 @@ function EmployeeKpiOverviewModal(props) {
         window.$(`#modal-employee-kpi-set-log-${type}`).modal('show')
     }
 
+    function formatDate(date) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear(),
+            hour = d.getHours(),
+            minute = d.getMinutes(),
+            second = d.getSeconds()
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        return [hour, minute, second].join(':') + " " + [day, month, year].join('-');
+    }
 
     let list;
     if (kpimembers?.currentKPI) {
@@ -48,9 +64,32 @@ function EmployeeKpiOverviewModal(props) {
                 employeeKpiSetId={employeeKpiSetId}
                 type={type}
             />
-            <button className=" btn btn-primary pull-right" onClick={() => showEmployeeKPISetLogs(kpimembers?.currentKPI?._id)}>{translate('kpi.evaluation.employee_evaluation.show_logs')}</button>
-            <br/><br/>
+            <div style={{ marginBottom: '10px' }}>
+                <button className=" btn btn-primary pull-right" onClick={() => showEmployeeKPISetLogs(kpimembers?.currentKPI?._id)}>{translate('kpi.evaluation.employee_evaluation.show_logs')}</button>
+                <div>
+                    <label>{translate('kpi.evaluation.employee_evaluation.number_of_targets')}:</label>
+                    <span> {list?.length ?? 0}</span>
+                </div>
+                <div>
+                    <label>{translate('task.task_management.eval_of')}:</label>
+                    <ToolTip 
+                        type={'text_tooltip'}
+                        dataTooltip={`${translate('kpi.evaluation.dashboard.auto_point')} - ${translate('kpi.evaluation.dashboard.employee_point')} - ${translate('kpi.evaluation.dashboard.approve_point')}`}
+                    >
+                        <span>
+                            <span> {kpimembers?.currentKPI?.automaticPoint !== null && kpimembers?.currentKPI?.automaticPoint >= 0 ? kpimembers?.currentKPI?.automaticPoint : translate('kpi.evaluation.employee_evaluation.not_avaiable')}</span>
+                            <span> - {kpimembers?.currentKPI?.employeePoint !== null && kpimembers?.currentKPI?.employeePoint >= 0 ? kpimembers?.currentKPI?.employeePoint : translate('kpi.evaluation.employee_evaluation.not_avaiable')}</span>
+                            <span> - {kpimembers?.currentKPI?.approvedPoint !== null && kpimembers?.currentKPI?.approvedPoint >= 0 ? kpimembers?.currentKPI?.approvedPoint : translate('kpi.evaluation.employee_evaluation.not_avaiable')}</span>
+                        </span>
+                    </ToolTip>
+                </div>
+                <div>
+                    <label>{translate('kpi.evaluation.employee_evaluation.lastest_edit')}: </label>
+                    <span> {kpimembers?.currentKPI?.logs?.[0]?.creator?.name} ({formatDate(kpimembers?.currentKPI?.logs?.[0]?.createdAt)})</span>
+                </div>
+            </div>
 
+            <h4 style={{ display: "inline-block", fontWeight: "600", marginTop: "0px" }}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.target_list')}</h4>
             <DataTableSetting
                 className="pull-right"
                 tableId={tableId}
@@ -101,47 +140,67 @@ function EmployeeKpiOverviewModal(props) {
                                             </span>
                                         </ToolTip>
                                     </td>
-                                    <td title={`${translate('kpi.evaluation.dashboard.auto_point')} - ${translate('kpi.evaluation.dashboard.employee_point')} - ${translate('kpi.evaluation.dashboard.approve_point')}`}>
+                                    <td>
                                         { kpi?.weeklyEvaluations?.length > 0 
                                             && kpi?.weeklyEvaluations?.filter(eva => eva?.title === 'week1')?.map(
-                                                item => <>
-                                                        <span>{kpi?.automaticPoint !== null && kpi?.automaticPoint >= 0 ? kpi.automaticPoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')} - </span>
-                                                        <span>{kpi?.employeePoint !== null && kpi?.employeePoint >= 0 ? kpi.employeePoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')} - </span>
-                                                        <span>{kpi?.approvedPoint !== null && kpi?.approvedPoint >= 0 ? kpi.approvedPoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')}</span>
-                                                    </>
+                                                item => <ToolTip
+                                                        type={'text_tooltip'}
+                                                        dataTooltip={`${translate('kpi.evaluation.dashboard.auto_point')} - ${translate('kpi.evaluation.dashboard.employee_point')} - ${translate('kpi.evaluation.dashboard.approve_point')}`}
+                                                    >
+                                                        <span>
+                                                            <span>{item?.automaticPoint !== null && item?.automaticPoint >= 0 ? item.automaticPoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')} - </span>
+                                                            <span>{item?.employeePoint !== null && item?.employeePoint >= 0 ? item.employeePoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')} - </span>
+                                                            <span>{item?.approvedPoint !== null && item?.approvedPoint >= 0 ? item.approvedPoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')}</span>
+                                                        </span>
+                                                    </ToolTip>
                                             )
                                         }
                                     </td>
-                                    <td title={`${translate('kpi.evaluation.dashboard.auto_point')} - ${translate('kpi.evaluation.dashboard.employee_point')} - ${translate('kpi.evaluation.dashboard.approve_point')}`}>
+                                    <td>
                                         { kpi?.weeklyEvaluations?.length > 0 
                                             && kpi?.weeklyEvaluations?.filter(eva => eva?.title === 'week2')?.map(
-                                                item => <>
-                                                        <span>{kpi?.automaticPoint !== null && kpi?.automaticPoint >= 0 ? kpi.automaticPoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')} - </span>
-                                                        <span>{kpi?.employeePoint !== null && kpi?.employeePoint >= 0 ? kpi.employeePoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')} - </span>
-                                                        <span>{kpi?.approvedPoint !== null && kpi?.approvedPoint >= 0 ? kpi.approvedPoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')}</span>
-                                                    </>
+                                                item => <ToolTip
+                                                        type={'text_tooltip'}
+                                                        dataTooltip={`${translate('kpi.evaluation.dashboard.auto_point')} - ${translate('kpi.evaluation.dashboard.employee_point')} - ${translate('kpi.evaluation.dashboard.approve_point')}`}
+                                                    >
+                                                        <span>
+                                                            <span>{item?.automaticPoint !== null && item?.automaticPoint >= 0 ? item.automaticPoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')} - </span>
+                                                            <span>{item?.employeePoint !== null && item?.employeePoint >= 0 ? item.employeePoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')} - </span>
+                                                            <span>{item?.approvedPoint !== null && item?.approvedPoint >= 0 ? item.approvedPoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')}</span>
+                                                        </span>
+                                                    </ToolTip>
                                             )
                                         }
                                     </td>
-                                    <td title={`${translate('kpi.evaluation.dashboard.auto_point')} - ${translate('kpi.evaluation.dashboard.employee_point')} - ${translate('kpi.evaluation.dashboard.approve_point')}`}>
+                                    <td>
                                         { kpi?.weeklyEvaluations?.length > 0 
                                             && kpi?.weeklyEvaluations?.filter(eva => eva?.title === 'week3')?.map(
-                                                item => <>
-                                                        <span>{kpi?.automaticPoint !== null && kpi?.automaticPoint >= 0 ? kpi.automaticPoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')} - </span>
-                                                        <span>{kpi?.employeePoint !== null && kpi?.employeePoint >= 0 ? kpi.employeePoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')} - </span>
-                                                        <span>{kpi?.approvedPoint !== null && kpi?.approvedPoint >= 0 ? kpi.approvedPoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')}</span>
-                                                    </>
+                                                item => <ToolTip
+                                                        type={'text_tooltip'}
+                                                        dataTooltip={`${translate('kpi.evaluation.dashboard.auto_point')} - ${translate('kpi.evaluation.dashboard.employee_point')} - ${translate('kpi.evaluation.dashboard.approve_point')}`}
+                                                    >
+                                                        <span>
+                                                            <span>{item?.automaticPoint !== null && item?.automaticPoint >= 0 ? item.automaticPoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')} - </span>
+                                                            <span>{item?.employeePoint !== null && item?.employeePoint >= 0 ? item.employeePoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')} - </span>
+                                                            <span>{item?.approvedPoint !== null && item?.approvedPoint >= 0 ? item.approvedPoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')}</span>
+                                                        </span>
+                                                    </ToolTip>
                                             )
                                         }
                                     </td>
-                                    <td title={`${translate('kpi.evaluation.dashboard.auto_point')} - ${translate('kpi.evaluation.dashboard.employee_point')} - ${translate('kpi.evaluation.dashboard.approve_point')}`}>
+                                    <td>
                                         { kpi?.weeklyEvaluations?.length > 0 
                                             && kpi?.weeklyEvaluations?.filter(eva => eva?.title === 'week4')?.map(
-                                                item => <>
-                                                        <span>{kpi?.automaticPoint !== null && kpi?.automaticPoint >= 0 ? kpi.automaticPoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')} - </span>
-                                                        <span>{kpi?.employeePoint !== null && kpi?.employeePoint >= 0 ? kpi.employeePoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')} - </span>
-                                                        <span>{kpi?.approvedPoint !== null && kpi?.approvedPoint >= 0 ? kpi.approvedPoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')}</span>
-                                                    </>
+                                                item => <ToolTip
+                                                        type={'text_tooltip'}
+                                                        dataTooltip={`${translate('kpi.evaluation.dashboard.auto_point')} - ${translate('kpi.evaluation.dashboard.employee_point')} - ${translate('kpi.evaluation.dashboard.approve_point')}`}
+                                                    >
+                                                        <span>
+                                                            <span>{item?.automaticPoint !== null && item?.automaticPoint >= 0 ? item.automaticPoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')} - </span>
+                                                            <span>{item?.employeePoint !== null && item?.employeePoint >= 0 ? item.employeePoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')} - </span>
+                                                            <span>{item?.approvedPoint !== null && item?.approvedPoint >= 0 ? item.approvedPoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')}</span>
+                                                        </span>
+                                                    </ToolTip>
                                             )
                                         }
                                     </td>

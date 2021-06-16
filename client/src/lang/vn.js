@@ -4040,6 +4040,7 @@ export default {
                     not_avaiable: "Chưa đánh giá",
                     no_point: "Chưa có điểm",
                     lastest_evaluation: "Đánh giá cuối",
+                    lastest_edit: "Chỉnh sửa cuối",
                     task_list: "Danh sách công việc",
                     work_duration_time: "Thời gian làm việc",
                     evaluate_time: "Thời gian đánh giá",

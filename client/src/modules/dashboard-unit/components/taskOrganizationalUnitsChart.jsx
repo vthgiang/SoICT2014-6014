@@ -63,17 +63,17 @@ class TaskOrganizationalUnitsChart extends Component {
 
     componentDidMount() {
         const { childOrganizationalUnit, month } = this.props;
-        const { startDate, endDate } = this.state;
+        const { startDate, endDate, timeseriesChart } = this.state;
         let childOrganizationalUnitId = childOrganizationalUnit.map(x => x.id);
         this.props.getAllEmployeeOfUnitByIds({
             organizationalUnitIds: childOrganizationalUnitId,
         });
 
-        // Nếu số đơn vị >1, chỉ truy vấn dữ lieuẹ trong 1 tháng (dùng cho biểu đồ)
-        if (childOrganizationalUnitId?.length > 3) {
-            this.props.getTaskInOrganizationUnitByMonth(childOrganizationalUnitId, month, month);
-        } else {
+        // Nếu số đơn vị > 1, chỉ truy vấn dữ lieuẹ trong 1 tháng (dùng cho biểu đồ)
+        if (timeseriesChart) {
             this.props.getTaskInOrganizationUnitByMonth(childOrganizationalUnitId, this.formatString(startDate), this.formatString(endDate));
+        } else {
+            this.props.getTaskInOrganizationUnitByMonth(childOrganizationalUnitId, month, month);
         }
     }
 
@@ -122,9 +122,9 @@ class TaskOrganizationalUnitsChart extends Component {
             
             // Nếu số đơn vị >1, chỉ truy vấn dữ lieuẹ trong 1 tháng (dùng cho biểu đồ)
             if (timeseriesChart) {
-                this.props.getTaskInOrganizationUnitByMonth(childOrganizationalUnitId, nextProps.month, nextProps.month);
-            } else {
                 this.props.getTaskInOrganizationUnitByMonth(childOrganizationalUnitId, this.formatString(startDate), this.formatString(endDate));
+            } else {
+                this.props.getTaskInOrganizationUnitByMonth(childOrganizationalUnitId, nextProps.month, nextProps.month);
             }
             return true
         }

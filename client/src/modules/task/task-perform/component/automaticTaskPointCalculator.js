@@ -119,7 +119,7 @@ function calcAutoPoint(data) {
     let automaticPoint = 0;
     let numberOfPassedActions = actions.filter(act => act.rating >= 5).length;
     let numberOfFailedActions = actions.filter(act => act.rating < 5).length;
-    
+
     if (!task.formula) {
         if (task.taskTemplate === null || task.taskTemplate === undefined) { // Công việc không theo mẫu
             automaticPoint = a ? autoHasActionInfo : autoDependOnDay;
@@ -250,7 +250,7 @@ function calcProjectTaskPoint(data, getCalcPointsOnly = true) {
     const usedDuration = getDurationWithoutSatSun(task.startDate, moment().format(), 'milliseconds');
     const totalDuration = task.estimateNormalTime;
     const schedulePerformanceIndex = (Number(progress) / 100) / (usedDuration / totalDuration);
-    const taskTimePoint = convertIndexPointToNormalPoint(schedulePerformanceIndex) * (task?.timeWeight || 0.25);
+    const taskTimePoint = convertIndexPointToNormalPoint(schedulePerformanceIndex) * (task?.taskWeight?.timeWeight || (1 / 3));
     /***************** Yếu tố chất lượng **********************/
     // Các hoạt động (chỉ lấy những hoạt động đã đánh giá của người phê duyệt)
     let actionsHasRating = task.taskActions.filter(item => (
@@ -266,22 +266,22 @@ function calcProjectTaskPoint(data, getCalcPointsOnly = true) {
     });
     const taskQualityPoint = sumRatingOfAllActions === 0
         ? 0
-        : [(sumRatingOfPassedActions / sumRatingOfAllActions) * 100] * (task?.qualityWeight || 0.25);
+        : [(sumRatingOfPassedActions / sumRatingOfAllActions) * 100] * (task?.taskWeight?.qualityWeight || (1 / 3));
 
     /***************** Yếu tố chi phí **********************/
     let actualCost = 0;
     if (currentTaskActualCost) actualCost = Number(currentTaskActualCost);
     else if (task?.actualCost) actualCost = Number(task.actualCost);
     const costPerformanceIndex = ((Number(progress) / 100) * estimateNormalCost) / (actualCost);
-    const taskCostPoint = convertIndexPointToNormalPoint(costPerformanceIndex) * (task?.costWeight || 0.25);
-    /***************** Yếu tố chuyên cần **********************/
+    const taskCostPoint = convertIndexPointToNormalPoint(costPerformanceIndex) * (task?.taskWeight?.costWeight || (1 / 3));
+    // Tính tổng số giờ đã bấm cho công việc
     let totalTimeLogs = 0;
     if (timesheetLogs && timesheetLogs.length > 0) {
         for (let timeSheetItem of timesheetLogs) {
             totalTimeLogs += timeSheetItem.duration;
         }
     }
-    const taskDilligencePoint = Math.min((totalTimeLogs / totalDuration) * 100 * (task?.dilligenceWeight || 0.25), 100);
+
     let autoTaskPoint = 0;
     let formula;
     if (task.formulaProjectTask) {
@@ -291,7 +291,6 @@ function calcProjectTaskPoint(data, getCalcPointsOnly = true) {
         formula = formula.replace(/taskTimePoint/g, `(${taskTimePoint})`);
         formula = formula.replace(/taskQualityPoint/g, `(${taskQualityPoint})`);
         formula = formula.replace(/taskCostPoint/g, `(${taskCostPoint})`);
-        formula = formula.replace(/taskDilligencePoint/g, `(${taskDilligencePoint})`);
 
         // thay mã code bằng giá trị(chỉ dùng cho kiểu số)
         for (let i in taskInformations) {
@@ -310,7 +309,7 @@ function calcProjectTaskPoint(data, getCalcPointsOnly = true) {
         }
         autoTaskPoint = calculateExpression(formula);
     } else {
-        autoTaskPoint = taskTimePoint + taskQualityPoint + taskCostPoint + taskDilligencePoint;
+        autoTaskPoint = taskTimePoint + taskQualityPoint + taskCostPoint;
     }
 
     if (getCalcPointsOnly) return autoTaskPoint;
@@ -328,7 +327,6 @@ function calcProjectTaskPoint(data, getCalcPointsOnly = true) {
         taskTimePoint,
         taskQualityPoint,
         taskCostPoint,
-        taskDilligencePoint,
         autoTaskPoint,
     }
 }
@@ -343,7 +341,7 @@ function calcProjectMemberPoint(data, getCalcPointsOnly = true) {
     const usedDuration = getDurationWithoutSatSun(task.startDate, moment().format(), 'milliseconds');
     const totalDuration = task.estimateNormalTime;
     const schedulePerformanceIndex = (Number(progress) / 100) / (usedDuration / totalDuration);
-    const memberTimePoint = convertIndexPointToNormalPoint(schedulePerformanceIndex) * (task?.timeWeight || 0.25);
+    const memberTimePoint = convertIndexPointToNormalPoint(schedulePerformanceIndex) * (task?.memberWeight?.timeWeight || 0.25);
     /***************** Yếu tố chất lượng **********************/
     // Các hoạt động (chỉ lấy những hoạt động đã đánh giá của người phê duyệt)
     let actionsHasRating = task.taskActions.filter(item => (
@@ -359,22 +357,35 @@ function calcProjectMemberPoint(data, getCalcPointsOnly = true) {
     });
     const memberQualityPoint = sumRatingOfAllActions === 0
         ? 0
-        : [(sumRatingOfPassedActions / sumRatingOfAllActions) * 100] * (task?.qualityWeight || 0.25);
+        : [(sumRatingOfPassedActions / sumRatingOfAllActions) * 100] * (task?.memberWeight?.qualityWeight || 0.25);
     /***************** Yếu tố chi phí **********************/
     let actualCost = 0;
     if (currentMemberActualCost) actualCost = Number(currentMemberActualCost);
     // Tìm lương và trọng số thành viên đó
     let estimateNormalMemberCost = getEstimateMemberCostOfTask(task, projectDetail, userId);
     const costPerformanceIndex = ((Number(progress) / 100) * estimateNormalMemberCost) / (actualCost);
-    const memberCostPoint = convertIndexPointToNormalPoint(costPerformanceIndex) * (task?.costWeight || 0.25);
-    /***************** Yếu tố chuyên cần **********************/
+    const memberCostPoint = convertIndexPointToNormalPoint(costPerformanceIndex) * (task?.memberWeight?.costWeight || 0.25);
+    /***************** Yếu tố phân bố thời gian **********************/
     let totalTimeLogs = 0;
+    let userWithTimeSheetLogsCounter = 0;
+    let sumTimeDistributionPoint = 0;
     for (let timeSheetItem of timesheetLogs) {
         if (String(userId) === String(timeSheetItem.creator.id)) {
             totalTimeLogs += timeSheetItem.duration;
+            userWithTimeSheetLogsCounter++;
+            // Tính toán xem bấm giờ này có nằm trong khoảng thời gian làm việc không?
+            const convertedStartMoment = moment(moment(timeSheetItem.startedAt).format('HH:mm:ss'), 'HH:mm:ss');
+            const convertedEndMoment = moment(moment(timeSheetItem.stoppedAt).format('HH:mm:ss'), 'HH:mm:ss');
+            console.log('convertedStartMoment, convertedEndMoment', convertedStartMoment, convertedEndMoment);
+            const isInWorkingTime = convertedStartMoment.isSameOrAfter(moment('08:00:00', 'HH:mm:ss')) && convertedEndMoment.isSameOrBefore(moment('20:00:00', 'HH:mm:ss'))
+            console.log('isInWorkingTime', isInWorkingTime)
+            console.log('timeSheetItem.duration', timeSheetItem.duration, 12 * MILISECS_TO_HOURS)
+            sumTimeDistributionPoint += (timeSheetItem.autoStopped === 1 && isInWorkingTime && (timeSheetItem.duration <= (12 * MILISECS_TO_HOURS))) ? 100 : 80;
         }
     }
-    const memberDilligencePoint = Math.min((totalTimeLogs / (totalDuration * Number(currentEmployee.weight / 100))) * 100 * (task?.dilligenceWeight || 0.25), 100);
+    const memberTimedistributionPoint = (sumTimeDistributionPoint / (100 * userWithTimeSheetLogsCounter)) * 100 * (task?.memberWeight?.timedistributionWeight || 0.25);
+    console.log('memberTimedistributionPoint', memberTimedistributionPoint);
+
     let autoMemberPoint = 0;
     let formula;
     if (task.formulaProjectMember) {
@@ -384,7 +395,7 @@ function calcProjectMemberPoint(data, getCalcPointsOnly = true) {
         formula = formula.replace(/memberTimePoint/g, `(${memberTimePoint})`);
         formula = formula.replace(/memberQualityPoint/g, `(${memberQualityPoint})`);
         formula = formula.replace(/memberCostPoint/g, `(${memberCostPoint})`);
-        formula = formula.replace(/memberDilligencePoint/g, `(${memberDilligencePoint})`);
+        formula = formula.replace(/memberTimedistributionPoint/g, `(${memberTimedistributionPoint})`);
 
         // thay mã code bằng giá trị(chỉ dùng cho kiểu số)
         for (let i in taskInformations) {
@@ -403,7 +414,7 @@ function calcProjectMemberPoint(data, getCalcPointsOnly = true) {
         }
         autoMemberPoint = calculateExpression(formula);
     } else {
-        autoMemberPoint = memberTimePoint + memberQualityPoint + memberCostPoint + memberDilligencePoint;
+        autoMemberPoint = memberTimePoint + memberQualityPoint + memberCostPoint + memberTimedistributionPoint;
     }
 
     if (getCalcPointsOnly) return autoMemberPoint;
@@ -418,10 +429,12 @@ function calcProjectMemberPoint(data, getCalcPointsOnly = true) {
         actualCost,
         costPerformanceIndex,
         totalTimeLogs,
+        sumTimeDistributionPoint,
+        sumMaxTimeDistributionPoint: 100 * userWithTimeSheetLogsCounter,
         memberTimePoint,
         memberQualityPoint,
         memberCostPoint,
-        memberDilligencePoint,
+        memberTimedistributionPoint,
         autoMemberPoint,
     }
 }

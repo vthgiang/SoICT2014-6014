@@ -406,7 +406,6 @@ class TaskManagement extends Component {
                 tags: tags
             }
 
-            console.log("7777", data)
             this.props.getPaginateTasks(data);
         }
 
@@ -581,7 +580,6 @@ class TaskManagement extends Component {
     }
 
     handleTaskTags = (value) => {
-        console.log(value)
         this.setState({
             tags: value,
         })

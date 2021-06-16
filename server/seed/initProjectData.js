@@ -1450,7 +1450,7 @@ const initHumanResourceForProjectData = async () => {
         responsibleEmployees: newResponsibleEmployees,
         responsibleEmployeesWithUnit: newResponsibleEmployeesWithUnit,
     }
-    
+
     const newEmptyProject3Type1 = {
         name: 'Dự án test không ràng buộc 3',
         projectType: 1,
@@ -1468,7 +1468,7 @@ const initHumanResourceForProjectData = async () => {
         responsibleEmployeesWithUnit: newResponsibleEmployeesWithUnit,
     }
 
-    
+
     const newEmptyProject4Type1 = {
         name: 'Dự án test không ràng buộc 4',
         projectType: 1,
@@ -1486,7 +1486,7 @@ const initHumanResourceForProjectData = async () => {
         responsibleEmployeesWithUnit: newResponsibleEmployeesWithUnit,
     }
 
-    
+
     const newEmptyProject5Type1 = {
         name: 'Dự án test không ràng buộc 5',
         projectType: 1,
@@ -1708,10 +1708,10 @@ const initHumanResourceForProjectData = async () => {
                     );
                     return {
                         ...cAWTItem,
-                        timesheetLogs,
+                        timesheetLogs: flat(timesheetLogs, 5),
                     }
                 })
-                totalTimesheetLogs.push(...timesheetLogs);
+                totalTimesheetLogs.push(...flat(timesheetLogs, 5));
                 actionsList.push(...currentActions);
             }
         }
@@ -2141,17 +2141,23 @@ const generateTaskActionsArray = (resId, accId, numOfActions = 3) => {
 }
 
 const generateTimesheetLogItem = (creatorId, duration, startedAt, timeMode = 'days') => {
-    const randomDuration = getRandomIntFromInterval(100, Number(duration));
-    const formattedRandomDuration = Number(randomDuration) / (timeMode === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS);
-    return {
-        creator: creatorId,
-        autoStopped: 1,
-        acceptLog: true,
-        description: '',
-        duration: randomDuration,
-        startedAt,
-        stoppedAt: moment(startedAt).add(formattedRandomDuration, timeMode).format(),
+    const randomNumsOfTimeLogs = getRandomIntFromInterval(3, 10);
+    const randomAutoStopped = getRandomIntFromInterval(1, 3);
+    let timeSheetLogArr = [];
+    for (let i = 0; i < randomNumsOfTimeLogs; i++) {
+        const currentStartedAt = timeSheetLogArr[i - 1]?.stoppedAt || startedAt;
+        const randomDuration = Math.round(getRandomIntFromInterval(100, Number(duration)) / randomNumsOfTimeLogs);
+        timeSheetLogArr.push({
+            creator: creatorId,
+            autoStopped: randomAutoStopped,
+            acceptLog: true,
+            description: '',
+            duration: randomDuration,
+            startedAt: currentStartedAt,
+            stoppedAt: moment(currentStartedAt).add(randomDuration, 'milliseconds').format(),
+        })
     }
+    return timeSheetLogArr;
 }
 
 const getEstimateMemberCostOfTask = (actorsWithSalary, estimateNormalTime, projectDetail, userId) => {
@@ -2191,7 +2197,7 @@ const calcProjectTaskPoint = (data, getCalcPointsOnly = true) => {
     const usedDuration = getDurationWithoutSatSun(task.startDate, task.actualEndDate, 'milliseconds');
     const totalDuration = task.estimateNormalTime;
     const schedulePerformanceIndex = (Number(progress) / 100) / (usedDuration / totalDuration);
-    const taskTimePoint = convertIndexPointToNormalPoint(schedulePerformanceIndex) * (task?.timeWeight || 0.25);
+    const taskTimePoint = convertIndexPointToNormalPoint(schedulePerformanceIndex) * (task?.taskWeight?.timeWeight || (1 / 3));
     // console.log('taskTimePoint', taskTimePoint)
     /***************** Yếu tố chất lượng **********************/
     // Các hoạt động (chỉ lấy những hoạt động đã đánh giá của người phê duyệt)
@@ -2208,25 +2214,17 @@ const calcProjectTaskPoint = (data, getCalcPointsOnly = true) => {
     });
     const taskQualityPoint = sumRatingOfAllActions === 0
         ? 0
-        : [(sumRatingOfPassedActions / sumRatingOfAllActions) * 100] * (task?.qualityWeight || 0.25);
+        : [(sumRatingOfPassedActions / sumRatingOfAllActions) * 100] * (task?.taskWeight?.qualityWeight || (1 / 3));
     // console.log('taskQualityPoint', taskQualityPoint)
     /***************** Yếu tố chi phí **********************/
     let actualCost = 0;
     if (currentTaskActualCost) actualCost = Number(currentTaskActualCost);
     else if (task?.actualCost) actualCost = Number(task.actualCost);
     const costPerformanceIndex = ((Number(progress) / 100) * estimateNormalCost) / (actualCost);
-    const taskCostPoint = convertIndexPointToNormalPoint(costPerformanceIndex) * (task?.costWeight || 0.25);
+    const taskCostPoint = convertIndexPointToNormalPoint(costPerformanceIndex) * (task?.taskWeight?.costWeight || (1 / 3));
     // console.log('taskCostPoint', taskCostPoint)
-    /***************** Yếu tố chuyên cần **********************/
-    let totalTimeLogs = 0;
-    if (timesheetLogs && timesheetLogs.length > 0) {
-        for (let timeSheetItem of timesheetLogs) {
-            totalTimeLogs += timeSheetItem.duration;
-        }
-    }
-    const taskDilligencePoint = Math.min((totalTimeLogs / totalDuration) * 100 * (task?.dilligenceWeight || 0.25), 100);
-    // console.log('taskDilligencePoint', taskDilligencePoint)
-    const autoTaskPoint = taskTimePoint + taskQualityPoint + taskCostPoint + taskDilligencePoint;
+    const autoTaskPoint = taskTimePoint + taskQualityPoint + taskCostPoint;
+    // console.log('autoTaskPoint', autoTaskPoint)
 
     if (getCalcPointsOnly) return autoTaskPoint;
     return {
@@ -2243,7 +2241,6 @@ const calcProjectTaskPoint = (data, getCalcPointsOnly = true) => {
         taskTimePoint,
         taskQualityPoint,
         taskCostPoint,
-        taskDilligencePoint,
         autoTaskPoint,
     }
 }
@@ -2259,7 +2256,7 @@ const calcProjectMemberPoint = (data, getCalcPointsOnly = true) => {
     const usedDuration = getDurationWithoutSatSun(task.startDate, task.actualEndDate, 'milliseconds');
     const totalDuration = task.estimateNormalTime;
     const schedulePerformanceIndex = (Number(progress) / 100) / (usedDuration / totalDuration);
-    const memberTimePoint = convertIndexPointToNormalPoint(schedulePerformanceIndex) * (task?.timeWeight || 0.25);
+    const memberTimePoint = convertIndexPointToNormalPoint(schedulePerformanceIndex) * (task?.memberWeight?.timeWeight || 0.25);
     // console.log('memberTimePoint', memberTimePoint)
     /***************** Yếu tố chất lượng **********************/
     // Các hoạt động (chỉ lấy những hoạt động đã đánh giá của người phê duyệt)
@@ -2276,7 +2273,7 @@ const calcProjectMemberPoint = (data, getCalcPointsOnly = true) => {
     });
     const memberQualityPoint = sumRatingOfAllActions === 0
         ? 0
-        : [(sumRatingOfPassedActions / sumRatingOfAllActions) * 100] * (task?.qualityWeight || 0.25);
+        : [(sumRatingOfPassedActions / sumRatingOfAllActions) * 100] * (task?.memberWeight?.qualityWeight || 0.25);
     // console.log('memberQualityPoint', memberQualityPoint)
     /***************** Yếu tố chi phí **********************/
     let actualCost = 0;
@@ -2284,18 +2281,27 @@ const calcProjectMemberPoint = (data, getCalcPointsOnly = true) => {
     // Tìm lương và trọng số thành viên đó
     let estimateNormalMemberCost = getEstimateMemberCostOfTask(task.actorsWithSalary, totalDuration, projectDetail, userId);
     const costPerformanceIndex = ((Number(progress) / 100) * estimateNormalMemberCost) / (actualCost);
-    const memberCostPoint = convertIndexPointToNormalPoint(costPerformanceIndex) * (task?.costWeight || 0.25);
+    const memberCostPoint = convertIndexPointToNormalPoint(costPerformanceIndex) * (task?.memberWeight?.costWeight || 0.25);
     // console.log('memberCostPoint', memberCostPoint)
-    /***************** Yếu tố chuyên cần **********************/
+    /***************** Yếu tố phân bố thời gian **********************/
     let totalTimeLogs = 0;
+    let userWithTimeSheetLogsCounter = 0;
+    let sumTimeDistributionPoint = 0;
     for (let timeSheetItem of timesheetLogs) {
         if (String(userId) === String(timeSheetItem.creator)) {
             totalTimeLogs += timeSheetItem.duration;
+            userWithTimeSheetLogsCounter++;
+            // Tính toán xem bấm giờ này có nằm trong khoảng thời gian làm việc không?
+            const convertedStartMoment = moment(moment(timeSheetItem.startedAt).format('HH:mm:ss'), 'HH:mm:ss');
+            const convertedEndMoment = moment(moment(timeSheetItem.stoppedAt).format('HH:mm:ss'), 'HH:mm:ss');
+            const isInWorkingTime = convertedStartMoment.isSameOrAfter(moment('08:00:00', 'HH:mm:ss')) && convertedEndMoment.isSameOrBefore(moment('20:00:00', 'HH:mm:ss'))
+            sumTimeDistributionPoint += (timeSheetItem.autoStopped === 1 && isInWorkingTime && (timeSheetItem.duration <= (12 * MILISECS_TO_HOURS))) ? 100 : 80;
         }
     }
-    const memberDilligencePoint = Math.min((totalTimeLogs / (totalDuration * Number(currentEmployee.weight / 100))) * 100 * (task?.dilligenceWeight || 0.25), 100);
-    // console.log('memberDilligencePoint', memberDilligencePoint)
-    let autoMemberPoint = memberTimePoint + memberQualityPoint + memberCostPoint + memberDilligencePoint;
+    const memberTimedistributionPoint = (sumTimeDistributionPoint / (100 * userWithTimeSheetLogsCounter)) * 100 * (task?.memberWeight?.timedistributionWeight || 0.25);
+    // console.log('memberTimedistributionPoint', memberTimedistributionPoint)
+    let autoMemberPoint = memberTimePoint + memberQualityPoint + memberCostPoint + memberTimedistributionPoint;
+    // console.log('autoMemberPoint', autoMemberPoint)
     console.log('\n')
 
     if (getCalcPointsOnly) return autoMemberPoint;
@@ -2310,10 +2316,12 @@ const calcProjectMemberPoint = (data, getCalcPointsOnly = true) => {
         actualCost,
         costPerformanceIndex,
         totalTimeLogs,
+        sumTimeDistributionPoint,
+        sumMaxTimeDistributionPoint: 100 * userWithTimeSheetLogsCounter,
         memberTimePoint,
         memberQualityPoint,
         memberCostPoint,
-        memberDilligencePoint,
+        memberTimedistributionPoint,
         autoMemberPoint,
     }
 }
@@ -2364,6 +2372,19 @@ const getEstimateCostOfProject = (currentProjectTasks) => {
         estCost += Number(taskItem.estimateNormalCost)
     }
     return estCost;
+}
+
+const flat = (input, depth = 1, stack = []) => {
+    for (let item of input) {
+        if (item instanceof Array && depth > 0) {
+            flat(item, depth - 1, stack);
+        }
+        else {
+            stack.push(item);
+        }
+    }
+
+    return stack;
 }
 
 initHumanResourceForProjectData().catch((err) => {

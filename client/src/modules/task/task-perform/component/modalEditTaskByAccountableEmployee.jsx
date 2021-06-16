@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 
-import { DialogModal, ErrorLabel, SelectBox, DatePicker, QuillEditor, TreeSelect, TimePicker, convertImageBase64ToFile, ToolTip } from '../../../../common-components/';
+import { DialogModal, ErrorLabel, SelectBox, DatePicker, QuillEditor, TreeSelect, TimePicker, convertImageBase64ToFile, ToolTip, InputTags } from '../../../../common-components/';
 import { getStorage } from "../../../../config";
 
 import { UserActions } from "../../../super-admin/user/redux/actions";
@@ -25,7 +25,7 @@ function ModalEditTaskByAccountableEmployee(props) {
 
     const { task, organizationalUnit, collaboratedWithOrganizationalUnits, errorOnEndDate, errorOnStartDate, errorTaskName, errorTaskDescription, errorOnFormula, taskName, taskDescription, statusOptions, priorityOptions, taskDescriptionDefault,
         startDate, endDate, startTime, endTime, formula, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees, inactiveEmployees, parent, parentTask
-        , taskProjectName } = state;
+        ,taskProjectName, tags } = state;
 
     function initState(task) {
         let userId = getStorage("userId");
@@ -36,6 +36,7 @@ function ModalEditTaskByAccountableEmployee(props) {
         let statusOptions = []; statusOptions.push(task && task.status);
         let priorityOptions = []; priorityOptions.push(task && task.priority);
         let taskName = task && task.name;
+        let tags = task?.tags
         let taskDescription = task && task.description;
         let progress = task && task.progress;
         let formula = task && task.formula;
@@ -145,6 +146,7 @@ function ModalEditTaskByAccountableEmployee(props) {
             endDate: endDate,
             startTime: startTime,
             endTime: endTime,
+            tags: tags,
             responsibleEmployees: responsibleEmployees,
             accountableEmployees: accountableEmployees,
             consultedEmployees: consultedEmployees,
@@ -847,6 +849,7 @@ function ModalEditTaskByAccountableEmployee(props) {
             user: state.userId,
             progress: state.progress,
             date: formatDate(Date.now()),
+            tags: state.tags,
 
             startDate: startDateTask,
             endDate: endDateTask,
@@ -893,6 +896,13 @@ function ModalEditTaskByAccountableEmployee(props) {
         setState({
             ...state,
             taskProjectName: value
+        })
+    }
+
+    const handleTaskTags = (value) => {
+        setState({
+            ...state,
+            tags: value,
         })
     }
 
@@ -1057,6 +1067,15 @@ function ModalEditTaskByAccountableEmployee(props) {
                                         data={project?.data?.list?.filter((projectItem) => projectItem.projectType === 1)}
                                         handleChange={handleTaskProject}
                                         value={[taskProjectName]}
+                                    />
+                                </div>
+
+                                <div className="form-group">
+                                    <label>Tags</label>
+                                    <InputTags
+                                        id={`task-personal`}
+                                        onChange={handleTaskTags}
+                                        value={tags}
                                     />
                                 </div>
                             </div>

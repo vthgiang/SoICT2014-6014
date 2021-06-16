@@ -52,6 +52,7 @@ const ProjectDetailPage = (props) => {
         }, 10);
         setTimeout(() => {
             props.getTasksByProject(currentProjectId);
+            props.getTasksByProject(currentProjectId, 1, 6);
         }, 1000);
     }
 
@@ -68,6 +69,7 @@ const ProjectDetailPage = (props) => {
     const handleAfterCreateProject = async () => {
         await props.getProjectsDispatch({ calledId: "user_all", userId });
         await props.getTasksByProject(currentProjectId);
+        await props.getTasksByProject(currentProjectId, 1, 6);
         projectDetail = getCurrentProjectDetails(project);
         await props.getListProjectChangeRequestsDispatch({ projectId: currentProjectId });
     }

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 
-import { DialogModal, ErrorLabel, QuillEditor, TreeSelect, convertImageBase64ToFile } from '../../../../common-components/';
+import { DialogModal, ErrorLabel, QuillEditor, TreeSelect, convertImageBase64ToFile, InputTags } from '../../../../common-components/';
 import { getStorage } from "../../../../config";
 
 import { TaskInformationForm } from './taskInformationForm';
@@ -15,7 +15,7 @@ function ModalEditTaskByResponsibleEmployee(props) {
     const { title, id, role, perform } = props;
     const { KPIPersonalManager, translate, project } = props
     const { task, taskName, taskDescription, kpi, taskProjectName,
-        errorTaskName, errorTaskDescription, taskDescriptionDefault } = state;
+        errorTaskName, errorTaskDescription, taskDescriptionDefault, tags } = state;
 
     function initState() {
         let date = formatDate(new Date());
@@ -23,16 +23,17 @@ function ModalEditTaskByResponsibleEmployee(props) {
 
         return {
             errorInfo: {},
-            task: data.task,
-            userId: data.idUser,
-            taskName: data.task.name,
-            taskDescription: data.task.description,
-            taskDescriptionDefault: data.task.description,
-            idUser: data.idUser,
-            info: data.info,
-            date: data.date,
-            progress: data.task.progress,
-            taskProjectName: data.task.taskProject,
+            task: data?.task,
+            userId: data?.idUser,
+            taskName: data?.task?.name,
+            taskDescription: data?.task?.description,
+            taskDescriptionDefault: data?.task?.description,
+            idUser: data?.idUser,
+            info: data?.info,
+            date: data?.date,
+            progress: data?.task?.progress,
+            taskProjectName: data?.task?.taskProject,
+            tags: data?.task?.tags
         }
     }
 
@@ -342,12 +343,23 @@ function ModalEditTaskByResponsibleEmployee(props) {
     const handleTaskProject = (value) => {
         value = value.toString();
         setState({
+            ...state,
             taskProjectName: value
         })
     }
 
+    const handleTaskTags = (value) => {
+        setState({
+            ...state,
+            tags: value,
+        })
+    }
+
     const handleChangeListInfo = (data) => {
-        setState({ listInfo: data })
+        setState({ 
+            ...state,
+            listInfo: data
+        })
     }
 
     const isFormValidated = () => {
@@ -380,6 +392,7 @@ function ModalEditTaskByResponsibleEmployee(props) {
             progress: state.progress,
             info: state.info,
             taskProject: state.taskProjectName,
+            tags: state.tags,
             imageDescriptions: imageDescriptions
         }
 
@@ -448,6 +461,14 @@ function ModalEditTaskByResponsibleEmployee(props) {
                                         data={project?.data?.list?.filter((projectItem) => projectItem.projectType === 1)}
                                         handleChange={handleTaskProject}
                                         value={[taskProjectName]}
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>Tags</label>
+                                    <InputTags
+                                        id={`task-personal`}
+                                        onChange={handleTaskTags}
+                                        value={tags}
                                     />
                                 </div>
                             </div>

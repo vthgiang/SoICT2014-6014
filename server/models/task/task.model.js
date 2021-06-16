@@ -888,32 +888,51 @@ const TaskSchema = new Schema(
         formulaProjectTask: {
             type: String,
             default:
-                "taskTimePoint + taskQualityPoint + taskCostPoint + taskDilligencePoint",
+                "taskTimePoint + taskQualityPoint + taskCostPoint",
         },
         formulaProjectMember: {
             type: String,
             default:
-                "memberTimePoint + memberQualityPoint + memberCostPoint + memberDilligencePoint",
+                "memberTimePoint + memberQualityPoint + memberCostPoint + memberTimedistributionPoint",
         },
-        // Số bé hơn 1
-        timeWeight: {
-            type: Number,
-            default: 0.25,
+        taskWeight: {
+            // Số bé hơn 1
+            timeWeight: {
+                type: Number,
+                default: 1/3,
+            },
+            // Số bé hơn 1
+            qualityWeight: {
+                type: Number,
+                default: 1/3,
+            },
+            // Số bé hơn 1
+            costWeight: {
+                type: Number,
+                default: 1/3,
+            },
         },
-        // Số bé hơn 1
-        qualityWeight: {
-            type: Number,
-            default: 0.25,
-        },
-        // Số bé hơn 1
-        costWeight: {
-            type: Number,
-            default: 0.25,
-        },
-        // Số bé hơn 1
-        dilligenceWeight: {
-            type: Number,
-            default: 0.25,
+        memberWeight: {
+            // Số bé hơn 1
+            timeWeight: {
+                type: Number,
+                default: 0.25,
+            },
+            // Số bé hơn 1
+            qualityWeight: {
+                type: Number,
+                default: 0.25,
+            },
+            // Số bé hơn 1
+            costWeight: {
+                type: Number,
+                default: 0.25,
+            },
+            // Số bé hơn 1
+            timedistributionWeight: {
+                type: Number,
+                default: 0.25,
+            },
         },
     },
     {

@@ -3712,6 +3712,7 @@ export default {
                     not_avaiable: "Not evaluated",
                     no_point: "No Point",
                     lastest_evaluation: "Lastest evaluation",
+                    lastest_edit: "Lastest edit",
                     task_list: "Task list",
                     work_duration_time: "Working duration time",
                     evaluate_time: "Evaluate time",
