@@ -56,6 +56,7 @@ function EmployeeInfomation(props) {
     useEffect(() => {
         let currentRole = localStorage.getItem("currentRole")
         props.getAllUserSameDepartment(currentRole)
+        console.log("object");
     }, [])
     const { userdepartments } = user
     const { translate } = props
@@ -73,12 +74,14 @@ function EmployeeInfomation(props) {
             list = list.concat(deputyManagers[keyDeputyManagers[0]].members.map(category => { return { value: category._id, text: category.name } }));
         }
         if (JSON.stringify(listUser) !== JSON.stringify(listUsers)) {
+            setCurrentUser(listUser[0])
             setListUsers(listUser)
         }
-        if (!currentUser && listUsers) {
-            setCurrentUser(listUsers[0])
-        }
+        // if (!currentUser && listUsers) {
+        //     setCurrentUser(listUsers[0])
+        // }
     }
+    console.log(listUsers,currentUser);
     const handchangeUser = (data) => {
         let dataUser = listUsers.find(value => value._id === data[0])
         setCurrentUser(dataUser)
@@ -134,7 +137,7 @@ function EmployeeInfomation(props) {
 
             {
                 currentUser &&
-                <DetailUser user={currentUser} id={userdepartments._id} state={state} search={search} ></DetailUser>
+                <DetailUser user={currentUser} id={userdepartments && userdepartments._id} state={state} search={search} ></DetailUser>
             }
 
         </div>

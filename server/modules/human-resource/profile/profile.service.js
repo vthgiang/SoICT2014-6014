@@ -278,6 +278,7 @@ exports.getEmployees = async (portal, company, organizationalUnits, positions, a
                     $in: emailInCompany
                 }
             };
+
             let listEmployeesOfOrganizationalUnits = await Employee(connect(DB_CONNECTION, portal)).find(keySearch);
             let totalEmployee = listEmployeesOfOrganizationalUnits.length;
             return {
@@ -471,6 +472,7 @@ exports.getEmployeesByStartingAndLeaving = async (portal, organizationalUnits, s
         };
 
         if (organizationalUnits) {
+            let totalEmployeesUnit = []
             let emailInCompany = await this.getEmployeeEmailsByOrganizationalUnitsAndPositions(portal, organizationalUnits, undefined);
             let listEmployeesHaveStartingDateOfNumberMonth = await Employee(connect(DB_CONNECTION, portal)).find({
                 company: company,
@@ -495,11 +497,26 @@ exports.getEmployeesByStartingAndLeaving = async (portal, organizationalUnits, s
                 leavingDate: 1
             });
 
+            for (let month of arrMonth) {
+                let monthIso = new Date(month);
+                let lastDay = new Date(monthIso.getFullYear(), monthIso.getMonth() + 1, 1);
+                let total = await Employee(connect(DB_CONNECTION, portal)).countDocuments({
+                    company: company,
+                    emailInCompany: {
+                        $in: emailInCompany
+                    },
+                    startingDate: {
+                        "$lt": lastDay,
+                    }
+                });
+                totalEmployeesUnit = [...totalEmployeesUnit, total]
+            };
+
             return {
                 arrMonth,
                 listEmployeesHaveStartingDateOfNumberMonth,
                 listEmployeesHaveLeavingDateOfNumberMonth,
-                totalEmployees
+                totalEmployees: totalEmployeesUnit
             }
         } else {
             let listEmployeesHaveStartingDateOfNumberMonth = await Employee(connect(DB_CONNECTION, portal)).find({

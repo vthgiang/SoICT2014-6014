@@ -163,6 +163,20 @@ class QualificationChart extends Component {
         this.renderChart("");
     }
 
+    componentDidUpdate() {
+        const { employeesManager, department } = this.props;
+        const { organizationalUnits } = this.state;
+
+        let listAllEmployees = (!organizationalUnits || organizationalUnits.length === department.list.length) ?
+        employeesManager.listAllEmployees : employeesManager.listEmployeesOfOrganizationalUnits;
+
+        if (listAllEmployees.length !== 0) {
+            this.renderChart(this.convertData(listAllEmployees));
+        } else {
+            this.removePreviousChart();
+        }
+    }
+
     render() {
         const { employeesManager, department, translate } = this.props;
         const { organizationalUnits, typeChart } = this.state;
@@ -171,15 +185,6 @@ class QualificationChart extends Component {
         if (organizationalUnits) {
             organizationalUnitsName = department.list.filter(x => organizationalUnits.includes(x._id));
             organizationalUnitsName = organizationalUnitsName.map(x => x.name);
-        }
-
-        let listAllEmployees = (!organizationalUnits || organizationalUnits.length === department.list.length) ?
-            employeesManager.listAllEmployees : employeesManager.listEmployeesOfOrganizationalUnits;
-
-        if (listAllEmployees.length !== 0) {
-            this.renderChart(this.convertData(listAllEmployees));
-        } else {
-            this.removePreviousChart();
         }
 
         return (

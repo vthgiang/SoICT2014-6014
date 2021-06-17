@@ -1033,7 +1033,7 @@ exports.getCurrentTaskTimesheetLogOfEmployeeInOrganizationalUnit = async (portal
         { $match: keySearch }
     ])
 
-    await User(connect(DB_CONNECTION, portal)).populate(timesheetLog, { path: 'creator', select: '_id name email' });
+    await User(connect(DB_CONNECTION, portal)).populate(timesheetLog, { path: 'creator', select: '_id name email avatar' });
 
     return timesheetLog;
 }

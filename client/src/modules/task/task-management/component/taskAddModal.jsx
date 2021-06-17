@@ -27,30 +27,18 @@ function TaskAddModal(props) {
             taskTemplate: "",
             taskProject: "",
         },
-        startTime: "08:00 AM",
-        endTime: "05:30 PM",
         currentRole: getStorage('currentRole'),
     })
 
     const { translate, task, id, parentTask, currentTasks, currentProjectTasks, isProjectForm = false, projectId } = props;
 
     const onChangeTaskData = (value) => {
-        setState({
-            ...state,
-            newTask: value
+        setState((st) => {
+            return {
+                ...st,
+                newTask: value
+            }
         })
-    }
-    const onChangeStartTime = (value) => {
-        setState({
-            ...state,
-            startTime: value
-        });
-    }
-    const onChangeEndTime = (value) => {
-        setState({
-            ...state,
-            endTime: value
-        });
     }
 
     const convertDateTime = (date, time) => {
@@ -60,9 +48,9 @@ function TaskAddModal(props) {
     }
 
     const handleSubmit = async () => {
-        const { newTask, startTime, endTime } = state;
-        let startDateTask = convertDateTime(newTask.startDate, startTime);
-        let endDateTask = convertDateTime(newTask.endDate, endTime);
+        const { newTask } = state;
+        let startDateTask = convertDateTime(newTask.startDate, newTask.startTime);
+        let endDateTask = convertDateTime(newTask.endDate, newTask.endTime);
         let imageDescriptions = convertImageBase64ToFile(newTask?.imgs)
 
         let data = {
@@ -93,7 +81,7 @@ function TaskAddModal(props) {
     }, [])
 
     const isFormValidated = () => {
-        const { name, startDate, endDate, responsibleEmployees, accountableEmployees } = state.newTask;
+        const { name, startDate, endDate, responsibleEmployees, accountableEmployees } = state?.newTask;
         const { translate } = props;
 
         if (!ValidationHelper.validateEmpty(translate, name).status
@@ -117,8 +105,6 @@ function TaskAddModal(props) {
                 <AddTaskForm
                     quillId={props.id}
                     handleChangeTaskData={onChangeTaskData}
-                    handleChangeStartTime={onChangeStartTime}
-                    handleChangeEndTime={onChangeEndTime}
                     id={id}
                     task={task}
                     parentTask={parentTask}
