@@ -1,5 +1,5 @@
 /* Xu hướng tăng giảm nhân sự của nhân viên */
-import React, { Component, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -82,7 +82,7 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
             })
             renderChart({ nameData1, nameData2, nameData3, ratioX, data1, data2, data3, lineChart });
         }
-    }, [JSON.stringify(employeesManager)])
+    }, [JSON.stringify(employeesManager), lineChart])
 
     /**
      * Function bắt sự kiện thay đổi unit

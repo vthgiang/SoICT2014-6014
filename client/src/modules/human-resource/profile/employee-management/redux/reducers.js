@@ -31,7 +31,6 @@ export function employeesManager(state = initState, action) {
                 ...state,
                 isLoading: true,
                     exportData: [],
-                    arrMonth: [],
                     // listEmployeesOfOrganizationalUnits:[],
                     // listAllEmployees:[],
             };
