@@ -348,7 +348,7 @@ class SuperHome extends Component {
             <React.Fragment>
                 {
                     listAlarmTask &&
-                    <ViewAllTasks listAlarmTask={listAlarmTask} />
+                        <ViewAllTasks listAlarmTask={listAlarmTask} />
                 }
                 <div className="qlcv" style={{ marginBottom: 10 }}>
                     {/**Chọn ngày bắt đầu */}

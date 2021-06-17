@@ -139,7 +139,7 @@ class ContentMaker extends Component {
                         <div className='files-list'>
                             <ul>{files.map((file,index) =>
                                 <li className='files-list-item' key={file.id}>
-                                    <div className='files-list-item-preview'>
+                                    <div className='files-list-item-preview row'>
                                         {!file.preview ?
                                             <React.Fragment>
                                                 <img className='files-list-item-preview-image' src={window.URL.createObjectURL(file)} />

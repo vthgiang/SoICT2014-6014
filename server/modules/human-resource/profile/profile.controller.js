@@ -217,7 +217,6 @@ exports.createEmployee = async (req, res) => {
             }
         }
     } catch (error) {
-        console.log("errror", error),
         await Log.error(req.user.email, 'CREATE_EMPLOYEE', req.portal);
         res.status(400).json({
             success: false,
@@ -291,7 +290,6 @@ exports.updateEmployeeInformation = async (req, res) => {
             });
         }
     } catch (error) {
-        console.log('error', error)
         await Log.error(req.user.email, 'EDIT_EMPLOYEE', req.portal);
         res.status(400).json({
             success: false,
@@ -419,7 +417,6 @@ exports.importEmployees = async (req, res) => {
             });
         }
     } catch (error) {
-        console.log('error', error)
         await Log.error(req.user.email, 'IMPORT_EMPLOYEE', req.portal);
         res.status(400).json({
             success: false,
@@ -460,7 +457,6 @@ exports.createNotificationForEmployeesHaveBrithdayCurrent = async () => {
  */
 exports.searchEmployeeForPackage = async (req, res) => {
     // try {
-        console.log('aa',req.query);
         let data;
 
         let params = {
@@ -479,7 +475,6 @@ exports.searchEmployeeForPackage = async (req, res) => {
             page: Number(req.query.page),
             limit: Number(req.query.limit),
         }
-console.log('qoaoaoao', params);
         data = await EmployeeService.searchEmployeeForPackage(req.portal, params, req.user.company._id);
 
         await Log.info(req.user.email, 'GET_EMPLOYEES', req.portal);

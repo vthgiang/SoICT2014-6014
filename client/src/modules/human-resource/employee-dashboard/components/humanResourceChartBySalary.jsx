@@ -1,5 +1,5 @@
 /* Biểu đồ nhân sự phân theo dải lương */
-import React, { Component, useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -150,24 +150,15 @@ const HumanResourceChartBySalary = (props) => {
         return true;
     }
 
-    useEffect(() => {
-        if (props.organizationalUnits !== state.organizationalUnits || props.monthShow !== state.monthShow ||
-            !isEqual(props.salary.listSalaryByMonthAndOrganizationalUnits, state.listSalaryByMonthAndOrganizationalUnits)) {
-            setState({
-                ...state,
-                monthShow: props.monthShow,
-                organizationalUnits: props.organizationalUnits,
-                listSalaryByMonthAndOrganizationalUnits: props.salary.listSalaryByMonthAndOrganizationalUnits
-            })
-        }
-    }, [props.organizationalUnits, props.monthShow, props.salary.listSalaryByMonthAndOrganizationalUnits])
-
-    useEffect(() => {
-        if (props.organizationalUnits !== state.organizationalUnits || props.monthShow !== state.monthShow ||
-            !isEqual(props.salary.listSalaryByMonthAndOrganizationalUnits, state.listSalaryByMonthAndOrganizationalUnits)) {
-            setState({...state})
-        };
-    }, [props.organizationalUnits, props.monthShow, props.salary.listSalaryByMonthAndOrganizationalUnits]);
+    if (props.organizationalUnits !== state.organizationalUnits || props.monthShow !== state.monthShow ||
+        !isEqual(props.salary.listSalaryByMonthAndOrganizationalUnits, state.listSalaryByMonthAndOrganizationalUnits)) {
+        setState({
+            ...state,
+            monthShow: props.monthShow,
+            organizationalUnits: props.organizationalUnits,
+            listSalaryByMonthAndOrganizationalUnits: props.salary.listSalaryByMonthAndOrganizationalUnits
+        })
+    }
 
     const { translate, salary, department } = props;
 
