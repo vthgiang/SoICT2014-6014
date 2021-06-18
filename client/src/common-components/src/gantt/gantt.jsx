@@ -7,7 +7,7 @@ import { getStorage } from '../../../config';
 import ToolbarGantt from './toolbarGantt';
 import './gantt.css';
 
-function Gantt (props) {
+function Gantt(props) {
     const { translate } = props;
     const { ganttId, zoom, line, onZoomChange, unit, ganttData } = props;
     const [dataProcessor, setDataProcessor] = useState(null);
@@ -146,7 +146,7 @@ function Gantt (props) {
         }
     }
 
-    let heightCalc = line ? (line * 35 + 80) : 80;
+    let heightCalc = parseFloat(line) ? (parseFloat(line) * 35 + 80) : 80;
     return (
         <React.Fragment>
             <ToolbarGantt
