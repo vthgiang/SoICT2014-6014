@@ -365,7 +365,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                                 allSelectedText: translate('kpi.evaluation.dashboard.all_unit'),
                                             }}
                                             onChange={this.handleChangeOrganizationUnit}
-                                            value={idsUnit}
+                                            value={idsUnit ? idsUnit : undefined}
                                         >
                                         </SelectMulti>
                                     }
@@ -538,7 +538,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                             {
                                                 idsUnit && idsUnit.length < 2 ?
                                                     <>
-                                                        <spn>{` ${translate('task.task_dashboard.of')}`}</spn>
+                                                        <span>{` ${translate('task.task_dashboard.of')}`}</span>
                                                         <span>{` ${this.getUnitName(selectBoxUnit, idsUnit).map(o => o).join(", ")}`}</span>
                                                     </>
                                                     :
@@ -573,7 +573,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                             {
                                                 idsUnit && idsUnit.length < 2 ?
                                                     <>
-                                                        <spn>{` ${translate('task.task_dashboard.of')}`}</spn>
+                                                        <span>{` ${translate('task.task_dashboard.of')}`}</span>
                                                         <span>{` ${this.getUnitName(selectBoxUnit, idsUnit).map(o => o).join(", ")}`}</span>
                                                     </>
                                                     :
@@ -611,7 +611,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                             {
                                                 idsUnit && idsUnit.length < 2 ?
                                                     <>
-                                                        <spn>{` ${translate('task.task_dashboard.of')}`}</spn>
+                                                        <span>{` ${translate('task.task_dashboard.of')}`}</span>
                                                         <span>{` ${this.getUnitName(selectBoxUnit, idsUnit).map(o => o).join(", ")}`}</span>
                                                     </>
                                                     :

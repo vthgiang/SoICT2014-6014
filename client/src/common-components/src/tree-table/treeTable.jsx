@@ -39,7 +39,6 @@ class TreeTable extends Component {
                     children = $table.find('tr[data-parent="' + id + '"]')
                 //  var tagSpan = $columnName.find("span").length;
 
-
                 let div = window.$("<div/>").attr({
                     "style": "display: inline-block; margin-left: " + (15 + 30 * (level - 1)) + "px"
                 }).html($columnName.text());
