@@ -17,8 +17,8 @@ function ResultsOfAllOrganizationalUnitKpiChart(props) {
     let currentMonth = currentDate.getMonth();
 
     const INFO_SEARCH = {
-        startDate: currentYear + '-' + 1,
-        endDate: (currentMonth > 10) ? ((currentYear + 1) + '-' + (currentMonth - 10)) : (currentYear + '-' + (currentMonth + 2))
+        startDate: currentYear + '-0' + 1,
+        endDate: (currentMonth >= 9) ? (currentYear + '-' + (currentMonth + 1)) : (currentYear + '-0' + (currentMonth + 1))
     };
 
     const refMultiLineChart = React.createRef();
@@ -30,11 +30,15 @@ function ResultsOfAllOrganizationalUnitKpiChart(props) {
         userRoleId: localStorage.getItem("currentRole"),
         startDate: INFO_SEARCH.startDate,
         endDate: INFO_SEARCH.endDate,
+        infoSearch: {
+            startDate: INFO_SEARCH.startDate,
+            endDate: INFO_SEARCH.endDate,
+        },
         kindOfPoint: KIND_OF_POINT.AUTOMATIC
     });
 
     const {createKpiUnit, translate} = props;
-    const { kindOfPoint } = state;
+    const { kindOfPoint, infoSearch } = state;
     let organizationalUnitKpiSetsOfChildUnit;
 
     useEffect(() => {
@@ -67,26 +71,32 @@ function ResultsOfAllOrganizationalUnitKpiChart(props) {
     const handleSelectMonthStart = (value) => {
         let month = value.slice(3, 7) + '-' + value.slice(0, 2);
 
-        INFO_SEARCH.startDate = month;
+        setState({
+            ...state,
+            infoSearch: {
+                ...state.infoSearch,
+                startDate: month
+            }
+        })
     };
 
     const handleSelectMonthEnd = async (value) => {
-        let month;
+        let month = value.slice(3, 7) + '-' + value.slice(0, 2);
 
-        if (value.slice(0, 2) < 12) {
-            month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)) + 1);
-        } else {
-            month = (new Number(value.slice(3, 7)) + 1) + '-' + '1';
-        }
-
-        INFO_SEARCH.endDate = month;
+        setState({
+            ...state,
+            infoSearch: {
+                ...state.infoSearch,
+                endDate: month
+            }
+        })
     };
 
     const handleSearchData = async () => {
-        let startDate = new Date(INFO_SEARCH.startDate);
-        let endDate = new Date(INFO_SEARCH.endDate);
+        let startDate = new Date(infoSearch?.startDate);
+        let endDate = new Date(infoSearch?.endDate);
         const {translate} = props;
-        if (startDate && endDate && startDate.getTime() >= endDate.getTime()) {
+        if (startDate && endDate && startDate.getTime() > endDate.getTime()) {
             Swal.fire({
                 title: translate('kpi.organizational_unit.dashboard.alert_search.search'),
                 type: 'warning',
@@ -96,8 +106,8 @@ function ResultsOfAllOrganizationalUnitKpiChart(props) {
         } else {
             await setState({
                 ...state,
-                startDate: INFO_SEARCH.startDate,
-                endDate: INFO_SEARCH.endDate
+                startDate: infoSearch?.startDate,
+                endDate: infoSearch?.endDate
             })
         }
     };
