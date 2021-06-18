@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import Swal from 'sweetalert2';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-
 import { AuthActions } from '../../../modules/auth/redux/actions';
 
 class ApiImage extends Component {
