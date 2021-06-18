@@ -265,7 +265,7 @@ function TransportRequirementsCreateForm(props) {
         if (res && res.length !==0){
             setRequirementsForm({
                 ...requirementsForm,
-                approver: value[0],
+                approver: res[0].approver,
                 department: res[0].department,
             })
         }
@@ -331,10 +331,11 @@ function TransportRequirementsCreateForm(props) {
                                     roleOrganizationalUnit.users.map(user => {
                                         
                                         newApproverList.push({
-                                            value: user.userId?._id,
+                                            value: roleOrganizationalUnit._id,
                                             text: user.userId.name + " - " + roleOrganizationalUnit.name + " - " + item.organizationalUnit?.name,
                                             department: item._id, 
                                             roleOrganizationalUnit: roleOrganizationalUnit._id,
+                                            approver: user.userId?._id,
                                         })
                                     })
                                 }       
