@@ -34,6 +34,7 @@ function TransportPlanManagementTable(props) {
 
     const [currentTransportPlan, setCurrentTransportPlan] = useState()
     const [reloadRequirementTable, setReloadRequirementTable] = useState()
+    const [searchData, setSearchData] = useState(); // tham số tìm kiếm
 
     const [pageStatus, setPageStatus] = useState({
         page: 1,
@@ -63,7 +64,12 @@ function TransportPlanManagementTable(props) {
     ]
 
     useEffect(() => {
-        props.getAllTransportPlans({page: page, limit: perPage});
+        let queryData = {
+            page: page,
+            limit: perPage,
+            searchData: searchData,
+        }
+        props.getAllTransportPlans(queryData);
         // props.getAllUserOfCompany();
     }, [pageStatus])
 
@@ -133,7 +139,6 @@ function TransportPlanManagementTable(props) {
         return true;
     }
     // xử lí khi tham số search thay đổi
-    const [searchData, setSearchData] = useState();
 
     const handleCodeChange = (e) => {
         const {value} = e.target;
