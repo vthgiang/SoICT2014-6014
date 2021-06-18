@@ -129,6 +129,9 @@ const planStatus = [
         text: "Hoàn thành"
     },
 ]
+exports.getListPlanStatus = () => {
+    return planStatus;
+}
 exports.getPlanStatus = (value) => {
     let res = "";
     let tmp = planStatus.filter(r => String(r.value)===String(value));

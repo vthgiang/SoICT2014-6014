@@ -113,6 +113,32 @@ exports.getAllTransportPlans = async (portal, data) => {
     let currentUserId = data.currentUserId;
     let currentRole = data.currentRole;
     let page, limit;
+    if (data.searchData) {
+        let searchData = JSON.parse(data.searchData);
+
+        let {code, name, startDate, endDate, status} = searchData;
+        
+        if (code){
+            keySearch.code = new RegExp(code, "i");
+        }
+        if (name){
+            keySearch.name = new RegExp(name, "i");
+        }
+        if (startDate){
+            keySearch.startTime = {
+                $gte: new Date(startDate),
+            }
+        }
+        if (endDate){
+            keySearch.endTime = {
+                $lte: new Date(endDate),
+            }
+        }
+        if (status){
+            keySearch.status = status;
+        }
+    }
+    console.log(keySearch);
     if (data.page && data.limit){
         page= data.page;
         limit = data.limit;
