@@ -168,7 +168,7 @@ class QuillEditor extends Component {
                     html: quill?.container?.firstChild?.innerHTML,
                     width: showDetail?.width ?? "75%",
                     customClass: {
-                        content: "quill-editor"
+                        content: "ql-editor ql-blank"
                     }
                 })
             })
