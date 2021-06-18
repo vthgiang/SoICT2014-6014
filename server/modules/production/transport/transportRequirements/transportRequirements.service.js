@@ -99,9 +99,26 @@ exports.getAllTransportRequirements = async (portal, data) => {
     //         }
     //     }
     // }
+    if (data.searchData) {
+        let searchData = JSON.parse(data.searchData);
+
+        let {code, type, status} = searchData;
+        
+        if (code){
+            keySearch.code = new RegExp(code, "i");
+        }
+        if (type){
+            keySearch.type = type;
+        }
+        if (status){
+            keySearch.status = status;
+        }
+    }
+
     if (data.status){
         keySearch.status = data.status;
     }
+    
     let page, limit;
     page = data?.page ? Number(data.page) : 1;
     limit = data?.limit ? Number(data.limit) : 20;

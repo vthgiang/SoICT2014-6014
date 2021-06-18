@@ -25,7 +25,7 @@ const requirements = [
     },
     {
         value: "5",
-        text: "Khác",
+        text: "Vận chuyển",
     }
 ];
 exports.getListTypeRequirement = () => {
@@ -99,6 +99,9 @@ const transportRequirementStatus = [
         value: "6", text: "Vận chuyển thất bại"
     }
 ]
+exports.getListTransportRequirementStatus = () => {
+    return transportRequirementStatus;
+}
 exports.getTransportRequirementStatus = (value) => {
     let res = "";
     let k = transportRequirementStatus.filter(r => String(r.value) === String(value));

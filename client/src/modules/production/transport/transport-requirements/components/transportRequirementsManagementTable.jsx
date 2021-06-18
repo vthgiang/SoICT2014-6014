@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 
-import { DataTableSetting, DeleteNotification, PaginateBar } from "../../../../../common-components";
+import { DataTableSetting, DeleteNotification, PaginateBar, SelectBox } from "../../../../../common-components";
 
 import { TransportRequirementsCreateForm } from "./transportRequirementsCreateForm"
 import { TransportRequirementsViewDetails } from "./transportRequirementsViewDetails"
@@ -11,12 +11,13 @@ import { TransportRequirementsEditForm } from './transportRequirementsEditForm'
 import { transportRequirementsActions } from "../redux/actions";
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 
-import {getTypeRequirement, getTransportRequirementStatus} from '../../transportHelper/getTextFromValue'
+import {getTypeRequirement, getTransportRequirementStatus, getListTransportRequirementStatus} from '../../transportHelper/getTextFromValue'
 
 function TransportRequirementsManagementTable(props) {
     const getTableId = "table-manage-transport-requirements-hooks";
     const defaultConfig = { limit: 5 }
     const getLimit = getTableConfiguration(getTableId, defaultConfig).limit;
+
 
     const requirements = [
         {
@@ -45,7 +46,7 @@ function TransportRequirementsManagementTable(props) {
         },
         {
             value: "5",
-            text: "Khác",
+            text: "Vận chuyển",
         }
     ];
     // Khởi tạo state
@@ -160,6 +161,50 @@ function TransportRequirementsManagementTable(props) {
     // const totalPage = example && Math.ceil(example.totalList / perPage);
     const totalPage = allTransportRequirements && Math.ceil(allTransportRequirements.length / perPage);
 
+    // xử lí khi tham số search thay đổi -------------------------------------------------------------
+
+    const [searchData, setSearchData] = useState();
+
+    const handleCodeChange = (e) => {
+        const {value} = e.target;
+        setSearchData({
+            ...searchData,
+            code: value,
+        })
+    }
+    const handleTypeChange = (value) => {
+        if (value[0] !== "0"){
+            setSearchData({
+                ...searchData,
+                type: value[0],
+            })
+        }
+        else {
+            setSearchData({
+                ...searchData,
+                type: null,
+            })
+        }
+    }
+    const handleStatusChange =(value) => {
+        if (value[0] !== "0"){
+            setSearchData({
+                ...searchData,
+                status: value[0],
+            })
+        }
+        else {
+            setSearchData({
+                ...searchData,
+                status: null,
+            })
+        }
+    }    
+
+    const handleSubmitSearch = () => {
+        props.getAllTransportRequirements(searchData);
+    }
+
     return (
         <React.Fragment>
             <TransportRequirementsCreateForm 
@@ -178,10 +223,37 @@ function TransportRequirementsManagementTable(props) {
                     {/* Tìm kiếm */}
                     <div className="form-group">
                         <label className="form-control-static">{"Mã yêu cầu"}</label>
-                        <input type="text" className="form-control" name="exampleName" placeholder={"Mã yêu cầu"} autoComplete="off" />
+                        <input type="text" className="form-control" name="code" value={searchData?.code} onChange={handleCodeChange} placeholder={"Mã yêu cầu"} autoComplete="off" />
                     </div>
                     <div className="form-group">
-                        <button type="button" className="btn btn-success" title={translate('manage_example.search')} >{translate('manage_example.search')}</button>
+                        <label className="form-control-static">{"Loại yêu cầu"}</label>
+                        <SelectBox
+                            id={`search-type-transport`}
+                            className="form-control select2"
+                            style={{ width: "100%" }}
+                            value={searchData?.type}
+                            items={[{value: "0", text: "---Chọn yêu cầu"}].concat(requirements)}
+                            onChange={handleTypeChange}
+                            multiple={false}
+                        />
+                    </div>                    
+                </div>
+                <div className="form-inline">
+                    <div className="form-group">
+                        <label className="form-control-static">{"Trạng thái"}</label>
+                        <SelectBox
+                            id={`search-status-transport`}
+                            className="form-control select2"
+                            style={{ width: "100%" }}
+                            value={searchData?.status}
+                            items={[{value: "0", text: "---Trạng thái vận chuyển"}].concat(getListTransportRequirementStatus())}
+                            onChange={handleStatusChange}
+                            multiple={false}
+                        />
+                    </div>   
+                    <div className="form-group">
+                        <label className="form-control-static"></label>
+                        <button type="button" className="btn btn-success" title={translate('manage_example.search')} onClick={handleSubmitSearch} >{translate('manage_example.search')}</button>
                     </div>
                 </div>
 
