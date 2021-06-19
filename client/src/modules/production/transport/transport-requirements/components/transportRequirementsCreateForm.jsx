@@ -111,9 +111,11 @@ function TransportRequirementsCreateForm(props) {
         /**
          * Khi tạo mới yêu cầu vận chuyển, đồng thời lấy tọa độ geocode {Lat, Lng} lưu vào db
          */
-        let fromLat, fromLng;
-        let toLat, toLng;
-        if (requirementsForm.info.customer1AddressTransport){
+        let fromLat = requirements?.info?.fromLat;
+        let fromLng = requirements?.info?.fromLng;
+        let toLat = requirements?.info?.fromLat;
+        let toLng = requirements?.info?.fromLng;
+        if (requirementsForm.info?.customer1AddressTransport && !fromLat && !fromLng){
             await getGeocode(requirementsForm.info.customer1AddressTransport).then(
                 (value) => {
                     fromLat = value.lat;
@@ -121,7 +123,7 @@ function TransportRequirementsCreateForm(props) {
                 }
             );
         }
-        if (requirementsForm.info.customer2AddressTransport){
+        if (requirementsForm.info?.customer2AddressTransport && !toLat && !toLng){
             await getGeocode(requirementsForm.info.customer2AddressTransport).then(
                 (value) => {
                     toLat = value.lat;
@@ -397,6 +399,7 @@ function TransportRequirementsCreateForm(props) {
      * Hàm lấy dữ liệu thông tin khách hàng từ component con
      */
     const callBackGeneralInfo = (value) => {
+        console.log(value)
         setRequirementsForm({
             ...requirementsForm,
             info: value,
@@ -446,7 +449,7 @@ function TransportRequirementsCreateForm(props) {
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <fieldset className="scheduler-border" style={{ height: "100%" }}>
                         <legend className="scheduler-border">Thông tin chung</legend>
-                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12"  style={{padding: "0px"}}>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group`}>
                                     <label>
@@ -474,7 +477,7 @@ function TransportRequirementsCreateForm(props) {
                                 </div>
                             </div>
                         </div>
-                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{padding: "0px"}}>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group`}>
                                     <label>

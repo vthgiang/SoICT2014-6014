@@ -5,7 +5,7 @@ import axios from 'axios'
 import './mapstyles.css';
 function MapContainer(props) {
 
-    const {locations, driverLocation, nonDirectLocations, zoom, indexComponent, mapHeight, callBackLatLng} = props;
+    const {locations, driverLocation, nonDirectLocations, zoom, indexComponent, mapHeight, callBackLatLng, flyToCenter} = props;
     // locations: danh sach vi tri co chi duong, driverLocation: vi tri tai xe, nonDirections: vi tri ko chi duong, zoom: phong to map, indexComponent: so thu tu component, mapheight: height map, callBackLatLng: tra ve lat lng khi click map
 
     let routeId = "route" + indexComponent;
@@ -44,7 +44,7 @@ function MapContainer(props) {
                 center = driverLocation[0].location;
             }
             else {
-                if (locations && locations.length !==0){
+                if (locations && locations.length !==0 && locations[0].location.lat && locations[0].location.lng){
                     center = locations[0].location;
                 }
                 else {
@@ -72,6 +72,10 @@ function MapContainer(props) {
         currentMap.current.once('idle',function(){
             currentMap.current.resize()
             })
+
+        if (flyToCenter && flyToCenter.center && flyToCenter.center.lat && flyToCenter.center.lng && currentMap.current){
+            currentMap.current.flyTo(flyToCenter);
+        }
 
         // call back geocode khi click map
         if (callBackLatLng){
@@ -146,6 +150,7 @@ function MapContainer(props) {
 
         if (locations && locations.length!==0){
             locations.map((item,index) => {
+                if (!(item.location.lat && item.location.lng)) return;
                 let marker = new mapboxgl.Marker({
                     color: "green"
                 })
@@ -212,7 +217,7 @@ function MapContainer(props) {
             //     currentMap.current.removeLayer("route");
             //     currentMap.current.removeSource("route")
             // } else{       
-                console.log(checkMapLoaded, " hahahahah")
+                // console.log(checkMapLoaded, " hahahahah")
                 if (checkMapLoaded === 1){
                     while (currentMap.current.getSource(routeId)){                
                         currentMap.current.removeLayer(routeId);

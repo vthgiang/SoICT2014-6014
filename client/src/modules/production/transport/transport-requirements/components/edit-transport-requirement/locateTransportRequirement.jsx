@@ -141,7 +141,7 @@ function LocateTransportRequirement(props) {
                                 <MapContainer
                                     locations = {[
                                         {
-                                            name: "from",
+                                            name: "S",
                                             location: {
                                                 lat: location?.fromLat,
                                                 lng: location?.fromLng
@@ -184,7 +184,7 @@ function LocateTransportRequirement(props) {
                                 <MapContainer
                                     locations = {[
                                         {
-                                            name: "to",
+                                            name: "D",
                                             location: {
                                                 lat: location?.toLat,
                                                 lng: location?.toLng
