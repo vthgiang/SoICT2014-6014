@@ -106,9 +106,26 @@ function TransportRequirementsManagementTable(props) {
         props.editTransportRequirement(requirement._id, {status: 2})
     }
     const checkApprover = (requirement) => {
-        console.log(String(localStorage.getItem("userId") === String(requirement.approver?._id)), " aaaaaaaaaaaaaaaaaaaaa")
+        // console.log(String(localStorage.getItem("userId") === String(requirement.approver?._id)), " aaaaaaaaaaaaaaaaaaaaa")
         if (String(localStorage.getItem("userId")) === String(requirement.approver?._id)){
-            return 1;
+            if (requirement.department){
+                console.log(requirement.department)
+                if (requirement.department.type && requirement.department.type.length !==0){
+                    let role1 = requirement.department.type.filter(r => Number(r.roleTransport) === 1);
+                    if (role1 && role1.length !==0){
+                        let currentRole = localStorage.getItem('currentRole');
+                        let flag = false;
+                        if (role1[0].roleOrganizationalUnit?.length !== 0){
+                            role1[0].roleOrganizationalUnit.map(r => {
+                                if (r._id === currentRole){
+                                    flag = true;
+                                }
+                            })
+                        }
+                        if (flag) return 1;
+                    }
+                }
+            }
         }
         else
         return 2;
@@ -333,7 +350,7 @@ function TransportRequirementsManagementTable(props) {
                                         (String(x.status)==="1"&&checkApprover(x) === 1)
                                         &&(
                                             <a
-                                                onClick={() => handleShowApprove(x)}
+                                                // onClick={() => handleShowApprove(x)}
                                                 className="add text-success"
                                                 style={{ width: "5px" }}
                                                 title="Phê duyệt yêu cầu vận chuyển"
