@@ -1370,7 +1370,6 @@ class ActionTab extends Component {
                                     {
                                         // Hiển thị hoạt động của công việc
                                         (taskActions).map((item, index) => {
-                                            let arrImageIndex = item.files.map((elem, index) => this.isImage(elem.name) ? index : -1).filter(index => index !== -1);
                                             let listImage = item.files.map((elem) => this.isImage(elem.name) ? elem.url : -1).filter(url => url !== -1);
                                             return (
                                                 <div key={item._id} className={index > 3 ? "hide-component" : ""}>
@@ -1522,8 +1521,6 @@ class ActionTab extends Component {
                                                                                 {this.isImage(elem.name) ?
                                                                                     <ApiImage
                                                                                         listImage={listImage}
-                                                                                        arrImageIndex={arrImageIndex}
-                                                                                        index={index}
                                                                                         className="attachment-img files-attach"
                                                                                         style={{ marginTop: "5px" }}
                                                                                         src={elem.url}
@@ -1578,7 +1575,6 @@ class ActionTab extends Component {
                                                     {!showSort && showChildComment.some(obj => obj === item._id) &&
                                                         <div>
                                                             {item.comments.map(child => {
-                                                                let arrImageIndex = child.files.map((elem, index) => this.isImage(elem.name) ? index : -1).filter(index => index !== -1);
                                                                 let listImage = child.files.map((elem) => this.isImage(elem.name) ? elem.url : -1).filter(url => url !== -1);
                                                                 return <div key={child._id}>
                                                                     <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + child.creator?.avatar)} alt="User Image" />
@@ -1618,9 +1614,7 @@ class ActionTab extends Component {
                                                                                             return <div key={index} className="show-files-task">
                                                                                                 {this.isImage(elem.name) ?
                                                                                                     <ApiImage
-                                                                                                        arrImageIndex={arrImageIndex}
                                                                                                         listImage={listImage}
-                                                                                                        index={index}
                                                                                                         className="attachment-img files-attach"
                                                                                                         style={{ marginTop: "5px" }}
                                                                                                         src={elem.url}
@@ -1816,7 +1810,6 @@ class ActionTab extends Component {
                                 >
                                     {
                                         taskComments.map((item, index) => {
-                                            let arrImageIndex = item.files.map((elem, index) => this.isImage(elem.name) ? index : -1).filter(index => index !== -1);
                                             let listImage = item.files.map((elem) => this.isImage(elem.name) ? elem.url : -1).filter(url => url !== -1);
                                             return (
                                                 <div key={item._id} className={index > 3 ? "hide-component" : ""}>
@@ -1857,9 +1850,7 @@ class ActionTab extends Component {
                                                                                 return <div key={index} className="show-files-task">
                                                                                     {this.isImage(elem.name) ?
                                                                                         <ApiImage
-                                                                                            arrImageIndex={arrImageIndex}
                                                                                             listImage={listImage}
-                                                                                            index={index}
                                                                                             className="attachment-img files-attach"
                                                                                             style={{ marginTop: "5px" }}
                                                                                             src={elem.url}
@@ -1916,7 +1907,6 @@ class ActionTab extends Component {
                                                     {showChildComment.some(x => x === item._id) &&
                                                         <div className="comment-content-child">
                                                             {item.comments.map(child => {
-                                                                let arrImageIndex = child.files.map((elem, index) => this.isImage(elem.name) ? index : -1).filter(index => index !== -1);
                                                                 let listImage = child.files.map((elem) => this.isImage(elem.name) ? elem.url : -1).filter(url => url !== -1);
                                                                 return <div key={child._id}>
                                                                     <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + child.creator?.avatar)} alt="User Image" />
@@ -1955,9 +1945,7 @@ class ActionTab extends Component {
                                                                                                     return <div key={index} className="show-files-task">
                                                                                                         {this.isImage(elem.name) ?
                                                                                                             <ApiImage
-                                                                                                                arrImageIndex={arrImageIndex}
                                                                                                                 listImage={listImage}
-                                                                                                                index={index}
                                                                                                                 className="attachment-img files-attach"
                                                                                                                 style={{ marginTop: "5px" }}
                                                                                                                 src={elem.url}
@@ -2060,7 +2048,6 @@ class ActionTab extends Component {
                                     >
                                         {
                                             documents.map((item, index) => {
-                                                let arrImageIndex = item.files.map((elem, index) => this.isImage(elem.name) ? index : -1).filter(index => index !== -1);
                                                 let listImage = item.files.map((elem) => this.isImage(elem.name) ? elem.url : -1).filter(url => url !== -1);
                                                 return (
                                                     <React.Fragment key={`documents-${item._id}`}>
@@ -2098,9 +2085,7 @@ class ActionTab extends Component {
                                                                                     <div key={index} className="show-files-task">
                                                                                         {this.isImage(elem.name) ?
                                                                                             <ApiImage
-                                                                                                arrImageIndex={arrImageIndex}
                                                                                                 listImage={listImage}
-                                                                                                index={index}
                                                                                                 className="attachment-img files-attach"
                                                                                                 style={{ marginTop: "5px" }}
                                                                                                 src={elem.url}

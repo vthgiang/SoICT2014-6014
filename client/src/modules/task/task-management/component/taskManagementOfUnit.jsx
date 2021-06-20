@@ -247,7 +247,7 @@ class TaskManagementOfUnit extends Component {
 
     backPage = async () => {
         let { organizationalUnit, status, priority, special, name,
-            startDate, endDate, responsibleEmployees, tags, 
+            startDate, endDate, responsibleEmployees, tags,
             accountableEmployees, creatorEmployees, perPage, organizationalUnitRole
         } = this.state;
 
@@ -544,11 +544,21 @@ class TaskManagementOfUnit extends Component {
             default:
                 statusColor = "#333";
         }
-        return (
-            <div>
-                <span style={{ color: statusColor }}>{formatStatus(translate, task.status)}</span>
-            </div>
-        )
+        if (task.requestToCloseTask && task.requestToCloseTask.requestStatus === 1) {
+            return (
+                <div>
+                    <span style={{ color: "#385898" }}>{translate('task.task_management.inprocess')}</span>&nbsp; - &nbsp;
+                    <span style={{ color: "#333" }}>{translate('task.task_management.requested_to_close')}</span>
+                </div>
+            )
+        }
+        else {
+            return (
+                <div>
+                    <span style={{ color: statusColor }}>{formatStatus(translate, task.status)}</span>
+                </div>
+            )
+        }
     }
 
     convertPriorityData = (priority) => {
@@ -865,6 +875,7 @@ class TaskManagementOfUnit extends Component {
                                     behaviour="show-children"
                                     column={column}
                                     data={data}
+                                    openOnClickName={true}
                                     titleAction={{
                                         edit: translate('task.task_management.action_edit'),
                                         delete: translate('task.task_management.action_delete'),

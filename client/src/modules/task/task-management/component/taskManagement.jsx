@@ -1066,6 +1066,7 @@ class TaskManagement extends Component {
                                 behaviour="show-children"
                                 column={column}
                                 data={data}
+                                openOnClickName={true}
                                 titleAction={{
                                     edit: translate('task.task_management.action_edit'),
                                     delete: translate('task.task_management.action_delete'),

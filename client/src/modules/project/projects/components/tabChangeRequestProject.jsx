@@ -279,7 +279,7 @@ const TabChangeRequestProject = (props) => {
     }
 
     const renderActionValueCell = (requestStatus, CRid, creatorObj) => {
-        if (requestStatus === 1 && checkIfAbleToCRUDProject({ project, user, currentProjectId: currentProjectId || projectDetail._id })) {
+        if (requestStatus === 1 && checkIfAbleToCRUDProject({ project, user, currentProjectId: currentProjectId || projectDetail._id, isInsideProject: true })) {
             return (
                 <td style={{ textAlign: 'center' }}>
                     <a className="visibility text-yellow" style={{ width: '5px', cursor: 'pointer' }} onClick={() => handleShowDetailInfo(CRid)}>

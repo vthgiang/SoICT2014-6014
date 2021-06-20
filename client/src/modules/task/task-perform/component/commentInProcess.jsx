@@ -370,7 +370,6 @@ class CommentInProcess extends Component {
                 {comments ?
                     //Hiển thị bình luận của công việc
                     comments.map(item => {
-                        let arrImageIndex = item.files.map((elem, index) => this.isImage(elem.name) ? index : -1).filter(index => index !== -1);
                         let listImage = item.files.map((elem) => this.isImage(elem.name) ? elem.url : -1).filter(url => url !== -1);
                         return (
                             <div key={item._id}>
@@ -413,9 +412,7 @@ class CommentInProcess extends Component {
                                                                 return <div key={index} className="show-files-task">
                                                                     {this.isImage(elem.name) ?
                                                                         <ApiImage
-                                                                            arrImageIndex={arrImageIndex}
                                                                             listImage={listImage}
-                                                                            index={index}
                                                                             className="attachment-img files-attach"
                                                                             style={{ marginTop: "5px" }}
                                                                             src={elem.url}
@@ -487,7 +484,6 @@ class CommentInProcess extends Component {
                                 {showChildComment === item._id &&
                                     <div className="comment-content-child">
                                         {item.comments.map(child => {
-                                            let arrImageIndex = child.files.map((elem, index) => this.isImage(elem.name) ? index : -1).filter(index => index !== -1);
                                             let listImage = child.files.map((elem) => this.isImage(elem.name) ? elem.url : -1).filter(url => url !== -1);
                                             return <div key={child._id}>
                                                 <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + child.creator?.avatar)} alt="User Image" />
@@ -529,7 +525,6 @@ class CommentInProcess extends Component {
                                                                                 return <div key={index} className="show-files-task">
                                                                                     {this.isImage(elem.name) ?
                                                                                         <ApiImage
-                                                                                            arrImageIndex={arrImageIndex}
                                                                                             listImage={listImage}
                                                                                             index={index}
                                                                                             className="attachment-img files-attach"

@@ -7,6 +7,7 @@ import moment from 'moment';
 import { DatePicker } from '../../../../common-components';
 import { checkIsNullUndefined, numberWithCommas } from '../../../task/task-management/component/functionHelpers';
 import { AutomaticTaskPointCalculator } from '../../../task/task-perform/component/automaticTaskPointCalculator';
+import { formatTaskStatus } from '../../projects/components/functionHelper';
 
 const TabEvalProjectMember = (props) => {
     const { currentTasks, translate, listTasksEval, currentMonth, handleChangeMonth, projectDetail } = props;
@@ -133,7 +134,7 @@ const TabEvalProjectMember = (props) => {
                                                     <>
                                                         <tr key={`${memberItem.id}-${memberTaskItem?.tasksWithMemberItem.name}-${memberIndex}-${memberTaskIndex}-0`}>
                                                             <td><strong>{memberTaskIndex === 0 ? memberItem?.name : ''}</strong></td>
-                                                            <td>{memberTaskItem?.tasksWithMemberItem?.status}</td>
+                                                            <td>{formatTaskStatus(translate, memberTaskItem?.tasksWithMemberItem?.status)}</td>
                                                             <td>{memberTaskItem?.tasksWithMemberItem.name}</td>
                                                             <td>{moment(memberTaskItem?.tasksWithMemberItem?.startDate).format('HH:mm DD/MM/YYYY')}</td>
                                                             <td>{moment(memberTaskItem?.tasksWithMemberItem?.endDate).format('HH:mm DD/MM/YYYY')}</td>
@@ -170,7 +171,7 @@ const TabEvalProjectMember = (props) => {
                                             return (
                                                 <tr key={`${memberItem.id}-${memberTaskItem?.tasksWithMemberItem.name}-${memberIndex}-${memberTaskIndex}-2`}>
                                                     <td><strong>{memberTaskIndex === 0 ? memberItem?.name : ''}</strong></td>
-                                                    <td>{memberTaskItem?.tasksWithMemberItem?.status}</td>
+                                                    <td>{formatTaskStatus(translate, memberTaskItem?.tasksWithMemberItem?.status)}</td>
                                                     <td>{memberTaskItem?.tasksWithMemberItem.name}</td>
                                                     <td>{moment(memberTaskItem?.tasksWithMemberItem?.startDate).format('HH:mm DD/MM/YYYY')}</td>
                                                     <td>{moment(memberTaskItem?.tasksWithMemberItem?.endDate).format('HH:mm DD/MM/YYYY')}</td>

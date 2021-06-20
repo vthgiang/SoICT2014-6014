@@ -1,5 +1,5 @@
 const { freshArray } = require("../../helpers/functionHelper");
-
+const { htmlToText } = require('html-to-text');
 const {
     OrganizationalUnit,
     UserRole,
@@ -232,7 +232,7 @@ exports.createNotification = async (
     const listPush = listUsersPushNotification.filter(
         (token, i) => listUsersPushNotification.indexOf(token) === i
     );
-
+    
     try {
         // Đặt trong try catch, phòng khi firebase bị lỗi/đổi token
         if (listPush.length > 0) {
@@ -247,6 +247,8 @@ exports.createNotification = async (
                 },
                 notification: {
                     title: data.title,
+                    body: data?.associatedDataObject?.description ? htmlToText(notification.associatedDataObject.description) : '',
+                    sound: "default",
                 },
             });
         }

@@ -315,7 +315,6 @@ exports.getListTasksEval = async (portal, id, evalMonth) => {
 }
 
 exports.getSalaryMembers = async (portal, data) => {
-    console.log(data)
     let newResponsibleEmployeesWithUnit = [];
     for (let employeeItem of data.responsibleEmployeesWithUnit) {
         let newListUsers = [];
