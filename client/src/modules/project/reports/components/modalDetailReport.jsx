@@ -44,7 +44,7 @@ const ModalDetailReport = (props) => {
                         <li className="active"><a href="#project-report-time" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Tiến độ dự án</a></li>
                         <li><a href="#project-report-cost" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Chi phí dự án</a></li>
                         {
-                            checkIfAbleToCRUDProject({ project, user, projectDetailId }) &&
+                            checkIfAbleToCRUDProject({ project, user, projectDetailId, isInsideProject: true }) &&
                             <li><a href="#project-report-member" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Thành viên dự án</a></li>
                         }
                     </ul>
@@ -63,7 +63,7 @@ const ModalDetailReport = (props) => {
                         </div>
                         {/** Tab báo cáo thành viên */}
                         {
-                            checkIfAbleToCRUDProject({ project, user, projectDetailId }) &&
+                            checkIfAbleToCRUDProject({ project, user, projectDetailId, isInsideProject: true }) &&
                             <div className="tab-pane" id="project-report-member">
                                 <LazyLoadComponent
                                     key="TabProjectReportMember"

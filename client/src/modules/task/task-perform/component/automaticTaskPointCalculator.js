@@ -376,15 +376,15 @@ function calcProjectMemberPoint(data, getCalcPointsOnly = true) {
             // Tính toán xem bấm giờ này có nằm trong khoảng thời gian làm việc không?
             const convertedStartMoment = moment(moment(timeSheetItem.startedAt).format('HH:mm:ss'), 'HH:mm:ss');
             const convertedEndMoment = moment(moment(timeSheetItem.stoppedAt).format('HH:mm:ss'), 'HH:mm:ss');
-            console.log('convertedStartMoment, convertedEndMoment', convertedStartMoment, convertedEndMoment);
+            // console.log('convertedStartMoment, convertedEndMoment', convertedStartMoment, convertedEndMoment);
             const isInWorkingTime = convertedStartMoment.isSameOrAfter(moment('08:00:00', 'HH:mm:ss')) && convertedEndMoment.isSameOrBefore(moment('20:00:00', 'HH:mm:ss'))
-            console.log('isInWorkingTime', isInWorkingTime)
-            console.log('timeSheetItem.duration', timeSheetItem.duration, 12 * MILISECS_TO_HOURS)
+            // console.log('isInWorkingTime', isInWorkingTime)
+            // console.log('timeSheetItem.duration', timeSheetItem.duration, 12 * MILISECS_TO_HOURS)
             sumTimeDistributionPoint += (timeSheetItem.autoStopped === 1 && isInWorkingTime && (timeSheetItem.duration <= (12 * MILISECS_TO_HOURS))) ? 100 : 80;
         }
     }
     const memberTimedistributionPoint = (sumTimeDistributionPoint / (100 * userWithTimeSheetLogsCounter)) * 100 * (task?.memberWeight?.timedistributionWeight || 0.25);
-    console.log('memberTimedistributionPoint', memberTimedistributionPoint);
+    // console.log('memberTimedistributionPoint', memberTimedistributionPoint);
 
     let autoMemberPoint = 0;
     let formula;

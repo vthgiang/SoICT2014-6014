@@ -12,8 +12,8 @@ import { getStorage } from '../../../../config';
 import { isUserInCurrentTask } from '../../../project/projects/components/functionHelper';
 
 function RequestToCloseProjectTaskModal(props) {
-    const { id, role, task, translate, performtasks } = props;
-    const [status, setStatus] = useState(task?.requestToCloseTask?.taskStatus ? task.requestToCloseTask.taskStatus : 'finished');
+    const { id, role, task, translate, performtasks, project } = props;
+    const [status, setStatus] = useState(task?.requestToCloseTask?.taskStatus ? task.requestToCloseTask.taskStatus : 'inprocess');
     const userId = getStorage('userId');
     const [description, setDescription] = useState();
     const [descriptionDefault, setDescriptionDefault] = useState();
@@ -113,12 +113,7 @@ function RequestToCloseProjectTaskModal(props) {
                     <SelectBox id="multiSelectStatusRequestClose"
                         style={{ width: "100%" }}
                         value={status}
-                        items={[
-                            { value: "wait_for_approval", text: translate('task.task_management.wait_for_approval') },
-                            { value: "finished", text: translate('task.task_management.finished') },
-                            { value: "delayed", text: translate('task.task_management.delayed') },
-                            { value: "canceled", text: translate('task.task_management.canceled') }
-                        ]}
+                        items={renderStatusItemsArr()}
                         onChange={handleSelectStatus}
                         disabled={requestToCloseTask?.requestStatus === 1 && role === 'responsible'}
                     />
@@ -161,12 +156,7 @@ function RequestToCloseProjectTaskModal(props) {
                     <SelectBox id="multiSelectStatusRequestClose"
                         style={{ width: "100%" }}
                         value={status}
-                        items={[
-                            { value: "wait_for_approval", text: translate('task.task_management.wait_for_approval') },
-                            { value: "finished", text: translate('task.task_management.finished') },
-                            { value: "delayed", text: translate('task.task_management.delayed') },
-                            { value: "canceled", text: translate('task.task_management.canceled') }
-                        ]}
+                        items={renderStatusItemsArr()}
                         onChange={handleSelectStatus}
                     />
                 </div>
@@ -181,6 +171,25 @@ function RequestToCloseProjectTaskModal(props) {
     const handleSaveAccountableData = (data) => {
         setAccData(data)
     }
+
+    console.log('task?.taskProject', task?.taskProject);
+    console.log('project?.data?.listbyuser?.find(item => String(item._id) === String(task?.taskProject))', project?.data?.listbyuser?.find(item => String(item._id) === String(task?.taskProject)))
+
+    const renderStatusItemsArr = () => {
+        if (task?.taskProject && project?.data?.listbyuser?.find(item => String(item._id) === String(task?.taskProject))?.projectType === 2) {
+            return [
+                { value: "wait_for_approval", text: translate('task.task_management.wait_for_approval') },
+                { value: "finished", text: translate('task.task_management.finished') },
+            ]
+        }
+        return [
+            { value: "wait_for_approval", text: translate('task.task_management.wait_for_approval') },
+            { value: "finished", text: translate('task.task_management.finished') },
+            { value: "delayed", text: translate('task.task_management.delayed') },
+            { value: "canceled", text: translate('task.task_management.canceled') },
+        ]
+    }
+
 
     return (
         <React.Fragment>
@@ -210,8 +219,8 @@ function RequestToCloseProjectTaskModal(props) {
 }
 
 function mapState(state) {
-    const { } = state;
-    return {}
+    const { project } = state;
+    return { project }
 
 }
 const actions = {

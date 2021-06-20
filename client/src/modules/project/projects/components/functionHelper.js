@@ -8,15 +8,15 @@ import { getNumsOfDaysWithoutGivenDay, getSalaryFromUserId } from "../../../task
 export const MILISECS_TO_DAYS = 86400000;
 export const MILISECS_TO_HOURS = 3600000;
 
-export const checkIfAbleToCRUDProject = ({ project, user, currentProjectId }) => {
+export const checkIfAbleToCRUDProject = ({ project, user, currentProjectId, isInsideProject = false }) => {
     const currentRole = getStorage("currentRole");
     const userId = getStorage("userId");
     const checkIfCurrentRoleIsUnitManager = user?.usersInUnitsOfCompany?.filter(userItem => userItem?.managers?.[currentRole])?.length > 0;
-    const projectDetail = project?.data?.list?.filter(item => item._id === currentProjectId)?.[0]
+    const projectDetail = project?.data?.list?.length > 0 ? project?.data?.list?.filter(item => item._id === currentProjectId)?.[0] : project?.data?.listbyuser?.filter(item => item._id === currentProjectId)?.[0]
     const checkIfCurrentIdIsProjectManagerOrCreator =
         projectDetail?.projectManager?.filter(managerItem => managerItem?._id === userId)?.length > 0
         || projectDetail?.creator?._id === userId;
-    return checkIfCurrentRoleIsUnitManager || checkIfCurrentIdIsProjectManagerOrCreator;
+    return isInsideProject ? (checkIfCurrentIdIsProjectManagerOrCreator && checkIfCurrentRoleIsUnitManager) : (checkIfCurrentRoleIsUnitManager);
 }
 
 export const getCurrentProjectDetails = (project, projectId = undefined, type = 'user_all') => {
@@ -606,4 +606,21 @@ export const getRecursiveRelevantTasks = (tasksList, currentTask) => {
     }
     getAllRelationTasks(tasksList, currentTask);
     return allTasksNodeRelationArr;
+}
+
+export const formatTaskStatus = (translate, status) => {
+    switch (status) {
+        case "inprocess":
+            return translate('task.task_management.inprocess');
+        case "wait_for_approval":
+            return translate('task.task_management.wait_for_approval');
+        case "finished":
+            return translate('task.task_management.finished');
+        case "delayed":
+            return translate('task.task_management.delayed');
+        case "canceled":
+            return translate('task.task_management.canceled');
+        case "requested_to_close":
+            return translate('task.task_management.requested_to_close');
+    }
 }

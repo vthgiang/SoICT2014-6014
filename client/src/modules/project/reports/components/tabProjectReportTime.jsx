@@ -4,6 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { ProjectActions } from "../../projects/redux/actions";
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import moment from 'moment';
+import { formatTaskStatus } from '../../projects/components/functionHelper';
 
 const TabProjectReportTime = (props) => {
     const { currentTasks, translate } = props;
@@ -116,7 +117,7 @@ const TabProjectReportTime = (props) => {
                                     displayContent.tasks.map((taskItem, index) => (
                                         <tr key={index}>
                                             <td>{taskItem?.name}</td>
-                                            <td>{taskItem?.status}</td>
+                                            <td>{formatTaskStatus(translate, taskItem?.status)}</td>
                                             <td>{taskItem?.progress}</td>
                                             <td>{moment(taskItem?.startDate).format('HH:mm DD/MM/YYYY')}</td>
                                             <td>{moment(taskItem?.endDate).format('HH:mm DD/MM/YYYY')}</td>
