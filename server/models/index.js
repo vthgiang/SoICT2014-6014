@@ -53,7 +53,6 @@ module.exports = {
 
     Course: require('./training/course.model'),
     EducationProgram: require('./training/educationProgram.model'),
-    EmployeeCourse: require('./training/employeeCourse.model'),
 
     //asset
     Asset: require('./asset/asset.model'), //tài sản

@@ -13,7 +13,7 @@ const CourseSchema = new Schema({
     type: { // loại khóa học
         type: String,
         required: true,
-        enum:['external','internal'] //external- đào tạo ngoài, internal-đào tại nội bộ
+        enum: ['external', 'internal'] //external- đào tạo ngoài, internal-đào tại nội bộ
     },
     company: {
         type: Schema.Types.ObjectId,
@@ -35,7 +35,7 @@ const CourseSchema = new Schema({
         type: Date,
         required: true
     },
-    cost: { 
+    cost: {
         number: String,
         unit: {
             type: String,
@@ -46,6 +46,31 @@ const CourseSchema = new Schema({
     lecturer: {
         type: String
     },
+    results: [{
+        employee: {
+            type: Schema.Types.ObjectId,
+            ref: 'Employee',
+            required: true
+        },
+        result: { //pass: Đạt, failed: Không đạt
+            type: String,
+            enum: ['pass', 'failed']
+        },
+    }],
+    registeredEmployees: [{
+        employee: {
+            type: Schema.Types.ObjectId,
+            ref: 'Employee',
+            required: true
+        },
+        registerType: {
+            // 1: Nhân viên đăng ký, chưa phê duyệt
+            // 2: Nhân viên đăng ký, được accept
+            // 3: Nhân viên đăng ký, bị reject
+            // 4: Người quản lý add trực tiếp nhân viên vào
+            type: Number
+        }
+    }],
     employeeCommitmentTime: { // thời gian cam kết làm việc tối thiểu tại công ty sau khi tham gia khóa học
         type: String,
         required: true
@@ -60,7 +85,7 @@ const CourseSchema = new Schema({
 });
 
 module.exports = (db) => {
-    if(!db.models.Course)
+    if (!db.models.Course)
         return db.model('Course', CourseSchema);
     return db.models.Course;
 }
