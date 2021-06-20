@@ -8,7 +8,7 @@ import { UserActions } from '../../../super-admin/user/redux/actions';
 import { formatDate } from '../../../../helpers/formatDate';
 import { taskManagementActions } from '../../../task/task-management/redux/actions';
 import { getStorage } from '../../../../config';
-import { getCurrentProjectDetails } from './functionHelper';
+import { formatTaskStatus, getCurrentProjectDetails } from './functionHelper';
 import { performTaskAction } from '../../../task/task-perform/redux/actions';
 import Swal from 'sweetalert2';
 import { ModalPerform } from '../../../task/task-perform/component/modalPerform';
@@ -36,23 +36,6 @@ const TableTasksProject = (props) => {
         props.getTasksByProject(currentProjectId, page, perPage);
         props.getAllUserInAllUnitsOfCompany();
     }, [])
-
-    const formatTaskStatus = (translate, status) => {
-        switch (status) {
-            case "inprocess":
-                return translate('task.task_management.inprocess');
-            case "wait_for_approval":
-                return translate('task.task_management.wait_for_approval');
-            case "finished":
-                return translate('task.task_management.finished');
-            case "delayed":
-                return translate('task.task_management.delayed');
-            case "canceled":
-                return translate('task.task_management.canceled');
-            case "requested_to_close":
-                return translate('task.task_management.requested_to_close');
-        }
-    }
 
     // const handleChangeProjectName = (e) => {
     //     const { value } = e.target;
@@ -161,6 +144,47 @@ const TableTasksProject = (props) => {
         return null;
     }
 
+    const renderProgressBar = (progress = 0, task) => {
+        const { startDate, endDate, status } = task
+        let now = moment(new Date());
+        let end = moment(endDate);
+        let start = moment(startDate);
+        let period = end.diff(start);
+        let upToNow = now.diff(start);
+        let barColor = "";
+        if (status === 'inprocess' && now.diff(end) > 0) barColor = "red";
+        else if (status === 'inprocess' && (period * progress / 100 - upToNow >= 0) || status === 'finished') barColor = "lime";
+        else barColor = "gold";
+        return (
+            <div className="progress" style={{ backgroundColor: 'rgb(221, 221, 221)', textAlign: "right", borderRadius: '3px', position: 'relative' }}>
+                <span style={{ position: 'absolute', right: '1px', fontSize: '13px', marginRight: '5px' }}>{progress + '%'}</span>
+                <div role="progressbar" className="progress-bar" aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100} style={{ width: `${progress + '%'}`, maxWidth: "100%", minWidth: "0%", backgroundColor: barColor }} >
+                </div>
+            </div>
+        )
+    }
+
+    const renderStatusColor = (task) => {
+        let statusColor = "";
+        switch (task.status) {
+            case "inprocess":
+                statusColor = "#385898";
+                break;
+            case "canceled":
+                statusColor = "#e86969";
+                break;
+            case "delayed":
+                statusColor = "#db8b0b";
+                break;
+            case "finished":
+                statusColor = "#31b337";
+                break;
+            default:
+                statusColor = "#333";
+        }
+        return statusColor;
+    }
+
     return (
         <React.Fragment>
             {
@@ -208,16 +232,17 @@ const TableTasksProject = (props) => {
                     {(lists && lists.length !== 0) &&
                         lists.map((taskItem, index) => (
                             <tr key={index}>
-                                <td>{taskItem?.name}</td>
+                                <td style={{ color: '#385898' }}>{taskItem?.name}</td>
                                 <td style={{ maxWidth: 350 }}>{processPreceedingTasks(taskItem?.preceedingTasks)}</td>
                                 <td>{taskItem?.responsibleEmployees.map(o => o.name).join(", ")}</td>
                                 <td>{taskItem?.accountableEmployees?.map(o => o.name).join(", ")}</td>
-                                <td>{formatTaskStatus(translate, taskItem?.status)}</td>
+                                <td style={{ color: renderStatusColor(taskItem) }}>{formatTaskStatus(translate, taskItem?.status)}</td>
                                 <td>{moment(taskItem?.startDate).format('HH:mm DD/MM/YYYY')}</td>
                                 <td>{moment(taskItem?.endDate).format('HH:mm DD/MM/YYYY')}</td>
                                 <td>{taskItem?.actualEndDate && moment(taskItem?.actualEndDate).format('HH:mm DD/MM/YYYY')}</td>
                                 <td>{getTotalTimeSheetLogs(taskItem?.timesheetLogs)}</td>
-                                <td>{taskItem?.progress}%</td>
+                                <td>{renderProgressBar(taskItem?.progress, taskItem)}</td>
+                                {/* <td>{taskItem?.progress}%</td> */}
                                 <td style={{ textAlign: "center" }}>
                                     <a className="edit text-yellow" style={{ width: '5px' }} onClick={() => handleShowDetailInfo(taskItem?._id)}><i className="material-icons">edit</i></a>
                                     {renderTimerButton(taskItem)}
