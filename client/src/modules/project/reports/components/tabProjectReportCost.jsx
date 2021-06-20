@@ -6,7 +6,7 @@ import { UserActions } from '../../../super-admin/user/redux/actions';
 import moment from 'moment';
 import c3 from 'c3';
 import 'c3/c3.css';
-import { getAmountOfWeekDaysInMonth } from '../../projects/components/functionHelper';
+import { formatTaskStatus, getAmountOfWeekDaysInMonth } from '../../projects/components/functionHelper';
 import { numberWithCommas } from '../../../task/task-management/component/functionHelpers';
 
 const MILISECS_TO_DAYS = 86400000;
@@ -182,7 +182,7 @@ const TabProjectReportCost = (props) => {
                                     displayContent.tasks.map((taskItem, index) => (
                                         <tr key={index}>
                                             <td>{taskItem?.name}</td>
-                                            <td>{taskItem?.status}</td>
+                                            <td>{formatTaskStatus(translate, taskItem?.status)}</td>
                                             <td>{taskItem?.progress}</td>
                                             <td>{moment(taskItem?.startDate).format('HH:mm DD/MM/YYYY')}</td>
                                             <td>{moment(taskItem?.endDate).format('HH:mm DD/MM/YYYY')}</td>

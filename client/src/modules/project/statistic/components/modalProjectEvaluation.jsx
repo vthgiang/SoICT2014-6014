@@ -50,7 +50,7 @@ const ModalProjectEvaluation = (props) => {
                     <ul className="nav nav-tabs">
                         <li className="active"><a href="#eval-project" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Thống kê đánh giá dự án</a></li>
                         {
-                            checkIfAbleToCRUDProject({ project, user, currentProjectId }) &&
+                            checkIfAbleToCRUDProject({ project, user, currentProjectId, isInsideProject: true }) &&
                             <li><a href="#eval-project-members" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Thống kê đánh giá thành viên dự án</a></li>
                         }
                         <li><a href="#eval-self" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Thống kê đánh giá cá nhân</a></li>
@@ -70,7 +70,7 @@ const ModalProjectEvaluation = (props) => {
                         }
                         {/** Tab Đánh giá thành viên dự án */}
                         {
-                            checkIfAbleToCRUDProject({ project, user, currentProjectId }) &&
+                            checkIfAbleToCRUDProject({ project, user, currentProjectId, isInsideProject: true }) &&
                             <div className="tab-pane" id="eval-project-members">
                                 <TabEvalProjectMember
                                     currentTasks={currentTasks}

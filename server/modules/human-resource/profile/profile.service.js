@@ -7,7 +7,7 @@ const {
     OrganizationalUnit,
     UserRole,
     User,
-    EmployeeCourse,
+    Course,
     Notification,
     Timesheet,
     Company,
@@ -148,8 +148,12 @@ exports.getEmployeeProfile = async (portal, email) => {
         let disciplines = await Discipline(connect(DB_CONNECTION, portal)).find({
             employee: employees[0]._id
         })
-        let courses = await EmployeeCourse(connect(DB_CONNECTION, portal)).find({
-            employee: employees[0]._id
+        let courses = await Course(connect(DB_CONNECTION, portal)).find({
+            results: {
+                '$elemMatch': {
+                    employee: employees[0]._id
+                }
+            }
         })
 
         return {
@@ -885,11 +889,15 @@ exports.createEmployee = async (portal, data, company, fileInfor) => {
     if (data.courses !== undefined) {
         let courses = data.courses;
         for (let x in courses) {
-            EmployeeCourse.create({
-                employee: createEmployee._id,
-                course: courses[x].course,
-                result: courses[x].result,
-            });
+            Course.update(
+                { _id: course[x].course},
+                { '$push': {
+                    results: {
+                        employee: createEmployee._id,
+                        result: courses[x].result
+                    }
+                }}
+            )
         }
     }
 
@@ -1156,7 +1164,7 @@ exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company)
     queryEditCreateDeleteDocumentInCollection(oldEmployee._id, company, Discipline, deleteDisciplines, editDisciplines, createDisciplines);
     queryEditCreateDeleteDocumentInCollection(oldEmployee._id, company, Commendation, deleteConmmendations, editConmmendations, createCommendations);
     queryEditCreateDeleteDocumentInCollection(oldEmployee._id, company, AnnualLeave, deleteAnnualLeaves, editAnnualLeaves, createAnnualLeaves);
-    queryEditCreateDeleteDocumentInCollection(oldEmployee._id, company, EmployeeCourse, deleteCourses, editCourses, createCourses);
+    queryEditCreateDeleteDocumentInCollection(oldEmployee._id, company, Course, deleteCourses, editCourses, createCourses);
    
     if (employee.emailInCompany) {
         // Kiểm tra xem email mới của nhân viên có tồn tại trong bảng user hay chưa

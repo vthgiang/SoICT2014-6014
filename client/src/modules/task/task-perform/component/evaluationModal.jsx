@@ -231,12 +231,12 @@ function EvaluationModal(props) {
     }
 
     // let dateParam = TODAY;
-    let now = new Date();
-    let startDate = task && new Date(task.startDate);
+    // let now = new Date();
+    // let startDate = task && new Date(task.startDate);
 
-    if (startDate && now.getTime() < startDate.getTime()) {
-        dateParam = formatDate(startDate);
-    }
+    // if (startDate && now.getTime() < startDate.getTime()) {
+    //     dateParam = formatDate(startDate);
+    // }
 
     let title;
     if (role === 'responsible') {
