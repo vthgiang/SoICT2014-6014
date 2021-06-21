@@ -248,7 +248,6 @@ exports.createNotification = async (
                 notification: {
                     title: data.title,
                     body: data?.associatedDataObject?.description ? htmlToText(data.associatedDataObject.description) : '',
-                    sound: "default",
                 },
             });
         }
