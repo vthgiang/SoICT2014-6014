@@ -110,11 +110,17 @@ function TransportRequirementsManagementTable(props) {
         });
         window.$('#modal-approve-transport-requirement').modal('show');
     }
+    const checkEdit = (requirement) => {
+        if (localStorage.getItem('userId') === String(requirement?.creator?._id)){
+            return 1;
+        }
+        return 0;
+    }
     const checkApprover = (requirement) => {
         // console.log(String(localStorage.getItem("userId") === String(requirement.approver?._id)), " aaaaaaaaaaaaaaaaaaaaa")
         if (String(localStorage.getItem("userId")) === String(requirement.approver?._id)){
             if (requirement.department){
-                console.log(requirement.department)
+                // console.log(requirement.department)
                 if (requirement.department.type && requirement.department.type.length !==0){
                     let role1 = requirement.department.type.filter(r => Number(r.roleTransport) === 1);
                     if (role1 && role1.length !==0){
@@ -240,7 +246,7 @@ function TransportRequirementsManagementTable(props) {
                 editTransportRequirement={editTransportRequirement}
             />
             <ApproveForm
-                curentTransportRequirementDetail={curentTransportRequirementDetail}
+                currentTransportRequirementDetail={curentTransportRequirementDetail}
             />
             <div className="box-body qlcv">
                 <div className="form-inline">
@@ -339,7 +345,7 @@ function TransportRequirementsManagementTable(props) {
                                             </i>
                                         </a>
                                         {
-                                            (String(x.status)==="1")
+                                            ((String(x.status)==="1" || String(x.status)==="0") && checkEdit(x) === 1)
                                             && (
                                             <a className="edit text-yellow" 
                                                 style={{ width: '5px' }} 
@@ -353,8 +359,7 @@ function TransportRequirementsManagementTable(props) {
                                             )
                                         }
                                         {
-                                        // this.checkUserForApprove(item) === 1 && 
-                                        (String(x.status)==="1"&&checkApprover(x) === 1)
+                                        ((String(x.status)==="1" || String(x.status) === "0") &&checkApprover(x) === 1)
                                         &&(
                                             <a
                                                 onClick={() => handleShowApprove(x)}

@@ -82,6 +82,18 @@ exports.createTransportRequirement = async (portal, data, userId) => {
                             ])                            
                             .populate({
                                 path: 'goods.good'
+                            })
+                            .populate({
+                                path: 'department',
+                                populate: {
+                                    path: 'type.roleOrganizationalUnit organizationalUnit',
+                                    populate: [{
+                                        path: "users",
+                                        populate: [{
+                                            path: "userId"
+                                        }]
+                                    }]
+                                }
                             });
     return requirement;
 }
@@ -314,6 +326,18 @@ exports.editTransportRequirement = async (portal, id, data) => {
         },
         {
             path: 'approver'
+        },
+        {
+            path: 'department',
+            populate: {
+                path: 'type.roleOrganizationalUnit organizationalUnit',
+                populate: [{
+                    path: "users",
+                    populate: [{
+                        path: "userId"
+                    }]
+                }]
+            }
         }
     ])        
     return transportRequirement;

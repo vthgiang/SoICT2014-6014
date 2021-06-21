@@ -5,9 +5,13 @@ import { ButtonModal, DialogModal, ErrorLabel, SelectBox } from '../../../../../
 import { withTranslate } from 'react-redux-multilingual';
 import ValidationHelper from '../../../../../../helpers/validationHelper';
 
+import { transportRequirementsActions } from "../../redux/actions";
+
 
 function ApproveForm(props) {
     
+    const {currentTransportRequirementDetail} = props;
+
     const [state, setState] = useState({
         status: "title",
         note: "",
@@ -28,11 +32,12 @@ function ApproveForm(props) {
         })
     }
 
-    const save = () => {
-
+    const save = () => {        
+        props.editTransportRequirement(currentTransportRequirementDetail._id, {status: Number(status), note: note });
     }
 
     const isFormValidated = () => {
+        if (status === 'title') return false;
         return true;
     }
 
@@ -89,13 +94,11 @@ function ApproveForm(props) {
 }
 
 function mapState(state) {
-    // const bills = state.bills.listPaginate;
-    // return { bills }
+    return {}
 }
 
 const actions = {
-    // getBillsByType: BillActions.getBillsByType,
-    // getCustomers: CrmCustomerActions.getCustomers,
+    editTransportRequirement: transportRequirementsActions.editTransportRequirement,
 }
 
 const connectedApproveForm = connect(mapState, actions)(withTranslate(ApproveForm));

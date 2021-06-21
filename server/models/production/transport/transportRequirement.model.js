@@ -172,7 +172,10 @@ const TransportRequirementSchema = new Schema({
     approver: {
         type: Schema.Types.ObjectId,
         ref: 'User'
-    }
+    },
+    note: { // note phê duyệt
+        type: String,
+    },
 },{
     timestamps: true,
 });
