@@ -7,6 +7,7 @@ import { DataTableSetting, DeleteNotification, PaginateBar, SelectBox } from "..
 import { TransportRequirementsCreateForm } from "./transportRequirementsCreateForm"
 import { TransportRequirementsViewDetails } from "./transportRequirementsViewDetails"
 import { TransportRequirementsEditForm } from './transportRequirementsEditForm'
+import { ApproveForm } from './approve-transport-requirement/approveForm'
 
 import { transportRequirementsActions } from "../redux/actions";
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
@@ -71,7 +72,6 @@ function TransportRequirementsManagementTable(props) {
                 setAllTransportRequirements(transportRequirements.lists)
             }
         }
-        console.log(transportRequirements)
     }, [transportRequirements])
 
     /**
@@ -102,8 +102,13 @@ function TransportRequirementsManagementTable(props) {
     const editTransportRequirement = (requirementId, data) => {
         props.editTransportRequirement(requirementId, data);
     }
-    const handleShowApprove = (requirement) => {
-        props.editTransportRequirement(requirement._id, {status: 2})
+    const handleShowApprove = (transportRequirement) => {
+        // props.editTransportRequirement(requirement._id, {status: 2})
+        setState({
+            ...state,
+            curentTransportRequirementDetail: transportRequirement,
+        });
+        window.$('#modal-approve-transport-requirement').modal('show');
     }
     const checkApprover = (requirement) => {
         // console.log(String(localStorage.getItem("userId") === String(requirement.approver?._id)), " aaaaaaaaaaaaaaaaaaaaa")
@@ -135,7 +140,6 @@ function TransportRequirementsManagementTable(props) {
      * @param {*} example thông tin của ví dụ cần xem
      */
     const handleShowDetailInfo = (transportRequirement) => {
-        console.log(transportRequirement, " day la transportrequirement")
         setState({
             ...state,
             curentTransportRequirementDetail: transportRequirement,
@@ -234,6 +238,9 @@ function TransportRequirementsManagementTable(props) {
             <TransportRequirementsEditForm
                 curentTransportRequirementDetail={curentTransportRequirementDetail}
                 editTransportRequirement={editTransportRequirement}
+            />
+            <ApproveForm
+                curentTransportRequirementDetail={curentTransportRequirementDetail}
             />
             <div className="box-body qlcv">
                 <div className="form-inline">
@@ -350,7 +357,7 @@ function TransportRequirementsManagementTable(props) {
                                         (String(x.status)==="1"&&checkApprover(x) === 1)
                                         &&(
                                             <a
-                                                // onClick={() => handleShowApprove(x)}
+                                                onClick={() => handleShowApprove(x)}
                                                 className="add text-success"
                                                 style={{ width: "5px" }}
                                                 title="Phê duyệt yêu cầu vận chuyển"

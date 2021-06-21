@@ -81,6 +81,9 @@ exports.getTransportStatus = (routeOrdinal) => {
 
 const transportRequirementStatus = [
     {
+        value: "0", text: "Không được phê duyệt"
+    },
+    {
         value: "1", text: "Chờ phê duyệt"
     },
     {
