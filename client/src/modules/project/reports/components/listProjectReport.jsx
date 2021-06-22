@@ -129,14 +129,13 @@ function ListProjectReport(props) {
                         <tbody>
                             {(lists && lists.length !== 0) &&
                                 lists.map((projectItem, index) => (
-                                    <tr key={index}>
-                                        <td>{projectItem?.name}</td>
+                                    <tr key={index} style={{ cursor: 'pointer' }} onClick={() => handleShowDetailInfo(projectItem)}>
+                                        <td style={{ color: '#385898' }}>{projectItem?.name}</td>
                                         <td>{projectItem?.creator?.name}</td>
                                         <td>{projectItem?.projectManager.map(o => o.name).join(", ")}</td>
-                                        <td style={{ maxWidth: 450 }}>{renderLongList(projectItem?.responsibleEmployees.map(o => o.name))}</td>
+                                        <td style={{ maxWidth: 400 }}>{renderLongList(projectItem?.responsibleEmployees.map(o => o.name))}</td>
                                         <td style={{ textAlign: "center" }}>
-                                            <a className="edit text-green" style={{ width: '5px' }} onClick={() => handleShowDetailInfo(projectItem)}><i className="material-icons">visibility</i></a>
-
+                                            <span className="visibility text-green" style={{ width: '5px' }}><i className="material-icons">visibility</i></span>
                                         </td>
                                     </tr>
                                 ))

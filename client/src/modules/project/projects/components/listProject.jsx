@@ -186,7 +186,7 @@ function ListProject(props) {
                                     // console.log('projectItem?.creator?.name', projectItem?.creator?.name, 'projectItem?.responsibleEmployees', projectItem?.responsibleEmployees);
                                     return (
                                         <tr key={index}>
-                                            <td>{projectItem?.name}</td>
+                                            <td style={{ color: '#385898' }}>{projectItem?.name}</td>
                                             <td>{renderProjectTypeText(projectItem?.projectType)}</td>
                                             <td>{projectItem?.creator?.name}</td>
                                             <td>{projectItem?.projectManager.map(o => o.name).join(", ")}</td>
