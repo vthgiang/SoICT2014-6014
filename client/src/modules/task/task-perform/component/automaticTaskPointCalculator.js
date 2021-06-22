@@ -467,12 +467,12 @@ function calcMemberStatisticEvalPoint(data) {
     const { startDate, actorsWithSalary, estimateNormalTime, actualEndDate } = task;
     const currentMemberWithSalary = actorsWithSalary.find((actorItem) => String(actorItem.userId) === String(userId));
     // Estimate duration
-    const estDuration = (currentMemberWithSalary.weight / 100) * estimateNormalTime / (projectDetail?.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS);
+    const estDuration = (currentMemberWithSalary?.weight / 100) * estimateNormalTime / (projectDetail?.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS);
     // Estimate cost
     const estCost = getEstimateMemberCostOfTask(task, projectDetail, userId);
     // Real duration
     const realDuration = (task?.status === 'finished' && actualEndDate)
-        ? (getDurationWithoutSatSun(startDate, actualEndDate, 'milliseconds') / (projectDetail?.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS) * (currentMemberWithSalary.weight / 100))
+        ? (getDurationWithoutSatSun(startDate, actualEndDate, 'milliseconds') / (projectDetail?.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS) * (currentMemberWithSalary?.weight / 100))
         : undefined;
     // Real cost
     const realCost = getActualMemberCostOfTask(task, projectDetail, userId);

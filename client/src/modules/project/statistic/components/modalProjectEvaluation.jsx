@@ -12,7 +12,7 @@ import TabEvalProject from './tabEvalProject';
 import TabEvalProjectMember from './tabEvalProjectMember';
 import TabEvalSelf from './tabEvalSelf';
 import { StatisticActions } from '../../statistic/redux/actions';
-import { checkIfAbleToCRUDProject } from '../../projects/components/functionHelper';
+import { checkIfAbleToCRUDProject, getCurrentProjectDetails } from '../../projects/components/functionHelper';
 
 const ModalProjectEvaluation = (props) => {
     const { projectDetailId, projectDetail, translate, project, tasks, user, projectStatistic } = props;
@@ -46,54 +46,59 @@ const ModalProjectEvaluation = (props) => {
                 size={100}
                 resetOnClose={true}
             >
-                <div className="nav-tabs-custom">
-                    <ul className="nav nav-tabs">
-                        <li className="active"><a href="#eval-project" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Thống kê đánh giá dự án</a></li>
-                        {
-                            checkIfAbleToCRUDProject({ project, user, currentProjectId, isInsideProject: true }) &&
-                            <li><a href="#eval-project-members" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Thống kê đánh giá thành viên dự án</a></li>
-                        }
-                        <li><a href="#eval-self" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Thống kê đánh giá cá nhân</a></li>
-                    </ul>
-                    <div className="tab-content">
-                        {/** Thống kê điểm số công việc theo tháng */}
-                        {
-                            <div className="tab-pane active" id="eval-project">
-                                <TabEvalProject
-                                    projectDetail={projectDetail}
-                                    projectDetailId={projectDetailId}
-                                    currentTasks={currentTasks}
-                                    listTasksEval={projectStatistic.listTasksEval}
-                                    currentMonth={currentMonth}
-                                    handleChangeMonth={handleChangeMonth} />
+                {
+                    getCurrentProjectDetails(project, projectDetail?._id)?.projectType === 2 ?
+                        <div className="nav-tabs-custom">
+                            <ul className="nav nav-tabs">
+                                <li className="active"><a href="#eval-project" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Thống kê đánh giá dự án</a></li>
+                                {
+                                    checkIfAbleToCRUDProject({ project, user, currentProjectId, isInsideProject: true }) &&
+                                    <li><a href="#eval-project-members" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Thống kê đánh giá thành viên dự án</a></li>
+                                }
+                                <li><a href="#eval-self" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Thống kê đánh giá cá nhân</a></li>
+                            </ul>
+                            <div className="tab-content">
+                                {/** Thống kê điểm số công việc theo tháng */}
+                                {
+                                    <div className="tab-pane active" id="eval-project">
+                                        <TabEvalProject
+                                            projectDetail={projectDetail}
+                                            projectDetailId={projectDetailId}
+                                            currentTasks={currentTasks}
+                                            listTasksEval={projectStatistic.listTasksEval}
+                                            currentMonth={currentMonth}
+                                            handleChangeMonth={handleChangeMonth} />
+                                    </div>
+                                }
+                                {/** Tab Đánh giá thành viên dự án */}
+                                {
+                                    checkIfAbleToCRUDProject({ project, user, currentProjectId, isInsideProject: true }) &&
+                                    <div className="tab-pane" id="eval-project-members">
+                                        <TabEvalProjectMember
+                                            currentTasks={currentTasks}
+                                            currentMonth={currentMonth}
+                                            listTasksEval={projectStatistic.listTasksEval}
+                                            handleChangeMonth={handleChangeMonth}
+                                            projectDetail={projectDetail}
+                                        />
+                                    </div>
+                                }
+                                {/** Tab Đánh giá cá nhân */}
+                                <div className="tab-pane" id="eval-self">
+                                    <TabEvalSelf
+                                        currentTasks={currentTasks}
+                                        currentMonth={currentMonth}
+                                        listTasksEval={projectStatistic.listTasksEval}
+                                        handleChangeMonth={handleChangeMonth}
+                                        projectDetail={projectDetail}
+                                        userId={userId}
+                                    />
+                                </div>
                             </div>
-                        }
-                        {/** Tab Đánh giá thành viên dự án */}
-                        {
-                            checkIfAbleToCRUDProject({ project, user, currentProjectId, isInsideProject: true }) &&
-                            <div className="tab-pane" id="eval-project-members">
-                                <TabEvalProjectMember
-                                    currentTasks={currentTasks}
-                                    currentMonth={currentMonth}
-                                    listTasksEval={projectStatistic.listTasksEval}
-                                    handleChangeMonth={handleChangeMonth}
-                                    projectDetail={projectDetail}
-                                />
-                            </div>
-                        }
-                        {/** Tab Đánh giá cá nhân */}
-                        <div className="tab-pane" id="eval-self">
-                            <TabEvalSelf
-                                currentTasks={currentTasks}
-                                currentMonth={currentMonth}
-                                listTasksEval={projectStatistic.listTasksEval}
-                                handleChangeMonth={handleChangeMonth}
-                                projectDetail={projectDetail}
-                                userId={userId}
-                            />
                         </div>
-                    </div>
-                </div>
+                        :
+                        <div>Dự án không ràng buộc không dùng được chức năng này!</div>
+                }
             </DialogModal>
         </React.Fragment>
     )

@@ -8,7 +8,7 @@ import { UserActions } from '../../../super-admin/user/redux/actions';
 import { formatDate } from '../../../../helpers/formatDate';
 import { taskManagementActions } from '../../../task/task-management/redux/actions';
 import { getStorage } from '../../../../config';
-import { formatTaskStatus, getCurrentProjectDetails } from './functionHelper';
+import { formatTaskStatus, getCurrentProjectDetails, renderProgressBar, renderStatusColor } from './functionHelper';
 import { performTaskAction } from '../../../task/task-perform/redux/actions';
 import Swal from 'sweetalert2';
 import { ModalPerform } from '../../../task/task-perform/component/modalPerform';
@@ -142,47 +142,6 @@ const TableTasksProject = (props) => {
             // </a>
         }
         return null;
-    }
-
-    const renderProgressBar = (progress = 0, task) => {
-        const { startDate, endDate, status } = task
-        let now = moment(new Date());
-        let end = moment(endDate);
-        let start = moment(startDate);
-        let period = end.diff(start);
-        let upToNow = now.diff(start);
-        let barColor = "";
-        if (status === 'inprocess' && now.diff(end) > 0) barColor = "red";
-        else if (status === 'inprocess' && (period * progress / 100 - upToNow >= 0) || status === 'finished') barColor = "lime";
-        else barColor = "gold";
-        return (
-            <div className="progress" style={{ backgroundColor: 'rgb(221, 221, 221)', textAlign: "right", borderRadius: '3px', position: 'relative' }}>
-                <span style={{ position: 'absolute', right: '1px', fontSize: '13px', marginRight: '5px' }}>{progress + '%'}</span>
-                <div role="progressbar" className="progress-bar" aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100} style={{ width: `${progress + '%'}`, maxWidth: "100%", minWidth: "0%", backgroundColor: barColor }} >
-                </div>
-            </div>
-        )
-    }
-
-    const renderStatusColor = (task) => {
-        let statusColor = "";
-        switch (task.status) {
-            case "inprocess":
-                statusColor = "#385898";
-                break;
-            case "canceled":
-                statusColor = "#e86969";
-                break;
-            case "delayed":
-                statusColor = "#db8b0b";
-                break;
-            case "finished":
-                statusColor = "#31b337";
-                break;
-            default:
-                statusColor = "#333";
-        }
-        return statusColor;
     }
 
     return (
