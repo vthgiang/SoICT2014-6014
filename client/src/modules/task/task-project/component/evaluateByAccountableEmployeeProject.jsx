@@ -11,7 +11,7 @@ import { getStorage } from '../../../../config';
 import moment from 'moment';
 import "../../task-perform/component/scrollBar.css";
 import { getCurrentProjectDetails } from '../../../project/projects/components/functionHelper';
-import { checkIsNullUndefined } from '../../task-management/component/functionHelpers';
+import { checkIsNullUndefined, numberWithCommas } from '../../task-management/component/functionHelpers';
 import { ProjectActions } from '../../../project/projects/redux/actions';
 import { ModalShowAutoPointInfoProjectMember } from './modalShowAutoPointInfoProjectMember';
 
@@ -330,14 +330,14 @@ const EvaluateByAccountableEmployeeProject = (props) => {
                     <div className="row">
                         <div className="col-md-12">
                             <strong>Điểm tự động đã được lưu:</strong>{'  '}
-                            {checkIsNullUndefined(currentTaskAutomaticPointInDB) ? 'Chưa tính được' : currentTaskAutomaticPointInDB}
+                            {checkIsNullUndefined(currentTaskAutomaticPointInDB) ? 'Chưa tính được' : numberWithCommas(currentTaskAutomaticPointInDB)}
                         </div>
                     </div>
                     <div className="row">
                         <div className="col-md-12">
                             <strong>Điểm tự động:</strong>{'  '}
                             <a style={{ cursor: "pointer" }} onClick={openModalTaskCalculation}>
-                                {checkIsNullUndefined(currentTaskAutomaticPoint) ? 'Chưa tính được' : currentTaskAutomaticPoint}
+                                {checkIsNullUndefined(currentTaskAutomaticPoint) ? 'Chưa tính được' : numberWithCommas(currentTaskAutomaticPoint)}
                             </a>
                         </div>
                     </div>
@@ -355,14 +355,14 @@ const EvaluateByAccountableEmployeeProject = (props) => {
                     <div className="row">
                         <div className="col-md-12">
                             <strong>Điểm tự động đã được lưu:</strong>{'  '}
-                            {checkIsNullUndefined(currentAccUserAutomaticPointInDB) ? 'Chưa tính được' : currentAccUserAutomaticPointInDB}
+                            {checkIsNullUndefined(currentAccUserAutomaticPointInDB) ? 'Chưa tính được' : numberWithCommas(currentAccUserAutomaticPointInDB)}
                         </div>
                     </div>
                     <div className="row">
                         <div className="col-md-12">
                             <strong>Điểm tự động:</strong>{'  '}
                             <a style={{ cursor: "pointer" }} onClick={openModalMemberCalculation}>
-                                {checkIsNullUndefined(currentAccUserAutomaticPoint) ? 'Chưa tính được' : currentAccUserAutomaticPoint}
+                                {checkIsNullUndefined(currentAccUserAutomaticPoint) ? 'Chưa tính được' : numberWithCommas(currentAccUserAutomaticPoint)}
                             </a>
                         </div>
                     </div>
@@ -441,10 +441,10 @@ const EvaluateByAccountableEmployeeProject = (props) => {
                     </table>
                 </fieldset>
 
-                <div className="box">
-                    <div className="row">
-                        <button className="btn-success pull-right" onClick={handleSaveEvalResult} title="Lưu kết quả đánh giá">Lưu kết quả đánh giá</button>
-                    </div>
+                <div className="row">
+                    <button className="btn btn-success pull-right" style={{ marginRight: 10 }} onClick={handleSaveEvalResult} title="Lưu kết quả đánh giá">
+                        Lưu kết quả đánh giá
+                    </button>
                 </div>
             </div>
         </React.Fragment>

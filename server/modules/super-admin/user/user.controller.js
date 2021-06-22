@@ -22,7 +22,6 @@ exports.getUsers = async (req, res) => {
                 content: users
             });
         } catch (error) {
-            console.log('super admin get user errs', error)
             Logger.error(req.user.email, 'get_users_faile', req.portal);
             res.status(400).json({
                 success: false,

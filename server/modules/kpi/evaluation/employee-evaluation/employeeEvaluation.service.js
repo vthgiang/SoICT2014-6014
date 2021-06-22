@@ -118,7 +118,8 @@ exports.getEmployeeKPISets = async (portal, data) => {
         .populate([
             { path: 'comments.creator', select: 'name email avatar ' },
             { path: 'comments.comments.creator', select: 'name email avatar' }
-        ]);
+        ])
+        .populate({ path: "logs.creator", select: "_id name email avatar" })
 
     let totalCount = await EmployeeKpiSet(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
     let totalPages = Math.ceil(totalCount / perPage);
@@ -157,7 +158,8 @@ exports.getKpisByMonth = async (portal, data) => {
         .populate([
             { path: 'comments.creator', select: 'name email avatar ' },
             { path: 'comments.comments.creator', select: 'name email avatar' }
-        ]);
+        ])
+        .populate({ path: "logs.creator", select: "_id name email avatar" })
 
     return employeeKpiSets;
 }
@@ -188,6 +190,7 @@ exports.approveAllKpis = async (portal, id, companyId) => {
             { path: 'comments.creator', select: 'name email avatar ' },
             { path: 'comments.comments.creator', select: 'name email avatar' }
         ])
+        .populate({ path: "logs.creator", select: "_id name email avatar" })
         .execPopulate();
 
     const date = (employee_kpi_set.date).getMonth() + 1;
@@ -248,6 +251,7 @@ exports.editStatusKpi = async (portal, data, query, companyId) => {
             { path: 'comments.creator', select: 'name email avatar ' },
             { path: 'comments.comments.creator', select: 'name email avatar' }
         ])
+        .populate({ path: "logs.creator", select: "_id name email avatar" })
         .execPopulate();
 
     if (employee_kpi_set) {
@@ -307,6 +311,7 @@ exports.editKpi = async (portal, id, data) => {
         .populate("organizationalUnit ")
         .populate({path: "creator", select :"_id name email avatar"})
         .populate({path: "approver", select :"_id name email avatar"})
+        .populate({ path: "logs.creator", select: "_id name email avatar" })
 
     return {
         target,
@@ -329,8 +334,10 @@ exports.getKpisByKpiSetId = async (portal, id) => {
         .populate([
             { path: 'comments.creator', select: 'name email avatar ' },
             { path: 'comments.comments.creator', select: 'name email avatar' }
-        ]);
-    for (let i = 0; i < employeeKpiSet?.kpis?.length; i++) {
+        ])
+        .populate({ path: "logs.creator", select: "_id name email avatar" })
+
+        for (let i = 0; i < employeeKpiSet?.kpis?.length; i++) {
         let data = {
             id: employeeKpiSet?.kpis?.[i]?._id,
             employeeId: employeeKpiSet?.creator?._id,
@@ -537,6 +544,7 @@ exports.setTaskImportanceLevel = async (portal, id, kpiType, data) => {
         .populate("organizationalUnit")
         .populate({path: "creator", select :"_id name email avatar"})
         .populate({path: "approver", select :"_id name email avatar"})
+        .populate({ path: "logs.creator", select: "_id name email avatar" })
 
     return { task, result, updateKpiSet };
 }
@@ -654,6 +662,7 @@ exports.getTasksByListKpis = async (portal, data) => {
             .findById(data[i])
             .populate({ path: "creator", select: "_id name email avatar" })
             .populate({ path: "kpis" })
+            .populate({ path: "logs.creator", select: "_id name email avatar" })
         listkpis.push(employee_kpi_set);
     }
 
@@ -922,7 +931,8 @@ exports.setPointAllKpi = async (portal, idEmployee, idKpiSet, data) => {
         .populate([
             { path: 'comments.creator', select: 'name email avatar ' },
             { path: 'comments.comments.creator', select: 'name email avatar' }
-        ]);
+        ])
+        .populate({ path: "logs.creator", select: "_id name email avatar" })
 
     for (let i = 0; i < updateKpiSet?.kpis?.length; i++) {
         let data = {

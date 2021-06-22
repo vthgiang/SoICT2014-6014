@@ -27,6 +27,7 @@ const ProjectDetailPage = (props) => {
     const currentProjectId = window.location.href.split('?id=')[1].split('#')?.[0];
 
     useEffect(() => {
+        props.getProjectsDispatch({ calledId: "all" });
         props.getProjectsDispatch({ calledId: "user_all", userId });
         props.getAllDepartment();
         props.getDepartment();
@@ -52,6 +53,7 @@ const ProjectDetailPage = (props) => {
         }, 10);
         setTimeout(() => {
             props.getTasksByProject(currentProjectId);
+            props.getTasksByProject(currentProjectId, 1, 6);
         }, 1000);
     }
 
@@ -68,6 +70,7 @@ const ProjectDetailPage = (props) => {
     const handleAfterCreateProject = async () => {
         await props.getProjectsDispatch({ calledId: "user_all", userId });
         await props.getTasksByProject(currentProjectId);
+        await props.getTasksByProject(currentProjectId, 1, 6);
         projectDetail = getCurrentProjectDetails(project);
         await props.getListProjectChangeRequestsDispatch({ projectId: currentProjectId });
     }
@@ -134,7 +137,9 @@ const ProjectDetailPage = (props) => {
                                 <div className="pull-right" style={{ marginTop: 15, marginRight: 10 }}>
                                     <button title="Tải lại danh sách công việc" type="button" className="pull-right"
                                         style={{ display: 'flex', height: 35, justifyContent: 'center', alignItems: 'center' }}
-                                        onClick={() => props.getTasksByProject(currentProjectId)}
+                                        onClick={() => {
+                                            props.getTasksByProject(currentProjectId)
+                                        }}
                                     >
                                         <span className="material-icons">refresh</span>
                                     </button>
@@ -153,29 +158,27 @@ const ProjectDetailPage = (props) => {
                                 }
                                 {
                                     projectDetail?.projectType === 2 &&
-                                        checkIfAbleToCRUDProject({ project, user, currentProjectId }) && currentProjectTasks && currentProjectTasks.length > 0 ? null :
+                                        checkIfAbleToCRUDProject({ project, user, currentProjectId, isInsideProject: true }) && currentProjectTasks && currentProjectTasks.length > 0 ? null :
                                         (projectDetail && <ModalAddTaskSchedule projectDetail={projectDetail} onHandleReRender={onHandleReRender} />)
                                 }
                                 {
                                     projectDetail?.projectType === 2 &&
-                                    checkIfAbleToCRUDProject({ project, user, currentProjectId }) && currentProjectTasks && currentProjectTasks.length === 0 &&
+                                    checkIfAbleToCRUDProject({ project, user, currentProjectId, isInsideProject: true }) && currentProjectTasks && currentProjectTasks.length === 0 &&
                                     <button type="button" className="btn btn-success pull-right" onClick={onHandleOpenScheduleModal}
                                         title={`Tạo công việc mới bằng file excel`}>
                                         Tạo công việc mới bằng file excel
                                     </button>
                                 }
                                 {
-                                    projectDetail?.projectType === 2 &&
+                                    projectDetail?.projectType === 2 && !checkIfAbleToCRUDProject({ project, user, currentProjectId, isInsideProject: true }) &&
                                     currentProjectTasks && currentProjectTasks.length > 0 &&
-                                    <TaskProjectAddModal onHandleReRender={onHandleReRender} currentProjectTasks={currentProjectTasks} parentTask={parentTask} />
-                                }
-                                {
-                                    projectDetail?.projectType === 2 &&
-                                    currentProjectTasks && currentProjectTasks.length > 0 &&
-                                    <button type="button" className="btn btn-success pull-right" onClick={handleOpenCreateProjectTask}
-                                        title={`Tạo công việc mới bằng tay`}>
-                                        Tạo công việc mới bằng tay
-                                    </button>
+                                    <>
+                                        <TaskProjectAddModal onHandleReRender={onHandleReRender} currentProjectTasks={currentProjectTasks} parentTask={parentTask} />
+                                        <button type="button" className="btn btn-success pull-right" onClick={handleOpenCreateProjectTask}
+                                            title={`Tạo công việc mới bằng tay`}>
+                                            Tạo công việc mới bằng tay
+                                        </button>
+                                    </>
                                 }
                             </div>
                         </div>
@@ -209,7 +212,7 @@ const ProjectDetailPage = (props) => {
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     );
 }
 

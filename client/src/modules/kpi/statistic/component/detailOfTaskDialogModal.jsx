@@ -5,10 +5,6 @@ import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal } from '../../../../common-components';
 
 function DetailOfTaskDialogModal(props) {
-    const [state, setState] = useState({
-
-    });
-
     const { translate } = props;
     const { listTask } = props;
 
@@ -43,6 +39,7 @@ function DetailOfTaskDialogModal(props) {
         else if (data === "delayed") return translate('task.task_management.delayed');
         else if (data === "canceled") return translate('task.task_management.canceled');
     }
+
     return (
         <React.Fragment>
             <DialogModal

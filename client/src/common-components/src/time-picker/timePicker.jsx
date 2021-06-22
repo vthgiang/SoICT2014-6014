@@ -23,7 +23,7 @@ class TimePicker extends Component {
             this.setState({
                 value: value
             })
-            onChange(value); // Thông báo lại cho parent component về giá trị mới (để parent component lưu vào state của nó)
+            this.props.onChange(value); // Thông báo lại cho parent component về giá trị mới (để parent component lưu vào state của nó)
         });
         if (getDefaultValue)
             getDefaultValue(window.$("#" + id).val())
@@ -55,6 +55,13 @@ class TimePicker extends Component {
             return true;
         return false;  // Tự chủ động update (do đã lưu value vào state)
     }
+    onChangeTimePicker = (e) => {
+        const { value } = e.target;
+        this.setState({
+            value: value
+        })
+        this.props.onChange(value);
+    }
 
     render() {
         const { id, disabled = false } = this.props;
@@ -65,7 +72,7 @@ class TimePicker extends Component {
                         <i style={{ width: 16, height: 16 }} className="fa fa-clock-o"></i>
                     </span>
                     <input type="text" id={id} className="form-control" value={this.state.value ? this.state.value : ""}
-                        onClick={() => window.$("#" + id).timepicker('showWidget')} onChange={() => { }} ref="timePicker"
+                        onClick={() => window.$("#" + id).timepicker('showWidget')} onChange={this.onChangeTimePicker} ref="timePicker"
                         disabled={disabled} />
                 </div>
             </React.Fragment>

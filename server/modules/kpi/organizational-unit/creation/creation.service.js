@@ -139,7 +139,10 @@ exports.getParentOrganizationalUnitKpiSet = async (portal, data) => {
  * @query {*} endDate
  */
 exports.getAllOrganizationalUnitKpiSetByTime = async (portal, roleId, organizationalUnitId, startDate, endDate) => {
-
+    startDate = new Date(startDate)
+    endDate = new Date(endDate)
+    endDate.setMonth(endDate.getMonth() + 1)
+    
     let organizationalUnit, organizationalUnitKpiSets;
     if (!organizationalUnitId) {
         organizationalUnit = await OrganizationalUnit(connect(DB_CONNECTION, portal))

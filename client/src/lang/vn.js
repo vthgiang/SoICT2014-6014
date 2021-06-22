@@ -38,6 +38,7 @@ export default {
             month: "tháng",
             value: "Giá trị",
             export: "Xuất",
+            add_tag: "Thêm tag",
             auth_alert: {
                 title:
                     "Hệ thống xác nhận có lỗi xảy ra trong phiên làm việc của bạn!",
@@ -83,7 +84,8 @@ export default {
             need_to_do_chart: "Công việc cần làm",
             urgent_task_amount: "Số công việc khẩn cấp",
             need_to_do_task_amount: "Số công việc cần làm",
-            list_employe_timing: "Danh sách nhân viên đang bấm giờ"
+            list_employe_timing: "Danh sách nhân viên đang bấm giờ",
+            statistics_task_unit: "Biểu đồ thống kê điểm công việc"
         },
 
         menu: {
@@ -3215,7 +3217,9 @@ export default {
                 calc_average_action_rating:
                     "Trung bình cộng điểm đánh giá hoạt động",
                 calc_failed_action_rating:
-                    "Tổng các tích điểm hoạt động và độ quan trọng hoạt động của các hoạt động không đạt (rating < 5)",
+                    "Số hoạt động không đạt (rating < 5)",
+                calc_passed_action_rating:
+                    "Số hoạt động đạt (rating >= 5)",
                 calc_all_action_rating: "Tổng các tích điểm hoạt động và độ quan trọng hoạt động của tất cả hoạt động",
                 calc_progress: "Tiến độ công việc",
                 calc_new_formula: "Công thức hiện tại",
@@ -4036,6 +4040,7 @@ export default {
                     not_avaiable: "Chưa đánh giá",
                     no_point: "Chưa có điểm",
                     lastest_evaluation: "Đánh giá cuối",
+                    lastest_edit: "Chỉnh sửa cuối",
                     task_list: "Danh sách công việc",
                     work_duration_time: "Thời gian làm việc",
                     evaluate_time: "Thời gian đánh giá",
@@ -4047,7 +4052,9 @@ export default {
                     old_value: "Giá trị cũ",
                     auto_value: "Giá trị tự động",
                     cal_all_kpis: 'Tính điểm toàn bộ KPI',
+                    refresh_all_kpis: 'Tính lại điểm KPI các đơn vị',
                     update_task_importance: `(*)Cập nhật độ quan trọng công việc và Tính điểm KPI `,
+                    cal_all_kpis_title: `(*)Cập nhật độ quan trọng công việc và Tính điểm tất cả KPI `,
 
                     /**
                      * Management
@@ -4112,9 +4119,9 @@ export default {
                     "Lấy điểm hệ thống cho KPI thành công",
                 get_system_point_fail: "Lấy điểm hệ thống cho KPI lỗi",
                 set_task_importance_level_success:
-                    "Thêm độ quan trọng cho công việc thành công",
+                    "Thêm độ quan trọng cho công việc và tính KPI thành công",
                 set_task_importance_level_fail:
-                    "Thêm độ quan trọng cho công việc lỗi",
+                    "Thêm độ quan trọng cho công việc và tính KPI lỗi",
                 set_point_kpi_success:
                     "Tính điểm tất cả kpi thành công",
                 set_point_kpi_fail:

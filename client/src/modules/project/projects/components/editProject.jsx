@@ -326,6 +326,7 @@ const ProjectEditForm = (props) => {
                                         onChange={(e) => handleChangeForm(e, 'projectType')}
                                         value={projectType}
                                         multiple={false}
+                                        disabled={!isTasksListEmpty}
                                     />
                                 </div>
                             </div>

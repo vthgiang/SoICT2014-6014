@@ -37,6 +37,7 @@ export default {
             month: "in",
             value: "Value",
             export: 'Export',
+            add_tag: "Add a tag",
             auth_alert: {
                 title: "Current Session invalid. Please log in again",
                 reason: "Reasons maybe:",
@@ -81,7 +82,8 @@ export default {
             need_to_do_chart: "The chart shows the number of to-do tasks",
             urgent_task_amount: "The number of urgent tasks",
             need_to_do_task_amount: "The number of tasks to do",
-            list_employe_timing: "List of employees who are timing"
+            list_employe_timing: "List of employees who are timing",
+            statistics_task_unit: "Statistics Of Task In Units Chart"
         },
 
         menu: {
@@ -1638,7 +1640,7 @@ export default {
                 district: "County/District",
                 province: "Province/City",
                 nation: "Nation",
-                roles : "Role",
+                roles: "Role",
                 academic_level: "Academic level",
                 educational_level: "Educational level",
                 language_level: "Language level",
@@ -2917,7 +2919,8 @@ export default {
                 calc_overdue_date: "Overdue date of task",
                 calc_day_used: "Time from start date to today",
                 calc_average_action_rating: "Average action of task rating",
-                calc_failed_action_rating: "Sum of activity scores and performance importance of failed activities (rating < 5)",
+                calc_failed_action_rating: "Sum of failed activities (rating < 5)",
+                calc_passed_action_rating: "Sum of passed activities (rating >= 5)",
                 calc_all_action_rating: "Sum of activity scores and performance importance of all activities",
                 calc_progress: "Progress of task",
                 calc_new_formula: "Current formula",
@@ -3709,6 +3712,7 @@ export default {
                     not_avaiable: "Not evaluated",
                     no_point: "No Point",
                     lastest_evaluation: "Lastest evaluation",
+                    lastest_edit: "Lastest edit",
                     task_list: "Task list",
                     work_duration_time: "Working duration time",
                     evaluate_time: "Evaluate time",
@@ -3748,7 +3752,9 @@ export default {
                     formula: "Formula",
                     explain_automatic_point: "Explain automatic value",
                     cal_all_kpis: 'Calculator all kpi',
+                    refresh_all_kpis: 'Calculator all organizational unit KPI',
                     update_task_importance: `(*)Update task importance level and Calculator KPI point`,
+                    cal_all_kpis_title: `(*)Update task importance level and Calculator all KPI point`,
 
                 },
 
@@ -3779,13 +3785,13 @@ export default {
                 get_system_point_success: "Get system point successfully",
                 get_system_point_fail: "Get system point fail",
                 set_task_importance_level_success:
-                    "Set task importance level successfully",
+                    "Set task importance level and evalutate KPI successfully",
                 set_task_importance_level_fail:
-                    "Set task importance level fail",
+                    "Set task importance level and evalutate KPI fail",
                 set_point_kpi_success:
-                    "Set point all kpi successfully",
+                    "Evalutate all kpis successfully",
                 set_point_kpi_fail:
-                    "Set point all kpi fail",
+                    "Evalutate all kpis fail",
             },
             organizational_unit: {
                 // Module chính
@@ -4212,15 +4218,15 @@ export default {
 
         manage_transport: {
             transportRequirement: {
-                add_requirements: "Add a new transport requirement",                
+                add_requirements: "Add a new transport requirement",
                 add_success: "Created new transport requirement",
-                add_fail: "Create new transport requirement fail",                
+                add_fail: "Create new transport requirement fail",
                 edit_success: "Edited transport requirement",
                 edit_fail: "Edit transport requirement fail",
                 delete_success: "Deleted transport requirement",
                 delete_fail: "Delete transport requirement fail",
             },
-            transportPlan: {                
+            transportPlan: {
                 add_success: "Created new transport plan",
                 add_fail: "Create new transport plan fail",
                 edit_success: "Edited transport plan",
@@ -4231,7 +4237,7 @@ export default {
             transportCommand: {
                 edit_success: "Edited transport command",
                 edit_fail: "Edit transport command fail",
-            },            
+            },
             transportVehicle: {
                 add_success: "Added vehicle success",
                 add_fail: "Add vehicle fail",
@@ -4268,7 +4274,7 @@ export default {
             role: 'Project role',
             creator: 'Project creator',
 
-            task_management:  {
+            task_management: {
                 estimate: "Estimating",
                 add_err_time_cost: "Time & Cost must be numeric and greater or equal than 0",
                 end_date: "Estimated end date",
@@ -4282,7 +4288,7 @@ export default {
                 estimatedCost: "Estimated cost",
                 estimatedCostNormal: "Normal",
                 estimatedCostMaximum: "Maximum",
-                
+
                 preceedingTask: "Preceeding task",
             },
 

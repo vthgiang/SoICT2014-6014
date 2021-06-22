@@ -10,6 +10,7 @@ import { AutomaticTaskPointCalculator } from '../../../task/task-perform/compone
 import c3 from 'c3';
 import 'c3/c3.css';
 import ModalEVMData from './modalEVMData';
+import { formatTaskStatus, renderStatusColor } from '../../projects/components/functionHelper';
 
 const TabEvalProject = (props) => {
     const { currentTasks, translate, listTasksEval, project, currentMonth, projectDetailId, projectDetail, handleChangeMonth } = props;
@@ -266,8 +267,8 @@ const TabEvalProject = (props) => {
                                 {processedTableData.map((taskItem, index) => {
                                     return (
                                         <tr key={index}>
-                                            <td>{taskItem?.name}</td>
-                                            <td>{taskItem?.status}</td>    
+                                            <td style={{ color: '#385898' }}>{taskItem?.name}</td>
+                                            <td style={{ color: renderStatusColor(taskItem) }}>{formatTaskStatus(translate, taskItem?.status)}</td>    
                                             <td>{moment(taskItem?.startDate).format('HH:mm DD/MM/YYYY')}</td> 
                                             <td>{moment(taskItem?.endDate).format('HH:mm DD/MM/YYYY')}</td> 
                                             <td>{taskItem?.actualEndDate && taskItem?.status === 'finished' && moment(taskItem?.actualEndDate).format('HH:mm DD/MM/YYYY')}</td>                                         

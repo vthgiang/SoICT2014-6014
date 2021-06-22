@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, SelectBox, QuillEditor } from '../../../common-components';
+import { DialogModal, SelectBox, QuillEditor, convertImageBase64ToFile } from '../../../common-components';
 
 import { DepartmentActions } from '../../super-admin/organizational-unit/redux/actions';
 import { UserActions } from '../../super-admin/user/redux/actions';
@@ -68,7 +68,7 @@ class NotificationCreate extends Component {
     }
 
     handleContent = (data, imgs) => {
-        const image = QuillEditor.convertImageBase64ToFile(imgs);
+        const image = convertImageBase64ToFile(imgs);
         this.setState(state => {
             return {
                 ...state,

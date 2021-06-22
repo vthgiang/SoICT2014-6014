@@ -174,13 +174,16 @@
     font-weight: 800;
 }
 .files-list-item-preview {
-    width: 130px;
-    display: inline-block;
+    width: 150px;    
+    display: inline-block;        
 }
 .files-list-item-preview-image {
     width: 85%;
     display: inline-block;
-    border: 1px solid #000;
+    border: 0.5px solid #000;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    padding: 5px;
 }
 .files-list-item-preview-extension {
     width: 100px;
@@ -320,7 +323,7 @@ to {transform:scale(1)}
   }
 .show-files-task {
     display: flex;
-    flex-direction: column;
+    flex-direction: column;   
 }
 
 .list-name-document {

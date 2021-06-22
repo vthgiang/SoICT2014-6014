@@ -6,7 +6,7 @@ import { UserActions } from '../../../super-admin/user/redux/actions';
 import moment from 'moment';
 import c3 from 'c3';
 import 'c3/c3.css';
-import { getAmountOfWeekDaysInMonth } from '../../projects/components/functionHelper';
+import { formatTaskStatus, getAmountOfWeekDaysInMonth, renderProgressBar, renderStatusColor } from '../../projects/components/functionHelper';
 import { numberWithCommas } from '../../../task/task-management/component/functionHelpers';
 
 const MILISECS_TO_DAYS = 86400000;
@@ -173,7 +173,7 @@ const TabProjectReportCost = (props) => {
                                     <th>Tiến độ (%)</th>
                                     <th>Thời gian bắt đầu</th>
                                     <th>Thời gian dự kiến kết thúc</th>
-                                    <th>Ngân sách (VND)</th>
+                                    <th>Chi phí ước lượng (VND)</th>
                                     <th>Chi phí thực (VND)</th>
                                 </tr>
                             </thead>
@@ -181,9 +181,9 @@ const TabProjectReportCost = (props) => {
                                 {displayContent.tasks && displayContent.tasks.length !== 0 &&
                                     displayContent.tasks.map((taskItem, index) => (
                                         <tr key={index}>
-                                            <td>{taskItem?.name}</td>
-                                            <td>{taskItem?.status}</td>
-                                            <td>{taskItem?.progress}</td>
+                                            <td style={{ color: '#385898' }}>{taskItem?.name}</td>
+                                            <td style={{ color: renderStatusColor(taskItem) }}>{formatTaskStatus(translate, taskItem?.status)}</td>
+                                            <td>{renderProgressBar(taskItem?.progress, taskItem)}</td>
                                             <td>{moment(taskItem?.startDate).format('HH:mm DD/MM/YYYY')}</td>
                                             <td>{moment(taskItem?.endDate).format('HH:mm DD/MM/YYYY')}</td>
                                             <td>{numberWithCommas(taskItem.estimateNormalCost)}</td>

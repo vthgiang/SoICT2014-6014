@@ -321,11 +321,12 @@ function KPIPersonalManager(props) {
                 <div className="form-inline">
                     {/**Chọn ngày bắt đầu */}
                     <div className="form-group">
-                        <label>{translate('kpi.evaluation.employee_evaluation.from')}:</label>
-                        <DatePicker id='start_date'
-                                    value={startDateDefault}
-                                    onChange={handleStartDateChange}
-                                    dateFormat="month-year"
+                        <label>{translate('kpi.evaluation.employee_evaluation.from')}</label>
+                        <DatePicker 
+                            id='start_date'
+                            value={startDateDefault}
+                            onChange={handleStartDateChange}
+                            dateFormat="month-year"
                         />
                     </div>
 
@@ -343,7 +344,7 @@ function KPIPersonalManager(props) {
 
                 <div className="form-inline">
                     <div className="form-group">
-                        <label>{translate('general.status')}:</label>
+                        <label>{translate('general.status')}</label>
                         <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
                             id={`status-kpi`}
                             style={{ width: "100%" }}
@@ -407,9 +408,11 @@ function KPIPersonalManager(props) {
                                     type={'text_tooltip'}
                                     dataTooltip={`${translate('kpi.evaluation.dashboard.auto_point')} - ${translate('kpi.evaluation.dashboard.employee_point')} - ${translate('kpi.evaluation.dashboard.approve_point')}`}
                                 >
-                                    <strong>{item?.automaticPoint !== null && item?.automaticPoint >= 0 ? item.automaticPoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')} - </strong>
-                                    <strong>{item?.employeePoint !== null && item?.employeePoint >= 0 ? item.employeePoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')} - </strong>
-                                    <strong>{item?.approvedPoint !== null && item?.approvedPoint >= 0 ? item.approvedPoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')}</strong>
+                                    <span>
+                                        <span>{item?.automaticPoint !== null && item?.automaticPoint >= 0 ? item.automaticPoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')} - </span>
+                                        <span>{item?.employeePoint !== null && item?.employeePoint >= 0 ? item.employeePoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')} - </span>
+                                        <span>{item?.approvedPoint !== null && item?.approvedPoint >= 0 ? item.approvedPoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')}</span>
+                                    </span>
                                 </ToolTip>
                             </td>
                             <td style={{ textAlign: "center" }}>

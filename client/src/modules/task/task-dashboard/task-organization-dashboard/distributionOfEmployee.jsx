@@ -288,7 +288,7 @@ class DistributionOfEmployee extends Component {
                         {
                             unitIds && unitIds.length < 2 ?
                                 <>
-                                    <spn>{` ${translate('task.task_dashboard.of')}`}</spn>
+                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
                                     <span>{` ${this.props.getUnitName(selectBoxUnit, unitIds).map(o => o).join(", ")}`}</span>
                                 </>
                                 :

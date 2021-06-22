@@ -1,17 +1,16 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux';
 import arrayToTree from 'array-to-tree';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { managerActions } from '../../management/redux/actions';
 
-import { DatePicker } from '../../../../../common-components'
+import { ToolTip } from '../../../../../common-components'
 
 import './kpiUnit.css';
 
 const StatisticsKpiUnits = (props) => {
     const { translate, managerKpiUnit, auth } = props;
-    const { type } = props
     const KIND_OF_POINT = { AUTOMATIC: 1, EMPLOYEE: 2, APPROVED: 3 };
     const [state, setState] = useState(() => {
         let d = new Date(),
@@ -26,13 +25,10 @@ const StatisticsKpiUnits = (props) => {
 
         return {
             role: localStorage.getItem('currentRole'),
-            date: new Date([year, endMonth].join('-')),
-            defaultDate: [endMonth, year].join('-')
         }
     });
-    const { role, date, defaultDate } = state;
+    const { role } = state;
     const [kindOfPoint, setKindOfPoint] = useState(KIND_OF_POINT.AUTOMATIC)
-    const monthRef = useRef(date)
 
     useEffect(() => {
         let infoSearch = {
@@ -41,12 +37,12 @@ const StatisticsKpiUnits = (props) => {
             status: -1,
             perPage: 10000,
             page: 1,
-            startDate: date,
-            endDate: date,
+            startDate: props.month,
+            endDate: props.month,
         };
 
         props.getAllKPIUnit(infoSearch);
-    }, [JSON.stringify(props.organizationalUnitIds)])
+    }, [JSON.stringify(props.organizationalUnitIds), JSON.stringify(props.month)])
 
     const showNodeContent = (translate, data, kindOfPoint) => {
         let pointShow, titleShow;
@@ -118,34 +114,10 @@ const StatisticsKpiUnits = (props) => {
         setKindOfPoint(Number(value))
     };
 
-    const handleSelectDateStatistics = (date) => {
-        let month = date.slice(3, 7) + '-' + date.slice(0, 2);
-        monthRef.current = month
-    };
-
-    const handleSearchKpiUnits = () => {
-        setState({
-            ...state,
-            date: monthRef.current
-        })
-
-        let infoSearch = {
-            organizationalUnit: props.organizationalUnitIds,
-            role: role,
-            status: -1,
-            perPage: 10000,
-            page: 1,
-            startDate: monthRef.current,
-            endDate: monthRef.current,
-        };
-
-        props.getAllKPIUnit(infoSearch);
-    };
-
     const handleRefreshKpiUnits = () => {
         let kpiUnitSet = managerKpiUnit?.kpis?.map(item => item?._id)
 
-        props.calculateKPIUnit(kpiUnitSet, date);
+        props.calculateKPIUnit(kpiUnitSet, props.month);
     };
 
     const checkHasComponent = (name) => {
@@ -176,30 +148,7 @@ const StatisticsKpiUnits = (props) => {
 
     return (
         <div className="box-body">
-            <div className="form-inline" style={type === "for-admin" ? { marginBottom: "30px" } : {}}>
-                {
-                    !(type === "for-admin")
-                    && <>
-                        <label style={{ width: 'auto', marginRight: '10px' }}>Tháng</label>
-                        <div className="form-group" style={{ marginRight: '10px' }}>
-                            <DatePicker
-                                id="monthFilterResultKpi"
-                                dateFormat="month-year"
-                                value={defaultDate}
-                                onChange={handleSelectDateStatistics}
-                                disabled={false}
-                            />
-                        </div>
-                        <button type="button" className="btn btn-success" onClick={handleSearchKpiUnits} >{translate('kpi.evaluation.employee_evaluation.search')}</button>
-                    </>
-                }
-                
-                { checkHasComponent('refresh-kpi-unit-in-dashboard') 
-                    && <button type="button" className="btn btn-primary pull-right" onClick={handleRefreshKpiUnits}>{translate('task.task_management.detail_refresh')}</button> 
-                }
-            </div>
-
-            <section className="box-body" style={{ textAlign: "right", marginRight: "-10px" }}>
+            <section className="box-body" style={{ textAlign: "right" }}>
                 <div className="btn-group">
                     <button type="button"
                         className={`btn btn-xs ${kindOfPoint === KIND_OF_POINT.AUTOMATIC ? 'btn-danger' : null}`}
@@ -211,6 +160,18 @@ const StatisticsKpiUnits = (props) => {
                         className={`btn btn-xs ${kindOfPoint === KIND_OF_POINT.APPROVED ? 'btn-danger' : null}`}
                         onClick={() => handleSelectKindOfPoint(KIND_OF_POINT.APPROVED)}>{translate('kpi.evaluation.dashboard.approve_point')}</button>
                 </div>
+                { checkHasComponent('refresh-kpi-unit-in-dashboard') 
+                    && <ToolTip
+                        type="text_tooltip"
+                        dataTooltip={[
+                            ` ${translate('kpi.evaluation.employee_evaluation.refresh_all_kpis')}`,
+                        ]}
+                    >
+                        <i className="material-icons" onClick={() => handleRefreshKpiUnits()} style={{ fontSize: "22px", verticalAlign: "top", color: '#06c', cursor: 'pointer', marginLeft: '10px' }}>
+                            refresh
+                        </i>
+                    </ToolTip>
+                }
             </section>
 
             {

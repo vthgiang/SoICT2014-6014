@@ -21,17 +21,17 @@ function StatisticsOfOrganizationalUnitKpi(props) {
     const TREE_INDEX = useRef(0);            // Dùng làm id cho những phàn tử trong tree nếu phần tử đó k có kpi con
     const today = new Date();
 
-    const INFO_SEARCH = {
-        organizationalUnitId: null,
-        month: today.getFullYear() + '-' + (today.getMonth() + 1)
-    };
-
     const [state, setState] = useState({
         currentRole: localStorage.getItem("currentRole"),
         dataStatus: DATA_STATUS.QUERYING,
 
-        organizationalUnitId: INFO_SEARCH.organizationalUnitId,
-        month: INFO_SEARCH.month
+        organizationalUnitId: null,
+        month: today.getFullYear() + '-' + (today.getMonth() + 1),
+
+        infoSearch: {
+            organizationalUnitId: null,
+            month: today.getFullYear() + '-' + (today.getMonth() + 1),
+        }
     });
 
     const { dashboardEvaluationEmployeeKpiSet, createKpiUnit, dashboardOrganizationalUnitKpi } = props;
@@ -345,16 +345,27 @@ function StatisticsOfOrganizationalUnitKpi(props) {
     };
 
     const handleSelectOrganizationalUnitId = (value) => {
-        INFO_SEARCH.organizationalUnitId = value[0];
+        setState({
+            ...state,
+            infoSearch: {
+                ...state.infoSearch,
+                organizationalUnitId: value[0]
+            }
+        })
     }
 
     const handleSelectMonth = async (value) => {
-        INFO_SEARCH.month = value.slice(3, 7) + '-' + value.slice(0, 2);
+        setState({
+            ...state,
+            infoSearch: {
+                ...state.infoSearch,
+                month: value.slice(3, 7) + '-' + value.slice(0, 2)
+            }
+        })
     }
 
     const handleSearchData = () => {
-        console.log("hello", INFO_SEARCH)
-        if (INFO_SEARCH.month === '-') {
+        if (state.infoSearch.month === '-') {
             Swal.fire({
                 title: translate('task.task_management.date_not_empty'),
                 type: 'warning',
@@ -364,8 +375,8 @@ function StatisticsOfOrganizationalUnitKpi(props) {
         } else {
             setState({
                 ...state,
-                organizationalUnitId: INFO_SEARCH.organizationalUnitId,
-                month: INFO_SEARCH.month
+                organizationalUnitId: state.infoSearch.organizationalUnitId,
+                month: state.infoSearch.month
             })
         }
     }
@@ -480,7 +491,7 @@ function StatisticsOfOrganizationalUnitKpi(props) {
                                 />
                             </div>
                             <div className="form-group">
-                                <button type="button" className="btn btn-success" onClick={handleSearchData}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
+                                <button type="button" className="btn btn-success" onClick={() => handleSearchData()}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
                             </div>
                         </div>
 

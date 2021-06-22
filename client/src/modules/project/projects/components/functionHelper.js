@@ -8,15 +8,17 @@ import { getNumsOfDaysWithoutGivenDay, getSalaryFromUserId } from "../../../task
 export const MILISECS_TO_DAYS = 86400000;
 export const MILISECS_TO_HOURS = 3600000;
 
-export const checkIfAbleToCRUDProject = ({ project, user, currentProjectId }) => {
+export const checkIfAbleToCRUDProject = ({ project, user, currentProjectId, isInsideProject = false }) => {
     const currentRole = getStorage("currentRole");
     const userId = getStorage("userId");
+    console.log('currentProjectId', currentProjectId)
+    console.log('project?.data?.list', project?.data?.list, ' project?.data?.listbyuser',  project?.data?.listbyuser)
     const checkIfCurrentRoleIsUnitManager = user?.usersInUnitsOfCompany?.filter(userItem => userItem?.managers?.[currentRole])?.length > 0;
-    const projectDetail = project?.data?.list?.filter(item => item._id === currentProjectId)?.[0]
+    const projectDetail = project?.data?.list?.length > 0 ? project?.data?.list?.filter(item => item._id === currentProjectId)?.[0] : project?.data?.listbyuser?.filter(item => item._id === currentProjectId)?.[0]
     const checkIfCurrentIdIsProjectManagerOrCreator =
         projectDetail?.projectManager?.filter(managerItem => managerItem?._id === userId)?.length > 0
         || projectDetail?.creator?._id === userId;
-    return checkIfCurrentRoleIsUnitManager || checkIfCurrentIdIsProjectManagerOrCreator;
+    return isInsideProject ? (checkIfCurrentIdIsProjectManagerOrCreator && checkIfCurrentRoleIsUnitManager) : (checkIfCurrentRoleIsUnitManager);
 }
 
 export const getCurrentProjectDetails = (project, projectId = undefined, type = 'user_all') => {
@@ -606,4 +608,62 @@ export const getRecursiveRelevantTasks = (tasksList, currentTask) => {
     }
     getAllRelationTasks(tasksList, currentTask);
     return allTasksNodeRelationArr;
+}
+
+export const formatTaskStatus = (translate, status) => {
+    switch (status) {
+        case "inprocess":
+            return translate('task.task_management.inprocess');
+        case "wait_for_approval":
+            return translate('task.task_management.wait_for_approval');
+        case "finished":
+            return translate('task.task_management.finished');
+        case "delayed":
+            return translate('task.task_management.delayed');
+        case "canceled":
+            return translate('task.task_management.canceled');
+        case "requested_to_close":
+            return translate('task.task_management.requested_to_close');
+    }
+}
+
+export const renderStatusColor = (task) => {
+    let statusColor = "";
+    switch (task.status) {
+        case "inprocess":
+            statusColor = "#385898";
+            break;
+        case "canceled":
+            statusColor = "#e86969";
+            break;
+        case "delayed":
+            statusColor = "#db8b0b";
+            break;
+        case "finished":
+            statusColor = "#31b337";
+            break;
+        default:
+            statusColor = "#333";
+    }
+    return statusColor;
+}
+
+export const renderProgressBar = (progress = 0, task) => {
+    const { startDate, endDate, status } = task
+    let now = moment(new Date());
+    let end = moment(endDate);
+    let start = moment(startDate);
+    let period = end.diff(start);
+    let upToNow = now.diff(start);
+    let barColor = "";
+    if (status === 'inprocess' && now.diff(end) > 0) barColor = "red";
+    else if (status === 'inprocess' && (period * progress / 100 - upToNow >= 0) || status === 'finished') barColor = "lime";
+    else barColor = "gold";
+    return (
+        <div className="progress" style={{ backgroundColor: 'rgb(221, 221, 221)', textAlign: "center", borderRadius: '3px', position: 'relative' }}>
+            <span style={{ position: 'absolute', right: '1px', fontSize: '13px', marginRight: '5px' }}>{progress + '%'}</span>
+            <div role="progressbar" className="progress-bar" aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100} style={{ width: `${progress + '%'}`, maxWidth: "100%", minWidth: "0%", backgroundColor: barColor }} >
+            </div>
+        </div>
+    )
 }

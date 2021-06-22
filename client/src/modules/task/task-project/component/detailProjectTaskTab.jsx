@@ -126,7 +126,7 @@ class DetailProjectTaskTab extends Component {
                         roles.push(this.ROLE.INFORMED);
                     }
 
-                    if (checkIfAbleToCRUDProject({ project: this.props.project, user: this.props.user, currentProjectId: task.taskProject })) {
+                    if (checkIfAbleToCRUDProject({ project: this.props.project, user: this.props.user, currentProjectId: task.taskProject, isInsideProject: true })) {
                         roles.push(this.ROLE.PROJECT_MANAGER);
                     }
 

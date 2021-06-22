@@ -155,7 +155,7 @@ function ResetPasswordNew(props) {
                 { containerId: 'toast-notification' });
             return false;
 
-            }
+        }
         if (isFormValidated)
 
             props.forgotPassword({
@@ -271,16 +271,20 @@ function ResetPasswordNew(props) {
                     </div>
                 </div> */}
 
-
+                {/*Cách lấy sitekey của react captchar v2 
+                     Truy cập https://www.google.com/recaptcha/about/ , bấm vào v3 Admin console
+                     Đăng nhập tài khoản dungna.vnist@gmail.com, mật khẩu vnist123@
+                     Ở phía tay trái màn hình chọn v2 Checkbox xyz rồi bấm vào biểu tượng hình răng cưa ở phía tay phải màn hình 
+                     Bấm vào reCAPTCHA keys , chọn copy site key để lấy key  */}
                 <ReCAPTCHA
-                    sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+                    sitekey="6Ld94SMbAAAAANJYglZD8tCajp126HJLOIUiYV8H"
                     onChange={verifyCaptchar}
 
                 />
+
                 <div className="row">
-                    <div className="col-xs-6">
-                    </div>
-                    <div className="col-xs-6">
+
+                    <div className="col-xs-12">
 
                         <a className="btn btn-default" href={"/login"}>{translate(`general.cancel`)}</a>
                         <button className="btn btn-primary pull-right" onClick={handleForgotPassword} disabled={!isFormValidated()}>{translate(`general.accept`)}</button>

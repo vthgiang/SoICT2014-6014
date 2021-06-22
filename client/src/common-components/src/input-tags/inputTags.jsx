@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { withTranslate } from "react-redux-multilingual"
 
 import TagsInput from 'react-tagsinput'
 import 'react-tagsinput/react-tagsinput.css'
@@ -16,16 +17,18 @@ class InputTags extends Component {
     }
 
     render() {
-        const { id, value = [] } = this.props
+        const { translate } = this.props
+        const { id, value = [], placeholder = translate('general.add_tag') } = this.props
 
         return (
             <React.Fragment>
                 <div className="tags-input input-group" id={`tagsinput-container-${id}`}>
-                    <TagsInput value={value} onChange={this.handleChange}/>   
+                    <TagsInput value={value} onChange={this.handleChange} inputProps={{ placeholder: placeholder }}/>   
                 </div>
             </React.Fragment>
         )
     }
 }
 
-export { InputTags }
+const connectedInputTags = withTranslate(InputTags)
+export { connectedInputTags as InputTags }

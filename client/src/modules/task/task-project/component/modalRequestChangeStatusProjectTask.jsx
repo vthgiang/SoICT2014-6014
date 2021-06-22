@@ -15,7 +15,7 @@ import { ChangeRequestActions } from '../../../project/change-requests/redux/act
 function ModalRequestChangeStatusProjectTask(props) {
     const { id, role, task, translate, currentProjectTasks, project } = props;
     const [currentStatus, setCurrentStatus] = useState(task?.status);
-    const projectDetail = getCurrentProjectDetails(project, task.taskProject);
+    const projectDetail = getCurrentProjectDetails(project, task?.taskProject);
     const fakeStatusList = [
         {text: 'Đang thực hiện', value: 'inprocess'},
         {text: 'Bị hoãn', value: 'delayed'},
@@ -34,7 +34,7 @@ function ModalRequestChangeStatusProjectTask(props) {
         })
         const taskFormatted = {
             ...task,
-            preceedingTasks: task.preceedingTasks.map((taskItemPreItem) => {
+            preceedingTasks: task?.preceedingTasks.map((taskItemPreItem) => {
                 return taskItemPreItem.task
             })
         }
@@ -43,16 +43,16 @@ function ModalRequestChangeStatusProjectTask(props) {
         console.log('allTasksNodeRelationArr', allTasksNodeRelationArr)
         allTasksNodeRelationArr.unshift({
             ...task,
-            preceedingTasks: task.preceedingTasks.map((preItem) => preItem.task._id),
+            preceedingTasks: task?.preceedingTasks.map((preItem) => preItem.task?._id),
         });
         const allTasksNodeRelationFormattedArr = allTasksNodeRelationArr;
 
         const newAffectedTasksList = allTasksNodeRelationFormattedArr.map((nodeItem) => {
-            if (String(nodeItem._id) === task._id) {
+            if (String(nodeItem._id) === task?._id) {
                 return {
                     task: nodeItem._id,
                     old: {
-                        status: task.status,
+                        status: task?.status,
                     },
                     new: {
                         status: currentStatus,

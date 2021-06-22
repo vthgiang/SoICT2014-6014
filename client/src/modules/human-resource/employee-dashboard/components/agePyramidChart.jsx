@@ -1,5 +1,5 @@
 /* Biểu đồ thể hiện đổ tuổi của nhân viên */
-import React, { Component, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -9,10 +9,12 @@ import c3 from 'c3';
 import 'c3/c3.css';
 
 const AgePyramidChart = (props) => {
-    
+    const { employeesManager, department, translate } = props;
+
     const [state, setState] = useState({
         organizationalUnits: []
     })
+    const { organizationalUnits } = state;
 
     const _chart = useRef(null);
 
@@ -142,17 +144,43 @@ const AgePyramidChart = (props) => {
     }
 
     useEffect(() => {
-        if (props.organizationalUnits !== state.organizationalUnits || !isEqual(props.employeesManager.listAllEmployees, state.listAllEmployees) ||
-            !isEqual(props.employeesManager.listEmployeesOfOrganizationalUnits, state.listEmployeesOfOrganizationalUnits)) {
-            setState({
-                ...state
-            })
-        };
-    }, [props.organizationalUnits, state.organizationalUnits, props.employeesManager.listAllEmployees, state.listAllEmployees, props.employeesManager.listEmployeesOfOrganizationalUnits, state.listEmployeesOfOrganizationalUnits])
+        let listAllEmployees = (!organizationalUnits || organizationalUnits.length === 0 || organizationalUnits.length === department.list.length) 
+            ? employeesManager.listAllEmployees 
+            : employeesManager.listEmployeesOfOrganizationalUnits;
+        let maleEmployees = listAllEmployees.filter(x => x.gender === 'male');
+        let femaleEmployees = listAllEmployees.filter(x => x.gender === 'female');
 
-    const { employeesManager, department, translate } = props;
-    const { organizationalUnits } = state;
+        // Start Định dạng dữ liệu cho biểu đồ tháp tuổi
+        let age = 69, i = 0, data1AgePyramid = [], data2AgePyramid = [];
+        while (age > 18) {
+            let maleData = [], femaleData = [];
+            if (age === 19) {
+                femaleData = femaleEmployees.filter(x => getYear(x.birthdate) <= age && getYear(x.birthdate) > age - 2);
+                maleData = maleEmployees.filter(x => getYear(x.birthdate) <= age && getYear(x.birthdate) > age - 2);
+            } else {
+                femaleData = femaleEmployees.filter(x => getYear(x.birthdate) <= age && getYear(x.birthdate) > age - 5);
+                maleData = maleEmployees.filter(x => getYear(x.birthdate) <= age && getYear(x.birthdate) > age - 5);
+            }
+            data1AgePyramid[i] = 0 - femaleData.length;
+            data2AgePyramid[i] = maleData.length;
+            age = age - 5;
+            i++;
+        }
+        data1AgePyramid.unshift('Nữ');
+        data2AgePyramid.unshift('Nam');
+        // End Định dạng dữ liệu cho biểu đồ tháp tuổi
 
+        let data = {
+            nameData1: 'Nữ',
+            nameData2: 'Nam',
+            ageRanges: ['65-69', '60-64', '55-59', '50-54', '45-49', '40-44', '35-39', '30-34', '25-29', '20-24', '18-19'],
+            data1: data1AgePyramid,
+            data2: data2AgePyramid,
+        }
+        renderChart(data);
+    }, [JSON.stringify(employeesManager)])
+
+   
     let organizationalUnitsName;
     if (organizationalUnits && department?.list) {
         organizationalUnitsName = department.list.filter(x => organizationalUnits.includes(x._id));
@@ -164,34 +192,7 @@ const AgePyramidChart = (props) => {
     let maleEmployees = listAllEmployees.filter(x => x.gender === 'male');
     let femaleEmployees = listAllEmployees.filter(x => x.gender === 'female');
 
-    // Start Định dạng dữ liệu cho biểu đồ tháp tuổi
-    let age = 69, i = 0, data1AgePyramid = [], data2AgePyramid = [];
-    while (age > 18) {
-        let maleData = [], femaleData = [];
-        if (age === 19) {
-            femaleData = femaleEmployees.filter(x => getYear(x.birthdate) <= age && getYear(x.birthdate) > age - 2);
-            maleData = maleEmployees.filter(x => getYear(x.birthdate) <= age && getYear(x.birthdate) > age - 2);
-        } else {
-            femaleData = femaleEmployees.filter(x => getYear(x.birthdate) <= age && getYear(x.birthdate) > age - 5);
-            maleData = maleEmployees.filter(x => getYear(x.birthdate) <= age && getYear(x.birthdate) > age - 5);
-        }
-        data1AgePyramid[i] = 0 - femaleData.length;
-        data2AgePyramid[i] = maleData.length;
-        age = age - 5;
-        i++;
-    }
-    data1AgePyramid.unshift('Nữ');
-    data2AgePyramid.unshift('Nam');
-    // End Định dạng dữ liệu cho biểu đồ tháp tuổi
-
-    let data = {
-        nameData1: 'Nữ',
-        nameData2: 'Nam',
-        ageRanges: ['65-69', '60-64', '55-59', '50-54', '45-49', '40-44', '35-39', '30-34', '25-29', '20-24', '18-19'],
-        data1: data1AgePyramid,
-        data2: data2AgePyramid,
-    }
-    renderChart(data);
+    
 
     return (
         <React.Fragment>

@@ -49,6 +49,7 @@
     "fs": "0.0.1-security",
     "generate-password": "^1.4.2",
     "glob": "^7.1.6",
+    "html-to-text": "^8.0.0",
     "imprintjs": "^1.0.0",
     "javascript-obfuscator": "^2.9.4",
     "jsencrypt": "^3.0.0-rc.1",

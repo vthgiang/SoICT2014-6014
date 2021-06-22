@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import parse from 'html-react-parser';
 
 import { DialogModal } from '../../../../../common-components/index';
-import { DataTableSetting, ExportExcel } from '../../../../../common-components';
+import { DataTableSetting, ExportExcel, ToolTip } from '../../../../../common-components';
 
 import { kpiMemberActions } from '../../../evaluation/employee-evaluation/redux/actions';
 
@@ -70,14 +70,17 @@ function ModalDetailKPIPersonal(props) {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
-            year = d.getFullYear();
+            year = d.getFullYear(),
+            hour = d.getHours(),
+            minute = d.getMinutes(),
+            second = d.getSeconds()
 
         if (month.length < 2)
             month = '0' + month;
         if (day.length < 2)
             day = '0' + day;
 
-        return [day, month, year].join('-');
+        return [hour, minute, second].join(':') + " " + [day, month, year].join('-');
     }
 
     function formatMonth(date) {
@@ -316,10 +319,17 @@ function ModalDetailKPIPersonal(props) {
                                                 </div>
 
                                             <div>
-                                                <label>{translate('task.task_management.eval_of')}{` (${translate('kpi.evaluation.dashboard.auto_point')} - ${translate('kpi.evaluation.dashboard.employee_point')} - ${translate('kpi.evaluation.dashboard.approve_point')})`}:</label>
-                                                <span> {item.automaticPoint ? item.automaticPoint : translate('kpi.evaluation.employee_evaluation.not_avaiable')}</span>
-                                                <span> - {item.employeePoint ? item.employeePoint : translate('kpi.evaluation.employee_evaluation.not_avaiable')}</span>
-                                                <span> - {item.approvedPoint ? item.approvedPoint : translate('kpi.evaluation.employee_evaluation.not_avaiable')}</span>
+                                                <label>{translate('task.task_management.eval_of')}:</label>
+                                                <ToolTip 
+                                                    type={'text_tooltip'}
+                                                    dataTooltip={`${translate('kpi.evaluation.dashboard.auto_point')} - ${translate('kpi.evaluation.dashboard.employee_point')} - ${translate('kpi.evaluation.dashboard.approve_point')}`}
+                                                >
+                                                    <span>
+                                                        <span> {item.automaticPoint !== null && item.automaticPoint >= 0 ? item.automaticPoint : translate('kpi.evaluation.employee_evaluation.not_avaiable')}</span>
+                                                        <span> - {item.employeePoint !== null && item.employeePoint >= 0 ? item.employeePoint : translate('kpi.evaluation.employee_evaluation.not_avaiable')}</span>
+                                                        <span> - {item.approvedPoint !== null && item.approvedPoint >= 0 ? item.approvedPoint : translate('kpi.evaluation.employee_evaluation.not_avaiable')}</span>
+                                                    </span>
+                                                </ToolTip>
                                             </div>
                                             <div>
                                                 <label>{translate('kpi.evaluation.employee_evaluation.weekly_point')}:</label>

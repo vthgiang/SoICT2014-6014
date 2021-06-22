@@ -184,13 +184,14 @@ function getDepartmentOfUser(data) {
 }
 
 // Get all children of an organizational unit and that organizational unit
-function getChildrenOfOrganizationalUnitsAsTree(id) {
+function getChildrenOfOrganizationalUnitsAsTree(id, type = 'unitId') {
     return sendRequest(
         {
             url: `${process.env.REACT_APP_SERVER}/user/users`,
             method: "GET",
             params: {
                 unitId: id,
+                type: type
             },
         },
         false,
@@ -207,6 +208,7 @@ function getAllUserInAllUnitsOfCompany() {
             method: "GET",
             params: {
                 unitId: -1,
+                type: 'unitId'
             },
         },
         false,

@@ -370,7 +370,8 @@ getPaginatedTasksByOrganizationalUnit = async (req, res) => {
             responsibleEmployees: req.query.responsibleEmployees,
             accountableEmployees: req.query.accountableEmployees,
             creatorEmployees: req.query.creatorEmployees,
-            organizationalUnitRole: req.query.organizationalUnitRole
+            organizationalUnitRole: req.query.organizationalUnitRole,
+            tags: req.query.tags
         };
 
         let tasks = await TaskManagementService.getPaginatedTasksByOrganizationalUnit(req.portal, task, req.query.type);

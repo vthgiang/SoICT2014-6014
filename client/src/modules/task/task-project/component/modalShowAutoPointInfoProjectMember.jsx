@@ -31,10 +31,12 @@ const ModalShowAutoPointInfoProjectMember = (props) => {
         actualCost,
         costPerformanceIndex,
         totalTimeLogs,
+        sumTimeDistributionPoint,
+        sumMaxTimeDistributionPoint,
         memberTimePoint,
         memberQualityPoint,
         memberCostPoint,
-        memberDilligencePoint,
+        memberTimedistributionPoint,
         autoMemberPoint,
     } = AutomaticTaskPointCalculator.calcProjectMemberPoint(data, false);
 
@@ -49,7 +51,7 @@ const ModalShowAutoPointInfoProjectMember = (props) => {
                 size={100}
             >
                 <div>
-                    <p><strong>Công thức: </strong>memberTimePoint + memberQualityPoint + memberCostPoint + memberDilligencePoint</p>
+                    <p><strong>Công thức: </strong>memberTimePoint + memberQualityPoint + memberCostPoint + memberTimedistributionPoint</p>
                     <p><strong>Trong đó: </strong></p>
                     <p><strong>memberTimePoint: </strong>Điểm quy đổi SPI * timeWeight = (progress / 100) / (usedDuration / totalDuration) * timeWeight</p>
                     <ul style={{ lineHeight: 2.3 }}>
@@ -58,14 +60,14 @@ const ModalShowAutoPointInfoProjectMember = (props) => {
                         <li>totalDuration - Tổng thời gian từ khi bắt đầu task đến dự kiến kết thúc (milliseconds): <strong>{numberWithCommas(totalDuration)}</strong></li>
                         <li>SPI - Chỉ số hiệu năng tiến độ: (progress / 100) / (usedDuration / totalDuration) = <strong>{schedulePerformanceIndex}</strong></li>
                         <li>Điểm quy đổi SPI <span style={{ color: 'red' }}>*(Bảng quy đổi ở mục cuối cùng)</span>: <strong>{AutomaticTaskPointCalculator.convertIndexPointToNormalPoint(schedulePerformanceIndex)}</strong></li>
-                        <li>timeWeight - trọng số thời gian: <strong>{task.timeWeight || '0.25'}</strong></li>
+                        <li>timeWeight - trọng số thời gian: <strong>{task?.memberWeight?.timeWeight || '0.25'}</strong></li>
                         <li>memberTimePoint: <strong>{memberTimePoint}</strong></li>
                     </ul>
                     <p><strong>memberQualityPoint </strong>= [(sumRatingOfPassedActions / sumRatingOfAllActions) * 100] * qualityWeight</p>
                     <ul style={{ lineHeight: 2.3 }}>
                         <li>sumRatingOfPassedActions - Tổng đánh giá những hoạt động đạt yêu cầu: <strong>{sumRatingOfPassedActions}</strong></li>
                         <li>sumRatingOfAllActions - Tổng đánh giá tất cả những hoạt động: <strong>{sumRatingOfAllActions}</strong></li>
-                        <li>qualityWeight - trọng số chất lượng: <strong>{task.qualityWeight || '0.25'}</strong></li>
+                        <li>qualityWeight - trọng số chất lượng: <strong>{task?.memberWeight?.qualityWeight || '0.25'}</strong></li>
                         <li>memberQualityPoint: <strong>{memberQualityPoint}</strong></li>
                     </ul>
                     <p><strong>memberCostPoint: </strong>Điểm quy đổi CPI * costWeight = [(progress / 100) * estimateNormalMemberCost / actualCost] * costWeight</p>
@@ -75,15 +77,15 @@ const ModalShowAutoPointInfoProjectMember = (props) => {
                         <li>actualCost - Tổng chi phí thực cho thành viên (VND): <strong>{numberWithCommas(actualCost)}</strong></li>
                         <li>CPI - Chỉ số hiệu năng chi phí: (progress / 100) * estimateNormalMemberCost / actualCost = <strong>{costPerformanceIndex}</strong></li>
                         <li>Điểm quy đổi CPI <span style={{ color: 'red' }}>*(Bảng quy đổi ở mục cuối cùng)</span>: <strong>{AutomaticTaskPointCalculator.convertIndexPointToNormalPoint(costPerformanceIndex)}</strong></li>
-                        <li>costWeight - trọng số chi phí: <strong>{task.costWeight || '0.25'}</strong></li>
+                        <li>costWeight - trọng số chi phí: <strong>{task?.memberWeight?.costWeight || '0.25'}</strong></li>
                         <li>memberCostPoint: <strong>{memberCostPoint}</strong></li>
                     </ul>
-                    <p><strong>memberDilligencePoint </strong>= [(totalTimeLogs / totalDuration) * 100] * dilligenceWeight</p>
+                    <p><strong>memberTimedistributionPoint </strong>= [(sumTimeDistributionPoint / sumMaxTimeDistributionPoint) * 100] * timedistributionWeight</p>
                     <ul style={{ lineHeight: 2.3 }}>
-                        <li>totalTimeLogs - Tổng thời gian thành viên bấm giờ của task (milliseconds): <strong>{numberWithCommas(totalTimeLogs)}</strong></li>
-                        <li>totalDuration - Tổng thời gian từ khi bắt đầu task đến dự kiến kết thúc (milliseconds): <strong>{numberWithCommas(totalDuration)}</strong></li>
-                        <li>dilligenceWeight - trọng số chuyên cần: <strong>{task.dilligenceWeight || '0.25'}</strong></li>
-                        <li>memberDilligencePoint <span style={{ color: 'red' }}>*(Nếu điểm lớn hơn 100 thì công thức sẽ lấy 100)</span>: <strong>{memberDilligencePoint}</strong></li>
+                        <li>sumTimeDistributionPoint - Tổng thời gian thành viên bấm giờ hợp lệ của task (milliseconds): <strong>{numberWithCommas(sumTimeDistributionPoint)}</strong></li>
+                        <li>sumMaxTimeDistributionPoint - Tổng thời gian thành viên bấm giờ cho task (milliseconds): <strong>{numberWithCommas(sumMaxTimeDistributionPoint)}</strong></li>
+                        <li>timedistributionWeight - trọng số chuyên cần: <strong>{task?.memberWeight?.timedistributionWeight || '0.25'}</strong></li>
+                        <li>memberTimedistributionPoint : <strong>{numberWithCommas(memberTimedistributionPoint)}</strong></li>
                     </ul>
                     <p><strong>Công thức quy đổi: </strong>
                         <ul style={{ lineHeight: 2.3 }}>
@@ -96,7 +98,7 @@ const ModalShowAutoPointInfoProjectMember = (props) => {
                             <li>{translate('project.eval.level6')}</li>
                         </ul>
                     </p>
-                    <p><strong>Kết quả hiện tại: </strong> {memberTimePoint} + {memberQualityPoint} + {memberCostPoint} + {memberDilligencePoint} = {autoMemberPoint}</p>
+                    <p><strong>Kết quả hiện tại: </strong> {memberTimePoint} + {memberQualityPoint} + {memberCostPoint} + {memberTimedistributionPoint} = {autoMemberPoint}</p>
                 </div>
             </DialogModal>
         </React.Fragment>

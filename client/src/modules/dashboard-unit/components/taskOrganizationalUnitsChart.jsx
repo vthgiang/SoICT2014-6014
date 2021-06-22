@@ -5,7 +5,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { taskManagementActions } from '../../task/task-management/redux/actions';
 import { UserActions } from '../../super-admin/user/redux/actions';
 
-import { DatePicker, CustomLegendC3js } from '../../../common-components';
+import { DatePicker } from '../../../common-components';
 import { showListInSwal } from '../../../helpers/showListInSwal';
 import Swal from 'sweetalert2';
 
@@ -15,13 +15,11 @@ import 'c3/c3.css';
 class TaskOrganizationalUnitsChart extends Component {
     constructor(props) {
         super(props);
+        const { childOrganizationalUnit } = this.props
         let startDate = ['01', new Date().getFullYear()].join('-');
 
-        this.chart = null;
-        this.dataChart = null;
-
         this.state = {
-            totalTask: false,
+            timeseriesChart: childOrganizationalUnit?.length <= 1,
             startDate: startDate,
             startDateShow: startDate,
             endDate: this.formatDate(Date.now(), true),
@@ -64,14 +62,19 @@ class TaskOrganizationalUnitsChart extends Component {
 
 
     componentDidMount() {
-        const { startDate, endDate } = this.state;
-        let { childOrganizationalUnit } = this.props;
+        const { childOrganizationalUnit, month } = this.props;
+        const { startDate, endDate, timeseriesChart } = this.state;
         let childOrganizationalUnitId = childOrganizationalUnit.map(x => x.id);
         this.props.getAllEmployeeOfUnitByIds({
             organizationalUnitIds: childOrganizationalUnitId,
-            callApi: "employeesOfUnistsUserIsManager"
         });
-        this.props.getTaskInOrganizationUnitByMonth(childOrganizationalUnitId, this.formatString(startDate), this.formatString(endDate));
+
+        // Nếu số đơn vị > 1, chỉ truy vấn dữ lieuẹ trong 1 tháng (dùng cho biểu đồ)
+        if (timeseriesChart) {
+            this.props.getTaskInOrganizationUnitByMonth(childOrganizationalUnitId, this.formatString(startDate), this.formatString(endDate));
+        } else {
+            this.props.getTaskInOrganizationUnitByMonth(childOrganizationalUnitId, month, month);
+        }
     }
 
     isEqual = (items1, items2) => {
@@ -99,173 +102,44 @@ class TaskOrganizationalUnitsChart extends Component {
             })
             return true;
         };
-        if (nextState.startDateShow !== this.state.startDateShow || nextState.endDateShow !== this.state.endDateShow || nextState.totalTask !== this.state.totalTask) {
+        if (nextState.startDateShow !== this.state.startDateShow || nextState.endDateShow !== this.state.endDateShow) {
             return true;
         }
 
-        if (JSON.stringify(nextProps.childOrganizationalUnit) !== JSON.stringify(this.props.childOrganizationalUnit)) {
+        if (JSON.stringify(nextProps.childOrganizationalUnit) !== JSON.stringify(this.props.childOrganizationalUnit) || nextProps.month !== this.props.month) {
             let childOrganizationalUnitId = nextProps.childOrganizationalUnit.map(x => x.id);
+            let timeseriesChart = nextProps.childOrganizationalUnit?.length <= 1
+
+            this.setState(state => {
+                return {
+                    ...state,
+                    timeseriesChart: timeseriesChart
+                }
+            })
             this.props.getAllEmployeeOfUnitByIds({
                 organizationalUnitIds: childOrganizationalUnitId,
-                callApi: "employeesOfUnistsUserIsManager"
             });
-            this.props.getTaskInOrganizationUnitByMonth(childOrganizationalUnitId, this.formatString(startDate), this.formatString(endDate));
             
+            // Nếu số đơn vị >1, chỉ truy vấn dữ lieuẹ trong 1 tháng (dùng cho biểu đồ)
+            if (timeseriesChart) {
+                this.props.getTaskInOrganizationUnitByMonth(childOrganizationalUnitId, this.formatString(startDate), this.formatString(endDate));
+            } else {
+                this.props.getTaskInOrganizationUnitByMonth(childOrganizationalUnitId, nextProps.month, nextProps.month);
+            }
             return true
         }
 
         return true;
     }
 
-    /**
-     * Bắt sự kiện thay đổi ngày bắt đầu
-     * @param {*} value : Giá trị ngày bắt đầu
-     */
-    handleStartMonthChange = (value) => {
-        this.setState({
-            startDate: value
-        })
+    componentDidUpdate = () => {
+        this.renderChart()
     }
 
-    /**
-     * Bắt sự kiện thay đổi ngày kết thúc
-     * @param {*} value : Giá trị ngày kết thúc
-     */
-    handleEndMonthChange = (value) => {
-        this.setState({
-            endDate: value,
-        })
-    }
-
-    /**
-     * Bắt sự kiện thay đổi chế đọ xem biểu đồ
-     * @param {*} value : chế độ xem biểu đồ (true or false)
-     */
-    handleChangeViewChart = (value) => {
-        this.setState({
-            ...this.state,
-            totalTask: value
-        })
-    }
-
-    static isEqual = (items1, items2) => {
-        if (!items1 || !items2) {
-            return false;
-        }
-        if (items1.length !== items2.length) {
-            return false;
-        }
-        for (let i = 0; i < items1.length; ++i) {
-            if (items1[i].startingDate !== items2[i].startingDate) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /** Xóa các chart đã render khi chưa đủ dữ liệu */
-    removePreviousChart() {
-        const chart = this.refs.taskUnitsChart;
-        if (chart) {
-            while (chart && chart.hasChildNodes()) {
-                chart.removeChild(chart.lastChild);
-            }
-        }
-    }
-
-    /**
-     * Render chart
-     * @param {*} data : Dữ liệu biểu đồ
-     */
-    renderChart = (data) => {
-        this.removePreviousChart();
-        let chart = c3.generate({
-            bindto: this.refs.taskUnitsChart,
-            data: {
-                x: 'x',
-                columns: data,
-            },
-            bar: {
-                width: {
-                    ratio: 0.8
-                }
-            },
-            axis: {
-                x: {
-                    type: 'timeseries',
-                    tick: {
-                        format: '%m - %Y',
-                        outer: false,
-                        rotate: -45,
-                        multiline: false
-                    },
-                },
-                y: {
-                    tick: {
-                        outer: false
-                    },
-                }
-            },
-
-            tooltip: {
-                position: function () {
-                    let position = c3.chart.internal.fn.tooltipPosition.apply(this, arguments);
-                    return position;
-                },
-                contents: function (data) {
-                    let value = '<div style="overflow-y: scroll; max-height: 300px; pointer-events: auto;">';
-                    value = value + '<table class=\'c3-tooltip\'>';
-
-                    data.forEach((val) => {
-                        value = value + '<tr><td class=\'name\'>' + val.name + '</td>'
-                            + '<td class=\'value\'>' + val.value + '</td></tr>';
-                    });
-
-                    value = value + '</table>';
-                    value = value + '</div>';
-
-                    return value;
-                }
-            },
-
-            legend: {
-                show: false
-            }
-        });
-
-        this.chart = chart;
-    };
-
-    /** Bắt sự kiện tìm kiếm */
-    handleSunmitSearch = async () => {
-        const { startDate, endDate } = this.state;
-
-        let startDateCheck = new Date(startDate);
-        let endDateCheck = new Date(endDate);
-        const { translate } = this.props;
-        if (startDateCheck && endDateCheck && startDateCheck.getTime() >= endDateCheck.getTime()) {
-            Swal.fire({
-                title: translate('kpi.organizational_unit.dashboard.alert_search.search'),
-                type: 'warning',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: translate('kpi.organizational_unit.dashboard.alert_search.confirm')
-            })
-        } else {
-            let { childOrganizationalUnit } = this.props;
-            let childOrganizationalUnitId = childOrganizationalUnit.map(x => x.id);
-            this.setState({
-                startDateShow: startDate,
-                endDateShow: endDate,
-                taskOfUnists: []
-            })
-            this.props.getTaskInOrganizationUnitByMonth(childOrganizationalUnitId, this.formatString(startDate), this.formatString(endDate));
-        }
-    }
-
-    render() {
-        const { translate, tasks, user } = this.props;
+    setSingleDataChart = () => {
+        const { tasks, user } = this.props;
         let { childOrganizationalUnit } = this.props;
-        const { totalTask, startDate, endDate } = this.state;
+        const { startDate, endDate } = this.state;
 
         let endMonth = new Date(this.formatString(endDate)).getMonth();
         let endYear = new Date(this.formatString(endDate)).getFullYear();
@@ -305,16 +179,29 @@ class TaskOrganizationalUnitsChart extends Component {
             }
         };
         let listTask = tasks.organizationUnitTasks ? tasks.organizationUnitTasks.tasks : [];
-        let employeesOfUnitsUserIsManager = user.employeesOfUnitsUserIsManager;
-        let employeeOfUnits = [];
-        if (totalTask) {
-            childOrganizationalUnit && childOrganizationalUnit.forEach(x => {
-                let count = employeesOfUnitsUserIsManager && employeesOfUnitsUserIsManager.filter(e => e?.idUnit?.toString() === x?.id?.toString())
-                employeeOfUnits = [...employeeOfUnits, count.length ? count.length : 1]
-            })
-        }
+        let employees = user.employees;
+        let employeeOfUnits = {};
+        childOrganizationalUnit && childOrganizationalUnit.forEach(unit => {
+            let roleInUnit = unit.managers.concat(unit.deputyManagers).concat(unit.employees)
+            employeeOfUnits[unit.id] = employees?.filter(e => {
+                if (e?.roleId?.length > 0) {
+                    let check = false
+                    e.roleId.map(item => {
+                        if (roleInUnit.includes(item?._id)) {
+                            check = true 
+                        }
+                    })
 
-        let data = [["x", ...arrMonth]];
+                    return check
+                }
+
+                return false
+            })
+        })
+
+        let title = ["x", ...arrMonth];
+        let totalTask = ["Số công việc"], taskPerEmployeeOfUnit = ["Công việc trên đầu người"];
+
         childOrganizationalUnit && childOrganizationalUnit.forEach((x, index) => {
             let taskOfUnist = [];
             if (listTask.length !== 0) {
@@ -333,16 +220,210 @@ class TaskOrganizationalUnitsChart extends Component {
                     }
                     return false;
                 });
-                if (totalTask) {
-                    return (taskOfUnistInMonth.length / employeeOfUnits[index]).toFixed(1);
-                }
-                return taskOfUnistInMonth.length;
+
+                let taskPerEmployee = taskOfUnistInMonth?.length / employeeOfUnits?.[x?.id]?.length
+
+                taskPerEmployeeOfUnit.push(taskPerEmployee && !isNaN(taskPerEmployee) ? taskPerEmployee.toFixed(1) : 0);
+                totalTask.push(taskOfUnistInMonth.length);
             })
-            data = [...data, [x.name, ...row]]
         })
 
-        this.dataChart = data;
-        this.renderChart(data)
+        return [
+            title,
+            totalTask,
+            taskPerEmployeeOfUnit
+        ]
+    }
+
+    setMultiDataChart = () => {
+        const { tasks, user } = this.props;
+        let { childOrganizationalUnit } = this.props;
+       
+        let listTask = tasks.organizationUnitTasks ? tasks.organizationUnitTasks.tasks : [];
+        let employees = user.employees;
+        let employeeOfUnits = {};
+        childOrganizationalUnit && childOrganizationalUnit.forEach(unit => {
+            let roleInUnit = unit.managers.concat(unit.deputyManagers).concat(unit.employees)
+            employeeOfUnits[unit.id] = employees?.filter(e => {
+                if (e?.roleId?.length > 0) {
+                    let check = false
+                    e.roleId.map(item => {
+                        if (roleInUnit.includes(item?._id)) {
+                            check = true 
+                        }
+                    })
+
+                    return check
+                }
+
+                return false
+            })
+        })
+
+        let title = ["x"];
+        let totalTask = ["Số công việc"], taskPerEmployeeOfUnit = ["Công việc trên đầu người"];
+
+
+        childOrganizationalUnit && childOrganizationalUnit.forEach((unit, index) => {
+            let taskOfUnist = [];
+            if (listTask.length !== 0) {
+                taskOfUnist = listTask.filter(t => t.organizationalUnit?._id === unit.id);
+            }
+            let taskPerEmployee = taskOfUnist?.length / employeeOfUnits?.[unit?.id]?.length
+
+            title.push(unit?.name)
+            totalTask.push(taskOfUnist?.length)
+            taskPerEmployeeOfUnit.push(taskPerEmployee && !isNaN(taskPerEmployee) ? taskPerEmployee.toFixed(1) : 0)
+        })
+
+        return [
+            title,
+            totalTask,
+            taskPerEmployeeOfUnit
+        ]
+    }
+
+    /** Xóa các chart đã render khi chưa đủ dữ liệu */
+    removePreviousChart() {
+        const chart = this.refs.taskUnitsChart;
+        if (chart) {
+            while (chart && chart.hasChildNodes()) {
+                chart.removeChild(chart.lastChild);
+            }
+        }
+    }
+
+    /**
+     * Render chart
+     * @param {*} data : Dữ liệu biểu đồ
+     */
+    renderChart = () => {
+        const { timeseriesChart } = this.state
+
+        this.removePreviousChart();
+        let dataChart;
+        if (timeseriesChart) {
+            dataChart = this.setSingleDataChart()
+        } else {
+            dataChart = this.setMultiDataChart()
+        }
+        let chart = c3.generate({
+            bindto: this.refs.taskUnitsChart,
+            data: {
+                x: 'x',
+                columns: dataChart,
+                type: 'bar'
+            },
+            bar: {
+                width: {
+                    ratio: 0.3
+                }
+            },
+            axis: {
+                x: {
+                    type: timeseriesChart ? 'timeseries' : 'categories',
+                    tick: {
+                        format: '%m - %Y',
+                        outer: false,
+                        rotate: -45,
+                        multiline: false
+                    },
+                },
+                y: {
+                    tick: {
+                        outer: false
+                    },
+                }
+            },
+
+            tooltip: {
+                position: function () {
+                    let position = c3.chart.internal.fn.tooltipPosition.apply(this, arguments);
+                    return position;
+                },
+                contents: function (data) {
+                    let value = '<div style="overflow-y: scroll; max-height: 300px; pointer-events: auto;">';
+                    value = value + '<table class=\'c3-tooltip\'>';
+
+                    data.forEach((val) => {
+                        value = value + '<tr><td class=\'name\'>' + val.name + '</td>'
+                            + '<td class=\'value\'>' + val.value + '</td></tr>';
+                    });
+
+                    value = value + '</table>';
+                    value = value + '</div>';
+
+                    return value;
+                }
+            },
+        });
+    };
+
+    /**
+     * Bắt sự kiện thay đổi ngày bắt đầu
+     * @param {*} value : Giá trị ngày bắt đầu
+     */
+    handleStartMonthChange = (value) => {
+        this.setState({
+            startDate: value
+        })
+    }
+
+    /**
+     * Bắt sự kiện thay đổi ngày kết thúc
+     * @param {*} value : Giá trị ngày kết thúc
+     */
+    handleEndMonthChange = (value) => {
+        this.setState({
+            endDate: value,
+        })
+    }
+
+    static isEqual = (items1, items2) => {
+        if (!items1 || !items2) {
+            return false;
+        }
+        if (items1.length !== items2.length) {
+            return false;
+        }
+        for (let i = 0; i < items1.length; ++i) {
+            if (items1[i].startingDate !== items2[i].startingDate) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /** Bắt sự kiện tìm kiếm */
+    handleSunmitSearch = async () => {
+        const { startDate, endDate } = this.state;
+
+        let startDateCheck = new Date(startDate);
+        let endDateCheck = new Date(endDate);
+        const { translate } = this.props;
+        if (startDateCheck && endDateCheck && startDateCheck.getTime() >= endDateCheck.getTime()) {
+            Swal.fire({
+                title: translate('kpi.organizational_unit.dashboard.alert_search.search'),
+                type: 'warning',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: translate('kpi.organizational_unit.dashboard.alert_search.confirm')
+            })
+        } else {
+            let { childOrganizationalUnit } = this.props;
+            let childOrganizationalUnitId = childOrganizationalUnit.map(x => x.id);
+            this.setState({
+                startDateShow: startDate,
+                endDateShow: endDate,
+                taskOfUnists: []
+            })
+            this.props.getTaskInOrganizationUnitByMonth(childOrganizationalUnitId, this.formatString(startDate), this.formatString(endDate));
+        }
+    }
+
+    render() {
+        const { translate, tasks } = this.props;
+        let { childOrganizationalUnit } = this.props;
+        const { startDate, endDate, timeseriesChart } = this.state;
 
         return (
             <div className="box box-solid" >
@@ -365,54 +446,43 @@ class TaskOrganizationalUnitsChart extends Component {
                     </div>
                 </div>
                 <div className="box-body" >
-                    <div className="qlcv" style={{ marginBottom: 15 }} >
-                        <div className="form-inline" >
-                            <div className="form-group">
-                                <label className="form-control-static" >Từ tháng</label>
-                                <DatePicker
-                                    id="form-month-task"
-                                    dateFormat="month-year"
-                                    deleteValue={false}
-                                    value={startDate}
-                                    onChange={this.handleStartMonthChange}
-                                />
+                    {timeseriesChart 
+                        && <div className="qlcv" style={{ marginBottom: 15 }} >
+                            <div className="form-inline" >
+                                <div className="form-group">
+                                    <label className="form-control-static" >Từ tháng</label>
+                                    <DatePicker
+                                        id="form-month-task"
+                                        dateFormat="month-year"
+                                        deleteValue={false}
+                                        value={startDate}
+                                        onChange={this.handleStartMonthChange}
+                                    />
+                                </div>
+                            </div>
+                            <div className="form-inline" >
+                                <div className='form-group'>
+                                    <label className="form-control-static" >Đến tháng</label>
+                                    <DatePicker
+                                        id="to-month-task"
+                                        dateFormat="month-year"
+                                        deleteValue={false}
+                                        value={endDate}
+                                        onChange={this.handleEndMonthChange}
+                                    />
+                                    <button type="button" className="btn btn-success" title={translate('general.search')} onClick={() => this.handleSunmitSearch()} > {translate('general.search')} </button>
+                                </div>
                             </div>
                         </div>
-                        <div className="form-inline" >
-                            <div className='form-group'>
-                                <label className="form-control-static" >Đến tháng</label>
-                                <DatePicker
-                                    id="to-month-task"
-                                    dateFormat="month-year"
-                                    deleteValue={false}
-                                    value={endDate}
-                                    onChange={this.handleEndMonthChange}
-                                />
-                                <button type="button" className="btn btn-success" title={translate('general.search')} onClick={() => this.handleSunmitSearch()} > {translate('general.search')} </button>
-                            </div>
-                        </div>
-                    </div>
+                    }
 
                     {tasks?.isLoading 
                         ? <p>{translate('general.loading')}</p>
-                        : this.dataChart
+                        : tasks?.organizationUnitTasks?.tasks?.length > 0
                             ? <div className="" >
                                 <p className="pull-left" > < b > ĐV tính: Số công việc </b></p >
-                                <div className="box-tools pull-right" >
-                                    <div className="btn-group pull-rigth">
-                                        <button type="button" className={`btn btn-xs ${totalTask ? "active" : "btn-danger"}`} onClick={() => this.handleChangeViewChart(false)}>Tổng công việc</button>
-                                        <button type="button" className={`btn btn-xs ${totalTask ? 'btn-danger' : "active"}`} onClick={() => this.handleChangeViewChart(true)}>Công việc trên đầu người</button>
-                                    </div>
-                                </div>
                                 <section id={"taskUnitsChart"} className="c3-chart-container">
                                     <div ref="taskUnitsChart" style={{ marginBottom: "15px" }}></div>
-                                    <CustomLegendC3js
-                                        chart={this.chart}
-                                        chartId={"taskUnitsChart"}
-                                        legendId={"taskUnitsChartLegend"}
-                                        title={this.dataChart && `${translate('general.list_unit')} (${this.dataChart.length - 1})`}
-                                        dataChartLegend={this.dataChart && this.dataChart.filter((item, index) => index > 0).map(item => item[0])}
-                                    />
                                 </section>
                             </div>
                             : <p>{translate('kpi.organizational_unit.dashboard.no_data')}</p>

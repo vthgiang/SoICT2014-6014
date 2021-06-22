@@ -1,17 +1,17 @@
 const {
     EducationProgram,
-    Course,
-    EmployeeCourse,
+    Course
 } = require(`../../../models`);
 
 const {
     connect
 } = require(`../../../helpers/dbHelper`);
+const courseModel = require("../../../models/training/course.model");
 
 /**
  * Lấy danh sách các khoá đào tạo theo phòng ban(đơn vị), chức vụ
  * @organizationalUnits : Array id đơn vị
- * @positions : Array id chức vụ
+ * @positions : Array id chức vụ    // Note: positions --> role ??
  * @company : Id công ty
  */
 exports.getAllCourses = async (portal, company, organizationalUnits, positions) => {
@@ -58,70 +58,107 @@ exports.getAllCourses = async (portal, company, organizationalUnits, positions) 
  * @company : Id công ty
  */
 exports.searchCourses = async (portal, params, company) => {
+    // Note: nên khai báo các biến params ở đầu
+    const { educationProgram, courseId, name, type } = params
     let keySearch = {
         company: company
     };
 
     // Bắt sựu kiện tên chương trình khoá đào tạo khác ""
-    if (params.educationProgram !== undefined) {
+    if (educationProgram) {    // Note: if (params?.educationProgram)
         keySearch = {
             ...keySearch,
-            educationProgram: params.educationProgram
+            educationProgram: educationProgram
         }
     }
 
     // Bắt sựu kiện mã khoá đào tạo khác ""
-    if (params.courseId !== undefined && params.courseId.length !== 0) {
+    if (courseId?.length > 0) {    // Note: if (params?.courseId?.length > 0)
         keySearch = {
             ...keySearch,
             courseId: {
-                $regex: params.courseId,
+                $regex: courseId,
                 $options: "i"
             }
         }
     }
 
     // Bắt sựu kiện tên khoá đào tạo khác ""
-    if (params.name !== undefined && params.name.length !== 0) {
-        console.log(params.name);
+    if (name?.length > 0) {
+        console.log(name);
         keySearch = {
             ...keySearch,
             name: {
-                $regex: params.name,
+                $regex: name,
                 $options: "i"
             }
         }
     }
 
     // Bắt sựu kiện loại đào tạo khác null
-    if (params.type !== undefined) {
+    if (type) {
         keySearch = {
             ...keySearch,
-            type: params.type
+            type: type
         }
     }
     let totalList = await Course(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
-    let listCourses = await Course(connect(DB_CONNECTION, portal)).find(keySearch)
-        .skip(params.page).limit(params.limit)
-        .populate({
-            path: 'educationProgram',
-        });
-    for (let n in listCourses) {
-        let listEmployees = await EmployeeCourse(connect(DB_CONNECTION, portal)).find({
-            course: listCourses[n]._id
-        }).populate({
-            path: 'employee',
-            select: {
-                '_id': 1,
-                'fullName': 1,
-                'employeeNumber': 1
+
+    // Note: Đoạn code này thử dùng aggregate, dùng aggregate 1 câu truy vấn, thay vì vòng for như bên dưới (keyword: aggregate addField)
+    // let listCourses = await Course(connect(DB_CONNECTION, portal)).find(keySearch)
+    //     .skip(params.page).limit(params.limit)  // Note: trường hợp API k có params page và limit, cần khai báo mặc định giá trị ban đầu
+    //     .populate({
+    //         path: 'educationProgram',
+    //     });
+    let listCourses = await Course(connect(DB_CONNECTION, portal))
+        .aggregate([
+            {
+                $skip: params.page 
+            },
+            {
+                $limit: params.limit
+            },
+            {
+                $lookup: {
+                    from: "educationprograms",
+                    localField: "educationProgram",
+                    foreignField: "_id",
+                    as: "educationProgram"
+                }
+            },
+            {
+                $addFields: {
+                    listEmployees: "$results.employee"
+                }
+            },
+            {
+                $lookup: {
+                    from: 'employees',
+                    localField: 'listEmployees',
+                    foreignField: '_id',
+                    as: 'listEmployees'
+                }
             }
-        });
-        listCourses[n] = {
-            ...listCourses[n]._doc,
-            listEmployees: listEmployees
+        ])
+
+    listCourses= listCourses.map(course => {
+        const infoEmployees = course.listEmployees.map((employee, index) => {
+            return {
+                employee: {
+                    _id: employee._id,
+                    fullName: employee.fullName,
+                    employeeNumber: employee.employeeNumber
+                },
+                result: course.results[index].result
+            }
+        })
+        return {
+            ...course,
+            listEmployees: infoEmployees,
+            educationProgram: course.educationProgram[0]
         }
-    }
+    })
+    
     return {
         totalList,
         listCourses
@@ -140,8 +177,8 @@ exports.createCourse = async (portal, data, company) => {
     }, {
         _id: 1
     });
-    if (isCourse !== null) {
-        return "have_exist"
+    if (isCourse) { // Note: Sửa toàn bộ các chỗ khác, chỉ cần if (isCourse), k sử dụng !== null hay !== undefined
+        return "have_exist" //  Note: sử dụng throw để catch lỗi, tham khảo service thêm tài sản
     } else {
         let course = await Course(connect(DB_CONNECTION, portal)).create({
             company: company,
@@ -167,25 +204,37 @@ exports.createCourse = async (portal, data, company) => {
                     employee: x._id,
                     result: x.result
                 }
-            });
-            await EmployeeCourse(connect(DB_CONNECTION, portal)).insertMany([...data.listEmployees]);
+            }); 
+            data.listEmployees.map(async i => {
+                await Course(connect(DB_CONNECTION, portal)).update(
+                    { _id: i.course},
+                    {
+                        $push: {
+                            results: {
+                                employee: i.employee,
+                                result: i.result
+                            }
+                        }
+                    }
+                )
+            })
         }
+
+        //  Note: có thể  gộp 2 câu truy vấn dưới thành 1, hạn chế sử dụng nhiều câu truy vấn
         let newCourse = await Course(connect(DB_CONNECTION, portal)).findById(course._id).populate({
             path: 'educationProgram',
-        });
-        let listEmployees = await EmployeeCourse(connect(DB_CONNECTION, portal)).find({
-            course: newCourse._id
         }).populate({
-            path: 'employee',
+            path: 'results.employee',
             select: {
                 '_id': 1,
                 'fullName': 1,
                 'employeeNumber': 1
             }
         });
+
         return {
             ...newCourse._doc,
-            listEmployees
+            listEmployees: newCourse.results
         }
     }
 }
@@ -198,12 +247,10 @@ exports.deleteCourse = async (portal, id) => {
     let courseDelete = await Course(connect(DB_CONNECTION, portal)).findOneAndDelete({
         _id: id
     });
-    let listEmployees = await EmployeeCourse(connect(DB_CONNECTION, portal)).deleteMany({
-        course: id
-    })
+    let listEmployees = courseDelete.results
     return {
         ...courseDelete._doc,
-        listEmployees: listEmployees
+        listEmployees
     };
 }
 
@@ -233,35 +280,33 @@ exports.updateCourse = async (portal, id, data) => {
     }, {
         $set: courseChange
     });
-    await EmployeeCourse(connect(DB_CONNECTION, portal)).deleteMany({
-        course: id
-    });
     if (data.listEmployees.length !== 0) {
-        data.listEmployees = data.listEmployees.map(x => {
-            return {
-                course: id,
-                employee: x._id,
-                result: x.result
-            }
-        });
-        await EmployeeCourse(connect(DB_CONNECTION, portal)).insertMany([...data.listEmployees]);
+        const listEmployees = data.listEmployees.map(i => ({
+            employee: i._id,
+            result: i.result
+        }))
+        await Course(connect(DB_CONNECTION, portal)).update(
+            { _id: id},
+            {
+                $set: {
+                    results: listEmployees
+                }
+            }            
+        )
     }
-
+    
     let updateCourse = await Course(connect(DB_CONNECTION, portal)).findById(id).populate({
         path: 'educationProgram',
-    });
-    let listEmployees = await EmployeeCourse(connect(DB_CONNECTION, portal)).find({
-        course: id
     }).populate({
-        path: 'employee',
+        path: 'results.employee',
         select: {
             '_id': 1,
             'fullName': 1,
             'employeeNumber': 1
         }
-    });
+    })
     return {
         ...updateCourse._doc,
-        listEmployees
+        listEmployees: updateCourse.results
     }
 }

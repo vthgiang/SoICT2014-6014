@@ -73,7 +73,7 @@ function TaskListView(props) {
                                                     totalEmployeesInTask.length > 0 &&
                                                     totalEmployeesInTask.map((o, index) => {
                                                         if (index < 4)
-                                                            return <img src={process.env.REACT_APP_SERVER + o.avatar} className="img-circle" style={{ width: '20px', height: '20px', borderRadius: '50%', marginRight: '5px' }} alt="User avatar" />
+                                                            return <img key={index} src={process.env.REACT_APP_SERVER + o.avatar} className="img-circle" style={{ width: '20px', height: '20px', borderRadius: '50%', marginRight: '5px' }} alt="User avatar" />
                                                     })
                                                 }
                                                 {
@@ -161,7 +161,7 @@ function TaskListView(props) {
                                                     totalEmployeesInTask.length > 0 &&
                                                     totalEmployeesInTask.map((o, index) => {
                                                         if (index < 4)
-                                                            return <img src={process.env.REACT_APP_SERVER + o.avatar} className="img-circle" style={{ width: '20px', height: '20px', borderRadius: '50%', marginRight: '5px' }} alt="User avatar" />
+                                                            return <img key={index} src={process.env.REACT_APP_SERVER + o.avatar} className="img-circle" style={{ width: '20px', height: '20px', borderRadius: '50%', marginRight: '5px' }} alt="User avatar" />
                                                     })
                                                 }
                                                 {
@@ -249,7 +249,7 @@ function TaskListView(props) {
                                                     totalEmployeesInTask.length > 0 &&
                                                     totalEmployeesInTask.map((o, index) => {
                                                         if (index < 4)
-                                                            return <img src={process.env.REACT_APP_SERVER + o.avatar} className="img-circle" style={{ width: '20px', height: '20px', borderRadius: '50%', marginRight: '5px' }} alt="User avatar" />
+                                                            return <img key={index} src={process.env.REACT_APP_SERVER + o.avatar} className="img-circle" style={{ width: '20px', height: '20px', borderRadius: '50%', marginRight: '5px' }} alt="User avatar" />
                                                     })
                                                 }
                                                 {
