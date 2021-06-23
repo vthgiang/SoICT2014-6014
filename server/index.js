@@ -7,6 +7,8 @@ const server = require("http").createServer(app);
 
 const swaggerUi = require("swagger-ui-express");
 const { swaggerJsonData } = require("./api-docs/swagger.js");
+const { auth } = require(`./middleware`);
+const { SystemApiControllers } = require('./modules/system-admin/system-api/systemApi.controller');
 
 require("dotenv").config();
 // require("./connectDatabase");
@@ -133,6 +135,10 @@ router.use(
 router.use(
     "/system-admin/system-link",
     require("./modules/system-admin/system-link/systemLink.route")
+);
+router.use(
+    "/system-admin/system-api",
+    require("./modules/system-admin/system-api/systemApi.route")
 );
 router.use(
     "/system-admin/root-role",
@@ -282,6 +288,12 @@ app.use("/transport-process", require("./modules/production/transport/transportP
 app.use("/transport-department", require("./modules/production/transport/transportDepartment/transportDepartment.route"));
 
 app.use(router);
+
+// Cập nhật các api mới nhất
+app.post('/system-admin/system-api/system-apis/update-auto', auth, (req, res) => {
+    SystemApiControllers.updateSystemApiAutomatic(app, req, res)
+})
+
 
 /**
  * Server initial
