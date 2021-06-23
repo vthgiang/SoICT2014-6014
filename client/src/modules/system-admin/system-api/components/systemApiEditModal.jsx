@@ -6,16 +6,27 @@ import { DialogModal, SelectBox } from '../../../../common-components';
 
 import { SystemApiActions } from '../redux/actions'
 
-function SystemApiCreateModal(props) {
+function SystemApiEditModal(props) {
     const { translate } = props;
 
     const [state, setState] = useState({
+        id: null,
         path: null,
         method: 'GET',
         description: null,
     });
 
-    const { path, method, description } = state;
+    const { id, path, method, description } = state;
+
+    if (props._id !== id) {
+        setState({
+            ...state,
+            id: props._id,
+            path: props.systemApi?.path,
+            method: props.systemApi?.method,
+            description: props.systemApi?.description,
+        })
+    }
 
     const handleChangePath = (e) => {
         setState({
@@ -39,20 +50,20 @@ function SystemApiCreateModal(props) {
     }
 
     const handleSubmit = () => {
-        props.createSystemApi({
+        props.editSystemApi(id, {
             path: path, 
             method: method, 
             description: description, 
         })
-        window.$("#create-system-api").modal("hide");
+        window.$("#edit-system-api").modal("hide");
     }
 
     return (
         <React.Fragment>
             <DialogModal
-                modalID="create-system-api" isLoading={false}
+                modalID="edit-system-api" isLoading={false}
                 formID="form-create-system-api"
-                title={translate('system_admin.system_api.modal.create_title')}
+                title={translate('system_admin.system_api.modal.edit_title')}
                 msg_success={translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.success')}
                 msg_faile={translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.failure')}
                 func={handleSubmit}
@@ -62,7 +73,7 @@ function SystemApiCreateModal(props) {
                     {/* Path */}
                     <div className="form-group">
                         <label>{translate('system_admin.system_api.table.path')}</label>
-                        <input className="form-control" type="text" placeholder={translate('system_admin.system_api.placeholder.input_path')} name="name" onChange={(e) => handleChangePath(e)} />
+                        <input className="form-control" type="text" placeholder={translate('system_admin.system_api.placeholder.input_path')} value={path} onChange={(e) => handleChangePath(e)} />
                     </div>
 
                     {/* Method */}
@@ -95,6 +106,7 @@ function SystemApiCreateModal(props) {
                                 }
                             ]}
                             onChange={handleChangeMethod}
+                            value={method}
                             multiple={false}
                         />
                     </div>
@@ -102,7 +114,7 @@ function SystemApiCreateModal(props) {
                     {/* Description */}
                     <div className="form-group">
                         <label>{translate('system_admin.system_api.table.description')}</label>
-                        <input className="form-control" type="text" name="name" placeholder={translate('system_admin.system_api.placeholder.input_description')} onChange={(e) => handleChangeDescription(e)} />
+                        <input className="form-control" type="text" value={description} placeholder={translate('system_admin.system_api.placeholder.input_description')} onChange={(e) => handleChangeDescription(e)} />
                     </div>
                 </form>
             </DialogModal>
@@ -117,8 +129,8 @@ function mapState(state) {
 }
 
 const actionCreators = {
-    createSystemApi: SystemApiActions.createSystemApi
+    editSystemApi: SystemApiActions.editSystemApi
 };
 
-const connectedSystemApiCreateModal = connect(mapState, actionCreators)(withTranslate(SystemApiCreateModal));
-export { connectedSystemApiCreateModal as SystemApiCreateModal };
+const connectedSystemApiEditModal = connect(mapState, actionCreators)(withTranslate(SystemApiEditModal));
+export { connectedSystemApiEditModal as SystemApiEditModal };

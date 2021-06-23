@@ -653,6 +653,12 @@ export default {
                 select_all_method: "Select all method",
                 non_select_method: "Select method",
 
+                modal: {
+                    create_title: 'Create a API',
+                    edit_title: 'Edit a API',
+                    delete_title: 'Delete a API'
+                },
+
                 placeholder: {
                     input_path: "Type path",
                     input_description: "Type description"

@@ -4,6 +4,8 @@ import { SystemApiConstants } from "./constants";
 export const SystemApiActions = {
     getSystemApis,
     createSystemApi,
+    editSystemApi,
+    deleteSystemApi,
     updateSystemApiAutomatic
 }
 
@@ -42,6 +44,48 @@ function createSystemApi(data) {
             .catch(error => {
                 dispatch({ 
                     type: SystemApiConstants.CREATE_SYSTEM_API_FAILURE,
+                    payload: error
+                });
+                
+            })
+    }
+}
+
+function editSystemApi(systemApiId, data) {
+    return dispatch => {
+        dispatch({ type: SystemApiConstants.EDIT_SYSTEM_API_REQUEST });
+
+        SystemApiServices.editSystemApi(systemApiId, data)
+            .then(res => {
+                dispatch({
+                    type: SystemApiConstants.EDIT_SYSTEM_API_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({ 
+                    type: SystemApiConstants.EDIT_SYSTEM_API_FAILURE,
+                    payload: error
+                });
+                
+            })
+    }
+}
+
+function deleteSystemApi (systemApiId) {
+    return dispatch => {
+        dispatch({ type: SystemApiConstants.DELETE_SYSTEM_API_REQUEST });
+
+        SystemApiServices.deleteSystemApi(systemApiId)
+            .then(res => {
+                dispatch({
+                    type: SystemApiConstants.DELETE_SYSTEM_API_SUCCESS,
+                    payload: systemApiId
+                })
+            })
+            .catch(error => {
+                dispatch({ 
+                    type: SystemApiConstants.DELETE_SYSTEM_API_FAILURE,
                     payload: error
                 });
                 
