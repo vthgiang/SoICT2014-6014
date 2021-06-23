@@ -118,6 +118,11 @@ class SideBar extends Component {
                                             path: "/system/links-default-management",
                                         },
                                         {
+                                            name: "menu.manage_api",
+                                            icon: "fa fa-link",
+                                            path: "/system/apis-default-management",
+                                        },
+                                        {
                                             name: "menu.manage_component",
                                             icon: "fa fa-object-group",
                                             path: "/system/components-default-management",
