@@ -72,7 +72,7 @@ function TransportPlanGenerate(props) {
             if (plans && plans.length!==0){
                 plans.map((item, index) => {
                     if (item.transportRequirements && item.transportRequirements.length!==0){
-                        item.code = generateCode("KHVC");
+                        item.code = generateCode("KHVC"+index);
                         item.name = "Kế hoạch vận chuyển "+item.code
                         item.startTime = item.date;
                         item.endTime = item.date;
@@ -141,9 +141,9 @@ function TransportPlanGenerate(props) {
         }
         data.transportVehicles = transportVehicles
         props.createTransportPlan(data);
-        let newList = [...listPlanGenerate]
-        newList = [...newList.slice(0,stt), ...newList.slice(stt+1)];
-        setListPlanGenerate(newList);
+        // let newList = [...listPlanGenerate]
+        // newList = [...newList.slice(0,stt), ...newList.slice(stt+1)];
+        // setListPlanGenerate(newList);
     }
     const save = () => {
         // props.createTransportPlan(formSchedule);
@@ -162,6 +162,17 @@ function TransportPlanGenerate(props) {
         // props.getUserByRole({currentUserId: localStorage.getItem('userId'), role: 2})
         // props.getUserByRole({currentUserId: localStorage.getItem('userId'), role: 3})
         // props.getAllTransportVehicles();
+        if (listPlanGenerate && listPlanGenerate.length!==0){
+            if (transportPlan && transportPlan.lists && transportPlan.lists.length!==0){
+                let newListPlanGenerate = [...listPlanGenerate];
+                console.log(transportPlan.lists, " list1");
+                console.log(newListPlanGenerate, " l ist2")
+                transportPlan.lists.map(oldPlan => {
+                    newListPlanGenerate = newListPlanGenerate.filter(newPlan => String(newPlan.code) !== String(oldPlan.code));
+                })
+                setListPlanGenerate(newListPlanGenerate);
+            }
+        }
     }, [transportPlan]);
 
     useEffect(() => {
@@ -262,6 +273,7 @@ function TransportPlanGenerate(props) {
                 // disableSubmit={!isFormValidated()}
                 size={100}
                 maxWidth={500}
+                hasSaveButton={false}
             >
             <form id="form-generate-transport-plans" >
             

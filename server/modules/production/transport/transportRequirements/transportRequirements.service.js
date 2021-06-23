@@ -276,31 +276,7 @@ exports.getAllTransportRequirements = async (portal, data) => {
     }
 }
 
-//     let page, perPage;
-//     page = data?.page ? Number(data.page) : 1;
-//     perPage = data?.perPage ? Number(data.perPage) : 20;
-
-//     let totalList = await Example(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
-//     let ExampleCollection = await Example(connect(DB_CONNECTION, portal)).find(keySearch, { exampleName: 1 })
-//         .skip((page - 1) * perPage)
-//         .limit(perPage);
-
-//     return { 
-//         data: ExampleCollection,
-//         totalList 
-//     }
-// }
-
-// // Lấy ra Ví dụ theo id
-// exports.getExampleById = async (portal, id) => {
-//     let example = await Example(connect(DB_CONNECTION, portal)).findById({ _id: id });
-//     if (example) {
-//         return example;
-//     }
-//     return -1;
-// }
-
-// Chỉnh sửa một Ví dụ
+// Chỉnh sửa một yêu cầu vận chuyển
 exports.editTransportRequirement = async (portal, id, data) => {
 
     let oldTransportRequirement = await TransportRequirement(connect(DB_CONNECTION, portal)).findById(id);
