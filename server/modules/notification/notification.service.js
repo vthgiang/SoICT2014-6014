@@ -247,8 +247,7 @@ exports.createNotification = async (
                 },
                 notification: {
                     title: data.title,
-                    body: data?.associatedDataObject?.description ? htmlToText(notification.associatedDataObject.description) : '',
-                    sound: "default",
+                    body: data?.associatedDataObject?.description ? htmlToText(data.associatedDataObject.description) : '',
                 },
             });
         }

@@ -7,7 +7,7 @@ import moment from 'moment';
 import 'moment/locale/vi';
 import parse from 'html-react-parser';
 import './actionTab.css';
-
+import FilePreview from './FilePreview';
 import { ContentMaker, DateTimeConverter, ApiImage, ShowMoreShowLess, SelectBox, DatePicker, TimePicker, ErrorLabel, DialogModal } from '../../../../common-components';
 
 import { getStorage } from '../../../../config';
@@ -1281,7 +1281,24 @@ class ActionTab extends Component {
         })
     }
 
+    showFilePreview = async (data) => {
+        await this.setState({
+            currentFilepri: data,
+        });
+        window.$('#modal-file-preview').modal('show');
+    }
 
+    checkTypeFile = (data) => {
+        if (typeof data === 'string' || data instanceof String) {
+            let index = data.lastIndexOf(".");
+            let typeFile = data.substring(index + 1, data.length);
+            if (typeFile === "pdf") {
+                return true;
+            }
+            else return false;
+        }
+        else return false;
+    }
 
     render() {
         let task, informations, statusTask, documents, actionComments, taskComments, logTimer, logs;
@@ -1328,6 +1345,12 @@ class ActionTab extends Component {
 
         return (
             <div>
+                {
+                    this.state.currentFilepri &&
+                    <FilePreview
+                        file={this.state.currentFilepri}
+                    />
+                }
                 <div className="nav-tabs-custom" style={{ boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none" }}>
                     <ul className="nav nav-tabs">
                         <li className="active"><a href="#taskAction" onClick={() => this.handleChangeContent("taskAction")} data-toggle="tab">{translate("task.task_perform.actions")} ({taskActions && taskActions.length})</a></li>
@@ -1547,7 +1570,14 @@ class ActionTab extends Component {
                                                                                         requestDownloadFile={this.requestDownloadFile}
                                                                                     />
                                                                                     :
-                                                                                    <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
+                                                                                    <div>
+                                                                                        <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name}</a>
+                                                                                        <a href="#" onClick={() => this.showFilePreview(elem && elem.url)}>
+                                                                                            <u>{elem && this.checkTypeFile(elem.url) ?
+                                                                                                <i className="fa fa-eye"></i> : ""}</u>
+                                                                                        </a>
+                                                                                    </div>
+
                                                                                 }
                                                                             </div>
                                                                         })}
@@ -1641,7 +1671,13 @@ class ActionTab extends Component {
                                                                                                         requestDownloadFile={this.requestDownloadFile}
                                                                                                     />
                                                                                                     :
-                                                                                                    <a style={{ cursor: "pointer" }} style={{ marginTop: "5px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
+                                                                                                    <div>
+                                                                                                        <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name}</a>
+                                                                                                        <a href="#" onClick={() => this.showFilePreview(elem && elem.url)}>
+                                                                                                            <u>{elem && this.checkTypeFile(elem.url) ?
+                                                                                                                <i className="fa fa-eye"></i> : ""}</u>
+                                                                                                        </a>
+                                                                                                    </div>
                                                                                                 }
                                                                                             </div>
                                                                                         })}
@@ -1876,7 +1912,13 @@ class ActionTab extends Component {
                                                                                             file={elem}
                                                                                             requestDownloadFile={this.requestDownloadFile}
                                                                                         />
-                                                                                        : <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
+                                                                                        : <div>
+                                                                                            <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name}</a>
+                                                                                            <a href="#" onClick={() => this.showFilePreview(elem && elem.url)}>
+                                                                                                <u>{elem && this.checkTypeFile(elem.url) ?
+                                                                                                    <i className="fa fa-eye"></i> : ""}</u>
+                                                                                            </a>
+                                                                                        </div>
                                                                                     }
                                                                                 </div>
                                                                             })}
@@ -1972,7 +2014,13 @@ class ActionTab extends Component {
                                                                                                                 requestDownloadFile={this.requestDownloadFile}
                                                                                                             />
                                                                                                             :
-                                                                                                            <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
+                                                                                                            <div>
+                                                                                                                <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name}</a>
+                                                                                                                <a href="#" onClick={() => this.showFilePreview(elem && elem.url)}>
+                                                                                                                    <u>{elem && this.checkTypeFile(elem.url) ?
+                                                                                                                        <i className="fa fa-eye"></i> : ""}</u>
+                                                                                                                </a>
+                                                                                                            </div>
                                                                                                         }
                                                                                                     </div>
                                                                                                 })}
@@ -2111,8 +2159,13 @@ class ActionTab extends Component {
                                                                                                 file={elem}
                                                                                                 requestDownloadFile={this.requestDownloadFile}
                                                                                             />
-                                                                                            :
-                                                                                            <a style={{ cursor: "pointer", marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
+                                                                                            : <div>
+                                                                                                <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name}</a>
+                                                                                                <a href="#" onClick={() => this.showFilePreview(elem && elem.url)}>
+                                                                                                    <u>{elem && this.checkTypeFile(elem.url) ?
+                                                                                                        <i className="fa fa-eye"></i> : ""}</u>
+                                                                                                </a>
+                                                                                            </div>
                                                                                         }
 
                                                                                     </div>

@@ -167,6 +167,8 @@ const Notifications = lazy(() => import("../modules/notification/components/inde
 const SystemSetting = lazy(() => import("../modules/system-admin/system-setting/components"))
 const Company = lazy(() => import("../modules/system-admin/company/components"))
 const ManageLinkSystem = lazy(() => import("../modules/system-admin/system-link/components"))
+const SystemApiManagement = lazy(() => import("../modules/system-admin/system-api/components/systemApiManagement"))
+
 const ManageRoleDefault = lazy(() => import("../modules/system-admin/root-role/components"))
 const ComponentsDefaultManagement = lazy(() => import("../modules/system-admin/system-component/components"))
 const ManageSystem = lazy(() => import("../modules/super-admin/system/components"))
@@ -274,6 +276,29 @@ class Routes extends Component {
                         pageName={"manage_link"}
                         layout={Layout}
                         component={ManageLinkSystem}
+                    />
+                    <PrivateRoute
+                        isLoading={this.props.systemApis?.isLoading}
+                        key={"manage_apis_default"}
+                        arrPage={[
+                            {
+                                link: "#",
+                                name: "system_administration",
+                                icon: "fa fa-key",
+                            },
+                            {
+                                link: "/system/apis-default-management",
+                                name: "manage_api",
+                                icon: "fa fa-link",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/system/apis-default-management"}
+                        path={"/system/apis-default-management"}
+                        pageName={"manage_api"}
+                        layout={Layout}
+                        component={SystemApiManagement}
                     />
                     <PrivateRoute
                         isLoading={this.props.systemComponents.isLoading}

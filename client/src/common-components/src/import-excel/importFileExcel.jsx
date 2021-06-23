@@ -143,7 +143,7 @@ class ImportFileExcel extends Component {
         return (
             <React.Fragment>
                 {/* <label>{translate('human_resource.choose_file')}</label> */}
-                <UploadFile onChange={this.handleChangeFile} deleteValue={false} importFile={this.handleChangeFileImport} disabled={disabled}
+                <UploadFile onChange={this.handleChangeFile} callFunctionDeleteFile={this.props.callFunctionDeleteFile} deleteValue={true} importFile={this.handleChangeFileImport} disabled={disabled}
                     accept=".xlms,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
             </React.Fragment>
         )

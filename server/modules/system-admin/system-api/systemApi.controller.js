@@ -1,0 +1,137 @@
+const { SystemApiServices } = require('./systemApi.service');
+const Logger = require(`../../../logs`);
+
+const getSystemApis = async (req, res) => {
+    try {
+        const data = await SystemApiServices.getSystemApis(req.query);
+        
+        Logger.info(req.user.email, 'get system api');
+        res.status(200).json({
+            success: true,
+            messages: ['get_system_api_success'],
+            content: data
+        });
+    } catch (error) {
+        Logger.error(req.user.email, 'get system api');
+       
+        res.status(400).json({
+            success: false,
+            messages: ['get_system_api_failure'],
+            content: error
+        });
+    }
+};
+
+/** Them moi system API */
+const createSystemApi = async (req, res) => {
+    try {
+        const systemAPi = await SystemApiServices.createSystemApi(req.body);
+        
+        Logger.info(req.user.email, 'create system api');
+        res.status(200).json({
+            success: true,
+            messages: ['create_system_api_success'],
+            content: systemAPi
+        });
+    } catch (error) {
+        Logger.error(req.user.email, 'create system api');
+        let messages = error?.messages === 'system_api_exist' ? ['system_api_exist'] : ['create_system_api_failure']
+       
+        res.status(400).json({
+            success: false,
+            messages: messages,
+            content: error
+        });
+    }
+};
+
+/** Chinh sua API */
+const editSystemApi = async (req, res) => {
+    try {
+        const systemApi = await SystemApiServices.editSystemApi(req.params.id, req.body);
+        
+        Logger.info(req.user.email, 'edit system api');
+        res.status(200).json({
+            success: true,
+            messages: ['edit_system_api_success'],
+            content: systemApi
+        });
+    } catch (error) {
+        Logger.error(req.user.email, 'edit system api');
+        res.status(400).json({
+            success: false,
+            messages: ['edit_system_api_failure'],
+            content: error
+        });
+    }
+}
+
+/** Xoa system API */
+const deleteSystemApi = async (req, res) => {
+    try {
+        const systemApi = await SystemApiServices.deleteSystemApi(req.params.id);
+        
+        Logger.info(req.user.email, 'delete system api');
+        res.status(200).json({
+            success: true,
+            messages: ['delete_system_api_success'],
+            content: systemApi
+        });
+    } catch (error) {
+        Logger.error(req.user.email, 'delete system api');
+        res.status(400).json({
+            success: false,
+            messages: ['delete_system_api_failure'],
+            content: error
+        });
+    }
+}
+
+const updateSystemApiAutomatic = async (app, req, res) => {
+    try {
+        const systemAPi = await SystemApiServices.updateSystemApiAutomatic(app);
+        
+        Logger.info(req.user.email, 'create system api');
+        res.status(200).json({
+            success: true,
+            messages: ['create_system_api_success'],
+            content: systemAPi
+        });
+    } catch (error) {
+        Logger.error(req.user.email, 'create system api');
+        res.status(400).json({
+            success: false,
+            messages: ['create_system_api_failure'],
+            content: error
+        });
+    }
+}
+
+const createPrivilegeApi = async (req, res) => {
+    try {
+        const privilegeApi = await SystemApiServices.createPrivilegeApi(req.body);
+        
+        Logger.info(req.user.email, 'create privilege api');
+        res.status(200).json({
+            success: true,
+            messages: ['create_privilege_api_success'],
+            content: privilegeApi
+        });
+    } catch (error) {
+        Logger.error(req.user.email, 'create privilege api');
+        res.status(400).json({
+            success: false,
+            messages: ['create_privilege_api_failure'],
+            content: error
+        });
+    }
+}
+
+exports.SystemApiControllers = {
+    getSystemApis,
+    createSystemApi,
+    editSystemApi,
+    deleteSystemApi,
+    updateSystemApiAutomatic,
+    createPrivilegeApi
+}

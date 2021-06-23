@@ -606,6 +606,9 @@ exports.links = [
         url: '/system/roles-default-management',
         apis: ['@all']
     }, {
+        url: '/system/apis-default-management',
+        apis: ['@all']
+    }, {
         url: '/system/links-default-management',
         apis: ['@all']
     }, {

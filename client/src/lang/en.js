@@ -95,6 +95,7 @@ export default {
             manage_role: "Manage Roles",
             manage_link: "Manage Pages",
             manage_component: "Manage permissions on page",
+            manage_api: "Manage API",
 
             manage_department: "Manage Departments",
             manage_user: "Manage Users",
@@ -641,6 +642,33 @@ export default {
                 system_component_name_invalid: "Component name invalid",
                 system_component_name_exist: "Component name exist",
             },
+
+            system_api: {
+                table: {
+                    path: "Path",
+                    method: "Method",
+                    description: "Description",
+                    category: "Category"
+                },
+                select_all_method: "Select all method",
+                non_select_method: "Select method",
+
+                modal: {
+                    create_title: 'Create a API',
+                    edit_title: 'Edit a API',
+                    delete_title: 'Delete a API'
+                },
+
+                placeholder: {
+                    input_path: "Type path",
+                    input_description: "Type description"
+                },
+
+                //Thông điệp trả về từ server
+                create_system_api_success: 'Create system API successfully',
+                create_system_api_failure: 'Create system API unsuccessfully',
+                system_api_exist: 'System API already exists'
+            }
         },
 
         super_admin: {

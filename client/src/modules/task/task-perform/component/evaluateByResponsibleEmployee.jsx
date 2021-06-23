@@ -586,7 +586,7 @@ function EvaluateByResponsibleEmployee(props) {
         }
         else if (type === "start") {
             // kiểm tra điều kiện trong tháng đánh giá
-            if (startDateISO > endOfMonth) {
+            if (startDateISO < startOfMonth || startDateISO > endOfMonth) {
                 msg = 'Khoảng đánh giá phải chứa tháng đánh giá'
             }
 
@@ -600,7 +600,7 @@ function EvaluateByResponsibleEmployee(props) {
             }
         }
         else if (type === "end") {
-            if (endDateISO < startOfMonth) {
+            if (endDateISO < startOfMonth || endDateISO>endOfMonth) {
                 msg = 'Khoảng đánh giá phải chứa tháng đánh giá'
             }
 
@@ -787,7 +787,25 @@ function EvaluateByResponsibleEmployee(props) {
             }
         }
     }
+    const getStartTask = async () => {
+        let { translate } = props;
+        let { task } = state;
+        let start = task?.startDate;
+        let startDate = formatDate(new Date(start));
+        let startTime = formatTime(new Date(start));
 
+        let { evaluatingMonth, endDate, endTime, idUser } = state;
+        console.log(startDate, startTime,endTime,endDate,evaluatingMonth);
+        let err = validateDateTime(evaluatingMonth, startDate, startTime, endDate, endTime, "start");
+
+        setState({
+            ...state,
+            errorOnStartDate: err,
+            startDate: startDate,
+            startTime: startTime,
+            indexReRender: state.indexReRender + 1,
+        });
+    }
     const getEndTask = async () => {
         let { translate } = props;
         let { task } = state;
@@ -1199,7 +1217,12 @@ function EvaluateByResponsibleEmployee(props) {
                                 <div className="row">
                                     <div className="col-md-6">
                                         <div className={`form-group ${errorOnStartDate === undefined ? "" : "has-error"}`}>
-                                            <label>{translate('task.task_management.eval_from')}<span className="text-red">*</span></label>
+                                            <label>
+                                                {translate('task.task_management.eval_from')}<span className="text-red">*</span>
+                                                <span className="pull-right" style={{ fontWeight: "normal", marginLeft: 10 }}>
+                                                    <a style={{ cursor: "pointer" }} onClick={() => getStartTask()}>Lấy thời điểm bắt đầu công việc</a>
+                                                </span>
+                                            </label>
                                             <DatePicker
                                                 id={`start_date_${id}_${perform}`}
                                                 value={startDate}
