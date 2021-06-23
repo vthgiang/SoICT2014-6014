@@ -141,7 +141,7 @@ exports.searchCourses = async (portal, params, company) => {
             }
         ])
 
-    listCourses= listCourses.map(course => {
+    listCourses = listCourses.map(course => {
         const infoEmployees = course.listEmployees.map((employee, index) => {
             return {
                 employee: {
@@ -158,7 +158,6 @@ exports.searchCourses = async (portal, params, company) => {
             educationProgram: course.educationProgram[0]
         }
     })
-    
     return {
         totalList,
         listCourses
