@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { SelectMulti, PaginateBar, DataTableSetting } from '../../../../common-components';
+import { SelectMulti, PaginateBar, DataTableSetting, DeleteNotification } from '../../../../common-components';
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
 
 import { SystemApiActions } from '../redux/actions'
 
 import { SystemApiCreateModal } from './systemApiCreateModal'
+import { SystemApiEditModal } from './systemApiEditModal'
 
 function SystemApiManagement (props) {
     const { translate, systemApis } = props
@@ -23,6 +24,8 @@ function SystemApiManagement (props) {
         page: 1,
         perPage: limit
     })
+    const [systemApiEdit, setSystemApiEdit] = useState({})
+    
     const { path, method, description, page, perPage } = state;
 
     useEffect(() => {
@@ -63,10 +66,6 @@ function SystemApiManagement (props) {
         })
     }
 
-    const handleEdit = (api) => {
-
-    }
-
     const setLimit = (value) => {
         if (Number(value) !== perPage) {
             setState({
@@ -103,6 +102,12 @@ function SystemApiManagement (props) {
         window.$("#create-system-api").modal("show");
     }
 
+    const handleEdit = (api) => {
+        setSystemApiEdit(api)
+
+        window.$("#edit-system-api").modal("show");
+    }
+
     const updateSystemApiAuto = () => {
         props.updateSystemApiAutomatic()
     }
@@ -112,7 +117,10 @@ function SystemApiManagement (props) {
     return (
         <React.Fragment>
             <SystemApiCreateModal/>
-
+            <SystemApiEditModal
+                _id={systemApiEdit?._id}
+                systemApi={systemApiEdit}
+            />
             <div className="box" >
                 <div className="box-body qlcv">
                     <div className="form-inline">
@@ -128,7 +136,7 @@ function SystemApiManagement (props) {
                             <input className="form-control" type="text" placeholder={translate('system_admin.system_api.placeholder.input_description')} name="name" onChange={(e) => handleChangeDescription(e)} />
                         </div>
 
-                        <button type="button" onClick={() => updateSystemApiAuto()} className="btn btn-success pull-right" title={translate('task.task_management.add_title')}>Update</button>
+                        <button type="button" onClick={() => updateSystemApiAuto()} className="btn btn-success pull-right" title={translate('system_admin.system_api.modal.create_title')}>Update</button>
                         <button type="button" onClick={() => handleAddApi()} className="btn btn-success pull-right" title={translate('task.task_management.add_title')}>{translate('task.task_management.add_task')}</button>
                     </div>
 
@@ -194,20 +202,20 @@ function SystemApiManagement (props) {
                         <tbody>
                             { listPaginateApi?.length > 0
                                 && listPaginateApi.map(api => 
-                                    <tr key={api._id}>
-                                        <td>{api.path}</td>
-                                        <td>{api.method}</td>
-                                        <td>{api.description}</td>
+                                    <tr key={api?._id}>
+                                        <td>{api?.path}</td>
+                                        <td>{api?.method}</td>
+                                        <td>{api?.description}</td>
                                         <td style={{ textAlign: 'center' }}>
-                                            <a onClick={() => handleEdit(api)} className="edit" title={translate('system_admin.system_component.edit')}><i className="material-icons">edit</i></a>
-                                            {/* <DeleteNotification
-                                                content={translate('system_admin.system_component.delete')}
+                                            <a onClick={() => handleEdit(api)} className="edit" title={translate('system_admin.system_api.modal.edit_title')}><i className="material-icons">edit</i></a>
+                                            <DeleteNotification
+                                                content={translate('system_admin.system_api.modal.delete_title')}
                                                 data={{
-                                                    id: component._id,
-                                                    info: component.name
+                                                    id: api?._id,
+                                                    info: api?.path
                                                 }}
-                                                func={props.deleteSystemComponent}
-                                            /> */}
+                                                func={props.deleteSystemApi}
+                                            />
                                         </td>
                                     </tr>    
                                 )
@@ -234,7 +242,8 @@ function mapState(state) {
 }
 const actions = {
     getSystemApis: SystemApiActions.getSystemApis,
-    updateSystemApiAutomatic: SystemApiActions.updateSystemApiAutomatic
+    updateSystemApiAutomatic: SystemApiActions.updateSystemApiAutomatic,
+    deleteSystemApi: SystemApiActions.deleteSystemApi
 }
 
 export default connect(mapState, actions)(withTranslate(SystemApiManagement))

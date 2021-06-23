@@ -8,14 +8,14 @@ import 'moment/locale/vi';
 import parse from 'html-react-parser';
 import './actionTab.css';
 import FilePreview from './FilePreview';
-import { ContentMaker, DateTimeConverter, ApiImage, ShowMoreShowLess, SelectBox, DatePicker, TimePicker, ErrorLabel } from '../../../../common-components';
+import { ContentMaker, DateTimeConverter, ApiImage, ShowMoreShowLess, SelectBox, DatePicker, TimePicker, ErrorLabel, DialogModal } from '../../../../common-components';
 
 import { getStorage } from '../../../../config';
 
 import { performTaskAction } from '../redux/actions';
 import { taskManagementActions } from "../../task-management/redux/actions";
 import { AuthActions } from '../../../auth/redux/actions';
-
+import { ModalEditDateCreatedAction } from './modalEditDateCreatedAction';
 import { SubTaskTab } from './subTaskTab';
 import { ViewProcess } from '../../task-process/component/task-process-management/viewProcess';
 import { IncomingDataTab } from './incomingDataTab';
@@ -25,6 +25,7 @@ import ValidationHelper from '../../../../helpers/validationHelper';
 import { formatDate } from '../../../../helpers/formatDate';
 import { convertTime } from '../../../../helpers/stringMethod';
 import { htmlToText } from 'html-to-text';
+import { formatTime } from '../../../project/projects/components/functionHelper';
 class ActionTab extends Component {
     constructor(props) {
         let idUser = getStorage("userId");
@@ -543,6 +544,20 @@ class ActionTab extends Component {
                 }
             }
         })
+    }
+    convertDateTime = (date, time) => {
+        let splitter = date.split("-");
+        let strDateTime = `${splitter[2]}/${splitter[1]}/${splitter[0]} ${time}`;
+        return new Date(strDateTime);
+    }
+
+    handleSaveChangeDateAction = (action) => {
+        let data = new FormData();
+        let createdDateAction = this.convertDateTime(action.dateCreatedAt, action.timeCreatedAt)
+        data.append("type", "edit-time")
+        data.append("creator", getStorage("userId"))
+        data.append("dateCreatedAt", createdDateAction)
+        this.props.editTaskAction(action.id, data, action.taskId);
     }
 
     handleSaveEditTaskComment = async (e, taskId, commentId, description) => {
@@ -1277,7 +1292,7 @@ class ActionTab extends Component {
         if (typeof data === 'string' || data instanceof String) {
             let index = data.lastIndexOf(".");
             let typeFile = data.substring(index + 1, data.length);
-            if (typeFile === "pdf" ) {
+            if (typeFile === "pdf") {
                 return true;
             }
             else return false;
@@ -1330,12 +1345,12 @@ class ActionTab extends Component {
 
         return (
             <div>
-             {
-                this.state.currentFilepri &&
-                <FilePreview
-                    file={this.state.currentFilepri}
-                />
-            }
+                {
+                    this.state.currentFilepri &&
+                    <FilePreview
+                        file={this.state.currentFilepri}
+                    />
+                }
                 <div className="nav-tabs-custom" style={{ boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none" }}>
                     <ul className="nav nav-tabs">
                         <li className="active"><a href="#taskAction" onClick={() => this.handleChangeContent("taskAction")} data-toggle="tab">{translate("task.task_perform.actions")} ({taskActions && taskActions.length})</a></li>
@@ -1448,7 +1463,10 @@ class ActionTab extends Component {
 
                                                             {/* Các file đính kèm */}
                                                             {!showSort && <ul className="list-inline tool-level1">
-                                                                <li><span className="text-sm">{<DateTimeConverter dateTime={item.createdAt} />}</span></li>
+                                                                {role === "accountable" ?
+                                                                    <ModalEditDateCreatedAction data={item} taskId={task._id} saveChangeDateCreatedAction={this.handleSaveChangeDateAction} /> :
+                                                                    <li><span className="text-sm">{<DateTimeConverter dateTime={item.createdAt} />}</span></li>
+                                                                }
                                                                 <li>{item.mandatory && !item.creator && <b className="text-sm">{translate("task.task_perform.mandatory_action")}</b>}</li>
                                                                 {((item.creator === undefined || item.creator === null) && role === "responsible") &&
                                                                     <li><a style={{ cursor: "pointer" }} className="text-green text-sm" onClick={(e) => this.handleConfirmAction(e, item._id, currentUser, task._id)}><i className="fa fa-check-circle" aria-hidden="true"></i> {translate("task.task_perform.confirm_action")}</a></li>}
@@ -1466,6 +1484,7 @@ class ActionTab extends Component {
                                                                     </React.Fragment>
                                                                 }
                                                             </ul>}
+
                                                             {!showSort && <ul className="list-inline tool-level1">
                                                                 {item.creator &&
                                                                     <React.Fragment>
@@ -1552,13 +1571,13 @@ class ActionTab extends Component {
                                                                                     />
                                                                                     :
                                                                                     <div>
-                                                                                    <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name}</a>
-                                                                                    <a href="#" onClick={() => this.showFilePreview(elem && elem.url)}>
-                                                                                        <u>{elem && this.checkTypeFile(elem.url) ?
-                                                                                            <i className="fa fa-eye"></i> : ""}</u>
-                                                                                    </a>
+                                                                                        <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name}</a>
+                                                                                        <a href="#" onClick={() => this.showFilePreview(elem && elem.url)}>
+                                                                                            <u>{elem && this.checkTypeFile(elem.url) ?
+                                                                                                <i className="fa fa-eye"></i> : ""}</u>
+                                                                                        </a>
                                                                                     </div>
-                                                                                        
+
                                                                                 }
                                                                             </div>
                                                                         })}
@@ -2140,7 +2159,7 @@ class ActionTab extends Component {
                                                                                                 file={elem}
                                                                                                 requestDownloadFile={this.requestDownloadFile}
                                                                                             />
-                                                                                            :<div>
+                                                                                            : <div>
                                                                                                 <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name}</a>
                                                                                                 <a href="#" onClick={() => this.showFilePreview(elem && elem.url)}>
                                                                                                     <u>{elem && this.checkTypeFile(elem.url) ?

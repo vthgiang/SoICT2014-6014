@@ -1,5 +1,6 @@
 const { SystemApi, PrivilegeApi } = require(`../../../models`);
 const { connect } = require(`../../../helpers/dbHelper`);
+const mongoose = require('mongoose');
 
 const getSystemApis = async (data) => {
     const { path, method, description, page = 1, perPage = 30 } = data
@@ -133,6 +134,35 @@ const updateSystemApiAutomatic = async (app) => {
     app._router.stack.forEach(print.bind(null, []))
 }
 
+/** Chinh sua API */
+const editSystemApi = async (systemApiId, data) => {
+    const { path, method, description } = data
+
+    let systemApi = await SystemApi(connect(DB_CONNECTION, process.env.DB_NAME))
+        .updateOne(
+            { _id: mongoose.Types.ObjectId(systemApiId) },
+            {
+                $set: {
+                    path: path,
+                    method: method,
+                    description: description
+                }
+            }
+        )
+    systemApi = await SystemApi(connect(DB_CONNECTION, process.env.DB_NAME))
+        .findById(systemApiId)
+
+    return systemApi
+}
+
+/** Xoa system API */
+const deleteSystemApi = async (systemApiId) => {
+    let systemApi = await SystemApi(connect(DB_CONNECTION, process.env.DB_NAME))
+        .deleteOne( { "_id" : mongoose.Types.ObjectId(systemApiId) } )
+
+    return
+}
+
 /** Thêm phân quyền API
  * @email email người được sử dụng
  * @apis mảng gồm các object { path, company }
@@ -160,6 +190,8 @@ const createPrivilegeApi = async (data) => {
 exports.SystemApiServices = {
     getSystemApis,
     createSystemApi,
+    editSystemApi,
+    deleteSystemApi,
     updateSystemApiAutomatic,
     createPrivilegeApi
 }

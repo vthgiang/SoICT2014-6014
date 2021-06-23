@@ -609,124 +609,61 @@ const stopTimeSheetLogAllDevices = (taskId, user) => {
  * Dừng bấm giờ: Lưu thời gian kết thúc và số giờ chạy (endTime và time)
  */
 exports.stopTimesheetLog = async (portal, params, body, user) => {
-    if(body.type && body.type === "cancel"){
+    if (body.type && body.type === "cancel") {
         const cancelTimer = await Task(connect(DB_CONNECTION, portal)).findOneAndUpdate(
-        { _id: params.taskId, "timesheetLogs._id": body.timesheetLog, "timesheetLogs.creator" : body.employee },
-        {
-            $pull: {
-                timesheetLogs: { _id: body.timesheetLog},
-            },
-        },
-        { new: true }).populate([
-            { path: "parent", select: "name" },
-            { path: "taskTemplate", select: "formula" },
-            { path: "organizationalUnit" },
-            { path: "collaboratedWithOrganizationalUnits.organizationalUnit" },
+            { _id: params.taskId, "timesheetLogs._id": body.timesheetLog, "timesheetLogs.creator": body.employee },
             {
-                path:
-                    "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator inactiveEmployees",
-                select: "name email _id active avatar",
+                $pull: {
+                    timesheetLogs: { _id: body.timesheetLog },
+                },
             },
-            {
-                path: "evaluations.results.employee",
-                select: "name email _id active",
-            },
-            {
-                path: "evaluations.results.organizationalUnit",
-                select: "name _id",
-            },
-            { path: "evaluations.results.kpis" },
-            { path: "taskActions.creator", select: "name email avatar" },
-            {
-                path: "taskActions.comments.creator",
-                select: "name email avatar",
-            },
-            {
-                path: "taskActions.timesheetLogs.creator",
-                select: "_id name email avatar",
-            },
-            { path: "commentsInProcess.creator", select: "name email avatar" },
-            {
-                path: "commentsInProcess.comments.creator",
-                select: "name email avatar",
-            },
-            {
-                path: "taskActions.evaluations.creator",
-                select: "name email avatar ",
-            },
-            { path: "taskComments.creator", select: "name email avatar" },
-            {
-                path: "taskComments.comments.creator",
-                select: "name email avatar",
-            },
-            { path: "documents.creator", select: "name email avatar" },
-            { path: "followingTasks.task" },
-            {
-                path: "preceedingTasks.task",
-                populate: [
-                    {
-                        path: "commentsInProcess.creator",
-                        select: "name email avatar",
-                    },
-                    {
-                        path: "commentsInProcess.comments.creator",
-                        select: "name email avatar",
-                    },
-                ],
-            },
-            { path: "timesheetLogs.creator", select: "name avatar _id email" },
-            { path: "hoursSpentOnTask.contributions.employee", select: "name" },
-            {
-                path: "process",
-                populate: {
-                    path: "tasks",
+            { new: true }).populate([
+                { path: "parent", select: "name" },
+                { path: "taskTemplate", select: "formula" },
+                { path: "organizationalUnit" },
+                { path: "collaboratedWithOrganizationalUnits.organizationalUnit" },
+                {
+                    path:
+                        "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator inactiveEmployees",
+                    select: "name email _id active avatar",
+                },
+                {
+                    path: "evaluations.results.employee",
+                    select: "name email _id active",
+                },
+                {
+                    path: "evaluations.results.organizationalUnit",
+                    select: "name _id",
+                },
+                { path: "evaluations.results.kpis" },
+                { path: "taskActions.creator", select: "name email avatar" },
+                {
+                    path: "taskActions.comments.creator",
+                    select: "name email avatar",
+                },
+                {
+                    path: "taskActions.timesheetLogs.creator",
+                    select: "_id name email avatar",
+                },
+                { path: "commentsInProcess.creator", select: "name email avatar" },
+                {
+                    path: "commentsInProcess.comments.creator",
+                    select: "name email avatar",
+                },
+                {
+                    path: "taskActions.evaluations.creator",
+                    select: "name email avatar ",
+                },
+                { path: "taskComments.creator", select: "name email avatar" },
+                {
+                    path: "taskComments.comments.creator",
+                    select: "name email avatar",
+                },
+                { path: "documents.creator", select: "name email avatar" },
+                { path: "followingTasks.task" },
+                {
+                    path: "preceedingTasks.task",
                     populate: [
-                        { path: "parent", select: "name" },
-                        { path: "taskTemplate", select: "formula" },
-                        { path: "organizationalUnit" },
-                        {
-                            path:
-                                "collaboratedWithOrganizationalUnits.organizationalUnit",
-                        },
-                        {
-                            path:
-                                "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
-                            select: "name email _id active avatar",
-                        },
-                        {
-                            path: "evaluations.results.employee",
-                            select: "name email _id active",
-                        },
-                        {
-                            path: "evaluations.results.organizationalUnit",
-                            select: "name _id",
-                        },
-                        { path: "evaluations.results.kpis" },
-                        {
-                            path: "taskActions.creator",
-                            select: "name email avatar",
-                        },
-                        {
-                            path: "taskActions.comments.creator",
-                            select: "name email avatar",
-                        },
-                        {
-                            path: "taskActions.evaluations.creator",
-                            select: "name email avatar ",
-                        },
-                        {
-                            path: "taskComments.creator",
-                            select: "name email avatar",
-                        },
-                        {
-                            path: "taskComments.comments.creator",
-                            select: "name email avatar",
-                        },
-                        {
-                            path: "documents.creator",
-                            select: "name email avatar",
-                        },
-                        { path: "process" },
                         {
                             path: "commentsInProcess.creator",
                             select: "name email avatar",
@@ -737,17 +674,80 @@ exports.stopTimesheetLog = async (portal, params, body, user) => {
                         },
                     ],
                 },
-            },
-            { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
-            { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
-        ])
-    
+                { path: "timesheetLogs.creator", select: "name avatar _id email" },
+                { path: "hoursSpentOnTask.contributions.employee", select: "name" },
+                {
+                    path: "process",
+                    populate: {
+                        path: "tasks",
+                        populate: [
+                            { path: "parent", select: "name" },
+                            { path: "taskTemplate", select: "formula" },
+                            { path: "organizationalUnit" },
+                            {
+                                path:
+                                    "collaboratedWithOrganizationalUnits.organizationalUnit",
+                            },
+                            {
+                                path:
+                                    "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
+                                select: "name email _id active avatar",
+                            },
+                            {
+                                path: "evaluations.results.employee",
+                                select: "name email _id active",
+                            },
+                            {
+                                path: "evaluations.results.organizationalUnit",
+                                select: "name _id",
+                            },
+                            { path: "evaluations.results.kpis" },
+                            {
+                                path: "taskActions.creator",
+                                select: "name email avatar",
+                            },
+                            {
+                                path: "taskActions.comments.creator",
+                                select: "name email avatar",
+                            },
+                            {
+                                path: "taskActions.evaluations.creator",
+                                select: "name email avatar ",
+                            },
+                            {
+                                path: "taskComments.creator",
+                                select: "name email avatar",
+                            },
+                            {
+                                path: "taskComments.comments.creator",
+                                select: "name email avatar",
+                            },
+                            {
+                                path: "documents.creator",
+                                select: "name email avatar",
+                            },
+                            { path: "process" },
+                            {
+                                path: "commentsInProcess.creator",
+                                select: "name email avatar",
+                            },
+                            {
+                                path: "commentsInProcess.comments.creator",
+                                select: "name email avatar",
+                            },
+                        ],
+                    },
+                },
+                { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
+                { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
+            ])
+
         cancelTimer.evaluations.reverse();
         // Tắt modal đếm giờ nếu công việc mở ở nhiều trinh duyệt
         stopTimeSheetLogAllDevices(params.taskId, user)
         return cancelTimer;
     }
-    else{
+    else {
         let stoppedAt;
         let timer, duration;
 
@@ -1257,18 +1257,18 @@ exports.editCommentOfTaskAction = async (portal, params, body, files) => {
             new: true,
         }
     ).populate([
-            { path: "taskActions.creator", select: "name email avatar " },
-            {
-                path: "taskActions.comments.creator",
-                select: "name email avatar ",
-            },
-            {
-                path: "taskActions.evaluations.creator",
-                select: "name email avatar ",
-            },
-            { path: "taskActions.timesheetLogs.creator", select: "_id name email" }
-        ]);
-    
+        { path: "taskActions.creator", select: "name email avatar " },
+        {
+            path: "taskActions.comments.creator",
+            select: "name email avatar ",
+        },
+        {
+            path: "taskActions.evaluations.creator",
+            select: "name email avatar ",
+        },
+        { path: "taskActions.timesheetLogs.creator", select: "_id name email" }
+    ]);
+
     return action.taskActions;
 };
 
@@ -1296,17 +1296,17 @@ exports.deleteCommentOfTaskAction = async (portal, params) => {
         { $pull: { "taskActions.$.comments": { _id: params.commentId } } },
         { new: true }
     ).populate([
-            { path: "taskActions.creator", select: "name email avatar " },
-            {
-                path: "taskActions.comments.creator",
-                select: "name email avatar ",
-            },
-            {
-                path: "taskActions.evaluations.creator",
-                select: "name email avatar",
-            },
-            { path: "taskActions.timesheetLogs.creator", select: "_id name email" }
-        ]);
+        { path: "taskActions.creator", select: "name email avatar " },
+        {
+            path: "taskActions.comments.creator",
+            select: "name email avatar ",
+        },
+        {
+            path: "taskActions.evaluations.creator",
+            select: "name email avatar",
+        },
+        { path: "taskActions.timesheetLogs.creator", select: "_id name email" }
+    ]);
 
     let i = 0;
     for (i = 0; i < files.length; i++) {
@@ -1475,18 +1475,18 @@ exports.createTaskAction = async (portal, params, body, files) => {
  * Sửa hoạt động của cộng việc
  */
 exports.editTaskAction = async (portal, params, body, files) => {
-    let action = await Task(connect(DB_CONNECTION, portal)).findOneAndUpdate(
-        { _id: params.taskId, "taskActions._id": params.actionId },
-        {
-            $set: {
-                "taskActions.$.description": body.description,
+    console.log('params', params)
+    console.log('body', body)
+    if (body.type == 'edit-time') {
+        let action = await Task(connect(DB_CONNECTION, portal)).findOneAndUpdate(
+            { _id: params.taskId, "taskActions._id": params.actionId },
+            {
+                $set: {
+                    "taskActions.$.createdAt": body.dateCreatedAt,
+                },
             },
-            $push: {
-                "taskActions.$.files": files,
-            },
-        },
-        {new: true}
-    ).populate([
+            { new: true }
+        ).populate([
             { path: "taskActions.creator", select: "name email avatar" },
             {
                 path: "taskActions.comments.creator",
@@ -1498,7 +1498,34 @@ exports.editTaskAction = async (portal, params, body, files) => {
             },
             { path: "taskActions.timesheetLogs.creator", select: "_id name email" }
         ]);
-    return action.taskActions;
+        return action.taskActions;
+    }
+    else {
+        let action = await Task(connect(DB_CONNECTION, portal)).findOneAndUpdate(
+            { _id: params.taskId, "taskActions._id": params.actionId },
+            {
+                $set: {
+                    "taskActions.$.description": body.description,
+                },
+                $push: {
+                    "taskActions.$.files": files,
+                },
+            },
+            { new: true }
+        ).populate([
+            { path: "taskActions.creator", select: "name email avatar" },
+            {
+                path: "taskActions.comments.creator",
+                select: "name email avatar",
+            },
+            {
+                path: "taskActions.evaluations.creator",
+                select: "name email avatar ",
+            },
+            { path: "taskActions.timesheetLogs.creator", select: "_id name email" }
+        ]);
+        return action.taskActions;
+    }
 };
 
 /**
@@ -1523,23 +1550,23 @@ exports.deleteTaskAction = async (portal, params) => {
         },
         { new: true }
     ).populate([
-            { path: "taskActions.creator", select: "name email avatar" },
-            {
-                path: "taskActions.comments.creator",
-                select: "name email avatar",
-            },
-            {
-                path: "taskActions.evaluations.creator",
-                select: "name email avatar",
-            },
-            { path: "taskActions.timesheetLogs.creator", select: "_id name email" }
-        ]);
+        { path: "taskActions.creator", select: "name email avatar" },
+        {
+            path: "taskActions.comments.creator",
+            select: "name email avatar",
+        },
+        {
+            path: "taskActions.evaluations.creator",
+            select: "name email avatar",
+        },
+        { path: "taskActions.timesheetLogs.creator", select: "_id name email" }
+    ]);
     //xoa file sau khi xoa hoat dong
     let i;
     for (i = 0; i < files.length; i++) {
         fs.unlinkSync(files[i].url);
     }
-   
+
     return action.taskActions;
 };
 
@@ -1727,18 +1754,18 @@ exports.editTaskComment = async (portal, params, body, files) => {
             $push: {
                 "taskComments.$.files": files,
             },
-        },{new: true}
+        }, { new: true }
     ).populate([
-            { path: "taskComments.creator", select: "name email avatar " },
-            {
-                path: "taskComments.comments.creator",
-                select: "name email avatar",
-            },
-            {
-                path: "taskActions.evaluations.creator",
-                select: "name email avatar ",
-            },
-        ]);
+        { path: "taskComments.creator", select: "name email avatar " },
+        {
+            path: "taskComments.comments.creator",
+            select: "name email avatar",
+        },
+        {
+            path: "taskActions.evaluations.creator",
+            select: "name email avatar ",
+        },
+    ]);
     return taskComment.taskComments;
 };
 /**
@@ -1754,22 +1781,22 @@ exports.deleteTaskComment = async (portal, params) => {
         { $replaceRoot: { newRoot: "$files" } },
     ]);
 
-    
+
     const comment = await Task(connect(DB_CONNECTION, portal)).findOneAndUpdate(
         { _id: params.taskId, "taskComments._id": params.commentId },
         { $pull: { taskComments: { _id: params.commentId } } },
         { new: true }
     ).populate([
-            { path: "taskComments.creator", select: "name email avatar " },
-            {
-                path: "taskComments.comments.creator",
-                select: "name email avatar ",
-            },
-            {
-                path: "taskActions.evaluations.creator",
-                select: "name email avatar ",
-            },
-        ]);
+        { path: "taskComments.creator", select: "name email avatar " },
+        {
+            path: "taskComments.comments.creator",
+            select: "name email avatar ",
+        },
+        {
+            path: "taskActions.evaluations.creator",
+            select: "name email avatar ",
+        },
+    ]);
 
     //xoa files
     let i;
@@ -1989,16 +2016,16 @@ exports.editCommentOfTaskComment = async (portal, params, body, files) => {
             new: true,
         }
     ).populate([
-            { path: "taskComments.creator", select: "name email avatar" },
-            {
-                path: "taskComments.comments.creator",
-                select: "name email avatar",
-            },
-            {
-                path: "taskActions.evaluations.creator",
-                select: "name email avatar ",
-            },
-        ]);
+        { path: "taskComments.creator", select: "name email avatar" },
+        {
+            path: "taskComments.comments.creator",
+            select: "name email avatar",
+        },
+        {
+            path: "taskActions.evaluations.creator",
+            select: "name email avatar ",
+        },
+    ]);
     return comment.taskComments;
 };
 /**
@@ -2029,16 +2056,16 @@ exports.deleteCommentOfTaskComment = async (portal, params) => {
         },
         { new: true }
     ).populate([
-            { path: "taskComments.creator", select: "name email avatar" },
-            {
-                path: "taskComments.comments.creator",
-                select: "name email avatar",
-            },
-            {
-                path: "taskActions.evaluations.creator",
-                select: "name email avatar ",
-            },
-        ]);
+        { path: "taskComments.creator", select: "name email avatar" },
+        {
+            path: "taskComments.comments.creator",
+            select: "name email avatar",
+        },
+        {
+            path: "taskActions.evaluations.creator",
+            select: "name email avatar ",
+        },
+    ]);
 
     //xoa file sau khi xoa binh luan
     let i = 0;
@@ -2051,7 +2078,7 @@ exports.deleteCommentOfTaskComment = async (portal, params) => {
  * Đánh giá hoạt động
  */
 exports.evaluationAction = async (portal, params, body) => {
-    
+
     // Kiểm tra xem đánh giá hoạt động đã tồn tại hay chưa - nếu chưa tạo mới, nếu có ghi đè
     let danhgia = await Task(connect(DB_CONNECTION, portal)).aggregate([
         { $match: { _id: mongoose.Types.ObjectId(params.taskId) } },
@@ -2460,7 +2487,7 @@ exports.createDescriptionEvaluationTaskLogs = async (portal, userId, newTask, ol
 exports.getTaskLog = async (portal, taskId) => {
     let task = await Task(connect(DB_CONNECTION, portal))
         .findById(taskId)
-        .populate({path: "logs.creator", select: "_id name email avatar"});
+        .populate({ path: "logs.creator", select: "_id name email avatar" });
 
     return task.logs.reverse();
 };
@@ -2987,26 +3014,26 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
 
                 inactiveEmployees: inactiveEmployees,
             } : {
-                name: name,
-                description: description,
-                progress: progress,
-                priority: parseInt(priority[0]),
-                formula: formula,
-                parent: parent,
-                taskProject: taskProject ?? undefined,
+                    name: name,
+                    description: description,
+                    progress: progress,
+                    priority: parseInt(priority[0]),
+                    formula: formula,
+                    parent: parent,
+                    taskProject: taskProject ?? undefined,
 
-                startDate: new Date(startDate),
-                endDate: new Date(endDate),
+                    startDate: new Date(startDate),
+                    endDate: new Date(endDate),
 
-                collaboratedWithOrganizationalUnits: newCollab,
+                    collaboratedWithOrganizationalUnits: newCollab,
 
-                responsibleEmployees: responsibleEmployees,
-                consultedEmployees: consultedEmployees,
-                accountableEmployees: accountableEmployees,
-                informedEmployees: informedEmployees,
+                    responsibleEmployees: responsibleEmployees,
+                    consultedEmployees: consultedEmployees,
+                    accountableEmployees: accountableEmployees,
+                    informedEmployees: informedEmployees,
 
-                inactiveEmployees: inactiveEmployees,
-            },
+                    inactiveEmployees: inactiveEmployees,
+                },
         },
         { $new: true }
     );
@@ -6147,7 +6174,7 @@ exports.editDocument = async (portal, taskId, documentId, body, files) => {
  *  thêm bình luận
  */
 exports.createComment = async (portal, params, body, files) => {
-   
+
     const commentss = {
         description: body.description,
         creator: body.creator,

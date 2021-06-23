@@ -712,6 +712,12 @@ export default {
                     input_description: "Nhập mô tả"
                 },
 
+                modal: {
+                    create_title: 'Thêm mới API',
+                    edit_title: 'Chỉnh sửa API',
+                    delete_title: 'Xóa API'
+                },
+
                 //Thông điệp trả về từ server
                 create_system_api_success: 'Thêm system API thành công',
                 create_system_api_failure: 'Thêm system API thất bại',

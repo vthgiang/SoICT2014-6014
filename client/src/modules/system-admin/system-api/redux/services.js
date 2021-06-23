@@ -3,6 +3,8 @@ import { sendRequest } from '../../../../helpers/requestHelper';
 export const SystemApiServices = {
     getSystemApis,
     createSystemApi,
+    editSystemApi,
+    deleteSystemApi,
     updateSystemApiAutomatic
 };
 
@@ -27,11 +29,27 @@ function getSystemApis(params) {
  * @data gồm: path, method, description
 */
 function createSystemApi(data) {
-
     return sendRequest({
         url: `${ process.env.REACT_APP_SERVER }/system-admin/system-api/system-apis`,
         method: 'POST',
         data: data
+    }, true, true, 'system_admin.system_api');
+}
+
+/** Chinh sua system api */
+function editSystemApi (systemApiId, data) {
+    return sendRequest({
+        url: `${ process.env.REACT_APP_SERVER }/system-admin/system-api/system-apis/${systemApiId}`,
+        method: 'PATCH',
+        data: data
+    }, true, true, 'system_admin.system_api');
+}
+
+/** Xoa system API */
+function deleteSystemApi(systemApiId) {
+    return sendRequest({
+        url: `${ process.env.REACT_APP_SERVER }/system-admin/system-api/system-apis/${systemApiId}`,
+        method: 'DELETE',
     }, true, true, 'system_admin.system_api');
 }
 
