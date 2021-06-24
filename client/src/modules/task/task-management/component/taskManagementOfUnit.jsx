@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Swal from 'sweetalert2';
 import { withTranslate } from 'react-redux-multilingual';
-import { DataTableSetting, DatePicker, PaginateBar, InputTags, SelectMulti, TreeTable, ExportExcel, Tree } from '../../../../common-components';
+import { DataTableSetting, DatePicker, PaginateBar, InputTags, SelectMulti, TreeTable, ExportExcel, ToolTip } from '../../../../common-components';
 import { getFormatDateFromTime } from '../../../../helpers/stringMethod';
 import moment from 'moment';
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
@@ -649,8 +649,8 @@ class TaskManagementOfUnit extends Component {
                     description: dataTemp?.[n]?.description ? parse(dataTemp[n].description) : "",
                     organization: dataTemp[n].organizationalUnit ? dataTemp[n].organizationalUnit.name : translate('task.task_management.err_organizational_unit'),
                     priority: this.convertPriorityData(dataTemp[n].priority),
-                    responsibleEmployees: dataTemp[n].responsibleEmployees && dataTemp[n].responsibleEmployees.map(o => o.name).join(', '),
-                    accountableEmployees: dataTemp[n].accountableEmployees && dataTemp[n].accountableEmployees.map(o => o.name).join(', '),
+                    responsibleEmployees: dataTemp[n].responsibleEmployees ? (<ToolTip dataTooltip={dataTemp[n].responsibleEmployees.map(o => o.name)} />) : null,
+                    accountableEmployees: dataTemp[n].accountableEmployees ? (<ToolTip dataTooltip={dataTemp[n].accountableEmployees.map(o => o.name)} />) : null,
                     creatorEmployees: dataTemp[n].creator && dataTemp[n].creator.name,
                     startDate: getFormatDateFromTime(dataTemp[n].startDate, 'dd-mm-yyyy'),
                     endDate: getFormatDateFromTime(dataTemp[n].endDate, 'dd-mm-yyyy'),
