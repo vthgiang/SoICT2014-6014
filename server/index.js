@@ -8,7 +8,7 @@ const server = require("http").createServer(app);
 const swaggerUi = require("swagger-ui-express");
 const { swaggerJsonData } = require("./api-docs/swagger.js");
 const { auth } = require(`./middleware`);
-const { SystemApiControllers } = require('./modules/system-admin/system-api/systemApi.controller');
+const { SystemApiControllers } = require('./modules/system-admin/system-api/system-api-management/systemApi.controller');
 
 require("dotenv").config();
 // require("./connectDatabase");
@@ -138,7 +138,7 @@ router.use(
 );
 router.use(
     "/system-admin/system-api",
-    require("./modules/system-admin/system-api/systemApi.route")
+    require("./modules/system-admin/system-api/system-api-management/systemApi.route")
 );
 router.use(
     "/system-admin/root-role",

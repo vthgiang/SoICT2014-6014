@@ -129,6 +129,11 @@ const initDB = async() => {
             deleteSoft: false
         },
         {
+            url: '/system/privilege-api-management',
+            description: 'Quản lý các phân quyền API của hệ thống',
+            deleteSoft: false
+        },
+        {
             url: '/system/components-default-management',
             description: 'Quản lý các thành phần UI mặc định khi khởi tạo cho 1 công ty',
             deleteSoft: false

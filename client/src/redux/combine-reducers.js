@@ -6,7 +6,7 @@ import { systemSetting } from '../modules/system-admin/system-setting/redux/redu
 import { auth } from '../modules/auth/redux/reducers';
 import { company } from '../modules/system-admin/company/redux/reducers';
 import { systemLinks } from '../modules/system-admin/system-link/redux/reducers';
-import { systemApis } from '../modules/system-admin/system-api/redux/reducers';
+import { systemApis } from '../modules/system-admin/system-api/system-api-management/redux/reducers';
 
 import { system } from '../modules/super-admin/system/redux/reducers';
 import { user } from '../modules/super-admin/user/redux/reducers';

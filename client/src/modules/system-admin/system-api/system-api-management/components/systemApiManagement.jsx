@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { SelectMulti, PaginateBar, DataTableSetting, DeleteNotification } from '../../../../common-components';
-import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
+import { SelectMulti, PaginateBar, DataTableSetting, DeleteNotification } from '../../../../../common-components';
+import { getTableConfiguration } from '../../../../../helpers/tableConfiguration'
 
 import { SystemApiActions } from '../redux/actions'
 
@@ -99,13 +99,13 @@ function SystemApiManagement (props) {
     }
 
     const handleAddApi = () => {
-        window.$("#create-system-api").modal("show");
+        window.$("#create-system-api-modal").modal("show");
     }
 
     const handleEdit = (api) => {
         setSystemApiEdit(api)
 
-        window.$("#edit-system-api").modal("show");
+        window.$("#edit-system-api-modal").modal("show");
     }
 
     const updateSystemApiAuto = () => {

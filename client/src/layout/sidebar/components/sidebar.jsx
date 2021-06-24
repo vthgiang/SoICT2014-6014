@@ -123,6 +123,11 @@ class SideBar extends Component {
                                             path: "/system/apis-default-management",
                                         },
                                         {
+                                            name: "menu.privilege_api",
+                                            icon: "fa fa-link",
+                                            path: "/system/privilege-api-management",
+                                        },
+                                        {
                                             name: "menu.manage_component",
                                             icon: "fa fa-object-group",
                                             path: "/system/components-default-management",

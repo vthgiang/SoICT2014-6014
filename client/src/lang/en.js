@@ -96,6 +96,7 @@ export default {
             manage_link: "Manage Pages",
             manage_component: "Manage permissions on page",
             manage_api: "Manage API",
+            privilege_api: "Manage permissions API",
 
             manage_department: "Manage Departments",
             manage_user: "Manage Users",
@@ -668,6 +669,15 @@ export default {
                 create_system_api_success: 'Create system API successfully',
                 create_system_api_failure: 'Create system API unsuccessfully',
                 system_api_exist: 'System API already exists'
+            },
+
+            privilege_system_api: {
+                table: {
+                    email: "Email"
+                },
+                placeholder: {
+                    input_email: "Type email"
+                },
             }
         },
 
