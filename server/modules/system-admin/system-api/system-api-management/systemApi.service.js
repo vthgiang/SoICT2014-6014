@@ -1,5 +1,5 @@
-const { SystemApi, PrivilegeApi } = require(`../../../models`);
-const { connect } = require(`../../../helpers/dbHelper`);
+const { SystemApi } = require(`../../../../models`);
+const { connect } = require(`../../../../helpers/dbHelper`);
 const mongoose = require('mongoose');
 
 const getSystemApis = async (data) => {
@@ -163,35 +163,10 @@ const deleteSystemApi = async (systemApiId) => {
     return
 }
 
-/** Thêm phân quyền API
- * @email email người được sử dụng
- * @apis mảng gồm các object { path, company }
- */
-const createPrivilegeApi = async (data) => {
-    const { email, apis} = data
-    
-    const token = await jwt.sign(
-        {
-            email: email,
-        },
-        process.env.TOKEN_SECRET
-    );
-
-    let privilege = PrivilegeApi(connect(DB_CONNECTION, process.env.DB_NAME))
-        .create({
-            email: email,
-            apis: apis,
-            token: token
-        })
-
-    return privilege
-}
-
 exports.SystemApiServices = {
     getSystemApis,
     createSystemApi,
     editSystemApi,
     deleteSystemApi,
     updateSystemApiAutomatic,
-    createPrivilegeApi
 }

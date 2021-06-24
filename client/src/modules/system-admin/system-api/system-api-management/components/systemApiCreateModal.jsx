@@ -2,31 +2,20 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, SelectBox } from '../../../../common-components';
+import { DialogModal, SelectBox } from '../../../../../common-components';
 
 import { SystemApiActions } from '../redux/actions'
 
-function SystemApiEditModal(props) {
+function SystemApiCreateModal(props) {
     const { translate } = props;
 
     const [state, setState] = useState({
-        id: null,
         path: null,
         method: 'GET',
         description: null,
     });
 
-    const { id, path, method, description } = state;
-
-    if (props._id !== id) {
-        setState({
-            ...state,
-            id: props._id,
-            path: props.systemApi?.path,
-            method: props.systemApi?.method,
-            description: props.systemApi?.description,
-        })
-    }
+    const { path, method, description } = state;
 
     const handleChangePath = (e) => {
         setState({
@@ -50,20 +39,20 @@ function SystemApiEditModal(props) {
     }
 
     const handleSubmit = () => {
-        props.editSystemApi(id, {
+        props.createSystemApi({
             path: path, 
             method: method, 
             description: description, 
         })
-        window.$("#edit-system-api").modal("hide");
+        window.$("#create-system-api-modal").modal("hide");
     }
 
     return (
         <React.Fragment>
             <DialogModal
-                modalID="edit-system-api" isLoading={false}
+                modalID="create-system-api-modal" isLoading={false}
                 formID="form-create-system-api"
-                title={translate('system_admin.system_api.modal.edit_title')}
+                title={translate('system_admin.system_api.modal.create_title')}
                 msg_success={translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.success')}
                 msg_faile={translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.failure')}
                 func={handleSubmit}
@@ -73,7 +62,7 @@ function SystemApiEditModal(props) {
                     {/* Path */}
                     <div className="form-group">
                         <label>{translate('system_admin.system_api.table.path')}</label>
-                        <input className="form-control" type="text" placeholder={translate('system_admin.system_api.placeholder.input_path')} value={path} onChange={(e) => handleChangePath(e)} />
+                        <input className="form-control" type="text" placeholder={translate('system_admin.system_api.placeholder.input_path')} name="name" onChange={(e) => handleChangePath(e)} />
                     </div>
 
                     {/* Method */}
@@ -106,7 +95,6 @@ function SystemApiEditModal(props) {
                                 }
                             ]}
                             onChange={handleChangeMethod}
-                            value={method}
                             multiple={false}
                         />
                     </div>
@@ -114,7 +102,7 @@ function SystemApiEditModal(props) {
                     {/* Description */}
                     <div className="form-group">
                         <label>{translate('system_admin.system_api.table.description')}</label>
-                        <input className="form-control" type="text" value={description} placeholder={translate('system_admin.system_api.placeholder.input_description')} onChange={(e) => handleChangeDescription(e)} />
+                        <input className="form-control" type="text" name="name" placeholder={translate('system_admin.system_api.placeholder.input_description')} onChange={(e) => handleChangeDescription(e)} />
                     </div>
                 </form>
             </DialogModal>
@@ -129,8 +117,8 @@ function mapState(state) {
 }
 
 const actionCreators = {
-    editSystemApi: SystemApiActions.editSystemApi
+    createSystemApi: SystemApiActions.createSystemApi
 };
 
-const connectedSystemApiEditModal = connect(mapState, actionCreators)(withTranslate(SystemApiEditModal));
-export { connectedSystemApiEditModal as SystemApiEditModal };
+const connectedSystemApiCreateModal = connect(mapState, actionCreators)(withTranslate(SystemApiCreateModal));
+export { connectedSystemApiCreateModal as SystemApiCreateModal };

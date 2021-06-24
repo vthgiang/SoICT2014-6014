@@ -98,6 +98,7 @@ export default {
             manage_link: "Quản lý trang",
             manage_component: "Quản lý phân quyền trên các trang",
             manage_api: "Quản lý API",
+            privilege_api: "Quản lý phân quyền API",
 
             manage_department: "Quản lý cơ cấu tổ chức",
             manage_user: "Quản lý người dùng",
@@ -702,14 +703,16 @@ export default {
                     path: "Đường dẫn",
                     method: "Phương thức",
                     description: "Mô tả",
-                    category: "Danh mục"
+                    category: "Danh mục",
+                    email: "Email"
                 },
                 select_all_method: "Chọn tất cả các phương thức",
                 non_select_method: "Chọn phương thức",
 
                 placeholder: {
                     input_path: "Nhập đường dẫn",
-                    input_description: "Nhập mô tả"
+                    input_description: "Nhập mô tả",
+                    input_email: "Nhập email người dùng"
                 },
 
                 modal: {
@@ -722,6 +725,15 @@ export default {
                 create_system_api_success: 'Thêm system API thành công',
                 create_system_api_failure: 'Thêm system API thất bại',
                 system_api_exist: 'System API đã tồn tại'
+            },
+
+            privilege_system_api: {
+                table: {
+                    email: "Email"
+                },
+                placeholder: {
+                    input_email: "Nhập email"
+                },
             }
         },
 

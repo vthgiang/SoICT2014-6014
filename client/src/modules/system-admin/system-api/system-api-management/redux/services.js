@@ -1,4 +1,4 @@
-import { sendRequest } from '../../../../helpers/requestHelper';
+import { sendRequest } from '../../../../../helpers/requestHelper';
 
 export const SystemApiServices = {
     getSystemApis,

@@ -167,7 +167,8 @@ const Notifications = lazy(() => import("../modules/notification/components/inde
 const SystemSetting = lazy(() => import("../modules/system-admin/system-setting/components"))
 const Company = lazy(() => import("../modules/system-admin/company/components"))
 const ManageLinkSystem = lazy(() => import("../modules/system-admin/system-link/components"))
-const SystemApiManagement = lazy(() => import("../modules/system-admin/system-api/components/systemApiManagement"))
+const SystemApiManagement = lazy(() => import("../modules/system-admin/system-api/system-api-management/components/systemApiManagement"))
+const PrivilegeApiManagement = lazy(() => import("../modules/system-admin/system-api/system-api-privilege/components/privilegeApiManagement"))
 
 const ManageRoleDefault = lazy(() => import("../modules/system-admin/root-role/components"))
 const ComponentsDefaultManagement = lazy(() => import("../modules/system-admin/system-component/components"))
@@ -299,6 +300,29 @@ class Routes extends Component {
                         pageName={"manage_api"}
                         layout={Layout}
                         component={SystemApiManagement}
+                    />
+                    <PrivateRoute
+                        isLoading={this.props.systemApis?.isLoading}
+                        key={"manage_privilege_api"}
+                        arrPage={[
+                            {
+                                link: "#",
+                                name: "system_administration",
+                                icon: "fa fa-key",
+                            },
+                            {
+                                link: "/system/privilege-api-management",
+                                name: "privilege_api",
+                                icon: "fa fa-link",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/system/privilege-api-management"}
+                        path={"/system/privilege-api-management"}
+                        pageName={"privilege_api"}
+                        layout={Layout}
+                        component={PrivilegeApiManagement}
                     />
                     <PrivateRoute
                         isLoading={this.props.systemComponents.isLoading}
