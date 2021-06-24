@@ -3761,6 +3761,7 @@ export default {
                     new_value: "New value",
                     old_value: "Old value",
                     auto_value: "Auto value",
+                    refresh: "Refresh",
                     /**
                      * Management
                      */

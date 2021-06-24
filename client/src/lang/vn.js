@@ -4095,7 +4095,7 @@ export default {
                     refresh_all_kpis: 'Tính lại điểm KPI các đơn vị',
                     update_task_importance: `(*)Cập nhật độ quan trọng công việc và Tính điểm KPI `,
                     cal_all_kpis_title: `(*)Cập nhật độ quan trọng công việc và Tính điểm tất cả KPI `,
-
+                    refresh: "Làm mới",
                     /**
                      * Management
                      */
