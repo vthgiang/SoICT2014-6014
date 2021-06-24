@@ -295,6 +295,21 @@ function EmployeeKpiEvaluateModal(props) {
                 return translate('task.task_management.canceled');
         }
     }
+    const handleRefresh = () => {
+        if (props.kpimembers.tasks) {
+            let tasks = props.kpimembers.tasks;
+            let importanceLevels = {};
+            tasks.forEach(element => {
+                importanceLevels[element.taskId] = element.results.taskImportanceLevel;
+            });
+            setState({
+                ...state,
+                tasks: tasks,
+                points: importanceLevels,
+                dataStatus: DATA_STATUS.FINISHED,
+            });
+        }
+    }
 
     if (kpimembers.tasks) {
         myTask = kpimembers.tasks;
@@ -375,6 +390,19 @@ function EmployeeKpiEvaluateModal(props) {
                                     </ToolTip>
                                 }
                                 {exportData && <ExportExcel id="export-employee-kpi-evaluate-detail-kpi" exportData={exportData} />}
+                                {
+                                    currentKpi &&
+                                    <ToolTip
+                                        type="text_tooltip"
+                                        dataTooltip={[
+                                            ` ${translate('kpi.evaluation.employee_evaluation.refresh')} ${currentKpi ? currentKpi.name : ""}`,
+                                        ]}
+                                    >
+                                        <button className="btn btn-success" onClick={() => handleRefresh()}>
+                                        <i class="fa fa-refresh" aria-hidden="true"> Refresh</i>
+                                        </button>
+                                    </ToolTip>
+                                }
                             </div>
                             {list && list.map(item => {
                                 if (item._id === content)
