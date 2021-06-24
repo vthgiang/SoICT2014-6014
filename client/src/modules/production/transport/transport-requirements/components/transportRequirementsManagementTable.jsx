@@ -110,6 +110,29 @@ function TransportRequirementsManagementTable(props) {
         });
         window.$('#modal-approve-transport-requirement').modal('show');
     }
+
+    const checkGeocode = (x) => {
+        if (x.geocode){
+            if (x.geocode.fromAddress && x.geocode.fromAddress.lat && Number(x.geocode.fromAddress.lat) !== -1 && x.geocode.fromAddress.lng && Number(x.geocode.fromAddress.lng) !== -1
+            &&x.geocode.toAddress && x.geocode.toAddress.lat && Number(x.geocode.toAddress.lat) !== -1 && x.geocode.toAddress.lng && Number(x.geocode.toAddress.lng) !== -1){
+               return 1;
+            }
+        }
+        return 0;
+    }
+
+    const statusRequirement = (x) => {
+        let res = getTransportRequirementStatus(x.status);
+        if (Number(x.status) === 0 || Number(x.status) ===1){
+            let s = " - Cần xác định lại địa điểm giao nhận"
+            if (checkGeocode(x) === 1){
+                s="";
+            }
+            res+=s;
+        }
+        return res;
+    }
+
     const checkEdit = (requirement) => {
         if (localStorage.getItem('userId') === String(requirement?.creator?._id)){
             return 1;
@@ -333,7 +356,7 @@ function TransportRequirementsManagementTable(props) {
                                     <td>{x.toAddress}</td>
                                     <td>{x.creator ? x.creator.name : ""}</td>
                                     <td>{x.approver ? x.approver.name: ""}</td>
-                                    <td>{getTransportRequirementStatus(x.status)}</td>
+                                    <td>{statusRequirement(x)}</td>
                                     <td style={{ textAlign: "center" }}>
                                         <a className="edit text-green" style={{ width: '5px' }} 
                                             // title={translate('manage_example.detail_info_example')} 
@@ -359,7 +382,7 @@ function TransportRequirementsManagementTable(props) {
                                             )
                                         }
                                         {
-                                        ((String(x.status)==="1" || String(x.status) === "0") &&checkApprover(x) === 1)
+                                        ((String(x.status)==="1" || String(x.status) === "0") &&checkApprover(x) === 1 && checkGeocode(x) === 1)
                                         &&(
                                             <a
                                                 onClick={() => handleShowApprove(x)}

@@ -62,6 +62,9 @@ function TransportPlanManagementTable(props) {
             text: "Hoàn thành"
         },
     ]
+    useEffect(() => {
+        props.getAllTransportPlans({page: page, limit: perPage});
+    }, [])
 
     useEffect(() => {
         let queryData = {

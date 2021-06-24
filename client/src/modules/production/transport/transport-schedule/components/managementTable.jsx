@@ -30,7 +30,6 @@ function ManagementTable(props) {
         props.getAllTransportPlans({page: 1, limit: 100});
     }, [transportSchedule]);
     const handleShowArrangeForm = (plan) => {
-        console.log(plan, " aaaa")
         setCurrentPlanId(plan._id);
         window.$('#modal-arrange-good-vehicle-ordinal-transport').modal('show');
     }
