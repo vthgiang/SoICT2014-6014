@@ -13,10 +13,9 @@ import { transportPlanActions } from '../redux/actions';
 import { transportRequirementsActions } from '../../transport-requirements/redux/actions'
 import { getTypeRequirement } from '../../transportHelper/getTextFromValue'
 
-import {} from './transport-plan.css'
+import './transport-plan.css'
 
 function TransportPlanDetailInfo(props) {
-    let allTransportRequirements;
     let {currentTransportPlan} = props;
     const [formSchedule, setFormSchedule] = useState({
         code: "",

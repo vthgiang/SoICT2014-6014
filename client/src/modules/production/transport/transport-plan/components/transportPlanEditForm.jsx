@@ -14,7 +14,7 @@ import { transportPlanActions } from '../redux/actions';
 import { transportDepartmentActions } from '../../transport-department/redux/actions'
 import { transportRequirementsActions } from '../../transport-requirements/redux/actions'
 
-import {} from './transport-plan.css'
+import './transport-plan.css'
 
 function TransportPlanEditForm(props) {
     let allTransportRequirements;

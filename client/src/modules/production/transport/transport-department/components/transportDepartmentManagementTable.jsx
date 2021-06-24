@@ -5,21 +5,53 @@ import { withTranslate } from "react-redux-multilingual";
 import { DataTableSetting, DeleteNotification, PaginateBar } from "../../../../../common-components";
 // import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
 import { TransportDepartmentCreateForm } from "../components/transportDepartmentCreateForm"
+import { TransportDepartmentDetails } from "./transportDepartmentDetails"
 
 import { transportDepartmentActions } from "../redux/actions"
 function TransportDepartmentManagementTable(props) {
     let { listTransportDepartments } = props
+
+    const [currentDepartment, setCurrentDepartment] = useState();
+
     useEffect(() => {
         props.getAllTransportDepartments({page: 1, limit: 100})
     }, [])
 
     const handleShowDetailBusinessDepartment = (businessDepartment) => {
         console.log(businessDepartment, " okkkkkk")
+        setCurrentDepartment(businessDepartment);        
+        window.$('#modal-department-details').modal('show');
     }
+
+    const getManager = (businessDepartment) => {
+        let res = "";
+        if (businessDepartment && businessDepartment.type && businessDepartment.type.length !==0) {
+            let role1 = businessDepartment.type.filter(r => Number(r.roleTransport) === 1);
+            if (role1 && role1.length !== 0){
+                if (role1[0].roleOrganizationalUnit && role1[0].roleOrganizationalUnit.length!==0){
+                    role1[0].roleOrganizationalUnit.map(organizationalUnit => {
+                        if (organizationalUnit.users && organizationalUnit.users.length !==0){
+                            organizationalUnit.users.map((item, index) => {
+                                if (index !==0){
+                                    res +=", ";
+                                }
+                                res+=item.userId?.name;
+                            })
+                        }
+                    })
+                }
+            }
+        }
+        return res;
+    }
+
     return (
         <React.Fragment>
             <div className="box-body qlcv">
                 <TransportDepartmentCreateForm />
+                <TransportDepartmentDetails 
+                    currentDepartment={currentDepartment}
+                />
                 {/* <table id={tableId} className="table table-striped table-bordered table-hover"> */}
                 <table id={"tableId"} className="table table-striped table-bordered table-hover">
                         <thead>
@@ -46,9 +78,7 @@ function TransportDepartmentManagementTable(props) {
                                         <td>{index + 1}</td>
                                         <td>{businessDepartment.organizationalUnit ? businessDepartment.organizationalUnit.name : "---"}</td>
                                         <td>
-                                            {/* {businessDepartment.organizationalUnit
-                                                ? this.getManagerName(businessDepartment.organizationalUnit)
-                                                : "---"} */}
+                                            {getManager(businessDepartment)}
                                         </td>
                                         {/* <td>{roleConvert[businessDepartment.role]}</td> */}
                                         <td style={{ textAlign: "center" }}>

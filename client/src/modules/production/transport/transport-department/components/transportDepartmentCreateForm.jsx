@@ -289,7 +289,7 @@ function TransportDepartmentCreateForm(props) {
                                     {
                                         formRoleUnit1.users.map((item, index) => (
                                             item &&
-                                            <tr>
+                                            <tr key = {index}>
                                                 <td>{index+1}</td>
                                                 <td>{item.name}</td>
                                             </tr>
@@ -329,7 +329,7 @@ function TransportDepartmentCreateForm(props) {
                                     {
                                         formRoleUnit2.users.map((item, index) => (
                                             item &&
-                                            <tr>
+                                            <tr key = {index}>
                                                 <td>{index+1}</td>
                                                 <td>{item.name}</td>
                                             </tr>
@@ -369,7 +369,7 @@ function TransportDepartmentCreateForm(props) {
                                     {
                                         formRoleUnit3.users.map((item, index) => (
                                             item &&
-                                            <tr>
+                                            <tr key = {index}>
                                                 <td>{index+1}</td>
                                                 <td>{item.name}</td>
                                             </tr>
