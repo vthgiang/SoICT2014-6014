@@ -105,8 +105,11 @@ function MapContainer(props) {
         let newListMarker = [];
         if (nonDirectLocations && nonDirectLocations.length !==0){
             nonDirectLocations.map((item, index) => {
+                if (!(item.location?.lat && item.location?.lng)){
+                    return;
+                }
                 let marker = new mapboxgl.Marker({
-                    color: "blue"
+                    color: item.color?item.color:"blue"
                 })
                 .setLngLat(item.location).setPopup(new mapboxgl.Popup({
                     offset: 25,
@@ -127,8 +130,11 @@ function MapContainer(props) {
         let countAddress = 0;
         if (driverLocation && driverLocation.length!==0){
             driverLocation.map((item,index) => {
+                if (!(item.location?.lat && item.location?.lng)){
+                    return;
+                }
                 let marker = new mapboxgl.Marker({
-                    color: "red"
+                    color: item.color?item.color:"red"
                 })
                 .setLngLat(item.location).setPopup(new mapboxgl.Popup({
                     offset: 25,
@@ -150,9 +156,9 @@ function MapContainer(props) {
 
         if (locations && locations.length!==0){
             locations.map((item,index) => {
-                if (!(item.location.lat && item.location.lng)) return;
+                if (!(item.location?.lat && item.location?.lng)) return;
                 let marker = new mapboxgl.Marker({
-                    color: "green"
+                    color: item.color?item.color:"green"
                 })
                 .setLngLat(item.location).setPopup(new mapboxgl.Popup({
                     offset: 25,
