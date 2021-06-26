@@ -197,28 +197,56 @@ exports.getAllTransportPlans = async (portal, data) => {
     })
 
     let res = [];
-    // Lấy danh sách người phê duyệt, xếp lịch
-    let headerUser = await TransportDepartmentServices.getUserByRole(portal, {currentUserId: currentUserId, role: 1});
-    let checkCurrentIdIsHearder = false;
-    if (headerUser && headerUser.list && headerUser.list.length!==0){
-        headerUser.list.map(item => {
-            if (String(item._id) === currentUserId){
-                checkCurrentIdIsHearder = true;
-            }
-        })
-    }
+    // // Lấy danh sách người phê duyệt, xếp lịch
+    // let headerUser = await TransportDepartmentServices.getUserByRole(portal, {currentUserId: currentUserId, role: 1});
+    // let checkCurrentIdIsHearder = false;
+    // if (headerUser && headerUser.list && headerUser.list.length!==0){
+    //     headerUser.list.map(item => {
+    //         if (String(item._id) === currentUserId){
+    //             checkCurrentIdIsHearder = true;
+    //         }
+    //     })
+    // }
     for (let i=0;i<plans.length;i++){
         // Trưởng đơn vị, người xếp lịch được xem các plan (đồng thời cũng là người tạo)
         let flag=true;
-        if (flag && checkCurrentIdIsHearder && headerUser && headerUser.list && headerUser.list.length!==0){
-            // console.log(plans[i].creator);
-            headerUser.list.map(item => {
-                if (String(item._id) === String(plans[i].creator?._id)){
-                    res.push(plans[i]);
-                    flag=false;
+        // if (flag && checkCurrentIdIsHearder && headerUser && headerUser.list && headerUser.list.length!==0){
+        //     // console.log(plans[i].creator);
+        //     headerUser.list.map(item => {
+        //         if (String(item._id) === String(plans[i].creator?._id)){
+        //             res.push(plans[i]);
+        //             flag=false;
+        //         }
+        //     })
+        // }
+        if (flag && plans[i].department) {
+            let department = plans[i].department;
+            if (department){
+
+                if (department.type && department.type.length !==0){
+
+                    department.type.map(x => {
+                        if (!flag) return;
+                        if (x.roleTransport !== 1){
+                            return;
+                        }
+                        if (x.roleOrganizationalUnit && x.roleOrganizationalUnit.length !==0){
+                            x.roleOrganizationalUnit.map(organization => {
+                                if (!flag) return;
+                                if (String(organization._id) === currentRole){
+                                    flag = false;
+                                }
+                            })
+                        }
+
+                    })
+
                 }
-            })
+
+            };
+            if (!flag) res.push(plans[i]);
         }
+
         // Người giám sát được xem
         if (flag && String(plans[i].supervisor?._id) === String(currentUserId)){
             res.push(plans[i]);
