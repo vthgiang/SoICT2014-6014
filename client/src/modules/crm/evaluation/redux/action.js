@@ -2,7 +2,7 @@ import { CrmEvaluationServices } from "./services";
 import { CrmEvaluationConstants } from "./constants";
 
 export const CrmEvaluationActions = {
-    getEvaluations
+    getEvaluations,getCustomerCareInfoByEmployee
 };
 
 function getEvaluations(data) {
@@ -16,5 +16,18 @@ function getEvaluations(data) {
                 })
             })
             .catch(err => { dispatch({ type: CrmEvaluationConstants.GET_CRM_EVALUATIONS_FAILE }) })
+    }
+}
+function getCustomerCareInfoByEmployee(id) {
+    return dispatch => {
+        dispatch({ type: CrmEvaluationConstants.GET_CRM_CARE_INFO_BY_EMPLOYEE_REQUEST });
+        CrmEvaluationServices.getCustomerCareInfoByEmployee(id)
+            .then(res => {
+                dispatch({
+                    type: CrmEvaluationConstants.GET_CRM_CARE_INFO_BY_EMPLOYEE_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => { dispatch({ type: CrmEvaluationConstants.GET_CRM_CARE_INFO_BY_EMPLOYEE_FAILE }) })
     }
 }

@@ -1237,6 +1237,21 @@ const LINKS = [{
     components: getComponentsInLink('/crm/generalConfiguration')
 },
 {
+    url: '/crm/crmUnitConfiguration',
+    description: `Cấu hình đơn vị chăm sóc khách hàng`,
+    category: LINK_CATEGORY.CRM.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
+    
+    ],
+    components: getComponentsInLink('/crm/crmUnitConfiguration')
+},
+
+
+{
     url: "/manage-plans",
     description: "Quản lý đơn hàng",
     category: LINK_CATEGORY.PLAN.name,

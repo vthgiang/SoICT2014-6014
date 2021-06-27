@@ -69,9 +69,8 @@ function Evaluation(props) {
                             <th>Mã nhân viên</th>
                             <th>Tên nhân viên</th>
                             <th>Tổng số hoạt động</th>
-                            <th>Số hoạt động hoàn thành</th>
-                            <th>Tỉ lệ thành công </th>
-                            <th>Điểm đánh giá trung bình</th>
+                            <th>Tỉ lệ hoàn thành hoạt động</th>
+                            <th>Tỉ lệ hoạt động thành công</th>
                             <th style={{ width: "120px" }}>
                                 {translate('table.action')}
                                 <DataTableSetting
@@ -79,9 +78,8 @@ function Evaluation(props) {
                                         'Mã nhân viên',
                                         "Tên nhân viên",
                                         'Tổng số hoạt động',
-                                        'Số hoạt động hoàn thành',
-                                        'Tỉ lệ thành công',
-                                        'Điểm đánh giá trung bình'
+                                        'Tỉ lệ hoàn thành hoạt động',
+                                        'Tỉ lệ hoạt động thành công',
                                     ]}
                                 // setLimit={this.setLimit}
                                 //  tableId={tableId}
@@ -92,15 +90,14 @@ function Evaluation(props) {
                     <tbody>
                         {
                             evaluations && evaluations.list && evaluations.list.map((evaluation) => (
-                                <tr key={evaluation.staffCode} >
-                                    <td>{evaluation.staffCode}</td>
-                                    <td>{evaluation.staffName}</td>
-                                    <td>{evaluation.totalCare}</td>
-                                    <td>{evaluation.numberOfCompletedCares}</td>
-                                    <td>{`${evaluation.successRate * 100} %`}</td>
-                                    <td>{`${evaluation.averagePoint} /10`}</td>
+                                <tr key={evaluation.employeeId} >
+                                    <td>{evaluation.employeeId}</td>
+                                    <td>{evaluation.employeeName}</td>
+                                    <td>{evaluation.totalCareActions}</td>
+                                    <td>{`${evaluation.completionRate * 100} %`}</td>
+                                    <td>{`${evaluation.solutionRate * 100} %`}</td>
                                     <td style={{ textAlign: 'center' }}>
-                                        <a className="text-yellow"
+                                        <a className="text-green"
                                             onClick={() => handleEvaluationInfo(evaluation)}
                                         ><i className="material-icons">visibility</i></a>
                                     </td>

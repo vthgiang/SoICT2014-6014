@@ -112,7 +112,8 @@ export default {
                 group: "Nhóm khách hàng",
                 statistic: "Thống kê",
                 generalConfiguration: "Cấu hình chung",
-                evaluation: "Đánh giá hoạt động CSKH"
+                evaluation: "Đánh giá hoạt động CSKH",
+                crmUnitConfiguration:"Cấu hình đơn vị chăm sóc khách hàng"
             },
 
             task_template: "Mẫu Công Việc",

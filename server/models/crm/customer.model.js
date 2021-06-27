@@ -164,9 +164,15 @@ const CustomerSchema = new Schema({
         minimumOrderValue: { type: Number },
         promotionalValueMax: { type: Number },
         expirationDate:{type:Date}
-    }]
+    }],
+    crmUnit: {// người cập nhật
+        type: Schema.Types.ObjectId,
+        ref: "CrmUnit",
+    },
 
-}, {
+}
+
+, {
     timestamps: true,
 });
 
