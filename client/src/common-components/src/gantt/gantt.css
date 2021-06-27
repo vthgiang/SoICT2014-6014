@@ -91,6 +91,11 @@
     background: #909090;
 }
 
+.baseline_item {
+    border: 1px solid #DCDCDC;
+    background: #DCDCDC;
+}
+
 .gantt_link_control.task_left, .gantt_link_control.task_right {
     display: none;
 }

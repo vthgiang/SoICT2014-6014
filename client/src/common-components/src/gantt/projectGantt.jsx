@@ -6,6 +6,7 @@ import { getStorage } from '../../../config';
 
 import ToolbarGantt from './toolbarGantt';
 import './gantt.css';
+import { numberWithCommas } from '../../../modules/task/task-management/component/functionHelpers';
 
 function ProjectGantt(props) {
     const { translate } = props;
@@ -19,6 +20,7 @@ function ProjectGantt(props) {
 
         // Config biểu đồ
         if (gantt) {
+            gantt.config.row_height = 25;
             gantt.config.drag_move = false;
             gantt.config.drag_multiple = false;
             gantt.config.drag_progress = false;
@@ -32,12 +34,12 @@ function ProjectGantt(props) {
                     resize: true,
                     width: '*',
                 },
-                {
-                    name: 'responsible',
-                    label: 'Người thực hiện',
-                    resize: true,
-                    width: '*',
-                },
+                // {
+                //     name: 'responsible',
+                //     label: 'Người thực hiện',
+                //     resize: true,
+                //     width: '*',
+                // },
                 {
                     name: 'customDuration',
                     label: `Thời lượng (${zoom})`,
@@ -51,6 +53,8 @@ function ProjectGantt(props) {
             // Màu sắc cho công việc
             gantt.templates.task_class = function (start, end, task) {
                 switch (task.process) {
+                    case -1:
+                        return 'baseline_item';
                     case 0:
                         return "delay";
                     case 1:
@@ -68,13 +72,22 @@ function ProjectGantt(props) {
                 // critical_path: true,
             });
             gantt.templates.tooltip_text = function (start, end, task) {
-                return `<b>${translate('task.task_dashboard.task_name')}:</b> ${task.taskName} 
-                    <br/>
-                    <b>${translate('task.task_dashboard.start_date')}:</b> ${moment(start).format("DD-MM-YYYY hh:mm A")} 
-                    <br/>
-                    <b>${translate('task.task_dashboard.end_date')}:</b> ${moment(end).format("DD-MM-YYYY hh:mm A")}
-                    <br/>
-                    <b>Tiến độ:</b> ${Number(task.progress) * 100}%`;
+                if (RegExp(/baseline/g).test(String(task.id))) {
+                    return `<b>${translate('task.task_dashboard.task_name')}:</b> ${task.baselineName} 
+                            <br/>
+                            <b>Thời điểm bắt đầu:</b> ${moment(start).format("DD-MM-YYYY hh:mm A")} 
+                            <br/>
+                            <b>Thời điểm kết thúc dự kiến:</b> ${moment(end).format("DD-MM-YYYY hh:mm A")}`;
+                }
+                return `<b>${translate('task.task_dashboard.task_name')}:</b> ${task.taskName}
+                        <br/>
+                        ${task.status === 'finished'
+                        ? `<b>Thời điểm kết thúc thực tế:</b> ${moment(end).format("DD-MM-YYYY hh:mm A")}
+                        <br/>`
+                        : ``}
+                        <b>Trạng thái công việc:</b> ${task.status}
+                        <br/>
+                        <b>Tiến độ:</b> ${numberWithCommas(Number(task.progress) * 100)}%`;
             };
 
             gantt.attachEvent("onTaskDblClick", (id, mode) => {
@@ -125,12 +138,12 @@ function ProjectGantt(props) {
                 resize: true,
                 width: '*',
             },
-            {
-                name: 'responsible',
-                label: 'Người thực hiện',
-                resize: true,
-                width: '*',
-            },
+            // {
+            //     name: 'responsible',
+            //     label: 'Người thực hiện',
+            //     resize: true,
+            //     width: '*',
+            // },
             {
                 name: 'customDuration',
                 label: `Thời lượng (${zoom})`,

@@ -1,13 +1,13 @@
 import moment from 'moment';
 import Swal from 'sweetalert2';
-import { getDurationWithoutSatSun, MILISECS_TO_HOURS } from '../../../project/projects/components/functionHelper';
+import { getActualMemberCostOfTask, getDurationWithoutSatSun, getEstimateMemberCostOfTask, MILISECS_TO_HOURS } from '../../../project/projects/components/functionHelper';
 var mexp = require('math-expression-evaluator'); // native js package
 
 export const AutomaticTaskPointCalculator = {
     calcAutoPoint,
-    calcProjectAutoPoint,
+    calcTaskEVMPoint,
     getAmountOfWeekDaysInMonth,
-    calcProjectTaskMemberAutoPoint,
+    calcMemberStatisticEvalPoint,
     calcProjectTaskPoint,
     calcProjectMemberPoint,
     convertIndexPointToNormalPoint,
@@ -117,14 +117,8 @@ function calcAutoPoint(data) {
     let averageActionRating = !a ? 10 : reduceAction.rating / reduceAction.actionImportanceLevel; // a = 0 thì avg mặc định là 10
     let autoHasActionInfo = progress / (daysUsed / totalDays) - 0.5 * (10 - (averageActionRating)) * 10;
     let automaticPoint = 0;
-    let sumRatingOfFailedActions = 0, sumRatingOfAllActions = 0;
-
-    actions.map((item) => {
-        if (item.rating < 5) {
-            sumRatingOfFailedActions = sumRatingOfFailedActions + item.rating * item.actionImportanceLevel
-        }
-        sumRatingOfAllActions = sumRatingOfAllActions + item.rating * item.actionImportanceLevel
-    });
+    let numberOfPassedActions = actions.filter(act => act.rating >= 5).length;
+    let numberOfFailedActions = actions.filter(act => act.rating < 5).length;
 
     if (!task.formula) {
         if (task.taskTemplate === null || task.taskTemplate === undefined) { // Công việc không theo mẫu
@@ -139,8 +133,8 @@ function calcAutoPoint(data) {
             formula = formula.replace(/totalDays/g, `(${totalDays})`);
             formula = formula.replace(/daysUsed/g, `(${daysUsed})`);
             formula = formula.replace(/averageActionRating/g, `(${averageActionRating})`);
-            formula = formula.replace(/sumRatingOfFailedActions/g, `${sumRatingOfFailedActions}`);
-            formula = formula.replace(/sumRatingOfAllActions/g, `${sumRatingOfAllActions}`);
+            formula = formula.replace(/numberOfFailedActions/g, `${numberOfFailedActions}`);
+            formula = formula.replace(/numberOfPassedActions/g, `${numberOfPassedActions}`);
             formula = formula.replace(/progress/g, `(${progressTask})`);
 
             // thay mã code bằng giá trị(chỉ dùng cho kiểu số)
@@ -174,8 +168,8 @@ function calcAutoPoint(data) {
             formula = formula.replace(/totalDays/g, `(${totalDays})`);
             formula = formula.replace(/daysUsed/g, `(${daysUsed})`);
             formula = formula.replace(/averageActionRating/g, `(${averageActionRating})`);
-            formula = formula.replace(/sumRatingOfFailedActions/g, `${sumRatingOfFailedActions}`);
-            formula = formula.replace(/sumRatingOfAllActions/g, `${sumRatingOfAllActions}`);
+            formula = formula.replace(/numberOfFailedActions/g, `${numberOfFailedActions}`);
+            formula = formula.replace(/numberOfPassedActions/g, `${numberOfPassedActions}`);
             formula = formula.replace(/progress/g, `(${progressTask})`);
 
             // thay mã code bằng giá trị(chỉ dùng cho kiểu số)
@@ -203,8 +197,8 @@ function calcAutoPoint(data) {
             formula = formula.replace(/totalDays/g, `(${totalDays})`);
             formula = formula.replace(/daysUsed/g, `(${daysUsed})`);
             formula = formula.replace(/averageActionRating/g, `(${averageActionRating})`);
-            formula = formula.replace(/sumRatingOfFailedActions/g, `${sumRatingOfFailedActions}`);
-            formula = formula.replace(/sumRatingOfAllActions/g, `${sumRatingOfAllActions}`);
+            formula = formula.replace(/numberOfFailedActions/g, `${numberOfFailedActions}`);
+            formula = formula.replace(/numberOfPassedActions/g, `${numberOfPassedActions}`);
             formula = formula.replace(/progress/g, `(${progressTask})`);
 
             // thay mã code bằng giá trị(chỉ dùng cho kiểu số)
@@ -250,15 +244,13 @@ function convertIndexPointToNormalPoint(indexPoint) {
 }
 
 function calcProjectTaskPoint(data, getCalcPointsOnly = true) {
-    // console.log('\n--------------');
     const { task, progress, projectDetail, currentTaskActualCost, info } = data;
     const { timesheetLogs, estimateNormalCost, startDate, endDate, actorsWithSalary, responsibleEmployees, estimateAssetCost, accountableEmployees } = task;
     /***************** Yếu tố tiến độ **********************/
     const usedDuration = getDurationWithoutSatSun(task.startDate, moment().format(), 'milliseconds');
     const totalDuration = task.estimateNormalTime;
     const schedulePerformanceIndex = (Number(progress) / 100) / (usedDuration / totalDuration);
-    const taskTimePoint = convertIndexPointToNormalPoint(schedulePerformanceIndex) * (task?.timeWeight || 0.25);
-    // console.log('taskTimePoint', taskTimePoint)
+    const taskTimePoint = convertIndexPointToNormalPoint(schedulePerformanceIndex) * (task?.taskWeight?.timeWeight || (1 / 3));
     /***************** Yếu tố chất lượng **********************/
     // Các hoạt động (chỉ lấy những hoạt động đã đánh giá của người phê duyệt)
     let actionsHasRating = task.taskActions.filter(item => (
@@ -274,24 +266,22 @@ function calcProjectTaskPoint(data, getCalcPointsOnly = true) {
     });
     const taskQualityPoint = sumRatingOfAllActions === 0
         ? 0
-        : [(sumRatingOfPassedActions / sumRatingOfAllActions) * 100] * (task?.qualityWeight || 0.25);
-    // console.log('taskQualityPoint', taskQualityPoint)
+        : [(sumRatingOfPassedActions / sumRatingOfAllActions) * 100] * (task?.taskWeight?.qualityWeight || (1 / 3));
+
     /***************** Yếu tố chi phí **********************/
     let actualCost = 0;
     if (currentTaskActualCost) actualCost = Number(currentTaskActualCost);
     else if (task?.actualCost) actualCost = Number(task.actualCost);
     const costPerformanceIndex = ((Number(progress) / 100) * estimateNormalCost) / (actualCost);
-    const taskCostPoint = convertIndexPointToNormalPoint(costPerformanceIndex) * (task?.costWeight || 0.25);
-    // console.log('taskCostPoint', taskCostPoint)
-    /***************** Yếu tố chuyên cần **********************/
+    const taskCostPoint = convertIndexPointToNormalPoint(costPerformanceIndex) * (task?.taskWeight?.costWeight || (1 / 3));
+    // Tính tổng số giờ đã bấm cho công việc
     let totalTimeLogs = 0;
     if (timesheetLogs && timesheetLogs.length > 0) {
         for (let timeSheetItem of timesheetLogs) {
             totalTimeLogs += timeSheetItem.duration;
         }
     }
-    const taskDilligencePoint = Math.min((totalTimeLogs / totalDuration) * 100 * (task?.dilligenceWeight || 0.25), 100);
-    // console.log('taskDilligencePoint', taskDilligencePoint)
+
     let autoTaskPoint = 0;
     let formula;
     if (task.formulaProjectTask) {
@@ -301,7 +291,6 @@ function calcProjectTaskPoint(data, getCalcPointsOnly = true) {
         formula = formula.replace(/taskTimePoint/g, `(${taskTimePoint})`);
         formula = formula.replace(/taskQualityPoint/g, `(${taskQualityPoint})`);
         formula = formula.replace(/taskCostPoint/g, `(${taskCostPoint})`);
-        formula = formula.replace(/taskDilligencePoint/g, `(${taskDilligencePoint})`);
 
         // thay mã code bằng giá trị(chỉ dùng cho kiểu số)
         for (let i in taskInformations) {
@@ -320,7 +309,7 @@ function calcProjectTaskPoint(data, getCalcPointsOnly = true) {
         }
         autoTaskPoint = calculateExpression(formula);
     } else {
-        autoTaskPoint = taskTimePoint + taskQualityPoint + taskCostPoint + taskDilligencePoint;
+        autoTaskPoint = taskTimePoint + taskQualityPoint + taskCostPoint;
     }
 
     if (getCalcPointsOnly) return autoTaskPoint;
@@ -338,21 +327,21 @@ function calcProjectTaskPoint(data, getCalcPointsOnly = true) {
         taskTimePoint,
         taskQualityPoint,
         taskCostPoint,
-        taskDilligencePoint,
         autoTaskPoint,
     }
 }
 
 function calcProjectMemberPoint(data, getCalcPointsOnly = true) {
-    // console.log('\n--------------');
     const { task, progress, projectDetail, currentMemberActualCost, info, userId } = data;
-    const { timesheetLogs, estimateNormalCost, startDate, endDate, actorsWithSalary, responsibleEmployees, estimateAssetCost, accountableEmployees, estimateNormalTime } = task;
+    const { timesheetLogs } = task;
+    const currentEmployee = task.actorsWithSalary.find((actorSalaryItem) => {
+        return String(actorSalaryItem.userId) === String(userId)
+    });
     /***************** Yếu tố tiến độ **********************/
     const usedDuration = getDurationWithoutSatSun(task.startDate, moment().format(), 'milliseconds');
     const totalDuration = task.estimateNormalTime;
     const schedulePerformanceIndex = (Number(progress) / 100) / (usedDuration / totalDuration);
-    const memberTimePoint = convertIndexPointToNormalPoint(schedulePerformanceIndex) * (task?.timeWeight || 0.25);
-    // console.log('memberTimePoint', memberTimePoint)
+    const memberTimePoint = convertIndexPointToNormalPoint(schedulePerformanceIndex) * (task?.memberWeight?.timeWeight || 0.25);
     /***************** Yếu tố chất lượng **********************/
     // Các hoạt động (chỉ lấy những hoạt động đã đánh giá của người phê duyệt)
     let actionsHasRating = task.taskActions.filter(item => (
@@ -368,32 +357,35 @@ function calcProjectMemberPoint(data, getCalcPointsOnly = true) {
     });
     const memberQualityPoint = sumRatingOfAllActions === 0
         ? 0
-        : [(sumRatingOfPassedActions / sumRatingOfAllActions) * 100] * (task?.qualityWeight || 0.25);
-    // console.log('memberQualityPoint', memberQualityPoint)
+        : [(sumRatingOfPassedActions / sumRatingOfAllActions) * 100] * (task?.memberWeight?.qualityWeight || 0.25);
     /***************** Yếu tố chi phí **********************/
     let actualCost = 0;
     if (currentMemberActualCost) actualCost = Number(currentMemberActualCost);
     // Tìm lương và trọng số thành viên đó
-    let estimateNormalMemberCost = 0;
-    const currentEmployee = actorsWithSalary.find((actorSalaryItem) => {
-        return String(actorSalaryItem.userId) === String(userId)
-    });
-    if (currentEmployee) {
-        estimateNormalMemberCost = Number(currentEmployee.salary) * Number(currentEmployee.weight / 100) * totalDuration
-            / (projectDetail.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS);
-    }
+    let estimateNormalMemberCost = getEstimateMemberCostOfTask(task, projectDetail, userId);
     const costPerformanceIndex = ((Number(progress) / 100) * estimateNormalMemberCost) / (actualCost);
-    const memberCostPoint = convertIndexPointToNormalPoint(costPerformanceIndex) * (task?.costWeight || 0.25);
-    // console.log('memberCostPoint', memberCostPoint)
-    /***************** Yếu tố chuyên cần **********************/
+    const memberCostPoint = convertIndexPointToNormalPoint(costPerformanceIndex) * (task?.memberWeight?.costWeight || 0.25);
+    /***************** Yếu tố phân bố thời gian **********************/
     let totalTimeLogs = 0;
+    let userWithTimeSheetLogsCounter = 0;
+    let sumTimeDistributionPoint = 0;
     for (let timeSheetItem of timesheetLogs) {
         if (String(userId) === String(timeSheetItem.creator.id)) {
             totalTimeLogs += timeSheetItem.duration;
+            userWithTimeSheetLogsCounter++;
+            // Tính toán xem bấm giờ này có nằm trong khoảng thời gian làm việc không?
+            const convertedStartMoment = moment(moment(timeSheetItem.startedAt).format('HH:mm:ss'), 'HH:mm:ss');
+            const convertedEndMoment = moment(moment(timeSheetItem.stoppedAt).format('HH:mm:ss'), 'HH:mm:ss');
+            // console.log('convertedStartMoment, convertedEndMoment', convertedStartMoment, convertedEndMoment);
+            const isInWorkingTime = convertedStartMoment.isSameOrAfter(moment('08:00:00', 'HH:mm:ss')) && convertedEndMoment.isSameOrBefore(moment('20:00:00', 'HH:mm:ss'))
+            // console.log('isInWorkingTime', isInWorkingTime)
+            // console.log('timeSheetItem.duration', timeSheetItem.duration, 12 * MILISECS_TO_HOURS)
+            sumTimeDistributionPoint += (timeSheetItem.autoStopped === 1 && isInWorkingTime && (timeSheetItem.duration <= (12 * MILISECS_TO_HOURS))) ? 100 : 80;
         }
     }
-    const memberDilligencePoint = Math.min((totalTimeLogs / totalDuration) * 100 * (task?.dilligenceWeight || 0.25), 100);
-    // console.log('memberDilligencePoint', memberDilligencePoint)
+    const memberTimedistributionPoint = (sumTimeDistributionPoint / (100 * userWithTimeSheetLogsCounter)) * 100 * (task?.memberWeight?.timedistributionWeight || 0.25);
+    // console.log('memberTimedistributionPoint', memberTimedistributionPoint);
+
     let autoMemberPoint = 0;
     let formula;
     if (task.formulaProjectMember) {
@@ -403,7 +395,7 @@ function calcProjectMemberPoint(data, getCalcPointsOnly = true) {
         formula = formula.replace(/memberTimePoint/g, `(${memberTimePoint})`);
         formula = formula.replace(/memberQualityPoint/g, `(${memberQualityPoint})`);
         formula = formula.replace(/memberCostPoint/g, `(${memberCostPoint})`);
-        formula = formula.replace(/memberDilligencePoint/g, `(${memberDilligencePoint})`);
+        formula = formula.replace(/memberTimedistributionPoint/g, `(${memberTimedistributionPoint})`);
 
         // thay mã code bằng giá trị(chỉ dùng cho kiểu số)
         for (let i in taskInformations) {
@@ -422,7 +414,7 @@ function calcProjectMemberPoint(data, getCalcPointsOnly = true) {
         }
         autoMemberPoint = calculateExpression(formula);
     } else {
-        autoMemberPoint = memberTimePoint + memberQualityPoint + memberCostPoint + memberDilligencePoint;
+        autoMemberPoint = memberTimePoint + memberQualityPoint + memberCostPoint + memberTimedistributionPoint;
     }
 
     if (getCalcPointsOnly) return autoMemberPoint;
@@ -437,134 +429,58 @@ function calcProjectMemberPoint(data, getCalcPointsOnly = true) {
         actualCost,
         costPerformanceIndex,
         totalTimeLogs,
+        sumTimeDistributionPoint,
+        sumMaxTimeDistributionPoint: 100 * userWithTimeSheetLogsCounter,
         memberTimePoint,
         memberQualityPoint,
         memberCostPoint,
-        memberDilligencePoint,
+        memberTimedistributionPoint,
         autoMemberPoint,
     }
 }
 
-function calcProjectAutoPoint(data, getCalcPointsOnly = true) {
+function calcTaskEVMPoint(data) {
     const { task, progress, projectDetail } = data;
-    const { timesheetLogs, estimateNormalCost, startDate, endDate, actorsWithSalary, responsibleEmployees, estimateAssetCost, accountableEmployees } = task;
-    const weekDays = getAmountOfWeekDaysInMonth(moment(startDate));
-    let autoCalPointProject = undefined;
-    let estDuration = 0
-    estDuration = getDurationWithoutSatSun(startDate, endDate, projectDetail?.unitTime);
-    const estCost = estimateNormalCost;
-    const progressTask = progress;
-    let realDuration = 0;
-    if (timesheetLogs && timesheetLogs.length > 0) {
-        for (let timeSheetItem of timesheetLogs) {
-            realDuration += timeSheetItem.duration / MILISECS_TO_DAYS * (projectDetail?.unitTime === 'hours' ? 8 : 1);
-        }
-    }
-
-    let realCost = estimateAssetCost;
-    for (let actorItem of actorsWithSalary) {
-        for (let timeSheetItem of timesheetLogs) {
-            if (actorItem.userId === timeSheetItem.creator.id) {
-                realCost += timeSheetItem.duration / MILISECS_TO_DAYS * (projectDetail?.unitTime === 'hours' ? 8 : 1)
-                    * actorItem.salary / weekDays * (projectDetail?.unitTime === 'hours' ? 8 : 1);
-            }
-        }
-    }
-    const earnedValue = Number(progressTask) / 100 * Number(estimateNormalCost);
-    // Tính plannedValue dựa vào thời gian đã trôi qua
-    const diffFromStartToEnd = getDurationWithoutSatSun(startDate, endDate, projectDetail?.unitTime);
-    const diffFromStartToNow = getDurationWithoutSatSun(startDate, moment().format(), projectDetail?.unitTime) < 0 ? 0 : getDurationWithoutSatSun(startDate, moment().format(), projectDetail?.unitTime);
+    const { estimateNormalCost, estimateNormalTime, startDate, actorsWithSalary, estimateAssetCost, actualEndDate } = task;
+    // Planned Value
+    const diffFromStartToEnd = estimateNormalTime;
+    const diffFromStartToNow = getDurationWithoutSatSun(startDate, moment().format(), 'milliseconds') < 0 ? 0 : getDurationWithoutSatSun(startDate, moment().format(), 'milliseconds');
     const plannedValue = (diffFromStartToNow / diffFromStartToEnd > 1 ? 1 : diffFromStartToNow / diffFromStartToEnd) * Number(estimateNormalCost);
-
-    const actualCost = realCost;
-    const costPerformanceIndex = earnedValue / actualCost;
-
-    if (actualCost <= estimateAssetCost || costPerformanceIndex === undefined || costPerformanceIndex === Infinity) autoCalPointProject = undefined;
-    else if (realDuration === 0 || costPerformanceIndex < 0.5) autoCalPointProject = 0;
-    else if (costPerformanceIndex >= 0.5 && costPerformanceIndex < 0.75) autoCalPointProject = 40;
-    else if (costPerformanceIndex >= 0.75 && costPerformanceIndex < 1) autoCalPointProject = 60;
-    else if (costPerformanceIndex >= 1 && costPerformanceIndex < 1.25) autoCalPointProject = 80;
-    else if (costPerformanceIndex >= 1.25 && costPerformanceIndex < 1.5) autoCalPointProject = 90;
-    else autoCalPointProject = 100;
-
-    if (getCalcPointsOnly) return autoCalPointProject;
+    // Actual Cost
+    const actualCost = task.actualCost || 0;
+    // Earned Value
+    const earnedValue = Number(progress) / 100 * Number(estimateNormalCost);
+    // Other params
+    const estDuration = Number(estimateNormalTime) / (projectDetail?.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS);
+    const realDuration = (task?.status === 'finished' && actualEndDate) ? (getDurationWithoutSatSun(startDate, actualEndDate, 'milliseconds') / (projectDetail?.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS)) : undefined;
     return {
-        estimateAssetCost,
-        estCost,
-        estDuration,
-        realCost,
-        realDuration,
-        progressTask,
         earnedValue,
         plannedValue,
         actualCost,
-        costPerformanceIndex,
-        autoCalPointProject,
+        estDuration,
+        realDuration,
     }
 }
 
-function calcProjectTaskMemberAutoPoint(data, getCalcPointsOnly = true) {
+function calcMemberStatisticEvalPoint(data) {
     const { task, progress, projectDetail, userId } = data;
-    const { timesheetLogs, startDate, endDate, actorsWithSalary, responsibleEmployees, estimateAssetCost, accountableEmployees, estimateNormalTime, estimateNormalCost } = task;
-    const weekDays = getAmountOfWeekDaysInMonth(moment(startDate));
-    // Tính trọng số của userId trong task đó
-    let weight = 0;
-    const responsibleEmployeesFlatten = responsibleEmployees.map(resItem => String(resItem.id));
-    const accountableEmployeesFlatten = accountableEmployees.map(accItem => String(accItem.id));
-    if (responsibleEmployeesFlatten.includes(String(userId))) {
-        weight = 0.8 / responsibleEmployeesFlatten.length;  // Trọng số phải đi kèm với số người
-    } else {
-        weight = 0.2 / accountableEmployeesFlatten.length;  // Trọng số phải đi kèm với số người
-    }
-    let autoCalPointProject = undefined;
-    let estDuration = getDurationWithoutSatSun(startDate, endDate, projectDetail?.unitTime) * weight;
-    const currentActor = actorsWithSalary.find(item => String(userId) === String(item.userId));
-    // estCost là ngân sách - chi phí ước lượng cho task
-    const estCost = estDuration * currentActor.salary / weekDays / (projectDetail?.unitTime === 'hours' ? 8 : 1);
-    const progressTask = progress;
-    let realDuration = 0;
-    if (timesheetLogs && timesheetLogs.length > 0) {
-        for (let timeSheetItem of timesheetLogs) {
-            realDuration += timeSheetItem.duration / MILISECS_TO_DAYS * (projectDetail?.unitTime === 'hours' ? 8 : 1);
-        }
-    }
+    const { startDate, actorsWithSalary, estimateNormalTime, actualEndDate } = task;
+    const currentMemberWithSalary = actorsWithSalary.find((actorItem) => String(actorItem.userId) === String(userId));
+    // Estimate duration
+    const estDuration = (currentMemberWithSalary?.weight / 100) * estimateNormalTime / (projectDetail?.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS);
+    // Estimate cost
+    const estCost = getEstimateMemberCostOfTask(task, projectDetail, userId);
+    // Real duration
+    const realDuration = (task?.status === 'finished' && actualEndDate)
+        ? (getDurationWithoutSatSun(startDate, actualEndDate, 'milliseconds') / (projectDetail?.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS) * (currentMemberWithSalary?.weight / 100))
+        : undefined;
+    // Real cost
+    const realCost = getActualMemberCostOfTask(task, projectDetail, userId);
 
-    let realCost = 0;
-    for (let timeSheetItem of timesheetLogs) {
-        if (userId === timeSheetItem.creator.id) {
-            realCost += timeSheetItem.duration / MILISECS_TO_DAYS * (projectDetail?.unitTime === 'hours' ? 8 : 1)
-                * currentActor.salary / weekDays * (projectDetail?.unitTime === 'hours' ? 8 : 1);
-        }
-    }
-
-    const earnedValue = Number(progressTask) / 100 * Number(estCost);
-    // Tính plannedValue dựa vào thời gian đã trôi qua
-    const diffFromStartToEnd = getDurationWithoutSatSun(startDate, endDate, projectDetail?.unitTime);
-    const diffFromStartToNow = getDurationWithoutSatSun(startDate, moment().format(), projectDetail?.unitTime) < 0 ? 0 : getDurationWithoutSatSun(startDate, moment().format(), projectDetail?.unitTime);
-    const plannedValue = (diffFromStartToNow / diffFromStartToEnd > 1 ? 1 : diffFromStartToNow / diffFromStartToEnd) * Number(estCost);
-
-    const actualCost = realCost;
-    const costPerformanceIndex = earnedValue / actualCost;
-
-    if (actualCost === 0 || costPerformanceIndex === undefined || costPerformanceIndex === Infinity) autoCalPointProject = undefined;
-    else if (realDuration === 0 || costPerformanceIndex < 0.5) autoCalPointProject = 0;
-    else if (costPerformanceIndex >= 0.5 && costPerformanceIndex < 0.75) autoCalPointProject = 40;
-    else if (costPerformanceIndex >= 0.75 && costPerformanceIndex < 1) autoCalPointProject = 60;
-    else if (costPerformanceIndex >= 1 && costPerformanceIndex < 1.25) autoCalPointProject = 80;
-    else if (costPerformanceIndex >= 1.25 && costPerformanceIndex < 1.5) autoCalPointProject = 90;
-    else autoCalPointProject = 100;
-
-    if (getCalcPointsOnly) return autoCalPointProject;
     return {
         estCost,
         estDuration,
         realCost,
         realDuration,
-        progressTask,
-        earnedValue,
-        plannedValue,
-        actualCost,
-        costPerformanceIndex,
-        autoCalPointProject,
     };
 }

@@ -243,7 +243,7 @@ function StatisticsOfOrganizationalUnitKpiResultsChart(props) {
             name = organizationalUnit[0].name;
         }
 
-        let fileName = "Thống kê kết quả KPI " +(name?name:"")+" "+ ( month?("tháng "+month):"" );
+        let fileName = "Thống kê kết quả KPI " +(name?name:"")+" "+ (month ? ("tháng " + month) : "");
         if (data) {
             data = data.map((x, index) => {
 
@@ -287,6 +287,7 @@ function StatisticsOfOrganizationalUnitKpiResultsChart(props) {
                 },
             ]
         }
+
         return exportData;
     };
 

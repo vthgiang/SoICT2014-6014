@@ -8,20 +8,24 @@ import { getNumsOfDaysWithoutGivenDay, getSalaryFromUserId } from "../../../task
 export const MILISECS_TO_DAYS = 86400000;
 export const MILISECS_TO_HOURS = 3600000;
 
-export const checkIfAbleToCRUDProject = ({ project, user, currentProjectId }) => {
+export const checkIfAbleToCRUDProject = ({ project, user, currentProjectId, isInsideProject = false }) => {
     const currentRole = getStorage("currentRole");
     const userId = getStorage("userId");
+    console.log('currentProjectId', currentProjectId)
+    console.log('project?.data?.list', project?.data?.list, ' project?.data?.listbyuser',  project?.data?.listbyuser)
     const checkIfCurrentRoleIsUnitManager = user?.usersInUnitsOfCompany?.filter(userItem => userItem?.managers?.[currentRole])?.length > 0;
-    const projectDetail = project?.data?.list?.filter(item => item._id === currentProjectId)?.[0]
+    const projectDetail = project?.data?.list?.length > 0 ? project?.data?.list?.filter(item => item._id === currentProjectId)?.[0] : project?.data?.listbyuser?.filter(item => item._id === currentProjectId)?.[0]
     const checkIfCurrentIdIsProjectManagerOrCreator =
         projectDetail?.projectManager?.filter(managerItem => managerItem?._id === userId)?.length > 0
         || projectDetail?.creator?._id === userId;
-    return checkIfCurrentRoleIsUnitManager || checkIfCurrentIdIsProjectManagerOrCreator;
+    return isInsideProject ? (checkIfCurrentIdIsProjectManagerOrCreator && checkIfCurrentRoleIsUnitManager) : (checkIfCurrentRoleIsUnitManager);
 }
 
-export const getCurrentProjectDetails = (project, projectId = undefined) => {
-    const currentProjectId = projectId || window.location.href.split('?id=')[1];
-    const projectDetail = project?.data?.list?.filter(item => item._id === currentProjectId)?.[0];
+export const getCurrentProjectDetails = (project, projectId = undefined, type = 'user_all') => {
+    const currentProjectId = projectId || window.location.href.split('?id=')[1].split('#')?.[0];
+    const projectDetail = type === 'user_all'
+        ? project?.data?.listbyuser?.filter(item => item._id === currentProjectId)?.[0]
+        : project?.data?.list?.filter(item => item._id === currentProjectId)?.[0];
     return projectDetail;
 }
 
@@ -535,4 +539,131 @@ export const getEstimateCostOfProject = (currentProjectTasks) => {
         estCost += Number(taskItem.estimateNormalCost)
     }
     return estCost;
+}
+
+export const getEstimateMemberCostOfTask = (task, projectDetail, userId) => {
+    let estimateNormalMemberCost = 0;
+    if (!task || !projectDetail) return 0;
+    const currentEmployee = task.actorsWithSalary.find((actorSalaryItem) => {
+        return String(actorSalaryItem.userId) === String(userId)
+    });
+    if (currentEmployee) {
+        estimateNormalMemberCost = Number(currentEmployee.salary) * Number(currentEmployee.weight / 100) * task.estimateNormalTime
+            / (projectDetail.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS);
+    }
+    return estimateNormalMemberCost;
+}
+
+export const getActualMemberCostOfTask = (task, projectDetail, userId) => {
+    let actualNormalMemberCost = 0;
+    if (!task || !projectDetail) return 0;
+    const currentEmployee = task.actorsWithSalary.find((actorSalaryItem) => {
+        return String(actorSalaryItem.userId) === String(userId)
+    });
+    if (currentEmployee) {
+        actualNormalMemberCost = Number(currentEmployee.actualCost || 0);
+    }
+    return actualNormalMemberCost;
+}
+
+export const renderLongList = (list, limit = 10) => {
+    if (!list) return '';
+    if (list.length > limit) {
+        const newList = list.filter((item, index) => index < limit);
+        newList.push('...');
+        return newList.join(', ');
+    }
+    return list.join(', ');
+}
+
+export const renderProjectTypeText = (projectType) => {
+    if (projectType === 1) return "Đơn giản"
+    return "Phương pháp CPM";
+}
+
+export const isUserInCurrentTask = (userId, task) => {
+    return task.accountableEmployees.find((accItem) => {
+        return (String(accItem) === userId) || (String(accItem.id) === userId)
+    }) || task.responsibleEmployees.find((resItem) => {
+        return (String(resItem) === userId) || (String(resItem.id) === userId)
+    })
+}
+
+export const getRecursiveRelevantTasks = (tasksList, currentTask) => {
+    let allTasksNodeRelationArr = [];
+    // Hàm đệ quy để lấy tất cả những tasks có liên quan tới task hiện tại
+    const getAllRelationTasks = (tasksList, currentTask) => {
+        const preceedsContainCurrentTask = tasksList.filter((taskItem) => {
+            return taskItem.preceedingTasks.includes(currentTask._id)
+        });
+        for (let preConItem of preceedsContainCurrentTask) {
+            if (!allTasksNodeRelationArr.includes(preConItem)) {
+                allTasksNodeRelationArr.push(preConItem);
+            }
+            getAllRelationTasks(tasksList, preConItem);
+        }
+        if (!preceedsContainCurrentTask || preceedsContainCurrentTask.length === 0) {
+            return;
+        }
+    }
+    getAllRelationTasks(tasksList, currentTask);
+    return allTasksNodeRelationArr;
+}
+
+export const formatTaskStatus = (translate, status) => {
+    switch (status) {
+        case "inprocess":
+            return translate('task.task_management.inprocess');
+        case "wait_for_approval":
+            return translate('task.task_management.wait_for_approval');
+        case "finished":
+            return translate('task.task_management.finished');
+        case "delayed":
+            return translate('task.task_management.delayed');
+        case "canceled":
+            return translate('task.task_management.canceled');
+        case "requested_to_close":
+            return translate('task.task_management.requested_to_close');
+    }
+}
+
+export const renderStatusColor = (task) => {
+    let statusColor = "";
+    switch (task.status) {
+        case "inprocess":
+            statusColor = "#385898";
+            break;
+        case "canceled":
+            statusColor = "#e86969";
+            break;
+        case "delayed":
+            statusColor = "#db8b0b";
+            break;
+        case "finished":
+            statusColor = "#31b337";
+            break;
+        default:
+            statusColor = "#333";
+    }
+    return statusColor;
+}
+
+export const renderProgressBar = (progress = 0, task) => {
+    const { startDate, endDate, status } = task
+    let now = moment(new Date());
+    let end = moment(endDate);
+    let start = moment(startDate);
+    let period = end.diff(start);
+    let upToNow = now.diff(start);
+    let barColor = "";
+    if (status === 'inprocess' && now.diff(end) > 0) barColor = "red";
+    else if (status === 'inprocess' && (period * progress / 100 - upToNow >= 0) || status === 'finished') barColor = "lime";
+    else barColor = "gold";
+    return (
+        <div className="progress" style={{ backgroundColor: 'rgb(221, 221, 221)', textAlign: "center", borderRadius: '3px', position: 'relative' }}>
+            <span style={{ position: 'absolute', right: '1px', fontSize: '13px', marginRight: '5px' }}>{progress + '%'}</span>
+            <div role="progressbar" className="progress-bar" aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100} style={{ width: `${progress + '%'}`, maxWidth: "100%", minWidth: "0%", backgroundColor: barColor }} >
+            </div>
+        </div>
+    )
 }

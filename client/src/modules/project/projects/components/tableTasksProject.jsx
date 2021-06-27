@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import { connect } from 'react-redux';
 import { DataTableSetting, DatePicker, PaginateBar, SelectBox, SelectMulti, Tree, TreeTable, ExportExcel, DeleteNotification } from '../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
@@ -8,7 +8,7 @@ import { UserActions } from '../../../super-admin/user/redux/actions';
 import { formatDate } from '../../../../helpers/formatDate';
 import { taskManagementActions } from '../../../task/task-management/redux/actions';
 import { getStorage } from '../../../../config';
-import { getCurrentProjectDetails } from './functionHelper';
+import { formatTaskStatus, getCurrentProjectDetails, renderProgressBar, renderStatusColor } from './functionHelper';
 import { performTaskAction } from '../../../task/task-perform/redux/actions';
 import Swal from 'sweetalert2';
 import { ModalPerform } from '../../../task/task-perform/component/modalPerform';
@@ -16,39 +16,26 @@ import moment from 'moment';
 import { getTotalTimeSheetLogs } from '../../../task/task-management/component/functionHelpers';
 
 const TableTasksProject = (props) => {
+    const tableId = "tasks-project-table";
     const [state, setState] = useState({
         taskName: "",
-        page: 1,
-        limit: 5,
+        // page: 1,
+        // perPage: 6,
         currentTaskId: null,
     })
-    const currentProjectId = window.location.href.split('?id=')[1];
+    const [page, setPage] = useState(1);
+    const [perPage, setPerPage] = useState(6);
+    const currentProjectId = window.location.href.split('?id=')[1].split('#')?.[0];
     const userId = getStorage('userId');
-    const { translate, currentProjectTasks, user, project, performtasks } = props;
-    const { page, limit, taskName, currentTaskId } = state;
+    const { translate, currentProjectTasks, user, project, performtasks, tasks } = props;
+    const { taskName, currentTaskId } = state;
     let units = []
     if (user) units = user.organizationalUnitsOfUser;
 
     useEffect(() => {
+        props.getTasksByProject(currentProjectId, page, perPage);
         props.getAllUserInAllUnitsOfCompany();
     }, [])
-
-    const formatTaskStatus = (translate, status) => {
-        switch (status) {
-            case "inprocess":
-                return translate('task.task_management.inprocess');
-            case "wait_for_approval":
-                return translate('task.task_management.wait_for_approval');
-            case "finished":
-                return translate('task.task_management.finished');
-            case "delayed":
-                return translate('task.task_management.delayed');
-            case "canceled":
-                return translate('task.task_management.canceled');
-            case "requested_to_close":
-                return translate('task.task_management.requested_to_close');
-        }
-    }
 
     // const handleChangeProjectName = (e) => {
     //     const { value } = e.target;
@@ -61,7 +48,7 @@ const TableTasksProject = (props) => {
     // const handleSubmitSearch = () => {
     //     props.getExamples({
     //         taskName,
-    //         limit,
+    //         perPage,
     //         page: 1
     //     });
     //     setState({
@@ -70,42 +57,20 @@ const TableTasksProject = (props) => {
     //     });
     // }
 
-    // const setPage = (pageNumber) => {
-    //     setState({
-    //         ...state,
-    //         page: parseInt(pageNumber)
-    //     });
+    const setCurrentPage = (pageNumber) => {
+        setPage(parseInt(pageNumber));
+        props.getTasksByProject(currentProjectId, parseInt(pageNumber), perPage);
+    }
 
-    //     props.getProjectsDispatch({
-    //         callId: "paginate",
-    //         taskName,
-    //         limit,
-    //         page: parseInt(pageNumber)
-    //     });
-    // }
-
-    // const setLimit = (number) => {
-    //     setState({
-    //         ...state,
-    //         limit: parseInt(number),
-    //         page: 1
-    //     });
-    //     props.getTasksByProject({
-    //         taskName,
-    //         limit: parseInt(number),
-    //         page: 1
-    //     });
-    // }
-
-    const handleDelete = async (id) => {
-        // props.deleteProjectDispatch(id);
-        // props.getProjectsDispatch({
-        //     taskName,
-        //     limit,
-        //     page: project && project.lists && project.lists.length === 1 ? page - 1 : page
+    const setLimit = (number) => {
+        setPage(1);
+        setPerPage(parseInt(number));
+        // setState({
+        //     ...state,
+        //     perPage: parseInt(number),
+        //     page: 1
         // });
-        await props.deleteTaskById(id);
-        await props.getTasksByProject(currentProjectId);
+        props.getTasksByProject(currentProjectId, 1, parseInt(number));
     }
 
     const handleShowDetailInfo = (id) => {
@@ -118,18 +83,18 @@ const TableTasksProject = (props) => {
     }
 
     const processPreceedingTasks = (preceedingTasks) => {
-        if (preceedingTasks.length === 0) return '';
+        if (!currentProjectTasks || preceedingTasks.length === 0) return '';
         const resultArr = preceedingTasks.map(preceedingTaskItem => {
             return currentProjectTasks.find(item => item._id === preceedingTaskItem.task)?.name;
         })
         return resultArr.join(", ");
     }
-    // let lists = [];
-    // if (project) {
-    //     lists = project.data.paginate
-    // }
+    let lists = [];
+    if (tasks) {
+        lists = tasks.tasksbyprojectpaginate
+    }
 
-    // const totalPage = project && project.data.totalPage;
+    const totalPage = tasks && Math.ceil(tasks.totalDocs / perPage);
 
     const funcStartTimer = async (taskId, overrideTSLog = 'no') => {
         let timer = {
@@ -188,7 +153,7 @@ const TableTasksProject = (props) => {
                 /> : null
             }
 
-            <table id="project-table" className="table table-striped table-bordered table-hover">
+            <table id={tableId} className="table table-striped table-bordered table-hover">
                 <thead>
                     <tr>
                         <th>{translate('task.task_management.col_name')}</th>
@@ -204,48 +169,61 @@ const TableTasksProject = (props) => {
                         <th style={{ width: "120px", textAlign: "center" }}>
                             {translate('table.action')}
                             <DataTableSetting
-                                tableId="example-table"
+                                tableId={tableId}
                                 columnArr={[
-                                    translate('manage_example.index'),
-                                    translate('manage_example.exampleName'),
-                                    translate('manage_example.description'),
-                                    "Mã số",
+                                    translate('task.task_management.col_name'),
+                                    translate('project.task_management.preceedingTask'),
+                                    translate('task.task_management.responsible'),
+                                    translate('task.task_management.accountable'),
+                                    translate('task.task_management.col_status'),
+                                    'Thời điểm bắt đầu',
+                                    'Thời điểm kết thúc dự kiến',
+                                    'Thời điểm kết thúc thực tế',
+                                    'Thời điểm bấm giờ',
+                                    translate('task.task_management.col_progress'),
                                 ]}
+                                setLimit={setLimit}
                             />
                         </th>
                     </tr>
                 </thead>
                 <tbody>
-                    {(currentProjectTasks && currentProjectTasks.length !== 0) &&
-                        currentProjectTasks.map((taskItem, index) => (
+                    {(lists && lists.length !== 0) &&
+                        lists.map((taskItem, index) => (
                             <tr key={index}>
-                                <td>{taskItem?.name}</td>
-                                <td>{processPreceedingTasks(taskItem?.preceedingTasks)}</td>
+                                <td style={{ color: '#385898' }}>{taskItem?.name}</td>
+                                <td style={{ maxWidth: 350 }}>{processPreceedingTasks(taskItem?.preceedingTasks)}</td>
                                 <td>{taskItem?.responsibleEmployees.map(o => o.name).join(", ")}</td>
                                 <td>{taskItem?.accountableEmployees?.map(o => o.name).join(", ")}</td>
-                                <td>{formatTaskStatus(translate, taskItem?.status)}</td>
+                                <td style={{ color: renderStatusColor(taskItem) }}>{formatTaskStatus(translate, taskItem?.status)}</td>
                                 <td>{moment(taskItem?.startDate).format('HH:mm DD/MM/YYYY')}</td>
                                 <td>{moment(taskItem?.endDate).format('HH:mm DD/MM/YYYY')}</td>
                                 <td>{taskItem?.actualEndDate && moment(taskItem?.actualEndDate).format('HH:mm DD/MM/YYYY')}</td>
                                 <td>{getTotalTimeSheetLogs(taskItem?.timesheetLogs)}</td>
-                                <td>{taskItem?.progress}%</td>
+                                <td>{renderProgressBar(taskItem?.progress, taskItem)}</td>
+                                {/* <td>{taskItem?.progress}%</td> */}
                                 <td style={{ textAlign: "center" }}>
                                     <a className="edit text-yellow" style={{ width: '5px' }} onClick={() => handleShowDetailInfo(taskItem?._id)}><i className="material-icons">edit</i></a>
                                     {renderTimerButton(taskItem)}
-                                    {/* <DeleteNotification
-                                        content={translate('task.task_management.action_delete')}
-                                        data={{
-                                            id: taskItem?._id,
-                                            info: taskItem?.name
-                                        }}
-                                        func={handleDelete}
-                                    /> */}
                                 </td>
                             </tr>
                         ))
                     }
                 </tbody>
             </table>
+
+            {/* PaginateBar */}
+            {tasks && tasks.isProjectPaginateLoading ?
+                <div className="table-info-panel">{translate('confirm.loading')}</div> :
+                (!lists || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+            }
+            <PaginateBar
+                pageTotal={totalPage ? totalPage : 0}
+                currentPage={page}
+                display={lists && lists.length !== 0 && lists.length}
+                total={tasks && tasks.totalDocs}
+                func={setCurrentPage}
+            />
         </React.Fragment>
     );
 }
@@ -263,3 +241,8 @@ const mapDispatchToProps = {
     startTimer: performTaskAction.startTimerTask,
 }
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(TableTasksProject));
+// export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(
+//     memo(TableTasksProject, (prev, next) => {
+//         return prev.tasks.tasksbyproject === next.tasks.tasksbyproject
+//     })
+// ));

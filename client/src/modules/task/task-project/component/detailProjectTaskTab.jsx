@@ -30,6 +30,7 @@ import dayjs from 'dayjs';
 import { RequestToCloseProjectTaskModal } from './requestToCloseProjectTaskModal';
 import { ModalRequestEditProjectTaskEmployee } from './modalRequestEditProjectTaskEmployee';
 import { checkIfAbleToCRUDProject, getCurrentProjectDetails } from '../../../project/projects/components/functionHelper';
+import { ModalRequestChangeStatusProjectTask } from './modalRequestChangeStatusProjectTask';
 class DetailProjectTaskTab extends Component {
 
     constructor(props) {
@@ -124,8 +125,8 @@ class DetailProjectTaskTab extends Component {
                     if (tmp) {
                         roles.push(this.ROLE.INFORMED);
                     }
-                    
-                    if (checkIfAbleToCRUDProject({ project: this.props.project, user: this.props.user, currentProjectId: task.taskProject })) {
+
+                    if (checkIfAbleToCRUDProject({ project: this.props.project, user: this.props.user, currentProjectId: task.taskProject, isInsideProject: true })) {
                         roles.push(this.ROLE.PROJECT_MANAGER);
                     }
 
@@ -163,7 +164,7 @@ class DetailProjectTaskTab extends Component {
         // this.props.getProjectsDispatch({ calledId: "" });
         this.props.showInfoRole(currentRole);
         this.props.getTasksByProject(this.props.task?.taskProject);
-        this.props.getProjectsDispatch({ calledId: "all", userId: getStorage('userId') });
+        this.props.getProjectsDispatch({ calledId: "user_all", userId: getStorage('userId') });
     }
 
     handleChangeCollapseInfo = async () => {
@@ -723,7 +724,12 @@ class DetailProjectTaskTab extends Component {
         setTimeout(() => {
             window.$(`#modal-request-edit-project-task-accountable-${id}`).modal('show');
         }, 10);
+    }
 
+    handleShowChangeStatusTask = (id) => {
+        setTimeout(() => {
+            window.$(`#modal-request-change-currentStatus-project-task-${id}`).modal('show');
+        })
     }
 
     render() {
@@ -892,8 +898,14 @@ class DetailProjectTaskTab extends Component {
                         }
                         {
                             currentRole === "accountable" && task && statusTask !== "finished" && checkHasAccountable &&
-                            <a className="btn btn-app" onClick={() => this.handleShowChangeRequestEditTask(id)} title={'Cập nhật công việc nâng cao'}>
-                                <i className="fa fa-wrench" style={{ fontSize: "16px" }}></i>{'Cập nhật công việc nâng cao'}
+                            <a className="btn btn-app" onClick={() => this.handleShowChangeRequestEditTask(id)} title={'Yêu cầu cập nhật nguồn lực'}>
+                                <i className="fa fa-wrench" style={{ fontSize: "16px" }}></i>{'Yêu cầu cập nhật nguồn lực'}
+                            </a>
+                        }
+                        {
+                            task && statusTask !== "finished" && statusTask !== "delayed" && statusTask !== "canceled" && (currentRole === "accountable" && checkInactive) && checkHasAccountable
+                            && <a className="btn btn-app" onClick={() => this.handleShowChangeStatusTask(id)} title={'Yêu cầu hoãn huỷ'}>
+                                <i className="fa fa-power-off" style={{ fontSize: "16px" }}></i>{'Yêu cầu hoãn huỷ'}
                             </a>
                         }
                         {
@@ -930,8 +942,8 @@ class DetailProjectTaskTab extends Component {
                         } */}
 
                         {task && statusTask !== "finished" && ((currentRole === "responsible" || currentRole === "accountable") && checkInactive) && checkHasAccountable
-                            && <a className="btn btn-app" onClick={() => this.handleShowRequestCloseTask(id)} title={'Kết thúc công việc'}>
-                                <i className="fa fa-external-link-square" style={{ fontSize: "16px" }}></i>{'Kết thúc công việc'}
+                            && <a className="btn btn-app" onClick={() => this.handleShowRequestCloseTask(id)} title={'Đánh giá kết thúc công việc'}>
+                                <i className="fa fa-calendar-check-o" style={{ fontSize: "16px" }}></i>{'Đánh giá kết thúc công việc'}
                             </a>
                         }
 
@@ -1436,6 +1448,14 @@ class DetailProjectTaskTab extends Component {
                         task={task && task}
                         role={currentRole}
                         hasAccountable={checkHasAccountable}
+                    />
+                }
+                {
+                    id && currentRole === "accountable" && checkHasAccountable &&
+                    <ModalRequestChangeStatusProjectTask
+                        id={id}
+                        task={task && task}
+                        currentProjectTasks={currentProjectTasks && currentProjectTasks}
                     />
                 }
             </React.Fragment>

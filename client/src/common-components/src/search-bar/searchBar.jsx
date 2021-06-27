@@ -18,18 +18,18 @@ class SearchBar extends Component {
             // Cancel the default action, if needed
             event.preventDefault();
             // Trigger the button element with a click
-            this.props.search();
+            this.props.search(this.props.parentState);
         }
     }
 
-    handleChangeOption = async (value) => {
-        await this.setState(state => {
+    handleChangeOption = (value) => {
+        this.setState(state => {
             return {
                 ...state,
                 option: value[0]
             }
         })
-        await this.props.setOption("option", this.state.option);
+        this.props.setOption("option", value[0]);
     }
 
     handleChangeInput = async(e) => {
@@ -40,7 +40,7 @@ class SearchBar extends Component {
                 value
             }
         })
-        await this.props.setOption("value", this.state.value); //set giá trị của nội dung muốn tìm kiếm
+        await this.props.setOption("value", value); //set giá trị của nội dung muốn tìm kiếm
     }
 
     handleChange = async (value) => {
@@ -57,7 +57,7 @@ class SearchBar extends Component {
     }
 
     search = () => {
-        this.props.search();
+        this.props.search(this.props.parentState);
     } 
 
     render() { 
@@ -77,6 +77,7 @@ class SearchBar extends Component {
                                     columns !== undefined ? columns.map( column => { return { value: column.value, text: column.title} }) : []
                                 }
                                 onChange={this.handleChangeOption}
+                                value={this.state.option}
                                 multiple={false}
                             />
                         </div>

@@ -6,12 +6,12 @@ import { PrivateRoute } from "./privateRoute";
 import { AuthRoute } from "./authRoute";
 
 import Layout from "../layout/layout";
+import Login from "../modules/auth/components/login"
+import Introduction from "../modules/intro/components"
+import ResetPassword from "../modules/auth/components/resetPasswordNew"
 
 const Home = lazy(() => import("../modules/home/components"))
 const NotFound = lazy(() => import("../modules/not-found/components"))
-const Login = lazy(() => import("../modules/auth/components/login"))
-const ResetPassword = lazy(() => import("../modules/auth/components/resetPasswordNew"))
-const Introduction = lazy(() => import("../modules/intro/components"))
 const ManageDocument = lazy(() => import("../modules/document/components/administration"))
 const Document = lazy(() => import("../modules/document/components/user"))
 
@@ -90,11 +90,11 @@ const EmployeeAssetManagement = lazy(() => import("../modules/asset/user/asset-m
 const TaskReportManager = lazy(() => import("../modules/report/task-report/components/taskReportManager"))
 
 //warehouse
-const InventoryDashBoard = lazy(() => import("../modules/production/warehouse/dashboard-inventory/component"))
-const BillDashBoard = lazy(() => import("../modules/production/warehouse/dashboard-bill/component"))
-const CategoryManagement = lazy(() => import("../modules/production/common-production/category-management/component"))
-const GoodManagement = lazy(() => import("../modules/production/common-production/good-management/component"))
-const StockManagement = lazy(() => import("../modules/production/warehouse/stock-management/component"))
+const InventoryDashBoard = lazy(() => import("../modules/production/warehouse/dashboard-inventory/components"))
+const BillDashBoard = lazy(() => import("../modules/production/warehouse/dashboard-bill/components"))
+const CategoryManagement = lazy(() => import("../modules/production/common-production/category-management/components"))
+const GoodManagement = lazy(() => import("../modules/production/common-production/good-management/components"))
+const StockManagement = lazy(() => import("../modules/production/warehouse/stock-management/components"))
 const BinLocationManagement = lazy(() => import("../modules/production/warehouse/bin-location-management/components"))
 const BillManagement = lazy(() => import("../modules/production/warehouse/bill-management/components"))
 const InventoryManagement = lazy(() => import("../modules/production/warehouse/inventory-management/components"))
@@ -144,11 +144,10 @@ const ManufacturingDashboard = lazy(() => import("../modules/production/manufact
 const ManufacturingLot = lazy(() => import("../modules/production/manufacturing/manufacturing-lot/components"))
 
 // Transport Managements
-const TransportRequirements = lazy(() => import("../modules/production/transport/transport-requirements/components"))
+const TransportRequirement = lazy(() => import("../modules/production/transport/transport-requirements/components"))
 const TransportPlan = lazy(() => import("../modules/production/transport/transport-plan/components"))
 const TransportSchedule = lazy(() => import("../modules/production/transport/transport-schedule/components"))
 const TransportVehicle = lazy(() => import("../modules/production/transport/transport-vehicle/components"))
-const TransportHuman = lazy(() => import("../modules/production/transport/transport-human/components"))
 const TransportRoute = lazy(() => import("../modules/production/transport/transport-route/components"))
 const TransportDepartment = lazy(() => import("../modules/production/transport/transport-department/components"))
 const CarrierTodayTransportMission = lazy(() => import("../modules/production/transport/carrier-today-transport-mission/components"))
@@ -169,6 +168,9 @@ const Notifications = lazy(() => import("../modules/notification/components/inde
 const SystemSetting = lazy(() => import("../modules/system-admin/system-setting/components"))
 const Company = lazy(() => import("../modules/system-admin/company/components"))
 const ManageLinkSystem = lazy(() => import("../modules/system-admin/system-link/components"))
+const SystemApiManagement = lazy(() => import("../modules/system-admin/system-api/system-api-management/components/systemApiManagement"))
+const PrivilegeApiManagement = lazy(() => import("../modules/system-admin/system-api/system-api-privilege/components/privilegeApiManagement"))
+
 const ManageRoleDefault = lazy(() => import("../modules/system-admin/root-role/components"))
 const ComponentsDefaultManagement = lazy(() => import("../modules/system-admin/system-component/components"))
 const ManageSystem = lazy(() => import("../modules/super-admin/system/components"))
@@ -276,6 +278,52 @@ class Routes extends Component {
                         pageName={"manage_link"}
                         layout={Layout}
                         component={ManageLinkSystem}
+                    />
+                    <PrivateRoute
+                        isLoading={this.props.systemApis?.isLoading}
+                        key={"manage_apis_default"}
+                        arrPage={[
+                            {
+                                link: "#",
+                                name: "system_administration",
+                                icon: "fa fa-key",
+                            },
+                            {
+                                link: "/system/apis-default-management",
+                                name: "manage_api",
+                                icon: "fa fa-link",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/system/apis-default-management"}
+                        path={"/system/apis-default-management"}
+                        pageName={"manage_api"}
+                        layout={Layout}
+                        component={SystemApiManagement}
+                    />
+                    <PrivateRoute
+                        isLoading={this.props.systemApis?.isLoading}
+                        key={"manage_privilege_api"}
+                        arrPage={[
+                            {
+                                link: "#",
+                                name: "system_administration",
+                                icon: "fa fa-key",
+                            },
+                            {
+                                link: "/system/privilege-api-management",
+                                name: "privilege_api",
+                                icon: "fa fa-link",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/system/privilege-api-management"}
+                        path={"/system/privilege-api-management"}
+                        pageName={"privilege_api"}
+                        layout={Layout}
+                        component={PrivilegeApiManagement}
                     />
                     <PrivateRoute
                         isLoading={this.props.systemComponents.isLoading}
@@ -2441,22 +2489,22 @@ class Routes extends Component {
 
                     <PrivateRoute
                         isLoading={false}
-                        key={"manage-transport-requirements"}
+                        key={"manage-transport-requirement"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
                             {
-                                link: "/manage-transport-requirements", // url trang
+                                link: "/manage-transport-requirement", // url trang
                                 name: "manage_transport_requirements", // tên trang
                                 icon: " fa fa-calendar-o ",
                             },
                         ]}
                         auth={auth}
                         exact={true}
-                        link={"/manage-transport-requirements"}
-                        path={"/manage-transport-requirements"}
+                        link={"/manage-transport-requirement"}
+                        path={"/manage-transport-requirement"}
                         pageName={"manage_transport_requirements"}
                         layout={Layout}
-                        component={TransportRequirements} // component ứng với trang, tạo ở bước 1
+                        component={TransportRequirement} // component ứng với trang, tạo ở bước 1
                     />
                     <PrivateRoute
                         isLoading={false}
@@ -2514,25 +2562,6 @@ class Routes extends Component {
                         pageName={"manage_transport_vehicle"}
                         layout={Layout}
                         component={TransportVehicle} // component ứng với trang, tạo ở bước 1
-                    />
-                    <PrivateRoute
-                        isLoading={false}
-                        key={"manage-transport-human"}
-                        arrPage={[
-                            { link: "/", name: "home", icon: "fa fa-home" },
-                            {
-                                link: "/manage-transport-human", // url trang
-                                name: "manage_transport_human", // tên trang
-                                icon: " fa fa-calendar-o ",
-                            },
-                        ]}
-                        auth={auth}
-                        exact={true}
-                        link={"/manage-transport-human"}
-                        path={"/manage-transport-human"}
-                        pageName={"manage_transport_human"}
-                        layout={Layout}
-                        component={TransportHuman} // component ứng với trang, tạo ở bước 1
                     />
                     <PrivateRoute
                         isLoading={false}

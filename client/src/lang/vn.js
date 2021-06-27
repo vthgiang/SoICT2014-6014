@@ -38,6 +38,7 @@ export default {
             month: "tháng",
             value: "Giá trị",
             export: "Xuất",
+            add_tag: "Thêm tag",
             auth_alert: {
                 title:
                     "Hệ thống xác nhận có lỗi xảy ra trong phiên làm việc của bạn!",
@@ -83,7 +84,8 @@ export default {
             need_to_do_chart: "Công việc cần làm",
             urgent_task_amount: "Số công việc khẩn cấp",
             need_to_do_task_amount: "Số công việc cần làm",
-            list_employe_timing: "Danh sách nhân viên đang bấm giờ"
+            list_employe_timing: "Danh sách nhân viên đang bấm giờ",
+            statistics_task_unit: "Biểu đồ thống kê điểm công việc"
         },
 
         menu: {
@@ -95,6 +97,8 @@ export default {
             manage_role: "Quản lý phân quyền",
             manage_link: "Quản lý trang",
             manage_component: "Quản lý phân quyền trên các trang",
+            manage_api: "Quản lý API",
+            privilege_api: "Quản lý phân quyền API",
 
             manage_department: "Quản lý cơ cấu tổ chức",
             manage_user: "Quản lý người dùng",
@@ -283,10 +287,9 @@ export default {
             manage_transport_plan: "Kế hoạch vận chuyển",
             manage_transport_schedule: "Lệnh vận chuyển",
             manage_transport_vehicle: "Phương tiện vận chuyển",
-            manage_transport_human: "Nhân viên vận chuyển",
             manage_transport_route: "Hành trình vận chuyển",
             manage_transport_department: "Phân vai trò đơn vị vận chuyển",
-            carrier_today_transport_mission: "Nhiệm vụ vận chuyển hôm nay",
+            carrier_today_transport_mission: "Nhiệm vụ vận chuyển",
             carrier_all_times_transport_mission: "Nhiệm vụ vận chuyển mỗi ngày",
 
 
@@ -695,6 +698,44 @@ export default {
                 system_component_name_exist:
                     "Tên này đã được sử dụng cho 1 system component khác",
             },
+
+            system_api: {
+                table: {
+                    path: "Đường dẫn",
+                    method: "Phương thức",
+                    description: "Mô tả",
+                    category: "Danh mục",
+                    email: "Email"
+                },
+                select_all_method: "Chọn tất cả các phương thức",
+                non_select_method: "Chọn phương thức",
+
+                placeholder: {
+                    input_path: "Nhập đường dẫn",
+                    input_description: "Nhập mô tả",
+                    input_email: "Nhập email người dùng"
+                },
+
+                modal: {
+                    create_title: 'Thêm mới API',
+                    edit_title: 'Chỉnh sửa API',
+                    delete_title: 'Xóa API'
+                },
+
+                //Thông điệp trả về từ server
+                create_system_api_success: 'Thêm system API thành công',
+                create_system_api_failure: 'Thêm system API thất bại',
+                system_api_exist: 'System API đã tồn tại'
+            },
+
+            privilege_system_api: {
+                table: {
+                    email: "Email"
+                },
+                placeholder: {
+                    input_email: "Nhập email"
+                },
+            }
         },
 
         super_admin: {
@@ -3217,7 +3258,9 @@ export default {
                 calc_average_action_rating:
                     "Trung bình cộng điểm đánh giá hoạt động",
                 calc_failed_action_rating:
-                    "Tổng các tích điểm hoạt động và độ quan trọng hoạt động của các hoạt động không đạt (rating < 5)",
+                    "Số hoạt động không đạt (rating < 5)",
+                calc_passed_action_rating:
+                    "Số hoạt động đạt (rating >= 5)",
                 calc_all_action_rating: "Tổng các tích điểm hoạt động và độ quan trọng hoạt động của tất cả hoạt động",
                 calc_progress: "Tiến độ công việc",
                 calc_new_formula: "Công thức hiện tại",
@@ -4038,6 +4081,7 @@ export default {
                     not_avaiable: "Chưa đánh giá",
                     no_point: "Chưa có điểm",
                     lastest_evaluation: "Đánh giá cuối",
+                    lastest_edit: "Chỉnh sửa cuối",
                     task_list: "Danh sách công việc",
                     work_duration_time: "Thời gian làm việc",
                     evaluate_time: "Thời gian đánh giá",
@@ -4049,8 +4093,10 @@ export default {
                     old_value: "Giá trị cũ",
                     auto_value: "Giá trị tự động",
                     cal_all_kpis: 'Tính điểm toàn bộ KPI',
+                    refresh_all_kpis: 'Tính lại điểm KPI các đơn vị',
                     update_task_importance: `(*)Cập nhật độ quan trọng công việc và Tính điểm KPI `,
-
+                    cal_all_kpis_title: `(*)Cập nhật độ quan trọng công việc và Tính điểm tất cả KPI `,
+                    refresh: "Làm mới",
                     /**
                      * Management
                      */
@@ -4114,9 +4160,9 @@ export default {
                     "Lấy điểm hệ thống cho KPI thành công",
                 get_system_point_fail: "Lấy điểm hệ thống cho KPI lỗi",
                 set_task_importance_level_success:
-                    "Thêm độ quan trọng cho công việc thành công",
+                    "Thêm độ quan trọng cho công việc và tính KPI thành công",
                 set_task_importance_level_fail:
-                    "Thêm độ quan trọng cho công việc lỗi",
+                    "Thêm độ quan trọng cho công việc và tính KPI lỗi",
                 set_point_kpi_success:
                     "Tính điểm tất cả kpi thành công",
                 set_point_kpi_fail:
@@ -5763,7 +5809,33 @@ export default {
             }
         },
         manage_transport: {
-            add_requirements: "Thêm yêu cầu vận chuyển",
+            transportRequirement: {
+                add_requirements: "Thêm yêu cầu vận chuyển",
+                add_success: "Tạo yêu cầu vận chuyển thành công",
+                add_fail: "Tạo yêu cầu vận chuyển thất bại",
+                edit_success: "Chỉnh sửa yêu cầu vận chuyển thành công",
+                edit_fail: "Chỉnh sửa yêu cầu vận chuyển thất bại",
+                delete_success: "Đã xóa yêu cầu vận chuyển",
+                delete_fail: "Xóa yêu cầu vận chuyển thất bại",
+            },
+            transportPlan: {
+                add_success: "Đã tạo kế hoạch vận chuyển",
+                add_fail: "Tạo kế hoạch vận chuyển thất bại",
+                edit_success: "Đã chỉnh sửa kế hoạch vận chuyển",
+                edit_fail: "Chỉnh sửa kế hoạch vận chuyển thất bại",
+                delete_success: "Đã xóa kế hoạch vận chuyển",
+                delete_fail: "Xóa kế hoạch vận chuyển thất bại",
+            },
+            transportCommand: {
+                edit_success: "Đã chỉnh sửa lệnh vận chuyển",
+                edit_fail: "Chỉnh sửa lệnh vận chuyển thất bại",
+            },
+            transportVehicle: {
+                add_success: "Đã thêm phương tiện",
+                add_fail: "Thêm phương tiện thất bại",
+                edit_success: "Đã chỉnh sửa trạng thái phương tiện",
+                edit_fail: "Chỉnh sửa trạng thái phương tiện thất bại",
+            }
         },
 
         // Quản lý dự án

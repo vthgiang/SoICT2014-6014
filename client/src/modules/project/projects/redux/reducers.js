@@ -13,7 +13,7 @@ const initState = {
     value: {},
     isLoading: false,
     data: {
-        list: [], paginate: [],
+        list: [], paginate: [], listbyuser: [],
         totalDocs: 0,
         limit: 0,
         totalPages: 0,
@@ -30,14 +30,13 @@ const initState = {
 export function project(state = initState, action) {
     var index = -1;
     var indexPaginate = -1;
+    var indexUserAll = -1;
     switch (action.type) {
         case ProjectConstants.GET_PROJECTS_REQUEST:
         case ProjectConstants.CREATE_PROJECTS_REQUEST:
         case ProjectConstants.DELETE_PROJECTS_REQUEST:
         case ProjectConstants.EDIT_PROJECTS_REQUEST:
         case ProjectConstants.GET_SALARY_MEMBER:
-        case ProjectConstants.CREATE_PROJECT_CHANGE_REQUEST:
-        case ProjectConstants.GET_LIST_PROJECT_CHANGE_REQUESTS:
             return {
                 ...state,
                 isLoading: true,
@@ -48,8 +47,6 @@ export function project(state = initState, action) {
         case ProjectConstants.DELETE_PROJECTS_FAILE:
         case ProjectConstants.EDIT_PROJECTS_FAILE:
         case ProjectConstants.GET_SALARY_MEMBER_FAILE:
-        case ProjectConstants.CREATE_PROJECT_CHANGE_REQUEST_FAILE:
-        case ProjectConstants.GET_LIST_PROJECT_CHANGE_REQUESTS_FAILE:
             return {
                 ...state,
                 isLoading: false,
@@ -76,6 +73,16 @@ export function project(state = initState, action) {
                     }
                 }
             }
+            else if (action.calledId === "user_all") {
+                return {
+                    ...state,
+                    isLoading: false,
+                    data: {
+                        ...state.data,
+                        listbyuser: action.payload
+                    }
+                }
+            }
             else {
                 return {
                     ...state,
@@ -99,6 +106,10 @@ export function project(state = initState, action) {
                     paginate: [
                         action.payload,
                         ...state.data.paginate,
+                    ],
+                    listbyuser: [
+                        action.payload,
+                        ...state.data.listbyuser,
                     ]
                 }
             }
@@ -107,6 +118,8 @@ export function project(state = initState, action) {
             if (index !== -1) state.data.list.splice(index, 1);
             indexPaginate = findIndex(state.data.paginate, action.payload);
             if (indexPaginate !== -1) state.data.paginate.splice(indexPaginate, 1);
+            indexUserAll = findIndex(state.data.listbyuser, action.payload);
+            if (indexUserAll !== -1) state.data.listbyuser.splice(indexUserAll, 1);
             return {
                 ...state,
                 isLoading: false
@@ -117,6 +130,8 @@ export function project(state = initState, action) {
             if (index !== -1) state.data.list[index] = action.payload;
             indexPaginate = findIndex(state.data.paginate, action.payload._id);
             if (indexPaginate !== -1) state.data.paginate[indexPaginate] = action.payload;
+            indexUserAll = findIndex(state.data.listbyuser, action.payload);
+            if (indexUserAll !== -1) state.data.listbyuser.splice(indexUserAll, 1);
             return {
                 ...state,
                 isLoading: false
@@ -128,20 +143,6 @@ export function project(state = initState, action) {
                 isLoading: false,
                 salaries: action.payload,
             };
-
-        case ProjectConstants.CREATE_PROJECT_CHANGE_REQUEST_SUCCESS:
-            return {
-                ...state,
-                isLoading: false,
-                changeRequests: action.payload,
-            }
-
-        case ProjectConstants.GET_LIST_PROJECT_CHANGE_REQUESTS_SUCCESS:
-            return {
-                ...state,
-                isLoading: false,
-                changeRequests: action.payload,
-            }
 
         default:
             return state;

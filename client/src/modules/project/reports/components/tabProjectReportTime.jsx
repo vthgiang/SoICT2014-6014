@@ -4,6 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { ProjectActions } from "../../projects/redux/actions";
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import moment from 'moment';
+import { formatTaskStatus, renderProgressBar, renderStatusColor } from '../../projects/components/functionHelper';
 
 const TabProjectReportTime = (props) => {
     const { currentTasks, translate } = props;
@@ -103,17 +104,25 @@ const TabProjectReportTime = (props) => {
                             <thead>
                                 <tr>
                                     <th>Tên công việc</th>
+                                    <th>Trạng thái</th>
+                                    <th>Tiến độ (%)</th>
                                     <th>Thời gian bắt đầu</th>
-                                    <th>Thời gian dự kiến kết thúc</th>
+                                    <th>Thời gian kết thúc dự kiến</th>
+                                    <th>Thời gian kết thúc thực tế</th>
+                                    <th>Thời điểm hiện tại</th>
                                 </tr>
                             </thead>
                             <tbody data-toggle="collapse" id="show-report-time-tasks-project-table" className="collapse">
                                 {displayContent.tasks && displayContent.tasks.length !== 0 &&
                                     displayContent.tasks.map((taskItem, index) => (
                                         <tr key={index}>
-                                            <td>{taskItem?.name}</td>
+                                            <td style={{ color: '#385898' }}>{taskItem?.name}</td>
+                                            <td style={{ color: renderStatusColor(taskItem) }}>{formatTaskStatus(translate, taskItem?.status)}</td>
+                                            <td>{renderProgressBar(taskItem?.progress, taskItem)}</td>
                                             <td>{moment(taskItem?.startDate).format('HH:mm DD/MM/YYYY')}</td>
                                             <td>{moment(taskItem?.endDate).format('HH:mm DD/MM/YYYY')}</td>
+                                            <td>{taskItem?.actualEndDate && moment(taskItem?.actualEndDate).format('HH:mm DD/MM/YYYY')}</td>
+                                            <td>{moment().format('HH:mm DD/MM/YYYY')}</td>
                                         </tr>
                                     ))
                                 }

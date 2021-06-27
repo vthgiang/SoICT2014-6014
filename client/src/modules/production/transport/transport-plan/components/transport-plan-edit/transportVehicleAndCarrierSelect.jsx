@@ -66,30 +66,42 @@ function TransportVehicleAndCarrierSelect(props) {
                     vehiclesList.push(vehicle);
                 })
             }
+            // let carriersList = [];
+            // if (transportDepartment && transportDepartment.lists && transportDepartment.lists.length !==0){
+            //     let lists = transportDepartment.lists;
+            //     let carrierOrganizationalUnit = [];
+            //     carrierOrganizationalUnit = lists.filter(r => r.role === 2) // role nhân viên vận chuyển
+            //     console.log(carrierOrganizationalUnit, " unit")
+            //     if (carrierOrganizationalUnit && carrierOrganizationalUnit.length !==0){
+            //         carrierOrganizationalUnit.map(item =>{
+            //             if (item.organizationalUnit){
+            //                 let organizationalUnit = item.organizationalUnit;
+            //                 organizationalUnit.employees && organizationalUnit.employees.length !==0
+            //                 && organizationalUnit.employees.map(employees => {
+            //                     employees.users && employees.users.length !== 0
+            //                     && employees.users.map(users => {
+            //                         if (users.userId){
+            //                             if (users.userId.name){
+            //                                 carriersList.push(users.userId)
+            //                             }
+            //                         }
+            //                     })
+            //                 })
+            //             }
+            //         })
+            //     } 
+            // }
             let carriersList = [];
-            if (transportDepartment && transportDepartment.lists && transportDepartment.lists.length !==0){
-                let lists = transportDepartment.lists;
-                let carrierOrganizationalUnit = [];
-                carrierOrganizationalUnit = lists.filter(r => r.role === 2) // role nhân viên vận chuyển
-                console.log(carrierOrganizationalUnit, " unit")
-                if (carrierOrganizationalUnit && carrierOrganizationalUnit.length !==0){
-                    carrierOrganizationalUnit.map(item =>{
-                        if (item.organizationalUnit){
-                            let organizationalUnit = item.organizationalUnit;
-                            organizationalUnit.employees && organizationalUnit.employees.length !==0
-                            && organizationalUnit.employees.map(employees => {
-                                employees.users && employees.users.length !== 0
-                                && employees.users.map(users => {
-                                    if (users.userId){
-                                        if (users.userId.name){
-                                            carriersList.push(users.userId)
-                                        }
-                                    }
-                                })
-                            })
+            if (transportDepartment && transportDepartment.listUser && transportDepartment.listUser.length!==0){
+                let listUser = transportDepartment.listUser.filter(r=>Number(r.role) === 3);
+                if (listUser && listUser.length!==0 && listUser[0].list && listUser[0].list.length!==0){
+                    listUser[0].list.map(userId => {
+                        if (carriersList.length!==0){
+                            carriersList = carriersList.filter(r=>String(r._id)!==String(userId._id));
                         }
+                        carriersList.push(userId);
                     })
-                } 
+                }
             }
             if (transportPlan && transportPlan.lists && transportPlan.lists.length!==0){
                 transportPlan.lists.map(plan => {

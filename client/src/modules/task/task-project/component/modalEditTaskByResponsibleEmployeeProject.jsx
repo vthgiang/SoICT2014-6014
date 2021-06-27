@@ -41,7 +41,7 @@ class ModalEditTaskByResponsibleEmployeeProject extends Component {
         let department = task.organizationalUnit ? task.organizationalUnit._id : '';
 
         this.props.getAllKpiSetsOrganizationalUnitByMonth(userId, department, date);
-        this.props.getProjectsDispatch({ calledId: "all" });
+        this.props.getProjectsDispatch({ calledId: "user_all" });
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {

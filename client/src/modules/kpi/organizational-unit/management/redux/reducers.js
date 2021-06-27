@@ -84,10 +84,16 @@ export function managerKpiUnit(state = {}, action) {
       return {
         ...state,
         isLoading: false,
-        childtarget: action.payload.childrenKpi,
-        kpis: state.kpis.map(kpi =>
-          kpi._id === action.payload.kpiUnitSet._id ? action.payload.kpiUnitSet : kpi
-        )
+        childtarget: action.payload?.[0]?.childrenKpi,
+        kpis: state.kpis.map(kpi => {
+          let kpiUnit = action.payload?.filter(item => kpi._id === item.kpiUnitSet._id)
+
+          if (kpiUnit?.length > 0) {
+            return kpiUnit?.[0]?.kpiUnitSet
+          } else {
+            return kpi
+          }
+        })
       }
     case managerConstants.CALCULATE_KPIUNIT_FAILURE:
       return {

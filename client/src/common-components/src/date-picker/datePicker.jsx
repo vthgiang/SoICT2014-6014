@@ -11,6 +11,7 @@ class DatePicker extends Component {
         }
         this.zIndex = 1050;
     }
+    
     componentDidMount = () => {
         const { id, dateFormat, onChange, deleteValue = true } = this.props;
         let zIndex = 1050;
@@ -40,13 +41,14 @@ class DatePicker extends Component {
         if (deleteValue) {
             window.$("#" + id).keyup(function (e) {
                 if (e.keyCode == 8 || e.keyCode == 46) {
-                    window.$("#" + id).datepicker('update', "");
+                    window.$("#" + id).datepicker('update');
                 }
             });
         }
         window.$("#" + id).on("change", () => {
             let value = this.refs.datePicker.value;
             this.setState({
+                
                 value: value
             })
             this.props.onChange(value); // Thông báo lại cho parent component về giá trị mới (để parent component lưu vào state của nó)
@@ -99,18 +101,24 @@ class DatePicker extends Component {
             return true;
         return false;  // Tự chủ động update (do đã lưu value vào state)
     }
-
+    onChangeDatePicker = (e) => {
+        const { value } = e.target;
+        this.setState({
+            value: value
+        })
+        this.props.onChange(value);
+    }
     render() {
         const { id, disabled = false, defaultValue, style = {} } = this.props;
-        const { value } = this.state;
-        
+        const { value } = this.state;       
         return (
             <React.Fragment>
                 <div className={'input-group date has-feedback'} id={id}>
                     <div className="input-group-addon">
                         <i style={{ width: 16, height: 16 }} className="fa fa-calendar" />
                     </div>
-                    <input type="text" style={style} className="form-control" value={value ? value : (defaultValue ? defaultValue : '')} ref="datePicker" onChange={() => { }} disabled={disabled} />
+                    <input type="text" style={style} className="form-control" value={value ? value : (defaultValue ? defaultValue : '')} onChange={this.onChangeDatePicker} ref="datePicker"
+                     disabled={disabled} />
                 </div>
             </React.Fragment>
         );

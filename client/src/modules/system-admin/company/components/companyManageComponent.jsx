@@ -100,20 +100,19 @@ function CompanyManageComponent(props) {
 
     const setOption = (title, option) => {
         setState({
-
+            ...state,
             [title]: option
         });
     }
 
-    const searchWithOption = () => {
-        const { companyId } = state;
+    const searchWithOption = (state) => {
         const params = {
-            company: companyId,
-            portal: state.companyShortName,
-            limit: state.limit,
+            company: state?.companyId,
+            portal: state?.companyShortName,
+            limit: state?.limit,
             page: 1,
-            key: state.option,
-            value: state.value
+            key: state?.option,
+            value: state?.value
         };
 
         props.getCompanyComponents(params);
@@ -207,6 +206,7 @@ function CompanyManageComponent(props) {
         <div style={{ padding: '10px 0px 10px 0px' }}>
             <a className="btn btn-primary pull-right" onClick={() => updateCompanyComponents(companyShortName)}><i className="material-icons">save</i></a>
             <SearchBar
+                id={`search-component`}
                 columns={[
                     { title: translate('manage_component.name'), value: 'name' },
                     { title: translate('manage_component.description'), value: 'description' }
@@ -214,6 +214,7 @@ function CompanyManageComponent(props) {
                 option={state.option}
                 setOption={setOption}
                 search={searchWithOption}
+                parentState={state}
             />
             <DataTableSetting
                 tableId="company-manage-component-table"

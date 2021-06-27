@@ -9,7 +9,7 @@ import { UserActions } from '../../../super-admin/user/redux/actions';
 import { taskTemplateActions } from '../../task-template/redux/actions';
 import { taskManagementActions } from '../redux/actions';
 
-import { DatePicker, TimePicker, SelectBox, ErrorLabel, ToolTip, TreeSelect, QuillEditor } from '../../../../common-components';
+import { DatePicker, TimePicker, SelectBox, ErrorLabel, ToolTip, TreeSelect, QuillEditor, InputTags } from '../../../../common-components';
 import { TaskFormValidator } from './taskFormValidator';
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import ModalAddProject from '../../../project/projects/components/createProject';
@@ -28,6 +28,8 @@ class AddTaskForm extends Component {
                 quillDescriptionDefault: "",
                 startDate: "",
                 endDate: "",
+                startTime: "08:00 AM",
+                endTime: "05:30 PM",
                 priority: 3,
                 responsibleEmployees: [],
                 accountableEmployees: [],
@@ -39,9 +41,8 @@ class AddTaskForm extends Component {
                 taskTemplate: "",
                 parent: "",
                 taskProject: "",
+                tags: []
             },
-            startTime: "08:00 AM",
-            endTime: "05:30 PM",
             currentRole: getStorage('currentRole'),
         };
     }
@@ -121,9 +122,9 @@ class AddTaskForm extends Component {
     validateTaskStartDate = (value, willUpdateState = true) => {
         let { translate } = this.props;
         let msg = TaskFormValidator.validateTaskStartDate(value, this.state.newTask.endDate, translate);
-        let { newTask } = this.state;
-        let startDate = this.convertDateTime(value, this.state.startTime);
-        let endDate = this.convertDateTime(this.state.newTask.endDate, this.state.endTime);
+        const { newTask } = this.state;
+        let startDate = this.convertDateTime(value, newTask.startTime);
+        let endDate = this.convertDateTime(newTask.endDate, newTask.endTime);
         if (startDate > endDate) {
             msg = translate('task.task_management.add_err_end_date');
         }
@@ -145,7 +146,7 @@ class AddTaskForm extends Component {
     handleStartTimeChange = (value) => {
         let { translate } = this.props;
         let startDate = this.convertDateTime(this.state.newTask.startDate, value);
-        let endDate = this.convertDateTime(this.state.newTask.endDate, this.state.endTime);
+        let endDate = this.convertDateTime(this.state.newTask.endDate, this.state.newTask.endTime);
         let err, resetErr;
 
         if (value.trim() === "") {
@@ -158,22 +159,21 @@ class AddTaskForm extends Component {
         this.setState(state => {
             return {
                 ...state,
-                startTime: value,
                 newTask: {
                     ...state.newTask,
+                    startTime: value,
                     errorOnStartDate: err,
                     errorOnEndDate: resetErr,
                 }
             }
         }, () => {
-            this.props.handleChangeStartTime(this.state.startTime);
             this.props.handleChangeTaskData(this.state.newTask)
         });
     }
 
     handleEndTimeChange = (value) => {
         let { translate } = this.props;
-        let startDate = this.convertDateTime(this.state.newTask.startDate, this.state.startTime);
+        let startDate = this.convertDateTime(this.state.newTask.startDate, this.state.newTask.startTime);
         let endDate = this.convertDateTime(this.state.newTask.endDate, value);
         let err, resetErr;
 
@@ -188,15 +188,14 @@ class AddTaskForm extends Component {
         this.setState(state => {
             return {
                 ...state,
-                endTime: value,
                 newTask: {
                     ...state.newTask,
+                    endTime: value,
                     errorOnEndDate: err,
                     errorOnStartDate: resetErr,
                 }
             }
         }, () => {
-            this.props.handleChangeEndTime(this.state.endTime);
             this.props.handleChangeTaskData(this.state.newTask);
         });
     }
@@ -427,6 +426,17 @@ class AddTaskForm extends Component {
         }, () => this.props.handleChangeTaskData(this.state.newTask))
     }
 
+    handleTaskTags = (value) => {
+        this.setState({
+            newTask: {
+                ...this.state.newTask,
+                tags: value
+            }
+        }, () => {
+            this.props.handleChangeTaskData(this.state.newTask)
+        })
+    }
+
     // convert ISODate to String dd-mm-yyyy
     formatDate(date) {
         var d = new Date(date),
@@ -561,7 +571,7 @@ class AddTaskForm extends Component {
     }
 
     render() {
-        const { id, newTask, startTime, endTime } = this.state;
+        const { id, newTask } = this.state;
         const { tasktemplates, user, translate, tasks, department, project, isProcess, info, role } = this.props;
         let listTaskTemplate;
         let listDepartment = department?.list;
@@ -674,7 +684,7 @@ class AddTaskForm extends Component {
                                     < TimePicker
                                         id={`time-picker-1-${id}-${this.props.id}`}
                                         ref={`time-picker-1-${id}-${this.props.id}`}
-                                        value={startTime}
+                                        value={newTask.startTime}
                                         onChange={this.handleStartTimeChange}
                                     />
                                     <ErrorLabel content={newTask.errorOnStartDate} />
@@ -689,7 +699,7 @@ class AddTaskForm extends Component {
                                     < TimePicker
                                         id={`time-picker-2-${id}-${this.props.id}`}
                                         ref={`time-picker-2-${id}-${this.props.id}`}
-                                        value={endTime}
+                                        value={newTask.endTime}
                                         onChange={this.handleEndTimeChange}
                                     />
                                     <ErrorLabel content={newTask.errorOnEndDate} />
@@ -852,14 +862,23 @@ class AddTaskForm extends Component {
                                     <TreeSelect
                                         id={`select-task-project-task-${id}`}
                                         mode='radioSelect'
-                                        data={project?.data?.list}
+                                        data={project?.data?.list?.filter((projectItem) => projectItem.projectType === 1)}
                                         handleChange={this.handleTaskProject}
-                                        value={[newTask.taskProject]}
+                                        value={this.props.projectIdFromDetailProject || [newTask.taskProject]}
                                         action={checkCurrentRoleIsManager && checkCurrentRoleIsManager.length > 0 ? () => { window.$('#modal-create-project').modal('show') } : null}
                                         actionIcon={checkCurrentRoleIsManager && checkCurrentRoleIsManager.length > 0 && 'fa fa-plus'}
                                     />
                                 </div>
                             }
+
+                            <div className="form-group">
+                                <label>Tags</label>
+                                <InputTags
+                                    id={`tagsinput-${id}`}
+                                    onChange={this.handleTaskTags}
+                                    value={newTask?.tags}
+                                />
+                            </div>
                         </fieldset>
                     </div>
                 </div>

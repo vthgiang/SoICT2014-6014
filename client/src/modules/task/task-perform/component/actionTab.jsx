@@ -7,15 +7,15 @@ import moment from 'moment';
 import 'moment/locale/vi';
 import parse from 'html-react-parser';
 import './actionTab.css';
-
-import { ContentMaker, DateTimeConverter, ApiImage, ShowMoreShowLess, SelectBox, DatePicker, TimePicker, ErrorLabel } from '../../../../common-components';
+import FilePreview from './FilePreview';
+import { ContentMaker, DateTimeConverter, ApiImage, ShowMoreShowLess, SelectBox, DatePicker, TimePicker, ErrorLabel, DialogModal } from '../../../../common-components';
 
 import { getStorage } from '../../../../config';
 
 import { performTaskAction } from '../redux/actions';
 import { taskManagementActions } from "../../task-management/redux/actions";
 import { AuthActions } from '../../../auth/redux/actions';
-
+import { ModalEditDateCreatedAction } from './modalEditDateCreatedAction';
 import { SubTaskTab } from './subTaskTab';
 import { ViewProcess } from '../../task-process/component/task-process-management/viewProcess';
 import { IncomingDataTab } from './incomingDataTab';
@@ -25,6 +25,7 @@ import ValidationHelper from '../../../../helpers/validationHelper';
 import { formatDate } from '../../../../helpers/formatDate';
 import { convertTime } from '../../../../helpers/stringMethod';
 import { htmlToText } from 'html-to-text';
+import { formatTime } from '../../../project/projects/components/functionHelper';
 class ActionTab extends Component {
     constructor(props) {
         let idUser = getStorage("userId");
@@ -58,7 +59,7 @@ class ActionTab extends Component {
                 creator: idUser,
                 description: "",
                 files: [],
-                descriptionDefault: ""
+                descriptionDefault: "",
             },
             newActionEdited: {
                 creator: idUser,
@@ -67,10 +68,10 @@ class ActionTab extends Component {
                 descriptionDefault: ""
             },
             newCommentOfAction: {
-                // creator: idUser,
-                // description: "",
-                // files: [],
-                // taskActionId: null,
+                creator: idUser,
+                description: "",
+                files: [],
+                taskActionId: null,
                 descriptionDefault: ""
             },
             newCommentOfActionEdited: {
@@ -344,6 +345,7 @@ class ActionTab extends Component {
                     files: [],
                     descriptionDefault: ''
                 }
+                state.CommentOfActionFilePaste = []
                 return {
                     ...state,
                 }
@@ -363,7 +365,6 @@ class ActionTab extends Component {
         newAction.files && newAction.files.forEach(x => {
             data.append("files", x);
         })
-
         if (newAction.creator && newAction.description) {
             this.props.createTaskAction(taskId, data);
         }
@@ -371,6 +372,7 @@ class ActionTab extends Component {
         this.setState(state => {
             return {
                 ...state,
+                filePaste: [],
                 newAction: {
                     ...state.newAction,
                     description: "",
@@ -404,6 +406,7 @@ class ActionTab extends Component {
                     files: [],
                     descriptionDefault: ''
                 },
+                newTaskCommentFilePaste: []
             }
         })
     }
@@ -426,6 +429,7 @@ class ActionTab extends Component {
                 files: [],
                 descriptionDefault: ''
             }
+            state.newCommentOfTaskCommentPaste = []
             return {
                 ...state,
             }
@@ -453,6 +457,7 @@ class ActionTab extends Component {
                     files: [],
                     descriptionDefault: ''
                 },
+                taskFilesPaste: []
             }
         })
 
@@ -539,6 +544,20 @@ class ActionTab extends Component {
                 }
             }
         })
+    }
+    convertDateTime = (date, time) => {
+        let splitter = date.split("-");
+        let strDateTime = `${splitter[2]}/${splitter[1]}/${splitter[0]} ${time}`;
+        return new Date(strDateTime);
+    }
+
+    handleSaveChangeDateAction = (action) => {
+        let data = new FormData();
+        let createdDateAction = this.convertDateTime(action.dateCreatedAt, action.timeCreatedAt)
+        data.append("type", "edit-time")
+        data.append("creator", getStorage("userId"))
+        data.append("dateCreatedAt", createdDateAction)
+        this.props.editTaskAction(action.id, data, action.taskId);
     }
 
     handleSaveEditTaskComment = async (e, taskId, commentId, description) => {
@@ -664,9 +683,6 @@ class ActionTab extends Component {
         })
     }
 
-    onEditCommentOfTaskCommentFilesChange = async (files) => {
-
-    }
 
     handleConfirmAction = async (e, actionId, userId, taskId) => {
         e.preventDefault();
@@ -717,19 +733,6 @@ class ActionTab extends Component {
             }
         })
     }
-
-    onEditCommentOfActionFilesChange = (files) => {
-        this.setState(state => {
-            return {
-                ...state,
-                newCommentOfActionEdited: {
-                    ...state.newCommentOfActionEdited,
-                    files: files,
-                }
-            }
-        })
-    }
-
     onEditCommentOfTaskCommentFilesChange = async (files) => {
         this.setState(state => {
             return {
@@ -741,7 +744,6 @@ class ActionTab extends Component {
             }
         });
     }
-
     onEditTaskCommentFilesChange = (files) => {
         this.setState(state => {
             return {
@@ -760,7 +762,7 @@ class ActionTab extends Component {
                 ...state,
                 newTaskComment: {
                     ...state.newTaskComment,
-                    files: files,
+                    files: files
                 }
             }
         })
@@ -770,14 +772,24 @@ class ActionTab extends Component {
         this.setState(state => {
             state.newCommentOfAction[`${actionId}`] = {
                 ...state.newCommentOfAction[`${actionId}`],
-                files: files,
+                files: files
             }
             return {
                 ...state
             }
         })
     }
-
+    onEditCommentOfActionFilesChange = (files) => {
+        this.setState(state => {
+            return {
+                ...state,
+                newCommentOfActionEdited: {
+                    ...state.newCommentOfActionEdited,
+                    files: files,
+                }
+            }
+        })
+    }
     onCommentOfTaskCommentFilesChange = (commentId, files) => {
         this.setState(state => {
             state.newCommentOfTaskComment[`${commentId}`] = {
@@ -787,14 +799,13 @@ class ActionTab extends Component {
             return { ...state, }
         })
     }
-
     onTaskFilesChange = (files) => {
         this.setState(state => {
             return {
                 ...state,
                 taskFiles: {
                     ...state.taskFiles,
-                    files: files,
+                    files: files
                 }
             }
         })
@@ -907,7 +918,6 @@ class ActionTab extends Component {
             event.preventDefault();
         }
     }
-
     onEditFileTask = (files) => {
         this.setState(state => {
             return {
@@ -927,66 +937,6 @@ class ActionTab extends Component {
             return true;
         } else {
             return false;
-        }
-    }
-
-    showPreviousImage = async (index, arrFile, arrIndex) => {
-        let i = arrIndex.findIndex((e) => e === index)
-        if (i > 0) {
-            let newIndex = arrIndex[i - 1];
-            let alt = "File not available";
-            let src = arrFile[newIndex].url;
-            if ((src.search(';base64,') < 0) && !this.props.auth.showFiles.find(x => x.fileName === src).file) {
-                await this.props.downloadFile(src, `${src}`, false);
-            }
-            let image = await this.props.auth.showFiles.find(x => x.fileName === src).file;;
-            Swal.fire({
-                html: `<img src=${image} alt=${alt} style="max-width: 100%; max-height: 100%" />`,
-                width: 'auto',
-                showCloseButton: true,
-                showConfirmButton: i > 1 ? true : false,
-                showCancelButton: true,
-                confirmButtonText: '<',
-                cancelButtonText: '>',
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#3085d6',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    this.showPreviousImage(newIndex, arrFile, arrIndex);
-                } else if (result.dismiss === Swal.DismissReason.cancel) {
-                    this.showNextImage(newIndex, arrFile, arrIndex);
-                }
-            })
-        }
-    }
-
-    showNextImage = async (index, arrFile, arrIndex) => {
-        let i = arrIndex.findIndex((e) => e === index)
-        if (i < arrIndex.length - 1) {
-            let newIndex = arrIndex[i + 1];
-            let alt = "File not available";
-            let src = arrFile[newIndex].url;
-            if ((src.search(';base64,') < 0) && !this.props.auth.showFiles.find(x => x.fileName === src).file) {
-                await this.props.downloadFile(src, `${src}`, false);
-            }
-            let image = await this.props.auth.showFiles.find(x => x.fileName === src).file;
-            Swal.fire({
-                html: `<img src=${image} alt=${alt} style="max-width: 100%; max-height: 100%" />`,
-                width: 'auto',
-                showCloseButton: true,
-                showConfirmButton: true,
-                showCancelButton: i < arrIndex.length - 2 ? true : false,
-                confirmButtonText: '<',
-                cancelButtonText: '>',
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#3085d6',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    this.showPreviousImage(newIndex, arrFile, arrIndex);
-                } else if (result.dismiss === Swal.DismissReason.cancel) {
-                    this.showNextImage(newIndex, arrFile, arrIndex);
-                }
-            })
         }
     }
 
@@ -1297,15 +1247,24 @@ class ActionTab extends Component {
         }
     }
 
+    getCreatorId = (creator) => {
+        if (!creator)
+            return
+        if (creator && typeof (creator) === 'object') return creator._id;
+        else return creator;
+    }
+
     showDetailTimer = (nameAction, timeSheetLogs) => {
         nameAction = htmlToText(nameAction);
         let result = [];
         timeSheetLogs.reduce((res, value) => {
-            if (!res[value?.creator?._id]) {
-                res[value.creator._id] = { id: value.creator._id, duration: 0, creatorName: value.creator.name };
-                result.push(res[value.creator._id]);
+            const creatorId = this.getCreatorId(value?.creator);
+
+            if (!res[creatorId]) {
+                res[creatorId] = { id: creatorId, duration: 0, creatorName: value.creator.name };
+                result.push(res[creatorId]);
             }
-            res[value.creator._id].duration += value.duration;
+            res[creatorId].duration += value.duration;
             return res;
         }, {});
 
@@ -1313,8 +1272,8 @@ class ActionTab extends Component {
             html: `<div style="max-width: 100%; max-height: 100%" > 
                 <h4 style="margin-bottom: 15px">Thời gian bấm giờ cho hoạt động "<strong>${nameAction}</strong>"</h4>` +
                 `<ol>${result.map(o => (
-                    `<li>${o.creatorName}: ${convertTime(o.duration)}</li>`
-                ))} </ol>`
+                    `<li style="margin-bottom: 7px">${o.creatorName}: ${convertTime(o.duration)}</li>`
+                )).join(" ")} </ol>`
                 +
                 `<div>`,
 
@@ -1322,7 +1281,24 @@ class ActionTab extends Component {
         })
     }
 
+    showFilePreview = async (data) => {
+        await this.setState({
+            currentFilepri: data,
+        });
+        window.$('#modal-file-preview').modal('show');
+    }
 
+    checkTypeFile = (data) => {
+        if (typeof data === 'string' || data instanceof String) {
+            let index = data.lastIndexOf(".");
+            let typeFile = data.substring(index + 1, data.length);
+            if (typeFile === "pdf") {
+                return true;
+            }
+            else return false;
+        }
+        else return false;
+    }
 
     render() {
         let task, informations, statusTask, documents, actionComments, taskComments, logTimer, logs;
@@ -1369,6 +1345,12 @@ class ActionTab extends Component {
 
         return (
             <div>
+                {
+                    this.state.currentFilepri &&
+                    <FilePreview
+                        file={this.state.currentFilepri}
+                    />
+                }
                 <div className="nav-tabs-custom" style={{ boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none" }}>
                     <ul className="nav nav-tabs">
                         <li className="active"><a href="#taskAction" onClick={() => this.handleChangeContent("taskAction")} data-toggle="tab">{translate("task.task_perform.actions")} ({taskActions && taskActions.length})</a></li>
@@ -1395,7 +1377,7 @@ class ActionTab extends Component {
 
                             {/* Thêm hoạt động cho công việc*/}
                             {role === "responsible" && task && !showSort &&
-                                <React.Fragment>
+                                <React.Fragment  >
                                     <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
                                     <ContentMaker
                                         idQuill={`add-action-${id}`}
@@ -1426,7 +1408,7 @@ class ActionTab extends Component {
                                     {
                                         // Hiển thị hoạt động của công việc
                                         (taskActions).map((item, index) => {
-                                            let arrImageIndex = item.files.map((elem, index) => this.isImage(elem.name) ? index : -1).filter(index => index !== -1);
+                                            let listImage = item.files.map((elem) => this.isImage(elem.name) ? elem.url : -1).filter(url => url !== -1);
                                             return (
                                                 <div key={item._id} className={index > 3 ? "hide-component" : ""}>
                                                     {item.creator ?
@@ -1481,7 +1463,10 @@ class ActionTab extends Component {
 
                                                             {/* Các file đính kèm */}
                                                             {!showSort && <ul className="list-inline tool-level1">
-                                                                <li><span className="text-sm">{<DateTimeConverter dateTime={item.createdAt} />}</span></li>
+                                                                {role === "accountable" ?
+                                                                    <ModalEditDateCreatedAction data={item} taskId={task._id} saveChangeDateCreatedAction={this.handleSaveChangeDateAction} /> :
+                                                                    <li><span className="text-sm">{<DateTimeConverter dateTime={item.createdAt} />}</span></li>
+                                                                }
                                                                 <li>{item.mandatory && !item.creator && <b className="text-sm">{translate("task.task_perform.mandatory_action")}</b>}</li>
                                                                 {((item.creator === undefined || item.creator === null) && role === "responsible") &&
                                                                     <li><a style={{ cursor: "pointer" }} className="text-green text-sm" onClick={(e) => this.handleConfirmAction(e, item._id, currentUser, task._id)}><i className="fa fa-check-circle" aria-hidden="true"></i> {translate("task.task_perform.confirm_action")}</a></li>}
@@ -1499,6 +1484,7 @@ class ActionTab extends Component {
                                                                     </React.Fragment>
                                                                 }
                                                             </ul>}
+
                                                             {!showSort && <ul className="list-inline tool-level1">
                                                                 {item.creator &&
                                                                     <React.Fragment>
@@ -1576,10 +1562,7 @@ class ActionTab extends Component {
                                                                             return <div key={index} className="show-files-task">
                                                                                 {this.isImage(elem.name) ?
                                                                                     <ApiImage
-                                                                                        showPreviousImage={() => this.showPreviousImage(index, item.files, arrImageIndex)}
-                                                                                        showNextImage={() => this.showNextImage(index, item.files, arrImageIndex)}
-                                                                                        haveNextImage={index < arrImageIndex[arrImageIndex.length - 1] ? true : false}
-                                                                                        havePreviousImage={index > arrImageIndex[0] ? true : false}
+                                                                                        listImage={listImage}
                                                                                         className="attachment-img files-attach"
                                                                                         style={{ marginTop: "5px" }}
                                                                                         src={elem.url}
@@ -1587,7 +1570,14 @@ class ActionTab extends Component {
                                                                                         requestDownloadFile={this.requestDownloadFile}
                                                                                     />
                                                                                     :
-                                                                                    <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
+                                                                                    <div>
+                                                                                        <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name}</a>
+                                                                                        <a href="#" onClick={() => this.showFilePreview(elem && elem.url)}>
+                                                                                            <u>{elem && this.checkTypeFile(elem.url) ?
+                                                                                                <i className="fa fa-eye"></i> : ""}</u>
+                                                                                        </a>
+                                                                                    </div>
+
                                                                                 }
                                                                             </div>
                                                                         })}
@@ -1620,8 +1610,8 @@ class ActionTab extends Component {
 
                                                                 {item.files.length > 0 &&
                                                                     <div className="tool-level1" style={{ marginTop: -15 }}>
-                                                                        {item.files.map(file => {
-                                                                            return <div>
+                                                                        {item.files.map((file, index) => {
+                                                                            return <div key={index}>
                                                                                 <a style={{ cursor: "pointer" }}>{file.name} &nbsp;</a><a style={{ cursor: "pointer" }} className="link-black text-sm btn-box-tool" onClick={() => { this.handleDeleteFile(file._id, file.name, item._id, "action") }}><i className="fa fa-times"></i></a>
                                                                             </div>
                                                                         })}
@@ -1634,6 +1624,7 @@ class ActionTab extends Component {
                                                     {!showSort && showChildComment.some(obj => obj === item._id) &&
                                                         <div>
                                                             {item.comments.map(child => {
+                                                                let listImage = child.files.map((elem) => this.isImage(elem.name) ? elem.url : -1).filter(url => url !== -1);
                                                                 return <div key={child._id}>
                                                                     <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + child.creator?.avatar)} alt="User Image" />
                                                                     {editComment !== child._id && // Khi đang edit thì nội dung cũ đi
@@ -1672,10 +1663,7 @@ class ActionTab extends Component {
                                                                                             return <div key={index} className="show-files-task">
                                                                                                 {this.isImage(elem.name) ?
                                                                                                     <ApiImage
-                                                                                                        showPreviousImage={() => this.showPreviousImage(index, item.files, arrImageIndex)}
-                                                                                                        showNextImage={() => this.showNextImage(index, item.files, arrImageIndex)}
-                                                                                                        haveNextImage={index < arrImageIndex[arrImageIndex.length - 1] ? true : false}
-                                                                                                        havePreviousImage={index > arrImageIndex[0] ? true : false}
+                                                                                                        listImage={listImage}
                                                                                                         className="attachment-img files-attach"
                                                                                                         style={{ marginTop: "5px" }}
                                                                                                         src={elem.url}
@@ -1683,7 +1671,13 @@ class ActionTab extends Component {
                                                                                                         requestDownloadFile={this.requestDownloadFile}
                                                                                                     />
                                                                                                     :
-                                                                                                    <a style={{ cursor: "pointer" }} style={{ marginTop: "5px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
+                                                                                                    <div>
+                                                                                                        <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name}</a>
+                                                                                                        <a href="#" onClick={() => this.showFilePreview(elem && elem.url)}>
+                                                                                                            <u>{elem && this.checkTypeFile(elem.url) ?
+                                                                                                                <i className="fa fa-eye"></i> : ""}</u>
+                                                                                                        </a>
+                                                                                                    </div>
                                                                                                 }
                                                                                             </div>
                                                                                         })}
@@ -1871,7 +1865,7 @@ class ActionTab extends Component {
                                 >
                                     {
                                         taskComments.map((item, index) => {
-                                            let arrImageIndex = item.files.map((elem, index) => this.isImage(elem.name) ? index : -1).filter(index => index !== -1);
+                                            let listImage = item.files.map((elem) => this.isImage(elem.name) ? elem.url : -1).filter(url => url !== -1);
                                             return (
                                                 <div key={item._id} className={index > 3 ? "hide-component" : ""}>
                                                     <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + item.creator?.avatar)} alt="User Image" />
@@ -1911,17 +1905,20 @@ class ActionTab extends Component {
                                                                                 return <div key={index} className="show-files-task">
                                                                                     {this.isImage(elem.name) ?
                                                                                         <ApiImage
-                                                                                            showPreviousImage={() => this.showPreviousImage(index, item.files, arrImageIndex)}
-                                                                                            showNextImage={() => this.showNextImage(index, item.files, arrImageIndex)}
-                                                                                            haveNextImage={index < arrImageIndex[arrImageIndex.length - 1] ? true : false}
-                                                                                            havePreviousImage={index > arrImageIndex[0] ? true : false}
+                                                                                            listImage={listImage}
                                                                                             className="attachment-img files-attach"
                                                                                             style={{ marginTop: "5px" }}
                                                                                             src={elem.url}
                                                                                             file={elem}
                                                                                             requestDownloadFile={this.requestDownloadFile}
                                                                                         />
-                                                                                        : <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
+                                                                                        : <div>
+                                                                                            <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name}</a>
+                                                                                            <a href="#" onClick={() => this.showFilePreview(elem && elem.url)}>
+                                                                                                <u>{elem && this.checkTypeFile(elem.url) ?
+                                                                                                    <i className="fa fa-eye"></i> : ""}</u>
+                                                                                            </a>
+                                                                                        </div>
                                                                                     }
                                                                                 </div>
                                                                             })}
@@ -1971,6 +1968,7 @@ class ActionTab extends Component {
                                                     {showChildComment.some(x => x === item._id) &&
                                                         <div className="comment-content-child">
                                                             {item.comments.map(child => {
+                                                                let listImage = child.files.map((elem) => this.isImage(elem.name) ? elem.url : -1).filter(url => url !== -1);
                                                                 return <div key={child._id}>
                                                                     <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + child.creator?.avatar)} alt="User Image" />
                                                                     {editCommentOfTaskComment !== child._id && // Đang edit thì ẩn đi
@@ -2008,10 +2006,7 @@ class ActionTab extends Component {
                                                                                                     return <div key={index} className="show-files-task">
                                                                                                         {this.isImage(elem.name) ?
                                                                                                             <ApiImage
-                                                                                                                showPreviousImage={() => this.showPreviousImage(index, item.files, arrImageIndex)}
-                                                                                                                showNextImage={() => this.showNextImage(index, item.files, arrImageIndex)}
-                                                                                                                haveNextImage={index < arrImageIndex[arrImageIndex.length - 1] ? true : false}
-                                                                                                                havePreviousImage={index > arrImageIndex[0] ? true : false}
+                                                                                                                listImage={listImage}
                                                                                                                 className="attachment-img files-attach"
                                                                                                                 style={{ marginTop: "5px" }}
                                                                                                                 src={elem.url}
@@ -2019,7 +2014,13 @@ class ActionTab extends Component {
                                                                                                                 requestDownloadFile={this.requestDownloadFile}
                                                                                                             />
                                                                                                             :
-                                                                                                            <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
+                                                                                                            <div>
+                                                                                                                <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name}</a>
+                                                                                                                <a href="#" onClick={() => this.showFilePreview(elem && elem.url)}>
+                                                                                                                    <u>{elem && this.checkTypeFile(elem.url) ?
+                                                                                                                        <i className="fa fa-eye"></i> : ""}</u>
+                                                                                                                </a>
+                                                                                                            </div>
                                                                                                         }
                                                                                                     </div>
                                                                                                 })}
@@ -2114,7 +2115,7 @@ class ActionTab extends Component {
                                     >
                                         {
                                             documents.map((item, index) => {
-                                                let arrImageIndex = item.files.map((elem, index) => this.isImage(elem.name) ? index : -1).filter(index => index !== -1);
+                                                let listImage = item.files.map((elem) => this.isImage(elem.name) ? elem.url : -1).filter(url => url !== -1);
                                                 return (
                                                     <React.Fragment key={`documents-${item._id}`}>
                                                         {showEditTaskFile !== item._id &&
@@ -2151,18 +2152,20 @@ class ActionTab extends Component {
                                                                                     <div key={index} className="show-files-task">
                                                                                         {this.isImage(elem.name) ?
                                                                                             <ApiImage
-                                                                                                showPreviousImage={() => this.showPreviousImage(index, item.files, arrImageIndex)}
-                                                                                                showNextImage={() => this.showNextImage(index, item.files, arrImageIndex)}
-                                                                                                haveNextImage={index < arrImageIndex[arrImageIndex.length - 1] ? true : false}
-                                                                                                havePreviousImage={index > arrImageIndex[0] ? true : false}
+                                                                                                listImage={listImage}
                                                                                                 className="attachment-img files-attach"
                                                                                                 style={{ marginTop: "5px" }}
                                                                                                 src={elem.url}
                                                                                                 file={elem}
                                                                                                 requestDownloadFile={this.requestDownloadFile}
                                                                                             />
-                                                                                            :
-                                                                                            <a style={{ cursor: "pointer", marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a>
+                                                                                            : <div>
+                                                                                                <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name}</a>
+                                                                                                <a href="#" onClick={() => this.showFilePreview(elem && elem.url)}>
+                                                                                                    <u>{elem && this.checkTypeFile(elem.url) ?
+                                                                                                        <i className="fa fa-eye"></i> : ""}</u>
+                                                                                                </a>
+                                                                                            </div>
                                                                                         }
 
                                                                                     </div>

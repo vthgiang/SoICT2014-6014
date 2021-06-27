@@ -143,8 +143,8 @@ const TaskProjectAddModal = (props) => {
         // const newTasksListAfterCR = getNewTasksListAfterCR(projectDetail, currentProjectTasks, newTaskFormatted);
         await props.createProjectChangeRequestDispatch({
             creator: getStorage('userId'),
-            name: `Thêm mới công việc ${newTask.name}`,
-            description: `Thêm mới công việc ${newTask.name}`,
+            name: `Thêm mới công việc "${newTask.name}"`,
+            description: `Thêm mới công việc "${newTask.name}"`,
             requestStatus: 1,
             type: 'add_task',
             currentTask,
@@ -163,7 +163,7 @@ const TaskProjectAddModal = (props) => {
     useEffect(() => {
         const userId = getStorage("userId");
         const currentRole = getStorage("currentRole");
-        props.getProjectsDispatch({ calledId: "all", userId });
+        props.getProjectsDispatch({ calledId: "user_all", userId });
         props.getRoleSameDepartment(currentRole);
     }, [])
 
@@ -208,7 +208,6 @@ const actionCreators = {
     addTask: taskManagementActions.addTask,
     addProjectTask: taskManagementActions.addProjectTask,
     getProjectsDispatch: ProjectActions.getProjectsDispatch,
-    getTasksByProject: taskManagementActions.getTasksByProject,
     createProjectChangeRequestDispatch: ChangeRequestActions.createProjectChangeRequestDispatch,
 
     showInfoRole: RoleActions.show,

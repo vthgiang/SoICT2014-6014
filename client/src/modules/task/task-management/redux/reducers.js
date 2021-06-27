@@ -4,8 +4,9 @@ export function tasks(state = {
     allTimeSheetLogs: [],
     userTimeSheetLogs: [],
     totalCount: 0,
+    totalDocs: 0,
     tasks: [],
-    pages: 0
+    pages: 0,
 }, action) {
     switch (action.type) {
         case taskManagementConstants.GETALL_TASK_REQUEST:
@@ -563,7 +564,7 @@ export function tasks(state = {
                 isLoading: false
             };
 
-        
+
         case taskManagementConstants.GET_ALL_USER_TIME_SHEET_LOG_REQUEST:
             return {
                 ...state,
@@ -582,19 +583,18 @@ export function tasks(state = {
                 allTimeSheetLogs: action.payload,
                 isLoading: false
             };
-        
-        
+
+
         case taskManagementConstants.UPDATE_TASK_SUCCESS:
-             return {
+            return {
                 ...state,
-                tasks: state.tasks.map(t=>(t._id === action.payload._id) ? action.payload : t),
+                tasks: state.tasks.map(t => (t._id === action.payload._id) ? action.payload : t),
                 isLoading: false
             };
-            
+
         case taskManagementConstants.GETTASK_BYPROJECT_REQUEST:
             return {
                 ...state,
-                tasksbyproject: null,
                 isLoading: true
             };
         case taskManagementConstants.GETTASK_BYPROJECT_SUCCESS:
@@ -608,6 +608,25 @@ export function tasks(state = {
                 ...state,
                 error: action.error,
                 isLoading: false
+            }
+
+        case taskManagementConstants.GETTASK_BYPROJECT_PAGINATE_REQUEST:
+            return {
+                ...state,
+                isProjectPaginateLoading: true
+            };
+        case taskManagementConstants.GETTASK_BYPROJECT_PAGINATE_SUCCESS:
+            return {
+                ...state,
+                tasksbyprojectpaginate: action.payload.docs,
+                totalDocs: action.payload.totalDocs,
+                isProjectPaginateLoading: false
+            }
+        case taskManagementConstants.GETTASK_BYPROJECT_PAGINATE_FAILURE:
+            return {
+                ...state,
+                error: action.error,
+                isProjectPaginateLoading: false
             }
 
         default:

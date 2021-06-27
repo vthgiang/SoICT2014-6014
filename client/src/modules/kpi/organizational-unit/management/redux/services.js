@@ -53,12 +53,12 @@ function copyKPIUnit(kpiId, data) {
     }, true, true, 'kpi.organizational_unit');
 }
 
-function calculateKPIUnit(idKpiUnitSet, date, idKpiUnit) {
+function calculateKPIUnit(idKpiUnitSets, date, idKpiUnit) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/kpi/organizational-unit/management/organizational-unit-kpi-sets/calculate`,
         method: 'POST',
         data: {
-            idKpiUnitSet: idKpiUnitSet,
+            idKpiUnitSets: idKpiUnitSets,
             date: date,
             idKpiUnit: idKpiUnit,
         }

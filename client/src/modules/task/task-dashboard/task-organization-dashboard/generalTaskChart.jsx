@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef, useLayoutEffect } from 'react'
 import moment from 'moment'
-import { SlimScroll, DataTableSetting } from '../../../../common-components';
+import { SlimScroll, DataTableSetting, TreeTable } from '../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
 import './generalTaskChart.css';
 import ViewAllGeneralTask from './viewAllGeneralTask';
@@ -15,7 +15,7 @@ const GeneralTaskChart = (props) => {
 
     const { translate } = props;
     const dataTable = []
-    const [state, setstate] = useState([]);
+    const [state, setState] = useState([]);
     const [collapse, setCollapse] = useState({
 
     });
@@ -317,7 +317,7 @@ const GeneralTaskChart = (props) => {
 
         checkExport.current = true;
 
-        setstate(dataTable);
+        setState(dataTable);
     }, [props.tasks]);
 
 
@@ -400,7 +400,7 @@ const GeneralTaskChart = (props) => {
                 return obj;
             })
             // cập nhật state
-            setstate(cloneArr);
+            setState(cloneArr);
 
             let title = `collapse${idParent}`;
             setCollapse({
@@ -430,6 +430,69 @@ const GeneralTaskChart = (props) => {
         } else return data;
     }
 
+    let column = [
+        { name: translate('task.task_dashboard.unit'), key: "name" },
+        { name: translate('task.task_dashboard.all_tasks'), key: "totalTask" },
+        { name: translate('task.task_dashboard.all_tasks_inprocess'), key: "taskInprocess" },
+        { name: translate('task.task_dashboard.all_tasks_finished'), key: "taskFinished" },
+        { name: translate('task.task_dashboard.confirmed_task'), key: "confirmedTask" },
+        { name: translate('task.task_dashboard.none_update_recently'), key: "noneUpdateTask" },
+        { name: translate('task.task_dashboard.intime_task'), key: "intimeTask" },
+        { name: translate('task.task_dashboard.delay_task'), key: "delayTask" },
+        { name: translate('task.task_dashboard.overdue_task'), key: "overdueTask" }
+    ];
+
+    const bindTextToEvent = (key, text, data, name = "", index = 0, bold = "bold") => {
+        let textColor = "";
+        switch (key) {
+            case "name":
+                return (
+                    <span >{text}</span>
+                )
+            case "totalTask":
+                textColor = "#777";
+                break;
+            case "taskFinished":
+                textColor = "#28A745 ";
+                break;
+            case "intimeTask":
+                textColor = "#3c763d";
+                break;
+            case "delayTask":
+                textColor = "#f39c12 ";
+                break;
+            case "overdueTask":
+                textColor = "#dd4b39 ";
+                break;
+            default:
+                textColor = "#385898";
+        }
+        return (
+            <a onClick={() => handleShowGeneralTask(data, name, index, key)} style={{ color: textColor, fontWeight: bold }}>{text}</a>
+        )
+    }
+
+    let data = [];
+    let dataTemp = state.filter(o => o.name);
+    for (let i in dataTemp) {
+        let bold = dataTemp[i].parent && dataTemp[i].parent !== true ? "normal" : "bold";
+        data[i] = {
+            ...dataTemp[i],
+            name: bindTextToEvent("name", dataTemp[i].name, dataTemp[i], bold),
+            totalTask: bindTextToEvent("totalTask", dataTemp[i].totalTask.length, dataTemp[i].totalTask, dataTemp[i].name, i, bold),
+            taskInprocess: bindTextToEvent("taskInprocess", dataTemp[i].taskInprocess.length, dataTemp[i].taskInprocess, dataTemp[i].name, i, bold),
+            taskFinished: bindTextToEvent("taskFinished", dataTemp[i].taskFinished.length, dataTemp[i].taskFinished, dataTemp[i].name, i, bold),
+            confirmedTask: bindTextToEvent("confirmedTask", dataTemp[i].confirmedTask.length, dataTemp[i].confirmedTask, dataTemp[i].name, i, bold),
+            noneUpdateTask: bindTextToEvent("noneUpdateTask", dataTemp[i].noneUpdateTask.length, dataTemp[i].noneUpdateTask, dataTemp[i].name, i, bold),
+            intimeTask: bindTextToEvent("intimeTask", dataTemp[i].intimeTask.length, dataTemp[i].intimeTask, dataTemp[i].name, i, bold),
+            delayTask: bindTextToEvent("delayTask", dataTemp[i].delayTask.length, dataTemp[i].delayTask, dataTemp[i].name, i, bold),
+            overdueTask: bindTextToEvent("overdueTask", dataTemp[i].overdueTask.length, dataTemp[i].overdueTask, dataTemp[i].name, i, bold),
+            parent: dataTemp[i].parent && dataTemp[i].parent !== true ? dataTemp[i].parent : null,
+            _id: dataTemp[i]._id ? dataTemp[i]._id : -1
+        }
+    }
+
+
     return (
         <React.Fragment>
             <ViewAllGeneralTask showDetailTask={showDetailTask} />
@@ -447,7 +510,16 @@ const GeneralTaskChart = (props) => {
                 ]}
                 linePerPageOption={false}
             />
-            <div className="general_task_unit" id="general-list-task-wrapper">
+            <div className="general_task_unit" id="general-list-task-wrapper" style={{ marginTop: '20px' }}>
+                <TreeTable
+                    tableId={tableId}
+                    behaviour="hide-children"
+                    column={column}
+                    data={data}
+                    actions={false}
+                />
+            </div>
+            {/* <div className="general_task_unit" id="general-list-task-wrapper">
                 <table id='general-list-task' className="table table-striped table-bordered table-hover">
                     <thead>
                         <tr>
@@ -489,7 +561,7 @@ const GeneralTaskChart = (props) => {
                         }
                     </tbody>
                 </table>
-            </div>
+            </div> */}
             <SlimScroll verticalScroll={true} outerComponentId={"general-list-task-wrapper"} maxHeight={500} activate={true} />
         </React.Fragment>
     )

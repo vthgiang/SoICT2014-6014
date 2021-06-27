@@ -606,6 +606,12 @@ exports.links = [
         url: '/system/roles-default-management',
         apis: ['@all']
     }, {
+        url: '/system/apis-default-management',
+        apis: ['@all']
+    }, {
+        url: '/system/privilege-api-management',
+        apis: ['@all']
+    }, {
         url: '/system/links-default-management',
         apis: ['@all']
     }, {
@@ -987,7 +993,7 @@ exports.links = [
 
     //transport
     {
-        url: '/manage-transport-requirements',
+        url: '/manage-transport-requirement',
         apis: ['@all']
     },
     {
@@ -1000,10 +1006,6 @@ exports.links = [
     },
     {
         url: '/manage-transport-vehicle',
-        apis: ['@all']
-    },
-    {
-        url: '/manage-transport-human',
         apis: ['@all']
     },
     {

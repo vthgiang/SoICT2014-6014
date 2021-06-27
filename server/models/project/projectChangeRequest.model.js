@@ -31,8 +31,10 @@ const ProjectChangeRequestSchema = new Schema(
         type: {
             type: String,
             enum: [
+                "normal",
                 "add_task",
                 "edit_task",
+                "update_status_task",
             ],
         },
         createdAt: {
@@ -167,6 +169,22 @@ const ProjectChangeRequestSchema = new Schema(
                     ref: "Task",
                 },
                 old: {
+                    // Tên dự án công việc thuộc về
+                    taskProject: {
+                        type: Schema.Types.ObjectId,
+                        ref: 'Project',
+                    },
+                    status: {
+                        // có 5 trạng thái công việc: Đang thực hiện, Chờ phê duyệt, Đã hoàn thành, Tạm hoãn, Bị hủy
+                        type: String,
+                        enum: [
+                            "inprocess",
+                            "wait_for_approval",
+                            "finished",
+                            "delayed",
+                            "canceled",
+                        ],
+                    },
                     preceedingTasks: [
                         {
                             task: {
@@ -260,6 +278,17 @@ const ProjectChangeRequestSchema = new Schema(
                     },
                     description: {
                         type: String,
+                    },
+                    status: {
+                        // có 5 trạng thái công việc: Đang thực hiện, Chờ phê duyệt, Đã hoàn thành, Tạm hoãn, Bị hủy
+                        type: String,
+                        enum: [
+                            "inprocess",
+                            "wait_for_approval",
+                            "finished",
+                            "delayed",
+                            "canceled",
+                        ],
                     },
                     // Tên dự án công việc thuộc về
                     taskProject: {

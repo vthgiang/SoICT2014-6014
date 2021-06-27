@@ -3,15 +3,26 @@ import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { taskManagementService } from "../../../task/task-management/redux/services";
 import { formatPriority, getTotalTimeSheetLogs, formatStatus } from "../../../task/task-management/component/functionHelpers.js"
-
+import { taskManagementActions } from "../../../task/task-management/redux/actions";
+import Swal from 'sweetalert2';
+import { SelectMulti, forceCheckOrVisible } from '../../../../common-components';
+function areEqual(prevProps, nextProps) {
+    if (prevProps.user._id === nextProps.user._id && prevProps.search === nextProps.search ){
+        return true
+    } else {
+        return false
+    }
+}
 function TaskUser(props) {
     const [taskResponsible, setTaskResponsible] = useState()
+    const [nameTask, setNameTask] = useState(" thực hiện ")
     const [taskAccountable, setTaskAccountable] = useState()
     const [taskConsulted, setTaskConsulted] = useState()
     const [taskInformed, setTaskInformed] = useState()
     const [taskCreator, setTaskCreator] = useState()
     const [resultShow, setResultShow] = useState(false)
     const [status, setStatus] = useState([1, 0, 0, 0, 0])
+    const [updateDelete, setUpdateDelete] = useState(0)
     const { translate } = props
     useEffect(() => {
         if (props.startDate) {
@@ -41,41 +52,69 @@ function TaskUser(props) {
                     setTaskCreator(data)
                 })
         }
-    }, [props.user._id, props.startDate, props.endDate])
+    }, [props.user._id, props.startDate, props.endDate,updateDelete])
     const handChangeStatus = (index) => {
+        let name 
         switch (index) {
             case 0:
-                props.changeTask(" thực hiện")
+                name="thực hiện"
                 break
             case 1:
-                props.changeTask(" phê duyệt")
+                name="phê duyệt"
                 break
             case 2:
-                props.changeTask(" tư vấn")
+                name="tư vấn"
                 break
             case 3:
-                props.changeTask("quan sát")
+                name="quan sát"
                 break
             case 4:
-                props.changeTask(" đã tạo")
+                name="đã tạo"
                 break
         }
         let data = [0, 0, 0, 0, 0]
         data[index] = 1
+        handleNameTask(name)
         setStatus(data)
+    }
+    const handleNameTask = (taskName) => {
+        setNameTask(taskName)
+    }
+    const handleDelete = async (id,name) => {
+        const { tasks, translate } = props;
+            Swal.fire({
+                title: `Bạn có chắc chắn muốn xóa công việc "${name}"?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: translate('general.no'),
+                confirmButtonText: translate('general.yes'),
+            }).then(async (result) => {
+                if (result.value) {
+                    await props.deleteTaskById(id);
+                    await setUpdateDelete(updateDelete+1)
+                }
+            })
+
     }
     const showData = (data) => {
         let result = null
         if (data.length !== 0) {
             result = data.map((x, index) => {
+                console.log(x);
                 return (
                     <tr key={index}>
-                        <td>{x.name}</td>
+                        <td><a href={`/task?taskId=${x._id}`} target="_blank">{x.name}</a></td>
                         <td>{x.project || null}</td>
                         <td>{formatPriority(translate, x.priority)}</td>
                         <td>{formatStatus(translate, x.status)}</td>
                         <td>{x.progress ? x.progress + "%" : "0%"}</td>
                         <td>{getTotalTimeSheetLogs(x.timesheetLogs)}</td>
+                        <td>
+                        <a style={{ cursor: 'pointer' }} onClick={() =>handleDelete(x._id,x.name)} className="delete" title={translate('task.task_management.action_delete')}>
+                        <i className="material-icons"></i>
+                    </a></td>
                     </tr>
                 )
             })
@@ -89,99 +128,73 @@ function TaskUser(props) {
         }
         return result
     }
+    const handleNavTabs = (value,id) => {
+        if (value) {
+            handChangeStatus(id)
+            forceCheckOrVisible(true, false);
+        }
+        window.dispatchEvent(new Event('resize')); // Fix lỗi chart bị resize khi đổi tab
+    }
     return (
-        <div>
-            <div className="col-md-2 col-sm-4 col-xs-4 statistical-item" onClick={() => handChangeStatus(0)} >
-                <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: "#fff", padding: '10px', borderRadius: '10px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <span style={{ marginRight: '10px', color: "#00c0ef" }} className="material-icons">
-                            person
-                </span>
-                        <span style={{ fontWeight: 'bold' }}>{props.user.name || null} thực hiện</span>
-                    </div>
-                    <span style={{ fontSize: '21px' }} className="info-box-number">{taskResponsible ? taskResponsible.totalCount : 0}</span>
-                </div>
-            </div>
-            <div className="col-md-2 col-sm-4 col-xs-4 statistical-item" onClick={() => handChangeStatus(1)}>
-                <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: "#fff", padding: '10px', borderRadius: '10px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <span style={{ marginRight: '10px', color: "#00c0ef" }} className="material-icons">
-                            person
-                </span>
-                        <span style={{ fontWeight: 'bold' }}>{props.user.name || null} phê duyệt</span>
-                    </div>
-                    <span style={{ fontSize: '21px' }} className="info-box-number">{taskAccountable ? taskAccountable.totalCount : 0}</span>
-                </div>
-            </div>
-            <div className="col-md-2 col-sm-4 col-xs-4 statistical-item" onClick={() => handChangeStatus(2)}>
-                <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: "#fff", padding: '10px', borderRadius: '10px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <span style={{ marginRight: '10px', color: "#00c0ef" }} className="material-icons">
-                            person
-                </span>
-                        <span style={{ fontWeight: 'bold' }}>{props.user.name || null} tư vấn</span>
-                    </div>
-                    <span style={{ fontSize: '21px' }} className="info-box-number">{taskConsulted ? taskConsulted.totalCount : 0}</span>
-                </div>
-            </div>
-            <div className="col-md-2 col-sm-4 col-xs-4 statistical-item" onClick={() => handChangeStatus(3)}>
-                <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: "#fff", padding: '10px', borderRadius: '10px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <span style={{ marginRight: '10px', color: "#00c0ef" }} className="material-icons">
-                            person_search
-                </span>
-                        <span style={{ fontWeight: 'bold' }}>{props.user.name || null} quan sát</span>
-                    </div>
-                    <span style={{ fontSize: '21px' }} className="info-box-number">{taskInformed ? taskInformed.totalCount : 0}</span>
-                </div>
-            </div>
-            <div className="col-md-2 col-sm-4 col-xs-4 statistical-item" onClick={() => handChangeStatus(4)}>
-                <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: "#fff", padding: '10px', borderRadius: '10px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <span style={{ marginRight: '10px', color: "#00c0ef" }} className="material-icons">
-                            person_add
-                </span>
-                        <span style={{ fontWeight: 'bold' }}>{props.user.name || null} đã tạo</span>
-                    </div>
-                    <span style={{ fontSize: '21px' }} className="info-box-number">{taskCreator ? taskCreator.tasks.length : 0}</span>
-                </div>
-            </div>
-            <table className="table table-striped table-bordered table-hover box-body">
-                <thead>
-                    <tr>
-                        <th>{translate('task.task_management.col_name')}</th>
-                        <th>{translate('task.task_management.col_project')}</th>
-                        <th>{translate('task.task_management.col_priority')}</th>
-                        <th>{translate('task.task_management.col_status')}</th>
-                        <th>{translate('task.task_management.col_progress')}</th>
-                        <th>{translate('task.task_management.col_logged_time')}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {taskResponsible && status[0] === 1 &&
-                        showData(taskResponsible.tasks)
-                    }
+        <div className="nav-tabs-custom">
+        <ul className="nav nav-tabs">
+                <li className="active"><a href="#taskResponsible" data-toggle="tab" onClick={() => handleNavTabs(true,0)}>Công việc thực hiện : {taskResponsible ? taskResponsible.totalCount : 0}</a></li>
+                <li><a href="#taskAccountable" data-toggle="tab" onClick={() => handleNavTabs(true,1)}>Công việc phê duyệt : {taskAccountable ? taskAccountable.totalCount : 0}</a></li>
+                <li><a href="#taskConsulted" data-toggle="tab" onClick={() => handleNavTabs(true,2)}>Công việc tư vấn : {taskConsulted ? taskConsulted.totalCount : 0}</a></li>
+                <li><a href="#taskInformed" data-toggle="tab" onClick={() => handleNavTabs(true,3)}>Công việc quan sát : {taskInformed ? taskInformed.totalCount : 0}</a></li>
+                <li><a href="#taskCreator" data-toggle="tab" onClick={() => handleNavTabs(true,4)}>Công việc đã tạo : {taskCreator ? taskCreator.tasks.length : 0}</a></li>
+            </ul>
+            <div className="row">
+                <div className="col-xs-12">
+                    <div className="box box-primary">
+                        <div className="box-header with-border">
+                            <h3 class="title">Công việc {nameTask}</h3>
+                        </div>
+                        <table className="table table-striped table-bordered table-hover box-body">
+
+                            <thead>
+                                <tr>
+                                    <th>{translate('task.task_management.col_name')}</th>
+                                    <th>{translate('task.task_management.col_project')}</th>
+                                    <th>{translate('task.task_management.col_priority')}</th>
+                                    <th>{translate('task.task_management.col_status')}</th>
+                                    <th>{translate('task.task_management.col_progress')}</th>
+                                    <th>{translate('task.task_management.col_logged_time')}</th>
+                                    <th >{translate('table.action')}</th>
+                                </tr>
+                            </thead>
 
 
-                    {taskAccountable && status[1] === 1 &&
-                        showData(taskAccountable.tasks)
-                    }
+                            <tbody>
+                                {taskResponsible && status[0] === 1 &&
+                                    showData(taskResponsible.tasks)
+                                }
 
-                    {taskConsulted && status[2] === 1 &&
-                        showData(taskConsulted.tasks)
-                    }
 
-                    {taskInformed && status[3] === 1 &&
-                        showData(taskInformed.tasks)
-                    }
+                                {taskAccountable && status[1] === 1 &&
+                                    showData(taskAccountable.tasks)
+                                }
 
-                    {taskCreator && status[4] === 1 &&
-                        showData(taskCreator.tasks)
-                    }
-                </tbody>
-            </table>
+                                {taskConsulted && status[2] === 1 &&
+                                    showData(taskConsulted.tasks)
+                                }
+
+                                {taskInformed && status[3] === 1 &&
+                                    showData(taskInformed.tasks)
+                                }
+
+                                {taskCreator && status[4] === 1 &&
+                                    showData(taskCreator.tasks)
+                                }
+                            </tbody>
+
+                        </table>
+                    </div>
+                </div>
+            </div>
             {!resultShow && <div className="table-info-panel">{translate('confirm.no_data')}</div>}
         </div>
+
 
     )
 }
@@ -192,9 +205,9 @@ function mapState(state) {
 }
 
 const mapDispatchToProps = {
-
+    deleteTaskById: taskManagementActions._delete,
 }
 
 
 
-export default connect(mapState, mapDispatchToProps)(withTranslate(TaskUser));
+export default connect(mapState, mapDispatchToProps)(withTranslate(React.memo(TaskUser,areEqual)));

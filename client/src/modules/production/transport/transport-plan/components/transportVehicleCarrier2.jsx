@@ -7,9 +7,8 @@ import { formatDate, formatToTimeZoneDate} from "../../../../../helpers/formatDa
 
 import { TransportPlanCreateForm } from "./transportPlanCreateForm"
 import { TransportPlanEditForm } from "./transportPlanEditForm"
-import { TransportPlanDetailInfo } from "./transportPlanDetailInfo"
+import { TransportPlanDetailInfo } from "./transport-plan-detail/transportPlanDetailInfo2"
 import { TransportVehicleCarrierListedChart } from "./transport-vehicle-carrier-listed/transportVehicleCarrierListedChart"
-
 
 import { transportPlanActions } from "../redux/actions"
 import { transportVehicleActions } from '../../transport-vehicle/redux/actions'
@@ -63,8 +62,9 @@ function TransportVehicleCarrier2(props) {
 
     useEffect(() => {
         // Lấy tất cả plans đã có để kiểm tra xe và người có bị trùng lặp không
-        props.getAllTransportDepartments();
-        props.getAllTransportVehicles();
+        // props.getAllTransportDepartments();       
+        // props.getAllTransportVehicles();
+        // props.getUserByRole({currentUserId: localStorage.getItem('userId'), role: 3})
     }, [transportPlan])
 
     useEffect(() => {
@@ -78,28 +78,39 @@ function TransportVehicleCarrier2(props) {
                     allVehicles.push(vehicle);
                 })
             }
-            if (transportDepartment && transportDepartment.lists && transportDepartment.lists.length !==0){
-                let lists = transportDepartment.lists;
-                let carrierOrganizationalUnit = [];
-                carrierOrganizationalUnit = lists.filter(r => r.role === 2) // role nhân viên vận chuyển
-                if (carrierOrganizationalUnit && carrierOrganizationalUnit.length !==0){
-                    carrierOrganizationalUnit.map(item =>{
-                        if (item.organizationalUnit){
-                            let organizationalUnit = item.organizationalUnit;
-                            organizationalUnit.employees && organizationalUnit.employees.length !==0
-                            && organizationalUnit.employees.map(employees => {
-                                employees.users && employees.users.length !== 0
-                                && employees.users.map(users => {
-                                    if (users.userId){
-                                        if (users.userId.name){
-                                            allCarriers.push(users.userId)
-                                        }
-                                    }
-                                })
-                            })
+            // if (transportDepartment && transportDepartment.lists && transportDepartment.lists.length !==0){
+            //     let lists = transportDepartment.lists;
+            //     let carrierOrganizationalUnit = [];
+            //     carrierOrganizationalUnit = lists.filter(r => r.role === 2) // role nhân viên vận chuyển
+            //     if (carrierOrganizationalUnit && carrierOrganizationalUnit.length !==0){
+            //         carrierOrganizationalUnit.map(item =>{
+            //             if (item.organizationalUnit){
+            //                 let organizationalUnit = item.organizationalUnit;
+            //                 organizationalUnit.employees && organizationalUnit.employees.length !==0
+            //                 && organizationalUnit.employees.map(employees => {
+            //                     employees.users && employees.users.length !== 0
+            //                     && employees.users.map(users => {
+            //                         if (users.userId){
+            //                             if (users.userId.name){
+            //                                 allCarriers.push(users.userId)
+            //                             }
+            //                         }
+            //                     })
+            //                 })
+            //             }
+            //         })
+            //     } 
+            // }
+            if (transportDepartment && transportDepartment.listUser && transportDepartment.listUser.length!==0){
+                let listUser = transportDepartment.listUser.filter(r=>Number(r.role) === 3);
+                if (listUser && listUser.length!==0 && listUser[0].list && listUser[0].list.length!==0){
+                    listUser[0].list.map(userId => {
+                        if (allCarriers.length!==0){
+                            allCarriers = allCarriers.filter(r=>String(r._id)!==String(userId._id));
                         }
+                        allCarriers.push(userId);
                     })
-                } 
+                }
             }
 
             if (lday && lday.length!==0 && allVehicles && allCarriers){
@@ -225,14 +236,20 @@ function TransportVehicleCarrier2(props) {
         }
         return res;
     }
+    const [planChosenSeen, setPlanChosenSeen] = useState({})
+    const handleShowDetailPlan = (plan) => {
+        // console.log(plan);
+        setPlanChosenSeen(plan);
+        window.$('#modal-detail-info-transport-plan2').modal('show');
+    }
 
     useEffect(() => {
-        console.log(listAllVehicles);
-        console.log(listAllCarriers);
+        // console.log(listAllVehicles);
+        // console.log(listAllCarriers);
     }, [listAllVehicles])
 
     useEffect(() => {
-        console.log(listUsedVehiclesCarriers, " okkkkkkkkkkkkkkkkkkkk")
+        // console.log(listUsedVehiclesCarriers, " okkkkkkkkkkkkkkkkkkkk")
     }, [listUsedVehiclesCarriers])
 
     return (
@@ -259,15 +276,22 @@ function TransportVehicleCarrier2(props) {
             </div>
             
             <div className="box box-solid">
-                <div className="box-header">
-                    <div className="box-title">{"Danh sách sử dụng phuơng tiện theo ngày"}</div>
-                </div>
+                {/* <div className="box-header"> */}
+                    {/* <div className="box-title">{"Danh sách sử dụng phuơng tiện theo ngày"}</div> */}
+                {/* </div> */}
 
                 <div className="box-body qlcv">
-
+                    <TransportPlanDetailInfo 
+                        currentTransportPlan={planChosenSeen}
+                    />
                     <div className={"divTest"}>
                         <table className={"tableTest table-bordered table-hover not-sort"}>
                             <thead>
+                                <tr key={"vehicle-label"}>
+                                    <td colSpan={listDay?listDay.length + 4:4}>
+                                        <div className="transport-table-carrier-vehicle-label"> {"Danh sách sử dụng phương tiện theo ngày"}</div>
+                                    </td>
+                                </tr>
                                 <tr className="word-no-break">
                                     <th>{"STT"}</th>
                                     <th>{"Mã xe"}</th>
@@ -276,8 +300,8 @@ function TransportVehicleCarrier2(props) {
                                     {
                                         listDay && listDay.length!==0
                                         &&
-                                        listDay.map(item => (
-                                            <th>{formatDate(item)}</th>
+                                        listDay.map((item, index) => (
+                                            <th key={index+"day"}>{formatDate(item)}</th>
                                         )) 
                                     }
                                 </tr>
@@ -307,7 +331,7 @@ function TransportVehicleCarrier2(props) {
                                                     </span>
                                                     <span className="tooltiptext">
                                                         <a style={{ color: "white" }} 
-                                                            // onClick={() => this.handleShowDetailManufacturingCommand(command)}
+                                                            onClick={() => handleShowDetailPlan(getCurrentPlan(formatDate(day), vehicle._id))}
                                                         >{getCurrentPlan(formatDate(day), vehicle._id)?.code}</a>
                                                     </span>
                                                 </td>
@@ -316,31 +340,28 @@ function TransportVehicleCarrier2(props) {
                                     </tr>
                                 ))
                             }
+                            <tr key="page-nav-vehicle">
+                                <td colSpan={listDay?listDay.length+4:4}>
+                                    { }
+                                </td>
+                            </tr>
                             </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <div className="box box-solid">
-                <div className="box-header">
-                    <div className="box-title">{"Danh sách công việc vận chuyển nhân viên theo ngày"}</div>
-                </div>
-
-                <div className="box-body qlcv">
-
-                    <div className={"divTest"}>
-                        <table id="vehicle-used-list" className={"tableTest table-bordered table-hover not-sort"}>
+                            
                             <thead>
+                                <tr key="carrier-label">
+                                    <td colSpan={listDay?listDay.length + 4:4}>
+                                        <div className="transport-table-carrier-vehicle-label"> {"Danh sách công việc vận chuyển nhân viên theo ngày"}</div>
+                                    </td>
+                                </tr>
                                 <tr className="word-no-break">
                                     <th>{"STT"}</th>
                                     <th>{"Tên nhân viên"}</th>
-                                    <th>{"Email"}</th>
+                                    <th colSpan={2}>{"Email"}</th>
                                     {
                                         listDay && listDay.length!==0
                                         &&
-                                        listDay.map(item => (
-                                            <th>{formatDate(item)}</th>
+                                        listDay.map((item, index) => (
+                                            <th key={index+"day2"}>{formatDate(item)}</th>
                                         )) 
                                     }
                                 </tr>
@@ -354,7 +375,7 @@ function TransportVehicleCarrier2(props) {
                                     <tr key={carrier._id} className="word-no-break">
                                         <td>{index1+1}</td>
                                         <td>{carrier.name}</td>
-                                        <td>{carrier.email}</td>
+                                        <td colSpan={2}>{carrier.email}</td>
                                         {
                                             listDay && listDay.length!==0
                                             && listDay.map((day, index2) => (
@@ -366,7 +387,7 @@ function TransportVehicleCarrier2(props) {
                                                     </span>
                                                     <span className="tooltiptext">
                                                         <a style={{ color: "white" }} 
-                                                            // onClick={() => this.handleShowDetailManufacturingCommand(command)}
+                                                            onClick={() => handleShowDetailPlan(getCurrentPlan(formatDate(day), carrier._id))}
                                                         >{getCurrentPlan(formatDate(day), carrier._id)?.code}</a>
                                                     </span>
                                                 </td>
@@ -380,6 +401,30 @@ function TransportVehicleCarrier2(props) {
                     </div>
                 </div>
             </div>
+
+            {/* <div className="box box-solid">
+                <div className="box-header">
+                    <div className="box-title">{"Danh sách công việc vận chuyển nhân viên theo ngày"}</div>
+                </div>
+
+                <div className="box-body qlcv">
+
+                    <div className={"divTest"}>
+                        <table id="vehicle-used-list" className={"tableTest table-bordered table-hover not-sort"}>
+                            <thead>
+                                <tr className="word-no-break">
+                                    <th>{"STT"}</th>
+                                    <th>{"Tên nhân viên"}</th>
+                                    <th>{"Email"}</th>
+                                </tr>
+                            </thead>
+                            <tbody className="transport-special-row">
+                            
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div> */}
          
         </div>
     )
@@ -391,8 +436,9 @@ function mapState(state) {
 }
 
 const actions = {
-    getAllTransportDepartments: transportDepartmentActions.getAllTransportDepartments,
-    getAllTransportVehicles: transportVehicleActions.getAllTransportVehicles,
+    // getAllTransportDepartments: transportDepartmentActions.getAllTransportDepartments,
+    // getAllTransportVehicles: transportVehicleActions.getAllTransportVehicles,
+    // getUserByRole: transportDepartmentActions.getUserByRole,
 }
 
 const connectedTransportVehicleCarrier2 = connect(mapState, actions)(withTranslate(TransportVehicleCarrier2));

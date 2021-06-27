@@ -1,53 +1,48 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { BinLocationActions } from '../../redux/actions';
 import './binLocation.css';
 
 import { SelectBox, TreeSelect, ErrorLabel } from '../../../../../../common-components';
-class BinEditForm extends Component {
-    constructor(props) {
-        super(props);
-        this.EMPTY_GOOD = {
-            good: '',
-            capacity: '',
-            contained: ''
-        }
-        this.state = {
-            binEnableGoods: [],
-            good: Object.assign({}, this.EMPTY_GOOD),
-            editInfo: false,
-        }
+
+function BinEditForm(props) {
+    const EMPTY_GOOD = {
+        good: '',
+        capacity: '',
+        contained: ''
     }
 
-    static getDerivedStateFromProps(props, state) {
-        if (props.binId !== state.binId) {
-            return {
-                ...state,
-                binId: props.binId,
-                binParent: props.binParent,
-                binCode: props.binCode,
-                binName: props.binName,
-                binStatus: props.binStatus,
-                binUnit: props.binUnit,
-                binUsers: props.binUsers,
-                binPath: props.binPath,
-                binContained: props.binContained,
-                binCapacity: props.binCapacity,
-                binDescription: props.binDescription,
-                binDepartment: props.binDepartment,
-                binEnableGoods: props.binEnableGoods,
-                binStock: props.binStock,
-                errorName: undefined,
-                errorCode: undefined
-            }
-        } else {
-            return null;
-        }
-    }
+    const [state, setState] = useState({
+        binEnableGoods: [],
+        good: Object.assign({}, EMPTY_GOOD),
+        editInfo: false,
+    })
 
-    getAllDepartment = () => {
-        let { translate, department } = this.props;
+    useEffect(() => {
+        setState({
+            ...state,
+            binId: props.binId,
+            binParent: props.binParent,
+            binCode: props.binCode,
+            binName: props.binName,
+            binStatus: props.binStatus,
+            binUnit: props.binUnit,
+            binUsers: props.binUsers,
+            binPath: props.binPath,
+            binContained: props.binContained,
+            binCapacity: props.binCapacity,
+            binDescription: props.binDescription,
+            binDepartment: props.binDepartment,
+            binEnableGoods: props.binEnableGoods,
+            binStock: props.binStock,
+            errorName: undefined,
+            errorCode: undefined
+        })
+    }, [props.binId])
+
+    const getAllDepartment = () => {
+        let { translate, department } = props;
         let manageDepartmentArr = [{ value: '', text: translate('manage_warehouse.bin_location_management.choose_department') }];
 
         department.list.map(item => {
@@ -60,8 +55,8 @@ class BinEditForm extends Component {
         return manageDepartmentArr;
     }
 
-    getAllGoods = () => {
-        let { translate, goods } = this.props;
+    const getAllGoods = () => {
+        let { translate, goods } = props;
         let goodArr = [{ value: '', text: translate('manage_warehouse.good_management.choose_category') }];
 
         goods.listALLGoods.map(item => {
@@ -74,266 +69,232 @@ class BinEditForm extends Component {
         return goodArr;
     }
 
-    handleGoodChange = (value) => {
+    const handleGoodChange = (value) => {
         let good = value[0];
-        this.validateGood(good, true);
+        validateGood(good, true);
     }
 
-    validateGood = (value, willUpdateState = true) => {
-        const dataGood = this.getAllGoods();
-        
+    const validateGood = (value, willUpdateState = true) => {
+        const dataGood = getAllGoods();
+
         let msg = undefined;
-        const { translate } = this.props;
-        let { good } = this.state;
-        if(!value){
+        const { translate } = props;
+        let { good } = state;
+        if (!value) {
             msg = translate('manage_warehouse.category_management.validate_name');
         }
         if (willUpdateState) {
-        let goodName = dataGood.find(x=>x.value === value);
-            good.good = {_id:value,name:goodName.text};
-            this.setState(state => {
-                return {
-                    ...state,
-                    good:{...good},
-                    errorGood: msg
-                }
+            let goodName = dataGood.find(x => x.value === value);
+            good.good = { _id: value, name: goodName.text };
+            setState({
+                ...state,
+                good: { ...good },
+                errorGood: msg
             });
         }
         return msg === undefined;
     }
 
-    handleContainedChange = (e) => {
+    const handleContainedChange = (e) => {
         let value = e.target.value;
-        this.state.good.contained = value;
-        this.setState(state => {
-            return {
-                ...state
-            }
+        state.good.contained = value;
+        setState({
+            ...state
         })
     }
 
-    handleCapacityChange = (e) => {
+    const handleCapacityChange = (e) => {
         let value = e.target.value;
-        this.validateCapacity(value, true);
+        validateCapacity(value, true);
     }
 
-    validateCapacity = (value, willUpdateState = true) => {
+    const validateCapacity = (value, willUpdateState = true) => {
         let msg = undefined;
-        const { translate } = this.props;
-        
-        if(!value) {
+        const { translate } = props;
+
+        if (!value) {
             msg = translate('manage_warehouse.bin_location_management.validate_capacity');
         }
 
-        if(willUpdateState){
-            this.state.good.capacity = value;
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorCapacity: msg
-                }
+        if (willUpdateState) {
+            state.good.capacity = value;
+            setState({
+                ...state,
+                errorCapacity: msg
             })
         }
         return msg = undefined;
     }
 
-    isGoodsValidated = () => {
-        let result = 
-            this.validateGood(this.state.good.good, false)
+    const isGoodsValidated = () => {
+        let result =
+            validateGood(state.good.good, false)
         return result;
     }
 
-    handleAddGood = async (e) => {
+    const handleAddGood = async (e) => {
         e.preventDefault();
-        await this.setState(state => {
-            let binEnableGoods = [ ...(this.state.binEnableGoods), state.good ];
-            return {
-                ...state,
-                binEnableGoods: binEnableGoods,
-                good: Object.assign({}, this.EMPTY_GOOD)
-            }
+        let binEnableGoods = [...(state.binEnableGoods), state.good];
+        await setState({
+            ...state,
+            binEnableGoods: binEnableGoods,
+            good: Object.assign({}, EMPTY_GOOD)
         })
     }
 
-    handleClearGood = () => {
-        this.setState(state => {
-            return {
-                ...state,
-                good: Object.assign({}, this.EMPTY_GOOD)
-            }
+    const handleClearGood = () => {
+        setState({
+            ...state,
+            good: Object.assign({}, EMPTY_GOOD)
         })
     }
 
-    handleEditGood = (good, index) => {
-        this.setState(state => {
-            return {
-                ...state,
-                editInfo: true,
-                indexInfo: index,
-                good: Object.assign({}, good)
-            }
+    const handleEditGood = (good, index) => {
+        setState({
+            ...state,
+            editInfo: true,
+            indexInfo: index,
+            good: Object.assign({}, good)
         })
     }
 
-    handleSaveEditGood = async (e) => {
+    const handleSaveEditGood = async (e) => {
         e.preventDefault();
-        const { indexInfo, binEnableGoods } = this.state;
+        const { indexInfo, binEnableGoods } = state;
         let newEnableGoods;
-        if(binEnableGoods){
+        if (binEnableGoods) {
             newEnableGoods = binEnableGoods.map((item, index) => {
-                return (index === indexInfo) ? this.state.good : item
+                return (index === indexInfo) ? state.good : item
             })
         }
 
-        await this.setState(state => {
-            return {
-                ...state,
-                editInfo: false,
-                binEnableGoods: newEnableGoods,
-                good: Object.assign({}, this.EMPTY_GOOD)
-            }
+        await setState({
+            ...state,
+            editInfo: false,
+            binEnableGoods: newEnableGoods,
+            good: Object.assign({}, EMPTY_GOOD)
         })
     }
 
-    handleCancelEditGood = (e) => {
+    const handleCancelEditGood = (e) => {
         e.preventDefault();
-        this.setState(state => {
-            return {
-                ...state,
-                editInfo: false,
-                good: Object.assign({}, this.EMPTY_GOOD)
-            }
+        setState({
+            ...state,
+            editInfo: false,
+            good: Object.assign({}, EMPTY_GOOD)
         })
     }
 
-    handleDeleteGood = async (index) => {
-        let { binEnableGoods } = this.state;
+    const handleDeleteGood = async (index) => {
+        let { binEnableGoods } = state;
         let newEnableGoods;
-        if(binEnableGoods) {
+        if (binEnableGoods) {
             newEnableGoods = binEnableGoods.filter((item, x) => index !== x)
         }
 
-        this.setState(state => {
-            return {
-                ...state,
-                binEnableGoods: newEnableGoods
-            }
+        setState({
+            ...state,
+            binEnableGoods: newEnableGoods
         })
     }
 
-    handleStatusChange = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                binStatus: value[0]
-            }
+    const handleStatusChange = (value) => {
+        setState({
+            ...state,
+            binStatus: value[0]
         })
     }
 
-    handleDepartmentChange = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                binDepartment: value[0]
-            }
+    const handleDepartmentChange = (value) => {
+        setState({
+            ...state,
+            binDepartment: value[0]
         })
     }
 
-    handleUnitChange = (e) => {
+    const handleUnitChange = (e) => {
         let value = e.target.value;
-        this.setState(state => {
-            return {
-                ...state,
-                binUnit: value
-            }
+        setState({
+            ...state,
+            binUnit: value
         })
     }
 
-    handleNameChange = (e) => {
+    const handleNameChange = (e) => {
         let value = e.target.value;
-        this.validateName(value, true);
+        validateName(value, true);
     }
 
-    validateName = (value, willUpdateState = true) => {
+    const validateName = (value, willUpdateState = true) => {
         let msg = undefined;
-        const { translate } = this.props;
-        if(!value) {
+        const { translate } = props;
+        if (!value) {
             msg = translate('manage_warehouse.category_management.validate_name');
         }
         if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorName: msg,
-                    binName: value
-                }
+            setState({
+                ...state,
+                errorName: msg,
+                binName: value
             });
         }
         return msg === undefined;
     }
 
-    handleCapacityTotalChange = (e) => {
+    const handleCapacityTotalChange = (e) => {
         let value = e.target.value;
         console.log(value);
-        this.setState(state => {
-            return {
-                ...state,
-                binCapacity: value
-            }
+        setState({
+            ...state,
+            binCapacity: value
         })
     }
 
-    handleManagementLocationtChange = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                binUsers: value
-            }
+    const handleManagementLocationtChange = (value) => {
+        setState({
+            ...state,
+            binUsers: value
         })
     }
 
-    handleParent = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                binParent: value[0]
-            }
+    const handleParent = (value) => {
+        setState({
+            ...state,
+            binParent: value[0]
         })
     }
 
-    handleDescriptionChange = (e) => {
+    const handleDescriptionChange = (e) => {
         let value = e.target.value;
-        this.setState(state => {
-            return {
-                ...state,
-                binDescription: value
-            }
+        setState({
+            ...state,
+            binDescription: value
         })
     }
 
-    isValidated = () => {
-        let result =
-            this.validateCode(this.state.binCode, false) &&
-            this.validateName(this.state.binName, false)
-        
-        return result;
-    }
+    // const isValidated = () => {
+    //     let result =
+    //         validateCode(state.binCode, false) &&
+    //         validateName(state.binName, false)
 
-    save = async () => {
-        const { binLocations } = this.props;
-        const { binId, binCode, binName, binStatus, binUnit, binUsers, binPath, binContained, 
-            binParent, binCapacity, binDescription, binDepartment, binEnableGoods, binStock} = this.state;
+    //     return result;
+    // }
+
+    const save = async () => {
+        const { binLocations } = props;
+        const { binId, binCode, binName, binStatus, binUnit, binUsers, binPath, binContained,
+            binParent, binCapacity, binDescription, binDepartment, binEnableGoods, binStock } = state;
         const { list } = binLocations.binLocation;
 
         let node = "";
         node = list.filter(item => item._id === binId)[0];
 
         let array = [];
-        if(node) {
-            array = this.findChildrenNode(list, node);
-        }
+        // if (node) {
+        //     array = findChildrenNode(list, node);
+        // }
 
-        await this.props.editBinLocation(binId, {
+        await props.editBinLocation(binId, {
             code: binCode,
             name: binName,
             status: binStatus,
@@ -350,7 +311,7 @@ class BinEditForm extends Component {
         });
     }
 
-    findChildrenNode = (list, node) => {
+    const findChildrenNode = (list, node) => {
         let array = [];
         let queue_children = [node];
         while (queue_children.length > 0) {
@@ -362,22 +323,21 @@ class BinEditForm extends Component {
         return array
     }
 
-    render() {
-        const { translate, user, binLocations } = this.props;
-        const { binCode, binName, binStatus, binUnit, binUsers, binParent, binCapacity, 
-            binDescription, binDepartment, binEnableGoods, errorName, errorCapacity, errorGood, good, binStock } = this.state;
-        const { list } = binLocations.binLocationByStock;
-        const dataDepartment = this.getAllDepartment();
-        const dataGoods = this.getAllGoods();
-        const listUsers = user.list;
+    const { translate, user, binLocations } = props;
+    const { binCode, binName, binStatus, binUnit, binUsers, binParent, binCapacity,
+        binDescription, binDepartment, binEnableGoods, errorName, errorCapacity, errorGood, good, binStock } = state;
+    const { list } = binLocations.binLocationByStock;
+    const dataDepartment = getAllDepartment();
+    const dataGoods = getAllGoods();
+    const listUsers = list;
 
-        return (
-            <div id="edit-bin-location">
+    return (
+        <div id="edit-bin-location">
             <div className="scroll-row">
                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                     <div className={`form-group`}>
                         <label>{translate('manage_warehouse.bin_location_management.code')}<span className="attention"> * </span></label>
-                        <input type="text" className="form-control" value={binCode} disabled onChange={this.handleCodeChange}/>
+                        {/* <input type="text" className="form-control" value={binCode} disabled onChange={handleCodeChange} /> */}
                     </div>
                     <div className={`form-group`}>
                         <label>{translate('manage_warehouse.bin_location_management.status')}<span className="attention"> * </span></label>
@@ -393,7 +353,7 @@ class BinEditForm extends Component {
                                 { value: '4', text: translate('manage_warehouse.bin_location_management.4.status') },
                                 { value: '5', text: translate('manage_warehouse.bin_location_management.5.status') },
                             ]}
-                            onChange={this.handleStatusChange}    
+                            onChange={handleStatusChange}
                             multiple={false}
                         />
                     </div>
@@ -411,18 +371,18 @@ class BinEditForm extends Component {
                     </div> */}
                     <div className={`form-group`}>
                         <label>{translate('manage_warehouse.bin_location_management.unit')}<span className="attention"> * </span></label>
-                        <input type="text" className="form-control" value={binUnit} onChange={this.handleUnitChange} />
+                        <input type="text" className="form-control" value={binUnit} onChange={handleUnitChange} />
                     </div>
                 </div>
                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                     <div className={`form-group ${!errorName ? "" : "has-error"}`}>
                         <label>{translate('manage_warehouse.bin_location_management.name')}<span className="attention"> * </span></label>
-                        <input type="text" className="form-control" value={binName} onChange={this.handleNameChange} />
-                        <ErrorLabel content = { errorName }/>
+                        <input type="text" className="form-control" value={binName} onChange={handleNameChange} />
+                        <ErrorLabel content={errorName} />
                     </div>
                     <div className="form-group">
                         <label>{translate('manage_warehouse.bin_location_management.capacity')}<span className="attention"> * </span></label>
-                        <input type="number" className="form-control" value={binCapacity ? binCapacity : ""} onChange={this.handleCapacityTotalChange} />
+                        <input type="number" className="form-control" value={binCapacity ? binCapacity : ""} onChange={handleCapacityTotalChange} />
                     </div>
                     {/* <div className={`form-group`}>
                         <label>{translate('manage_warehouse.bin_location_management.management_location')}<span className="attention"> * </span></label>
@@ -438,17 +398,17 @@ class BinEditForm extends Component {
                     </div> */}
                     <div className={`form-group`}>
                         <label>{translate('manage_warehouse.bin_location_management.parent')}</label>
-                        <TreeSelect data={list} value={binParent ? [binParent] : ""} handleChange={this.handleParent} mode="radioSelect" />
+                        <TreeSelect data={list} value={binParent ? [binParent] : ""} handleChange={handleParent} mode="radioSelect" />
                     </div>
                 </div>
                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <div className="form-group">
                         <label>{translate('manage_warehouse.bin_location_management.description')}</label>
-                        <textarea type="text" className="form-control" value={binDescription} onChange={this.handleDescriptionChange} />
+                        <textarea type="text" className="form-control" value={binDescription} onChange={handleDescriptionChange} />
                     </div>
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border">{translate('manage_warehouse.bin_location_management.enable_good')}</legend>
-                        
+
                         <div className={`form-group ${!errorGood ? "" : "has-error"}`}>
                             <label>{translate('manage_warehouse.good_management.good')}</label>
                             <SelectBox
@@ -457,34 +417,34 @@ class BinEditForm extends Component {
                                 style={{ width: "100%" }}
                                 value={good.good._id ? good.good._id : { value: '', text: translate('manage_warehouse.good_management.choose_category') }}
                                 items={dataGoods}
-                                onChange={this.handleGoodChange}
+                                onChange={handleGoodChange}
                                 multiple={false}
                             />
-                            <ErrorLabel content = { errorGood }/>
+                            <ErrorLabel content={errorGood} />
                         </div>
                         <div className={`form-group`}>
                             <label className="control-label">{translate('manage_warehouse.bin_location_management.contained')}</label>
                             <div>
-                                <input type="number" className="form-control" value={good.contained} disabled placeholder={translate('manage_warehouse.good_management.contained')} onChange={this.handleContainedChange} />
+                                <input type="number" className="form-control" value={good.contained} disabled placeholder={translate('manage_warehouse.good_management.contained')} onChange={handleContainedChange} />
                             </div>
                         </div>
                         <div className={`form-group ${!errorCapacity ? "" : "has-error"}`}>
                             <label className="control-label">{translate('manage_warehouse.bin_location_management.max_quantity')}</label>
                             <div>
-                                <input type="number" className="form-control" value={good.capacity} placeholder={translate('manage_warehouse.good_management.max_quantity')} onChange={this.handleCapacityChange} />
+                                <input type="number" className="form-control" value={good.capacity} placeholder={translate('manage_warehouse.good_management.max_quantity')} onChange={handleCapacityChange} />
                             </div>
-                            <ErrorLabel content = { errorCapacity }/>
+                            <ErrorLabel content={errorCapacity} />
                         </div>
 
-                        <div className="pull-right" style={{marginBottom: "10px"}}>
-                            {this.state.editInfo ?
+                        <div className="pull-right" style={{ marginBottom: "10px" }}>
+                            {state.editInfo ?
                                 <React.Fragment>
-                                    <button className="btn btn-success" onClick={this.handleCancelEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.cancel_editing')}</button>
-                                    <button className="btn btn-success" disabled={!this.isGoodsValidated()} onClick={this.handleSaveEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.save')}</button>
-                                </React.Fragment>:
-                                <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!this.isGoodsValidated()} onClick={this.handleAddGood}>{translate('task_template.add')}</button>
+                                    <button className="btn btn-success" onClick={handleCancelEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.cancel_editing')}</button>
+                                    <button className="btn btn-success" disabled={!isGoodsValidated()} onClick={handleSaveEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.save')}</button>
+                                </React.Fragment> :
+                                <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!isGoodsValidated()} onClick={handleAddGood}>{translate('task_template.add')}</button>
                             }
-                            <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={this.handleClearGood}>{translate('task_template.delete')}</button>
+                            <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={handleClearGood}>{translate('task_template.delete')}</button>
                         </div>
 
                         <table className="table table-bordered">
@@ -497,33 +457,32 @@ class BinEditForm extends Component {
                                 </tr>
                             </thead>
                             <tbody id={`good-manage-by-stock`}>
-                                { (typeof binEnableGoods === 'undefined' || binEnableGoods.length === 0) ? <tr><td colSpan={4}><center>{translate('task_template.no_data')}</center></td></tr> :
-                                    binEnableGoods.map((x, index) => 
+                                {(typeof binEnableGoods === 'undefined' || binEnableGoods.length === 0) ? <tr><td colSpan={4}><center>{translate('task_template.no_data')}</center></td></tr> :
+                                    binEnableGoods.map((x, index) =>
                                         <tr key={index}>
                                             <td>{x.good.name}</td>
                                             <td>{x.contained}</td>
                                             <td>{x.capacity}</td>
                                             <td>
-                                                <a href="#abc" className="edit" title={translate('general.edit')} onClick={() => this.handleEditGood(x, index)}><i className="material-icons"></i></a>
-                                                <a href="#abc" className="delete" title={translate('general.delete')} onClick={() => this.handleDeleteGood(index)}><i className="material-icons"></i></a>
+                                                <a href="#abc" className="edit" title={translate('general.edit')} onClick={() => handleEditGood(x, index)}><i className="material-icons"></i></a>
+                                                <a href="#abc" className="delete" title={translate('general.delete')} onClick={() => handleDeleteGood(index)}><i className="material-icons"></i></a>
                                             </td>
                                         </tr>
-                                    )   
+                                    )
                                 }
                             </tbody>
                         </table>
                     </fieldset>
                 </div>
-                </div>
-                <div className="form-group">
-                    <button className="btn btn-success pull-right" style={{ marginLeft: '5px' }} onClick={this.save}>{translate('form.save')}</button>
-                    <button className="btn btn-danger" onClick={() => {
-                        window.$(`#edit-bin-location`).slideUp()
-                    }}>{translate('form.close')}</button>
-                </div>
             </div>
-        )
-    }
+            <div className="form-group">
+                <button className="btn btn-success pull-right" style={{ marginLeft: '5px' }} onClick={save}>{translate('form.save')}</button>
+                <button className="btn btn-danger" onClick={() => {
+                    window.$(`#edit-bin-location`).slideUp()
+                }}>{translate('form.close')}</button>
+            </div>
+        </div>
+    )
 }
 
 const mapStateToProps = state => state;

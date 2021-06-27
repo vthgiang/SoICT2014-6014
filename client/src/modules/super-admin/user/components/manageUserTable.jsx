@@ -182,9 +182,9 @@ function ManageUserTable(props) {
                                     <a onClick={() => handleEdit(u)} className="edit text-yellow" href={`#${u._id}`} style={{ width: '5px' }} title={translate('manage_user.edit')}><i className="material-icons">edit</i></a>
                                     <ConfirmNotification
                                         className="text-blue"
-                                        title="Gửi email thay đổi mật khẩu"
+                                        title="Gửi email cấp lại mật khẩu"
                                         name="contact_mail"
-                                        content={`Gửi email thay đổi mật khẩu đến tài khoản [ ${u.email} ]`}
+                                        content={`Gửi email cấp lại mật khẩu đến tài khoản [ ${u.email} ]`}
                                         icon="question"
                                         func={() => sendEmailResetPasswordUser(u.email)}
                                     />

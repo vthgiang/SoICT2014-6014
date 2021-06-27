@@ -11,7 +11,7 @@ import { getStorage } from '../../../../config';
 import TabProjectReportTime from './tabProjectReportTime';
 import TabProjectReportCost from './tabProjectReportCost';
 import TabProjectReportMember from './tabProjectReportMember';
-import { checkIfAbleToCRUDProject } from '../../projects/components/functionHelper';
+import { checkIfAbleToCRUDProject, getCurrentProjectDetails } from '../../projects/components/functionHelper';
 
 const ModalDetailReport = (props) => {
     const { projectDetailId, projectDetail, translate, project, tasks, user } = props;
@@ -20,7 +20,7 @@ const ModalDetailReport = (props) => {
     const currentTasks = tasks?.tasksbyproject;
 
     useEffect(() => {
-        props.getProjectsDispatch({ calledId: "all", userId });
+        props.getProjectsDispatch({ calledId: "user_all", userId });
         props.getAllUserInAllUnitsOfCompany();
         props.getTasksByProject(projectDetailId || projectDetail?._id)
     }, [currentProjectId])
@@ -42,9 +42,12 @@ const ModalDetailReport = (props) => {
                 <div className="nav-tabs-custom">
                     <ul className="nav nav-tabs">
                         <li className="active"><a href="#project-report-time" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Tiến độ dự án</a></li>
-                        <li><a href="#project-report-cost" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Chi phí dự án</a></li>
                         {
-                            checkIfAbleToCRUDProject({ project, user, projectDetailId }) &&
+                            getCurrentProjectDetails(project, projectDetailId || projectDetail?._id)?.projectType === 2 &&
+                            <li><a href="#project-report-cost" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Chi phí dự án</a></li>
+                        }
+                        {
+                            checkIfAbleToCRUDProject({ project, user, currentProjectId: projectDetailId || projectDetail?._id, isInsideProject: true }) &&
                             <li><a href="#project-report-member" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Thành viên dự án</a></li>
                         }
                     </ul>
@@ -54,16 +57,19 @@ const ModalDetailReport = (props) => {
                             <TabProjectReportTime currentTasks={currentTasks} />
                         </div>
                         {/** Tab báo cáo chi phí */}
-                        <div className="tab-pane" id="project-report-cost">
-                            <LazyLoadComponent
-                                key="TabProjectReportCost"
-                            >
-                                <TabProjectReportCost currentTasks={currentTasks} />
-                            </LazyLoadComponent>
-                        </div>
+                        {
+                            getCurrentProjectDetails(project, projectDetailId || projectDetail?._id)?.projectType === 2 &&
+                            <div className="tab-pane" id="project-report-cost">
+                                <LazyLoadComponent
+                                    key="TabProjectReportCost"
+                                >
+                                    <TabProjectReportCost currentTasks={currentTasks} />
+                                </LazyLoadComponent>
+                            </div>
+                        }
                         {/** Tab báo cáo thành viên */}
                         {
-                            checkIfAbleToCRUDProject({ project, user, projectDetailId }) &&
+                            checkIfAbleToCRUDProject({ project, user, currentProjectId: projectDetailId || projectDetail?._id, isInsideProject: true }) &&
                             <div className="tab-pane" id="project-report-member">
                                 <LazyLoadComponent
                                     key="TabProjectReportMember"

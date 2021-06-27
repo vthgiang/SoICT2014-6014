@@ -30,7 +30,7 @@ class ModalEditTaskByAccountableEmployeeProject extends Component {
         let organizationalUnit = task && task.organizationalUnit?._id;
         let collaboratedWithOrganizationalUnits = task && task.collaboratedWithOrganizationalUnits.map(e => { if (e) return e.organizationalUnit._id });
 
-        let statusOptions = []; statusOptions.push(task && task.status);
+        // let statusOptions = []; statusOptions.push(task && task.status);
         let priorityOptions = []; priorityOptions.push(task && task.priority);
         let taskName = task && task.name;
         let taskDescription = task && task.description;
@@ -132,7 +132,7 @@ class ModalEditTaskByAccountableEmployeeProject extends Component {
             taskDescriptionDefault: taskDescription,
             organizationalUnit: organizationalUnit,
             collaboratedWithOrganizationalUnits: collaboratedWithOrganizationalUnits,
-            statusOptions: statusOptions,
+            // statusOptions: statusOptions,
             priorityOptions: priorityOptions,
             progress: progress,
             formulaProjectTask,
@@ -887,7 +887,7 @@ class ModalEditTaskByAccountableEmployeeProject extends Component {
 
             name: this.state.taskName,
             description: this.state.taskDescription,
-            status: this.state.statusOptions,
+            // status: this.state.statusOptions,
             priority: this.state.priorityOptions,
             formulaProjectTask: this.state.formulaProjectTask,
             formulaProjectMember: this.state.formulaProjectMember,
@@ -1111,7 +1111,7 @@ class ModalEditTaskByAccountableEmployeeProject extends Component {
                                 {/* <div> */}
 
                                 <div className="row form-group">
-                                    <div className="col-lg-6 col-md-6 col-ms-12 col-xs-12">
+                                    {/* <div className="col-lg-6 col-md-6 col-ms-12 col-xs-12">
                                         <label>{translate('task.task_management.detail_status')}</label>
                                         {
                                             <SelectBox
@@ -1124,7 +1124,7 @@ class ModalEditTaskByAccountableEmployeeProject extends Component {
                                                 onChange={this.handleSelectedStatus}
                                             />
                                         }
-                                    </div>
+                                    </div> */}
 
                                     {/*Mức ưu tiên*/}
                                     <div className="col-lg-6 col-md-6 col-ms-12 col-xs-12">
@@ -1178,37 +1178,36 @@ class ModalEditTaskByAccountableEmployeeProject extends Component {
                                 {/**Công thức tính của công việc */}
                                 <div className={` form-group ${errorOnFormulaTask === undefined ? "" : "has-error"}`} >
                                     <label className="control-label" htmlFor="inputProjectTaskFormula">Công thức tính điểm công việc tự động<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" id="inputProjectTaskFormula" placeholder="taskTimePoint + taskQualityPoint + taskCostPoint + taskDilligencePoint"
+                                    <input type="text" className="form-control" id="inputProjectTaskFormula" placeholder="taskTimePoint + taskQualityPoint + taskCostPoint"
                                         value={formulaProjectTask} onChange={this.handleChangeTaskFormula}
                                     />
                                     <ErrorLabel content={errorOnFormulaTask} />
 
                                     <br />
-                                    <div><span style={{ fontWeight: 800 }}>Ví dụ: </span>taskTimePoint + taskQualityPoint + taskCostPoint + taskDilligencePoint</div>
+                                    <div><span style={{ fontWeight: 800 }}>Ví dụ: </span>taskTimePoint + taskQualityPoint + taskCostPoint</div>
                                     <br />
                                     <div><span style={{ fontWeight: 800 }}>{translate('task_template.parameters')}:</span></div>
                                     <div><span style={{ fontWeight: 600 }}>taskTimePoint</span> - Điểm yếu tố tiến độ của công việc</div>
                                     <div><span style={{ fontWeight: 600 }}>taskQualityPoint</span> - Điểm yếu tố chất lượng của công việc</div>
                                     <div><span style={{ fontWeight: 600 }}>taskCostPoint</span> - Điểm yếu tố chi phí của công việc</div>
-                                    <div><span style={{ fontWeight: 600 }}>taskDilligencePoint</span> - Điểm yếu tố chuyên cần của công việc</div>
                                     <div><span style={{ fontWeight: 600 }}>p1, p2,...</span> - Thông tin công việc kiểu số</div>
                                 </div>
                                 {/**Công thức tính của thành viên công việc */}
                                 <div className={` form-group ${errorOnFormulaMember === undefined ? "" : "has-error"}`} >
                                     <label className="control-label" htmlFor="inputProjectMemberFormula">Công thức tính điểm thành viên công việc tự động<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" id="inputProjectMemberFormula" placeholder="memberTimePoint + memberQualityPoint + memberCostPoint + memberDilligencePoint"
+                                    <input type="text" className="form-control" id="inputProjectMemberFormula" placeholder="memberTimePoint + memberQualityPoint + memberCostPoint + memberTimedistributionPoint"
                                         value={formulaProjectMember} onChange={this.handleChangeMemberFormula}
                                     />
                                     <ErrorLabel content={errorOnFormulaMember} />
 
                                     <br />
-                                    <div><span style={{ fontWeight: 800 }}>Ví dụ: </span>memberTimePoint + memberQualityPoint + memberCostPoint + memberDilligencePoint</div>
+                                    <div><span style={{ fontWeight: 800 }}>Ví dụ: </span>memberTimePoint + memberQualityPoint + memberCostPoint + memberTimedistributionPoint</div>
                                     <br />
                                     <div><span style={{ fontWeight: 800 }}>{translate('task_template.parameters')}:</span></div>
                                     <div><span style={{ fontWeight: 600 }}>memberTimePoint</span> - Điểm yếu tố tiến độ của công việc</div>
                                     <div><span style={{ fontWeight: 600 }}>memberQualityPoint</span> - Điểm yếu tố chất lượng của công việc</div>
                                     <div><span style={{ fontWeight: 600 }}>memberCostPoint</span> - Điểm yếu tố chi phí của thành viên trong công việc</div>
-                                    <div><span style={{ fontWeight: 600 }}>memberDilligencePoint</span> - Điểm yếu tố chuyên cần của thành viên trong công việc</div>
+                                    <div><span style={{ fontWeight: 600 }}>memberTimedistributionPoint</span> - Điểm yếu tố phân bố thời gian hợp lý của thành viên trong công việc</div>
                                     <div><span style={{ fontWeight: 600 }}>p1, p2,...</span> - Thông tin công việc kiểu số</div>
                                 </div>
                             </fieldset>

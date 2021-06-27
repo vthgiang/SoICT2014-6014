@@ -2,21 +2,15 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import ManufacturingLotManagementTable from './manufacturingLotManagementTable';
-class ManufacturingLot extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {}
-    }
+function ManufacturingLot(props) {
 
-    render() {
-        return (
-            <div className="box" style={{ minHeight: "450px" }}>
-                <div className="box-body">
-                    <ManufacturingLotManagementTable />
-                </div>
+    return (
+        <div className="box" style={{ minHeight: "450px" }}>
+            <div className="box-body">
+                <ManufacturingLotManagementTable />
             </div>
-        )
-    }
+        </div>
+    )
 }
 
 export default connect(null, null)(withTranslate(ManufacturingLot));

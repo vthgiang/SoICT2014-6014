@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-
+import { withTranslate } from 'react-redux-multilingual';
 import parse from 'html-react-parser';
+import Swal from 'sweetalert2';
 
-import { configQuillEditor } from './configQuillEditor';
+import { configQuillEditor, convertImageBase64ToFile } from './configQuillEditor';
 import { ToolbarQuillEditor } from './toolbarQuillEditor';
+import { SlimScroll } from '../slim-scroll/slimScroll'
 
 import { AuthActions } from '../../../modules/auth/redux/actions'
 
@@ -21,10 +23,11 @@ class QuillEditor extends Component {
     
 
     componentDidMount() {
+        const { translate } = this.props
         const { id, isText = false, quillValueDefault, 
             toolbar = true, maxHeight = 200,
             enableEdit = true, placeholder = null,
-            enableDropImage = true
+            enableDropImage = true, showDetail = false
         } = this.props;
 
         // Khởi tạo Quill Editor trong thẻ có id = id truyền vào
@@ -157,6 +160,21 @@ class QuillEditor extends Component {
             }
         }
 
+        // Bắt sự kiện phóng to nội dung
+        if (showDetail?.enable) {
+            window.$(`#editor-container${id}`).on("dblclick", () => {
+                Swal.fire({
+                    title: showDetail?.titleShowDetail ?? translate('general.detail'),
+                    html: quill?.container?.firstChild?.innerHTML,
+                    width: showDetail?.width ?? "75%",
+                    customClass: {
+                        content: "ql-editor ql-blank"
+                    }
+                })
+            })
+        }
+        
+
         this.setState({
             quill: quill
         })
@@ -175,6 +193,14 @@ class QuillEditor extends Component {
 
         // download ảnh 
         if (nextProps.quillValueDefault !== quillValueDefault) {
+            // Insert value ban đầu
+            // Lưu ý: quillValueDefault phải được truyền vào 1 giá trị cố định, không thay đổi 
+            if (nextProps.quillValueDefault || nextProps.quillValueDefault === '') {
+                if (quill && quill.container && quill.container.firstChild) {
+                    quill.container.firstChild.innerHTML = nextProps.quillValueDefault;
+                }  
+            }
+
             if (quill?.container) {
                 let imgs = Array.from(quill?.container?.querySelectorAll('img[src^="upload/private"]'))
                 if (imgs?.length > 0) {
@@ -204,14 +230,6 @@ class QuillEditor extends Component {
         if (quill && !isText) {
             quill.enable(enableEdit);
         }
-
-        // Insert value ban đầu
-        // Lưu ý: quillValueDefault phải được truyền vào 1 giá trị cố định, không thay đổi 
-        if (quillValueDefault || quillValueDefault === '') {
-            if (quill && quill.container && quill.container.firstChild) {
-                quill.container.firstChild.innerHTML = this.props.quillValueDefault;
-            }  
-        }
         
         if (quill?.container) {
             // Add lại base64 ảnh download từ server
@@ -234,53 +252,8 @@ class QuillEditor extends Component {
     }
 
     setHeightContainer = (id, maxHeight) => {
-        window.$(`#editor-container${id}`).height("")
-        let heightCurrent = window.$(`#editor-container${id}`)?.height()
-        if (heightCurrent > maxHeight) {
-            window.$(`#editor-container${id}`).height(maxHeight)
-        } else {
-            window.$(`#editor-container${id}`).height("")
-        }
-    }
-
-    /** 
-     * Chuyển đổi dữ liệu ảnh base64 sang FIle để upload lên server
-     * @imgs mảng hình ảnh dạng base64
-     * @names mảng tên các ảnh tương ứng
-     * */ 
-    static convertImageBase64ToFile = (imgs, sliceSize=512) => {
-        let imageFile;
-        if (imgs && imgs.length !== 0) {
-            imageFile = imgs.map((item) => {
-                let block, contentType, realData;
-                // Split the base64 string in data and contentType
-                block = item?.url?.split(";");
-                if (block && block.length !== 0) {
-                    contentType = block[0].split(":")[1];
-                    realData = block[1].split(",")[1];
-                }
-                contentType = contentType || '';
-
-                let byteCharacters = atob(realData);
-                let byteArrays = [];
-
-                for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-                    const slice = byteCharacters.slice(offset, offset + sliceSize);
-
-                    const byteNumbers = new Array(slice.length);
-                    for (let i = 0; i < slice.length; i++) {
-                    byteNumbers[i] = slice.charCodeAt(i);
-                    }
-
-                    const byteArray = new Uint8Array(byteNumbers);
-                    byteArrays.push(byteArray);
-                }
-
-                const blob = new Blob(byteArrays, {type: ""});
-                return new File([blob], item?.originalName + ".png");
-            })
-        }
-        return imageFile;
+        SlimScroll.removeVerticalScrollStyleCSS(`editor-container${id}`)
+        SlimScroll.addVerticalScrollStyleCSS(`editor-container${id}`, maxHeight, true)
     }
 
     render() {
@@ -317,8 +290,6 @@ class QuillEditor extends Component {
     }
 }
 
-    
-
 function mapState (state) {
     const { auth } = state
     return { auth }
@@ -327,5 +298,5 @@ const actions = {
     downloadFile: AuthActions.downloadFile
 }
 
-const connectedQuillEditor = connect(mapState, actions)(QuillEditor);
-export { connectedQuillEditor as QuillEditor }
+const connectedQuillEditor = connect(mapState, actions)(withTranslate(QuillEditor));
+export { connectedQuillEditor as QuillEditor, convertImageBase64ToFile }

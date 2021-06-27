@@ -7,8 +7,6 @@ import { formatToTimeZoneDate } from '../../../../../helpers/formatDate'
 import ValidationHelper from '../../../../../helpers/validationHelper';
 import {generateCode} from '../../../../../helpers/generateCode'
 
-import { TransportGeneralInfo } from './create-transport-requirements/transportGeneralInfo';
-import { TransportRequirementsViewDetails } from './transportRequirementsViewDetails';
 import { TransportGeneralInfoShip } from './create-transport-requirements/transportGeneralInfoShip';
 import { TransportReturn } from './create-transport-requirements/transportReturn';
 import { TransportImportGoods } from './create-transport-requirements/transportImportGoods';
@@ -17,31 +15,34 @@ import { TransportNewOne} from './create-transport-requirements/transportNewOne'
 import { TransportGoods } from './create-transport-requirements/transportGoods';
 import { TransportTime } from './create-transport-requirements/transportTime';
 
-import { exampleActions } from '../redux/actions';
 
 import { BillActions } from '../../../warehouse/bill-management/redux/actions';
 import { CrmCustomerActions } from "../../../../crm/customer/redux/actions";
 import { GoodActions} from '../../../common-production/good-management/redux/actions';
 import { transportRequirementsActions } from '../redux/actions'
-import { transportDepartment, transportDepartmentActions } from '../../transport-department/redux/actions'
+import { transportDepartmentActions } from '../../transport-department/redux/actions'
+import { getListTypeRequirement, getValueTypeRequirement, getTypeRequirement } from '../../transportHelper/getTextFromValue'
 import { getGeocode } from '../../transportHelper/getGeocodeGoong'
 
 function TransportRequirementsCreateForm(props) {
 
-    // const { translate, example, page, perPage } = props;
-    // const { exampleName, description, exampleNameError } = state1;
-    const {requirements, bills, transportDepartment} = props
-    // /**
-    //  * Hàm dùng để kiểm tra xem form đã được validate hay chưa
-    //  */
-    // const isFormValidated = () => {
-    //     if (!exampleNameError.status) {
-    //         return false;
-    //     }
-    //     return true;
-    // }
+    const {bills, transportDepartment, billFromStockModules} = props
+    const requirements=getListTypeRequirement();
 
-    // Khởi tạo state
+    useEffect(() => {
+        console.log(billFromStockModules,"billFromStockModules");
+        if (billFromStockModules){
+            handleClickCreateCode();
+            setCurrentBill({bill: billFromStockModules, id: billFromStockModules._id});
+            setState({
+                ...state,
+                billGroup: billFromStockModules.group,
+                billType: billFromStockModules.type,
+                value: getValueTypeRequirement(billFromStockModules.group, billFromStockModules.type),
+            })
+        }
+    }, [billFromStockModules])
+
     const [state, setState] = useState({
         value: "5",
         billGroup: "2",
@@ -83,15 +84,16 @@ function TransportRequirementsCreateForm(props) {
     //     good: [],
     // })
 
-    const { translate, example, page, perPage } = props;
-
-    const { exampleName, description, exampleNameError } = state;
+    const { translate} = props;
 
     const isFormValidated = () => {
-        if (!exampleNameError.status) {
-            return false;
-        }
-        return true;
+        if (state.value && requirementsForm.code && requirementsForm.info?.customer1AddressTransport &&  requirementsForm.info?.customer2AddressTransport
+            && requirementsForm.goods && requirementsForm.goods.length !==0
+            && requirementsForm.approver && requirementsForm.department){
+                return true;
+            }
+        return false;
+        
     }
     /**
      * Hàm dùng để lưu thông tin của form và gọi service tạo mới ví dụ
@@ -127,7 +129,7 @@ function TransportRequirementsCreateForm(props) {
                 }
             );
         }
-
+        console.log(requirementsForm.goods, " good")
         let data = {
             status: 1,
             code: requirementsForm.code,
@@ -143,9 +145,14 @@ function TransportRequirementsCreateForm(props) {
             toLat: toLat,
             toLng: toLng,
             approver: requirementsForm.approver,
+            department: requirementsForm.department,
         }
         if (state.value !== "5"){
             data.bill = currentBill.id;
+        }
+        if (state.value === "5"){
+            data.detail1 = requirementsForm.info?.newOneDetail1;
+            data.detail2 = requirementsForm.info?.newOneDetail2;
         }
         props.createTransportRequirement(data)
     }
@@ -224,17 +231,11 @@ function TransportRequirementsCreateForm(props) {
     }
 
     useEffect(() => {
-        // props.getCustomers();
-        // props.getBillsByType({ page:1, limit:30, group: parseInt(state.billGroup), managementLocation: localStorage.getItem("currentRole") });
-        props.getBillsByType({ group: parseInt(state.billGroup), managementLocation: localStorage.getItem("currentRole") });
+        // // props.getCustomers();
+        // // props.getBillsByType({ page:1, limit:30, group: parseInt(state.billGroup), managementLocation: localStorage.getItem("currentRole") });
+        // console.log(state, " okkkkkkkkkkkk")
+        if(!billFromStockModules)props.getBillsByType({ group: parseInt(state.billGroup), managementLocation: localStorage.getItem("currentRole") });
     },[state])
-
-    // useEffect(() => {
-    //     const getGoods = async () => {
-    //         props.getAllGoods();
-    //     }
-    //     getGoods();
-    // }, [state, billId])
 
     const handleTypeBillChange = (value) => {
         // console.log(value[0]);
@@ -259,58 +260,105 @@ function TransportRequirementsCreateForm(props) {
     }
 
     const handleApproverChange = (value) => {
-        setRequirementsForm({
-            ...requirementsForm,
-            approver: value[0],
-        })
+        let list = [...approverList];
+        let res = list.filter(r => String(r.value) === String(value[0]));
+        if (res && res.length !==0){
+            setRequirementsForm({
+                ...requirementsForm,
+                approver: value[0],
+                department: res[0].department,
+            })
+        }
     }
 
-    // useEffect(() => {
-    //     let currentBill = bills.filter(r => r._id === billId.id);
-    //     setBillDetail({
-    //         ...billDetail,
-    //         currentBill: currentBill[0]
-    //     })
-        
-    // }, [billId])
     useEffect(() => {
         props.getAllTransportDepartments();
+        // props.getUserByRole({currentUserId: localStorage.getItem('userId'), role: 1})
     }, [])
 
     useEffect(() => {
-        console.log(transportDepartment, " transportDepartment")
-        let newApproverList = [...approverList];
+        // console.log(transportDepartment, " transportDepartment")
+        // let newApproverList = [...approverList];
+        // if (transportDepartment && transportDepartment.lists && transportDepartment.lists.length!==0){
+        //     // role vận chuyển === 2
+        //     let lists = transportDepartment.lists.filter(r => String(r.role) === "2") 
+        //         console.log(lists, " unit")
+        //         if (lists && lists.length !==0){
+        //             lists.map(item =>{
+        //                 if (item.organizationalUnit){
+        //                     let organizationalUnit = item.organizationalUnit;
+        //                     organizationalUnit.managers && organizationalUnit.managers.length !==0
+        //                     && organizationalUnit.managers.map(managers => {
+        //                         managers.users && managers.users.length !== 0
+        //                         && managers.users.map(users => {
+        //                             if (users.userId){
+        //                                 if (users.userId._id){
+        //                                     let check = newApproverList.filter(r =>
+        //                                             String(r.value) ===  String(users.userId._id)
+        //                                         )
+        //                                     if (!(check && check.length!==0)){
+        //                                         newApproverList.push({
+        //                                             value: users.userId._id,
+        //                                             text: users.userId.name
+        //                                         })
+        //                                     }
+        //                                 }
+        //                             }
+        //                         })
+        //                     })
+        //                 }
+        //             })
+        //         } 
+        // }
+        // setApproverList(newApproverList)
+        let newApproverList = [{
+            value: "title",
+            text: "--Chọn người phê duyệt--"
+        }]
+        // console.log(transportDepartment, " opopopo")
         if (transportDepartment && transportDepartment.lists && transportDepartment.lists.length!==0){
-            // role vận chuyển === 2
-            let lists = transportDepartment.lists.filter(r => String(r.role) === "2") 
-                console.log(lists, " unit")
-                if (lists && lists.length !==0){
-                    lists.map(item =>{
-                        if (item.organizationalUnit){
-                            let organizationalUnit = item.organizationalUnit;
-                            organizationalUnit.managers && organizationalUnit.managers.length !==0
-                            && organizationalUnit.managers.map(managers => {
-                                managers.users && managers.users.length !== 0
-                                && managers.users.map(users => {
-                                    if (users.userId){
-                                        if (users.userId._id){
-                                            let check = newApproverList.filter(r =>
-                                                    String(r.value) ===  String(users.userId._id)
-                                                )
-                                            if (!(check && check.length!==0)){
-                                                newApproverList.push({
-                                                    value: users.userId._id,
-                                                    text: users.userId.name
-                                                })
-                                            }
-                                        }
-                                    }
-                                })
+            transportDepartment.lists.map(item => {
+
+                let listRoleApproverOrganizationalUnit = item.type.filter(r => Number(r.roleTransport) === 1);
+                
+                if (listRoleApproverOrganizationalUnit && listRoleApproverOrganizationalUnit.length !==0){
+                    listRoleApproverOrganizationalUnit.map(organization => {
+                        
+                        if (organization.roleOrganizationalUnit && organization.roleOrganizationalUnit.length !==0){
+                            organization.roleOrganizationalUnit.map(roleOrganizationalUnit => {
+                                
+                                if (roleOrganizationalUnit.users && roleOrganizationalUnit.users.length !== 0){
+                                    roleOrganizationalUnit.users.map(user => {
+                                        
+                                        newApproverList.push({
+                                            value: user.userId?._id,
+                                            text: user.userId.name + " - " + roleOrganizationalUnit.name + " - " + item.organizationalUnit?.name,
+                                            department: item._id, 
+                                            roleOrganizationalUnit: roleOrganizationalUnit._id,
+                                        })
+                                    })
+                                }       
+                                
                             })
                         }
+                        
                     })
-                } 
+                }
+
+            })
         }
+        // console.log(newApproverList, " ok");
+        // if (transportDepartment && transportDepartment.listUser && transportDepartment.listUser.length!==0){
+        //     let listUser = transportDepartment.listUser.filter(r=>Number(r.role) === 1);
+        //     if (listUser && listUser.length!==0 && listUser[0].list && listUser[0].list.length!==0){
+        //         listUser[0].list.map(userId => {
+        //             newApproverList.push({
+        //                 value: userId._id,
+        //                 text: userId.name
+        //             })
+        //         })
+        //     }
+        // }
         setApproverList(newApproverList)
     }, [transportDepartment])
 
@@ -324,7 +372,6 @@ function TransportRequirementsCreateForm(props) {
     }, [bills])
 
     useEffect(() => {
-        console.log(currentBill?.bill, " bbbb")
         if (currentBill && currentBill.bill && currentBill.bill.goods && currentBill.bill.goods.length!==0){
             let listGood = [];
             currentBill.bill.goods.map(item => {
@@ -384,11 +431,11 @@ function TransportRequirementsCreateForm(props) {
                 modalID="modal-create-transport-requirements" 
                 isLoading={false}
                 formID="form-create-transport-requirements"
-                title={translate('manage_transport.add_requirements')}
-                // msg_success={translate('manage_example.add_success')}
-                // msg_faile={translate('manage_example.add_fail')}
+                title={translate('manage_transport.transportRequirement.add_requirements')}
+                // msg_success={translate('manage_transport.add_success')}
+                // msg_faile={translate('manage_transport.add_fail')}
                 func={save}
-                // disableSubmit={!isFormValidated()}
+                disableSubmit={!isFormValidated()}
                 size={100}
                 maxWidth={500}
             >
@@ -434,20 +481,32 @@ function TransportRequirementsCreateForm(props) {
                                         Loại yêu cầu
                                         <span className="attention"> * </span>
                                     </label>
-                                    <SelectBox
-                                        id={`select-type-requirement`}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        value={state.value}
-                                        items={requirements}
-                                        onChange={handleTypeRequirementChange}
-                                        multiple={false}
-                                    />
+                                    {
+                                        !billFromStockModules
+                                        &&
+                                        <SelectBox
+                                            id={`select-type-requirement`}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            value={state.value}
+                                            items={requirements}
+                                            onChange={handleTypeRequirementChange}
+                                            multiple={false}
+                                        />
+                                    }
+                                    {
+                                        billFromStockModules
+                                        &&
+                                        <input type="text" className="form-control" disabled={true} 
+                                            value={getTypeRequirement(state.value)}
+                                        />
+                                    }
                                 </div>
                             </div>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 {
-                                    state.value !== "5" &&
+                                    state.value !== "5" && !billFromStockModules
+                                    &&
                                     <div className={`form-group`}>
                                         <label>
                                             Phiếu kho
@@ -461,6 +520,19 @@ function TransportRequirementsCreateForm(props) {
                                             items={getBills()}
                                             onChange={handleTypeBillChange}
                                             multiple={false}
+                                        />
+                                    </div>
+                                }
+                                {
+                                    billFromStockModules
+                                    &&
+                                    <div className={`form-group`}>
+                                        <label>
+                                            Phiếu kho
+                                            <span className="attention"> * </span>
+                                        </label>
+                                        <input type="text" className="form-control" disabled={true} 
+                                            value={currentBill?.bill?.code}
                                         />
                                     </div>
                                 }
@@ -523,13 +595,8 @@ function TransportRequirementsCreateForm(props) {
     );
 }
 
-function mapState(state) {
-    // const example = state.example1;
-    // return { example }  
-    // console.log(state, " day la state");    
+function mapState(state) { 
     const {bills, transportDepartment} = state;
-    // console.log(bills)
-    // const listAllGoods = state.goods.listALLGoods;
     return { bills, transportDepartment }
 }
 
@@ -538,6 +605,7 @@ const actions = {
     getCustomers: CrmCustomerActions.getCustomers,
     createTransportRequirement: transportRequirementsActions.createTransportRequirement,
     getAllTransportDepartments: transportDepartmentActions.getAllTransportDepartments,
+    getUserByRole: transportDepartmentActions.getUserByRole,
 }
 
 const connectedTransportRequirementsCreateForm = connect(mapState, actions)(withTranslate(TransportRequirementsCreateForm));

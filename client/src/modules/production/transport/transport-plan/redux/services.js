@@ -18,13 +18,15 @@ function getAllTransportPlans(queryData) {
             params: {
                 // page: queryData !== undefined ? queryData.page : null,
                 // limit: queryData !== undefined ? queryData.limit : null
-                page: 1,
-                limit: 100
+                page: queryData !== undefined ? queryData.page : null,
+                limit: queryData !== undefined ? queryData.limit : null,
+                currentUserId: localStorage.getItem('userId'),
+                currentRole: localStorage.getItem('currentRole'),
             }
         },
          false, // Nếu có truy vấn thành công thì không hiện thông báo
          true, // Nếu có truy vấn thất bại thì hiện thông báo
-         "transport.plans"
+         "manage_transport.transportPlan"
     );
 }
 
@@ -37,7 +39,7 @@ function createTransportPlan(data) {
         },
         true,
         true,
-        "manage_transport"
+        "manage_transport.transportPlan"
     )
 }
 
@@ -49,7 +51,7 @@ function getDetailTransportPlan(id) {
         },
         false,
         true,
-        'transport.plan'
+        'manage_transport.transportPlan'
     )
 }
 
@@ -61,7 +63,7 @@ function getDetailTransportPlan2(id) {
         },
         false,
         true,
-        'transport.plan'
+        'manage_transport.transportPlan'
     )
 }
 
@@ -74,7 +76,7 @@ function editTransportPlan(id, data) {
         },
         true,
         true,
-        "manage_transport"
+        "manage_transport.transportPlan"
     )
 }
 
@@ -87,7 +89,7 @@ function addTransportRequirementToPlan(id, data) {
         },
         true,
         true,
-        "manage_transport"
+        "manage_transport.transportPlan"
     )
 }
 
@@ -100,7 +102,7 @@ function addTransportVehicleToPlan(id, data) {
         },
         true,
         true,
-        "manage_transport"
+        "manage_transport.transportPlan"
     )
 }
 
@@ -112,6 +114,6 @@ function deleteTransportPlan(id) {
         },
         true,
         true,
-        "manage_transport"
+        "manage_transport.transportPlan"
     )
 }

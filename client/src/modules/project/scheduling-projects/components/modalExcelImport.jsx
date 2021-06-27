@@ -10,6 +10,7 @@ import { configImportCPMData } from './staticData'
 
 const ModalExcelImport = (props) => {
     const [state, setState] = useState({});
+    const [isFirstInitialRender, setIsFirstIntialRender] = useState(true);
     const { translate, project } = props;
     const projectDetail = getCurrentProjectDetails(project);
     const [currentMessageError, setCurrentMessageError] = useState('');
@@ -140,6 +141,7 @@ const ModalExcelImport = (props) => {
         let data = getDataImportCPM(value);
         // // console.log('data', data)
         // console.log('checkFileImport', checkFileImport)
+        setIsFirstIntialRender(false);
         setState({
             ...state,
             data: data
@@ -224,6 +226,12 @@ const ModalExcelImport = (props) => {
         return resultData;
     }
 
+    const handleResetModal = () => {
+        setIsFirstIntialRender(true);
+        setState({});
+        setCurrentMessageError('');
+    }
+
     return (
         <React.Fragment>
             <DialogModal
@@ -247,6 +255,14 @@ const ModalExcelImport = (props) => {
                                 buttonName={translate('human_resource.download_file')} exportData={convertDataCPMExport(dataImportTemplate)} />
                         </div>
                     </div>
+                    <div className="pull-right" style={{ marginRight: 20 }}>
+                        <button title="Làm mới modal import excel" type="button" className="pull-right"
+                            style={{ display: 'flex', height: 35, justifyContent: 'center', alignItems: 'center' }}
+                            onClick={handleResetModal}
+                        >
+                            <span className="material-icons">refresh</span>
+                        </button>
+                    </div>
                 </div>
                 <div className="row">
                     <div className="col-md-6">
@@ -266,10 +282,15 @@ const ModalExcelImport = (props) => {
                     <div className="col-md-3" style={{ marginTop: 10 }}>
                         <div className="form-group">
                             <ImportFileExcel
+                                callFunctionDeleteFile={handleResetModal}
                                 configData={configImportCPMData}
                                 handleImportExcel={handleImport}
                             />
                         </div>
+                        {
+                            !(state.data && state.data.length > 0 && !currentMessageError) && !isFirstInitialRender &&
+                            <div style={{ color: 'red' }}>File Excel không hợp lệ!</div>
+                        }
                     </div>
                 </div>
                 <div className="row">
@@ -291,7 +312,6 @@ const mapDispatchToProps = {
     getProjectsDispatch: ProjectActions.getProjectsDispatch,
     deleteProjectDispatch: ProjectActions.deleteProjectDispatch,
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
-    getTasksByProject: taskManagementActions.getTasksByProject,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate((ModalExcelImport)));

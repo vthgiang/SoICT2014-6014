@@ -75,13 +75,24 @@ table.tableTest {
     border: 1px solid #ddd;
     word-break: keep-all !important;
   }
-  
-table.tableTest th, td {
+table.tableTest th {
+    text-align: left;
+    padding: 8px;
+    word-break: keep-all;
+    white-space: nowrap;
+}
+table.tableTest th td {
     text-align: left;
     padding: 8px;
     word-break: keep-all;
     white-space: nowrap;
   }
+table.tableTest tr td {
+    text-align: left;
+    padding: 8px;
+    word-break: keep-all;
+    white-space: nowrap;
+}
 table.tableTest th.first-column {
     min-width: 100px;
 }
@@ -94,4 +105,8 @@ table.tableTest th.first-column {
 .transport-special-row tr:nth-child(2n):not(2) {
     /* border-bottom: 2px solid rgb(0, 162, 255); */
     background: #a7cde4;
+}
+
+.transport-table-carrier-vehicle-label {
+    font-size: 18px;
 }

@@ -17,13 +17,39 @@ function TransportDepartmentCreateForm(props) {
     // Chứa 2 giá trị 2 trường nhập vào và lỗi
     const [formState, setFormState] = useState({
         _id: "",
-        value: "title",
     })
+
+    const [formRoleUnit1, setFormRoleUnit1] = useState({
+        roleId: [],
+    })
+
+    const [formRoleUnit2, setFormRoleUnit2] = useState({
+        roleId: [],
+    })
+
+    const [formRoleUnit3, setFormRoleUnit3] = useState({
+        roleId: [],
+    })
+
+    const [selectedOrganizationalUnit, setSelectedOrganizationalUnit] = useState({})
 
     const save = () => {
         let data = {
             organizationalUnit: formState._id,
-            role: formState.value,
+            type: [
+                {
+                    roleTransport: 1,
+                    roleOrganizationalUnit: formRoleUnit1.roleId,
+                },
+                {
+                    roleTransport: 2,
+                    roleOrganizationalUnit: formRoleUnit2.roleId,
+                },
+                {                    
+                    roleTransport: 3,
+                    roleOrganizationalUnit: formRoleUnit3.roleId,
+                }
+            ]
         }
         props.createTransportDepartment(data);
     }
@@ -31,7 +57,9 @@ function TransportDepartmentCreateForm(props) {
      * Xác thực form
      */
     const isFormValidated = () => {
-        if (formState._id!=="" && formState.value!=="title") return true;
+        // if (formState._id!=="" && formState.value!=="title") return true;
+        if (formRoleUnit1?.roleId?.length!==0 && formRoleUnit2?.roleId?.length!==0 && formRoleUnit3?.roleId?.length!==0)
+        return true; 
         else return false
     }
     const getListDepartmentArr = () => {
@@ -56,14 +84,139 @@ function TransportDepartmentCreateForm(props) {
             ...formState,
             _id: value[0],
         });
+        let selectedUnit = allDepartments.filter(r=> String(r._id) === String(value[0]))
+        if (selectedUnit && selectedUnit.length!==0){
+            setSelectedOrganizationalUnit(selectedUnit[0]);
+        }
+        else {
+            setSelectedOrganizationalUnit({})
+        }
+        console.log(selectedUnit);
     };
 
-    const handleRoleChange = (value) => {
-        setFormState({
-            ...formState,
-            value: value[0],
-        });
+    const handleRole1Change = (value) => {
+        let listUser = [];
+        if (value && value.length!==0){
+            value.map(roleId => {
+                let list = getListUserByRoleId(roleId).listUserByRole;
+                if (list && list.length!==0){
+                    listUser = listUser.concat(list);
+                }
+            })
+        }
+        setFormRoleUnit1({
+            ...formRoleUnit1,
+            roleId: value,
+            users: listUser,
+        })
     }
+
+    const handleRole2Change = (value) => {
+        let listUser = [];
+        if (value && value.length!==0){
+            value.map(roleId => {
+                let list = getListUserByRoleId(roleId).listUserByRole;
+                if (list && list.length!==0){
+                    listUser = listUser.concat(list);
+                }
+            })
+        }
+        setFormRoleUnit2({
+            ...formRoleUnit2,
+            roleId: value,
+            users: listUser,
+        })
+    }
+
+    const handleRole3Change = (value) => {
+        let listUser = [];
+        if (value && value.length!==0){
+            value.map(roleId => {
+                let list = getListUserByRoleId(roleId).listUserByRole;
+                if (list && list.length!==0){
+                    listUser = listUser.concat(list);
+                }
+            })
+        }
+        setFormRoleUnit3({
+            ...formRoleUnit3,
+            roleId: value,
+            users: listUser,
+        })
+    }
+
+    const getListValueRole = () => {
+        let res = []
+        if (selectedOrganizationalUnit){
+            if (selectedOrganizationalUnit.managers && selectedOrganizationalUnit.managers.length!==0) {
+                selectedOrganizationalUnit.managers.map(item => {
+                    res.push({
+                        value: item._id,
+                        text: item.name, 
+                    })
+                })
+            }
+            if (selectedOrganizationalUnit.deputyManagers && selectedOrganizationalUnit.deputyManagers.length!==0) {
+                selectedOrganizationalUnit.deputyManagers.map(item => {
+                    res.push({
+                        value: item._id,
+                        text: item.name, 
+                    })
+                })
+            }
+            if (selectedOrganizationalUnit.employees && selectedOrganizationalUnit.employees.length!==0) {
+                selectedOrganizationalUnit.employees.map(item => {
+                    res.push({
+                        value: item._id,
+                        text: item.name, 
+                    })
+                })
+            }
+        }
+        if (!(res && res.length!==0)){
+            res.push({
+                value: "title",
+                text: "Không có vai trò"
+            })
+        }
+        return res;
+    }
+
+    
+    const getListUserByRoleId = (roleId) => {
+        let listUserByRole = []
+        let currentRole;
+        if (selectedOrganizationalUnit){
+            if (selectedOrganizationalUnit.managers && selectedOrganizationalUnit.managers.length!==0) {
+                selectedOrganizationalUnit.managers.map(item => {
+                    if (String(item._id) === String(roleId)){
+                        currentRole = item;
+                    }
+                })
+            }
+            if (selectedOrganizationalUnit.deputyManagers && selectedOrganizationalUnit.deputyManagers.length!==0) {
+                selectedOrganizationalUnit.deputyManagers.map(item => {
+                    if (String(item._id) === String(roleId)){
+                        currentRole = item;
+                    }
+                })
+            }
+            if (selectedOrganizationalUnit.employees && selectedOrganizationalUnit.employees.length!==0) {
+                selectedOrganizationalUnit.employees.map(item => {
+                    if (String(item._id) === String(roleId)){
+                        currentRole = item;
+                    }
+                })
+            }
+        }
+        if (currentRole && currentRole.users && currentRole.users.length!==0) {
+            currentRole.users.map(user => {
+                listUserByRole.push(user.userId);
+            })
+        }
+        return {listUserByRole, currentRole};
+    }
+
 
     useEffect(() => {
         props.getAllDepartments();
@@ -85,7 +238,7 @@ function TransportDepartmentCreateForm(props) {
                 msg_success={"success"}
                 msg_faile={"fail"}
                 func={save}
-                // disableSubmit={!isFormValidated()}
+                disableSubmit={!isFormValidated()}
                 size={50}
                 maxWidth={500}
             >
@@ -107,25 +260,128 @@ function TransportDepartmentCreateForm(props) {
                         {/* <ErrorLabel content={organizationalUnitError} /> */}
                     </div>
                     <div className={`form-group`}>
-                        <label>
-                            {"Vai trò của đơn vị"}
-                            <span className="text-red">*</span>
-                        </label>
-                        <SelectBox
-                            id={`select-role-for-transport-department`}
-                            className="form-control select2"
-                            style={{ width: "100%" }}
-                            value={formState.value}
-                            items={[
-                                { value: "title", text: "---Chọn vai trò cho đơn vị---" },
-                                { value: 1, text: "Quản lý vận chuyển" },
-                                { value: 2, text: "Nhân viên vận chuyển" },
-                            ]}
-                            onChange={handleRoleChange}
-                            multiple={false}
-                        />
-                        {/* <ErrorLabel content={roleError} /> */}
+                        
+                        <div className="box box-solid">
+                            <label>
+                                {"Vai trò phê duyệt yêu cầu, tạo kế hoạch vận chuyển"}
+                                <span className="text-red">*</span>
+                            </label>
+                            <SelectBox
+                                id={`select-role-for-transport-department-1`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                value={""}
+                                items={getListValueRole()}
+                                onChange={handleRole1Change}
+                                multiple={true}
+                            />
+                            {
+                                formRoleUnit1 && formRoleUnit1.users && formRoleUnit1.users.length!==0
+                                && 
+                                <table id={`select-role-for-transport-department-1`} className="table table-striped table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>STT</th>
+                                            <th>Tên</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {
+                                        formRoleUnit1.users.map((item, index) => (
+                                            item &&
+                                            <tr>
+                                                <td>{index+1}</td>
+                                                <td>{item.name}</td>
+                                            </tr>
+                                        ))
+                                    }
+                                    </tbody>
+                                </table>                            
+                            }
+                            {/* <ErrorLabel content={roleError} /> */}
+                        </div>
+
+                        <div className="box box-solid">
+                            <label>
+                                {"Vai trò giám sát thực hiện kế hoạch vận chuyển"}
+                                <span className="text-red">*</span>
+                            </label>
+                            <SelectBox
+                                id={`select-role-for-transport-department-2`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                value={""}
+                                items={getListValueRole()}
+                                onChange={handleRole2Change}
+                                multiple={true}
+                            />
+                            {
+                                formRoleUnit2 && formRoleUnit2.users && formRoleUnit2.users.length!==0
+                                && 
+                                <table id={`select-role-for-transport-department-2`} className="table table-striped table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>STT</th>
+                                            <th>Tên</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {
+                                        formRoleUnit2.users.map((item, index) => (
+                                            item &&
+                                            <tr>
+                                                <td>{index+1}</td>
+                                                <td>{item.name}</td>
+                                            </tr>
+                                        ))
+                                    }
+                                    </tbody>
+                                </table>                            
+                            }
+                            {/* <ErrorLabel content={roleError} /> */}
+                        </div>
+
+                        <div className="box box-solid">
+                            <label>
+                                {"Vai trò nhân viên tham gia vận chuyển"}
+                                <span className="text-red">*</span>
+                            </label>
+                            <SelectBox
+                                id={`select-role-for-transport-department-3`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                value={""}
+                                items={getListValueRole()}
+                                onChange={handleRole3Change}
+                                multiple={true}
+                            />
+                            {
+                                formRoleUnit3 && formRoleUnit3.users && formRoleUnit3.users.length!==0
+                                && 
+                                <table id={`select-role-for-transport-department-1`} className="table table-striped table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>STT</th>
+                                            <th>Tên</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {
+                                        formRoleUnit3.users.map((item, index) => (
+                                            item &&
+                                            <tr>
+                                                <td>{index+1}</td>
+                                                <td>{item.name}</td>
+                                            </tr>
+                                        ))
+                                    }
+                                    </tbody>
+                                </table>                            
+                            }
+                            {/* <ErrorLabel content={roleError} /> */}
+                        </div>
                     </div>
+                    
                 </form>
             </DialogModal>
         </React.Fragment>

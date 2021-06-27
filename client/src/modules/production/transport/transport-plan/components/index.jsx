@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { TransportPlanManagementTable } from './transportPlanManagementTable';
-import { TransportArrangePlan } from './transportArrangePlan';
+// import { TransportArrangePlan } from './transportArrangePlan';
 import { TransportVehicleManagementTable } from '../../transport-vehicle/components/transportVehicleManagementTable';
 import { TransportVehicle } from '../../transport-vehicle/components/transportVehicle'
 import { TransportEmployee } from '../../transport-vehicle/components/transportEmployee'
@@ -17,7 +17,8 @@ class TransportPlan extends Component {
     render() {
         return (
             
-            <div>
+            <div className="box" style={{ minHeight: "450px" }}>
+                <div className="box-body">
             {/* <div className="nav-tabs-custom">
                 <ul className="nav nav-tabs"> */}
                     {/* <li className="active"><a href="#list-transport-plan" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Kế hoạch vận chuyển"}</a></li> */}
@@ -45,6 +46,7 @@ class TransportPlan extends Component {
                         {/* </LazyLoadComponent>
                     </div>
                 </div> */}
+            </div>
             </div>
         );
     }

@@ -1,5 +1,5 @@
 /* Xu hướng tăng giảm nhân sự của nhân viên */
-import React, { Component, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -12,6 +12,9 @@ import c3 from 'c3';
 import 'c3/c3.css';
 
 const HumanResourceIncreaseAndDecreaseChart = (props) => {
+    const { department, employeesManager, translate } = props;
+    const { childOrganizationalUnit } = props;
+
     let date = new Date()
     let _startDate = formatDate(date.setMonth(new Date().getMonth() - 3), true);
 
@@ -24,6 +27,7 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
         organizationalUnits: props.defaultUnit ? props?.childOrganizationalUnit?.map(item => item?.id) : [],
         organizationalUnitsSearch: props.defaultUnit ? props?.childOrganizationalUnit?.map(item => item?.id) : [],
     })
+    const { lineChart, nameChart, nameData1, nameData2, nameData3, startDate, endDate, startDateShow, endDateShow, organizationalUnits, organizationalUnitsSearch } = state;
 
     useEffect(() => {
         const { organizationalUnits, startDate, endDate } = state;
@@ -51,6 +55,34 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
         let endDateNew = [arrEnd[1], arrEnd[0]].join('-');
         props.getAllEmployee({ organizationalUnits: organizationalUnitsTemp, startDate: startDateNew, endDate: endDateNew });
     }, [JSON.stringify(props.childOrganizationalUnit)])
+
+    useEffect(() => {
+        if (employeesManager?.arrMonth?.length > 0) {
+            let ratioX = ['x', ...employeesManager?.arrMonth];
+            let listEmployeesHaveStartingDateOfNumberMonth = employeesManager?.listEmployeesHaveStartingDateOfNumberMonth;
+            let listEmployeesHaveLeavingDateOfNumberMonth = employeesManager?.listEmployeesHaveLeavingDateOfNumberMonth;
+            let data1 = ['data1'], data2 = ['data2'], data3 = ["data3", ...employeesManager?.totalEmployees];
+            employeesManager.arrMonth.forEach(x => {
+                let date = new Date(x);
+                let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+                let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 1);
+                let total1 = 0, total2 = 0;
+                listEmployeesHaveStartingDateOfNumberMonth.forEach(y => {
+                    if (y.startingDate && firstDay.getTime() < new Date(y.startingDate).getTime() && new Date(y.startingDate).getTime() <= lastDay.getTime()) {
+                        total1 += 1;
+                    }
+                })
+                listEmployeesHaveLeavingDateOfNumberMonth.forEach(y => {
+                    if (y.leavingDate && firstDay.getTime() < new Date(y.leavingDate).getTime() && new Date(y.leavingDate).getTime() <= lastDay.getTime()) {
+                        total2 += 1;
+                    }
+                })
+                data1 = [...data1, total1];
+                data2 = [...data2, total2];
+            })
+            renderChart({ nameData1, nameData2, nameData3, ratioX, data1, data2, data3, lineChart });
+        }
+    }, [JSON.stringify(employeesManager), lineChart])
 
     /**
      * Function bắt sự kiện thay đổi unit
@@ -115,9 +147,9 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
     }
 
     if (!state.arrMonth
-        || props.employeesManager.arrMonth?.length !== state.arrMonth?.length
-        || !isEqual(props.employeesManager.listEmployeesHaveStartingDateOfNumberMonth, state.listEmployeesHaveStartingDateOfNumberMonth)
-        || !isEqual(props.employeesManager.listEmployeesHaveLeavingDateOfNumberMonth, state.listEmployeesHaveLeavingDateOfNumberMonth)
+        || employeesManager.arrMonth?.length !== state.arrMonth?.length
+        || !isEqual(employeesManager.listEmployeesHaveStartingDateOfNumberMonth, state.listEmployeesHaveStartingDateOfNumberMonth)
+        || !isEqual(employeesManager.listEmployeesHaveLeavingDateOfNumberMonth, state.listEmployeesHaveLeavingDateOfNumberMonth)
     ) {
         setState({
             ...state,
@@ -146,7 +178,7 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
      * Render chart
      * @param {*} data : Dữ liệu biểu đồ
      */
-    const renderChart = (data) => {
+    function renderChart (data) {
         data.data1.shift();
         data.data2.shift();
         removePreviousChart();
@@ -216,43 +248,10 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
         }
     }
 
-    const { department, employeesManager, translate } = props;
-
-    const { lineChart, nameChart, nameData1, nameData2, nameData3, startDate, endDate, startDateShow, endDateShow, organizationalUnits, organizationalUnitsSearch } = state;
-
-    const { childOrganizationalUnit } = props;
-
     let organizationalUnitsName = [];
-    console.log("88888", organizationalUnitsSearch, childOrganizationalUnit)
     if (organizationalUnitsSearch) {
         organizationalUnitsName = department.list.filter(x => organizationalUnitsSearch.includes(x._id));
         organizationalUnitsName = organizationalUnitsName.map(x => x.name);
-    }
-
-    if (employeesManager.arrMonth.length !== 0) {
-        let ratioX = ['x', ...employeesManager.arrMonth];
-        let listEmployeesHaveStartingDateOfNumberMonth = employeesManager.listEmployeesHaveStartingDateOfNumberMonth;
-        let listEmployeesHaveLeavingDateOfNumberMonth = employeesManager.listEmployeesHaveLeavingDateOfNumberMonth;
-        let data1 = ['data1'], data2 = ['data2'], data3 = ["data3", ...employeesManager.totalEmployees];
-        employeesManager.arrMonth.forEach(x => {
-            let date = new Date(x);
-            let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
-            let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 1);
-            let total1 = 0, total2 = 0;
-            listEmployeesHaveStartingDateOfNumberMonth.forEach(y => {
-                if (y.startingDate && firstDay.getTime() < new Date(y.startingDate).getTime() && new Date(y.startingDate).getTime() <= lastDay.getTime()) {
-                    total1 += 1;
-                }
-            })
-            listEmployeesHaveLeavingDateOfNumberMonth.forEach(y => {
-                if (y.leavingDate && firstDay.getTime() < new Date(y.leavingDate).getTime() && new Date(y.leavingDate).getTime() <= lastDay.getTime()) {
-                    total2 += 1;
-                }
-            })
-            data1 = [...data1, total1];
-            data2 = [...data2, total2];
-        })
-        renderChart({ nameData1, nameData2, nameData3, ratioX, data1, data2, data3, lineChart });
     }
 
     return (

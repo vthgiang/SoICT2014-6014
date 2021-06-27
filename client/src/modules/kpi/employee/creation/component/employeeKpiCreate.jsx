@@ -24,6 +24,8 @@ import getEmployeeSelectBoxItems from '../../../../task/organizationalUnitHelper
 
 var translate = '';
 function CreateEmployeeKpiSet(props) {
+    const { createEmployeeKpiSet, user, createKpiUnit, department } = props;
+        
     let idUser = getStorage("userId");
     var translate = props.translate;
 
@@ -63,7 +65,8 @@ function CreateEmployeeKpiSet(props) {
             files: [],
         }
     });
-
+    const { editing, id, employeeKpi, employeeKpiSet, defaultDate , month, currentRole} = state;
+   
     useEffect(()=>{
         props.getDepartment();
         props.getEmployeeKpiSet({
@@ -74,19 +77,6 @@ function CreateEmployeeKpiSet(props) {
     },[])
 
     useEffect(()=>{
-        const { createEmployeeKpiSet, createKpiUnit } = props;
-        const { month, currentRole } = state;
-
-        // Không re-render khi lựa chọn tháng ở DatePiker
-        // if (state.month !== month || state.month === '') {
-        //     return false;
-        // }
-
-        // Lấy thông tin đơn vị cha
-        if (createKpiUnit?.currentKPI?.organizationalUnit?.parent && props.department && !props.department.unitLoading && !props.department.unit) {
-            props.getOrganizationalUnit(createKpiUnit?.currentKPI?.organizationalUnit?.parent);
-        }
-
         // Khi truy vấn API đã có kết quả
         if (!state.employeeKpiSet.approver && createEmployeeKpiSet?.currentKPI?.approver && createEmployeeKpiSet?.currentKPILoading) {
             setState({
@@ -105,6 +95,10 @@ function CreateEmployeeKpiSet(props) {
         })
         // return true;
     }, [])
+
+    useEffect(() => {
+        props.getOrganizationalUnit(createKpiUnit?.currentKPI?.organizationalUnit?.parent);
+    }, [JSON.stringify(createKpiUnit?.currentKPI?.organizationalUnit?.parent)])
 
     /**
      * Xử lí các thông điệp
@@ -457,8 +451,7 @@ function CreateEmployeeKpiSet(props) {
         }
     }
 
-    const { createEmployeeKpiSet, user, createKpiUnit, department } = props;
-    const { editing, id, employeeKpi, employeeKpiSet, defaultDate , month} = state;
+  
     let unitList, currentUnit, currentKPI, currentKPILoading, userdepartments, organizationalUnitsOfUser;
 
     if (user) {
@@ -479,11 +472,21 @@ function CreateEmployeeKpiSet(props) {
         currentKPI = createEmployeeKpiSet.currentKPI;
         currentKPILoading = createEmployeeKpiSet.currentKPILoading;
     }
-    let managers = [];
+    let managers = [], existManagers = [];
 
     if (user?.userdepartments) {
         managers = getEmployeeSelectBoxItems([user.userdepartments], true, false, false);
     }
+    if (managers?.length > 0) {
+        managers.map(manager => {
+            if (manager?.value?.length > 0) {
+                manager.value.map(item => {
+                    existManagers.push(item?.value)
+                })
+            }
+        })
+    }
+
     if (department?.unit) {
         let temp;
         temp = {
@@ -492,10 +495,12 @@ function CreateEmployeeKpiSet(props) {
         }
         if (department?.unit?.managers?.[0]?.users) {
             department.unit.managers[0].users.map(item => {
-                temp.value.push({
-                    value: item?.userId?.id,
-                    text: item?.userId?.name + ' (' + department.unit.managers[0]?.name + ')'
-                })
+                if (!existManagers?.includes(item?.userId?.id)) {
+                    temp.value.push({
+                        value: item?.userId?.id,
+                        text: item?.userId?.name + ' (' + department.unit.managers[0]?.name + ')'
+                    })
+                }
             })
         }
 
@@ -551,7 +556,7 @@ function CreateEmployeeKpiSet(props) {
                                     }
 
                                     {/* Xóa tập KPI này */}
-                                    <a className="btn btn-app" onClick={checkOrganizationalUnitKpi() ? () => handleDeleteEmployeeKpiSet(currentKPI._id, currentKPI.status) : () => handleStartOrganizationalUnitKpi()} title="Xóa KPI tháng">
+                                    <a className="btn btn-app" onClick={() => handleDeleteEmployeeKpiSet(currentKPI._id, currentKPI.status)} title="Xóa KPI tháng">
                                         <i className="fa fa-trash" style={{ fontSize: "16px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.general_information.delete')}
                                     </a>
 

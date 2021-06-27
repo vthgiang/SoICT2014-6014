@@ -133,6 +133,9 @@ const TaskSchema = new Schema(
         description: {
             type: String,
         },
+        tags: [{
+            type: String
+        }],
         startDate: {
             type: Date,
         },
@@ -455,7 +458,7 @@ const TaskSchema = new Schema(
         formula: {
             type: String,
             default:
-                "progress / (daysUsed / totalDays) - (sumRatingOfFailedActions / sumRatingOfAllActions) * 100",
+                "progress / (daysUsed / totalDays) - (10 - averageActionRating) * 10",
         },
         progress: {
             // % Hoàn thành thành công việc
@@ -862,6 +865,7 @@ const TaskSchema = new Schema(
                 salary: {
                     type: Number,
                 },
+                // Số lớn hơn 1
                 weight: {
                     type: Number,
                 },
@@ -874,7 +878,7 @@ const TaskSchema = new Schema(
         estimateAssetCost: {
             type: Number,
         },
-        // Trọng số tổng dành cho Thành viên Thực hiện
+        // Trọng số tổng dành cho Thành viên Thực hiện - Số lớn hơn 1
         totalResWeight: {
             type: Number,
         },
@@ -884,28 +888,51 @@ const TaskSchema = new Schema(
         formulaProjectTask: {
             type: String,
             default:
-                "taskTimePoint + taskQualityPoint + taskCostPoint + taskDilligencePoint",
+                "taskTimePoint + taskQualityPoint + taskCostPoint",
         },
         formulaProjectMember: {
             type: String,
             default:
-                "memberTimePoint + memberQualityPoint + memberCostPoint + memberDilligencePoint",
+                "memberTimePoint + memberQualityPoint + memberCostPoint + memberTimedistributionPoint",
         },
-        timeWeight: {
-            type: Number,
-            default: 0.25,
+        taskWeight: {
+            // Số bé hơn 1
+            timeWeight: {
+                type: Number,
+                default: 1/3,
+            },
+            // Số bé hơn 1
+            qualityWeight: {
+                type: Number,
+                default: 1/3,
+            },
+            // Số bé hơn 1
+            costWeight: {
+                type: Number,
+                default: 1/3,
+            },
         },
-        qualityWeight: {
-            type: Number,
-            default: 0.25,
-        },
-        costWeight: {
-            type: Number,
-            default: 0.25,
-        },
-        dilligenceWeight: {
-            type: Number,
-            default: 0.25,
+        memberWeight: {
+            // Số bé hơn 1
+            timeWeight: {
+                type: Number,
+                default: 0.25,
+            },
+            // Số bé hơn 1
+            qualityWeight: {
+                type: Number,
+                default: 0.25,
+            },
+            // Số bé hơn 1
+            costWeight: {
+                type: Number,
+                default: 0.25,
+            },
+            // Số bé hơn 1
+            timedistributionWeight: {
+                type: Number,
+                default: 0.25,
+            },
         },
     },
     {
@@ -913,8 +940,12 @@ const TaskSchema = new Schema(
     }
 );
 
+TaskSchema.index({ tags: "text" });
+
 module.exports = (db) => {
-    if (!db.models.Task) return db.model("Task", TaskSchema);
+    if (!db.models.Task) {
+        return db.model("Task", TaskSchema);
+    }
     return db.models.Task;
 };
 

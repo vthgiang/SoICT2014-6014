@@ -12,7 +12,7 @@ class TabTask extends Component {
     };
 
     render() {
-        const { childOrganizationalUnit, organizationalUnits } = this.props;
+        const { childOrganizationalUnit, organizationalUnits, month } = this.props;
 
         return (
             <React.Fragment>
@@ -20,6 +20,7 @@ class TabTask extends Component {
                     <div className="col-md-12">
                         <TaskOrganizationalUnitsChart 
                             childOrganizationalUnit={childOrganizationalUnit} 
+                            month={month}
                         />
                     </div>
                 </div>

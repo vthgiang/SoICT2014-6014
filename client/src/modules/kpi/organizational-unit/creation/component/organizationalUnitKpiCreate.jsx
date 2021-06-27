@@ -304,7 +304,6 @@ function OrganizationalUnitKpiCreate(props) {
         })
 
         if (infoSearch?.organizationalUnitId && infoSearch?.month && infoSearch?.month !== '') {
-            console.log(infoSearch?.organizationalUnitId ,infoSearch?.month, infoSearch?.organizationalUnit)
             props.getCurrentKPIUnit(currentRole, infoSearch?.organizationalUnitId, infoSearch?.month);
             props.getKPIParent({
                 roleId: currentRole,
@@ -452,17 +451,19 @@ function OrganizationalUnitKpiCreate(props) {
     if (!listIdOfExistUnit?.includes(createKpiUnit?.parent?.organizationalUnit?._id) && listOrganizationalUnitCopy) {
         let parentKPI = createKpiUnit?.parent?.organizationalUnit;
 
-        listOrganizationalUnitCopy.push({
-            ...parentKPI,
-            id: parentKPI?._id
-        })
-        listIdOfExistUnit.push(parentKPI?._id)
+        if (parentKPI) {
+            listOrganizationalUnitCopy.push({
+                ...parentKPI,
+                id: parentKPI?._id
+            })
+            listIdOfExistUnit.push(parentKPI?._id)
+        }
     }
 
     // Copy từ đơn vị nhân viên này là trưởng
     if (listUnitOfUser?.length > 0 && listOrganizationalUnitCopy) {
         listUnitOfUser.map(item => {
-            if (item?.parent === organizationalUnit?.parent_id && !listIdOfExistUnit?.includes(item?._id) && (item?._id !== organizationalUnit?.id)) {
+            if (item?.parent === organizationalUnit?.parent_id && !listIdOfExistUnit?.includes(item?._id)) {
                 listOrganizationalUnitCopy.push({
                     ...item,
                     id: item?._id
@@ -520,7 +521,7 @@ function OrganizationalUnitKpiCreate(props) {
                                     />
                                     <div style={{ marginLeft: "-10px" }}>
                                         {/* Xóa KPI tháng */}
-                                        <a className="btn btn-app" onClick={checkEdittingPermission(currentKPI && currentKPI.organizationalUnit) ? () => deleteKPI(currentKPI.status, currentKPI._id) : () => swalEdittingPermission()} title="Xóa KPI tháng">
+                                        <a className="btn btn-app" onClick={() => deleteKPI(currentKPI.status, currentKPI._id)} title="Xóa KPI tháng">
                                             <i className="fa fa-trash" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.delete')}
                                         </a>
 
@@ -721,13 +722,13 @@ function OrganizationalUnitKpiCreate(props) {
                                         }
 
                                         {/* Sao chép mục tiêu từ KPI đơn vị cha */}
-                                        {checkEdittingPermission(organizationalUnit) && parentKpi ?
+                                        {checkEdittingPermission(organizationalUnit) ?
                                             <span>
-                                                <a className="btn btn-app" data-toggle="modal" data-target={`#copy-old-kpi-to-new-time-${parentKpi && parentKpi._id}`} data-backdrop="static" data-keyboard="false">
+                                                <a className="btn btn-app" data-toggle="modal" data-target={`#copy-old-kpi-to-new-time-${parentKpi?._id ?? 'unit'}`} data-backdrop="static" data-keyboard="false">
                                                     <i className="fa fa-copy" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.copy_kpi_unit')}
                                                 </a>
                                                 <ModalCopyKPIUnit
-                                                    kpiId={parentKpi?._id}
+                                                    kpiId={parentKpi?._id ?? 'unit'}
                                                     idunit={organizationalUnit?.id}
                                                     organizationalUnitSelect={listOrganizationalUnitCopy}
                                                     kpiunit={parentKpi}

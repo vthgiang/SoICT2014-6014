@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Swal from 'sweetalert2';
 import { withTranslate } from 'react-redux-multilingual';
-import { DataTableSetting, DatePicker, PaginateBar, SelectBox, SelectMulti, TreeTable, ExportExcel, Tree } from '../../../../common-components';
+import { DataTableSetting, DatePicker, PaginateBar, InputTags, SelectMulti, TreeTable, ExportExcel, ToolTip } from '../../../../common-components';
 import { getFormatDateFromTime } from '../../../../helpers/stringMethod';
-
+import moment from 'moment';
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { DashboardEvaluationEmployeeKpiSetAction } from '../../../kpi/evaluation/dashboard/redux/actions';
@@ -35,7 +35,8 @@ class TaskManagementOfUnit extends Component {
             name: "",
             startDate: "",
             endDate: "",
-            organizationalUnitRole: ['management', 'collabration']
+            organizationalUnitRole: ['management', 'collabration'],
+            tags: []
         };
     }
 
@@ -176,7 +177,7 @@ class TaskManagementOfUnit extends Component {
 
     handleGetDataPagination = async (index) => {
         let { organizationalUnit, status, priority, special, name,
-            startDate, endDate, responsibleEmployees,
+            startDate, endDate, responsibleEmployees, tags,
             accountableEmployees, creatorEmployees, organizationalUnitRole
         } = this.state;
 
@@ -204,14 +205,15 @@ class TaskManagementOfUnit extends Component {
                 responsibleEmployees: responsibleEmployees,
                 accountableEmployees: accountableEmployees,
                 creatorEmployees: creatorEmployees,
-                organizationalUnitRole: organizationalUnitRole
+                organizationalUnitRole: organizationalUnitRole,
+                tags: tags
             });
         };
     }
 
     nextPage = async (pageTotal) => {
         let { organizationalUnit, status, priority, special, name,
-            startDate, endDate, responsibleEmployees,
+            startDate, endDate, responsibleEmployees, tags,
             accountableEmployees, creatorEmployees, perPage, organizationalUnitRole
         } = this.state;
 
@@ -237,14 +239,15 @@ class TaskManagementOfUnit extends Component {
                 responsibleEmployees: responsibleEmployees,
                 accountableEmployees: accountableEmployees,
                 creatorEmployees: creatorEmployees,
-                organizationalUnitRole: organizationalUnitRole
+                organizationalUnitRole: organizationalUnitRole,
+                tags: tags
             });
         };
     }
 
     backPage = async () => {
         let { organizationalUnit, status, priority, special, name,
-            startDate, endDate, responsibleEmployees,
+            startDate, endDate, responsibleEmployees, tags,
             accountableEmployees, creatorEmployees, perPage, organizationalUnitRole
         } = this.state;
 
@@ -270,7 +273,8 @@ class TaskManagementOfUnit extends Component {
                 responsibleEmployees: responsibleEmployees,
                 accountableEmployees: accountableEmployees,
                 creatorEmployees: creatorEmployees,
-                organizationalUnitRole: organizationalUnitRole
+                organizationalUnitRole: organizationalUnitRole,
+                tags: tags
             });
         };
     }
@@ -293,7 +297,7 @@ class TaskManagementOfUnit extends Component {
 
     handleGetDataPerPage = (perPage) => {
         let { organizationalUnit, status, priority, special, name,
-            startDate, endDate, responsibleEmployees,
+            startDate, endDate, responsibleEmployees, tags,
             accountableEmployees, creatorEmployees, organizationalUnitRole
         } = this.state;
 
@@ -310,7 +314,8 @@ class TaskManagementOfUnit extends Component {
             responsibleEmployees: responsibleEmployees,
             accountableEmployees: accountableEmployees,
             creatorEmployees: creatorEmployees,
-            organizationalUnitRole: organizationalUnitRole
+            organizationalUnitRole: organizationalUnitRole,
+            tags: tags
         });
 
         this.setState(state => {
@@ -323,7 +328,7 @@ class TaskManagementOfUnit extends Component {
 
     handleUpdateData = () => {
         const { translate } = this.props;
-        let { organizationalUnit, status, priority, special,
+        let { organizationalUnit, status, priority, special, tags,
             name, startDate, endDate, perPage, organizationalUnitRole,
             responsibleEmployees, accountableEmployees, creatorEmployees
         } = this.state;
@@ -357,7 +362,8 @@ class TaskManagementOfUnit extends Component {
                 responsibleEmployees: responsibleEmployees,
                 accountableEmployees: accountableEmployees,
                 creatorEmployees: creatorEmployees,
-                organizationalUnitRole: organizationalUnitRole
+                organizationalUnitRole: organizationalUnitRole,
+                tags: tags
             });
         }
 
@@ -491,10 +497,121 @@ class TaskManagementOfUnit extends Component {
         })
     }
 
+    handleTaskTags = (value) => {
+        this.setState({
+            tags: value,
+        })
+    }
+
+    handleDelete = async (id) => {
+        const { tasks, translate } = this.props;
+        let currentTasks = tasks.tasks.find(task => task._id === id);
+        let progress = currentTasks.progress;
+        let action = currentTasks.taskActions.filter(item => item.creator); // Nếu công việc theo mẫu, chưa hoạt động nào được xác nhận => cho xóa
+
+        Swal.fire({
+            title: `Bạn có chắc chắn muốn xóa công việc "${currentTasks.name}"?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            cancelButtonText: this.props.translate('general.no'),
+            confirmButtonText: this.props.translate('general.yes'),
+        }).then((result) => {
+            if (result.value) {
+                this.props.deleteTaskById(id);
+            }
+        })
+
+    }
+
+    checkTaskRequestToClose = (task) => {
+        const { translate } = this.props;
+        let statusColor = "";
+        switch (task.status) {
+            case "inprocess":
+                statusColor = "#385898";
+                break;
+            case "canceled":
+                statusColor = "#e86969";
+                break;
+            case "delayed":
+                statusColor = "#db8b0b";
+                break;
+            case "finished":
+                statusColor = "#31b337";
+                break;
+            default:
+                statusColor = "#333";
+        }
+        if (task.requestToCloseTask && task.requestToCloseTask.requestStatus === 1) {
+            return (
+                <div>
+                    <span style={{ color: "#385898" }}>{translate('task.task_management.inprocess')}</span>&nbsp; - &nbsp;
+                    <span style={{ color: "#333" }}>{translate('task.task_management.requested_to_close')}</span>
+                </div>
+            )
+        }
+        else {
+            return (
+                <div>
+                    <span style={{ color: statusColor }}>{formatStatus(translate, task.status)}</span>
+                </div>
+            )
+        }
+    }
+
+    convertPriorityData = (priority) => {
+        const { translate } = this.props;
+        let priorityColor = "";
+        switch (priority) {
+            case 5:
+                priorityColor = "#ff0707";
+                break;
+            case 4:
+                priorityColor = "#ff5707";
+                break;
+            case 3:
+                priorityColor = "#28A745";
+                break;
+            case 2:
+                priorityColor = "#ffa707";
+                break;
+            default:
+                priorityColor = "#808080"
+        }
+        return (
+            <div >
+                <span style={{ color: priorityColor }}> {formatPriority(translate, priority)}</span>
+            </div>
+        )
+    }
+
+    convertProgressData = (progress = 0, startDate, endDate) => {
+        let now = moment(new Date());
+        let end = moment(endDate);
+        let start = moment(startDate);
+        let period = end.diff(start);
+        let upToNow = now.diff(start);
+        let barColor = "";
+        if (now.diff(end) > 0) barColor = "red";
+        else if (period * progress / 100 - upToNow >= 0) barColor = "lime";
+        else barColor = "gold";
+        return (
+            <div >
+                <div className="progress" style={{ backgroundColor: 'rgb(221, 221, 221)', textAlign: "right", borderRadius: '3px', position: 'relative' }}>
+                    <span style={{ position: 'absolute', right: '1px', fontSize: '13px', marginRight: '5px' }}>{progress + '%'}</span>
+                    <div role="progressbar" className="progress-bar" aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100} style={{ width: `${progress + '%'}`, maxWidth: "100%", minWidth: "0%", backgroundColor: barColor }} >
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
     render() {
         const { tasks, user, translate, dashboardEvaluationEmployeeKpiSet } = this.props;
         const { selectBoxUnit, currentTaskId, currentPage, startDate,
-            endDate, perPage, status,
+            endDate, perPage, status, tags,
             organizationalUnit, tableId, organizationalUnitRole
         } = this.state;
         let currentTasks, units = [];
@@ -531,21 +648,21 @@ class TaskManagementOfUnit extends Component {
                     name: dataTemp[n].name,
                     description: dataTemp?.[n]?.description ? parse(dataTemp[n].description) : "",
                     organization: dataTemp[n].organizationalUnit ? dataTemp[n].organizationalUnit.name : translate('task.task_management.err_organizational_unit'),
-                    priority: formatPriority(translate, dataTemp[n].priority),
-                    responsibleEmployees: dataTemp[n].responsibleEmployees && dataTemp[n].responsibleEmployees.map(o => o.name).join(', '),
-                    accountableEmployees: dataTemp[n].accountableEmployees && dataTemp[n].accountableEmployees.map(o => o.name).join(', '),
+                    priority: this.convertPriorityData(dataTemp[n].priority),
+                    responsibleEmployees: dataTemp[n].responsibleEmployees ? (<ToolTip dataTooltip={dataTemp[n].responsibleEmployees.map(o => o.name)} />) : null,
+                    accountableEmployees: dataTemp[n].accountableEmployees ? (<ToolTip dataTooltip={dataTemp[n].accountableEmployees.map(o => o.name)} />) : null,
                     creatorEmployees: dataTemp[n].creator && dataTemp[n].creator.name,
                     startDate: getFormatDateFromTime(dataTemp[n].startDate, 'dd-mm-yyyy'),
                     endDate: getFormatDateFromTime(dataTemp[n].endDate, 'dd-mm-yyyy'),
-                    status: formatStatus(translate, dataTemp[n].status),
-                    progress: dataTemp[n].progress ? dataTemp[n].progress : 0,
+                    status: this.checkTaskRequestToClose(dataTemp[n]),
+                    progress: this.convertProgressData(dataTemp[n].progress, dataTemp[n].startDate, dataTemp[n].endDate),
                     totalLoggedTime: getTotalTimeSheetLogs(dataTemp[n].timesheetLogs),
                     parent: dataTemp[n].parent ? dataTemp[n].parent._id : null
                 }
             }
 
             for (let i in data) {
-                data[i] = { ...data[i], action: ["edit"] }
+                data[i] = { ...data[i], action: ["edit", "delete"] }
             }
         }
 
@@ -716,6 +833,15 @@ class TaskManagementOfUnit extends Component {
                                 </div>
 
                                 <div className="form-group">
+                                    <label>Tags</label>
+                                    <InputTags
+                                        id={`task-unit`}
+                                        onChange={this.handleTaskTags}
+                                        value={tags}
+                                    />
+                                </div>
+
+                                <div className="form-group">
                                     <label></label>
                                     <button type="button" className="btn btn-success" onClick={this.handleUpdateData}>{translate('task.task_management.search')}</button>
                                 </div>
@@ -749,10 +875,13 @@ class TaskManagementOfUnit extends Component {
                                     behaviour="show-children"
                                     column={column}
                                     data={data}
+                                    openOnClickName={true}
                                     titleAction={{
                                         edit: translate('task.task_management.action_edit'),
+                                        delete: translate('task.task_management.action_delete'),
                                     }}
                                     funcEdit={this.handleShowModal}
+                                    funcDelete={this.handleDelete}
                                 />
                             </div>
 
@@ -806,6 +935,7 @@ const actionCreators = {
     getDepartment: UserActions.getDepartmentOfUser,
     getAllDepartment: DepartmentActions.get,
     getChildrenOfOrganizationalUnitsAsTree: DashboardEvaluationEmployeeKpiSetAction.getChildrenOfOrganizationalUnitsAsTree,
+    deleteTaskById: taskManagementActions._delete,
 };
 export default connect(mapState, actionCreators)(withTranslate(TaskManagementOfUnit));
 

@@ -70,10 +70,10 @@ function copyKPIUnit(kpiId, data) {
     }
 }
 
-function calculateKPIUnit(idKpiUnitSet, date, idKpiUnit) {
+function calculateKPIUnit(idKpiUnitSets, date, idKpiUnit) {
     return dispatch => {
         dispatch({ type: managerConstants.CALCULATE_KPIUNIT_REQUEST })
-        managerServices.calculateKPIUnit(idKpiUnitSet, date, idKpiUnit)
+        managerServices.calculateKPIUnit(idKpiUnitSets, date, idKpiUnit)
             .then(res => {
                 dispatch({
                     type: managerConstants.CALCULATE_KPIUNIT_SUCCESS,

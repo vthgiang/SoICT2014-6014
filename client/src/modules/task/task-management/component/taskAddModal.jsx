@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, QuillEditor } from '../../../../common-components';
+import { DialogModal, QuillEditor, convertImageBase64ToFile } from '../../../../common-components';
 import { getStorage } from '../../../../config';
 import { ProjectActions } from '../../../project/projects/redux/actions';
 import { taskManagementActions } from '../redux/actions';
@@ -27,30 +27,18 @@ function TaskAddModal(props) {
             taskTemplate: "",
             taskProject: "",
         },
-        startTime: "08:00 AM",
-        endTime: "05:30 PM",
         currentRole: getStorage('currentRole'),
     })
 
-    const { translate, task, id, parentTask, currentTasks, currentProjectTasks, isProjectForm = false } = props;
+    const { translate, task, id, parentTask, currentTasks, currentProjectTasks, isProjectForm = false, projectId } = props;
 
     const onChangeTaskData = (value) => {
-        setState({
-            ...state,
-            newTask: value
+        setState((st) => {
+            return {
+                ...st,
+                newTask: value
+            }
         })
-    }
-    const onChangeStartTime = (value) => {
-        setState({
-            ...state,
-            startTime: value
-        });
-    }
-    const onChangeEndTime = (value) => {
-        setState({
-            ...state,
-            endTime: value
-        });
     }
 
     const convertDateTime = (date, time) => {
@@ -59,34 +47,32 @@ function TaskAddModal(props) {
         return new Date(strDateTime);
     }
 
-    const handleSubmit = () => {
-        const { newTask, startTime, endTime } = state;
-        let startDateTask = convertDateTime(newTask.startDate, startTime);
-        let endDateTask = convertDateTime(newTask.endDate, endTime);
-        let imageDescriptions = QuillEditor.convertImageBase64ToFile(newTask?.imgs)
-        
+    const handleSubmit = async () => {
+        const { newTask } = state;
+        let startDateTask = convertDateTime(newTask.startDate, newTask.startTime);
+        let endDateTask = convertDateTime(newTask.endDate, newTask.endTime);
+        let imageDescriptions = convertImageBase64ToFile(newTask?.imgs)
+
         let data = {
             ...newTask,
             startDate: startDateTask,
             endDate: endDateTask,
+            taskProject: projectId,
             imgs: null
         }
         let formData = new FormData();
 
-        for (let key in data) {
-            if (data?.[key] && Array.isArray(data[key])) {
-                data[key].forEach(x => {
-                    formData.append(key, x);
-                })
-            } else {
-                formData.append(key, data?.[key]);
-            }
-        }
+        formData.append("data", JSON.stringify(data))
+
         imageDescriptions && imageDescriptions.forEach(x => {
             formData.append("files", x);
         })
 
-        props.addTask(formData);
+        await props.addTask(formData);
+
+        if (props.onHandleReRender) {
+            await props.onHandleReRender();
+        }
     }
 
     useEffect(() => {
@@ -95,7 +81,7 @@ function TaskAddModal(props) {
     }, [])
 
     const isFormValidated = () => {
-        const { name, startDate, endDate, responsibleEmployees, accountableEmployees } = state.newTask;
+        const { name, startDate, endDate, responsibleEmployees, accountableEmployees } = state?.newTask;
         const { translate } = props;
 
         if (!ValidationHelper.validateEmpty(translate, name).status
@@ -119,12 +105,11 @@ function TaskAddModal(props) {
                 <AddTaskForm
                     quillId={props.id}
                     handleChangeTaskData={onChangeTaskData}
-                    handleChangeStartTime={onChangeStartTime}
-                    handleChangeEndTime={onChangeEndTime}
                     id={id}
                     task={task}
                     parentTask={parentTask}
                     currentTasks={currentTasks}
+                    projectIdFromDetailProject={projectId}
                 />
             </DialogModal>
         </React.Fragment>
@@ -140,7 +125,6 @@ const actionCreators = {
     addTask: taskManagementActions.addTask,
     addProjectTask: taskManagementActions.addProjectTask,
     getProjectsDispatch: ProjectActions.getProjectsDispatch,
-    getTasksByProject: taskManagementActions.getTasksByProject,
 };
 
 const connectedModalAddTask = connect(mapStateToProps, actionCreators)(withTranslate(TaskAddModal));

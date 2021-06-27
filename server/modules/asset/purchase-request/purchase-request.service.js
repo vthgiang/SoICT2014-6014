@@ -108,7 +108,10 @@ exports.searchPurchaseRequests = async (portal, company, query) => {
         connect(DB_CONNECTION, portal)
     )
         .find(keySearch)
-        .populate({ path: "proponent approver recommendUnits" })
+        .populate([
+            {path: "recommendUnits" },
+            {path: "proponent approver", select: "_id name email avatar"}
+        ])
         .sort({ createdAt: "desc" })
         .skip(page ? parseInt(page) : 0)
         .limit(limit ? parseInt(limit) : 0);

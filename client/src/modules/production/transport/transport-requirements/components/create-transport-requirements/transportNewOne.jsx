@@ -16,6 +16,8 @@ function TransportNewOne(props) {
         customer1Email: "",
         customer1Address: "",
         customer1AddressTransport: "",
+        newOneDetail1: "",
+        
 
         customer2: "",
         customer2Name: "",
@@ -23,6 +25,7 @@ function TransportNewOne(props) {
         customer2Email: "",
         customer2Address: "",
         customer2AddressTransport: "",
+        newOneDetail2: "",
     });
 
     const handleCustomer1Change = (e) => {
@@ -56,10 +59,15 @@ function TransportNewOne(props) {
         })
     }
     const handleCustomer1AddressTransportChange = (e) => {
-        console.log(e.target.value);
         setFormInfo({
             ...formInfo,
             customer1AddressTransport: e.target.value,
+        })
+    }
+    const handlecustomer1DetailChange = (e) => {
+        setFormInfo({
+            ...formInfo,
+            newOneDetail1: e.target.value,
         })
     }
     const handleCustomer2Change = (e) => {
@@ -100,6 +108,12 @@ function TransportNewOne(props) {
             customer2AddressTransport: e.target.value,
         })
     }
+    const handlecustomer2DetailChange = (e) => {
+        setFormInfo({
+            ...formInfo,
+            newOneDetail2: e.target.value,
+        })
+    }
     
     useEffect(() => {
         if (curentTransportRequirementDetail){
@@ -118,66 +132,11 @@ function TransportNewOne(props) {
 
     return (
         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6" style={{ padding: 10, height: "100%" }}>
+            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6" style={{ padding: 0}}>
                 <fieldset className="scheduler-border" style={{ height: "100%" }}>
-                    <legend className="scheduler-border">Thông tin bên gửi</legend>
-                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ padding: 0 }}>
-                        <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                            <div className={`form-group`}>
-                                <label>
-                                    Khách hàng
-                                    <span className="attention"> * </span>
-                                </label>
-                                <input type="text" className="form-control" disabled={false} 
-                                        // value={address}
-                                    onChange={handleCustomer1Change}
-                                />
-                            </div>
-                        </div>
-                        <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8">
-                            <div className="form-group">
-                                <label>
-                                    Tên khách hàng <span className="attention"> </span>
-                                </label>
-                                <input type="text" className="form-control" disabled={false} 
-                                    onChange={handleCustomer1NameChange}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                        <div className={`form-group`}>
-                            <label>
-                                Số điện thoại
-                                <span className="attention"> * </span>
-                            </label>
-                            <input type="text" className="form-control"
-                                onChange={handleCustomer1PhoneChange}
-                            />
-                    
-                        </div>
-                    </div>
-                    <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8">
-                        <div className="form-group">
-                            <label>
-                                Email <span className="attention"> </span>
-                            </label>
-                            <input type="text" className="form-control" disabled={false} 
-                                onChange={handleCustomer1EmailChange}
-                            />
-                        </div>
-                    </div>
-                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                        <div className={`form-group`}>
-                            <label>
-                                Địa chỉ khách hàng
-                                <span className="attention"> * </span>
-                            </label>
-                            <textarea type="text" className="form-control" 
-                                onChange={handleCustomer1AddressChange}
-                            />
-                        </div>
-                    </div>
+                    <legend className="scheduler-border">Thông tin gửi</legend>
+                    {/* <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ padding: 0 }}>
+                    </div> */}
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div className={`form-group`}>
                             <label>
@@ -189,71 +148,27 @@ function TransportNewOne(props) {
                                 onChange={handleCustomer1AddressTransportChange}
                             />
                         </div>
-                    </div>                        
+                    </div>  
+                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div className={`form-group`}>
+                            <label>
+                                Chi tiết
+                            </label>
+                            <textarea type="text" className="form-control"
+                                value={formInfo.newOneDetail1}
+                                onChange={handlecustomer1DetailChange}
+                            />
+                        </div>
+                    </div>                      
                 </fieldset>
                 
             </div>
 
-            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6" style={{ padding: 10, height: "100%" }}>
+            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6" style={{ padding: 0}}>
                 <fieldset className="scheduler-border" style={{ height: "100%" }}>
-                    <legend className="scheduler-border">Thông tin bên nhận</legend>
-                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ padding: 0 }}>
-                        <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                            <div className={`form-group`}>
-                                <label>
-                                    Khách hàng
-                                    <span className="attention"> * </span>
-                                </label>
-                                <input type="text" className="form-control" disabled={false} 
-                                        // value={address}
-                                    onChange={handleCustomer2Change}
-                                />
-                            </div>
-                        </div>
-                        <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8">
-                            <div className="form-group">
-                                <label>
-                                    Tên khách hàng <span className="attention"> </span>
-                                </label>
-                                <input type="text" className="form-control" disabled={false} 
-                                    onChange={handleCustomer2NameChange}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                        <div className={`form-group`}>
-                            <label>
-                                Số điện thoại
-                                <span className="attention"> * </span>
-                            </label>
-                            <input type="text" className="form-control"
-                                onChange={handleCustomer2PhoneChange}
-                            />
-                    
-                        </div>
-                    </div>
-                    <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8">
-                        <div className="form-group">
-                            <label>
-                                Email <span className="attention"> </span>
-                            </label>
-                            <input type="text" className="form-control" disabled={false} 
-                                onChange={handleCustomer2EmailChange}
-                            />
-                        </div>
-                    </div>
-                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                        <div className={`form-group`}>
-                            <label>
-                                Địa chỉ khách hàng
-                                <span className="attention"> * </span>
-                            </label>
-                            <textarea type="text" className="form-control" 
-                                onChange={handleCustomer2AddressChange}
-                            />
-                        </div>
-                    </div>
+                    <legend className="scheduler-border">Thông tin nhận</legend>
+                    {/* <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ padding: 0 }}>
+                    </div> */}
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div className={`form-group`}>
                             <label>
@@ -265,9 +180,20 @@ function TransportNewOne(props) {
                                 onChange={handleCustomer2AddressTransportChange}
                             />
                         </div>
-                    </div>                        
+                    </div>       
+                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div className={`form-group`}>
+                            <label>
+                                Chi tiết
+                            </label>
+                            <textarea type="text" className="form-control"
+                                value={formInfo.newOneDetail2}
+                                onChange={handlecustomer2DetailChange}
+                            />
+                        </div>
+                    </div>                    
                 </fieldset>
-                
+
             </div>
 
         </div>

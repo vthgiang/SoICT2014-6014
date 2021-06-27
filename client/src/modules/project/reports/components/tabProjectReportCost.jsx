@@ -6,7 +6,7 @@ import { UserActions } from '../../../super-admin/user/redux/actions';
 import moment from 'moment';
 import c3 from 'c3';
 import 'c3/c3.css';
-import { getAmountOfWeekDaysInMonth } from '../../projects/components/functionHelper';
+import { formatTaskStatus, getAmountOfWeekDaysInMonth, renderProgressBar, renderStatusColor } from '../../projects/components/functionHelper';
 import { numberWithCommas } from '../../../task/task-management/component/functionHelpers';
 
 const MILISECS_TO_DAYS = 86400000;
@@ -14,30 +14,6 @@ const MILISECS_TO_DAYS = 86400000;
 const TabProjectReportCost = (props) => {
     const { currentTasks, translate, projectDetail } = props;
     const chartRef = useRef(null);
-
-    const getCurrentActualCostForTask = (taskItem) => {
-        let actualCost = 0;
-        const { timesheetLogs, actorsWithSalary, responsibleEmployees, accountableEmployees } = taskItem
-        if (!timesheetLogs) return 0;
-        for (let timeItem of timesheetLogs) {
-            // Lấy salary của creator của timeLog đó
-            let currentSalary = actorsWithSalary.find(actorItem => String(actorItem.userId) === String(timeItem.creator))?.salary;
-            // Tính số ngày công của tháng đó
-            const currentMonthWorkDays = getAmountOfWeekDaysInMonth(moment(timeItem.startedAt));
-            // Tính trọng số của creator cho task đó
-            let weight = 0;
-            const responsibleEmployeesFlatten = responsibleEmployees.map(resItem => String(resItem.id));
-            const accountableEmployeesFlatten = accountableEmployees.map(accItem => String(accItem.id));
-            if (responsibleEmployeesFlatten.includes(String(timeItem.creator))) {
-                weight = 0.8 / responsibleEmployeesFlatten.length;  // Trọng số phải đi kèm với số người
-            } else {
-                weight = 0.2 / accountableEmployeesFlatten.length;  // Trọng số phải đi kèm với số người
-            }
-            // Tính actual cost của task đó bằng cách cộng thêm actual cost của creator hiện tại
-            actualCost += weight * (currentSalary / currentMonthWorkDays) * (timeItem.duration / MILISECS_TO_DAYS);
-        }
-        return actualCost;
-    }
 
     const preprocessData = () => {
         let columns = [], categories = [];
@@ -50,7 +26,7 @@ const TabProjectReportCost = (props) => {
         }
         for (let taskItem of currentTasks) {
             budgets.push(taskItem.estimateNormalCost);
-            actualCost.push(taskItem.actualCost || getCurrentActualCostForTask(taskItem));
+            actualCost.push(taskItem.actualCost || 0);
             categories.push(taskItem.name)
         }
         columns = [budgets, actualCost];
@@ -116,7 +92,7 @@ const TabProjectReportCost = (props) => {
     const getOnBudgetTasks = () => {
         if (!currentTasks) return [];
         return currentTasks.filter((taskItem, taskIndex) => {
-            const currentActualCost = taskItem.actualCost || getCurrentActualCostForTask(taskItem);
+            const currentActualCost = taskItem.actualCost || 0;
             if (taskItem.estimateNormalCost >= currentActualCost) return taskItem;
         })
     }
@@ -125,7 +101,7 @@ const TabProjectReportCost = (props) => {
     const getBehindBudgetTasks = () => {
         if (!currentTasks) return [];
         return currentTasks.filter((taskItem, taskIndex) => {
-            const currentActualCost = taskItem.actualCost || getCurrentActualCostForTask(taskItem);
+            const currentActualCost = taskItem.actualCost || 0;
             if (taskItem.estimateNormalCost < currentActualCost) return taskItem;
         })
     }
@@ -193,9 +169,11 @@ const TabProjectReportCost = (props) => {
                             <thead>
                                 <tr>
                                     <th>Tên công việc</th>
+                                    <th>Trạng thái</th>
+                                    <th>Tiến độ (%)</th>
                                     <th>Thời gian bắt đầu</th>
                                     <th>Thời gian dự kiến kết thúc</th>
-                                    <th>Ngân sách (VND)</th>
+                                    <th>Chi phí ước lượng (VND)</th>
                                     <th>Chi phí thực (VND)</th>
                                 </tr>
                             </thead>
@@ -203,11 +181,13 @@ const TabProjectReportCost = (props) => {
                                 {displayContent.tasks && displayContent.tasks.length !== 0 &&
                                     displayContent.tasks.map((taskItem, index) => (
                                         <tr key={index}>
-                                            <td>{taskItem?.name}</td>
+                                            <td style={{ color: '#385898' }}>{taskItem?.name}</td>
+                                            <td style={{ color: renderStatusColor(taskItem) }}>{formatTaskStatus(translate, taskItem?.status)}</td>
+                                            <td>{renderProgressBar(taskItem?.progress, taskItem)}</td>
                                             <td>{moment(taskItem?.startDate).format('HH:mm DD/MM/YYYY')}</td>
                                             <td>{moment(taskItem?.endDate).format('HH:mm DD/MM/YYYY')}</td>
                                             <td>{numberWithCommas(taskItem.estimateNormalCost)}</td>
-                                            <td>{numberWithCommas(taskItem.actualCost || getCurrentActualCostForTask(taskItem))}</td>
+                                            <td>{numberWithCommas(taskItem.actualCost || 0)}</td>
                                         </tr>
                                     ))
                                 }

@@ -18,7 +18,8 @@ exports.getOrganizationalUnits = async (portal, id) => {
                 populate: [{
                     path: "users",
                     populate: [{
-                        path: "userId"
+                        path: "userId",
+                        select: "_id name email avatar"
                     }]
                 }]
             },
@@ -27,7 +28,8 @@ exports.getOrganizationalUnits = async (portal, id) => {
                 populate: [{
                     path: "users",
                     populate: [{
-                        path: "userId"
+                        path: "userId",
+                        select: "_id name email avatar"
                     }]
                 }]
             },
@@ -36,7 +38,8 @@ exports.getOrganizationalUnits = async (portal, id) => {
                 populate: [{
                     path: "users",
                     populate: [{
-                        path: "userId"
+                        path: "userId",
+                        select: "_id name email avatar"
                     }]
                 }]
             }
@@ -51,9 +54,9 @@ exports.getOrganizationalUnit = async (portal, id) => {
     return await OrganizationalUnit(connect(DB_CONNECTION, portal))
         .findById(id)
         .populate([
-            { path: 'managers', populate: { path: 'users', populate: { path: 'userId' } } },
-            { path: 'deputyManagers', populate: { path: 'users', populate: { path: 'userId' } } },
-            { path: 'employees', populate: { path: 'users', populate: { path: 'userId' } } }
+            { path: 'managers', populate: { path: 'users', populate: { path: 'userId', select: "_id name email avatar" } } },
+            { path: 'deputyManagers', populate: { path: 'users', populate: { path: 'userId', select: "_id name email avatar" } } },
+            { path: 'employees', populate: { path: 'users', populate: { path: 'userId', select: "_id name email avatar" } } }
         ]);
 }
 
@@ -77,7 +80,7 @@ exports.getOrganizationalUnitsAsTree = async (portal, id = undefined) => {
             deputyManagers: department.deputyManagers.map(deputyManager => { return { _id: deputyManager._id.toString(), name: deputyManager.name } }),
             employees: department.employees.map(employee => { return { _id: employee._id.toString(), name: employee.name } }),
             description: department.description,
-            parent_id: department.parent !== null ? department.parent.toString() : null
+            parent_id: (department.parent !== null && department.parent !== undefined) ? department.parent.toString() : null
         }
     });
     const tree = await arrayToTree(newData);
@@ -117,7 +120,7 @@ exports.getChildrenOfOrganizationalUnitsAsTree = async (portal, role, organizati
             managers: department.managers.map(item => item.toString()),
             deputyManagers: department.deputyManagers.map(item => item.toString()),
             employees: department.employees.map(item => item.toString()),
-            parent_id: department.parent !== null ? department.parent.toString() : null
+            parent_id: (department.parent !== null && department.parent !== undefined) ? department.parent.toString() : null
         }
     });
 

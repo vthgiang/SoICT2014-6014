@@ -255,7 +255,7 @@ const ModalEditRowCPMExcel = (props) => {
     }
 
     useEffect(() => {
-        props.getProjectsDispatch({ calledId: "all", userId });
+        props.getProjectsDispatch({ calledId: "user_all", userId });
         props.getAllUserInAllUnitsOfCompany();
     }, [])
 
@@ -594,7 +594,6 @@ const mapDispatchToProps = {
     getProjectsDispatch: ProjectActions.getProjectsDispatch,
     deleteProjectDispatch: ProjectActions.deleteProjectDispatch,
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
-    getTasksByProject: taskManagementActions.getTasksByProject,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ModalEditRowCPMExcel))

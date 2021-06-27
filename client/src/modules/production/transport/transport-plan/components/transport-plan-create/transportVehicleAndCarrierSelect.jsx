@@ -46,9 +46,10 @@ function TransportVehicleAndCarrierSelect(props) {
     const [listVehiclesUsable, setListVehiclesUsable] = useState();
     useEffect(() => {
         // Lấy tất cả plans đã có để kiểm tra xe và người có bị trùng lặp không
-        props.getAllTransportDepartments();
-        props.getAllTransportVehicles();
-        props.getAllTransportPlans();
+        // props.getAllTransportDepartments();
+        // props.getAllTransportVehicles();
+        // props.getAllTransportPlans();
+        // props.getUserByRole({currentUserId: localStorage.getItem('userId'), role: 3})
     }, [])
 
     useEffect(() => {
@@ -59,30 +60,42 @@ function TransportVehicleAndCarrierSelect(props) {
                     vehiclesList.push(vehicle);
                 })
             }
+            // let carriersList = [];
+            // if (transportDepartment && transportDepartment.lists && transportDepartment.lists.length !==0){
+            //     let lists = transportDepartment.lists;
+            //     let carrierOrganizationalUnit = [];
+            //     carrierOrganizationalUnit = lists.filter(r => r.role === 2) // role nhân viên vận chuyển
+            //     console.log(carrierOrganizationalUnit, " unit")
+            //     if (carrierOrganizationalUnit && carrierOrganizationalUnit.length !==0){
+            //         carrierOrganizationalUnit.map(item =>{
+            //             if (item.organizationalUnit){
+            //                 let organizationalUnit = item.organizationalUnit;
+            //                 organizationalUnit.employees && organizationalUnit.employees.length !==0
+            //                 && organizationalUnit.employees.map(employees => {
+            //                     employees.users && employees.users.length !== 0
+            //                     && employees.users.map(users => {
+            //                         if (users.userId){
+            //                             if (users.userId.name){
+            //                                 carriersList.push(users.userId)
+            //                             }
+            //                         }
+            //                     })
+            //                 })
+            //             }
+            //         })
+            //     } 
+            // }
             let carriersList = [];
-            if (transportDepartment && transportDepartment.lists && transportDepartment.lists.length !==0){
-                let lists = transportDepartment.lists;
-                let carrierOrganizationalUnit = [];
-                carrierOrganizationalUnit = lists.filter(r => r.role === 2) // role nhân viên vận chuyển
-                console.log(carrierOrganizationalUnit, " unit")
-                if (carrierOrganizationalUnit && carrierOrganizationalUnit.length !==0){
-                    carrierOrganizationalUnit.map(item =>{
-                        if (item.organizationalUnit){
-                            let organizationalUnit = item.organizationalUnit;
-                            organizationalUnit.employees && organizationalUnit.employees.length !==0
-                            && organizationalUnit.employees.map(employees => {
-                                employees.users && employees.users.length !== 0
-                                && employees.users.map(users => {
-                                    if (users.userId){
-                                        if (users.userId.name){
-                                            carriersList.push(users.userId)
-                                        }
-                                    }
-                                })
-                            })
+            if (transportDepartment && transportDepartment.listUser && transportDepartment.listUser.length!==0){
+                let listUser = transportDepartment.listUser.filter(r=>Number(r.role) === 3);
+                if (listUser && listUser.length!==0 && listUser[0].list && listUser[0].list.length!==0){
+                    listUser[0].list.map(userId => {                        
+                        if (carriersList.length!==0){
+                            carriersList = carriersList.filter(r=>String(r._id)!==String(userId._id));
                         }
+                        carriersList.push(userId);
                     })
-                } 
+                }
             }
             if (transportPlan && transportPlan.lists && transportPlan.lists.length!==0){
                 transportPlan.lists.map(plan => {
@@ -127,7 +140,7 @@ function TransportVehicleAndCarrierSelect(props) {
         }
         console.log(transportVehicle, transportDepartment)
         console.log(startTime)
-    }, [startTime, endTime, transportDepartment, transportVehicle, transportPlan])
+    }, [startTime, endTime, transportDepartment, transportVehicle, transportPlan, transportDepartment])
     /**
      * Lấy id tài xế đã có trong listVehicleAndCarrier
      */
@@ -428,143 +441,121 @@ function TransportVehicleAndCarrierSelect(props) {
     return (
         <React.Fragment>
             <div className="box-body">
-                {
-                listVehiclesUsable && listVehiclesUsable.length!==0
-                &&
-                <table id={"1"} className="table table-striped table-bordered table-hover">
-                    <thead>
-                        <tr>
-                            <th className="col-fixed" style={{ width: 60 }}>{"STT"}</th>
-                            <th>{"Mã xe"}</th>
-                            <th>{"Tên xe"}</th>
-                            <th>{"Trọng tải"}</th>
-                            <th>{"Thể tích thùng"}</th>
-                            <th>{"Tài xế"}</th>
-                            <th style={{width: '200px'}}>{"Nhân viên đi cùng"}</th>
-                            <th >{"Hành động"}</th>
-                            {/* <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
-                                <DataTableSetting
-                                    tableId={tableId}
-                                    columnArr={[
-                                        translate('manage_example.index'),
-                                        translate('manage_example.exampleName'),
-                                        translate('manage_example.description'),
-                                    ]}
-                                    setLimit={setLimit}
-                                />
-                            </th> */}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {(listVehiclesUsable && listVehiclesUsable.length !== 0) &&
-                            listVehiclesUsable.map((x, index) => (
-                                x &&
-                                <tr key={index}>
-                                    <td>{index+1}</td>
-                                    <td>{x.code}</td>
-                                    <td>{x.name}</td>
-                                    <td>{x.payload}</td>
-                                    <td>{x.volume}</td>
-                                    <td>
-                                        <SelectBox
-                                            id={x._id}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            value={getCurrentDriver(x._id)}
-                                            items={getAllDriver(x._id)}
-                                            onChange={handleDriverChange}
-                                            multiple={false}
+                <div className="box box-solid">
+                    <div className="box-header">
+                        <div className="box-title">{"Danh sách phương tiện có thể sử dụng ngày: "+ formatDate(startTime)}</div>                                
+                    </div>
+                    <div className="box-body qlcv">                             
+                        
+                    {
+                        listVehiclesUsable && listVehiclesUsable.length!==0
+                        &&
+                        <table id={"1"} className="table table-striped table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th className="col-fixed" style={{ width: 60 }}>{"STT"}</th>
+                                    <th>{"Mã xe"}</th>
+                                    <th>{"Tên xe"}</th>
+                                    <th>{"Trọng tải"}</th>
+                                    <th>{"Thể tích thùng"}</th>
+                                    <th>{"Tài xế"}</th>
+                                    <th style={{width: '200px'}}>{"Nhân viên đi cùng"}</th>
+                                    <th >{"Hành động"}</th>
+                                    {/* <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
+                                        <DataTableSetting
+                                            tableId={tableId}
+                                            columnArr={[
+                                                translate('manage_example.index'),
+                                                translate('manage_example.exampleName'),
+                                                translate('manage_example.description'),
+                                            ]}
+                                            setLimit={setLimit}
                                         />
-                                    </td>
-                                    <td>
-                                        <SelectBox
-                                            id={x._id+"1"}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            value={getCurrentCarriers(x._id)}
-                                            items={getAllCarriers(x._id)}
-                                            onChange={handleCarriersChange}
-                                            multiple={true}
-                                        />
-                                    </td>
-                                    
-                                    <td style={{ textAlign: "center" }} className="tooltip-checkbox">
-                                        <span className={"icon "
-                                        +getStatusTickBox(x)
-                                    }
-                                        title={"alo"} 
-                                        onClick={() => handleSelectVehicle(x)}
-                                        >
-                                        </span>
-                                    </td>
+                                    </th> */}
                                 </tr>
-                            ))
-                        }
-                    </tbody>
-                </table>
-            }
-
-            {
-                listCarriersUsable && listCarriersUsable.length!==0
-                &&
-                <table id={"1"} className="table table-striped table-bordered table-hover">
-                    <thead>
-                        <tr>
-                            <th className="col-fixed" style={{ width: 60 }}>{"STT"}</th>
-                            <th>{"Tên nhân viên"}</th>
-                            <th>{"Email"}</th>
-                            <th>{"Thể tích thùng"}</th>
-                            <th>{"Hành động"}</th>
-                            {/* <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
-                                <DataTableSetting
-                                    tableId={tableId}
-                                    columnArr={[
-                                        translate('manage_example.index'),
-                                        translate('manage_example.exampleName'),
-                                        translate('manage_example.description'),
-                                    ]}
-                                    setLimit={setLimit}
-                                />
-                            </th> */}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {(listCarriersUsable && listCarriersUsable.length !== 0) &&
-                            listCarriersUsable.map((x, index) => (
-                                x &&
-                                <tr key={index}>
-                                    <td>{index+1}</td>
-                                    <td>{x.name}</td>
-                                    <td>{x.email}</td>
-                                    <td>{x._id}</td>
-                                    {/* <td>{x.volume}</td> */}
-                                    {/* <td>{x.createdAt ? formatDate(x.createdAt) : ""}</td> */}
-                                    <td>
-                                        {
-                                            // (x.timeRequests && x.timeRequests.length!==0)
-                                            // && x.timeRequests.map((timeRequest, index2)=>(
-                                            //     <div key={index+" "+index2}>
-                                            //         {index2+1+"/ "+formatDate(timeRequest.timeRequest)}
-                                            //     </div>
-                                            // ))
-                                        }
-                                    </td>
-                                    {/* <td>{x.status}</td> */}
-                                    <td style={{ textAlign: "center" }} className="tooltip-checkbox">
-                                        <span className={"icon "
-                                        // +getStatusTickBox(x)
-                                    }
-                                        title={"alo"} 
-                                        // onClick={() => handleSelectRequirement(x)}
-                                        >
-                                        </span>
-                                    </td>
+                            </thead>
+                            <tbody>
+                                {(listVehiclesUsable && listVehiclesUsable.length !== 0) &&
+                                    listVehiclesUsable.map((x, index) => (
+                                        x &&
+                                        <tr key={index + "xe"}>
+                                            <td>{index+1}</td>
+                                            <td>{x.code}</td>
+                                            <td>{x.name}</td>
+                                            <td>{x.payload}</td>
+                                            <td>{x.volume}</td>
+                                            <td>
+                                                <SelectBox
+                                                    id={x._id}
+                                                    className="form-control select2"
+                                                    style={{ width: "100%" }}
+                                                    value={getCurrentDriver(x._id)}
+                                                    items={getAllDriver(x._id)}
+                                                    onChange={handleDriverChange}
+                                                    multiple={false}
+                                                />
+                                            </td>
+                                            <td>
+                                                <SelectBox
+                                                    id={x._id+"1"}
+                                                    className="form-control select2"
+                                                    style={{ width: "100%" }}
+                                                    value={getCurrentCarriers(x._id)}
+                                                    items={getAllCarriers(x._id)}
+                                                    onChange={handleCarriersChange}
+                                                    multiple={true}
+                                                />
+                                            </td>
+                                            
+                                            <td style={{ textAlign: "center" }} className="tooltip-checkbox">
+                                                <span className={"icon "
+                                                +getStatusTickBox(x)
+                                            }
+                                                title={"alo"} 
+                                                onClick={() => handleSelectVehicle(x)}
+                                                >
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    ))
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    </div>
+                </div>
+                <div className="box box-solid">
+                    <div className="box-header">
+                        <div className="box-title">{"Danh sách nhân viên"}</div>                                
+                    </div>
+                    <div className="box-body qlcv"> 
+                    {
+                        listCarriersUsable && listCarriersUsable.length!==0
+                        &&
+                        <table id={"2"} className="table table-striped table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th className="col-fixed" style={{ width: 60 }}>{"STT"}</th>
+                                    <th>{"Tên nhân viên"}</th>
+                                    <th>{"Email"}</th>
                                 </tr>
-                            ))
-                        }
-                    </tbody>
-                </table>
-            }
+                            </thead>
+                            <tbody>
+                                {(listCarriersUsable && listCarriersUsable.length !== 0) &&
+                                    listCarriersUsable.map((x, index) => (
+                                        x &&
+                                        <tr key={index}>
+                                            <td>{index+1}</td>
+                                            <td>{x.name}</td>
+                                            <td>{x.email}</td>                                    
+                                        </tr>
+                                    ))
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    </div>
+                </div>
             </div>
         </React.Fragment>
     );
@@ -576,9 +567,10 @@ function mapState(state) {
     return { transportDepartment, transportVehicle, transportPlan }
 }
 const actions = {
-    getAllTransportDepartments: transportDepartmentActions.getAllTransportDepartments,
-    getAllTransportVehicles: transportVehicleActions.getAllTransportVehicles,
-    getAllTransportPlans: transportPlanActions.getAllTransportPlans,
+    // getAllTransportDepartments: transportDepartmentActions.getAllTransportDepartments,
+    // getAllTransportVehicles: transportVehicleActions.getAllTransportVehicles,
+    // getAllTransportPlans: transportPlanActions.getAllTransportPlans,
+    // getUserByRole: transportDepartmentActions.getUserByRole,
 }
 const connectedTransportVehicleAndCarrierSelect = connect(mapState, actions)(withTranslate(TransportVehicleAndCarrierSelect));
 export { connectedTransportVehicleAndCarrierSelect as TransportVehicleAndCarrierSelect };

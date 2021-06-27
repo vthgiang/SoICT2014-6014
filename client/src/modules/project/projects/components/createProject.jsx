@@ -24,12 +24,15 @@ const ProjectCreateForm = (props) => {
         { text: 'Ngày', value: 'days' },
         { text: 'Giờ', value: 'hours' },
     ]
+    const fakeProjectTypeList = [
+        { text: 'QLDA dạng đơn giản', value: 1 },
+        { text: 'QLDA phương pháp CPM', value: 2 },
+    ]
     const [form, setForm] = useState({
         projectNameError: undefined,
-        codeError: undefined,
         projectName: "",
+        projectType: 2,
         description: "",
-        code: "",
         startDate: '',
         endDate: '',
         projectManager: [],
@@ -48,7 +51,7 @@ const ProjectCreateForm = (props) => {
         currentEmployeeRow: [],
     })
 
-    const { projectName, projectNameError, codeError, description, code, startDate, endDate, projectManager, responsibleEmployees, unitCost, unitTime, estimatedCost } = form;
+    const { projectName, projectNameError, description, projectType, startDate, endDate, projectManager, responsibleEmployees, unitCost, unitTime, estimatedCost } = form;
 
     const handleChangeForm = (event, currentKey) => {
         if (currentKey === 'projectName') {
@@ -61,16 +64,6 @@ const ProjectCreateForm = (props) => {
             })
             return;
         }
-        if (currentKey === 'code') {
-            let { translate } = props;
-            let { message } = ValidationHelper.validateName(translate, event.target.value, 6, 6);
-            setForm({
-                ...form,
-                [currentKey]: event.target.value,
-                codeError: message === undefined ? message : "Mã dự án phải có 6 kí tự",
-            })
-            return;
-        }
         const justRenderEventArr = ['projectManager', 'responsibleEmployees', 'startDate', 'endDate'];
         if (justRenderEventArr.includes(currentKey)) {
             setForm({
@@ -79,7 +72,7 @@ const ProjectCreateForm = (props) => {
             })
             return;
         }
-        const renderFirstItemArr = ['unitCost', 'unitTime'];
+        const renderFirstItemArr = ['unitCost', 'unitTime', 'projectType'];
         if (renderFirstItemArr.includes(currentKey)) {
             setForm({
                 ...form,
@@ -110,7 +103,6 @@ const ProjectCreateForm = (props) => {
         // console.log(startDate.length === 0)
         // console.log(endDate.length === 0)
         if (!ValidationHelper.validateName(translate, projectName, 6, 255).status) return false;
-        if (!ValidationHelper.validateName(translate, code, 6, 6).status) return false;
         if (projectManager.length === 0) return false;
         if (responsibleEmployeesWithUnit.list.length === 0) return false;
         if (startDate.length === 0) return false;
@@ -136,7 +128,7 @@ const ProjectCreateForm = (props) => {
 
             props.createProjectDispatch({
                 name: projectName,
-                code,
+                projectType,
                 startDate: start,
                 endDate: end,
                 projectManager,
@@ -261,16 +253,25 @@ const ProjectCreateForm = (props) => {
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border">Thông số dự án</legend>
 
-                            <div className={`form-group ${!projectNameError ? "" : "has-error"}`}>
-                                <label>{translate('project.name')}<span className="text-red">*</span></label>
-                                <input type="text" className="form-control" value={projectName} onChange={(e) => handleChangeForm(e, 'projectName')}></input>
-                                <ErrorLabel content={projectNameError} />
-                            </div>
+                            <div className="row">
+                                <div className={`form-group col-md-6 col-xs-6 ${!projectNameError ? "" : "has-error"}`}>
+                                    <label>{translate('project.name')}<span className="text-red">*</span></label>
+                                    <input type="text" className="form-control" value={projectName} onChange={(e) => handleChangeForm(e, 'projectName')}></input>
+                                    <ErrorLabel content={projectNameError} />
+                                </div>
 
-                            <div className={`form-group ${!codeError ? "" : "has-error"}`}>
-                                <label>{translate('project.code')}<span className="text-red">*</span></label>
-                                <input type="text" className="form-control" maxLength={6} value={code} onChange={(e) => handleChangeForm(e, 'code')}></input>
-                                <ErrorLabel content={codeError} />
+                                <div className={`form-group col-md-6 col-xs-6`}>
+                                    <label>Hình thức quản lý dự án<span className="text-red">*</span></label>
+                                    <SelectBox
+                                        id={`select-project-type`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={fakeProjectTypeList}
+                                        onChange={(e) => handleChangeForm(e, 'projectType')}
+                                        value={projectType}
+                                        multiple={false}
+                                    />
+                                </div>
                             </div>
 
                             <div className="row">
@@ -409,7 +410,7 @@ const ProjectCreateForm = (props) => {
                                                         />}
                                                 </div>
                                             </td>
-                                            <td>
+                                            <td style={{ maxWidth: 250 }}>
                                                 <div className={`form-group`}>
                                                     {listDepartments && listDepartments.length > 0 &&
                                                         <SelectBox

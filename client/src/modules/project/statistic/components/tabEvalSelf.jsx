@@ -7,6 +7,7 @@ import moment from 'moment';
 import { DatePicker } from '../../../../common-components';
 import { checkIsNullUndefined, numberWithCommas } from '../../../task/task-management/component/functionHelpers';
 import { AutomaticTaskPointCalculator } from '../../../task/task-perform/component/automaticTaskPointCalculator';
+import { formatTaskStatus, renderStatusColor } from '../../projects/components/functionHelper';
 
 const TabEvalSelf = (props) => {
     const { currentTasks, translate, listTasksEval, currentMonth, handleChangeMonth, projectDetail, userId } = props;
@@ -18,7 +19,7 @@ const TabEvalSelf = (props) => {
         const selfItem = projectDetail.responsibleEmployees.find(projectEmpItem => String(projectEmpItem._id) === userId)
             || projectDetail.projectManager.find(projectManItem => String(projectManItem._id) === userId);
         if (!selfItem) return undefined;
-        
+
         // Lấy danh sách tasks mà có member này tham gia
         const tasksWithMemberArr = listTaskData.filter((listTaskItem) => {
             const responsibleEmployeesFlatten = listTaskItem.responsibleEmployees.map(resItem => String(resItem.id));
@@ -50,14 +51,14 @@ const TabEvalSelf = (props) => {
                 }
                 // Check currentRole
                 if (tasksWithMemberItem.responsibleEmployees.find(resItem => String(resItem.id) === String(userId))) currentRole = 'responsible';
-                // Tính toán PV, AC, EV của nhân viên trong task
+                // Tính toán estCost, realCost, estDuration và realDuration của nhân viên trong task
                 const data = {
                     task: tasksWithMemberItem,
                     progress: tasksWithMemberItem.progress,
                     projectDetail,
                     userId: userId,
                 }
-                const resultCalculate = AutomaticTaskPointCalculator.calcProjectTaskMemberAutoPoint(data, false);
+                const resultCalculate = AutomaticTaskPointCalculator.calcMemberStatisticEvalPoint(data, false);
                 tasksWithPointAndRoleAndEVM.push({
                     tasksWithMemberItem,
                     currentRole,
@@ -66,14 +67,13 @@ const TabEvalSelf = (props) => {
                 })
             }
             // Tính điểm trung bình cộng của tất cả task trong tháng của nhân viên đó
-            let sumPoint = 0, totalPV = 0, totalAC = 0, totalEV = 0;
+            let sumPoint = 0, totalEstCost = 0, totalRealCost = 0;
             let counter = 0;
             for (let taskPointRoleEVMItem of tasksWithPointAndRoleAndEVM) {
                 // console.log(taskPointRoleEVMItem.currentMemberCurrentTaskPoint, taskPointRoleEVMItem.plannedValue, taskPointRoleEVMItem.actualCost, taskPointRoleEVMItem.earnedValue)
                 sumPoint += taskPointRoleEVMItem.currentMemberCurrentTaskPoint;
-                totalPV += taskPointRoleEVMItem.plannedValue;
-                totalAC += taskPointRoleEVMItem.actualCost;
-                totalEV += taskPointRoleEVMItem.earnedValue;
+                totalEstCost += taskPointRoleEVMItem.estCost;
+                totalRealCost += taskPointRoleEVMItem.realCost;
                 counter++;
             }
             selfData = {
@@ -81,9 +81,8 @@ const TabEvalSelf = (props) => {
                 name: selfItem.name,
                 tasksWithPointAndRoleAndEVM,
                 averagePoint: sumPoint / counter,
-                totalPV,
-                totalAC,
-                totalEV,
+                totalEstCost,
+                totalRealCost,
             }
         }
         return selfData;
@@ -112,13 +111,15 @@ const TabEvalSelf = (props) => {
                             <thead>
                                 <tr>
                                     <th>Họ và tên</th>
-                                    <th>Tháng đánh giá</th>
+                                    <th>Trạng thái công việc</th>
                                     <th>Tên công việc</th>
-                                    <th>Thời gian bắt đầu</th>
-                                    <th>Thời gian dự kiến kết thúc</th>
-                                    <th>Planned Value (VND)</th>
-                                    <th>Actual Cost (VND)</th>
-                                    <th>Earned Value (VND)</th>
+                                    <th>Thời điểm bắt đầu</th>
+                                    <th>Thời điểm kết thúc dự kiến</th>
+                                    <th>Thời điểm kết thúc thực tế</th>
+                                    <th>Thời lượng ước lượng ({translate(`project.unit.${projectDetail?.unitTime}`)})</th>
+                                    <th>Thời lượng thực tế ({translate(`project.unit.${projectDetail?.unitTime}`)})</th>
+                                    <th>Tổng chi phí ước lượng thành viên (VND)</th>
+                                    <th>Tổng chi phí thực tế thành viên (VND)</th>
                                     <th>Vai trò</th>
                                     <th>Điểm số thành viên</th>
                                 </tr>
@@ -131,13 +132,16 @@ const TabEvalSelf = (props) => {
                                                 <>
                                                     <tr key={`${userId}-${memberTaskIndex}-0`}>
                                                         <td><strong>{memberTaskIndex === 0 ? processedSelfData?.name : ''}</strong></td>
-                                                        <td>{moment(currentMonth).format('M')}</td>
-                                                        <td>{memberTaskItem?.tasksWithMemberItem.name}</td>
-                                                        <td>{moment(memberTaskItem?.tasksWithMemberItem?.startDate).format('DD/MM/YYYY')}</td>
-                                                        <td>{moment(memberTaskItem?.tasksWithMemberItem?.endDate).format('DD/MM/YYYY')}</td>
-                                                        <td>{numberWithCommas(memberTaskItem?.plannedValue)}</td>
-                                                        <td>{numberWithCommas(memberTaskItem?.actualCost)}</td>
-                                                        <td>{numberWithCommas(memberTaskItem?.earnedValue)}</td>
+                                                        <td style={{ color: renderStatusColor(memberTaskItem?.tasksWithMemberItem) }}>{formatTaskStatus(translate, memberTaskItem?.tasksWithMemberItem?.status)}</td>
+                                                        <td style={{ color: '#385898' }}>{memberTaskItem?.tasksWithMemberItem.name}</td>
+                                                        <td>{moment(memberTaskItem?.tasksWithMemberItem?.startDate).format('HH:mm DD/MM/YYYY')}</td>
+                                                        <td>{moment(memberTaskItem?.tasksWithMemberItem?.endDate).format('HH:mm DD/MM/YYYY')}</td>
+                                                        <td>{memberTaskItem?.tasksWithMemberItem?.actualEndDate && memberTaskItem?.tasksWithMemberItem?.status === 'finished'
+                                                            && moment(memberTaskItem?.tasksWithMemberItem?.actualEndDate).format('HH:mm DD/MM/YYYY')}</td>
+                                                        <td>{numberWithCommas(memberTaskItem?.estDuration)}</td>
+                                                        <td>{memberTaskItem?.realDuration && numberWithCommas(memberTaskItem?.realDuration)}</td>
+                                                        <td>{numberWithCommas(memberTaskItem?.estCost)}</td>
+                                                        <td>{numberWithCommas(memberTaskItem?.realCost)}</td>
                                                         <td>{memberTaskItem.currentRole}</td>
                                                         <td>{numberWithCommas(memberTaskItem.currentMemberCurrentTaskPoint)} / 100</td>
                                                     </tr>
@@ -150,9 +154,11 @@ const TabEvalSelf = (props) => {
                                                             <td></td>
                                                             <td></td>
                                                             <td></td>
-                                                            <td style={{ fontWeight: 'bold' }}>{numberWithCommas(processedSelfData?.totalPV)}</td>
-                                                            <td style={{ fontWeight: 'bold' }}>{numberWithCommas(processedSelfData?.totalAC)}</td>
-                                                            <td style={{ fontWeight: 'bold' }}>{numberWithCommas(processedSelfData?.totalEV)}</td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td style={{ fontWeight: 'bold' }}>{numberWithCommas(processedSelfData?.totalEstCost)}</td>
+                                                            <td style={{ fontWeight: 'bold' }}>{numberWithCommas(processedSelfData?.totalRealCost)}</td>
                                                             <td></td>
                                                             <td style={{ fontWeight: 'bold' }}>{numberWithCommas(processedSelfData?.averagePoint)} / 100</td>
                                                         </tr>
@@ -163,13 +169,16 @@ const TabEvalSelf = (props) => {
                                         return (
                                             <tr key={`${userId}-${memberTaskIndex}-2`}>
                                                 <td><strong>{memberTaskIndex === 0 ? processedSelfData?.name : ''}</strong></td>
-                                                <td>{moment(currentMonth).format('M')}</td>
-                                                <td>{memberTaskItem?.tasksWithMemberItem.name}</td>
-                                                <td>{moment(memberTaskItem?.tasksWithMemberItem?.startDate).format('DD/MM/YYYY')}</td>
-                                                <td>{moment(memberTaskItem?.tasksWithMemberItem?.endDate).format('DD/MM/YYYY')}</td>
-                                                <td>{numberWithCommas(memberTaskItem?.plannedValue)}</td>
-                                                <td>{numberWithCommas(memberTaskItem?.actualCost)}</td>
-                                                <td>{numberWithCommas(memberTaskItem?.earnedValue)}</td>
+                                                <td style={{ color: renderStatusColor(memberTaskItem?.tasksWithMemberItem) }}>{formatTaskStatus(translate, memberTaskItem?.tasksWithMemberItem?.status)}</td>
+                                                <td style={{ color: '#385898' }}>{memberTaskItem?.tasksWithMemberItem.name}</td>
+                                                <td>{moment(memberTaskItem?.tasksWithMemberItem?.startDate).format('HH:mm DD/MM/YYYY')}</td>
+                                                <td>{moment(memberTaskItem?.tasksWithMemberItem?.endDate).format('HH:mm DD/MM/YYYY')}</td>
+                                                <td>{memberTaskItem?.tasksWithMemberItem?.actualEndDate && memberTaskItem?.tasksWithMemberItem?.status === 'finished'
+                                                    && moment(memberTaskItem?.tasksWithMemberItem?.actualEndDate).format('HH:mm DD/MM/YYYY')}</td>
+                                                <td>{numberWithCommas(memberTaskItem?.estDuration)}</td>
+                                                <td>{numberWithCommas(memberTaskItem?.realDuration)}</td>
+                                                <td>{numberWithCommas(memberTaskItem?.estCost)}</td>
+                                                <td>{numberWithCommas(memberTaskItem?.realCost)}</td>
                                                 <td>{memberTaskItem.currentRole}</td>
                                                 <td>{numberWithCommas(memberTaskItem.currentMemberCurrentTaskPoint)} / 100</td>
                                             </tr>

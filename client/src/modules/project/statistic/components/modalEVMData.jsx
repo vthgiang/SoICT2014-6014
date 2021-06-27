@@ -21,7 +21,7 @@ const ModalEVMData = (props) => {
     const [currentMonth, setCurrentMonth] = useState(moment().startOf('month'));
 
     useEffect(() => {
-        props.getProjectsDispatch({ calledId: "all", userId });
+        props.getProjectsDispatch({ calledId: "user_all", userId });
         props.getAllUserInAllUnitsOfCompany();
         props.getTasksByProject(projectDetailId || projectDetail?._id)
         props.getListTasksEvalDispatch(currentProjectId, currentMonth.format());
@@ -68,7 +68,7 @@ const ModalEVMData = (props) => {
                                                                 : ''
                                                         }
                                                         </strong></td>
-                                                        <td>{taskMomentItem?.name}</td>
+                                                        <td style={{ color: '#385898' }}>{taskMomentItem?.name}</td>
                                                         <td>{moment(taskMomentItem?.startDate).format('HH:mm DD/MM/YYYY')}</td>
                                                         <td>{moment(taskMomentItem?.endDate).format('HH:mm DD/MM/YYYY')}</td>
                                                         <td>{numberWithCommas(taskMomentItem?.plannedValue)}</td>
@@ -95,7 +95,7 @@ const ModalEVMData = (props) => {
                                                         : ''
                                                 }
                                                 </strong></td>
-                                                <td>{taskMomentItem?.name}</td>
+                                                <td style={{ color: '#385898' }}>{taskMomentItem?.name}</td>
                                                 <td>{moment(taskMomentItem?.startDate).format('HH:mm DD/MM/YYYY')}</td>
                                                 <td>{moment(taskMomentItem?.endDate).format('HH:mm DD/MM/YYYY')}</td>
                                                 <td>{numberWithCommas(taskMomentItem?.plannedValue)}</td>

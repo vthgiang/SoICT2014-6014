@@ -65,8 +65,11 @@ function TransportGeneralInfoShip(props) {
 
     return (
         <React.Fragment>
+            
+            {/* <div class="row-equal-height" style={{marginTop: "0px"}}> */}
             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6" style={{ padding: 10, height: "100%" }}>
+                <div className="transport-row-eq-height">
+                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6" style={{ padding: 0}}>
                         <fieldset className="scheduler-border" style={{ height: "100%" }}>
                             <legend className="scheduler-border">Thông tin kho</legend>
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ padding: 0 }}>
@@ -78,7 +81,7 @@ function TransportGeneralInfoShip(props) {
                                         </label>
                                         <input type="text" 
                                             className="form-control" 
-                                            disabled={false} 
+                                            // disabled={true} 
                                             value={formValue.stockCode}
                                         />
                                     </div>
@@ -90,7 +93,7 @@ function TransportGeneralInfoShip(props) {
                                         </label>
                                         <input type="text" 
                                             className="form-control" 
-                                            disabled={false} 
+                                            // disabled={true} 
                                             value={formValue.billCreator}
                                         />
                                     </div>
@@ -102,7 +105,8 @@ function TransportGeneralInfoShip(props) {
                                         Địa chỉ kho hàng
                                         <span className="attention"> * </span>
                                     </label>
-                                    <textarea type="text" className="form-control" disabled={false}
+                                    <textarea type="text" className="form-control" 
+                                        // disabled={true}
                                         value={formValue.stockAddress}
                                     />
                                 </div>
@@ -113,7 +117,7 @@ function TransportGeneralInfoShip(props) {
                       
                     </div>
 
-                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6" style={{ padding: 10, height: "100%" }}>
+                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6" style={{ padding: 0}}>
                         <fieldset className="scheduler-border" style={{ height: "100%" }}>
                             <legend className="scheduler-border">Thông tin khách hàng</legend>
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ padding: 0 }}>
@@ -123,7 +127,8 @@ function TransportGeneralInfoShip(props) {
                                             Khách hàng
                                             <span className="attention"> * </span>
                                         </label>
-                                        <input type="text" className="form-control" disabled={false} 
+                                        <input type="text" className="form-control" 
+                                        // disabled={true} 
                                                 value={formValue.customerCode}
                                         />
                                     </div>
@@ -133,7 +138,8 @@ function TransportGeneralInfoShip(props) {
                                         <label>
                                             Tên khách hàng <span className="attention"> </span>
                                         </label>
-                                        <input type="text" className="form-control" disabled={false} 
+                                        <input type="text" className="form-control"
+                                        //  disabled={true} 
                                             value={formValue.customerName}
                                         />
                                     </div>
@@ -147,6 +153,7 @@ function TransportGeneralInfoShip(props) {
                                     </label>
                                     <input type="text" className="form-control"
                                         value={formValue.customerPhone}
+                                        // disabled={true}
                                     />                            
                                 </div>
                             </div>
@@ -155,7 +162,8 @@ function TransportGeneralInfoShip(props) {
                                     <label>
                                         Email <span className="attention"> </span>
                                     </label>
-                                    <input type="text" className="form-control" disabled={false} 
+                                    <input type="text" className="form-control" 
+                                    // disabled={true} 
                                         value={formValue.customerEmail}
                                     />
                                 </div>
@@ -168,12 +176,14 @@ function TransportGeneralInfoShip(props) {
                                     </label>
                                     <textarea type="text" className="form-control" 
                                         value={formValue.customerAddress}
+                                        // disabled={true}
                                     />
                                 </div>
                             </div>
                         </fieldset>
                       
                     </div>
+                </div>
                 </div>
         </React.Fragment>
     );

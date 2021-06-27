@@ -20,22 +20,8 @@ const { createProjectTask } = require('../task/task-management/task.service');
 const MILISECS_TO_DAYS = 86400000;
 
 exports.get = async (portal, query) => {
-    let { page, limit, userId } = query;
+    let { page, perPage, userId, projectName } = query;
     let options = {};
-    if (query.limit) {
-        // options = {
-        //     ...options,
-        //     limit: query.limit
-        // }
-        // limit = query.lim
-    }
-
-    if (query.page) {
-        // options = {
-        //     ...options,
-        //     page: query.page
-        // }
-    }
     options = userId ? {
         ...options,
         $or: [
@@ -44,18 +30,39 @@ exports.get = async (portal, query) => {
             { 'creator': userId }
         ]
     } : {};
+
+    if (projectName && projectName.toString().trim()) {
+        options = {
+            ...options,
+            name: {
+                $regex: projectName,
+                $options: "i"
+            }
+        }
+    }
+
     let project;
+
+    let totalList = await Project(connect(DB_CONNECTION, portal)).countDocuments(options);
     if (query.calledId === "paginate") {
+        let currentPage, currentPerPage;
+        console.log('page, perPage', page, perPage)
+        currentPage = page ? Number(page) : 1;
+        currentPerPage = perPage ? Number(perPage) : 5;
+        console.log('currentPage, currentPerPage', currentPage, currentPerPage)
+        console.log('options', options)
+
         project = await Project(
             connect(DB_CONNECTION, portal)
-        ).paginate(options, {
-            page, limit,
-            populate: [
-                { path: "responsibleEmployees", select: "_id name email" },
-                { path: "projectManager", select: "_id name email" },
-                { path: "creator", select: "_id name email" }
-            ]
-        });
+        ).find(options).skip((currentPage - 1) * currentPerPage).limit(currentPerPage)
+            .populate({ path: "responsibleEmployees", select: "_id name email" })
+            .populate({ path: "projectManager", select: "_id name email" })
+            .populate({ path: "creator", select: "_id name email" });
+        console.log('project', project)
+        return {
+            docs: project,
+            totalDocs: totalList,
+        }
     }
     else {
         project = await Project(connect(DB_CONNECTION, portal)).find(options)
@@ -63,6 +70,7 @@ exports.get = async (portal, query) => {
             .populate({ path: "projectManager", select: "_id name email" })
             .populate({ path: "creator", select: "_id name email" })
     }
+    // console.log('project2222222', project)
     return project;
 }
 
@@ -73,19 +81,19 @@ exports.show = async (portal, id) => {
 }
 
 exports.create = async (portal, data) => {
+    console.log('data', data)
     let newData = {};
     let newResponsibleEmployeesWithUnit = [];
-    console.log(data)
 
     if (data) {
-        for (let i in data) {
-            if (data[i] && data[i].length > 0) {
-                newData = {
-                    ...newData,
-                    [i]: data[i]
-                }
-            }
-        }
+        // for (let i in data) {
+        //     if (data[i] && data[i].length > 0) {
+        //         newData = {
+        //             ...newData,
+        //             [i]: data[i]
+        //         }
+        //     }
+        // }
         for (let employeeItem of data.responsibleEmployeesWithUnit) {
             let newListUsers = [];
             for (let userItem of employeeItem.listUsers) {
@@ -132,7 +140,8 @@ exports.create = async (portal, data) => {
     }
 
     let project = await Project(connect(DB_CONNECTION, portal)).create({
-        ...newData,
+        // ...newData,
+        ...data,
         responsibleEmployeesWithUnit: newResponsibleEmployeesWithUnit,
     });
     return project;
@@ -187,8 +196,9 @@ exports.edit = async (portal, id, data) => {
     }
     const a = await Project(connect(DB_CONNECTION, portal)).findByIdAndUpdate(id, {
         $set: {
-            code: data.code,
+            // code: data.code,
             name: data.name,
+            projectType: data.projectType,
             parent: data.parent,
             startDate: data.startDate,
             endDate: data.endDate,
@@ -305,7 +315,6 @@ exports.getListTasksEval = async (portal, id, evalMonth) => {
 }
 
 exports.getSalaryMembers = async (portal, data) => {
-    console.log(data)
     let newResponsibleEmployeesWithUnit = [];
     for (let employeeItem of data.responsibleEmployeesWithUnit) {
         let newListUsers = [];
@@ -354,9 +363,27 @@ exports.getSalaryMembers = async (portal, data) => {
 }
 
 exports.getListProjectChangeRequests = async (portal, query) => {
-    let { page, limit, projectId } = query;
-    // console.log(changeRequest);
-    const projectChangeRequestsList = await ProjectChangeRequest(connect(DB_CONNECTION, portal)).find({
+    let { page, perPage, projectId } = query;
+    console.log('page, perPage, projectId', page, perPage, projectId)
+    let projectChangeRequestsList;
+    let totalList = await ProjectChangeRequest(connect(DB_CONNECTION, portal)).countDocuments({
+        taskProject: projectId,
+    });
+    if (query.calledId === "paginate") {
+        let currentPage = Number(page), currentPerPage = Number(perPage);
+        console.log('currentPage, currentPerPage', currentPage, currentPerPage)
+
+        projectChangeRequestsList = await ProjectChangeRequest(connect(DB_CONNECTION, portal)).find({
+            taskProject: projectId,
+        }).skip((currentPage - 1) * currentPerPage).limit(currentPerPage)
+        .populate({ path: "creator", select: "_id name email" });
+
+        return {
+            docs: projectChangeRequestsList,
+            totalDocs: totalList,
+        }
+    }
+    projectChangeRequestsList = await ProjectChangeRequest(connect(DB_CONNECTION, portal)).find({
         taskProject: projectId,
     }).populate({ path: "creator", select: "_id name email" });
     console.log('Lấy danh sách CR', projectChangeRequestsList.length)
@@ -380,41 +407,54 @@ exports.updateStatusProjectChangeRequest = async (portal, changeRequestId, reque
             requestStatus,
         }
     }, { new: true });
-    // nếu requestStatus là đồng ý thì thực thi
+    // Nếu requestStatus là đồng ý thì thực thi
     if (Number(requestStatus) === 3) {
-        // Cập nhật + Tạo mới task nếu có
-        for (let affectedItem of updateCRStatusResult.affectedTasksList) {
-            // Nếu task cần edit
-            if (affectedItem.task) {
-                await Task(connect(DB_CONNECTION, portal)).findByIdAndUpdate(affectedItem.task, {
-                    $set: {
-                        preceedingTasks: affectedItem.new.preceedingTasks,
-                        startDate: affectedItem.new.startDate,
-                        startDate: affectedItem.new.startDate,
-                        endDate: affectedItem.new.endDate,
-                        estimateNormalTime: affectedItem.new.estimateNormalTime,
-                        estimateOptimisticTime: affectedItem.new.estimateOptimisticTime,
-                        estimateNormalCost: affectedItem.new.estimateNormalCost,
-                        estimateMaxCost: affectedItem.new.estimateMaxCost,
-                        actorsWithSalary: affectedItem.new.actorsWithSalary,
-                        responsibleEmployees: affectedItem.new.responsibleEmployees,
-                        accountableEmployees: affectedItem.new.accountableEmployees,
-                        totalResWeight: affectedItem.new.totalResWeight,
-                        estimateAssetCost: affectedItem.new.estimateAssetCost,
-                    }
-                }, { new: true });
-            }
-            // Nếu affectedItem.task là dạng undefined
-            else {
-                await createProjectTask(portal, updateCRStatusResult.currentTask);
-            }
+        // Nếu là dạng normal thì bỏ qua
+        if (updateCRStatusResult.type === 'normal') { }
+        // Nếu là dạng update trạng thái hoãn huỷ công việc
+        else if (updateCRStatusResult.type === 'update_status_task') {
+            const affectedItem = updateCRStatusResult.affectedTasksList[0];
+            await Task(connect(DB_CONNECTION, portal)).findByIdAndUpdate(affectedItem.task, {
+                $set: {
+                    status: affectedItem.new.status,
+                }
+            }, { new: true });
         }
-        await Project(connect(DB_CONNECTION, portal)).findByIdAndUpdate(updateCRStatusResult.taskProject, {
-            $set: {
-                budgetChangeRequest: updateCRStatusResult.baseline.newCost,
-                endDateRequest: updateCRStatusResult.baseline.newEndDate,
+        // Nếu là dạng edit_task hoặc add_task
+        else {
+            for (let affectedItem of updateCRStatusResult.affectedTasksList) {
+                // Nếu task cần edit
+                if (affectedItem.task) {
+                    await Task(connect(DB_CONNECTION, portal)).findByIdAndUpdate(affectedItem.task, {
+                        $set: {
+                            preceedingTasks: affectedItem.new.preceedingTasks,
+                            startDate: affectedItem.new.startDate,
+                            startDate: affectedItem.new.startDate,
+                            endDate: affectedItem.new.endDate,
+                            estimateNormalTime: affectedItem.new.estimateNormalTime,
+                            estimateOptimisticTime: affectedItem.new.estimateOptimisticTime,
+                            estimateNormalCost: affectedItem.new.estimateNormalCost,
+                            estimateMaxCost: affectedItem.new.estimateMaxCost,
+                            actorsWithSalary: affectedItem.new.actorsWithSalary,
+                            responsibleEmployees: affectedItem.new.responsibleEmployees,
+                            accountableEmployees: affectedItem.new.accountableEmployees,
+                            totalResWeight: affectedItem.new.totalResWeight,
+                            estimateAssetCost: affectedItem.new.estimateAssetCost,
+                        }
+                    }, { new: true });
+                }
+                // Nếu affectedItem.task là dạng undefined => Dạng add_task
+                else {
+                    await createProjectTask(portal, updateCRStatusResult.currentTask);
+                }
             }
-        }, { new: true });
+            await Project(connect(DB_CONNECTION, portal)).findByIdAndUpdate(updateCRStatusResult.taskProject, {
+                $set: {
+                    budgetChangeRequest: updateCRStatusResult.baseline.newCost,
+                    endDateRequest: updateCRStatusResult.baseline.newEndDate,
+                }
+            }, { new: true });
+        }
     }
     // query lại danh sách projectChangeRequest
     const projectChangeRequestsList = await ProjectChangeRequest(connect(DB_CONNECTION, portal)).find({

@@ -22,7 +22,6 @@ exports.getUsers = async (req, res) => {
                 content: users
             });
         } catch (error) {
-
             Logger.error(req.user.email, 'get_users_faile', req.portal);
             res.status(400).json({
                 success: false,
@@ -73,7 +72,6 @@ getAllEmployeeOfUnitByIds = async (req, res) => {
 };
 
 exports.getUser = async (req, res) => {
-
     try {
         var user = await UserService.getUser(req.portal, req.params.id);
 
@@ -84,7 +82,6 @@ exports.getUser = async (req, res) => {
             content: user
         });
     } catch (error) {
-
         Logger.error(req.user.email, 'SHOW_USER', req.portal);
         res.status(400).json({
             success: false,

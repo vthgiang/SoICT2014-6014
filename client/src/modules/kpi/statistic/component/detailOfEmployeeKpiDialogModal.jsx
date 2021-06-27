@@ -64,7 +64,7 @@ function DetailOfEmployeeKpiDialogModal(props) {
                                     <td title={item.creatorInfo.email && item.creatorInfo.email.length !== 0 && item.creatorInfo.email[0]}>
                                         {item.creatorInfo.email && item.creatorInfo.email.length !== 0 && item.creatorInfo.email[0]}
                                     </td>
-                                    <td title={parse(item.criteria)}>{parse(item.criteria)}</td>
+                                    <td title={item?.criteria && parse(item.criteria)}>{item?.criteria && parse(item.criteria)}</td>
                                     <td title={item.status}>{formatStatus(item.status)}</td>
                                     <td title={item.weight} style={{ textAlign: "left" }}>{item.weight}</td>
                                 </tr>

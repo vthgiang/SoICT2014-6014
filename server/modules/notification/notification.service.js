@@ -1,5 +1,5 @@
 const { freshArray } = require("../../helpers/functionHelper");
-
+const { htmlToText } = require('html-to-text');
 const {
     OrganizationalUnit,
     UserRole,
@@ -23,6 +23,7 @@ exports.getAllManualNotifications = async (portal, creator) => {
         .populate([
             {
                 path: "users",
+                select: "_id name email avatar"
             },
             {
                 path: "organizationalUnits",
@@ -54,7 +55,7 @@ exports.paginateManualNotifications = async (portal, creator, data) => {
             },
             populate: [
                 {
-                    path: "users",
+                    path: "users", select: "_id name email avatar"
                 },
                 {
                     path: "organizationalUnits",
@@ -99,7 +100,7 @@ exports.createManualNotification = async (portal, data, files) => {
         .findById(notify._id)
         .populate([
             {
-                path: "users",
+                path: "users", select: "_id name email avatar"
             },
             {
                 path: "organizationalUnits",
@@ -231,7 +232,7 @@ exports.createNotification = async (
     const listPush = listUsersPushNotification.filter(
         (token, i) => listUsersPushNotification.indexOf(token) === i
     );
-
+    
     try {
         // Đặt trong try catch, phòng khi firebase bị lỗi/đổi token
         if (listPush.length > 0) {
@@ -246,6 +247,7 @@ exports.createNotification = async (
                 },
                 notification: {
                     title: data.title,
+                    body: data?.associatedDataObject?.description ? htmlToText(data.associatedDataObject.description) : '',
                 },
             });
         }

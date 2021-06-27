@@ -3,7 +3,13 @@ import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { AssetManagerActions } from '../../../asset/admin/asset-information/redux/actions';
 import { AssetService } from "../../../asset/admin/asset-information/redux/services";
-
+function areEqual(prevProps, nextProps) {
+    if (prevProps.user._id === nextProps.user._id ){
+        return true
+    } else {
+        return false
+    }
+}
 function AssetsManagedByUser(props) {
     const [ listAssets, setListAssets ] = useState({status:false})
     const { translate } = props
@@ -146,4 +152,4 @@ const mapDispatchToProps = {
 
 
 
-export default connect(mapState, mapDispatchToProps)(withTranslate(AssetsManagedByUser));
+export default connect(mapState, mapDispatchToProps)(withTranslate(React.memo(AssetsManagedByUser,areEqual)));

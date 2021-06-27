@@ -17,8 +17,8 @@ function ResultsOfOrganizationalUnitKpiChart(props) {
     let currentMonth = currentDate.getMonth();
 
     const INFO_SEARCH = {
-        startDate: currentYear + '-' + 1,
-        endDate: (currentMonth > 10) ? ((currentYear + 1) + '-' + (currentMonth - 10)) : (currentYear + '-' + (currentMonth + 2))
+        startDate: currentYear + '-0' + 1,
+        endDate: (currentMonth >= 9) ? (currentYear + '-' + (currentMonth + 1)) : (currentYear + '-0' + (currentMonth + 1))
     };
 
     const DATA_STATUS = {NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3};
@@ -130,13 +130,7 @@ function ResultsOfOrganizationalUnitKpiChart(props) {
     };
 
     const handleSelectMonthEnd = async (value) => {
-        let month;
-
-        if (value.slice(0, 2) < 12) {
-            month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)) + 1);
-        } else {
-            month = (new Number(value.slice(3, 7)) + 1) + '-' + '1';
-        }
+        let month = value.slice(3, 7) + '-' + value.slice(0, 2);
 
         INFO_SEARCH.endDate = month;
     };
@@ -145,7 +139,7 @@ function ResultsOfOrganizationalUnitKpiChart(props) {
         let startDate = new Date(INFO_SEARCH.startDate);
         let endDate = new Date(INFO_SEARCH.endDate);
         const {translate} = props;
-        if (startDate.getTime() >= endDate.getTime()) {
+        if (startDate && endDate && startDate.getTime() > endDate.getTime()) {
             Swal.fire({
                 title: translate('kpi.organizational_unit.dashboard.alert_search.search'),
                 type: 'warning',
@@ -276,6 +270,7 @@ function ResultsOfOrganizationalUnitKpiChart(props) {
                 },
             ]
         }
+
         return exportData;
     };
 

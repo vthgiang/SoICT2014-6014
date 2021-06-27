@@ -9,7 +9,7 @@ import GanttTasksProject from './ganttTasksProject';
 import KanbanTasksProject from './kanbanTasksProject';
 import CpmTasksProject from './cpmTasksProject';
 import moment from 'moment';
-import { getEndDateOfProject } from './functionHelper';
+import { getEndDateOfProject, renderProjectTypeText } from './functionHelper';
 
 const ProjectDetailForm = (props) => {
     const { translate, projectDetail, projectDetailId, currentProjectTasks } = props;
@@ -30,20 +30,20 @@ const ProjectDetailForm = (props) => {
                             <div className="col-md-6">
                                 <div className="form-horizontal">
                                     <div className="form-group">
-                                        <strong className="col-sm-4">{translate('project.code')}</strong>
-                                        <div className="col-sm-8">
-                                            <span>{projectDetail ? projectDetail?.code : null}</span>
-                                        </div>
+                                        <strong className="col-sm-4">{translate('project.detail_link')}</strong>
+                                        <a className="col-sm-8" href={`/project/project-details?id=${projectDetail?._id}`} target="_blank">
+                                            {projectDetail ? projectDetail?.name : null}
+                                        </a>
                                     </div>
                                 </div>
                             </div>
                             <div className="col-md-6">
                                 <div className="form-horizontal">
                                     <div className="form-group">
-                                        <strong className="col-sm-4">{translate('project.detail_link')}</strong>
-                                        <a className="col-sm-8" href={`/project/project-details?id=${projectDetail?._id}`} target="_blank">
-                                            {projectDetail ? projectDetail?.name : null}
-                                        </a>
+                                        <strong className="col-sm-4">Hình thức quản lý dự án</strong>
+                                        <div className="col-sm-8">
+                                            {projectDetail ? renderProjectTypeText(projectDetail?.projectType) : null}
+                                        </div>
                                     </div>
                                 </div>
                             </div>

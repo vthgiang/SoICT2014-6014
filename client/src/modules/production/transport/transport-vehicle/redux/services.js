@@ -15,12 +15,13 @@ function getAllTransportVehicles(queryData) {
                 // page: queryData !== undefined ? queryData.page : null,
                 // limit: queryData !== undefined ? queryData.limit : null
                 page: 1,
-                limit: 100
+                limit: 100,
+                currentRole: localStorage.getItem('currentRole'),
             }
         },
          false, // Nếu có truy vấn thành công thì không hiện thông báo
          true, // Nếu có truy vấn thất bại thì hiện thông báo
-         "transport.vehicle"
+         "manage_transport.transportVehicle"
     );
 }
 
@@ -33,7 +34,7 @@ function createTransportVehicle(data) {
         },
         true,
         true,
-        "manage_transport"
+        "manage_transport.transportVehicle"
     )
 }
 
@@ -46,7 +47,7 @@ function createTransportPlanVehicleNotDuplicate(id, data) {
         },
         true,
         true,
-        "manage_transport"
+        "manage_transport.transportVehicle"
     )    
 }
 
@@ -60,6 +61,6 @@ function editTransportVehicle(id, data) {
         },
         true,
         true,
-        "manage_transport"
+        "manage_transport.transportVehicle"
     )     
 }

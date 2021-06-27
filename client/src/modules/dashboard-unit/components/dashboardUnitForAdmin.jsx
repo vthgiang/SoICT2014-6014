@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import Swal from 'sweetalert2';
 
 import { SelectMulti, LazyLoadComponent } from '../../../common-components';
 import { showListInSwal } from '../../../helpers/showListInSwal';
@@ -17,9 +18,9 @@ import { LoadTaskOrganizationChart } from '../../task/task-dashboard/task-organi
 import ViewAllTaskUrgent from './viewAllTaskUrgent';
 import ViewAllTaskNeedToDo from './viewAllTaskNeedToDo';
 import StatisticsKpiUnits from '../../kpi/organizational-unit/dashboard/component/statisticsKpiUnits'
+import { StatisticsTaskUnits } from './statisticsTaskUnits'
 
 import c3 from 'c3';
-import Swal from 'sweetalert2';
 import "./dashboardUnit.css";
 
 function DashboardUnitForAdmin(props) {
@@ -444,6 +445,24 @@ function DashboardUnitForAdmin(props) {
 
     }
 
+    const showStatisticsTaskUnitDoc = () => {
+        Swal.fire({
+            icon: "question",
+
+            html: `<h3 style="color: red"><div>Thống kê điểm công việc giữa các đơn vị</div> </h3>
+            <div style="font-size: 1.3em; text-align: left; margin-top: 15px; line-height: 1.7">
+            <p>Biểu đồ này cho biết điểm tự động trung bình theo thời gian thực hiện công việc của từng đơn vị.</b></p>
+            <p>Cách tính:</p>
+            <ul>
+                <li>Lấy n công việc đã tạo đánh giá trong tháng hiện tại của 1 đơn vị</li>
+                <li>Tính tổng (điểm tự động x thời gian thực hiện trong lần đánh giá) của từng công việc</li>
+                <li>Điểm trung bình = Tổng trên / Tổng (thời gian trong lần đánh giá của từng công việc)</p></li>
+            </ul>
+            </div>`,
+            width: "50%",
+        })
+    }
+
     const getUnitName = (arrayUnit, arrUnitId) => {
         let data = [];
         arrayUnit && arrayUnit.forEach(x => {
@@ -650,6 +669,46 @@ function DashboardUnitForAdmin(props) {
                         </div>
                     </div>
 
+                    {/* Thống kê CV */}
+                    <div className="row">
+                        <div className="col-md-12">
+                            <LazyLoadComponent>
+                                <div className="box box-primary">
+                                    <div className="box-header with-border">
+                                        <div className="box-title">
+                                            {translate('dashboard_unit.statistics_task_unit')} {monthTitle}
+                                            {
+                                                organizationalUnits && organizationalUnits.length < 2 ?
+                                                    <>
+                                                        <span>{` ${translate('task.task_dashboard.of')}`}</span>
+                                                        <span>{` ${getUnitName(listUnitSelect, organizationalUnits).map(o => o).join(", ")}`}</span>
+                                                    </>
+                                                    :
+                                                    <span onClick={() => showUnitTask(listUnitSelect, organizationalUnits)} style={{ cursor: 'pointer' }}>
+                                                        <span>{` ${translate('task.task_dashboard.of')}`}</span>
+                                                        <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {organizationalUnits?.length}</a>
+                                                        <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                                    </span>
+                                            }
+                                            <a className="text-red" title={translate('task.task_management.explain')} onClick={() => showStatisticsTaskUnitDoc()}>
+                                                <i className="fa fa-question-circle" style={{ color: '#dd4b39', cursor: 'pointer', marginLeft: '5px' }} />
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div className="box-body">
+                                        {
+                                            organizationalUnits &&
+                                                <StatisticsTaskUnits 
+                                                    organizationalUnits={department?.list?.filter(item => organizationalUnits.includes(item?._id))} 
+                                                    monthStatistics={month} 
+                                                />
+                                        }
+                                    </div>
+                                </div>
+                            </LazyLoadComponent>
+                        </div>
+                    </div>
+
                     {/* Thống kê KPI */}
                     <div className="row">
                         <div className="col-md-12">
@@ -661,7 +720,7 @@ function DashboardUnitForAdmin(props) {
                                     <div className="box-body">
                                         {
                                             organizationalUnits &&
-                                            <StatisticsKpiUnits organizationalUnitIds={organizationalUnits} monthStatistics={month} />
+                                            <StatisticsKpiUnits organizationalUnitIds={organizationalUnits} month={month} type="for-admin"/>
                                         }
                                     </div>
                                 </div>

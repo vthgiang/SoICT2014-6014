@@ -6,36 +6,39 @@ function MapDirectionsRenderer(props) {
     const [directions, setDirections] = useState(null);
     const [error, setError] = useState(null);
   
-    const { places, travelMode } = props;
+    const { places, travelMode, stt } = props;
     useEffect(() => {
-        if (places && travelMode){
-            let waypoints = []
-            places.map((p, index) => {
-                waypoints.push({
-                    location: { lat: p?.location.lat, lng: p?.location.lng },
-                    stopover: true
-                })
-            });
-    
-            const origin = waypoints.shift().location;
-            const destination = waypoints.pop().location;
-            const directionsService = new window.google.maps.DirectionsService();
-            directionsService.route(
-                {
-                    origin: origin,
-                    destination: destination,
-                    travelMode: travelMode,
-                    waypoints: waypoints
-                },
-                (result, status) => {
-                    if (status === window.google.maps.DirectionsStatus.OK) {
-                        setDirections(result);
-                    } else {
-                        setError(result);
+        let timeDelay = (typeof stt == 'number')?stt*2000:2000;
+        setTimeout(()=>{
+            if (places && travelMode){
+                let waypoints = []
+                places.map((p, index) => {
+                    waypoints.push({
+                        location: { lat: p?.location.lat, lng: p?.location.lng },
+                        stopover: true
+                    })
+                });
+        
+                const origin = waypoints.shift().location;
+                const destination = waypoints.pop().location;
+                const directionsService = new window.google.maps.DirectionsService();
+                directionsService.route(
+                    {
+                        origin: origin,
+                        destination: destination,
+                        travelMode: travelMode,
+                        waypoints: waypoints
+                    },
+                    (result, status) => {
+                        if (status === window.google.maps.DirectionsStatus.OK) {
+                            setDirections(result);
+                        } else {
+                            setError(result);
+                        }
                     }
-                }
-            );
-        }
+                );
+            }
+        }, timeDelay)
     }, [places, travelMode]);
   
     if (error) {

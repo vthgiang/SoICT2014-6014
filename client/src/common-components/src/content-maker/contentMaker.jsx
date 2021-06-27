@@ -13,7 +13,9 @@ class ContentMaker extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            showDropFileHere: false
+            showDropFileHere: false,
+            file:[],
+            filepaste:[]
         };
     }
 
@@ -44,6 +46,44 @@ class ContentMaker extends Component {
             event.preventDefault();
         }
     }
+    //paste ảnh
+    handlePaste = e => {
+        if (e.clipboardData.files.length) {
+            const fileObject = e.clipboardData.files[0];
+            this.setState({
+                filepaste : [...this.state.filepaste,fileObject]
+            }) 
+            let files= [...this.state.file,fileObject]
+            this.setState({file:files})
+            if (this.props.onFilesChange){
+                this.props.onFilesChange(files)
+            }
+        }
+    };
+    onActionFilesChange = (files) => {
+        let listfiles = [...files, ...this.state.filepaste]
+        this.setState({
+            file:listfiles
+        })
+        if (this.props.onFilesChange){
+            this.props.onFilesChange(listfiles)
+        }
+    }
+    onFilesRemote = (index) => {
+        let files = this.state.file
+        let fileRemove = files.splice(index, 1)
+        this.setState(state => {
+            return {
+                ...state,
+                filepaste: state.filepaste.filter(value => value.lastModified !== fileRemove[0].lastModified),
+                file: files
+            }
+        })
+        console.log(files);
+        if (this.props.onFilesChange){
+            this.props.onFilesChange(files)
+        }
+    }
     render() {
         const { translate } = this.props;
         const {
@@ -54,10 +94,11 @@ class ContentMaker extends Component {
         } = this.props
         return (
             <React.Fragment>
+            <div onPaste={this.handlePaste}>
                 <Files
                     ref='fileComponent'
                     className='files-dropzone-list'
-                    onChange={onFilesChange}
+                    onChange={this.onActionFilesChange}
                     onError={onFilesError}
                     multiple={multiple}
                     maxFiles={maxFiles}
@@ -80,12 +121,15 @@ class ContentMaker extends Component {
                         </div>
                     }
                 </Files>
+            </div>
                 <div className={controlCssClass}>
                     <div className="" style={{ textAlign: "right" }}>
                         <a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={(e) => this.refs.fileComponent.openFileChooser()}>{translate("task.task_perform.attach_file")}&nbsp;&nbsp;&nbsp;&nbsp;</a>
                         <a style={{ cursor: "pointer" }} className="link-black text-sm" disabled={disabledSubmit} onClick={(e) => {
                             onSubmit(e);
-                            this.refs.fileComponent.removeFiles(); // Xóa các file đã chọn sau khi submit
+                            this.refs.fileComponent.removeFiles(); 
+                            this.setState({filepaste:[]})
+                            // Xóa các file đã chọn sau khi submit
                         }}>
                             {submitButtonText}&nbsp;&nbsp;&nbsp;
                         </a>
@@ -93,16 +137,20 @@ class ContentMaker extends Component {
                     </div>
                     {files && files.length > 0 &&
                         <div className='files-list'>
-                            <ul>{files.map((file) =>
+                            <ul>{files.map((file,index) =>
                                 <li className='files-list-item' key={file.id}>
-                                    <div className='files-list-item-preview'>
-                                        {file.preview.type === 'image' ?
+                                    <div className='files-list-item-preview row'>
+                                        {!file.preview ?
                                             <React.Fragment>
-                                                <img className='files-list-item-preview-image' src={file.preview.url} />
+                                                <img className='files-list-item-preview-image' src={window.URL.createObjectURL(file)} />
+                                            </React.Fragment>
+                                            : file.preview.type === 'image' ?
+                                            <React.Fragment>
+                                                <img className='files-list-item-preview-image' src={window.URL.createObjectURL(file)} />
                                             </React.Fragment>
                                             :
                                             <div className='files-list-item-preview-extension'>{file.extension}</div>}
-                                        <a style={{ cursor: "pointer" }} className="pull-right btn-box-tool" onClick={(e) => { this.refs.fileComponent.removeFile(file) }}><i className="fa fa-times"></i></a>
+                                        <a style={{ cursor: "pointer" }} className="pull-right btn-box-tool" onClick={(e) => { this.refs.fileComponent.removeFile(file); this.onFilesRemote(index) }}><i className="fa fa-times"></i></a>
                                     </div>
                                     <div className='files-list-item-content'>
                                         <div className='files-list-item-content-item files-list-item-content-item-1'>{file.name}</div>

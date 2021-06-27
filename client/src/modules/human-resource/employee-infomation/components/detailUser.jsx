@@ -6,36 +6,13 @@ import KpiUser from "./kpiUser";
 import TaskUser from "./taskUser";
 import TakeLeaveUser from "./overtimeUser"
 import { UserServices } from "../../../super-admin/user/redux/services";
-import { SelectMulti, DatePicker } from '../../../../common-components';
+import { SelectMulti, forceCheckOrVisible } from '../../../../common-components';
 import CommendationUser from "./commendationUser";
 import DisciplineUser from "./disciplineUser";
 
 function DetailUser(props) {
-    const [ nameTask, setNameTask ] = useState(" thực hiện ")
-    const formatDate = (date, monthYear = false) => {
-        if (date) {
-            let d = new Date(date),
-                month = '' + (d.getMonth() + 1),
-                day = '' + d.getDate(),
-                year = d.getFullYear();
-
-            if (month.length < 2)
-                month = '0' + month;
-            if (day.length < 2)
-                day = '0' + day;
-
-            if (monthYear === true) {
-                return [month, year].join('-');
-            } else return [day, month, year].join('-');
-        }
-        return date;
-    };
-    let date = new Date()
-    let _startDate = formatDate(date.setMonth(new Date().getMonth() - 6), true);
-    const [state, setState] = useState({
-        startDate: _startDate,
-        endDate: formatDate(Date.now(), true)
-    })
+    const [nameTask, setNameTask] = useState(" thực hiện ")
+    const { translate } = props
     const [email, setEmail] = useState()
     useEffect(() => {
         if (props.user._id) {
@@ -45,62 +22,88 @@ function DetailUser(props) {
                 })
         }
     }, [props.user._id])
-    const handleStartMonthChange = (value) => {
-        setState({
-            ...state,
-            startDate: value
-        })
+    const handleNavTabs = (value) => {
+        if (value) {
+            forceCheckOrVisible(true, false);
+        }
+        window.dispatchEvent(new Event('resize')); // Fix lỗi chart bị resize khi đổi tab
     }
-
-    const handleEndMonthChange = (value) => {
-        setState({
-            ...state,
-            endDate: value,
-        })
-    }
-    const handleNameTask = (taskName) =>{
+    const handleNameTask = (taskName) => {
         setNameTask(taskName)
     }
+    const { state, search } = props
     let partMonth1 = state.startDate.split('-');
     let startDate = [partMonth1[1], partMonth1[0]].join('-');
     let partMonth2 = state.endDate.split('-');
     let endDate = [partMonth2[1], partMonth2[0]].join('-');
     return (
-        <div>
-            <div className="form-inline" >
-                <div className="form-group">
-                    <label className="form-control-static" >Từ tháng</label>
-                    <DatePicker
-                        id="form-month-annual-leave"
-                        dateFormat="month-year"
-                        deleteValue={false}
-                        value={state.startDate}
-                        onChange={handleStartMonthChange}
-                    />
+        <div className="nav-tabs-custom">
+        <div className="col-xs-12">
+            <ul className="nav nav-tabs">
+                <li className="active"><a href="#task" data-toggle="tab" onClick={() => handleNavTabs()}>Công việc nhân viên</a></li>
+                <li><a href="#asset" data-toggle="tab" onClick={() => handleNavTabs(true)}>Tài sản nhân viên</a></li>
+                <li><a href="#commendation-dícipline" data-toggle="tab" onClick={() => handleNavTabs(true)}>Khen thường và kỷ luật</a></li>
+                <li><a href="#kpi" data-toggle="tab" onClick={() => handleNavTabs(true)}>KPI nhân viên</a></li>
+                <li><a href="#annualLeave" data-toggle="tab" onClick={() => handleNavTabs(true)}>Nghỉ phép-Tăng ca</a></li>
+            </ul>
+            </div>
+            <div className="tab-content ">
+                <div className="tab-pane active" id="task">
+                    <TaskUser user={props.user} unitId={props.id} startDate={startDate} endDate={endDate} search={search} changeTask={handleNameTask}></TaskUser>
                 </div>
-                <div className='form-group'>
-                    <label className="form-control-static" >Đến tháng</label>
-                    <DatePicker
-                        id="to-month-annual-leave"
-                        dateFormat="month-year"
-                        deleteValue={false}
-                        value={state.endDate}
-                        onChange={handleEndMonthChange}
-                    />
+                <div className="tab-pane" id="asset">
+                    <div className="row">
+                        <div className="col-xs-12">
+                            <div className="box box-primary">
+                                <div className="box-header with-border">
+                                    <h3 class="title">Tài sản quản lý</h3>
+                                </div>
+                                <AssetsManagedByUser user={props.user} unitId={props.id} type="quản lý" ></AssetsManagedByUser>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-xs-12">
+                            <div className="box box-primary">
+                                <div className="box-header with-border">
+                                    <h3 class="title">Tài sản sử dụng</h3>
+                                </div>
+                                <AssetsManagedByUser user={props.user} unitId={props.id} type="sử dụng" ></AssetsManagedByUser>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="tab-pane" id="commendation-dícipline">
+                    <div className="row">
+                        <div className="col-xs-12">
+                            <div className="box box-primary">
+                                <div className="box-header with-border">
+                                    <h3 class="title">Thông tin khen thưởng</h3>
+                                </div>
+                                <CommendationUser user={props.user} unitId={props.id} email={email} startDate={startDate} endDate={endDate} search={search} ></CommendationUser>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-xs-12">
+                            <div className="box box-primary">
+                                <div className="box-header with-border">
+                                    <h3 class="title">Thông tin kỷ luật</h3>
+                                </div>
+                                <DisciplineUser user={props.user} unitId={props.id} email={email} startDate={startDate} endDate={endDate} search={search}></DisciplineUser>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="tab-pane" id="kpi">
+                <h3 class="title">KPI nhân viên</h3>
+                    <KpiUser user={props.user} unitId={props.id} startDate={startDate} endDate={endDate} search={search} ></KpiUser>
+                </div>
+                <div className="tab-pane" id="annualLeave">
+                    <TakeLeaveUser user={props.user} unitId={props.id} email={email} startDate={startDate} endDate={endDate} search={search}></TakeLeaveUser>
                 </div>
             </div>
-            <label>Công việc {nameTask}</label>
-            <TaskUser user={props.user} unitId={props.id} startDate={startDate} endDate={endDate} changeTask={handleNameTask}></TaskUser>
-            <label>Tài sản quản lý</label>
-            <AssetsManagedByUser user={props.user} unitId={props.id} type="quản lý" ></AssetsManagedByUser>
-            <label>Tài sản sử dụng</label>
-            <AssetsManagedByUser user={props.user} unitId={props.id} type="sử dụng" ></AssetsManagedByUser>
-            <label>Thông tin khen thưởng</label>
-            <CommendationUser user={props.user} unitId={props.id} email={email} startDate={startDate} endDate={endDate}></CommendationUser>
-            <label>Thông tin kỷ luật</label>
-            <DisciplineUser user={props.user} unitId={props.id} email={email} startDate={startDate} endDate={endDate}></DisciplineUser>
-            <KpiUser user={props.user} unitId={props.id} startDate={startDate} endDate={endDate} ></KpiUser>
-            <TakeLeaveUser user={props.user} unitId={props.id} email={email} startDate={startDate} endDate={endDate} ></TakeLeaveUser>
+
         </div>
     )
 }
