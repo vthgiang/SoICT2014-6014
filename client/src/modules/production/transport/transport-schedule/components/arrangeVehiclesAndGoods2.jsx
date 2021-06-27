@@ -14,7 +14,7 @@ import { getTableConfiguration } from '../../../../../helpers/tableConfiguration
 
 function ArrangeVehiclesAndGoods(props) {
 
-    let { currentTransportSchedule} = props;
+    let { currentTransportSchedule, callBackStateData} = props;
 
     const [transportArrangeRequirements, setAransportArrangeRequirements] = useState([]);
 
@@ -209,10 +209,40 @@ function ArrangeVehiclesAndGoods(props) {
         // reloadOrdinalTransport();
     }
 
+    useEffect(() => {
+        let data = [];
+        /**
+         * data = 
+         * [
+         *  transportVehicle: id,
+         *  transportRequirements: [id1, id2,...]
+         * ]
+         * item = [
+         *      vehicle: id,
+         *      transportRequirements: [id, id]
+         * ]
+         * data model tương ứng: 
+         * transportVehicles: [
+         *      transportVehicle: id,
+         *      transportRequirements: [id, id];
+         * ]
+         */
+        if (distributionState && distributionState.length !== 0){
+            distributionState.map((item, index) => {
+                let singleData = {
+                    transportVehicle: item.vehicle,
+                    transportRequirements: item.transportRequirements,
+                }
+                data.push(singleData);
+            })
+        }
+        callBackStateData({transportVehicles: data})
+    }, [distributionState])
+
     return (
         <React.Fragment>
         <div className="box-body qlcv">
-            <div className="form-inline">
+            {/* <div className="form-inline">
 
                 <div className="form-group">
                     <button type="button" className="btn btn-success" title="Lưu" 
@@ -221,7 +251,7 @@ function ArrangeVehiclesAndGoods(props) {
                         Lưu
                     </button>
                 </div>
-            </div>
+            </div> */}
         {
             // <MapContainer 
             //     locations={[
