@@ -138,7 +138,7 @@ exports.getAllTransportPlans = async (portal, data) => {
             keySearch.status = status;
         }
     }
-    console.log(keySearch);
+    // console.log(keySearch);
     if (data.page && data.limit){
         page= data.page;
         limit = data.limit;
@@ -321,7 +321,7 @@ exports.editTransportPlan = async (portal, id, data) => {
         }
         if (oldTransportPlan.transportRequirements && oldTransportPlan.transportRequirements.length!==0
             && data.transportRequirements && data.transportRequirements.length!==0){
-                console.log("vao 203");
+                // console.log("vao 203");
                 let sameTransportRequirements = oldTransportPlan.transportRequirements.filter(r=>{
                     return data.transportRequirements.indexOf(String(r)) !==-1;
                 })

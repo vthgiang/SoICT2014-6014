@@ -72,7 +72,6 @@ function TransportTime(props) {
                                 >
                                     <label>
                                         {"Chọn ngày"}
-                                        <span className="attention"> * </span>
                                     </label>
                                     <DatePicker
                                         id={componentId?componentId:`expected_date2`}

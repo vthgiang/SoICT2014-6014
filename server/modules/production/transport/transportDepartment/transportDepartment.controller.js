@@ -67,3 +67,27 @@ exports.getUserByRole = async (req, res) => {
         });
     }
 }
+
+exports.deleteTransportDepartment = async (req, res) => {
+    try {
+        let { id } = req.params;
+        let deletedDepartment = await TransportDepartment.deleteDepartment(req.portal, id);
+        if (deletedDepartment) {
+            await Log.info(req.user.email, "DELETED_TRANSPORT_DEPARTMENT", req.portal);
+            res.status(200).json({
+                success: true,
+                messages: ["delete_success"],
+                content: deletedDepartment
+            });
+        } else {
+            throw Error("TransportRequirement is invalid");
+        }
+    } catch (error) {
+        await Log.error(req.user.email, "DELETED_TRANSPORT_DEPARTMENT", req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ["delete_fail"],
+            content: error.message
+        });
+    }
+}

@@ -465,6 +465,7 @@ function TransportRequirementsCreateForm(props) {
                                     <label>
                                         Người phê duyệt
                                     </label>
+                                        <span className="attention"> * </span>
                                     <SelectBox
                                         id={`select-approver`}
                                         className="form-control select2"

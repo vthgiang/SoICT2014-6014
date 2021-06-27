@@ -45,6 +45,11 @@ function TransportDepartmentManagementTable(props) {
         return res;
     }
 
+    const handleDelete = (id) => {
+        console.log(id)
+        props.deleteTransportDepartment(id);
+    }
+
     return (
         <React.Fragment>
             <div className="box-body qlcv">
@@ -91,16 +96,15 @@ function TransportDepartmentManagementTable(props) {
                                             >
                                                 <i className="material-icons">view_list</i>
                                             </a>
-                                            {/* <a
-                                                className="edit text-yellow"
-                                                style={{ width: "5px" }}
-                                                title={"Chỉnh sửa thông tin"}
-                                                onClick={() => {
-                                                    this.handleEditBusinessDepartment(businessDepartment);
-                                                }}
-                                            >
-                                                <i className="material-icons">edit</i>
-                                            </a> */}
+                                            <DeleteNotification
+                                            // content={translate('manage_example.delete')}
+                                            content={"Xóa đơn vị vận chuyển "}
+                                            data={{
+                                                id: businessDepartment?._id,
+                                                info: businessDepartment?.organizationalUnit?.name,
+                                            }}
+                                            func={handleDelete}
+                                        />
                                         </td>
                                     </tr>
                                 ))}
@@ -112,14 +116,15 @@ function TransportDepartmentManagementTable(props) {
 }
 
 function mapState(state) {
-    console.log(state);
+    // console.log(state);
+    const {transportDepartment} = state; 
     const listTransportDepartments = state?.transportDepartment?.lists;
-    return {listTransportDepartments}
-
+    return {listTransportDepartments, transportDepartment}
 }
 
 const actions = {
     getAllTransportDepartments: transportDepartmentActions.getAllTransportDepartments,
+    deleteTransportDepartment: transportDepartmentActions.deleteTransportDepartment,
 }
 
 const connectedTransportDepartmentManagementTable = connect(mapState, actions)(withTranslate(TransportDepartmentManagementTable));

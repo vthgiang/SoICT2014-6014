@@ -252,3 +252,8 @@ exports.getDepartmentByRole = async (portal, currentRole) => {
     })
     return res;
 }
+
+exports.deleteDepartment = async (portal, id) => {
+    let department = await TransportDepartment(connect(DB_CONNECTION, portal)).findByIdAndDelete({ _id: id });
+    return department;
+}

@@ -196,6 +196,7 @@ function TransportGoods(props) {
                                 `}
                                 >
                                     <label>{"Chọn hàng hóa"}</label>
+                                        <span className="attention"> * </span>
                                     <SelectBox
                                         id={`select-good`}
                                         className="form-control select2"

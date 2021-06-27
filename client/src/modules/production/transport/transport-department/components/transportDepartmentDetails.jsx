@@ -86,9 +86,9 @@ function TransportDepartmentDetails(props) {
                         <label>
                             {"Đơn vị: "}
                         </label>
-                        <text>
+                        <p>
                             {organizationalUnit?.name}
-                        </text>
+                        </p>
                     </div>
 
                     <div className={`form-group`}>
