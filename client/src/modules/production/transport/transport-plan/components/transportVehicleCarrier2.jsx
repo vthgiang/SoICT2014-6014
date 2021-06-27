@@ -323,7 +323,7 @@ function TransportVehicleCarrier2(props) {
                                         {
                                             listDay && listDay.length!==0
                                             && listDay.map((day, index2) => (
-                                                <td className="tooltip-checkbox-transport">
+                                                <td className="tooltip-checkbox-transport" key={index2}>
                                                     <span className={"icon "+getStatusTickBox(formatDate(day), vehicle._id)}
                                                     title={"ngay-xe"} 
                                                     >
@@ -379,7 +379,7 @@ function TransportVehicleCarrier2(props) {
                                         {
                                             listDay && listDay.length!==0
                                             && listDay.map((day, index2) => (
-                                                <td className="tooltip-checkbox-transport">
+                                                <td className="tooltip-checkbox-transport" key={index2}>
                                                     <span className={"icon "+getStatusTickBox(formatDate(day), carrier._id)}
                                                     title={"ngay-nguoi"} 
                                                     >

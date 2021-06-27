@@ -5,7 +5,8 @@ import { withTranslate } from 'react-redux-multilingual';
 import { formatToTimeZoneDate, formatDate } from "../../../../../../helpers/formatDate"
 import ValidationHelper from '../../../../../../helpers/validationHelper';
 
-import { LocationMap } from '../map/locationMap'
+// import { LocationMap } from '../map/locationMap'
+import { MapContainer } from '../../../transportHelper/mapbox/map'
 import { TransportVehicleAndCarrierSelect } from "../transport-plan-detail/transportVehicleAndCarrierSelect"
 
 import { transportPlanActions } from '../../redux/actions';
@@ -227,13 +228,19 @@ function TransportPlanDetailInfo(props) {
                             {
                                 (listRequirements && listRequirements.length!==0)
                                 &&
-                                <LocationMap 
-                                    locations = {listSelectedRequirementsLocation}
-                                    loadingElement={<div style={{height: `100%`}}/>}
-                                    containerElement={<div style={{height: "45vh", marginTop: '20px'}}/>}
-                                    mapElement={<div style={{height: `100%`}}/>}
-                                    defaultZoom={10}
-                                    defaultCenter={listSelectedRequirementsLocation[0]?.locations}
+                                // <LocationMap 
+                                //     locations = {listSelectedRequirementsLocation}
+                                //     loadingElement={<div style={{height: `100%`}}/>}
+                                //     containerElement={<div style={{height: "45vh", marginTop: '20px'}}/>}
+                                //     mapElement={<div style={{height: `100%`}}/>}
+                                //     defaultZoom={10}
+                                //     defaultCenter={listSelectedRequirementsLocation[0]?.locations}
+                                // />
+                                
+                                <MapContainer
+                                    nonDirectLocations = {listSelectedRequirementsLocation}
+                                    // mapHeight={"45vh"}
+                                    flyToCenter={{center: listSelectedRequirementsLocation[0]?.locations}}
                                 />
                             }
                         </div>

@@ -15,11 +15,16 @@ import { transportVehicleActions } from '../../../transport-vehicle/redux/action
 import { transportDepartmentActions } from "../../../transport-department/redux/actions"
 import { generatePlanFastestMove } from "../../../transportHelper/generatePlan"
 
+import { TransportVehicleCarrier2 } from '../transportVehicleCarrier2'
+import { TransportRequirementsViewDetails } from "../../../transport-requirements/components/transportRequirementsViewDetails"
+
 import { getListDateBetween, isTimeZoneDateSmaller } from "../../../transportHelper/compareDateTimeZone"
+
+import { getTypeRequirement } from "../../../transportHelper/getTextFromValue"
 
 function TransportPlanGenerate(props) {
     // let allTransportRequirements;
-    let {transportRequirements, transportVehicle, transportDepartment, transportPlan} = props;
+    let {transportRequirements, transportVehicle, transportDepartment, transportPlan, translate} = props;
     const [formSchedule, setFormSchedule] = useState({
         code: "",
         startDate: "",
@@ -35,7 +40,9 @@ function TransportPlanGenerate(props) {
      * Danh sách tất cả transportrequirements theo thứ tự ưu tiên
      * [transportRequirement, ...]
      */
-    const [listRequirements, setListRequirements] = useState([])
+    const [listUnavailableRequirement, setListUnavailableRequirement] = useState([])
+    const [state, setState] = useState({});
+    let {curentTransportRequirementDetail} = state;
     const [listAll, setListAll] = useState({
         allRequirements: [],
         allPlans: [],
@@ -64,10 +71,10 @@ function TransportPlanGenerate(props) {
 
     const handleSubmitGenerate = () => {
         // console.log(listAll);
-        let generatePlan = generatePlanFastestMove(listAll.allRequirements, listAll.allPlans, listAll.allVehicles, listAll.allCarriers, formSchedule.inDay, formSchedule.startDate);
+        let generatePlan = generatePlanFastestMove(listAll?.allRequirements, listAll?.allPlans, listAll?.allVehicles, listAll?.allCarriers, formSchedule.inDay, formSchedule.startDate);
         // console.log(generatePlan);
         if (generatePlan){
-            let {plans} = generatePlan;
+            let {plans, listUnavailableRequirement} = generatePlan;
             let res=[]
             if (plans && plans.length!==0){
                 plans.map((item, index) => {
@@ -84,9 +91,11 @@ function TransportPlanGenerate(props) {
                 })
             }
             setListPlanGenerate(res);
+            setListUnavailableRequirement(listUnavailableRequirement);
         }
         else {
             setListPlanGenerate([]);
+            setListUnavailableRequirement(listAll?.allRequirements)
         }
         
     }
@@ -145,6 +154,15 @@ function TransportPlanGenerate(props) {
         // newList = [...newList.slice(0,stt), ...newList.slice(stt+1)];
         // setListPlanGenerate(newList);
     }
+
+    const handleShowDetailRequirementInfo = (transportRequirement) => {
+        setState({
+            ...state,
+            curentTransportRequirementDetail: transportRequirement,
+        });
+        window.$(`#modal-detail-info-example-hooks`).modal('show')
+    }
+    
     const save = () => {
         // props.createTransportPlan(formSchedule);
     }
@@ -276,13 +294,28 @@ function TransportPlanGenerate(props) {
                 hasSaveButton={false}
             >
             <form id="form-generate-transport-plans" >
-            
+                
+                <TransportRequirementsViewDetails
+                    curentTransportRequirementDetail={curentTransportRequirementDetail}
+                />
                 <div className="box-body">
+                    <div className="box box-solid">
+                        <div className="box-body qlcv">
+                            <TransportVehicleCarrier2 
+                                transportPlan = {transportPlan}
+                                // key={transportPlan}
+                            />
+                        </div>
+                    </div>
                     <TransportPlanDetailInfo
                         currentTransportPlan = {currentPlan}
                     />
                     
-
+            <div className="box box-solid">
+                <div className="box-header">
+                    <div className="box-title">{"Tạo kế hoạch vận chuyển tự động"}</div>
+                </div>
+                <div className="box-body qlcv">
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{padding: "0px"}}>
                         <div className="col-xs-12 col-sm-12 col-md-3 col-lg-3">
                             <div className="form-group">
@@ -387,7 +420,65 @@ function TransportPlanGenerate(props) {
                     }
                     </tbody>
                 </table>
+                </div>
+                </div>
             
+                    {
+                        listUnavailableRequirement && listUnavailableRequirement.length !==0
+                        &&
+                        <div className="box box-solid">
+                            <div className="box-header">
+                                <div className="box-title">{"Danh sách yêu cầu vận chuyển không thể xếp kế hoạch vận chuyển"}</div>
+                            </div>
+                            <div className="box-body qlcv">
+                                <table id={"unavailable-requirement"} className="table table-striped table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th className="col-fixed" style={{ width: 60 }}>{translate('manage_example.index')}</th>
+                                        <th>{"Mã yêu cầu"}</th>
+                                        <th>{"Loại yêu cầu"}</th>
+                                        <th>{"Địa chỉ nhận hàng"}</th>
+                                        <th>{"Địa chỉ giao hàng"}</th>
+                                        <th>{"Trọng tải"}</th>
+                                        <th>{"Thể tích"}</th>
+                                        <th>{"Xem chi tiết"}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        listUnavailableRequirement.map((x, index) => (
+                                            x
+                                            &&
+                                            <tr key={index}>
+                                                {/* <td>{index + 1 + (page - 1) * perPage}</td> */}
+                                                <td>{index+1}</td>
+                                                <td>{x.code}</td>
+                                                <td>{getTypeRequirement(x.type)}</td>
+                                                <td>{x.fromAddress}</td>
+                                                <td>{x.toAddress}</td>
+                                                <td>{x.payload}</td>
+                                                <td>{x.volume}</td>    
+                                                <td>
+                                                <a className="edit text-green" style={{ width: '5px' }} 
+                                                    // title={translate('manage_example.detail_info_example')} 
+                                                    title={'Thông tin chi tiết yêu cầu vận chuyển'}
+                                                    onClick={() => handleShowDetailRequirementInfo(x)}
+                                                >
+                                                    <i className="material-icons">
+                                                        visibility
+                                                    </i>
+                                                </a>
+                                                </td>                              
+                                            </tr>
+                                        ))
+                                    }
+                                </tbody>
+                            </table>
+                            </div>
+
+                        </div>
+                    }
+                    
                 </div>
             </form>
             </DialogModal>

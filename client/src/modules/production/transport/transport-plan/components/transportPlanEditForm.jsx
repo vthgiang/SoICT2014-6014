@@ -146,6 +146,13 @@ function TransportPlanEditForm(props) {
             supervisor: value[0],
         })
     }
+    
+    const handlePlanNameChange = (e) => {
+        setFormSchedule({
+            ...formSchedule,
+            name: e.target.value,
+        })
+    }
 
     useEffect(() => {
         props.getAllTransportRequirements({page:1, limit: 100, status:2})
@@ -320,8 +327,9 @@ function TransportPlanEditForm(props) {
                                                         <label>
                                                             Tên kế hoạch <span className="attention"> </span>
                                                         </label>
-                                                        <input type="text" className="form-control" disabled={true} 
+                                                        <input type="text" className="form-control" disabled={false} 
                                                             value={formSchedule.name}
+                                                            onChange={handlePlanNameChange}
                                                         />
                                                     </div>
                                                 </div>
