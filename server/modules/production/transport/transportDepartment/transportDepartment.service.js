@@ -134,6 +134,7 @@ exports.getUserByRole = async (portal, data) => {
     if (!(data && data.currentUserId && data.role)) return [];
     currentUserId = String(data.currentUserId);
     role = Number(data.role);
+    currentRole = String(data.currentRole);
     let departments = await TransportDepartment(connect(DB_CONNECTION, portal)).find()
         .populate([{
             path: "organizationalUnit",
@@ -175,13 +176,30 @@ exports.getUserByRole = async (portal, data) => {
                 }]
             }
         ])
-    let res = []
+    let res = [];
     let currentRoleDepartments;
     if (Number(role)===1){
         currentRoleDepartments=departments;
     }
     else{
         if (departments && departments.length !==0){
+            // Tim department co role hien tai
+            departments = departments.filter(r => {
+                let flag1 = false;
+                if (r.type && r.type.length !==0 ){
+                    r.type.map(type => {
+                        if (type.roleOrganizationalUnit && type.roleOrganizationalUnit.length !== 0){
+                            type.roleOrganizationalUnit.map(role => {
+                                if (String(role._id) === currentRole){
+                                    flag1 = true;
+                                }
+                            })
+                        }
+                    })
+                }
+                return flag1
+            })
+
             currentRoleDepartments = departments.filter(transportDepartment => {
                 if (transportDepartment && transportDepartment.type && transportDepartment.type.length!==0){
                     if (transportDepartment.type[0].roleTransport === 1){

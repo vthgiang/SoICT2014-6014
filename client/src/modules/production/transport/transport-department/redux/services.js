@@ -59,6 +59,7 @@ function getUserByRole(queryData) {
                 // limit: queryData !== undefined ? queryData.limit : null
                 currentUserId: queryData !== undefined ? queryData.currentUserId : null,
                 role: queryData !== undefined ? queryData.role : null,
+                currentRole: localStorage.getItem('currentRole'),
             } 
         }
     );
