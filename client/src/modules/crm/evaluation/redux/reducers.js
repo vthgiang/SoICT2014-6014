@@ -20,6 +20,7 @@ export function evaluations(state = initState, action) {
 
     switch (action.type) {
         case CrmEvaluationConstants.GET_CRM_EVALUATIONS_REQUEST:
+        case CrmEvaluationConstants.GET_CRM_CARE_INFO_BY_EMPLOYEE_REQUEST:
 
             return {
                 ...state,
@@ -27,12 +28,13 @@ export function evaluations(state = initState, action) {
             }
 
         case CrmEvaluationConstants.GET_CRM_EVALUATIONS_FAILE:
+        case CrmEvaluationConstants.GET_CRM_CARE_INFO_BY_EMPLOYEE_FAILE:
             return {
                 ...state,
                 isLoading: false
             }
 
-   
+
 
         case CrmEvaluationConstants.GET_CRM_EVALUATIONS_SUCCESS:
             return {
@@ -40,9 +42,14 @@ export function evaluations(state = initState, action) {
                 list: action.payload,
                 isLoading: false,
             };
+        case CrmEvaluationConstants.GET_CRM_CARE_INFO_BY_EMPLOYEE_SUCCESS:
+            return {
+                ...state,
+                customerCareInfoByEmployee: action.payload,
+                isLoading: false,
+            };
 
 
-     
         default:
             return state;
     }

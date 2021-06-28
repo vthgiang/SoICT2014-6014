@@ -5,6 +5,7 @@ import { DialogModal, SelectBox, DatePicker, ErrorLabel, QuillEditor } from '../
 import { CrmCareActions } from '../redux/action';
 import { formatFunction } from '../../common/index';
 import ValidationHelper from '../../../../helpers/validationHelper';
+import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
 function EditCareForm(props) {
 
     const { crm, user, careEditId, translate } = props
@@ -15,10 +16,8 @@ function EditCareForm(props) {
 
     // Lấy nhân viên trong đơn vị hiện tại
     let employees;
-    if (user.employees) {
-        employees = user.employees.map(o => (
-            { value: o.userId._id, text: o.userId.name }
-        ))
+    if (user.usersOfChildrenOrganizationalUnit) {
+        employees = getEmployeeSelectBoxItems(user.usersOfChildrenOrganizationalUnit);
     }
 
     let listCareTypes;

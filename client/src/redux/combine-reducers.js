@@ -6,6 +6,7 @@ import { systemSetting } from '../modules/system-admin/system-setting/redux/redu
 import { auth } from '../modules/auth/redux/reducers';
 import { company } from '../modules/system-admin/company/redux/reducers';
 import { systemLinks } from '../modules/system-admin/system-link/redux/reducers';
+import { systemApis } from '../modules/system-admin/system-api/system-api-management/redux/reducers';
 
 import { system } from '../modules/super-admin/system/redux/reducers';
 import { user } from '../modules/super-admin/user/redux/reducers';
@@ -77,6 +78,7 @@ import { careTypes } from "../modules/crm/careType/redux/reducers";
 import { evaluations } from "../modules/crm/evaluation/redux/reducers";
 import {loyalCustomers} from "../modules/crm/loyalCustomer/redux/reducers"
 import {customerRankPoints} from "../modules/crm/customerRankPoint/redux/reducers"
+import {crmUnits} from "../modules/crm/crmUnitConfiguration/redux/reducers"
 
 //order
 import { taxs } from "../modules/production/order/tax/redux/reducers";
@@ -129,6 +131,7 @@ const appReducer = combineReducers({
     systemSetting,
     company,
     systemLinks,
+    systemApis,
     rootRoles,
     systemComponents,
 
@@ -205,7 +208,7 @@ const appReducer = combineReducers({
 
     // customer management
     crm: combineReducers({
-        customers, groups, status, cares, careTypes,evaluations,loyalCustomers,customerRankPoints
+        customers, groups, status, cares, careTypes,evaluations,loyalCustomers,customerRankPoints,crmUnits
     }),
 
     //order

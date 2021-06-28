@@ -41,13 +41,14 @@ class DatePicker extends Component {
         if (deleteValue) {
             window.$("#" + id).keyup(function (e) {
                 if (e.keyCode == 8 || e.keyCode == 46) {
-                    window.$("#" + id).datepicker('update', "");
+                    window.$("#" + id).datepicker('update');
                 }
             });
         }
         window.$("#" + id).on("change", () => {
             let value = this.refs.datePicker.value;
             this.setState({
+                
                 value: value
             })
             this.props.onChange(value); // Thông báo lại cho parent component về giá trị mới (để parent component lưu vào state của nó)
@@ -116,7 +117,7 @@ class DatePicker extends Component {
                     <div className="input-group-addon">
                         <i style={{ width: 16, height: 16 }} className="fa fa-calendar" />
                     </div>
-                    <input type="text" style={style} className="form-control" value={value ? value : (defaultValue ? defaultValue : '')} ref="datePicker" onChange={this.onChangeDatePicker} ref="datePicker"
+                    <input type="text" style={style} className="form-control" value={value ? value : (defaultValue ? defaultValue : '')} onChange={this.onChangeDatePicker} ref="datePicker"
                      disabled={disabled} />
                 </div>
             </React.Fragment>

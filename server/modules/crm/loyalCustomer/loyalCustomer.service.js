@@ -21,12 +21,12 @@ exports.getLoyalCustomers = async (userId, portal, companyId, query, currentRole
 
     const { customerCode } = query;
     // lay danh sach khach hang
-    const listAllCustomer = await getCustomers(portal, companyId, {customerCode });
+    const listAllCustomer = await getCustomers(portal, companyId, {customerCode },currentRole);
     let customers;
     if (listAllCustomer) customers = listAllCustomer.customers;
     let loyalCustomers = [];
     for (const customer of customers) {
-        let listSaleOrder = await getAllSalesOrders(userId, { page: 1, limit: 100, currentRole, customer: customer._id }, portal,true);
+        let listSaleOrder = await getAllSalesOrders(userId, { page: 1, limit: 100, currentRole, customer: customer._id,getAll : true }, portal);
         let saleOrders;
         if (listSaleOrder) saleOrders = listSaleOrder.allSalesOrders.docs;
         let totalOrderValue = 0;

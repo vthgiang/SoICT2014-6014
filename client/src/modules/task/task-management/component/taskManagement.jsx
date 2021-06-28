@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import parse from 'html-react-parser';
 import Swal from 'sweetalert2';
 import moment from 'moment';
-import { DataTableSetting, DatePicker, PaginateBar, SelectBox, SelectMulti, Tree, TreeTable, ExportExcel, InputTags } from '../../../../common-components';
+import { DataTableSetting, DatePicker, PaginateBar, SelectBox, SelectMulti, Tree, TreeTable, ExportExcel, InputTags, ToolTip } from '../../../../common-components';
 import { getFormatDateFromTime } from '../../../../helpers/stringMethod';
 import { getProjectName } from '../../../../helpers/taskModuleHelpers';
 import { getStorage } from '../../../../config';
@@ -713,8 +713,8 @@ class TaskManagement extends Component {
                     organization: dataTemp[n].organizationalUnit ? dataTemp[n].organizationalUnit.name : translate('task.task_management.err_organizational_unit'),
                     project: dataTemp[n].taskProject ? getProjectName(dataTemp[n].taskProject, project.data && project.data.list) : null,
                     priority: this.convertPriorityData(dataTemp[n].priority),
-                    responsibleEmployees: dataTemp[n].responsibleEmployees ? dataTemp[n].responsibleEmployees.map(o => o.name).join(', ') : null,
-                    accountableEmployees: dataTemp[n].accountableEmployees ? dataTemp[n].accountableEmployees.map(o => o.name).join(', ') : null,
+                    responsibleEmployees: dataTemp[n].responsibleEmployees ? (<ToolTip dataTooltip={dataTemp[n].responsibleEmployees.map(o => o.name)} />) : null,
+                    accountableEmployees: dataTemp[n].accountableEmployees ? (<ToolTip dataTooltip={dataTemp[n].accountableEmployees.map(o => o.name)} />) : null,
                     creatorEmployees: dataTemp[n].creator ? dataTemp[n].creator.name : null,
                     startDate: getFormatDateFromTime(dataTemp[n].startDate, 'dd-mm-yyyy'),
                     endDate: getFormatDateFromTime(dataTemp[n].endDate, 'dd-mm-yyyy'),

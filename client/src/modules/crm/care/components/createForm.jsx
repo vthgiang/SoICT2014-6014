@@ -2,6 +2,7 @@ import React, { Component, useCallback, useState } from 'react';
 import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { ButtonModal, DatePicker, DialogModal, SelectBox, QuillEditor, SelectMulti } from '../../../../common-components';
+import { getStorage } from '../../../../config';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
 import { CrmCareTypeActions } from '../../careType/redux/action';
@@ -136,7 +137,7 @@ function CreateCareForm(props) {
 
 
     const save = () => {
-        props.createCare(newCare);
+        props.createCare({...newCare,roleId:getStorage('currentRole')});
     }
 
 

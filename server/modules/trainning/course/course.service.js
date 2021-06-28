@@ -113,12 +113,6 @@ exports.searchCourses = async (portal, params, company) => {
     let listCourses = await Course(connect(DB_CONNECTION, portal))
         .aggregate([
             {
-                $skip: params.page 
-            },
-            {
-                $limit: params.limit
-            },
-            {
                 $lookup: {
                     from: "educationprograms",
                     localField: "educationProgram",
@@ -138,10 +132,16 @@ exports.searchCourses = async (portal, params, company) => {
                     foreignField: '_id',
                     as: 'listEmployees'
                 }
+            },
+            {
+                $skip: params.page 
+            },
+            {
+                $limit: params.limit
             }
         ])
 
-    listCourses= listCourses.map(course => {
+    listCourses = listCourses.map(course => {
         const infoEmployees = course.listEmployees.map((employee, index) => {
             return {
                 employee: {
@@ -158,7 +158,6 @@ exports.searchCourses = async (portal, params, company) => {
             educationProgram: course.educationProgram[0]
         }
     })
-    
     return {
         totalList,
         listCourses

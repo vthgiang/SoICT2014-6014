@@ -1,5 +1,6 @@
 module.exports = {
     Privilege: require('./auth/privilege.model'),
+    PrivilegeApi: require('./auth/privilegeApi.model'),
     Role: require('./auth/role.model'),
     User: require('./auth/user.model'),
     UserRole: require('./auth/userRole.model'),
@@ -38,6 +39,7 @@ module.exports = {
     SystemComponent: require('./system-admin/systemComponent.model'),
     SystemLink: require('./system-admin/systemLink.model'),
     RootRole: require('./system-admin/rootRole.model'),
+    SystemApi: require('./system-admin/systemApi.model'),
 
     Task: require('./task/task.model'),
     TaskComment: require('./task/taskComment.model'),
@@ -83,6 +85,8 @@ module.exports = {
     ProductCategory: require('./crm/productCategory.model'),
     ProductDiscount: require('./crm/productDiscount.model'),
     CrmTask: require('./crm/crmTask.model'),
+    CrmTaskTemplate:require('./crm/crmTaskTemplate.model'),
+    CrmUnit:require('./crm/crmUnit.model'),
 
     //order
     BankAccount: require('./production/order/bankAccount.model'),

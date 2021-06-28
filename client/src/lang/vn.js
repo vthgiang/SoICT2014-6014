@@ -97,6 +97,8 @@ export default {
             manage_role: "Quản lý phân quyền",
             manage_link: "Quản lý trang",
             manage_component: "Quản lý phân quyền trên các trang",
+            manage_api: "Quản lý API",
+            privilege_api: "Quản lý phân quyền API",
 
             manage_department: "Quản lý cơ cấu tổ chức",
             manage_user: "Quản lý người dùng",
@@ -114,7 +116,8 @@ export default {
                 group: "Nhóm khách hàng",
                 statistic: "Thống kê",
                 generalConfiguration: "Cấu hình chung",
-                evaluation: "Đánh giá hoạt động CSKH"
+                evaluation: "Đánh giá hoạt động CSKH",
+                crmUnitConfiguration:"Cấu hình đơn vị chăm sóc khách hàng"
             },
 
             task_template: "Mẫu Công Việc",
@@ -695,6 +698,44 @@ export default {
                 system_component_name_exist:
                     "Tên này đã được sử dụng cho 1 system component khác",
             },
+
+            system_api: {
+                table: {
+                    path: "Đường dẫn",
+                    method: "Phương thức",
+                    description: "Mô tả",
+                    category: "Danh mục",
+                    email: "Email"
+                },
+                select_all_method: "Chọn tất cả các phương thức",
+                non_select_method: "Chọn phương thức",
+
+                placeholder: {
+                    input_path: "Nhập đường dẫn",
+                    input_description: "Nhập mô tả",
+                    input_email: "Nhập email người dùng"
+                },
+
+                modal: {
+                    create_title: 'Thêm mới API',
+                    edit_title: 'Chỉnh sửa API',
+                    delete_title: 'Xóa API'
+                },
+
+                //Thông điệp trả về từ server
+                create_system_api_success: 'Thêm system API thành công',
+                create_system_api_failure: 'Thêm system API thất bại',
+                system_api_exist: 'System API đã tồn tại'
+            },
+
+            privilege_system_api: {
+                table: {
+                    email: "Email"
+                },
+                placeholder: {
+                    input_email: "Nhập email"
+                },
+            }
         },
 
         super_admin: {
@@ -4055,7 +4096,7 @@ export default {
                     refresh_all_kpis: 'Tính lại điểm KPI các đơn vị',
                     update_task_importance: `(*)Cập nhật độ quan trọng công việc và Tính điểm KPI `,
                     cal_all_kpis_title: `(*)Cập nhật độ quan trọng công việc và Tính điểm tất cả KPI `,
-
+                    refresh: "Làm mới",
                     /**
                      * Management
                      */

@@ -85,7 +85,8 @@ function PurchaseHistoriesInfoForm(props) {
             limit: 10,
             page: 1,
             customer: customerId,
-            currentRole: localStorage.getItem('currentRole')
+            currentRole: localStorage.getItem('currentRole'),
+            getAll:true
         });
     }
     const handleShowDetailInfo = async (salesOrder) => {
@@ -143,8 +144,6 @@ function PurchaseHistoriesInfoForm(props) {
                                             "Giá trị đơn hàng",
                                             "Trạng thái",
                                         ]}
-                                    // setLimit={this.setLimit}
-                                    // tableId={tableId}
                                     />
                                 </th>
 

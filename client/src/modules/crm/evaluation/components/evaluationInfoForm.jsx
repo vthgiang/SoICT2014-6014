@@ -18,8 +18,7 @@ function EvaluationInfoForm(props) {
                 formID="modal-crm-evaluation-info"
                 title={translate("crm.care.info")}
                 size={75}
-            // func={this.save}
-            // disableSubmit={!this.isFormValidated()}
+             disableSubmit={true}
             >
                 {/* Form xem công việc chăm sóc khách hàng */}
 
@@ -38,15 +37,10 @@ function EvaluationInfoForm(props) {
                                     id={`evaluation-tab`}
                                     evaluationInfo = {evaluationInfo}
                                 />
-
-
                                 {/* Tab lịch sử làm việc */}
-
                                 <HistoriesActionTabForm
                                     id={'histories-action'}
                                 />
-
-
                             </div>
                         </div>
                 </div>

@@ -1,7 +1,7 @@
 import React, { Component, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { ConfirmNotification, DataTableSetting, ExportExcel, PaginateBar, SelectBox, SelectMulti } from '../../../../common-components';
+import { ConfirmNotification, DataTableSetting, DatePicker, ExportExcel, PaginateBar, SelectBox, SelectMulti } from '../../../../common-components';
 import { formatFunction, getData } from '../../common/index';
 import { CrmCustomerActions } from '../../customer/redux/actions';
 import { CrmCareActions } from '../redux/action';
@@ -16,11 +16,18 @@ import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
 import { getStorage } from '../../../../config';
 
 function CrmCareHomePage(props) {
-
+    // thiết lập trạng thái tìm kiếm ban đầu
+    const now = new Date();
+    const month = now.getMonth();
+    const year = now.getFullYear();
     const [searchState, setSearchState] = useState({
         limit: 10,
         page: 0,
+        month: month + 1,
+        year,
+        roleId: getStorage('currentRole')
     })
+    //------------------------------------------------
     const { crm, translate, user, auth, role } = props;
     const { cares, careTypes } = crm;
     const { limit, page } = searchState;
@@ -61,6 +68,14 @@ function CrmCareHomePage(props) {
         await setSearchState(newState);
         props.getCares(newState);
     }
+    const changeTime = async (value) => {
+        let dataTime = value.split("-");
+        let month = dataTime[0];
+        let year = dataTime[1];
+        const newState = { ...searchState, month, year }
+        await setSearchState(newState);
+        props.getCares(newState);
+    }
     const search = () => {
         console.log(searchState);
         props.getCares(searchState);
@@ -69,11 +84,11 @@ function CrmCareHomePage(props) {
 
     useEffect(
         () => {
-            async function getData() {
-                props.getCares(searchState);
-                props.getCustomers();
-                props.getCareTypes({});
+            async function getData() {        
                 const currentRole = getStorage('currentRole')
+                props.getCares(searchState);
+                props.getCustomers({roleId:currentRole});
+                props.getCareTypes({});
                 if (user && user.organizationalUnitsOfUser) {
                     let getCurrentUnit = user.organizationalUnitsOfUser.find(item =>
                         item.managers[0] === currentRole
@@ -237,15 +252,15 @@ function CrmCareHomePage(props) {
                 {/* search form */}
                 {/* tim kiem hoat dong CSKh do toi phu trach */}
                 <div className="form-inline" >
-                    <div className="form-group unitSearch">
-                        <label>{"Hoạt động chăm sóc khách hàng"}</label>
-                        <SelectBox id="SelectUnit-care-by-current-role"
-                            defaultValue={''}
-                            items={[{ value: '0', text: 'Chọn tất cả' }, { value: '1', text: 'Do tôi phụ trách' },]}
-                            onChange={handleSearchByCurrentRole}
-                            style={{ width: '100%' }}
-                        >
-                        </SelectBox>
+                    <div className="form-group" >
+                        <label className="form-control-static">Tháng</label>
+                        <DatePicker
+                            id="time-sheet-log-care-homePage"
+                            dateFormat="month-year"
+                            value={`${searchState.month}-${searchState.year}`}
+                            onChange={changeTime}
+                            disabled={false}
+                        />
                     </div>
                     {/* tim kiem theo nhan vien phu trach*/}
                     <div className="form-group">
@@ -262,6 +277,8 @@ function CrmCareHomePage(props) {
                         </SelectMulti>}
                     </div>
                 </div>
+
+
                 {/*  tim kiem theo loai hinh CSKH */}
                 <div className="form-inline" >
                     <div className="form-group">

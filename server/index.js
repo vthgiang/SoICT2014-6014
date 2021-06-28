@@ -7,6 +7,8 @@ const server = require("http").createServer(app);
 
 const swaggerUi = require("swagger-ui-express");
 const { swaggerJsonData } = require("./api-docs/swagger.js");
+const { auth } = require(`./middleware`);
+const { SystemApiControllers } = require('./modules/system-admin/system-api/system-api-management/systemApi.controller');
 
 require("dotenv").config();
 // require("./connectDatabase");
@@ -135,6 +137,10 @@ router.use(
     require("./modules/system-admin/system-link/systemLink.route")
 );
 router.use(
+    "/system-admin/system-api",
+    require("./modules/system-admin/system-api/system-api-management/systemApi.route")
+);
+router.use(
     "/system-admin/root-role",
     require("./modules/system-admin/root-role/rootRole.route")
 );
@@ -218,6 +224,7 @@ app.use("/crm/status", require("./modules/crm/status/status.route"));
 app.use("/crm/evaluations", require("./modules/crm/evaluation/evaluation.route"));
 app.use("/crm/loyalCustomers", require("./modules/crm/loyalCustomer/loyalCustomer.route"));
 app.use("/crm/customerRankPoints", require("./modules/crm/rankPoint/customerRankPoint.route"));
+app.use("/crm/crmUnits", require("./modules/crm/crmUnit/crmUnit.route"));
 
 // production - manufaturing
 app.use(
@@ -282,6 +289,12 @@ app.use("/transport-process", require("./modules/production/transport/transportP
 app.use("/transport-department", require("./modules/production/transport/transportDepartment/transportDepartment.route"));
 
 app.use(router);
+
+// Cập nhật các api mới nhất
+app.post('/system-admin/system-api/system-apis/update-auto', auth, (req, res) => {
+    SystemApiControllers.updateSystemApiAutomatic(app, req, res)
+})
+
 
 /**
  * Server initial
