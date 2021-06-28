@@ -16,7 +16,7 @@ function TransportVehicleManagementTable(props) {
     const { currentTransportPlanId, currentTransportPlan, transportVehicle } = props;
 
     const getTableId = "table-manage-transport-vehicle";
-    const defaultConfig = { limit: 5 }
+    const defaultConfig = { limit: 50 }
     const getLimit = getTableConfiguration(getTableId, defaultConfig).limit;
 
     const [vehiclesListState, setVehilesListState] = useState({});
@@ -186,8 +186,8 @@ function TransportVehicleManagementTable(props) {
                                         <td>{index + 1}</td>
                                         <td>{vehicle.code}</td>
                                         <td>{vehicle.assetName}</td>
-                                        <td>{vehicle.payload}</td>
-                                        <td>{vehicle.volume}</td>
+                                        <td>{vehicle.payload +" kg"}</td>
+                                        <td>{vehicle.volume + " \u33A5"}</td>
                                         {/* <td style={{ textAlign: "center" }}> */}
                                             {/* <a className="edit text-green" style={{ width: '5px' }} title={"Thông tin xe"} 
                                                 // onClick={() => handleShowDetailInfo(example)}

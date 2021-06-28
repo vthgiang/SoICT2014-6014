@@ -282,7 +282,7 @@ function TransportManageProcess(props) {
    return (
         <DialogModal
             modalID={`modal-detail-process`}
-            title={"Bản đồ"}
+            title={"Chi tiết thực hiện vận chuyển"}
             formID={`modal-detail-process`}
             size={100}
             maxWidth={500}

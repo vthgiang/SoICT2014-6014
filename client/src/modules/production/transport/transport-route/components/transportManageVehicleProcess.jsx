@@ -4,6 +4,8 @@ import { withTranslate } from "react-redux-multilingual";
 
 import { DataTableSetting, DeleteNotification, PaginateBar, SelectBox } from "../../../../../common-components";
 
+import { ResultMissionReport } from "./resultMissionReport"
+
 import { formatDate } from "../../../../../helpers/formatDate"
 
 import { transportPlanActions } from "../../transport-plan/redux/actions"
@@ -26,6 +28,8 @@ function TransportManageVehicleProcess(props) {
     const [timelineItemPos, setTimelineItemPos] = useState([])
 
     const [processBarLen, setProcessBarLen] = useState(0);
+
+    const [currentMission, setCurrentMission] = useState();
     useEffect(() => {
         if (route){
             let barWidth = timelineBarWidth?timelineBarWidth:100
@@ -119,6 +123,12 @@ function TransportManageVehicleProcess(props) {
         }
         return res;
     }
+    
+    const showResultMission = (routeOrdinal) => {
+        setCurrentMission(routeOrdinal);
+        console.log(routeOrdinal, " ll")       
+        window.$(`#modal-result-misson-map`).modal('show')
+    }
 
     return (
         <div className="timeline-transport" style={{width: timelineBarWidth+"%"}}>
@@ -135,7 +145,7 @@ function TransportManageVehicleProcess(props) {
                         {
                             getTimeLineItemStatus(routeOrdinal, index) !== " "
                             && 
-                            <div className="timeline-contain-transport">{getTimeTransport(routeOrdinal, index)}</div>
+                            <div className="timeline-contain-transport" onClick={()=>showResultMission(routeOrdinal)}>{getTimeTransport(routeOrdinal, index)}</div>
                         }
                     </div>
                 ))
@@ -150,6 +160,9 @@ function TransportManageVehicleProcess(props) {
                     
                 </div> */}
             </div>
+            <ResultMissionReport
+                routeOrdinal={currentMission}
+            />
         </div>               
     )
 }

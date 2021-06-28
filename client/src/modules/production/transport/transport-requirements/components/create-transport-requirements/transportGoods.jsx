@@ -262,7 +262,7 @@ function TransportGoods(props) {
                             </div> */}
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group`}>
-                                    <label>{"Khối lượng"}</label>
+                                    <label>{"Khối lượng kg"}</label>
                                     <input type="number" 
                                     value={currentGood.weight} 
                                     onChange={handleWeightChange} 
@@ -272,7 +272,7 @@ function TransportGoods(props) {
                             </div>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group`}>
-                                    <label>{"Thể tích"}</label>
+                                    <label>{"Thể tích "+" \u33A5"}</label>
                                     <input type="number" 
                                     value={currentGood.volume} 
                                     onChange={handleVolumeChange} 

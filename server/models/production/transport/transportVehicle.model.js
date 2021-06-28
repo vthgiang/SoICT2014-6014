@@ -15,10 +15,6 @@ const TransportVehicleSchema = new Schema({ // Phương tiện vận tải (lấ
         type: String,
         required: true,
     },
-    useInTransportPlan: [{ // Kế hoạch có sử dụng phương tiện
-        type: Schema.Types.ObjectId,
-        ref: 'TransportPlan'
-    }],
     usable: { // Đơn vị được sử dụng hay ko, 0 không, 1 có
         type: Number,
         required: true,

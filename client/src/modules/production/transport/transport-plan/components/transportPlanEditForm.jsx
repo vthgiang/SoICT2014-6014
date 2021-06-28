@@ -13,6 +13,7 @@ import { TransportVehicleAndCarrierSelect } from "./transport-plan-edit/transpor
 import { transportPlanActions } from '../redux/actions';
 import { transportDepartmentActions } from '../../transport-department/redux/actions'
 import { transportRequirementsActions } from '../../transport-requirements/redux/actions'
+import { getTypeRequirement, getTransportRequirementStatus } from '../../transportHelper/getTextFromValue'
 
 import './transport-plan.css'
 
@@ -441,7 +442,7 @@ function TransportPlanEditForm(props) {
                                                     <tr key={index}>
                                                         <td>{index+1}</td>
                                                         <td>{x.code}</td>
-                                                        <td>{x.type}</td>
+                                                        <td>{getTypeRequirement(x.type)}</td>
                                                         <td>{x.fromAddress}</td>
                                                         <td>{x.toAddress}</td>
                                                         <td>{x.createdAt ? formatDate(x.createdAt) : ""}</td>
@@ -455,7 +456,7 @@ function TransportPlanEditForm(props) {
                                                                 ))
                                                             }
                                                         </td>
-                                                        <td>{x.status}</td>
+                                                        <td>{getTransportRequirementStatus(x.status)}</td>
                                                         <td style={{ textAlign: "center" }} className="tooltip-checkbox">
                                                             <span className={"icon "
                                                             +getStatusTickBox(x)
