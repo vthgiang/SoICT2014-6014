@@ -88,7 +88,7 @@ const updateSystemApiAutomatic = async (app) => {
             layer.handle.stack.forEach(print.bind(null, path.concat(split(layer.regexp))))
         } else if (layer.method) {
             let currentMethod = layer.method.toUpperCase()
-            let currentPath = path.concat(split(layer.regexp)).filter(Boolean).join('/')
+            let currentPath = "/" + path.concat(split(layer.regexp)).filter(Boolean).join('/')
 
             if (!routes.find(ele => 
                 ele.method === currentMethod

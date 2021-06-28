@@ -2,46 +2,58 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { PaginateBar, DataTableSetting } from '../../../../../common-components';
+import { PaginateBar, DataTableSetting, SelectMulti, DeleteNotification } from '../../../../../common-components';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration'
 
-import { PrivilegeApiCreateModal } from './privilegeApiCreateModal'
+import { PrivilegeApiActions } from '../redux/actions'
+import { CompanyActions } from '../../../company/redux/actions';
 
+import { PrivilegeApiCreateModal } from './privilegeApiCreateModal'
+ 
 function PrivilegeApiManagement (props) {
-    const { translate, systemApis } = props
+    const { translate, privilegeApis, company } = props
 
     const tableId = "table-privilege-system-api";
     const defaultConfig = { limit: 20 }
     const limit = getTableConfiguration(tableId, defaultConfig).limit;
 
     const [state, setState] = useState({
-        path: null,
-        method: [],
-        description: null,
+        email: null,
+        companyIds: null,
         page: 1,
         perPage: limit
     })
-    const { path, method, description, page, perPage } = state;
+    const { email, companyIds, page, perPage } = state;
 
-    const handleChangePath = (e) => {
-        setState({
-            ...state,
-            path: e.target.value
+    useEffect(() => {
+        props.getPrivilegeApis({
+            page: page,
+            perPage: perPage
         })
-    }
+        props.getAllCompanies({
+            limit: 2000,
+            page: 1
+        })
+    }, [])
 
     const handleChangeEmail = (e) => {
         setState({
             ...state,
-            description: e.target.value
+            email: e.target.value
+        })
+    }
+
+    const handleCompany = (value) => {
+        setState({
+            ...state,
+            companyIds: value
         })
     }
 
     const handleSunmitSearch = () => {
-        props.getSystemApis({
-            path: path,
-            method: method,
-            description: description,
+        props.getPrivilegeApis({
+            email: email,
+            companyIds: companyIds,
             page: page,
             perPage: perPage
         })
@@ -58,10 +70,9 @@ function PrivilegeApiManagement (props) {
                 page: 1,
                 perPage: Number(value)
             })
-            props.getSystemApis({
-                path: path,
-                method: method,
-                description: description,
+            props.getPrivilegeApis({
+                email: email,
+                companyIds: companyIds,
                 page: 1,
                 perPage: Number(value)
             })
@@ -69,26 +80,26 @@ function PrivilegeApiManagement (props) {
     }
 
     const handleGetDataPagination = (value) => {
-        console.log(value)
         setState({
             ...state,
             page: value
         })
-        props.getSystemApis({
-            path: path,
-            method: method,
-            description: description,
+        props.getPrivilegeApis({
+            email: email,
+            companyIds: companyIds,
             page: value,
             perPage: perPage
         })
     }
 
-    const handleAddApi = () => {
+    const handleAddPrivilegeApi = () => {
         window.$("#privilege-system-api-modal").modal("show");
     }
 
-    let listPaginateApi = systemApis?.listPaginateApi
-    console.log("listPaginateApi", listPaginateApi)
+    let listPaginatePrivilegeApi = privilegeApis?.listPaginatePrivilegeApi
+    let listPaginateCompany = company?.listPaginate
+
+    console.log(privilegeApis)
     return (
         <React.Fragment>
             <PrivilegeApiCreateModal/>
@@ -102,14 +113,26 @@ function PrivilegeApiManagement (props) {
                             <input className="form-control" type="text" placeholder={translate('system_admin.privilege_system_api.placeholder.input_email')} name="name" onChange={(e) => handleChangeEmail(e)} />
                         </div>
 
-                        <button type="button" onClick={() => handleAddApi()} className="btn btn-success pull-right" title={translate('task.task_management.add_title')}>{translate('task.task_management.add_task')}</button>
+                        <button type="button" onClick={() => handleAddPrivilegeApi()} className="btn btn-success pull-right" title={translate('task.task_management.add_title')}>{translate('task.task_management.add_task')}</button>
                     </div>
 
                     <div className="form-inline" style={{ marginBottom: 15 }}>
-                        {/* Path */}
+                        {/* Company */}
                         <div className="form-group">
-                            <label className="form-control-static">{translate('system_admin.system_api.table.path')}</label>
-                            <input className="form-control" type="text" placeholder={translate('system_admin.system_api.placeholder.input_path')} name="name" onChange={(e) => handleChangePath(e)} />
+                            <label className="control-label">{translate('system_admin.company.table.name')}</label>
+                            <SelectMulti
+                                id={`management-privilege-api-modal-company`}
+                                className="form-control"
+                                style={{ width: "100%" }}
+                                items={listPaginateCompany?.length > 0 ? listPaginateCompany.map(item => {
+                                    return {
+                                        value: item?._id,
+                                        text: item?.name
+                                    }
+                                }) : []}
+                                value={companyIds}
+                                onChange={handleCompany}
+                            />
                         </div>
 
                         {/* Button tìm kiếm */}
@@ -121,7 +144,9 @@ function PrivilegeApiManagement (props) {
                     <table id={tableId} className="table table-hover table-striped table-bordered">
                         <thead>
                             <tr>
+                                <th style={{ width: '40px' }}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.no_')}</th>
                                 <th>{translate('system_admin.privilege_system_api.table.email')}</th>
+                                <th>{translate('system_admin.company.table.name')}</th>
                                 <th>Token</th>
                                 <th style={{ width: "120px" }}>
                                     {translate('table.action')}
@@ -134,21 +159,25 @@ function PrivilegeApiManagement (props) {
                             </tr>
                         </thead>
                         <tbody>
-                            { listPaginateApi?.length > 0
-                                && listPaginateApi.map(api => 
-                                    <tr key={api._id}>
-                                        <td>{api.path}</td>
-                                        <td>{api.description}</td>
+                            { listPaginatePrivilegeApi?.length > 0
+                                && listPaginatePrivilegeApi.map((privilege, index) => 
+                                    <tr key={privilege._id}>
+                                        <td>{index + 1}</td>
+                                        <td>{privilege.email}</td>
+                                        <td>{privilege.company?.name}</td>
+                                        <td style={{ position: "relative" }}>
+                                            <button className="pull-right" style={{ position: "absolute", right: 0 }}>Copy</button>
+                                            {privilege.token.slice(0, 60)}...
+                                        </td>
                                         <td style={{ textAlign: 'center' }}>
-                                            <a onClick={() => handleEdit(api)} className="edit" title={translate('system_admin.system_component.edit')}><i className="material-icons">edit</i></a>
-                                            {/* <DeleteNotification
+                                            <a onClick={() => handleEdit(privilege)} className="edit" title={translate('system_admin.system_component.edit')}><i className="material-icons">edit</i></a>
+                                            <DeleteNotification
                                                 content={translate('system_admin.system_component.delete')}
                                                 data={{
-                                                    id: component._id,
-                                                    info: component.name
+                                                    id: privilege._id,
                                                 }}
-                                                func={props.deleteSystemComponent}
-                                            /> */}
+                                                // func={props.deleteSystemComponent}
+                                            />
                                         </td>
                                     </tr>    
                                 )
@@ -157,9 +186,9 @@ function PrivilegeApiManagement (props) {
                     </table>
 
                     <PaginateBar
-                        display={systemApis?.listPaginateApi?.length}
-                        total={systemApis?.totalSystemApis}
-                        pageTotal={systemApis?.totalPages}
+                        display={privilegeApis?.listPaginatePrivilegeApi?.length}
+                        total={privilegeApis?.totalPrivilegeApis}
+                        pageTotal={privilegeApis?.totalPages}
                         currentPage={page}
                         func={handleGetDataPagination}
                     />
@@ -170,11 +199,12 @@ function PrivilegeApiManagement (props) {
 }
 
 function mapState(state) {
-    const { systemApis } = state
-    return { systemApis }
+    const { privilegeApis, company } = state
+    return { privilegeApis, company }
 }
 const actions = {
-  
+    getPrivilegeApis: PrivilegeApiActions.getPrivilegeApis,
+    getAllCompanies: CompanyActions.getAllCompanies,
 }
 
 export default connect(mapState, actions)(withTranslate(PrivilegeApiManagement))
