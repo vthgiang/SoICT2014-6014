@@ -141,6 +141,10 @@ router.use(
     require("./modules/system-admin/system-api/system-api-management/systemApi.route")
 );
 router.use(
+    "/system-admin/privilege-api",
+    require("./modules/system-admin/system-api/system-api-privilege/privilegeSystemApi.route")
+);
+router.use(
     "/system-admin/root-role",
     require("./modules/system-admin/root-role/rootRole.route")
 );
