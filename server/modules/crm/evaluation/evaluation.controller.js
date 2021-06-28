@@ -24,3 +24,21 @@ exports.getEvaluations = async (req, res) => {
         })
     }
 }
+exports.getCustomerCareInfoByEmployee = async (req, res) => {
+    try {
+        const status = await EvaluationService.getCustomerCareInfoByEmployee(req.portal, req.user.company._id, req.query,req.user._id);
+        await Logger.info(req.user.email, ' get_customerCareInfoByEmployee_success ', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['get_customerCareInfoByEmployee_success'],
+            content: status
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, ' get_customerCareInfoByEmployee_faile ', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ['get_customerCareInfoByEmployee_faile'],
+            content: error
+        })
+    }
+}

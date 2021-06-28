@@ -78,6 +78,7 @@ import { careTypes } from "../modules/crm/careType/redux/reducers";
 import { evaluations } from "../modules/crm/evaluation/redux/reducers";
 import {loyalCustomers} from "../modules/crm/loyalCustomer/redux/reducers"
 import {customerRankPoints} from "../modules/crm/customerRankPoint/redux/reducers"
+import {crmUnits} from "../modules/crm/crmUnitConfiguration/redux/reducers"
 
 //order
 import { taxs } from "../modules/production/order/tax/redux/reducers";
@@ -207,7 +208,7 @@ const appReducer = combineReducers({
 
     // customer management
     crm: combineReducers({
-        customers, groups, status, cares, careTypes,evaluations,loyalCustomers,customerRankPoints
+        customers, groups, status, cares, careTypes,evaluations,loyalCustomers,customerRankPoints,crmUnits
     }),
 
     //order

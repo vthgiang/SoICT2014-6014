@@ -20,22 +20,17 @@ function CareHistoriesInfoForm(props) {
 
     const { customerId, customerInfomation, crm, user, translate } = props;
     const [searchState, setSearchState] = useState({
-        limit: 5,
-        page: 0,
+        getAll: true,
         customerId: customerId,
     });
     const { id } = props;
-    const [careInfoId,setCareInfoId] = useState();
+    const [careInfoId, setCareInfoId] = useState();
     let unitMembers;
     let listCareType;
 
     useEffect(() => {
-
-
-        console.log('ID', customerId)
         const newSearchState = { ...searchState, customerId: customerId }
         setSearchState(newSearchState);
-        console.log('State', searchState)
         props.getCareTypes({});
         props.getCares({ ...searchState, customerId: customerId })
     }, [customerId])
@@ -102,10 +97,10 @@ function CareHistoriesInfoForm(props) {
         <div className="tab-pane purchaseHistories" id={id}>
             <div className="box">
                 <div className="box-body qlcv">
-                     {/* form xem chi tieets */}
-                {
-                    careInfoId && <InfoCareForm careInfoId={careInfoId} />
-                }
+                    {/* form xem chi tieets */}
+                    {
+                        careInfoId && <InfoCareForm careInfoId={careInfoId} />
+                    }
                     {/* search form */}
                     {/* tìm kiếm theo loại hoạt động */}
                     <div className="form-inline" style={{ marginBottom: '2px' }}>
@@ -197,13 +192,13 @@ function CareHistoriesInfoForm(props) {
 
                                         <td>{o.name ? o.name : ''}</td>
                                         <td>{o.customerCareTypes ? o.customerCareTypes.map(cr => cr.name).join(', ') : ''}</td>
-                                        <td>{o.description}</td>
+                                        <td dangerouslySetInnerHTML={{ __html: o.description ? o.description : '' }}></td>
                                         <td>{o.customerCareStaffs ? o.customerCareStaffs.map(cg => cg.name).join(', ') : ''}</td>
-                                        <td>{getStatusText(o.status)}</td>
+                                        <td>{formatFunction.formatCareStatus(o.status)}</td>
                                         <td>{o.startDate ? formatFunction.formatDate(o.startDate) : ''}</td>
                                         <td>{o.endDate ? formatFunction.formatDate(o.endDate) : ''}</td>
                                         <td style={{ textAlign: 'center' }}>
-                                             <a className="text-green" onClick={() => handleInfo(o._id)}><i className="material-icons">visibility</i></a>
+                                            <a className="text-green" onClick={() => handleInfo(o._id)}><i className="material-icons">visibility</i></a>
                                         </td>
                                     </tr>
                                 )) : null

@@ -39,6 +39,7 @@ function CustomerHomePage(props) {
         limit: limit,
         page: 0,
         tableId: tableId,
+        roleId:getStorage('currentRole')
 
     });
 
