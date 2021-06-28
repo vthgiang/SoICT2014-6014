@@ -7,18 +7,19 @@ const PrivilegeApiSchema = new Schema({
         required: true
     },
     apis: [{
-        path: {
-            type: String,
-            required: true
-        },
-        company: {
-            type: Schema.Types.ObjectId,
-            ref: 'Company',
-            required: true
-        }
+        type: Schema.Types.ObjectId,
+        ref: 'SystemApi',
+        required: true
+        
     }],
+    company: {
+        type: Schema.Types.ObjectId,
+        ref: 'Company',
+        required: true
+    },
     token: {
-        type: String
+        type: String,
+        required: true
     },
     startDate: {
         type: Date
