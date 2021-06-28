@@ -337,7 +337,7 @@ function ArrangeVehiclesAndGoods(props) {
                                             {"Mã yêu cầu:"}
                                         </p>
                                         <p>
-                                            {"123"}
+                                            {item.code}
                                         </p>
                                     </div>
                                     <div>

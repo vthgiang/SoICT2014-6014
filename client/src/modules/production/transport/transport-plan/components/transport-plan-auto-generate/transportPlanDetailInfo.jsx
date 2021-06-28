@@ -11,7 +11,7 @@ import { TransportVehicleAndCarrierSelect } from "../transport-plan-detail/trans
 
 import { transportPlanActions } from '../../redux/actions';
 import { transportRequirementsActions } from '../../../transport-requirements/redux/actions'
-import { getTypeRequirement } from '../../../transportHelper/getTextFromValue'
+import { getTypeRequirement, getTransportRequirementStatus } from '../../../transportHelper/getTextFromValue'
 
 function TransportPlanDetailInfo(props) {
     let allTransportRequirements;
@@ -301,7 +301,7 @@ function TransportPlanDetailInfo(props) {
                                                         ))
                                                     }
                                                 </td>
-                                                <td>{x.status}</td>
+                                                <td>{getTransportRequirementStatus(x.status)}</td>
                                             </tr>
                                         ))
                                     }

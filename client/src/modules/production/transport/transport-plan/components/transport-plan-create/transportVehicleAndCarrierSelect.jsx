@@ -443,7 +443,7 @@ function TransportVehicleAndCarrierSelect(props) {
             <div className="box-body">
                 <div className="box box-solid">
                     <div className="box-header">
-                        <div className="box-title">{"Danh sách phương tiện có thể sử dụng ngày: "+ formatDate(startTime)}</div>                                
+                        <div className="box-title">{"Danh sách phương tiện có thể sử dụng ngày "+ formatDate(startTime)}</div>                                
                     </div>
                     <div className="box-body qlcv">                             
                         
