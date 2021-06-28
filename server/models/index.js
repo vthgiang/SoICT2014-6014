@@ -87,7 +87,7 @@ module.exports = {
     CrmTask: require('./crm/crmTask.model'),
     CrmTaskTemplate:require('./crm/crmTaskTemplate.model'),
     CrmUnit:require('./crm/crmUnit.model'),
-
+    CrmUnitKPI:require('./crm/crmUnitKPI.model'),
     //order
     BankAccount: require('./production/order/bankAccount.model'),
     Discount: require('./production/order/discount.model'),

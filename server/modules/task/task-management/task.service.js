@@ -1994,7 +1994,7 @@ exports.sendEmailForCreateTask = async (portal, task) => {
  * Tạo công việc mới
  */
 exports.createTask = async (portal, task) => {
-    // console.log('task', task.taskProject)
+    console.log('task', task)
     // Lấy thông tin công việc liên quan
     var level = 1;
     if (mongoose.Types.ObjectId.isValid(task.parent)) {
@@ -2612,17 +2612,13 @@ exports.sendEmailCheckTaskLastMonth = async () => {
                     }
                 })
             }
-
-
             // xu ly Action not evaluated
             var TaskHasActionsAccountable = [];
             var TaskHasActionsResponsible = [];
-
             if (accTasks) {
                 let inprocessAccountableTask = accTasks.filter(task => task.status === "inprocess")
                 inprocessAccountableTask.length && inprocessAccountableTask.map(x => {
                     let taskActions;
-
                     taskActions = x.taskActions.length && x.taskActions;
                     if (taskActions.length !== 0) {
                         for (let i in taskActions) {

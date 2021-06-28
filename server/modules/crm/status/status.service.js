@@ -1,16 +1,21 @@
 const mongoose = require("mongoose");
 const { Status } = require('../../../models');
 const { connect } = require(`../../../helpers/dbHelper`);
+const { getCrmUnitByRole } = require("../crmUnit/crmUnit.service");
 
-exports.getStatus = async (portal, companyId, query) => {
-    const { limit, page } = query;
+exports.getStatus = async (portal, companyId, query,role) => {
+    const { limit, page,getAll } = query;
+    console.log('role',role)
     let keySearch = {};
-
+    if (!getAll) {
+        const crmUnit = await getCrmUnitByRole(portal, companyId, role);
+        if (!crmUnit) return { listStatusTotal: 0, listStatus: [] }
+        keySearch = { ...keySearch, crmUnit: crmUnit._id }
+    }
     const listStatusTotal = await Status(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
 
     const listStatus = await Status(connect(DB_CONNECTION, portal)).find(keySearch)
         .populate({ path: 'creator', select: '_id name' })
-
     // .skip(parseInt(page)).limit(parseInt(limit));
     return { listStatusTotal, listStatus };
 }
@@ -20,12 +25,15 @@ exports.getStatusById = async (portal, companyId, id) => {
     return statusById;
 }
 
-exports.createStatus = async (portal, companyId, userId, data) => {
+exports.createStatus = async (portal, companyId, userId, data,role) => {
     const { name, description } = data;
+    // tao du lieu truong don vi CSKH
+      const crmUnit = await getCrmUnitByRole(portal, companyId, role);
     const newStatus = await Status(connect(DB_CONNECTION, portal)).create({
         creator: userId,
         name: name,
         description: description ? description : '',
+        crmUnit: crmUnit._id
     })
 
     const getNewStatus = await Status(connect(DB_CONNECTION, portal)).findById(newStatus._id)

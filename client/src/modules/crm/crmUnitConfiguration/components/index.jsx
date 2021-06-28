@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { formatFunction } from '../../common';
 import CrmUnitAddForm from './crmUnitAddForm';
-
+import '../../customer/components/customer.css';
 
 
 function CrmUnitConfiguration(props) {

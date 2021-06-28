@@ -37,7 +37,7 @@ exports.createCare = async (portal, companyId, data, userId, role) => {
     // tạo trường đơn vị CSKH
 
     const crmUnit = await getCrmUnitByRole(portal, companyId, role);
-    data = { ...data, crmUnit };
+    data = { ...data, crmUnit:crmUnit._id };
 
 
     const newCare = await Care(connect(DB_CONNECTION, portal)).create(data);
@@ -61,7 +61,7 @@ exports.getCares = async (portal, companyId, query, role) => {
     if (!getAll) {
         const crmUnit = await getCrmUnitByRole(portal, companyId, role);
         if (!crmUnit) return { listDocsTotal:0, cares:[] };
-        keySearch = { ...keySearch, crmUnit: crmUnit }
+        keySearch = { ...keySearch, crmUnit: crmUnit._id }
     }
     if (customerId) {
         keySearch =

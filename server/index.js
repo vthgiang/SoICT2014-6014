@@ -225,6 +225,7 @@ app.use("/crm/evaluations", require("./modules/crm/evaluation/evaluation.route")
 app.use("/crm/loyalCustomers", require("./modules/crm/loyalCustomer/loyalCustomer.route"));
 app.use("/crm/customerRankPoints", require("./modules/crm/rankPoint/customerRankPoint.route"));
 app.use("/crm/crmUnits", require("./modules/crm/crmUnit/crmUnit.route"));
+app.use("/crm/crmUnitKPI", require("./modules/crm/crmUnitKPI/crmUnitKPI.route"));
 
 // production - manufaturing
 app.use(

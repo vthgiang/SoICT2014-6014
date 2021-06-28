@@ -26,7 +26,7 @@ exports.getEvaluations = async (req, res) => {
 }
 exports.getCustomerCareInfoByEmployee = async (req, res) => {
     try {
-        const status = await EvaluationService.getCustomerCareInfoByEmployee(req.portal, req.user.company._id, req.query,req.user._id);
+        const status = await EvaluationService.getCustomerCareInfoByEmployee(req.portal, req.user.company._id, req.query,req.user._id,req.currentRole);
         await Logger.info(req.user.email, ' get_customerCareInfoByEmployee_success ', req.portal);
         res.status(200).json({
             success: true,
