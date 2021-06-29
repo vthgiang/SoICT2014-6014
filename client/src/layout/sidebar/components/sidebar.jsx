@@ -497,6 +497,11 @@ class SideBar extends Component {
                                             icon: "fa fa-list-alt",
                                             path: "/hr-training-plan",
                                         },
+                                        {
+                                            name: "menu.training_plan_employee",
+                                            icon: "fa fa-list-alt",
+                                            path: "/hr-training-plan-employee",
+                                        },
                                     ],
                                 }}
                             />

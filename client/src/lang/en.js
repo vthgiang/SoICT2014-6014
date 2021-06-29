@@ -144,6 +144,7 @@ export default {
             time_keeping: "Attendance Staff",
             list_education: "Training Programs",
             training_plan: "Manage Training Courses",
+            training_plan_employee: "Training Courses",
             list_major: "Manage majors",
             list_career_position: "Manage career position",
             list_search_for_package: "Search employee for package",
@@ -2205,6 +2206,7 @@ export default {
                 edit_course: "edit training course",
                 delete_course: "delete training course",
                 view_course: "Training course information",
+                register: "register",
 
                 // Thông điệp trả về từ server
                 name_required: "Name of the training course required",

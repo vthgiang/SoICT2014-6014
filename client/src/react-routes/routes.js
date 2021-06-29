@@ -43,6 +43,7 @@ const DashboardUnit = lazy(() => import("../modules/dashboard-unit/components"))
 
 const ListEducation = lazy(() => import("../modules/training/education-program/components/educationProgramList"))
 const TrainingPlan = lazy(() => import("../modules/training/course/components/course"))
+const CourseOfUser = lazy(() => import("../modules/training/course/user/components/course"))
 
 
 const OrganizationalUnitKpiCreateForAdmin = lazy(() => import("../modules/kpi/organizational-unit/creation/component/organizationalUnitKpiCreateForAdmin"))
@@ -986,6 +987,27 @@ class Routes extends Component {
                         layout={Layout}
                         component={TrainingPlan}
                     />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"training_plan_employee"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/hr-training-plan-employee",
+                                name: "training_plan_employee",
+                                icon: "fa fa-list-alt",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/hr-training-plan-employee"}
+                        path={"/hr-training-plan-employee"}
+                        pageName={"training_plan_employee"}
+                        layout={Layout}
+                        component={CourseOfUser}
+                    />
+                    
 
                     {/* kpi - routes */}
                     <PrivateRoute

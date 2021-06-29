@@ -1108,7 +1108,7 @@ const EmployeeManagement = (props) => {
                             )}
                     </tbody>
                 </table> */}
-                <SmartTable
+                {/* <SmartTable
                     tableId={tableId}
                     columnArr={{
                         staff_number: translate('human_resource.staff_number'),
@@ -1155,7 +1155,7 @@ const EmployeeManagement = (props) => {
                     })}
                     setLimit={setLimit}
                     getDataCheck={getDataCheck}
-                />
+                /> */}
                 {employeesManager.isLoading ?
                     <div className="table-info-panel">{translate('confirm.loading')}</div> :
                     (!listEmployees || listEmployees.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>

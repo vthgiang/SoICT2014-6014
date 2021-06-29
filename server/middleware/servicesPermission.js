@@ -708,6 +708,9 @@ exports.links = [
         url: '/hr-training-plan',
         apis: ['@all']
     }, {
+        url: '/hr-training-plan-employee',
+        apis: ['@all']
+    }, {
         url: '/hr-list-education',
         apis: ['@all']
     },
