@@ -1,22 +1,21 @@
-import React, { Component, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { CrmCustomerActions } from '../redux/actions';
+import { ConfirmNotification, DataTableSetting, ExportExcel, PaginateBar, SelectMulti } from '../../../../common-components';
+import { getStorage } from '../../../../config';
+import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
 import { UserActions } from '../../../super-admin/user/redux/actions';
+import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
+import { CrmCareTypeActions } from '../../careType/redux/action';
+import CreateCareCommonForm from '../../common/createCareCommonForm';
+import { formatFunction } from '../../common/index';
 import { CrmGroupActions } from '../../group/redux/actions';
 import { CrmStatusActions } from '../../status/redux/actions';
-import { DataTableSetting, PaginateBar, ConfirmNotification, SelectMulti, ExportExcel, SelectBox } from '../../../../common-components';
+import { CrmCustomerActions } from '../redux/actions';
 import CreateForm from './createForm';
-import InfoForm from './infoForm';
 import EditForm from './editForm';
 import CrmCustomerImportFile from './importFileForm';
-import { formatFunction } from '../../common/index';
-import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
-import CreateCareCommonForm from '../../common/createCareCommonForm';
-import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
-import { getStorage } from '../../../../config';
-import useDeepCompareEffect from 'use-deep-compare-effect';
-import { CrmCareTypeActions } from '../../careType/redux/action';
+import InfoForm from './infoForm';
 function CustomerHomePage(props) {
     const tableId = "table-manage-crm-customer";
     const defaultConfig = { limit: 10 }
@@ -46,11 +45,12 @@ function CustomerHomePage(props) {
     useEffect(
         () => {
             async function getData() {
-                props.getCustomers(state);
-                props.getGroups();
-                props.getStatus();
-                props.getCareTypes({});           
                 const currentRole = getStorage('currentRole')
+                props.getCustomers(state);
+                props.getGroups({roleId:currentRole});
+                props.getStatus({roleId:currentRole});
+                props.getCareTypes({});           
+               
                 if (user && user.organizationalUnitsOfUser) {
                     let getCurrentUnit = user.organizationalUnitsOfUser.find(item =>
                         item.managers[0] === currentRole

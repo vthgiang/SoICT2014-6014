@@ -1,12 +1,17 @@
 const mongoose = require("mongoose");
 const { Care, User, Status } = require('../../../models');
 const { connect } = require(`../../../helpers/dbHelper`);
-const { getAllEmployeeOfUnitByRole } = require("../../super-admin/user/user.service");
+const { getAllUserInUnitAndItsSubUnits, getAllEmployeeOfUnitByIds } = require("../../super-admin/user/user.service");
 const { getCares } = require("../care/care.service");
 const { getCustomers } = require("../customer/customer.service");
 const { getAllSalesOrders } = require("../../production/order/sales-order/salesOrder.service");
 const { getGroups } = require("../group/group.service");
 const { getStatus } = require("../status/status.service");
+const { getCrmUnitByRole } = require("../crmUnit/crmUnit.service");
+const { getChildrenOfOrganizationalUnitsAsTree } = require("../../super-admin/organizational-unit/organizationalUnit.service");
+const { createCrmTaskTemplate, getCrmTaskTemplate } = require("../crmTaskTemplate/crmTaskTemplate.service");
+const { updateSearchingCustomerTaskInfo } = require("../crmTask/crmTask.service");
+
 
 
 const STATUS_VALUE = {
@@ -29,26 +34,34 @@ const STATUS_VALUE = {
  * @returns 
  */
 exports.getEvaluations = async (portal, companyId, query, currentRole) => {
+    
     let { month, year } = query;
-
     // neu ko co querry thi lay theo thang hien tai
     if (!month || !year) {
         const date = new Date();
         month = date.getMonth() + 1;
         year = date.getFullYear();
     }
+    //lấy đơn vị CSKH
+    const crmUnit = await getCrmUnitByRole(portal, companyId, currentRole);
     //lấy danh sách nhân viên
-    const listEmployee = await getAllEmployeeOfUnitByRole(portal, currentRole);
+    const listCrmDepartment = await getAllUserInUnitAndItsSubUnits(portal, crmUnit.organizationalUnit._id);
+    let listEmployee = [];
+    for (let i = 0; i < listCrmDepartment.length; i++) {
+        const getEmployeesOfUnit = await getAllEmployeeOfUnitByIds(portal, { ids: [listCrmDepartment[i].id], perPage: 1000 });
+        const employeesOfUnit = getEmployeesOfUnit.employees
+        listEmployee = listEmployee.concat(employeesOfUnit)
+    }
     let evaluations = [];
     for (const employee of listEmployee) {
         // tính tỉ lệ giải quyết vấn đề
-        const { numberOfCompletionActions, solutionRate } = await this.getSolutionRate(portal, companyId, { month, year }, employee.userId._id);
+        const { numberOfCompletionActions, solutionRate } = await this.getSolutionRate(portal, companyId, { month, year }, employee.userId._id, currentRole);
         // tính tỉ lệ hoàn thành hoạt động
-        const { totalCareActions, completionRate, numberOfOverdueCareAction } = await this.getCompletionRate(portal, companyId, { month, year }, employee.userId._id);
+        const { totalCareActions, completionRate, numberOfOverdueCareAction } = await this.getCompletionRate(portal, companyId, { month, year }, employee.userId._id, currentRole);
         // tính tỉ lệ khách hàng mua hàng
-        const { numberOfOldCustomers, customerRetentionRate } = await this.getCustomerRetentionRate(portal, companyId, { month, year }, employee.userId._id);
+        const { numberOfOldCustomers, customerRetentionRate } = await this.getCustomerRetentionRate(portal, companyId, { month, year }, employee.userId._id, currentRole);
         // tính tir lệ khách hàng mới mua hàng
-        const { numberOfNewCustomers, newCustomerBuyingRate } = await this.getNewCustomerBuyingRate(portal, companyId, { month, year }, employee.userId._id);
+        const { numberOfNewCustomers, newCustomerBuyingRate } = await this.getNewCustomerBuyingRate(portal, companyId, { month, year }, employee.userId._id, currentRole);
 
 
         evaluations = [...evaluations, {
@@ -61,9 +74,11 @@ exports.getEvaluations = async (portal, companyId, query, currentRole) => {
     }
     return evaluations
 }
-exports.getCustomerCareInfoByEmployee = async (portal, companyId, query, userId) => {
+exports.getCustomerCareInfoByEmployee = async (portal, companyId, query, userId, currentRole) => {
+    console.log('vao ham 1');
+    const abc = await updateSearchingCustomerTaskInfo(portal, companyId, userId, currentRole);
+    console.log(abc);
     let { month, year } = query;
-
     // neu ko co querry thi lay theo thang hien tai
     if (!month || !year) {
         const date = new Date();
@@ -71,13 +86,13 @@ exports.getCustomerCareInfoByEmployee = async (portal, companyId, query, userId)
         year = date.getFullYear();
     }
     // tính tỉ lệ hoàn thành hoạt động
-    const { totalCareActions, numberOfCompletionCareAction, numberOfOverdueCareAction } = await this.getCompletionRate(portal, companyId, { month, year }, userId);
+    const { totalCareActions, numberOfCompletionCareAction, numberOfOverdueCareAction } = await this.getCompletionRate(portal, companyId, { month, year }, userId, currentRole);
     // lấy danh sách khách hàng quản lý
-    const getAllCustomers = await getCustomers(portal, companyId, { customerOwner: [userId] });
+    const getAllCustomers = await getCustomers(portal, companyId, { customerOwner: [userId] }, currentRole);
     const listManagedCustomer = getAllCustomers.customers;
 
     //lấy danh sách nhóm khách hàng - tạo dữ liệu khách hàng theo nhóm
-    const getCustomnerGroups = await getGroups(portal, companyId, {})
+    const getCustomnerGroups = await getGroups(portal, companyId, {}, currentRole)
     const listGroup = getCustomnerGroups.groups;
     let customerDataByGroup = [];
     listGroup.forEach(group => {
@@ -88,7 +103,7 @@ exports.getCustomerCareInfoByEmployee = async (portal, companyId, query, userId)
         customerDataByGroup = [...customerDataByGroup, [group.name, numberOfCustomer]];
     });
     //lấy danh sách trạng thái khách hàng - tạo dữ liệu khách hàng theo trạng thái
-    const getCustomnerStatus = await getStatus(portal, companyId, {})
+    const getCustomnerStatus = await getStatus(portal, companyId, {}, currentRole)
     const listStatus = getCustomnerStatus.listStatus;
     let customerDataByStatus = [];
     listStatus.forEach(status => {
@@ -104,24 +119,24 @@ exports.getCustomerCareInfoByEmployee = async (portal, companyId, query, userId)
     let solutionRateData = [];
     for (let i = 0; i < 12; i++) {
         x = [...x, `${month}/${year}`];
-        let { completionRate } = await this.getCompletionRate(portal, companyId, { month, year }, userId);
-        completionRateData = [...completionRateData, completionRate*100];
-        let {solutionRate} = await this.getSolutionRate(portal, companyId, { month, year }, userId);
-        solutionRateData = [...solutionRateData, solutionRate*100];
-        if (month <=1) { month = month + 12 - 1; year--; }
+        let { completionRate } = await this.getCompletionRate(portal, companyId, { month, year }, userId, currentRole);
+        completionRateData = [...completionRateData, completionRate * 100];
+        let { solutionRate } = await this.getSolutionRate(portal, companyId, { month, year }, userId, currentRole);
+        solutionRateData = [...solutionRateData, solutionRate * 100];
+        if (month <= 1) { month = month + 12 - 1; year--; }
         else month--;
     }
 
 
     const customerCareInfoByEmployee = {
         totalCareActions, numberOfOverdueCareAction, numberOfCompletionCareAction, listManagedCustomer,
-         customerDataByGroup, customerDataByStatus, x, solutionRateData, completionRateData
+        customerDataByGroup, customerDataByStatus, x, solutionRateData, completionRateData
     }
     return customerCareInfoByEmployee
 }
 
 
-exports.getSolutionRate = async (portal, companyId, query, userId) => {
+exports.getSolutionRate = async (portal, companyId, query, userId, currentRole) => {
     const { month, year } = query;
     // neu ko co querry thi lay theo thang hien tai
     if (!month || !year) {
@@ -130,7 +145,7 @@ exports.getSolutionRate = async (portal, companyId, query, userId) => {
         year = date.getFullYear();
     }
     //-----------------------------
-    const getAllActions = await getCares(portal, companyId, { customerCareStaffs: [userId], month, year });
+    const getAllActions = await getCares(portal, companyId, { customerCareStaffs: [userId], month, year }, currentRole);
     const listCare = getAllActions.cares.filter((care) => { return (care.status == 3 || care.status == 5) });
     // lấy ra danh sách hoạt động thành công
     const listSolutionCare = listCare.filter((care) => { return (care.evaluation && care.evaluation.result && care.evaluation.result == 1) });
@@ -139,7 +154,7 @@ exports.getSolutionRate = async (portal, companyId, query, userId) => {
     return { numberOfCompletionActions: listCare.length, solutionRate: (listSolutionCare.length) / (listCare.length) };
 }
 
-exports.getCompletionRate = async (portal, companyId, query, userId) => {
+exports.getCompletionRate = async (portal, companyId, query, userId, currentRole) => {
 
     const { month, year } = query;
     // neu ko co querry thi lay theo thang hien tai
@@ -149,7 +164,7 @@ exports.getCompletionRate = async (portal, companyId, query, userId) => {
         year = date.getFullYear();
     }
     //-----------------------------
-    const getAllActions = await getCares(portal, companyId, { customerCareStaffs: [userId], month, year });
+    const getAllActions = await getCares(portal, companyId, { customerCareStaffs: [userId], month, year }, currentRole);
     //lấy ra danh sách hoạt động đã hoàn thành
     const listCareAction = getAllActions.cares;
     const listCompletionCare = listCareAction.filter((care) => { return (care.status == 3 || care.status == 5) });
@@ -158,7 +173,7 @@ exports.getCompletionRate = async (portal, companyId, query, userId) => {
     if (listCareAction.length == 0) return { totalCareActions: listCareAction.length, completionRate: 0 };
     return { totalCareActions: listCareAction.length, numberOfCompletionCareAction: listCompletionCare.length, completionRate: (listCompletionCare.length) / (listCareAction.length), numberOfOverdueCareAction: listOverdueCareAction.length };
 }
-exports.getCustomerRetentionRate = async (portal, companyId, query, userId) => {
+exports.getCustomerRetentionRate = async (portal, companyId, query, userId, currentRole) => {
     const { month, year } = query;
     // neu ko co querry thi lay theo thang hien tai
     if (!month || !year) {
@@ -168,7 +183,7 @@ exports.getCustomerRetentionRate = async (portal, companyId, query, userId) => {
     }
     //-----------------------------
     //lấy danh sách khách hàng cũ
-    const getAllCustomers = await getCustomers(portal, companyId, { month, year, customerOwner: [userId], isNewCustomer: false });
+    const getAllCustomers = await getCustomers(portal, companyId, { month, year, customerOwner: [userId], isNewCustomer: false }, currentRole);
     const listCustomer = getAllCustomers.customers;
     //lấy ra danh sách đơn hàng trong tháng
     const getSalesOrders = await getAllSalesOrders(userId, { month, year }, portal);
@@ -185,7 +200,7 @@ exports.getCustomerRetentionRate = async (portal, companyId, query, userId) => {
     if (listCustomer.length == 0) return { numberOfOldCustomers: listCustomer.length, customerRetentionRate: 0 };
     return { numberOfOldCustomers: listCustomer.length, customerRetentionRate: (numberOfCustomerBuying) / (listCustomer.length) };
 }
-exports.getNewCustomerBuyingRate = async (portal, companyId, query, userId) => {
+exports.getNewCustomerBuyingRate = async (portal, companyId, query, userId, currentRole) => {
     const { month, year } = query;
     // neu ko co querry thi lay theo thang hien tai
     if (!month || !year) {
@@ -195,7 +210,7 @@ exports.getNewCustomerBuyingRate = async (portal, companyId, query, userId) => {
     }
     //-----------------------------
     //lấy danh sách khách hàng mới
-    const getAllCustomers = await getCustomers(portal, companyId, { month, year, customerOwner: [userId], isNewCustomer: true });
+    const getAllCustomers = await getCustomers(portal, companyId, { month, year, customerOwner: [userId], isNewCustomer: true }, currentRole);
     const listCustomer = getAllCustomers.customers;
     //lấy ra danh sách đơn hàng trong tháng
     const getSalesOrders = await getAllSalesOrders(userId, { month, year }, portal);

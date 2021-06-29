@@ -165,7 +165,7 @@ const CustomerSchema = new Schema({
         promotionalValueMax: { type: Number },
         expirationDate:{type:Date}
     }],
-    crmUnit: {// người cập nhật
+    crmUnit: {// đơn vị CSKH
         type: Schema.Types.ObjectId,
         ref: "CrmUnit",
     },

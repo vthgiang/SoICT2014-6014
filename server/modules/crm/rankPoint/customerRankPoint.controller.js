@@ -3,7 +3,7 @@ const Logger = require(`../../../logs`);
 
 exports.getCustomerRankPoints = async (req, res) => {
     try {
-        const customerRankPoints = await CustomerRankPointService.getCustomerRankPoints(req.portal, req.user.company._id, req.query);
+        const customerRankPoints = await CustomerRankPointService.getCustomerRankPoints(req.portal, req.user.company._id, req.query,req.currentRole);
         await Logger.info(req.user.email, ' get_customerRankPoints_success ', req.portal);
         res.status(200).json({
             success: true,
@@ -44,7 +44,7 @@ exports.getCustomerRankPointById = async (req, res) => {
 exports.createCustomerRankPoint = async (req, res) => {
     console.log('vao controller');
     try {
-        const newCustomerRankPoint = await CustomerRankPointService.createCustomerRankPoint(req.portal, req.user.company._id, req.body, req.user._id);
+        const newCustomerRankPoint = await CustomerRankPointService.createCustomerRankPoint(req.portal, req.user.company._id, req.body, req.user._id,req.currentRole,req.currentRole);
         await Logger.info(req.user.email, ' create_customerRankPoint_success ', req.portal);
         res.status(200).json({
             success: true,

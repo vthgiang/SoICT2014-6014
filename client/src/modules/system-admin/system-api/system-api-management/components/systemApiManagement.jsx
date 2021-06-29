@@ -186,6 +186,7 @@ function SystemApiManagement (props) {
                     <table id={tableId} className="table table-hover table-striped table-bordered">
                         <thead>
                             <tr>
+                                <th style={{ width: '40px' }}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.no_')}</th>
                                 <th>{translate('system_admin.system_api.table.path')}</th>
                                 <th>{translate('system_admin.system_api.table.method')}</th>
                                 <th>{translate('system_admin.system_api.table.description')}</th>
@@ -201,8 +202,9 @@ function SystemApiManagement (props) {
                         </thead>
                         <tbody>
                             { listPaginateApi?.length > 0
-                                && listPaginateApi.map(api => 
+                                && listPaginateApi.map((api, index) => 
                                     <tr key={api?._id}>
+                                        <td>{index + 1}</td>
                                         <td>{api?.path}</td>
                                         <td>{api?.method}</td>
                                         <td>{api?.description}</td>

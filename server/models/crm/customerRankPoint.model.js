@@ -30,6 +30,10 @@ const CustomerRankPointSchema = new Schema({
         type: String,
     }
     ,
+    crmUnit: {// đơn vị CSKH
+        type: Schema.Types.ObjectId,
+        ref: "CrmUnit",
+    },
 
 
 }, {

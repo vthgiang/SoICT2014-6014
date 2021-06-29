@@ -15,12 +15,13 @@ exports.getCrmUnitByRole = async (portal, companyId, role) => {
     const crmUnits = await this.getCrmUnits(portal, companyId, {});
     //lấy đơn vị từ role
     const userUnit = await getOrganizationalUnitByUserRole(portal, role);
-
+    if (!userUnit) return 0;
     for (let i = 0; i < crmUnits.length; i++) {
-        if (userUnit._id.toString() == crmUnits[i].organizationalUnit._id.toString() || (userUnit.parent&&userUnit.parent.toString()== crmUnits[i].organizationalUnit._id.toString())) {
-            return crmUnits[i]._id;
+        if (userUnit._id.toString() == crmUnits[i].organizationalUnit._id.toString() || (userUnit.parent && userUnit.parent.toString() == crmUnits[i].organizationalUnit._id.toString())) {
+            return crmUnits[i];
         }
     }
+
     return 0;
 }
 

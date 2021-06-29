@@ -8,6 +8,7 @@ import EditGroupForm from './editForm';
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
 import CreateCareCommonForm from '../../common/createCareCommonForm';
 import GroupInfoForm from './groupInfoForm';
+import { getStorage } from '../../../../config';
 
 function CrmGroup(props) {
 
@@ -23,6 +24,7 @@ function CrmGroup(props) {
         option: 'name',
         value: '',
         tableId: tableIdDefault,
+        roleId:getStorage('currentRole'),
     });
     useEffect(() => props.getGroups(searchState), []
     )

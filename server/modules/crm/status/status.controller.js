@@ -8,7 +8,7 @@ const Logger = require(`../../../logs`);
  */
 exports.getStatus = async (req, res) => {
     try {
-        const status = await StatusService.getStatus(req.portal, req.user.company._id, req.query);
+        const status = await StatusService.getStatus(req.portal, req.user.company._id, req.query,req.currentRole);
         await Logger.info(req.user.email, ' get_status_success ', req.portal);
         res.status(200).json({
             success: true,
@@ -56,7 +56,7 @@ exports.getStatusById = async (req, res) => {
  */
 exports.createStatus = async (req, res) => {
     try {
-        const newStatus = await StatusService.createStatus(req.portal, req.user.company._id, req.user._id, req.body);
+        const newStatus = await StatusService.createStatus(req.portal, req.user.company._id, req.user._id, req.body,req.currentRole);
         await Logger.info(req.user.email, ' create_status_success ', req.portal);
         res.status(200).json({
             success: true,

@@ -19,7 +19,6 @@ const CrmUnitSchema = new Schema({
 });
 
 CrmUnitSchema.plugin(mongoosePaginate);
-
 module.exports = (db) => {
     if (!db.models.CrmUnit)
         return db.model('CrmUnit', CrmUnitSchema);

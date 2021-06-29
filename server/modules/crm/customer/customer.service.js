@@ -76,7 +76,7 @@ exports.createCustomer = async (portal, companyId, data, userId, fileConverts, r
     console.log('vao day', role);
     const crmUnit = await getCrmUnitByRole(portal, companyId, role);
     if (!crmUnit) return {};
-    data = { ...data, crmUnit };
+    data = { ...data, crmUnit:crmUnit._id };
     const newCustomer = await Customer(connect(DB_CONNECTION, portal)).create(data);
     // them vao hoạt động tìm kiếm khách hàng
     //lấy công việc thêm khách hàng của nhân viên
@@ -176,9 +176,8 @@ exports.getCustomers = async (portal, companyId, query, role) => {
     if (!getAll) {
         // lấy đơn vị CSKH từ role
         const crmUnit = await getCrmUnitByRole(portal, companyId, role);
-        console.log('crmUnit',crmUnit);
         if (!crmUnit) return { listDocsTotal :0, customers:[] } ;
-        keySearch = { crmUnit: crmUnit }
+        keySearch = { crmUnit: crmUnit._id }
     }
     if (customerCode) {
         keySearch = {

@@ -149,6 +149,7 @@ export default {
             time_keeping: "Chấm công nhân viên",
             list_education: "Chương trình đào tạo bắt buộc",
             training_plan: "Quản lý khoá đào tạo",
+            training_plan_employee: "Danh sách khóa đào tạo",
             list_major: "Danh sách chuyên ngành",
             list_career_position: "Danh sách vị trí công việc",
             list_search_for_package: "Tìm kiếm nhân sự gói thầu",
@@ -2434,6 +2435,7 @@ export default {
                 edit_course: "Chỉnh sửa khoá đào tạo",
                 delete_course: "Xoá khoá đào tạo",
                 view_course: "Thông tin khoá đào tạo",
+                register: "Đăng ký",
 
                 // Thông điệp trả về từ server
                 name_required: "Tên khoá đào tạo không được để trống",

@@ -4,11 +4,12 @@ import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ButtonModal, SelectBox, ErrorLabel } from '../../../../common-components';
 import { CrmGroupActions } from '../redux/actions';
 import ValidationHelper from '../../../../helpers/validationHelper';
+import { getStorage } from '../../../../config';
 
 class CreateGroupForm extends Component {
     constructor(props) {
         super(props);
-        this.state = { newCustomerGroup: {} }
+        this.state = { newCustomerGroup: { roleId:getStorage('currentRole'),} }
     }
 
     /**
