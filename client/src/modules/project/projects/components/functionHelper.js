@@ -548,7 +548,7 @@ export const getEstimateMemberCostOfTask = (task, projectDetail, userId) => {
         return String(actorSalaryItem.userId) === String(userId)
     });
     if (currentEmployee) {
-        estimateNormalMemberCost = Number(currentEmployee.salary) * Number(currentEmployee.weight / 100) * task.estimateNormalTime
+        estimateNormalMemberCost = Number(currentEmployee.salary) / getAmountOfWeekDaysInMonth(moment()) * Number(currentEmployee.weight / 100) * task.estimateNormalTime
             / (projectDetail.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS);
     }
     return estimateNormalMemberCost;
