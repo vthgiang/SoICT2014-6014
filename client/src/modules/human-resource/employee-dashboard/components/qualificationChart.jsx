@@ -169,6 +169,7 @@ class QualificationChart extends Component {
 
         let listAllEmployees = employeesManager.listEmployeesOfOrganizationalUnits;
 
+
         if (listAllEmployees.length !== 0) {
             this.renderChart(this.convertData(listAllEmployees));
         } else {
@@ -207,7 +208,7 @@ class QualificationChart extends Component {
                             }
                         </div>
                     </div>
-                    { employeesManager.isLoading
+                    {employeesManager.isLoading
                         ? <p>{translate('general.loading')}</p>
                         : <div className="box-body">
                             <div className="box-tools pull-left" >
@@ -223,7 +224,7 @@ class QualificationChart extends Component {
                                         chart={this.chart}
                                         chartId={"donutChart"}
                                         legendId={"donutChartLegend"}
-                                        title={`${typeChart ? "Danh sách trình độ chuyên ngành" : "Dánh sách trình độ chuyên môn"}`}
+                                        title={`${typeChart ? "Danh sách trình độ chuyên ngành" : "Danh sách trình độ chuyên môn"}`}
                                         dataChartLegend={this.dataChart && this.dataChart.map(item => item[0])}
                                     />
                                 </div>

@@ -71,7 +71,10 @@ exports.getTotalCommendation = async (portal, company, organizationalUnits, mont
             }
         }
     }
-    let totalList = await Commendation(connect(DB_CONNECTION, portal)).find(keySearch).populate({path:'employee', select:'fullName employeeNumber'});
+    let totalList = await Commendation(connect(DB_CONNECTION, portal)).find(keySearch).populate({
+        path: 'employee',
+        select: 'fullName employeeNumber'
+    });
     return {
         totalList,
         totalListOfYear
@@ -88,66 +91,70 @@ exports.searchCommendations = async (portal, params, company) => {
     let keySearch = {
         company: company
     };
-    let endMonth = new Date(params.endDate).getMonth();
-    let endYear = new Date(params.endDate).getFullYear();
-    endMonth = endMonth + 1;
-    let arrMonth = [];
-    for (let i = 0; ; i++) {
-        let month = endMonth - i;
-        if (month > 0) {
-            if (month.toString().length === 1) {
-                month = `${endYear}-0${month}-01`;
-                arrMonth = [...arrMonth, month];
+
+    if (params.endDate && params.startDate) {
+        let endMonth = new Date(params.endDate).getMonth();
+        let endYear = new Date(params.endDate).getFullYear();
+        endMonth = endMonth + 1;
+        let arrMonth = [];
+        for (let i = 0;; i++) {
+            let month = endMonth - i;
+            if (month > 0) {
+                if (month.toString().length === 1) {
+                    month = `${endYear}-0${month}-01`;
+                    arrMonth = [...arrMonth, month];
+                } else {
+                    month = `${endYear}-${month}-01`;
+                    arrMonth = [...arrMonth, month];
+                }
+                if (`${params.startDate}-01` === month) {
+                    break;
+                }
             } else {
-                month = `${endYear}-${month}-01`;
-                arrMonth = [...arrMonth, month];
-            }
-            if (`${params.startDate}-01` === month) {
-                break;
-            }
-        } else {
-            let j = 1;
-            for (j; ; j++) {
-                month = month + 12;
-                if (month > 0) {
+                let j = 1;
+                for (j;; j++) {
+                    month = month + 12;
+                    if (month > 0) {
+                        break;
+                    }
+                }
+                if (month.toString().length === 1) {
+                    month = `${endYear - j}-0${month}-01`;
+                    arrMonth = [...arrMonth, month];
+                } else {
+                    month = `${endYear - j}-${month}-01`;
+                    arrMonth = [...arrMonth, month];
+                }
+                if (`${params.startDate}-01` === month) {
                     break;
                 }
             }
-            if (month.toString().length === 1) {
-                month = `${endYear - j}-0${month}-01`;
-                arrMonth = [...arrMonth, month];
-            } else {
-                month = `${endYear - j}-${month}-01`;
-                arrMonth = [...arrMonth, month];
-            }
-            if (`${params.startDate}-01` === month) {
-                break;
-            }
         }
-    }
 
-    let querys = [];
-    arrMonth.forEach(x => {
-        let date = new Date(x);
-        let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
-        let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 1);
-        querys = [...querys, {
-            startDate: {
-                "$gt": firstDay,
-                "$lte": lastDay
-            }
-        }]
-    })
-    keySearch = {
-        ...keySearch,
-        "$or": querys
+        let querys = [];
+        arrMonth.forEach(x => {
+            let date = new Date(x);
+            let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+            let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 1);
+            querys = [...querys, {
+                startDate: {
+                    "$gt": firstDay,
+                    "$lte": lastDay
+                }
+            }]
+        })
+        keySearch = {
+            ...keySearch,
+            "$or": querys
+
+        }
     }
     // Bắt sựu kiện MSNV hoặc tên nhân viên tìm kiếm khác undefined
     if (params.employeeNumber || params.employeeName) {
         let keySearchEmployee = {
             company: company
         };
-        if(params.employeeNumber){
+        if (params.employeeNumber) {
             keySearchEmployee = {
                 ...keySearchEmployee,
                 employeeNumber: {
@@ -156,7 +163,7 @@ exports.searchCommendations = async (portal, params, company) => {
                 }
             }
         };
-        if(params.employeeName){
+        if (params.employeeName) {
             keySearchEmployee = {
                 ...keySearchEmployee,
                 fullName: {
