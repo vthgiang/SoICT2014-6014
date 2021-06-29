@@ -86,7 +86,7 @@ const AnnualLeaveChartAndTable = (props) => {
         }
     }
 
-    function isEqual (items1, items2) {
+    function isEqual(items1, items2) {
         if (!items1 || !items2) {
             return false;
         }
@@ -280,7 +280,7 @@ const AnnualLeaveChartAndTable = (props) => {
                     </div>
                 </div>
                 <div className="box-body" >
-                    { !defaultUnit 
+                    {!defaultUnit
                         && <div className="qlcv" style={{ marginBottom: 15 }}>
                             <div className="form-inline">
                                 <div className="form-group">
@@ -303,7 +303,7 @@ const AnnualLeaveChartAndTable = (props) => {
                     <div className="dashboard_box_body">
                         {annualLeave.isLoading
                             ? <div>{translate('general.loading')}</div>
-                            : annualLeave.beforAndAfterOneWeeks.length 
+                            : annualLeave.beforAndAfterOneWeeks.length
                                 ? <div ref={barChartAndTable}></div>
                                 : <div>{translate('kpi.organizational_unit.dashboard.no_data')}</div>
                         }
@@ -320,8 +320,10 @@ const AnnualLeaveChartAndTable = (props) => {
                             </thead>
                             <tbody>
                                 {annualLeave.isLoading
-                                    ? <td colspan="4">{translate('general.loading')}</td>
-                                    : listAnnual?.length 
+                                    ? <tr>
+                                        <td colSpan="4">{translate('general.loading')}</td>
+                                    </tr>
+                                    : listAnnual?.length
                                         ? listAnnual.map(x => {
                                             return (
                                                 <tr key={x.id}>
@@ -332,7 +334,9 @@ const AnnualLeaveChartAndTable = (props) => {
                                                 </tr>
                                             )
                                         })
-                                        : <td colspan="4">{translate('kpi.organizational_unit.dashboard.no_data')}</td>
+                                        : <tr>
+                                            <td colSpan="4">{translate('kpi.organizational_unit.dashboard.no_data')}</td>
+                                        </tr>
                                 }
                             </tbody>
                         </table>
