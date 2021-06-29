@@ -11,11 +11,12 @@ import { taskManagementActions } from '../../../task/task-management/redux/actio
 import { ProjectActions } from "../../projects/redux/actions";
 import { getCurrentProjectDetails, processDataTasksStartEnd } from '../../projects/components/functionHelper';
 
-const NUMS_OF_REDUCTION = 4;
+const NUMS_OF_REDUCTION = 100;
 
 const ModalCalculateRecommend = (props) => {
     const { processedData, tasksData, translate, project, oldCPMEndDate } = props;
     const projectDetail = getCurrentProjectDetails(project);
+    const [isFirstTimeHere, setIsFirstTimeHere] = useState(true);
 
     const [currentNumOfReduction, setCurrentNumOfReduction] = useState(NUMS_OF_REDUCTION);
     const [displayNumOfReduction, setDisplayNumOfReduction] = useState(NUMS_OF_REDUCTION);
@@ -144,6 +145,7 @@ const ModalCalculateRecommend = (props) => {
             currentProcessedData,
         });
         setDisplayNumOfReduction(currentNumOfReduction);
+        setIsFirstTimeHere(false);
     }
 
     const save = () => {
@@ -162,6 +164,57 @@ const ModalCalculateRecommend = (props) => {
         })
     }
 
+    const renderContent = () => {
+        if (!content.status) {
+            if (isFirstTimeHere) {
+                return null;
+            }
+            return (
+                <div>
+                    <div>Không có phương án nào để giảm thời gian dự án!</div>
+                    <div>Đề xuất: </div>
+                    <ul>
+                        <li>Thay đổi thời gian dự kiến kết thúc của dự án</li>
+                        <li>Thay đổi dữ liệu thời gian ở file excel</li>
+                        <li>Chấp nhận kết quả và không sửa đổi gì</li>
+                    </ul>
+                </div>
+            )
+        }
+        return (
+            <div>
+                <ul className="todo-list">
+                    {content && content.message.length > 0 && content.message.map((messageItem, messageIndex) => {
+                        const { taskCode, timeToDecrease, costToIncrease } = messageItem;
+                        return (
+                            <li key={`${messageIndex}-${messageItem.taskCode}`}>
+                                <strong>Công việc {taskCode}: </strong>
+                                <span style={{ color: 'green' }}>
+                                    Giảm thời gian đi {timeToDecrease} {translate(`project.unit.${projectDetail?.unitTime}`)}
+                                </span>
+                                {', '}
+                                <span style={{ color: 'red' }}>tăng chi phí thêm {numberWithCommas(costToIncrease)} {projectDetail?.unitCost}</span>
+                            </li>
+                        )
+                    })}
+                </ul>
+                <div style={{ marginLeft: 10 }}>
+                    <h5>Ngày kết thúc dự án dự kiến: <strong>{moment(projectDetail?.endDate).format('HH:mm DD/MM/YYYY')}</strong></h5>
+                    <h5>Ngày kết thúc dự án tính theo CPM cũ:{' '}
+                        <strong style={{ color: 'red' }}>
+                            {moment(oldCPMEndDate).format('HH:mm DD/MM/YYYY')}
+                        </strong>
+                    </h5>
+                    <h5>Ngày kết thúc dự án tính theo CPM mới:{' '}
+                        <strong style={{ color: 'green' }}>
+                            {moment(content.currentCPMEndDate).format('HH:mm DD/MM/YYYY')}
+                        </strong>
+                    </h5>
+                </div>
+            </div>
+        )
+    }
+
     return (
         <React.Fragment>
             <DialogModal
@@ -173,59 +226,11 @@ const ModalCalculateRecommend = (props) => {
                 hasSaveButton={content.status}
                 resetOnClose={true}
             >
-                <div>
-                    <div className="row">
-                        <div className="form-group col-md-6">
-                            <label className="form-control-static">Số bước giảm thời gian</label>
-                            <input type="number" className="form-control" value={currentNumOfReduction} onChange={e => setCurrentNumOfReduction(e.target.value)} />
-                        </div>
-                        <button style={{ marginRight: 20, marginTop: 20 }} className="btn-success pull-right" onClick={calculateRecommend}>Tính toán</button>
-                    </div>
-                    <div>
-                        {content.status ?
-                            <div>
-                                <ul className="todo-list">
-                                    {content && content.message.length > 0 && content.message.map((messageItem, messageIndex) => {
-                                        const { taskCode, timeToDecrease, costToIncrease } = messageItem;
-                                        return (
-                                            <li key={`${messageIndex}-${messageItem.taskCode}`}>
-                                                <strong>Công việc {taskCode}: </strong>
-                                                <span style={{ color: 'green' }}>
-                                                    Giảm thời gian đi {timeToDecrease} {translate(`project.unit.${projectDetail?.unitTime}`)}
-                                                </span>
-                                                {', '}
-                                                <span style={{ color: 'red' }}>tăng chi phí thêm {numberWithCommas(costToIncrease)} {projectDetail?.unitCost}</span>
-                                            </li>
-                                        )
-                                    })}
-                                </ul>
-                                <div style={{ marginLeft: 10 }}>
-                                    <h5>Ngày kết thúc dự án dự kiến: <strong>{moment(projectDetail?.endDate).format('HH:mm DD/MM/YYYY')}</strong></h5>
-                                    <h5>Ngày kết thúc dự án tính theo CPM cũ:{' '}
-                                        <strong style={{ color: 'red' }}>
-                                            {moment(oldCPMEndDate).format('HH:mm DD/MM/YYYY')}
-                                        </strong>
-                                    </h5>
-                                    <h5>Ngày kết thúc dự án tính theo CPM mới:{' '}
-                                        <strong style={{ color: 'green' }}>
-                                            {moment(content.currentCPMEndDate).format('HH:mm DD/MM/YYYY')}
-                                        </strong>
-                                    </h5>
-                                </div>
-                            </div>
-                            :
-                            <div>
-                                <div>Không có kế hoạch giảm thời gian chỉ với <strong>{displayNumOfReduction} bước!</strong></div>
-                                <div>Đề xuất: </div>
-                                <ul>
-                                    <li>Tăng số bước giảm chi phí</li>
-                                    <li>Thay đổi thời gian dự kiến kết thúc của dự án</li>
-                                    <li>Thay đổi dữ liệu thời gian ở file excel</li>
-                                    <li>Chấp nhận kết quả và không sửa đổi gì</li>
-                                </ul>
-                            </div>
-                        }
-                    </div>
+                <div className="description-box without-border">
+                    <button className="btn btn-success" onClick={calculateRecommend}>
+                        Tính toán
+                    </button>
+                    {renderContent()}
                 </div>
             </DialogModal>
         </React.Fragment>

@@ -240,62 +240,36 @@ const ModalExcelImport = (props) => {
                 title={translate('manage_user.import_title')}
                 func={importCPM}
                 disableSubmit={!(state.data && state.data.length > 0 && !currentMessageError)}
-                size={75}
+                size={50}
+                saveText={`Nhập dữ liệu`}
                 resetOnClose={true}
             >
-                <div className="row">
-                    <div className="col-md-6">
-                        <strong>
-                            <h4>Bước 1: Download template excel về</h4>
-                        </strong>
+                <div className="description-box without-border">
+                    <h4><strong>Các bước upload file excel danh sách công việc dự án:</strong></h4>
+                    <div>
+                        Bước 1: Download template excel về
+                        <ExportExcel className="btn btn-link" type="link" id="downloadTemplateImport-cpm"
+                            buttonName={`Tải file template excel danh sách công việc dự án`} exportData={convertDataCPMExport(dataImportTemplate)} />
                     </div>
-                    <div className="col-md-3" style={{ marginTop: 10 }}>
-                        <div className="form-group">
-                            <ExportExcel className="btn btn-primary" type="button" id="downloadTemplateImport-cpm"
-                                buttonName={translate('human_resource.download_file')} exportData={convertDataCPMExport(dataImportTemplate)} />
+                    <div>Bước 2: Chỉnh sửa file excel vừa tải về</div>
+                    <div>
+                        Bước 3: Chọn file excel và tải lên
+                        <div style={{ marginTop: 10 }}>
+                            <div className="form-group">
+                                <ImportFileExcel
+                                    callFunctionDeleteFile={handleResetModal}
+                                    configData={configImportCPMData}
+                                    handleImportExcel={handleImport}
+                                />
+                            </div>
+                            {
+                                !(state.data && state.data.length > 0 && !currentMessageError) && !isFirstInitialRender &&
+                                <div style={{ color: 'red' }}>File Excel không hợp lệ!</div>
+                            }
                         </div>
                     </div>
-                    <div className="pull-right" style={{ marginRight: 20 }}>
-                        <button title="Làm mới modal import excel" type="button" className="pull-right"
-                            style={{ display: 'flex', height: 35, justifyContent: 'center', alignItems: 'center' }}
-                            onClick={handleResetModal}
-                        >
-                            <span className="material-icons">refresh</span>
-                        </button>
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col-md-6">
-                        <strong>
-                            <h4>Bước 2: Chỉnh sửa file excel theo mẫu</h4>
-                        </strong>
-                    </div>
-                    <div className="col-md-3" style={{ marginTop: 10 }}>
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col-md-6">
-                        <strong>
-                            <h4>Bước 3: Tải file excel theo mẫu đã chỉnh sửa lên</h4>
-                        </strong>
-                    </div>
-                    <div className="col-md-3" style={{ marginTop: 10 }}>
-                        <div className="form-group">
-                            <ImportFileExcel
-                                callFunctionDeleteFile={handleResetModal}
-                                configData={configImportCPMData}
-                                handleImportExcel={handleImport}
-                            />
-                        </div>
-                        {
-                            !(state.data && state.data.length > 0 && !currentMessageError) && !isFirstInitialRender &&
-                            <div style={{ color: 'red' }}>File Excel không hợp lệ!</div>
-                        }
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col-md-6">
-                        <span style={{ color: 'red' }}>{currentMessageError}</span>
+                    <div>
+                        <strong style={{ color: 'red' }}>{currentMessageError}</strong>
                     </div>
                 </div>
             </DialogModal>

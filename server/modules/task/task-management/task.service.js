@@ -2934,7 +2934,6 @@ exports.getTasksByProject = async (portal, projectId, page, perPage) => {
     }
     tasks = await Task(connect(DB_CONNECTION, portal))
         .find({ taskProject: projectId })
-        .sort({ createdAt: -1 })
         .populate({ path: "responsibleEmployees", select: "_id name" })
         .populate({ path: "accountableEmployees", select: "_id name" })
         .populate({ path: "consultedEmployees", select: "_id name" })

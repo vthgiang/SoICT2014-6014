@@ -18,6 +18,7 @@ import TabChangeRequestProject from './tabChangeRequestProject';
 import { ChangeRequestActions } from '../../change-requests/redux/actions';
 import { TaskAddModal } from '../../../task/task-management/component/taskAddModal';
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
+import { isEqual } from 'lodash';
 
 const TabProjectTasksList = (props) => {
     const { translate, project, user, tasks, currentProjectTasks } = props;
@@ -50,6 +51,8 @@ const TabProjectTasksList = (props) => {
         window.$('#modal-add-task-schedule').modal('show')
     }
 
+    console.log('currentProjectTasks', currentProjectTasks)
+
     return (
         <React.Fragment>
             <div className="box-body qlcv">
@@ -57,14 +60,19 @@ const TabProjectTasksList = (props) => {
                     <div className="box-tools" style={{ marginLeft: 10 }}>
                         <div className="btn-group">
                             <button type="button" className={`btn btn-xs ${isTableType ? 'btn-danger' : "active"}`} onClick={() => setIsTableType(true)}>Bảng</button>
-                            <button type="button" className={`btn btn-xs ${isTableType ? "active" : "btn-danger"}`} onClick={() => setIsTableType(false)}>Biểu đồ Gantt</button>
+                            <button type="button" className={`btn btn-xs ${isTableType ? "active" : "btn-danger"}`} onClick={() => {
+                                // props.getTasksByProject(currentProjectId);
+                                // props.getTasksByProject(currentProjectId, 1, 6);
+                                setIsTableType(false);
+                            }}>Biểu đồ Gantt</button>
                         </div>
                     </div>
                     <div style={{ flexDirection: 'row', display: 'flex' }}>
                         {/* Button refresh danh sách tasks */}
                         <button style={{ paddingTop: 5, width: 35, height: 35, justifyContent: 'center', alignItems: 'center', marginTop: 15, marginRight: 10 }}
                             onClick={() => {
-                                props.getTasksByProject(currentProjectId)
+                                props.getTasksByProject(currentProjectId);
+                                props.getTasksByProject(currentProjectId, 1, 6);
                             }}
                         >
                             <span className="material-icons">refresh</span>
@@ -84,7 +92,7 @@ const TabProjectTasksList = (props) => {
                         {
                             projectDetail?.projectType === 2 &&
                                 checkIfAbleToCRUDProject({ project, user, currentProjectId, isInsideProject: true }) && currentProjectTasks && currentProjectTasks.length > 0 ? null :
-                                (projectDetail && <modalAddTaskSchedule projectDetail={projectDetail} onHandleReRender={onHandleReRender} />)
+                                (projectDetail && <ModalAddTaskSchedule projectDetail={projectDetail} onHandleReRender={onHandleReRender} />)
                         }
                         {
                             projectDetail?.projectType === 2 &&

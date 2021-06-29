@@ -49,8 +49,6 @@ const ProjectDetailPage = (props) => {
 
     return (
         <div className="box">
-
-
             <ul className="nav nav-tabs">
                 <li className="active"><a href="#project-details-info" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Thông tin dự án</a></li>
                 <li><a href="#project-tasks-list" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Danh sách công việc dự án</a></li>
@@ -86,7 +84,6 @@ const ProjectDetailPage = (props) => {
                         <TabChangeRequestProject currentProjectTasks={currentProjectTasks} />
                     </LazyLoadComponent>
                 </div>
-
             </div>
         </div >
     );
