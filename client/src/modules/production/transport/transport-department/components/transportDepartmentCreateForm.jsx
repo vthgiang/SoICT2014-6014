@@ -279,7 +279,7 @@ function TransportDepartmentCreateForm(props) {
                     </div>
                     <div className={`form-group`}>
                         
-                        <div className="box box-solid">
+                        {/* <div className="box box-solid"> */}
                             <label>
                                 {"Vai trò phê duyệt yêu cầu, tạo kế hoạch vận chuyển"}
                                 <span className="text-red">*</span>
@@ -317,9 +317,9 @@ function TransportDepartmentCreateForm(props) {
                                 </table>                            
                             }
                             {/* <ErrorLabel content={roleError} /> */}
-                        </div>
+                        {/* </div> */}
 
-                        <div className="box box-solid">
+                        {/* <div className="box box-solid"> */}
                             <label>
                                 {"Vai trò giám sát thực hiện kế hoạch vận chuyển"}
                                 <span className="text-red">*</span>
@@ -357,9 +357,9 @@ function TransportDepartmentCreateForm(props) {
                                 </table>                            
                             }
                             {/* <ErrorLabel content={roleError} /> */}
-                        </div>
+                        {/* </div> */}
 
-                        <div className="box box-solid">
+                        {/* <div className="box box-solid"> */}
                             <label>
                                 {"Vai trò nhân viên tham gia vận chuyển"}
                                 <span className="text-red">*</span>
@@ -397,7 +397,7 @@ function TransportDepartmentCreateForm(props) {
                                 </table>                            
                             }
                             {/* <ErrorLabel content={roleError} /> */}
-                        </div>
+                        {/* </div> */}
                     </div>
                     
                 </form>

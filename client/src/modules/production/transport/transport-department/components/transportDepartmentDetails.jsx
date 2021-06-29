@@ -93,7 +93,7 @@ function TransportDepartmentDetails(props) {
 
                     <div className={`form-group`}>
                         
-                        <div className="box box-solid">
+                        {/* <div className="box box-solid"> */}
                             <label>
                                 {"Vai trò phê duyệt yêu cầu, tạo kế hoạch vận chuyển"}
                             </label>
@@ -122,9 +122,9 @@ function TransportDepartmentDetails(props) {
                                     </tbody>
                                 </table>                            
                             }
-                        </div>
+                        {/* </div> */}
 
-                        <div className="box box-solid">
+                        {/* <div className="box box-solid"> */}
                             <label>
                                 {"Vai trò giám sát thực hiện kế hoạch vận chuyển"}
                             </label>
@@ -154,9 +154,9 @@ function TransportDepartmentDetails(props) {
                                 </table>                            
                             }
                             {/* <ErrorLabel content={roleError} /> */}
-                        </div>
+                        {/* </div> */}
 
-                        <div className="box box-solid">
+                        {/* <div className="box box-solid"> */}
                             <label>
                                 {"Vai trò nhân viên tham gia vận chuyển"}
                             </label>
@@ -186,7 +186,7 @@ function TransportDepartmentDetails(props) {
                                 </table>                            
                             }
                         </div>
-                    </div>
+                    {/* </div> */}
                     
                 </form>
             </DialogModal>

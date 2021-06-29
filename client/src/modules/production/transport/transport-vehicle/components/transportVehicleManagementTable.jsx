@@ -35,7 +35,8 @@ function TransportVehicleManagementTable(props) {
             typeRegisterForUse: "",
             page: 0,
             limit: 500,
-            managedBy: props.managedBy ? props.managedBy : ''
+            managedBy: props.managedBy ? props.managedBy : '',
+            currentRole: localStorage.getItem("currentRole")
         }
         props.getAllAsset(data);
         
@@ -174,7 +175,7 @@ function TransportVehicleManagementTable(props) {
                             <th>{"Tên phương tiện"}</th>
                             <th>{"Trọng tải"}</th>
                             <th>{"Thể tích"}</th>
-                            <th>{"Chọn"}</th>
+                            <th>{"Chọn phương tiện đơn vị sử dụng"}</th>
                         </tr>
                     </thead>
                     <tbody>

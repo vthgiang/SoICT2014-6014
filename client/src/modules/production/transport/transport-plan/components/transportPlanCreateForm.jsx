@@ -204,6 +204,7 @@ function TransportPlanCreateForm(props) {
     useEffect(() => {
         if (transportRequirements){
             let {lists} = transportRequirements;
+            console.log(transportRequirements)
             if (lists && lists.length!==0){
                 if (formSchedule.startDate && formSchedule.endDate){
                     const startDate = new Date(formSchedule.startDate);
@@ -213,7 +214,7 @@ function TransportPlanCreateForm(props) {
                     }
                 }
                 else {
-                    setListRequirements([])
+                    setListRequirements(lists)
                 }
             }
         }
@@ -285,7 +286,7 @@ function TransportPlanCreateForm(props) {
             <div className="nav-tabs-custom">
                 <ul className="nav nav-tabs">
                     <li className="active"><a href="#plan-list-transport-carrier" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Thống kê phương tiện và nhân viên"}</a></li>
-                    <li><a href="#plan-list-transport-requirement" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Chọn yêu cầu vận chuyển"}</a></li>
+                    <li><a href="#plan-list-transport-requirement" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Tạo thông tin chung kế hoạch và chọn yêu cầu vận chuyển"}</a></li>
                     <li><a href="#plan-transport-vehicle-carrier" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Chọn phương tiện và nhân viên"}</a></li>
                 </ul>
                 <div className="tab-content">
@@ -369,6 +370,7 @@ function TransportPlanCreateForm(props) {
                                         </div>
 
                                 </div>
+                                
                                 <div className="col-xs-12 col-sm-12 col-md-8 col-lg-8">
                                     {
                                         (listRequirements && listRequirements.length!==0)
@@ -386,10 +388,12 @@ function TransportPlanCreateForm(props) {
                                     }
                                 </div>
                             </div>
+                            
+                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         {
                             listRequirements && listRequirements.length!==0
                             &&
-                            <table id={"1"} className="table table-striped table-bordered table-hover">
+                            <table id={"1"} className="table table-striped table-bordered table-hover" style={{marginTop: "10px"}}>
                                 <thead>
                                     <tr>
                                         <th className="col-fixed" style={{ width: 60 }}>{"STT"}</th>
@@ -451,6 +455,7 @@ function TransportPlanCreateForm(props) {
                                 </tbody>
                             </table>
                         }
+                        </div>
                         </div>
                     </div>
                     <div className="tab-pane" id="plan-transport-vehicle-carrier">

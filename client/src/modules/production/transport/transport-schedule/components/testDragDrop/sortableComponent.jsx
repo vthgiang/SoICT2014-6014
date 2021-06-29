@@ -324,7 +324,7 @@ const getTypeTransportRequirement = (value) => {
 	return "Giao";
 }
 return(
-    <div className="address-element" style={{margin: "10px", cursor: "pointer"}}>
+    <div className="address-element box box-solid" style={{margin: "10px", cursor: "pointer"}}>
 		<div>
 			{"STT: "+ (stt+1)}
 		</div>

@@ -132,7 +132,7 @@ function TransportNewOne(props) {
 
     return (
         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6" style = {{ padding: 0}}>
+            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6" style = {{ paddingLeft: 0}}>
                 <fieldset className="scheduler-border" style={{ height: "100%" }}>
                     <legend className="scheduler-border">Thông tin bên gửi</legend>                 
                     
@@ -163,7 +163,7 @@ function TransportNewOne(props) {
                 
             </div>
 
-            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6" style = {{ padding: 0}}>
+            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6" style = {{ paddingRight: 0}}>
                 <fieldset className="scheduler-border" style={{ height: "100%" }}>
                     <legend className="scheduler-border">Thông tin bên nhận</legend>                    
                     {/* <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">

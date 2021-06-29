@@ -460,7 +460,7 @@ function TransportVehicleAndCarrierSelect(props) {
                                     <th>{"Thể tích thùng"}</th>
                                     <th>{"Tài xế"}</th>
                                     <th style={{width: '200px'}}>{"Nhân viên đi cùng"}</th>
-                                    <th >{"Hành động"}</th>
+                                    <th >{"Xác nhận sử dụng phương tiện trong kế hoạch"}</th>
                                     {/* <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
                                         <DataTableSetting
                                             tableId={tableId}

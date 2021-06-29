@@ -189,9 +189,21 @@ function TransportNewOne(props) {
 
     return (
         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6" style={{ padding: 0}}>
+            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6" style={{ paddingLeft: 0}}>
                 <fieldset className="scheduler-border" style={{ height: "100%" }}>
-                    <legend className="scheduler-border">Thông tin gửi</legend>
+                    <legend className="scheduler-border">Thông tin giao hàng</legend>                    
+                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div className={`form-group`}>
+                            <label>
+                                Chi tiết
+                            </label>
+                            <textarea type="text" className="form-control"
+                                value={formInfo1.newOneDetail1}
+                                onChange={handlecustomer1DetailChange}
+                            />
+                        </div>
+                    </div>   
+
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div className={`form-group`}>
                             <label>
@@ -221,26 +233,27 @@ function TransportNewOne(props) {
                             indexComponent={"mapFromAddress"}
                             flyToCenter={flyToCenter1}
                         /> 
-                    </div>
+                    </div>                   
+                </fieldset>
+                
+            </div>
 
+            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6" style={{ paddingRight: 0}}>
+                <fieldset className="scheduler-border" style={{ height: "100%" }}>
+
+                    <legend className="scheduler-border">Thông tin nhận hàng</legend>
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div className={`form-group`}>
                             <label>
                                 Chi tiết
                             </label>
                             <textarea type="text" className="form-control"
-                                value={formInfo1.newOneDetail1}
-                                onChange={handlecustomer1DetailChange}
+                                value={formInfo2.newOneDetail2}
+                                onChange={handlecustomer2DetailChange}
                             />
                         </div>
-                    </div>                      
-                </fieldset>
-                
-            </div>
+                    </div>
 
-            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6" style={{ padding: 0}}>
-                <fieldset className="scheduler-border" style={{ height: "100%" }}>
-                    <legend className="scheduler-border">Thông tin nhận</legend>
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div className={`form-group`}>
                             <label>
@@ -271,17 +284,6 @@ function TransportNewOne(props) {
                         /> 
                     </div>
 
-                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                        <div className={`form-group`}>
-                            <label>
-                                Chi tiết
-                            </label>
-                            <textarea type="text" className="form-control"
-                                value={formInfo2.newOneDetail2}
-                                onChange={handlecustomer2DetailChange}
-                            />
-                        </div>
-                    </div>
                 </fieldset>
 
             </div>

@@ -253,7 +253,8 @@ function TransportVehicleCarrier2(props) {
     }, [listUsedVehiclesCarriers])
 
     return (
-        <div className="box-body qlcv">
+        <React.Fragment>
+        {/* <div className="box-body qlcv"> */}
             <div className="form-inline">
                 <div className="form-group">
                     <label className="form-control-static">Từ ngày: </label>
@@ -275,12 +276,12 @@ function TransportVehicleCarrier2(props) {
                 </div>
             </div>
             
-            <div className="box box-solid">
+            {/* <div className="box box-solid"> */}
                 {/* <div className="box-header"> */}
                     {/* <div className="box-title">{"Danh sách sử dụng phuơng tiện theo ngày"}</div> */}
                 {/* </div> */}
 
-                <div className="box-body qlcv">
+                {/* <div className="box-body qlcv"> */}
                     <TransportPlanDetailInfo 
                         currentTransportPlan={planChosenSeen}
                     />
@@ -289,7 +290,7 @@ function TransportVehicleCarrier2(props) {
                             <thead>
                                 <tr key={"vehicle-label"}>
                                     <td colSpan={listDay?listDay.length + 4:4}>
-                                        <div className="transport-table-carrier-vehicle-label"> {"Danh sách sử dụng phương tiện theo ngày"}</div>
+                                        <div className="transport-table-carrier-vehicle-label"> {"Lịch vận chuyển phương tiện"}</div>
                                     </td>
                                 </tr>
                                 <tr className="word-no-break">
@@ -325,15 +326,19 @@ function TransportVehicleCarrier2(props) {
                                             && listDay.map((day, index2) => (
                                                 <td className="tooltip-checkbox-transport" key={index2}>
                                                     <span className={"icon "+getStatusTickBox(formatDate(day), vehicle._id)}
-                                                    title={"ngay-xe"} 
+                                                    title={"KH"}
+                                                    style={{cursor: "default"}} 
                                                     >
-
                                                     </span>
-                                                    <span className="tooltiptext">
-                                                        <a style={{ color: "white" }} 
-                                                            onClick={() => handleShowDetailPlan(getCurrentPlan(formatDate(day), vehicle._id))}
-                                                        >{getCurrentPlan(formatDate(day), vehicle._id)?.code}</a>
-                                                    </span>
+                                                    {
+                                                        getCurrentPlan(formatDate(day), vehicle._id)
+                                                        &&
+                                                        <span className="tooltiptext">
+                                                            <a style={{ color: "white", cursor: "pointer" }} 
+                                                                onClick={() => handleShowDetailPlan(getCurrentPlan(formatDate(day), vehicle._id))}
+                                                            >{getCurrentPlan(formatDate(day), vehicle._id)?.code}</a>
+                                                        </span>
+                                                    }
                                                 </td>
                                             ))
                                         }
@@ -350,7 +355,7 @@ function TransportVehicleCarrier2(props) {
                             <thead>
                                 <tr key="carrier-label">
                                     <td colSpan={listDay?listDay.length + 4:4}>
-                                        <div className="transport-table-carrier-vehicle-label"> {"Danh sách công việc vận chuyển nhân viên theo ngày"}</div>
+                                        <div className="transport-table-carrier-vehicle-label"> {"Lịch vận chuyển của nhân viên"}</div>
                                     </td>
                                 </tr>
                                 <tr className="word-no-break">
@@ -381,15 +386,19 @@ function TransportVehicleCarrier2(props) {
                                             && listDay.map((day, index2) => (
                                                 <td className="tooltip-checkbox-transport" key={index2}>
                                                     <span className={"icon "+getStatusTickBox(formatDate(day), carrier._id)}
-                                                    title={"ngay-nguoi"} 
+                                                    title={"KH"} 
+                                                    style={{cursor: "default"}} 
                                                     >
-
                                                     </span>
-                                                    <span className="tooltiptext">
-                                                        <a style={{ color: "white" }} 
-                                                            onClick={() => handleShowDetailPlan(getCurrentPlan(formatDate(day), carrier._id))}
-                                                        >{getCurrentPlan(formatDate(day), carrier._id)?.code}</a>
-                                                    </span>
+                                                    {
+                                                        getCurrentPlan(formatDate(day), carrier._id)
+                                                        &&
+                                                        <span className="tooltiptext">
+                                                            <a style={{ color: "white", cursor: "pointer" }} 
+                                                                onClick={() => handleShowDetailPlan(getCurrentPlan(formatDate(day), carrier._id))}
+                                                            >{getCurrentPlan(formatDate(day), carrier._id)?.code}</a>
+                                                        </span>
+                                                    }
                                                 </td>
                                             ))
                                         }
@@ -399,8 +408,8 @@ function TransportVehicleCarrier2(props) {
                             </tbody>
                         </table>
                     </div>
-                </div>
-            </div>
+                {/* </div> */}
+            {/* </div> */}
 
             {/* <div className="box box-solid">
                 <div className="box-header">
@@ -426,7 +435,8 @@ function TransportVehicleCarrier2(props) {
                 </div>
             </div> */}
          
-        </div>
+        {/* </div> */}
+        </React.Fragment>
     )
 }
 

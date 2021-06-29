@@ -301,10 +301,10 @@ function TransportPlanGenerate(props) {
                 <div className="box-body">
                     <div className="box box-solid">
                         <div className="box-body qlcv">
-                            <TransportVehicleCarrier2 
+                            {/* <TransportVehicleCarrier2 
                                 transportPlan = {transportPlan}
                                 // key={transportPlan}
-                            />
+                            /> */}
                         </div>
                     </div>
                     <TransportPlanDetailInfo
