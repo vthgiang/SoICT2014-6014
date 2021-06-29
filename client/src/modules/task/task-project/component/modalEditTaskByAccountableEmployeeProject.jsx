@@ -30,7 +30,7 @@ class ModalEditTaskByAccountableEmployeeProject extends Component {
         let organizationalUnit = task && task.organizationalUnit?._id;
         let collaboratedWithOrganizationalUnits = task && task.collaboratedWithOrganizationalUnits.map(e => { if (e) return e.organizationalUnit._id });
 
-        // let statusOptions = []; statusOptions.push(task && task.status);
+        let statusOptions = []; statusOptions.push(task && task.status);
         let priorityOptions = []; priorityOptions.push(task && task.priority);
         let taskName = task && task.name;
         let taskDescription = task && task.description;
@@ -132,7 +132,7 @@ class ModalEditTaskByAccountableEmployeeProject extends Component {
             taskDescriptionDefault: taskDescription,
             organizationalUnit: organizationalUnit,
             collaboratedWithOrganizationalUnits: collaboratedWithOrganizationalUnits,
-            // statusOptions: statusOptions,
+            statusOptions: statusOptions,
             priorityOptions: priorityOptions,
             progress: progress,
             formulaProjectTask,
@@ -887,7 +887,7 @@ class ModalEditTaskByAccountableEmployeeProject extends Component {
 
             name: this.state.taskName,
             description: this.state.taskDescription,
-            // status: this.state.statusOptions,
+            status: this.state.statusOptions,
             priority: this.state.priorityOptions,
             formulaProjectTask: this.state.formulaProjectTask,
             formulaProjectMember: this.state.formulaProjectMember,
@@ -1111,7 +1111,7 @@ class ModalEditTaskByAccountableEmployeeProject extends Component {
                                 {/* <div> */}
 
                                 <div className="row form-group">
-                                    {/* <div className="col-lg-6 col-md-6 col-ms-12 col-xs-12">
+                                    <div className="col-lg-6 col-md-6 col-ms-12 col-xs-12">
                                         <label>{translate('task.task_management.detail_status')}</label>
                                         {
                                             <SelectBox
@@ -1124,7 +1124,7 @@ class ModalEditTaskByAccountableEmployeeProject extends Component {
                                                 onChange={this.handleSelectedStatus}
                                             />
                                         }
-                                    </div> */}
+                                    </div>
 
                                     {/*Mức ưu tiên*/}
                                     <div className="col-lg-6 col-md-6 col-ms-12 col-xs-12">

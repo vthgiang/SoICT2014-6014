@@ -1417,14 +1417,17 @@ const initHumanResourceForProjectData = async () => {
         })
     }).flat();
 
+    const normalProjStartDate = moment().format();
+    const normalProjEndDate = moment().add(14, 'days').format();
+
     const newEmptyProject1Type1 = {
         name: 'Dự án test không ràng buộc 1',
         projectType: 1,
         "unitTime": "days",
         "unitCost": "VND",
         "status": "inprocess",
-        "startDate": new Date("2021-04-16T00:00:00Z"),
-        "endDate": new Date("2021-07-23T00:00:00Z"),
+        "startDate": normalProjStartDate,
+        "endDate": normalProjEndDate,
         "description": "Dự án này có danh sách công việc không bị ràng buộc bởi tham số gì",
         projectManager: [
             projectManager._id,
@@ -1451,67 +1454,14 @@ const initHumanResourceForProjectData = async () => {
         responsibleEmployeesWithUnit: newResponsibleEmployeesWithUnit,
     }
 
-    const newEmptyProject3Type1 = {
-        name: 'Dự án test không ràng buộc 3',
-        projectType: 1,
-        "unitTime": "days",
-        "unitCost": "VND",
-        "status": "inprocess",
-        "startDate": new Date("2021-04-16T00:00:00Z"),
-        "endDate": new Date("2021-07-23T00:00:00Z"),
-        "description": "Dự án này có danh sách công việc không bị ràng buộc bởi tham số gì",
-        projectManager: [
-            projectManager._id,
-        ],
-        creator: projectManager._id,
-        responsibleEmployees: newResponsibleEmployees,
-        responsibleEmployeesWithUnit: newResponsibleEmployeesWithUnit,
-    }
-
-
-    const newEmptyProject4Type1 = {
-        name: 'Dự án test không ràng buộc 4',
-        projectType: 1,
-        "unitTime": "days",
-        "unitCost": "VND",
-        "status": "inprocess",
-        "startDate": new Date("2021-04-16T00:00:00Z"),
-        "endDate": new Date("2021-07-23T00:00:00Z"),
-        "description": "Dự án này có danh sách công việc không bị ràng buộc bởi tham số gì",
-        projectManager: [
-            projectManager._id,
-        ],
-        creator: projectManager._id,
-        responsibleEmployees: newResponsibleEmployees,
-        responsibleEmployeesWithUnit: newResponsibleEmployeesWithUnit,
-    }
-
-
-    const newEmptyProject5Type1 = {
-        name: 'Dự án test không ràng buộc 5',
-        projectType: 1,
-        "unitTime": "days",
-        "unitCost": "VND",
-        "status": "inprocess",
-        "startDate": new Date("2021-04-16T00:00:00Z"),
-        "endDate": new Date("2021-07-23T00:00:00Z"),
-        "description": "Dự án này có danh sách công việc không bị ràng buộc bởi tham số gì",
-        projectManager: [
-            projectManager._id,
-        ],
-        creator: projectManager._id,
-        responsibleEmployees: newResponsibleEmployees,
-        responsibleEmployeesWithUnit: newResponsibleEmployeesWithUnit,
-    }
-
     const newEmptyProjectType2 = {
         name: 'Dự án test lập kế hoạch CPM',
         projectType: 2,
         "unitTime": "days",
         "unitCost": "VND",
         "status": "inprocess",
-        "startDate": new Date("2021-04-16T00:00:00Z"),
-        "endDate": new Date("2021-07-23T00:00:00Z"),
+        "startDate": normalProjStartDate,
+        "endDate": normalProjEndDate,
         "description": "Dự án này có danh sách công việc rỗng để có thể test chức năng lập kế hoạch",
         projectManager: [
             projectManager._id,
@@ -1544,9 +1494,6 @@ const initHumanResourceForProjectData = async () => {
         drugRNDProject,
         newEmptyProject1Type1,
         newEmptyProject2Type1,
-        newEmptyProject3Type1,
-        newEmptyProject4Type1,
-        newEmptyProject5Type1,
         newEmptyProjectType2,
     ]);
 
@@ -1666,7 +1613,7 @@ const initHumanResourceForProjectData = async () => {
         { name: 'Báo cáo kết quả thử nghiệm Độ ổn định sản phẩm - Tuần 9', code: 'Z', preceedingTasks: ['Y'], startDate: '', endDate: '', estimateNormalTime: 5, creator: projectManager._id, description: '', responsibleEmployees: [], accountableEmployees: [], actorsWithSalary: [], estimateAssetCost: 1000000, totalResWeight: 70, taskProject: drugRNDProjectIdInDB, organizationalUnit: Directorate._id },
         { name: 'Báo cáo kết quả thử nghiệm Độ ổn định sản phẩm - Tuần 10', code: 'AA', preceedingTasks: ['Z'], startDate: '', endDate: '', estimateNormalTime: 5, creator: projectManager._id, description: '', responsibleEmployees: [], accountableEmployees: [], actorsWithSalary: [], estimateAssetCost: 1000000, totalResWeight: 70, taskProject: drugRNDProjectIdInDB, organizationalUnit: Directorate._id },
         { name: 'Nhãn sản phẩm', code: 'AB', preceedingTasks: ['H', 'P', 'AA'], startDate: '', endDate: '', estimateNormalTime: 3, creator: projectManager._id, description: '', responsibleEmployees: [], accountableEmployees: [], actorsWithSalary: [], estimateAssetCost: 1000000, totalResWeight: 70, taskProject: drugRNDProjectIdInDB, organizationalUnit: Directorate._id },
-        { name: 'Hồ sơ đăng ký sản phảm', code: 'AC', preceedingTasks: ['AB'], startDate: '', endDate: '', estimateNormalTime: 4, creator: projectManager._id, description: '', responsibleEmployees: [], accountableEmployees: [], actorsWithSalary: [], estimateAssetCost: 1000000, totalResWeight: 70, taskProject: drugRNDProjectIdInDB, organizationalUnit: Directorate._id },
+        { name: 'Hồ sơ đăng ký sản phẩm', code: 'AC', preceedingTasks: ['AB'], startDate: '', endDate: '', estimateNormalTime: 4, creator: projectManager._id, description: '', responsibleEmployees: [], accountableEmployees: [], actorsWithSalary: [], estimateAssetCost: 1000000, totalResWeight: 70, taskProject: drugRNDProjectIdInDB, organizationalUnit: Directorate._id },
     ]
     const startEndTasksData = processDataTasksStartEnd(drugRNDProject, fakeTasksData);
     const startEndTasksDataWithoutPreceeding = startEndTasksData.map((seTaskItem, seTaskIndex) => {
@@ -1901,6 +1848,7 @@ const initHumanResourceForProjectData = async () => {
     await Project(vnistDB).findByIdAndUpdate(drugRNDProjectIdInDB, {
         $set: {
             budget: getEstimateCostOfProject(fullTasksData),
+            budgetChangeRequest: getEstimateCostOfProject(fullTasksData),
         }
     }, { new: true });
 
@@ -2167,7 +2115,7 @@ const getEstimateMemberCostOfTask = (actorsWithSalary, estimateNormalTime, proje
         return String(actorSalaryItem.userId) === String(userId)
     });
     if (currentEmployee) {
-        estimateNormalMemberCost = Number(currentEmployee.salary) * Number(currentEmployee.weight / 100) * estimateNormalTime
+        estimateNormalMemberCost = Number(currentEmployee.salary) / getAmountOfWeekDaysInMonth(moment()) * Number(currentEmployee.weight / 100) * estimateNormalTime
             / (projectDetail.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS);
     }
     return estimateNormalMemberCost;
@@ -2385,6 +2333,17 @@ const flat = (input, depth = 1, stack = []) => {
     }
 
     return stack;
+}
+
+// Lấy số ngày công trong tháng
+const getAmountOfWeekDaysInMonth = (date) => {
+    let result = 0;
+    for (var i = 1; i < 6; i++) {
+        date.date(1);
+        var dif = (7 + (i - date.weekday())) % 7 + 1;
+        result += Math.floor((date.daysInMonth() - dif) / 7) + 1;
+    }
+    return result;
 }
 
 initHumanResourceForProjectData().catch((err) => {

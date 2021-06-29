@@ -2918,7 +2918,7 @@ exports.getTasksByProject = async (portal, projectId, page, perPage) => {
     let totalList = await Task(connect(DB_CONNECTION, portal)).countDocuments({ taskProject: projectId });
     if (page && perPage) {
         tasks = await Task(connect(DB_CONNECTION, portal))
-            .find({ taskProject: projectId }).skip((Number(page) - 1) * Number(perPage)).limit(Number(perPage))
+            .find({ taskProject: projectId }).sort({ createdAt: -1 }).skip((Number(page) - 1) * Number(perPage)).limit(Number(perPage))
             .populate({ path: "responsibleEmployees", select: "_id name" })
             .populate({ path: "accountableEmployees", select: "_id name" })
             .populate({ path: "consultedEmployees", select: "_id name" })
