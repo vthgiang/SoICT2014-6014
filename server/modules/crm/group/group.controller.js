@@ -8,7 +8,7 @@ const Logger = require(`../../../logs`);
  */
 exports.getGroups = async (req, res) => {
     try {
-        const groups = await GroupService.getGroups(req.portal, req.user.company._id, req.query);
+        const groups = await GroupService.getGroups(req.portal, req.user.company._id, req.query, req.currentRole);
         await Logger.info(req.user.email, ' get_groups_success ', req.portal);
         res.status(200).json({
             success: true,
@@ -56,7 +56,7 @@ exports.getGroupById = async (req, res) => {
  */
 exports.createGroup = async (req, res) => {
     try {
-        const newGroup = await GroupService.createGroup(req.portal, req.user.company._id, req.user._id, req.body);
+        const newGroup = await GroupService.createGroup(req.portal, req.user.company._id, req.user._id, req.body, req.currentRole);
         await Logger.info(req.user.email, ' create_group_success ', req.portal);
         res.status(200).json({
             success: true,

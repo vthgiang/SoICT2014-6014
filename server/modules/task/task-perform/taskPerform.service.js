@@ -2917,6 +2917,7 @@ exports.editTaskByResponsibleEmployees = async (portal, data, taskId) => {
  * @param {String} taskID id của công việc cần edit
  */
 exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
+    console.log('data',data);
     let {
         description,
         name,
@@ -3014,26 +3015,26 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
 
                 inactiveEmployees: inactiveEmployees,
             } : {
-                    name: name,
-                    description: description,
-                    progress: progress,
-                    priority: parseInt(priority[0]),
-                    formula: formula,
-                    parent: parent,
-                    taskProject: taskProject ?? undefined,
+                name: name,
+                description: description,
+                progress: progress,
+                priority: parseInt(priority[0]),
+                formula: formula,
+                parent: parent,
+                taskProject: taskProject ?? undefined,
 
-                    startDate: new Date(startDate),
-                    endDate: new Date(endDate),
+                startDate: new Date(startDate),
+                endDate: new Date(endDate),
 
-                    collaboratedWithOrganizationalUnits: newCollab,
+                collaboratedWithOrganizationalUnits: newCollab,
 
-                    responsibleEmployees: responsibleEmployees,
-                    consultedEmployees: consultedEmployees,
-                    accountableEmployees: accountableEmployees,
-                    informedEmployees: informedEmployees,
+                responsibleEmployees: responsibleEmployees,
+                consultedEmployees: consultedEmployees,
+                accountableEmployees: accountableEmployees,
+                informedEmployees: informedEmployees,
 
-                    inactiveEmployees: inactiveEmployees,
-                },
+                inactiveEmployees: inactiveEmployees,
+            },
         },
         { $new: true }
     );

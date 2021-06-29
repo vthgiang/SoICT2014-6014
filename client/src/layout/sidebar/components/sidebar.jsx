@@ -554,6 +554,11 @@ class SideBar extends Component {
                                             icon: "fa fa-gear",
                                             path: "/crm/generalConfiguration",
                                         },
+                                        {
+                                            name: "menu.crm_list.crmUnitConfiguration",
+                                            icon: "fa fa-gear",
+                                            path: "/crm/crmUnitConfiguration",
+                                        },
                                     ],
                                 }}
                             />

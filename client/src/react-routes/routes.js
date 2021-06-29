@@ -108,6 +108,7 @@ const CrmCare = lazy(() => import("../modules/crm/care/components"))
 const CrmLoyalCustomer = lazy(() => import("../modules/crm/loyalCustomer/components"))
 const CrmEvaluation = lazy(() => import("../modules/crm/evaluation/components"))
 const GeneralConfiguration = lazy(() => import("../modules/crm/generalConfiguration/components"))
+const CrmUnitConfiguration = lazy(() => import("../modules/crm/crmUnitConfiguration/components"))
 
 //orders
 const PurchaseOrder = lazy(() => import("../modules/production/order/purchase-order/components"))
@@ -1999,6 +2000,24 @@ class Routes extends Component {
                         pageName={"crm_list.generalConfiguration"}
                         layout={Layout}
                         component={GeneralConfiguration}
+                    />
+                   <PrivateRoute
+                        isLoading={false}
+                        key={"crmUnitConfiguration"}
+                        arrPage={[
+                            {
+                                link: "/crm/crmUnitConfiguration",
+                                name: "crm_list.crmUnitConfiguration",
+                                icon: "fa fa-gear",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/crm/crmUnitConfiguration"}
+                        path={"/crm/crmUnitConfiguration"}
+                        pageName={"crm_list.crmUnitConfiguration"}
+                        layout={Layout}
+                        component={CrmUnitConfiguration}
                     />
 
                     {/* Orders Management */}

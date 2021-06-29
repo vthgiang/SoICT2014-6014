@@ -1,7 +1,8 @@
 const { Customer, User } = require('../../../models');
 const { connect } = require(`../../../helpers/dbHelper`);
 const { getCrmTask } = require('../crmTask/crmTask.service')
-const { createTaskAction } = require('../../task/task-perform/taskPerform.service')
+const { createTaskAction } = require('../../task/task-perform/taskPerform.service');
+const { getCrmUnitByRole } = require('../crmUnit/crmUnit.service');
 exports.getUrl = (destination, filename) => {
     let url = `${destination}/${filename}`;
     return url.substr(1, url.length);
@@ -20,12 +21,25 @@ exports.formatDate = (value) => {
 }
 
 
-exports.createCustomer = async (portal, companyId, data, userId, fileConverts) => {
+exports.createCustomer = async (portal, companyId, data, userId, fileConverts, role) => {
     let { companyEstablishmentDate, birthDate, files } = data;
+    // tạo mã khách hàng
+    const lastCustomer = await Customer(connect(DB_CONNECTION, portal)).findOne().sort({ $natural: -1 });
+    let code;
+    if (lastCustomer == null) code = 'KH001';
+    else {
+        let customerNumber = await lastCustomer.code;
+        customerNumber = customerNumber.slice(2);
+        customerNumber = parseInt(customerNumber) + 1;
+        if (customerNumber < 10) code = 'KH00' + customerNumber;
+        else if (customerNumber < 100) code = 'KH0' + customerNumber;
+        else code = 'KH' + customerNumber;
+    }
+
+    data = { ...data, code };
     //format birthDate yy-mm-dd
     if (birthDate) {
         birthDate = this.formatDate(birthDate);
-
         data = { ...data, birthDate }; // merge giá trị mới của birthDate vào data
     }
 
@@ -40,8 +54,6 @@ exports.createCustomer = async (portal, companyId, data, userId, fileConverts) =
     if (userId) {
         data = { ...data, creator: userId };
     }
-
-
     // Thêm file đính kèm với khách hàng nếu có
     if (files && files.length > 0 && fileConverts && fileConverts.length > 0) {
         let result = [];
@@ -60,7 +72,11 @@ exports.createCustomer = async (portal, companyId, data, userId, fileConverts) =
         })
         data = { ...data, files: result };
     }
-
+    // thêm đơn vị quản lý 
+    console.log('vao day', role);
+    const crmUnit = await getCrmUnitByRole(portal, companyId, role);
+    if (!crmUnit) return {};
+    data = { ...data, crmUnit:crmUnit._id };
     const newCustomer = await Customer(connect(DB_CONNECTION, portal)).create(data);
     // them vao hoạt động tìm kiếm khách hàng
     //lấy công việc thêm khách hàng của nhân viên
@@ -153,11 +169,21 @@ exports.importCustomers = async (portal, companyId, data, userId) => {
  * @param {*} companyId 
  * @param {*} query 
  */
-exports.getCustomers = async (portal, companyId, query) => {
-    const { page, limit, customerCode, customerStatus, customerGroup, customerOwner } = query;
+exports.getCustomers = async (portal, companyId, query, role) => {
+    const { page, limit, customerCode, customerStatus, customerGroup, customerOwner, isNewCustomer, month, year, getAll } = query;
+
     let keySearch = {}
+    if (!getAll) {
+        // lấy đơn vị CSKH từ role
+        const crmUnit = await getCrmUnitByRole(portal, companyId, role);
+        if (!crmUnit) return { listDocsTotal :0, customers:[] } ;
+        keySearch = { crmUnit: crmUnit._id }
+    }
     if (customerCode) {
-        keySearch = { code: { $regex: customerCode, $options: "i" }, }
+        keySearch = {
+            ...keySearch,
+            code: { $regex: customerCode, $options: "i" },
+        }
     }
     if (customerStatus)
         keySearch = {
@@ -175,14 +201,35 @@ exports.getCustomers = async (portal, companyId, query) => {
             owner: { $in: customerOwner }
         }
     }
+    if (month && year) {
+        let beginOfMonth = new Date(`${year}-${month}`); // cần chỉnh lại 
+        let endOfMonth = new Date(year, month); // cần chỉnh lại
+        if (isNewCustomer)
+            keySearch =
+            {
+                ...keySearch,
+                createdAt: { $gte: beginOfMonth, $lt: endOfMonth }
+            }
+        else
+            keySearch =
+            {
+                ...keySearch,
+                createdAt: { $lt: beginOfMonth }
+            }
+    }
+
     const listDocsTotal = await Customer(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
 
-    const customers = await Customer(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 'desc' })
+    let customers;
+    if (page && limit) customers = await Customer(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 'desc' })
         .skip(parseInt(page)).limit(parseInt(limit))
         .populate({ path: 'group', select: '_id name' })
         .populate({ path: 'status', select: '_id name' })
         .populate({ path: 'owner', select: '_id name email' });
-
+    else customers = await Customer(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 'desc' })
+        .populate({ path: 'group', select: '_id name' })
+        .populate({ path: 'status', select: '_id name' })
+        .populate({ path: 'owner', select: '_id name email' });
     return { listDocsTotal, customers };
 }
 

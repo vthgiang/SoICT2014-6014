@@ -35,7 +35,6 @@ function CustomerStatusAddForm(props) {
             <DialogModal
                 modalID="modal-crm-customerStatus-create" isLoading={false}
                 formID="form-crm-customerStatus-create"
-                title={translate('crm.status.add')}
                 func={save}
                 size={50}
             // disableSubmit={!this.isFormValidated()}

@@ -12,7 +12,9 @@ import CustomerCareTypeEditForm from './customerCareTypeEditForm';
 import { CrmCustomerRankPointActions } from '../../customerRankPoint/redux/action';
 import CustomerRankPointAddForm from './customerRankPointAddForm';
 import CustomerRankPointEditForm from './customerRankPointEditForm';
-
+import CrmUnitKPIEditForm from './crmUnitKPIEditForm'
+import '../../customer/components/customer.css';
+import { CrmUnitKPIActions } from '../../crmUnitKPI/redux/action';
 
 function GeneralConfiguration(props) {
 
@@ -29,7 +31,7 @@ function GeneralConfiguration(props) {
         props.getStatus();
         props.getCareTypes();
         props.getCustomerRankPoints();
-
+        props.getCrmUnitKPI();
 
     }, [])
 
@@ -104,6 +106,9 @@ function GeneralConfiguration(props) {
         });
     }
 
+    let crmUnitKPI;
+    if (crm.crmUnitKPI && crm.crmUnitKPI.list && crm.crmUnitKPI.list.length > 0) crmUnitKPI = crm.crmUnitKPI.list[0];
+
     return (
         <React.Fragment>
             <div className="box generalConfiguration">
@@ -123,6 +128,7 @@ function GeneralConfiguration(props) {
                                 <li className="active"><a href="#customer-status" data-toggle="tab" >{translate('crm.customer.status')}</a></li>
                                 <li> <a href="#customer-caretype" data-toggle="tab">{translate('crm.care.careType')}</a> </li>
                                 <li> <a href="#customer-rank-point" data-toggle="tab">{'Phân hạng khách hàng'}</a> </li>
+                                <li> <a href="#customer-crmUnitKPI" data-toggle="tab">{'Chỉ tiêu công việc chăm sóc khách hàng'}</a> </li>
                             </ul>
                         </div>
                         <div className="tab-content tab-content-right">
@@ -239,6 +245,108 @@ function GeneralConfiguration(props) {
                                 </div>
                             </div>
 
+                            {/* tab chỉ tiêu đơn vị */}
+                            <div id={`customer-crmUnitKPI`} className="tab-pane">
+                                <div className="description-box">
+                                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                        <h4 class="box-title" style={{ color: 'rgb(68,68,68)' }}>Chỉ tiêu đơn vị chăm sóc khách hàng</h4>
+                                        <CrmUnitKPIEditForm/>
+                                    </div>
+                                    <ul id="sortItem" className="todo-list">
+                                        {
+                                            crmUnitKPI ?
+                                                (<>
+                                                    <li>
+                                                        <a data-toggle="collapse" href={`#collapsed_crmUnitKPI_${1}`}>
+                                                            <span style={{ margin: '0 5px', display: 'inline-block' }}>
+                                                               1
+                                                            </span>
+                                                            <span className="text">Chỉ tiêu về số lượng khách hàng mới</span>
+                                                        </a>
+                                                        <div id={`collapsed_crmUnitKPI_${1}`} class="collapse" >
+                                                            <ul>
+                                                                <li><strong style={{ color: 'green' }}>Số lượng khách hàng mới : </strong> {` ${crmUnitKPI.numberOfNewCustomers.value ? crmUnitKPI.numberOfNewCustomers.value : ''}`}</li>
+                                                                <li>Trọng số của chỉ tiêu : {` ${crmUnitKPI.numberOfNewCustomers.weight ? crmUnitKPI.numberOfNewCustomers.weight : ''}`}</li>
+                                                            </ul>
+                                                        </div>
+                                                    </li>
+                                                    <li>
+                                                        <a data-toggle="collapse" href={`#collapsed_crmUnitKPI_${2}`}>
+                                                            <span style={{ margin: '0 5px', display: 'inline-block' }}>
+                                                               2
+                                                            </span>
+                                                            <span className="text">Chỉ tiêu về tỉ lệ mua hàng ở khách hàng mới</span>
+                                                        </a>
+                                                        <div id={`collapsed_crmUnitKPI_${2}`} class="collapse" >
+                                                            <ul>
+                                                                <li><strong style={{ color: 'green' }}>Tỉ lệ mua hàng ở khách hàng mới (%) : </strong> {` ${crmUnitKPI.newCustomerBuyingRate.value ? crmUnitKPI.newCustomerBuyingRate.value : ''}`}</li>
+                                                                <li>Trọng số của chỉ tiêu : {` ${crmUnitKPI.newCustomerBuyingRate.weight ? crmUnitKPI.newCustomerBuyingRate.weight : ''}`}</li>
+                                                            </ul>
+                                                        </div>
+                                                    </li>
+                                                    <li>
+                                                        <a data-toggle="collapse" href={`#collapsed_crmUnitKPI_${3}`}>
+                                                            <span style={{ margin: '0 5px', display: 'inline-block' }}>
+                                                              3
+                                                            </span>
+                                                            <span className="text">Chỉ tiêu về số lượng hoạt động</span>
+                                                        </a>
+                                                        <div id={`collapsed_crmUnitKPI_${3}`} class="collapse" >
+                                                            <ul>
+                                                                <li><strong style={{ color: 'green' }}>Số lượng hoạt động : </strong> {` ${crmUnitKPI.totalActions.value ? crmUnitKPI.totalActions.value : ''}`}</li>
+                                                                <li>Trọng số của chỉ tiêu : {` ${crmUnitKPI.totalActions.weight ? crmUnitKPI.totalActions.weight : ''}`}</li>
+                                                            </ul>
+                                                        </div>
+                                                    </li>
+                                                    <li>
+                                                        <a data-toggle="collapse" href={`#collapsed_crmUnitKPI_${4}`}>
+                                                            <span style={{ margin: '0 5px', display: 'inline-block' }}>
+                                                              4
+                                                            </span>
+                                                            <span className="text">Chỉ tiêu về tỉ lệ hoàn thành hoạt động</span>
+                                                        </a>
+                                                        <div id={`collapsed_crmUnitKPI_${4}`} class="collapse" >
+                                                            <ul>
+                                                                <li><strong style={{ color: 'green' }}>Tỉ lệ hoàn thành hoạt động (%) : </strong> {` ${crmUnitKPI.completionRate.value ? crmUnitKPI.completionRate.value : ''}`}</li>
+                                                                <li>Trọng số của chỉ tiêu : {` ${crmUnitKPI.completionRate.weight ? crmUnitKPI.completionRate.weight : ''}`}</li>
+                                                            </ul>
+                                                        </div>
+                                                    </li>
+                                                    <li>
+                                                        <a data-toggle="collapse" href={`#collapsed_crmUnitKPI_${5}`}>
+                                                            <span style={{ margin: '0 5px', display: 'inline-block' }}>
+                                                                5
+                                                            </span>
+                                                            <span className="text">Chỉ tiêu về tỉ lệ hoạt động thành công</span>
+                                                        </a>
+                                                        <div id={`collapsed_crmUnitKPI_${5}`} class="collapse" >
+                                                            <ul>
+                                                                <li><strong style={{ color: 'green' }}>Tỉ lệ hoạt động thành công (%) : </strong> {` ${crmUnitKPI.solutionRate.value ? crmUnitKPI.solutionRate.value : ''}`}</li>
+                                                                <li>Trọng số của chỉ tiêu : {` ${crmUnitKPI.solutionRate.weight ? crmUnitKPI.solutionRate.weight : ''}`}</li>
+                                                            </ul>
+                                                        </div>
+                                                    </li>
+                                                    <li>
+                                                        <a data-toggle="collapse" href={`#collapsed_crmUnitKPI_${6}`}>
+                                                            <span style={{ margin: '0 5px', display: 'inline-block' }}>
+                                                             6
+                                                            </span>
+                                                            <span className="text">Chỉ tiêu về tỉ lệ khách hàng quay lại mua hàng</span>
+                                                        </a>
+                                                        <div id={`collapsed_crmUnitKPI_${6}`} class="collapse" >
+                                                            <ul>
+                                                                <li><strong style={{ color: 'green' }}>Tỉ lệ khách hàng quay lại mua hàng (%) : </strong> {` ${crmUnitKPI.customerRetentionRate.value ? crmUnitKPI.customerRetentionRate.value : ''}`}</li>
+                                                                <li>Trọng số của chỉ tiêu : {` ${crmUnitKPI.customerRetentionRate.weight ? crmUnitKPI.customerRetentionRate.weight : ''}`}</li>
+                                                            </ul>
+                                                        </div>
+                                                    </li>
+                                                 
+                                                </>
+                                                ) : null
+                                        }
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -262,6 +370,7 @@ const mapDispatchToProps = {
     getCustomerRankPoints: CrmCustomerRankPointActions.getCustomerRankPoints,
     deleteCustomerRankPoint: CrmCustomerRankPointActions.deleteCustomerRankPoint,
     createCustomerRankPoint: CrmCustomerRankPointActions.createCustomerRankPoint,
+    getCrmUnitKPI: CrmUnitKPIActions.getCrmUnitKPI,
 
 }
 

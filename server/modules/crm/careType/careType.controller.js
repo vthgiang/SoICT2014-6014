@@ -3,7 +3,7 @@ const Logger = require(`../../../logs`);
 
 exports.getCareTypes = async (req, res) => {
     try {
-        const careTypes = await CareTypeService.getCareTypes(req.portal, req.user.company._id, req.query);
+        const careTypes = await CareTypeService.getCareTypes(req.portal, req.user.company._id, req.query,req.currentRole);
         await Logger.info(req.user.email, ' get_careTypes_success ', req.portal);
         res.status(200).json({
             success: true,
@@ -43,7 +43,7 @@ exports.getCareTypeById = async (req, res) => {
 
 exports.createCareType = async (req, res) => {
     try {
-        const newCareType = await CareTypeService.createCareType(req.portal, req.user.company._id, req.body, req.user._id);
+        const newCareType = await CareTypeService.createCareType(req.portal, req.user.company._id, req.body, req.user._id,req.currentRole);
         await Logger.info(req.user.email, ' create_careType_success ', req.portal);
         res.status(200).json({
             success: true,

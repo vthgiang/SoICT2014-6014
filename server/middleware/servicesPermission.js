@@ -906,6 +906,10 @@ exports.links = [
     }, {
         url: '/crm/generalConfiguration',
         apis: ['@all']
+    },
+    {
+        url: '/crm/crmUnitConfiguration',
+        apis: ['@all']
     }, {
         url: '/manage-plans',
         apis: ['@all']

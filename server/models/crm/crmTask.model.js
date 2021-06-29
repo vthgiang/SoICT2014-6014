@@ -21,7 +21,6 @@ const CrmTaskSchema = new Schema({
     },
     type: { //loại công việc : 1-công việc tìm kiếm khách hàng mới , 2- công việc CSKH
         type: Number,
-        ref: 'User',
 
     }
 

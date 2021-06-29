@@ -59,7 +59,7 @@ export function status(state = initState, action) {
         case CrmStatusConstants.CREATE_CRM_STATUS_SUCCESS:
             return {
                 ...state,
-                list: [action.payload, ...state.list],
+                list: [action.payload,...state.list, ],
                 isLoading: false
             };
 

@@ -8,7 +8,7 @@ const Logger = require(`../../../logs`);
  */
 exports.getCustomers = async (req, res) => {
     try {
-        const customers = await CustomerService.getCustomers(req.portal, req.user.company._id, req.query);
+        const customers = await CustomerService.getCustomers(req.portal, req.user.company._id, req.query,req.query.roleId);
         await Logger.info(req.user.email, ' get_customers_success ', req.portal);
         res.status(200).json({
             success: true,
@@ -82,7 +82,7 @@ exports.getCustomerPoint = async (req, res) => {
  */
 exports.createCustomer = async (req, res) => {
     try {
-        const newCustomer = await CustomerService.createCustomer(req.portal, req.user.company._id, req.body, req.user._id, req.files);
+        const newCustomer = await CustomerService.createCustomer(req.portal, req.user.company._id, req.body, req.user._id, req.files,req.body.roleId);
         await Logger.info(req.user.email, ' create_customer_success ', req.portal);
         res.status(200).json({
             success: true,
