@@ -385,13 +385,13 @@ export const processDataTasksStartEnd = (projectDetail, currentTasksData, curren
 }
 
 // render item ở phần thông tin
-export const renderItemLabelContent = (label, content, customTextStyle = {}, customContainerStyle = {}) => {
+export const renderItemLabelContent = (label, content, containerWidth = 6, labelWidth = 4, valueWidth = 8, customTextStyle = {}, customContainerStyle = {}) => {
     return (
-        <div className="col-md-6">
+        <div className={`col-md-${containerWidth}`}>
             <div className="form-horizontal">
                 <div style={{ ...customContainerStyle }} className="form-group">
-                    <strong className="col-sm-4">{label}</strong>
-                    <div className="col-sm-8">
+                    <strong className={`col-md-${labelWidth}`}>{label}</strong>
+                    <div className={`col-md-${valueWidth}`}>
                         <span style={{ ...customTextStyle }}>{content}</span>
                     </div>
                 </div>
