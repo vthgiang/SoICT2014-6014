@@ -167,8 +167,7 @@ class QualificationChart extends Component {
         const { employeesManager, department } = this.props;
         const { organizationalUnits } = this.state;
 
-        let listAllEmployees = (!organizationalUnits || organizationalUnits.length === department.list.length) ?
-        employeesManager.listAllEmployees : employeesManager.listEmployeesOfOrganizationalUnits;
+        let listAllEmployees = employeesManager.listEmployeesOfOrganizationalUnits;
 
         if (listAllEmployees.length !== 0) {
             this.renderChart(this.convertData(listAllEmployees));
