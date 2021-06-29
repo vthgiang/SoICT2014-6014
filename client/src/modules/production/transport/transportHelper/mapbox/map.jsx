@@ -67,6 +67,8 @@ function MapContainer(props) {
             
             // setMap(currentMap.current);
             setCheckMapLoaded(0);
+            
+            currentMap.current.resize();
             console.log("da tao map");
         }
         currentMap.current.once('idle',function(){

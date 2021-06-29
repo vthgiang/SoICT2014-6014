@@ -30,6 +30,8 @@ function LocateTransportRequirement(props) {
         setLocation({
             ...location,
             fromAddress: e.target.value,
+            fromLat: null,
+            fromLng: null,
         })
     }
 
@@ -37,6 +39,8 @@ function LocateTransportRequirement(props) {
         setLocation({
             ...location,
             toAddress: e.target.value,
+            toLat: null,
+            toLng: null,
         })
     }
 

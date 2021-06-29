@@ -136,7 +136,7 @@ function TransportNewOne(props) {
                 <fieldset className="scheduler-border" style={{ height: "100%" }}>
                     <legend className="scheduler-border">Thông tin bên gửi</legend>                 
                     
-                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    {/* <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div className={`form-group`}>
                             <label>
                                 Địa chỉ giao hàng
@@ -147,7 +147,7 @@ function TransportNewOne(props) {
                                 onChange={handleCustomer1AddressTransportChange}
                             />
                         </div>
-                    </div>
+                    </div> */}
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div className={`form-group`}>
                             <label>
@@ -166,7 +166,7 @@ function TransportNewOne(props) {
             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6" style = {{ padding: 0}}>
                 <fieldset className="scheduler-border" style={{ height: "100%" }}>
                     <legend className="scheduler-border">Thông tin bên nhận</legend>                    
-                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    {/* <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div className={`form-group`}>
                             <label>
                                 Địa chỉ nhận hàng
@@ -177,7 +177,7 @@ function TransportNewOne(props) {
                                 onChange={handleCustomer2AddressTransportChange}
                             />
                         </div>
-                    </div>     
+                    </div>      */}
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div className={`form-group`}>
                             <label>

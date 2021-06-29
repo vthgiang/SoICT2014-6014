@@ -87,6 +87,26 @@ function TransportRequirementsEditForm(props) {
             toAddress: requirementsForm.toAddress,
             geocode: requirementsForm.geocode,
         };
+        if (!(requirementsForm.geocode?.fromAddress?.lat && requirementsForm.geocode?.fromAddress?.lng)){
+            await getGeocode(requirementsForm.fromAddress).then(
+                (value) => {
+                    data.geocode.fromAddress = {
+                        lat: value.lat,
+                        lng: value.lng
+                    }
+                }
+            );
+        }
+        if (!(requirementsForm.geocode?.toAddress?.lat && requirementsForm.geocode?.toAddress?.lng)){
+            await getGeocode(requirementsForm.toAddress).then(
+                (value) => {
+                    data.geocode.toAddress = {
+                        lat: value.lat,
+                        lng: value.lng
+                    }
+                }
+            );
+        }
         if (state.value === "5"){
             data.detail1 = requirementsForm.info?.newOneDetail1;
             data.detail2 = requirementsForm.info?.newOneDetail2;
