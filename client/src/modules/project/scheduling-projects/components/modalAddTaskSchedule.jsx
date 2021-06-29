@@ -254,7 +254,7 @@ const ModalAddTaskSchedule = (props) => {
                 steps: steps.map((oldStepItem, oldStepIndex) => {
                     return {
                         ...oldStepItem,
-                        active: oldStepIndex === index ? true : false
+                        active: oldStepIndex === index ? true : oldStepItem.active
                     }
                 })
             });
