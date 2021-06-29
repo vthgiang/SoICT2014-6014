@@ -11,8 +11,8 @@ export const MILISECS_TO_HOURS = 3600000;
 export const checkIfAbleToCRUDProject = ({ project, user, currentProjectId, isInsideProject = false }) => {
     const currentRole = getStorage("currentRole");
     const userId = getStorage("userId");
-    console.log('currentProjectId', currentProjectId)
-    console.log('project?.data?.list', project?.data?.list, ' project?.data?.listbyuser',  project?.data?.listbyuser)
+    // console.log('currentProjectId', currentProjectId)
+    // console.log('project?.data?.list', project?.data?.list, ' project?.data?.listbyuser',  project?.data?.listbyuser)
     const checkIfCurrentRoleIsUnitManager = user?.usersInUnitsOfCompany?.filter(userItem => userItem?.managers?.[currentRole])?.length > 0;
     const projectDetail = project?.data?.list?.length > 0 ? project?.data?.list?.filter(item => item._id === currentProjectId)?.[0] : project?.data?.listbyuser?.filter(item => item._id === currentProjectId)?.[0]
     const checkIfCurrentIdIsProjectManagerOrCreator =
@@ -666,4 +666,11 @@ export const renderProgressBar = (progress = 0, task) => {
             </div>
         </div>
     )
+}
+
+export const renderCompare2Item = (valueToBeCompared, valueToColor, funcCompareToGood = undefined, goodResultColor = 'green', badResultColor = 'red') => {
+    if (funcCompareToGood !== undefined) {
+        return funcCompareToGood ? goodResultColor : badResultColor;
+    }
+    return valueToColor <= valueToBeCompared ? goodResultColor : badResultColor;
 }

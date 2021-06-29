@@ -8,7 +8,7 @@ import { UserActions } from '../../../super-admin/user/redux/actions';
 import { taskManagementActions } from '../../../task/task-management/redux/actions';
 import moment from 'moment';
 import { getStorage } from '../../../../config';
-import TabProjectReportTime from './tabProjectReportTime';
+import TabProjectReportTasks from './tabProjectReportTasks';
 import TabProjectReportCost from './tabProjectReportCost';
 import TabProjectReportMember from './tabProjectReportMember';
 import { checkIfAbleToCRUDProject, getCurrentProjectDetails } from '../../projects/components/functionHelper';
@@ -41,7 +41,7 @@ const ModalDetailReport = (props) => {
             >
                 <div className="nav-tabs-custom">
                     <ul className="nav nav-tabs">
-                        <li className="active"><a href="#project-report-time" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Tiến độ dự án</a></li>
+                        <li className="active"><a href="#project-report-time" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Công việc dự án</a></li>
                         {
                             getCurrentProjectDetails(project, projectDetailId || projectDetail?._id)?.projectType === 2 &&
                             <li><a href="#project-report-cost" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Chi phí dự án</a></li>
@@ -52,9 +52,9 @@ const ModalDetailReport = (props) => {
                         }
                     </ul>
                     <div className="tab-content">
-                        {/** Tab báo cáo tiến độ */}
+                        {/** Tab báo cáo công việc dự án */}
                         <div className="tab-pane active" id="project-report-time">
-                            <TabProjectReportTime currentTasks={currentTasks} />
+                            <TabProjectReportTasks currentTasks={currentTasks} />
                         </div>
                         {/** Tab báo cáo chi phí */}
                         {

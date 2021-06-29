@@ -1417,14 +1417,17 @@ const initHumanResourceForProjectData = async () => {
         })
     }).flat();
 
+    const normalProjStartDate = moment().format();
+    const normalProjEndDate = moment().add(14, 'days').format();
+
     const newEmptyProject1Type1 = {
         name: 'Dự án test không ràng buộc 1',
         projectType: 1,
         "unitTime": "days",
         "unitCost": "VND",
         "status": "inprocess",
-        "startDate": new Date("2021-04-16T00:00:00Z"),
-        "endDate": new Date("2021-07-23T00:00:00Z"),
+        "startDate": normalProjStartDate,
+        "endDate": normalProjEndDate,
         "description": "Dự án này có danh sách công việc không bị ràng buộc bởi tham số gì",
         projectManager: [
             projectManager._id,
@@ -1451,67 +1454,14 @@ const initHumanResourceForProjectData = async () => {
         responsibleEmployeesWithUnit: newResponsibleEmployeesWithUnit,
     }
 
-    const newEmptyProject3Type1 = {
-        name: 'Dự án test không ràng buộc 3',
-        projectType: 1,
-        "unitTime": "days",
-        "unitCost": "VND",
-        "status": "inprocess",
-        "startDate": new Date("2021-04-16T00:00:00Z"),
-        "endDate": new Date("2021-07-23T00:00:00Z"),
-        "description": "Dự án này có danh sách công việc không bị ràng buộc bởi tham số gì",
-        projectManager: [
-            projectManager._id,
-        ],
-        creator: projectManager._id,
-        responsibleEmployees: newResponsibleEmployees,
-        responsibleEmployeesWithUnit: newResponsibleEmployeesWithUnit,
-    }
-
-
-    const newEmptyProject4Type1 = {
-        name: 'Dự án test không ràng buộc 4',
-        projectType: 1,
-        "unitTime": "days",
-        "unitCost": "VND",
-        "status": "inprocess",
-        "startDate": new Date("2021-04-16T00:00:00Z"),
-        "endDate": new Date("2021-07-23T00:00:00Z"),
-        "description": "Dự án này có danh sách công việc không bị ràng buộc bởi tham số gì",
-        projectManager: [
-            projectManager._id,
-        ],
-        creator: projectManager._id,
-        responsibleEmployees: newResponsibleEmployees,
-        responsibleEmployeesWithUnit: newResponsibleEmployeesWithUnit,
-    }
-
-
-    const newEmptyProject5Type1 = {
-        name: 'Dự án test không ràng buộc 5',
-        projectType: 1,
-        "unitTime": "days",
-        "unitCost": "VND",
-        "status": "inprocess",
-        "startDate": new Date("2021-04-16T00:00:00Z"),
-        "endDate": new Date("2021-07-23T00:00:00Z"),
-        "description": "Dự án này có danh sách công việc không bị ràng buộc bởi tham số gì",
-        projectManager: [
-            projectManager._id,
-        ],
-        creator: projectManager._id,
-        responsibleEmployees: newResponsibleEmployees,
-        responsibleEmployeesWithUnit: newResponsibleEmployeesWithUnit,
-    }
-
     const newEmptyProjectType2 = {
         name: 'Dự án test lập kế hoạch CPM',
         projectType: 2,
         "unitTime": "days",
         "unitCost": "VND",
         "status": "inprocess",
-        "startDate": new Date("2021-04-16T00:00:00Z"),
-        "endDate": new Date("2021-07-23T00:00:00Z"),
+        "startDate": normalProjStartDate,
+        "endDate": normalProjEndDate,
         "description": "Dự án này có danh sách công việc rỗng để có thể test chức năng lập kế hoạch",
         projectManager: [
             projectManager._id,
@@ -1544,9 +1494,6 @@ const initHumanResourceForProjectData = async () => {
         drugRNDProject,
         newEmptyProject1Type1,
         newEmptyProject2Type1,
-        newEmptyProject3Type1,
-        newEmptyProject4Type1,
-        newEmptyProject5Type1,
         newEmptyProjectType2,
     ]);
 
