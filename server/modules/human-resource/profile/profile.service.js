@@ -269,6 +269,7 @@ exports.getEmployees = async (portal, company, organizationalUnits, positions, a
             }
         }
     }
+
     if (allInfor === true) {
         if (organizationalUnits !== undefined) {
             let emailInCompany = await this.getEmployeeEmailsByOrganizationalUnitsAndPositions(portal, organizationalUnits, positions);
@@ -288,6 +289,7 @@ exports.getEmployees = async (portal, company, organizationalUnits, positions, a
         }
         let listAllEmployees = await Employee(connect(DB_CONNECTION, portal)).find(keySearch);
         let totalAllEmployee = listAllEmployees.length;
+
         return {
             totalAllEmployee,
             listAllEmployees
@@ -344,6 +346,7 @@ exports.getEmployees = async (portal, company, organizationalUnits, positions, a
             status: 1,
             degrees: 1
         });
+
         return {
             totalAllEmployee,
             listAllEmployees
