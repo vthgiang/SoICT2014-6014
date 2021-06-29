@@ -9,7 +9,7 @@ import c3 from 'c3';
 import 'c3/c3.css';
 
 const SalaryOfOrganizationalUnitsChart = (props) => {
-    
+
     const [state, setState] = useState({
         unit: true
     });
@@ -29,7 +29,7 @@ const SalaryOfOrganizationalUnitsChart = (props) => {
     useEffect(() => {
         if (props.salary.listSalaryByMonth !== state.listSalaryByMonth) {
             setState({
-                ...state, 
+                ...state,
                 listSalaryByMonth: props.salary.listSalaryByMonth
             })
         };
@@ -81,7 +81,7 @@ const SalaryOfOrganizationalUnitsChart = (props) => {
     const { monthShow, organizationalUnits } = props;
     const { unit } = state;
 
-    let organizationalUnitsName = department?.list?.filter(item => organizationalUnits.includes(item?._id))?.map(x => { return { _id: x._id, name: x.name, salary: 0 } });
+    let organizationalUnitsName = department?.list?.filter(item => organizationalUnits?.includes(item?._id))?.map(x => { return { _id: x._id, name: x.name, salary: 0 } });
     let data = salary.listSalaryByMonth;
     if (data.length !== 0) {
         data = data.map(x => {
