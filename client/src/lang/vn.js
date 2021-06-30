@@ -2141,6 +2141,8 @@ export default {
                         "Chỉnh sửa thông tin nhân viên thất bại",
                     import_employee_success:
                         "Import thông tin nhân viên thành công",
+                    importing_employee: 
+                        "Đang xử lí dữ liệu",
                     import_employee_faile:
                         "Import thông tin nhân viên thất bại",
                     employee_number_required:
