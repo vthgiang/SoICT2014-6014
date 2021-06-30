@@ -831,7 +831,7 @@ function GoodReceiptEditForm(props) {
                                         items={dataStatus}
                                         onChange={handleStatusChange}
                                         multiple={false}
-                                        disabled={checkApproved}
+                                        // disabled={checkApproved}
                                     />
                                 </div>
                             </div>

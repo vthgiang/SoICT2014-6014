@@ -5,7 +5,7 @@ import { DataTableSetting, DatePicker, PaginateBar, SelectBox, SelectMulti } fro
 import { formatDate } from '../../../../../helpers/formatDate';
 import { GoodActions } from '../../../common-production/good-management/redux/actions';
 import { LotActions } from '../../../warehouse/inventory-management/redux/actions';
-import GoodReceiptCreateForm from './ goodReceiptCreateForm';
+import GoodReceiptCreateForm from './goodReceiptCreateForm';
 import ManufacturingLotDetailForm from './manufacturingLotDetailForm';
 import ManufacturingLotEditFrom from './manufacturingLotEditForm';
 import { StockActions } from '../../../warehouse/stock-management/redux/actions';

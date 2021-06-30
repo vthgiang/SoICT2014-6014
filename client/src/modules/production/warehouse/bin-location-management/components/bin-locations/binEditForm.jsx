@@ -357,7 +357,7 @@ function BinEditForm(props) {
                             multiple={false}
                         />
                     </div>
-                    {/* <div className={`form-group`}>
+                    <div className={`form-group`}>
                         <label>{translate('manage_warehouse.bin_location_management.department')}<span className="attention"> * </span></label>
                         <SelectBox
                             id={`select-department-bin`}
@@ -365,10 +365,10 @@ function BinEditForm(props) {
                             style={{ width: "100%" }}
                             value={binDepartment ? binDepartment : { value: '', text: translate('manage_warehouse.bin_location_management.choose_department')}}
                             items={dataDepartment}
-                            onChange={this.handleDepartmentChange}    
+                            onChange={handleDepartmentChange}    
                             multiple={false}
                         />
-                    </div> */}
+                    </div>
                     <div className={`form-group`}>
                         <label>{translate('manage_warehouse.bin_location_management.unit')}<span className="attention"> * </span></label>
                         <input type="text" className="form-control" value={binUnit} onChange={handleUnitChange} />
@@ -384,7 +384,7 @@ function BinEditForm(props) {
                         <label>{translate('manage_warehouse.bin_location_management.capacity')}<span className="attention"> * </span></label>
                         <input type="number" className="form-control" value={binCapacity ? binCapacity : ""} onChange={handleCapacityTotalChange} />
                     </div>
-                    {/* <div className={`form-group`}>
+                    <div className={`form-group`}>
                         <label>{translate('manage_warehouse.bin_location_management.management_location')}<span className="attention"> * </span></label>
                         <SelectBox
                             id={`select-management-location-stock`}
@@ -392,10 +392,10 @@ function BinEditForm(props) {
                             style={{ width: "100%" }}
                             value={binUsers ? binUsers : []}
                             items={listUsers.map(x => { return { value: x.id, text: x.name } })}
-                            onChange={this.handleManagementLocationtChange}    
+                            onChange={handleManagementLocationtChange}    
                             multiple={true}
                         />
-                    </div> */}
+                    </div>
                     <div className={`form-group`}>
                         <label>{translate('manage_warehouse.bin_location_management.parent')}</label>
                         <TreeSelect data={list} value={binParent ? [binParent] : ""} handleChange={handleParent} mode="radioSelect" />
