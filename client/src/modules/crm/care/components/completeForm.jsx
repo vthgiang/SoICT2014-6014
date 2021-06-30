@@ -91,7 +91,7 @@ function CompleteForm(props) {
                             </SelectBox>
                         </div>
                         <div className="form-group">
-                            <label className="form-control-static">{'Điểm tự đánh giá :'}</label>
+                            <label className="form-control-static">{'Điểm tự đánh giá : (/100)'}</label>
                             <input className="form-control" type="text" name="point" placeholder={``} onChange={handleChangePoint} />
                         </div>
                         <div className="form-group">

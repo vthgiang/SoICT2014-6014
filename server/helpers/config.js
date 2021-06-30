@@ -589,6 +589,15 @@ const LINKS = [{
     components: getComponentsInLink('/hr-training-plan')
 },
 {
+    url: '/hr-training-plan-employee',
+    description: 'Kế hoạch đào tạo',
+    category: LINK_CATEGORY.HUMAN_RESOURCE.name,
+    roles: [
+        ROOT_ROLES.ADMIN.name,
+    ],
+    components: getComponentsInLink('/hr-training-plan-employee')
+},
+{
     url: '/hr-list-education',
     description: 'Chương trình đào tạo bắt buộc',
     category: LINK_CATEGORY.HUMAN_RESOURCE.name,
@@ -1254,6 +1263,21 @@ const LINKS = [{
     ],
     components: getComponentsInLink('/crm/generalConfiguration')
 },
+{
+    url: '/crm/crmUnitConfiguration',
+    description: `Cấu hình đơn vị chăm sóc khách hàng`,
+    category: LINK_CATEGORY.CRM.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
+    
+    ],
+    components: getComponentsInLink('/crm/crmUnitConfiguration')
+},
+
+
 {
     url: "/manage-plans",
     description: "Quản lý đơn hàng",

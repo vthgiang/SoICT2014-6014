@@ -18,17 +18,16 @@ const { forEach } = require("lodash");
  * @returns 
  */
 exports.getLoyalCustomers = async (userId, portal, companyId, query, currentRole) => {
-
     const { customerCode } = query;
     // lay danh sach khach hang
-    const listAllCustomer = await getCustomers(portal, companyId, {customerCode });
+    const listAllCustomer = await getCustomers(portal, companyId, { customerCode }, currentRole);
     let customers;
     if (listAllCustomer) customers = listAllCustomer.customers;
     let loyalCustomers = [];
     for (const customer of customers) {
-        let listSaleOrder = await getAllSalesOrders(userId, { page: 1, limit: 100, currentRole, customer: customer._id }, portal,true);
+        let listSaleOrder = await getAllSalesOrders(userId, {customer: customer._id}, portal);
         let saleOrders;
-        if (listSaleOrder) saleOrders = listSaleOrder.allSalesOrders.docs;
+        if (listSaleOrder) saleOrders = listSaleOrder.allSalesOrders;
         let totalOrderValue = 0;
         saleOrders.forEach(saleOrder => {
             totalOrderValue += saleOrder.paymentAmount;
@@ -38,14 +37,15 @@ exports.getLoyalCustomers = async (userId, portal, companyId, query, currentRole
         let rankPoint = 0;
         let totalPromotion = customer.promotions ? customer.promotions.length : 0;
         const listRankPoint = customer.rankPoints;
-        if (listRankPoint) {
+        if (listRankPoint&&listRankPoint.length) {
             listRankPoint.forEach(x => {
                 if (x.expirationDate.getTime() > now.getTime()) rankPoint += x.point;
             });
         }
-        loyalCustomers = [...loyalCustomers, { customer, totalOrder: saleOrders.length, totalOrderValue, rankPoint,totalPromotion }];
+        loyalCustomers = [...loyalCustomers, { customer, totalOrder: saleOrders.length, totalOrderValue, rankPoint, totalPromotion }];
+        
     }
-     loyalCustomers =  loyalCustomers.sort((a, b) => (a.rankPoint < b.rankPoint) ? 1 : -1).filter((x)=>x.rankPoint>0);
-    return {listDocsTotal: loyalCustomers.length, loyalCustomers}
+    loyalCustomers = loyalCustomers.sort((a, b) => (a.rankPoint < b.rankPoint) ? 1 : -1).filter((x) => x.rankPoint > 0);
+    return { listDocsTotal: loyalCustomers.length, loyalCustomers }
 }
 

@@ -43,6 +43,7 @@ const DashboardUnit = lazy(() => import("../modules/dashboard-unit/components"))
 
 const ListEducation = lazy(() => import("../modules/training/education-program/components/educationProgramList"))
 const TrainingPlan = lazy(() => import("../modules/training/course/components/course"))
+const CourseOfUser = lazy(() => import("../modules/training/course/user/components/course"))
 
 
 const OrganizationalUnitKpiCreateForAdmin = lazy(() => import("../modules/kpi/organizational-unit/creation/component/organizationalUnitKpiCreateForAdmin"))
@@ -107,6 +108,7 @@ const CrmCare = lazy(() => import("../modules/crm/care/components"))
 const CrmLoyalCustomer = lazy(() => import("../modules/crm/loyalCustomer/components"))
 const CrmEvaluation = lazy(() => import("../modules/crm/evaluation/components"))
 const GeneralConfiguration = lazy(() => import("../modules/crm/generalConfiguration/components"))
+const CrmUnitConfiguration = lazy(() => import("../modules/crm/crmUnitConfiguration/components"))
 
 //orders
 const PurchaseOrder = lazy(() => import("../modules/production/order/purchase-order/components"))
@@ -986,6 +988,27 @@ class Routes extends Component {
                         layout={Layout}
                         component={TrainingPlan}
                     />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"training_plan_employee"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/hr-training-plan-employee",
+                                name: "training_plan_employee",
+                                icon: "fa fa-list-alt",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/hr-training-plan-employee"}
+                        path={"/hr-training-plan-employee"}
+                        pageName={"training_plan_employee"}
+                        layout={Layout}
+                        component={CourseOfUser}
+                    />
+                    
 
                     {/* kpi - routes */}
                     <PrivateRoute
@@ -1977,6 +2000,24 @@ class Routes extends Component {
                         pageName={"crm_list.generalConfiguration"}
                         layout={Layout}
                         component={GeneralConfiguration}
+                    />
+                   <PrivateRoute
+                        isLoading={false}
+                        key={"crmUnitConfiguration"}
+                        arrPage={[
+                            {
+                                link: "/crm/crmUnitConfiguration",
+                                name: "crm_list.crmUnitConfiguration",
+                                icon: "fa fa-gear",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/crm/crmUnitConfiguration"}
+                        path={"/crm/crmUnitConfiguration"}
+                        pageName={"crm_list.crmUnitConfiguration"}
+                        layout={Layout}
+                        component={CrmUnitConfiguration}
                     />
 
                     {/* Orders Management */}

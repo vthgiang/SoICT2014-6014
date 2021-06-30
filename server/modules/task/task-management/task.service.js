@@ -1994,7 +1994,7 @@ exports.sendEmailForCreateTask = async (portal, task) => {
  * Tạo công việc mới
  */
 exports.createTask = async (portal, task) => {
-    // console.log('task', task.taskProject)
+    console.log('task', task)
     // Lấy thông tin công việc liên quan
     var level = 1;
     if (mongoose.Types.ObjectId.isValid(task.parent)) {
@@ -2612,17 +2612,13 @@ exports.sendEmailCheckTaskLastMonth = async () => {
                     }
                 })
             }
-
-
             // xu ly Action not evaluated
             var TaskHasActionsAccountable = [];
             var TaskHasActionsResponsible = [];
-
             if (accTasks) {
                 let inprocessAccountableTask = accTasks.filter(task => task.status === "inprocess")
                 inprocessAccountableTask.length && inprocessAccountableTask.map(x => {
                     let taskActions;
-
                     taskActions = x.taskActions.length && x.taskActions;
                     if (taskActions.length !== 0) {
                         for (let i in taskActions) {
@@ -2922,7 +2918,7 @@ exports.getTasksByProject = async (portal, projectId, page, perPage) => {
     let totalList = await Task(connect(DB_CONNECTION, portal)).countDocuments({ taskProject: projectId });
     if (page && perPage) {
         tasks = await Task(connect(DB_CONNECTION, portal))
-            .find({ taskProject: projectId }).skip((Number(page) - 1) * Number(perPage)).limit(Number(perPage))
+            .find({ taskProject: projectId }).sort({ createdAt: -1 }).skip((Number(page) - 1) * Number(perPage)).limit(Number(perPage))
             .populate({ path: "responsibleEmployees", select: "_id name" })
             .populate({ path: "accountableEmployees", select: "_id name" })
             .populate({ path: "consultedEmployees", select: "_id name" })

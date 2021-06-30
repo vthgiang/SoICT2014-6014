@@ -9,7 +9,7 @@ exports.getAllTaskTemplates = async (portal, query) => {
     if (query.pageNumber === '1' && query.noResultsPerPage === '0') {
         // LẤY DANH SÁCH TẤT CẢ CÁC MẪU CÔNG VIỆC CÓ TRONG HỆ THỐNG CỦA CÔNG TY
         let docs = await TaskTemplate(connect(DB_CONNECTION, portal)).find().populate([
-            { path: "creator readByEmployees responsibleEmployees accountableEmployees consultedEmployees informedEmployees", select: "name email"},
+            { path: "creator readByEmployees responsibleEmployees accountableEmployees consultedEmployees informedEmployees", select: "name email" },
             { path: 'organizationalUnit' },
             { path: 'collaboratedWithOrganizationalUnits' }
         ]);
@@ -45,7 +45,7 @@ exports.getAllTaskTemplates = async (portal, query) => {
         let userRoles = dataRoles.reduce((arr, role) => [...arr, role._id, ...role.parents], [])
         userRoles = userRoles.filter((role, index) => role.toString() === userRoles[index].toString());
         let option = !organizationalUnit ?
-            {   
+            {
                 $or: [
                     { readByEmployees: { $in: userRoles } },
                     { creator: id }
@@ -94,10 +94,9 @@ exports.getTaskTemplate = async (portal, id) => {
  * @body dữ liệu tạo mới mẫu công việc
  */
 exports.createTaskTemplate = async (portal, body, userId) => {
-    console.log("22", body);
     //kiểm tra tên mẫu công việc đã tồn tại hay chưa ?
     let checkTaskTemplate = await TaskTemplate(connect(DB_CONNECTION, portal)).findOne({ name: body.name });
-    if(checkTaskTemplate) throw ['task_template_name_exist'];
+    if (checkTaskTemplate) throw ['task_template_name_exist'];
 
     for (let i in body.taskActions) {
         if (body.taskActions[i].description) {
@@ -156,7 +155,6 @@ exports.createTaskTemplate = async (portal, body, userId) => {
         }
     }
     //Tạo dữ liệu mẫu công việc
-    console.log("body", body);
     var tasktemplate = await TaskTemplate(connect(DB_CONNECTION, portal)).create({
         organizationalUnit: body.organizationalUnit,
         collaboratedWithOrganizationalUnits: body.collaboratedWithOrganizationalUnits,
@@ -273,7 +271,7 @@ exports.editTaskTemplate = async (portal, data, id) => {
             readByEmployee.push(roleManagers[i]);
         }
     }
-    
+
     // thêm quyền xem mẫu công việc cho đơn vị phối hợp (neu co)
     if (data.collaboratedWithOrganizationalUnits.length) {
         units = await OrganizationalUnit(connect(DB_CONNECTION, portal)).findById(data.collaboratedWithOrganizationalUnits);
@@ -396,13 +394,13 @@ exports.importTaskTemplate = async (portal, data, id) => {
                     } else {
                         data[i].accountableEmployees[j] = null;
                     }
-                    
+
                 }
             };
         } else {
             data[i].accountableEmployees = [];
         }
-        
+
         let read = [];
         if (data[i].readByEmployees[0]) {
             for (let j = 0; j < data[i].readByEmployees.length; j++) {
@@ -421,7 +419,7 @@ exports.importTaskTemplate = async (portal, data, id) => {
         } else {
             data[i].readByEmployees = [];
         }
-        
+
 
         if (data[i].consultedEmployees[0]) {
             for (let j = 0; j < data[i].consultedEmployees.length; j++) {
@@ -435,7 +433,7 @@ exports.importTaskTemplate = async (portal, data, id) => {
                     } else {
                         data[i].consultedEmployees[j] = null;
                     }
-                    
+
                 }
             };
         } else {
@@ -454,13 +452,13 @@ exports.importTaskTemplate = async (portal, data, id) => {
                     } else {
                         data[i].informedEmployees[j] = null;
                     }
-                    
+
                 }
             };
         } else {
             data[i].informedEmployees = [];
         }
-        
+
         if (data[i].responsibleEmployees[0]) {
             for (let j = 0; j < data[i].responsibleEmployees.length; j++) {
                 let responsibleEmployees = await User(connect(DB_CONNECTION, portal)).findOne({ name: data[i].responsibleEmployees[j] });
@@ -478,7 +476,7 @@ exports.importTaskTemplate = async (portal, data, id) => {
         } else {
             data[i].responsibleEmployees = [];
         }
-        
+
         // xu ly thong tin filledByAccountableEmployeesOnly 
         for (let j = 0; j < data[i].taskInformations.length; j++) {
             if (data[i].taskInformations[j][0]) {
@@ -488,7 +486,7 @@ exports.importTaskTemplate = async (portal, data, id) => {
                 } else {
                     data[i].taskInformations[j]["filledByAccountableEmployeesOnly"] = "false";
                 }
-                
+
                 // formart thong tin kieu du lieu
                 data[i].taskInformations[j]["type"] = data[i].taskInformations[j][2].toLowerCase();
                 data[i].taskInformations[j]["name"] = data[i].taskInformations[j][0];
@@ -514,7 +512,7 @@ exports.importTaskTemplate = async (portal, data, id) => {
                 data[i].taskActions[j]["name"] = data[i].taskActions[j][0];
                 data[i].taskActions[j]["description"] = data[i].taskActions[j][1];
             } else {
-                if (!data[i].taskActions[j][0]){
+                if (!data[i].taskActions[j][0]) {
                     data[i].taskActions[j] = [];
                     // break;
                 }
@@ -523,14 +521,14 @@ exports.importTaskTemplate = async (portal, data, id) => {
             }
         }
         switch (data[i].priority) {
-            case "Cao" : data[i].priority = 3; break;
-            case "Thấp" : data[i].priority = 2; break;
-            default : data[i].priority = 1 ;
+            case "Cao": data[i].priority = 3; break;
+            case "Thấp": data[i].priority = 2; break;
+            default: data[i].priority = 1;
         }
 
         let unit = await OrganizationalUnit(connect(DB_CONNECTION, portal)).findOne({ name: data[i].organizationalUnit });
         data[i].organizationalUnit = String(unit._id);
-        if (data[i].collaboratedWithOrganizationalUnits){
+        if (data[i].collaboratedWithOrganizationalUnits) {
             if (data[i].collaboratedWithOrganizationalUnits[0]) {
                 let collaboratedWithOrganizationalUnit = [];
                 for (let j = 0; j < data[i].collaboratedWithOrganizationalUnits.length; j++) {
@@ -545,7 +543,7 @@ exports.importTaskTemplate = async (portal, data, id) => {
         } else {
             data[i].collaboratedWithOrganizationalUnits = undefined;
         }
-        
+
         let result = await this.createTaskTemplate(portal, data[i]);
         results = [...results, result];
     };

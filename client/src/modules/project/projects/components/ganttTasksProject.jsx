@@ -38,6 +38,7 @@ const GanttTasksProject = (props) => {
     }, [])
 
     const getDataTask = (zoom = currentZoom) => {
+        console.log('currentProjectTasks', currentProjectTasks.map(o => o.name).join(', '))
         // Dựa vào currentZoom để tính toán duration theo giờ, ngày, tuần, tháng
         let currentMode = '';
         switch (zoom) {
@@ -63,7 +64,6 @@ const GanttTasksProject = (props) => {
         }
         let data = [], links = [], linkId = 0, line = 0;
         let count = { delay: 0, intime: 0, notAchived: 0 };
-        // console.log('currentProjectTasks', currentProjectTasks)
         if (currentProjectTasks && currentProjectTasks.length > 0) {
             for (let taskItem of currentProjectTasks) {
                 let start = moment(taskItem.startDate);

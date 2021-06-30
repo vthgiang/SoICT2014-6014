@@ -116,7 +116,8 @@ export default {
                 group: "Nhóm khách hàng",
                 statistic: "Thống kê",
                 generalConfiguration: "Cấu hình chung",
-                evaluation: "Đánh giá hoạt động CSKH"
+                evaluation: "Đánh giá hoạt động CSKH",
+                crmUnitConfiguration:"Cấu hình đơn vị chăm sóc khách hàng"
             },
 
             task_template: "Mẫu Công Việc",
@@ -148,6 +149,7 @@ export default {
             time_keeping: "Chấm công nhân viên",
             list_education: "Chương trình đào tạo bắt buộc",
             training_plan: "Quản lý khoá đào tạo",
+            training_plan_employee: "Danh sách khóa đào tạo",
             list_major: "Danh sách chuyên ngành",
             list_career_position: "Danh sách vị trí công việc",
             list_search_for_package: "Tìm kiếm nhân sự gói thầu",
@@ -2433,6 +2435,7 @@ export default {
                 edit_course: "Chỉnh sửa khoá đào tạo",
                 delete_course: "Xoá khoá đào tạo",
                 view_course: "Thông tin khoá đào tạo",
+                register: "Đăng ký",
 
                 // Thông điệp trả về từ server
                 name_required: "Tên khoá đào tạo không được để trống",
@@ -5906,13 +5909,13 @@ export default {
                 percentFinishTask: 'Xác suất hoàn thành dự án trong',
             },
             eval: {
-                undefined: 'Nếu costPerformanceIndex không tính được (mẫu số actualCost = 0 HOẶC costPerformanceIndex = Infinity): Điểm = Chưa tính được',
-                level1: 'Nếu realDuration = 0 HOẶC costPerformanceIndex < 0.5: Điểm = 0',
-                level2: 'Nếu 0.5 <= costPerformanceIndex < 0.75: Điểm = 40',
-                level3: 'Nếu 0.75 <= costPerformanceIndex < 1: Điểm = 60',
-                level4: 'Nếu 1 <= costPerformanceIndex < 1.25: Điểm = 80',
-                level5: 'Nếu 1.25 <= costPerformanceIndex < 1.5: Điểm = 90',
-                level6: 'Nếu 1.5 <= costPerformanceIndex: Điểm = 100',
+                undefined: 'Nếu performanceIndex không tính được (mẫu số actualCost = 0 HOẶC performanceIndex = Infinity): Điểm = Chưa tính được',
+                level1: 'Nếu realDuration = 0 HOẶC performanceIndex < 0.5: Điểm = 0',
+                level2: 'Nếu 0.5 <= performanceIndex < 0.75: Điểm = 40',
+                level3: 'Nếu 0.75 <= performanceIndex < 1: Điểm = 60',
+                level4: 'Nếu 1 <= performanceIndex < 1.25: Điểm = 80',
+                level5: 'Nếu 1.25 <= performanceIndex < 1.5: Điểm = 90',
+                level6: 'Nếu 1.5 <= performanceIndex: Điểm = 100',
             },
             report: {
                 title: 'Báo cáo chi tiết dự án'

@@ -118,9 +118,6 @@ const DashBoardEmployees = (props) => {
                 monthShow: month
             }));
 
-            if (arrayUnitShow && arrayUnitShow.length === childOrganizationalUnit.length) {
-                arrayUnitShow = null;
-            };
             const { getAllEmployeeOfUnitByIds, getAllEmployee, searchAnnualLeaves, getListPraise, getListDiscipline, searchSalary, getTimesheets } = props;
 
             getAllEmployeeOfUnitByIds(arrayUnitShow && arrayUnitShow.length !== 0 ? arrayUnitShow : childOrganizationalUnit.map(x => x.id));
@@ -156,8 +153,7 @@ const DashBoardEmployees = (props) => {
     }
 
 
-    let listAllEmployees = (!organizationalUnits || organizationalUnits.length === 0 || organizationalUnits.length === childOrganizationalUnit.length) ?
-        employeesManager.listAllEmployees : employeesManager.listEmployeesOfOrganizationalUnits;
+    let listAllEmployees = employeesManager.listEmployeesOfOrganizationalUnits;
 
     let totalHourAnnualLeave = 0;
     let listTimesheets = timesheets.listTimesheets;

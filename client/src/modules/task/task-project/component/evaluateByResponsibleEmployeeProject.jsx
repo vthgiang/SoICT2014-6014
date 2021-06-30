@@ -191,10 +191,10 @@ const EvaluateByResponsibleEmployeeProject = (props) => {
                     </div>
                 </fieldset>
 
-                <div className="box">
-                    <div className="row">
-                        <button className="btn-success pull-right" onClick={handleSaveEvalResult} title="Lưu kết quả đánh giá">Lưu kết quả đánh giá</button>
-                    </div>
+                <div className="row">
+                    <button className="btn btn-success pull-right" style={{ marginRight: 10 }} onClick={handleSaveEvalResult} title="Lưu kết quả đánh giá">
+                        Lưu kết quả đánh giá
+                    </button>
                 </div>
             </div>
         </React.Fragment>

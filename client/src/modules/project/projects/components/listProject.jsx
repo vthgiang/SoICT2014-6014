@@ -112,6 +112,7 @@ function ListProject(props) {
     }
 
     const totalPage = project && Math.ceil(project.data.totalDocs / perPage);
+    console.log('tasks', tasks)
 
     return (
         <React.Fragment>

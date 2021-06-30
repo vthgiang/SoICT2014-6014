@@ -503,8 +503,9 @@ const ModalRequestEditProjectTaskEmployee = (props) => {
 
     useEffect(() => {
         const curStartDateTime = convertDateTime(editTask.startDate, startTime);
+        console.log('curStartDateTime', curStartDateTime)
         console.log('editTask.currentLatestStartDate', editTask.currentLatestStartDate)
-        if (editTask.currentLatestStartDate && editTask.preceedingTasks.length > 0 && moment(curStartDateTime).isBefore(editTask.currentLatestStartDate)) {
+        if (editTask.currentLatestStartDate && editTask.preceedingTasks.length > 0 && moment(curStartDateTime).isBefore(moment(editTask.currentLatestStartDate).set('second', 0))) {
             setState({
                 ...state,
                 editTask: {
@@ -717,14 +718,14 @@ const ModalRequestEditProjectTaskEmployee = (props) => {
                                                 <label className="control-label">
                                                     Chi phí ước lượng nhân lực ({projectDetail?.unitCost})
                                     </label>
-                                                <input className="form-control" value={editTask.estimateHumanCost} disabled={true} />
+                                                <input className="form-control" value={numberWithCommas(editTask.estimateHumanCost)} disabled={true} />
                                             </div>
                                         </div>
                                         <div className={'row'}>
                                             {/* Chi phí ước lượng */}
                                             <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 form-group ${Number(String(estimateNormalCost).replace(/,/g, '')) > Number(String(editTask.estimateMaxCost).replace(/,/g, '')) ? 'has-error' : ''}`}>
                                                 <label className="control-label">Chi phí ước lượng tổng ({projectDetail?.unitCost})</label>
-                                                <input className="form-control" value={estimateNormalCost} disabled={true} />
+                                                <input className="form-control" value={numberWithCommas(estimateNormalCost)} disabled={true} />
                                                 <ErrorLabel content={Number(String(estimateNormalCost).replace(/,/g, '')) > Number(String(editTask.estimateMaxCost).replace(/,/g, '')) && "Ngân sách đang thấp hơn chi phí ước lượng"} />
                                             </div>
                                             {/* Ngân sách cho công việc */}

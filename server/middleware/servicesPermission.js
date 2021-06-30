@@ -708,6 +708,9 @@ exports.links = [
         url: '/hr-training-plan',
         apis: ['@all']
     }, {
+        url: '/hr-training-plan-employee',
+        apis: ['@all']
+    }, {
         url: '/hr-list-education',
         apis: ['@all']
     },
@@ -902,6 +905,10 @@ exports.links = [
         apis: ['@all']
     }, {
         url: '/crm/generalConfiguration',
+        apis: ['@all']
+    },
+    {
+        url: '/crm/crmUnitConfiguration',
         apis: ['@all']
     }, {
         url: '/manage-plans',

@@ -32,8 +32,8 @@ function getListDiscipline(data) {
             employeeName: data.employeeName,
             employeeNumber: data.employeeNumber,
             decisionNumber: data.decisionNumber,
-            startDate:data.startDate,
-            endDate:data.endDate,
+            startDate:data.startDate?data.startDate: null,
+            endDate:data.endDate?data.endDate:null,
             month: data.month,
             page: data.page,
             limit: data.limit
@@ -105,8 +105,8 @@ function getListPraise(data) {
             employeeNumber: data.employeeNumber,
             decisionNumber: data.decisionNumber,
             month: data.month,
-            startDate:data.startDate,
-            endDate:data.endDate,
+            startDate:data.startDate?data.startDate: null,
+            endDate:data.endDate?data.endDate:null,
             page: data.page,
             limit: data.limit
         }

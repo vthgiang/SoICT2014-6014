@@ -146,14 +146,12 @@ exports.createNewSalesOrder = async (userId, companyId, data, portal) => {
     return { salesOrder }
 }
 
-exports.getAllSalesOrders = async (userId, query, portal,getAll = false) => {
+exports.getAllSalesOrders = async (userId, query, portal) => {
     //Lấy cấp dưới người ngày quản lý (bao gồm cả người này và các nhân viên phòng ban con)
     let users = await BusinessDepartmentServices.getAllRelationsUser(userId, query.currentRole, portal);
-
     let option = {};
-    let { page, limit, code, status, customer } = query;
-
-    if (users.length && !getAll ) {
+    let { page, limit, code, status, customer, getAll, month, year } = query;
+    if (users.length && !getAll) {
         option = {
             $or: [{ creator: users },
             { approvers: { $elemMatch: { approver: userId } } }],
@@ -170,6 +168,15 @@ exports.getAllSalesOrders = async (userId, query, portal,getAll = false) => {
     }
     if (customer) {
         option.customer = customer
+    }
+    if (month && year) {
+        let beginOfMonth = new Date(`${year}-${month}`); // cần chỉnh lại 
+        let endOfMonth = new Date(year, month); // cần chỉnh lại
+        option =
+        {
+            ...option,
+            createdAt: { $gte: beginOfMonth, $lt: endOfMonth }
+        }
     }
 
     page = Number(page);

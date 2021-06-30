@@ -53,9 +53,9 @@ const LoadTaskOrganizationChart = (props) => {
             for (let i in selectedUnit) {
                 data[i] = [];
                 array.fill(0, 0);
-                let findUnit = units.find(elem => elem.id === selectedUnit[i])
+                let findUnit = units.find(elem => (elem.value === selectedUnit[i]) || (elem.id === selectedUnit[i]))
                 if (findUnit) {
-                    data[i].push(findUnit.name);
+                    data[i].push(findUnit.text || findUnit.name);
                 }
 
                 for (let k in improcessTask) {

@@ -2,7 +2,7 @@ import React, { useEffect, useState, useLayoutEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DataTableSetting, DeleteNotification, ConfirmNotification, PaginateBar, SelectMulti, ExportExcel, DatePicker, SmartTable } from '../../../../../common-components';
+import { DataTableSetting, DeleteNotification, ConfirmNotification, PaginateBar, SelectMulti, ExportExcel, DatePicker } from '../../../../../common-components';
 
 import { EmployeeCreateForm, EmployeeDetailForm, EmployeeEditFrom, EmployeeImportForm } from './combinedContent';
 
@@ -31,7 +31,7 @@ const EmployeeManagement = (props) => {
     }, [search])
 
     const tableId = "table-employee-management";
-    const defaultConfig = { limit: 10, hiddenColumns: ["1"] }
+    const defaultConfig = { limit: 10 }
     const _limit = getTableConfiguration(tableId, defaultConfig).limit;
 
     const [state, setState] = useState({
@@ -253,10 +253,6 @@ const EmployeeManagement = (props) => {
     const handleSunmitSearch = async () => {
         props.getAllEmployee(state);
     }
-
-    const getDataCheck = (value) => {
-        console.log(value)
-    }   
 
     /**
      * Bắt sự kiện setting số dòng hiện thị trên một trang
@@ -1053,9 +1049,10 @@ const EmployeeManagement = (props) => {
                     }
                 </div>
 
-                {/* <table id={tableId} className="table table-striped table-bordered table-hover">
+                <table id={tableId} className="table table-striped table-bordered table-hover">
                     <thead>
                         <tr>
+                            <th>STT</th>
                             <th>{translate('human_resource.staff_number')}</th>
                             <th>{translate('human_resource.staff_name')}</th>
                             <th>{translate('human_resource.profile.gender')}</th>
@@ -1067,6 +1064,7 @@ const EmployeeManagement = (props) => {
                                 <DataTableSetting
                                     tableId={tableId}
                                     columnArr={[
+                                        'STT',
                                         translate('human_resource.staff_number'),
                                         translate('human_resource.staff_name'),
                                         translate('human_resource.profile.gender'),
@@ -1084,6 +1082,7 @@ const EmployeeManagement = (props) => {
                         {listEmployees && listEmployees.length !== 0 &&
                             listEmployees.map((x, index) => (
                                 <tr key={index}>
+                                    <td style={{ textAlign: 'center' }}>{index + 1}</td>
                                     <td>{x.employeeNumber}</td>
                                     <td>{x.fullName}</td>
                                     <td>{translate(`human_resource.profile.${x.gender}`)}</td>
@@ -1107,55 +1106,8 @@ const EmployeeManagement = (props) => {
                             )
                             )}
                     </tbody>
-                </table> */}
-                <SmartTable
-                    tableId={tableId}
-                    columnArr={{
-                        staff_number: translate('human_resource.staff_number'),
-                        staff_name: translate('human_resource.staff_name'),
-                        gender: translate('human_resource.profile.gender'),
-                        date_birth: translate('human_resource.profile.date_birth'),
-                        contract_end_date: translate('human_resource.profile.contract_end_date'),
-                        type_contract: translate('human_resource.profile.type_contract'),
-                        status: translate('human_resource.status')
-                    }}
-                    headTableData={{
-                        staff_number: <th>{translate('human_resource.staff_number')}</th>,
-                        staff_name: <th>{translate('human_resource.staff_name')}</th>,
-                        gender: <th>{translate('human_resource.profile.gender')}</th>,
-                        date_birth: <th>{translate('human_resource.profile.date_birth')}</th>,
-                        contract_end_date: <th>{translate('human_resource.profile.contract_end_date')}</th>,
-                        type_contract: <th>{translate('human_resource.profile.type_contract')}</th>,
-                        status: <th>{translate('human_resource.status')}</th>,
-                        action: <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}</th>
-                    }}
-                    tableData={listEmployees?.length > 0 && listEmployees.map(item => {
-                        return {
-                            id: item?._id,
-                            staff_number: <td>{item?.employeeNumber}</td>,
-                            staff_name: <td>{item?.fullName}</td>,
-                            gender: <td>{translate(`human_resource.profile.${item?.gender}`)}</td>,
-                            date_birth: <td>{formatDate(item?.birthdate)}</td>,
-                            contract_end_date: <td>{formatDate(item?.contractEndDate)}</td>,
-                            type_contract: <td>{item?.contractType}</td>,
-                            status: <td style={{ color: item?.status === "active" ? "#28A745" : (item?.status === "active" ? '#dd4b39' : null) }}>{translate(`human_resource.profile.${item?.status}`)}</td>,
-                            action: <td>
-                                <a onClick={() => handleView(item)} style={{ width: '5px' }} title={translate('human_resource.profile.employee_management.view_employee')}><i className="material-icons">view_list</i></a>
-                                <a onClick={() => handleEdit(item)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.profile.employee_management.edit_employee')}><i className="material-icons">edit</i></a>
-                                <ConfirmNotification
-                                    icon="question"
-                                    title="Xóa thông tin nhân viên"
-                                    name="delete"
-                                    className="text-red"
-                                    content={`<h4>${translate('human_resource.profile.employee_management.delete_employee')} ${item.fullName + " - " + item.employeeNumber}</h4>`}
-                                    func={() => props.deleteEmployee(item._id, item.emailInCompany)}
-                                />
-                            </td>
-                        }
-                    })}
-                    setLimit={setLimit}
-                    getDataCheck={getDataCheck}
-                />
+
+                </table>
                 {employeesManager.isLoading ?
                     <div className="table-info-panel">{translate('confirm.loading')}</div> :
                     (!listEmployees || listEmployees.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
@@ -1167,7 +1119,7 @@ const EmployeeManagement = (props) => {
             <EmployeeCreateForm />
 
             {/* From import thông tin nhân viên*/
-                importEmployee && <EmployeeImportForm/>
+                importEmployee && <EmployeeImportForm />
             }
 
             {/* From xem thông tin nhân viên */

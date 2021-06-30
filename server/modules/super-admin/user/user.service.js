@@ -127,7 +127,7 @@ exports.getUsers = async (portal, company, query) => {
         }
     } else if (unitId) {
         if (query.type === 'unitId') {
-            return getAllUserInUnitAndItsSubUnits(portal, unitId);
+            return this.getAllUserInUnitAndItsSubUnits(portal, unitId);
         } else {
             let department = await OrganizationalUnit(connect(DB_CONNECTION, portal))
                 .findOne({
@@ -144,7 +144,7 @@ exports.getUsers = async (portal, company, query) => {
                     ],
                 });
 
-            return getAllUserInUnitAndItsSubUnits(portal, department?._id);
+            return this.getAllUserInUnitAndItsSubUnits(portal, department?._id);
         }
     }
 };
@@ -199,7 +199,7 @@ exports.getAllEmployeeOfUnitByIds = async (portal, query) => {
             '_id': { $in: ids.map(item => mongoose.Types.ObjectId(item)) }
         })
 
-    for(let i = 0; i < organizationalUnits.length; i++) {
+    for (let i = 0; i < organizationalUnits.length; i++) {
         roles = [
             ...roles,
             ...organizationalUnits[i].employees,
@@ -209,34 +209,42 @@ exports.getAllEmployeeOfUnitByIds = async (portal, query) => {
     }
 
     let keyQuery = [
-        { $match: {
-            'roleId': { $in: roles }
-        }},
+        {
+            $match: {
+                'roleId': { $in: roles }
+            }
+        },
 
-        { $group: { 
-            '_id': '$userId',
-            'user': { $push: "$$ROOT" }
-        }},
+        {
+            $group: {
+                '_id': '$userId',
+                'user': { $push: "$$ROOT" }
+            }
+        },
 
-        { $lookup: {
-            "from": "organizationalunits",
-            "let": { "roleId": "$user.roleId" },
-            "pipeline": [
-                { $match: {
-                    $expr: {
-                        $or: [
-                            { $eq: [ "$managers",  "$$roleId" ] },
-                            { $eq: [ "$deputyManagers",  "$$roleId" ] },
-                            { $eq: [ "$employees",  "$$roleId" ] }
-                        ]
-                    }
-                }},
-            ],
-            "as": "organizationalUnit"
-        }}
+        {
+            $lookup: {
+                "from": "organizationalunits",
+                "let": { "roleId": "$user.roleId" },
+                "pipeline": [
+                    {
+                        $match: {
+                            $expr: {
+                                $or: [
+                                    { $eq: ["$managers", "$$roleId"] },
+                                    { $eq: ["$deputyManagers", "$$roleId"] },
+                                    { $eq: ["$employees", "$$roleId"] }
+                                ]
+                            }
+                        }
+                    },
+                ],
+                "as": "organizationalUnit"
+            }
+        }
     ]
     let keyCountDocument = [
-        ...keyQuery, 
+        ...keyQuery,
         {
             $count: "totalEmployee"
         }
@@ -289,7 +297,7 @@ exports.getAllEmployeeOfUnitByIds = async (portal, query) => {
  * @id Id công ty
  * @unitID Id của của đơn vị cần lấy đơn vị con
  */
-getAllUserInUnitAndItsSubUnits = async (portal, unitId) => {
+exports.getAllUserInUnitAndItsSubUnits = async (portal, unitId) => {
     //Lấy tất cả các đơn vị con của 1 đơn vị
     var data;
 
@@ -428,10 +436,10 @@ exports.createUser = async (portal, data, company) => {
 
     if (!data.email)
         throw ['email_empty'];
-    
+
     if (!data.name)
         throw ['username_empty'];
-    
+
     var checkUser = await User(connect(DB_CONNECTION, portal)).findOne({
         email: data.email.trim(),
     });
@@ -565,7 +573,7 @@ exports.sendMailAboutChangeEmailOfUserAccount = async (oldEmail, newEmail) => {
         newEmail +
         "</li>" +
         "</ul>";
-    
+
     return await sendEmail(newEmail, subject, text, html);
 };
 
@@ -655,7 +663,7 @@ exports.editUser = async (portal, id, data) => {
     const employees = await Employee(connect(DB_CONNECTION, portal)).findOne({ emailInCompany: data.email });
     if (!employees)
         await Employee(connect(DB_CONNECTION, portal)).findOneAndUpdate({ emailInCompany: oldEmail }, { $set: { emailInCompany: data.email } });
-    
+
     return user;
 };
 
@@ -811,7 +819,7 @@ _getAllUsersInOrganizationalUnits = async (portal, data) => {
     var userArray = [];
     for (let i = 0; i < data.length; i++) {
         var department = data[i];
-        if(department) {
+        if (department) {
             var userRoles = await UserRole(connect(DB_CONNECTION, portal))
                 .find({
                     roleId: {
@@ -952,7 +960,7 @@ exports.getUsersByRolesArray = async (portal, roles) => {
     return users;
 }
 
-exports.sendEmailResetPasswordUser = async(portal, email) => {
+exports.sendEmailResetPasswordUser = async (portal, email) => {
     let user = await User(connect(DB_CONNECTION, portal)).findOne({ email });
     // let code = await generator.generate({ length: 6, numbers: true });
     // user.resetPasswordToken = code;
@@ -973,10 +981,10 @@ exports.sendEmailResetPasswordUser = async(portal, email) => {
     } else {
         await user.save();
     }
-    
+
     let subject = `${process.env.WEB_NAME} : Thay đổi mật khẩu - Change password`;
     let text = `Yêu cầu cấp lại mật khẩu cho email ${email}`
-    let html =  `<html>
+    let html = `<html>
                 <head>
                     <style>
                         .wrapper {
@@ -1052,7 +1060,7 @@ exports.sendEmailResetPasswordUser = async(portal, email) => {
                     </div>
                 </body>
         </html>`
-    await sendEmail(email, subject,text, html);
+    await sendEmail(email, subject, text, html);
 
     return {
         portal, email
