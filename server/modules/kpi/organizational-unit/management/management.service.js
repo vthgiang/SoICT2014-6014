@@ -1,7 +1,8 @@
 const Models = require(`../../../../models`);
-const { OrganizationalUnitKpiSet, OrganizationalUnitKpi, EmployeeKpiSet, EmployeeKpi } = Models;
+const { OrganizationalUnitKpiSet, OrganizationalUnitKpi, OrganizationalUnit, EmployeeKpiSet, EmployeeKpi } = Models;
 const { connect } = require(`../../../../helpers/dbHelper`);
 const EmployeeKpiService = require(`../../employee/management/management.service`);
+const UserService = require('../../../super-admin/user/user.service')
 const mongoose = require("mongoose");
 
 
@@ -41,6 +42,47 @@ exports.copyKPI = async (portal, kpiId, data) => {
                 date: new Date(data?.datenew),
                 kpis: []
             })
+        
+        // Thêm độ quan trọng đơn vị 
+        let units = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({
+            parent: mongoose.Types.ObjectId(data.idunit)
+        })
+        let organizationalUnitImportances = [];
+    
+        if (units && units.length > 0) {
+            organizationalUnitImportances = units.map(item => {
+                return {
+                    organizationalUnit: item?._id,
+                    importance: 100
+                }
+            })
+        }
+
+        // Thêm độ quan trọng nhân viên
+        let users = await UserService.getAllEmployeeOfUnitByIds(portal, {
+            ids: [data.idunit]
+        });
+        let employeeImportances = [];
+
+        if (users && users.length !== 0) {
+            employeeImportances = users?.employees?.map(item => {
+                return {
+                    employee: item?.userId?._id,
+                    importance: 100
+                }
+            })
+        }
+
+        // Cập nhật độ qtrg đơn vị và nhân viên
+        await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+            .findByIdAndUpdate(
+                organizationalUnitNewKpi?._id,
+                {
+                    'employeeImportances': employeeImportances,
+                    'organizationalUnitImportances': organizationalUnitImportances
+                },
+                { new: true }
+            );
 
         // Lấy dữ liệu kpi được sao chép
         organizationalUnitOldKPISet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
@@ -110,9 +152,15 @@ exports.copyKPI = async (portal, kpiId, data) => {
 
         organizationalUnitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
             .findById(organizationalUnitNewKpi?._id)
-            .populate("organizationalUnit")
-            .populate({ path: "creator", select: "_id name email avatar" })
-            .populate({ path: "kpis", populate: { path: 'parent' } });
+            .populate([
+                { path: "organizationalUnit" },
+                {path: "creator", select :"_id name email avatar"},
+                { path: "kpis", populate: { path: 'parent' } },
+                { path: 'comments.creator', select: 'name email avatar ' },
+                { path: 'comments.comments.creator', select: 'name email avatar' },
+                { path: 'employeeImportances', populate: { path: 'employee', select: ' _id name email' } },
+                { path: 'organizationalUnitImportances', populate: { path: 'organizationalUnit' } }
+            ])
 
         return {
             kpiunit: organizationalUnitKpiSet,
@@ -287,7 +335,7 @@ exports.calculateKpiUnit = async (portal, data) => {
                 approvedPoint = approvedPoint / totalImportance;
                 totalWeight += weight;
             } 
-            
+    
             // update point for each kpiUnit in kpiUnitSet
             organizationUnitKpi.automaticPoint = Math.round(autoPoint);
             organizationUnitKpi.employeePoint = Math.round(employeePoint);
