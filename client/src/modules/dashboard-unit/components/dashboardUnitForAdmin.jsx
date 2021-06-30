@@ -536,7 +536,7 @@ function DashboardUnitForAdmin(props) {
                             >
                             </SelectMulti>
                         </div>
-                        <button type="button" className="btn btn-success" onClick={handleUpdateDataUrgent}>{translate('general.search')}</button>
+                        <button type="button" className="btn btn-success" onClick={handleUpdateDataUrgent}>{translate('kpi.evaluation.dashboard.analyze')}</button>
                     </div>
                 </div>
 
@@ -657,7 +657,7 @@ function DashboardUnitForAdmin(props) {
                                     showUnitTask={showUnitTask}
                                     tasks={tasks?.organizationUnitTasks}
                                     listEmployee={user && user.employees}
-                                    units={listUnitSelect.map(item => { return { id: item?.value, name: item?.text } })}
+                                    units={listUnitSelect}
                                     startMonth={month}
                                     endMonth={month}
                                     startMonthTitle={monthTitle}
