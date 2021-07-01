@@ -17,7 +17,8 @@ class QuillEditor extends Component {
         super(props)
 
         this.state = {
-            quill: null
+            quill: null,
+            showDropFileHere:false
         }
     }
     
@@ -210,7 +211,12 @@ class QuillEditor extends Component {
                 }
             }
         }
-
+        if (nextState.showDropFileHere===true && this.state.showDropFileHere===false){
+            return true
+        }
+        if (nextState.showDropFileHere===false && this.state.showDropFileHere===false){
+            return true
+        }
         if (nextProps.quillValueDefault === quillValueDefault) {
             return false;
         } 
@@ -255,21 +261,37 @@ class QuillEditor extends Component {
         SlimScroll.removeVerticalScrollStyleCSS(`editor-container${id}`)
         SlimScroll.addVerticalScrollStyleCSS(`editor-container${id}`, maxHeight, true)
     }
+    handleDragEnter = () => {
+        this.setState(state => {
+            return {
+                ...state,
+                showDropFileHere: true
+            }
+        });
+    }
 
+    handleDragLeave = () => {
+        this.setState(state => {
+            return {
+                ...state,
+                showDropFileHere: false
+            }
+        });
+    }
+    
     render() {
         const { isText = false, inputCssClass = "", id, quillValueDefault, toolbar = true,
             font = true, header = true, typography = true, fontColor = true, 
             alignAndList = true, embeds = true, table = true
         } = this.props
-
         return (
-            <React.Fragment>
+            <React.Fragment >
                 {
                     !isText
-                        ? <React.Fragment>
+                        ? <React.Fragment >
                             {
                                 toolbar &&
-                                    <ToolbarQuillEditor
+                                    <ToolbarQuillEditor 
                                         id={`toolbar${id}`}
                                         font={font}
                                         header={header}
@@ -281,8 +303,13 @@ class QuillEditor extends Component {
                                         inputCssClass={inputCssClass}
                                     />
                             }
-                            <div id={`editor-container${id}`} className={`quill-editor ${inputCssClass}`}/>
-                        </React.Fragment>
+                            <div id={`editor-container${id}`} className={`quill-editor ${inputCssClass}`}  onDragLeave={this.handleDragLeave} onDragEnter={this.handleDragEnter}>
+                            {
+                                this.state.showDropFileHere && 
+                                <div style={{ fontSize: "2em", pointerEvents: "none", width: "100%", height: "100%", border: "2px dashed black", backgroundColor: "rgba(255, 255, 255, 0.3)", top: "0", left: 0, position: "absolute", textAlign: "center" }}>DROP FILES HERE</div>
+                            }</div>
+                            
+                            </React.Fragment>
                         : parse(quillValueDefault)
                 }
             </React.Fragment>
