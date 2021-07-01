@@ -7,7 +7,7 @@ import { ProjectActions } from "../../projects/redux/actions";
 import jsPERT, { pertProbability, START, END, Pert } from 'js-pert';
 import { fakeObj, fakeArr } from './staticData';
 import { Collapse } from 'react-bootstrap';
-import { DialogModal } from '../../../../common-components';
+import { DialogModal, forceCheckOrVisible, LazyLoadComponent } from '../../../../common-components';
 import { convertToMilliseconds, convertUserIdToUserName, getCurrentProjectDetails, handleWeekendAndWorkTime, processDataTasksStartEnd } from '../../projects/components/functionHelper';
 import { Canvas, Node } from 'reaflow';
 import { getNumsOfDaysWithoutGivenDay, getSalaryFromUserId, numberWithCommas } from '../../../task/task-management/component/functionHelpers';
@@ -118,8 +118,8 @@ const ModalCalculateCPM = (props) => {
         console.log('currentProcessData afterrrrrrr ----------', currentProcessData)
         console.log('findLatestDate(currentProcessData)', findLatestDate(currentProcessData))
         const message = moment(findLatestDate(currentProcessData)).isAfter(moment(projectDetail?.endDate))
-            ? "Thời gian tính toán nhiều hơn thời gian dự kiến. Bạn có chắc chắn tiếp tục thêm vào cơ sở dữ liệu?"
-            : "Bạn có muốn thêm vào cơ sở dữ liệu?"
+            ? "Thời gian tính toán nhiều hơn thời gian dự kiến. Bạn có chắc chắn tiếp tục thêm danh sách công việc dự án vào cơ sở dữ liệu?"
+            : "Bạn có muốn thêm danh sách công việc dự án vào cơ sở dữ liệu?"
         Swal.fire({
             html: `<h4 style="color: red"><div>${message}</div></h4>`,
             icon: 'warning',
@@ -200,153 +200,159 @@ const ModalCalculateCPM = (props) => {
 
     return (
         <React.Fragment>
-            <DialogModal
-                modalID={`modal-show-info-calculate-cpm`} isLoading={false}
-                formID={`form-show-info-calculate-cpm`}
-                title={translate('project.schedule.calculateCPM')}
-                hasSaveButton={false}
-                size={100}
-            >
-                <div>
-                    <div className="row">
-                        {/* Button Thêm dữ liệu vào database */}
+            <div style={{ lineHeight: 1.5 }}>
+                <div className="row">
+                    {/* Button Thêm dữ liệu vào database */}
+                    <div className="dropdown pull-right" style={{ marginTop: 15, marginRight: 10 }}>
+                        <button
+                            onClick={handleInsertListToDB}
+                            type="button" className="btn btn-success dropdown-toggle" data-toggle="dropdown">
+                            {`Lưu danh sách công việc dự án`}
+                        </button>
+                    </div>
+                    {/* Button Tính toán mức thoả hiệp dự án */}
+                    {moment(findLatestDate(processedData)).isAfter(moment(projectDetail?.endDate))
+                        &&
                         <div className="dropdown pull-right" style={{ marginTop: 15, marginRight: 10 }}>
+                            <ModalCalculateRecommend
+                                handleApplyChange={handleApplyChange}
+                                processedData={processedData}
+                                currentTasksData={currentTasksData}
+                                oldCPMEndDate={findLatestDate(processedData)}
+                            />
                             <button
-                                onClick={handleInsertListToDB}
-                                type="button" className="btn btn-success dropdown-toggle" data-toggle="dropdown">
-                                {translate('project.schedule.insertListTasksToDB')}
+                                onClick={handleCalculateRecommend}
+                                type="button" className="btn btn-warning dropdown-toggle" data-toggle="dropdown">
+                                {`Đề xuất tối ưu dự án`}
                             </button>
-                        </div>
-                        {/* Button Tính toán mức thoả hiệp dự án */}
-                        {moment(findLatestDate(processedData)).isAfter(moment(projectDetail?.endDate))
-                            &&
-                            <div className="dropdown pull-right" style={{ marginTop: 15, marginRight: 10 }}>
-                                <ModalCalculateRecommend
-                                    handleApplyChange={handleApplyChange}
-                                    processedData={processedData}
-                                    currentTasksData={currentTasksData}
-                                    oldCPMEndDate={findLatestDate(processedData)}
-                                />
+                        </div>}
+                </div>
+
+                <ul className="nav nav-tabs">
+                    <li className="active"><a href="#calc-cpm-table" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Bảng dữ liệu CPM</a></li>
+                    <li><a href="#calc-cpm-graph" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Đồ thị CPM</a></li>
+                </ul>
+                <div className="tab-content">
+                    {/** Thông tin dự án */}
+                    <div className="tab-pane active" id="calc-cpm-table">
+                        <LazyLoadComponent
+                            key="CalcCPMTable"
+                        >
+                            <div className="description-box without-border">
+                                <h5>Ngày bắt đầu dự án: <strong>{moment(projectDetail?.startDate).format('HH:mm DD/MM/YYYY')}</strong></h5>
+                                <h5>Ngày kết thúc dự án dự kiến: <strong>{moment(projectDetail?.endDate).format('HH:mm DD/MM/YYYY')}</strong></h5>
+                                <h5>Ngày kết thúc dự án tính theo CPM:
+                                    <strong style={{ color: moment(findLatestDate(processedData)).isAfter(moment(projectDetail?.endDate)) ? 'red' : 'green' }}>
+                                        {' '}
+                                        {moment(findLatestDate(processedData)).format('HH:mm DD/MM/YYYY')}
+                                    </strong>
+                                    {moment(findLatestDate(processedData)).isAfter(moment(projectDetail?.endDate)) &&
+                                        <span style={{ color: 'red' }}> - Hãy sử dụng tính năng "Đề xuất tối ưu dự án" ở góc bên phải màn hình!</span>}
+                                </h5>
+                            </div>
+
+                            <span style={{ color: 'green', marginLeft: 10 }}><strong>*Chú ý:</strong> Dòng màu xanh thể hiện công việc thuộc đường găng</span>
+                            {/* Button toggle bảng dữ liệu */}
+                            <div className="dropdown" style={{ marginTop: 15, marginRight: 10 }}>
                                 <button
-                                    onClick={handleCalculateRecommend}
-                                    type="button" className="btn btn-warning dropdown-toggle" data-toggle="dropdown">
-                                    {translate('project.schedule.calculateRecommend')}
+                                    onClick={() => setIsTableShown(!isTableShown)}
+                                    type="button" className="btn btn-link dropdown-toggle" data-toggle="dropdown"
+                                    aria-controls="cpm-task-table"
+                                    aria-expanded={isTableShown}>
+                                    {translate(isTableShown ? 'project.schedule.hideTableCPM' : 'project.schedule.showTableCPM')}
                                 </button>
-                            </div>}
+                                <Collapse in={isTableShown}>
+                                    <table id="cpm-task-table" className="table table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>{translate('project.schedule.taskCode')}</th>
+                                                <th>Công việc tiền nhiệm</th>
+                                                <th>Người thực hiện</th>
+                                                <th>Người phê duyệt</th>
+                                                <th>Thời gian bắt đầu</th>
+                                                <th>Thời gian dự kiến kết thúc (không tính T7, CN)</th>
+                                                <th>{translate('project.schedule.estimatedTime')} ({translate(`project.unit.${projectDetail?.unitTime}`)})</th>
+                                                <th>Thời gian thoả hiệp ({translate(`project.unit.${projectDetail?.unitTime}`)})</th>
+                                                <th>{translate('project.schedule.estimatedCostNormal')} (VND)</th>
+                                                <th>{translate('project.schedule.estimatedCostMaximum')} (VND)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {(currentTasksData && currentTasksData.length > 0) && processedData && processedData.length > 0 &&
+                                                processedData.map((taskItem, index) => (
+                                                    <tr key={index}>
+                                                        <td style={renderRowTableStyle(pert.slack[taskItem?.code] === 0)}>{taskItem?.code}</td>
+                                                        <td style={renderRowTableStyle(pert.slack[taskItem?.code] === 0)}>{taskItem?.preceedingTasks.join(', ')}</td>
+                                                        <td style={renderRowTableStyle(pert.slack[taskItem?.code] === 0)}>{taskItem?.currentResponsibleEmployees ?
+                                                            taskItem?.currentResponsibleEmployees
+                                                                .map(userId => convertUserIdToUserName(listUsers, userId)).join(', ') : null}
+                                                        </td>
+                                                        <td style={renderRowTableStyle(pert.slack[taskItem?.code] === 0)}>{taskItem?.currentAccountableEmployees ?
+                                                            taskItem?.currentAccountableEmployees
+                                                                .map(userId => convertUserIdToUserName(listUsers, userId)).join(', ') : null}
+                                                        </td>
+                                                        <td style={renderRowTableStyle(pert.slack[taskItem?.code] === 0)}>{moment(taskItem?.startDate).format('HH:mm DD/MM/YYYY')}</td>
+                                                        <td style={renderRowTableStyle(pert.slack[taskItem?.code] === 0)}>{moment(taskItem?.endDate).format('HH:mm DD/MM/YYYY')}</td>
+                                                        <td style={renderRowTableStyle(pert.slack[taskItem?.code] === 0)}>{taskItem?.estimateNormalTime}</td>
+                                                        <td style={renderRowTableStyle(pert.slack[taskItem?.code] === 0)}>{taskItem?.estimateOptimisticTime}</td>
+                                                        <td style={renderRowTableStyle(pert.slack[taskItem?.code] === 0)}>{taskItem?.estimateNormalCost}</td>
+                                                        <td style={renderRowTableStyle(pert.slack[taskItem?.code] === 0)}>{taskItem?.estimateMaxCost}</td>
+                                                    </tr>
+                                                ))
+                                            }
+                                        </tbody>
+                                    </table>
+                                </Collapse>
+                            </div>
+                        </LazyLoadComponent>
+                    </div>
+                    {/** Danh sách công việc dự án */}
+                    <div className="tab-pane" id="calc-cpm-graph">
+                        <LazyLoadComponent
+                            key="CalcCPMGraph"
+                        >
+                            <Canvas
+                                nodes={processNodes()}
+                                edges={processEdges()}
+                                width={'100%'}
+                                height={500}
+                                direction="RIGHT"
+                                center={true}
+                                fit={true}
+                                node={
+                                    <Node>
+                                        {event => (
+                                            <foreignObject
+                                                style={{ backgroundColor: event.node.data.slack === 0 ? 'green' : 'white' }}
+                                                height={event.height} width={event.width}
+                                                x={0}
+                                                y={0}
+                                            >
+                                                <table className="table table-bordered" style={{ height: '100%' }}>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td><strong style={{ color: event.node.data.slack === 0 ? 'white' : 'black' }}>{event.node.data.code}</strong></td>
+                                                            <td style={{ color: event.node.data.slack === 0 ? 'white' : 'black' }}>ES: {numberWithCommas(event.node.data.es)}</td>
+                                                            <td style={{ color: event.node.data.slack === 0 ? 'white' : 'black' }}>LS: {numberWithCommas(event.node.data.ls)}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style={{ color: event.node.data.slack === 0 ? 'white' : 'black' }}>Slack: {numberWithCommas(event.node.data.slack)}</td>
+                                                            <td style={{ color: event.node.data.slack === 0 ? 'white' : 'black' }}>EF: {numberWithCommas(event.node.data.ef)}</td>
+                                                            <td style={{ color: event.node.data.slack === 0 ? 'white' : 'black' }}>LF: {numberWithCommas(event.node.data.lf)}</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </foreignObject>
+                                        )}
+                                    </Node>
+                                }
+                                onLayoutChange={layout => null}
+                            />
+                        </LazyLoadComponent>
                     </div>
 
-                    {/* Bảng dữ liệu CPM */}
-                    <fieldset className="scheduler-border">
-                        <legend className="scheduler-border">Bảng dữ liệu CPM</legend>
-
-                        <div style={{ marginLeft: 10 }}>
-                            <h5>Ngày bắt đầu dự án: <strong>{moment(projectDetail?.startDate).format('HH:mm DD/MM/YYYY')}</strong></h5>
-                            <h5>Ngày kết thúc dự án dự kiến: <strong>{moment(projectDetail?.endDate).format('HH:mm DD/MM/YYYY')}</strong></h5>
-                            <h5>Ngày kết thúc dự án tính theo CPM:
-                                <strong style={{ color: moment(findLatestDate(processedData)).isAfter(moment(projectDetail?.endDate)) ? 'red' : 'green' }}>
-                                    {' '}
-                                    {moment(findLatestDate(processedData)).format('HH:mm DD/MM/YYYY')}
-                                </strong>
-                            </h5>
-                        </div>
-
-                        {/* Button toggle bảng dữ liệu */}
-                        <div className="dropdown" style={{ marginTop: 15, marginRight: 10 }}>
-                            <button
-                                onClick={() => setIsTableShown(!isTableShown)}
-                                type="button" className="btn btn-link dropdown-toggle" data-toggle="dropdown"
-                                aria-controls="cpm-task-table"
-                                aria-expanded={isTableShown}>
-                                {translate(isTableShown ? 'project.schedule.hideTableCPM' : 'project.schedule.showTableCPM')}
-                            </button>
-                            <Collapse in={isTableShown}>
-                                <table id="cpm-task-table" className="table table-bordered table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th>{translate('project.schedule.taskCode')}</th>
-                                            <th>Công việc tiền nhiệm</th>
-                                            <th>Người thực hiện</th>
-                                            <th>Người phê duyệt</th>
-                                            <th>Thời gian bắt đầu</th>
-                                            <th>Thời gian dự kiến kết thúc (không tính T7, CN)</th>
-                                            <th>{translate('project.schedule.estimatedTime')} ({translate(`project.unit.${projectDetail?.unitTime}`)})</th>
-                                            <th>Thời gian thoả hiệp ({translate(`project.unit.${projectDetail?.unitTime}`)})</th>
-                                            <th>{translate('project.schedule.estimatedCostNormal')} (VND)</th>
-                                            <th>{translate('project.schedule.estimatedCostMaximum')} (VND)</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {(currentTasksData && currentTasksData.length > 0) && processedData && processedData.length > 0 &&
-                                            processedData.map((taskItem, index) => (
-                                                <tr key={index}>
-                                                    <td style={renderRowTableStyle(pert.slack[taskItem?.code] === 0)}>{taskItem?.code}</td>
-                                                    <td style={renderRowTableStyle(pert.slack[taskItem?.code] === 0)}>{taskItem?.preceedingTasks.join(', ')}</td>
-                                                    <td style={renderRowTableStyle(pert.slack[taskItem?.code] === 0)}>{taskItem?.currentResponsibleEmployees ?
-                                                        taskItem?.currentResponsibleEmployees
-                                                            .map(userId => convertUserIdToUserName(listUsers, userId)).join(', ') : null}
-                                                    </td>
-                                                    <td style={renderRowTableStyle(pert.slack[taskItem?.code] === 0)}>{taskItem?.currentAccountableEmployees ?
-                                                        taskItem?.currentAccountableEmployees
-                                                            .map(userId => convertUserIdToUserName(listUsers, userId)).join(', ') : null}
-                                                    </td>
-                                                    <td style={renderRowTableStyle(pert.slack[taskItem?.code] === 0)}>{moment(taskItem?.startDate).format('HH:mm DD/MM/YYYY')}</td>
-                                                    <td style={renderRowTableStyle(pert.slack[taskItem?.code] === 0)}>{moment(taskItem?.endDate).format('HH:mm DD/MM/YYYY')}</td>
-                                                    <td style={renderRowTableStyle(pert.slack[taskItem?.code] === 0)}>{taskItem?.estimateNormalTime}</td>
-                                                    <td style={renderRowTableStyle(pert.slack[taskItem?.code] === 0)}>{taskItem?.estimateOptimisticTime}</td>
-                                                    <td style={renderRowTableStyle(pert.slack[taskItem?.code] === 0)}>{taskItem?.estimateNormalCost}</td>
-                                                    <td style={renderRowTableStyle(pert.slack[taskItem?.code] === 0)}>{taskItem?.estimateMaxCost}</td>
-                                                </tr>
-                                            ))
-                                        }
-                                    </tbody>
-                                </table>
-                            </Collapse>
-                        </div>
-                    </fieldset>
-
-                    {/* Đồ thị CPM */}
-                    <fieldset className="scheduler-border">
-                        <legend className="scheduler-border">Đồ thị CPM</legend>
-                        <Canvas
-                            nodes={processNodes()}
-                            edges={processEdges()}
-                            width={'100%'}
-                            height={500}
-                            direction="RIGHT"
-                            center={true}
-                            fit={true}
-                            node={
-                                <Node>
-                                    {event => (
-                                        <foreignObject
-                                            style={{ backgroundColor: event.node.data.slack === 0 ? 'green' : 'white' }}
-                                            height={event.height} width={event.width}
-                                            x={0}
-                                            y={0}
-                                        >
-                                            <table className="table table-bordered" style={{ height: '100%' }}>
-                                                <tbody>
-                                                    <tr>
-                                                        <td><strong style={{ color: event.node.data.slack === 0 ? 'white' : 'black' }}>{event.node.data.code}</strong></td>
-                                                        <td style={{ color: event.node.data.slack === 0 ? 'white' : 'black' }}>ES: {numberWithCommas(event.node.data.es)}</td>
-                                                        <td style={{ color: event.node.data.slack === 0 ? 'white' : 'black' }}>LS: {numberWithCommas(event.node.data.ls)}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td style={{ color: event.node.data.slack === 0 ? 'white' : 'black' }}>Slack: {numberWithCommas(event.node.data.slack)}</td>
-                                                        <td style={{ color: event.node.data.slack === 0 ? 'white' : 'black' }}>EF: {numberWithCommas(event.node.data.ef)}</td>
-                                                        <td style={{ color: event.node.data.slack === 0 ? 'white' : 'black' }}>LF: {numberWithCommas(event.node.data.lf)}</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </foreignObject>
-                                    )}
-                                </Node>
-                            }
-                            onLayoutChange={layout => null}
-                        />
-                    </fieldset>
                 </div>
-            </DialogModal>
+            </div>
         </React.Fragment>
     )
 }

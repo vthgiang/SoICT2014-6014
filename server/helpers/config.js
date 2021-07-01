@@ -589,6 +589,15 @@ const LINKS = [{
     components: getComponentsInLink('/hr-training-plan')
 },
 {
+    url: '/hr-training-plan-employee',
+    description: 'Kế hoạch đào tạo',
+    category: LINK_CATEGORY.HUMAN_RESOURCE.name,
+    roles: [
+        ROOT_ROLES.ADMIN.name,
+    ],
+    components: getComponentsInLink('/hr-training-plan-employee')
+},
+{
     url: '/hr-list-education',
     description: 'Chương trình đào tạo bắt buộc',
     category: LINK_CATEGORY.HUMAN_RESOURCE.name,

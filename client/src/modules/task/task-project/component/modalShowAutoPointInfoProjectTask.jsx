@@ -5,6 +5,7 @@ import { DialogModal } from '../../../../common-components';
 import { AutomaticTaskPointCalculator } from '../../task-perform/component/automaticTaskPointCalculator';
 import moment from 'moment'
 import { checkIsNullUndefined, numberWithCommas } from '../../task-management/component/functionHelpers';
+import { MILISECS_TO_DAYS } from '../../../project/projects/components/functionHelper';
 
 const ModalShowAutoPointInfoProjectTask = (props) => {
     const { task, translate, progress, projectDetail, currentTaskActualCost } = props;
@@ -49,10 +50,14 @@ const ModalShowAutoPointInfoProjectTask = (props) => {
                     <p><strong>taskTimePoint: </strong>Điểm quy đổi SPI * timeWeight = (progress / 100) / (usedDuration / totalDuration) * timeWeight</p>
                     <ul style={{ lineHeight: 2.3 }}>
                         <li>progress - Tiến độ của công việc (1 - 100): <strong>{progress}</strong></li>
-                        <li>usedDuration - Tổng thời gian từ khi bắt đầu task đến bây giờ (milliseconds): <strong>{numberWithCommas(usedDuration)}</strong></li>
-                        <li>totalDuration - Tổng thời gian từ khi bắt đầu task đến dự kiến kết thúc (milliseconds): <strong>{numberWithCommas(totalDuration)}</strong></li>
+                        <li>usedDuration - Tổng thời gian từ khi bắt đầu task đến bây giờ (milliseconds):
+                            <strong>{numberWithCommas(usedDuration)}</strong> = <strong>{numberWithCommas(usedDuration / MILISECS_TO_DAYS)} (ngày)</strong>
+                        </li>
+                        <li>totalDuration - Tổng thời gian từ khi bắt đầu task đến dự kiến kết thúc (milliseconds):
+                            <strong>{numberWithCommas(totalDuration)}</strong> = <strong>{numberWithCommas(totalDuration / MILISECS_TO_DAYS)} (ngày)</strong>
+                        </li>
                         <li>SPI - Chỉ số hiệu năng tiến độ: (progress / 100) / (usedDuration / totalDuration) = <strong>{schedulePerformanceIndex}</strong></li>
-                        <li>Điểm quy đổi SPI <span style={{ color: 'red' }}>*(Bảng quy đổi ở mục cuối cùng)</span>: <strong>{AutomaticTaskPointCalculator.convertIndexPointToNormalPoint(schedulePerformanceIndex)}</strong></li>
+                        <li>Điểm quy đổi SPI <span style={{ color: 'red' }}>*(Bảng quy đổi ở mục "Công thức quy đổi")</span>: <strong>{AutomaticTaskPointCalculator.convertIndexPointToNormalPoint(schedulePerformanceIndex)}</strong></li>
                         <li>timeWeight - trọng số thời gian: <strong>{numberWithCommas(task?.taskWeight?.timeWeight) || '0.33'}</strong></li>
                         <li>taskTimePoint: <strong>{numberWithCommas(taskTimePoint)}</strong></li>
                     </ul>
@@ -69,7 +74,7 @@ const ModalShowAutoPointInfoProjectTask = (props) => {
                         <li>estimateNormalCost - Tổng chi phí ước lượng cho task (VND): <strong>{numberWithCommas(estimateNormalCost)}</strong></li>
                         <li>actualCost - Tổng chi phí thực cho task (VND): <strong>{numberWithCommas(actualCost)}</strong></li>
                         <li>CPI - Chỉ số hiệu năng chi phí: (progress / 100) * estimateNormalCost / actualCost = <strong>{costPerformanceIndex}</strong></li>
-                        <li>Điểm quy đổi CPI <span style={{ color: 'red' }}>*(Bảng quy đổi ở mục cuối cùng)</span>: <strong>{AutomaticTaskPointCalculator.convertIndexPointToNormalPoint(costPerformanceIndex)}</strong></li>
+                        <li>Điểm quy đổi CPI <span style={{ color: 'red' }}>*(Bảng quy đổi ở mục "Công thức quy đổi")</span>: <strong>{AutomaticTaskPointCalculator.convertIndexPointToNormalPoint(costPerformanceIndex)}</strong></li>
                         <li>costWeight - trọng số chi phí: <strong>{numberWithCommas(task?.taskWeight?.costWeight) || '0.33'}</strong></li>
                         <li>taskCostPoint: <strong>{numberWithCommas(taskCostPoint)}</strong></li>
                     </ul>

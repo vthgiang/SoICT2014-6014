@@ -5,7 +5,7 @@ import { DialogModal } from '../../../../../common-components';
 import { translate } from 'react-redux-multilingual/lib/utils';
 
 import LogLots from './logLots';
-import BillDetailForm from '../../bill-management/components/genaral/billDetailForm';
+import BillDetailForm from '../../bill-management/components-class/genaral/billDetailForm';
 import { BillActions } from '../../bill-management/redux/actions';
 
 class LotDetailForm extends Component {

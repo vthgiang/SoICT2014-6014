@@ -143,7 +143,7 @@ function QuantityInventoryByTime(props) {
                             </div>
                         </div>
                         <div ref={refBarChart}></div>
-                        <div style={{ marginLeft: '70%' }}>
+                        {/* <div style={{ marginLeft: '70%' }}>
                             <ul className="pagination">
                                 <li className="page-item"><a className="page-link" href="#">Trước</a></li>
                                 <li className="page-item active"><a className="page-link" href="#">1</a></li>
@@ -153,7 +153,7 @@ function QuantityInventoryByTime(props) {
                                 <li className="page-item"><a className="page-link" href="#">5</a></li>
                                 <li className="page-item"><a className="page-link" href="#">Sau</a></li>
                             </ul>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </React.Fragment>

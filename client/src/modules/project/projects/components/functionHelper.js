@@ -11,8 +11,8 @@ export const MILISECS_TO_HOURS = 3600000;
 export const checkIfAbleToCRUDProject = ({ project, user, currentProjectId, isInsideProject = false }) => {
     const currentRole = getStorage("currentRole");
     const userId = getStorage("userId");
-    console.log('currentProjectId', currentProjectId)
-    console.log('project?.data?.list', project?.data?.list, ' project?.data?.listbyuser',  project?.data?.listbyuser)
+    // console.log('currentProjectId', currentProjectId)
+    // console.log('project?.data?.list', project?.data?.list, ' project?.data?.listbyuser',  project?.data?.listbyuser)
     const checkIfCurrentRoleIsUnitManager = user?.usersInUnitsOfCompany?.filter(userItem => userItem?.managers?.[currentRole])?.length > 0;
     const projectDetail = project?.data?.list?.length > 0 ? project?.data?.list?.filter(item => item._id === currentProjectId)?.[0] : project?.data?.listbyuser?.filter(item => item._id === currentProjectId)?.[0]
     const checkIfCurrentIdIsProjectManagerOrCreator =
@@ -385,13 +385,13 @@ export const processDataTasksStartEnd = (projectDetail, currentTasksData, curren
 }
 
 // render item ở phần thông tin
-export const renderItemLabelContent = (label, content, customTextStyle = {}, customContainerStyle = {}) => {
+export const renderItemLabelContent = (label, content, containerWidth = 6, labelWidth = 4, valueWidth = 8, customTextStyle = {}, customContainerStyle = {}) => {
     return (
-        <div className="col-md-6">
+        <div className={`col-md-${containerWidth}`}>
             <div className="form-horizontal">
                 <div style={{ ...customContainerStyle }} className="form-group">
-                    <strong className="col-sm-4">{label}</strong>
-                    <div className="col-sm-8">
+                    <strong className={`col-md-${labelWidth}`}>{label}</strong>
+                    <div className={`col-md-${valueWidth}`}>
                         <span style={{ ...customTextStyle }}>{content}</span>
                     </div>
                 </div>
@@ -548,7 +548,7 @@ export const getEstimateMemberCostOfTask = (task, projectDetail, userId) => {
         return String(actorSalaryItem.userId) === String(userId)
     });
     if (currentEmployee) {
-        estimateNormalMemberCost = Number(currentEmployee.salary) * Number(currentEmployee.weight / 100) * task.estimateNormalTime
+        estimateNormalMemberCost = Number(currentEmployee.salary) / getAmountOfWeekDaysInMonth(moment()) * Number(currentEmployee.weight / 100) * task.estimateNormalTime
             / (projectDetail.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS);
     }
     return estimateNormalMemberCost;
@@ -666,4 +666,11 @@ export const renderProgressBar = (progress = 0, task) => {
             </div>
         </div>
     )
+}
+
+export const renderCompare2Item = (valueToBeCompared, valueToColor, funcCompareToGood = undefined, goodResultColor = 'green', badResultColor = 'red') => {
+    if (funcCompareToGood !== undefined) {
+        return funcCompareToGood ? goodResultColor : badResultColor;
+    }
+    return valueToColor <= valueToBeCompared ? goodResultColor : badResultColor;
 }

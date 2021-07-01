@@ -74,6 +74,7 @@ const AgePyramidChart = (props) => {
         data.data1.shift(); data.data2.shift();
 
         removePreviousChart();
+
         let chart = c3.generate({
             bindto: _chart.current,
             data: {
@@ -144,9 +145,7 @@ const AgePyramidChart = (props) => {
     }
 
     useEffect(() => {
-        let listAllEmployees = (!organizationalUnits || organizationalUnits.length === 0 || organizationalUnits.length === department.list.length) 
-            ? employeesManager.listAllEmployees 
-            : employeesManager.listEmployeesOfOrganizationalUnits;
+        let listAllEmployees = employeesManager.listEmployeesOfOrganizationalUnits;
         let maleEmployees = listAllEmployees.filter(x => x.gender === 'male');
         let femaleEmployees = listAllEmployees.filter(x => x.gender === 'female');
 
@@ -187,8 +186,7 @@ const AgePyramidChart = (props) => {
         organizationalUnitsName = organizationalUnitsName.map(x => x.name);
     }
 
-    let listAllEmployees = (!organizationalUnits || organizationalUnits.length === 0 || organizationalUnits.length === department.list.length) ?
-        employeesManager.listAllEmployees : employeesManager.listEmployeesOfOrganizationalUnits;
+    let listAllEmployees = employeesManager.listEmployeesOfOrganizationalUnits;
     let maleEmployees = listAllEmployees.filter(x => x.gender === 'male');
     let femaleEmployees = listAllEmployees.filter(x => x.gender === 'female');
 

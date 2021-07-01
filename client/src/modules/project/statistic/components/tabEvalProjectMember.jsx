@@ -10,7 +10,7 @@ import { AutomaticTaskPointCalculator } from '../../../task/task-perform/compone
 import { formatTaskStatus, renderStatusColor } from '../../projects/components/functionHelper';
 
 const TabEvalProjectMember = (props) => {
-    const { currentTasks, translate, listTasksEval, currentMonth, handleChangeMonth, projectDetail } = props;
+    const { currentTasks, translate, listTasksEval, currentMonth, handleChangeMonth, projectDetail, isLoading } = props;
     // console.log('currentTasks', currentTasks)
     // console.log('listTasksEval', listTasksEval)
     const handleMembersData = (listTaskData) => {
@@ -92,22 +92,23 @@ const TabEvalProjectMember = (props) => {
 
     return (
         <React.Fragment>
-            <div>
-                <div className="box">
-                    <div className="box-body qlcv">
-                        <h4><strong>Điểm số thành viên dự án trong tháng</strong></h4>
-                        {/* Chọn tháng để lọc đánh giâ */}
-                        <div className="form-group">
-                            <label style={{ marginRight: 20 }}>Chọn tháng</label>
-                            <DatePicker
-                                id="start-date-eval-project-members-statistical"
-                                dateFormat="month-year"
-                                value={moment(currentMonth).format('MM-YYYY')}
-                                onChange={handleChangeMonth}
-                                disabled={false}
-                            />
-                        </div>
-                        <table id="eval-project-members-statistical-table" className="table table-bordered table-hover">
+            <div className="box-body qlcv">
+                <h4><strong>Điểm số thành viên dự án trong tháng</strong></h4>
+                {/* Chọn tháng để lọc đánh giâ */}
+                <div className="form-group">
+                    <label style={{ marginRight: 20 }}>Chọn tháng</label>
+                    <DatePicker
+                        id="start-date-eval-project-members-statistical"
+                        dateFormat="month-year"
+                        value={moment(currentMonth).format('MM-YYYY')}
+                        onChange={handleChangeMonth}
+                        disabled={false}
+                    />
+                </div>
+                {
+                    isLoading
+                        ? <div>Đang tải dữ liệu</div>
+                        : <table id="eval-project-members-statistical-table" className="table table-bordered table-hover">
                             <thead>
                                 <tr>
                                     <th>Họ và tên</th>
@@ -190,8 +191,7 @@ const TabEvalProjectMember = (props) => {
                                 }
                             </tbody>
                         </table>
-                    </div>
-                </div>
+                }
             </div>
         </React.Fragment>
     );

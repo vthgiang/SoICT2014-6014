@@ -54,7 +54,7 @@ exports.get = async (portal, query) => {
 
         project = await Project(
             connect(DB_CONNECTION, portal)
-        ).find(options).skip((currentPage - 1) * currentPerPage).limit(currentPerPage)
+        ).find(options).sort({createdAt: -1}).skip((currentPage - 1) * currentPerPage).limit(currentPerPage)
             .populate({ path: "responsibleEmployees", select: "_id name email" })
             .populate({ path: "projectManager", select: "_id name email" })
             .populate({ path: "creator", select: "_id name email" });
@@ -65,7 +65,7 @@ exports.get = async (portal, query) => {
         }
     }
     else {
-        project = await Project(connect(DB_CONNECTION, portal)).find(options)
+        project = await Project(connect(DB_CONNECTION, portal)).find(options).sort({createdAt: -1})
             .populate({ path: "responsibleEmployees", select: "_id name email" })
             .populate({ path: "projectManager", select: "_id name email" })
             .populate({ path: "creator", select: "_id name email" })
@@ -375,7 +375,7 @@ exports.getListProjectChangeRequests = async (portal, query) => {
 
         projectChangeRequestsList = await ProjectChangeRequest(connect(DB_CONNECTION, portal)).find({
             taskProject: projectId,
-        }).skip((currentPage - 1) * currentPerPage).limit(currentPerPage)
+        }).sort({createdAt: -1}).skip((currentPage - 1) * currentPerPage).limit(currentPerPage)
         .populate({ path: "creator", select: "_id name email" });
 
         return {
@@ -385,7 +385,7 @@ exports.getListProjectChangeRequests = async (portal, query) => {
     }
     projectChangeRequestsList = await ProjectChangeRequest(connect(DB_CONNECTION, portal)).find({
         taskProject: projectId,
-    }).populate({ path: "creator", select: "_id name email" });
+    }).sort({createdAt: -1}).populate({ path: "creator", select: "_id name email" });
     console.log('Lấy danh sách CR', projectChangeRequestsList.length)
     return projectChangeRequestsList;
 }
@@ -459,7 +459,7 @@ exports.updateStatusProjectChangeRequest = async (portal, changeRequestId, reque
     // query lại danh sách projectChangeRequest
     const projectChangeRequestsList = await ProjectChangeRequest(connect(DB_CONNECTION, portal)).find({
         taskProject: updateCRStatusResult.taskProject,
-    }).populate({ path: "creator", select: "_id name email" });
+    }).sort({createdAt: -1}).populate({ path: "creator", select: "_id name email" });
     return projectChangeRequestsList;
 }
 

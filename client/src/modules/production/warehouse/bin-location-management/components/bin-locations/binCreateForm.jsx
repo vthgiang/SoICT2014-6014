@@ -425,7 +425,7 @@ function BinCreateForm(props) {
                                     multiple={false}
                                 />
                             </div>
-                            {/* <div className={`form-group ${!errorDepartment ? "" : "has-error"}`}>
+                            <div className={`form-group ${!errorDepartment ? "" : "has-error"}`}>
                                 <label>{translate('manage_warehouse.bin_location_management.department')}<span className="attention"> * </span></label>
                                 <SelectBox
                                     id={`select-department-bin-create`}
@@ -433,11 +433,11 @@ function BinCreateForm(props) {
                                     style={{ width: "100%" }}
                                     value={binDepartment}
                                     items={dataDepartment}
-                                    onChange={this.handleDepartmentChange}    
+                                    onChange={handleDepartmentChange}    
                                     multiple={false}
                                 />
                                 <ErrorLabel content = { errorDepartment }/>
-                            </div> */}
+                            </div>
                             <div className={`form-group`}>
                                 <label>{translate('manage_warehouse.bin_location_management.unit')}<span className="attention"> * </span></label>
                                 <input type="text" className="form-control" onChange={handleUnitChange} />
@@ -457,7 +457,7 @@ function BinCreateForm(props) {
                                 <label>{translate('manage_warehouse.bin_location_management.contained')}</label>
                                 <input type="number" className="form-control" disabled value= {binContained} onChange={handleContainedTotalChange} />
                             </div>
-                            {/* <div className={`form-group`}>
+                            <div className={`form-group`}>
                                 <label>{translate('manage_warehouse.bin_location_management.management_location')}<span className="attention"> * </span></label>
                                 <SelectBox
                                     id={`select-management-location-stock-create`}
@@ -465,10 +465,10 @@ function BinCreateForm(props) {
                                     style={{ width: "100%" }}
                                     value={binUsers}
                                     items={listUsers.map(x => { return { value: x.id, text: x.name } })}
-                                    onChange={this.handleManagementLocationtChange}    
+                                    onChange={handleManagementLocationtChange}    
                                     multiple={true}
                                 />
-                            </div> */}
+                            </div>
                             <div className={`form-group`}>
                                 <label>{translate('manage_warehouse.bin_location_management.parent')}</label>
                                 <TreeSelect data={list} value={[binParentCreate]} handleChange={handleParent} mode="radioSelect" />

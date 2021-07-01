@@ -399,7 +399,7 @@ function EmployeeKpiEvaluateModal(props) {
                                         ]}
                                     >
                                         <button className="btn btn-success" onClick={() => handleRefresh()}>
-                                        <i class="fa fa-refresh" aria-hidden="true">  {translate('kpi.evaluation.employee_evaluation.refresh')}</i>
+                                        <i className="material-icons" style={{ fontSize: "22px", verticalAlign: "top", color: '#06c', cursor: 'pointer', marginLeft: '10px' }}>{translate('kpi.evaluation.employee_evaluation.refresh')}</i>
                                         </button>
                                     </ToolTip>
                                 }

@@ -26,7 +26,7 @@ exports.getAllCourses = async (portal, company, organizationalUnits, positions) 
             },
         }
     }
-    if (organizationalUnits && positions.length !== 0) {
+    if (positions) {
         keySearch = {
             ...keySearch,
             applyForPositions: {
@@ -34,9 +34,8 @@ exports.getAllCourses = async (portal, company, organizationalUnits, positions) 
             }
         }
     }
-    let listEducations = await EducationProgram(connect(DB_CONNECTION, portal)).find(keySearch, {
-        _id: 1
-    })
+    let listEducations = await EducationProgram(connect(DB_CONNECTION, portal)).find(keySearch)
+
     listEducations = listEducations.map(x => {
         return x._id
     });
@@ -158,6 +157,7 @@ exports.searchCourses = async (portal, params, company) => {
             educationProgram: course.educationProgram[0]
         }
     })
+    console.log(listCourses)
     return {
         totalList,
         listCourses
