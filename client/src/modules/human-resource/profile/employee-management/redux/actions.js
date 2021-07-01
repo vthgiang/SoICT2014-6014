@@ -119,13 +119,14 @@ function deleteEmployee(id, email) {
 
 /**
  * Import thông tin nhân viên
- * @id : id thông tin nhân viên cần xoá
+ * @data : dữ liệu thông tin nhân viên cần import
  */
 function importEmployees(data) {
     return dispatch => {
         dispatch({
             type: EmployeeConstants.IMPORT_EMPLOYEE_REQUEST
         });
+
 
         EmployeeService.importEmployees(data)
             .then(res => {

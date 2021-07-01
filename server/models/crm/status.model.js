@@ -29,6 +29,10 @@ const StatusSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'User'
     },
+    crmUnit: {// đơn vị CSKH
+        type: Schema.Types.ObjectId,
+        ref: "CrmUnit",
+    },
 }, {
     timestamps: true,
 });

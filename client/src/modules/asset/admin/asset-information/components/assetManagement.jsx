@@ -944,6 +944,7 @@ function AssetManagement(props) {
                 <table id={tableId} className="table table-striped table-bordered table-hover">
                     <thead>
                         <tr>
+                            <th style={{ width: "5%" }}>STT</th>
                             <th style={{ width: "8%" }}>{translate('asset.general_information.asset_code')}</th>
                             <th style={{ width: "10%" }}>{translate('asset.general_information.asset_name')}</th>
                             <th style={{ width: "10%" }}>{translate('asset.general_information.asset_group')}</th>
@@ -958,6 +959,7 @@ function AssetManagement(props) {
                                 <DataTableSetting
                                     tableId={tableId}
                                     columnArr={[
+                                        'STT',
                                         translate('asset.general_information.asset_code'),
                                         translate('asset.general_information.asset_name'),
                                         translate('asset.general_information.asset_group'),
@@ -978,6 +980,7 @@ function AssetManagement(props) {
                         {(lists && lists.length !== 0) ?
                             lists.map((x, index) => (
                                 <tr key={index}>
+                                    <td style={{ textAlign: 'center' }}>{index + 1}</td>
                                     <td>{x.code}</td>
                                     <td>{x.assetName}</td>
                                     <td>{convertGroupAsset(x.group)}</td>

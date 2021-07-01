@@ -36,7 +36,6 @@ function CustomerCareTypeAddForm(props) {
                 modalID="modal-crm-customer-care-type-create" 
                 isLoading={false}
                 formID="form-crm-customer-care-type-create"
-                title={translate('crm.status.add')}
                 func={save}
                 size={50}
             // disableSubmit={!this.isFormValidated()}

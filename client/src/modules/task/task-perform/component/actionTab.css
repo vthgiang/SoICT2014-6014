@@ -157,7 +157,7 @@
     width: calc(100% - 130px);
     float: right;
 
-    padding-top: 25px;
+    /* padding-top: 25px; */
 }
 .files-list-item-content-item {
     overflow: hidden;
@@ -180,7 +180,7 @@
 .files-list-item-preview-image {
     width: 85%;
     display: inline-block;
-    border: 0.5px solid #000;
+    border: 0.1px solid #000;
     border-radius: 4px;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     padding: 5px;

@@ -606,6 +606,12 @@ exports.links = [
         url: '/system/roles-default-management',
         apis: ['@all']
     }, {
+        url: '/system/apis-default-management',
+        apis: ['@all']
+    }, {
+        url: '/system/privilege-api-management',
+        apis: ['@all']
+    }, {
         url: '/system/links-default-management',
         apis: ['@all']
     }, {
@@ -700,6 +706,9 @@ exports.links = [
         apis: ['@all']
     }, {
         url: '/hr-training-plan',
+        apis: ['@all']
+    }, {
+        url: '/hr-training-plan-employee',
         apis: ['@all']
     }, {
         url: '/hr-list-education',
@@ -896,6 +905,10 @@ exports.links = [
         apis: ['@all']
     }, {
         url: '/crm/generalConfiguration',
+        apis: ['@all']
+    },
+    {
+        url: '/crm/crmUnitConfiguration',
         apis: ['@all']
     }, {
         url: '/manage-plans',

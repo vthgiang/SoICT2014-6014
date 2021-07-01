@@ -38,6 +38,8 @@ module.exports = {
     SystemComponent: require('./system-admin/systemComponent.model'),
     SystemLink: require('./system-admin/systemLink.model'),
     RootRole: require('./system-admin/rootRole.model'),
+    SystemApi: require('./system-admin/systemApi.model'),
+    PrivilegeApi: require('./system-admin/privilegeApi.model'),
 
     Task: require('./task/task.model'),
     TaskComment: require('./task/taskComment.model'),
@@ -83,7 +85,9 @@ module.exports = {
     ProductCategory: require('./crm/productCategory.model'),
     ProductDiscount: require('./crm/productDiscount.model'),
     CrmTask: require('./crm/crmTask.model'),
-
+    CrmTaskTemplate:require('./crm/crmTaskTemplate.model'),
+    CrmUnit:require('./crm/crmUnit.model'),
+    CrmUnitKPI:require('./crm/crmUnitKPI.model'),
     //order
     BankAccount: require('./production/order/bankAccount.model'),
     Discount: require('./production/order/discount.model'),

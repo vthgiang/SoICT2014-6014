@@ -15,10 +15,38 @@ function QuantityInventoryDashboard(props) {
         barChart: true,
         type: 'product',
         currentRole: localStorage.getItem("currentRole"),
-        category: []
+        category: [],
+        dataChart: [],
+        name: []
     })
+    const { translate, lots, stocks, categories } = props;
+    const { inventoryDashboard } = lots;
+    const { listStocks } = stocks;
+    const { categoryToTree } = categories;
+    const { type, category } = state;
 
-    const refBarChart = React.createRef();
+    const refBarChart = React.createRef()
+    if (inventoryDashboard.length > 0 && state.dataChart.length == 0) {
+        let name = [];
+        let inventory = ['Số lượng tồn kho'];
+        let goodReceipt = ['Số lượng sắp nhập'];
+        let goodIssue = ['Số lượng sắp xuất'];
+        for (let i = 0; i < inventoryDashboard.length; i++) {
+            name = [...name, inventoryDashboard[i].name];
+            inventory = [...inventory, inventoryDashboard[i].inventory];
+            goodReceipt = [...goodReceipt, inventoryDashboard[i].goodReceipt];
+            goodIssue = [...goodIssue, inventoryDashboard[i].goodIssue];
+        }
+        setState({
+            ...state,
+            name,
+            dataChart: [inventory, goodReceipt, goodIssue]
+        })
+    }
+
+    useEffect(() => {
+        barChart(state.name, state.dataChart);
+    }, [state.name, state.dataChart])
 
     useEffect(() => {
         const { type } = state;
@@ -76,15 +104,11 @@ function QuantityInventoryDashboard(props) {
     };
 
     // Khởi tạo BarChart bằng C3
-    const barChart = (name, inventory, goodReceipt, goodIssue) => {
+    const barChart = (name, dataChart) => {
         let chart = c3.generate({
             bindto: refBarChart.current,
             data: {
-                columns: [
-                    inventory,
-                    goodReceipt,
-                    goodIssue
-                ],
+                columns: dataChart,
                 type: 'bar',
                 labels: true,
             },
@@ -119,26 +143,7 @@ function QuantityInventoryDashboard(props) {
         });
     }
 
-    const { translate, lots, stocks, categories } = props;
-    const { inventoryDashboard } = lots;
-    const { listStocks } = stocks;
-    const { categoryToTree } = categories;
     const dataCategory = getAllCategory();
-    const { type, category } = state;
-
-    let name = [];
-    let inventory = ['Số lượng tồn kho'];
-    let goodReceipt = ['Số lượng sắp nhập'];
-    let goodIssue = ['Số lượng sắp xuất'];
-    if (inventoryDashboard.length > 0) {
-        for (let i = 0; i < inventoryDashboard.length; i++) {
-            name = [...name, inventoryDashboard[i].name];
-            inventory = [...inventory, inventoryDashboard[i].inventory];
-            goodReceipt = [...goodReceipt, inventoryDashboard[i].goodReceipt];
-            goodIssue = [...goodIssue, inventoryDashboard[i].goodIssue];
-        }
-    }
-    barChart(name, inventory, goodReceipt, goodIssue);
     return (
         <React.Fragment>
             <div className="box">
@@ -199,6 +204,7 @@ function QuantityInventoryDashboard(props) {
         </React.Fragment>
     )
 }
+
 
 const mapStateToProps = state => state;
 

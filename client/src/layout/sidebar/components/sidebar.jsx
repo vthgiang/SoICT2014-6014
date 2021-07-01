@@ -118,6 +118,16 @@ class SideBar extends Component {
                                             path: "/system/links-default-management",
                                         },
                                         {
+                                            name: "menu.manage_api",
+                                            icon: "fa fa-link",
+                                            path: "/system/apis-default-management",
+                                        },
+                                        {
+                                            name: "menu.privilege_api",
+                                            icon: "fa fa-link",
+                                            path: "/system/privilege-api-management",
+                                        },
+                                        {
                                             name: "menu.manage_component",
                                             icon: "fa fa-object-group",
                                             path: "/system/components-default-management",
@@ -487,6 +497,11 @@ class SideBar extends Component {
                                             icon: "fa fa-list-alt",
                                             path: "/hr-training-plan",
                                         },
+                                        {
+                                            name: "menu.training_plan_employee",
+                                            icon: "fa fa-list-alt",
+                                            path: "/hr-training-plan-employee",
+                                        },
                                     ],
                                 }}
                             />
@@ -538,6 +553,11 @@ class SideBar extends Component {
                                             name: "menu.crm_list.generalConfiguration",
                                             icon: "fa fa-gear",
                                             path: "/crm/generalConfiguration",
+                                        },
+                                        {
+                                            name: "menu.crm_list.crmUnitConfiguration",
+                                            icon: "fa fa-gear",
+                                            path: "/crm/crmUnitConfiguration",
                                         },
                                     ],
                                 }}

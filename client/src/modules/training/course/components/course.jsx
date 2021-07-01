@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -8,29 +8,27 @@ import { DeleteNotification, PaginateBar, DataTableSetting, SelectMulti } from '
 
 import { CourseActions } from '../redux/actions';
 import { EducationActions } from '../../education-program/redux/actions';
-class TrainingPlan extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            courseId: "",
-            name: '',
-            type: null,
-            page: 0,
-            limit: 5,
-        };
-    }
+const TrainingPlan = (props) => {
+    
+    const [state, setState] = useState({
+        courseId: "",
+        name: '',
+        type: null,
+        page: 0,
+        limit: 5,
+    })
 
-    componentDidMount() {
-        this.props.getListCourse(this.state);
-        this.props.getListEducation();
-    }
+    useEffect(() => {
+        props.getListCourse(state);
+        props.getListEducation();
+    }, [])
 
     /**
      * Function format dữ liệu Date thành string
      * @param {*} date : Ngày muốn format
      * @param {*} monthYear : true trả về ngày tháng năm, false trả về tháng năm
      */
-    formatDate(date, monthYear = false) {
+    const formatDate = (date, monthYear = false) => {
         if (date) {
             let d = new Date(date),
                 month = '' + (d.getMonth() + 1),
@@ -54,9 +52,9 @@ class TrainingPlan extends Component {
      * Function bắt sự kiện chỉnh sửa chương trình đào tạo
      * @param {*} value : Giá trị chương trình đào tạo
      */
-    handleEdit = async (value) => {
-        await this.setState({
-            ...this.state,
+    const handleEdit = async (value) => {
+        await setState({
+            ...state,
             currentEditRow: value
         })
         window.$(`#modal-edit-course${value._id}`).modal('show');
@@ -66,9 +64,9 @@ class TrainingPlan extends Component {
      * Function bắt sự kiện xem thông tin chương trình đào tạo
      * @param {*} value : Giá trị chương trình đào tạo
      */
-    handleView = async (value) => {
-        await this.setState({
-            ...this.state,
+    const handleView = async (value) => {
+        await setState({
+            ...state,
             currentViewRow: value
         })
         window.$(`#modal-view-course${value._id}`).modal('show');
@@ -78,209 +76,210 @@ class TrainingPlan extends Component {
      * Bắt sự kiện thay đổi loại đào tạo để tìm kiếm
      * @param {*} value : Giá trị loại đào tạo
      */
-    handleTypeChange = (value) => {
+    const handleTypeChange = (value) => {
         if (value.length === 0) {
             value = null
         };
-        this.setState({
-            ...this.state,
+        setState({
+            ...state,
             type: value
         })
     }
 
     /** Bắt sự kiện thay đổi mã khoá đào tạo, tên khoá đào tạo */
-    handleChange = (e) => {
+    const handleChange = (e) => {
         const { name, value } = e.target;
-        this.setState({
+        setState({
+            ...state,
             [name]: value
         });
     }
 
     /** Bắt sự kiện tìm kiếm */
-    handleSunmitSearch = () => {
-        this.props.getListCourse(this.state);
+    const handleSunmitSearch = () => {
+        props.getListCourse(state);
     }
 
     /**
      * Function bắt sự kiện thay đổi số dòng hiện thị trên 1 trang
      * @param {*} number 
      */
-    setLimit = async (number) => {
-        await this.setState({
+    const setLimit = async (number) => {
+        await setState({
             limit: parseInt(number)
         });
-        this.props.getListCourse(this.state);
+        props.getListCourse(state);
     }
 
     /**
      * Function bắt sự kiện thay đổi trang muốn xem
      * @param {*} pageNumber 
      */
-    setPage = async (pageNumber) => {
-        let page = (pageNumber - 1) * (this.state.limit);
-        await this.setState({
+    const setPage = async (pageNumber) => {
+        let page = (pageNumber - 1) * (state.limit);
+        await setState({
             page: parseInt(page),
         });
-        this.props.getListCourse(this.state);
+        props.getListCourse(state);
     }
 
-    render() {
-        const { translate, course } = this.props;
+    const { translate, course } = props;
 
-        const { page, limit, currentEditRow, currentViewRow } = this.state;
+    const { page, limit, currentEditRow, currentViewRow } = state;
 
-        let { listCourses } = course;
-        let pageTotal = (course.totalList % limit === 0) ?
-            parseInt(course.totalList / limit) :
-            parseInt((course.totalList / limit) + 1);
-        let currentPage = parseInt((page / limit) + 1);
+    let { listCourses } = course;
+    let pageTotal = (course.totalList % limit === 0) ?
+        parseInt(course.totalList / limit) :
+        parseInt((course.totalList / limit) + 1);
+    let currentPage = parseInt((page / limit) + 1);
 
-        return (
-            <div className="box">
-                <div className="box-body qlcv">
-                    <CourseCreateForm />
+    return (
+        <div className="box">
+            <div className="box-body qlcv">
+                <CourseCreateForm />
 
-                    <div className="form-inline">
-                        {/* Mã khoá đào tạo*/}
-                        <div className="form-group">
-                            <label className="form-control-static">{translate('training.course.table.course_code')}</label>
-                            <input type="text" className="form-control" name="courseId" onChange={this.handleChange} placeholder={translate('training.course.table.course_code')} autoComplete="off" />
-                        </div>
-                        {/* Tên khoá đào tạo  */}
-                        <div className="form-group">
-                            <label className="form-control-static">{translate('training.course.table.course_name')}</label>
-                            <input type="text" className="form-control" name="name" onChange={this.handleChange} placeholder={translate('training.course.table.course_name')} autoComplete="off" />
-                        </div>
+                <div className="form-inline">
+                    {/* Mã khoá đào tạo*/}
+                    <div className="form-group">
+                        <label className="form-control-static">{translate('training.course.table.course_code')}</label>
+                        <input type="text" className="form-control" name="courseId" onChange={handleChange} placeholder={translate('training.course.table.course_code')} autoComplete="off" />
                     </div>
-
-                    <div className="form-inline" style={{ marginBottom: 10 }}>
-                        {/* Loại đào tạo */}
-                        <div className="form-group">
-                            <label className="form-control-static">{translate('training.course.table.course_type')}</label>
-                            <SelectMulti id={`multiSelectTypeCourse`} multiple="multiple"
-                                options={{ nonSelectedText: translate('training.course.no_course_type'), allSelectedText: translate('training.course.all_course_type') }}
-                                onChange={this.handleTypeChange}
-                                items={[
-                                    { value: "internal", text: translate('training.course.type.internal') },
-                                    { value: "external", text: translate('training.course.type.external') },
-                                ]}
-                            >
-                            </SelectMulti>
-                        </div>
-                        <div className="form-group">
-                            <label></label>
-                            <button type="submit" className="btn btn-success" onClick={() => this.handleSunmitSearch()}>{translate('general.search')}</button>
-                        </div>
+                    {/* Tên khoá đào tạo  */}
+                    <div className="form-group">
+                        <label className="form-control-static">{translate('training.course.table.course_name')}</label>
+                        <input type="text" className="form-control" name="name" onChange={handleChange} placeholder={translate('training.course.table.course_name')} autoComplete="off" />
                     </div>
-
-                    <table id="course-table" className="table table-striped table-bordered table-hover">
-                        <thead>
-                            <tr>
-                                <th>{translate('training.course.table.course_code')}</th>
-                                <th>{translate('training.course.table.course_name')}</th>
-                                <th title={translate('training.course.start_date')}>{translate('training.course.table.start_date')}</th>
-                                <th title={translate('training.course.end_date')}>{translate('training.course.table.end_date')}</th>
-                                <th title="Địa điểm đào tạo">{translate('training.course.table.course_place')}</th>
-                                <th>{translate('training.course.table.offered_by')}</th>
-                                <th>{translate('training.course.table.course_type')}</th>
-                                <th style={{ width: "120px" }}>{translate('general.action')}
-                                    <DataTableSetting
-                                        tableId="course-table"
-                                        columnArr={[
-                                            translate('training.course.table.course_code'),
-                                            translate('training.course.table.course_name'),
-                                            translate('training.course.table.start_date'),
-                                            translate('training.course.table.end_date'),
-                                            translate('training.course.table.course_place'),
-                                            translate('training.course.table.offered_by'),
-                                            translate('training.course.table.course_type')
-                                        ]}
-                                        limit={this.state.limit}
-                                        setLimit={this.setLimit}
-                                        hideColumnOption={true}
-                                    />
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                (listCourses.length !== 0 && listCourses) &&
-                                listCourses.map((x, index) => (
-                                    <tr key={index}>
-                                        <td>{x.courseId}</td>
-                                        <td>{x.name}</td>
-                                        <td>{this.formatDate(x.startDate)}</td>
-                                        <td>{this.formatDate(x.endDate)}</td>
-                                        <td>{x.coursePlace}</td>
-                                        <td>{x.offeredBy}</td>
-                                        <td>{translate(`training.course.type.${x.type}`)}</td>
-                                        <td>
-                                            <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title={translate('training.course.view_course')}><i className="material-icons">view_list</i></a>
-                                            <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('training.course.edit_course')}><i className="material-icons">edit</i></a>
-                                            <DeleteNotification
-                                                content={translate('training.course.delete_course')}
-                                                data={{
-                                                    id: x._id,
-                                                    info: x.name + " - " + x.courseId
-                                                }}
-                                                func={this.props.deleteCourse}
-                                            />
-                                        </td>
-                                    </tr>
-                                ))
-                            }
-                        </tbody>
-                    </table>
-                    {course.isLoading ?
-                        <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                        (!listCourses || listCourses.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
-                    }
-                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={this.setPage} />
                 </div>
-                {
-                    currentEditRow &&
-                    <CourseEditForm
-                        _id={currentEditRow._id}
-                        name={currentEditRow.name}
-                        courseId={currentEditRow.courseId}
-                        offeredBy={currentEditRow.offeredBy}
-                        coursePlace={currentEditRow.coursePlace}
-                        startDate={this.formatDate(currentEditRow.startDate)}
-                        endDate={this.formatDate(currentEditRow.endDate)}
-                        cost={currentEditRow.cost.number}
-                        lecturer={currentEditRow.lecturer}
-                        applyForOrganizationalUnits={currentEditRow.educationProgram.applyForOrganizationalUnits}
-                        applyForPositions={currentEditRow.educationProgram.applyForPositions}
-                        educationProgram={currentEditRow.educationProgram._id}
-                        employeeCommitmentTime={currentEditRow.employeeCommitmentTime}
-                        type={currentEditRow.type}
-                        listEmployees={currentEditRow.listEmployees.map(x => { return { _id: x.employee._id, result: x.result } })}
-                        unit={currentEditRow.cost.unit}
-                    />
-                }
-                {
-                    currentViewRow &&
-                    <CourseDetailForm
-                        _id={currentViewRow._id}
-                        name={currentViewRow.name}
-                        courseId={currentViewRow.courseId}
-                        offeredBy={currentViewRow.offeredBy}
-                        coursePlace={currentViewRow.coursePlace}
-                        startDate={this.formatDate(currentViewRow.startDate)}
-                        endDate={this.formatDate(currentViewRow.endDate)}
-                        cost={currentViewRow.cost.number}
-                        lecturer={currentViewRow.lecturer}
-                        educationProgram={currentViewRow.educationProgram}
-                        employeeCommitmentTime={currentViewRow.employeeCommitmentTime}
-                        type={currentViewRow.type}
-                        listEmployees={currentViewRow.listEmployees}
-                        unit={currentViewRow.cost.unit}
-                    />
-                }
 
+                <div className="form-inline" style={{ marginBottom: 10 }}>
+                    {/* Loại đào tạo */}
+                    <div className="form-group">
+                        <label className="form-control-static">{translate('training.course.table.course_type')}</label>
+                        <SelectMulti id={`multiSelectTypeCourse`} multiple="multiple"
+                            options={{ nonSelectedText: translate('training.course.no_course_type'), allSelectedText: translate('training.course.all_course_type') }}
+                            onChange={handleTypeChange}
+                            items={[
+                                { value: "internal", text: translate('training.course.type.internal') },
+                                { value: "external", text: translate('training.course.type.external') },
+                            ]}
+                        >
+                        </SelectMulti>
+                    </div>
+                    <div className="form-group">
+                        <label></label>
+                        <button type="submit" className="btn btn-success" onClick={() => handleSunmitSearch()}>{translate('general.search')}</button>
+                    </div>
+                </div>
+
+                <table id="course-table" className="table table-striped table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>{translate('training.course.table.course_code')}</th>
+                            <th>{translate('training.course.table.course_name')}</th>
+                            <th title={translate('training.course.start_date')}>{translate('training.course.table.start_date')}</th>
+                            <th title={translate('training.course.end_date')}>{translate('training.course.table.end_date')}</th>
+                            <th title="Địa điểm đào tạo">{translate('training.course.table.course_place')}</th>
+                            <th>{translate('training.course.table.offered_by')}</th>
+                            <th>{translate('training.course.table.course_type')}</th>
+                            <th style={{ width: "120px" }}>{translate('general.action')}
+                                <DataTableSetting
+                                    tableId="course-table"
+                                    columnArr={[
+                                        translate('training.course.table.course_code'),
+                                        translate('training.course.table.course_name'),
+                                        translate('training.course.table.start_date'),
+                                        translate('training.course.table.end_date'),
+                                        translate('training.course.table.course_place'),
+                                        translate('training.course.table.offered_by'),
+                                        translate('training.course.table.course_type')
+                                    ]}
+                                    limit={state.limit}
+                                    setLimit={setLimit}
+                                    hideColumnOption={true}
+                                />
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            (listCourses.length !== 0 && listCourses) &&
+                            listCourses.map((x, index) => (
+                                <tr key={index}>
+                                    <td>{x.courseId}</td>
+                                    <td>{x.name}</td>
+                                    <td>{formatDate(x.startDate)}</td>
+                                    <td>{formatDate(x.endDate)}</td>
+                                    <td>{x.coursePlace}</td>
+                                    <td>{x.offeredBy}</td>
+                                    <td>{translate(`training.course.type.${x.type}`)}</td>
+                                    <td>
+                                        <a onClick={() => handleView(x)} style={{ width: '5px' }} title={translate('training.course.view_course')}><i className="material-icons">view_list</i></a>
+                                        <a onClick={() => handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('training.course.edit_course')}><i className="material-icons">edit</i></a>
+                                        <DeleteNotification
+                                            content={translate('training.course.delete_course')}
+                                            data={{
+                                                id: x._id,
+                                                info: x.name + " - " + x.courseId
+                                            }}
+                                            func={props.deleteCourse}
+                                        />
+                                    </td>
+                                </tr>
+                            ))
+                        }
+                    </tbody>
+                </table>
+                {course.isLoading ?
+                    <div className="table-info-panel">{translate('confirm.loading')}</div> :
+                    (!listCourses || listCourses.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                }
+                <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={setPage} />
             </div>
-        );
-    };
+            {
+                currentEditRow &&
+                <CourseEditForm
+                    _id={currentEditRow._id}
+                    name={currentEditRow.name}
+                    courseId={currentEditRow.courseId}
+                    offeredBy={currentEditRow.offeredBy}
+                    coursePlace={currentEditRow.coursePlace}
+                    startDate={formatDate(currentEditRow.startDate)}
+                    endDate={formatDate(currentEditRow.endDate)}
+                    cost={currentEditRow.cost.number}
+                    lecturer={currentEditRow.lecturer}
+                    applyForOrganizationalUnits={currentEditRow.educationProgram.applyForOrganizationalUnits}
+                    applyForPositions={currentEditRow.educationProgram.applyForPositions}
+                    educationProgram={currentEditRow.educationProgram._id}
+                    employeeCommitmentTime={currentEditRow.employeeCommitmentTime}
+                    type={currentEditRow.type}
+                    listEmployees={currentEditRow.listEmployees}
+                    unit={currentEditRow.cost.unit}
+                />
+            }
+            {
+                currentViewRow &&
+                <CourseDetailForm
+                    _id={currentViewRow._id}
+                    name={currentViewRow.name}
+                    courseId={currentViewRow.courseId}
+                    offeredBy={currentViewRow.offeredBy}
+                    coursePlace={currentViewRow.coursePlace}
+                    startDate={formatDate(currentViewRow.startDate)}
+                    endDate={formatDate(currentViewRow.endDate)}
+                    cost={currentViewRow.cost.number}
+                    lecturer={currentViewRow.lecturer}
+                    educationProgram={currentViewRow.educationProgram}
+                    employeeCommitmentTime={currentViewRow.employeeCommitmentTime}
+                    type={currentViewRow.type}
+                    listEmployees={currentViewRow.listEmployees}
+                    unit={currentViewRow.cost.unit}
+                />
+            }
+
+        </div>
+    );
+    
+        
 };
 
 function mapState(state) {

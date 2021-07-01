@@ -1052,6 +1052,7 @@ const EmployeeManagement = (props) => {
                 <table id={tableId} className="table table-striped table-bordered table-hover">
                     <thead>
                         <tr>
+                            <th>STT</th>
                             <th>{translate('human_resource.staff_number')}</th>
                             <th>{translate('human_resource.staff_name')}</th>
                             <th>{translate('human_resource.profile.gender')}</th>
@@ -1063,6 +1064,7 @@ const EmployeeManagement = (props) => {
                                 <DataTableSetting
                                     tableId={tableId}
                                     columnArr={[
+                                        'STT',
                                         translate('human_resource.staff_number'),
                                         translate('human_resource.staff_name'),
                                         translate('human_resource.profile.gender'),
@@ -1080,6 +1082,7 @@ const EmployeeManagement = (props) => {
                         {listEmployees && listEmployees.length !== 0 &&
                             listEmployees.map((x, index) => (
                                 <tr key={index}>
+                                    <td style={{ textAlign: 'center' }}>{index + 1}</td>
                                     <td>{x.employeeNumber}</td>
                                     <td>{x.fullName}</td>
                                     <td>{translate(`human_resource.profile.${x.gender}`)}</td>
@@ -1116,7 +1119,7 @@ const EmployeeManagement = (props) => {
             <EmployeeCreateForm />
 
             {/* From import thông tin nhân viên*/
-                importEmployee && <EmployeeImportForm/>
+                importEmployee && <EmployeeImportForm />
             }
 
             {/* From xem thông tin nhân viên */

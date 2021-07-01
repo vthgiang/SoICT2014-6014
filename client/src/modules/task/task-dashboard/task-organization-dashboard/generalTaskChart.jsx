@@ -510,7 +510,7 @@ const GeneralTaskChart = (props) => {
                 ]}
                 linePerPageOption={false}
             />
-            <div className="general_task_unit" id="tree-table-container" style={{ marginTop: '20px' }}>
+            <div className="general_task_unit" id="general-list-task-wrapper" style={{ marginTop: '20px' }}>
                 <TreeTable
                     tableId={tableId}
                     behaviour="hide-children"

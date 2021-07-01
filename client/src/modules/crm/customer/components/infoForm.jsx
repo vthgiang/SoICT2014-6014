@@ -25,7 +25,7 @@ class CrmCustomerInformation extends Component {
     static getDerivedStateFromProps(props, state) {
         if (props.customerId != state.customerId) {
             props.getCustomer(props.customerId);
-            props.getAllSalesOrders({ page :1 , limit:5, currentRole:localStorage.getItem('currentRole'),customer: props.customerId });
+            props.getAllSalesOrders({ page :1 , limit:5, currentRole:localStorage.getItem('currentRole'),customer: props.customerId,getAll:true });
             return {
                 dataStatus: 1,
                 customerId: props.customerId,

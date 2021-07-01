@@ -28,25 +28,23 @@ function ModalCreateEmployeeKpiSet(props) {
     let parentKpi;
 
     useEffect(()=>{
-        if (props.managers?.length > 0 && props.organizationalUnit?._id && props.month && (props.organizationalUnit?._id !== state.organizationalUnit?._id || props.month !== state.month)) {
-            setState({
-                ...state,
-                employeeKpiSet: {
-                    ...state.employeeKpiSet,
-                    organizationalUnit: props.organizationalUnit && props.organizationalUnit._id,
-                    month: props.month,
-                    approver: props.managers?.[1]?.value?.[0]?.value ? props.managers?.[1]?.value?.[0]?.value : props.managers?.[0]?.value?.[0]?.value
-                },
-                managers: props.managers,
-                organizationalUnit: props.organizationalUnit,
-                month: props.month
-            })
-        }
-    },[props.managers])
-
-    useEffect(()=>{
         props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
     },[])
+
+    useEffect(()=>{
+        setState({
+            ...state,
+            employeeKpiSet: {
+                ...state.employeeKpiSet,
+                organizationalUnit: props?.organizationalUnit?._id,
+                month: props.month,
+                approver: props.managers?.[1]?.value?.[0]?.value ? props.managers?.[1]?.value?.[0]?.value : props.managers?.[0]?.value?.[0]?.value
+            },
+            managers: props.managers,
+            organizationalUnit: props.organizationalUnit,
+            month: props.month
+        })
+    }, [props.managers, props?.organizationalUnit?._id, props.month])
 
     /**Thay đổi người phê duyệt */
     const handleApproverChange = (value) => {

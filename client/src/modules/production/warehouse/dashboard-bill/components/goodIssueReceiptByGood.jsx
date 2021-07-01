@@ -16,8 +16,37 @@ function GoodIssueReceiptByGood(props) {
         barChart: true,
         type: 'product',
         currentRole: localStorage.getItem("currentRole"),
-        category: []
+        category: [],
+        dataChart: [],
+        name: []
     })
+
+    let { translate, lots } = props;
+    const { inventoryDashboard } = lots;
+    const { type, category, startDate, endDate } = state;
+
+    if (inventoryDashboard.length > 0 && state.dataChart.length == 0) {
+        let name = [];
+        let inventory = ['Tồn kho'];
+        let goodReceipted = ['Nhập kho'];
+        let goodIssued = ['Xuất kho'];
+        for (let i = 0; i < inventoryDashboard.length; i++) {
+            name = [...name, inventoryDashboard[i].name];
+            inventory = [...inventory, inventoryDashboard[i].inventory];
+            goodReceipted = [...goodReceipted, inventoryDashboard[i].goodReceipted];
+            goodIssued = [...goodIssued, inventoryDashboard[i].goodIssued];
+        }
+        setState({
+            ...state, 
+            name,
+            dataChart: [inventory, goodReceipted, goodIssued]
+        })
+    }
+
+    useEffect(() => {
+        barAndChart(state.name, state.dataChart);
+    }, [state.name, state.dataChart])
+
 
     const refBarChart = React.createRef();
 
@@ -99,18 +128,13 @@ function GoodIssueReceiptByGood(props) {
     };
 
     // Khởi tạo BarChart bằng C3
-    const barAndChart = (name, inventory, goodReceipted, goodIssued) => {
+    const barAndChart = (name, dataChart) => {
         const { barChart } = state;
         let chart = c3.generate({
             bindto: refBarChart.current,
             data: {
-                x: 'x',
-                columns: [
-                    name,
-                    inventory,
-                    goodReceipted,
-                    goodIssued
-                ],
+                // x: 'x',
+                columns: dataChart,
                 type: barChart ? 'bar' : 'line',
             },
             axis: {
@@ -120,30 +144,16 @@ function GoodIssueReceiptByGood(props) {
                         rotate: 75,
                         multiline: false
                     },
+                    categories: name,
                     height: 100
                 }
             }
         });
     }
 
-    let { translate, lots } = props;
-    const { inventoryDashboard } = lots;
     const dataCategory = getAllCategory();
-    const { type, category, startDate, endDate } = state;
 
-    let name = ['x'];
-    let inventory = ['Tồn kho'];
-    let goodReceipted = ['Nhập kho'];
-    let goodIssued = ['Xuất kho'];
-    if (inventoryDashboard.length > 0) {
-        for (let i = 0; i < inventoryDashboard.length; i++) {
-            name = [...name, inventoryDashboard[i].name];
-            inventory = [...inventory, inventoryDashboard[i].inventory];
-            goodReceipted = [...goodReceipted, inventoryDashboard[i].goodReceipted];
-            goodIssued = [...goodIssued, inventoryDashboard[i].goodIssued];
-        }
-    }
-    barAndChart(name, inventory, goodReceipted, goodIssued);
+    // barAndChart(state.name, state);
     return (
         <React.Fragment>
             <div className="box">
@@ -199,7 +209,7 @@ function GoodIssueReceiptByGood(props) {
                                 />
                             </div>
                             <div className="form-group">
-                                <button type="button" className="btn btn-success" title={translate('manage_warehouse.bill_management.search')} onClick={handleSubmitSearch}>{translate('manage_warehouse.bill_management.search')}</button>
+                                <button type="button" className="btn btn-success" title={translate('manage_warehouse.bill_management.search')} onClick={() => handleSubmitSearch()}>{translate('manage_warehouse.bill_management.search')}</button>
                             </div>
                         </div>
                     </div>

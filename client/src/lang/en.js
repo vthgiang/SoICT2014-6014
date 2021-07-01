@@ -95,6 +95,8 @@ export default {
             manage_role: "Manage Roles",
             manage_link: "Manage Pages",
             manage_component: "Manage permissions on page",
+            manage_api: "Manage API",
+            privilege_api: "Manage permissions API",
 
             manage_department: "Manage Departments",
             manage_user: "Manage Users",
@@ -142,6 +144,7 @@ export default {
             time_keeping: "Attendance Staff",
             list_education: "Training Programs",
             training_plan: "Manage Training Courses",
+            training_plan_employee: "Training Courses",
             list_major: "Manage majors",
             list_career_position: "Manage career position",
             list_search_for_package: "Search employee for package",
@@ -641,6 +644,42 @@ export default {
                 system_component_name_invalid: "Component name invalid",
                 system_component_name_exist: "Component name exist",
             },
+
+            system_api: {
+                table: {
+                    path: "Path",
+                    method: "Method",
+                    description: "Description",
+                    category: "Category"
+                },
+                select_all_method: "Select all method",
+                non_select_method: "Select method",
+
+                modal: {
+                    create_title: 'Create a API',
+                    edit_title: 'Edit a API',
+                    delete_title: 'Delete a API'
+                },
+
+                placeholder: {
+                    input_path: "Type path",
+                    input_description: "Type description"
+                },
+
+                //Thông điệp trả về từ server
+                create_system_api_success: 'Create system API successfully',
+                create_system_api_failure: 'Create system API unsuccessfully',
+                system_api_exist: 'System API already exists'
+            },
+
+            privilege_system_api: {
+                table: {
+                    email: "Email"
+                },
+                placeholder: {
+                    input_email: "Type email"
+                },
+            }
         },
 
         super_admin: {
@@ -962,30 +1001,114 @@ export default {
 
         crm: {
             customer: {
-                name: "Customer",
-                code: "Code",
-                phone: "Phone number",
+                owner: "Manager",
+                source: "Customer Source",
+                company: "Company",
+                companyEstablishmentDate: "Company establishment date",
+                name: "Customer name",
+                code: "Customer Code",
+                customerType: "Customer Type",
+                mobilephoneNumber: "Mobile phone number",
+                telephoneNumber: "Landline number",
+                group: "Customer group",
+                status: "Customer Status",
                 address: "Address",
+                address2: "Address 2",
+                represent: "Representative",
                 email: "Email",
-                location: "Location",
-                birth: "Birth",
+                secondaryEmail: "Secondary email",
+                location: "Area",
+                birth: "Date of birth",
                 gender: "Gender",
-                liability: "Liability",
-                document: "Document",
+                male: "Male",
+                female: "Female",
+                liability: "Debt",
+                taxNumber: "Tax number",
+                website: "Website",
+                linkedIn: "linkedIn",
+                document: "Documents",
                 note: "Note",
-                carier: "Carier",
-                discount: "discount",
-                by_group: "Group by",
-                by_customer: "Group by customer",
-                organization: "organization",
-                northern: "northern",
-                central: "central",
-                southern: "southern",
+                carier: "Care worker in charge",
+                discount: "Discount applies",
+                by_group: "By customer group",
+                by_customer: "By customer",
+                payment: "Form of payment",
+                creator: "Creator",
+                personal: "Personal",
+                organization: "Organization",
+                northern: "North",
+                central: "Central region",
+                southern: "South",
+
+                purchaseHistories: {
+                    all: "All",
+                    waitingForApproval: "Waiting for approval",
+                    approved: "Approved",
+                    waitingForTheGoods: "Waiting for pick up",
+                    deliver: "Delivering",
+                    finished: "Done",
+                    cancel: "Cancelled",
+                },
+
+                info: "General Information",
+                contact: "Contact Information",
+                advance: "More Information",
+                list_attachments: "List of documents",
+                file: {
+                    name: "Document name",
+                    description: "Description",
+                    url: "Path",
+                    fileName: "Filename",
+                    add_file: "Add new file",
+                    edit_file: "Edit file",
+                    attachment: "Attachment file",
+                },
+
+                add: "Add new customer",
+                add_import: "Add data from file",
+                see: "View customer information",
+                edit: "Edit customer information",
+                delete: "Delete customer information",
+                cannot_be_empty: "cannot be empty",
+                value_duplicate: "duplicate",
             },
-            group: {},
+
+            group: {
+                name: "Customer group name",
+                code: "Customer group code",
+                description: "Describe the customer group",
+                promotion: "Additional offer",
+
+                add: "Add new customer group",
+                edit: "Edit customer group information",
+                delete: "Delete customer group information",
+            },
+
             lead: {},
-            care: {},
-            statistic: {},
+            care: {
+                name: "Activity name",
+                caregiver: "Staff in charge",
+                customer: "Customer name",
+                description: "Description",
+                careType: "Type of care",
+                status: "Status",
+                startDate: "Start Date",
+                endDate: "End Date",
+                notes: "Notes",
+                action: "Action",
+                add: "Add new customer care activities",
+                info: "View details of customer care activities",
+                edit: "Customer care editing",
+                priority: 'Priority',
+            },
+            status: {
+                add: "Add new status",
+                edit: "Edit Status",
+                delete: "Delete state",
+                name: "Customer status name",
+                description: "State Description",
+            },
+            statistics: {},
         },
 
         not_found: {
@@ -1899,6 +2022,7 @@ export default {
                     edit_employee_success: "Edit employee success",
                     edit_employee_faile: "Edit employee faile",
                     import_employee_success: "Import employee success",
+                    importing_employee: "Processing data",
                     import_employee_faile: "Import employee faile",
                     employee_number_required: "Staff code required",
                     email_in_company_required: "Email in company required",
@@ -2167,6 +2291,7 @@ export default {
                 edit_course: "edit training course",
                 delete_course: "delete training course",
                 view_course: "Training course information",
+                register: "register",
 
                 // Thông điệp trả về từ server
                 name_required: "Name of the training course required",
@@ -3723,6 +3848,7 @@ export default {
                     new_value: "New value",
                     old_value: "Old value",
                     auto_value: "Auto value",
+                    refresh: "Refresh",
                     /**
                      * Management
                      */

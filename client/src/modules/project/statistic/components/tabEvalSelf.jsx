@@ -10,7 +10,7 @@ import { AutomaticTaskPointCalculator } from '../../../task/task-perform/compone
 import { formatTaskStatus, renderStatusColor } from '../../projects/components/functionHelper';
 
 const TabEvalSelf = (props) => {
-    const { currentTasks, translate, listTasksEval, currentMonth, handleChangeMonth, projectDetail, userId } = props;
+    const { currentTasks, translate, listTasksEval, currentMonth, handleChangeMonth, projectDetail, userId, isLoading } = props;
     // console.log('currentTasks', currentTasks)
     // console.log('listTasksEval', listTasksEval)
     const handleSelfData = (listTaskData) => {
@@ -92,22 +92,23 @@ const TabEvalSelf = (props) => {
 
     return (
         <React.Fragment>
-            <div>
-                <div className="box">
-                    <div className="box-body qlcv">
-                        <h4><strong>Điểm số thành viên {processedSelfData?.name} trong tháng</strong></h4>
-                        {/* Chọn tháng để lọc đánh giâ */}
-                        <div className="form-group">
-                            <label style={{ marginRight: 20 }}>Chọn tháng</label>
-                            <DatePicker
-                                id="start-date-eval-self-statistical"
-                                dateFormat="month-year"
-                                value={moment(currentMonth).format('MM-YYYY')}
-                                onChange={handleChangeMonth}
-                                disabled={false}
-                            />
-                        </div>
-                        <table id="eval-project-members-statistical-table" className="table table-bordered table-hover">
+            <div className="box-body qlcv">
+                <h4><strong>Điểm số thành viên {processedSelfData?.name} trong tháng</strong></h4>
+                {/* Chọn tháng để lọc đánh giâ */}
+                <div className="form-group">
+                    <label style={{ marginRight: 20 }}>Chọn tháng</label>
+                    <DatePicker
+                        id="start-date-eval-self-statistical"
+                        dateFormat="month-year"
+                        value={moment(currentMonth).format('MM-YYYY')}
+                        onChange={handleChangeMonth}
+                        disabled={false}
+                    />
+                </div>
+                {
+                    isLoading
+                        ? <div>Đang tải dữ liệu</div>
+                        : <table id="eval-project-members-statistical-table" className="table table-bordered table-hover">
                             <thead>
                                 <tr>
                                     <th>Họ và tên</th>
@@ -187,9 +188,8 @@ const TabEvalSelf = (props) => {
                                 }
                             </tbody>
                         </table>
-                        {!processedSelfData && 'Không có công việc nào trong tháng này'}
-                    </div>
-                </div>
+                }
+                {!processedSelfData && 'Không có công việc nào trong tháng này'}
             </div>
         </React.Fragment>
     );

@@ -6,67 +6,79 @@ EvaluationTabInfoForm.propTypes = {
 };
 
 function EvaluationTabInfoForm(props) {
-    const { id,evaluationInfo } = props
+    const { id, evaluationInfo } = props
     return (
         <div className="tab-pane active " id={id}>
             <div className="box-body qlcv">
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <i style={{ fontSize: '17px', marginRight: '5px' }} className="fa fa-info-circle" aria-hidden="true"></i>
+                    <h4>{evaluationInfo.employeeName} - NV 1402</h4>
+                </div>
+                {/* <div className="form-group row col-sm-4">
+                    <strong >{'Mã nhân viên : '}</strong>
+                    <div>
+                        <span>{evaluationInfo.employeeId}</span>
+                    </div>
+                </div>
+                <div className="form-group row col-sm-8">
+                    <strong>{'Tên nhân viên : '}</strong>
+                    <div >
+                        <span>{evaluationInfo.employeeName}</span>
+                    </div>
+                </div> */}
                 <fieldset className="scheduler-border">
-                    <legend className="scheduler-border">{"Thông tin đánh giá nhân viên"} </legend>
+                    <legend className="scheduler-border">{"Thông tin các hoạt động chăm sóc khách hàng"} </legend>
                     <div className="form-group row">
-                        <strong className="col-sm-4">{'Mã nhân viên'}</strong>
+                        <strong className="col-sm-4">{'Tổng số hoạt động :'}</strong>
                         <div className="col-sm-8">
-                            <span>{evaluationInfo.staffCode}</span>
+                            <span>{evaluationInfo.totalCareActions}</span>
                         </div>
                     </div>
                     <div className="form-group row">
-                        <strong className="col-sm-4">{'Tên nhân viên'}</strong>
+                        <strong className="col-sm-4">{'Tỉ lệ hoàn thành hoạt động :'}</strong>
                         <div className="col-sm-8">
-                            <span>{evaluationInfo.staffName}</span>
+                            <span>{`${evaluationInfo.completionRate * 100} %`}</span>
                         </div>
                     </div>
                     <div className="form-group row">
-                        <strong className="col-sm-4">{'Số khách hàng đang quản lý'}</strong>
+                        <strong className="col-sm-4">{'Tỉ lệ hoạt động thành công :'}</strong>
                         <div className="col-sm-8">
-                            <span>{evaluationInfo.numberOfCustomers}</span>
+                            <span>{`${evaluationInfo.solutionRate * 100} %`}</span>
                         </div>
                     </div>
                     <div className="form-group row">
-                        <strong className="col-sm-4">{'Tổng số hoạt động'}</strong>
+                        <strong className="col-sm-4">{'Số hoạt động quá hạn :'}</strong>
                         <div className="col-sm-8">
-                            <span>{evaluationInfo.totalCare}</span>
+                            <span>{evaluationInfo.numberOfOverdueCareAction}</span>
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset className="scheduler-border">
+                    <legend className="scheduler-border">{"Thông tin khách hàng đang quản lý"} </legend>
+                    <div className="form-group row">
+                        <strong className="col-sm-4">{'Tổng số khách hàng đang quản lý :'}</strong>
+                        <div className="col-sm-8">
+                            <span>{evaluationInfo.totalCustomer}</span>
                         </div>
                     </div>
                     <div className="form-group row">
-                        <strong className="col-sm-4">{'Số hoạt động đã hoàn thành'}</strong>
+                        <strong className="col-sm-4">{'Số khách hàng mới trong tháng :'}</strong>
                         <div className="col-sm-8">
-                            <span>{evaluationInfo.numberOfCompletedCares}</span>
+                            <span>{`${evaluationInfo.numberOfNewCustomers}`}</span>
                         </div>
                     </div>
                     <div className="form-group row">
-                        <strong className="col-sm-4">{'Số hoạt động đang thực hiện'}</strong>
+                        <strong className="col-sm-4">{'Tỉ lệ khách hàng quay trở lại :'}</strong>
                         <div className="col-sm-8">
-                            <span>{evaluationInfo.numberOfProcessingCares}</span>
+                            <span>{`${evaluationInfo.customerRetentionRate * 100} %`}</span>
                         </div>
                     </div>
                     <div className="form-group row">
-                        <strong className="col-sm-4">{'Số hoạt động quá hạn'}</strong>
+                        <strong className="col-sm-4">{'Tỉ lệ mua hàng ở khách hàng mới :'}</strong>
                         <div className="col-sm-8">
-                            <span>{evaluationInfo.numberOfExpiredCares}</span>
+                            <span>{`${evaluationInfo.newCustomerBuyingRate * 100} %`}</span>
                         </div>
                     </div>
-                    <div className="form-group row">
-                        <strong className="col-sm-4">{'Tỉ lệ thành công'}</strong>
-                        <div className="col-sm-8">
-                            <span>{`${evaluationInfo.successRate*100} %`}</span>
-                        </div>
-                    </div>
-                    <div className="form-group row">
-                        <strong className="col-sm-4">{'Đánh giá trung bình'}</strong>
-                        <div className="col-sm-8">
-                            <span>{`${evaluationInfo.averagePoint} /10`}</span>
-                        </div>
-                    </div>
-
                 </fieldset>
             </div>
 

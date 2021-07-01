@@ -63,6 +63,11 @@ const CustomerCareSchema = new Schema({
         
 
     },
+    crmUnit: {// đơn vị CSKH
+        type: Schema.Types.ObjectId,
+        ref: "CrmUnit",
+    },
+    
     notes: { // Ghi chu
         type: String,
     },

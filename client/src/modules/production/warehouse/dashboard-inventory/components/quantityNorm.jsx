@@ -1,17 +1,53 @@
 
 import React, { useState, useEffect } from 'react';
-
+import { connect } from 'react-redux';
 import c3 from 'c3';
 import 'c3/c3.css';
 import './style.css';
+import { LotActions } from '../../inventory-management/redux/actions';
 
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { SelectMulti, DatePicker, SelectBox, TreeSelect } from '../../../../../common-components';
 
 function QuantityNorm(props) {
+    let today = new Date(),
+        month = today.getMonth() + 1,
+        year = today.getFullYear();
+    let endMonth;
+
+    if (month < 10) {
+        endMonth = '0' + month;
+    } else {
+        endMonth = month;
+    }
+
+    const INFO_SEARCH = {
+        startMonth: year + '-01',
+        endMonth: [year, endMonth].join('-')
+    };
     const [state, setState] = useState({
-        barChart: true
+        barChart: true,
+        type: 'product',
+        currentRole: localStorage.getItem("currentRole"),
+        category: [],
+        dataChart: [],
+        name: [],
+        productName: '',
+        startMonth: INFO_SEARCH.startMonth,
+        endMonth: INFO_SEARCH.endMonth,
+        infosearch: {
+            startMonth: INFO_SEARCH.startMonth,
+            endMonth: INFO_SEARCH.endMonth,
+        },
+
+        defaultEndMonth: [endMonth, year].join('-'),
+        defaultStartMonth: ['01', year].join('-'),
     })
+
+    const { defaultEndMonth, defaultStartMonth } = state;
+
+    let { translate, lots } = props;
+    const { inventoryDashboard } = lots;
 
     const refBarChart = React.createRef();
 
@@ -19,24 +55,26 @@ function QuantityNorm(props) {
         barChart();
     }, [])
 
-    // Thiết lập dữ liệu biểu đồ
-    const setDataBarChart = () => {
-        let data = {
-            count: ["5", "6", "7", "8", "9", "10"],
-            type: ["Thắng", "Phương", "Tài", "An", "Sang"],
-            shortName: ["T", "P", "T", "A", "S"]
-        }
+    /** Select month start in box */
+    const handleSelectMonthStart = (value) => {
+        let month = value.slice(3, 7) + '-' + value.slice(0, 2);
+        setState({
+            ...state,
+            startMonth: month
+        })
+    };
 
-        return data;
-    }
+    /** Select month end in box */
+    const handleSelectMonthEnd = async (value) => {
+        let month = value.slice(3, 7) + '-' + value.slice(0, 2);
+        setState({
+            ...state,
+            endMonth: month
+        })
+    };
 
     // Khởi tạo BarChart bằng C3
     const barChart = () => {
-        let { translate } = props;
-        let dataPieChart = setDataBarChart();
-        let count = dataPieChart.count;
-        let heightCalc = dataPieChart.type.length * 24.8;
-        let height = heightCalc < 320 ? 320 : heightCalc;
         let chart = c3.generate({
             bindto: refBarChart.current,
             data: {
@@ -72,7 +110,6 @@ function QuantityNorm(props) {
         });
     }
 
-    const { translate } = props;
     barChart();
     return (
         <React.Fragment>
@@ -102,13 +139,7 @@ function QuantityNorm(props) {
                             <SelectBox
                                 id="multiSelectOrgan"
                                 className="form-control select2"
-                                items={[
-                                    { value: '0', text: 'Albendazole' },
-                                    { value: '1', text: 'Afatinib' },
-                                    { value: '2', text: 'Zoledronic Acid' },
-                                    { value: '3', text: 'Abobotulinum' },
-                                    { value: '4', text: 'Acid Thioctic' }
-                                ]}
+                                items={inventoryDashboard.map((x, index) => { return { value: x._id, text: x.name } })}
                                 // onChange={handleSelectOrganizationalUnit}
                             />
                         </div>
@@ -128,19 +159,23 @@ function QuantityNorm(props) {
                             />
                         </div>
                         <div className="form-group">
-                            <label className="form-control-static">Từ ngày</label>
+                            <label className="form-control-static">Từ Tháng</label>
                             <DatePicker
-                                id="purchase-month"
-                                value=""
-                                // onChange={handlePurchaseMonthChange}
+                                id="monthStartInGoodWillReceipt"
+                                dateFormat="month-year"
+                                value={defaultStartMonth}
+                                onChange={handleSelectMonthStart}
+                                disabled={false}
                             />
                         </div>
                         <div className="form-group">
-                            <label className="form-control-static">Đến ngày</label>
+                            <label className="form-control-static">Đến Tháng</label>
                             <DatePicker
-                                id="purchase-month"
-                                value=""
-                                // onChange={handlePurchaseMonthChange}
+                                id="monthEndInGoodWillReceipt"
+                                dateFormat="month-year"
+                                value={defaultEndMonth}
+                                onChange={handleSelectMonthEnd}
+                                disabled={false}
                             />
                         </div>
                         <div className="form-group">
@@ -150,7 +185,7 @@ function QuantityNorm(props) {
                         </div>
                     </div>
                     <div ref={refBarChart}></div>
-                    <div style={{ marginLeft: '70%' }}>
+                    {/* <div style={{ marginLeft: '70%' }}>
                         <ul className="pagination">
                             <li className="page-item"><a className="page-link" href="#">Trước</a></li>
                             <li className="page-item active"><a className="page-link" href="#">1</a></li>
@@ -160,11 +195,16 @@ function QuantityNorm(props) {
                             <li className="page-item"><a className="page-link" href="#">5</a></li>
                             <li className="page-item"><a className="page-link" href="#">Sau</a></li>
                         </ul>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </React.Fragment>
     )
 }
 
-export default withTranslate(QuantityNorm);
+const mapStateToProps = state => state;
+
+const mapDispatchToProps = {
+    getInventoriesDashboard: LotActions.getInventoriesDashboard,
+}
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(QuantityNorm));

@@ -8,14 +8,14 @@ import 'moment/locale/vi';
 import parse from 'html-react-parser';
 import './actionTab.css';
 import FilePreview from './FilePreview';
-import { ContentMaker, DateTimeConverter, ApiImage, ShowMoreShowLess, SelectBox, DatePicker, TimePicker, ErrorLabel } from '../../../../common-components';
+import { ContentMaker, DateTimeConverter, ApiImage, ShowMoreShowLess, SelectBox, DatePicker, TimePicker, ErrorLabel, DialogModal } from '../../../../common-components';
 
 import { getStorage } from '../../../../config';
 
 import { performTaskAction } from '../redux/actions';
 import { taskManagementActions } from "../../task-management/redux/actions";
 import { AuthActions } from '../../../auth/redux/actions';
-
+import { ModalEditDateCreatedAction } from './modalEditDateCreatedAction';
 import { SubTaskTab } from './subTaskTab';
 import { ViewProcess } from '../../task-process/component/task-process-management/viewProcess';
 import { IncomingDataTab } from './incomingDataTab';
@@ -25,6 +25,7 @@ import ValidationHelper from '../../../../helpers/validationHelper';
 import { formatDate } from '../../../../helpers/formatDate';
 import { convertTime } from '../../../../helpers/stringMethod';
 import { htmlToText } from 'html-to-text';
+import { formatTime } from '../../../project/projects/components/functionHelper';
 class ActionTab extends Component {
     constructor(props) {
         let idUser = getStorage("userId");
@@ -543,6 +544,20 @@ class ActionTab extends Component {
                 }
             }
         })
+    }
+    convertDateTime = (date, time) => {
+        let splitter = date.split("-");
+        let strDateTime = `${splitter[2]}/${splitter[1]}/${splitter[0]} ${time}`;
+        return new Date(strDateTime);
+    }
+
+    handleSaveChangeDateAction = (action) => {
+        let data = new FormData();
+        let createdDateAction = this.convertDateTime(action.dateCreatedAt, action.timeCreatedAt)
+        data.append("type", "edit-time")
+        data.append("creator", getStorage("userId"))
+        data.append("dateCreatedAt", createdDateAction)
+        this.props.editTaskAction(action.id, data, action.taskId);
     }
 
     handleSaveEditTaskComment = async (e, taskId, commentId, description) => {
@@ -1277,7 +1292,7 @@ class ActionTab extends Component {
         if (typeof data === 'string' || data instanceof String) {
             let index = data.lastIndexOf(".");
             let typeFile = data.substring(index + 1, data.length);
-            if (typeFile === "pdf" ) {
+            if (typeFile === "pdf") {
                 return true;
             }
             else return false;
@@ -1330,12 +1345,12 @@ class ActionTab extends Component {
 
         return (
             <div>
-             {
-                this.state.currentFilepri &&
-                <FilePreview
-                    file={this.state.currentFilepri}
-                />
-            }
+                {
+                    this.state.currentFilepri &&
+                    <FilePreview
+                        file={this.state.currentFilepri}
+                    />
+                }
                 <div className="nav-tabs-custom" style={{ boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none" }}>
                     <ul className="nav nav-tabs">
                         <li className="active"><a href="#taskAction" onClick={() => this.handleChangeContent("taskAction")} data-toggle="tab">{translate("task.task_perform.actions")} ({taskActions && taskActions.length})</a></li>
@@ -1425,7 +1440,7 @@ class ActionTab extends Component {
                                                                 </div>
 
                                                                 <div className="btn-group pull-right">
-                                                                    {(role === 'responsible' && item.creator && showSort === false) &&
+                                                                    {(role === 'responsible' && item.creator && showSort === false && task) &&
                                                                         <React.Fragment>
                                                                             <span data-toggle="dropdown">
                                                                                 <i className="fa fa-ellipsis-h"></i>
@@ -1447,11 +1462,14 @@ class ActionTab extends Component {
                                                             </div>
 
                                                             {/* Các file đính kèm */}
-                                                            {!showSort && <ul className="list-inline tool-level1">
-                                                                <li><span className="text-sm">{<DateTimeConverter dateTime={item.createdAt} />}</span></li>
+                                                            {!showSort && task && <ul className="list-inline tool-level1">
+                                                                {role === "accountable" ?
+                                                                    <ModalEditDateCreatedAction data={item} taskId={task._id} saveChangeDateCreatedAction={this.handleSaveChangeDateAction} /> :
+                                                                    <li><span className="text-sm">{<DateTimeConverter dateTime={item.createdAt} />}</span></li>
+                                                                }
                                                                 <li>{item.mandatory && !item.creator && <b className="text-sm">{translate("task.task_perform.mandatory_action")}</b>}</li>
                                                                 {((item.creator === undefined || item.creator === null) && role === "responsible") &&
-                                                                    <li><a style={{ cursor: "pointer" }} className="text-green text-sm" onClick={(e) => this.handleConfirmAction(e, item._id, currentUser, task._id)}><i className="fa fa-check-circle" aria-hidden="true"></i> {translate("task.task_perform.confirm_action")}</a></li>}
+                                                                    <li><a style={{ cursor: "pointer" }} className="text-green text-sm" onClick={(e) => this.handleConfirmAction(e, item._id, currentUser, task?._id)}><i className="fa fa-check-circle" aria-hidden="true"></i> {translate("task.task_perform.confirm_action")}</a></li>}
 
                                                                 {/* Các chức năng tương tác với action */}
                                                                 {item.creator &&
@@ -1466,7 +1484,8 @@ class ActionTab extends Component {
                                                                     </React.Fragment>
                                                                 }
                                                             </ul>}
-                                                            {!showSort && <ul className="list-inline tool-level1">
+
+                                                            {!showSort && task && <ul className="list-inline tool-level1">
                                                                 {item.creator &&
                                                                     <React.Fragment>
                                                                         {(role === "accountable" || role === "consulted" || role === "creator" || role === "informed") &&
@@ -1552,13 +1571,13 @@ class ActionTab extends Component {
                                                                                     />
                                                                                     :
                                                                                     <div>
-                                                                                    <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name}</a>
-                                                                                    <a href="#" onClick={() => this.showFilePreview(elem && elem.url)}>
-                                                                                        <u>{elem && this.checkTypeFile(elem.url) ?
-                                                                                            <i className="fa fa-eye"></i> : ""}</u>
-                                                                                    </a>
+                                                                                        <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name}</a>
+                                                                                        <a href="#" onClick={() => this.showFilePreview(elem && elem.url)}>
+                                                                                            <u>{elem && this.checkTypeFile(elem.url) ?
+                                                                                                <i className="fa fa-eye"></i> : ""}</u>
+                                                                                        </a>
                                                                                     </div>
-                                                                                        
+
                                                                                 }
                                                                             </div>
                                                                         })}
@@ -1568,7 +1587,7 @@ class ActionTab extends Component {
                                                         </React.Fragment>
                                                     }
                                                     {/*Chỉnh sửa nội dung hoạt động của công việc */}
-                                                    {editAction === item._id &&
+                                                    {editAction === item._id && task &&
                                                         <React.Fragment>
                                                             <div>
                                                                 <ContentMaker
@@ -1602,7 +1621,7 @@ class ActionTab extends Component {
                                                     }
 
                                                     {/* Hiển thị bình luận cho hoạt động */}
-                                                    {!showSort && showChildComment.some(obj => obj === item._id) &&
+                                                    {!showSort && task && showChildComment.some(obj => obj === item._id) &&
                                                         <div>
                                                             {item.comments.map(child => {
                                                                 let listImage = child.files.map((elem) => this.isImage(elem.name) ? elem.url : -1).filter(url => url !== -1);
@@ -1746,7 +1765,7 @@ class ActionTab extends Component {
                                 : null
                             }
                             {/* Sắp xếo hoạt động CV*/}
-                            {showSort ?
+                            {task && showSort ?
                                 <div className="row" style={{ marginTop: 20 }}>
                                     <div className="col-xs-6">
                                         <button type="button" className={`btn btn-block`} onClick={() => this.cancelSort()}>Hủy</button>
@@ -1835,10 +1854,10 @@ class ActionTab extends Component {
                                     })
 
                                 }}
-                                onSubmit={(e) => { this.submitTaskComment(task._id) }}
+                                onSubmit={(e) => { this.submitTaskComment(task?._id) }}
                             />
 
-                            {typeof taskComments !== 'undefined' && taskComments.length !== 0 ?
+                            {task && typeof taskComments !== 'undefined' && taskComments.length !== 0 ?
                                 <ShowMoreShowLess
                                     id={`taskComment${id}`}
                                     classShowMoreLess='tool-level1'
@@ -2140,7 +2159,7 @@ class ActionTab extends Component {
                                                                                                 file={elem}
                                                                                                 requestDownloadFile={this.requestDownloadFile}
                                                                                             />
-                                                                                            :<div>
+                                                                                            : <div>
                                                                                                 <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name}</a>
                                                                                                 <a href="#" onClick={() => this.showFilePreview(elem && elem.url)}>
                                                                                                     <u>{elem && this.checkTypeFile(elem.url) ?
@@ -2215,7 +2234,7 @@ class ActionTab extends Component {
                                             })
                                         }}
                                         disableSubmit={true}
-                                        onSubmit={(e) => { this.handleUploadFile(task._id, currentUser) }}
+                                        onSubmit={(e) => { this.handleUploadFile(task?._id, currentUser) }}
                                     />
                                 </div>
                             </React.Fragment>
@@ -2391,8 +2410,8 @@ class ActionTab extends Component {
                                             <div key={item._id} className={`item-box ${index > 3 ? "hide-component" : ""}`}>
                                                 <a style={{ fontWeight: 700, cursor: "pointer" }}>{item.creator?.name} </a>
                                                 {item.title ? item.title : translate("task.task_perform.none_description")}&nbsp;
-                                            ({moment(item.createdAt).format("HH:mm:ss DD/MM/YYYY")})
-                                            <div>
+                                                ({moment(item.createdAt).format("HH:mm:ss DD/MM/YYYY")})
+                                                <div>
                                                     {item.description ? parse(item.description) : translate("task.task_perform.none_description")}
                                                 </div>
                                             </div>
