@@ -54,7 +54,7 @@ class QuoteCreateForm extends Component {
     }
 
     componentDidMount() {
-        this.props.getCustomers();
+        this.props.getCustomers({getAll:true});
     }
 
     handleClickCreateCode = () => {

@@ -199,19 +199,6 @@ function InfoCareForm(props) {
                                     <div className="col-md-6">
                                         <div className="form-horizontal">
                                             <div className="form-group">
-                                                <strong className="col-sm-4">{"Điểm tự đánh giá"}</strong>
-                                                <div className="col-sm-8">
-                                                    <span> {careInfomation.evaluation ? careInfomation.evaluation.point : ''} /100</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </div>
-                                <div className="row">
-                                    <div className="col-md-6">
-                                        <div className="form-horizontal">
-                                            <div className="form-group">
                                                 <strong className="col-sm-4">{"Nội dung đánh giá "}</strong>
                                                 <div className="col-sm-8">
 
@@ -222,6 +209,7 @@ function InfoCareForm(props) {
                                     </div>
 
                                 </div>
+                             
                             </fieldset>
                         </div>
                     </div>

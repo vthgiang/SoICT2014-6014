@@ -1,6 +1,6 @@
 const { Care } = require('../../../models');
 const { connect } = require(`../../../helpers/dbHelper`);
-const { getCrmTask } = require('../crmTask/crmTask.service');
+const { getCrmTask, updateCrmActionsTaskInfo } = require('../crmTask/crmTask.service');
 const { createTaskAction, evaluationAction } = require('../../task/task-perform/taskPerform.service');
 const { getCrmUnitByRole } = require('../crmUnit/crmUnit.service');
 const STATUS_VALUE = {
@@ -33,14 +33,14 @@ exports.createCare = async (portal, companyId, data, userId, role) => {
     if (startDate.getTime() > now.getTime()) data = { ...data, status: STATUS_VALUE.unfulfilled }
     else if (endDate.getTime() > now.getTime()) data = { ...data, status: STATUS_VALUE.processing }
     else data = { ...data, status: STATUS_VALUE.expired }
-    console.log('xong')
     // tạo trường đơn vị CSKH
 
     const crmUnit = await getCrmUnitByRole(portal, companyId, role);
-    data = { ...data, crmUnit:crmUnit._id };
-
+    data = { ...data, crmUnit: crmUnit._id };
 
     const newCare = await Care(connect(DB_CONNECTION, portal)).create(data);
+    // cập nhật công việc
+    await updateCrmActionsTaskInfo(portal, companyId, userId, role);
     const getNewCare = await Care(connect(DB_CONNECTION, portal)).findById(newCare._id)
         .populate({ path: 'creator', select: '_id name' })
         .populate({ path: 'customer', select: '_id name ' })
@@ -60,7 +60,7 @@ exports.getCares = async (portal, companyId, query, role) => {
     let keySearch = {};
     if (!getAll) {
         const crmUnit = await getCrmUnitByRole(portal, companyId, role);
-        if (!crmUnit) return { listDocsTotal:0, cares:[] };
+        if (!crmUnit) return { listDocsTotal: 0, cares: [] };
         keySearch = { ...keySearch, crmUnit: crmUnit._id }
     }
     if (customerId) {
@@ -150,7 +150,7 @@ exports.getCareById = async (portal, companyId, id) => {
 }
 
 
-exports.editCare = async (portal, companyId, id, data, userId) => {
+exports.editCare = async (portal, companyId, id, data, userId,role) => {
     let { startDate, endDate } = data;
     if (userId) {
         data = { ...data, creator: userId };
@@ -184,8 +184,8 @@ exports.editCare = async (portal, companyId, id, data, userId) => {
     if (oldCare.status != newCare.status && (newCare.status == STATUS_VALUE.completedOverdue || newCare.status == STATUS_VALUE.accomplished)) {
         // Ghi lại công việc
         //lấy công việc chăm sóc khách hàng của nhân viên
-
-        const crmTask = await getCrmTask(portal, userId, 2);
+        console.log(1);
+        const crmTask = await getCrmTask(portal, companyId, userId, role, 2);
         //thêm mới hoạt động váo công việc
         let params = { taskId: crmTask.task }
         let body = {
@@ -193,18 +193,13 @@ exports.editCare = async (portal, companyId, id, data, userId) => {
             description: `<p> <strong> ${newCare.name}</strong>, tên khách hàng : <strong> ${newCare.customer.name}</strong>  </p>`,
             index: '1'
         }
+        console.log(1);
         const action = await createTaskAction(portal, params, body, []);
+        console.log(1);
         // thực hiện đánh giá cho hoạt động
-        params = { taskId: crmTask.task, actionId: action.taskActions[0]._id }
-        body = {
-            rating: parseFloat(newCare.evaluation.point),
-            actionImportanceLevel: 10,
-            firstTime: 1,
-            type: 'evaluation',
-            role: 'accountable',
-            creator: userId
-        }
-        evaluationAction(portal, params, body)
+        // cập nhật công việc
+        await updateCrmActionsTaskInfo(portal, companyId, userId, role);
+        console.log(1);
 
     }
 

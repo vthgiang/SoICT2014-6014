@@ -4,7 +4,6 @@ const { createTask } = require("../../task/task-management/task.service");
 const { getCrmTaskTemplate } = require('../crmTaskTemplate/crmTaskTemplate.service');
 const { getCrmUnitByRole } = require('../crmUnit/crmUnit.service');
 const { getTaskById, editTaskByAccountableEmployees } = require('../../task/task-perform/taskPerform.service');
-const { getNewCustomerBuyingRate } = require('../evaluation/evaluation.service');
 
 async function createCrmTask(portal, companyId, userId, role, type) {
     // lấy tháng và năm tạo công việc
@@ -80,20 +79,24 @@ exports.getCrmTask = async (portal, companyId, userId, role, type) => {
     }
 
 }
-
-exports.updateSearchingCustomerTaskInfo = async (portal, companyId, userId, role)=>{
-    console.log('vao day');
+/**
+ * cập nhật thông tin của công việc tìm kiếm khách hàng mới
+ * @param {*} portal 
+ * @param {*} companyId 
+ * @param {*} userId 
+ * @param {*} role 
+ * @returns 
+ */
+exports.updateSearchingCustomerTaskInfo = async (portal, companyId, userId, role) => {
     const crmTask = await this.getCrmTask(portal, companyId, userId, role, 1);
-    console.log(11);
     const task = await getTaskById(portal, crmTask.task, userId);
-    console.log(11);
-    // lấy thông tin về khách hàng mới và tỉ lệ mua hàng ở khách hàng mới
     const now = new Date();
     const month = now.getMonth() + 1;
     const year = now.getFullYear();
-    const day = now.getDay()
-    const { numberOfNewCustomers, newCustomerBuyingRate } = await getNewCustomerBuyingRate(portal, companyId, { month, year }, userId, role);
-    console.log(11);
+    const day = now.getDate()
+   
+    const { numberOfNewCustomers, newCustomerBuyingRate } = await require('../evaluation/evaluation.service').getNewCustomerBuyingRate(portal, companyId, { month, year }, userId, role);
+ 
     const taskData = {
         name: task.name,
         description: task.description,
@@ -101,14 +104,14 @@ exports.updateSearchingCustomerTaskInfo = async (portal, companyId, userId, role
         priority: [task.priority],
         formula: task.formula,
         parent: '',
-        user: accountableEmployees[0]._id,
+        user: task.accountableEmployees[0]._id,
         progress: 0,
         date: `${day}-${month}-${year}`,
         tags: [],
         startDate: task.startDate,
         endDate: task.endDate,
         collaboratedWithOrganizationalUnits: [],
-        accountableEmployees: [accountableEmployees[0]._id],
+        accountableEmployees: [task.accountableEmployees[0]._id],
         consultedEmployees: [],
         responsibleEmployees: [userId],
         informedEmployees: [],
@@ -118,7 +121,60 @@ exports.updateSearchingCustomerTaskInfo = async (portal, companyId, userId, role
             p2: { value: newCustomerBuyingRate, code: 'p2', type: 'number' }
         }
     }
-    console.log(11);
-    return await editTaskByAccountableEmployees(portal, taskData, crmTask.task);
+
+    await editTaskByAccountableEmployees(portal, taskData, crmTask.task);
+    return true;
 }
 
+/**
+ * Cập nhật thông tin cho công việc chăm sóc khách hàng
+ * @param {*} portal 
+ * @param {*} companyId 
+ * @param {*} userId 
+ * @param {*} role 
+ * @returns 
+ */
+
+exports.updateCrmActionsTaskInfo = async (portal, companyId, userId, role) => {
+    const crmTask = await this.getCrmTask(portal, companyId, userId, role, 2);
+    const task = await getTaskById(portal, crmTask.task, userId);
+    // lấy thông tin về khách hàng mới và tỉ lệ mua hàng ở khách hàng mới
+    const now = new Date();
+    const month = now.getMonth() + 1;
+    const year = now.getFullYear();
+    const day = now.getDate()
+    // tính tỉ lệ giải quyết vấn đề
+    const { numberOfCompletionActions, solutionRate } = await require('../evaluation/evaluation.service').getSolutionRate(portal, companyId, { month, year }, userId, role);
+    // tính tỉ lệ hoàn thành hoạt động
+    const { totalCareActions, completionRate, numberOfOverdueCareAction } = await require('../evaluation/evaluation.service').getCompletionRate(portal, companyId, { month, year }, userId, role);
+    // tính tỉ lệ mua hàng ở khách hàng cũ
+    const { customerRetentionRate } = await require('../evaluation/evaluation.service').getCustomerRetentionRate(portal, companyId, { month, year }, userId, role);
+    const taskData = {
+        name: task.name,
+        description: task.description,
+        status: [task.status],
+        priority: [task.priority],
+        formula: task.formula,
+        parent: '',
+        user: task.accountableEmployees[0]._id,
+        progress: 0,
+        date: `${day}-${month}-${year}`,
+        tags: [],
+        startDate: task.startDate,
+        endDate: task.endDate,
+        collaboratedWithOrganizationalUnits: [],
+        accountableEmployees: [task.accountableEmployees[0]._id],
+        consultedEmployees: [],
+        responsibleEmployees: [userId],
+        informedEmployees: [],
+        inactiveEmployees: [],
+        info: {
+            p1: { value: customerRetentionRate*100, code: 'p1', type: 'number' },
+            p2: { value: completionRate*100, code: 'p2', type: 'number' },
+            p3: { value: solutionRate*100, code: 'p3', type: 'number' },
+            p4: { value: totalCareActions, code: 'p4', type: 'number' }
+        }
+    }
+    await editTaskByAccountableEmployees(portal, taskData, crmTask.task);
+    return true;
+}

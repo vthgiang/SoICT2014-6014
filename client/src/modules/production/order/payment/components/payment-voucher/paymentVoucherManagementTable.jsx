@@ -30,7 +30,7 @@ class PaymentVoucherManagementTable extends Component {
     componentDidMount() {
         const { page, limit, type } = this.state;
         this.props.getAllPayments({ page, limit, type });
-        this.props.getCustomers();
+        this.props.getCustomers({getAll:true});
         this.props.getAllBankAccounts({ page: 1, limit: 1000, status: true });
     }
 

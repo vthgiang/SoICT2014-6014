@@ -15,7 +15,7 @@ function CompleteForm(props) {
         setCareCompleteState({ id: undefined });
     }, [careCompleteId])
 
-   
+
     if (!crm.cares.isLoading && crm.cares.careById && (careCompleteState.id !== crm.cares.careById._id)) {
         const care = crm.cares.careById;
         const newCare = {
@@ -29,6 +29,7 @@ function CompleteForm(props) {
             startDate: care.startDate ? formatFunction.formatDate(care.startDate) : '',
             endDate: care.endDate ? formatFunction.formatDate(care.endDate) : '',
             quillValueDefault: care.description ? care.description : '',
+            crmUnit: care.crmUnit ? care.crmUnit : ''
         }
         setCareCompleteState(newCare);
     }
@@ -50,7 +51,7 @@ function CompleteForm(props) {
     }
     const save = () => {
 
-        let newState = { ...careCompleteState, completeDate: new Date(), status: careCompleteState.status==4?5:3 };
+        let newState = { ...careCompleteState, completeDate: new Date(), status: careCompleteState.status == 4 ? 5 : 3 };
         if (newState.evaluation && !newState.evaluation.result) newState = { ...newState, evaluation: { ...careCompleteState.evaluation, result: 1 } }
         props.editCare(careCompleteId, newState)
     }
@@ -60,23 +61,23 @@ function CompleteForm(props) {
                 modalID={`modal-crm-care-complete${careCompleteId}`}
                 formID={`form-crm-care-complete${careCompleteId}`}
                 title={"Xác nhận hoàn thành hoạt động"}
-                size={75}
+                size={40}
                 func={save}
             // disableSubmit={!this.isFormValidated()}
             >
                 <div className='form-group'>
-                    <div className='form-inline'>
-                        <label style={{ marginRight: '10px' }}>Tên hoạt động:  </label>
-                        <strong>   {careCompleteState.name ? careCompleteState.name : ''}</strong>
+                    <div className='form-inline col-md-12'>
+                        <label className='col-md-4'>Tên hoạt động  </label>
+                        <strong className='col-md-8'>   {careCompleteState.name ? careCompleteState.name : ''}</strong>
                     </div>
-                    <div className='form-inline'>
-                        <label style={{ marginRight: '10px' }}>Tên khách hàng : </label>
-                        <strong> {careCompleteState.customer ? careCompleteState.customer.name : ''}</strong>
+                    <div className='form-inline col-md-12'>
+                        <label className='col-md-4'>Tên khách hàng  </label>
+                        <strong className='col-md-8' > {careCompleteState.customer ? careCompleteState.customer.name : ''}</strong>
                     </div>
 
                 </div>
                 {/* Form đánh giá hoạt động*/}
-                <form id={`modal-crm-care-complete${careCompleteId}`}>
+                <form id={`modal-crm-care-complete${careCompleteId}`} className='col-md-12'>
                     <h4>Đánh giá hoạt động</h4>
                     {/* Kết quả hoạt động */}
                     <div className="" >
@@ -84,18 +85,14 @@ function CompleteForm(props) {
                             <label>{"Kết quả hoạt động :"}</label>
                             <SelectBox id={`SelectUnit-result-${careCompleteId}`}
                                 defaultValue={''}
-                                items={[{ value: '1', text: 'Thành công' }, { value: '2', text: 'Thất bại' },]}
+                                items={[{ value: '0', text: '---Chọn---' }, { value: '1', text: 'Thành công' }, { value: '2', text: 'Thất bại' },]}
                                 onChange={handleChangeResult}
                                 style={{ width: '100%' }}
                             >
                             </SelectBox>
                         </div>
                         <div className="form-group">
-                            <label className="form-control-static">{'Điểm tự đánh giá : (/100)'}</label>
-                            <input className="form-control" type="text" name="point" placeholder={``} onChange={handleChangePoint} />
-                        </div>
-                        <div className="form-group">
-                            <label className="form-control-static">{'Nội dung đánh giá :'}</label>
+                            <label className="form-control-static ">{'Nội dung đánh giá :'}</label>
                             <QuillEditor
                                 id={`complete-comment-${careCompleteId}`}
                                 getTextData={handleChangeComment}

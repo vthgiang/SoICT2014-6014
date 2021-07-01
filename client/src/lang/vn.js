@@ -112,10 +112,10 @@ export default {
                 dashboard: "Bảng tin quản lý khách hàng",
                 customer: "Quản lý thông tin khách hàng",
                 lead: "Khách hàng thân thiết",
-                care: "Chăm sóc khách hàng",
+                care: "Hoạt động chăm sóc khách hàng",
                 group: "Nhóm khách hàng",
                 statistic: "Thống kê",
-                generalConfiguration: "Cấu hình chung",
+                generalConfiguration: "Cấu hình hoạt động chăm sóc khách hàng",
                 evaluation: "Đánh giá hoạt động CSKH",
                 crmUnitConfiguration:"Cấu hình đơn vị chăm sóc khách hàng"
             },
