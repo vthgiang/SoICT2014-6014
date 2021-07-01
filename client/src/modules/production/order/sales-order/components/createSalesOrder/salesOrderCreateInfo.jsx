@@ -161,6 +161,7 @@ class SalesOrderCreateInfo extends Component {
             code,
             note,
             customer,
+            customerPromotions,
             customerName,
             customerAddress,
             customerPhone,

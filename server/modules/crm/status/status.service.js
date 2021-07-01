@@ -5,7 +5,6 @@ const { getCrmUnitByRole } = require("../crmUnit/crmUnit.service");
 
 exports.getStatus = async (portal, companyId, query,role) => {
     const { limit, page,getAll } = query;
-    console.log('role',role)
     let keySearch = {};
     if (!getAll) {
         const crmUnit = await getCrmUnitByRole(portal, companyId, role);

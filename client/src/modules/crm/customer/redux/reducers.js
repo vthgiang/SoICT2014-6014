@@ -29,6 +29,7 @@ export function customers(state = initState, action) {
         case CrmCustomerConstants.GET_CRM_CUSTOMER_POINT_REQUEST:
         case CrmCustomerConstants.EDIT_CRM_CUSTOMER_POINT_REQUEST:
         case CrmCustomerConstants.ADD_CRM_CUSTOMER_PROMOTION_REQUEST:
+        case CrmCustomerConstants.GET_CRM_CUSTOMER_PROMOTIONS_REQUEST:
             return {
                 ...state,
                 isLoading: true
@@ -43,6 +44,7 @@ export function customers(state = initState, action) {
         case CrmCustomerConstants.GET_CRM_CUSTOMER_POINT_FAILE:
         case CrmCustomerConstants.EDIT_CRM_CUSTOMER_POINT_FAILE:
         case CrmCustomerConstants.ADD_CRM_CUSTOMER_PROMOTION_FAILE:
+        case CrmCustomerConstants.GET_CRM_CUSTOMER_PROMOTIONS_FAILE:
             return {
                 ...state,
                 isLoading: false
@@ -101,7 +103,12 @@ export function customers(state = initState, action) {
                 ...state,
                 isLoading: false
             };
-
+        case CrmCustomerConstants.GET_CRM_CUSTOMER_PROMOTIONS_SUCCESS:
+            return {
+                ...state,
+                customerPromotions: action.payload,
+                isLoading: false,
+            };
 
         case CrmCustomerConstants.DELETE_CRM_CUSTOMER_SUCCESS:
             return {

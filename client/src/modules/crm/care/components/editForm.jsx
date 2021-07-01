@@ -51,6 +51,7 @@ function EditCareForm(props) {
                 startDate: care.startDate ? formatFunction.formatDate(care.startDate) : '',
                 endDate: care.endDate ? formatFunction.formatDate(care.endDate) : '',
                 quillValueDefault: care.description ? care.description : '',
+                crmUnit:care.crmUnit ? care.crmUnit : ''
             }
             await setCareEditting(newCareEditting);
         }

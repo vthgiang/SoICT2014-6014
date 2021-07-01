@@ -1,6 +1,7 @@
 const { Bill, Lot, Stock, SalesOrder, PurchaseOrder } = require(`../../../../models`);
 const { connect } = require(`../../../../helpers/dbHelper`);
 const CustomerService = require('../../../crm/customer/customer.service');
+const { updateCrmActionsTaskInfo, updateSearchingCustomerTaskInfo } = require('../../../crm/crmTask/crmTask.service');
 
 exports.getBillsByType = async (query, userId, portal) => {
     var { page, limit, group, managementLocation } = query;
@@ -512,8 +513,14 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
             salesOrder.save();
             // Them rankPoint cho khach hang
             //id, userId, data, portal, companyId
-            console.log('-------------------------saleorder---------------------- ', salesOrder);
-            CustomerService.addRankPoint(portal, companyId, salesOrder.customer, { paymentAmount: salesOrder.paymentAmount }, userId)
+            await CustomerService.addRankPoint(portal, companyId, salesOrder.customer, { paymentAmount: salesOrder.paymentAmount }, userId)
+            // cập nhật công việc chăm sóc khách hàng
+            const customer = CustomerService.getCustomerById(salesOrder.customer);
+
+            //role đang bị sai
+            updateCrmActionsTaskInfo(portal, companyId, customer.owner._id, '60da891d418c1834643ab74a');
+            updateSearchingCustomerTaskInfo(portal, companyId, customer.owner._id, '60da891d418c1834643ab74a');
+
             //Cập nhật số xu cho khách hàng
             let customerPoint = await CustomerService.getCustomerPoint(portal, companyId, salesOrder.customer);
             if (customerPoint && salesOrder.allCoin) {

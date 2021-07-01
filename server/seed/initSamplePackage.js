@@ -39,12 +39,12 @@ const initSampleCompanyDB = async () => {
      * 1.1 Khởi tạo model cho db
      */
     const initModels = (db) => {
-        console.log("models", db.models);
+        
         if (!db.models.Employee) Employee(db);
         if (!db.models.Major) Major(db);
         if (!db.models.CareerPosition) CareerPosition(db);
 
-        console.log("models_list", db.models);
+       
     }
 
     initModels(vnistDB);

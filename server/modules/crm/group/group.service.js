@@ -27,7 +27,6 @@ exports.getGroups = async (portal, companyId, query, role) => {
     if (!getAll) {
         // kta đơn vị CSKH
         const crmUnit = await getCrmUnitByRole(portal, companyId, role);
-        console.log(crmUnit)
         if (!crmUnit) return { listGroupTotal: 0, groups: [] }
         keySearch = { ...keySearch, crmUnit: crmUnit._id }
 
