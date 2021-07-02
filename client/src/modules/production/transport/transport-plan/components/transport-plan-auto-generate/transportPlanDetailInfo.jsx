@@ -136,9 +136,9 @@ function TransportPlanDetailInfo(props) {
     return (
         <React.Fragment>
             <DialogModal
-                modalID="modal-detail-info-transport-plan" 
+                modalID="modal-detail-info-transport-plan-auto-generate" 
                 isLoading={false}
-                formID="modal-detail-info-transport-plan"
+                formID="modal-detail-info-transport-plan-auto-generate"
                 title={"Chi tiết kế hoạch vận chuyển"}
                 size={100}
                 maxWidth={500}

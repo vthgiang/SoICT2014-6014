@@ -139,7 +139,7 @@ function TransportPlanDetailInfo(props) {
     return (
         <React.Fragment>
             <DialogModal
-                modalID="modal-detail-info-transport-plan" 
+                modalID="modal-detail-info-transport-plan11" 
                 isLoading={false}
                 formID="modal-detail-info-transport-plan"
                 title={"Chi tiết kế hoạch vận chuyển"}

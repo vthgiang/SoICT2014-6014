@@ -187,13 +187,13 @@ function TransportVehicleCarrier2(props) {
                             if (item.usedVehicles && item.usedVehicles.length!==0){
                                 let k = item.usedVehicles.filter(r=> String(r._id)===String(itemId));
                                 if (k && k.length!==0){
-                                    res = "iconactive";
+                                    res = "iconred";
                                 }
                             }
                             if (item.usedCarriers && item.usedCarriers.length!==0){
                                 let k = item.usedCarriers.filter(r=> String(r._id)===String(itemId));
                                 if (k && k.length!==0){
-                                    res = "iconactive"
+                                    res = "iconred"
                                 }
                             }
                         }

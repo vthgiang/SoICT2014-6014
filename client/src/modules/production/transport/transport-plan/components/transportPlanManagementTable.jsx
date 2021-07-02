@@ -99,7 +99,7 @@ function TransportPlanManagementTable(props) {
 
     const handleShowDetailInfo = (transportPlan) => {
         setCurrentTransportPlan(transportPlan);
-        window.$('#modal-detail-info-transport-plan').modal('show');
+        window.$('#modal-detail-info-transport-plan11').modal('show');
     }
 
     const reloadOtherEditForm = (value) => {
