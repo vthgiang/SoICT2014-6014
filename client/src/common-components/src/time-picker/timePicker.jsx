@@ -21,8 +21,14 @@ class TimePicker extends Component {
             let length = timeValue.length
             time  = [timeValue.slice(0,length-6),timeValue.slice(length-5,length-3),timeValue.slice(length-2,length)]
         }
-        window.$("#" + id).timepicki({start_time: time,step_size_minutes:5,on_change:this.onChangeTimePicker})
-    
+        window.$("#" + id).timepicki({
+            start_time: time,
+            step_size_minutes:5,
+            increase_direction:'up',
+            overflow_minutes:true,
+            input_writable: true,
+            on_change:this.onChangeTimePicker})
+            
        
         if (getDefaultValue){
             getDefaultValue(window.$("#" + id).val())
