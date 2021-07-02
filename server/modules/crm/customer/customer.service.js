@@ -1,11 +1,12 @@
 const { Customer, User } = require('../../../models');
 const { connect } = require(`../../../helpers/dbHelper`);
-const { getCrmTask } = require('../crmTask/crmTask.service')
 const { createTaskAction } = require('../../task/task-perform/taskPerform.service');
 const { getCrmUnitByRole } = require('../crmUnit/crmUnit.service');
+const { getCrmTask, updateSearchingCustomerTaskInfo } = require('../crmTask/crmTask.service');
 exports.getUrl = (destination, filename) => {
+    console.log(destination);
     let url = `${destination}/${filename}`;
-    return url.substr(1, url.length);
+    return url;
 }
 
 /**
@@ -20,11 +21,11 @@ exports.formatDate = (value) => {
     return [date[2], date[1], date[0]].join("-");
 }
 
+const createCustomerCode = async (portal) => {
 
-exports.createCustomer = async (portal, companyId, data, userId, fileConverts, role) => {
-    let { companyEstablishmentDate, birthDate, files } = data;
     // tạo mã khách hàng
     const lastCustomer = await Customer(connect(DB_CONNECTION, portal)).findOne().sort({ $natural: -1 });
+
     let code;
     if (lastCustomer == null) code = 'KH001';
     else {
@@ -35,6 +36,14 @@ exports.createCustomer = async (portal, companyId, data, userId, fileConverts, r
         else if (customerNumber < 100) code = 'KH0' + customerNumber;
         else code = 'KH' + customerNumber;
     }
+    return code;
+}
+
+exports.createCustomer = async (portal, companyId, data, userId, fileConverts, role) => {
+    data = await JSON.parse(JSON.stringify(data));
+    let { companyEstablishmentDate, birthDate, files } = data;
+    // tạo mã khách hàng
+    const code = await createCustomerCode(portal);
 
     data = { ...data, code };
     //format birthDate yy-mm-dd
@@ -73,14 +82,16 @@ exports.createCustomer = async (portal, companyId, data, userId, fileConverts, r
         data = { ...data, files: result };
     }
     // thêm đơn vị quản lý 
-    console.log('vao day', role);
+
     const crmUnit = await getCrmUnitByRole(portal, companyId, role);
+
     if (!crmUnit) return {};
-    data = { ...data, crmUnit:crmUnit._id };
+    data = { ...data, crmUnit: crmUnit._id };
     const newCustomer = await Customer(connect(DB_CONNECTION, portal)).create(data);
+
     // them vao hoạt động tìm kiếm khách hàng
     //lấy công việc thêm khách hàng của nhân viên
-    const crmTask = await getCrmTask(portal, userId, 1);
+    const crmTask = await getCrmTask(portal, companyId, userId, role, 1);
     //thêm mới hoạt động váo công việc
     const params = { taskId: crmTask.task }
     const body = {
@@ -88,7 +99,8 @@ exports.createCustomer = async (portal, companyId, data, userId, fileConverts, r
         description: `<p>Thêm mới khách hàng<strong> ${newCustomer.name}</strong></p>`,
         index: '1'
     }
-    createTaskAction(portal, params, body, []);
+    await createTaskAction(portal, params, body, []);
+    await updateSearchingCustomerTaskInfo(portal, companyId, userId, role);
 
     const getNewCustomer = await Customer(connect(DB_CONNECTION, portal)).findById(newCustomer._id)
         .populate({ path: 'group', select: '_id name' })
@@ -99,9 +111,19 @@ exports.createCustomer = async (portal, companyId, data, userId, fileConverts, r
 }
 
 
-exports.importCustomers = async (portal, companyId, data, userId) => {
+exports.importCustomers = async (portal, companyId, data, userId, role) => {
+    // thêm đơn vị quản lý 
+    const crmUnit = await getCrmUnitByRole(portal, companyId, role);
+    if (!crmUnit) return {};
+    //lấy công việc thêm khách hàng của nhân viên
+    const crmTask = await getCrmTask(portal, companyId, userId, role, 1);
+    const params = { taskId: crmTask.task }
+    let getResult = [];
     for ([index, x] of data.entries()) {
-        x["creator"] = userId;
+        const code = await createCustomerCode(portal);
+        x.crmUnit = crmUnit._id;
+        x.code = code;
+        x.creator = userId;
         let owners = [];
         for (y of x.owner) {
             let owner = await User(connect(DB_CONNECTION, portal)).findOne({ email: y });
@@ -110,8 +132,8 @@ exports.importCustomers = async (portal, companyId, data, userId) => {
                 owners = [...owners, owner];
             }
         }
-        data[index].owner = owners;
-
+        x.owner = owners;
+        console.log('vao 2')
         // format lai định dạng date trước khi lưu
         if (x.birthDate) {
             x.birthDate = this.formatDate(x.birthDate);
@@ -122,44 +144,37 @@ exports.importCustomers = async (portal, companyId, data, userId) => {
         }
 
         // ghi lại lịch sử tạo khách hàng
-
         if (x.status && x.status.length > 0) {
-            x["statusHistories"] = [{
+            x.statusHistories = [{
                 oldValue: x.status[x.status.length - 1],
                 newValue: x.status[x.status.length - 1],
                 createdAt: new Date(),
                 createdBy: userId,
             }]
         }
-    }
-
-    const result = await Customer(connect(DB_CONNECTION, portal)).insertMany(data);
-
-
-    // them vao hoạt động tìm kiếm khách hàng
-    //lấy công việc thêm khách hàng của nhân viên
-    const crmTask = await getCrmTask(portal, userId, 1);
-    //thêm mới hoạt động váo công việc
-    const params = { taskId: crmTask.task }
-    for ([index, x] of data.entries()) {
+        const newCustomer = await Customer(connect(DB_CONNECTION, portal)).create(x);
+        //thêm hoạt động vaod công việc tìm kiếm khách hàng
         const body = {
             creator: userId,
             description: `<p>Thêm mới khách hàng<strong> ${x.name}</strong></p>`,
             index: '1'
         }
         createTaskAction(portal, params, body, []);
-    }
 
-    let getResult = [];
-    for (let obj of result) {
-        const newObj = await Customer(connect(DB_CONNECTION, portal)).findOne({ _id: obj._id })
+
+        const getCustomer = await Customer(connect(DB_CONNECTION, portal)).findOne({ _id: newCustomer._id })
             .populate({ path: 'group', select: '_id name' })
             .populate({ path: 'status', select: '_id name' })
             .populate({ path: 'owner', select: '_id name email' });
-        if (newObj) {
-            getResult.push(newObj);
+        if (getCustomer) {
+            getResult.push(getCustomer);
         }
+
     }
+    // cập nhật lại thông tin công việc
+    await updateSearchingCustomerTaskInfo(portal, companyId, userId, role);
+
+
     return getResult;
 }
 
@@ -176,7 +191,7 @@ exports.getCustomers = async (portal, companyId, query, role) => {
     if (!getAll) {
         // lấy đơn vị CSKH từ role
         const crmUnit = await getCrmUnitByRole(portal, companyId, role);
-        if (!crmUnit) return { listDocsTotal :0, customers:[] } ;
+        if (!crmUnit) return { listDocsTotal: 0, customers: [] };
         keySearch = { crmUnit: crmUnit._id }
     }
     if (customerCode) {
@@ -360,9 +375,16 @@ exports.addPromotion = async (portal, companyId, id, data, userId) => {
         .populate({ path: 'owner', select: '_id name email' })
         .populate({ path: 'creator', select: '_id name email' })
         .populate({ path: 'statusHistories.oldValue statusHistories.newValue statusHistories.createdBy', select: '_id name' })
+}
 
+exports.getCustomerPromotions = async (portal, companyId, customerId) => {
+    console.log('vao get promotion');
+    const customer = await this.getCustomerById(portal, companyId, customerId);
+    if (!customer || customer.promotions) return [];
+    return customer.promotions;
 
 }
+
 
 exports.addRankPoint = async (portal, companyId, id, data, userId) => {
     let { paymentAmount } = data;

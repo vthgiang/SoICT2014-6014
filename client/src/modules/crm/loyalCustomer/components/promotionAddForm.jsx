@@ -1,20 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
-import { DatePicker, DialogModal, QuillEditor } from '../../../../common-components';
+import { ButtonModal, DatePicker, DialogModal } from '../../../../common-components';
 import { CrmCustomerActions } from '../../customer/redux/actions';
 import { CrmLoyalCustomerActions } from '../redux/action';
 
 
-
 function PromotionAddForm(props) {
-    const { translate, customerId, crm, user } = props;
+    const { translate, customerId, crm, user, customers } = props;
     const [promotion, setPromotion] = useState({});
-    useEffect(() => {
-        props.getCustomer(customerId);
-        setPromotion({});
-    }, [customerId]);
 
     const handleChangeValue = async (e) => {
         const value = e.target.value;
@@ -52,11 +46,11 @@ function PromotionAddForm(props) {
 
     return (
         <React.Fragment>
-
+            <ButtonModal modalID="modal-crm-customer-promotion-add" button_name={'Thêm mới khuyến mãi'} title={'Thêm mới khuyến mãi'} />
             <DialogModal
                 modalID="modal-crm-customer-promotion-add"
                 formID="form-crm-customer-promotion-add"
-                title={'Thêm khuyến mãi'}
+                title={'Thêm khuyến mãi khách hàng'}
                 func={save}
                 size={75}
             // disableSubmit={!this.isFormValidated()}
@@ -69,7 +63,7 @@ function PromotionAddForm(props) {
                                 <label style={{ marginRight: '10px' }}>{translate('crm.care.customer')}:</label>
                                 {
                                     crm.customers.customerById &&
-                                    <strong> {crm.customers.customerById.name} </strong>
+                                    <strong> {crm.customers.name} </strong>
                                 }
                                 {/* <ErrorLabel content={groupCodeError} /> */}
                             </div>

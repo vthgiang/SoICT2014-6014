@@ -59,11 +59,10 @@ function CrmCustomerCreate(props) {
      * Hàm kiểm tra validate
      */
     const isFormValidated = () => {
-        const { code, name, taxNumber } = newCustomer;
+        const { name, taxNumber } = newCustomer;
         const { translate } = props;
 
-        if (!ValidationHelper.validateName(translate, code).status
-            || !ValidationHelper.validateName(translate, name).status
+        if (!ValidationHelper.validateName(translate, name).status
             || !ValidationHelper.validateInvalidCharacter(translate, taxNumber).status)
             return false;
         return true;
@@ -118,7 +117,7 @@ function CrmCustomerCreate(props) {
                 <div className="nav-tabs-custom">
                     <ul className="nav nav-tabs">
                         <li className="active"><a href="#customer-general" data-toggle="tab" >Thông tin chung</a></li>
-                        <li><a href="#customer-fileAttachment" data-toggle="tab">Tài liệu liên quan</a></li>
+                        <li><a href="#customer-fileAttachment-create" data-toggle="tab">Tài liệu liên quan</a></li>
                     </ul>
                     <div className="tab-content">
                         {/* Tab thông tin chung */}
@@ -134,7 +133,7 @@ function CrmCustomerCreate(props) {
                         {/* Tab file liên quan đến khách hàng */}
                         {
                             <FileTabCreateForm
-                                id={'customer-fileAttachment'}
+                                id={'customer-fileAttachment-create'}
                                 callBackFromParentCreateForm={myCallBack}
                             />
                         }

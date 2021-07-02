@@ -62,9 +62,9 @@ function CrmCustomerEdit(props) {
                             oldValue: o.oldValue ? o.oldValue : null,
                             newValue: o.newValue,
                             createdBy: o.createdBy,
-                            description:o.description? o.description:''
+                            description: o.description ? o.description : ''
                         })) : [],
-                    files: customer.files?customer.files:[],
+                    files: customer.files ? customer.files : [],
                 };
                 await setEdittingCustomer(newEditingCustomer);
                 dataStatus = 1;
@@ -104,8 +104,8 @@ function CrmCustomerEdit(props) {
             ...editingCustomer,
             [name]: value,
         };
-        console.log('newEditingCustomer',newEditingCustomer)
-       await setEdittingCustomer(newEditingCustomer);
+        console.log('newEditingCustomer', newEditingCustomer)
+        await setEdittingCustomer(newEditingCustomer);
 
     }
 
@@ -114,11 +114,10 @@ function CrmCustomerEdit(props) {
      * Hàm kiểm tra validate
      */
     const isFormValidated = () => {
-        const { code, name, taxNumber } = editingCustomer;
+        const { name, taxNumber } = editingCustomer;
 
 
-        if (!ValidationHelper.validateName(translate, code).status
-            || !ValidationHelper.validateName(translate, name).status
+        if (!ValidationHelper.validateName(translate, name).status
             || !ValidationHelper.validateInvalidCharacter(translate, taxNumber).status)
             return false;
         return true;
@@ -129,9 +128,9 @@ function CrmCustomerEdit(props) {
         console.log(value);
     }
 
-    const save = async  () => {
+    const save = async () => {
         let formData;
-        let newEditingCustomer = {...editingCustomer}
+        let newEditingCustomer = { ...editingCustomer }
         if (statusChangeHistory.newStatus) {
             // lấy trạng thái cũ của khách hàng 
             const oldStatus = editingCustomer.status;
@@ -140,12 +139,12 @@ function CrmCustomerEdit(props) {
 
             //lấy danh sách trạng thái khách hàng trước khi edit (lịch sử cũ)
             let { statusHistories } = editingCustomer;
-            console.log('history',statusHistories)
+            console.log('history', statusHistories)
 
             const getDateTime = new Date();
 
             // Lưu lại lịch sủ thay đổi trạng thái
-            if (  oldStatus[0]._id != newStatus[0]) {
+            if (oldStatus[0]._id != newStatus[0]) {
                 console.log('CŨ', oldStatus[0]._id)
                 console.log('Mới', newStatus[0])
 
@@ -159,7 +158,7 @@ function CrmCustomerEdit(props) {
                         description: description
                     }
                 ]
-                 newEditingCustomer = { ...editingCustomer, statusHistories, status: [newStatus] }
+                newEditingCustomer = { ...editingCustomer, statusHistories, status: [newStatus] }
             }
         }
         // setEdittingCustomer(newEditingCustomer);

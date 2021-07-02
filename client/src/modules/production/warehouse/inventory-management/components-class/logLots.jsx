@@ -3,7 +3,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
 import { translate } from 'react-redux-multilingual/lib/utils';
 
-import BillDetailForm from '../../bill-management/components/genaral/billDetailForm';
+import BillDetailForm from '../../bill-management/components-class/genaral/billDetailForm';
 import { BillActions } from '../../bill-management/redux/actions';
 
 class LogLots extends Component {

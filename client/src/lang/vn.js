@@ -112,10 +112,10 @@ export default {
                 dashboard: "Bảng tin quản lý khách hàng",
                 customer: "Quản lý thông tin khách hàng",
                 lead: "Khách hàng thân thiết",
-                care: "Chăm sóc khách hàng",
+                care: "Hoạt động chăm sóc khách hàng",
                 group: "Nhóm khách hàng",
                 statistic: "Thống kê",
-                generalConfiguration: "Cấu hình chung",
+                generalConfiguration: "Cấu hình hoạt động chăm sóc khách hàng",
                 evaluation: "Đánh giá hoạt động CSKH",
                 crmUnitConfiguration:"Cấu hình đơn vị chăm sóc khách hàng"
             },
@@ -2141,6 +2141,8 @@ export default {
                         "Chỉnh sửa thông tin nhân viên thất bại",
                     import_employee_success:
                         "Import thông tin nhân viên thành công",
+                    importing_employee: 
+                        "Đang xử lí dữ liệu",
                     import_employee_faile:
                         "Import thông tin nhân viên thất bại",
                     employee_number_required:

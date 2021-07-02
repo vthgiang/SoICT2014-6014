@@ -210,14 +210,14 @@ function ArchiveManagementTable(props) {
                                     <td style={{ textAlign: 'center' }}>
                                         <a onClick={() => handleShowDetailInfo(x)}><i className="material-icons">view_list</i></a>
                                         <a onClick={() => handleEdit(x)} href={`#${x._id}`} className="text-yellow" ><i className="material-icons">edit</i></a>
-                                        {/* <DeleteNotification
+                                        <DeleteNotification
                                                 content={translate('manage_warehouse.category_management.delete_info')}
                                                 data={{
                                                     id: x._id,
                                                     info: x.code + " - " + x.name
                                                 }}
-                                                func={this.props.deleteBinLocations}
-                                            /> */}
+                                                func={props.deleteBinLocations}
+                                            />
                                     </td>
                                 </tr>
                             ))

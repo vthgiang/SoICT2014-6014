@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import BookManagement from '../components/stock-book';
-import ReceiptManagement from '../components/good-receipts';
-import IssueManagement from '../components/good-issues';
-import ReturnManagement from '../components/good-returns';
-import RotateManagement from '../components/stock-rotate';
-import TakeManagement from '../components/stock-takes';
+import BookManagement from '../components-class/stock-book';
+import ReceiptManagement from '../components-class/good-receipts';
+import IssueManagement from '../components-class/good-issues';
+import ReturnManagement from '../components-class/good-returns';
+import RotateManagement from '../components-class/stock-rotate';
+import TakeManagement from '../components-class/stock-takes';
 
 import { BillActions } from '../redux/actions';
 import { StockActions } from '../../stock-management/redux/actions';

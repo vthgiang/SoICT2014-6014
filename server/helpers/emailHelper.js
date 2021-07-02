@@ -31,5 +31,5 @@ exports.sendEmail = (to, subject, text, html) => {
             }
         });
     }
-    setTimeout(send,length*5000)
+    setTimeout(send,length*2000)
 }

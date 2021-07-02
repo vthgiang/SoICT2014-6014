@@ -37,7 +37,7 @@ class QuoteManageTable extends Component {
         const { page, limit, currentRole } = this.state;
         this.props.getAllQuotes({ page, limit, currentRole });
         this.props.getDiscountForOrderValue();
-        this.props.getCustomers();
+        this.props.getCustomers({getAll:true});
         this.props.getAllBusinessDepartments({ page: 1, limit: 1000 });
     };
 

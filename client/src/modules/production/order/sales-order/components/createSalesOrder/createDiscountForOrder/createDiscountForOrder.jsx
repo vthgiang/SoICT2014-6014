@@ -60,11 +60,12 @@ class CreateDiscountsForOrder extends Component {
         const { handleDiscountsChange } = this.props;
         let { discountsProps } = this.props;
         let { id, checked } = e.target;
-
+        console.log('discountsProps', discountsProps);
         if (checked === true) {
             let discountValue = this.getDiscountValue(id);
             discountsProps.push(discountValue);
             handleDiscountsChange(discountsProps);
+            console.log('discountsProps', discountsProps);
         } else {
             let filterDiscountsProps = discountsProps.filter((element) => element._id !== id.split("-")[0]); //lọc phần tử có id ra khỏi state
             for (let key in discountsChecked) {
@@ -81,9 +82,8 @@ class CreateDiscountsForOrder extends Component {
     };
 
     getThresholdToBeAppliedTitle = (discount) => {
-        let title = `Đơn hàng có giá trị từ ${
-            discount.minimumThresholdToBeApplied >= 0 ? formatCurrency(discount.minimumThresholdToBeApplied) : " 0 "
-        }`;
+        let title = `Đơn hàng có giá trị từ ${discount.minimumThresholdToBeApplied >= 0 ? formatCurrency(discount.minimumThresholdToBeApplied) : " 0 "
+            }`;
         if (discount.maximumThresholdToBeApplied) {
             title = title + " đến " + formatCurrency(discount.maximumThresholdToBeApplied);
         }
@@ -101,9 +101,8 @@ class CreateDiscountsForOrder extends Component {
         const { goodId } = this.props;
         let discount = discountOnGoods.find((element) => goodId === element.good._id);
 
-        let title = `${discount.discountedPrice ? formatCurrency(discount.discountedPrice) : ""} (vnđ)/ ${discount.good.baseUnit} ${
-            discount.expirationDate ? "đối với sản phẩm có hạn sử dụng trước ngày " + formatDate(discount.expirationDate) : ""
-        }`;
+        let title = `${discount.discountedPrice ? formatCurrency(discount.discountedPrice) : ""} (vnđ)/ ${discount.good.baseUnit} ${discount.expirationDate ? "đối với sản phẩm có hạn sử dụng trước ngày " + formatDate(discount.expirationDate) : ""
+            }`;
 
         return title;
     };
@@ -124,8 +123,7 @@ class CreateDiscountsForOrder extends Component {
             case 3:
                 title =
                     title +
-                    ` được miễn phí vận chuyển ${
-                        discount.maximumFreeShippingCost ? ", tối đa " + formatCurrency(discount.maximumFreeShippingCost) : ""
+                    ` được miễn phí vận chuyển ${discount.maximumFreeShippingCost ? ", tối đa " + formatCurrency(discount.maximumFreeShippingCost) : ""
                     } (vnđ)`;
                 break;
             case 4:
@@ -139,6 +137,74 @@ class CreateDiscountsForOrder extends Component {
         }
         return capitalize(title);
     };
+    handleCustomerPromotionChange = (e) => {
+        let { setCustomerPromotions } = this.props;
+        let { customerPromotions } = this.props;
+        let { id, checked } = e.target;
+        if (checked) {
+            for (let i = 0; i < customerPromotions.length; i++) {
+                customerPromotions[i].checked = false
+                customerPromotions[i].disabled = true
+            }
+        }
+        else {
+            for (let i = 0; i < customerPromotions.length; i++) {
+                customerPromotions[i].disabled = false
+            }
+        }
+        let index = id.split('-')[2];
+        customerPromotions[index].checked = checked;
+        customerPromotions[index].disabled = false;
+        setCustomerPromotions(customerPromotions);
+    }
+
+    getDiscountCustomertOptions = () => {
+        let { customerPromotions } = this.props;
+        let { paymentAmount } = this.props;
+        let { discountsChecked } = this.props;
+        const { setCustomerPromotions } = this.props;
+        // tạo giao diện 
+        return (
+            <div style={{ paddingLeft: "2rem" }}>
+                {customerPromotions.map((promo, index) => {
+                    let disabled = promo.disabled;
+                    if (promo.minimumOrderValue) {
+                        if (parseInt(paymentAmount) < promo.minimumOrderValue) {
+                            disabled = true;
+                            customerPromotions[index].disabled = true;
+                            customerPromotions[index].checked = false;
+                        }
+                    }
+                    if (paymentAmount === undefined || paymentAmount === "" || paymentAmount === null) {
+                        disabled = true;
+                    }
+                    return (
+                        <div className="form-check" style={{ display: "flex", paddingTop: "10px" }}>
+                            <input
+                                type="checkbox"
+                                className={`form-check-input`}
+                                id={`cus-promo-${index}`}
+                                disabled={disabled}
+                                checked={promo.checked}
+                                onChange={this.handleCustomerPromotionChange}
+                                style={{ minWidth: "20px" }}
+                                key={index}
+                            />
+                            <label
+                                className={`form-check-label ${disabled ? "text-muted" : "text-success"}`}
+                                for={`cus-promo-${index}`}
+                                style={{ fontWeight: `${disabled ? 500 : 600}` }}
+                            >
+                                {`Khuyến mãi ${promo.value}% cho đơn hàng từ ${promo.minimumOrderValue}, giảm tối đa ${promo.promotionalValueMax} (VNĐ)`}
+                            </label>
+                        </div>
+                    );
+                })}
+            </div>
+        );
+    }
+
+
 
     getDiscountOptions = (item) => {
         let { paymentAmount } = this.props;
@@ -239,6 +305,12 @@ class CreateDiscountsForOrder extends Component {
                             );
                         })
                     )}
+                    <div>
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                            <i className="fa fa-gift text-warning"></i> &ensp; <strong>Khuyến mãi của khách hàng</strong>
+                        </div>
+                        {this.getDiscountCustomertOptions()}
+                    </div>
                 </DialogModal>
             </React.Fragment>
         );
