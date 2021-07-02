@@ -5,8 +5,10 @@ import moment from 'moment'
 import { getStorage } from '../../../config';
 
 import ToolbarGantt from './toolbarGantt';
-import './gantt.css';
+import './projectGantt.css';
 import { numberWithCommas } from '../../../modules/task/task-management/component/functionHelpers';
+
+const BAR_HEIGHT = 16
 
 function ProjectGantt(props) {
     const { translate } = props;
@@ -15,12 +17,24 @@ function ProjectGantt(props) {
     const [lang, setLang] = useState(getStorage('lang'))
     const [gantt, setGantt] = useState(window.initializationGantt());
 
+    const draw_planned = (task) => {
+        if (task.planned_start && task.planned_end) {
+            var sizes = gantt.getTaskPosition(task, task.planned_start, task.planned_end);
+            var el = document.createElement('div');
+            el.className = 'baseline';
+            el.style.left = sizes.left + 'px';
+            el.style.width = sizes.width + 'px';
+            el.style.top = sizes.top + gantt.config.bar_height + 13 + 'px';
+            return el;
+        }
+        return false;
+    }
+
     useEffect(() => {
         initZoom(gantt);
 
         // Config biểu đồ
         if (gantt) {
-            gantt.config.row_height = 25;
             gantt.config.drag_move = false;
             gantt.config.drag_multiple = false;
             gantt.config.drag_progress = false;
@@ -50,18 +64,50 @@ function ProjectGantt(props) {
             ]
             gantt.config.xml_date = "%Y-%m-%d %H:%i";
 
+            gantt.config.task_height = BAR_HEIGHT;
+            gantt.config.bar_height = BAR_HEIGHT;
+            gantt.config.row_height = 42;
+            gantt.locale.labels.baseline_enable_button = 'Set';
+            gantt.locale.labels.baseline_disable_button = 'Remove';
+            gantt.config.lightbox.sections = [
+                { name: "description", height: 70, map_to: "text", type: "textarea", focus: true },
+                { name: "time", map_to: "auto", type: "duration" },
+                {
+                    name: "baseline",
+                    map_to: { start_date: "planned_start", end_date: "planned_end" },
+                    button: true,
+                    type: "duration_optional"
+                }
+            ];
+            gantt.locale.labels.section_baseline = "Planned";
+            // Adding baseline display
+            gantt.addTaskLayer(task => draw_planned(task));
+
             // Màu sắc cho công việc
             gantt.templates.task_class = function (start, end, task) {
-                switch (task.process) {
-                    case -1:
-                        return 'baseline_item';
-                    case 0:
-                        return "delay";
-                    case 1:
-                        return "intime";
-                    case 2:
-                        return "notAchive";
-                    default: return "none";
+                if (task.planned_end) {
+                    var classes = ['has-baseline'];
+                    if (end.getTime() > task.planned_end.getTime()) {
+                        classes.push('overdue');
+                    }
+                    switch (task.process) {
+                        case -1:
+                            classes.push('baseline_item');
+                            break;
+                        case 0:
+                            classes.push('delay');
+                            break;
+                        case 1:
+                            classes.push('intime');
+                            break;
+                        case 2:
+                            classes.push('notAchive');
+                            break;
+                        default:
+                            classes.push('none');
+                            break;
+                    }
+                    return classes.join(' ');
                 }
             };
 
@@ -72,17 +118,16 @@ function ProjectGantt(props) {
                 // critical_path: true,
             });
             gantt.templates.tooltip_text = function (start, end, task) {
-                if (RegExp(/baseline/g).test(String(task.id))) {
-                    return `<b>${translate('task.task_dashboard.task_name')}:</b> ${task.baselineName} 
-                            <br/>
-                            <b>Thời điểm bắt đầu:</b> ${moment(start).format("DD-MM-YYYY hh:mm A")} 
-                            <br/>
-                            <b>Thời điểm kết thúc dự kiến:</b> ${moment(end).format("DD-MM-YYYY hh:mm A")}`;
-                }
                 return `<b>${translate('task.task_dashboard.task_name')}:</b> ${task.taskName}
                         <br/>
+                        <b>Thời điểm bắt đầu dự kiến:</b> ${moment(task.start_date).format("DD-MM-YYYY hh:mm A")} 
+                        <br/>
+                        <b>Thời điểm kết thúc dự kiến:</b> ${moment(task.planned_end).format("DD-MM-YYYY hh:mm A")}
+                        <br/>
+                        <b>Thời điểm bắt đầu thực tế:</b> ${moment(task.start_date).format("DD-MM-YYYY hh:mm A")}
+                        <br/>
                         ${task.status === 'finished'
-                        ? `<b>Thời điểm kết thúc thực tế:</b> ${moment(end).format("DD-MM-YYYY hh:mm A")}
+                        ? `<b>Thời điểm kết thúc thực tế:</b> ${moment(task.end_date).format("DD-MM-YYYY hh:mm A")}
                         <br/>`
                         : ``}
                         <b>Trạng thái công việc:</b> ${task.status}
@@ -90,10 +135,26 @@ function ProjectGantt(props) {
                         <b>Tiến độ:</b> ${numberWithCommas(Number(task.progress) * 100)}%`;
             };
 
+            // Hiển thị text quá hạn bao nhiêu ngày
+            gantt.templates.rightside_text = function (start, end, task) {
+                if (task.planned_end) {
+                    if (end.getTime() > task.planned_end.getTime()) {
+                        var overdue = Math.ceil(Math.abs((end.getTime() - task.planned_end.getTime()) / (24 * 60 * 60 * 1000)));
+                        var text = "<b>Quá hạn: " + overdue + " ngày</b>";
+                        return text;
+                    }
+                }
+            };
+
+            gantt.attachEvent("onTaskLoading", function (task) {
+                task.planned_start = gantt.date.parseDate(task.planned_start, "xml_date");
+                task.planned_end = gantt.date.parseDate(task.planned_end, "xml_date");
+                return true;
+            });
+
             gantt.attachEvent("onTaskDblClick", (id, mode) => {
                 props.attachEvent(id);
             });
-            // gantt.config.highlight_critical_path = true;
         }
 
         return () => {
@@ -109,6 +170,8 @@ function ProjectGantt(props) {
             gantt.clearAll();
             gantt.init(`project-gantt-${ganttId}`);
             gantt.parse(ganttData);
+            // Add lại layer baseline dự án khi re-render component
+            gantt.addTaskLayer(task => draw_planned(task));
 
             // Thêm marker thời gian hiện tại
             const dateToStr = gantt.date.date_to_str(gantt.config.task_date);
@@ -207,7 +270,7 @@ function ProjectGantt(props) {
         }
     }
 
-    let heightCalc = line ? (line * 50 + 80) : 80;
+    let heightCalc = line ? (line * 50) : 80;
     return (
         <React.Fragment>
             <ToolbarGantt
