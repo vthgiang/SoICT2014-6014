@@ -35,11 +35,11 @@ function CrmDashBoard(props) {
         customerDataByGroup = customerCareInfoByEmployee.customerDataByGroup;
         customerDataByStatus = customerCareInfoByEmployee.customerDataByStatus;
         listManagedCustomer = customerCareInfoByEmployee.listManagedCustomer;
-        x=x.concat(customerCareInfoByEmployee.x.reverse());
-        solutionRateData=solutionRateData.concat(customerCareInfoByEmployee.solutionRateData.reverse());
-        completionRateData=completionRateData.concat(customerCareInfoByEmployee.completionRateData.reverse());
+        x = x.concat(customerCareInfoByEmployee.x.reverse());
+        solutionRateData = solutionRateData.concat(customerCareInfoByEmployee.solutionRateData.reverse());
+        completionRateData = completionRateData.concat(customerCareInfoByEmployee.completionRateData.reverse());
     }
-    console.log('solutionRateData',x);
+    console.log('solutionRateData', x);
     const customerByStatusGraph = {
         columns: customerDataByStatus, type: 'pie'
     };
@@ -61,7 +61,9 @@ function CrmDashBoard(props) {
             }
         }
     }
-
+    // lấy tháng hiện tại
+    const now = new Date();
+    const month = now.getMonth() + 1;
     return (
         <div className="container-fluid">
             <div className="row" >
@@ -78,7 +80,7 @@ function CrmDashBoard(props) {
                     <div className="info-box">
                         <span className="info-box-icon bg-yellow"><i className="fa fa-handshake-o" /></span>
                         <div className="info-box-content">
-                            <span className="info-box-text">{"Tổng sô hoạt động tháng 3"}</span>
+                            <span className="info-box-text">{`Tổng sô hoạt động tháng ${month}`}</span>
                             <span className="info-box-number">{customerCareInfoByEmployee ? customerCareInfoByEmployee.totalCareActions : 0}</span>
                         </div>
                     </div>
@@ -137,7 +139,7 @@ const mapDispatchToProps = {
     getCustomerCareInfoByEmployee: CrmEvaluationActions.getCustomerCareInfoByEmployee,
     getStatus: CrmStatusActions.getStatus,
     getGroups: CrmGroupActions.getGroups,
-    getCrmUnits:CrmUnitActions.getCrmUnits,
+    getCrmUnits: CrmUnitActions.getCrmUnits,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CrmDashBoard));

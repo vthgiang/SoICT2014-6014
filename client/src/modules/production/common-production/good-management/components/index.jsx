@@ -18,12 +18,11 @@ function GoodManagement(props) {
         name: "",
         category: "",
         value: "",
-        type: "",
+        type: "product",
         oldType: "",
-        activeP: false,
+        activeP: true,
         activeM: false,
         activeE: false,
-        activeW: false,
     })
 
     useEffect(() => {
@@ -35,16 +34,20 @@ function GoodManagement(props) {
     }, [])
 
     useEffect(() => {
-        props.getGoodsByType({ page: state.page, limit: state.limit, type: state.type });
-        setState({
-            ...state,
-            oldType: state.type,
-        });
-    }, [state.oldType])
+        if (state.oldType !== state.type) {
+            props.getGoodsByType({ page: state.page, limit: state.limit, type: state.type });
+            setState ({
+                ...state,
+                oldType: state.type,
+            });
+        }
+    }, [state.type])
 
-    // useEffect(() => {
-    //     setType();
-    // }, [nextPage.type])
+    useEffect(() => {
+        if(!state.type) {
+            setType();
+        }
+    }, [state.type])
 
     const setPage = (page) => {
         setState({
@@ -237,13 +240,29 @@ function GoodManagement(props) {
 
     const setType = () => {
         if (checkManagementGood('product') || checkManagementGood('waste')) {
-            setState({ type: 'product', activeP: true });
+            setState({ 
+                ...state,
+                type: 'product',
+                 activeP: true 
+                });
         } else if (checkManagementGood('material')) {
-            setState({ type: 'material', activeM: true });
+            setState({ 
+                ...state, 
+                type: 'material', 
+                activeM: true 
+            });
         } else if (checkManagementGood('equipment')) {
-            setState({ type: 'equipment', activeE: true });
+            setState({ 
+                ...state, 
+                type: 'equipment',
+                activeE: true 
+                });
         } else if (checkManagementGood('waste')) {
-            setState({ type: 'waste', activeW: true });
+            setState({ 
+                ...state, 
+                type: 'waste',
+                 activeW: true
+                 });
         }
     }
 

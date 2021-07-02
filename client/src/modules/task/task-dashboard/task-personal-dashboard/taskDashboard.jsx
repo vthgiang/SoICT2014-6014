@@ -205,6 +205,7 @@ function TaskDashboard(props) {
 
     const handleChangeMonthTimeSheetLog = (value) => {
         setState({
+            ...state,
             monthTimeSheetLog: value
         });
     }
@@ -647,7 +648,7 @@ function TaskDashboard(props) {
 
                             <div>
                                 <p className="pull-right" style={{ fontWeight: 'bold' }}>Kết quả
-                                <span style={{ fontWeight: 'bold', marginLeft: 10 }}>
+                                    <span style={{ fontWeight: 'bold', marginLeft: 10 }}>
                                         {
                                             !tasks.isLoading ? getTotalTimeSheet(userTimeSheetLogs) : translate('general.loading')
                                         }

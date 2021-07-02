@@ -6,10 +6,8 @@ import { UserActions } from '../../../super-admin/user/redux/actions';
 import moment from 'moment';
 import c3 from 'c3';
 import 'c3/c3.css';
-import { formatTaskStatus, getAmountOfWeekDaysInMonth, renderProgressBar, renderStatusColor } from '../../projects/components/functionHelper';
+import { formatTaskStatus, getAmountOfWeekDaysInMonth, renderCompare2Item, renderProgressBar, renderStatusColor } from '../../projects/components/functionHelper';
 import { numberWithCommas } from '../../../task/task-management/component/functionHelpers';
-
-const MILISECS_TO_DAYS = 86400000;
 
 const TabProjectReportCost = (props) => {
     const { currentTasks, translate, projectDetail } = props;
@@ -53,11 +51,6 @@ const TabProjectReportCost = (props) => {
                 type: 'bar',
                 labels: true,
             },
-            bar: {
-                width: {
-                    ratio: 0.5
-                }
-            },
             axis: {
                 x: {
                     type: 'category',
@@ -66,20 +59,24 @@ const TabProjectReportCost = (props) => {
                 y: {
                     tick: {
                         format: (d) => {
-                            return `${numberWithCommas(d)} VND`;
+                            return `${numberWithCommas(d)}`;
                         }
                     },
-                }
+                },
+                rotated: true,
             },
             zoom: {
-                enabled: true,
+                enabled: false,
             },
             tooltip: {
                 format: {
                     value: (value, ratio, id) => {
-                        return numberWithCommas(value);
+                        return `${numberWithCommas(value)} VND`;
                     }
                 }
+            },
+            size: {
+                height: (preprocessData().columns?.[0].length - 2) * 70,
             },
         });
     }
@@ -88,22 +85,20 @@ const TabProjectReportCost = (props) => {
         renderChart();
     });
 
-    // Danh sách các task đủ chi phí
-    const getOnBudgetTasks = () => {
-        if (!currentTasks) return [];
-        return currentTasks.filter((taskItem, taskIndex) => {
-            const currentActualCost = taskItem.actualCost || 0;
-            if (taskItem.estimateNormalCost >= currentActualCost) return taskItem;
-        })
+    const getProjectTotalBudget = () => {
+        let result = 0;
+        for (let taskItem of currentTasks) {
+            result += Number(taskItem.estimateNormalCost);
+        }
+        return result;
     }
 
-    // Danh sách task thiếu chi phí
-    const getBehindBudgetTasks = () => {
-        if (!currentTasks) return [];
-        return currentTasks.filter((taskItem, taskIndex) => {
-            const currentActualCost = taskItem.actualCost || 0;
-            if (taskItem.estimateNormalCost < currentActualCost) return taskItem;
-        })
+    const getProjectTotalActualCost = () => {
+        let result = 0;
+        for (let taskItem of currentTasks) {
+            result += Number(taskItem.actualCost || 0);
+        }
+        return result;
     }
 
     const [displayContent, setDisplayContent] = useState({
@@ -118,26 +113,12 @@ const TabProjectReportCost = (props) => {
         })
     }, [currentTasks])
 
-    const renderItem = (label, currentTask, icon = 'person') => {
-        if (!currentTask) return null;
+    const renderItem = (label, value, colorCondition = undefined) => {
         return (
-            <div className="col-md-4 col-sm-4 col-xs-6 statistical-item" style={{ marginBottom: 8 }}>
-                <a style={{ cursor: "pointer" }} onClick={() => {
-                    setDisplayContent({
-                        title: label,
-                        tasks: currentTask,
-                    })
-                }}>
-                    <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: "#d3d3d3", padding: '10px', borderRadius: '10px' }}>
-                        <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <span style={{ marginRight: '10px', color: "#00c0ef" }} className="material-icons">{icon}</span>
-                            <span style={{ fontWeight: 'bold' }}>{label}</span>
-                        </div>
-                        <span style={{ fontSize: '17px', color: 'red' }} className="info-box-number">
-                            {currentTask.length}
-                        </span>
-                    </div>
-                </a>
+            <div className="row col-md-12" style={{ marginBottom: 5 }}>
+                <span className="task-name">
+                    {label}: <span style={{ fontWeight: 'bold', color: colorCondition || 'black' }}>{numberWithCommas(value)} VND</span>
+                </span>
             </div>
         )
     }
@@ -145,61 +126,18 @@ const TabProjectReportCost = (props) => {
     return (
         <React.Fragment>
             <div>
-                <div className="box">
-                    <div className="box-body qlcv">
-                        <h4><strong>Tổng quan chi phí dự án công việc</strong></h4>
-                        {renderItem('Tổng số công việc', currentTasks)}
-                        {renderItem('Số công việc đủ chi phí', getOnBudgetTasks())}
-                        {renderItem('Số công việc thiếu chi phí', getBehindBudgetTasks())}
-                    </div>
-                    <div className="box-body qlcv">
-                        {displayContent.tasks && displayContent.tasks.length !== 0 &&
-                            <a
-                                className="pull-right"
-                                aria-controls="show-report-cost-tasks-project-table"
-                                data-toggle="collapse"
-                                data-target="#show-report-cost-tasks-project-table"
-                                aria-expanded="false"
-                                style={{ cursor: 'pointer' }}
-                            >
-                                Xem chi tiết
-                        </a>}
-                        <h4><strong>Danh sách - {displayContent.title}</strong></h4>
-                        <table className="table table-striped table-bordered table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Tên công việc</th>
-                                    <th>Trạng thái</th>
-                                    <th>Tiến độ (%)</th>
-                                    <th>Thời gian bắt đầu</th>
-                                    <th>Thời gian dự kiến kết thúc</th>
-                                    <th>Chi phí ước lượng (VND)</th>
-                                    <th>Chi phí thực (VND)</th>
-                                </tr>
-                            </thead>
-                            <tbody data-toggle="collapse" id="show-report-cost-tasks-project-table" className="collapse">
-                                {displayContent.tasks && displayContent.tasks.length !== 0 &&
-                                    displayContent.tasks.map((taskItem, index) => (
-                                        <tr key={index}>
-                                            <td style={{ color: '#385898' }}>{taskItem?.name}</td>
-                                            <td style={{ color: renderStatusColor(taskItem) }}>{formatTaskStatus(translate, taskItem?.status)}</td>
-                                            <td>{renderProgressBar(taskItem?.progress, taskItem)}</td>
-                                            <td>{moment(taskItem?.startDate).format('HH:mm DD/MM/YYYY')}</td>
-                                            <td>{moment(taskItem?.endDate).format('HH:mm DD/MM/YYYY')}</td>
-                                            <td>{numberWithCommas(taskItem.estimateNormalCost)}</td>
-                                            <td>{numberWithCommas(taskItem.actualCost || 0)}</td>
-                                        </tr>
-                                    ))
-                                }
-                            </tbody>
-                        </table>
-                    </div>
+                <div className="box-body qlcv">
+                    <h4><strong>Tổng quan chi phí dự án</strong></h4>
+                    {renderItem('Tổng ngân sách cho dự án', getProjectTotalBudget())}
+                    {renderItem(
+                        'Chi phí thực tế hiện tại cho dự án',
+                        getProjectTotalActualCost(),
+                        renderCompare2Item(getProjectTotalBudget(), getProjectTotalActualCost()))
+                    }
                 </div>
-                <div className="box">
-                    <div className="box-body qlcv">
-                        <h4><strong>Biểu đồ chi phí dự án công việc</strong></h4>
-                        <div ref={chartRef} />
-                    </div>
+                <div className="box-body qlcv">
+                    <h4><strong>Biểu đồ so sánh ngân sách - chi phí dự án</strong></h4>
+                    <div ref={chartRef} />
                 </div>
             </div>
         </React.Fragment>

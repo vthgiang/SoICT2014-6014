@@ -44,7 +44,7 @@ const createCrmTaskTemplate = async (portal, companyId, role, type ) => {
                     description: 'Số lượng khách hàng mới',
                     type: 'number',
                     extra: '',
-                    filledByAccountableEmployeesOnly: false,
+                    filledByAccountableEmployeesOnly: true,
                     chosen: false,
                     selected: false
                 },
@@ -53,7 +53,7 @@ const createCrmTaskTemplate = async (portal, companyId, role, type ) => {
                     description: 'Tỉ lệ mua hàng ở khách hàng mới',
                     type: 'number',
                     extra: '',
-                    filledByAccountableEmployeesOnly: false
+                    filledByAccountableEmployeesOnly: true
                 }
             ],
             collaboratedWithOrganizationalUnits: []
@@ -84,7 +84,7 @@ const createCrmTaskTemplate = async (portal, companyId, role, type ) => {
                     description: 'Tỉ lệ khách hàng quay lại mua hàng',
                     type: 'number',
                     extra: '',
-                    filledByAccountableEmployeesOnly: false,
+                    filledByAccountableEmployeesOnly: true,
                     chosen: false,
                     selected: false
                 },
@@ -93,14 +93,14 @@ const createCrmTaskTemplate = async (portal, companyId, role, type ) => {
                     description: 'Tỉ lệ hoàn thành hoạt động',
                     type: 'number',
                     extra: '',
-                    filledByAccountableEmployeesOnly: false
+                    filledByAccountableEmployeesOnly: true
                 },
                 {
                     name: 'Tỉ lệ  hoạt động  thành công (%)',
                     description: 'Tỉ lệ thành công ở các hoạt động đã hoàn thành',
                     type: 'number',
                     extra: '',
-                    filledByAccountableEmployeesOnly: false
+                    filledByAccountableEmployeesOnly: true
                 }
                 ,
                 {

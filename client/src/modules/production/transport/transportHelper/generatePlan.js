@@ -156,7 +156,7 @@ const check = (start, end) => {
     }
     return true;
 }
-exports.generatePlanFastestMove = (listRequirement, listPlan, allVehicles, allCarriers, inDay, startDate) => {
+export const generatePlanFastestMove = (listRequirement, listPlan, allVehicles, allCarriers, inDay, startDate) => {
     startDatePlan = startDate;
     if (!(listRequirement && allVehicles && allCarriers 
         && listRequirement.length!==0 && allVehicles.length!==0 && allCarriers.length!==0)){
@@ -256,7 +256,7 @@ exports.generatePlanFastestMove = (listRequirement, listPlan, allVehicles, allCa
     return {saveArr, saveArrVehicle, plans, listUnavailableRequirement};
 }
 
-exports.generatePlan = (listRequirement, listPlan, listVehicles, listCarriers) => {
+export const generatePlan = (listRequirement, listPlan, listVehicles, listCarriers) => {
     let res = [];
     let flag = true;
     let nextDay = 0;

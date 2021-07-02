@@ -163,7 +163,8 @@ const CustomerSchema = new Schema({
         description: { type: String },
         minimumOrderValue: { type: Number },
         promotionalValueMax: { type: Number },
-        expirationDate:{type:Date}
+        expirationDate:{type:Date},
+        status:{type:Number}
     }],
     crmUnit: {// đơn vị CSKH
         type: Schema.Types.ObjectId,

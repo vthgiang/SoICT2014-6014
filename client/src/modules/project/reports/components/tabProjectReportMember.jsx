@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { ProjectActions } from "../../projects/redux/actions";
@@ -9,13 +9,17 @@ import { getActualMemberCostOfTask, getAmountOfWeekDaysInMonth, getCurrentProjec
 import { checkIsNullUndefined, numberWithCommas } from '../../../task/task-management/component/functionHelpers';
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
-import { Collapse } from 'react-bootstrap';
+import c3 from 'c3';
+import 'c3/c3.css';
 
 momentDurationFormatSetup(moment);
-const MILISECS_TO_DAYS = 86400000;
 
 const TabProjectReportMember = (props) => {
     const { currentTasks, translate, projectDetail, project, } = props;
+
+    const chartHighScoreRef = useRef(null);
+    const chartOverdueScheduleRef = useRef(null);
+    const chartBehindBudgetRef = useRef(null);
 
     const preprocessMembersData = () => {
         let result = [];
@@ -210,166 +214,244 @@ const TabProjectReportMember = (props) => {
     const membersData = preprocessMembersData();
     console.log('membersData', membersData)
 
-    const renderData = (data, paramText) => {
-        if (data.length === 0) return <div className="col-md-4 statistical-item">Không có thành viên nào</div>
-        return data.map((item, index) => {
-            return (
-                <div key={item?.id} className="col-md-4 statistical-item">
-                    <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: "#d3d3d3", padding: '10px', borderRadius: '10px' }}>
-                        <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <span style={{ marginRight: '10px', color: "#00c0ef" }} className="material-icons">person</span>
-                            <span style={{ fontWeight: 'bold', fontSize: '20px' }}>{item?.name}</span>
-                        </div>
-                        <span style={{ fontSize: '17px', color: 'red' }} className="info-box-number">
-                            {item?.behindNumber} {paramText}
-                            <span>{' '}</span>
-                            <span style={{ fontSize: '17px', color: 'black' }}>/ {item?.totalNumber} tổng số</span>
-                        </span>
-                    </div>
-                </div>
-            )
-        })
+    // Xử lý chart data nhân viên có điểm số cao
+    const preprocessHighScoreChartData = () => {
+        let columns = [], categories = [];
+        let highScore = ['Điểm số'];
+        if (!membersData) {
+            return {
+                columns,
+                categories,
+            }
+        }
+        for (let memberItem of getMembersWithPoint(membersData)) {
+            highScore.push(memberItem.currentMemberPoint);
+            categories.push(memberItem.name);
+        }
+        columns = [highScore];
+        return {
+            columns,
+            categories,
+        }
     }
 
-    const [isTableShownArr, setIsTableShownArr] = useState(
-        getMembersWithPoint(membersData)?.map(memberItem => false)
-    )
-
-    const renderHightPointMembers = (data) => {
-        if (data.length === 0) return <div className="col-md-4 statistical-item">Không có thành viên nào</div>
-        return data.map((item, index) => {
-            return (
-                <div key={item?.id} className="col-md-12" style={{ marginBottom: 8 }}>
-                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', backgroundColor: "#fafafa", padding: '10px', borderRadius: '10px' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column', marginTop: isTableShownArr[index] ? 10 : 0 }}>
-                            <span style={{ fontWeight: 'bold', fontSize: '20px' }}>{item?.name}</span>
-                            <div style={{ width: '40%', aspectRatio: 1 }}>
-                                <CircularProgressbar value={item?.currentMemberPoint} text={`${Math.round(item?.currentMemberPoint)} / 100`} />
-                            </div>
-                        </div>
-                        <div style={{ display: 'flex', flexDirection: 'column' }}>
-                            <button
-                                onClick={() => {
-                                    const newIsTableShownArr = isTableShownArr.map((isTableItem, isTableIndex) => {
-                                        if (isTableIndex === index) {
-                                            return !isTableItem;
-                                        }
-                                        return isTableItem;
-                                    })
-                                    setIsTableShownArr(newIsTableShownArr);
-                                }}
-                                style={{ alignSelf: 'flex-end' }}
-                                type="button" className="btn btn-link dropdown-toggle" data-toggle="dropdown"
-                                aria-controls="high-points-members-table"
-                                aria-expanded={isTableShownArr[index]}>Hiển thị danh sách công việc
-                            </button>
-                            <Collapse in={isTableShownArr[index]}>
-                                <table id="high-points-members-table" className="table table-striped table-bordered table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th>Tên công việc</th>
-                                            <th>Mã công việc</th>
-                                            <th>Thời gian bắt đầu</th>
-                                            <th>Thời gian kết thúc</th>
-                                            <th>Điểm số của nhân viên</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {item?.tasksWithBudgetAndCostAndPointForMember
-                                            ?.filter((taskItem) => moment(taskItem.endDate).isSameOrBefore(moment()))
-                                            ?.map((taskItem, index) => (
-                                                <tr key={index}>
-                                                    <td>{taskItem?.name}</td>
-                                                    <td>{taskItem?.id}</td>
-                                                    <td>{moment(taskItem?.startDate).format('HH:mm DD/MM/YYYY')}</td>
-                                                    <td>{moment(taskItem?.endDate).format('HH:mm DD/MM/YYYY')}</td>
-                                                    <td>{numberWithCommas(taskItem?.currentMemberCurrentTaskPoint)} / 100</td>
-                                                </tr>
-                                            ))
-                                        }
-                                    </tbody>
-                                </table>
-                            </Collapse>
-                        </div>
-                    </div>
-                </div>
-            )
-        })
+    // Xử lý chart data nhân viên hay bị chậm tiến độ
+    const preprocessOverdueScheduleChartData = () => {
+        let columns = [], categories = [];
+        let overdue = ['Công việc chậm tiến độ'], total = ['Tổng số công việc được giao'];
+        if (!membersData) {
+            return {
+                columns,
+                categories,
+            }
+        }
+        for (let memberItem of getMembersAlwaysBehindSchedule(membersData)) {
+            overdue.push(memberItem.behindNumber);
+            total.push(memberItem.totalNumber)
+            categories.push(memberItem.name);
+        }
+        columns = [overdue, total];
+        return {
+            columns,
+            categories,
+        }
     }
+
+    // Xử lý chart data nhân viên hay bị lãng phí chi phí
+    const preprocessBehindBudgetChartData = () => {
+        let columns = [], categories = [];
+        let behindBudget = ['Công việc vượt mức ngân sách'], total = ['Tổng số công việc được giao'];
+        if (!membersData) {
+            return {
+                columns,
+                categories,
+            }
+        }
+        for (let memberItem of getMembersAlwaysBehindBudget(membersData)) {
+            behindBudget.push(memberItem.behindNumber);
+            total.push(memberItem.totalNumber)
+            categories.push(memberItem.name);
+        }
+        columns = [behindBudget, total];
+        console.log(columns)
+        return {
+            columns,
+            categories,
+        }
+    }
+
+    const renderHighScoreChart = () => {
+        const currentChartHighScore = chartHighScoreRef.current;
+        while (currentChartHighScore.hasChildNodes()) {
+            currentChartHighScore.removeChild(currentChartHighScore.lastChild);
+        }
+        let chartHighScore = c3.generate({
+            bindto: chartHighScoreRef.current,
+            data: {
+                columns: preprocessHighScoreChartData().columns,
+                type: 'bar',
+                labels: true,
+            },
+            axis: {
+                x: {
+                    type: 'category',
+                    categories: preprocessHighScoreChartData().categories,
+                },
+                rotated: true,
+            },
+            tooltip: {
+                format: {
+                    value: (value, ratio, id) => {
+                        return `${numberWithCommas(value)}`;
+                    }
+                }
+            },
+            zoom: {
+                enabled: false,
+            },
+            size: {
+                height: (preprocessHighScoreChartData().columns?.[0].length - 2) * 100,
+            },
+        });
+    }
+
+    const renderOverdueScheduleChart = () => {
+        const currentChartOverdueSchedule = chartOverdueScheduleRef.current;
+        while (currentChartOverdueSchedule.hasChildNodes()) {
+            currentChartOverdueSchedule.removeChild(currentChartOverdueSchedule.lastChild);
+        }
+        let chartOverdueSchedule = c3.generate({
+            bindto: chartOverdueScheduleRef.current,
+            data: {
+                columns: preprocessOverdueScheduleChartData().columns,
+                type: 'bar',
+                labels: true,
+            },
+            axis: {
+                x: {
+                    type: 'category',
+                    categories: preprocessOverdueScheduleChartData().categories,
+                },
+                rotated: true,
+            },
+            tooltip: {
+                format: {
+                    value: (value, ratio, id) => {
+                        return `${numberWithCommas(value)}`;
+                    }
+                }
+            },
+            zoom: {
+                enabled: false,
+            },
+            size: {
+                height: (preprocessOverdueScheduleChartData().columns?.[0].length - 2) * 100,
+            },
+        });
+    }
+
+    const renderBehindBudgetChart = () => {
+        const currentChartBehindBudget = chartBehindBudgetRef.current;
+        while (currentChartBehindBudget.hasChildNodes()) {
+            currentChartBehindBudget.removeChild(currentChartBehindBudget.lastChild);
+        }
+        let chartBehindBudget = c3.generate({
+            bindto: chartBehindBudgetRef.current,
+            data: {
+                columns: preprocessBehindBudgetChartData().columns,
+                type: 'bar',
+                labels: true,
+            },
+            axis: {
+                x: {
+                    type: 'category',
+                    categories: preprocessBehindBudgetChartData().categories,
+                },
+                rotated: true,
+            },
+            tooltip: {
+                format: {
+                    value: (value, ratio, id) => {
+                        return `${numberWithCommas(value)}`;
+                    }
+                }
+            },
+            zoom: {
+                enabled: false,
+            },
+            size: {
+                height: (preprocessBehindBudgetChartData().columns?.[0].length - 2) * 100,
+            },
+        });
+    }
+
+    useEffect(() => {
+        renderHighScoreChart();
+        renderOverdueScheduleChart();
+        renderBehindBudgetChart();
+    });
 
     return (
         <React.Fragment>
             <div>
                 {
                     getCurrentProjectDetails(project, projectDetail?._id)?.projectType === 2 &&
-                    <div className="box">
-                        <div className="box-body qlcv">
-                            <h4><strong>Các thành viên điểm số cao (điểm trung bình lớn hơn hoặc bằng 85)</strong></h4>
-                            {renderHightPointMembers(getMembersWithPoint(membersData))}
-                        </div>
+                    <div className="box-body qlcv">
+                        <h4><strong>Các thành viên điểm số cao (điểm trung bình lớn hơn hoặc bằng 85)</strong></h4>
+                        <div ref={chartHighScoreRef} />
                     </div>
                 }
-                <div className="box">
-                    <div className="box-body qlcv">
-                        <h4><strong>Các thành viên hay bị chậm tiến độ / quá hạn (tổng số trễ / tổng công việc lớn hơn hoặc bằng 1/2)</strong></h4>
-                        <div className="row statistical-wrapper" style={{ marginTop: '5px' }}>
-                            {renderData(getMembersAlwaysBehindSchedule(membersData), 'công việc trễ tiến độ')}
-                        </div>
-                    </div>
+                <div className="box-body qlcv">
+                    <h4><strong>Các thành viên hay bị chậm tiến độ / quá hạn (tổng số trễ / tổng công việc lớn hơn hoặc bằng 1/2)</strong></h4>
+                    <div ref={chartOverdueScheduleRef} />
                 </div>
                 {
                     getCurrentProjectDetails(project, projectDetail?._id)?.projectType === 2 &&
-                    <div className="box">
-                        <div className="box-body qlcv">
-                            <h4><strong>Các thành viên hay để lãng phí chi phí (tổng số vi phạm / tổng công việc lớn hơn hoặc bằng 1/2)</strong></h4>
-                            <div className="row statistical-wrapper" style={{ marginTop: '5px' }}>
-                                {renderData(getMembersAlwaysBehindBudget(membersData), 'công việc lãng phí chi phí')}
-                            </div>
-                        </div>
+                    <div className="box-body qlcv">
+                        <h4><strong>Các thành viên hay để lãng phí chi phí (tổng số vi phạm / tổng công việc lớn hơn hoặc bằng 1/2)</strong></h4>
+                        <div ref={chartBehindBudgetRef} />
                     </div>
                 }
-                <div className="box">
-                    <div className="box-body qlcv">
-                        <h4><strong>Tổng quan thành viên dự án</strong></h4>
-                        <table id="report-member-table" className="table table-striped table-bordered table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Tên thành viên</th>
-                                    <th>Số giờ làm việc</th>
-                                    <th>Số công việc đang làm</th>
-                                    <th>Số công việc chưa làm</th>
-                                    <th>Số công việc trễ tiến độ</th>
-                                    <th>Số công việc quá hạn</th>
-                                    {getCurrentProjectDetails(project, projectDetail?._id)?.projectType === 2 && <th>Số công việc đủ chi phí</th>}
-                                    {getCurrentProjectDetails(project, projectDetail?._id)?.projectType === 2 && <th>Số công việc lãng phí chi phí</th>}
-                                    {getCurrentProjectDetails(project, projectDetail?._id)?.projectType === 2 && <th>Tổng ngân sách cho thành viên (VND)</th>}
-                                    {getCurrentProjectDetails(project, projectDetail?._id)?.projectType === 2 && <th>Tổng chi phí thực của thành viên (VND)</th>}
-                                    {getCurrentProjectDetails(project, projectDetail?._id)?.projectType === 2 && <th>Điểm số hiện tại</th>}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {(membersData && membersData.length !== 0) &&
-                                    membersData.map((memberItem, index) => (
-                                        <tr key={index}>
-                                            <td style={{ color: '#385898' }}>{memberItem?.name}</td>
-                                            <td>{memberItem?.totalTimeLogs}</td>
-                                            <td>{memberItem?.doingTasks.length}</td>
-                                            <td>{memberItem?.notStartedYetTasks.length}</td>
-                                            <td style={{ color: memberItem?.behindScheduleTasks.length === 0 ? 'black' : 'red' }}>{memberItem?.behindScheduleTasks.length}</td>
-                                            <td style={{ color: memberItem?.overdueTasks.length === 0 ? 'black' : 'red' }}>{memberItem?.overdueTasks.length}</td>
-                                            {getCurrentProjectDetails(project, projectDetail?._id)?.projectType === 2 && <td>{memberItem?.onBudgetTasks.length}</td>}
-                                            {getCurrentProjectDetails(project, projectDetail?._id)?.projectType === 2 && <td style={{ color: memberItem?.behindBudgetTasks.length === 0 ? 'black' : 'red' }}>{memberItem?.behindBudgetTasks.length}</td>}
-                                            {getCurrentProjectDetails(project, projectDetail?._id)?.projectType === 2 && <td>{numberWithCommas(memberItem?.totalBudgetForMember)}</td>}
-                                            {getCurrentProjectDetails(project, projectDetail?._id)?.projectType === 2 && <td style={{ color: memberItem?.totalActualCostForMember > memberItem?.totalBudgetForMember ? 'red' : 'black' }}>
-                                                {numberWithCommas(memberItem?.totalActualCostForMember)}
-                                            </td>}
-                                            {getCurrentProjectDetails(project, projectDetail?._id)?.projectType === 2 && <td>{numberWithCommas(memberItem?.currentMemberPoint)} / 100</td>}
-                                        </tr>
-                                    ))
-                                }
-                            </tbody>
-                        </table>
-                    </div>
+                <div className="box-body qlcv">
+                    <h4><strong>Tổng quan thành viên dự án</strong></h4>
+                    <table id="report-member-table" className="table table-striped table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>Tên thành viên</th>
+                                <th>Số giờ làm việc</th>
+                                <th>Số công việc đang làm</th>
+                                <th>Số công việc chưa làm</th>
+                                <th>Số công việc trễ tiến độ</th>
+                                <th>Số công việc quá hạn</th>
+                                {getCurrentProjectDetails(project, projectDetail?._id)?.projectType === 2 && <th>Số công việc đủ chi phí</th>}
+                                {getCurrentProjectDetails(project, projectDetail?._id)?.projectType === 2 && <th>Số công việc lãng phí chi phí</th>}
+                                {getCurrentProjectDetails(project, projectDetail?._id)?.projectType === 2 && <th>Tổng ngân sách cho thành viên (VND)</th>}
+                                {getCurrentProjectDetails(project, projectDetail?._id)?.projectType === 2 && <th>Tổng chi phí thực của thành viên (VND)</th>}
+                                {getCurrentProjectDetails(project, projectDetail?._id)?.projectType === 2 && <th>Điểm số hiện tại</th>}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {(membersData && membersData.length !== 0) &&
+                                membersData.map((memberItem, index) => (
+                                    <tr key={index}>
+                                        <td style={{ color: '#385898' }}>{memberItem?.name}</td>
+                                        <td>{memberItem?.totalTimeLogs}</td>
+                                        <td>{memberItem?.doingTasks.length}</td>
+                                        <td>{memberItem?.notStartedYetTasks.length}</td>
+                                        <td style={{ color: memberItem?.behindScheduleTasks.length === 0 ? 'black' : 'red' }}>{memberItem?.behindScheduleTasks.length}</td>
+                                        <td style={{ color: memberItem?.overdueTasks.length === 0 ? 'black' : 'red' }}>{memberItem?.overdueTasks.length}</td>
+                                        {getCurrentProjectDetails(project, projectDetail?._id)?.projectType === 2 && <td>{memberItem?.onBudgetTasks.length}</td>}
+                                        {getCurrentProjectDetails(project, projectDetail?._id)?.projectType === 2 && <td style={{ color: memberItem?.behindBudgetTasks.length === 0 ? 'black' : 'red' }}>{memberItem?.behindBudgetTasks.length}</td>}
+                                        {getCurrentProjectDetails(project, projectDetail?._id)?.projectType === 2 && <td>{numberWithCommas(memberItem?.totalBudgetForMember)}</td>}
+                                        {getCurrentProjectDetails(project, projectDetail?._id)?.projectType === 2 && <td style={{ color: memberItem?.totalActualCostForMember > memberItem?.totalBudgetForMember ? 'red' : 'black' }}>
+                                            {numberWithCommas(memberItem?.totalActualCostForMember)}
+                                        </td>}
+                                        {getCurrentProjectDetails(project, projectDetail?._id)?.projectType === 2 && <td>{numberWithCommas(memberItem?.currentMemberPoint)} / 100</td>}
+                                    </tr>
+                                ))
+                            }
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </React.Fragment>

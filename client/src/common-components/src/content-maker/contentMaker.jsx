@@ -19,23 +19,6 @@ class ContentMaker extends Component {
         };
     }
 
-    handleDragEnter = () => {
-        this.setState(state => {
-            return {
-                ...state,
-                showDropFileHere: true
-            }
-        });
-    }
-
-    handleDragLeave = () => {
-        this.setState(state => {
-            return {
-                ...state,
-                showDropFileHere: false
-            }
-        });
-    }
     pressEnter = (event) => {
         let code = event.keyCode || event.which;
         if (code === 13 && !event.shiftKey) {
@@ -115,11 +98,7 @@ class ContentMaker extends Component {
                         placeholder={placeholder}
                         enableDropImage={false}
                     />
-                    {this.state.showDropFileHere &&
-                        <div style={{ fontSize: "2em", pointerEvents: "none", width: "100%", height: "100%", border: "2px dashed black", backgroundColor: "rgba(255, 255, 255, 0.3)", top: "0", left: 0, position: "absolute", textAlign: "center" }}>
-                                DROP FILES HERE
-                        </div>
-                    }
+
                 </Files>
             </div>
                 <div className={controlCssClass}>

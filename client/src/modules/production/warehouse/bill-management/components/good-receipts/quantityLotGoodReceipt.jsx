@@ -94,13 +94,13 @@ function QuantityLotGoodReceipt(props) {
         const { oldQuantity } = state;
         let msg = undefined;
         const { translate } = props;
-        let difference = difference();
+        let different = difference();
 
         if (!value) {
             msg = translate('manage_warehouse.bill_management.validate_quantity');
         }
 
-        if ((Number(value) - Number(oldQuantity)) > difference) {
+        if ((Number(value) - Number(oldQuantity)) > different) {
             msg = translate('manage_warehouse.bill_management.validate_norm');
         }
 
@@ -123,8 +123,8 @@ function QuantityLotGoodReceipt(props) {
     }
 
     const isFormValidated = () => {
-        let difference = difference();
-        if (difference === 0) {
+        let different = difference();
+        if (different === 0) {
             return true;
         }
         return false

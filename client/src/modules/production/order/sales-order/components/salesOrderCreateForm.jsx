@@ -31,10 +31,12 @@ class SalesOrderCreateForm extends Component {
             customerAddress: "",
             customerPhone: "",
             customerRepresent: "",
+            customerPromotions: [],
             shippingFee: "",
             deliveryTime: "",
             coin: "",
             priority: "",
+            initialAmount: 0,
             step: 0,
             isUseForeignCurrency: false,
             foreignCurrency: {
@@ -86,6 +88,7 @@ class SalesOrderCreateForm extends Component {
     handleCustomerChange = (value) => {
         if (value[0] !== "" && value[0] !== "title") {
             let customerInfo = this.props.customers.list.filter((item) => item._id === value[0]);
+            let customerPromotions = customerInfo[0].promotions.map((promo) => ({ ...promo, checked: false, disabled: false }))
             if (customerInfo.length) {
                 this.setState({
                     customer: customerInfo[0]._id,
@@ -95,6 +98,7 @@ class SalesOrderCreateForm extends Component {
                     customerRepresent: customerInfo[0].represent,
                     customerTaxNumber: customerInfo[0].taxNumber,
                     customerEmail: customerInfo[0].email,
+                    customerPromotions
                 });
             }
         } else {
@@ -115,6 +119,22 @@ class SalesOrderCreateForm extends Component {
         this.validateCustomer(value, true);
     };
 
+    setCustomerPromotions = (customerPromotions) => {
+        this.setState((state) => {
+            return {
+                ...state,
+                customerPromotions,
+            };
+        });
+    }
+    setInitialAmount = (initialAmount) => {
+        this.setState((state) => {
+            return {
+                ...state,
+                initialAmount,
+            };
+        });
+    }
     handleCustomerEmailChange = (e) => {
         let { value } = e.target;
         this.setState((state) => {
@@ -504,19 +524,19 @@ class SalesOrderCreateForm extends Component {
                 loyaltyCoin: dis.loyaltyCoin,
                 bonusGoods: dis.bonusGoods
                     ? dis.bonusGoods.map((bonus) => {
-                          return {
-                              good: bonus.good._id,
-                              expirationDateOfGoodBonus: bonus.expirationDateOfGoodBonus,
-                              quantityOfBonusGood: bonus.quantityOfBonusGood,
-                          };
-                      })
+                        return {
+                            good: bonus.good._id,
+                            expirationDateOfGoodBonus: bonus.expirationDateOfGoodBonus,
+                            quantityOfBonusGood: bonus.quantityOfBonusGood,
+                        };
+                    })
                     : undefined,
                 discountOnGoods: dis.discountOnGoods
                     ? {
-                          good: dis.discountOnGoods.good._id,
-                          expirationDate: dis.discountOnGoods.expirationDate,
-                          discountedPrice: dis.discountOnGoods.discountedPrice,
-                      }
+                        good: dis.discountOnGoods.good._id,
+                        expirationDate: dis.discountOnGoods.expirationDate,
+                        discountedPrice: dis.discountOnGoods.discountedPrice,
+                    }
                     : undefined,
             };
         });
@@ -628,6 +648,7 @@ class SalesOrderCreateForm extends Component {
             code,
             note,
             customer,
+            customerPromotions,
             customerName,
             customerAddress,
             customerPhone,
@@ -744,7 +765,9 @@ class SalesOrderCreateForm extends Component {
                                     //state
                                     code={code}
                                     note={note}
+
                                     customer={customer}
+
                                     customerName={customerName}
                                     customerAddress={customerAddress}
                                     customerPhone={customerPhone}
@@ -796,6 +819,7 @@ class SalesOrderCreateForm extends Component {
                                     setCurrentManufacturingWorksOfGoods={(data) => {
                                         this.setCurrentManufacturingWorksOfGoods(data);
                                     }}
+                                    setInitialAmount={(data)=>this.setInitialAmount(data)}
                                 />
                             )}
                             {step === 2 && (
@@ -803,6 +827,7 @@ class SalesOrderCreateForm extends Component {
                                     paymentAmount={paymentAmount}
                                     listGoods={goods}
                                     customer={customer}
+                                    customerPromotions={customerPromotions}
                                     customerPhone={customerPhone}
                                     customerAddress={customerAddress}
                                     customerName={customerName}
@@ -815,6 +840,7 @@ class SalesOrderCreateForm extends Component {
                                     deliveryTime={deliveryTime}
                                     coin={coin}
                                     note={note}
+                                    
                                     discountsOfOrderValue={discountsOfOrderValue}
                                     discountsOfOrderValueChecked={discountsOfOrderValueChecked}
                                     enableFormSubmit={enableFormSubmit}
@@ -834,6 +860,7 @@ class SalesOrderCreateForm extends Component {
                                     }}
                                     setPaymentAmount={(data) => this.setPaymentAmount(data)}
                                     saveSalesOrder={this.save}
+                                    setCustomerPromotions={(data) => this.setCustomerPromotions(data)}
                                 />
                             )}
                         </div>

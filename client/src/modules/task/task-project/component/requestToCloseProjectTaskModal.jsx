@@ -148,18 +148,7 @@ function RequestToCloseProjectTaskModal(props) {
     const renderNotRequestClostTaskYet = () => {
         return (
             <div>
-                <div style={{ textAlign: 'right' }}>
-                    <button className="btn btn-success" onClick={() => approvalRequestCloseTask()}>{translate('task.task_perform.approval_request_close_task')}</button>
-                </div>
-                <div className="form-group">
-                    <label style={{ marginRight: '5px' }}>{translate('task.task_perform.status_task_close')}</label>
-                    <SelectBox id="multiSelectStatusRequestClose"
-                        style={{ width: "100%" }}
-                        value={status}
-                        items={renderStatusItemsArr()}
-                        onChange={handleSelectStatus}
-                    />
-                </div>
+                Chưa có yêu cầu công việc nào được gửi
             </div>
         )
     }
@@ -178,7 +167,6 @@ function RequestToCloseProjectTaskModal(props) {
     const renderStatusItemsArr = () => {
         if (task?.taskProject && project?.data?.listbyuser?.find(item => String(item._id) === String(task?.taskProject))?.projectType === 2) {
             return [
-                { value: "wait_for_approval", text: translate('task.task_management.wait_for_approval') },
                 { value: "finished", text: translate('task.task_management.finished') },
             ]
         }

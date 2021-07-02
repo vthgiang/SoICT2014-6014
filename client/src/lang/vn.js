@@ -112,10 +112,10 @@ export default {
                 dashboard: "Bảng tin quản lý khách hàng",
                 customer: "Quản lý thông tin khách hàng",
                 lead: "Khách hàng thân thiết",
-                care: "Chăm sóc khách hàng",
+                care: "Hoạt động chăm sóc khách hàng",
                 group: "Nhóm khách hàng",
                 statistic: "Thống kê",
-                generalConfiguration: "Cấu hình chung",
+                generalConfiguration: "Cấu hình hoạt động chăm sóc khách hàng",
                 evaluation: "Đánh giá hoạt động CSKH",
                 crmUnitConfiguration:"Cấu hình đơn vị chăm sóc khách hàng"
             },
@@ -2141,6 +2141,8 @@ export default {
                         "Chỉnh sửa thông tin nhân viên thất bại",
                     import_employee_success:
                         "Import thông tin nhân viên thành công",
+                    importing_employee: 
+                        "Đang xử lí dữ liệu",
                     import_employee_faile:
                         "Import thông tin nhân viên thất bại",
                     employee_number_required:
@@ -5915,13 +5917,13 @@ export default {
                 percentFinishTask: 'Xác suất hoàn thành dự án trong',
             },
             eval: {
-                undefined: 'Nếu costPerformanceIndex không tính được (mẫu số actualCost = 0 HOẶC costPerformanceIndex = Infinity): Điểm = Chưa tính được',
-                level1: 'Nếu realDuration = 0 HOẶC costPerformanceIndex < 0.5: Điểm = 0',
-                level2: 'Nếu 0.5 <= costPerformanceIndex < 0.75: Điểm = 40',
-                level3: 'Nếu 0.75 <= costPerformanceIndex < 1: Điểm = 60',
-                level4: 'Nếu 1 <= costPerformanceIndex < 1.25: Điểm = 80',
-                level5: 'Nếu 1.25 <= costPerformanceIndex < 1.5: Điểm = 90',
-                level6: 'Nếu 1.5 <= costPerformanceIndex: Điểm = 100',
+                undefined: 'Nếu performanceIndex không tính được (mẫu số actualCost = 0 HOẶC performanceIndex = Infinity): Điểm = Chưa tính được',
+                level1: 'Nếu realDuration = 0 HOẶC performanceIndex < 0.5: Điểm = 0',
+                level2: 'Nếu 0.5 <= performanceIndex < 0.75: Điểm = 40',
+                level3: 'Nếu 0.75 <= performanceIndex < 1: Điểm = 60',
+                level4: 'Nếu 1 <= performanceIndex < 1.25: Điểm = 80',
+                level5: 'Nếu 1.25 <= performanceIndex < 1.5: Điểm = 90',
+                level6: 'Nếu 1.5 <= performanceIndex: Điểm = 100',
             },
             report: {
                 title: 'Báo cáo chi tiết dự án'

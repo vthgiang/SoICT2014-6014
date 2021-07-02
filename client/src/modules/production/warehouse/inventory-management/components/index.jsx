@@ -22,12 +22,12 @@ function InventoryManagement(props) {
         currentRole: localStorage.getItem("currentRole"),
         page: 1,
         limit: limit,
-        oldType: '',
-        type: '',
+        oldType: 'product',
+        type: 'product',
         perPage: 1,
         dataStatus: 0,
         stock: [],
-        activeP: false,
+        activeP: true,
         activeM: false,
         activeE: false,
         activeW: false,
@@ -43,63 +43,89 @@ function InventoryManagement(props) {
     }, [])
 
     useEffect(() => {
-        props.getGoodsByType({ page: state.page, limit: state.limit, type: state.type });
-        props.getAllLots({ type: state.type, managementLocation: state.currentRole });
-        props.getAllLots({ page: state.page, limit: state.limit, type: state.type, managementLocation: state.currentRole });
-        props.getAllGoodsByType({ type: state.type });
-        setState({
-            ...state,
-            oldType: state.type,
-        })
-    }, [state.oldType])
+        if (state.oldType !== state.type) {
+            props.getGoodsByType({ page: state.page, limit: state.limit, type: state.type });
+            props.getAllLots({ type: state.type, managementLocation: state.currentRole });
+            props.getAllLots({ page: state.page, limit: state.limit, type: state.type, managementLocation: state.currentRole });
+            props.getAllGoodsByType({ type: state.type });
+            setState ({
+                ...state,
+                oldType: state.type,
+            })
+        }
+    }, [state.type])
+   
 
-    // shouldComponentUpdate(props, nextPage) {
-    //     if (!nextPage.type) {
-    //         setType();
-    //         return false;
-    //     }
-    //     return true;
-    // }
+    useEffect(() => {
+        if(!state.type){
+            if (checkManagementGood('product')) {
+                setState({ 
+                    ...state,
+                    type: 'product', 
+                    activeP: true 
+                });
+            } else if (checkManagementGood('material')) {
+                setState({ 
+                    ...state, 
+                    type: 'material', 
+                    activeM: true 
+                });
+            } else if (checkManagementGood('equipment')) {
+                setState({ 
+                    ...state, 
+                    type: 'equipment', 
+                    activeE: true 
+                });
+            } else if (checkManagementGood('waste')) {
+                setState({ 
+                    ...state, 
+                    type: 'waste', 
+                    activeW: true 
+                });
+            }
+        }
+    }, [state.type])
 
-    const handleProduct = () => {
-        let type = 'product';
+    const handleProduct = async () => {
+        let newType = 'product';
         let page = 1;
-        setState({
+        await setState({
             ...state,
-            type: type,
+            type: newType,
             page: page,
             good: ''
         })
     }
 
-    const handleMaterial = () => {
-        let type = 'material';
+    const handleMaterial = async () => {
+        let newType = 'material';
         let page = 1;
-        setState({
+        await setState({
             ...state,
-            type: type,
+            type: newType,
             page: page,
             good: ''
         })
     }
 
-    const handleEquipment = () => {
-        let type = 'equipment';
+    const handleEquipment = async () => {
+        let newType = 'equipment';
         let page = 1;
-        setState({
+        await setState({
             ...state,
-            type: type,
+            type: newType,
             page: page,
             good: ''
         })
     }
+    console.log("type", state.type)
 
-    const handleWaste = () => {
-        let type = 'waste';
+    const handleWaste = async () => {
+        let newType = 'waste';
         let page = 1;
-        setState({
+        await setState({
             ...state,
-            type: type,
+            type: newType,
             page: page,
             good: ''
         })
@@ -297,6 +323,7 @@ function InventoryManagement(props) {
     }
 
     const checkQuantity = (stock) => {
+        console.log("stock", stock);
         const { stocks } = props;
         var check = 1;
         stock.map(x => {
@@ -347,19 +374,6 @@ function InventoryManagement(props) {
 
         return false;
     }
-
-    const setType = () => {
-        if (checkManagementGood('product')) {
-            setState({ type: 'product', activeP: true });
-        } else if (checkManagementGood('material')) {
-            setState({ type: 'material', activeM: true });
-        } else if (checkManagementGood('equipment')) {
-            setState({ type: 'equipment', activeE: true });
-        } else if (checkManagementGood('waste')) {
-            setState({ type: 'waste', activeW: true });
-        }
-    }
-
 
     const { translate, lots, goods, stocks } = props;
     const { type, lotId, lotDetailId, good, expirationDate, stock } = state;
@@ -417,7 +431,7 @@ function InventoryManagement(props) {
         <div className="nav-tabs-custom">
             <ul className="nav nav-tabs">
                 {checkManagementGood('product') && <li className={`${state.activeP ? "active" : ''}`}>
-                    <a href="#inventory-products" data-toggle="tab" onClick={() => handleProduct()}>
+                    <a href="#inventory-products" data-toggle="tab" onClick={handleProduct}>
                         {translate('manage_warehouse.inventory_management.product')}
                     </a>
                 </li>}
@@ -427,12 +441,12 @@ function InventoryManagement(props) {
                     </a>
                 </li>}
                 {checkManagementGood('equipment') && <li className={`${state.activeE ? "active" : ''}`}>
-                    <a href="#inventory-equipments" data-toggle="tab" onClick={() => handleEquipment()}>
+                    <a href="#inventory-equipments" data-toggle="tab" onClick={handleEquipment}>
                         {translate('manage_warehouse.inventory_management.equipment')}
                     </a>
                 </li>}
                 {checkManagementGood('waste') && <li className={`${state.activeW ? "active" : ''}`}>
-                    <a href="#inventory-wastes" data-toggle="tab" onClick={() => handleWaste()}>
+                    <a href="#inventory-wastes" data-toggle="tab" onClick={handleWaste}>
                         {translate('manage_warehouse.inventory_management.waste')}
                     </a>
                 </li>}

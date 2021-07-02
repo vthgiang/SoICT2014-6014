@@ -63,7 +63,7 @@ exports.createCare = async (req, res) => {
 
 exports.editCare = async (req, res) => {
     try {
-        const careUpdate = await CareService.editCare(req.portal, req.user.company._id, req.params.id, req.body, req.user._id);
+        const careUpdate = await CareService.editCare(req.portal, req.user.company._id, req.params.id, req.body, req.user._id,req.currentRole);
         await Logger.info(req.user.email, ' edit_care_success ', req.portal);
         res.status(200).json({
             success: true,

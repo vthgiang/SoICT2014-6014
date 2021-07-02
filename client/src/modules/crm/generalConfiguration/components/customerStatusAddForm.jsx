@@ -35,6 +35,7 @@ function CustomerStatusAddForm(props) {
             <DialogModal
                 modalID="modal-crm-customerStatus-create" isLoading={false}
                 formID="form-crm-customerStatus-create"
+                title ="Thêm mới trạng thái khách hàng"
                 func={save}
                 size={50}
             // disableSubmit={!this.isFormValidated()}

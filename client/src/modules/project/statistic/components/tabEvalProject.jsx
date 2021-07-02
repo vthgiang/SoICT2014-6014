@@ -197,95 +197,38 @@ const TabEvalProject = (props) => {
     // console.log('currentTasks', currentTasks)
     return (
         <React.Fragment>
-            <div>
-                <div className="box">
-                    <div className="box-body qlcv">
-                        {
-                            currentGraphData &&
-                            <ModalEVMData
-                                projectDetailId={projectDetailId}
-                                projectDetail={projectDetail}
-                                evmData={currentGraphData.modalEVMData}
+            <div className="box-body qlcv">
+                {
+                    currentGraphData &&
+                    <ModalEVMData
+                        projectDetailId={projectDetailId}
+                        projectDetail={projectDetail}
+                        evmData={currentGraphData.modalEVMData}
+                    />
+                }
+                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <div className="col-md-8 col-xs-8 col-ms-8" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                        <h4><strong>Biểu đồ trực quan EVM dự án</strong></h4>
+                        <div className="col-md-3 col-xs-3 col-ms-3">
+                            <SelectBox
+                                id={`tab-eval-project-time-mode`}
+                                className="form-control select2"
+                                value={currentTimeMode}
+                                items={currentTimeModeArr}
+                                onChange={(e) => {
+                                    setCurrentTimeMode(e[0]);
+                                    setCurrentGraphData(getGraphTasksDataOfTimeMode(currentTasks, e[0]))
+                                }}
+                                multiple={false}
                             />
-                        }
-                        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <div className="col-md-8 col-xs-8 col-ms-8" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                                <h4><strong>Biểu đồ trực quan EVM dự án</strong></h4>
-                                <div className="col-md-3 col-xs-3 col-ms-3">
-                                    <SelectBox
-                                        id={`tab-eval-project-time-mode`}
-                                        className="form-control select2"
-                                        value={currentTimeMode}
-                                        items={currentTimeModeArr}
-                                        onChange={(e) => {
-                                            setCurrentTimeMode(e[0]);
-                                            setCurrentGraphData(getGraphTasksDataOfTimeMode(currentTasks, e[0]))
-                                        }}
-                                        multiple={false}
-                                    />
-                                </div>
-                            </div>
+                        </div>
+                    </div>
 
-                            <button className="btn-link" onClick={showModalDetails}>Xem chi tiết</button>
-                        </div>
-                        {currentGraphData
-                            ? <div ref={chartRef} />
-                            : `Không thể biểu diễn biểu đồ dưới dạng ${currentTimeModeArr.find(item => item.value === currentTimeMode)?.text}`}
-                    </div>
+                    <button className="btn-link" onClick={showModalDetails}>Xem chi tiết</button>
                 </div>
-                <div className="box">
-                    <div className="box-body qlcv">
-                        <h4><strong>Điểm số các công việc của dự án theo tháng</strong></h4>
-                        {/* Chọn tháng để lọc đánh giâ */}
-                        <div className="form-group">
-                            <label style={{ marginRight: 20 }}>Chọn tháng</label>
-                            <DatePicker
-                                id="start-date-eval-project-statistical"
-                                dateFormat="month-year"
-                                value={moment(currentMonth).format('MM-YYYY')}
-                                onChange={handleChangeMonth}
-                                disabled={false}
-                            />
-                        </div>
-                        <table id="eval-project-statistical-table" className="table table-bordered table-hover">
-                            <thead>
-                                <tr>
-                                    <th>{translate('task.task_management.col_name')}</th>
-                                    <th>Trạng thái công việc</th>
-                                    <th>Thời điểm bắt đầu</th>
-                                    <th>Thời điểm kết thúc dự kiến</th>
-                                    <th>Thời điểm kết thúc thực tế</th>
-                                    <th>Thời lượng ước lượng ({translate(`project.unit.${projectDetail?.unitTime}`)})</th>
-                                    <th>Thời lượng thực tế ({translate(`project.unit.${projectDetail?.unitTime}`)})</th>
-                                    <th>Planned Value (VND)</th>
-                                    <th>Actual Cost (VND)</th>
-                                    <th>Earned Value (VND)</th>
-                                    <th>Điểm số công việc</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {processedTableData.map((taskItem, index) => {
-                                    return (
-                                        <tr key={index}>
-                                            <td style={{ color: '#385898' }}>{taskItem?.name}</td>
-                                            <td style={{ color: renderStatusColor(taskItem) }}>{formatTaskStatus(translate, taskItem?.status)}</td>    
-                                            <td>{moment(taskItem?.startDate).format('HH:mm DD/MM/YYYY')}</td> 
-                                            <td>{moment(taskItem?.endDate).format('HH:mm DD/MM/YYYY')}</td> 
-                                            <td>{taskItem?.actualEndDate && taskItem?.status === 'finished' && moment(taskItem?.actualEndDate).format('HH:mm DD/MM/YYYY')}</td>                                         
-                                            <td>{numberWithCommas(taskItem?.estDuration)}</td>
-                                            <td>{taskItem?.realDuration && numberWithCommas(taskItem?.realDuration)}</td>
-                                            <td>{numberWithCommas(taskItem?.plannedValue)}</td>
-                                            <td>{numberWithCommas(taskItem?.actualCost)}</td>
-                                            <td>{numberWithCommas(taskItem?.earnedValue)}</td>
-                                            <td>{checkUndefinedNull(taskItem?.overallEvaluation?.automaticPoint) ? 'Chưa tính được' : `${numberWithCommas(taskItem?.overallEvaluation?.automaticPoint)} / 100`}</td>
-                                        </tr>
-                                    )
-                                })
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                {currentGraphData
+                    ? <div ref={chartRef} />
+                    : `Không thể biểu diễn biểu đồ dưới dạng ${currentTimeModeArr.find(item => item.value === currentTimeMode)?.text}`}
             </div>
         </React.Fragment >
     );

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import ArchiveManagement from '../components/archives';
-import BinManagement from '../components/bin-locations';
+import ArchiveManagement from '../components-class/archives';
+import BinManagement from '../components-class/bin-locations';
 import { BinLocationActions} from '../redux/actions';
 
 import { LazyLoadComponent, forceCheckOrVisible } from '../../../../../common-components/index';

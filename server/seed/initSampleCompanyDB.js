@@ -64,6 +64,7 @@ const {
     ProductDiscount,
     Status,
     CustomerRankPoint,
+    CrmUnit,
 
     ManufacturingWorks,
     ManufacturingMill,
@@ -145,7 +146,7 @@ const initSampleCompanyDB = async () => {
      * 1.1 Khởi tạo model cho db
      */
     const initModels = (db) => {
-        console.log("models", db.models);
+        
 
         if (!db.models.Component) Component(db);
         if (!db.models.RoleType) RoleType(db);
@@ -465,7 +466,7 @@ const initSampleCompanyDB = async () => {
     });
     const giamDocKinhDoanh = await Role(vnistDB).create({
         parents: [roleManager._id, nvKinhDoanh247._id, truongPhongKinhDoanh247._id,
-            nvKinhDoanh123._id, truongPhongKinhDoanh123._id ],
+        nvKinhDoanh123._id, truongPhongKinhDoanh123._id],
         name: "Giám đốc kinh doanh",
         type: roleChucDanh._id,
     });
@@ -619,13 +620,13 @@ const initSampleCompanyDB = async () => {
             userId: users[5]._id,
             roleId: thanhVienBGĐ._id,
         },
-       
+
         {
             // Nhân viên phòng nhân sự Phạm Đình Phúc
             userId: users[7]._id,
             roleId: nvPhongHC._id,
         },
-      
+
         {
             userId: users[8]._id,
             roleId: nvPhongHC._id,
@@ -680,7 +681,7 @@ const initSampleCompanyDB = async () => {
             userId: users[5]._id,
             roleId: nvNhaMayThuocNuoc._id,
         },
-       
+
 
         {
             userId: users[8]._id,
@@ -751,7 +752,7 @@ const initSampleCompanyDB = async () => {
         },
 
         // Đơn vị vận chuyển-------------------------------------------------
-        {   
+        {
             // nva trưởng phòng vận chuyển phía bắc
             userId: users[2]._id,
             roleId: vcTruongPhong._id,
@@ -5500,7 +5501,12 @@ const initSampleCompanyDB = async () => {
         //     manufacturingMill: manufacturingMills[0]._id
         // },
     ]);
+
+
+
     console.log("Tạo xong dữ liệu mẫu các loại phiếu");
+
+
 
     var lotUpdate = await Lot(vnistDB).updateOne({
         _id: listLot[0]._id
@@ -5549,50 +5555,63 @@ const initSampleCompanyDB = async () => {
             }
         ],
     });
+    //**********************************Tạo dữ liệu đơn vị chăm sóc khách hàng */
+    const CrmUnitData = [
+        {
+            "organizationalUnit": boPhanCSKH[0]._id,
+            "creator": users[5]._id,
+            "createdAt": new Date(),
+        }
+    ];
+    const crmUnits = await CrmUnit(vnistDB).insertMany(CrmUnitData);
 
     // ****************** Tạo mẫu dữ liệu khách hàng********************
-    console.log("Tạo mẫu dữ liệu khách hàng");
+    console.log("Tạo mẫu dữ liệu nhóm khách hàng");
 
     const customerGroupData = [
         {
             name: "Khách bán buôn",
-            code: "KBB",
+            code: "NHKHKBB",
             description: "Nhóm khách chỉ bán buôn",
             "creator": users[5]._id,
             "updatedBy": users[5]._id,
             "createdAt": new Date(),
             "updatedAt": new Date(),
+            crmUnit: crmUnits[0]._id
         },
         {
             name: "Sỉ lẻ",
-            code: "SL",
+            code: "NKHBBSL",
             description: "Nhóm khách chỉ bán sĩ lẻ",
             "creator": users[5]._id,
             "updatedBy": users[5]._id,
             "createdAt": new Date(),
             "updatedAt": new Date(),
+            crmUnit: crmUnits[0]._id
         },
         {
             name: "Nhóm khách theo khu vực",
-            code: "CCAD",
+            code: "NKHKV",
             description: "Nhóm khách theo khu vực",
             "creator": users[5]._id,
             "updatedBy": users[5]._id,
             "createdAt": new Date(),
             "updatedAt": new Date(),
+            crmUnit: crmUnits[0]._id
         },
         {
             name: "Khách VIP",
-            code: "ĐLVA",
+            code: "KHVIP1",
             description: "Khách VIP",
             "creator": users[5]._id,
             "updatedBy": users[5]._id,
             "createdAt": new Date(),
             "updatedAt": new Date(),
+            crmUnit: crmUnits[0]._id
         },
     ];
     const groups = await Group(vnistDB).insertMany(customerGroupData);
-    console.log("Xong! Đã tạo mẫu dữ liệu khách hàng");
+    console.log("Xong! Đã tạo mẫu dữ liệu nhóm khách hàng");
 
     // ****************** Tạo mẫu dữ liệu trạng thái khách hàng********************
     console.log("Tạo mẫu dữ liệu trạng thái khách hàng");
@@ -5607,6 +5626,7 @@ const initSampleCompanyDB = async () => {
             "updatedBy": users[5]._id,
             "createdAt": new Date(),
             "updatedAt": new Date(),
+            crmUnit: crmUnits[0]._id
         },
         {
 
@@ -5618,6 +5638,7 @@ const initSampleCompanyDB = async () => {
             "updatedBy": users[5]._id,
             "createdAt": new Date(),
             "updatedAt": new Date(),
+            crmUnit: crmUnits[0]._id
         },
         {
 
@@ -5629,6 +5650,7 @@ const initSampleCompanyDB = async () => {
             "updatedBy": users[5]._id,
             "createdAt": new Date(),
             "updatedAt": new Date(),
+            crmUnit: crmUnits[0]._id
         },
         {
 
@@ -5640,6 +5662,7 @@ const initSampleCompanyDB = async () => {
             "updatedBy": users[5]._id,
             "createdAt": new Date(),
             "updatedAt": new Date(),
+            crmUnit: crmUnits[0]._id
         },
         {
 
@@ -5651,6 +5674,7 @@ const initSampleCompanyDB = async () => {
             "updatedBy": users[5]._id,
             "createdAt": new Date(),
             "updatedAt": new Date(),
+            crmUnit: crmUnits[0]._id
         },
     ];
     const status = await Status(vnistDB).insertMany(customerStatusData);
@@ -5666,6 +5690,7 @@ const initSampleCompanyDB = async () => {
             "updatedBy": users[5]._id,
             "createdAt": new Date(),
             "updatedAt": new Date(),
+            crmUnit: crmUnits[0]._id
         },
         {
             name: "Gửi Email",
@@ -5674,6 +5699,7 @@ const initSampleCompanyDB = async () => {
             "updatedBy": users[5]._id,
             "createdAt": new Date(),
             "updatedAt": new Date(),
+            crmUnit: crmUnits[0]._id
         },
         {
             name: "Gặp mặt trực tiếp",
@@ -5682,9 +5708,9 @@ const initSampleCompanyDB = async () => {
             "updatedBy": users[5]._id,
             "createdAt": new Date(),
             "updatedAt": new Date(),
+            crmUnit: crmUnits[0]._id
         },
     ];
-
     const careTypes = await CareType(vnistDB).insertMany(customerCareType);
     console.log("Xong! Đã tạo mẫu dữ liệu hình thức chăm sóc khách hàng");
     // ****************** Tạo mẫu dữ liệu xếp hạng khách hàng********************
@@ -5699,6 +5725,7 @@ const initSampleCompanyDB = async () => {
             "updatedBy": users[5]._id,
             "createdAt": new Date(),
             "updatedAt": new Date(),
+            crmUnit: crmUnits[0]._id
 
         }
         ,
@@ -5712,6 +5739,7 @@ const initSampleCompanyDB = async () => {
             "updatedBy": users[5]._id,
             "createdAt": new Date(),
             "updatedAt": new Date(),
+            crmUnit: crmUnits[0]._id
 
         }
         ,
@@ -5724,6 +5752,7 @@ const initSampleCompanyDB = async () => {
             "updatedBy": users[5]._id,
             "createdAt": new Date(),
             "updatedAt": new Date(),
+            crmUnit: crmUnits[0]._id
 
         },
         {
@@ -5734,6 +5763,7 @@ const initSampleCompanyDB = async () => {
             "updatedBy": users[5]._id,
             "createdAt": new Date(),
             "updatedAt": new Date(),
+            crmUnit: crmUnits[0]._id
 
         }
     ];
@@ -5742,303 +5772,152 @@ const initSampleCompanyDB = async () => {
     console.log("Xong! Đã tạo mẫu dữ liệu hình thức chăm sóc khách hàng");
 
     // ****************** Tạo mẫu dữ liệu khách hàng********************
-    var listCustomers = await Customer(vnistDB).insertMany([
+    var surname = ['Ngô', 'Đinh', 'Lê', 'Lý', 'Trần', 'Hồ', 'Trịnh', 'Nguyễn'];
+    var middleName = ['Văn', 'Thị', 'Hương', 'Bá', 'Trung', 'Duy', 'Viết', 'An', 'Xuân', 'Hoàng'];
+    var name = ['Thái', 'Quyền', 'Lĩnh', 'Hoàn', 'Cảnh', 'Ly', 'Ánh', 'Trực', 'An', 'Tùng', 'Nam', 'Việt'];
+    const getRandomCustomerName = () => {
+        var surnameIndex = Math.floor(Math.random() * 8);
+        var middleNameIndex = Math.floor(Math.random() * 10);
+        var nameIndex = Math.floor(Math.random() * 12);
+        return `${surname[surnameIndex]} ${middleName[middleNameIndex]} ${name[nameIndex]}`
+    }
+    let listCustomerData = [];
+    for (let i = 0; i < 6; i++) {
+        for (let j = 0; j < 50; j++) {
+            const name = await getRandomCustomerName();
+            const now = new Date();
+            const month = (now.getMonth() - i > 0) ? now.getMonth() - i : now.getMonth() - i + 12;
+            const year = (now.getMonth() - i > 0) ? now.getFullYear() : now.getFullYear() - 1;
+            const customer = {
 
-        {
+                "owner": [
+                    users[(j % 3 + 5)]._id
+                ],
+                "status": [
+                    status[j % 5]._id
+                ],
+                "point": 0,
+                "isDeleted": false,
+                "code": `KH${i * 50 + j + 1}`,
+                "name": name,
+                "customerType": 1,
+                "group": groups[j % 4]._id,
+                "gender": 2,
+                "birthDate": new Date("1998-09-03"),
+                "mobilephoneNumber": 123456789,
+                "email": "ThaiNguyen@gmail.com",
+                "address": "Nghệ An",
+                "telephoneNumber": 123456789,
+                "taxNumber": "Tax 123456789",
+                "location": 1,
+                "customerSource": "FaceBook",
+                "statusHistories": [
+                    {
 
-            "owner": [
-                users[5]._id
-            ],
-            "status": [
-                status[4]._id
-            ],
-            "point": 0,
-            "isDeleted": false,
-            "code": "KH12345",
-            "name": "Ngô Quyền",
-            "customerType": 1,
-            "group": groups[1]._id,
-            "gender": 2,
-            "birthDate": new Date("1998-09-03"),
-            "mobilephoneNumber": 123456789,
-            "email": "ThaiNguyen@gmail.com",
-            "address": "Nghệ An",
-            "telephoneNumber": 123456789,
-            "taxNumber": "Tax 123456789",
-            "location": 1,
-            "customerSource": "FaceBook",
-            "statusHistories": [
-                {
+                        "createdAt": new Date(),
+                        "oldValue": status[1]._id,
+                        "newValue": status[1]._id,
+                        "createdBy": users[(j % 3 + 5)]._id,
+                        "description": "Khách hàng được khởi tạo"
+                    },
+                    {
 
-                    "createdAt": new Date(),
-                    "oldValue": status[1]._id,
-                    "newValue": status[1]._id,
-                    "createdBy": users[5]._id,
-                    "description": "Khách hàng được khởi tạo"
-                },
-                {
+                        "oldValue": status[1]._id,
+                        "newValue": status[(j % 5)]._id,
+                        "createdAt": new Date(),
+                        "createdBy": users[(j % 3) + 5]._id,
+                        "description": "Khách hàng đã được chuyển trạng thái"
+                    }
+                ],
+                "creator": users[(j % 3 + 5)]._id,
+                "rankPoints": [
+                    {
 
-                    "oldValue": status[1]._id,
-                    "newValue": status[4]._id,
-                    "createdAt": new Date(),
-                    "createdBy": users[5]._id,
-                    "description": "Khách hàng đã kí hợp đồng"
-                }
-            ],
-            "creator": users[5]._id,
-            "rankPoints": [
-                {
+                        "point": Math.floor(Math.random() * 9876),
+                        "expirationDate": new Date(year, 12)
+                    },
+                    {
 
-                    "point": 800,
-                    "expirationDate": new Date('2022-02-02')
-                },
-                {
-
-                    "point": 80,
-                    "expirationDate": new Date('2022-02-02')
-                }
-            ],
-            "files": [],
-            "promotions": [],
-            "createdAt": new Date(),
-            "updatedAt": new Date(),
-            "__v": 0,
-            "address2": "",
-            "company": "",
-            "companyEstablishmentDate": null,
-            "email2": "",
-            "linkedIn": "",
-            "note": "",
-            "represent": "",
-            "website": ""
+                        "point": Math.floor(Math.random() * 98),
+                        "expirationDate": new Date(year, 12)
+                    }
+                ],
+                "files": [],
+                "promotions": [],
+                "createdAt": new Date(year, month),
+                "updatedAt": new Date(),
+                "__v": 0,
+                "address2": "",
+                "company": "",
+                "companyEstablishmentDate": null,
+                "email2": "",
+                "linkedIn": "",
+                "note": "",
+                "represent": "",
+                "website": "",
+                crmUnit: crmUnits[0]._id
+            }
+            listCustomerData = [...listCustomerData, customer];
         }
-        ,
-        {
+    }
 
-            "owner": [
-                users[6]._id
-            ],
-            "status": [
-                status[3]._id
-            ],
-            "point": 0,
-            "isDeleted": false,
-            "code": "KH0002",
-            "name": "Trần Hưng Đạo",
-            "customerType": 1,
-            "group": groups[1]._id,
-            "gender": 2,
-            "birthDate": new Date("1238-09-03"),
-            "mobilephoneNumber": 123456789,
-            "email": "hungdao@gmail.com",
-            "address": "Nam Định",
-            "telephoneNumber": 1234567890,
-            "taxNumber": "Tax 1234567111",
-            "location": 1,
-            "customerSource": "Shoppe",
-            "statusHistories": [
-                {
-
-                    "createdAt": new Date(),
-                    "oldValue": status[1]._id,
-                    "newValue": status[1]._id,
-                    "createdBy": users[5]._id,
-                    "description": "Khách hàng được khởi tạo"
-                },
-                {
-
-                    "oldValue": status[1]._id,
-                    "newValue": status[3]._id,
-                    "createdAt": new Date(),
-                    "createdBy": users[5]._id,
-                    "description": "Khách hàng đã được liên hệ"
-                }
-            ],
-            "creator": users[5]._id,
-            "rankPoints": [
-                {
-
-                    "point": 100,
-                    "expirationDate": new Date('2022-02-02')
-                },
-                {
-
-                    "point": 50,
-                    "expirationDate": new Date('2022-02-02')
-                }
-            ],
-            "files": [],
-            "promotions": [],
-            "createdAt": new Date(),
-            "updatedAt": new Date(),
-            "__v": 0,
-            "address2": "",
-            "company": "",
-            "companyEstablishmentDate": null,
-            "email2": "",
-            "linkedIn": "",
-            "note": "",
-            "represent": "",
-            "website": ""
-        },
-        
-        {
-
-            "owner": [
-                users[7]._id
-            ],
-            "status": [
-                status[4]._id
-            ],
-            "point": 0,
-            "isDeleted": false,
-            "code": "KH0003",
-            "name": "Công ty Việt Anh",
-            "customerType": 2,
-            "group": groups[1]._id,
-            "gender": 2,
-            "birthDate": new Date("1238-09-03"),
-            "mobilephoneNumber": 123456789,
-            "email": "vietanh@gmail.com",
-            "address": "Hà Nội",
-            "telephoneNumber": 1234561111,
-            "taxNumber": "Tax 11117111",
-            "location": 1,
-            "customerSource": "Shoppe",
-            "statusHistories": [
-                {
-
-                    "createdAt": new Date(),
-                    "oldValue": status[1]._id,
-                    "newValue": status[1]._id,
-                    "createdBy": users[5]._id,
-                    "description": "Khách hàng được khởi tạo"
-                },
-                {
-
-                    "oldValue": status[1]._id,
-                    "newValue": status[4]._id,
-                    "createdAt": new Date(),
-                    "createdBy": users[5]._id,
-                    "description": "Khách hàng đã mua hàng"
-                }
-            ],
-            "creator": users[5]._id,
-            "rankPoints": [
-                {
-
-                    "point": 1000,
-                    "expirationDate": new Date('2022-02-02')
-                },
-                {
-
-                    "point": 500,
-                    "expirationDate": new Date('2022-02-02')
-                }
-            ],
-            "files": [],
-            "promotions": [],
-            "createdAt": new Date(),
-            "updatedAt": new Date(),
-            "__v": 0,
-            "address2": "",
-            "company": "",
-            "companyEstablishmentDate": new Date('2002-02-02'),
-            "email2": "",
-            "linkedIn": "",
-            "note": "",
-            "represent": "Nguyễn Tuấn Anh",
-            "website": "vietanh.com.vn"
-        }
-
-    ]);
+    var listCustomers = await Customer(vnistDB).insertMany(listCustomerData);
     console.log("Xong! Đã tạo mẫu dữ liệu khách hàng");
 
 
 
     // ****************** Tạo mẫu dữ liệu chăm sóc khách hàng********************
-
-    const customerCares = [
-        {
-
-            "customerCareStaffs": [
-                users[5]._id
-            ],
-            "customerCareTypes": [
-                careTypes[1]._id
-            ],
-            "status": 2,
-            "name": "Gọi điện cho khách hàng ",
-            "description": "<p>Gọi điện cho khách hàng tư vấn mua sản phẩm mới </p>",
-            "priority": 2,
-            "startDate": new Date('2021-05-05'),
-            "endDate": new Date('2021-05-31'),
-            "customer": listCustomers[1]._id,
-            "creator": users[5]._id,
-            "createdAt": new Date(),
-            "updatedAt": new Date(),
-            "__v": 0
-        }
-        ,
-        /* 2 */
-        {
-
-            "customerCareStaffs": [
-                users[6]._id
-            ],
-            "customerCareTypes": [
-                careTypes[1]._id
-            ],
-            "status": 5,
-            "customer": listCustomers[0]._id,
-            "name": "email phản hồi khiếu nại của khách hàng",
-            "description": "<p>email phản hồi khiếu nại của khách hàng</p>",
-            "priority": 2,
-            "startDate": new Date('2021-05-05'),
-            "endDate": new Date('2021-05-07'),
-            "customer": listCustomers[1]._id,
-            "creator": users[5]._id,
-            "createdAt": new Date(),
-            "updatedAt": new Date(),
-            "__v": 0,
-            "completeDate": new Date('2021-05-14'),
-            "evaluation": {
-                "point": 8.9,
-                "comment": "<p>khách hàng hài lòng về phản hồi</p>",
-                "result": 1
+    const getRamdomCareName = () => {
+        const first = ['Gọi điện', 'Email', 'Gặp mặt']
+        const middle = ['tư vấn', 'phản hồi khiếu nại', 'trả lời thắc mắc']
+        const last = ['về dịch vụ', 'về sản phẩm', 'về công ty']
+        const firstIndex = Math.floor(Math.random() * 3);
+        const middleIndex = Math.floor(Math.random() * 3);
+        const lastIndex = Math.floor(Math.random() * 3);
+        return `${first[firstIndex]} ${middle[middleIndex]} ${last[lastIndex]}`;
+    }
+    let customerCareData = []
+    for (let i = 0; i < 6; i++) {
+        for (let j = 0; j < 50; j++) {
+            const careName = await getRamdomCareName();
+            const now = new Date();
+            const month = (now.getMonth() - i > 0) ? now.getMonth() - i : now.getMonth() - i + 12;
+            const year = (now.getMonth() - i > 0) ? now.getFullYear() : now.getFullYear() - 1;
+            let care =
+            {
+                "customerCareStaffs": [
+                    users[(j % 3 + 5)]._id
+                ],
+                "customerCareTypes": [
+                    careTypes[(j % 3)]._id
+                ],
+                "status": (j % 5 + 1),
+                "name": careName,
+                "description": `<p>${careName} </p>`,
+                "priority": 2,
+                "startDate": new Date(year, month, 5),
+                "endDate": new Date(year, month, 25),
+                "customer": listCustomers[(j%10)]._id,
+                "creator": users[(j % 3 + 5)]._id,
+                "createdAt": new Date(),
+                "updatedAt": new Date(),
+                crmUnit: crmUnits[0]._id,
+                "__v": 0
             }
-        },
-        /* 3 */
-        {
-
-            "customerCareStaffs": [
-                users[6]._id
-            ],
-            "customerCareTypes": [
-                careTypes[1]._id
-            ],
-            "status": 5,
-            "customer": listCustomers[0]._id,
-            "name": "Gặp mặt trao đổi thông tin ",
-            "description": "<p>Gặp mặt trao đổi thông tin</p>",
-            "priority": 2,
-            "startDate": new Date('2021-05-05'),
-            "endDate": new Date('2021-05-07'),
-            "customer": listCustomers[1]._id,
-            "creator": users[5]._id,
-            "createdAt": new Date(),
-            "updatedAt": new Date(),
-            "__v": 0,
-            "completeDate": new Date('2021-05-14'),
-            "evaluation": {
-                "point": 8.0,
-                "comment": "<p>khách hàng hài lòng về cuộc gặp mặt </p>",
-                "result": 1
+            if ((j % 5 + 1) == 3 || (j % 5 + 1) == 5)
+            care ={...care ,
+                evaluation: {
+                    "point": 8.9,
+                    "comment": "<p>khách hàng không có nhận xét về phản hồi</p>",
+                    "result": Math.floor(Math.random() * 2)+1
+                }
             }
+                customerCareData = [...customerCareData, care];
         }
-    ];
+    }
 
-    await Care(vnistDB).insertMany(customerCares);
+
+    await Care(vnistDB).insertMany(customerCareData);
     console.log("Xong! Đã tạo mẫu dữ liệu  chăm sóc khách hàng");
 
     /*---------------------------------------------------------------------------------------------
@@ -6079,7 +5958,6 @@ const initSampleCompanyDB = async () => {
           TẠO DỮ LIỆU THÔNG TIN CAM KẾT CHẤT LƯỢNG
       -----------------------------------------------------------------------------------------------
       ----------------------------------------------------------------------------------------------- */
-    console.log("istProduct[0]._id,", listProduct[0]._id);
     console.log("Khởi tạo dữ liệu thông tin cam kết chất lượng");
     var listServiceLevelAgreements = await ServiceLevelAgreement(vnistDB).insertMany([
         {
@@ -6884,7 +6762,7 @@ const initSampleCompanyDB = async () => {
 
     const transportGetNextNDates = (n) => {
         let currentDate = new Date();
-        currentDate.setDate(currentDate.getDate()+n);
+        currentDate.setDate(currentDate.getDate() + n);
         return new Date(currentDate);
     }
 
@@ -6912,15 +6790,15 @@ const initSampleCompanyDB = async () => {
             typeRegisterForUse: 3,
             description: "",
             detailInfo: [
-              {
-                nameField: "volume",
-                value: "16"
-              },
-              {
-                
-                nameField: "payload",
-                value: "3000"
-              }
+                {
+                    nameField: "volume",
+                    value: "16"
+                },
+                {
+
+                    nameField: "payload",
+                    value: "3000"
+                }
             ],
             depreciationType: "none",
             maintainanceLogs: [],
@@ -6934,7 +6812,7 @@ const initSampleCompanyDB = async () => {
             documents: [],
             unitsProducedDuringTheYears: [],
             informations: [],
-          },
+        },
         {
             assetType: [listAssetType[23]._id],
             readByRoles: [vcTruongPhong._id],
@@ -6963,7 +6841,7 @@ const initSampleCompanyDB = async () => {
                     value: "20"
                 },
                 {
-                    
+
                     nameField: "payload",
                     value: "2000"
                 }
@@ -6988,15 +6866,15 @@ const initSampleCompanyDB = async () => {
             organizationalUnit: phongVanChuyen._id,
             type: [
                 {
-                    roleOrganizationalUnit: vcTruongPhong._id,  
+                    roleOrganizationalUnit: vcTruongPhong._id,
                     roleTransport: 1,
                 },
                 {
-                    roleOrganizationalUnit: vcNvGiamSat._id,  
+                    roleOrganizationalUnit: vcNvGiamSat._id,
                     roleTransport: 2,
                 },
                 {
-                    roleOrganizationalUnit: vcNvVanChuyen._id,  
+                    roleOrganizationalUnit: vcNvVanChuyen._id,
                     roleTransport: 3,
                 },
             ]
@@ -7008,18 +6886,18 @@ const initSampleCompanyDB = async () => {
             asset: newTransportAssetVehicle[0]._id,
             code: newTransportAssetVehicle[0].code,
             name: newTransportAssetVehicle[0].assetName,
-            payload:3000,
-            volume:16,
-            usable:1,
+            payload: 3000,
+            volume: 16,
+            usable: 1,
             department: transportDepartment[0]._id,
         },
         {
             asset: newTransportAssetVehicle[1]._id,
             code: newTransportAssetVehicle[1].code,
             name: newTransportAssetVehicle[1].assetName,
-            payload:2000,
-            volume:20,
-            usable:1,
+            payload: 2000,
+            volume: 20,
+            usable: 1,
             department: transportDepartment[0]._id,
         }
     ])
@@ -7059,18 +6937,18 @@ const initSampleCompanyDB = async () => {
             volume: 2,
             payload: 10,
             approver: users[2]._id,
-            department: transportDepartment[0]._id,          
+            department: transportDepartment[0]._id,
         },
         { //1
             geocode: {
-            fromAddress: {
-                lat: 11.20385642,
-                lng: 107.356440853
-            },
-            toAddress: {
-                lat: 11.3130384470001,
-                lng: 106.024041001
-            }
+                fromAddress: {
+                    lat: 11.20385642,
+                    lng: 107.356440853
+                },
+                toAddress: {
+                    lat: 11.3130384470001,
+                    lng: 106.024041001
+                }
             },
             status: 1,
             code: "YCVC20210602.224869",
@@ -7099,14 +6977,14 @@ const initSampleCompanyDB = async () => {
         },
         { //2
             geocode: {
-            fromAddress: {
-                lat: 20.9991964035554,
-                lng: 105.845662549979
-            },
-            toAddress: {
-                lat: 20.988961633,
-                lng: 105.628865767
-            }
+                fromAddress: {
+                    lat: 20.9991964035554,
+                    lng: 105.845662549979
+                },
+                toAddress: {
+                    lat: 20.988961633,
+                    lng: 105.628865767
+                }
             },
             status: 3,
             code: "YCVC20210602.185942",
@@ -7132,7 +7010,7 @@ const initSampleCompanyDB = async () => {
             payload: 20,
             approver: users[2]._id,
             department: transportDepartment[0]._id,
-        }, 
+        },
         { //3
             geocode: {
                 fromAddress: {
@@ -7167,7 +7045,7 @@ const initSampleCompanyDB = async () => {
             volume: 5,
             payload: 25,
             approver: users[2]._id,
-            department: transportDepartment[0]._id,          
+            department: transportDepartment[0]._id,
         },
         { //4
             geocode: {
@@ -7203,7 +7081,7 @@ const initSampleCompanyDB = async () => {
             volume: 100,
             payload: 100,
             approver: users[2]._id,
-            department: transportDepartment[0]._id,          
+            department: transportDepartment[0]._id,
         },
         { //5
             geocode: {
@@ -7239,7 +7117,7 @@ const initSampleCompanyDB = async () => {
             volume: 6,
             payload: 40,
             approver: users[2]._id,
-            department: transportDepartment[0]._id,          
+            department: transportDepartment[0]._id,
         },
         { //6
             geocode: {
@@ -7275,7 +7153,7 @@ const initSampleCompanyDB = async () => {
             volume: 4,
             payload: 30,
             approver: users[2]._id,
-            department: transportDepartment[0]._id,          
+            department: transportDepartment[0]._id,
         },
     ])
 
@@ -7290,89 +7168,89 @@ const initSampleCompanyDB = async () => {
             startTime: transportGetNextNDates(4),
             endTime: transportGetNextNDates(4),
             transportVehicles: [
-              {
-                vehicle: transportVehicle[0]._id,
-                carriers: [
-                  {
-                    carrier: users[4]._id,
-                    pos: 1,
-                  },
-                  {
-                    carrier: users[5]._id,
-                  }
-                ]
-              },
-              {
-                vehicle: transportVehicle[1]._id,
-                carriers: [
-                  {
-                    
-                    carrier: users[6]._id,
-                    pos: 1
-                  }
-                ]
-              }
+                {
+                    vehicle: transportVehicle[0]._id,
+                    carriers: [
+                        {
+                            carrier: users[4]._id,
+                            pos: 1,
+                        },
+                        {
+                            carrier: users[5]._id,
+                        }
+                    ]
+                },
+                {
+                    vehicle: transportVehicle[1]._id,
+                    carriers: [
+                        {
+
+                            carrier: users[6]._id,
+                            pos: 1
+                        }
+                    ]
+                }
             ],
             department: transportDepartment[0]._id,
-          }
+        }
     ])
-    await TransportRequirement(vnistDB).updateOne({ _id: transportRequirement[0]._id }, { $set: { transportPlan: transportPlan[0]._id }});
-    await TransportRequirement(vnistDB).updateOne({ _id: transportRequirement[2]._id }, { $set: { transportPlan: transportPlan[0]._id }});
+    await TransportRequirement(vnistDB).updateOne({ _id: transportRequirement[0]._id }, { $set: { transportPlan: transportPlan[0]._id } });
+    await TransportRequirement(vnistDB).updateOne({ _id: transportRequirement[2]._id }, { $set: { transportPlan: transportPlan[0]._id } });
 
     const transportSchedule = await TransportSchedule(vnistDB).insertMany([
         {
             transportPlan: transportPlan[0]._id,
             route: [
-              {
-                transportVehicle: transportVehicle[1]._id,
-                routeOrdinal: [
-                  {
-                    transportRequirement: transportRequirement[2]._id,
-                    type: 1,
-                    distance: 0,
-                    duration: 0
-                  },
-                  {
-                    transportRequirement: transportRequirement[2]._id,
-                    type: 2,
-                    distance: 26,
-                    duration: 61
-                  }
-                ]
-              },
-              {
-                transportVehicle:transportVehicle[0]._id,
-                routeOrdinal: [
-                  {
-                    transportRequirement: transportRequirement[0]._id,
-                    type: 1,
-                    distance: 0,
-                    duration: 0
-                  },
-                  {
-                    transportRequirement: transportRequirement[0]._id,
-                    type: 2,
-                    distance: 75,
-                    duration: 174
-                  }
-                ]
-              }
+                {
+                    transportVehicle: transportVehicle[1]._id,
+                    routeOrdinal: [
+                        {
+                            transportRequirement: transportRequirement[2]._id,
+                            type: 1,
+                            distance: 0,
+                            duration: 0
+                        },
+                        {
+                            transportRequirement: transportRequirement[2]._id,
+                            type: 2,
+                            distance: 26,
+                            duration: 61
+                        }
+                    ]
+                },
+                {
+                    transportVehicle: transportVehicle[0]._id,
+                    routeOrdinal: [
+                        {
+                            transportRequirement: transportRequirement[0]._id,
+                            type: 1,
+                            distance: 0,
+                            duration: 0
+                        },
+                        {
+                            transportRequirement: transportRequirement[0]._id,
+                            type: 2,
+                            distance: 75,
+                            duration: 174
+                        }
+                    ]
+                }
             ],
             transportVehicles: [
-              {
-                transportRequirements: [transportRequirement[0]._id],
-                transportVehicle: transportVehicle[0]._id,
-              },
-              {
-                transportRequirements: [transportRequirement[2]._id],
-                transportVehicle: transportVehicle[1]._id,
-              }
+                {
+                    transportRequirements: [transportRequirement[0]._id],
+                    transportVehicle: transportVehicle[0]._id,
+                },
+                {
+                    transportRequirements: [transportRequirement[2]._id],
+                    transportVehicle: transportVehicle[1]._id,
+                }
             ],
-          }
+        }
     ])
 
     console.log("Khởi tạo xong dữ liệu vận chuyển");
-    
+
     /*---------------------------------------------------------------------------------------------
       -----------------------------------------------------------------------------------------------
           TẠO DỮ LIỆU ĐƠN BÁN HÀNG

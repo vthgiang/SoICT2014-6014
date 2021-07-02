@@ -47,7 +47,7 @@ class PurchaseOrderTable extends Component {
         const { page, limit, currentRole } = this.state;
         this.props.getAllPurchaseOrders({ page, limit, currentRole });
         this.props.getAllStocks();
-        this.props.getCustomers();
+        this.props.getCustomers({getALL:true});
         this.props.getUser();
         this.props.getAllGoodsByType({ type: "material" });
     }

@@ -80,7 +80,7 @@ const ModalCreateChangeRequest = (props) => {
                     </div>
                     <div className={`form-group`}>
                         <label>Mô tả yêu cầu<span className="text-red">*</span></label>
-                        <input type="text" className="form-control" value={description} onChange={(e) => handleChangeForm(e, 'description')}></input>
+                        <textarea type="text" className="form-control" value={description} onChange={(e) => handleChangeForm(e, 'description')} />
                     </div>
                     <div className={`form-group`}>
                         <label>Người tạo yêu cầu<span className="text-red">*</span></label>

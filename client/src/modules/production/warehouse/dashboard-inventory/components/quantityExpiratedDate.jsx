@@ -1,46 +1,62 @@
 
 import React, { useState, useEffect } from 'react';
-
+import { connect } from 'react-redux';
 import c3 from 'c3';
 import 'c3/c3.css';
 
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { SelectMulti, DatePicker, SelectBox } from '../../../../../common-components';
+import { LotActions } from '../../inventory-management/redux/actions';
 
-function QuantityExpiratedDate(props){
+function QuantityExpiratedDate(props) {
     const [state, setState] = useState({
-        pieChart: true
+        pieChart: true,
+        type: 'product',
+        currentRole: localStorage.getItem("currentRole"),
+        category: [],
+        dataChart: [],
+        name: [],
+        productName: '',
+        index: 0,
     })
+    let name = [];
+    let inventory = ['Hàng tồn kho'];
+    let goodReceipted = ['Hàng đã nhập kho'];
+    let goodReceipt = ['Hàng chuẩn bị nhập kho'];
+    let goodIssued = ['Hàng đã xuất kho'];
+    let goodIssue = ['Xuất chuẩn bị xuất kho'];
+
+    let { translate, lots } = props;
+    const { inventoryDashboard } = lots;
+
+    useEffect(() => {
+        if (!inventoryDashboard.isLoading && inventoryDashboard.length > 0) {
+            name = [...name, inventoryDashboard[state.index].name];
+            inventory = [...inventory, inventoryDashboard[state.index].inventory];
+            goodReceipted = [...goodReceipted, inventoryDashboard[state.index].goodReceipted];
+            goodIssued = [...goodIssued, inventoryDashboard[state.index].goodIssued];
+            goodReceipt = [...goodReceipt, inventoryDashboard[state.index].goodReceipt];
+            goodIssue = [...goodIssue, inventoryDashboard[state.index].goodIssue];
+            setState({
+                ...state,
+                name,
+                dataChart: [inventory, goodReceipted, goodIssued, goodReceipt, goodIssue]
+            })
+        }
+    }, [state.index, JSON.stringify(inventoryDashboard)])
+
+    useEffect(() => {
+        pieChart(state.name, state.dataChart);
+    }, [state.name, state.dataChart])
 
     const refPieChart = React.createRef();
 
-    useEffect(() => {
-        pieChart();
-    }, [])
-
-    // Thiết lập dữ liệu biểu đồ
-    const setDataBarChart = () => {
-        let data = {
-            count: ["5", "6", "7", "8", "9", "10"],
-            type: ["Thắng", "Phương", "Tài", "An", "Sang"],
-            shortName: ["T", "P", "T", "A", "S"]
-        }
-
-        return data;
-    }
-
-    const pieChart = () => {
+    const pieChart = (name, dataChart) => {
         let chart = c3.generate({
             bindto: refPieChart.current,
 
             data: {
-                columns: [
-                    ['Hư hỏng, hết hạn', 30],
-                    ['Đã xuất kho', 120],
-                    ['Đang lưu trữ', 90],
-                    ['Chuẩn bị nhập kho', 50],
-                    ['Chuẩn bị xuất kho', 80]
-                ],
+                columns: dataChart,
                 type: 'pie',
             },
             legend: {
@@ -54,7 +70,6 @@ function QuantityExpiratedDate(props){
                     }
                 }
             },
-
             padding: {
                 top: 20,
                 bottom: 20,
@@ -77,8 +92,20 @@ function QuantityExpiratedDate(props){
         });
     }
 
-    const { translate } = props;
-    pieChart();
+    const handleSelectProduct = async (value) => {
+        let index = 0;
+        for (let i = 0; i < inventoryDashboard.length; i++) {
+            if (inventoryDashboard[i].name === value[0]) {
+                index = i;
+                break;
+            }
+        }
+        await setState({
+            ...state,
+            index: index,
+        })
+    }
+
     return (
         <React.Fragment>
             <div className="box">
@@ -86,17 +113,11 @@ function QuantityExpiratedDate(props){
                     <i className="fa fa-bar-chart-o" />
                     <h3 className="box-title">
                         Xem chi tiết số lượng theo từng sản phẩm
-                        </h3>
+                    </h3>
                     <div className="form-group" style={{ width: '100%', margin: '10px' }}>
                         <SelectBox id="multiSelectqO"
-                            items={[
-                                { value: '0', text: 'Albendazole' },
-                                { value: '1', text: 'Afatinib' },
-                                { value: '2', text: 'Zoledronic Acid' },
-                                { value: '3', text: 'Abobotulinum' },
-                                { value: '4', text: 'Acid Thioctic' }
-                            ]}
-                            // onChange={handleSelectOrganizationalUnit}
+                            items={inventoryDashboard.map((x, index) => { return { value: x._id, text: x.name } })}
+                            onChange={handleSelectProduct}
                         />
                     </div>
                     <div ref={refPieChart}></div>
@@ -106,4 +127,9 @@ function QuantityExpiratedDate(props){
     )
 }
 
-export default withTranslate(QuantityExpiratedDate);
+const mapStateToProps = state => state;
+
+const mapDispatchToProps = {
+    getInventoriesDashboard: LotActions.getInventoriesDashboard,
+}
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(QuantityExpiratedDate));

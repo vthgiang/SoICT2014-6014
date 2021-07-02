@@ -2022,6 +2022,7 @@ export default {
                     edit_employee_success: "Edit employee success",
                     edit_employee_faile: "Edit employee faile",
                     import_employee_success: "Import employee success",
+                    importing_employee: "Processing data",
                     import_employee_faile: "Import employee faile",
                     employee_number_required: "Staff code required",
                     email_in_company_required: "Email in company required",

@@ -8,7 +8,7 @@ const Logger = require(`../../../logs`);
  */
 exports.getCustomers = async (req, res) => {
     try {
-        const customers = await CustomerService.getCustomers(req.portal, req.user.company._id, req.query,req.query.roleId);
+        const customers = await CustomerService.getCustomers(req.portal, req.user.company._id, req.query, req.currentRole);
         await Logger.info(req.user.email, ' get_customers_success ', req.portal);
         res.status(200).json({
             success: true,
@@ -82,7 +82,7 @@ exports.getCustomerPoint = async (req, res) => {
  */
 exports.createCustomer = async (req, res) => {
     try {
-        const newCustomer = await CustomerService.createCustomer(req.portal, req.user.company._id, req.body, req.user._id, req.files,req.body.roleId);
+        const newCustomer = await CustomerService.createCustomer(req.portal, req.user.company._id, req.body, req.user._id, req.files, req.currentRole);
         await Logger.info(req.user.email, ' create_customer_success ', req.portal);
         res.status(200).json({
             success: true,
@@ -101,7 +101,7 @@ exports.createCustomer = async (req, res) => {
 
 exports.importCustomers = async (req, res) => {
     try {
-        const newCustomers = await CustomerService.importCustomers(req.portal, req.user.company._id, req.body, req.user._id);
+        const newCustomers = await CustomerService.importCustomers(req.portal, req.user.company._id, req.body, req.user._id, req.currentRole);
         await Logger.info(req.user.email, 'import_customer_success');
         res.status(200).json({
             success: true,
@@ -202,6 +202,29 @@ exports.addPromotion = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: ['add_customer_promotion_faile'],
+            content: error
+        })
+    }
+}
+/**
+ * lay danh sach khuyen mai cua khach hang
+ * @param {*} req 
+ * @param {*} res 
+ */
+exports.getCustomerPromotions = async (req, res) => {
+    try {
+        const customerPromotions = await CustomerService.getCustomerPromotions(req.portal, req.user.company._id, req.params.id);
+        await Logger.info(req.user.email, 'get_customer_promotions_success');
+        res.status(200).json({
+            success: true,
+            messages: ['get_customer_promotions_success'],
+            content: customerPromotions
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, 'get_customer_promotions_faile ', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ['get_customer_promotions_faile'],
             content: error
         })
     }

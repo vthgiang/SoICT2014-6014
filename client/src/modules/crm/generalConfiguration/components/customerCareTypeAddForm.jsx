@@ -36,6 +36,7 @@ function CustomerCareTypeAddForm(props) {
                 modalID="modal-crm-customer-care-type-create" 
                 isLoading={false}
                 formID="form-crm-customer-care-type-create"
+                title={"Thêm mới loại hoạt động chăm sóc khách hàng"}
                 func={save}
                 size={50}
             // disableSubmit={!this.isFormValidated()}
