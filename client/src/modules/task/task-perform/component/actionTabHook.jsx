@@ -31,7 +31,7 @@ function ActionTab(props) {
     let idUser = getStorage("userId");
     const { tasks, performtasks, notifications, user, auth, translate, role, id } = props;
 
-    const [state, setState] = useState(initState())
+    const [state, setState] = useState(() => initState())
     const [hover1, setHover1] = useState([])
     function initState() {
         let idUser = getStorage("userId");
@@ -144,23 +144,12 @@ function ActionTab(props) {
     // error message
     const { errorDateAddLog, errorStartTimeAddLog, errorEndTimeAddLog } = state;
     const checkUserId = obj => obj.creator._id === currentUser;
-    useEffect(() => {
-        props.getAllPreceedingTasks(props.id);
-        console.log("ccccccccccccccc")
-    }, [])
 
-    if (notifications && notifications.associatedData && performtasks && performtasks.task && notifications.associatedData.value) {
+    if (performtasks?.task && notifications?.associatedData?.value) {
         if (notifications.associatedData.dataType === "realtime_tasks") {
             props.refreshData(notifications.associatedData.value);
         }
         notifications.associatedData = {}; // reset lại ... 
-    }
-
-    if (performtasks.task) {
-        setState({
-            ...state,
-            taskActions: performtasks.task.taskActions
-        })
     }
 
     useEffect(() => {
@@ -170,17 +159,30 @@ function ActionTab(props) {
             showBoxAddLogTimer: false,
             checkDateAddLog: false,
         })
-        props.getTimesheetLogs(props.id);
-        props.getTimerStatusTask(props.id);
-        props.getSubTask(props.id);
-        props.getTaskLog(props.id);
-        console.log("bbbbbbbbbbbbb")
+        if (props.id) {
+            props.getTimesheetLogs(props.id);
+            props.getTimerStatusTask(props.id);
+            props.getSubTask(props.id);
+            props.getAllPreceedingTasks(props.id);
+            props.getTaskLog(props.id);
+        }
+        
     }, [props.id])
 
     useEffect(() => {
-        props.getTaskById(props.id)
-        console.log("aaaaaaaaaaaaaa")
+        if (props.id) {
+            props.getTaskById(props.id)
+        }
     }, [props.auth.user.avatar])
+
+    useEffect(() => {
+        if (performtasks?.task?.taskActions) {
+            setState({
+                ...state,
+                taskActions: performtasks.task.taskActions
+            })
+        }
+    }, [JSON.stringify(performtasks?.task?.taskActions)])
 
     const setHover = async (id, value, type) => {
         if (type === "rating") {
@@ -1777,7 +1779,7 @@ function ActionTab(props) {
                                     state.showPopupApproveAllAction ?
                                         (role === "accountable") && taskActions.length > 1 &&
                                         <div style={{ borderColor: "#ddd", marginTop: 20 }}>
-                                            <button style={{ marginTop: 7, marginBottom: 7 }} className="btn btn-block btn-default btn-sm" onClick={togglePopupApproveAllAction}>Hủy đánh giá tất cả các hoạt động</button>
+                                            <button style={{ marginTop: 7, marginBottom: 7 }} className="btn btn-block btn-default btn-sm" onClick={() => togglePopupApproveAllAction()}>Hủy đánh giá tất cả các hoạt động</button>
 
                                             <div className="form-group text-sm">
                                                 <span style={{ marginRight: "5px" }}>Điểm đánh giá: <strong>{ratingAll ?? 0}/10</strong></span>
@@ -1816,9 +1818,9 @@ function ActionTab(props) {
                                             </div>
                                             <button style={{ marginTop: 7, marginBottom: 7 }} className="btn btn-block btn-default btn-sm" onClick={() => evaluationAllTaskAction(task._id, taskActions)}>Gửi đánh giá tất cả các hoạt động</button>
                                         </div>
-                                        : (role === "accountable") && taskActions.length > 1 && <button className="btn btn-block btn-success btn-sm" onClick={togglePopupApproveAllAction}>Đánh giá tất cả hoạt động</button>
+                                        : (role === "accountable") && taskActions.length > 1 && <button className="btn btn-block btn-success btn-sm" onClick={() => togglePopupApproveAllAction()}>Đánh giá tất cả hoạt động</button>
                                 }
-                                {(role === "responsible" || role === "accountable") && taskActions.length > 1 && <button className="btn btn-block btn-default btn-sm" onClick={handleShowSort}>Sắp xếp hoạt động</button>}
+                                {(role === "responsible" || role === "accountable") && taskActions.length > 1 && <button className="btn btn-block btn-default btn-sm" onClick={() => handleShowSort()}>Sắp xếp hoạt động</button>}
                             </React.Fragment>
                         }
                     </div>
@@ -2322,7 +2324,7 @@ function ActionTab(props) {
                                             />
                                         </div>
                                         <div>
-                                            <button className="btn btn-success" style={{ marginRight: '10px' }} onClick={saveAddLogTime} disabled={!isFormValidated()} >Lưu</button>
+                                            <button className="btn btn-success" style={{ marginRight: '10px' }} onClick={() => saveAddLogTime()} disabled={!isFormValidated()} >Lưu</button>
                                             <button className="btn btn-danger" onClick={() => {
                                                 setState({
                                                     ...state,
