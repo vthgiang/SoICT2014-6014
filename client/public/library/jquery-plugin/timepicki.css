@@ -14,7 +14,7 @@ Author: senthil
 .time,
 .mins,
 .meridian {
-	width: 50px;
+	width: 60px;
 	float: left;
 	margin: 0 ;
 	font-size: 14px;
@@ -27,7 +27,7 @@ Author: senthil
 .next {
 	cursor: pointer;
 	padding: 18px;
-	width: 50px;
+	width: 60px;
 	margin: auto;
 	background: url(../../image/arrow.png) no-repeat;
 	border-radius: 5px;
@@ -56,8 +56,8 @@ Author: senthil
 	z-index: 998;
 	display: none;
 	box-shadow: none;
-	min-width: 200px;
-	max-width: 200px;
+	min-width: 202px;
+	max-width: 202px;
 	margin: 2px 0 0;
 	font-size: 14px;
     text-align: left;
