@@ -42,21 +42,26 @@ function TransportManageVehicleProcess(props) {
                 // Chia tỉ lệ các điểm trên đường đi
                 let timelineItem = [];
                 let currentTimelineItemDistance = 0
+                let processLen = 0;
                 route.routeOrdinal.map(routeOrdinal => {
                     currentTimelineItemDistance+= routeOrdinal.distance;
                     // timelineItem.push((currentTimelineItemDistance/totalDistance)*barWidth);
                     timelineItem.push((routeOrdinal.distance/totalDistance)*100);
+                    console.log(routeOrdinal);
                     if (String(routeOrdinal.type) === "1"){
                         if (String(routeOrdinal.transportRequirement?.transportStatus?.fromAddress?.status) === "1"){
-                           setProcessBarLen(currentTimelineItemDistance/totalDistance * 100);
+                            console.log(currentTimelineItemDistance, " lll ", totalDistance)
+                            processLen = currentTimelineItemDistance/totalDistance * 100;
                         }
                     }
                     else {
                         if (String(routeOrdinal.transportRequirement?.transportStatus?.toAddress?.status) === "1"){
-                            setProcessBarLen(currentTimelineItemDistance/totalDistance * 100);
+                            console.log(currentTimelineItemDistance, " lll ", totalDistance)
+                            processLen = currentTimelineItemDistance/totalDistance * 100;
                         }
                     }
                 });
+                setProcessBarLen(processLen);
                 setTimelineItemPos(timelineItem)
             }
         }
@@ -123,6 +128,17 @@ function TransportManageVehicleProcess(props) {
         }
         return res;
     }
+
+    const getActionType = (routeOrdinal, index) => {
+        let res = " ";
+        if (String(routeOrdinal.type) === "1"){
+            res = "Nhận hàng";
+        }
+        else {
+            res = "Giao hàng"
+        }
+        return res;
+    }
     
     const showResultMission = (routeOrdinal) => {
         setCurrentMission(routeOrdinal);
@@ -145,7 +161,12 @@ function TransportManageVehicleProcess(props) {
                         {
                             getTimeLineItemStatus(routeOrdinal, index) !== " "
                             && 
-                            <div className="timeline-contain-transport" onClick={()=>showResultMission(routeOrdinal)}>{getTimeTransport(routeOrdinal, index)}</div>
+                            <div className="timeline-contain-transport active" onClick={()=>showResultMission(routeOrdinal)}>{getTimeTransport(routeOrdinal, index)}</div>
+                        }
+                        {
+                            getTimeLineItemStatus(routeOrdinal, index) === " "
+                            && 
+                            <div className="timeline-contain-transport">{getActionType(routeOrdinal, index)}</div>
                         }
                     </div>
                 ))

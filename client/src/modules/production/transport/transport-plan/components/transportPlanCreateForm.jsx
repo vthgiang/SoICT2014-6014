@@ -45,6 +45,11 @@ function TransportPlanCreateForm(props) {
      */
     const [listSelectedRequirementsLocation, setListSelectedRequirementsLocation] = useState([])
 
+    const [totalPayloadVolume, setTotalPayloadVolume] = useState({
+        payload: 0,
+        volume: 0,
+    })
+
     const isFormValidated = () => {
         if (formSchedule.startDate !=="" && formSchedule.endDate !=="" && formSchedule.supervisor !=="title" && formSchedule.name!==""){
             let startTime = new Date(formSchedule.startDate);
@@ -253,6 +258,20 @@ function TransportPlanCreateForm(props) {
         }
         // console.log(locationArr, " ar")
         setListSelectedRequirementsLocation(locationArr);
+        
+        if (listSelectedRequirements && listSelectedRequirements.length!==0){
+            let totalPayload = 0;
+            let totalVolume = 0;
+            listSelectedRequirements.map(item => {
+                totalPayload+=item.payload;
+                totalVolume+=item.volume;
+            })
+            setTotalPayloadVolume({
+                payload: totalPayload,
+                volume: totalVolume,
+            })
+        }
+
     }, [listSelectedRequirements])
 
     const callBackVehicleAndCarrier = (transportVehicles) => {
@@ -404,7 +423,7 @@ function TransportPlanCreateForm(props) {
                                         <th>{"Ngày tạo"}</th>
                                         <th>{"Ngày mong muốn vận chuyển"}</th>
                                         {/* <th>{"Trạng thái"}</th> */}
-                                        <th>{"Hành động"}</th>
+                                        <th>{"Thêm vào kế hoạch"}</th>
                                         {/* <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
                                             <DataTableSetting
                                                 tableId={tableId}
@@ -466,6 +485,7 @@ function TransportPlanCreateForm(props) {
                                 startTime={formSchedule.startDate}
                                 endTime={formSchedule.endDate}
                                 callBackVehicleAndCarrier={callBackVehicleAndCarrier}
+                                totalPayloadVolume={totalPayloadVolume}
                             />
                         </LazyLoadComponent>
                     </div>

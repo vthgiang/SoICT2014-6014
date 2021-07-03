@@ -100,7 +100,11 @@
     background-color: red;
   }
 
-
+  .timeline-progress {
+    height: 100%;
+    background-color: #28A745;
+    transition: all ease 0.9s;
+}
 
   /* style page cau hinh chung */
   .generalConfiguration .nav-tabs-custom{
