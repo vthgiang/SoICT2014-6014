@@ -274,28 +274,25 @@ exports.updateCourse = async (portal, id, data) => {
         educationProgram: data.educationProgram,
         employeeCommitmentTime: data.employeeCommitmentTime
     };
-    await Course(connect(DB_CONNECTION, portal)).findOneAndUpdate({
-        _id: id
-    }, {
-        $set: courseChange
-    });
+
+
     if (data.listEmployees.length !== 0) {
         const listEmployees = data.listEmployees.map(i => ({
             employee: i._id,
             result: i.result
         }))
-        await Course(connect(DB_CONNECTION, portal)).update(
-            { _id: id},
-            {
-                $set: {
-                    results: listEmployees
-                }
-            }            
-        )
+        courseChange = {
+            ...courseChange,
+            listEmployees
+        }
     }
-    
-    let updateCourse = await Course(connect(DB_CONNECTION, portal)).findById(id).populate({
-        path: 'educationProgram',
+
+    const updateCourse = await Course(connect(DB_CONNECTION, portal)).findOneAndUpdate({
+        _id: id
+    }, {
+        $set: courseChange
+    }, {
+        new: true
     }).populate({
         path: 'results.employee',
         select: {
@@ -303,9 +300,10 @@ exports.updateCourse = async (portal, id, data) => {
             'fullName': 1,
             'employeeNumber': 1
         }
-    })
+    }).lean();
+    
     return {
-        ...updateCourse._doc,
+        ...updateCourse,
         listEmployees: updateCourse.results
     }
 }
