@@ -10,7 +10,6 @@ import { EmployeeManagerActions } from '../../../human-resource/profile/employee
 import { CourseActions } from '../redux/actions';
 
 const CourseEditForm = (props) => {
-    
     const [state, setState] = useState({...props, addEmployees: []})
     console.log(props)
     useEffect(() => {
@@ -218,7 +217,7 @@ const CourseEditForm = (props) => {
     const handleEmployeeChange = (value) => {
         setState({
             ...state,
-            addEmployees: value.map(x => { return { _id: x, result: 'failed' } })
+            addEmployees: value.map(x => { return { _id: x, employresult: 'failed' } })
         })
     }
 
@@ -293,6 +292,7 @@ const CourseEditForm = (props) => {
         let endDateNew = [partEnd[2], partEnd[1], partEnd[0]].join('-');
 
         listEmployees = listEmployees.concat(state.addEmployees);
+    
         if (isFormValidated()) {
             props.updateCourse(state._id, { ...state, listEmployees: listEmployees, startDate: startDateNew, endDate: endDateNew });
         }
@@ -498,8 +498,8 @@ const CourseEditForm = (props) => {
                                 listEmployees.length > 0 &&
                                 listEmployees.map((x, index) => (
                                     <tr key={index}>
-                                        <td>{x.employee.employeeNumber}</td>
-                                        <td>{x.employee.fullName}</td>
+                                        <td>{x.employee?.employeeNumber}</td>
+                                        <td>{x.employee?.fullName}</td>
                                         <td>
                                             <div>
                                                 <div className="radio-inline">

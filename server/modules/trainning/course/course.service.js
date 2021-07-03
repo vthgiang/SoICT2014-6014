@@ -42,11 +42,14 @@ exports.getAllCourses = async (portal, company, organizationalUnits, positions) 
         return x._id
     });
 
-    let listCourses = await Course(connect(DB_CONNECTION, portal)).find({
+    let _listCourses = await Course(connect(DB_CONNECTION, portal)).find({
         educationProgram: {
             $in: listEducations
         }
-    })
+    }).lean();
+    
+    const listCourses = _listCourses.map(i => ({...i, listEmployees: i.results}))
+    
     return {
         listCourses
     }
@@ -59,6 +62,7 @@ exports.getAllCourses = async (portal, company, organizationalUnits, positions) 
  * @company : Id công ty
  */
 exports.searchCourses = async (portal, params, company) => {
+    console.log('is running')
     // Note: nên khai báo các biến params ở đầu
     const { educationProgram, courseId, name, type } = params
     let keySearch = {
@@ -113,7 +117,6 @@ exports.searchCourses = async (portal, params, company) => {
     //     .populate({
     //         path: 'educationProgram',
     //     });
-    console.log(keySearch)
     let listCourses = await Course(connect(DB_CONNECTION, portal))
         .aggregate([
             {
@@ -148,8 +151,6 @@ exports.searchCourses = async (portal, params, company) => {
             }
         ])
 
-    console.log(listCourses)
-
     listCourses = listCourses.map(course => {
         const infoEmployees = course.listEmployees.map((employee, index) => {
             return {
@@ -167,7 +168,7 @@ exports.searchCourses = async (portal, params, company) => {
             educationProgram: course.educationProgram[0]
         }
     })
-
+    console.log(listCourses)
     return {
         totalList,
         listCourses
@@ -239,10 +240,11 @@ exports.createCourse = async (portal, data, company) => {
                 'fullName': 1,
                 'employeeNumber': 1
             }
-        });
+        }).lean();
 
+        console.log(newCourse)
         return {
-            ...newCourse._doc,
+            ...newCourse,
             listEmployees: newCourse.results
         }
     }
