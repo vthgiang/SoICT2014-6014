@@ -8,6 +8,8 @@ const {
 } = require(`../../../helpers/dbHelper`);
 const courseModel = require("../../../models/training/course.model");
 
+const mongoose = require('mongoose')
+
 /**
  * Lấy danh sách các khoá đào tạo theo phòng ban(đơn vị), chức vụ
  * @organizationalUnits : Array id đơn vị
@@ -60,7 +62,7 @@ exports.searchCourses = async (portal, params, company) => {
     // Note: nên khai báo các biến params ở đầu
     const { educationProgram, courseId, name, type } = params
     let keySearch = {
-        company: company
+        company: mongoose.Types.ObjectId(company)
     };
 
     // Bắt sựu kiện tên chương trình khoá đào tạo khác ""
@@ -84,7 +86,6 @@ exports.searchCourses = async (portal, params, company) => {
 
     // Bắt sựu kiện tên khoá đào tạo khác ""
     if (name?.length > 0) {
-        console.log(name);
         keySearch = {
             ...keySearch,
             name: {
@@ -98,9 +99,12 @@ exports.searchCourses = async (portal, params, company) => {
     if (type) {
         keySearch = {
             ...keySearch,
-            type: type
+            type: {
+                $in: type
+            }
         }
     }
+
     let totalList = await Course(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
 
     // Note: Đoạn code này thử dùng aggregate, dùng aggregate 1 câu truy vấn, thay vì vòng for như bên dưới (keyword: aggregate addField)
@@ -109,8 +113,12 @@ exports.searchCourses = async (portal, params, company) => {
     //     .populate({
     //         path: 'educationProgram',
     //     });
+    console.log(keySearch)
     let listCourses = await Course(connect(DB_CONNECTION, portal))
         .aggregate([
+            {
+                $match: keySearch
+            },
             {
                 $lookup: {
                     from: "educationprograms",
@@ -140,6 +148,8 @@ exports.searchCourses = async (portal, params, company) => {
             }
         ])
 
+    console.log(listCourses)
+
     listCourses = listCourses.map(course => {
         const infoEmployees = course.listEmployees.map((employee, index) => {
             return {
@@ -157,7 +167,7 @@ exports.searchCourses = async (portal, params, company) => {
             educationProgram: course.educationProgram[0]
         }
     })
-    console.log(listCourses)
+
     return {
         totalList,
         listCourses
