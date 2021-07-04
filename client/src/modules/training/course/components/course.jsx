@@ -126,7 +126,7 @@ const TrainingPlan = (props) => {
     const { translate, course } = props;
 
     const { page, limit, currentEditRow, currentViewRow } = state;
-
+    
     let { listCourses } = course;
     let pageTotal = (course.totalList % limit === 0) ?
         parseInt(course.totalList / limit) :
@@ -249,7 +249,7 @@ const TrainingPlan = (props) => {
                     lecturer={currentEditRow.lecturer}
                     applyForOrganizationalUnits={currentEditRow.educationProgram.applyForOrganizationalUnits}
                     applyForPositions={currentEditRow.educationProgram.applyForPositions}
-                    educationProgram={currentEditRow.educationProgram._id}
+                    educationProgram={currentEditRow.educationProgram}
                     employeeCommitmentTime={currentEditRow.employeeCommitmentTime}
                     type={currentEditRow.type}
                     listEmployees={currentEditRow.listEmployees}

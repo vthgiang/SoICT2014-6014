@@ -8,6 +8,8 @@ const {
 } = require(`../../../helpers/dbHelper`);
 const courseModel = require("../../../models/training/course.model");
 
+const mongoose = require('mongoose')
+
 /**
  * Lấy danh sách các khoá đào tạo theo phòng ban(đơn vị), chức vụ
  * @organizationalUnits : Array id đơn vị
@@ -40,11 +42,14 @@ exports.getAllCourses = async (portal, company, organizationalUnits, positions) 
         return x._id
     });
 
-    let listCourses = await Course(connect(DB_CONNECTION, portal)).find({
+    let _listCourses = await Course(connect(DB_CONNECTION, portal)).find({
         educationProgram: {
             $in: listEducations
         }
-    })
+    }).lean();
+    
+    const listCourses = _listCourses.map(i => ({...i, listEmployees: i.results}))
+    
     return {
         listCourses
     }
@@ -57,10 +62,11 @@ exports.getAllCourses = async (portal, company, organizationalUnits, positions) 
  * @company : Id công ty
  */
 exports.searchCourses = async (portal, params, company) => {
+    console.log('is running')
     // Note: nên khai báo các biến params ở đầu
     const { educationProgram, courseId, name, type } = params
     let keySearch = {
-        company: company
+        company: mongoose.Types.ObjectId(company)
     };
 
     // Bắt sựu kiện tên chương trình khoá đào tạo khác ""
@@ -84,7 +90,6 @@ exports.searchCourses = async (portal, params, company) => {
 
     // Bắt sựu kiện tên khoá đào tạo khác ""
     if (name?.length > 0) {
-        console.log(name);
         keySearch = {
             ...keySearch,
             name: {
@@ -98,9 +103,12 @@ exports.searchCourses = async (portal, params, company) => {
     if (type) {
         keySearch = {
             ...keySearch,
-            type: type
+            type: {
+                $in: type
+            }
         }
     }
+
     let totalList = await Course(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
 
     // Note: Đoạn code này thử dùng aggregate, dùng aggregate 1 câu truy vấn, thay vì vòng for như bên dưới (keyword: aggregate addField)
@@ -111,6 +119,9 @@ exports.searchCourses = async (portal, params, company) => {
     //     });
     let listCourses = await Course(connect(DB_CONNECTION, portal))
         .aggregate([
+            {
+                $match: keySearch
+            },
             {
                 $lookup: {
                     from: "educationprograms",
@@ -229,10 +240,11 @@ exports.createCourse = async (portal, data, company) => {
                 'fullName': 1,
                 'employeeNumber': 1
             }
-        });
+        }).lean();
 
+        console.log(newCourse)
         return {
-            ...newCourse._doc,
+            ...newCourse,
             listEmployees: newCourse.results
         }
     }
@@ -274,28 +286,25 @@ exports.updateCourse = async (portal, id, data) => {
         educationProgram: data.educationProgram,
         employeeCommitmentTime: data.employeeCommitmentTime
     };
-    await Course(connect(DB_CONNECTION, portal)).findOneAndUpdate({
-        _id: id
-    }, {
-        $set: courseChange
-    });
+
+
     if (data.listEmployees.length !== 0) {
         const listEmployees = data.listEmployees.map(i => ({
             employee: i._id,
             result: i.result
         }))
-        await Course(connect(DB_CONNECTION, portal)).update(
-            { _id: id},
-            {
-                $set: {
-                    results: listEmployees
-                }
-            }            
-        )
+        courseChange = {
+            ...courseChange,
+            listEmployees
+        }
     }
-    
-    let updateCourse = await Course(connect(DB_CONNECTION, portal)).findById(id).populate({
-        path: 'educationProgram',
+
+    const updateCourse = await Course(connect(DB_CONNECTION, portal)).findOneAndUpdate({
+        _id: id
+    }, {
+        $set: courseChange
+    }, {
+        new: true
     }).populate({
         path: 'results.employee',
         select: {
@@ -303,9 +312,10 @@ exports.updateCourse = async (portal, id, data) => {
             'fullName': 1,
             'employeeNumber': 1
         }
-    })
+    }).lean();
+    
     return {
-        ...updateCourse._doc,
+        ...updateCourse,
         listEmployees: updateCourse.results
     }
 }

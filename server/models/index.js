@@ -42,14 +42,7 @@ module.exports = {
     PrivilegeApi: require('./system-admin/privilegeApi.model'),
 
     Task: require('./task/task.model'),
-    TaskComment: require('./task/taskComment.model'),
-    TaskFile: require('./task/taskFile.model'),
-    TaskHistory: require('./task/taskHistory.model'),
-    TaskResult: require('./task/taskResult.model'),
-    TaskResultInformation: require('./task/taskResultInformation.model'),
     TaskTemplate: require('./task/taskTemplate.model'),
-    TaskTemplateInformation: require('./task/taskTemplateInformation.model'),
-    TimesheetLog: require('./task/timesheetLog.model'),
     TaskProcess: require("./task/taskProcess.model"),
     ProcessTemplate: require("./task/processTemplate.model"),
 

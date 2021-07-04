@@ -1,6 +1,6 @@
 const Models = require(`../../../models`);
 const { Link, Privilege, Role } = Models;
-const { LINK_CATEGORY } = require(`../../../seed/terms`);
+// const { LINK_CATEGORY } = require(`../../../seed/terms`);
 const { connect } = require(`../../../helpers/dbHelper`);
 
 /**
@@ -165,9 +165,9 @@ exports.addComponentOfLink = async(portal, id, componentId) => {
 /**
  * Lấy thông tin LINK_CATEGORY
  */
-exports.getLinkCategories = async () => {
-    return LINK_CATEGORY;
-}
+// exports.getLinkCategories = async () => {
+//     return LINK_CATEGORY;
+// }
 
 exports.updateCompanyLinks = async (portal, data) => {
     for (let i = 0; i < data.length; i++) {

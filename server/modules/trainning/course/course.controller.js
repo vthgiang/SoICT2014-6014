@@ -8,7 +8,7 @@ const Log = require(`../../../logs`);
 exports.searchCourses = async (req, res) => {
     try {
         let data = {};
-        if (req.query.page === undefined && req.query.limit === undefined) {
+        if (req.query.courseId === "" && req.query.name === "" && req.query.type === undefined) {
             data = await CourseService.getAllCourses(req.portal, req.user.company._id, req.query.organizationalUnits, req.query.positions)
         } else {
             let params = {
