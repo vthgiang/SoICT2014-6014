@@ -26,7 +26,9 @@ function TransportProcessMainPage(props) {
 
     const [currentTransportPlan, setCurrentTransportPlan] = useState();
 
-    const [searchData, setSearchData] = useState(); // tham số tìm kiếm
+    const [searchData, setSearchData] = useState({
+        status: [2,3,4],
+    }); // tham số tìm kiếm
     
 
     const handleShowDetailProcess = (plan) => {
@@ -45,7 +47,7 @@ function TransportProcessMainPage(props) {
     }, [])
 
     useEffect(() => {
-        if (transportPlan && transportPlan.lists && transportPlan.lists.length !==0){
+        if (transportPlan){
             setListPlans(transportPlan.lists);
         }
     }, [transportPlan])
@@ -115,7 +117,7 @@ function TransportProcessMainPage(props) {
         })
     }
     const handleStatusChange = (value) => {
-        if (value[0] !== "0"){
+        if (value[0] !== "title"){
             setSearchData({
                 ...searchData,
                 status: value[0],
@@ -124,7 +126,7 @@ function TransportProcessMainPage(props) {
         else {
             setSearchData({
                 ...searchData,
-                status: null,
+                status: [2,3,4],
             })
         }
     }
@@ -183,7 +185,11 @@ function TransportProcessMainPage(props) {
                         className="form-control select2"
                         style={{ width: "100%" }}
                         value={searchData?.status}
-                        items={[{value: "0", text: "---Trạng thái"}].concat(getListPlanStatus())}
+                        items={[{value: "title", text: "---Trạng thái"},
+                                {value: "2", text: getPlanStatus(2)},
+                                {value: "3", text: getPlanStatus(3)},
+                                {value: "4", text: getPlanStatus(4)}]
+                            }
                         onChange={handleStatusChange}
                         multiple={false}
                     />

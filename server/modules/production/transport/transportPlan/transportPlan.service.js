@@ -135,7 +135,13 @@ exports.getAllTransportPlans = async (portal, data) => {
             }
         }
         if (status){
-            keySearch.status = status;
+            if (status.isArray){
+                keySearch.status = {
+                    $in: status,
+                }
+            }
+            else
+                keySearch.status = status;
         }
     }
     // console.log(keySearch);
@@ -537,7 +543,9 @@ exports.deleteTransportPlan = async (portal, planId) => {
     let transportPlan = await TransportPlan(connect(DB_CONNECTION, portal)).findById({ _id: planId });
     if (transportPlan && transportPlan.transportRequirements && transportPlan.transportRequirements.length !==0){
         transportPlan.transportRequirements.map((item,index) => {
-            TransportRequirementServices.editTransportRequirement(portal, item, {transportPlan: null, status:2})
+            if (Number(item.status) !== 5 && Number(item.status) !== 6){
+                await TransportRequirementServices.editTransportRequirement(portal, item, {transportPlan: null, status:2})
+            }
         })
     }
     await TransportScheduleServices.planDeleteTransportSchedule(portal, planId);
