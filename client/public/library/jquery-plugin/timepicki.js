@@ -65,28 +65,28 @@
 
 			// developer can specify which arrow makes the numbers go up or down
 			var top_arrow_button = (settings.increase_direction === 'down') ?
-				"<div class='prev action-prev'></div>" :
-				"<div class='prev action-next'></div>";
+				"<div class='prev1 action-prev'></div>" :
+				"<div class='prev1 action-next'></div>";
 			var bottom_arrow_button = (settings.increase_direction === 'down') ?
-				"<div class='next action-next'></div>" :
-				"<div class='next action-prev'></div>";
+				"<div class='next1 action-next'></div>" :
+				"<div class='next1 action-prev'></div>";
 
 			var new_ele = $(
 				"<div class='timepicker_wrap1 " + settings.custom_classes + "'>" +
 					"<div class='arrow_top1'></div>" +
-					"<div class='time'>" +
+					"<div class='time1'>" +
 						top_arrow_button +
 						"<div class='ti_tx'><input type='text' class='timepicki-input'" + (settings.disable_keyboard_mobile ? "readonly" : "") + "></div>" +
 						bottom_arrow_button +
 					"</div>" +
-					"<div class='mins'>" +
+					"<div class='mins1'>" +
 						top_arrow_button +
 						"<div class='mi_tx'><input type='text' class='timepicki-input'" + (settings.disable_keyboard_mobile ? "readonly" : "") + "></div>" +
 						bottom_arrow_button +
 					"</div>");
 			if(settings.show_meridian){
 				new_ele.append(
-					"<div class='meridian'>" +
+					"<div class='meridian1'>" +
 						top_arrow_button +
 						"<div class='mer_tx'><input type='text' class='timepicki-input' readonly></div>" +
 						bottom_arrow_button +
@@ -171,7 +171,7 @@
 			        var isEmpty = input.val() === "";
 
 
-			        if (grandfatherDiv.hasClass("time")) { /// HOUR
+			        if (grandfatherDiv.hasClass("time1")) { /// HOUR
 
 
 			            // if its a valid number.
@@ -195,7 +195,7 @@
 
 
 
-			        } else if (grandfatherDiv.hasClass("mins")) { /// MINUTE
+			        } else if (grandfatherDiv.hasClass("mins1")) { /// MINUTE
 
 
 			            // if its a valid number.
@@ -216,7 +216,7 @@
 			            }
 
 
-			        } else if (grandfatherDiv.hasClass("meridian")) { /// MERIDIAN
+			        } else if (grandfatherDiv.hasClass("meridian1")) { /// MERIDIAN
 			            // key presses should not affect
 			            // meridian - except up and down
 			            // which are handled else where
@@ -301,11 +301,11 @@
 					}
 				}
 
-				if (input.closest('.timepicker_wrap1 .time').length) {
+				if (input.closest('.timepicker_wrap1 .time1').length) {
 					change_time(null, direction);
-				} else if (input.closest('.timepicker_wrap1 .mins').length) {
+				} else if (input.closest('.timepicker_wrap1 .mins1').length) {
 					change_mins(null, direction);
-				} else if (input.closest('.timepicker_wrap1 .meridian').length && settings.show_meridian) {
+				} else if (input.closest('.timepicker_wrap1 .meridian1').length && settings.show_meridian) {
 					change_meri(null, direction);
 				}
 			});
@@ -441,7 +441,7 @@
 			}
 
 			function change_time(cur_ele, direction) {
-				var cur_cli = "time";
+				var cur_cli = "time1";
 				var cur_time = Number(ele_next.find("." + cur_cli + " .ti_tx input").val());
 				var ele_st = Number(settings.min_hour_value);
 				var ele_en = Number(settings.max_hour_value);
@@ -483,7 +483,7 @@
 			}
 
 			function change_mins(cur_ele, direction) {
-				var cur_cli = "mins";
+				var cur_cli = "mins1";
 				var cur_mins = Number(ele_next.find("." + cur_cli + " .mi_tx input").val());
 				var ele_st = 0;
 				var ele_en = 59;
@@ -520,7 +520,7 @@
 			}
 
 			function change_meri(cur_ele, direction) {
-				var cur_cli = "meridian";
+				var cur_cli = "meridian1";
 				var ele_st = 0;
 				var ele_en = 1;
 				var cur_mer = null;
@@ -545,9 +545,9 @@
 			var cur_prev = ele_next.find(".action-prev");
 			$(cur_prev).add(cur_next).on("click", function() {
 				var cur_ele = $(this);
-				if (cur_ele.parent().attr("class") == "time") {
+				if (cur_ele.parent().attr("class") == "time1") {
 					change_time(cur_ele);
-				} else if (cur_ele.parent().attr("class") == "mins") {
+				} else if (cur_ele.parent().attr("class") == "mins1") {
 					change_mins(cur_ele);
 				} else {
 					if(settings.show_meridian){
