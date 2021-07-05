@@ -32,7 +32,7 @@ function ActionTab(props) {
     const { tasks, performtasks, notifications, user, auth, translate, role, id } = props;
 
     const [state, setState] = useState(() => initState())
-    const [hover1, setHover1] = useState([])
+    const [hover1, setHover1] = useState({})
     function initState() {
         let idUser = getStorage("userId");
         let lang = getStorage("lang")
@@ -166,7 +166,7 @@ function ActionTab(props) {
             props.getAllPreceedingTasks(props.id);
             props.getTaskLog(props.id);
         }
-        
+
     }, [props.id])
 
     useEffect(() => {
@@ -185,36 +185,29 @@ function ActionTab(props) {
     }, [JSON.stringify(performtasks?.task?.taskActions)])
 
     const setHover = async (id, value, type) => {
+        console.log("value, type", value, type)
         if (type === "rating") {
             if (isNaN(value)) {
-                setHover1(hover => {
-                    hover[`${id}-rating`] = null
-                    return [
-                        ...hover
-                    ]
+                setHover1({
+                    ...hover1,
+                    [`${id}-rating`]: null
                 })
             } else {
-                setHover1(hover => {
-                    hover[`${id}-rating`] = value;
-                    return [
-                        ...hover
-                    ]
+                setHover1({
+                    ...hover1,
+                    [`${id}-rating`]: value
                 })
             }
         } else {
             if (isNaN(value)) {
-                setHover1(hover => {
-                    hover[`${id}-actionImportanceLevel`] = null;
-                    return [
-                        ...hover
-                    ]
+                setHover1({
+                    ...hover1,
+                    [`${id}-actionImportanceLevel`]: null
                 })
             } else {
-                setHover1(hover => {
-                    hover[`${id}-actionImportanceLevel`] = value;
-                    return [
-                        ...hover
-                    ]
+                setHover1({
+                    ...hover1,
+                    [`${id}-actionImportanceLevel`]: value
                 })
             }
         }
@@ -1225,7 +1218,8 @@ function ActionTab(props) {
     }
 
     const evaluationAllTaskAction = (taskId, taskActions) => {
-        const { actionImportanceLevelAll, ratingAll } = state
+        console.log('taskActions', taskActions)
+        const { actionImportanceLevelAll, ratingAll, evaluations } = state
         let evaluation = [], showEvaluations = [];
 
         taskActions.forEach((obj, index) => {
@@ -1237,16 +1231,22 @@ function ActionTab(props) {
             }]
             showEvaluations = [...showEvaluations, obj._id]
         })
+        let newEvaluationState = evaluations
+        Object.keys(newEvaluationState).forEach((key) => {
+            newEvaluationState[key].actionImportanceLevel = actionImportanceLevelAll
+            newEvaluationState[key].rating = ratingAll
+        })
 
         setState({
             ...state,
             showEvaluations,
             showPopupApproveAllAction: !state.showPopupApproveAllAction,
+            evaluations: newEvaluationState
 
-        }, () => {
-            hover1["all-action"] = 0;
-            props.evaluationAllAction(taskId, evaluation)
-        });
+        })
+        hover1["all-action"] = 0;
+        props.evaluationAllAction(taskId, evaluation)
+
     }
 
     const handleShowTime = (timeSheetLog) => {
@@ -1340,7 +1340,8 @@ function ActionTab(props) {
         default:
             break;
     }
-
+    console.log("state", state)
+    console.log("hover1", hover1)
     return (
         <div>
             {
