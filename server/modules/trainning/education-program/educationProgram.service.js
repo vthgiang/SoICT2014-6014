@@ -28,8 +28,6 @@ exports.searchEducationPrograms = async (portal, params, company) => {
         company: company
     }
 
-    console.log(params.programId);
-    console.log(params.name)
     // Bắt sựu kiện tìm kiếm theo mã chương trình đào tạo
     if(params.programId){
         keySearch = {
@@ -165,25 +163,23 @@ exports.updateEducationProgram = async (portal, id, data) => {
         applyForOrganizationalUnits: data.organizationalUnit,
         applyForPositions: data.position
     };
-    await EducationProgram(connect(DB_CONNECTION, portal)).findOneAndUpdate({
+    const updateEducation = await EducationProgram(connect(DB_CONNECTION, portal)).findOneAndUpdate({
         _id: id
     }, {
         $set: eduacationChange
-    });
-
-    let updateEducation = await EducationProgram(connect(DB_CONNECTION, portal)).findOne({
-        _id: id
+    }, {
+        new: true
     }).populate([{
         path: 'applyForOrganizationalUnits',
     }, {
         path: 'applyForPositions',
-    }]);
+    }]).lean();
 
     let totalList = await Course(connect(DB_CONNECTION, portal)).countDocuments({
         educationProgram: updateEducation._id
     });
     return {
-        ...updateEducation._doc,
+        ...updateEducation,
         totalList
     }
 }
