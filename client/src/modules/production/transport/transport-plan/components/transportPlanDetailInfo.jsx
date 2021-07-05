@@ -17,7 +17,7 @@ import { getTypeRequirement, getTransportRequirementStatus } from '../../transpo
 import './transport-plan.css'
 
 function TransportPlanDetailInfo(props) {
-    let {currentTransportPlan} = props;
+    let {currentTransportPlan, idPlan} = props;
     const [formSchedule, setFormSchedule] = useState({
         code: "",
         startDate: "",
@@ -139,16 +139,16 @@ function TransportPlanDetailInfo(props) {
     return (
         <React.Fragment>
             <DialogModal
-                modalID="modal-detail-info-transport-plan11" 
+                modalID={idPlan?idPlan:"modal-detail-info-transport-plan11" }
                 isLoading={false}
-                formID="modal-detail-info-transport-plan"
+                formID={idPlan?idPlan:"modal-detail-info-transport-plan"}
                 title={"Chi tiết kế hoạch vận chuyển"}
                 size={100}
                 maxWidth={500}
                 hasSaveButton={false}
                 hasNote={false}
             >
-            <form id="modal-detail-info-transport-plan" >
+            <form id={idPlan?idPlan:"modal-detail-info-transport-plan"} >
                 <div className="box-body">
                     <div className="box box-solid">
                         <div className="box-body qlcv">

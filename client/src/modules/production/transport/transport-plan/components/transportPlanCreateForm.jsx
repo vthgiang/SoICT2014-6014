@@ -409,6 +409,7 @@ function TransportPlanCreateForm(props) {
                             </div>
                             
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         {
                             listRequirements && listRequirements.length!==0
                             &&
@@ -474,6 +475,7 @@ function TransportPlanCreateForm(props) {
                                 </tbody>
                             </table>
                         }
+                        </div>
                         </div>
                         </div>
                     </div>

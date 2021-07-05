@@ -544,7 +544,7 @@ exports.deleteTransportPlan = async (portal, planId) => {
     if (transportPlan && transportPlan.transportRequirements && transportPlan.transportRequirements.length !==0){
         transportPlan.transportRequirements.map((item,index) => {
             if (Number(item.status) !== 5 && Number(item.status) !== 6){
-                await TransportRequirementServices.editTransportRequirement(portal, item, {transportPlan: null, status:2})
+                TransportRequirementServices.editTransportRequirement(portal, item, {transportPlan: null, status:2})
             }
         })
     }

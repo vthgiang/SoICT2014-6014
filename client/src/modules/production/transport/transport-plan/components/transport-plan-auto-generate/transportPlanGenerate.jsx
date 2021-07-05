@@ -7,7 +7,7 @@ import { formatToTimeZoneDate, formatDate } from "../../../../../../helpers/form
 import ValidationHelper from '../../../../../../helpers/validationHelper';
 
 // import { LocationMap } from './map/locationMap'
-import { TransportPlanDetailInfo } from './transportPlanDetailInfo'
+import { TransportPlanDetailInfo } from '../transportPlanDetailInfo'
 
 import { transportPlanActions } from '../../redux/actions';
 import { transportRequirementsActions } from '../../../transport-requirements/redux/actions'
@@ -15,7 +15,8 @@ import { transportVehicleActions } from '../../../transport-vehicle/redux/action
 import { transportDepartmentActions } from "../../../transport-department/redux/actions"
 import { generatePlanFastestMove } from "../../../transportHelper/generatePlan"
 
-import { TransportVehicleCarrier2 } from '../transportVehicleCarrier2'
+import { TransportPlanRequirement } from './transportPlanRequirement'
+import { TransportVehicleCarrier2 } from './transportVehicleCarrier2'
 import { TransportRequirementsViewDetails } from "../../../transport-requirements/components/transportRequirementsViewDetails"
 
 import { getListDateBetween, isTimeZoneDateSmaller } from "../../../transportHelper/compareDateTimeZone"
@@ -33,6 +34,9 @@ function TransportPlanGenerate(props) {
         inDay: 0,
         disableGenerateButtonStatus: true,
     });
+
+    let idPlan = "plan-detail-generate-after-create";
+
     const [listPlanGenerate, setListPlanGenerate] = useState([])
 
     const [currentPlan, setCurrentPlan] = useState();
@@ -102,7 +106,7 @@ function TransportPlanGenerate(props) {
 
     const handleShowDetailInfo = (transportPlan) => {
         setCurrentPlan(transportPlan);
-        window.$('#modal-detail-info-transport-plan-auto-generate').modal('show');
+        window.$('#'+idPlan).modal('show');
     }
     const handleSavePlan = (transportPlan, stt) => {        
         // console.log(transportPlan, " kokoko");
@@ -162,21 +166,17 @@ function TransportPlanGenerate(props) {
         });
         window.$(`#modal-detail-info-example-hooks`).modal('show')
     }
-    
-    const save = () => {
-        // props.createTransportPlan(formSchedule);
-    }
-    
+        
     useEffect(() => {
-        let allPlans = [];
-        if (transportPlan && transportPlan.lists){
-            allPlans = transportPlan.lists;
-        }
-        setListAll({
-            ...listAll,
-            allPlans: allPlans,
-        })
-        props.getAllTransportRequirements({page: 1, limit: 100, status: "2"})
+        // let allPlans = [];
+        // if (transportPlan && transportPlan.lists){
+        //     allPlans = transportPlan.lists;
+        // }
+        // setListAll({
+        //     ...listAll,
+        //     allPlans: allPlans,
+        // })
+        // props.getAllTransportRequirements({page: 1, limit: 100, status: "2"})
         // props.getUserByRole({currentUserId: localStorage.getItem('userId'), role: 2})
         // props.getUserByRole({currentUserId: localStorage.getItem('userId'), role: 3})
         // props.getAllTransportVehicles();
@@ -193,14 +193,14 @@ function TransportPlanGenerate(props) {
         }
     }, [transportPlan]);
 
-    useEffect(() => {
-        if (transportRequirements && transportRequirements.lists){
-            setListAll({
-                ...listAll,
-                allRequirements: transportRequirements.lists,
-            })
-        }
-    }, [transportRequirements])
+    // useEffect(() => {
+    //     if (transportRequirements && transportRequirements.lists){
+    //         setListAll({
+    //             ...listAll,
+    //             allRequirements: transportRequirements.lists,
+    //         })
+    //     }
+    // }, [transportRequirements])
 
     useEffect(() => {
         // if (isTimeZoneDateSmaller(formSchedule.startDate, formSchedule.endDate)){
@@ -271,6 +271,13 @@ function TransportPlanGenerate(props) {
         console.log(listPlanGenerate, " abcdd")
     }, [listPlanGenerate])
 
+    const callBackListRequirements = (listRequirement) => {
+        setListAll({
+            ...listAll,
+            allRequirements: listRequirement,
+        })
+    }
+
     return (
         <React.Fragment>
             <ButtonModal
@@ -287,198 +294,205 @@ function TransportPlanGenerate(props) {
                 title={"Tạo kế hoạch vận chuyển tự động"}
                 msg_success={"success"}
                 msg_faile={"fail"}
-                func={save}
                 // disableSubmit={!isFormValidated()}
                 size={100}
                 maxWidth={500}
                 hasSaveButton={false}
             >
             <form id="form-generate-transport-plans" >
-                
-                <TransportRequirementsViewDetails
-                    curentTransportRequirementDetail={curentTransportRequirementDetail}
-                />
-                <div className="box-body">
-                    <div className="box box-solid">
-                        <div className="box-body qlcv">
-                            {/* <TransportVehicleCarrier2 
+                <div className="nav-tabs-custom">
+                    <ul className="nav nav-tabs">
+                        <li className="active"><a href="#schedule" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Thống kê phương tiện và nhân viên"}</a></li>
+                        <li><a href="#select-requirement" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Chọn yêu cầu vận chuyển"}</a></li>
+                        <li><a href="#generate-plan" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Tạo kế hoạch"}</a></li>
+                    </ul>
+                    <div className="tab-content">
+                        <div className="tab-pane active" id="schedule">
+                            <TransportVehicleCarrier2 
                                 transportPlan = {transportPlan}
-                                // key={transportPlan}
-                            /> */}
-                        </div>
-                    </div>
-                    <TransportPlanDetailInfo
-                        currentTransportPlan = {currentPlan}
-                    />
-                    
-            <div className="box box-solid">
-                <div className="box-header">
-                    <div className="box-title">{"Tạo kế hoạch vận chuyển tự động"}</div>
-                </div>
-                <div className="box-body qlcv">
-                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{padding: "0px"}}>
-                        <div className="col-xs-12 col-sm-12 col-md-3 col-lg-3">
-                            <div className="form-group">
-                                <label>
-                                    Từ ngày <span className="attention"> * </span>
-                                </label>
-                                <DatePicker
-                                    id={`start_date_generate_plan`}
-                                    value={formatDate(formSchedule.startDate)}
-                                    onChange={handleStartDateChange}
-                                    disabled={false}
-                                />
-                            </div>
-                        </div>
-                        <div className="col-xs-12 col-sm-12 col-md-3 col-lg-3">
-                            <div className={`form-group`}>
-                                <label>
-                                    Tới ngày
-                                    <span className="attention"> * </span>
-                                </label>
-                                <DatePicker
-                                    id={`end_date_generate_plan`}
-                                    value={formatDate(formSchedule.endDate)}
-                                    onChange={handleEndDateChange}
-                                    disabled={false}
-                                />
-                            </div>
-                        </div>
-                        <div className="col-xs-12 col-sm-12 col-md-3 col-lg-3">
-                            <div className="form-group" style={{marginTop: "26px"}}>
-                                <button type="button" 
-                                        className="btn btn-success" 
-                                        title={"Tạo kế hoạch"} 
-                                        onClick={() => handleSubmitGenerate()}
-                                        disabled={formSchedule.disableGenerateButtonStatus}
-                                >
-                                    {"Tạo kế hoạch"}
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+                            />
+                        </div>    
 
-                    <table id={"tableId"} className="table table-striped table-bordered table-hover">
-                    <thead>
-                        <tr>
-                            <th className="col-fixed" style={{ width: 60 }}>{"Số thứ tự"}</th>
-                            <th>{"Mã kế hoạch"}</th>
-                            <th>{"Tên kế hoạch"}</th>
-                            {/* <th>{"Trạng thái"}</th> */}
-                            <th>{"Thời gian"}</th>
-                            <th>{"Người phụ trách giám sát"}</th>
-                            <th>{"Hành động"}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {
-                        !(listPlanGenerate && listPlanGenerate.length !== 0)
-                        &&
-                        <tr>
-                            <td colSpan={6}>{"Không có kế hoạch nào được tạo"}</td>
-                        </tr>
-                    }
-                    {
-                    (listPlanGenerate && listPlanGenerate.length !== 0) &&
-                    listPlanGenerate.map((x, index) => (
-                            x &&
-                            <tr key={index}>
-                                <td>{index + 1}</td>
-                                <td>{x.code}</td>
-                                <td>{x.name}</td>
-                                {/* <td>{getPlanStatus(x.status)}</td> */}
-                                <td>{formatDate(x.date)+" - "+formatDate(x.date)}</td>
-                                <td>{x.supervisor?.name}</td>                                
-                                {/* <td>{x.date+" - "+x.date}</td> */}
-                                {/* <td>{""}</td> */}
-                                <td style={{ textAlign: "center" }}>
-                                    <a className="edit text-green" 
-                                        style={{ width: '5px' }} 
-                                        title={"Thông tin chi tiết kế hoạch"} 
-                                        onClick={() => handleShowDetailInfo(x)}
+                        <div className="tab-pane" id="select-requirement">
+                            <TransportPlanRequirement 
+                                transportPlan = {transportPlan}
+                                callBackListRequirements = {callBackListRequirements}
+                            />
+                        </div>   
+                        
+                        <div className="tab-pane" id="generate-plan">
+                        <TransportRequirementsViewDetails
+                            curentTransportRequirementDetail={curentTransportRequirementDetail}
+                        />
+                        <div className="box-body">
+                        <TransportPlanDetailInfo
+                            currentTransportPlan = {currentPlan}
+                            idPlan = {idPlan}
+                        />
+                        
+                    <div className="box box-solid">
+                    <div className="box-header">
+                        <div className="box-title">{"Tạo kế hoạch vận chuyển tự động"}</div>
+                    </div>
+                    <div className="box-body qlcv">
+                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{padding: "0px"}}>
+                            <div className="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+                                <div className="form-group">
+                                    <label>
+                                        Từ ngày <span className="attention"> * </span>
+                                    </label>
+                                    <DatePicker
+                                        id={`start_date_generate_plan`}
+                                        value={formatDate(formSchedule.startDate)}
+                                        onChange={handleStartDateChange}
+                                        disabled={false}
+                                    />
+                                </div>
+                            </div>
+                            <div className="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+                                <div className={`form-group`}>
+                                    <label>
+                                        Tới ngày
+                                        <span className="attention"> * </span>
+                                    </label>
+                                    <DatePicker
+                                        id={`end_date_generate_plan`}
+                                        value={formatDate(formSchedule.endDate)}
+                                        onChange={handleEndDateChange}
+                                        disabled={false}
+                                    />
+                                </div>
+                            </div>
+                            <div className="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+                                <div className="form-group" style={{marginTop: "26px"}}>
+                                    <button type="button" 
+                                            className="btn btn-success" 
+                                            title={"Tạo kế hoạch"} 
+                                            onClick={() => handleSubmitGenerate()}
+                                            disabled={formSchedule.disableGenerateButtonStatus}
                                     >
-                                        <i className="material-icons">visibility
-                                        </i>
-                                    </a>
-                                    <a className="edit text-light-blue" style={{ width: '5px' }} 
-                                        title={"Lưu kế hoạch"} 
-                                        onClick={() => handleSavePlan(x, index)}
-                                    >
-                                        <i className="material-icons">save</i>
-                                    </a>
-                                    {/* <DeleteNotification
-                                        content={"Xóa kế hoạch vận chuyển"}
-                                        data={{
-                                            id: x._id,
-                                            info: x.code
-                                        }}
-                                        func={handleDelete}
-                                    /> */}
-                                </td>
+                                        {"Tạo kế hoạch"}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <table id={"tableId"} className="table table-striped table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th className="col-fixed" style={{ width: 60 }}>{"Số thứ tự"}</th>
+                                <th>{"Mã kế hoạch"}</th>
+                                <th>{"Tên kế hoạch"}</th>
+                                {/* <th>{"Trạng thái"}</th> */}
+                                <th>{"Thời gian"}</th>
+                                <th>{"Người phụ trách giám sát"}</th>
+                                <th>{"Hành động"}</th>
                             </tr>
-                        ))
-                    }
-                    </tbody>
-                </table>
-                </div>
-                </div>
-            
-                    {
-                        listUnavailableRequirement && listUnavailableRequirement.length !==0
-                        &&
-                        <div className="box box-solid">
-                            <div className="box-header">
-                                <div className="box-title">{"Danh sách yêu cầu vận chuyển không thể xếp kế hoạch vận chuyển"}</div>
-                            </div>
-                            <div className="box-body qlcv">
-                                <table id={"unavailable-requirement"} className="table table-striped table-bordered table-hover">
-                                <thead>
-                                    <tr>
-                                        <th className="col-fixed" style={{ width: 60 }}>{translate('manage_example.index')}</th>
-                                        <th>{"Mã yêu cầu"}</th>
-                                        <th>{"Loại yêu cầu"}</th>
-                                        <th>{"Địa chỉ nhận hàng"}</th>
-                                        <th>{"Địa chỉ giao hàng"}</th>
-                                        <th>{"Trọng tải"}</th>
-                                        <th>{"Thể tích"}</th>
-                                        <th>{"Xem chi tiết"}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {
-                                        listUnavailableRequirement.map((x, index) => (
-                                            x
-                                            &&
-                                            <tr key={index}>
-                                                {/* <td>{index + 1 + (page - 1) * perPage}</td> */}
-                                                <td>{index+1}</td>
-                                                <td>{x.code}</td>
-                                                <td>{getTypeRequirement(x.type)}</td>
-                                                <td>{x.fromAddress}</td>
-                                                <td>{x.toAddress}</td>
-                                                <td>{x.payload}</td>
-                                                <td>{x.volume}</td>    
-                                                <td>
-                                                <a className="edit text-green" style={{ width: '5px' }} 
-                                                    // title={translate('manage_example.detail_info_example')} 
-                                                    title={'Thông tin chi tiết yêu cầu vận chuyển'}
-                                                    onClick={() => handleShowDetailRequirementInfo(x)}
-                                                >
-                                                    <i className="material-icons">
-                                                        visibility
-                                                    </i>
-                                                </a>
-                                                </td>                              
-                                            </tr>
-                                        ))
-                                    }
-                                </tbody>
-                            </table>
-                            </div>
+                        </thead>
+                        <tbody>
+                        {
+                            !(listPlanGenerate && listPlanGenerate.length !== 0)
+                            &&
+                            <tr>
+                                <td colSpan={6}>{"Không có kế hoạch nào được tạo"}</td>
+                            </tr>
+                        }
+                        {
+                        (listPlanGenerate && listPlanGenerate.length !== 0) &&
+                        listPlanGenerate.map((x, index) => (
+                                x &&
+                                <tr key={index}>
+                                    <td>{index + 1}</td>
+                                    <td>{x.code}</td>
+                                    <td>{x.name}</td>
+                                    {/* <td>{getPlanStatus(x.status)}</td> */}
+                                    <td>{formatDate(x.date)+" - "+formatDate(x.date)}</td>
+                                    <td>{x.supervisor?.name}</td>                                
+                                    {/* <td>{x.date+" - "+x.date}</td> */}
+                                    {/* <td>{""}</td> */}
+                                    <td style={{ textAlign: "center" }}>
+                                        <a className="edit text-green" 
+                                            style={{ width: '5px' }} 
+                                            title={"Thông tin chi tiết kế hoạch"} 
+                                            onClick={() => handleShowDetailInfo(x)}
+                                        >
+                                            <i className="material-icons">visibility
+                                            </i>
+                                        </a>
+                                        <a className="edit text-light-blue" style={{ width: '5px' }} 
+                                            title={"Lưu kế hoạch"} 
+                                            onClick={() => handleSavePlan(x, index)}
+                                        >
+                                            <i className="material-icons">save</i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            ))
+                        }
+                        </tbody>
+                    </table>
+                    </div>
+                    </div>
+                
+                        {
+                            listUnavailableRequirement && listUnavailableRequirement.length !==0
+                            &&
+                            <div className="box box-solid">
+                                <div className="box-header">
+                                    <div className="box-title">{"Danh sách yêu cầu vận chuyển không thể xếp kế hoạch vận chuyển"}</div>
+                                </div>
+                                <div className="box-body qlcv">
+                                    <table id={"unavailable-requirement"} className="table table-striped table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th className="col-fixed" style={{ width: 60 }}>{translate('manage_example.index')}</th>
+                                            <th>{"Mã yêu cầu"}</th>
+                                            <th>{"Loại yêu cầu"}</th>
+                                            <th>{"Địa chỉ nhận hàng"}</th>
+                                            <th>{"Địa chỉ giao hàng"}</th>
+                                            <th>{"Trọng tải"}</th>
+                                            <th>{"Thể tích"}</th>
+                                            <th>{"Xem chi tiết"}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {
+                                            listUnavailableRequirement.map((x, index) => (
+                                                x
+                                                &&
+                                                <tr key={index}>
+                                                    {/* <td>{index + 1 + (page - 1) * perPage}</td> */}
+                                                    <td>{index+1}</td>
+                                                    <td>{x.code}</td>
+                                                    <td>{getTypeRequirement(x.type)}</td>
+                                                    <td>{x.fromAddress}</td>
+                                                    <td>{x.toAddress}</td>
+                                                    <td>{x.payload}</td>
+                                                    <td>{x.volume}</td>    
+                                                    <td>
+                                                    <a className="edit text-green" style={{ width: '5px' }} 
+                                                        // title={translate('manage_example.detail_info_example')} 
+                                                        title={'Thông tin chi tiết yêu cầu vận chuyển'}
+                                                        onClick={() => handleShowDetailRequirementInfo(x)}
+                                                    >
+                                                        <i className="material-icons">
+                                                            visibility
+                                                        </i>
+                                                    </a>
+                                                    </td>                              
+                                                </tr>
+                                            ))
+                                        }
+                                    </tbody>
+                                </table>
+                                </div>
 
-                        </div>
-                    }
-                    
+                            </div>
+                        }
+                        
+                    </div>
+                    </div>
+                    </div>
                 </div>
             </form>
             </DialogModal>
