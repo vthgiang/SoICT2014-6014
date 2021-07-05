@@ -15,7 +15,6 @@ class TimePicker extends Component {
         const { id, dateFormat, onChange, deleteValue = true, getDefaultValue } = this.props;
         let zIndex = 1050;
         let time 
-        console.log(this.state.value);
         if (this.state.value) {
             let timeValue= this.state.value
             let length = timeValue.length
@@ -62,7 +61,6 @@ class TimePicker extends Component {
 
     render() {
         const { id, disabled = false } = this.props;
-        console.log(this.state.value);
         return (
             <React.Fragment>
                 <div className="bootstrap-timepicker input-group has-feedback">
