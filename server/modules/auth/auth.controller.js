@@ -48,7 +48,7 @@ exports.logout = async (req, res) => {
 exports.logoutAllAccount = async (req, res) => {
     try {
         const logout = await AuthService.logoutAllAccount(req.portal, req.user._id);
-        
+
         await Logger.info(req.user.email, 'logout_all_success', req.portal);
         res.status(200).json({
             success: true,
@@ -132,8 +132,8 @@ exports.checkLinkValid = async (req, res) => {
 exports.changeInformation = async (req, res) => {
     try {
         let avatar;
-        if(req.file){
-            let path = req.file.destination +'/'+ req.file.filename;
+        if (req.file) {
+            let path = req.file.destination + '/' + req.file.filename;
             avatar = path.substr(1, path.length)
         }
         const profile = await AuthService.changeInformation(req.portal, req.params.id, req.body.name, req.body.email, req.body.password2, avatar);
@@ -185,7 +185,7 @@ changePassword1 = async (req, res) => {
 }
 
 
-changePassword2 = async(req, res) => {
+changePassword2 = async (req, res) => {
     try {
         const user = await AuthService.changePassword2(req.portal, req.params.id, req.body);
 
@@ -246,12 +246,12 @@ exports.getProfile = async (req, res) => {
         });
     }
 };
- /**
- * Người dùng download 1 file từ server
- * @path: đường dẫn tương đối về file - được lấy qua trường 'path' của req.query
- * Tham số về đường dẫn tương đối của file đường truyền từ bên client đến server như sau:
- * localhost:8000/auth/download-file?path=duong_dan_tuong_doi_cua_file_can_tai
- */
+/**
+* Người dùng download 1 file từ server
+* @path: đường dẫn tương đối về file - được lấy qua trường 'path' của req.query
+* Tham số về đường dẫn tương đối của file đường truyền từ bên client đến server như sau:
+* localhost:8000/auth/download-file?path=duong_dan_tuong_doi_cua_file_can_tai
+*/
 exports.downloadFile = async (req, res) => {
     try {
         cons
@@ -266,7 +266,7 @@ exports.downloadFile = async (req, res) => {
     }
 }
 
-exports.createPassword2 = async(req, res) => {
+exports.createPassword2 = async (req, res) => {
     try {
         const answer = await AuthService.createPassword2(req.portal, req.user._id, req.body);
         await Logger.info(req.user.email, 'create_password2_success', req.portal);

@@ -20,7 +20,7 @@ exports.login = async (fingerprint, data) => {
         company = await Company(
             connect(DB_CONNECTION, process.env.DB_NAME)
         ).findOne({ shortName: data.portal })
-        .select('_id name shortName active log');
+            .select('_id name shortName active log');
         if (!company) throw ["portal_invalid"];
     }
 
@@ -51,7 +51,7 @@ exports.login = async (fingerprint, data) => {
     }
 
     const password2Exists = user.password2 ? true : false;
-        
+
     const token = await jwt.sign(
         {
             _id: user._id,
@@ -140,7 +140,7 @@ exports.forgetPassword = async (portal, email, password2) => {
         throw ['email_empty']
     if (!validateEmailValid(email))
         throw ['email_invalid']
-    
+
     var user = await User(connect(DB_CONNECTION, portal)).findOne({ email });
     if (!user)
         throw ['email_not_found'];
@@ -151,16 +151,16 @@ exports.forgetPassword = async (portal, email, password2) => {
         const validPass = await bcrypt.compare(String(password2), user.password2);
         if (!validPass) throw ["password2_invalid"];
     }
-    
+
     var code = await generator.generate({ length: 10, numbers: true });
     const token = jwt.sign({ email: email, code: code, portal: portal }, process.env.TOKEN_SECRET, { expiresIn: '30m' })
-    
+
     console.log("=================================================")
     console.log('token', `${process.env.WEBSITE}/reset-password?token=${token}`);
     console.log("=================================================")
     user.resetPasswordToken = code;
     await user.save();
-    
+
     let subject = `${process.env.WEB_NAME} : Thay đổi mật khẩu - Change password`;
     let html = `
                 <div style="
@@ -187,7 +187,7 @@ exports.forgetPassword = async (portal, email, password2) => {
                     </div>       
                 </div>
         `
-    await sendEmail(email, subject,'',html )
+    await sendEmail(email, subject, '', html)
     return {
         email,
         portal,
@@ -206,20 +206,20 @@ exports.resetPassword = async (data) => {
         throw ["token_empty"];
     if (!otp)
         throw ["otp_empty"];
-    
+
     // Giải mã token
     const secret = jwt.verify(token, process.env.TOKEN_SECRET);
 
     // validate dữ liêu
     if (!secret.portal)
         throw ['portal_empty']
-    
+
     if (!secret.email)
         throw ["email_empty"];
-        
+
     if (secret.code !== otp)
         throw ["otp_invalid"];
-    
+
     var user = await User(connect(DB_CONNECTION, secret.portal)).findOne({
         email: secret.email,
         resetPasswordToken: otp,
@@ -240,10 +240,10 @@ exports.checkLinkValid = async (query) => {
     const secret = jwt.verify(token, process.env.TOKEN_SECRET);
     if (!token)
         throw ['token_reset_password_empty']; // token trống
-    
+
     const findUser = await User(connect(DB_CONNECTION, secret.portal)).findOne({
-            email: secret.email,
-            resetPasswordToken: secret.code,
+        email: secret.email,
+        resetPasswordToken: secret.code,
     });
     if (!findUser)
         throw ['link_reset_password_invalid']// link reset không hợp lệ
@@ -267,20 +267,20 @@ exports.changeInformation = async (
     // validate username
     if (!name)
         throw ['username_empty']
-    
+
     if (name && name.length < 6 || name.length > 255)
         throw ['username_invalid_length']
-    
+
     // validate email
     if (!email)
         throw ['email_empty']
 
     if (!validateEmailValid(email))
         throw ['email_invalid']
-    
+
     if (!password2)
         throw ['password2_empty']
-    
+
     let user = await User(connect(DB_CONNECTION, portal))
         .findById(id)
         .select('-password')
@@ -324,7 +324,7 @@ exports.changeInformation = async (
     const employees = await Employee(connect(DB_CONNECTION, portal)).findOne({ emailInCompany: email });
     if (!employees)
         await Employee(connect(DB_CONNECTION, portal)).findOneAndUpdate({ emailInCompany: oldEmail }, { $set: { emailInCompany: email } });
-    
+
     return user;
 };
 
@@ -337,20 +337,20 @@ exports.changeInformation = async (
 exports.changePassword = async (portal, id, password, new_password, confirmPassword, password2) => {
     if (!password)
         throw ['old_password_empty']
-    
-    if (!new_password) 
+
+    if (!new_password)
         throw ['newPassword_empty']
-    
+
     if (!confirmPassword)
         throw ['confirmPassword_empty']
-    
+
     if (new_password !== confirmPassword)
         throw ['confirm_password_invalid']
-        
+
     let user = await User(connect(DB_CONNECTION, portal))
         .findById(id)
         .populate([{ path: "roles", populate: { path: "roleId" } }]);
-    
+
     const validPass = await bcrypt.compare(password, user.password);
     // Kiểm tra mật khẩu cũ nhập vào có đúng hay không
     if (!validPass) throw ["password_invalid"];
@@ -366,11 +366,11 @@ exports.changePassword = async (portal, id, password, new_password, confirmPassw
         const validPassword2 = await bcrypt.compare(password2, user.password2);
         if (!validPassword2)
             throw ['password2_invalid']
-        
+
         const hashPassword2 = await bcrypt.hashSync(password2, salt);
         user.password2 = hashPassword2;
     }
-    
+
     await user.save();
 
     user = user.toObject();
@@ -387,22 +387,22 @@ exports.changePassword2 = async (portal, id, body) => {
     const { oldPassword, oldPassword2, newPassword2, confirmNewPassword2 } = body;
     if (!oldPassword)
         throw ['old_password_empty']
-    
-    if (!oldPassword2) 
+
+    if (!oldPassword2)
         throw ['old_password2_empty']
-    
+
     if (!newPassword2)
         throw ['new_password2_empty']
     if (!confirmNewPassword2)
         throw ['confirm_password2_empty']
-    
+
     if (newPassword2 !== confirmNewPassword2)
         throw ['confirm_password2_invalid']
-    
+
     let user = await User(connect(DB_CONNECTION, portal))
         .findById(id)
         .populate([{ path: "roles", populate: { path: "roleId" } }]);
-    
+
     // Check mật khảu cũ
     const validPass = await bcrypt.compare(oldPassword, user.password);
     if (!validPass) {
@@ -414,7 +414,7 @@ exports.changePassword2 = async (portal, id, body) => {
     if (!validPass2) {
         throw ['old_password2_invalid'];
     }
-    
+
     const salt = await bcrypt.genSaltSync(10);
     const hashPassword2 = await bcrypt.hashSync(newPassword2, salt);
     user.password2 = hashPassword2;
@@ -475,17 +475,17 @@ exports.createPassword2 = async (portal, userId, data) => {
     let user = await User(connect(DB_CONNECTION, portal)).findById(userId);
     // check xem pass cấp 2 đã tồn tại hay chưa
     if (user.password2) throw ['pwd2_existed']
-    
+
     if (!oldPassword)
         throw ['old_password_empty'];
 
     if (!newPassword2) throw ['password2_empty'];
     if (!confirmNewPassword2)
         throw ['confirm_password2_empty']
-    
+
     if (newPassword2 !== confirmNewPassword2)
         throw ['confirm_password2_invalid'];
-    
+
     // Check mật khảu cũ
     const validPass = await bcrypt.compare(oldPassword, user.password);
     if (!validPass) {
@@ -511,7 +511,7 @@ exports.deletePassword2 = async (portal, data, userId) => {
     const { pwd2 } = data;
     if (!pwd2)
         throw ['password2_empty']
-    
+
     let user = await User(connect(DB_CONNECTION, portal))
         .findById(userId)
         .populate([{ path: "roles", populate: { path: "roleId" } }]);
@@ -521,7 +521,7 @@ exports.deletePassword2 = async (portal, data, userId) => {
         throw ['password2_invalid'];
     }
 
-    let userUpdate = await User(connect(DB_CONNECTION, portal)).findOneAndUpdate({_id: userId},{ $unset: { password2: ""}}, {new: true})
+    let userUpdate = await User(connect(DB_CONNECTION, portal)).findOneAndUpdate({ _id: userId }, { $unset: { password2: "" } }, { new: true })
     userUpdate = userUpdate.toObject();
     userUpdate['password2Exists'] = false;
     return userUpdate;
