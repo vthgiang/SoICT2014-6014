@@ -289,8 +289,46 @@ exports.uploadFile = (arrData, type) => {
     }
 };
 
-// Middleware check quyền thay đổi thông tin tài khoản người dùng
-exports.authCUIP = async (req, res, next) => {
+/**
+ * Middleware kiểm tra userId gửi trong param có trùng với userId lưu trong jwt
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ */
+exports.authTrueOwner = async (req, res, next) => {
+    try {
+        const token = req.header("utk"); //JWT nhận từ người dùng
+        if (!token) throw ["access_denied"];
+        let verified;
+        try {
+            verified = await jwt.verify(token, process.env.TOKEN_SECRET);
+        } catch (error) {
+            throw ["access_denied"];
+        }
+
+        let userIdJwt = verified._id; // id người dùng lấy từ jwt
+        let userIdParam = req.params.userId; // id người dùng trong params
+
+        if (userIdJwt !== userIdParam) { // người gửi yêu cầu không phải chủ nhân thật sự của tài khoản
+            throw ['access_denied'];
+        }
+
+        next();
+    } catch (err) {
+        res.status(400).json({
+            success: false,
+            messages: err,
+        });
+    }
+}
+
+/**
+ * Middleware kiểm tra người dùng có là admin/super admin
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ */
+exports.authAdminSuperAdmin = async (req, res, next) => {
     try {
         const token = req.header("utk"); //JWT nhận từ người dùng
         if (!token) throw ["access_denied"];
@@ -302,29 +340,25 @@ exports.authCUIP = async (req, res, next) => {
         }
 
         let userId = verified._id; // id người dùng lấy từ jwt
-        let userRes = req.params.userId; // id người dùng trong params
 
-        if (userId !== userRes) //người gửi yêu cầu không phải chủ nhân thật sự của tài khoản
-        {
-            // check nếu như người gửi yêu cầu là super admin hoặc admin thì cho phép gọi api
-            let portal = !verified.company
-                ? process.env.DB_NAME
-                : verified.company.shortName;
-            initModels(connect(DB_CONNECTION, req.portal), Models);
+        // check nếu như người gửi yêu cầu là super admin hoặc admin thì cho phép gọi api
+        let portal = !verified.company
+            ? process.env.DB_NAME
+            : verified.company.shortName;
+        initModels(connect(DB_CONNECTION, req.portal), Models);
 
-            let ad = await Role(connect(DB_CONNECTION, portal)).find({
-                name: { $in: ['Super Admin', 'Admin'] }
-            });
-            if (ad.length === 0) throw ['access_denied'];
+        let ad = await Role(connect(DB_CONNECTION, portal)).find({
+            name: { $in: ['Super Admin', 'Admin'] }
+        });
+        if (ad.length === 0) throw ['access_denied'];
 
-            // Check người gửi request có quyền là SuperAdmin, Admin hay không?
-            let userrole = await UserRole(connect(DB_CONNECTION, portal)).find({
-                userId,
-                roleId: { $in: ad.map(r => r._id) }
-            });
+        // Check người gửi request có quyền là SuperAdmin, Admin hay không?
+        let userrole = await UserRole(connect(DB_CONNECTION, portal)).find({
+            userId,
+            roleId: { $in: ad.map(r => r._id) }
+        });
 
-            if (userrole.length === 0) throw ['access_denied'];
-        }
+        if (userrole.length === 0) throw ['access_denied'];
 
         next();
     } catch (err) {
