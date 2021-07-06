@@ -136,7 +136,7 @@ exports.changeInformation = async (req, res) => {
             let path = req.file.destination + '/' + req.file.filename;
             avatar = path.substr(1, path.length)
         }
-        const profile = await AuthService.changeInformation(req.portal, req.params.id, req.body.name, req.body.email, req.body.password2, avatar);
+        const profile = await AuthService.changeInformation(req.portal, req.params.userId, req.body.name, req.body.email, req.body.password2, avatar);
 
         await Logger.info(req.user.email, 'change_user_information_success', req.portal);
         res.status(200).json({
@@ -165,7 +165,7 @@ exports.changePassword = async (req, res) => {
 
 changePassword1 = async (req, res) => {
     try {
-        const user = await AuthService.changePassword(req.portal, req.params.id, req.body.password, req.body.new_password, req.body.confirmPassword, req.body.password2);
+        const user = await AuthService.changePassword(req.portal, req.params.userId, req.body.password, req.body.new_password, req.body.confirmPassword, req.body.password2);
 
         await Logger.info(req.user.email, 'change_user_password_success', req.portal);
         res.status(200).json({
@@ -187,7 +187,7 @@ changePassword1 = async (req, res) => {
 
 changePassword2 = async (req, res) => {
     try {
-        const user = await AuthService.changePassword2(req.portal, req.params.id, req.body);
+        const user = await AuthService.changePassword2(req.portal, req.params.userId, req.body);
 
         await Logger.info(req.user.email, 'change_user_password2_success', req.portal);
         res.status(200).json({
@@ -207,7 +207,7 @@ changePassword2 = async (req, res) => {
 }
 exports.getLinksThatRoleCanAccess = async (req, res) => {
     try {
-        const data = await AuthService.getLinksThatRoleCanAccess(req.portal, req.params.id);
+        const data = await AuthService.getLinksThatRoleCanAccess(req.portal, req.params.roleId);
 
         await Logger.info(req.user.email, 'get_links_of_role_success', req.portal);
         res.status(200).json({
@@ -228,7 +228,7 @@ exports.getLinksThatRoleCanAccess = async (req, res) => {
 
 exports.getProfile = async (req, res) => {
     try {
-        const profile = await AuthService.getProfile(req.portal, req.params.id);
+        const profile = await AuthService.getProfile(req.portal, req.params.userId);
 
         await Logger.info(req.user.email, 'show_profile_success', req.portal);
         res.status(200).json({
@@ -288,7 +288,7 @@ exports.createPassword2 = async (req, res) => {
 
 exports.deletePassword2 = async (req, res) => {
     try {
-        const result = await AuthService.deletePassword2(req.portal, req.body, req.params.id);
+        const result = await AuthService.deletePassword2(req.portal, req.body, req.params.userId);
         await Logger.info(req.user.email, 'delete_password2_success', req.portal);
         res.status(200).json({
             success: true,

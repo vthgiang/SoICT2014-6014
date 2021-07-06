@@ -302,7 +302,7 @@ exports.authCUIP = async (req, res, next) => {
         }
 
         let userId = verified._id; // id người dùng lấy từ jwt
-        let userRes = req.params.id; // id người dùng trong params
+        let userRes = req.params.userId; // id người dùng trong params
 
         if (userId !== userRes) //người gửi yêu cầu không phải chủ nhân thật sự của tài khoản
         {
@@ -343,14 +343,14 @@ exports.authCUIP = async (req, res, next) => {
  * @returns 
  */
 exports.rateLimitRequest = (windowMs = 60, maxRequest = 100, message) => { // mặc định trong vòng 1 tiếng chỉ cho phép tối đa 100 request tới api
-     const createAccountLimiter = rateLimit({
-            windowMs: windowMs * 60 * 1000, //  hour window
-            max: maxRequest, // start blocking after maxRequest requests
-            message: "Too many accounts created from this IP, please try again after an hour",
-            handler: (req, res, next) => res.status(429).json({
-                    success: false,
-                    messages: message?[message]:["Too many accounts created from this IP, please try again after an hour"]
-                }),
-        });
-        return createAccountLimiter;
+    const createAccountLimiter = rateLimit({
+        windowMs: windowMs * 60 * 1000, //  hour window
+        max: maxRequest, // start blocking after maxRequest requests
+        message: "Too many accounts created from this IP, please try again after an hour",
+        handler: (req, res, next) => res.status(429).json({
+            success: false,
+            messages: message ? [message] : ["Too many accounts created from this IP, please try again after an hour"]
+        }),
+    });
+    return createAccountLimiter;
 }

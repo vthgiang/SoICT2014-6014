@@ -251,14 +251,14 @@ exports.checkLinkValid = async (query) => {
 
 /**
  * Thay đổi thông tin người dùng
- * @param {*} id
+ * @param {*} userId
  * @param {*} name
  * @param {*} email
  * @param {*} avatar
  */
 exports.changeInformation = async (
     portal,
-    id,
+    userId,
     name,
     email,
     password2,
@@ -282,7 +282,7 @@ exports.changeInformation = async (
         throw ['password2_empty']
 
     let user = await User(connect(DB_CONNECTION, portal))
-        .findById(id)
+        .findById(userId)
         .select('-password')
         .populate([{ path: "roles", populate: { path: "roleId" } }]);
 
@@ -330,11 +330,11 @@ exports.changeInformation = async (
 
 /**
  * Thay đổi mật khẩu
- * @param {*} id : id người dùng
+ * @param {*} userId : id người dùng
  * @param {*} password : mật khẩu cũ
  * @param {*} new_password : mật khẩu mới
  */
-exports.changePassword = async (portal, id, password, new_password, confirmPassword, password2) => {
+exports.changePassword = async (portal, userId, password, new_password, confirmPassword, password2) => {
     if (!password)
         throw ['old_password_empty']
 
@@ -348,7 +348,7 @@ exports.changePassword = async (portal, id, password, new_password, confirmPassw
         throw ['confirm_password_invalid']
 
     let user = await User(connect(DB_CONNECTION, portal))
-        .findById(id)
+        .findById(userId)
         .populate([{ path: "roles", populate: { path: "roleId" } }]);
 
     const validPass = await bcrypt.compare(password, user.password);
@@ -383,7 +383,7 @@ exports.changePassword = async (portal, id, password, new_password, confirmPassw
 };
 
 
-exports.changePassword2 = async (portal, id, body) => {
+exports.changePassword2 = async (portal, userId, body) => {
     const { oldPassword, oldPassword2, newPassword2, confirmNewPassword2 } = body;
     if (!oldPassword)
         throw ['old_password_empty']
@@ -400,7 +400,7 @@ exports.changePassword2 = async (portal, id, body) => {
         throw ['confirm_password2_invalid']
 
     let user = await User(connect(DB_CONNECTION, portal))
-        .findById(id)
+        .findById(userId)
         .populate([{ path: "roles", populate: { path: "roleId" } }]);
 
     // Check mật khảu cũ
@@ -433,10 +433,10 @@ exports.changePassword2 = async (portal, id, body) => {
 
 /**
  * Lấy ra các trang mà người dùng có quyền truy cập
- * @param {*} idRole : id role người dùng
+ * @param {*} roleId : id role người dùng
  */
-exports.getLinksThatRoleCanAccess = async (portal, idRole) => {
-    const role = await Role(connect(DB_CONNECTION, portal)).findById(idRole); //lay duoc role hien tai
+exports.getLinksThatRoleCanAccess = async (portal, roleId) => {
+    const role = await Role(connect(DB_CONNECTION, portal)).findById(roleId); //lay duoc role hien tai
     let roles = [role._id, ...role.parents];
     const privilege = await Privilege(connect(DB_CONNECTION, portal))
         .find({
@@ -453,11 +453,11 @@ exports.getLinksThatRoleCanAccess = async (portal, idRole) => {
 
 /**
  * Lấy ra thông tn người dùng
- * @param {*} id : id người dùng
+ * @param {*} userId : id người dùng
  */
-exports.getProfile = async (portal, id) => {
+exports.getProfile = async (portal, userId) => {
     let user = await User(connect(DB_CONNECTION, portal))
-        .findById(id)
+        .findById(userId)
         .select("-password -status -deleteSoft -tokens")
         .populate([{ path: "roles", populate: { path: "roleId" } }]).lean();
     if (user === null) throw ["user_not_found"];
