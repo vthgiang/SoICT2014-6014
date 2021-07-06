@@ -5,6 +5,7 @@ const {
 const {
     connect
 } = require(`../../helpers/dbHelper`);
+const mongoose = require('mongoose');
 
 // Tạo mới mảng Ví dụ
 exports.createExample = async (portal, data) => {
@@ -101,7 +102,9 @@ exports.editExample = async (portal, id, data) => {
 }
 
 // Xóa một Ví dụ
-exports.deleteExample = async (portal, id) => {
-    let example = Example(connect(DB_CONNECTION, portal)).findByIdAndDelete({ _id: id });
-    return example;
+exports.deleteExamples = async (portal, exampleIds) => {
+    let examples = await Example(connect(DB_CONNECTION, portal))
+        .deleteMany({ _id: { $in: exampleIds.map(item => mongoose.Types.ObjectId(item)) } });
+
+    return examples;
 }
