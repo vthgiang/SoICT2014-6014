@@ -259,7 +259,7 @@ function TransportVehicleCarrier2(props) {
                 <div className="form-group">
                     <label className="form-control-static">Từ ngày: </label>
                     <DatePicker
-                        id={`start_date_23`}
+                        id={`start_date_232`}
                         value={formatDate(date.startDate)}
                         onChange={handleStartDateChange}
                         disabled={false}
@@ -268,7 +268,7 @@ function TransportVehicleCarrier2(props) {
                 <div className="form-group">
                     <label className="form-control-static">Đến ngày: </label>
                     <DatePicker
-                        id={`end_date_23`}
+                        id={`end_date_232`}
                         value={formatDate(date.endDate)}
                         onChange={handleEndDateChange}
                         disabled={false}

@@ -144,7 +144,7 @@ function TransportPlanCreateForm(props) {
                 if (requirement.timeRequests && requirement.timeRequests.length !==0){
                     requirement.timeRequests.map(time => {
                         let timeRequest = new Date(time.timeRequest);
-                        if(timeRequest.getTime() === date.getTime()){
+                        if(timeRequest.getDate() === date.getDate() && timeRequest.getMonth() === date.getMonth() && timeRequest.getFullYear() === date.getFullYear()){
                             mark = 5*86400000;
                         }
                     })
@@ -215,6 +215,7 @@ function TransportPlanCreateForm(props) {
                     const startDate = new Date(formSchedule.startDate);
                     const endDate = new Date(formSchedule.endDate);
                     if(startDate.getTime() <= endDate.getTime()){
+                        console.log("oje vasd");
                         setListRequirements(arrangeRequirement(lists, startDate))
                     }
                 }
