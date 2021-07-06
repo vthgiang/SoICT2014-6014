@@ -20,6 +20,7 @@ function getAllTransportRequirements(queryData) {
                 status: queryData !== undefined ? queryData.status : null,
                 currentUserId: localStorage.getItem('userId'),
                 currentRole: localStorage.getItem('currentRole'),
+                searchData: queryData,
             }
         },
          false, // Nếu có truy vấn thành công thì không hiện thông báo

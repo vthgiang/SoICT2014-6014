@@ -87,6 +87,30 @@ function TransportRequirementsEditForm(props) {
             toAddress: requirementsForm.toAddress,
             geocode: requirementsForm.geocode,
         };
+        if (!(requirementsForm.geocode?.fromAddress?.lat && requirementsForm.geocode?.fromAddress?.lng)){
+            await getGeocode(requirementsForm.fromAddress).then(
+                (value) => {
+                    data.geocode.fromAddress = {
+                        lat: value.lat,
+                        lng: value.lng
+                    }
+                }
+            );
+        }
+        if (!(requirementsForm.geocode?.toAddress?.lat && requirementsForm.geocode?.toAddress?.lng)){
+            await getGeocode(requirementsForm.toAddress).then(
+                (value) => {
+                    data.geocode.toAddress = {
+                        lat: value.lat,
+                        lng: value.lng
+                    }
+                }
+            );
+        }
+        if (state.value === "5"){
+            data.detail1 = requirementsForm.info?.newOneDetail1;
+            data.detail2 = requirementsForm.info?.newOneDetail2;
+        }
         editTransportRequirement(curentTransportRequirementDetail._id, data);
     }
 
@@ -193,8 +217,8 @@ function TransportRequirementsEditForm(props) {
                         > */}
                         
             <div className="box-body qlcv">
-                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                <fieldset className="scheduler-border" style={{ height: "100%" }}>
+                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <fieldset className="scheduler-border" style={{ height: "100%" }}>
                         <legend className="scheduler-border">Thông tin chung</legend>
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
@@ -209,7 +233,7 @@ function TransportRequirementsEditForm(props) {
                             </div>
                         </div>
                     </fieldset>
-                            </div>
+                </div>
                             {
                         state.value === "1" && ( 
                             <TransportGeneralInfoShip 

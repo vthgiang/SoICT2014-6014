@@ -20,6 +20,11 @@ function TransportGoods(props) {
 
     const [listGoodsChosen, setListGoodsChosen] = useState([]);
 
+    
+    const [errorForm, setErrorForm] = useState({});
+    let {errorGood} = errorForm;
+
+
     useEffect(() => {
         props.getAllGoods();
         setCurrentGood({
@@ -27,7 +32,8 @@ function TransportGoods(props) {
             quantity: 1,
             currentSelectBoxGoodText: "Chọn hàng hóa",
             volume: 1,
-            weight: 1
+            weight: 1,
+            idGoodSelectBox: "0",
         })
     }, [])
 
@@ -54,6 +60,10 @@ function TransportGoods(props) {
     }
 
     let handleGoodChange = (value) => {
+        setErrorForm({
+            ...errorForm,
+            errorGood: null,
+        })        
         if (value[0] !== "0" && listAllGoods){
             let filterGood = listAllGoods.filter((r) => r._id === value[0]);
             let currentGoodCode="", currentGoodName="";
@@ -67,8 +77,17 @@ function TransportGoods(props) {
                 _id: value[0],
                 name: currentGoodCode,
                 code: currentGoodName,
-                currentSelectBoxGoodText: currentSelectBoxGoodText,
+                currentSelectBoxGoodText: currentSelectBoxGoodText,                
+                idGoodSelectBox: value[0],
             })
+        }
+        else {
+            if (value[0] !== "0"){
+                setCurrentGood({
+                    ...currentGood,                
+                    idGoodSelectBox: value[0],
+                })
+            }
         }
     }
     const handleQuantityChange = (e) => {
@@ -126,6 +145,14 @@ function TransportGoods(props) {
      */
     const handleAddGood = (e) => {
         e.preventDefault();
+        console.log(currentGood);
+        if (currentGood.idGoodSelectBox === "0"){
+            setErrorForm({
+                ...errorForm,
+                errorGood: "Chọn hàng hóa trước"
+            })
+            return;
+        }
         let currentListGoods = [...listGoodsChosen];
         let good = {
             _id: currentGood._id,
@@ -184,6 +211,7 @@ function TransportGoods(props) {
         console.log(listGoodsChosen, " danh sach hang hoa chon");
         callBackState(listGoodsChosen);
     }, [listGoodsChosen])
+
     return (
         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <fieldset className="scheduler-border">
@@ -192,10 +220,10 @@ function TransportGoods(props) {
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div className="row">
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                <div className={`form-group 
-                                `}
+                                <div className={`form-group ${!errorGood ? "" : "has-error"} `}
                                 >
                                     <label>{"Chọn hàng hóa"}</label>
+                                        <span className="attention"> * </span>
                                     <SelectBox
                                         id={`select-good`}
                                         className="form-control select2"
@@ -205,7 +233,7 @@ function TransportGoods(props) {
                                         onChange={handleGoodChange}
                                         multiple={false}
                                     />
-                                    {/* <ErrorLabel content={errorGood} /> */}
+                                    <ErrorLabel content={errorGood} />
                                 </div>
                             </div>
                             {/* <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
@@ -234,7 +262,7 @@ function TransportGoods(props) {
                             </div> */}
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group`}>
-                                    <label>{"Khối lượng"}</label>
+                                    <label>{"Khối lượng kg"}</label>
                                     <input type="number" 
                                     value={currentGood.weight} 
                                     onChange={handleWeightChange} 
@@ -244,7 +272,7 @@ function TransportGoods(props) {
                             </div>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group`}>
-                                    <label>{"Thể tích"}</label>
+                                    <label>{"Thể tích "+" \u33A5"}</label>
                                     <input type="number" 
                                     value={currentGood.volume} 
                                     onChange={handleVolumeChange} 

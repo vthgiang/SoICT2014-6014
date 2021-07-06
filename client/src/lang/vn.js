@@ -5840,6 +5840,12 @@ export default {
                 add_fail: "Thêm phương tiện thất bại",
                 edit_success: "Đã chỉnh sửa trạng thái phương tiện",
                 edit_fail: "Chỉnh sửa trạng thái phương tiện thất bại",
+            },            
+            transportDepartment: {
+                add_success: "Đã thêm đơn vị vận chuyển",
+                add_fail: "Thêm đơn vị vận chuyển thất bại",
+                delete_success: "Đã xóa đơn vị vận chuyển",
+                delete_fail: "Xóa đơn vị vận chuyển thất bại",
             }
         },
 

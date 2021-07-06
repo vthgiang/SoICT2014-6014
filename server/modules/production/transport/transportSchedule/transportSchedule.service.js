@@ -29,9 +29,9 @@ exports.planCreateTransportRoute = async (portal, data) => {
 
 exports.getTransportRouteByPlanId = async (portal, id) => {
     // SOCKET_IO.emit("hihi", "nguyen dang trung kien");
-    SOCKET_IO.on("hihi", data => {
-        console.log(data);
-    })
+    // SOCKET_IO.on("hihi", data => {
+    //     console.log(data);
+    // })
     let transportRoute = await TransportSchedule(connect(DB_CONNECTION, portal)).findOne({transportPlan: id})
     .populate([
         {
@@ -70,7 +70,12 @@ exports.getTransportRouteByPlanId = async (portal, id) => {
         },
         {
             path: 'route.routeOrdinal.transportRequirement',
-            model: 'TransportRequirement'       
+            model: 'TransportRequirement', 
+            populate: [
+                {
+                    path: 'goods.good'
+                }
+            ]     
         }
     ])
     if (transportRoute) {

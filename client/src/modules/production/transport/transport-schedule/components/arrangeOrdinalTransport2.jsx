@@ -19,7 +19,7 @@ import './arrangeOrdinalTransport.css'
 
 function ArrangeOrdinalTransport(props) {
 
-    let { currentTransportSchedule, listenChange} = props;
+    let { currentTransportSchedule, listenChange, callBackStateData} = props;
 
     // State chứa array [transportVehicle: id, transportRequirements: arr]
     const [transportVehicles, setTransportVehicles] = useState([])
@@ -88,9 +88,29 @@ function ArrangeOrdinalTransport(props) {
             props.editTransportScheduleByPlanId(currentTransportSchedule?.transportPlan?._id, {route: data})
         }
     }
-    // useEffect(() => {
-    //     props.getAllTransportPlans({page: 1, limit: 100});
-    // }, []);
+    useEffect(() => {
+        if (transportOrdinalAddress && transportOrdinalAddress.length !==0){
+            let data = [];
+            transportOrdinalAddress.map((item, index) => {
+                let routeOrdinal = [];
+                if (item.addressOrdinal && item.addressOrdinal.length !==0){
+                    item.addressOrdinal.map((item2, index2) => {
+                        routeOrdinal.push({
+                            transportRequirement: item2.transportRequirementId,
+                            type: item2.addressType,
+                            distance: convertDistanceToKm(item2.distance),
+                            duration: convertTimeToMinutes(item2.duration),
+                        })
+                    })
+                }
+                data.push({
+                    transportVehicle: item.transportVehicle,
+                    routeOrdinal: routeOrdinal,
+                })
+            })
+            callBackStateData({route: data})
+        }
+    }, [transportOrdinalAddress]);
 
     useEffect(() => {
         // Lưu dữ liệu xe và hàng trên xe
@@ -145,7 +165,7 @@ function ArrangeOrdinalTransport(props) {
     return (
         <React.Fragment>
             <div className="box-body qlcv">
-                <div className="form-inline">
+                {/* <div className="form-inline">
                     {
                         (transportVehicles && transportVehicles.length !==0 )
                         &&
@@ -157,7 +177,7 @@ function ArrangeOrdinalTransport(props) {
                             </button>
                         </div>
                     }
-                </div>
+                </div> */}
                 <div>
                     {
                         (!(transportVehicles && transportVehicles.length !==0 ))

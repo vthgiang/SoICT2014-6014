@@ -12,7 +12,7 @@ import { transportVehicleActions } from '../../../transport-vehicle/redux/action
 import { transportDepartmentActions } from "../../../transport-department/redux/actions"
 import { isTimeZoneDateSmaller } from "../../../transportHelper/compareDateTimeZone"
 import '../transport-plan.css'
-
+// Xem danh sách xe + tài xế khi ấn xem chi tiết kế hoạch
 function TransportVehicleAndCarrierSelect(props) {
     let {currentTransportPlan} = props;
     const [vehicleAndCarrier, setVehicleAndCarrier] = useState([]);
@@ -30,7 +30,10 @@ function TransportVehicleAndCarrierSelect(props) {
         if (currentTransportPlan?.transportVehicles && currentTransportPlan?.transportVehicles?.length!==0){
             for (let i=0;i<carriers.length;i++){
                 if (!(carriers[i]?.pos === 1)){
-                    carrier += carriers[i].carrier.name+", ";
+                    if (carrier.length!==0){
+                        carrier+=", ";
+                    }
+                    carrier += carriers[i].carrier.name;
                 }
             }
         }
@@ -69,8 +72,8 @@ function TransportVehicleAndCarrierSelect(props) {
                                     <td>{index+1}</td>
                                     <td>{x.vehicle?.code}</td>
                                     <td>{x.vehicle?.name}</td>
-                                    <td>{x.vehicle?.payload}</td>
-                                    <td>{x.vehicle?.volume}</td>
+                                    <td>{x.vehicle?.payload + " kg"}</td>
+                                    <td>{x.vehicle?.volume + " \u33A5"}</td>
                                     <td>
                                         {getDriver(x.carriers)}
                                     </td>

@@ -29,14 +29,27 @@ function SortableComponent(props) {
 	const [duration, setDuration] = useState([]);
 	// const [transportVehicle, setTransportVehicle] = useState();
 	// const [transportRequirements, setTransportRequirements] = useState();
+	const [payloadVolumeInfo, setPayloadVolumeInfo] = useState([]);
 
 	const sleep = (ms) => {
 		return new Promise(resolve => setTimeout(resolve, ms));
 	}
 	const initializeDistanceAndDuration = async (addressList) => {
+		console.log(addressList, " joafoapfjsofjasoijasiodf");
 		let distanceArr = [0];
 		let durationArr = [0];
+		// let prePayload = [];
+		// let preVolume = [];
+		let listPayloadVolume=[];
+		let afterPayload;
+		let afterVolume;
 		if (addressList && addressList.length !==0){
+			// tính toán khối lượng, thể tích tới điểm
+			listPayloadVolume.push({
+				afterPayload: Number(addressList[0].payload),
+				afterVolume: Number(addressList[0].volume),
+			})
+
 			for (let i=1;i<addressList.length;i++){
 				await sleep(500);
 				setTimeout(
@@ -45,7 +58,25 @@ function SortableComponent(props) {
 					distanceArr.push(value.distance);
 					durationArr.push(value.duration);
 				}), 3000)
+				if (Number(addressList[i].addressType) === 1){
+					afterPayload = Number(listPayloadVolume[i-1].afterPayload) + Number(addressList[i].payload);
+					afterVolume = Number(listPayloadVolume[i-1].afterVolume) + Number(addressList[i].volume);
+				}
+				else{			
+					afterPayload = Number(listPayloadVolume[i-1].afterPayload) - Number(addressList[i].payload);
+					afterVolume = Number(listPayloadVolume[i-1].afterVolume) - Number(addressList[i].volume);		
+				}
+				let isError = false;
+				if (afterPayload > transportVehicle?.payload || afterVolume > transportVehicle?.volume){
+					isError = true;
+				}
+				listPayloadVolume.push({
+					afterPayload: afterPayload,
+					afterVolume: afterVolume,
+					isError: isError,
+				})
 			}
+			setPayloadVolumeInfo(listPayloadVolume);
 			setDistance(distanceArr);
 			setDuration(durationArr);
 		}
@@ -190,6 +221,38 @@ function SortableComponent(props) {
 			};
 		})
 		if (check ===0 && flag){
+
+			let listPayloadVolume=[];
+			let afterPayload;
+			let afterVolume;
+			if (arrayAddress && arrayAddress.length !==0){
+				// tính toán khối lượng, thể tích tới điểm
+				listPayloadVolume.push({
+					afterPayload: Number(arrayAddress[0].payload),
+					afterVolume: Number(arrayAddress[0].volume),
+				})
+				for (let i=1;i<arrayAddress.length;i++){
+					if (Number(addressList[i].addressType) === 1){
+						afterPayload = Number(listPayloadVolume[i-1].afterPayload) + Number(addressList[i].payload);
+						afterVolume = Number(listPayloadVolume[i-1].afterVolume) + Number(addressList[i].volume);
+					}
+					else{			
+						afterPayload = Number(listPayloadVolume[i-1].afterPayload) - Number(addressList[i].payload);
+						afterVolume = Number(listPayloadVolume[i-1].afterVolume) - Number(addressList[i].volume);		
+					}
+					let isError = false;
+					if (afterPayload > transportVehicle?.payload || afterVolume > transportVehicle?.volume){
+						isError = true;
+					}
+					listPayloadVolume.push({
+						afterPayload: afterPayload,
+						afterVolume: afterVolume,
+						isError: isError,
+					})
+				}
+				setPayloadVolumeInfo(listPayloadVolume);
+			}
+
 			// Nếu ban đầu ở vị trí 0 -> sau sắp xếp giá trị element kế tiếp = 0
 			if (oldIndex===0 && newIndex !==0){
 				// Update vị trí cũ
@@ -291,7 +354,8 @@ function SortableComponent(props) {
 	};
 
 	return (<SortableList 
-				items={addressList} 
+				items={addressList}
+				payloadVolumeInfo={payloadVolumeInfo} 
 				onSortEnd={onSortEnd} 
 				axis={"x"} 
 			/> );
@@ -300,7 +364,7 @@ function SortableComponent(props) {
 
 export {SortableComponent}
 
-const SortableList = SortableContainer(({items}) => {
+const SortableList = SortableContainer(({items, payloadVolumeInfo}) => {
 	// console.log(items, " day la itemmmmmmmmmmmmmm")
   return (
     <div className={"test1"}>
@@ -309,7 +373,8 @@ const SortableList = SortableContainer(({items}) => {
 			key={`item-${index}`} 
 			index={index}
 			stt={index} 
-			value={item} 
+			value={item}
+			payloadVolumeInfo={payloadVolumeInfo[index]} 
 		/>
       ))}
     </div>
@@ -318,13 +383,13 @@ const SortableList = SortableContainer(({items}) => {
 
 const SortableItem = SortableElement((props) =>
 {
-let {value, index, stt} = props
+let {value, index, stt, payloadVolumeInfo} = props
 const getTypeTransportRequirement = (value) => {
 	if (Number(value) === 1) return "Nhận";
 	return "Giao";
 }
 return(
-    <div className="address-element" style={{margin: "10px", cursor: "pointer"}}>
+    <div className={`address-element box box-solid ${payloadVolumeInfo?.isError ? "element-error" : ""}`} style={{margin: "10px", cursor: "pointer"}}>
 		<div>
 			{"STT: "+ (stt+1)}
 		</div>
@@ -335,13 +400,19 @@ return(
 			{"Loai: "+ getTypeTransportRequirement(value.addressType)}
 		</div>
 		<div>
-			{"id: "+ value.transportRequirement?.code}
+			{"ID: "+ value.transportRequirement?.code}
 		</div>
 		<div>
 			{"Trọng lượng: "+ value.payload}
 		</div>
 		<div>
 			{"Thể tích: "+ value.volume}
+		</div>
+		<div>
+			{"Trọng lượng hàng hóa sau khi tới điểm: "+ payloadVolumeInfo?.afterPayload}
+		</div>
+		<div>
+			{"Thể tích hàng hóa sau khi tới điểm: "+ payloadVolumeInfo?.afterVolume}
 		</div>
 		<div>
 			{"Khoảng cách: "+value.distance}

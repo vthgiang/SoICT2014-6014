@@ -20,25 +20,27 @@ export function transportDepartment(state = initialState, action) {
 		case transportDepartmentConstants.GET_ALL_TRANSPORT_DEPARTMENTS_REQUEST:
         case transportDepartmentConstants.CREATE_TRANSPORT_DEPARTMENT_REQUEST:
         case transportDepartmentConstants.GET_USER_BY_ROLE_REQUEST:
-		return {
-                ...state,
-                isLoading: true
-            }
+        case transportDepartmentConstants.DELETE_TRANSPORT_DEPARTMENT_REQUEST:
+            return {
+                    ...state,
+                    isLoading: true
+                }
 		
 		case transportDepartmentConstants.GET_ALL_TRANSPORT_DEPARTMENTS_FAILURE:
         case transportDepartmentConstants.CREATE_TRANSPORT_DEPARTMENT_FAILURE:    
         case transportDepartmentConstants.GET_USER_BY_ROLE_FAILURE:
-		return {
-                ...state,
-                isLoading: false,
-                error: action.error
-            }
+        case transportDepartmentConstants.DELETE_TRANSPORT_DEPARTMENT_FAILURE:        
+            return {
+                    ...state,
+                    isLoading: false,
+                    error: action.error
+                }
 		case transportDepartmentConstants.GET_ALL_TRANSPORT_DEPARTMENTS_SUCCESS:
-        return {
-            ...state,
-            lists: action.payload.data,
-            isLoading: false
-        }
+            return {
+                ...state,
+                lists: action.payload.data,
+                isLoading: false
+            }
         case transportDepartmentConstants.CREATE_TRANSPORT_DEPARTMENT_SUCCESS:
             return {
                 ...state,
@@ -60,6 +62,12 @@ export function transportDepartment(state = initialState, action) {
             return {
                 ...state,
                 listUser: res,
+                isLoading: false
+            }
+        case transportDepartmentConstants.DELETE_TRANSPORT_DEPARTMENT_SUCCESS:
+            return {
+                ...state,
+                lists: state.lists.filter(department => (department?._id !== action.payload?._id)),
                 isLoading: false
             }
 		default:
