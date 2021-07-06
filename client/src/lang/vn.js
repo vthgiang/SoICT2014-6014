@@ -20,6 +20,7 @@ export default {
             add: "Thêm",
             edit: "Sửa",
             delete: "Xóa",
+            delete_option: "Xóa lựa chọn",
             save: "Lưu",
             close: "Đóng",
             accept: "Xác nhận",
