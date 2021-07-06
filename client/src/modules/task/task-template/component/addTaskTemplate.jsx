@@ -14,30 +14,30 @@ import { getStorage } from '../../../../config';
 import ValidationHelper from '../../../../helpers/validationHelper';
 import parse from 'html-react-parser';
 
-function AddTaskTemplate (props) {
+function AddTaskTemplate(props) {
 
     let userId = getStorage("userId")
-        
+
     const [state, setState] = useState({
-            newTemplate: {
-                organizationalUnit: '',
-                name: '',
-                readByEmployees: [],
-                responsibleEmployees: [],
-                accountableEmployees: [],
-                consultedEmployees: [],
-                informedEmployees: [],
-                description: '',
-                creator: userId,
-                numberOfDaysTaken: '',
-                formula: '',
-                priority: 3,
-                taskActions: [],
-                taskInformations: [],
-            },
-            showMore: props.isProcess ? false : true,
-            currentRole: localStorage.getItem('currentRole'),
-        })
+        newTemplate: {
+            organizationalUnit: '',
+            name: '',
+            readByEmployees: [],
+            responsibleEmployees: [],
+            accountableEmployees: [],
+            consultedEmployees: [],
+            informedEmployees: [],
+            description: '',
+            creator: userId,
+            numberOfDaysTaken: '',
+            formula: '',
+            priority: 3,
+            taskActions: [],
+            taskInformations: [],
+        },
+        showMore: props.isProcess ? false : true,
+        currentRole: localStorage.getItem('currentRole'),
+    })
 
     useEffect(() => {
         // props.getDepartment(); // => user.organizationalUnitsOfUser
@@ -45,7 +45,7 @@ function AddTaskTemplate (props) {
         props.getRoleSameDepartment(localStorage.getItem("currentRole")); // => user.roledepartments
         props.getDepartmentsThatUserIsManager(); // => department.departmentsThatUserIsManager
         props.getAllUserInAllUnitsOfCompany(); // => user.usersInUnitsOfCompany
-    },[])
+    }, [])
 
     const handleTaskTemplateName = (e) => {
         let { value } = e.target;
@@ -56,9 +56,9 @@ function AddTaskTemplate (props) {
         newTemplate.name = value;
         newTemplate.errorOnName = message;
         props.onChangeTemplateData(newTemplate);
-        setState({ 
+        setState({
             ...state,
-            newTemplate 
+            newTemplate
         });
     }
 
@@ -135,9 +135,9 @@ function AddTaskTemplate (props) {
         let { value } = e.target;
         newTemplate.priority = value;
         props.onChangeTemplateData(newTemplate);
-        setState({ 
+        setState({
             ...state,
-            newTemplate 
+            newTemplate
         });
     }
 
@@ -184,9 +184,9 @@ function AddTaskTemplate (props) {
         let { newTemplate } = state;
         newTemplate.collaboratedWithOrganizationalUnits = value;
         props.onChangeTemplateData(newTemplate);
-        setState({ 
+        setState({
             ...state,
-            newTemplate 
+            newTemplate
         });
     }
 
@@ -196,7 +196,7 @@ function AddTaskTemplate (props) {
         props.onChangeTemplateData(newTemplate);
         setState({
             ...state,
-            newTemplate 
+            newTemplate
         });
     }
 
@@ -205,9 +205,9 @@ function AddTaskTemplate (props) {
         newTemplate.responsibleEmployees = value;
         props.isProcess && props.handleChangeResponsible(value)
         props.onChangeTemplateData(newTemplate);
-        setState({ 
+        setState({
             ...state,
-            newTemplate 
+            newTemplate
         });
     }
 
@@ -216,9 +216,9 @@ function AddTaskTemplate (props) {
         newTemplate.accountableEmployees = value;
         props.isProcess && props.handleChangeAccountable(value)
         props.onChangeTemplateData(newTemplate);
-        setState({ 
+        setState({
             ...state,
-            newTemplate 
+            newTemplate
         });
     }
 
@@ -226,9 +226,9 @@ function AddTaskTemplate (props) {
         let { newTemplate } = state;
         newTemplate.consultedEmployees = value;
         props.onChangeTemplateData(newTemplate);
-        setState({ 
+        setState({
             ...state,
-            newTemplate 
+            newTemplate
         });
     }
 
@@ -246,9 +246,9 @@ function AddTaskTemplate (props) {
         let { newTemplate } = state;
         newTemplate.taskActions = data;
         props.onChangeTemplateData(newTemplate);
-        setState({ 
+        setState({
             ...state,
-            newTemplate 
+            newTemplate
         })
     }
 
@@ -256,9 +256,9 @@ function AddTaskTemplate (props) {
         let { newTemplate } = state;
         newTemplate.taskInformations = data;
         props.onChangeTemplateData(newTemplate);
-        setState({ 
+        setState({
             ...state,
-            newTemplate 
+            newTemplate
         })
     }
 
@@ -308,7 +308,7 @@ function AddTaskTemplate (props) {
             }
             // props.getChildrenOfOrganizationalUnits(defaultUnit && defaultUnit._id); // => user.usersOfChildrenOrganizationalUnit
         }
-    },[props.id, state.newTemplate])
+    }, [props.id, state.newTemplate])
 
     //dùng cho chức năng lưu task thành template
     useEffect(() => {
@@ -371,7 +371,7 @@ function AddTaskTemplate (props) {
         }
 
         // Khi truy vấn lấy các đơn vị mà user là manager đã có kết quả, và thuộc tính đơn vị của newTemplate chưa được thiết lập
-        if (newTemplate.organizationalUnit === "" && user.organizationalUnitsOfUser) {
+        if (newTemplate.organizationalUnit === "" && user?.organizationalUnitsOfUser) {
             // Tìm unit mà currentRole của user đang thuộc về
             let defaultUnit = user.organizationalUnitsOfUser.find(item =>
                 item.managers.includes(state.currentRole)
@@ -393,7 +393,7 @@ function AddTaskTemplate (props) {
                 // Sẽ cập nhật lại state nên không cần render
             }
         }
-    },[props.savedTaskId, state.newTemplate])
+    }, [props.savedTaskId, state.newTemplate, props?.user.isLoading])
 
     const clickShowMore = () => {
         setState(state => {
@@ -427,7 +427,7 @@ function AddTaskTemplate (props) {
         for (let x in listRoles) {
             for (let i in listRoles[x]) {
                 if (listRole.indexOf(listRoles[x][i]) === -1) {
-                     listRole = listRole.concat(listRoles[x][i]);
+                    listRole = listRole.concat(listRoles[x][i]);
                 }
             }
         }

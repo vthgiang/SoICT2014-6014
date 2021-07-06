@@ -102,11 +102,17 @@ class DatePicker extends Component {
         return false;  // Tự chủ động update (do đã lưu value vào state)
     }
     onChangeDatePicker = (e) => {
-        const { value } = e.target;
+        let { value } = e.target;
+        let valueForm 
+        if (value[value.length-1]==='/'){
+            valueForm = value.slice(0,value.length-1) +'-'
+        } else {
+            valueForm = value
+        }
         this.setState({
-            value: value
+            value: valueForm
         })
-        this.props.onChange(value);
+        this.props.onChange(valueForm);
     }
     render() {
         const { id, disabled = false, defaultValue, style = {} } = this.props;

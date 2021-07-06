@@ -20,6 +20,7 @@ export default {
             add: "Add",
             edit: "Edit",
             delete: "Delete",
+            delete_option: "Delete options",
             save: "Save",
             close: "Close",
             accept: "Accept",
