@@ -34,9 +34,9 @@ function ArrangeOrdinalTransportOneVehicle(props) {
         posMaxPayload: 0,
         posMaxVolume: 0,
     })
-    useEffect(()=> {
-        console.log("okkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk", indexComponent)
-    }, [indexComponent])
+    // useEffect(()=> {
+    //     console.log("okkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk", indexComponent)
+    // }, [indexComponent])
     const [activeMapState, setActiveMapState] = useState();
     /**
      * addressList của component con

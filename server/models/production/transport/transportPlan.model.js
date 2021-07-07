@@ -2,40 +2,40 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const TransportPlanSchema = new Schema({
-    code: {
+    code: { // Mã kế hoạch
         type: String,
         required: true,
     },
-    name: {
+    name: { // Tên kế hoạch
         type: String,
     },
-    creator: {
+    creator: { // Người tạo kế hoạch
         type: Schema.Types.ObjectId,
         ref: 'User',
     },
-    supervisor: {
+    supervisor: { // Người giám sát thực hiện kế hoạch
         type: Schema.Types.ObjectId,
         ref: 'User',
     },
     status: { // Trạng thái kế hoạch hiện tại 1: Cần xếp hàng, xếp lộ trình, 2: Có thể tiến hành, 3: Đang tiến hành, 4: Đã hoàn thành
         type: Number,
     },
-    department: {
+    department: { // Đơn vị vận chuyển có kế hoạch
         type: Schema.Types.ObjectId,
         ref: 'TransportDepartment',
         required: true,
     },
-    transportRequirements: [{
+    transportRequirements: [{ // Danh sách yêu cầu vận chuyển
             type: Schema.Types.ObjectId,
             ref: 'TransportRequirement',
     }],
-    transportVehicles: [{ // phuong tien van chuyen
-        transportVehicle: {
-            type: Schema.Types.ObjectId,
-            ref: 'Asset',
-            // required: true
-        },
-        vehicle: {
+    transportVehicles: [{ // Phân bố xe và nhân viên
+        // transportVehicle: { 
+        //     type: Schema.Types.ObjectId,
+        //     ref: 'Asset',
+        //     // required: true
+        // },
+        vehicle: { // Phương tiện vận chuyển
             type: Schema.Types.ObjectId,
             ref: 'TransportVehicle',
         },
@@ -46,22 +46,22 @@ const TransportPlanSchema = new Schema({
         payload: { // Trọng tải của xe
             type: Number,
         },
-        carriers: [{ // nguoi su dung xe nay
-            carrier: {
+        carriers: [{ // Danh sách nhân viên vận chuyển điều khiển xe
+            carrier: { // Nhân viên
                 type: Schema.Types.ObjectId,
                 ref: 'User',
                 // required: true
             },
-            pos: {
-                type: Number, // Là lái xe => ==1 hay không
+            pos: { // Vị trí: 1 là tài xế
+                type: Number, 
             }
         }]
     }],
-    startTime: {
+    startTime: { // Ngày bắt đầu kế hoạch vận chuyển
         type: Date,
         required: true,
     },
-    endTime: {
+    endTime: { // Ngày kết thúc kế hoạch
         type: Date,
         required: true,
     },

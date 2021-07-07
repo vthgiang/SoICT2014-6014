@@ -62,7 +62,9 @@ class ExampleManagementTable extends Component {
         const { example } = this.props;
         const { exampleName, perPage, page } = this.state;
 
-        this.props.deleteExample(id);
+        this.props.deleteExamples({
+            exampleIds: [id]
+        });
         this.props.getOnlyExampleName({
             exampleName,
             perPage,
@@ -184,7 +186,7 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
     getOnlyExampleName: exampleActions.getOnlyExampleName,
-    deleteExample: exampleActions.deleteExample
+    deleteExamples: exampleActions.deleteExamples
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ExampleManagementTable));

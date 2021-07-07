@@ -103,10 +103,9 @@ exports.editExample = async (req, res) => {
 }
 
 // Xóa Ví dụ
-exports.deleteExample = async (req, res) => {
+exports.deleteExamples = async (req, res) => {
     try {
-        let { id } = req.params;
-        let deletedExample = await ExampleService.deleteExample(req.portal, id);
+        let deletedExample = await ExampleService.deleteExamples(req.portal, req.body.exampleIds);
         if (deletedExample) {
             await Log.info(req.user.email, "DELETED_EXAMPLE", req.portal);
             res.status(200).json({

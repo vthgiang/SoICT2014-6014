@@ -282,7 +282,7 @@ function TransportManageProcess(props) {
    return (
         <DialogModal
             modalID={`modal-detail-process`}
-            title={"Bản đồ"}
+            title={"Chi tiết thực hiện vận chuyển"}
             formID={`modal-detail-process`}
             size={100}
             maxWidth={500}
@@ -317,7 +317,7 @@ function TransportManageProcess(props) {
 
                     <div className="box-body qlcv">
                                 <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                                    <table>
+                                    <table className="transport-process-detail-vehicle">
                                         <tbody>
                                             <tr>
                                                 <td><strong>Mã xe: </strong></td>
@@ -335,7 +335,7 @@ function TransportManageProcess(props) {
                                     </table>                            
                                 </div>
                                 <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                                    <table>
+                                    <table className="transport-process-detail-vehicle">
                                         <tbody>
                                             <tr>
                                                 <td><strong>Tài xế: </strong></td>
@@ -374,7 +374,7 @@ function TransportManageProcess(props) {
                                 </div>
                                             
                                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 container-time-line">
-                                    <table>
+                                    <table className="transport-process-detail-vehicle">
                                         <tbody>
                                             <tr>
                                                 <td><strong>Tiến độ vận chuyển:</strong></td>

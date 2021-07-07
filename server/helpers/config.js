@@ -1438,7 +1438,10 @@ const LINKS = [{
     category: LINK_CATEGORY.TRANSPORT.name,
     roles: [
         ROOT_ROLES.SUPER_ADMIN.name,
-        ROOT_ROLES.ADMIN.name
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.EMPLOYEE.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
+        ROOT_ROLES.MANAGER.name,
     ]
 },
 {
@@ -1447,16 +1450,23 @@ const LINKS = [{
     category: LINK_CATEGORY.TRANSPORT.name,
     roles: [
         ROOT_ROLES.SUPER_ADMIN.name,
-        ROOT_ROLES.ADMIN.name
-    ]
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.EMPLOYEE.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
+        ROOT_ROLES.MANAGER.name,
+    ],
+    components: getComponentsInLink('/manage-transport-plan')
 },
 {
     url: "/manage-transport-schedule",
-    description: "Quản lý lịch vận chuyển",
+    description: "Quản lý lệnh vận chuyển",
     category: LINK_CATEGORY.TRANSPORT.name,
     roles: [
         ROOT_ROLES.SUPER_ADMIN.name,
-        ROOT_ROLES.ADMIN.name
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.EMPLOYEE.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
+        ROOT_ROLES.MANAGER.name,
     ]
 },
 {
@@ -1465,7 +1475,8 @@ const LINKS = [{
     category: LINK_CATEGORY.TRANSPORT.name,
     roles: [
         ROOT_ROLES.SUPER_ADMIN.name,
-        ROOT_ROLES.ADMIN.name
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.MANAGER.name,
     ]
 },
 {
@@ -1474,7 +1485,10 @@ const LINKS = [{
     category: LINK_CATEGORY.TRANSPORT.name,
     roles: [
         ROOT_ROLES.SUPER_ADMIN.name,
-        ROOT_ROLES.ADMIN.name
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.EMPLOYEE.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
+        ROOT_ROLES.MANAGER.name,
     ]
 },
 {
@@ -1492,18 +1506,19 @@ const LINKS = [{
     category: LINK_CATEGORY.TRANSPORT.name,
     roles: [
         ROOT_ROLES.SUPER_ADMIN.name,
-        ROOT_ROLES.ADMIN.name
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.EMPLOYEE.name,
     ]
 },
-{
-    url: "/carrier-all-times-transport-mission",
-    description: "Nhiệm vụ vận chuyển mỗi ngày",
-    category: LINK_CATEGORY.TRANSPORT.name,
-    roles: [
-        ROOT_ROLES.SUPER_ADMIN.name,
-        ROOT_ROLES.ADMIN.name
-    ]
-},
+// {
+//     url: "/carrier-all-times-transport-mission",
+//     description: "Nhiệm vụ vận chuyển mỗi ngày",
+//     category: LINK_CATEGORY.TRANSPORT.name,
+//     roles: [
+//         ROOT_ROLES.SUPER_ADMIN.name,
+//         ROOT_ROLES.ADMIN.name
+//     ]
+// },
 // Quan li du an
 {
     url: '/project/projects-list',

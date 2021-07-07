@@ -7,13 +7,15 @@ import { formatToTimeZoneDate, formatDate } from "../../../../../helpers/formatD
 import ValidationHelper from '../../../../../helpers/validationHelper';
 
 import { LocationMap } from './map/locationMap'
+import { MapContainer } from '../../transportHelper/mapbox/map'
 import { TransportVehicleAndCarrierSelect } from "./transport-plan-edit/transportVehicleAndCarrierSelect"
 
 import { transportPlanActions } from '../redux/actions';
 import { transportDepartmentActions } from '../../transport-department/redux/actions'
 import { transportRequirementsActions } from '../../transport-requirements/redux/actions'
+import { getTypeRequirement, getTransportRequirementStatus } from '../../transportHelper/getTextFromValue'
 
-import {} from './transport-plan.css'
+import './transport-plan.css'
 
 function TransportPlanEditForm(props) {
     let allTransportRequirements;
@@ -143,6 +145,13 @@ function TransportPlanEditForm(props) {
         setFormSchedule({
             ...formSchedule,
             supervisor: value[0],
+        })
+    }
+    
+    const handlePlanNameChange = (e) => {
+        setFormSchedule({
+            ...formSchedule,
+            name: e.target.value,
         })
     }
 
@@ -319,8 +328,9 @@ function TransportPlanEditForm(props) {
                                                         <label>
                                                             Tên kế hoạch <span className="attention"> </span>
                                                         </label>
-                                                        <input type="text" className="form-control" disabled={true} 
+                                                        <input type="text" className="form-control" disabled={false} 
                                                             value={formSchedule.name}
+                                                            onChange={handlePlanNameChange}
                                                         />
                                                     </div>
                                                 </div>
@@ -375,13 +385,16 @@ function TransportPlanEditForm(props) {
                                             {
                                                 (listRequirements && listRequirements.length!==0)
                                                 &&
-                                                <LocationMap 
-                                                    locations = {listSelectedRequirementsLocation}
-                                                    loadingElement={<div style={{height: `100%`}}/>}
-                                                    containerElement={<div style={{height: "45vh", marginTop: '20px'}}/>}
-                                                    mapElement={<div style={{height: `100%`}}/>}
-                                                    defaultZoom={10}
-                                                    defaultCenter={listSelectedRequirementsLocation[0]?.locations}
+                                                // <LocationMap 
+                                                //     locations = {listSelectedRequirementsLocation}
+                                                //     loadingElement={<div style={{height: `100%`}}/>}
+                                                //     containerElement={<div style={{height: "45vh", marginTop: '20px'}}/>}
+                                                //     mapElement={<div style={{height: `100%`}}/>}
+                                                //     defaultZoom={10}
+                                                //     defaultCenter={listSelectedRequirementsLocation[0]?.locations}
+                                                // />
+                                                <MapContainer 
+                                                    nonDirectLocations = {listSelectedRequirementsLocation}
                                                 />
                                             }
                                         </div>
@@ -429,7 +442,7 @@ function TransportPlanEditForm(props) {
                                                     <tr key={index}>
                                                         <td>{index+1}</td>
                                                         <td>{x.code}</td>
-                                                        <td>{x.type}</td>
+                                                        <td>{getTypeRequirement(x.type)}</td>
                                                         <td>{x.fromAddress}</td>
                                                         <td>{x.toAddress}</td>
                                                         <td>{x.createdAt ? formatDate(x.createdAt) : ""}</td>
@@ -443,7 +456,7 @@ function TransportPlanEditForm(props) {
                                                                 ))
                                                             }
                                                         </td>
-                                                        <td>{x.status}</td>
+                                                        <td>{getTransportRequirementStatus(x.status)}</td>
                                                         <td style={{ textAlign: "center" }} className="tooltip-checkbox">
                                                             <span className={"icon "
                                                             +getStatusTickBox(x)

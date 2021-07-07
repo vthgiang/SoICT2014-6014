@@ -171,10 +171,26 @@ export const generatePlanFastestMove = (listRequirement, listPlan, allVehicles, 
     let listCarriersDays = [];
     let numVehiclesDays = [];
     let usableCarriers, usableVehicles;
+    let listAvailableRequirement = [];
+    let listUnavailableRequirement = [];
+    let listCheckAvailableRequirement = new Array(listRequirement.length+5);
+    for (let i=0;i<listRequirement.length;i++){
+        listCheckAvailableRequirement[i] = false;
+    }
     for (let i=0;i<inDay;i++){
         let resultVehicleCarrierUsable = getVehicleCarrierUsable(getNextDay(i), listPlan, allCarriers, allVehicles);
         usableCarriers = resultVehicleCarrierUsable.usableCarriers;
         usableVehicles = resultVehicleCarrierUsable.usableVehicles;
+        // lọc yêu cầu vận chuyển có trọng tải, thế tích xếp được lên xe
+        if (usableVehicles && usableVehicles.length!==0 && listRequirement && listRequirement.length!==0){
+            usableVehicles.map(vehicle => {
+                listRequirement.map((requirement,index) => {
+                    if (Number(requirement.volume) <= Number(vehicle.volume) && Number(requirement.payload) <= Number(vehicle.payload)){
+                        listCheckAvailableRequirement[index] = true;
+                    }
+                })
+            })
+        }
         listVehiclesDays.push(usableVehicles);
         listCarriersDays.push(usableCarriers);
         if (usableVehicles.length > Math.ceil(usableCarriers.length / 2)){
@@ -184,6 +200,17 @@ export const generatePlanFastestMove = (listRequirement, listPlan, allVehicles, 
             numVehiclesDays.push(usableVehicles.length);
         }
     }
+    console.log(listRequirement);
+    console.log(listCheckAvailableRequirement);
+    for (let i=0;i<listRequirement.length;i++){
+        if (listCheckAvailableRequirement[i] === true){
+            listAvailableRequirement.push(listRequirement[i]);
+        }
+        else {
+            listUnavailableRequirement.push(listRequirement[i]);
+        }
+    }
+    listRequirement = listAvailableRequirement;
     for (let i =0; i<inDay;i++){
         day[i] = [];
     }
@@ -226,7 +253,7 @@ export const generatePlanFastestMove = (listRequirement, listPlan, allVehicles, 
         }
     }
     // console.log(saveArrVehicle);
-    return {saveArr, saveArrVehicle, plans};
+    return {saveArr, saveArrVehicle, plans, listUnavailableRequirement};
 }
 
 export const generatePlan = (listRequirement, listPlan, listVehicles, listCarriers) => {

@@ -111,9 +111,11 @@ function TransportRequirementsCreateForm(props) {
         /**
          * Khi tạo mới yêu cầu vận chuyển, đồng thời lấy tọa độ geocode {Lat, Lng} lưu vào db
          */
-        let fromLat, fromLng;
-        let toLat, toLng;
-        if (requirementsForm.info.customer1AddressTransport){
+        let fromLat = requirements?.info?.fromLat;
+        let fromLng = requirements?.info?.fromLng;
+        let toLat = requirements?.info?.fromLat;
+        let toLng = requirements?.info?.fromLng;
+        if (requirementsForm.info?.customer1AddressTransport && !fromLat && !fromLng){
             await getGeocode(requirementsForm.info.customer1AddressTransport).then(
                 (value) => {
                     fromLat = value.lat;
@@ -121,7 +123,7 @@ function TransportRequirementsCreateForm(props) {
                 }
             );
         }
-        if (requirementsForm.info.customer2AddressTransport){
+        if (requirementsForm.info?.customer2AddressTransport && !toLat && !toLng){
             await getGeocode(requirementsForm.info.customer2AddressTransport).then(
                 (value) => {
                     toLat = value.lat;
@@ -129,7 +131,6 @@ function TransportRequirementsCreateForm(props) {
                 }
             );
         }
-        console.log(requirementsForm.goods, " good")
         let data = {
             status: 1,
             code: requirementsForm.code,
@@ -265,7 +266,7 @@ function TransportRequirementsCreateForm(props) {
         if (res && res.length !==0){
             setRequirementsForm({
                 ...requirementsForm,
-                approver: value[0],
+                approver: res[0].approver,
                 department: res[0].department,
             })
         }
@@ -331,10 +332,11 @@ function TransportRequirementsCreateForm(props) {
                                     roleOrganizationalUnit.users.map(user => {
                                         
                                         newApproverList.push({
-                                            value: user.userId?._id,
+                                            value: roleOrganizationalUnit._id,
                                             text: user.userId.name + " - " + roleOrganizationalUnit.name + " - " + item.organizationalUnit?.name,
                                             department: item._id, 
                                             roleOrganizationalUnit: roleOrganizationalUnit._id,
+                                            approver: user.userId?._id,
                                         })
                                     })
                                 }       
@@ -397,6 +399,7 @@ function TransportRequirementsCreateForm(props) {
      * Hàm lấy dữ liệu thông tin khách hàng từ component con
      */
     const callBackGeneralInfo = (value) => {
+        console.log(value)
         setRequirementsForm({
             ...requirementsForm,
             info: value,
@@ -446,7 +449,7 @@ function TransportRequirementsCreateForm(props) {
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <fieldset className="scheduler-border" style={{ height: "100%" }}>
                         <legend className="scheduler-border">Thông tin chung</legend>
-                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12"  style={{padding: "0px"}}>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group`}>
                                     <label>
@@ -462,6 +465,7 @@ function TransportRequirementsCreateForm(props) {
                                     <label>
                                         Người phê duyệt
                                     </label>
+                                        <span className="attention"> * </span>
                                     <SelectBox
                                         id={`select-approver`}
                                         className="form-control select2"
@@ -474,7 +478,7 @@ function TransportRequirementsCreateForm(props) {
                                 </div>
                             </div>
                         </div>
-                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{padding: "0px"}}>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group`}>
                                     <label>

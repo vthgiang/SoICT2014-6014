@@ -47,7 +47,7 @@ export function example1(state = initialState, action) {
         case exampleConstants.DELETE_EXAMPLE_SUCCESS:
             return {
                 ...state,
-                lists: state.lists.filter(example => (example?._id !== action.payload?._id)),
+                lists: state.lists.filter(example => !action.exampleIds.includes(example?._id)),
                 isLoading: false
             }
         case exampleConstants.CREATE_EXAMPLE_SUCCESS:

@@ -10,7 +10,7 @@ router.get('/', auth, TransportDepartmentController.getAllTransportDepartments);
 router.post('/', auth, TransportDepartmentController.createTransportDepartment);
 router.get('/get-user-by-role', auth, TransportDepartmentController.getUserByRole);
 // router.patch('/:id', auth, TransportRequirementController.editTransportRequirement);
-// router.delete('/:id', auth, TransportRequirementController.deleteTransportRequirement);
+router.delete('/:id', auth, TransportDepartmentController.deleteTransportDepartment);
 
 module.exports = router;
 

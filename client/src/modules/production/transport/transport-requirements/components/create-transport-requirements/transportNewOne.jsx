@@ -5,138 +5,205 @@ import { ButtonModal, DialogModal, ErrorLabel, DatePicker, SelectBox } from '../
 import { withTranslate } from 'react-redux-multilingual';
 import ValidationHelper from '../../../../../../helpers/validationHelper';
 
+import { MapContainer } from '../../../transportHelper/mapbox/map'
+import { getGeocode } from '../../../transportHelper/getGeocodeGoong'
+import { getAddressName } from "../../../transportHelper/getAddressNameGoogleMap"
+
 function TransportNewOne(props) {
 
     const { callBackGeneralInfo, curentTransportRequirementDetail} = props;
 
-    const [formInfo, setFormInfo] = useState({
-        customer1: "",
-        customer1Name: "",
-        customer1Phone: "",
-        customer1Email: "",
-        customer1Address: "",
+    const [inputValue, setInputValue] = useState({
+        customer1AddressTransport: "",
+    })
+    // { center: {lat, lng}}
+    const [flyToCenter1, setFlyToCenter1] = useState()
+    const [flyToCenter2, setFlyToCenter2] = useState()
+
+    const [formInfo1, setFormInfo1] = useState({
         customer1AddressTransport: "",
         newOneDetail1: "",
-        
+        fromLat: undefined,
+        fromLng: undefined,
+        isReload1: true,
+    })
 
-        customer2: "",
-        customer2Name: "",
-        customer2Phone: "",
-        customer2Email: "",
-        customer2Address: "",
+    const [formInfo2, setFormInfo2] = useState({
         customer2AddressTransport: "",
         newOneDetail2: "",
-    });
+        toLat: undefined,
+        toLng: undefined,
+        isReload2: true
+    })
 
-    const handleCustomer1Change = (e) => {
-        setFormInfo({
-            ...formInfo,
-            customer1: e.target.value,
-        })
-    }
-    const handleCustomer1NameChange = (e) => {
-        setFormInfo({
-            ...formInfo,
-            customer1Name: e.target.value,
-        })
-    }
-    const handleCustomer1PhoneChange = (e) => {
-        setFormInfo({
-            ...formInfo,
-            customer1Phone: e.target.value,
-        })
-    }
-    const handleCustomer1EmailChange = (e) => {
-        setFormInfo({
-            ...formInfo,
-            customer1Email: e.target.value,
-        })
-    }     
-    const handleCustomer1AddressChange = (e) => {
-        setFormInfo({
-            ...formInfo,
-            customer1Address: e.target.value,
-        })
-    }
+    // time out thoi gian go, het time out goi api lay toa do
+    const [timeOut1, setTimeOut1] = useState();
     const handleCustomer1AddressTransportChange = (e) => {
-        setFormInfo({
-            ...formInfo,
+        setInputValue({
+            ...inputValue,
             customer1AddressTransport: e.target.value,
+        })
+        if (timeOut1){
+            clearTimeout(timeOut1);
+        };
+        let text = e.target.value;
+        let timeOut = setTimeout(() => { 
+            setFormInfo1({
+                ...formInfo1,
+                customer1AddressTransport: text,
+                isReload1: true,
+            })   
+        }, 4000);
+        setTimeOut1(timeOut);
+    }
+
+    const callBackLatLng1 = async(latlng) => {
+        const newAddress = await getAddressName(latlng.lat,latlng.lng)
+        setFlyToCenter1(null);
+        setFormInfo1({
+            ...formInfo1,
+            customer1AddressTransport: newAddress,
+            fromLat: latlng.lat,
+            fromLng: latlng.lng,
+            isReload1: false,
+        });
+        setInputValue({
+            ...inputValue,
+            customer1AddressTransport: newAddress,
         })
     }
     const handlecustomer1DetailChange = (e) => {
-        setFormInfo({
-            ...formInfo,
+        setFormInfo1({
+            ...formInfo1,
             newOneDetail1: e.target.value,
         })
     }
-    const handleCustomer2Change = (e) => {
-        console.log(e.target.value);
-        setFormInfo({
-            ...formInfo,
-            customer2: e.target.value,
-        })
-    }
-    const handleCustomer2NameChange = (e) => {
-        console.log(e.target.value);
-        setFormInfo({
-            ...formInfo,
-            customer2Name: e.target.value,
-        })
-    }
-    const handleCustomer2PhoneChange = (e) => {
-        setFormInfo({
-            ...formInfo,
-            customer2Phone: e.target.value,
-        })
-    }
-    const handleCustomer2EmailChange = (e) => {
-        setFormInfo({
-            ...formInfo,
-            customer2Email: e.target.value,
-        })
-    }     
-    const handleCustomer2AddressChange = (e) => {
-        setFormInfo({
-            ...formInfo,
-            customer2Address: e.target.value,
-        })
-    }
+
+    
+    const [timeOut2, setTimeOut2] = useState();
     const handleCustomer2AddressTransportChange = (e) => {
-        setFormInfo({
-            ...formInfo,
+        setInputValue({
+            ...inputValue,
             customer2AddressTransport: e.target.value,
         })
+        if (timeOut2){
+            clearTimeout(timeOut2);
+        };
+        let text = e.target.value;
+        let timeOut = setTimeout(() => { 
+            setFormInfo2({
+                ...formInfo2,
+                customer2AddressTransport: text,
+                isReload2: true,
+            })   
+        }, 4000);
+        setTimeOut2(timeOut);
     }
+    
+    const callBackLatLng2 = async(latlng) => {
+        const newAddress = await getAddressName(latlng.lat,latlng.lng)
+        setFlyToCenter2(null);
+        console.log(newAddress);
+        setFormInfo2({
+            ...formInfo2,
+            customer2AddressTransport: newAddress,
+            toLat: latlng.lat,
+            toLng: latlng.lng,
+            isReload2: false,
+        });
+        setInputValue({
+            ...inputValue,
+            customer2AddressTransport: newAddress,
+        })
+    }
+
     const handlecustomer2DetailChange = (e) => {
-        setFormInfo({
-            ...formInfo,
+        setFormInfo2({
+            ...formInfo2,
             newOneDetail2: e.target.value,
         })
     }
     
+    // useEffect(() => {
+    //     if (curentTransportRequirementDetail){
+    //         setFormInfo({
+    //             ...formInfo,
+    //             customer1AddressTransport: curentTransportRequirementDetail.fromAddress,
+    //             customer2AddressTransport: curentTransportRequirementDetail.toAddress,
+    //         })
+    //     }
+    // }, [curentTransportRequirementDetail])
+
     useEffect(() => {
-        if (curentTransportRequirementDetail){
-            setFormInfo({
-                ...formInfo,
-                customer1AddressTransport: curentTransportRequirementDetail.fromAddress,
-                customer2AddressTransport: curentTransportRequirementDetail.toAddress,
-            })
+        callBackGeneralInfo({...formInfo1, ...formInfo2});
+    }, [formInfo1, formInfo2])
+
+    useEffect(() => {
+        if (formInfo1.customer1AddressTransport && formInfo1.isReload1){
+            getGeocode(formInfo1.customer1AddressTransport).then(
+                (value) => {
+                    // if (value.lat !== -1 && value.lng !== -1){
+                        setFormInfo1({
+                            ...formInfo1,
+                            fromLat: value.lat,
+                            fromLng: value.lng
+                        });
+                        
+                        setFlyToCenter1({
+                            center: {
+                                lat: value.lat,
+                                lng: value.lng,
+                            }
+                        })
+                    // }
+
+                }
+            );      
+            // console.log("okjasdasdasd")              
         }
-    }, [curentTransportRequirementDetail])
+    }, [formInfo1.customer1AddressTransport])
 
     useEffect(() => {
-        callBackGeneralInfo(formInfo);
-    }, [formInfo])
+        if (formInfo2.customer2AddressTransport && formInfo2.isReload2){
+            getGeocode(formInfo2.customer2AddressTransport).then(
+                (value) => {
+                    // if (value.lat !== -1 && value.lng !== -1){
+                        setFormInfo2({
+                            ...formInfo2,
+                            toLat: value.lat,
+                            toLng: value.lng
+                        });
+                        
+                        setFlyToCenter2({
+                            center: {
+                                lat: value.lat,
+                                lng: value.lng,
+                            }
+                        })
+                    // }
 
+                }
+            );             
+        }
+    }, [formInfo2.customer2AddressTransport])
 
     return (
         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6" style={{ padding: 0}}>
+            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6" style={{ paddingLeft: 0}}>
                 <fieldset className="scheduler-border" style={{ height: "100%" }}>
-                    <legend className="scheduler-border">Thông tin gửi</legend>
-                    {/* <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ padding: 0 }}>
-                    </div> */}
+                    <legend className="scheduler-border">Thông tin giao hàng</legend>                    
+                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div className={`form-group`}>
+                            <label>
+                                Chi tiết
+                            </label>
+                            <textarea type="text" className="form-control"
+                                value={formInfo1.newOneDetail1}
+                                onChange={handlecustomer1DetailChange}
+                            />
+                        </div>
+                    </div>   
+
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div className={`form-group`}>
                             <label>
@@ -144,31 +211,49 @@ function TransportNewOne(props) {
                                 <span className="attention"> * </span>
                             </label>
                             <textarea type="text" className="form-control"
-                                value={formInfo.customer1AddressTransport}
+                                value={inputValue.customer1AddressTransport}
                                 onChange={handleCustomer1AddressTransportChange}
                             />
                         </div>
                     </div>  
+
+                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <MapContainer
+                            locations = {[
+                                {
+                                    name: "S",
+                                    location: {
+                                        lat: formInfo1?.fromLat,
+                                        lng: formInfo1?.fromLng
+                                    }
+                                }
+                            ]}
+                            callBackLatLng={callBackLatLng1}
+                            mapHeight={"300px"}
+                            indexComponent={"mapFromAddress"}
+                            flyToCenter={flyToCenter1}
+                        /> 
+                    </div>                   
+                </fieldset>
+                
+            </div>
+
+            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6" style={{ paddingRight: 0}}>
+                <fieldset className="scheduler-border" style={{ height: "100%" }}>
+
+                    <legend className="scheduler-border">Thông tin nhận hàng</legend>
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div className={`form-group`}>
                             <label>
                                 Chi tiết
                             </label>
                             <textarea type="text" className="form-control"
-                                value={formInfo.newOneDetail1}
-                                onChange={handlecustomer1DetailChange}
+                                value={formInfo2.newOneDetail2}
+                                onChange={handlecustomer2DetailChange}
                             />
                         </div>
-                    </div>                      
-                </fieldset>
-                
-            </div>
+                    </div>
 
-            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6" style={{ padding: 0}}>
-                <fieldset className="scheduler-border" style={{ height: "100%" }}>
-                    <legend className="scheduler-border">Thông tin nhận</legend>
-                    {/* <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ padding: 0 }}>
-                    </div> */}
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div className={`form-group`}>
                             <label>
@@ -176,22 +261,29 @@ function TransportNewOne(props) {
                                 <span className="attention"> * </span>
                             </label>
                             <textarea type="text" className="form-control"
-                                value={formInfo.customer2AddressTransport}
+                                value={inputValue.customer2AddressTransport}
                                 onChange={handleCustomer2AddressTransportChange}
                             />
                         </div>
-                    </div>       
+                    </div> 
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                        <div className={`form-group`}>
-                            <label>
-                                Chi tiết
-                            </label>
-                            <textarea type="text" className="form-control"
-                                value={formInfo.newOneDetail2}
-                                onChange={handlecustomer2DetailChange}
-                            />
-                        </div>
-                    </div>                    
+                        <MapContainer
+                            locations = {[
+                                {
+                                    name: "D",                                    
+                                    location: {
+                                        lat: formInfo2?.toLat,
+                                        lng: formInfo2?.toLng
+                                    }
+                                }
+                            ]}
+                            callBackLatLng={callBackLatLng2}
+                            mapHeight={"300px"}
+                            indexComponent={"mapToAddress"}
+                            flyToCenter={flyToCenter2}
+                        /> 
+                    </div>
+
                 </fieldset>
 
             </div>
@@ -201,8 +293,7 @@ function TransportNewOne(props) {
 }
 
 function mapState(state) {
-    const example = state.example1;
-    return { example }
+    return {}
 }
 
 const actions = {

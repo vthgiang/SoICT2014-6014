@@ -6923,9 +6923,9 @@ const initSampleCompanyDB = async () => {
             goods: [
                 {
                     good: listGood[2]._id,
-                    quantity: 100,
-                    volume: 100,
-                    payload: 100
+                    quantity: 10,
+                    volume: 2,
+                    payload: 10
                 }
             ],
             timeRequests: [
@@ -6934,8 +6934,8 @@ const initSampleCompanyDB = async () => {
                     description: "",
                 }
             ],
-            volume: 100,
-            payload: 100,
+            volume: 2,
+            payload: 10,
             approver: users[2]._id,
             department: transportDepartment[0]._id,
         },
@@ -6960,7 +6960,7 @@ const initSampleCompanyDB = async () => {
                 {
                     good: listGood[1]._id,
                     quantity: 10,
-                    volume: 10,
+                    volume: 2,
                     payload: 10
                 }
             ],
@@ -6970,7 +6970,7 @@ const initSampleCompanyDB = async () => {
                     description: ""
                 }
             ],
-            volume: 10,
+            volume: 2,
             payload: 10,
             approver: users[2]._id,
             department: transportDepartment[0]._id,
@@ -6996,8 +6996,8 @@ const initSampleCompanyDB = async () => {
                 {
                     good: listGood[3]._id,
                     quantity: 10,
-                    volume: 10,
-                    payload: 10
+                    volume: 3,
+                    payload: 20
                 }
             ],
             timeRequests: [
@@ -7006,8 +7006,8 @@ const initSampleCompanyDB = async () => {
                     description: ""
                 }
             ],
-            volume: 10,
-            payload: 10,
+            volume: 3,
+            payload: 20,
             approver: users[2]._id,
             department: transportDepartment[0]._id,
         },
@@ -7031,9 +7031,9 @@ const initSampleCompanyDB = async () => {
             goods: [
                 {
                     good: listGood[3]._id,
-                    quantity: 10,
-                    volume: 100,
-                    payload: 100
+                    quantity: 15,
+                    volume: 5,
+                    payload: 25
                 }
             ],
             timeRequests: [
@@ -7042,8 +7042,8 @@ const initSampleCompanyDB = async () => {
                     description: "",
                 }
             ],
-            volume: 100,
-            payload: 100,
+            volume: 5,
+            payload: 25,
             approver: users[2]._id,
             department: transportDepartment[0]._id,
         },
@@ -7104,8 +7104,8 @@ const initSampleCompanyDB = async () => {
                 {
                     good: listGood[3]._id,
                     quantity: 10,
-                    volume: 100,
-                    payload: 100
+                    volume: 6,
+                    payload: 40
                 }
             ],
             timeRequests: [
@@ -7114,8 +7114,8 @@ const initSampleCompanyDB = async () => {
                     description: "",
                 }
             ],
-            volume: 100,
-            payload: 100,
+            volume: 6,
+            payload: 40,
             approver: users[2]._id,
             department: transportDepartment[0]._id,
         },
@@ -7140,8 +7140,8 @@ const initSampleCompanyDB = async () => {
                 {
                     good: listGood[3]._id,
                     quantity: 10,
-                    volume: 100,
-                    payload: 100
+                    volume: 4,
+                    payload: 30
                 }
             ],
             timeRequests: [
@@ -7150,8 +7150,8 @@ const initSampleCompanyDB = async () => {
                     description: "",
                 }
             ],
-            volume: 100,
-            payload: 100,
+            volume: 4,
+            payload: 30,
             approver: users[2]._id,
             department: transportDepartment[0]._id,
         },

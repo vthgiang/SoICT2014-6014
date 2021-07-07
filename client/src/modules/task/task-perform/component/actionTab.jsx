@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2'
@@ -26,13 +26,17 @@ import { formatDate } from '../../../../helpers/formatDate';
 import { convertTime } from '../../../../helpers/stringMethod';
 import { htmlToText } from 'html-to-text';
 import { formatTime } from '../../../project/projects/components/functionHelper';
-class ActionTab extends Component {
-    constructor(props) {
+function ActionTab(props) {
+    let idUser = getStorage("userId");
+    const { tasks, performtasks, notifications, user, auth, translate, role, id } = props;
+
+    const [state, setState] = useState(() => initState())
+    const [hover1, setHover1] = useState({})
+    function initState() {
         let idUser = getStorage("userId");
-        super(props);
         let lang = getStorage("lang")
         moment.locale(lang)
-        this.state = {
+        return {
             filterLogAutoStopped: 'all',
             taskActions: [],
             currentUser: idUser,
@@ -121,106 +125,108 @@ class ActionTab extends Component {
             descriptionFile: "",
             deleteFile: '',
 
-            addLogTimeDate: this.formatDate(Date.now()),
+            addLogTimeDate: formatDate(Date.now()),
             showBoxAddLogTimer: false,
             checkDateAddLog: false,
             showPopupApproveAllAction: false,
         };
-        this.hover = [];
-        this.contentTaskComment = [];
-        this.contentCommentOfAction = [];
-        this.newContentCommentOfAction = [];
-        this.contentAction = [];
-        this.newContentAction = [];
-        this.newContentTaskComment = [];
-        this.contentCommentOfTaskComment = [];
-        this.newContentCommentOfTaskComment = [];
-        this.descriptionFile = []
     }
-    componentDidMount = () => {
-        const { id } = this.props;
+    const subtasks = tasks.subtasks;
+    const {
+        showEvaluations, selected, comment, editComment, showChildComment, editAction, action, taskActions,
+        editTaskComment, showEditTaskFile, evaluations, actionImportanceLevelAll, ratingAll,
+        editCommentOfTaskComment, valueRating, currentUser, hover, fileTaskEdited, showSort,
+        showFile, deleteFile, taskFiles, newActionEdited, newCommentOfActionEdited, newAction,
+        newCommentOfAction, newTaskCommentEdited, newCommentOfTaskComment, newTaskComment, newCommentOfTaskCommentEdited, showBoxAddLogTimer, addLogStartTime, addLogEndTime
+    } = state;
 
-        this.props.getAllPreceedingTasks(id);
+    // error message
+    const { errorDateAddLog, errorStartTimeAddLog, errorEndTimeAddLog } = state;
+    const checkUserId = obj => obj.creator._id === currentUser;
+
+    if (performtasks?.task && notifications?.associatedData?.value) {
+        if (notifications.associatedData.dataType === "realtime_tasks") {
+            props.refreshData(notifications.associatedData.value);
+        }
+        notifications.associatedData = {}; // reset lại ... 
     }
 
-    static getDerivedStateFromProps(props, prevState) {
-        const { performtasks, notifications } = props;
-        let state = {};
-        if (notifications && notifications.associatedData && performtasks && performtasks.task && notifications.associatedData.value) {
-            if (notifications.associatedData.dataType === "realtime_tasks") {
-                props.refreshData(notifications.associatedData.value);
-            }
-            notifications.associatedData = {}; // reset lại ... 
+    useEffect(() => {
+        setState({
+            ...state,
+            id: props.id,
+            showBoxAddLogTimer: false,
+            checkDateAddLog: false,
+        })
+        if (props.id) {
+            props.getTimesheetLogs(props.id);
+            props.getTimerStatusTask(props.id);
+            props.getSubTask(props.id);
+            props.getAllPreceedingTasks(props.id);
+            props.getTaskLog(props.id);
         }
 
-        if (performtasks.task) {
-            return {
-                ...prevState,
+    }, [props.id])
+
+    useEffect(() => {
+        if (props.id) {
+            props.getTaskById(props.id)
+        }
+    }, [props.auth.user.avatar])
+
+    useEffect(() => {
+        if (performtasks?.task?.taskActions) {
+            setState({
+                ...state,
                 taskActions: performtasks.task.taskActions
-            }
-        }
-        else {
-            return null;
-        }
-    }
-
-
-    shouldComponentUpdate = (nextProps, nextState) => {
-        if (nextProps.id !== this.state.id) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    id: nextProps.id,
-                    showBoxAddLogTimer: false,
-                    checkDateAddLog: false,
-                }
             })
-            this.props.getTimesheetLogs(nextProps.id);
-            this.props.getTimerStatusTask(nextProps.id);
-            this.props.getSubTask(nextProps.id);
-            this.props.getTaskLog(nextProps.id);
-            return true;
         }
-        if (nextProps.auth.user.avatar !== this.props.auth.user.avatar) {
-            this.props.getTaskById(nextProps.id)
-            return true;
-        }
-        return true;
-    }
+    }, [JSON.stringify(performtasks?.task?.taskActions)])
 
-    setHover = async (id, value, type) => {
+    const setHover = async (id, value, type) => {
+        console.log("value, type", value, type)
         if (type === "rating") {
             if (isNaN(value)) {
-                this.hover[`${id}-rating`] = null;
+                setHover1({
+                    ...hover1,
+                    [`${id}-rating`]: null
+                })
             } else {
-                this.hover[`${id}-rating`] = value;
+                setHover1({
+                    ...hover1,
+                    [`${id}-rating`]: value
+                })
             }
         } else {
             if (isNaN(value)) {
-                this.hover[`${id}-actionImportanceLevel`] = null;
+                setHover1({
+                    ...hover1,
+                    [`${id}-actionImportanceLevel`]: null
+                })
             } else {
-                this.hover[`${id}-actionImportanceLevel`] = value;
+                setHover1({
+                    ...hover1,
+                    [`${id}-actionImportanceLevel`]: value
+                })
             }
         }
 
-        await this.setState(state => {
-            return {
-                ...state,
-                hover: {
-                    ...state.hover,
-                    id: value
-                }
+        await setState({
+            ...state,
+            hover: {
+                ...state.hover,
+                id: value
             }
         })
     }
 
-    setValueRating = async (actionId, newValue) => {
-        let newEvaluations = this.state.evaluations
+    const setValueRating = async (actionId, newValue) => {
+        let newEvaluations = state.evaluations
         newEvaluations[actionId] = {
             ...newEvaluations[actionId],
             rating: newValue,
         }
-        await this.setState(state => {
+        await setState(state => {
             return {
                 ...state,
                 valueRating: newValue,
@@ -229,13 +235,13 @@ class ActionTab extends Component {
         })
     }
 
-    setActionImportanceLevel = (actionId, value) => {
-        let newEvaluations = this.state.evaluations
+    const setActionImportanceLevel = (actionId, value) => {
+        let newEvaluations = state.evaluations
         newEvaluations[actionId] = {
             ...newEvaluations[actionId],
             actionImportanceLevel: value
         }
-        this.setState(state => {
+        setState(state => {
             return {
                 ...state,
                 evaluations: newEvaluations
@@ -243,8 +249,8 @@ class ActionTab extends Component {
         })
     }
 
-    evaluationTaskAction = (evaAction, taskId, role, firstTime) => {
-        let newEvaluations = this.state.evaluations
+    const evaluationTaskAction = (evaAction, taskId, role, firstTime) => {
+        let newEvaluations = state.evaluations
         let rating = newEvaluations?.[evaAction?._id]?.rating ?? evaAction?.rating;
         newEvaluations[evaAction?._id] = {
             ...newEvaluations[evaAction?._id],
@@ -254,61 +260,61 @@ class ActionTab extends Component {
             type: "evaluation",
             role: role,
         }
-        this.props.evaluationAction(evaAction?._id, taskId, newEvaluations?.[evaAction?._id])
-        this.setState(state => {
+        props.evaluationAction(evaAction?._id, taskId, newEvaluations?.[evaAction?._id])
+        setState(state => {
             return {
                 ...state,
-                showEvaluations: [...this.state.showEvaluations, evaAction?._id]
+                showEvaluations: [...state.showEvaluations, evaAction?._id]
             }
         })
     }
-    handleChangeContent = async (content) => {
-        await this.setState(state => {
+    const handleChangeContent = async (content) => {
+        await setState(state => {
             return {
                 ...state,
                 selected: content
             }
         })
     }
-    handleComment = async (event) => {
+    const handleComment = async (event) => {
         event.preventDefault();
-        await this.setState(state => {
+        await setState(state => {
             return {
                 ...state,
                 comment: !state.comment
             }
         })
     }
-    handleAction = async (event) => {
+    const handleAction = async (event) => {
         event.preventDefault();
-        await this.setState(state => {
+        await setState(state => {
             return {
                 ...state,
                 action: !state.action
             }
         })
     }
-    handleShowChildComment = async (id) => {
+    const handleShowChildComment = async (id) => {
         let a;
-        if (this.state.showChildComment.some(obj => obj === id)) {
-            a = this.state.showChildComment.filter(x => x !== id);
-            this.setState(state => {
+        if (state.showChildComment.some(obj => obj === id)) {
+            a = state.showChildComment.filter(x => x !== id);
+            setState(state => {
                 return {
                     ...state,
                     showChildComment: a
                 }
             })
         } else {
-            this.setState(state => {
+            setState(state => {
                 return {
                     ...state,
-                    showChildComment: [...this.state.showChildComment, id]
+                    showChildComment: [...state.showChildComment, id]
                 }
             })
         }
     }
-    handleEditCommentOfTaskComment = async (childComment) => {
-        await this.setState(state => {
+    const handleEditCommentOfTaskComment = async (childComment) => {
+        await setState(state => {
             return {
                 ...state,
                 editCommentOfTaskComment: childComment._id,
@@ -319,15 +325,15 @@ class ActionTab extends Component {
             }
         })
     }
-    handleCloseModal = (id) => {
+    const handleCloseModal = (id) => {
         let element = document.getElementsByTagName("BODY")[0];
         element.classList.remove("modal-open");
         let modal = document.getElementById(`modelPerformTask${id}`);
         modal.classList.remove("in");
         modal.style = "display: none;";
     }
-    submitComment = async (actionId, taskId) => {
-        let { newCommentOfAction } = this.state;
+    const submitComment = async (actionId, taskId) => {
+        let { newCommentOfAction } = state;
         const data = new FormData();
 
         if (actionId) {
@@ -337,9 +343,9 @@ class ActionTab extends Component {
                 data.append("files", x);
             })
             if (newCommentOfAction[`${actionId}`].description && newCommentOfAction[`${actionId}`].creator) {
-                this.props.createActionComment(taskId, actionId, data);
+                props.createActionComment(taskId, actionId, data);
             }
-            this.setState(state => {
+            setState(state => {
                 state.newCommentOfAction[`${actionId}`] = {
                     description: "",
                     files: [],
@@ -354,8 +360,8 @@ class ActionTab extends Component {
     }
 
     //Thêm mới hoạt động
-    submitAction = async (taskId, index) => {
-        let { newAction } = this.state;
+    const submitAction = async (taskId, index) => {
+        let { newAction } = state;
 
         const data = new FormData();
 
@@ -366,10 +372,10 @@ class ActionTab extends Component {
             data.append("files", x);
         })
         if (newAction.creator && newAction.description) {
-            this.props.createTaskAction(taskId, data);
+            props.createTaskAction(taskId, data);
         }
         // Reset state cho việc thêm mới action
-        this.setState(state => {
+        setState(state => {
             return {
                 ...state,
                 filePaste: [],
@@ -384,8 +390,8 @@ class ActionTab extends Component {
     }
 
     //Thêm mới bình luận của công việc
-    submitTaskComment = async (taskId) => {
-        let { newTaskComment } = this.state;
+    const submitTaskComment = async (taskId) => {
+        let { newTaskComment } = state;
 
         const data = new FormData();
         data.append("creator", newTaskComment.creator);
@@ -394,10 +400,10 @@ class ActionTab extends Component {
             data.append("files", x);
         })
         if (newTaskComment.description && newTaskComment.creator) {
-            this.props.createTaskComment(taskId, data);
+            props.createTaskComment(taskId, data);
         }
         // Reset state cho việc thêm mới bình luận
-        await this.setState(state => {
+        await setState(state => {
             return {
                 ...state,
                 newTaskComment: {
@@ -410,8 +416,8 @@ class ActionTab extends Component {
             }
         })
     }
-    submitCommentOfTaskComment = async (commentId, taskId) => {
-        let { newCommentOfTaskComment } = this.state;
+    const submitCommentOfTaskComment = async (commentId, taskId) => {
+        let { newCommentOfTaskComment } = state;
         const data = new FormData();
 
         data.append("creator", newCommentOfTaskComment[`${commentId}`].creator);
@@ -420,10 +426,10 @@ class ActionTab extends Component {
             data.append("files", x);
         })
         if (newCommentOfTaskComment[`${commentId}`].description && newCommentOfTaskComment[`${commentId}`].creator) {
-            this.props.createCommentOfTaskComment(commentId, taskId, data);
+            props.createCommentOfTaskComment(commentId, taskId, data);
         }
         // Reset state cho việc thêm mới bình luận
-        this.setState(state => {
+        setState(state => {
             state.newCommentOfTaskComment[`${commentId}`] = {
                 description: "",
                 files: [],
@@ -436,19 +442,19 @@ class ActionTab extends Component {
         })
     }
 
-    handleUploadFile = (taskId, creator) => {
+    const handleUploadFile = (taskId, creator) => {
         const data = new FormData();
-        let { taskFiles } = this.state;
+        let { taskFiles } = state;
         taskFiles.files.forEach(x => {
             data.append("files", x)
         })
         data.append("description", taskFiles.description)
         data.append("creator", creator);
         if (taskFiles.files.length > 0) {
-            this.props.uploadFile(taskId, data);
+            props.uploadFile(taskId, data);
         }
         // Reset state cho việc thêm mới bình luận
-        this.setState(state => {
+        setState(state => {
             return {
                 ...state,
                 taskFiles: {
@@ -464,8 +470,8 @@ class ActionTab extends Component {
 
     }
 
-    handleEditFileTask = (file) => {
-        this.setState(state => {
+    const handleEditFileTask = (file) => {
+        setState(state => {
             return {
                 ...state,
                 showEditTaskFile: file._id,
@@ -476,8 +482,8 @@ class ActionTab extends Component {
         });
     }
 
-    handleEditActionComment = (actionComent) => {
-        this.setState(state => {
+    const handleEditActionComment = (actionComent) => {
+        setState(state => {
             return {
                 ...state,
                 editComment: actionComent._id,
@@ -489,8 +495,8 @@ class ActionTab extends Component {
         })
     }
 
-    handleEditAction = async (item) => {
-        this.setState(state => {
+    const handleEditAction = async (item) => {
+        setState(state => {
             return {
                 ...state,
                 editAction: item._id,
@@ -502,8 +508,8 @@ class ActionTab extends Component {
         })
     }
 
-    handleEditTaskComment = (taskComment) => {
-        this.setState(state => {
+    const handleEditTaskComment = (taskComment) => {
+        setState(state => {
             return {
                 ...state,
                 editTaskComment: taskComment._id,
@@ -515,9 +521,9 @@ class ActionTab extends Component {
         })
     }
 
-    handleSaveEditAction = async (e, id, description, taskId) => {
+    const handleSaveEditAction = async (e, id, description, taskId) => {
         e.preventDefault();
-        let { newActionEdited } = this.state;
+        let { newActionEdited } = state;
         let data = new FormData();
         newActionEdited.files.forEach(x => {
             data.append("files", x)
@@ -530,9 +536,9 @@ class ActionTab extends Component {
         }
         data.append("creator", newActionEdited.creator)
         if (newActionEdited.description || newActionEdited.files) {
-            this.props.editTaskAction(id, data, taskId);
+            props.editTaskAction(id, data, taskId);
         }
-        this.setState(state => {
+        setState(state => {
             return {
                 ...state,
                 editAction: "",
@@ -545,24 +551,24 @@ class ActionTab extends Component {
             }
         })
     }
-    convertDateTime = (date, time) => {
+    const convertDateTime = (date, time) => {
         let splitter = date.split("-");
         let strDateTime = `${splitter[2]}/${splitter[1]}/${splitter[0]} ${time}`;
         return new Date(strDateTime);
     }
 
-    handleSaveChangeDateAction = (action) => {
+    const handleSaveChangeDateAction = (action) => {
         let data = new FormData();
-        let createdDateAction = this.convertDateTime(action.dateCreatedAt, action.timeCreatedAt)
+        let createdDateAction = convertDateTime(action.dateCreatedAt, action.timeCreatedAt)
         data.append("type", "edit-time")
         data.append("creator", getStorage("userId"))
         data.append("dateCreatedAt", createdDateAction)
-        this.props.editTaskAction(action.id, data, action.taskId);
+        props.editTaskAction(action.id, data, action.taskId);
     }
 
-    handleSaveEditTaskComment = async (e, taskId, commentId, description) => {
+    const handleSaveEditTaskComment = async (e, taskId, commentId, description) => {
         e.preventDefault();
-        let { newTaskCommentEdited } = this.state;
+        let { newTaskCommentEdited } = state;
         let data = new FormData();
         newTaskCommentEdited.files.forEach(x => {
             data.append("files", x)
@@ -574,9 +580,9 @@ class ActionTab extends Component {
         }
         data.append("creator", newTaskCommentEdited.creator)
         if (newTaskCommentEdited.description || newTaskCommentEdited.files) {
-            this.props.editTaskComment(taskId, commentId, data);
+            props.editTaskComment(taskId, commentId, data);
         }
-        await this.setState(state => {
+        await setState(state => {
             return {
                 ...state,
                 newTaskCommentEdited: {
@@ -591,9 +597,9 @@ class ActionTab extends Component {
     }
 
     //Lưu hoạt động
-    handleSaveEditActionComment = async (e, taskId, actionId, commentId, description) => {
+    const handleSaveEditActionComment = async (e, taskId, actionId, commentId, description) => {
         e.preventDefault();
-        let { newCommentOfActionEdited } = this.state;
+        let { newCommentOfActionEdited } = state;
         let data = new FormData();
         newCommentOfActionEdited.files.forEach(x => {
             data.append("files", x)
@@ -605,9 +611,9 @@ class ActionTab extends Component {
         }
         data.append("creator", newCommentOfActionEdited.creator)
         if (newCommentOfActionEdited.description || newCommentOfActionEdited.files) {
-            await this.props.editActionComment(taskId, actionId, commentId, data);
+            await props.editActionComment(taskId, actionId, commentId, data);
         }
-        this.setState(state => {
+        setState(state => {
             return {
                 ...state,
                 newCommentOfActionEdited: {
@@ -621,9 +627,9 @@ class ActionTab extends Component {
         })
     }
 
-    handleSaveEditCommentOfTaskComment = async (e, commentId, taskId, description) => {
+    const handleSaveEditCommentOfTaskComment = async (e, commentId, taskId, description) => {
         e.preventDefault();
-        let { newCommentOfTaskCommentEdited } = this.state;
+        let { newCommentOfTaskCommentEdited } = state;
         let data = new FormData();
         newCommentOfTaskCommentEdited.files.forEach(x => {
             data.append("files", x)
@@ -635,10 +641,10 @@ class ActionTab extends Component {
         }
         data.append("creator", newCommentOfTaskCommentEdited.creator)
         if (newCommentOfTaskCommentEdited.description || newCommentOfTaskCommentEdited.files) {
-            this.props.editCommentOfTaskComment(commentId, taskId, data);
+            props.editCommentOfTaskComment(commentId, taskId, data);
         }
 
-        await this.setState(state => {
+        await setState(state => {
             return {
                 ...state,
                 newCommentOfTaskCommentEdited: {
@@ -652,9 +658,9 @@ class ActionTab extends Component {
         })
     }
 
-    handleSaveEditTaskFile = async (e, description, documentId, taskId) => {
+    const handleSaveEditTaskFile = async (e, description, documentId, taskId) => {
         e.preventDefault();
-        let { fileTaskEdited } = this.state;
+        let { fileTaskEdited } = state;
         let data = new FormData();
         fileTaskEdited.files.forEach(x => {
             data.append("files", x)
@@ -666,10 +672,10 @@ class ActionTab extends Component {
         }
         data.append("creator", fileTaskEdited.creator)
         if (fileTaskEdited.description || fileTaskEdited.files) {
-            this.props.editDocument(documentId, taskId, data);
+            props.editDocument(documentId, taskId, data);
         }
 
-        await this.setState(state => {
+        await setState(state => {
             return {
                 ...state,
                 fileTaskEdited: {
@@ -684,15 +690,15 @@ class ActionTab extends Component {
     }
 
 
-    handleConfirmAction = async (e, actionId, userId, taskId) => {
+    const handleConfirmAction = async (e, actionId, userId, taskId) => {
         e.preventDefault();
-        this.props.confirmAction(userId, actionId, taskId)
+        props.confirmAction(userId, actionId, taskId)
     }
 
-    handleChange = (event) => {
+    const handleChange = (event) => {
 
         const textareaLineHeight = 13;
-        const { minRows, maxRows } = this.state;
+        const { minRows, maxRows } = state;
         const previousRows = event.target.rows;//3
         event.target.rows = minRows; // reset number of rows in textarea 
         const currentRows = ~~(event.target.scrollHeight / textareaLineHeight);
@@ -704,14 +710,14 @@ class ActionTab extends Component {
             event.target.scrollTop = event.target.scrollHeight;
         }
 
-        this.setState({
+        setState({
             value: event.target.value,
             rows: currentRows < maxRows ? currentRows : maxRows,
         });
     }
 
-    onActionFilesChange = (files) => {
-        this.setState(state => {
+    const onActionFilesChange = (files) => {
+        setState(state => {
             return {
                 ...state,
                 newAction: {
@@ -722,8 +728,8 @@ class ActionTab extends Component {
         })
     }
 
-    onEditActionFilesChange = (files) => {
-        this.setState(state => {
+    const onEditActionFilesChange = (files) => {
+        setState(state => {
             return {
                 ...state,
                 newActionEdited: {
@@ -733,8 +739,8 @@ class ActionTab extends Component {
             }
         })
     }
-    onEditCommentOfTaskCommentFilesChange = async (files) => {
-        this.setState(state => {
+    const onEditCommentOfTaskCommentFilesChange = async (files) => {
+        setState(state => {
             return {
                 ...state,
                 newCommentOfTaskCommentEdited: {
@@ -744,8 +750,8 @@ class ActionTab extends Component {
             }
         });
     }
-    onEditTaskCommentFilesChange = (files) => {
-        this.setState(state => {
+    const onEditTaskCommentFilesChange = (files) => {
+        setState(state => {
             return {
                 ...state,
                 newTaskCommentEdited: {
@@ -756,8 +762,8 @@ class ActionTab extends Component {
         });
     }
 
-    onTaskCommentFilesChange = (files) => {
-        this.setState(state => {
+    const onTaskCommentFilesChange = (files) => {
+        setState(state => {
             return {
                 ...state,
                 newTaskComment: {
@@ -768,8 +774,8 @@ class ActionTab extends Component {
         })
     }
 
-    onCommentFilesChange = (files, actionId) => {
-        this.setState(state => {
+    const onCommentFilesChange = (files, actionId) => {
+        setState(state => {
             state.newCommentOfAction[`${actionId}`] = {
                 ...state.newCommentOfAction[`${actionId}`],
                 files: files
@@ -779,8 +785,8 @@ class ActionTab extends Component {
             }
         })
     }
-    onEditCommentOfActionFilesChange = (files) => {
-        this.setState(state => {
+    const onEditCommentOfActionFilesChange = (files) => {
+        setState(state => {
             return {
                 ...state,
                 newCommentOfActionEdited: {
@@ -790,8 +796,8 @@ class ActionTab extends Component {
             }
         })
     }
-    onCommentOfTaskCommentFilesChange = (commentId, files) => {
-        this.setState(state => {
+    const onCommentOfTaskCommentFilesChange = (commentId, files) => {
+        setState(state => {
             state.newCommentOfTaskComment[`${commentId}`] = {
                 ...state.newCommentOfTaskComment[`${commentId}`],
                 files: files
@@ -799,8 +805,8 @@ class ActionTab extends Component {
             return { ...state, }
         })
     }
-    onTaskFilesChange = (files) => {
-        this.setState(state => {
+    const onTaskFilesChange = (files) => {
+        setState(state => {
             return {
                 ...state,
                 taskFiles: {
@@ -811,66 +817,66 @@ class ActionTab extends Component {
         })
     }
 
-    onFilesError = (error, file) => {
+    const onFilesError = (error, file) => {
     }
 
-    filesRemoveOne = (file) => {
-        this.refs.filesAddAction.removeFile(file)
-    }
+    // const filesRemoveOne = (file) => {
+    //     refs.filesAddAction.removeFile(file)
+    // }
 
-    filesRemoveAll = () => {
-        this.refs.filesAddAction.removeFiles()
-    }
+    // const filesRemoveAll = () => {
+    //     refs.filesAddAction.removeFiles()
+    // }
 
-    requestDownloadFile = (e, path, fileName) => {
+    const requestDownloadFile = (e, path, fileName) => {
         e.preventDefault();
-        this.props.downloadFile(path, fileName);
+        props.downloadFile(path, fileName);
     }
 
-    handleShowFile = (id) => {
+    const handleShowFile = (id) => {
         let a;
-        let { showFile } = this.state
+        let { showFile } = state
         if (showFile.some(obj => obj === id)) {
             a = showFile.filter(x => x !== id);
-            this.setState(state => {
+            setState(state => {
                 return {
                     ...state,
                     showFile: a
                 }
             })
         } else {
-            this.setState(state => {
+            setState(state => {
                 return {
                     ...state,
-                    showFile: [...this.state.showFile, id]
+                    showFile: [...state.showFile, id]
                 }
             })
         }
     }
 
-    handleShowEvaluations = (id) => {
+    const handleShowEvaluations = (id) => {
         let a;
-        let { showEvaluations } = this.state;
+        let { showEvaluations } = state;
         if (showEvaluations.some(obj => obj === id)) {
             a = showEvaluations.filter(x => x !== id);
-            this.setState(state => {
+            setState(state => {
                 return {
                     ...state,
                     showEvaluations: a
                 }
             })
         } else {
-            this.setState(state => {
+            setState(state => {
                 return {
                     ...state,
-                    showEvaluations: [...this.state.showEvaluations, id]
+                    showEvaluations: [...state.showEvaluations, id]
                 }
             })
         }
     }
 
-    handleDeleteFile = async (fileId, fileName, actionId, type) => {
-        let { performtasks, translate } = this.props
+    const handleDeleteFile = async (fileId, fileName, actionId, type) => {
+        let { performtasks, translate } = props
         Swal.fire({
             html: `<div style="max-width: 100%; max-height: 100%" >${translate("task.task_perform.question_delete_file")} ${fileName} ? <div>`,
             showCancelButton: true,
@@ -878,10 +884,10 @@ class ActionTab extends Component {
             confirmButtonText: `Đồng ý`,
         }).then((result) => {
             if (result.isConfirmed) {
-                this.save(performtasks?.task?._id)
+                save(performtasks?.task?._id)
             }
         })
-        await this.setState(state => {
+        await setState(state => {
             return {
                 ...state,
                 deleteFile: {
@@ -894,32 +900,32 @@ class ActionTab extends Component {
         });
     }
 
-    save = (taskId) => {
-        let { deleteFile } = this.state
+    const save = (taskId) => {
+        let { deleteFile } = state
         if (deleteFile.type === "action") {
-            this.props.deleteFileAction(deleteFile.fileId, deleteFile.actionId, taskId, deleteFile.type);
+            props.deleteFileAction(deleteFile.fileId, deleteFile.actionId, taskId, deleteFile.type);
         } else if (deleteFile.type === "commentofaction") {
-            this.props.deleteFileCommentOfAction(deleteFile.fileId, deleteFile.actionId, taskId, deleteFile.type);
+            props.deleteFileCommentOfAction(deleteFile.fileId, deleteFile.actionId, taskId, deleteFile.type);
         } else if (deleteFile.type === "taskcomment") {
-            this.props.deleteFileTaskComment(deleteFile.fileId, deleteFile.actionId, taskId, deleteFile.type);
+            props.deleteFileTaskComment(deleteFile.fileId, deleteFile.actionId, taskId, deleteFile.type);
         } else if (deleteFile.type === "commentoftaskcomment") {
-            this.props.deleteFileChildTaskComment(deleteFile.fileId, deleteFile.actionId, taskId, deleteFile.type);
+            props.deleteFileChildTaskComment(deleteFile.fileId, deleteFile.actionId, taskId, deleteFile.type);
         } else if (deleteFile.type === "task") {
-            this.props.deleteFileTask(deleteFile.fileId, deleteFile.actionId, taskId)
+            props.deleteFileTask(deleteFile.fileId, deleteFile.actionId, taskId)
         }
     }
 
-    pressEnter = (event, taskId, index) => {
+    const pressEnter = (event, taskId, index) => {
         let code = event.keyCode || event.which;
         if (code === 13 && !event.shiftKey) {
-            this.submitAction(taskId, index)
+            submitAction(taskId, index)
         }
         if (code == 13 && !event.shiftKey) {
             event.preventDefault();
         }
     }
-    onEditFileTask = (files) => {
-        this.setState(state => {
+    const onEditFileTask = (files) => {
+        setState(state => {
             return {
                 ...state,
                 fileTaskEdited: {
@@ -930,7 +936,7 @@ class ActionTab extends Component {
         });
     }
 
-    isImage = (src) => {
+    const isImage = (src) => {
         let string = src.split(".")
         let image = ['jpg', 'jpeg', 'png', 'tiff', 'gif']
         if (image.indexOf(string[string.length - 1]) !== -1) {
@@ -940,23 +946,23 @@ class ActionTab extends Component {
         }
     }
 
-    showSort = async () => {
-        let { taskActions, showSort } = this.state
+    const handleShowSort = async () => {
+        let { taskActions, showSort } = state
         if (showSort) {
-            this.setState({ showSort: false });
+            setState({ showSort: false });
         } else {
-            this.setState({ showSort: true });
+            setState({ showSort: true });
         }
 
     }
 
-    sort = (index, type) => {
+    const sort = (index, type) => {
         let a = []
-        let { taskActions } = this.state
+        let { taskActions } = state
         let item = taskActions[index];
         taskActions.splice(index, 1);
         taskActions.splice(type === "up" ? index - 1 : index + 1, 0, item);
-        this.setState(state => {
+        setState(state => {
             return {
                 ...state,
                 taskActions: taskActions
@@ -964,16 +970,16 @@ class ActionTab extends Component {
         });
     }
 
-    cancelSort = () => {
-        let { taskActions } = this.state
+    const cancelSort = () => {
+        let { taskActions } = state
         taskActions.sort(function (a, b) {
             return a.sort - b.sort;
         });
-        this.setState({ taskActions: taskActions, showSort: false });
+        setState({ taskActions: taskActions, showSort: false });
     }
 
-    saveSort = async (taskId) => {
-        let { taskActions } = this.state
+    const saveSort = async (taskId) => {
+        let { taskActions } = state
         let i
         let arrayActions = []
         for (i = 0; i < taskActions.length; i++) {
@@ -981,15 +987,15 @@ class ActionTab extends Component {
             delete arrayActions[i]._id
         }
 
-        this.props.sortActions(taskId, arrayActions)
-        this.setState({ showSort: false });
+        props.sortActions(taskId, arrayActions)
+        setState({ showSort: false });
     }
 
-    setSrc = (src) => {
-        this.setState({ src: src });
+    const setSrc = (src) => {
+        setState({ src: src });
     }
 
-    convertTime = (ms) => {
+    const convertTime = (ms) => {
         if (!ms) return '00:00:00';
         let hour = Math.floor(ms / (60 * 60 * 1000));
         let minute = Math.floor((ms - hour * 60 * 60 * 1000) / (60 * 1000));
@@ -998,8 +1004,8 @@ class ActionTab extends Component {
         return `${hour > 9 ? hour : `0${hour}`}:${minute > 9 ? minute : `0${minute}`}:${second > 9 ? second : `0${second}`}`;
     }
 
-    getRoleNameInTask = (value) => {
-        let { translate } = this.props;
+    const getRoleNameInTask = (value) => {
+        let { translate } = props;
         switch (value) {
             case 'responsible':
                 return <span style={{ fontSize: 10 }}>[ {translate('task.task_management.responsible')} ]</span>
@@ -1016,82 +1022,82 @@ class ActionTab extends Component {
         }
     }
 
-    filterLogAutoStopped = (e) => {
-        this.setState({
+    const filterLogAutoStopped = (e) => {
+        setState({
             filterLogAutoStopped: e.target.value
         })
     }
 
-    checkValidateDate = (start, end) => {
+    const checkValidateDate = (start, end) => {
         let mStart = moment(start);
         let mEnd = moment(end);
         return mEnd.isAfter(mStart);
     }
 
     // Bấm giờ công việc 
-    handleChangeDateAddLog = (value) => {
-        const { translate } = this.props;
+    const handleChangeDateAddLog = (value) => {
+        const { translate } = props;
         const DateSplit = value.split("-");
         let addLogTimeDate = DateSplit[2] + '-' + DateSplit[1] + '-' + DateSplit[0];
 
         let { message } = ValidationHelper.validateEmpty(translate, value);
-        const checkDateAddLog = this.checkValidateDate(this.formatDate(Date.now()), addLogTimeDate);
+        const checkDateAddLog = checkValidateDate(formatDate(Date.now()), addLogTimeDate);
         if (checkDateAddLog)
             message = "Không được chọn ngày trong tương lai";
 
-        this.setState({
-            ...this.state,
+        setState({
+            ...state,
             addLogTimeDate,
             errorDateAddLog: message,
             checkDateAddLog,
         })
     }
 
-    handleChangeDateAddStartTime = (value) => {
-        const { translate } = this.props;
+    const handleChangeDateAddStartTime = (value) => {
+        const { translate } = props;
         let { message } = ValidationHelper.validateEmpty(translate, value);
-        this.setState({
-            ...this.state,
+        setState({
+            ...state,
             addLogStartTime: value,
             errorStartTimeAddLog: message,
         })
     }
 
-    getDefaultValueStartTime = (value) => {
-        this.setState({
-            ...this.state,
+    const getDefaultValueStartTime = (value) => {
+        setState({
+            ...state,
             addLogStartTime: value,
         })
     }
 
-    handleChangeDateAddEndTime = (value) => {
-        const { translate } = this.props;
+    const handleChangeDateAddEndTime = (value) => {
+        const { translate } = props;
         let { message } = ValidationHelper.validateEmpty(translate, value);
-        this.setState({
-            ...this.state,
+        setState({
+            ...state,
             addLogEndTime: value,
             errorEndTimeAddLog: message
         })
     }
 
-    getDefaultValueEndTime = (value) => {
-        this.setState({
-            ...this.state,
+    const getDefaultValueEndTime = (value) => {
+        setState({
+            ...state,
             addLogEndTime: value,
         })
     }
 
-    handleChangeAddLogDescription = (e) => {
+    const handleChangeAddLogDescription = (e) => {
         const { value } = e.target;
-        this.setState({
-            ...this.state,
+        setState({
+            ...state,
             addLogDescription: value,
         })
     }
 
-    saveAddLogTime = () => {
-        const { performtasks } = this.props;
-        let { addLogTimeDate, addLogStartTime, addLogEndTime, addLogDescription } = this.state;
+    const saveAddLogTime = () => {
+        const { performtasks } = props;
+        let { addLogTimeDate, addLogStartTime, addLogEndTime, addLogDescription } = state;
         let startAt, stopAt;
         let { startDate, endDate } = performtasks.task;
 
@@ -1114,7 +1120,7 @@ class ActionTab extends Component {
             autoStopped: 3, // 3: add log timer
         };
         // Check kho cho phép add log timer trong tương lại (thời gian lớn hơn thời điểm hiện tại)
-        if (this.checkValidateDate(new Date(), stopAt)) {
+        if (checkValidateDate(new Date(), stopAt)) {
             Swal.fire({
                 title: 'Không được chỉ định thời gian kết thúc bấm giờ trong tương lai ',
                 type: 'warning',
@@ -1141,7 +1147,7 @@ class ActionTab extends Component {
             }
             else {
                 // Check thời gian kết thúc phải sau thời gian bắt đầu
-                if (!this.checkValidateDate(startAt, stopAt)) {
+                if (!checkValidateDate(startAt, stopAt)) {
                     Swal.fire({
                         title: 'Thời gian kết thúc phải sau thời gian bắt đầu',
                         type: 'warning',
@@ -1149,9 +1155,9 @@ class ActionTab extends Component {
                         confirmButtonText: "Đóng",
                     })
                 } else {
-                    this.props.stopTimer(performtasks.task._id, timer);
-                    this.setState({
-                        ...this.state,
+                    props.stopTimer(performtasks.task._id, timer);
+                    setState({
+                        ...state,
                         showBoxAddLogTimer: false,
                         addLogDescription: "",
                     })
@@ -1160,7 +1166,7 @@ class ActionTab extends Component {
         }
     }
 
-    formatDate = (date) => {
+    function formatDate(date) {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -1177,9 +1183,9 @@ class ActionTab extends Component {
         return [year, month, day].join('-');
     }
 
-    isFormValidated = () => {
-        const { addLogTimeDate, addLogStartTime, addLogEndTime, checkDateAddLog } = this.state;
-        const { translate } = this.props;
+    const isFormValidated = () => {
+        const { addLogTimeDate, addLogStartTime, addLogEndTime, checkDateAddLog } = state;
+        const { translate } = props;
 
         if (!ValidationHelper.validateEmpty(translate, addLogTimeDate).status
             || !ValidationHelper.validateEmpty(translate, addLogStartTime).status
@@ -1189,29 +1195,30 @@ class ActionTab extends Component {
     }
 
 
-    togglePopupApproveAllAction = () => {
-        this.setState({
-            ...this.state,
-            showPopupApproveAllAction: !this.state.showPopupApproveAllAction,
+    const togglePopupApproveAllAction = () => {
+        setState({
+            ...state,
+            showPopupApproveAllAction: !state.showPopupApproveAllAction,
         })
     }
 
-    setValueRatingApproveAll = (value) => {
-        this.setState({
-            ...this.state,
+    const setValueRatingApproveAll = (value) => {
+        setState({
+            ...state,
             ratingAll: value
         })
     }
 
-    setActionImportanceLevelAll = (value) => {
-        this.setState({
-            ...this.state,
+    const setActionImportanceLevelAll = (value) => {
+        setState({
+            ...state,
             actionImportanceLevelAll: value
         })
     }
 
-    evaluationAllTaskAction = (taskId, taskActions) => {
-        const { actionImportanceLevelAll, ratingAll } = this.state
+    const evaluationAllTaskAction = (taskId, taskActions) => {
+        console.log('taskActions', taskActions)
+        const { actionImportanceLevelAll, ratingAll, evaluations } = state
         let evaluation = [], showEvaluations = [];
 
         taskActions.forEach((obj, index) => {
@@ -1223,19 +1230,25 @@ class ActionTab extends Component {
             }]
             showEvaluations = [...showEvaluations, obj._id]
         })
+        let newEvaluationState = evaluations
+        Object.keys(newEvaluationState).forEach((key) => {
+            newEvaluationState[key].actionImportanceLevel = actionImportanceLevelAll
+            newEvaluationState[key].rating = ratingAll
+        })
 
-        this.setState({
-            ...this.state,
+        setState({
+            ...state,
             showEvaluations,
-            showPopupApproveAllAction: !this.state.showPopupApproveAllAction,
+            showPopupApproveAllAction: !state.showPopupApproveAllAction,
+            evaluations: newEvaluationState
 
-        }, () => {
-            this.hover["all-action"] = 0;
-            this.props.evaluationAllAction(taskId, evaluation)
-        });
+        })
+        hover1["all-action"] = 0;
+        props.evaluationAllAction(taskId, evaluation)
+
     }
 
-    handleShowTime = (timeSheetLog) => {
+    const handleShowTime = (timeSheetLog) => {
         if (timeSheetLog && timeSheetLog.length > 0) {
             timeSheetLog = timeSheetLog.filter(x => x.acceptLog === true);
             const totalDuration = timeSheetLog.reduce((accumulator, currentValue) => {
@@ -1247,18 +1260,18 @@ class ActionTab extends Component {
         }
     }
 
-    getCreatorId = (creator) => {
+    const getCreatorId = (creator) => {
         if (!creator)
             return
         if (creator && typeof (creator) === 'object') return creator._id;
         else return creator;
     }
 
-    showDetailTimer = (nameAction, timeSheetLogs) => {
+    const showDetailTimer = (nameAction, timeSheetLogs) => {
         nameAction = htmlToText(nameAction);
         let result = [];
         timeSheetLogs.reduce((res, value) => {
-            const creatorId = this.getCreatorId(value?.creator);
+            const creatorId = getCreatorId(value?.creator);
 
             if (!res[creatorId]) {
                 res[creatorId] = { id: creatorId, duration: 0, creatorName: value.creator.name };
@@ -1281,14 +1294,14 @@ class ActionTab extends Component {
         })
     }
 
-    showFilePreview = async (data) => {
-        await this.setState({
+    const showFilePreview = async (data) => {
+        await setState({
             currentFilepri: data,
         });
         window.$('#modal-file-preview').modal('show');
     }
 
-    checkTypeFile = (data) => {
+    const checkTypeFile = (data) => {
         if (typeof data === 'string' || data instanceof String) {
             let index = data.lastIndexOf(".");
             let typeFile = data.substring(index + 1, data.length);
@@ -1300,1176 +1313,1160 @@ class ActionTab extends Component {
         else return false;
     }
 
-    render() {
-        let task, informations, statusTask, documents, actionComments, taskComments, logTimer, logs;
-        let idUser = getStorage("userId");
-        const { tasks, performtasks, user, auth, translate, role, id } = this.props;
-        const subtasks = tasks.subtasks;
-        const {
-            showEvaluations, selected, comment, editComment, showChildComment, editAction, action, taskActions,
-            editTaskComment, showEditTaskFile, evaluations, actionImportanceLevelAll, ratingAll,
-            editCommentOfTaskComment, valueRating, currentUser, hover, fileTaskEdited, showSort,
-            showFile, deleteFile, taskFiles, newActionEdited, newCommentOfActionEdited, newAction,
-            newCommentOfAction, newTaskCommentEdited, newCommentOfTaskComment, newTaskComment, newCommentOfTaskCommentEdited, showBoxAddLogTimer, addLogStartTime, addLogEndTime
-        } = this.state;
+    let task, informations, statusTask, documents, actionComments, taskComments, logTimer, logs;
+    if (typeof performtasks.task !== 'undefined' && performtasks.task !== null) {
+        task = performtasks.task;
+        taskComments = task.taskComments;
+        documents = task.documents
+    }
+    if (performtasks.logtimer) {
+        logTimer = performtasks.logtimer;
+    }
+    if (performtasks.logs) {
+        logs = performtasks.logs;
+    };
 
-        // error message
-        const { errorDateAddLog, errorStartTimeAddLog, errorEndTimeAddLog } = this.state;
-        const checkUserId = obj => obj.creator._id === currentUser;
+    switch (state.filterLogAutoStopped) {
+        case 'auto':
+            logTimer = logTimer.filter(item => item.autoStopped === 2)
+            break;
+        case 'hand':
+            logTimer = logTimer.filter(item => item.autoStopped === 1)
+            break;
+        case 'addlog':
+            logTimer = logTimer.filter(item => item.autoStopped === 3)
+            break;
+        default:
+            break;
+    }
+    console.log("state", state)
+    console.log("hover1", hover1)
+    return (
+        <div>
+            {
+                state.currentFilepri &&
+                <FilePreview
+                    file={state.currentFilepri}
+                />
+            }
+            <div className="nav-tabs-custom" style={{ boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none" }}>
+                <ul className="nav nav-tabs">
+                    <li className="active"><a href="#taskAction" onClick={() => handleChangeContent("taskAction")} data-toggle="tab">{translate("task.task_perform.actions")} ({taskActions && taskActions.length})</a></li>
+                    <li><a href="#taskComment" onClick={() => handleChangeContent("actionComment")} data-toggle="tab">{translate("task.task_perform.communication")} ({taskComments && taskComments.length})</a></li>
+                    <li><a href="#documentTask" onClick={() => handleChangeContent("documentTask")} data-toggle="tab">{translate("task.task_perform.documents")} ({documents && documents.length})</a></li>
+                    <li><a href="#logTimer" onClick={() => handleChangeContent("logTimer")} data-toggle="tab">{translate("task.task_perform.timesheetlogs")} ({logTimer && logTimer.length})</a></li>
+                    <li><a href="#subTask" onClick={() => handleChangeContent("subTask")} data-toggle="tab">{translate("task.task_perform.subtasks")} ({subtasks && subtasks.length})</a></li>
+                    <li><a href="#historyLog" onClick={() => handleChangeContent("historyLog")} data-toggle="tab">{translate("task.task_perform.change_history")} ({logs && logs.length})</a></li>
+                    {/* Tab quy trình cho công việc theo quy trình */}
+                    {(task && task.process) && <li><a href="#process" onClick={() => handleChangeContent("process")} data-toggle="tab">{translate("task.task_perform.change_process")} </a></li>}
 
-        if (typeof performtasks.task !== 'undefined' && performtasks.task !== null) {
-            task = performtasks.task;
-            taskComments = task.taskComments;
-            documents = task.documents
-        }
-        if (performtasks.logtimer) {
-            logTimer = performtasks.logtimer;
-        }
-        if (performtasks.logs) {
-            logs = performtasks.logs;
-        };
+                    {/** Điều kiện hiển thị tab dữ liệu vào */
+                        task && task.preceedingTasks && task.preceedingTasks.length !== 0 &&
+                        <li><a href="#incoming-data" onClick={() => handleChangeContent("incoming-data")} data-toggle="tab">{translate("task.task_perform.change_incoming")}</a></li>
+                    }
 
-        switch (this.state.filterLogAutoStopped) {
-            case 'auto':
-                logTimer = logTimer.filter(item => item.autoStopped === 2)
-                break;
-            case 'hand':
-                logTimer = logTimer.filter(item => item.autoStopped === 1)
-                break;
-            case 'addlog':
-                logTimer = logTimer.filter(item => item.autoStopped === 3)
-                break;
-            default:
-                break;
-        }
+                    {/** Điều kiện hiển thị tab dữ liệu ra */
+                        task && task.followingTasks && task.followingTasks.length !== 0 &&
+                        <li><a href="#outgoing-data" onClick={() => handleChangeContent("outgoing-data")} data-toggle="tab">{translate("task.task_perform.change_outgoing")}</a></li>
+                    }
+                </ul>
+                <div className="tab-content">
+                    <div className={selected === "taskAction" ? "active tab-pane" : "tab-pane"} id="taskAction">
 
-        return (
-            <div>
-                {
-                    this.state.currentFilepri &&
-                    <FilePreview
-                        file={this.state.currentFilepri}
-                    />
-                }
-                <div className="nav-tabs-custom" style={{ boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none" }}>
-                    <ul className="nav nav-tabs">
-                        <li className="active"><a href="#taskAction" onClick={() => this.handleChangeContent("taskAction")} data-toggle="tab">{translate("task.task_perform.actions")} ({taskActions && taskActions.length})</a></li>
-                        <li><a href="#taskComment" onClick={() => this.handleChangeContent("actionComment")} data-toggle="tab">{translate("task.task_perform.communication")} ({taskComments && taskComments.length})</a></li>
-                        <li><a href="#documentTask" onClick={() => this.handleChangeContent("documentTask")} data-toggle="tab">{translate("task.task_perform.documents")} ({documents && documents.length})</a></li>
-                        <li><a href="#logTimer" onClick={() => this.handleChangeContent("logTimer")} data-toggle="tab">{translate("task.task_perform.timesheetlogs")} ({logTimer && logTimer.length})</a></li>
-                        <li><a href="#subTask" onClick={() => this.handleChangeContent("subTask")} data-toggle="tab">{translate("task.task_perform.subtasks")} ({subtasks && subtasks.length})</a></li>
-                        <li><a href="#historyLog" onClick={() => this.handleChangeContent("historyLog")} data-toggle="tab">{translate("task.task_perform.change_history")} ({logs && logs.length})</a></li>
-                        {/* Tab quy trình cho công việc theo quy trình */}
-                        {(task && task.process) && <li><a href="#process" onClick={() => this.handleChangeContent("process")} data-toggle="tab">{translate("task.task_perform.change_process")} </a></li>}
-
-                        {/** Điều kiện hiển thị tab dữ liệu vào */
-                            task && task.preceedingTasks && task.preceedingTasks.length !== 0 &&
-                            <li><a href="#incoming-data" onClick={() => this.handleChangeContent("incoming-data")} data-toggle="tab">{translate("task.task_perform.change_incoming")}</a></li>
+                        {/* Thêm hoạt động cho công việc*/}
+                        {role === "responsible" && task && !showSort &&
+                            <React.Fragment  >
+                                <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
+                                <ContentMaker
+                                    idQuill={`add-action-${id}`}
+                                    inputCssClass="text-input-level1" controlCssClass="tool-level1 row"
+                                    onFilesChange={onActionFilesChange}
+                                    onFilesError={onFilesError}
+                                    files={newAction.files}
+                                    text={newAction.descriptionDefault}
+                                    placeholder={role === "responsible" ? translate("task.task_perform.result") : translate("task.task_perform.enter_action")}
+                                    submitButtonText={role === "responsible" ? translate("general.add") : translate("task.task_perform.create_action")}
+                                    onTextChange={(value, imgs) => {
+                                        setState(state => {
+                                            return { ...state, newAction: { ...state.newAction, description: value, descriptionDefault: null } }
+                                        })
+                                    }}
+                                    onSubmit={(e) => { submitAction(task._id, taskActions.length) }}
+                                />
+                            </React.Fragment>
                         }
 
-                        {/** Điều kiện hiển thị tab dữ liệu ra */
-                            task && task.followingTasks && task.followingTasks.length !== 0 &&
-                            <li><a href="#outgoing-data" onClick={() => this.handleChangeContent("outgoing-data")} data-toggle="tab">{translate("task.task_perform.change_outgoing")}</a></li>
-                        }
-                    </ul>
-                    <div className="tab-content">
-                        <div className={selected === "taskAction" ? "active tab-pane" : "tab-pane"} id="taskAction">
 
-                            {/* Thêm hoạt động cho công việc*/}
-                            {role === "responsible" && task && !showSort &&
-                                <React.Fragment  >
-                                    <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
-                                    <ContentMaker
-                                        idQuill={`add-action-${id}`}
-                                        inputCssClass="text-input-level1" controlCssClass="tool-level1 row"
-                                        onFilesChange={this.onActionFilesChange}
-                                        onFilesError={this.onFilesError}
-                                        files={newAction.files}
-                                        text={newAction.descriptionDefault}
-                                        placeholder={role === "responsible" ? translate("task.task_perform.result") : translate("task.task_perform.enter_action")}
-                                        submitButtonText={role === "responsible" ? translate("general.add") : translate("task.task_perform.create_action")}
-                                        onTextChange={(value, imgs) => {
-                                            this.setState(state => {
-                                                return { ...state, newAction: { ...state.newAction, description: value, descriptionDefault: null } }
-                                            })
-                                        }}
-                                        onSubmit={(e) => { this.submitAction(task._id, taskActions.length) }}
-                                    />
-                                </React.Fragment>
-                            }
-
-
-                            {typeof taskActions !== 'undefined' && taskActions.length !== 0 ?
-                                <ShowMoreShowLess
-                                    id={`description${id}`}
-                                    classShowMoreLess='tool-level1'
-                                    styleShowMoreLess={{ display: "inline-block", marginBotton: 15 }}
-                                >
-                                    {
-                                        // Hiển thị hoạt động của công việc
-                                        (taskActions).map((item, index) => {
-                                            let listImage = item.files.map((elem) => this.isImage(elem.name) ? elem.url : -1).filter(url => url !== -1);
-                                            return (
-                                                <div key={item._id} className={index > 3 ? "hide-component" : ""}>
-                                                    {item.creator ?
-                                                        <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + item.creator.avatar)} alt="User Image" /> :
-                                                        <div className="user-img-level1" />
-                                                    }
-                                                    {editAction !== item._id && // khi chỉnh sửa thì ẩn action hiện tại đi
-                                                        <React.Fragment>
-                                                            <div className="content-level1" data-width="100%">
-                                                                {/* Tên người tạo hoạt động */}
-                                                                <div style={{ display: 'flex', fontWeight: 'bold', justifyContent: 'space-between' }}>
-                                                                    {
-                                                                        item.creator && <a style={{ cursor: "pointer" }}>{item.creator?.name} </a>
-                                                                    }
-                                                                    {
-                                                                        item.creator && <a className="pull-right" style={{ cursor: 'pointer' }} onClick={() => this.showDetailTimer(item.description, item.timesheetLogs)}>{this.handleShowTime(item.timesheetLogs)}</a>
-                                                                    }
-                                                                </div>
-                                                                <div>
-                                                                    {
-                                                                        item.name && <b style={{ display: 'flex', marginTop: '4px' }}>{item.name} </b>
-                                                                    }
-                                                                    {item?.description?.split('\n')?.map((item, idx) => (
-                                                                        <div key={idx}>
-                                                                            {parse(item)}
-                                                                        </div>
-                                                                    ))
-                                                                    }
-                                                                </div>
-
-                                                                <div className="btn-group pull-right">
-                                                                    {(role === 'responsible' && item.creator && showSort === false && task) &&
-                                                                        <React.Fragment>
-                                                                            <span data-toggle="dropdown">
-                                                                                <i className="fa fa-ellipsis-h"></i>
-                                                                            </span>
-                                                                            <ul className="dropdown-menu">
-                                                                                <li><a style={{ cursor: "pointer" }} onClick={() => this.handleEditAction(item)} >{translate("task.task_perform.edit_action")}</a></li>
-                                                                                <li><a style={{ cursor: "pointer" }} onClick={() => this.props.deleteTaskAction(item._id, task._id)} >{translate("task.task_perform.delete_action")}</a></li>
-                                                                            </ul>
-                                                                        </React.Fragment>
-                                                                    }
-                                                                    {showSort === true && (role === 'responsible' || role === 'accountable') &&
-                                                                        <div className="sort-action">
-                                                                            {index !== 0 && <a style={{ marginTop: index === taskActions.length - 1 ? "10px" : "0px" }} onClick={() => this.sort(index, "up")}><i className="glyphicon glyphicon-arrow-up"></i> </a>}
-                                                                            {index !== taskActions.length - 1 && <a style={{ marginTop: index === 0 ? "13px" : "0px" }} onClick={() => this.sort(index, "down")}><i className="glyphicon glyphicon-arrow-down"></i> </a>}
-                                                                        </div>
-                                                                    }
-
-                                                                </div>
+                        {typeof taskActions !== 'undefined' && taskActions.length !== 0 ?
+                            <ShowMoreShowLess
+                                id={`description${id}`}
+                                classShowMoreLess='tool-level1'
+                                styleShowMoreLess={{ display: "inline-block", marginBotton: 15 }}
+                            >
+                                {
+                                    // Hiển thị hoạt động của công việc
+                                    (taskActions).map((item, index) => {
+                                        let listImage = item.files.map((elem) => isImage(elem.name) ? elem.url : -1).filter(url => url !== -1);
+                                        return (
+                                            <div key={item._id} className={index > 3 ? "hide-component" : ""}>
+                                                {item.creator ?
+                                                    <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + item.creator.avatar)} alt="User Image" /> :
+                                                    <div className="user-img-level1" />
+                                                }
+                                                {editAction !== item._id && // khi chỉnh sửa thì ẩn action hiện tại đi
+                                                    <React.Fragment>
+                                                        <div className="content-level1" data-width="100%">
+                                                            {/* Tên người tạo hoạt động */}
+                                                            <div style={{ display: 'flex', fontWeight: 'bold', justifyContent: 'space-between' }}>
+                                                                {
+                                                                    item.creator && <a style={{ cursor: "pointer" }}>{item.creator?.name} </a>
+                                                                }
+                                                                {
+                                                                    item.creator && <a className="pull-right" style={{ cursor: 'pointer' }} onClick={() => showDetailTimer(item.description, item.timesheetLogs)}>{handleShowTime(item.timesheetLogs)}</a>
+                                                                }
+                                                            </div>
+                                                            <div>
+                                                                {
+                                                                    item.name && <b style={{ display: 'flex', marginTop: '4px' }}>{item.name} </b>
+                                                                }
+                                                                {item?.description?.split('\n')?.map((item, idx) => (
+                                                                    <div key={idx}>
+                                                                        {parse(item)}
+                                                                    </div>
+                                                                ))
+                                                                }
                                                             </div>
 
-                                                            {/* Các file đính kèm */}
-                                                            {!showSort && task && <ul className="list-inline tool-level1">
-                                                                {role === "accountable" ?
-                                                                    <ModalEditDateCreatedAction data={item} taskId={task._id} saveChangeDateCreatedAction={this.handleSaveChangeDateAction} /> :
-                                                                    <li><span className="text-sm">{<DateTimeConverter dateTime={item.createdAt} />}</span></li>
-                                                                }
-                                                                <li>{item.mandatory && !item.creator && <b className="text-sm">{translate("task.task_perform.mandatory_action")}</b>}</li>
-                                                                {((item.creator === undefined || item.creator === null) && role === "responsible") &&
-                                                                    <li><a style={{ cursor: "pointer" }} className="text-green text-sm" onClick={(e) => this.handleConfirmAction(e, item._id, currentUser, task?._id)}><i className="fa fa-check-circle" aria-hidden="true"></i> {translate("task.task_perform.confirm_action")}</a></li>}
-
-                                                                {/* Các chức năng tương tác với action */}
-                                                                {item.creator &&
+                                                            <div className="btn-group pull-right">
+                                                                {(role === 'responsible' && item.creator && showSort === false && task) &&
                                                                     <React.Fragment>
-                                                                        {item.evaluations && <li><a style={{ cursor: "pointer", pointerEvents: item.evaluations.length > 0 ? "" : "none" }} className="link-black text-sm" onClick={() => { this.handleShowEvaluations(item._id) }}><i className="fa fa-thumbs-o-up margin-r-5"></i>{translate("task.task_perform.evaluation")} ({item.evaluations && item.evaluations.length})</a></li>}
-                                                                        {item.files && item.files.length > 0 && // Chỉ hiện show file khi có file đính kèm
-                                                                            <li style={{ display: "inline-table" }}>
-                                                                                <a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => this.handleShowFile(item._id)}><i className="fa fa-paperclip" aria-hidden="true"></i> {translate("task.task_perform.file_attach")} ({item.files && item.files.length})</a>
-                                                                            </li>
-                                                                        }
-                                                                        <li><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => this.handleShowChildComment(item._id)}><i className="fa fa-comments-o margin-r-5"></i> {translate("task.task_perform.comment")} ({item.comments.length}) &nbsp;</a></li>
+                                                                        <span data-toggle="dropdown">
+                                                                            <i className="fa fa-ellipsis-h"></i>
+                                                                        </span>
+                                                                        <ul className="dropdown-menu">
+                                                                            <li><a style={{ cursor: "pointer" }} onClick={() => handleEditAction(item)} >{translate("task.task_perform.edit_action")}</a></li>
+                                                                            <li><a style={{ cursor: "pointer" }} onClick={() => props.deleteTaskAction(item._id, task._id)} >{translate("task.task_perform.delete_action")}</a></li>
+                                                                        </ul>
                                                                     </React.Fragment>
                                                                 }
-                                                            </ul>}
-
-                                                            {!showSort && task && <ul className="list-inline tool-level1">
-                                                                {item.creator &&
-                                                                    <React.Fragment>
-                                                                        {(role === "accountable" || role === "consulted" || role === "creator" || role === "informed") &&
-                                                                            <>
-                                                                                <div className="form-group text-sm">
-                                                                                    {/* Code hiển thị: Nếu chưa chọn điểm đánh giá mới, hiển thị điểm đánh giá trong DB. Nếu chưa đánh giá, hiển thị -- */}
-                                                                                    <span style={{ marginRight: "5px" }}>Điểm đánh giá: <strong>{evaluations?.[item?._id]?.rating ?? (item?.rating !== -1 ? item?.rating : "--")}/10</strong></span>
-                                                                                    <Rating
-                                                                                        fractions={2}
-                                                                                        stop={10}
-                                                                                        emptySymbol="fa fa-star-o fa-2x"
-                                                                                        fullSymbol="fa fa-star fa-2x"
-                                                                                        initialRating={evaluations?.[item._id]?.rating ?? item?.rating}
-                                                                                        onClick={(value) => {
-                                                                                            this.setValueRating(item._id, value);
-                                                                                        }}
-                                                                                        onHover={(value) => {
-                                                                                            this.setHover(item._id, value, "rating")
-                                                                                        }}
-                                                                                    />
-                                                                                    <div style={{ display: "inline", marginLeft: "5px" }}>{this.hover?.[`${item?._id}-rating`]}</div>
-                                                                                </div>
-                                                                                <div className="form-group text-sm">
-                                                                                    {/* Code hiển thị: Nếu chưa chọn độ quan trọng mới, hiển thị độ quan trọng trong DB */}
-                                                                                    <span style={{ marginRight: "5px" }}>Độ quan trọng: <strong>{evaluations?.[item?._id]?.actionImportanceLevel ?? item?.actionImportanceLevel}/10</strong></span>
-                                                                                    <Rating
-                                                                                        fractions={2}
-                                                                                        stop={10}
-                                                                                        emptySymbol="fa fa-star-o fa-2x"
-                                                                                        fullSymbol="fa fa-star fa-2x"
-                                                                                        initialRating={evaluations?.[item._id]?.actionImportanceLevel ?? item?.actionImportanceLevel}
-                                                                                        onClick={(value) => {
-                                                                                            this.setActionImportanceLevel(item._id, value)
-                                                                                        }}
-                                                                                        onHover={(value) => {
-                                                                                            this.setHover(item._id, value, "actionImportanceLevel")
-                                                                                        }}
-                                                                                    />
-                                                                                    <div style={{ display: "inline", marginLeft: "5px" }}>{this.hover?.[`${item?._id}-actionImportanceLevel`]}</div>
-                                                                                </div>
-                                                                                <a style={{ cursor: "pointer", fontWeight: '600' }} onClick={() => this.evaluationTaskAction(item, task._id, role, 1)}>Gửi đánh giá</a>
-                                                                            </>
-                                                                        }
-                                                                    </React.Fragment>
+                                                                {showSort === true && (role === 'responsible' || role === 'accountable') &&
+                                                                    <div className="sort-action">
+                                                                        {index !== 0 && <a style={{ marginTop: index === taskActions.length - 1 ? "10px" : "0px" }} onClick={() => sort(index, "up")}><i className="glyphicon glyphicon-arrow-up"></i> </a>}
+                                                                        {index !== taskActions.length - 1 && <a style={{ marginTop: index === 0 ? "13px" : "0px" }} onClick={() => sort(index, "down")}><i className="glyphicon glyphicon-arrow-down"></i> </a>}
+                                                                    </div>
                                                                 }
 
-                                                            </ul>}
-                                                            <div className="tool-level1" style={{ paddingLeft: 5 }}>
-                                                                {/* Các kết quả đánh giá của action */}
-                                                                {showEvaluations.some(obj => obj === item._id) &&
-                                                                    <div style={{ marginBottom: "10px" }}>
-                                                                        <ul className="list-inline">
-                                                                            <li>
-                                                                                {
-                                                                                    Array.isArray(item?.evaluations) &&
-                                                                                    item.evaluations.map((element, index) => {
-                                                                                        return (
-                                                                                            <p key={index}>
-                                                                                                <b> {element?.creator?.name} </b>
-                                                                                                {this.getRoleNameInTask(element?.role)}
-                                                                                                <span> Điểm đánh giá:<span className="text-red"> {element?.rating}/10</span> - Độ quan trọng:<span className="text-red"> {element?.actionImportanceLevel}/10</span></span>
-                                                                                            </p>
-                                                                                        )
-                                                                                    })
-                                                                                }
-                                                                            </li>
+                                                            </div>
+                                                        </div>
+
+                                                        {/* Các file đính kèm */}
+                                                        {!showSort && task && <ul className="list-inline tool-level1">
+                                                            {role === "accountable" ?
+                                                                <ModalEditDateCreatedAction data={item} taskId={task._id} saveChangeDateCreatedAction={handleSaveChangeDateAction} /> :
+                                                                <li><span className="text-sm">{<DateTimeConverter dateTime={item.createdAt} />}</span></li>
+                                                            }
+                                                            <li>{item.mandatory && !item.creator && <b className="text-sm">{translate("task.task_perform.mandatory_action")}</b>}</li>
+                                                            {((item.creator === undefined || item.creator === null) && role === "responsible") &&
+                                                                <li><a style={{ cursor: "pointer" }} className="text-green text-sm" onClick={(e) => handleConfirmAction(e, item._id, currentUser, task?._id)}><i className="fa fa-check-circle" aria-hidden="true"></i> {translate("task.task_perform.confirm_action")}</a></li>}
+
+                                                            {/* Các chức năng tương tác với action */}
+                                                            {item.creator &&
+                                                                <React.Fragment>
+                                                                    {item.evaluations && <li><a style={{ cursor: "pointer", pointerEvents: item.evaluations.length > 0 ? "" : "none" }} className="link-black text-sm" onClick={() => { handleShowEvaluations(item._id) }}><i className="fa fa-thumbs-o-up margin-r-5"></i>{translate("task.task_perform.evaluation")} ({item.evaluations && item.evaluations.length})</a></li>}
+                                                                    {item.files && item.files.length > 0 && // Chỉ hiện show file khi có file đính kèm
+                                                                        <li style={{ display: "inline-table" }}>
+                                                                            <a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => handleShowFile(item._id)}><i className="fa fa-paperclip" aria-hidden="true"></i> {translate("task.task_perform.file_attach")} ({item.files && item.files.length})</a>
+                                                                        </li>
+                                                                    }
+                                                                    <li><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => handleShowChildComment(item._id)}><i className="fa fa-comments-o margin-r-5"></i> {translate("task.task_perform.comment")} ({item.comments.length}) &nbsp;</a></li>
+                                                                </React.Fragment>
+                                                            }
+                                                        </ul>}
+
+                                                        {!showSort && task && <ul className="list-inline tool-level1">
+                                                            {item.creator &&
+                                                                <React.Fragment>
+                                                                    {(role === "accountable" || role === "consulted" || role === "creator" || role === "informed") &&
+                                                                        <>
+                                                                            <div className="form-group text-sm">
+                                                                                {/* Code hiển thị: Nếu chưa chọn điểm đánh giá mới, hiển thị điểm đánh giá trong DB. Nếu chưa đánh giá, hiển thị -- */}
+                                                                                <span style={{ marginRight: "5px" }}>Điểm đánh giá: <strong>{evaluations?.[item?._id]?.rating ?? (item?.rating !== -1 ? item?.rating : "--")}/10</strong></span>
+                                                                                <Rating
+                                                                                    fractions={2}
+                                                                                    stop={10}
+                                                                                    emptySymbol="fa fa-star-o fa-2x"
+                                                                                    fullSymbol="fa fa-star fa-2x"
+                                                                                    initialRating={evaluations?.[item._id]?.rating ?? item?.rating}
+                                                                                    onClick={(value) => {
+                                                                                        setValueRating(item._id, value);
+                                                                                    }}
+                                                                                    onHover={(value) => {
+                                                                                        setHover(item._id, value, "rating")
+                                                                                    }}
+                                                                                />
+                                                                                <div style={{ display: "inline", marginLeft: "5px" }}>{hover1?.[`${item?._id}-rating`]}</div>
+                                                                            </div>
+                                                                            <div className="form-group text-sm">
+                                                                                {/* Code hiển thị: Nếu chưa chọn độ quan trọng mới, hiển thị độ quan trọng trong DB */}
+                                                                                <span style={{ marginRight: "5px" }}>Độ quan trọng: <strong>{evaluations?.[item?._id]?.actionImportanceLevel ?? item?.actionImportanceLevel}/10</strong></span>
+                                                                                <Rating
+                                                                                    fractions={2}
+                                                                                    stop={10}
+                                                                                    emptySymbol="fa fa-star-o fa-2x"
+                                                                                    fullSymbol="fa fa-star fa-2x"
+                                                                                    initialRating={evaluations?.[item._id]?.actionImportanceLevel ?? item?.actionImportanceLevel}
+                                                                                    onClick={(value) => {
+                                                                                        setActionImportanceLevel(item._id, value)
+                                                                                    }}
+                                                                                    onHover={(value) => {
+                                                                                        setHover(item._id, value, "actionImportanceLevel")
+                                                                                    }}
+                                                                                />
+                                                                                <div style={{ display: "inline", marginLeft: "5px" }}>{hover1?.[`${item?._id}-actionImportanceLevel`]}</div>
+                                                                            </div>
+                                                                            <a style={{ cursor: "pointer", fontWeight: '600' }} onClick={() => evaluationTaskAction(item, task._id, role, 1)}>Gửi đánh giá</a>
+                                                                        </>
+                                                                    }
+                                                                </React.Fragment>
+                                                            }
+
+                                                        </ul>}
+                                                        <div className="tool-level1" style={{ paddingLeft: 5 }}>
+                                                            {/* Các kết quả đánh giá của action */}
+                                                            {showEvaluations.some(obj => obj === item._id) &&
+                                                                <div style={{ marginBottom: "10px" }}>
+                                                                    <ul className="list-inline">
+                                                                        <li>
+                                                                            {
+                                                                                Array.isArray(item?.evaluations) &&
+                                                                                item.evaluations.map((element, index) => {
+                                                                                    return (
+                                                                                        <p key={index}>
+                                                                                            <b> {element?.creator?.name} </b>
+                                                                                            {getRoleNameInTask(element?.role)}
+                                                                                            <span> Điểm đánh giá:<span className="text-red"> {element?.rating}/10</span> - Độ quan trọng:<span className="text-red"> {element?.actionImportanceLevel}/10</span></span>
+                                                                                        </p>
+                                                                                    )
+                                                                                })
+                                                                            }
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
+                                                            }
+                                                            {/* Các file đính kèm của action */}
+                                                            {showFile.some(obj => obj === item._id) &&
+                                                                <div>
+                                                                    {item.files.map((elem, index) => {
+                                                                        return <div key={index} className="show-files-task">
+                                                                            {isImage(elem.name) ?
+                                                                                <ApiImage
+                                                                                    listImage={listImage}
+                                                                                    className="attachment-img files-attach"
+                                                                                    style={{ marginTop: "5px" }}
+                                                                                    src={elem.url}
+                                                                                    file={elem}
+                                                                                    requestDownloadFile={requestDownloadFile}
+                                                                                />
+                                                                                :
+                                                                                <div>
+                                                                                    <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => requestDownloadFile(e, elem.url, elem.name)}> {elem.name}</a>
+                                                                                    <a href="#" onClick={() => showFilePreview(elem && elem.url)}>
+                                                                                        <u>{elem && checkTypeFile(elem.url) ?
+                                                                                            <i className="fa fa-eye"></i> : ""}</u>
+                                                                                    </a>
+                                                                                </div>
+
+                                                                            }
+                                                                        </div>
+                                                                    })}
+                                                                </div>
+                                                            }
+                                                        </div>
+                                                    </React.Fragment>
+                                                }
+                                                {/*Chỉnh sửa nội dung hoạt động của công việc */}
+                                                {editAction === item._id && task &&
+                                                    <React.Fragment>
+                                                        <div>
+                                                            <ContentMaker
+                                                                idQuill={`edit-action-${item._id}`}
+                                                                inputCssClass="text-input-level1" controlCssClass="tool-level2 row"
+                                                                onFilesChange={onEditActionFilesChange}
+                                                                onFilesError={onFilesError}
+                                                                files={newActionEdited.files}
+                                                                text={newActionEdited.descriptionDefault}
+                                                                submitButtonText={translate("task.task_perform.save_edit")}
+                                                                cancelButtonText={translate("task.task_perform.cancel")}
+                                                                handleEdit={(item) => handleEditAction(item)}
+                                                                onTextChange={(value, imgs) => {
+                                                                    setState(state => {
+                                                                        return { ...state, newActionEdited: { ...state.newActionEdited, description: value } }
+                                                                    })
+                                                                }}
+                                                                onSubmit={(e) => { handleSaveEditAction(e, item._id, item.description, task._id) }}
+                                                            />
+
+                                                            {item.files.length > 0 &&
+                                                                <div className="tool-level1" style={{ marginTop: -15 }}>
+                                                                    {item.files.map((file, index) => {
+                                                                        return <div key={index}>
+                                                                            <a style={{ cursor: "pointer" }}>{file.name} &nbsp;</a><a style={{ cursor: "pointer" }} className="link-black text-sm btn-box-tool" onClick={() => { handleDeleteFile(file._id, file.name, item._id, "action") }}><i className="fa fa-times"></i></a>
+                                                                        </div>
+                                                                    })}
+                                                                </div>}
+                                                        </div>
+                                                    </React.Fragment>
+                                                }
+
+                                                {/* Hiển thị bình luận cho hoạt động */}
+                                                {!showSort && task && showChildComment.some(obj => obj === item._id) &&
+                                                    <div>
+                                                        {item.comments.map(child => {
+                                                            let listImage = child.files.map((elem) => isImage(elem.name) ? elem.url : -1).filter(url => url !== -1);
+                                                            return <div key={child._id}>
+                                                                <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + child.creator?.avatar)} alt="User Image" />
+                                                                {editComment !== child._id && // Khi đang edit thì nội dung cũ đi
+                                                                    <div>
+                                                                        <div className="content-level2">
+                                                                            <a style={{ cursor: "pointer" }}>{child.creator?.name} </a>
+                                                                            {child.description.split('\n').map((item, idx) => {
+                                                                                return (
+                                                                                    <span key={idx}>
+                                                                                        {parse(item)}
+                                                                                    </span>
+                                                                                );
+                                                                            })}
+
+                                                                            {child.creator?._id === currentUser &&
+                                                                                <div className="btn-group pull-right">
+                                                                                    <span data-toggle="dropdown">
+                                                                                        <i className="fa fa-ellipsis-h"></i>
+                                                                                    </span>
+                                                                                    <ul className="dropdown-menu">
+                                                                                        <li><a style={{ cursor: "pointer" }} onClick={() => handleEditActionComment(child)} >{translate("task.task_perform.edit_comment")}</a></li>
+                                                                                        <li><a style={{ cursor: "pointer" }} onClick={() => props.deleteActionComment(task._id, item._id, child._id)} >{translate("task.task_perform.delete_comment")}</a></li>
+                                                                                    </ul>
+                                                                                </div>}
+                                                                        </div>
+                                                                        <ul className="list-inline tool-level2">
+                                                                            <li><span className="text-sm">{<DateTimeConverter dateTime={child.createdAt} />}</span></li>
+                                                                            {child.files && child.files.length > 0 &&
+                                                                                <li style={{ display: "inline-table" }}>
+                                                                                    <div><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => handleShowFile(child._id)}><b><i className="fa fa-paperclip" aria-hidden="true"> {translate("task.task_perform.file_attach")} ({child.files && child.files.length})</i></b></a></div>
+                                                                                </li>
+                                                                            }
+                                                                            {showFile.some(obj => obj === child._id) &&
+                                                                                <li style={{ display: "inline-table" }}>
+                                                                                    {child.files.map((elem, index) => {
+                                                                                        return <div key={index} className="show-files-task">
+                                                                                            {isImage(elem.name) ?
+                                                                                                <ApiImage
+                                                                                                    listImage={listImage}
+                                                                                                    className="attachment-img files-attach"
+                                                                                                    style={{ marginTop: "5px" }}
+                                                                                                    src={elem.url}
+                                                                                                    file={elem}
+                                                                                                    requestDownloadFile={requestDownloadFile}
+                                                                                                />
+                                                                                                :
+                                                                                                <div>
+                                                                                                    <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => requestDownloadFile(e, elem.url, elem.name)}> {elem.name}</a>
+                                                                                                    <a href="#" onClick={() => showFilePreview(elem && elem.url)}>
+                                                                                                        <u>{elem && checkTypeFile(elem.url) ?
+                                                                                                            <i className="fa fa-eye"></i> : ""}</u>
+                                                                                                    </a>
+                                                                                                </div>
+                                                                                            }
+                                                                                        </div>
+                                                                                    })}
+                                                                                </li>
+                                                                            }
+
                                                                         </ul>
                                                                     </div>
                                                                 }
-                                                                {/* Các file đính kèm của action */}
-                                                                {showFile.some(obj => obj === item._id) &&
-                                                                    <div>
-                                                                        {item.files.map((elem, index) => {
+                                                                {/*Chỉnh sửa nội dung bình luận của hoạt động */}
+                                                                {editComment === child._id &&
+                                                                    <React.Fragment>
+                                                                        <div>
+                                                                            <ContentMaker
+                                                                                idQuill={`edit-comment-${child._id}`}
+                                                                                inputCssClass="text-input-level2" controlCssClass="tool-level2 row"
+                                                                                onFilesChange={onEditCommentOfActionFilesChange}
+                                                                                onFilesError={onFilesError}
+                                                                                files={newCommentOfActionEdited.files}
+                                                                                text={newCommentOfActionEdited.descriptionDefault}
+                                                                                submitButtonText={translate("task.task_perform.save_edit")}
+                                                                                cancelButtonText={translate("task.task_perform.cancel")}
+                                                                                handleEdit={(e) => handleEditActionComment(e)}
+                                                                                onTextChange={(value, imgs) => {
+                                                                                    setState(state => {
+                                                                                        return { ...state, newCommentOfActionEdited: { ...state.newCommentOfActionEdited, description: value } }
+                                                                                    })
+                                                                                }}
+                                                                                onSubmit={(e) => { handleSaveEditActionComment(e, task._id, item._id, child._id, child.description) }}
+                                                                            />
+                                                                            {/* Hiện file đã tải lên */}
+                                                                            {child.files.length > 0 &&
+                                                                                <div className="tool-level2" style={{ marginTop: -15 }}>
+                                                                                    {child.files.map((file, index) => {
+                                                                                        return <div key={index}>
+                                                                                            <a style={{ cursor: "pointer" }}>{file.name} &nbsp;</a><a style={{ cursor: "pointer" }} className="link-black text-sm btn-box-tool" onClick={() => { handleDeleteFile(file._id, file.name, item._id, "commentofaction") }}><i className="fa fa-times"></i></a>
+                                                                                        </div>
+                                                                                    })}
+                                                                                </div>}
+                                                                        </div>
+                                                                    </React.Fragment>
+                                                                }
+                                                            </div>;
+                                                            return true;
+                                                        })
+                                                        }
+                                                        {/*Thêm bình luận cho hoạt động */}
+                                                        <div>
+                                                            <img className="user-img-level2"
+                                                                src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar"
+                                                            />
+                                                            <ContentMaker
+                                                                idQuill={`add-comment-action-${item._id}`}
+                                                                imageDropAndPasteQuill={false}
+                                                                inputCssClass="text-input-level2" controlCssClass="tool-level2 row"
+                                                                onFilesChange={(files) => onCommentFilesChange(files, item._id)}
+                                                                onFilesError={onFilesError}
+                                                                files={newCommentOfAction[`${item._id}`]?.files}
+                                                                text={newCommentOfAction[`${item._id}`]?.descriptionDefault}
+                                                                placeholder={translate("task.task_perform.enter_comment_action")}
+                                                                submitButtonText={translate("task.task_perform.create_comment_action")}
+                                                                onTextChange={(value, imgs) => {
+                                                                    setState(state => {
+                                                                        state.newCommentOfAction[`${item._id}`] = {
+                                                                            ...state.newCommentOfAction[`${item._id}`],
+                                                                            creator: idUser,
+                                                                            description: value,
+                                                                            descriptionDefault: null
+                                                                        }
+                                                                        return {
+                                                                            ...state,
+                                                                        }
+                                                                    })
+                                                                }}
+                                                                onSubmit={(e) => { submitComment(item._id, task._id) }}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </div>
+                                        )
+                                    })
+                                }
+                            </ShowMoreShowLess>
+                            : null
+                        }
+                        {/* Sắp xếo hoạt động CV*/}
+                        {task && showSort ?
+                            <div className="row" style={{ marginTop: 20 }}>
+                                <div className="col-xs-6">
+                                    <button type="button" className={`btn btn-block`} onClick={() => cancelSort()}>Hủy</button>
+                                </div>
+                                <div className="col-xs-6">
+                                    <button type="button" className={`btn btn-block`} onClick={() => saveSort(task._id)}>Lưu</button>
+                                </div>
+                            </div>
+                            :
+                            <React.Fragment>
+                                {
+                                    // Đánh giá tất cả các hoạt động CV
+                                    state.showPopupApproveAllAction ?
+                                        (role === "accountable") && taskActions.length > 1 &&
+                                        <div style={{ borderColor: "#ddd", marginTop: 20 }}>
+                                            <button style={{ marginTop: 7, marginBottom: 7 }} className="btn btn-block btn-default btn-sm" onClick={() => togglePopupApproveAllAction()}>Hủy đánh giá tất cả các hoạt động</button>
+
+                                            <div className="form-group text-sm">
+                                                <span style={{ marginRight: "5px" }}>Điểm đánh giá: <strong>{ratingAll ?? 0}/10</strong></span>
+                                                <Rating
+                                                    fractions={2}
+                                                    stop={10}
+                                                    emptySymbol="fa fa-star-o fa-2x"
+                                                    fullSymbol="fa fa-star fa-2x"
+                                                    initialRating={ratingAll ?? 0}
+                                                    onClick={(value) => {
+                                                        setValueRatingApproveAll(value);
+                                                    }}
+                                                    onHover={(value) => {
+                                                        setHover('all-action', value, "rating")
+                                                    }}
+                                                />
+                                                <div style={{ display: "inline", marginLeft: "5px" }}>{hover1?.['all-action-rating']}</div>
+                                            </div>
+
+                                            <div className="form-group text-sm">
+                                                <span style={{ marginRight: "5px" }}>Độ quan trọng: <strong>{actionImportanceLevelAll ?? 10}/10</strong></span>
+                                                <Rating
+                                                    fractions={2}
+                                                    stop={10}
+                                                    emptySymbol="fa fa-star-o fa-2x"
+                                                    fullSymbol="fa fa-star fa-2x"
+                                                    initialRating={actionImportanceLevelAll ?? 10}
+                                                    onClick={(value) => {
+                                                        setActionImportanceLevelAll(value)
+                                                    }}
+                                                    onHover={(value) => {
+                                                        setHover('all-action', value, "actionImportanceLevel")
+                                                    }}
+                                                />
+                                                <div style={{ display: "inline", marginLeft: "5px" }}>{hover1?.['all-action-actionImportanceLevel']}</div>
+                                            </div>
+                                            <button style={{ marginTop: 7, marginBottom: 7 }} className="btn btn-block btn-default btn-sm" onClick={() => evaluationAllTaskAction(task._id, taskActions)}>Gửi đánh giá tất cả các hoạt động</button>
+                                        </div>
+                                        : (role === "accountable") && taskActions.length > 1 && <button className="btn btn-block btn-success btn-sm" onClick={() => togglePopupApproveAllAction()}>Đánh giá tất cả hoạt động</button>
+                                }
+                                {(role === "responsible" || role === "accountable") && taskActions.length > 1 && <button className="btn btn-block btn-default btn-sm" onClick={() => handleShowSort()}>Sắp xếp hoạt động</button>}
+                            </React.Fragment>
+                        }
+                    </div>
+
+                    {/* Chuyển qua tab trao đổi */}
+                    <div className={selected === "taskComment" ? "active tab-pane" : "tab-pane"} id="taskComment">
+
+                        {/* Thêm bình luận cho công việc*/}
+                        <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="User Image" />
+                        <ContentMaker
+                            idQuill={`add-comment-task-${id}`}
+                            inputCssClass="text-input-level1" controlCssClass="tool-level1 row"
+                            onFilesChange={onTaskCommentFilesChange}
+                            onFilesError={onFilesError}
+                            files={newTaskComment.files}
+                            text={newTaskComment.descriptionDefault}
+                            placeholder={translate("task.task_perform.enter_comment")}
+                            submitButtonText={translate("task.task_perform.create_comment")}
+                            onTextChange={(value, imgs) => {
+                                setState(state => {
+                                    return {
+                                        ...state,
+                                        newTaskComment: {
+                                            ...state.newTaskComment,
+                                            description: value,
+                                            descriptionDefault: null
+                                        }
+                                    }
+                                })
+
+                            }}
+                            onSubmit={(e) => { submitTaskComment(task?._id) }}
+                        />
+
+                        {task && typeof taskComments !== 'undefined' && taskComments.length !== 0 ?
+                            <ShowMoreShowLess
+                                id={`taskComment${id}`}
+                                classShowMoreLess='tool-level1'
+                                styleShowMoreLess={{ display: "inline-block", marginBotton: 15 }}
+                            >
+                                {
+                                    taskComments.map((item, index) => {
+                                        let listImage = item.files.map((elem) => isImage(elem.name) ? elem.url : -1).filter(url => url !== -1);
+                                        return (
+                                            <div key={item._id} className={index > 3 ? "hide-component" : ""}>
+                                                <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + item.creator?.avatar)} alt="User Image" />
+                                                {editTaskComment !== item._id && // Khi đang edit thì ẩn đi
+                                                    <React.Fragment>
+                                                        <div className="content-level1">
+                                                            <a style={{ cursor: "pointer" }}>{item.creator?.name} </a>
+                                                            {item.description.split('\n').map((item, idx) => {
+                                                                return (
+                                                                    <span key={idx}>
+                                                                        {parse(item)}
+                                                                    </span>
+                                                                );
+                                                            })}
+                                                            {item.creator?._id === currentUser &&
+                                                                <div className="btn-group pull-right">
+                                                                    <span data-toggle="dropdown">
+                                                                        <i className="fa fa-ellipsis-h"></i>
+                                                                    </span>
+                                                                    <ul className="dropdown-menu">
+                                                                        <li><a style={{ cursor: "pointer" }} onClick={() => handleEditTaskComment(item)} >{translate("task.task_perform.edit_comment")}</a></li>
+                                                                        <li><a style={{ cursor: "pointer" }} onClick={() => props.deleteTaskComment(item._id, task._id)} >{translate("task.task_perform.delete_comment")}</a></li>
+                                                                    </ul>
+                                                                </div>}
+                                                        </div>
+
+
+                                                        <ul className="list-inline tool-level1">
+                                                            <li><span className="text-sm">{<DateTimeConverter dateTime={item.createdAt} />}</span></li>
+                                                            <li><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => handleShowChildComment(item._id)}><i className="fa fa-comments-o margin-r-5"></i> {translate("task.task_perform.comment")} ({item.comments.length}) &nbsp;</a></li>
+                                                            {item.files.length > 0 &&
+                                                                <React.Fragment>
+                                                                    <li style={{ display: "inline-table" }}>
+                                                                        <div><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => handleShowFile(item._id)}><b><i className="fa fa-paperclip" aria-hidden="true"> {translate("task.task_perform.file_attach")} ({item.files && item.files.length})</i></b></a> </div></li>
+                                                                    {showFile.some(obj => obj === item._id) &&
+                                                                        <li style={{ display: "inline-table" }}>{item.files.map((elem, index) => {
                                                                             return <div key={index} className="show-files-task">
-                                                                                {this.isImage(elem.name) ?
+                                                                                {isImage(elem.name) ?
                                                                                     <ApiImage
                                                                                         listImage={listImage}
                                                                                         className="attachment-img files-attach"
                                                                                         style={{ marginTop: "5px" }}
                                                                                         src={elem.url}
                                                                                         file={elem}
-                                                                                        requestDownloadFile={this.requestDownloadFile}
+                                                                                        requestDownloadFile={requestDownloadFile}
                                                                                     />
-                                                                                    :
-                                                                                    <div>
-                                                                                        <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name}</a>
-                                                                                        <a href="#" onClick={() => this.showFilePreview(elem && elem.url)}>
-                                                                                            <u>{elem && this.checkTypeFile(elem.url) ?
+                                                                                    : <div>
+                                                                                        <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => requestDownloadFile(e, elem.url, elem.name)}> {elem.name}</a>
+                                                                                        <a href="#" onClick={() => showFilePreview(elem && elem.url)}>
+                                                                                            <u>{elem && checkTypeFile(elem.url) ?
                                                                                                 <i className="fa fa-eye"></i> : ""}</u>
                                                                                         </a>
                                                                                     </div>
-
                                                                                 }
                                                                             </div>
                                                                         })}
+                                                                        </li>
+                                                                    }
+                                                                </React.Fragment>
+                                                            }
+                                                        </ul>
+                                                    </React.Fragment>
+                                                }
+
+                                                {/*Chỉnh sửa nội dung trao đổi của công việc */}
+                                                {editTaskComment === item._id &&
+                                                    <React.Fragment>
+                                                        <div>
+                                                            <ContentMaker
+                                                                idQuill={`edit-content-${item._id}`}
+                                                                inputCssClass="text-input-level1" controlCssClass="tool-level2 row"
+                                                                onFilesChange={onEditTaskCommentFilesChange}
+                                                                onFilesError={onFilesError}
+                                                                files={newTaskCommentEdited.files}
+                                                                text={newTaskCommentEdited.descriptionDefault}
+                                                                submitButtonText={translate("task.task_perform.save_edit")}
+                                                                cancelButtonText={translate("task.task_perform.cancel")}
+                                                                handleEdit={(e) => handleEditTaskComment(e)}
+                                                                onTextChange={(value, imgs) => {
+                                                                    setState(state => {
+                                                                        return { ...state, newTaskCommentEdited: { ...state.newTaskCommentEdited, description: value } }
+                                                                    })
+                                                                }}
+                                                                onSubmit={(e) => { handleSaveEditTaskComment(e, task._id, item._id, item.description) }}
+                                                            />
+                                                            {/* Hiện file đã tải lên */}
+                                                            {item.files.length > 0 &&
+                                                                <div className="tool-level1" style={{ marginTop: -15 }}>
+                                                                    {item.files.map((file, index) => {
+                                                                        return <div key={index} >
+                                                                            <a style={{ cursor: "pointer" }}>{file.name} &nbsp;</a><a style={{ cursor: "pointer" }} className="link-black text-sm btn-box-tool" onClick={() => { handleDeleteFile(file._id, file.name, item._id, "taskcomment") }}><i className="fa fa-times"></i></a>
+                                                                        </div>
+                                                                    })}
+                                                                </div>}
+                                                        </div>
+                                                    </React.Fragment>
+                                                }
+
+                                                {/* Hiển thị bình luận cho bình luận */}
+                                                {showChildComment.some(x => x === item._id) &&
+                                                    <div className="comment-content-child">
+                                                        {item.comments.map(child => {
+                                                            let listImage = child.files.map((elem) => isImage(elem.name) ? elem.url : -1).filter(url => url !== -1);
+                                                            return <div key={child._id}>
+                                                                <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + child.creator?.avatar)} alt="User Image" />
+                                                                {editCommentOfTaskComment !== child._id && // Đang edit thì ẩn đi
+                                                                    <div>
+                                                                        <div className="content-level2">
+                                                                            <a style={{ cursor: "pointer" }}>{child.creator?.name} </a>
+                                                                            {child.description.split('\n').map((item, idx) => {
+                                                                                return (
+                                                                                    <span key={idx}>
+                                                                                        {parse(item)}
+                                                                                    </span>
+                                                                                );
+                                                                            })}
+
+                                                                            {child.creator?._id === currentUser &&
+                                                                                <div className="btn-group pull-right">
+                                                                                    <span data-toggle="dropdown">
+                                                                                        <i className="fa fa-ellipsis-h"></i>
+                                                                                    </span>
+                                                                                    <ul className="dropdown-menu">
+                                                                                        <li><a style={{ cursor: "pointer" }} onClick={() => handleEditCommentOfTaskComment(child)} >{translate("task.task_perform.edit_comment")}</a></li>
+                                                                                        <li><a style={{ cursor: "pointer" }} onClick={() => props.deleteCommentOfTaskComment(child._id, task._id)} >{translate("task.task_perform.delete_comment")}</a></li>
+                                                                                    </ul>
+                                                                                </div>}
+                                                                        </div>
+                                                                        <ul className="list-inline tool-level2">
+                                                                            <li><span className="text-sm">{<DateTimeConverter dateTime={child.createdAt} />}</span></li>
+                                                                            {child.files.length > 0 &&
+                                                                                <React.Fragment>
+                                                                                    <li style={{ display: "inline-table" }}>
+                                                                                        <div><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => handleShowFile(child._id)}><b><i className="fa fa-paperclip" aria-hidden="true"> {translate("task.task_perform.file_attach")} ({child.files && child.files.length})</i></b></a></div></li>
+                                                                                    {showFile.some(obj => obj === child._id) &&
+                                                                                        <li style={{ display: "inline-table" }}>
+                                                                                            {child.files.map((elem, index) => {
+                                                                                                return <div key={index} className="show-files-task">
+                                                                                                    {isImage(elem.name) ?
+                                                                                                        <ApiImage
+                                                                                                            listImage={listImage}
+                                                                                                            className="attachment-img files-attach"
+                                                                                                            style={{ marginTop: "5px" }}
+                                                                                                            src={elem.url}
+                                                                                                            file={elem}
+                                                                                                            requestDownloadFile={requestDownloadFile}
+                                                                                                        />
+                                                                                                        :
+                                                                                                        <div>
+                                                                                                            <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => requestDownloadFile(e, elem.url, elem.name)}> {elem.name}</a>
+                                                                                                            <a href="#" onClick={() => showFilePreview(elem && elem.url)}>
+                                                                                                                <u>{elem && checkTypeFile(elem.url) ?
+                                                                                                                    <i className="fa fa-eye"></i> : ""}</u>
+                                                                                                            </a>
+                                                                                                        </div>
+                                                                                                    }
+                                                                                                </div>
+                                                                                            })}
+                                                                                        </li>
+                                                                                    }
+                                                                                </React.Fragment>}
+                                                                        </ul>
                                                                     </div>
                                                                 }
-                                                            </div>
-                                                        </React.Fragment>
-                                                    }
-                                                    {/*Chỉnh sửa nội dung hoạt động của công việc */}
-                                                    {editAction === item._id && task &&
-                                                        <React.Fragment>
-                                                            <div>
-                                                                <ContentMaker
-                                                                    idQuill={`edit-action-${item._id}`}
-                                                                    inputCssClass="text-input-level1" controlCssClass="tool-level2 row"
-                                                                    onFilesChange={this.onEditActionFilesChange}
-                                                                    onFilesError={this.onFilesError}
-                                                                    files={newActionEdited.files}
-                                                                    text={newActionEdited.descriptionDefault}
-                                                                    submitButtonText={translate("task.task_perform.save_edit")}
-                                                                    cancelButtonText={translate("task.task_perform.cancel")}
-                                                                    handleEdit={(item) => this.handleEditAction(item)}
-                                                                    onTextChange={(value, imgs) => {
-                                                                        this.setState(state => {
-                                                                            return { ...state, newActionEdited: { ...state.newActionEdited, description: value } }
-                                                                        })
-                                                                    }}
-                                                                    onSubmit={(e) => { this.handleSaveEditAction(e, item._id, item.description, task._id) }}
-                                                                />
 
-                                                                {item.files.length > 0 &&
-                                                                    <div className="tool-level1" style={{ marginTop: -15 }}>
-                                                                        {item.files.map((file, index) => {
-                                                                            return <div key={index}>
-                                                                                <a style={{ cursor: "pointer" }}>{file.name} &nbsp;</a><a style={{ cursor: "pointer" }} className="link-black text-sm btn-box-tool" onClick={() => { this.handleDeleteFile(file._id, file.name, item._id, "action") }}><i className="fa fa-times"></i></a>
-                                                                            </div>
-                                                                        })}
-                                                                    </div>}
-                                                            </div>
-                                                        </React.Fragment>
-                                                    }
-
-                                                    {/* Hiển thị bình luận cho hoạt động */}
-                                                    {!showSort && task && showChildComment.some(obj => obj === item._id) &&
-                                                        <div>
-                                                            {item.comments.map(child => {
-                                                                let listImage = child.files.map((elem) => this.isImage(elem.name) ? elem.url : -1).filter(url => url !== -1);
-                                                                return <div key={child._id}>
-                                                                    <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + child.creator?.avatar)} alt="User Image" />
-                                                                    {editComment !== child._id && // Khi đang edit thì nội dung cũ đi
+                                                                {/* Sửa bình luận của bình luận */}
+                                                                {editCommentOfTaskComment === child._id &&
+                                                                    <React.Fragment>
                                                                         <div>
-                                                                            <div className="content-level2">
-                                                                                <a style={{ cursor: "pointer" }}>{child.creator?.name} </a>
-                                                                                {child.description.split('\n').map((item, idx) => {
-                                                                                    return (
-                                                                                        <span key={idx}>
-                                                                                            {parse(item)}
-                                                                                        </span>
-                                                                                    );
-                                                                                })}
-
-                                                                                {child.creator?._id === currentUser &&
-                                                                                    <div className="btn-group pull-right">
-                                                                                        <span data-toggle="dropdown">
-                                                                                            <i className="fa fa-ellipsis-h"></i>
-                                                                                        </span>
-                                                                                        <ul className="dropdown-menu">
-                                                                                            <li><a style={{ cursor: "pointer" }} onClick={() => this.handleEditActionComment(child)} >{translate("task.task_perform.edit_comment")}</a></li>
-                                                                                            <li><a style={{ cursor: "pointer" }} onClick={() => this.props.deleteActionComment(task._id, item._id, child._id)} >{translate("task.task_perform.delete_comment")}</a></li>
-                                                                                        </ul>
-                                                                                    </div>}
-                                                                            </div>
-                                                                            <ul className="list-inline tool-level2">
-                                                                                <li><span className="text-sm">{<DateTimeConverter dateTime={child.createdAt} />}</span></li>
-                                                                                {child.files && child.files.length > 0 &&
-                                                                                    <li style={{ display: "inline-table" }}>
-                                                                                        <div><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => this.handleShowFile(child._id)}><b><i className="fa fa-paperclip" aria-hidden="true"> {translate("task.task_perform.file_attach")} ({child.files && child.files.length})</i></b></a></div>
-                                                                                    </li>
-                                                                                }
-                                                                                {showFile.some(obj => obj === child._id) &&
-                                                                                    <li style={{ display: "inline-table" }}>
-                                                                                        {child.files.map((elem, index) => {
-                                                                                            return <div key={index} className="show-files-task">
-                                                                                                {this.isImage(elem.name) ?
-                                                                                                    <ApiImage
-                                                                                                        listImage={listImage}
-                                                                                                        className="attachment-img files-attach"
-                                                                                                        style={{ marginTop: "5px" }}
-                                                                                                        src={elem.url}
-                                                                                                        file={elem}
-                                                                                                        requestDownloadFile={this.requestDownloadFile}
-                                                                                                    />
-                                                                                                    :
-                                                                                                    <div>
-                                                                                                        <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name}</a>
-                                                                                                        <a href="#" onClick={() => this.showFilePreview(elem && elem.url)}>
-                                                                                                            <u>{elem && this.checkTypeFile(elem.url) ?
-                                                                                                                <i className="fa fa-eye"></i> : ""}</u>
-                                                                                                        </a>
-                                                                                                    </div>
-                                                                                                }
-                                                                                            </div>
-                                                                                        })}
-                                                                                    </li>
-                                                                                }
-
-                                                                            </ul>
+                                                                            <ContentMaker
+                                                                                idQuill={`edit-child-comment-${child._id}`}
+                                                                                inputCssClass="text-input-level2" controlCssClass="tool-level2 row"
+                                                                                onFilesChange={onEditCommentOfTaskCommentFilesChange}
+                                                                                onFilesError={onFilesError}
+                                                                                files={newCommentOfTaskCommentEdited.files}
+                                                                                text={newCommentOfTaskCommentEdited.descriptionDefault}
+                                                                                submitButtonText={translate("task.task_perform.save_edit")}
+                                                                                cancelButtonText={translate("task.task_perform.cancel")}
+                                                                                handleEdit={(e) => handleEditCommentOfTaskComment(e)}
+                                                                                onTextChange={(value, imgs) => {
+                                                                                    setState(state => {
+                                                                                        return { ...state, newCommentOfTaskCommentEdited: { ...state.newCommentOfTaskCommentEdited, description: value } }
+                                                                                    })
+                                                                                }}
+                                                                                onSubmit={(e) => { handleSaveEditCommentOfTaskComment(e, child._id, task._id, child.description) }}
+                                                                            />
+                                                                            {/* Hiện file đã tải lên */}
+                                                                            {child.files.length > 0 &&
+                                                                                <div className="tool-level2" style={{ marginTop: -15 }}>
+                                                                                    {child.files.map(file => {
+                                                                                        return <div>
+                                                                                            <a style={{ cursor: "pointer" }}>{file.name} &nbsp;</a><a style={{ cursor: "pointer" }} className="link-black text-sm btn-box-tool" onClick={() => { handleDeleteFile(file._id, file.name, item._id, "commentoftaskcomment") }}><i className="fa fa-times"></i></a>
+                                                                                        </div>
+                                                                                    })}
+                                                                                </div>}
                                                                         </div>
-                                                                    }
-                                                                    {/*Chỉnh sửa nội dung bình luận của hoạt động */}
-                                                                    {editComment === child._id &&
-                                                                        <React.Fragment>
-                                                                            <div>
-                                                                                <ContentMaker
-                                                                                    idQuill={`edit-comment-${child._id}`}
-                                                                                    inputCssClass="text-input-level2" controlCssClass="tool-level2 row"
-                                                                                    onFilesChange={this.onEditCommentOfActionFilesChange}
-                                                                                    onFilesError={this.onFilesError}
-                                                                                    files={newCommentOfActionEdited.files}
-                                                                                    text={newCommentOfActionEdited.descriptionDefault}
-                                                                                    submitButtonText={translate("task.task_perform.save_edit")}
-                                                                                    cancelButtonText={translate("task.task_perform.cancel")}
-                                                                                    handleEdit={(e) => this.handleEditActionComment(e)}
-                                                                                    onTextChange={(value, imgs) => {
-                                                                                        this.setState(state => {
-                                                                                            return { ...state, newCommentOfActionEdited: { ...state.newCommentOfActionEdited, description: value } }
-                                                                                        })
-                                                                                    }}
-                                                                                    onSubmit={(e) => { this.handleSaveEditActionComment(e, task._id, item._id, child._id, child.description) }}
-                                                                                />
-                                                                                {/* Hiện file đã tải lên */}
-                                                                                {child.files.length > 0 &&
-                                                                                    <div className="tool-level2" style={{ marginTop: -15 }}>
-                                                                                        {child.files.map((file, index) => {
-                                                                                            return <div key={index}>
-                                                                                                <a style={{ cursor: "pointer" }}>{file.name} &nbsp;</a><a style={{ cursor: "pointer" }} className="link-black text-sm btn-box-tool" onClick={() => { this.handleDeleteFile(file._id, file.name, item._id, "commentofaction") }}><i className="fa fa-times"></i></a>
-                                                                                            </div>
-                                                                                        })}
-                                                                                    </div>}
-                                                                            </div>
-                                                                        </React.Fragment>
-                                                                    }
-                                                                </div>;
-                                                                return true;
-                                                            })
-                                                            }
-                                                            {/*Thêm bình luận cho hoạt động */}
-                                                            <div>
-                                                                <img className="user-img-level2"
-                                                                    src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar"
-                                                                />
-                                                                <ContentMaker
-                                                                    idQuill={`add-comment-action-${item._id}`}
-                                                                    imageDropAndPasteQuill={false}
-                                                                    inputCssClass="text-input-level2" controlCssClass="tool-level2 row"
-                                                                    onFilesChange={(files) => this.onCommentFilesChange(files, item._id)}
-                                                                    onFilesError={this.onFilesError}
-                                                                    files={newCommentOfAction[`${item._id}`]?.files}
-                                                                    text={newCommentOfAction[`${item._id}`]?.descriptionDefault}
-                                                                    placeholder={translate("task.task_perform.enter_comment_action")}
-                                                                    submitButtonText={translate("task.task_perform.create_comment_action")}
-                                                                    onTextChange={(value, imgs) => {
-                                                                        this.setState(state => {
-                                                                            state.newCommentOfAction[`${item._id}`] = {
-                                                                                ...state.newCommentOfAction[`${item._id}`],
-                                                                                creator: idUser,
-                                                                                description: value,
-                                                                                descriptionDefault: null
-                                                                            }
-                                                                            return {
-                                                                                ...state,
-                                                                            }
-                                                                        })
-                                                                    }}
-                                                                    onSubmit={(e) => { this.submitComment(item._id, task._id) }}
-                                                                />
-                                                            </div>
+                                                                    </React.Fragment>
+                                                                }
+                                                            </div>;
+                                                            return true;
+                                                        })
+                                                        }
+                                                        {/*Thêm bình luận cho bình luận */}
+                                                        <div>
+                                                            <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
+                                                            <ContentMaker
+                                                                idQuill={`add-child-comment-${item._id}`}
+                                                                inputCssClass="text-input-level2" controlCssClass="tool-level2 row"
+                                                                onFilesChange={(files) => onCommentOfTaskCommentFilesChange(item._id, files)}
+                                                                onFilesError={onFilesError}
+                                                                files={newCommentOfTaskComment[`${item._id}`]?.files}
+                                                                text={newCommentOfTaskComment[`${item._id}`]?.descriptionDefault}
+                                                                placeholder={translate("task.task_perform.enter_comment")}
+                                                                submitButtonText={translate("task.task_perform.create_comment")}
+                                                                onTextChange={(value, imgs) => {
+                                                                    setState(state => {
+                                                                        state.newCommentOfTaskComment[`${item._id}`] = {
+                                                                            ...state.newCommentOfTaskComment[`${item._id}`],
+                                                                            description: value,
+                                                                            creator: currentUser,
+                                                                            descriptionDefault: null
+                                                                        }
+                                                                        return { ...state }
+                                                                    })
+                                                                }}
+                                                                onSubmit={(e) => { submitCommentOfTaskComment(item._id, task._id) }}
+                                                            />
                                                         </div>
-                                                    }
-                                                </div>
-                                            )
-                                        })
-                                    }
-                                </ShowMoreShowLess>
-                                : null
-                            }
-                            {/* Sắp xếo hoạt động CV*/}
-                            {task && showSort ?
-                                <div className="row" style={{ marginTop: 20 }}>
-                                    <div className="col-xs-6">
-                                        <button type="button" className={`btn btn-block`} onClick={() => this.cancelSort()}>Hủy</button>
-                                    </div>
-                                    <div className="col-xs-6">
-                                        <button type="button" className={`btn btn-block`} onClick={() => this.saveSort(task._id)}>Lưu</button>
-                                    </div>
-                                </div>
-                                :
-                                <React.Fragment>
-                                    {
-                                        // Đánh giá tất cả các hoạt động CV
-                                        this.state.showPopupApproveAllAction ?
-                                            (role === "accountable") && taskActions.length > 1 &&
-                                            <div style={{ borderColor: "#ddd", marginTop: 20 }}>
-                                                <button style={{ marginTop: 7, marginBottom: 7 }} className="btn btn-block btn-default btn-sm" onClick={this.togglePopupApproveAllAction}>Hủy đánh giá tất cả các hoạt động</button>
-
-                                                <div className="form-group text-sm">
-                                                    <span style={{ marginRight: "5px" }}>Điểm đánh giá: <strong>{ratingAll ?? 0}/10</strong></span>
-                                                    <Rating
-                                                        fractions={2}
-                                                        stop={10}
-                                                        emptySymbol="fa fa-star-o fa-2x"
-                                                        fullSymbol="fa fa-star fa-2x"
-                                                        initialRating={ratingAll ?? 0}
-                                                        onClick={(value) => {
-                                                            this.setValueRatingApproveAll(value);
-                                                        }}
-                                                        onHover={(value) => {
-                                                            this.setHover('all-action', value, "rating")
-                                                        }}
-                                                    />
-                                                    <div style={{ display: "inline", marginLeft: "5px" }}>{this.hover?.['all-action-rating']}</div>
-                                                </div>
-
-                                                <div className="form-group text-sm">
-                                                    <span style={{ marginRight: "5px" }}>Độ quan trọng: <strong>{actionImportanceLevelAll ?? 10}/10</strong></span>
-                                                    <Rating
-                                                        fractions={2}
-                                                        stop={10}
-                                                        emptySymbol="fa fa-star-o fa-2x"
-                                                        fullSymbol="fa fa-star fa-2x"
-                                                        initialRating={actionImportanceLevelAll ?? 10}
-                                                        onClick={(value) => {
-                                                            this.setActionImportanceLevelAll(value)
-                                                        }}
-                                                        onHover={(value) => {
-                                                            this.setHover('all-action', value, "actionImportanceLevel")
-                                                        }}
-                                                    />
-                                                    <div style={{ display: "inline", marginLeft: "5px" }}>{this.hover?.['all-action-actionImportanceLevel']}</div>
-                                                </div>
-                                                <button style={{ marginTop: 7, marginBottom: 7 }} className="btn btn-block btn-default btn-sm" onClick={() => this.evaluationAllTaskAction(task._id, taskActions)}>Gửi đánh giá tất cả các hoạt động</button>
+                                                    </div>
+                                                }
                                             </div>
-                                            : (role === "accountable") && taskActions.length > 1 && <button className="btn btn-block btn-success btn-sm" onClick={this.togglePopupApproveAllAction}>Đánh giá tất cả hoạt động</button>
-                                    }
-                                    {(role === "responsible" || role === "accountable") && taskActions.length > 1 && <button className="btn btn-block btn-default btn-sm" onClick={this.showSort}>Sắp xếp hoạt động</button>}
-                                </React.Fragment>
-                            }
-                        </div>
-
-                        {/* Chuyển qua tab trao đổi */}
-                        <div className={selected === "taskComment" ? "active tab-pane" : "tab-pane"} id="taskComment">
-
-                            {/* Thêm bình luận cho công việc*/}
-                            <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="User Image" />
-                            <ContentMaker
-                                idQuill={`add-comment-task-${id}`}
-                                inputCssClass="text-input-level1" controlCssClass="tool-level1 row"
-                                onFilesChange={this.onTaskCommentFilesChange}
-                                onFilesError={this.onFilesError}
-                                files={newTaskComment.files}
-                                text={newTaskComment.descriptionDefault}
-                                placeholder={translate("task.task_perform.enter_comment")}
-                                submitButtonText={translate("task.task_perform.create_comment")}
-                                onTextChange={(value, imgs) => {
-                                    this.setState(state => {
-                                        return {
-                                            ...state,
-                                            newTaskComment: {
-                                                ...state.newTaskComment,
-                                                description: value,
-                                                descriptionDefault: null
-                                            }
-                                        }
+                                        )
                                     })
+                                }
+                            </ShowMoreShowLess> : null
+                        }
+                    </div>
 
-                                }}
-                                onSubmit={(e) => { this.submitTaskComment(task?._id) }}
-                            />
 
-                            {task && typeof taskComments !== 'undefined' && taskComments.length !== 0 ?
+                    {/* Chuyển qua tab tài liệu */}
+                    <div className={selected === "documentTask" ? "active tab-pane" : "tab-pane"} id="documentTask">
+                        <div>
+                            {documents &&
                                 <ShowMoreShowLess
-                                    id={`taskComment${id}`}
-                                    classShowMoreLess='tool-level1'
-                                    styleShowMoreLess={{ display: "inline-block", marginBotton: 15 }}
+                                    id={`documentTask${id}`}
+                                    styleShowMoreLess={{ display: "inline-block", marginBotton: 15, marginTop: 15 }}
                                 >
                                     {
-                                        taskComments.map((item, index) => {
-                                            let listImage = item.files.map((elem) => this.isImage(elem.name) ? elem.url : -1).filter(url => url !== -1);
+                                        documents.map((item, index) => {
+                                            let listImage = item.files.map((elem) => isImage(elem.name) ? elem.url : -1).filter(url => url !== -1);
                                             return (
-                                                <div key={item._id} className={index > 3 ? "hide-component" : ""}>
-                                                    <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + item.creator?.avatar)} alt="User Image" />
-                                                    {editTaskComment !== item._id && // Khi đang edit thì ẩn đi
-                                                        <React.Fragment>
-                                                            <div className="content-level1">
-                                                                <a style={{ cursor: "pointer" }}>{item.creator?.name} </a>
-                                                                {item.description.split('\n').map((item, idx) => {
-                                                                    return (
-                                                                        <span key={idx}>
-                                                                            {parse(item)}
-                                                                        </span>
-                                                                    );
-                                                                })}
-                                                                {item.creator?._id === currentUser &&
-                                                                    <div className="btn-group pull-right">
-                                                                        <span data-toggle="dropdown">
-                                                                            <i className="fa fa-ellipsis-h"></i>
-                                                                        </span>
-                                                                        <ul className="dropdown-menu">
-                                                                            <li><a style={{ cursor: "pointer" }} onClick={() => this.handleEditTaskComment(item)} >{translate("task.task_perform.edit_comment")}</a></li>
-                                                                            <li><a style={{ cursor: "pointer" }} onClick={() => this.props.deleteTaskComment(item._id, task._id)} >{translate("task.task_perform.delete_comment")}</a></li>
-                                                                        </ul>
-                                                                    </div>}
+                                                <React.Fragment key={`documents-${item._id}`}>
+                                                    {showEditTaskFile !== item._id &&
+                                                        <div key={item._id} className={`item-box ${index > 3 ? "hide-component" : ""}`}>
+                                                            {(currentUser === item.creator?._id) &&
+                                                                <div className="btn-group pull-right">
+                                                                    <span data-toggle="dropdown">
+                                                                        <i className="fa fa-ellipsis-h"></i>
+                                                                    </span>
+                                                                    <ul className="dropdown-menu">
+                                                                        <li><a style={{ cursor: "pointer" }} onClick={() => handleEditFileTask(item)} >{translate("task.task_perform.edit")}</a></li>
+                                                                        <li><a style={{ cursor: "pointer" }} onClick={() => props.deleteDocument(item._id, task._id)} >{translate("task.task_perform.delete")}</a></li>
+                                                                    </ul>
+                                                                </div>}
+                                                            <div>
+                                                                <ul className='list-inline list-name-document'>
+                                                                    <li><strong>{item.creator?.name} </strong></li>
+                                                                    <li><span className="text-sm">{<DateTimeConverter dateTime={item.createdAt} />}</span></li>
+                                                                </ul>
+                                                                {parse(item.description)}
                                                             </div>
-
-
-                                                            <ul className="list-inline tool-level1">
-                                                                <li><span className="text-sm">{<DateTimeConverter dateTime={item.createdAt} />}</span></li>
-                                                                <li><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => this.handleShowChildComment(item._id)}><i className="fa fa-comments-o margin-r-5"></i> {translate("task.task_perform.comment")} ({item.comments.length}) &nbsp;</a></li>
-                                                                {item.files.length > 0 &&
-                                                                    <React.Fragment>
-                                                                        <li style={{ display: "inline-table" }}>
-                                                                            <div><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => this.handleShowFile(item._id)}><b><i className="fa fa-paperclip" aria-hidden="true"> {translate("task.task_perform.file_attach")} ({item.files && item.files.length})</i></b></a> </div></li>
-                                                                        {showFile.some(obj => obj === item._id) &&
-                                                                            <li style={{ display: "inline-table" }}>{item.files.map((elem, index) => {
-                                                                                return <div key={index} className="show-files-task">
-                                                                                    {this.isImage(elem.name) ?
+                                                            <div>
+                                                                {showFile.some(obj => obj === item._id) ?
+                                                                    <a style={{ cursor: 'pointer' }} onClick={() => { handleShowFile(item._id) }}>Ẩn bớt<i className='fa fa-angle-double-up'></i></a>
+                                                                    :
+                                                                    <a style={{ cursor: 'pointer' }} onClick={() => { handleShowFile(item._id) }}>Hiển thị {item?.files?.length} tài liệu &nbsp; <i className='fa fa-angle-double-down'></i> </a>
+                                                                }
+                                                            </div>
+                                                            {showFile.some(obj => obj === item._id) &&
+                                                                <React.Fragment>
+                                                                    <div>
+                                                                        {item.files.map((elem, index) => {
+                                                                            return (
+                                                                                <div key={index} className="show-files-task">
+                                                                                    {isImage(elem.name) ?
                                                                                         <ApiImage
                                                                                             listImage={listImage}
                                                                                             className="attachment-img files-attach"
                                                                                             style={{ marginTop: "5px" }}
                                                                                             src={elem.url}
                                                                                             file={elem}
-                                                                                            requestDownloadFile={this.requestDownloadFile}
+                                                                                            requestDownloadFile={requestDownloadFile}
                                                                                         />
                                                                                         : <div>
-                                                                                            <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name}</a>
-                                                                                            <a href="#" onClick={() => this.showFilePreview(elem && elem.url)}>
-                                                                                                <u>{elem && this.checkTypeFile(elem.url) ?
+                                                                                            <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => requestDownloadFile(e, elem.url, elem.name)}> {elem.name}</a>
+                                                                                            <a href="#" onClick={() => showFilePreview(elem && elem.url)}>
+                                                                                                <u>{elem && checkTypeFile(elem.url) ?
                                                                                                     <i className="fa fa-eye"></i> : ""}</u>
                                                                                             </a>
                                                                                         </div>
                                                                                     }
-                                                                                </div>
-                                                                            })}
-                                                                            </li>
-                                                                        }
-                                                                    </React.Fragment>
-                                                                }
-                                                            </ul>
-                                                        </React.Fragment>
-                                                    }
 
-                                                    {/*Chỉnh sửa nội dung trao đổi của công việc */}
-                                                    {editTaskComment === item._id &&
+                                                                                </div>
+                                                                            )
+                                                                        })}
+                                                                    </div>
+                                                                </React.Fragment>
+                                                            }
+                                                        </div>
+                                                    }
+                                                    {showEditTaskFile === item._id &&
                                                         <React.Fragment>
-                                                            <div>
+                                                            <div style={{ marginTop: '15px' }}>
+                                                                <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
                                                                 <ContentMaker
-                                                                    idQuill={`edit-content-${item._id}`}
+                                                                    idQuill={`edit-file-${item._id}`}
                                                                     inputCssClass="text-input-level1" controlCssClass="tool-level2 row"
-                                                                    onFilesChange={this.onEditTaskCommentFilesChange}
-                                                                    onFilesError={this.onFilesError}
-                                                                    files={newTaskCommentEdited.files}
-                                                                    text={newTaskCommentEdited.descriptionDefault}
+                                                                    onFilesChange={onEditFileTask}
+                                                                    onFilesError={onFilesError}
+                                                                    files={fileTaskEdited.files}
+                                                                    text={fileTaskEdited.descriptionDefault}
                                                                     submitButtonText={translate("task.task_perform.save_edit")}
                                                                     cancelButtonText={translate("task.task_perform.cancel")}
-                                                                    handleEdit={(e) => this.handleEditTaskComment(e)}
+                                                                    handleEdit={(e) => handleEditFileTask(e)}
                                                                     onTextChange={(value, imgs) => {
-                                                                        this.setState(state => {
-                                                                            return { ...state, newTaskCommentEdited: { ...state.newTaskCommentEdited, description: value } }
+                                                                        setState(state => {
+                                                                            return { ...state, fileTaskEdited: { ...state.fileTaskEdited, description: value } }
                                                                         })
                                                                     }}
-                                                                    onSubmit={(e) => { this.handleSaveEditTaskComment(e, task._id, item._id, item.description) }}
+                                                                    onSubmit={(e) => { handleSaveEditTaskFile(e, item.description, item._id, task._id) }}
                                                                 />
-                                                                {/* Hiện file đã tải lên */}
                                                                 {item.files.length > 0 &&
                                                                     <div className="tool-level1" style={{ marginTop: -15 }}>
-                                                                        {item.files.map((file, index) => {
-                                                                            return <div key={index} >
-                                                                                <a style={{ cursor: "pointer" }}>{file.name} &nbsp;</a><a style={{ cursor: "pointer" }} className="link-black text-sm btn-box-tool" onClick={() => { this.handleDeleteFile(file._id, file.name, item._id, "taskcomment") }}><i className="fa fa-times"></i></a>
+                                                                        {item.files.map(file => {
+                                                                            return <div>
+                                                                                <a style={{ cursor: "pointer" }}>{file.name} &nbsp;</a><a style={{ cursor: "pointer" }} className="link-black text-sm btn-box-tool" onClick={() => { handleDeleteFile(file._id, file.name, item._id, "task") }}><i className="fa fa-times"></i></a>
                                                                             </div>
                                                                         })}
                                                                     </div>}
                                                             </div>
                                                         </React.Fragment>
                                                     }
-
-                                                    {/* Hiển thị bình luận cho bình luận */}
-                                                    {showChildComment.some(x => x === item._id) &&
-                                                        <div className="comment-content-child">
-                                                            {item.comments.map(child => {
-                                                                let listImage = child.files.map((elem) => this.isImage(elem.name) ? elem.url : -1).filter(url => url !== -1);
-                                                                return <div key={child._id}>
-                                                                    <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + child.creator?.avatar)} alt="User Image" />
-                                                                    {editCommentOfTaskComment !== child._id && // Đang edit thì ẩn đi
-                                                                        <div>
-                                                                            <div className="content-level2">
-                                                                                <a style={{ cursor: "pointer" }}>{child.creator?.name} </a>
-                                                                                {child.description.split('\n').map((item, idx) => {
-                                                                                    return (
-                                                                                        <span key={idx}>
-                                                                                            {parse(item)}
-                                                                                        </span>
-                                                                                    );
-                                                                                })}
-
-                                                                                {child.creator?._id === currentUser &&
-                                                                                    <div className="btn-group pull-right">
-                                                                                        <span data-toggle="dropdown">
-                                                                                            <i className="fa fa-ellipsis-h"></i>
-                                                                                        </span>
-                                                                                        <ul className="dropdown-menu">
-                                                                                            <li><a style={{ cursor: "pointer" }} onClick={() => this.handleEditCommentOfTaskComment(child)} >{translate("task.task_perform.edit_comment")}</a></li>
-                                                                                            <li><a style={{ cursor: "pointer" }} onClick={() => this.props.deleteCommentOfTaskComment(child._id, task._id)} >{translate("task.task_perform.delete_comment")}</a></li>
-                                                                                        </ul>
-                                                                                    </div>}
-                                                                            </div>
-                                                                            <ul className="list-inline tool-level2">
-                                                                                <li><span className="text-sm">{<DateTimeConverter dateTime={child.createdAt} />}</span></li>
-                                                                                {child.files.length > 0 &&
-                                                                                    <React.Fragment>
-                                                                                        <li style={{ display: "inline-table" }}>
-                                                                                            <div><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => this.handleShowFile(child._id)}><b><i className="fa fa-paperclip" aria-hidden="true"> {translate("task.task_perform.file_attach")} ({child.files && child.files.length})</i></b></a></div></li>
-                                                                                        {showFile.some(obj => obj === child._id) &&
-                                                                                            <li style={{ display: "inline-table" }}>
-                                                                                                {child.files.map((elem, index) => {
-                                                                                                    return <div key={index} className="show-files-task">
-                                                                                                        {this.isImage(elem.name) ?
-                                                                                                            <ApiImage
-                                                                                                                listImage={listImage}
-                                                                                                                className="attachment-img files-attach"
-                                                                                                                style={{ marginTop: "5px" }}
-                                                                                                                src={elem.url}
-                                                                                                                file={elem}
-                                                                                                                requestDownloadFile={this.requestDownloadFile}
-                                                                                                            />
-                                                                                                            :
-                                                                                                            <div>
-                                                                                                                <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name}</a>
-                                                                                                                <a href="#" onClick={() => this.showFilePreview(elem && elem.url)}>
-                                                                                                                    <u>{elem && this.checkTypeFile(elem.url) ?
-                                                                                                                        <i className="fa fa-eye"></i> : ""}</u>
-                                                                                                                </a>
-                                                                                                            </div>
-                                                                                                        }
-                                                                                                    </div>
-                                                                                                })}
-                                                                                            </li>
-                                                                                        }
-                                                                                    </React.Fragment>}
-                                                                            </ul>
-                                                                        </div>
-                                                                    }
-
-                                                                    {/* Sửa bình luận của bình luận */}
-                                                                    {editCommentOfTaskComment === child._id &&
-                                                                        <React.Fragment>
-                                                                            <div>
-                                                                                <ContentMaker
-                                                                                    idQuill={`edit-child-comment-${child._id}`}
-                                                                                    inputCssClass="text-input-level2" controlCssClass="tool-level2 row"
-                                                                                    onFilesChange={this.onEditCommentOfTaskCommentFilesChange}
-                                                                                    onFilesError={this.onFilesError}
-                                                                                    files={newCommentOfTaskCommentEdited.files}
-                                                                                    text={newCommentOfTaskCommentEdited.descriptionDefault}
-                                                                                    submitButtonText={translate("task.task_perform.save_edit")}
-                                                                                    cancelButtonText={translate("task.task_perform.cancel")}
-                                                                                    handleEdit={(e) => this.handleEditCommentOfTaskComment(e)}
-                                                                                    onTextChange={(value, imgs) => {
-                                                                                        this.setState(state => {
-                                                                                            return { ...state, newCommentOfTaskCommentEdited: { ...state.newCommentOfTaskCommentEdited, description: value } }
-                                                                                        })
-                                                                                    }}
-                                                                                    onSubmit={(e) => { this.handleSaveEditCommentOfTaskComment(e, child._id, task._id, child.description) }}
-                                                                                />
-                                                                                {/* Hiện file đã tải lên */}
-                                                                                {child.files.length > 0 &&
-                                                                                    <div className="tool-level2" style={{ marginTop: -15 }}>
-                                                                                        {child.files.map(file => {
-                                                                                            return <div>
-                                                                                                <a style={{ cursor: "pointer" }}>{file.name} &nbsp;</a><a style={{ cursor: "pointer" }} className="link-black text-sm btn-box-tool" onClick={() => { this.handleDeleteFile(file._id, file.name, item._id, "commentoftaskcomment") }}><i className="fa fa-times"></i></a>
-                                                                                            </div>
-                                                                                        })}
-                                                                                    </div>}
-                                                                            </div>
-                                                                        </React.Fragment>
-                                                                    }
-                                                                </div>;
-                                                                return true;
-                                                            })
-                                                            }
-                                                            {/*Thêm bình luận cho bình luận */}
-                                                            <div>
-                                                                <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
-                                                                <ContentMaker
-                                                                    idQuill={`add-child-comment-${item._id}`}
-                                                                    inputCssClass="text-input-level2" controlCssClass="tool-level2 row"
-                                                                    onFilesChange={(files) => this.onCommentOfTaskCommentFilesChange(item._id, files)}
-                                                                    onFilesError={this.onFilesError}
-                                                                    files={newCommentOfTaskComment[`${item._id}`]?.files}
-                                                                    text={newCommentOfTaskComment[`${item._id}`]?.descriptionDefault}
-                                                                    placeholder={translate("task.task_perform.enter_comment")}
-                                                                    submitButtonText={translate("task.task_perform.create_comment")}
-                                                                    onTextChange={(value, imgs) => {
-                                                                        this.setState(state => {
-                                                                            state.newCommentOfTaskComment[`${item._id}`] = {
-                                                                                ...state.newCommentOfTaskComment[`${item._id}`],
-                                                                                description: value,
-                                                                                creator: currentUser,
-                                                                                descriptionDefault: null
-                                                                            }
-                                                                            return { ...state }
-                                                                        })
-                                                                    }}
-                                                                    onSubmit={(e) => { this.submitCommentOfTaskComment(item._id, task._id) }}
-                                                                />
-                                                            </div>
-                                                        </div>
-                                                    }
-                                                </div>
+                                                </React.Fragment>
                                             )
                                         })
                                     }
-                                </ShowMoreShowLess> : null
+                                </ShowMoreShowLess>
                             }
                         </div>
+                        <React.Fragment>
+                            <div style={{ marginTop: '15px' }}>
+                                <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
+                                <ContentMaker
+                                    idQuill={`upload-file-${id}`}
+                                    inputCssClass="text-input-level1" controlCssClass="tool-level1"
+                                    onFilesChange={onTaskFilesChange}
+                                    onFilesError={onFilesError}
+                                    files={taskFiles.files}
+                                    text={taskFiles.descriptionDefault}
+                                    placeholder={translate("task.task_perform.enter_description")}
+                                    submitButtonText={translate("task.task_perform.create_document")}
+                                    onTextChange={(value, imgs) => {
+                                        setState(state => {
+                                            return { ...state, taskFiles: { ...state.taskFiles, description: value, descriptionDefault: null } }
 
-
-                        {/* Chuyển qua tab tài liệu */}
-                        <div className={selected === "documentTask" ? "active tab-pane" : "tab-pane"} id="documentTask">
-                            <div>
-                                {documents &&
-                                    <ShowMoreShowLess
-                                        id={`documentTask${id}`}
-                                        styleShowMoreLess={{ display: "inline-block", marginBotton: 15, marginTop: 15 }}
-                                    >
-                                        {
-                                            documents.map((item, index) => {
-                                                let listImage = item.files.map((elem) => this.isImage(elem.name) ? elem.url : -1).filter(url => url !== -1);
-                                                return (
-                                                    <React.Fragment key={`documents-${item._id}`}>
-                                                        {showEditTaskFile !== item._id &&
-                                                            <div key={item._id} className={`item-box ${index > 3 ? "hide-component" : ""}`}>
-                                                                {(currentUser === item.creator?._id) &&
-                                                                    <div className="btn-group pull-right">
-                                                                        <span data-toggle="dropdown">
-                                                                            <i className="fa fa-ellipsis-h"></i>
-                                                                        </span>
-                                                                        <ul className="dropdown-menu">
-                                                                            <li><a style={{ cursor: "pointer" }} onClick={() => this.handleEditFileTask(item)} >{translate("task.task_perform.edit")}</a></li>
-                                                                            <li><a style={{ cursor: "pointer" }} onClick={() => this.props.deleteDocument(item._id, task._id)} >{translate("task.task_perform.delete")}</a></li>
-                                                                        </ul>
-                                                                    </div>}
-                                                                <div>
-                                                                    <ul className='list-inline list-name-document'>
-                                                                        <li><strong>{item.creator?.name} </strong></li>
-                                                                        <li><span className="text-sm">{<DateTimeConverter dateTime={item.createdAt} />}</span></li>
-                                                                    </ul>
-                                                                    {parse(item.description)}
-                                                                </div>
-                                                                <div>
-                                                                    {showFile.some(obj => obj === item._id) ?
-                                                                        <a style={{ cursor: 'pointer' }} onClick={() => { this.handleShowFile(item._id) }}>Ẩn bớt<i className='fa fa-angle-double-up'></i></a>
-                                                                        :
-                                                                        <a style={{ cursor: 'pointer' }} onClick={() => { this.handleShowFile(item._id) }}>Hiển thị {item?.files?.length} tài liệu &nbsp; <i className='fa fa-angle-double-down'></i> </a>
-                                                                    }
-                                                                </div>
-                                                                {showFile.some(obj => obj === item._id) &&
-                                                                    <React.Fragment>
-                                                                        <div>
-                                                                            {item.files.map((elem, index) => {
-                                                                                return (
-                                                                                    <div key={index} className="show-files-task">
-                                                                                        {this.isImage(elem.name) ?
-                                                                                            <ApiImage
-                                                                                                listImage={listImage}
-                                                                                                className="attachment-img files-attach"
-                                                                                                style={{ marginTop: "5px" }}
-                                                                                                src={elem.url}
-                                                                                                file={elem}
-                                                                                                requestDownloadFile={this.requestDownloadFile}
-                                                                                            />
-                                                                                            : <div>
-                                                                                                <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name}</a>
-                                                                                                <a href="#" onClick={() => this.showFilePreview(elem && elem.url)}>
-                                                                                                    <u>{elem && this.checkTypeFile(elem.url) ?
-                                                                                                        <i className="fa fa-eye"></i> : ""}</u>
-                                                                                                </a>
-                                                                                            </div>
-                                                                                        }
-
-                                                                                    </div>
-                                                                                )
-                                                                            })}
-                                                                        </div>
-                                                                    </React.Fragment>
-                                                                }
-                                                            </div>
-                                                        }
-                                                        {showEditTaskFile === item._id &&
-                                                            <React.Fragment>
-                                                                <div style={{ marginTop: '15px' }}>
-                                                                    <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
-                                                                    <ContentMaker
-                                                                        idQuill={`edit-file-${item._id}`}
-                                                                        inputCssClass="text-input-level1" controlCssClass="tool-level2 row"
-                                                                        onFilesChange={this.onEditFileTask}
-                                                                        onFilesError={this.onFilesError}
-                                                                        files={fileTaskEdited.files}
-                                                                        text={fileTaskEdited.descriptionDefault}
-                                                                        submitButtonText={translate("task.task_perform.save_edit")}
-                                                                        cancelButtonText={translate("task.task_perform.cancel")}
-                                                                        handleEdit={(e) => this.handleEditFileTask(e)}
-                                                                        onTextChange={(value, imgs) => {
-                                                                            this.setState(state => {
-                                                                                return { ...state, fileTaskEdited: { ...state.fileTaskEdited, description: value } }
-                                                                            })
-                                                                        }}
-                                                                        onSubmit={(e) => { this.handleSaveEditTaskFile(e, item.description, item._id, task._id) }}
-                                                                    />
-                                                                    {item.files.length > 0 &&
-                                                                        <div className="tool-level1" style={{ marginTop: -15 }}>
-                                                                            {item.files.map(file => {
-                                                                                return <div>
-                                                                                    <a style={{ cursor: "pointer" }}>{file.name} &nbsp;</a><a style={{ cursor: "pointer" }} className="link-black text-sm btn-box-tool" onClick={() => { this.handleDeleteFile(file._id, file.name, item._id, "task") }}><i className="fa fa-times"></i></a>
-                                                                                </div>
-                                                                            })}
-                                                                        </div>}
-                                                                </div>
-                                                            </React.Fragment>
-                                                        }
-                                                    </React.Fragment>
-                                                )
-                                            })
-                                        }
-                                    </ShowMoreShowLess>
-                                }
+                                        })
+                                    }}
+                                    disableSubmit={true}
+                                    onSubmit={(e) => { handleUploadFile(task?._id, currentUser) }}
+                                />
                             </div>
-                            <React.Fragment>
-                                <div style={{ marginTop: '15px' }}>
-                                    <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
-                                    <ContentMaker
-                                        idQuill={`upload-file-${id}`}
-                                        inputCssClass="text-input-level1" controlCssClass="tool-level1"
-                                        onFilesChange={this.onTaskFilesChange}
-                                        onFilesError={this.onFilesError}
-                                        files={taskFiles.files}
-                                        text={taskFiles.descriptionDefault}
-                                        placeholder={translate("task.task_perform.enter_description")}
-                                        submitButtonText={translate("task.task_perform.create_document")}
-                                        onTextChange={(value, imgs) => {
-                                            this.setState(state => {
-                                                return { ...state, taskFiles: { ...state.taskFiles, description: value, descriptionDefault: null } }
+                        </React.Fragment>
+                    </div>
 
-                                            })
-                                        }}
-                                        disableSubmit={true}
-                                        onSubmit={(e) => { this.handleUploadFile(task?._id, currentUser) }}
-                                    />
+                    {/* Chuyển qua tab công việc liên quan */}
+                    <div className={selected === "subTask" ? "active tab-pane" : "tab-pane"} id="subTask">
+                        <SubTaskTab
+                            id={state.id}
+                        />
+                    </div>
+
+                    {/* Chuyển qua tab Bấm giờ */}
+                    <div className={selected === "logTimer" ? "active tab-pane" : "tab-pane"} id="logTimer">
+                        <div className="row" style={{ display: 'flex', alignItems: 'center' }}>
+                            <div className="col-md-6">
+                                <div className="form-group">
+                                    <label>Hình thức bấm giờ</label>
+                                    <select className="form-control" value={state.filterLogAutoStopped} onChange={filterLogAutoStopped}>
+                                        <option value="all">Tất cả</option>
+                                        <option value="hand">Bấm giờ</option>
+                                        <option value="auto">Bấm hẹn giờ</option>
+                                        <option value="addlog">Bấm bù giờ</option>
+                                    </select>
                                 </div>
-                            </React.Fragment>
-                        </div>
+                            </div>
 
-                        {/* Chuyển qua tab công việc liên quan */}
-                        <div className={selected === "subTask" ? "active tab-pane" : "tab-pane"} id="subTask">
-                            <SubTaskTab
-                                id={this.state.id}
-                            />
-                        </div>
+                            <div className="col-md-6">
+                                <button className="btn btn-success" style={{ float: 'right' }}
+                                    disabled={showBoxAddLogTimer}
+                                    onClick={() => {
+                                        setState({
+                                            ...state,
+                                            showBoxAddLogTimer: true,
+                                        })
+                                    }}>
+                                    Add log hours
+                                </button>
+                            </div>
 
-                        {/* Chuyển qua tab Bấm giờ */}
-                        <div className={selected === "logTimer" ? "active tab-pane" : "tab-pane"} id="logTimer">
-                            <div className="row" style={{ display: 'flex', alignItems: 'center' }}>
-                                <div className="col-md-6">
-                                    <div className="form-group">
-                                        <label>Hình thức bấm giờ</label>
-                                        <select className="form-control" value={this.state.filterLogAutoStopped} onChange={this.filterLogAutoStopped}>
-                                            <option value="all">Tất cả</option>
-                                            <option value="hand">Bấm giờ</option>
-                                            <option value="auto">Bấm hẹn giờ</option>
-                                            <option value="addlog">Bấm bù giờ</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div className="col-md-6">
-                                    <button className="btn btn-success" style={{ float: 'right' }}
-                                        disabled={showBoxAddLogTimer}
-                                        onClick={() => {
-                                            this.setState({
-                                                ...this.state,
-                                                showBoxAddLogTimer: true,
-                                            })
-                                        }}>
-                                        Add log hours
-                                    </button>
-                                </div>
-
-                                {
-                                    showBoxAddLogTimer &&
-                                    <div className="addlog-box">
-                                        <h4 className="addlog-title">New Time Log</h4>
-                                        <p style={{ color: "#f96767" }}>(*) Ghi nhật ký thời gian không được phép cho các ngày trong tương lai</p>
-                                        <div>
-                                            <div className={`form-group ${!errorDateAddLog ? "" : "has-error"}`}>
-                                                <label>Ngày <span className="text-red">*</span></label>
-                                                <DatePicker
-                                                    id={`addlog-date`}
-                                                    onChange={this.handleChangeDateAddLog}
-                                                    defaultValue={formatDate(Date.now())}
-                                                />
-                                                <ErrorLabel content={errorDateAddLog} />
-                                            </div>
-                                            <div className="row">
-                                                <div className="col-sm-6 col-md-6">
-                                                    <div className={`form-group ${!errorStartTimeAddLog ? "" : "has-error"}`}>
-                                                        <label>Từ <span className="text-red">*</span></label>
-                                                        <TimePicker
-                                                            id={`addlog-startTime`}
-                                                            value={addLogStartTime}
-                                                            onChange={this.handleChangeDateAddStartTime}
-                                                            getDefaultValue={this.getDefaultValueStartTime}
-                                                        />
-                                                        <ErrorLabel content={errorStartTimeAddLog} />
-                                                    </div>
-                                                </div>
-                                                <div className="col-sm-6 col-md-6">
-                                                    <div className={`form-group ${!errorEndTimeAddLog ? "" : "has-error"}`}>
-                                                        <label>Đến <span className="text-red">*</span></label>
-                                                        <TimePicker
-                                                            id={`addlog-endtime`}
-                                                            value={addLogEndTime}
-                                                            onChange={this.handleChangeDateAddEndTime}
-                                                            getDefaultValue={this.getDefaultValueEndTime}
-                                                        />
-                                                        <ErrorLabel content={errorEndTimeAddLog} />
-                                                    </div>
+                            {
+                                showBoxAddLogTimer &&
+                                <div className="addlog-box">
+                                    <h4 className="addlog-title">New Time Log</h4>
+                                    <p style={{ color: "#f96767" }}>(*) Ghi nhật ký thời gian không được phép cho các ngày trong tương lai</p>
+                                    <div>
+                                        <div className={`form-group ${!errorDateAddLog ? "" : "has-error"}`}>
+                                            <label>Ngày <span className="text-red">*</span></label>
+                                            <DatePicker
+                                                id={`addlog-date`}
+                                                onChange={handleChangeDateAddLog}
+                                                defaultValue={formatDate(Date.now())}
+                                            />
+                                            <ErrorLabel content={errorDateAddLog} />
+                                        </div>
+                                        <div className="row">
+                                            <div className="col-sm-6 col-md-6">
+                                                <div className={`form-group ${!errorStartTimeAddLog ? "" : "has-error"}`}>
+                                                    <label>Từ <span className="text-red">*</span></label>
+                                                    <TimePicker
+                                                        id={`addlog-startTime`}
+                                                        value={addLogStartTime}
+                                                        onChange={handleChangeDateAddStartTime}
+                                                        getDefaultValue={getDefaultValueStartTime}
+                                                    />
+                                                    <ErrorLabel content={errorStartTimeAddLog} />
                                                 </div>
                                             </div>
-                                            <div className="form-group">
-                                                <label>Mô tả</label>
-                                                <TextareaAutosize
-                                                    style={{ width: '100%', border: '1px solid rgba(70, 68, 68, 0.15)', padding: '5px' }}
-                                                    minRows={3}
-                                                    maxRows={20}
-                                                    onChange={this.handleChangeAddLogDescription}
-                                                />
-                                            </div>
-                                            <div>
-                                                <button className="btn btn-success" style={{ marginRight: '10px' }} onClick={this.saveAddLogTime} disabled={!this.isFormValidated()} >Lưu</button>
-                                                <button className="btn btn-danger" onClick={() => {
-                                                    this.setState({
-                                                        ...this.state,
-                                                        showBoxAddLogTimer: false,
-                                                        addLogDescription: "",
-                                                    })
-                                                }}>Hủy</button>
+                                            <div className="col-sm-6 col-md-6">
+                                                <div className={`form-group ${!errorEndTimeAddLog ? "" : "has-error"}`}>
+                                                    <label>Đến <span className="text-red">*</span></label>
+                                                    <TimePicker
+                                                        id={`addlog-endtime`}
+                                                        value={addLogEndTime}
+                                                        onChange={handleChangeDateAddEndTime}
+                                                        getDefaultValue={getDefaultValueEndTime}
+                                                    />
+                                                    <ErrorLabel content={errorEndTimeAddLog} />
+                                                </div>
                                             </div>
                                         </div>
+                                        <div className="form-group">
+                                            <label>Mô tả</label>
+                                            <TextareaAutosize
+                                                style={{ width: '100%', border: '1px solid rgba(70, 68, 68, 0.15)', padding: '5px' }}
+                                                minRows={3}
+                                                maxRows={20}
+                                                onChange={handleChangeAddLogDescription}
+                                            />
+                                        </div>
+                                        <div>
+                                            <button className="btn btn-success" style={{ marginRight: '10px' }} onClick={() => saveAddLogTime()} disabled={!isFormValidated()} >Lưu</button>
+                                            <button className="btn btn-danger" onClick={() => {
+                                                setState({
+                                                    ...state,
+                                                    showBoxAddLogTimer: false,
+                                                    addLogDescription: "",
+                                                })
+                                            }}>Hủy</button>
+                                        </div>
                                     </div>
-                                }
-                            </div>
-                            {logTimer &&
-                                <ShowMoreShowLess
-                                    id={`logTimer${id}`}
-                                    styleShowMoreLess={{ display: "inline-block", marginBottom: 15, marginTop: 15 }}
-                                >
-                                    {logTimer.map((item, index) =>
-                                        <React.Fragment key={index}>
-                                            {item.stoppedAt &&
-                                                <div key={item._id} className={`item-box ${index > 3 ? "hide-component" : ""}`}>
-                                                    <h3 className={`pull-right ${item.acceptLog ? 'text-green' : 'text-red'}`}>{this.convertTime(item.duration)}</h3>
-                                                    <a style={{ fontWeight: 700, cursor: "pointer" }}>{item.creator?.name} </a>
-                                                    <div>
-                                                        <i className="fa fa-clock-o"> </i> {moment(item.startedAt).format("DD/MM/YYYY HH:mm:ss")}{" - "}
-                                                        <i className="fa fa-clock-o"> </i> {moment(item.stoppedAt).format("DD/MM/YYYY HH:mm:ss")})
-                                                    </div>
-                                                    <div>
-                                                        <i style={{ marginRight: '5px' }} className={`${item.autoStopped === 1 ? 'text-green fa fa-hand-pointer-o' : (item.autoStopped === 2 ? 'text-red fa fa-clock-o' : 'text-red fa fa-plus')}`}>{item.autoStopped === 1 ? 'Bấm giờ' : (item.autoStopped === 2 ? 'Bấm hẹn giờ' : 'Bấm bù giờ')}</i>
-                                                        {
-                                                            role === "accountable" ?
-                                                                (
-                                                                    <React.Fragment>
-                                                                        <i className={`${item.acceptLog ? 'text-green fa fa-check' : 'text-red fa fa-close'}`}> {item.acceptLog ? 'Được chấp nhận' : 'Không được chấp nhận'}</i>
-                                                                        <a
-                                                                            style={{ cursor: 'pointer', marginLeft: 10, fontWeight: 'bold' }}
-                                                                            className={item.acceptLog ? 'text-red' : 'text-green'}
-                                                                            onClick={
-                                                                                item.acceptLog ?
-                                                                                    () => {
-                                                                                        this.props.editTimeSheetLog(this.state.id, item._id, {
-                                                                                            acceptLog: false
-                                                                                        })
-                                                                                    } :
-                                                                                    () => {
-                                                                                        this.props.editTimeSheetLog(this.state.id, item._id, {
-                                                                                            acceptLog: true
-                                                                                        })
-                                                                                    }
-                                                                            }
-                                                                        >
-                                                                            [ {item.acceptLog ? 'Hủy' : 'Chấp nhận'} ]
-                                                                        </a>
-                                                                    </React.Fragment>
-                                                                ) : (
-                                                                    <i className={`${item.acceptLog ? 'text-green fa fa-check' : 'text-red fa fa-close'}`}> {item.acceptLog ? 'Được chấp nhận' : 'Không được chấp nhận'}</i>
-                                                                )
-                                                        }
-                                                    </div>
-                                                    <div>
-                                                        <i className="fa fa-edit"></i>
-                                                        {item.description ? item.description : translate("task.task_perform.none_description")}
-                                                    </div>
-                                                </div>
-                                            }
-                                        </React.Fragment>
-                                    )}
-                                </ShowMoreShowLess>
-                            }
-                        </div>
-
-                        {/* Chuyển qua tab Nhật ký lịch sử */}
-                        <div className={selected === "historyLog" ? "active tab-pane" : "tab-pane"} id="historyLog">
-                            {logs &&
-                                <ShowMoreShowLess
-                                    id={`historyLog${id}`}
-                                    styleShowMoreLess={{ display: "inline-block", marginBotton: 15 }}
-                                >
-                                    {
-                                        logs.map((item, index) =>
-                                            <div key={item._id} className={`item-box ${index > 3 ? "hide-component" : ""}`}>
-                                                <a style={{ fontWeight: 700, cursor: "pointer" }}>{item.creator?.name} </a>
-                                                {item.title ? item.title : translate("task.task_perform.none_description")}&nbsp;
-                                                ({moment(item.createdAt).format("HH:mm:ss DD/MM/YYYY")})
-                                                <div>
-                                                    {item.description ? parse(item.description) : translate("task.task_perform.none_description")}
-                                                </div>
-                                            </div>
-                                        )
-                                    }
-                                </ShowMoreShowLess>
-                            }
-                        </div>
-
-                        {/* Chuyển qua tab quy trình */}
-                        <div className={selected === "process" ? "active tab-pane" : "tab-pane"} id="process">
-                            {(task && task.process) &&
-                                <div>
-                                    {task &&
-                                        <ViewProcess
-                                            isTabPane={true}
-                                            data={task && task.process}
-                                            idProcess={task && task.process._id}
-                                            xmlDiagram={task && task.process.xmlDiagram}
-                                            processName={task && task.process.processName}
-                                            processDescription={task && task.process.processDescription}
-                                            infoTask={task && task.process.tasks}
-                                            creator={task && task.process.creator}
-                                        />
-                                    }
                                 </div>
                             }
                         </div>
-                        {/* Dữ liệu vào */}
-                        <div className={selected === "incoming-data" ? "active tab-pane" : "tab-pane"} id="incoming-data">
-                            {
-                                (task && task.process) &&
-                                <React.Fragment>
-                                    <IncomingDataTab
-                                        taskId={task._id}
-                                        preceedingTasks={task.preceedingTasks}
+                        {logTimer &&
+                            <ShowMoreShowLess
+                                id={`logTimer${id}`}
+                                styleShowMoreLess={{ display: "inline-block", marginBottom: 15, marginTop: 15 }}
+                            >
+                                {logTimer.map((item, index) =>
+                                    <React.Fragment key={index}>
+                                        {item.stoppedAt &&
+                                            <div key={item._id} className={`item-box ${index > 3 ? "hide-component" : ""}`}>
+                                                <h3 className={`pull-right ${item.acceptLog ? 'text-green' : 'text-red'}`}>{convertTime(item.duration)}</h3>
+                                                <a style={{ fontWeight: 700, cursor: "pointer" }}>{item.creator?.name} </a>
+                                                <div>
+                                                    <i className="fa fa-clock-o"> </i> {moment(item.startedAt).format("DD/MM/YYYY HH:mm:ss")}{" - "}
+                                                    <i className="fa fa-clock-o"> </i> {moment(item.stoppedAt).format("DD/MM/YYYY HH:mm:ss")})
+                                                </div>
+                                                <div>
+                                                    <i style={{ marginRight: '5px' }} className={`${item.autoStopped === 1 ? 'text-green fa fa-hand-pointer-o' : (item.autoStopped === 2 ? 'text-red fa fa-clock-o' : 'text-red fa fa-plus')}`}>{item.autoStopped === 1 ? 'Bấm giờ' : (item.autoStopped === 2 ? 'Bấm hẹn giờ' : 'Bấm bù giờ')}</i>
+                                                    {
+                                                        role === "accountable" ?
+                                                            (
+                                                                <React.Fragment>
+                                                                    <i className={`${item.acceptLog ? 'text-green fa fa-check' : 'text-red fa fa-close'}`}> {item.acceptLog ? 'Được chấp nhận' : 'Không được chấp nhận'}</i>
+                                                                    <a
+                                                                        style={{ cursor: 'pointer', marginLeft: 10, fontWeight: 'bold' }}
+                                                                        className={item.acceptLog ? 'text-red' : 'text-green'}
+                                                                        onClick={
+                                                                            item.acceptLog ?
+                                                                                () => {
+                                                                                    props.editTimeSheetLog(state.id, item._id, {
+                                                                                        acceptLog: false
+                                                                                    })
+                                                                                } :
+                                                                                () => {
+                                                                                    props.editTimeSheetLog(state.id, item._id, {
+                                                                                        acceptLog: true
+                                                                                    })
+                                                                                }
+                                                                        }
+                                                                    >
+                                                                        [ {item.acceptLog ? 'Hủy' : 'Chấp nhận'} ]
+                                                                    </a>
+                                                                </React.Fragment>
+                                                            ) : (
+                                                                <i className={`${item.acceptLog ? 'text-green fa fa-check' : 'text-red fa fa-close'}`}> {item.acceptLog ? 'Được chấp nhận' : 'Không được chấp nhận'}</i>
+                                                            )
+                                                    }
+                                                </div>
+                                                <div>
+                                                    <i className="fa fa-edit"></i>
+                                                    {item.description ? item.description : translate("task.task_perform.none_description")}
+                                                </div>
+                                            </div>
+                                        }
+                                    </React.Fragment>
+                                )}
+                            </ShowMoreShowLess>
+                        }
+                    </div>
+
+                    {/* Chuyển qua tab Nhật ký lịch sử */}
+                    <div className={selected === "historyLog" ? "active tab-pane" : "tab-pane"} id="historyLog">
+                        {logs &&
+                            <ShowMoreShowLess
+                                id={`historyLog${id}`}
+                                styleShowMoreLess={{ display: "inline-block", marginBotton: 15 }}
+                            >
+                                {
+                                    logs.map((item, index) =>
+                                        <div key={item._id} className={`item-box ${index > 3 ? "hide-component" : ""}`}>
+                                            <a style={{ fontWeight: 700, cursor: "pointer" }}>{item.creator?.name} </a>
+                                            {item.title ? item.title : translate("task.task_perform.none_description")}&nbsp;
+                                            ({moment(item.createdAt).format("HH:mm:ss DD/MM/YYYY")})
+                                            <div>
+                                                {item.description ? parse(item.description) : translate("task.task_perform.none_description")}
+                                            </div>
+                                        </div>
+                                    )
+                                }
+                            </ShowMoreShowLess>
+                        }
+                    </div>
+
+                    {/* Chuyển qua tab quy trình */}
+                    <div className={selected === "process" ? "active tab-pane" : "tab-pane"} id="process">
+                        {(task && task.process) &&
+                            <div>
+                                {task &&
+                                    <ViewProcess
+                                        isTabPane={true}
+                                        data={task && task.process}
+                                        idProcess={task && task.process._id}
+                                        xmlDiagram={task && task.process.xmlDiagram}
+                                        processName={task && task.process.processName}
+                                        processDescription={task && task.process.processDescription}
+                                        infoTask={task && task.process.tasks}
+                                        creator={task && task.process.creator}
                                     />
-
-                                </React.Fragment>
-                            }
-                        </div>
-
-                        {/** Dữ liệu ra */}
-                        <div className={selected === "outgoing-data" ? "active tab-pane" : "tab-pane"} id="outgoing-data">
-                            {
-                                (task && task.process) &&
-                                <OutgoingDataTab
-                                    isOutgoingData={task && task.followingTasks && task.followingTasks.length !== 0}
+                                }
+                            </div>
+                        }
+                    </div>
+                    {/* Dữ liệu vào */}
+                    <div className={selected === "incoming-data" ? "active tab-pane" : "tab-pane"} id="incoming-data">
+                        {
+                            (task && task.process) &&
+                            <React.Fragment>
+                                <IncomingDataTab
                                     taskId={task._id}
-                                    task={task}
+                                    preceedingTasks={task.preceedingTasks}
                                 />
-                            }
-                        </div>
+
+                            </React.Fragment>
+                        }
+                    </div>
+
+                    {/** Dữ liệu ra */}
+                    <div className={selected === "outgoing-data" ? "active tab-pane" : "tab-pane"} id="outgoing-data">
+                        {
+                            (task && task.process) &&
+                            <OutgoingDataTab
+                                isOutgoingData={task && task.followingTasks && task.followingTasks.length !== 0}
+                                taskId={task._id}
+                                task={task}
+                            />
+                        }
                     </div>
                 </div>
             </div>
-        );
-    }
+        </div>
+    );
 }
 
 function mapState(state) {
