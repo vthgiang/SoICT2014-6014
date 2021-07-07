@@ -20,6 +20,8 @@ import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
 import { convertDataToExportData, getTotalTimeSheetLogs, formatPriority, formatStatus } from './functionHelpers';
 import TaskListView from './taskListView';
 
+import TaskManagementImportForm from './taskManagementImportForm';
+
 class TaskManagement extends Component {
     constructor(props) {
         let userId = getStorage("userId");
@@ -666,6 +668,10 @@ class TaskManagement extends Component {
         )
     }
 
+    handleOpenModalImport = () => {
+        window.$('#modal_import_tasks').modal('show');
+    }
+
     render() {
         const { tasks, user, translate, project } = this.props;
         const { currentTaskId, currentPage, currentTab,
@@ -845,19 +851,36 @@ class TaskManagement extends Component {
             <React.Fragment>
                 <div className="box">
                     <div className="box-body qlcv">
-                        <div style={{ height: "40px" }}>
-                            <button className="btn btn-primary" type="button" style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }} title="Dạng bảng" onClick={() => this.handleDisplayType('table')}><i className="fa fa-table"></i> Dạng bảng</button>
-                            <button className="btn btn-primary" type="button" style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }} title="Dạng cây" onClick={() => this.handleDisplayType('tree')}><i className="fa fa-sitemap"></i> Dạng cây</button>
-                            <button className="btn btn-primary" type="button" style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }} title="Dạng danh sách" onClick={() => this.handleDisplayType('list')}><i className="fa fa-list"></i> Dạng danh sách</button>
-                            <button className="btn btn-primary" type="button" style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }} onClick={() => { window.$('#tasks-filter').slideToggle() }}><i className="fa fa-filter"></i> Lọc</button>
+                        <div style={{ height: "40px", display: 'flex', justifyContent: 'space-between' }}>
+                            <div><button className="btn btn-primary" type="button" style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }} title="Dạng bảng" onClick={() => this.handleDisplayType('table')}><i className="fa fa-table"></i> Dạng bảng</button>
+                                <button className="btn btn-primary" type="button" style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }} title="Dạng cây" onClick={() => this.handleDisplayType('tree')}><i className="fa fa-sitemap"></i> Dạng cây</button>
+                                <button className="btn btn-primary" type="button" style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }} title="Dạng danh sách" onClick={() => this.handleDisplayType('list')}><i className="fa fa-list"></i> Dạng danh sách</button>
+                                <button className="btn btn-primary" type="button" style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }} onClick={() => { window.$('#tasks-filter').slideToggle() }}><i className="fa fa-filter"></i> Lọc</button></div>
 
-                            {exportData && <ExportExcel id="list-task-employee" buttonName="Báo cáo" exportData={exportData} style={{ marginLeft: '10px' }} />}
-                            {currentTab !== "informed" &&
+                            <div style={{ display: 'flex', marginBottom: 6 }}>
+                                {
+                                    currentTab !== "informed" &&
+                                    <div className="dropdown">
+                                        <button type="button" className="btn btn-success dropdown-toggler" data-toggle="dropdown" aria-expanded="true" title='Thêm'>{translate('task_template.add')}</button>
+                                        <ul className="dropdown-menu pull-right">
+                                            <li><a href="#" title="ImportForm" onClick={() => { this.handleAddTask("") }}>{translate('task_template.add')}</a></li>
+                                            <li><a href="#" title="Import file excell" onClick={this.handleOpenModalImport}>{translate('task_template.import')}</a></li>
+                                        </ul>
+                                    </div>
+                                }
+                                {/* <button type="button" onClick={this.handleOpenModalImport} className="btn btn-success pull-right" title={translate('task.task_management.add_title')}>Thêm excel</button> */}
+
+                                {exportData && <ExportExcel id="list-task-employee" buttonName="Báo cáo" exportData={exportData} style={{ marginLeft: '10px' }} />}
+                                {/* {currentTab !== "informed" &&
                                 <button type="button" onClick={() => { this.handleAddTask("") }} className="btn btn-success pull-right" title={translate('task.task_management.add_title')}>{translate('task.task_management.add_task')}</button>
-                            }
+                            } */}
+                            </div>
 
+
+                            <TaskManagementImportForm />
                             <TaskAddModal currentTasks={(currentTasks && currentTasks.length !== 0) && this.list_to_tree(currentTasks)} parentTask={parentTask} />
                         </div>
+
 
                         <div id="tasks-filter" className="form-inline" style={{ display: 'none' }}>
                             <div className="form-group">

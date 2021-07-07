@@ -20,6 +20,7 @@ app.use(bodyParser.json({limit: '50mb'}));
 app.use(cookieParser());
 
 app.use("/upload/avatars", express.static("upload/avatars"));
+app.use("/upload/template-imports", express.static("upload/template-imports"));
 
 app.use("/upload/user-guide/task", express.static("upload/user-guide/task"));
 app.use("/upload/user-guide/kpi", express.static("upload/user-guide/kpi"));
