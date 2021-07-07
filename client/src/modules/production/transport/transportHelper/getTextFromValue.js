@@ -25,7 +25,7 @@ const requirements = [
     },
     {
         value: "5",
-        text: "Khác",
+        text: "Vận chuyển",
     }
 ];
 exports.getListTypeRequirement = () => {
@@ -81,6 +81,9 @@ exports.getTransportStatus = (routeOrdinal) => {
 
 const transportRequirementStatus = [
     {
+        value: "0", text: "Không được phê duyệt"
+    },
+    {
         value: "1", text: "Chờ phê duyệt"
     },
     {
@@ -99,6 +102,9 @@ const transportRequirementStatus = [
         value: "6", text: "Vận chuyển thất bại"
     }
 ]
+exports.getListTransportRequirementStatus = () => {
+    return transportRequirementStatus;
+}
 exports.getTransportRequirementStatus = (value) => {
     let res = "";
     let k = transportRequirementStatus.filter(r => String(r.value) === String(value));
@@ -126,6 +132,9 @@ const planStatus = [
         text: "Hoàn thành"
     },
 ]
+exports.getListPlanStatus = () => {
+    return planStatus;
+}
 exports.getPlanStatus = (value) => {
     let res = "";
     let tmp = planStatus.filter(r => String(r.value)===String(value));

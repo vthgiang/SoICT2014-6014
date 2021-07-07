@@ -5,6 +5,7 @@ export const transportDepartmentActions = {
     getAllTransportDepartments,
     createTransportDepartment,
     getUserByRole,
+    deleteTransportDepartment,
 }
 
 function getAllTransportDepartments(queryData) {
@@ -73,4 +74,26 @@ function getUserByRole(queryData) {
                 });
             });
     } 
+}
+function deleteTransportDepartment(id) {
+    return (dispatch) => {
+        dispatch({
+            type: transportDepartmentConstants.DELETE_TRANSPORT_DEPARTMENT_SUCCESS
+        });
+
+        transportDepartmentServices
+            .deleteTransportDepartment(id)
+            .then((res) => {
+                dispatch({
+                    type: transportDepartmentConstants.DELETE_TRANSPORT_DEPARTMENT_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch((error) => {
+                dispatch({
+                    type: transportDepartmentConstants.DELETE_TRANSPORT_DEPARTMENT_FAILURE,
+                    error
+                });
+            });
+    }
 }

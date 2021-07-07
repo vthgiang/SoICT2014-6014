@@ -12,7 +12,7 @@ import { DepartmentActions } from "../../../../super-admin/organizational-unit/r
 
 function TransportDepartmentCreateForm(props) {
 
-    let { allDepartments } = props;
+    let { allDepartments, transportDepartment } = props;
     
     // Chứa 2 giá trị 2 trường nhập vào và lỗi
     const [formState, setFormState] = useState({
@@ -71,10 +71,24 @@ function TransportDepartmentCreateForm(props) {
         ];
         (allDepartments && allDepartments.length !==0)
             && allDepartments.map((item, index) => {
-                listDepartmentArr.push({
-                    value: item._id,
-                    text: item.name,
-                });
+                let flag = true;
+                console.log(transportDepartment)
+                if (transportDepartment && transportDepartment.lists && transportDepartment.lists.length !==0){
+                    console.log("okkkkkkkkkkkkkkkkkkkkkkkkkkk")
+                    transportDepartment.lists.map(item2 => {
+                        console.log(item2, " plll")
+                        if (!flag) return;
+                        if (String(item2.organizationalUnit?._id)===String(item._id)){
+                            flag = false;
+                        }
+                    })
+                }
+                if (flag){
+                    listDepartmentArr.push({
+                        value: item._id,
+                        text: item.name,
+                    });
+                }
             })
         return listDepartmentArr;
     };
@@ -84,6 +98,9 @@ function TransportDepartmentCreateForm(props) {
             ...formState,
             _id: value[0],
         });
+        setFormRoleUnit1();
+        setFormRoleUnit2();
+        setFormRoleUnit3();
         let selectedUnit = allDepartments.filter(r=> String(r._id) === String(value[0]))
         if (selectedUnit && selectedUnit.length!==0){
             setSelectedOrganizationalUnit(selectedUnit[0]);
@@ -174,10 +191,11 @@ function TransportDepartmentCreateForm(props) {
             }
         }
         if (!(res && res.length!==0)){
-            res.push({
-                value: "title",
-                text: "Không có vai trò"
-            })
+            res= [];
+            // res.push({
+            //     value: "title",
+            //     text: "Không có vai trò"
+            // })
         }
         return res;
     }
@@ -226,12 +244,12 @@ function TransportDepartmentCreateForm(props) {
         <React.Fragment>
             <ButtonModal
                     // onButtonCallBack={handleClickCreateCode}
-                    modalID={"modal-create-transport-plan"}
+                    modalID={"modal-create-transport-deparment"}
                     button_name={"Thêm cấu hình đơn vị"}
                     title={"Thêm cấu hình đơn vị"}
             />
             <DialogModal
-                modalID="modal-create-transport-plan" 
+                modalID="modal-create-transport-deparment" 
                 isLoading={false}
                 formID="form-create-transport-requirements"
                 title={"Phân vai trò đơn vị vận chuyển"}
@@ -261,7 +279,7 @@ function TransportDepartmentCreateForm(props) {
                     </div>
                     <div className={`form-group`}>
                         
-                        <div className="box box-solid">
+                        {/* <div className="box box-solid"> */}
                             <label>
                                 {"Vai trò phê duyệt yêu cầu, tạo kế hoạch vận chuyển"}
                                 <span className="text-red">*</span>
@@ -289,7 +307,7 @@ function TransportDepartmentCreateForm(props) {
                                     {
                                         formRoleUnit1.users.map((item, index) => (
                                             item &&
-                                            <tr>
+                                            <tr key = {index}>
                                                 <td>{index+1}</td>
                                                 <td>{item.name}</td>
                                             </tr>
@@ -299,9 +317,9 @@ function TransportDepartmentCreateForm(props) {
                                 </table>                            
                             }
                             {/* <ErrorLabel content={roleError} /> */}
-                        </div>
+                        {/* </div> */}
 
-                        <div className="box box-solid">
+                        {/* <div className="box box-solid"> */}
                             <label>
                                 {"Vai trò giám sát thực hiện kế hoạch vận chuyển"}
                                 <span className="text-red">*</span>
@@ -329,7 +347,7 @@ function TransportDepartmentCreateForm(props) {
                                     {
                                         formRoleUnit2.users.map((item, index) => (
                                             item &&
-                                            <tr>
+                                            <tr key = {index}>
                                                 <td>{index+1}</td>
                                                 <td>{item.name}</td>
                                             </tr>
@@ -339,9 +357,9 @@ function TransportDepartmentCreateForm(props) {
                                 </table>                            
                             }
                             {/* <ErrorLabel content={roleError} /> */}
-                        </div>
+                        {/* </div> */}
 
-                        <div className="box box-solid">
+                        {/* <div className="box box-solid"> */}
                             <label>
                                 {"Vai trò nhân viên tham gia vận chuyển"}
                                 <span className="text-red">*</span>
@@ -369,7 +387,7 @@ function TransportDepartmentCreateForm(props) {
                                     {
                                         formRoleUnit3.users.map((item, index) => (
                                             item &&
-                                            <tr>
+                                            <tr key = {index}>
                                                 <td>{index+1}</td>
                                                 <td>{item.name}</td>
                                             </tr>
@@ -379,7 +397,7 @@ function TransportDepartmentCreateForm(props) {
                                 </table>                            
                             }
                             {/* <ErrorLabel content={roleError} /> */}
-                        </div>
+                        {/* </div> */}
                     </div>
                     
                 </form>
@@ -390,7 +408,8 @@ function TransportDepartmentCreateForm(props) {
 
 function mapState(state) {
     const allDepartments = state.department?.list
-    return { allDepartments }
+    const {transportDepartment} = state; 
+    return { allDepartments, transportDepartment }
 }
 
 const actions = {

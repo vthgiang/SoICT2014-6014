@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 
-import { DataTableSetting, DeleteNotification, PaginateBar, forceCheckOrVisible } from "../../../../../common-components";
+import { DataTableSetting, DeleteNotification, PaginateBar, SelectBox, DatePicker } from "../../../../../common-components";
 
-import { formatDate } from "../../../../../helpers/formatDate"
+import { formatDate, formatToTimeZoneDate } from "../../../../../helpers/formatDate"
 import { TransportPlanGenerate } from "./transport-plan-auto-generate/transportPlanGenerate"
 import { TransportPlanCreateForm } from "./transportPlanCreateForm"
 import { TransportPlanEditForm } from "./transportPlanEditForm"
@@ -16,6 +16,8 @@ import { transportVehicleActions } from '../../transport-vehicle/redux/actions'
 import { transportDepartmentActions } from "../../transport-department/redux/actions"
 // import { transportRequirementsActions } from "../redux/actions";
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
+
+import { getListPlanStatus } from "../../transportHelper/getTextFromValue"
 // import { convertJsonObjectToFormData } from '../../../../../helpers/jsonObjectToFormDataObjectConverter'
 // import { UserActions } from "../../../../super-admin/user/redux/actions";
 
@@ -32,6 +34,7 @@ function TransportPlanManagementTable(props) {
 
     const [currentTransportPlan, setCurrentTransportPlan] = useState()
     const [reloadRequirementTable, setReloadRequirementTable] = useState()
+    const [searchData, setSearchData] = useState(); // tham số tìm kiếm
 
     const [pageStatus, setPageStatus] = useState({
         page: 1,
@@ -59,9 +62,17 @@ function TransportPlanManagementTable(props) {
             text: "Hoàn thành"
         },
     ]
-
     useEffect(() => {
         props.getAllTransportPlans({page: page, limit: perPage});
+    }, [])
+
+    useEffect(() => {
+        let queryData = {
+            page: page,
+            limit: perPage,
+            searchData: searchData,
+        }
+        props.getAllTransportPlans(queryData);
         // props.getAllUserOfCompany();
     }, [pageStatus])
 
@@ -88,7 +99,7 @@ function TransportPlanManagementTable(props) {
 
     const handleShowDetailInfo = (transportPlan) => {
         setCurrentTransportPlan(transportPlan);
-        window.$('#modal-detail-info-transport-plan').modal('show');
+        window.$('#modal-detail-info-transport-plan11').modal('show');
     }
 
     const reloadOtherEditForm = (value) => {
@@ -130,6 +141,58 @@ function TransportPlanManagementTable(props) {
         }
         return true;
     }
+    // xử lí khi tham số search thay đổi
+
+    const handleCodeChange = (e) => {
+        const {value} = e.target;
+        setSearchData({
+            ...searchData,
+            code: value,
+        })
+    }
+    const handleNameChange = (e) => {
+        const {value} = e.target;
+        setSearchData({
+            ...searchData,
+            name: value,
+        })
+    }
+    const handleStartDateChange = (value) => {
+        setSearchData({
+            ...searchData,
+            startDate: formatToTimeZoneDate(value),
+        })
+    }
+    const handleEndDateChange = (value) => {
+        setSearchData({
+            ...searchData,
+            endDate: formatToTimeZoneDate(value),
+        })
+    }
+    const handleStatusChange = (value) => {
+        if (value[0] !== "0"){
+            setSearchData({
+                ...searchData,
+                status: value[0],
+            })
+        }
+        else {
+            setSearchData({
+                ...searchData,
+                status: null,
+            })
+        }
+    }
+
+    const handleSubmitSearch = () => {
+        let queryData = {
+            page: page,
+            limit: perPage,
+            searchData: searchData,
+        }
+        props.getAllTransportPlans(queryData);
+    }
+
     return (
         // <div className="nav-tabs-custom">
         // <ul className="nav nav-tabs">
@@ -166,7 +229,54 @@ function TransportPlanManagementTable(props) {
             />
             
             <div className="form-inline">
+                <div className="form-group">
+                    <label className="form-control-static">{"Mã kế hoạch"}</label>
+                    <input type="text" className="form-control" name="code" value={searchData?.code} onChange={handleCodeChange} placeholder={"Mã kế hoạch"} autoComplete="off" />
+                </div>
+                <div className="form-group">
+                    <label className="form-control-static">{"Tên kế hoạch"}</label>
+                    <input type="text" className="form-control" name="name" value={searchData?.name} onChange={handleNameChange} placeholder={"Tên kế hoạch"} autoComplete="off" />
+                </div>
+            </div>
 
+            <div className="form-inline">
+                <div className="form-group">
+                    <label className="form-control-static">{"Từ ngày"}</label>
+                    <DatePicker
+                        id={`search-plan-startDate`}
+                        value={formatDate(searchData?.startDate)}
+                        onChange={handleStartDateChange}
+                        disabled={false}
+                    />
+                </div>   
+                <div className="form-group">
+                    <label className="form-control-static">{"Đến ngày"}</label>
+                    <DatePicker
+                        id={`search-plan-endDate`}
+                        value={formatDate(searchData?.endDate)}
+                        onChange={handleEndDateChange}
+                        disabled={false}
+                    />
+                </div> 
+            </div>
+
+            <div className="form-inline">    
+                <div className="form-group">
+                    <label className="form-control-static">{"Trạng thái"}</label>
+                    <SelectBox
+                        id={`search-status-plan-transport`}
+                        className="form-control select2"
+                        style={{ width: "100%" }}
+                        value={searchData?.status}
+                        items={[{value: "0", text: "---Trạng thái kế hoạch"}].concat(getListPlanStatus())}
+                        onChange={handleStatusChange}
+                        multiple={false}
+                    />
+                </div>                              
+                <div className="form-group">
+                    <label className="form-control-static"></label>
+                    <button type="button" className="btn btn-success" title={translate('manage_example.search')} onClick={handleSubmitSearch} >{translate('manage_example.search')}</button>
+                </div>
             </div>
 
             {/* Danh sách lịch vận chuyển */}

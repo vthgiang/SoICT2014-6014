@@ -54,7 +54,7 @@ function TransportDetailRoute(props) {
                 modalID={`modal-detail-route-manage`}
                 title={"Các nhiệm vụ cụ thể"}
                 formID={`modal-detail-route-manage`}
-                size={100}
+                size={50}
                 maxWidth={500}
                 hasSaveButton={false}
                 hasNote={false}
@@ -73,7 +73,7 @@ function TransportDetailRoute(props) {
                         <th>{"Địa chỉ"}</th>
                         <th>{"Nhiệm vụ"}</th>
                         <th>{"Trạng thái"}</th>
-                        <th>{"Hành động"}</th>
+                        {/* <th>{"Hành động"}</th> */}
                         {/* <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
                             <DataTableSetting
                                 tableId={tableId}
@@ -101,7 +101,7 @@ function TransportDetailRoute(props) {
                                 <td>
                                     {getTransportStatus(routeOrdinal)}
                                 </td>
-                                <td style={{ textAlign: "center" }}>
+                                {/* <td style={{ textAlign: "center" }}>
                                     <a className="edit text-green" style={{ width: '5px' }} 
                                         // title={translate('manage_example.detail_info_example')} 
                                         title={'Thông tin chi tiết yêu cầu vận chuyển'}
@@ -111,7 +111,7 @@ function TransportDetailRoute(props) {
                                             visibility
                                         </i>
                                     </a>
-                                </td>
+                                </td> */}
                             </tr>
                         ))
                     }

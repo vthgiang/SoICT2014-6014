@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { ButtonModal, DialogModal, ErrorLabel, DatePicker, SelectBox } from '../../../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
 import ValidationHelper from '../../../../../../helpers/validationHelper';
-import { formatDate } from "../../../../../../helpers/formatDate"
+import { formatDate, formatToTimeZoneDate } from "../../../../../../helpers/formatDate"
 
 import { exampleActions } from '../../redux/actions';
 import { BillActions } from '../../../../warehouse/bill-management/redux/actions'
@@ -22,10 +22,18 @@ function TransportTime(props) {
 
     const [listTimeChosen, setListTimeChosen] = useState([]);
 
+    const [errorForm, setErrorForm] = useState({})
+
+    let {timeError} = errorForm;
+
     let handleTimeChange = (value) => {
         setCurrentTime({
             ...currentTime,
             time: value,
+        })
+        setErrorForm({
+            ...errorForm,
+            timeError: null
         })
     }
     let handleDetailChange = (e) => {
@@ -36,15 +44,41 @@ function TransportTime(props) {
     }
     const handleAddTime = (e) => {
         e.preventDefault();
-        let time = {
-            time: currentTime.time,
-            detail: currentTime.detail,
+        try {
+            if (!formatToTimeZoneDate(currentTime.time)){
+                setErrorForm({
+                    ...errorForm,
+                    timeError: "Ngày không hợp lệ"
+                })
+                return;
+            };
+            let selectDate = new Date(formatToTimeZoneDate(currentTime.time));
+            selectDate.setHours(10,1,1);
+            let currentDate = new Date();
+            currentDate.setHours(8,1,1);
+            if (currentDate.getTime() > selectDate.getTime()){
+                setErrorForm({
+                    ...errorForm,
+                    timeError: "Ngày mong muốn không trước ngày hôm nay",
+                })
+                return;
+            }
+            let time = {
+                time: currentTime.time,
+                detail: currentTime.detail,
+            }
+            setListTimeChosen(listTimeChosen => [...listTimeChosen, time]);
+        } catch (error) {
+            setErrorForm({
+                ...errorForm,
+                timeError: "Ngày không hợp lệ"
+            })
+            return;
         }
-        setListTimeChosen(listTimeChosen => [...listTimeChosen, time]);
     }
 
     useEffect(() => {
-        console.log(listTimeChosen, " danh sach thoi gian lua chon");
+        // console.log(listTimeChosen, " danh sach thoi gian lua chon");
         callBackState(listTimeChosen);
     }, [listTimeChosen])
 
@@ -60,6 +94,13 @@ function TransportTime(props) {
             setListTimeChosen(list);
         }
     }, [timeRequested])
+
+    useEffect(() => {
+        if (currentTime){
+            // if (new Date(currentTime) !== "Invalid Date") && !isNaN(new Date(currentTime))
+        }
+    }, [currentTime])
+
     return (
         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <fieldset className="scheduler-border">
@@ -68,19 +109,18 @@ function TransportTime(props) {
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div className="row">
                             <div className="col-xs-12 col-sm-3 col-md-3 col-lg-3">
-                                <div className={`form-group`}
+                                <div className={`form-group ${!timeError ? "" : "has-error"}`}
                                 >
                                     <label>
                                         {"Chọn ngày"}
-                                        <span className="attention"> * </span>
                                     </label>
                                     <DatePicker
                                         id={componentId?componentId:`expected_date2`}
                                         value={currentTime.time}
                                         onChange={handleTimeChange}
                                         disabled={false}
-                                    />
-                                    {/* <ErrorLabel content={errorGood} /> */}
+                                    />                                    
+                                    <ErrorLabel content={timeError} />
                                 </div>
                             </div>
                             <div className="col-xs-12 col-sm-5 col-md-5 col-lg-5">

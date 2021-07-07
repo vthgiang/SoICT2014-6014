@@ -2,6 +2,7 @@ import { sendRequest } from '../../../../../helpers/requestHelper';
 export const transportDepartmentServices = {
     getAllTransportDepartments,
     createTransportDepartment,
+    deleteTransportDepartment,
     getUserByRole,
 }
 
@@ -14,7 +15,7 @@ function createTransportDepartment(data) {
         },
         true,
         true,
-        "manage_transport"
+        "manage_transport.transportDepartment"
     )
 }
 
@@ -32,8 +33,20 @@ function getAllTransportDepartments(queryData) {
         },
          false, // Nếu có truy vấn thành công thì không hiện thông báo
          true, // Nếu có truy vấn thất bại thì hiện thông báo
-         "transport.department"
+         "manage_transport.transportDepartment"
     );
+}
+
+function deleteTransportDepartment(id) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/transport-department/${id}`,
+            method: "DELETE"
+        },
+        true,
+        true,
+        "manage_transport.transportDepartment"
+    )
 }
 
 function getUserByRole(queryData) {
@@ -46,6 +59,7 @@ function getUserByRole(queryData) {
                 // limit: queryData !== undefined ? queryData.limit : null
                 currentUserId: queryData !== undefined ? queryData.currentUserId : null,
                 role: queryData !== undefined ? queryData.role : null,
+                currentRole: localStorage.getItem('currentRole'),
             } 
         }
     );

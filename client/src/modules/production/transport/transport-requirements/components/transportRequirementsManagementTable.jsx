@@ -2,21 +2,23 @@ import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 
-import { DataTableSetting, DeleteNotification, PaginateBar } from "../../../../../common-components";
+import { DataTableSetting, DeleteNotification, PaginateBar, SelectBox } from "../../../../../common-components";
 
 import { TransportRequirementsCreateForm } from "./transportRequirementsCreateForm"
 import { TransportRequirementsViewDetails } from "./transportRequirementsViewDetails"
 import { TransportRequirementsEditForm } from './transportRequirementsEditForm'
+import { ApproveForm } from './approve-transport-requirement/approveForm'
 
 import { transportRequirementsActions } from "../redux/actions";
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 
-import {getTypeRequirement, getTransportRequirementStatus} from '../../transportHelper/getTextFromValue'
+import {getTypeRequirement, getTransportRequirementStatus, getListTransportRequirementStatus} from '../../transportHelper/getTextFromValue'
 
 function TransportRequirementsManagementTable(props) {
     const getTableId = "table-manage-transport-requirements-hooks";
     const defaultConfig = { limit: 5 }
     const getLimit = getTableConfiguration(getTableId, defaultConfig).limit;
+
 
     const requirements = [
         {
@@ -45,7 +47,7 @@ function TransportRequirementsManagementTable(props) {
         },
         {
             value: "5",
-            text: "Khác",
+            text: "Vận chuyển",
         }
     ];
     // Khởi tạo state
@@ -70,7 +72,6 @@ function TransportRequirementsManagementTable(props) {
                 setAllTransportRequirements(transportRequirements.lists)
             }
         }
-        console.log(transportRequirements)
     }, [transportRequirements])
 
     /**
@@ -101,13 +102,64 @@ function TransportRequirementsManagementTable(props) {
     const editTransportRequirement = (requirementId, data) => {
         props.editTransportRequirement(requirementId, data);
     }
-    const handleShowApprove = (requirement) => {
-        props.editTransportRequirement(requirement._id, {status: 2})
+    const handleShowApprove = (transportRequirement) => {
+        // props.editTransportRequirement(requirement._id, {status: 2})
+        setState({
+            ...state,
+            curentTransportRequirementDetail: transportRequirement,
+        });
+        window.$('#modal-approve-transport-requirement').modal('show');
+    }
+
+    const checkGeocode = (x) => {
+        if (x.geocode){
+            if (x.geocode.fromAddress && x.geocode.fromAddress.lat && Number(x.geocode.fromAddress.lat) !== -1 && x.geocode.fromAddress.lng && Number(x.geocode.fromAddress.lng) !== -1
+            &&x.geocode.toAddress && x.geocode.toAddress.lat && Number(x.geocode.toAddress.lat) !== -1 && x.geocode.toAddress.lng && Number(x.geocode.toAddress.lng) !== -1){
+               return 1;
+            }
+        }
+        return 0;
+    }
+
+    const statusRequirement = (x) => {
+        let res = getTransportRequirementStatus(x.status);
+        if (Number(x.status) === 0 || Number(x.status) ===1){
+            let s = " - Cần xác định lại địa điểm giao nhận"
+            if (checkGeocode(x) === 1){
+                s="";
+            }
+            res+=s;
+        }
+        return res;
+    }
+
+    const checkEdit = (requirement) => {
+        if (localStorage.getItem('userId') === String(requirement?.creator?._id)){
+            return 1;
+        }
+        return 0;
     }
     const checkApprover = (requirement) => {
-        console.log(String(localStorage.getItem("userId") === String(requirement.approver?._id)), " aaaaaaaaaaaaaaaaaaaaa")
+        // console.log(String(localStorage.getItem("userId") === String(requirement.approver?._id)), " aaaaaaaaaaaaaaaaaaaaa")
         if (String(localStorage.getItem("userId")) === String(requirement.approver?._id)){
-            return 1;
+            if (requirement.department){
+                // console.log(requirement.department)
+                if (requirement.department.type && requirement.department.type.length !==0){
+                    let role1 = requirement.department.type.filter(r => Number(r.roleTransport) === 1);
+                    if (role1 && role1.length !==0){
+                        let currentRole = localStorage.getItem('currentRole');
+                        let flag = false;
+                        if (role1[0].roleOrganizationalUnit?.length !== 0){
+                            role1[0].roleOrganizationalUnit.map(r => {
+                                if (r._id === currentRole){
+                                    flag = true;
+                                }
+                            })
+                        }
+                        if (flag) return 1;
+                    }
+                }
+            }
         }
         else
         return 2;
@@ -117,7 +169,6 @@ function TransportRequirementsManagementTable(props) {
      * @param {*} example thông tin của ví dụ cần xem
      */
     const handleShowDetailInfo = (transportRequirement) => {
-        console.log(transportRequirement, " day la transportrequirement")
         setState({
             ...state,
             curentTransportRequirementDetail: transportRequirement,
@@ -160,6 +211,50 @@ function TransportRequirementsManagementTable(props) {
     // const totalPage = example && Math.ceil(example.totalList / perPage);
     const totalPage = allTransportRequirements && Math.ceil(allTransportRequirements.length / perPage);
 
+    // xử lí khi tham số search thay đổi -------------------------------------------------------------
+
+    const [searchData, setSearchData] = useState();
+
+    const handleCodeChange = (e) => {
+        const {value} = e.target;
+        setSearchData({
+            ...searchData,
+            code: value,
+        })
+    }
+    const handleTypeChange = (value) => {
+        if (value[0] !== "0"){
+            setSearchData({
+                ...searchData,
+                type: value[0],
+            })
+        }
+        else {
+            setSearchData({
+                ...searchData,
+                type: null,
+            })
+        }
+    }
+    const handleStatusChange =(value) => {
+        if (value[0] !== "0"){
+            setSearchData({
+                ...searchData,
+                status: value[0],
+            })
+        }
+        else {
+            setSearchData({
+                ...searchData,
+                status: null,
+            })
+        }
+    }    
+
+    const handleSubmitSearch = () => {
+        props.getAllTransportRequirements(searchData);
+    }
+
     return (
         <React.Fragment>
             <TransportRequirementsCreateForm 
@@ -173,15 +268,45 @@ function TransportRequirementsManagementTable(props) {
                 curentTransportRequirementDetail={curentTransportRequirementDetail}
                 editTransportRequirement={editTransportRequirement}
             />
+            <ApproveForm
+                currentTransportRequirementDetail={curentTransportRequirementDetail}
+            />
             <div className="box-body qlcv">
                 <div className="form-inline">
                     {/* Tìm kiếm */}
                     <div className="form-group">
                         <label className="form-control-static">{"Mã yêu cầu"}</label>
-                        <input type="text" className="form-control" name="exampleName" placeholder={"Mã yêu cầu"} autoComplete="off" />
+                        <input type="text" className="form-control" name="code" value={searchData?.code} onChange={handleCodeChange} placeholder={"Mã yêu cầu"} autoComplete="off" />
                     </div>
                     <div className="form-group">
-                        <button type="button" className="btn btn-success" title={translate('manage_example.search')} >{translate('manage_example.search')}</button>
+                        <label className="form-control-static">{"Loại yêu cầu"}</label>
+                        <SelectBox
+                            id={`search-type-transport`}
+                            className="form-control select2"
+                            style={{ width: "100%" }}
+                            value={searchData?.type}
+                            items={[{value: "0", text: "---Chọn yêu cầu"}].concat(requirements)}
+                            onChange={handleTypeChange}
+                            multiple={false}
+                        />
+                    </div>                    
+                </div>
+                <div className="form-inline">
+                    <div className="form-group">
+                        <label className="form-control-static">{"Trạng thái"}</label>
+                        <SelectBox
+                            id={`search-status-transport`}
+                            className="form-control select2"
+                            style={{ width: "100%" }}
+                            value={searchData?.status}
+                            items={[{value: "0", text: "---Trạng thái vận chuyển"}].concat(getListTransportRequirementStatus())}
+                            onChange={handleStatusChange}
+                            multiple={false}
+                        />
+                    </div>   
+                    <div className="form-group">
+                        <label className="form-control-static"></label>
+                        <button type="button" className="btn btn-success" title={translate('manage_example.search')} onClick={handleSubmitSearch} >{translate('manage_example.search')}</button>
                     </div>
                 </div>
 
@@ -231,7 +356,7 @@ function TransportRequirementsManagementTable(props) {
                                     <td>{x.toAddress}</td>
                                     <td>{x.creator ? x.creator.name : ""}</td>
                                     <td>{x.approver ? x.approver.name: ""}</td>
-                                    <td>{getTransportRequirementStatus(x.status)}</td>
+                                    <td>{statusRequirement(x)}</td>
                                     <td style={{ textAlign: "center" }}>
                                         <a className="edit text-green" style={{ width: '5px' }} 
                                             // title={translate('manage_example.detail_info_example')} 
@@ -243,7 +368,7 @@ function TransportRequirementsManagementTable(props) {
                                             </i>
                                         </a>
                                         {
-                                            (String(x.status)==="1")
+                                            ((String(x.status)==="1" || String(x.status)==="0") && checkEdit(x) === 1)
                                             && (
                                             <a className="edit text-yellow" 
                                                 style={{ width: '5px' }} 
@@ -257,8 +382,7 @@ function TransportRequirementsManagementTable(props) {
                                             )
                                         }
                                         {
-                                        // this.checkUserForApprove(item) === 1 && 
-                                        (String(x.status)==="1"&&checkApprover(x) === 1)
+                                        ((String(x.status)==="1" || String(x.status) === "0") &&checkApprover(x) === 1 && checkGeocode(x) === 1)
                                         &&(
                                             <a
                                                 onClick={() => handleShowApprove(x)}

@@ -2,25 +2,16 @@ import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 
-import { DataTableSetting, DeleteNotification, PaginateBar, DatePicker } from "../../../../../common-components";
-import { formatDate, formatToTimeZoneDate} from "../../../../../helpers/formatDate"
+import { DatePicker } from "../../../../../../common-components";
+import { formatDate, formatToTimeZoneDate} from "../../../../../../helpers/formatDate"
 
-import { TransportPlanCreateForm } from "./transportPlanCreateForm"
-import { TransportPlanEditForm } from "./transportPlanEditForm"
-import { TransportPlanDetailInfo } from "./transport-plan-detail/transportPlanDetailInfo2"
-import { TransportVehicleCarrierListedChart } from "./transport-vehicle-carrier-listed/transportVehicleCarrierListedChart"
+import { TransportPlanDetailInfo } from "../transportPlanDetailInfo"
 
-import { transportPlanActions } from "../redux/actions"
-import { transportVehicleActions } from '../../transport-vehicle/redux/actions'
-import { transportDepartmentActions } from "../../transport-department/redux/actions"
-// import { transportRequirementsActions } from "../redux/actions";
-import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
-import { convertJsonObjectToFormData } from '../../../../../helpers/jsonObjectToFormDataObjectConverter'
-
-import { isTimeZoneDateSmaller, getListDateBetween } from "../../transportHelper/compareDateTimeZone"
+import { isTimeZoneDateSmaller, getListDateBetween } from "../../../transportHelper/compareDateTimeZone"
 
 function TransportVehicleCarrier2(props) {
     let { transportPlan, transportDepartment, transportVehicle } = props
+    let idPlan = "plan-detail-generate-2";
     const getNext5Day = ()=> {
         let currentDay = new Date();
         let date = currentDay.getDate();
@@ -61,13 +52,6 @@ function TransportVehicleCarrier2(props) {
     }
 
     useEffect(() => {
-        // Lấy tất cả plans đã có để kiểm tra xe và người có bị trùng lặp không
-        // props.getAllTransportDepartments();       
-        // props.getAllTransportVehicles();
-        // props.getUserByRole({currentUserId: localStorage.getItem('userId'), role: 3})
-    }, [transportPlan])
-
-    useEffect(() => {
         if (date.startDate && date.endDate){
             let lday = getListDateBetween(date.startDate, date.endDate);
             let allVehicles=[];
@@ -78,29 +62,6 @@ function TransportVehicleCarrier2(props) {
                     allVehicles.push(vehicle);
                 })
             }
-            // if (transportDepartment && transportDepartment.lists && transportDepartment.lists.length !==0){
-            //     let lists = transportDepartment.lists;
-            //     let carrierOrganizationalUnit = [];
-            //     carrierOrganizationalUnit = lists.filter(r => r.role === 2) // role nhân viên vận chuyển
-            //     if (carrierOrganizationalUnit && carrierOrganizationalUnit.length !==0){
-            //         carrierOrganizationalUnit.map(item =>{
-            //             if (item.organizationalUnit){
-            //                 let organizationalUnit = item.organizationalUnit;
-            //                 organizationalUnit.employees && organizationalUnit.employees.length !==0
-            //                 && organizationalUnit.employees.map(employees => {
-            //                     employees.users && employees.users.length !== 0
-            //                     && employees.users.map(users => {
-            //                         if (users.userId){
-            //                             if (users.userId.name){
-            //                                 allCarriers.push(users.userId)
-            //                             }
-            //                         }
-            //                     })
-            //                 })
-            //             }
-            //         })
-            //     } 
-            // }
             if (transportDepartment && transportDepartment.listUser && transportDepartment.listUser.length!==0){
                 let listUser = transportDepartment.listUser.filter(r=>Number(r.role) === 3);
                 if (listUser && listUser.length!==0 && listUser[0].list && listUser[0].list.length!==0){
@@ -240,7 +201,7 @@ function TransportVehicleCarrier2(props) {
     const handleShowDetailPlan = (plan) => {
         // console.log(plan);
         setPlanChosenSeen(plan);
-        window.$('#modal-detail-info-transport-plan2').modal('show');
+        window.$('#'+idPlan).modal('show');
     }
 
     useEffect(() => {
@@ -259,7 +220,7 @@ function TransportVehicleCarrier2(props) {
                 <div className="form-group">
                     <label className="form-control-static">Từ ngày: </label>
                     <DatePicker
-                        id={`start_date_232`}
+                        id={`start_date_23`}
                         value={formatDate(date.startDate)}
                         onChange={handleStartDateChange}
                         disabled={false}
@@ -268,22 +229,16 @@ function TransportVehicleCarrier2(props) {
                 <div className="form-group">
                     <label className="form-control-static">Đến ngày: </label>
                     <DatePicker
-                        id={`end_date_232`}
+                        id={`end_date_23`}
                         value={formatDate(date.endDate)}
                         onChange={handleEndDateChange}
                         disabled={false}
                     />
                 </div>
             </div>
-            
-            {/* <div className="box box-solid"> */}
-                {/* <div className="box-header"> */}
-                    {/* <div className="box-title">{"Danh sách sử dụng phuơng tiện theo ngày"}</div> */}
-                {/* </div> */}
-
-                {/* <div className="box-body qlcv"> */}
                     <TransportPlanDetailInfo 
                         currentTransportPlan={planChosenSeen}
+                        idPlan={idPlan}
                     />
                     <div className={"divTest"}>
                         <table className={"tableTest table-bordered table-hover not-sort"}>
@@ -408,34 +363,6 @@ function TransportVehicleCarrier2(props) {
                             </tbody>
                         </table>
                     </div>
-                {/* </div> */}
-            {/* </div> */}
-
-            {/* <div className="box box-solid">
-                <div className="box-header">
-                    <div className="box-title">{"Danh sách công việc vận chuyển nhân viên theo ngày"}</div>
-                </div>
-
-                <div className="box-body qlcv">
-
-                    <div className={"divTest"}>
-                        <table id="vehicle-used-list" className={"tableTest table-bordered table-hover not-sort"}>
-                            <thead>
-                                <tr className="word-no-break">
-                                    <th>{"STT"}</th>
-                                    <th>{"Tên nhân viên"}</th>
-                                    <th>{"Email"}</th>
-                                </tr>
-                            </thead>
-                            <tbody className="transport-special-row">
-                            
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div> */}
-         
-        {/* </div> */}
         </React.Fragment>
     )
 }
