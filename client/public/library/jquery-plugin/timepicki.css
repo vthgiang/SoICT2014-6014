@@ -47,23 +47,27 @@ Author: senthil
 }
 
 .time_pick {
-	
-    
-    position: fixed;
-	z-index: 1000;
+    position: relative;
+	z-index: 1000 ; 
 }
 
 .timepicker_wrap1 {
 	padding: 10px;
 	border-radius: 5px;
-	z-index: 998;	
+	z-index: 998;
+	display: none;
 	box-shadow: 2px 2px 5px 0 rgba(50,50,50,0.35);
-	background: #f6f6f6;
+	background-color: #fff;
 	border: 1px solid #ccc;
 	float: left;
     position: sticky;
-	top: 27px;
+	text-align: left;
+    list-style: none;
+	background-clip: padding-box;
+	top: 27px !important;
 	left: 0;
+	z-index: 1000 !important;
+	
 }
 
 .arrow_top1 {
