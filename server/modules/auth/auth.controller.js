@@ -254,7 +254,6 @@ exports.getProfile = async (req, res) => {
 */
 exports.downloadFile = async (req, res) => {
     try {
-        cons
         const { path } = req.query;
         res.download(path);
     } catch (error) {

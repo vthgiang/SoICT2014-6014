@@ -26,10 +26,10 @@ function Evaluation(props) {
     //lay list danh gia nhan vien theo thang hien tai
     useEffect(() => {
         const date = new Date();
-        const month = date.getMonth()+1;
+        const month = date.getMonth() + 1;
         const year = date.getFullYear();
         props.getEvaluations({ month, year });
-       
+
     }, [])
 
 
@@ -66,20 +66,21 @@ function Evaluation(props) {
                 <table className="table table-hover table-striped table-bordered" style={{ marginTop: '10px' }}>
                     <thead>
                         <tr>
-                            <th>Mã nhân viên</th>
+                            <th>Số thứ tự</th>
                             <th>Tên nhân viên</th>
+                            <th>Email nhân viên</th>
                             <th>Tổng số hoạt động</th>
-                            <th>Tỉ lệ hoàn thành hoạt động</th>
-                            <th>Tỉ lệ hoạt động thành công</th>
+                            <th>Số hoạt động hoàn thành/Tổng số hoạt động</th>
+                            <th>Số hoạt động thành công/Số hoạt động hoàn thành</th>
                             <th style={{ width: "120px" }}>
                                 {translate('table.action')}
                                 <DataTableSetting
                                     columnArr={[
-                                        'Mã nhân viên',
+                                        'Email nhân viên',
                                         "Tên nhân viên",
                                         'Tổng số hoạt động',
-                                        'Tỉ lệ hoàn thành hoạt động',
-                                        'Tỉ lệ hoạt động thành công',
+                                        'Số hoạt động hoàn thành/Tổng số hoạt động',
+                                        'Số hoạt động thành công/Số hoạt động hoàn thành',
                                     ]}
                                 // setLimit={this.setLimit}
                                 //  tableId={tableId}
@@ -89,15 +90,16 @@ function Evaluation(props) {
                     </thead>
                     <tbody>
                         {
-                            evaluations && evaluations.list && evaluations.list.map((evaluation) => (
+                            evaluations && evaluations.list && evaluations.list.map((evaluation, index) => (
                                 <tr key={evaluation.employeeId} >
-                                    <td>{evaluation.employeeId}</td>
+                                    <td>{index + 1}</td>
                                     <td>{evaluation.employeeName}</td>
+                                    <td>{evaluation.employeeEmail}</td>
                                     <td>{evaluation.totalCareActions}</td>
                                     <td>{`${evaluation.completionRate * 100} %`}</td>
                                     <td>{`${evaluation.solutionRate * 100} %`}</td>
                                     <td style={{ textAlign: 'center' }}>
-                                        <a className="text-green"
+                                        <a className="text-green" title='Xem thông tin đánh giá nhân viên'
                                             onClick={() => handleEvaluationInfo(evaluation)}
                                         ><i className="material-icons">visibility</i></a>
                                     </td>

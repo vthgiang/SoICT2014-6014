@@ -29,6 +29,7 @@ export const taskManagementService = {
 
     addNewProjectTask,
     getTasksByProject,
+    importTasks,
 };
 
 
@@ -491,4 +492,12 @@ function getTasksByProject(projectId, page = undefined, perPage = undefined) {
         method: 'GET',
         params: { type: 'project', projectId, page, perPage }
     }, false, true, 'task.task_management');
+}
+
+function importTasks(data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/task/import`,
+        method: 'POST',
+        data: data
+    }, true, true, 'task.task_management');
 }

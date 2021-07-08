@@ -53,21 +53,17 @@ exports.getEvaluations = async (portal, companyId, query, currentRole) => {
     let evaluations = [];
     for (const employee of listEmployee) {
         // tính tỉ lệ giải quyết vấn đề
-        console.log(1);
         const { numberOfCompletionActions, solutionRate } = await this.getSolutionRate(portal, companyId, { month, year }, employee.userId._id, currentRole);
         // tính tỉ lệ hoàn thành hoạt động
-        console.log(1);
         const { totalCareActions, completionRate, numberOfOverdueCareAction } = await this.getCompletionRate(portal, companyId, { month, year }, employee.userId._id, currentRole);
         // tính tỉ lệ khách hàng mua hàng
-        console.log(1);
         const { numberOfOldCustomers, customerRetentionRate } = await this.getCustomerRetentionRate(portal, companyId, { month, year }, employee.userId._id, currentRole);
         // tính tir lệ khách hàng mới mua hàng
-        console.log(1);
         const { numberOfNewCustomers, newCustomerBuyingRate } = await this.getNewCustomerBuyingRate(portal, companyId, { month, year }, employee.userId._id, currentRole);
-
+        console.log('employee', employee)
 
         evaluations = [...evaluations, {
-            employeeId: employee._id,
+            employeeEmail: employee.userId.email,
             employeeName: employee.userId.name,
             totalCareActions, numberOfOverdueCareAction, completionRate, solutionRate,
             customerRetentionRate, newCustomerBuyingRate, numberOfNewCustomers, totalCustomer: (numberOfOldCustomers + numberOfNewCustomers)
@@ -76,6 +72,7 @@ exports.getEvaluations = async (portal, companyId, query, currentRole) => {
     }
     return evaluations
 }
+
 
 exports.getCustomerCareInfoByEmployee = async (portal, companyId, query, userId, currentRole) => {
     let { month, year } = query;
@@ -97,7 +94,7 @@ exports.getCustomerCareInfoByEmployee = async (portal, companyId, query, userId,
     listGroup.forEach(group => {
         let numberOfCustomer = 0;
         listManagedCustomer.forEach(customer => {
-            if (customer.group&&customer.group._id.toString() == group._id.toString()) numberOfCustomer++;
+            if (customer.group && customer.group._id.toString() == group._id.toString()) numberOfCustomer++;
         });
         customerDataByGroup = [...customerDataByGroup, [group.name, numberOfCustomer]];
     });
@@ -131,8 +128,70 @@ exports.getCustomerCareInfoByEmployee = async (portal, companyId, query, userId,
         totalCareActions, numberOfOverdueCareAction, numberOfCompletionCareAction, listManagedCustomer,
         customerDataByGroup, customerDataByStatus, x, solutionRateData, completionRateData
     }
+
     return customerCareInfoByEmployee
 }
+
+exports.getCustomerCareInfoByUnit = async (portal, companyId, query, currentRole) => {
+    let { month, year } = query;
+    // neu ko co querry thi lay theo thang hien tai
+    if (!month || !year) {
+        const date = new Date();
+        month = date.getMonth() + 1;
+        year = date.getFullYear();
+    }
+    // tính tỉ lệ hoàn thành hoạt động
+    const { totalCareActions, numberOfCompletionCareAction, numberOfOverdueCareAction } = await this.getCompletionRate(portal, companyId, { month, year }, 0, currentRole);
+    // lấy danh sách khách hàng quản lý
+    const getAllCustomers = await getCustomers(portal, companyId, {}, currentRole);
+    const listManagedCustomer = getAllCustomers.customers;
+    //lấy danh sách nhóm khách hàng - tạo dữ liệu khách hàng theo nhóm
+    const getCustomnerGroups = await getGroups(portal, companyId, {}, currentRole)
+    const listGroup = getCustomnerGroups.groups;
+    let customerDataByGroup = [];
+    listGroup.forEach(group => {
+        let numberOfCustomer = 0;
+        listManagedCustomer.forEach(customer => {
+            if (customer.group && customer.group._id.toString() == group._id.toString()) numberOfCustomer++;
+        });
+        customerDataByGroup = [...customerDataByGroup, [group.name, numberOfCustomer]];
+    });
+    //lấy danh sách trạng thái khách hàng - tạo dữ liệu khách hàng theo trạng thái
+    const getCustomnerStatus = await getStatus(portal, companyId, {}, currentRole)
+    const listStatus = getCustomnerStatus.listStatus;
+    let customerDataByStatus = [];
+    listStatus.forEach(status => {
+        let numberOfCustomer = 0;
+        listManagedCustomer.forEach(customer => {
+            if (customer.status[0]._id.toString() == status._id.toString()) numberOfCustomer++;
+        });
+        customerDataByStatus = [...customerDataByStatus, [status.name, numberOfCustomer]];
+    });
+    // tính tỉ lệ hoàn thành hoạt động và tỉ lệ giải quyết vấn đề ở 12 tháng gần nhất
+    let x = [];
+    let customerRetentionRateData = [];
+    let numberOfNewCustomersData = [];
+    for (let i = 0; i < 12; i++) {
+        x = [...x, `${month}/${year}`];
+        let { customerRetentionRate } = await this.getCustomerRetentionRate(portal, companyId, { month, year }, 0, currentRole);
+
+        customerRetentionRateData = [...customerRetentionRateData, customerRetentionRate * 100];
+        let { numberOfNewCustomers } = await this.getNewCustomerBuyingRate(portal, companyId, { month, year }, 0, currentRole);
+
+        numberOfNewCustomersData = [...numberOfNewCustomersData, numberOfNewCustomers];
+        if (month <= 1) { month = month + 12 - 1; year--; }
+        else month--;
+    }
+
+
+    const customerCareInfoByUnit = {
+        totalCareActions, numberOfOverdueCareAction, numberOfCompletionCareAction, totalManagedCustomer: listManagedCustomer.length,
+        customerDataByGroup, customerDataByStatus, x, customerRetentionRateData, numberOfNewCustomersData
+    }
+
+    return customerCareInfoByUnit
+}
+
 
 
 exports.getSolutionRate = async (portal, companyId, query, userId, currentRole) => {
@@ -144,7 +203,10 @@ exports.getSolutionRate = async (portal, companyId, query, userId, currentRole) 
         year = date.getFullYear();
     }
     //-----------------------------
-    const getAllActions = await getCares(portal, companyId, { customerCareStaffs: [userId], month, year }, currentRole);
+    let option = { month, year };
+    if (userId) option = { ...option, customerCareStaffs: [userId] };
+
+    const getAllActions = await getCares(portal, companyId, option, currentRole);
     const listCare = getAllActions.cares.filter((care) => { return (care.status == 3 || care.status == 5) });
     // lấy ra danh sách hoạt động thành công
     const listSolutionCare = listCare.filter((care) => { return (care.evaluation && care.evaluation.result && care.evaluation.result == 1) });
@@ -161,14 +223,17 @@ exports.getCompletionRate = async (portal, companyId, query, userId, currentRole
         year = date.getFullYear();
     }
     //-----------------------------
-    const getAllActions = await getCares(portal, companyId, { customerCareStaffs: [userId], month, year }, currentRole);
+    let option = { month, year };
+    if (userId) option = { ...option, customerCareStaffs: [userId] };
+
+    const getAllActions = await getCares(portal, companyId, option, currentRole);
     //lấy ra danh sách hoạt động đã hoàn thành
     const listCareAction = getAllActions.cares;
     const listCompletionCare = listCareAction.filter((care) => { return (care.status == 3 || care.status == 5) });
     //lấy danh sách hoạt động quá hạn
     const listOverdueCareAction = listCareAction.filter((care) => { return (care.status == STATUS_VALUE.expired || care.status == STATUS_VALUE.completedOverdue) });
     if (listCareAction.length == 0) return { totalCareActions: listCareAction.length, completionRate: 0 };
-    return { totalCareActions: listCareAction.length, numberOfCompletionCareAction: listCompletionCare.length, completionRate:( (listCompletionCare.length) / (listCareAction.length)).toFixed(4), numberOfOverdueCareAction: listOverdueCareAction.length };
+    return { totalCareActions: listCareAction.length, numberOfCompletionCareAction: listCompletionCare.length, completionRate: ((listCompletionCare.length) / (listCareAction.length)).toFixed(4), numberOfOverdueCareAction: listOverdueCareAction.length };
 }
 exports.getCustomerRetentionRate = async (portal, companyId, query, userId, currentRole) => {
     const { month, year } = query;
@@ -180,10 +245,14 @@ exports.getCustomerRetentionRate = async (portal, companyId, query, userId, curr
     }
     //-----------------------------
     //lấy danh sách khách hàng cũ
-    const getAllCustomers = await getCustomers(portal, companyId, { month, year, customerOwner: [userId], isNewCustomer: false }, currentRole);
+    let option = { month, year, isNewCustomer: false };
+    if (userId) option = { ...option, customerOwner: [userId], };
+
+    const getAllCustomers = await getCustomers(portal, companyId, option, currentRole);
     const listCustomer = getAllCustomers.customers;
     //lấy ra danh sách đơn hàng trong tháng
-    const getSalesOrders = await getAllSalesOrders(userId, { month, year }, portal);
+    const getSalesOrders = await getAllSalesOrders(userId, { getAll: true, month, year }, portal);
+
     const listSalesOrders = getSalesOrders.allSalesOrders;
     let numberOfCustomerBuying = 0;
     listCustomer.forEach(customer => {
@@ -207,10 +276,13 @@ exports.getNewCustomerBuyingRate = async (portal, companyId, query, userId, curr
     }
     //-----------------------------
     //lấy danh sách khách hàng mới
-    const getAllCustomers = await getCustomers(portal, companyId, { month, year, customerOwner: [userId], isNewCustomer: true }, currentRole);
+    let option = { month, year, isNewCustomer: true };
+    if (userId) option = { ...option, customerOwner: [userId] };
+
+    const getAllCustomers = await getCustomers(portal, companyId, option, currentRole);
     const listCustomer = getAllCustomers.customers;
     //lấy ra danh sách đơn hàng trong tháng
-    const getSalesOrders = await getAllSalesOrders(userId, { month, year }, portal);
+    const getSalesOrders = await getAllSalesOrders(userId, { getAll: true, month, year }, portal);
     const listSalesOrders = getSalesOrders.allSalesOrders;
     let numberOfCustomerBuying = 0;
     listCustomer.forEach(customer => {
@@ -222,5 +294,5 @@ exports.getNewCustomerBuyingRate = async (portal, companyId, query, userId, curr
         };
     });
     if (listCustomer.length == 0) return { numberOfNewCustomers: 0, newCustomerBuyingRate: 0 };
-    return { numberOfNewCustomers: listCustomer.length, newCustomerBuyingRate:( (numberOfCustomerBuying) / (listCustomer.length)).toFixed(4) };
+    return { numberOfNewCustomers: listCustomer.length, newCustomerBuyingRate: ((numberOfCustomerBuying) / (listCustomer.length)).toFixed(4) };
 }

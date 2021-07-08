@@ -56,7 +56,7 @@ exports.getCustomerById = async (req, res) => {
  */
 exports.getCustomerPoint = async (req, res) => {
     try {
-        console.log("ashjdhsjhdkj")
+      
         const customerPoint = await CustomerService.getCustomerPoint(req.portal, req.user.company._id, req.params.id);
         await Logger.info(req.user.email, ' get_customer_point_success ', req.portal);
         res.status(200).json({
@@ -190,12 +190,12 @@ exports.editCustomerPoint = async (req, res) => {
  */
 exports.addPromotion = async (req, res) => {
     try {
-        const newCustomerPoint = await CustomerService.addPromotion(req.portal, req.user.company._id, req.params.id, req.body, req.user._id);
+        const newCustomer = await CustomerService.addPromotion(req.portal, req.user.company._id, req.params.id, req.body, req.user._id);
         await Logger.info(req.user.email, 'add_customer_promotion_success');
         res.status(200).json({
             success: true,
             messages: ['add_customer_promotion_success'],
-            content: newCustomerPoint
+            content: newCustomer
         })
     } catch (error) {
         await Logger.error(req.user.email, 'add_customer_promotion_faile ', req.portal);
@@ -249,6 +249,78 @@ exports.deleteCustomer = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: ['delete_customer_faile'],
+            content: error
+        })
+    }
+}
+
+
+/**
+ * xoa khuyen mai khach hang
+ * @param {*} req 
+ * @param {*} res 
+ */
+ exports.deletePromotion = async (req, res) => {
+    try {
+        const newCustomer = await CustomerService.deletePromotion(req.portal, req.user.company._id, req.params.id, req.body, req.user._id);
+        await Logger.info(req.user.email, 'delete_customer_promotion_success');
+        res.status(200).json({
+            success: true,
+            messages: ['delete_customer_promotion_success'],
+            content: newCustomer
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, 'delete_customer_promotion_faile ', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ['delete_customer_promotion_faile'],
+            content: error
+        })
+    }
+}
+/**
+ * su dung khuyen mai khach hang
+ * @param {*} req 
+ * @param {*} res 
+ */
+ exports.usePromotion = async (req, res) => {
+    try {
+        const newCustomer = await CustomerService.usePromotion(req.portal, req.user.company._id, req.params.id, req.body, req.user._id);
+        await Logger.info(req.user.email, 'use_customer_promotion_success');
+        res.status(200).json({
+            success: true,
+            messages: ['use_customer_promotion_success'],
+            content: newCustomer
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, 'use_customer_promotion_faile ', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ['use_customer_promotion_faile'],
+            content: error
+        })
+    }
+}
+
+/**
+ * chinh sua khuyen mai khach hang
+ * @param {*} req 
+ * @param {*} res 
+ */
+ exports.editPromotion = async (req, res) => {
+    try {
+        const newCustomer = await CustomerService.editPromotion(req.portal, req.user.company._id, req.params.id, req.body, req.user._id);
+        await Logger.info(req.user.email, 'edit_customer_promotion_success');
+        res.status(200).json({
+            success: true,
+            messages: ['edit_customer_promotion_success'],
+            content: newCustomer
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, 'edit_customer_promotion_faile ', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ['edit_customer_promotion_faile'],
             content: error
         })
     }

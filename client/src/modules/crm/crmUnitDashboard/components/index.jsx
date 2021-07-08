@@ -12,35 +12,33 @@ import { CrmGroupActions } from '../../group/redux/actions';
 import { CrmUnitActions } from '../../crmUnitConfiguration/redux/actions';
 
 
-function CrmDashBoard(props) {
+function CrmDashBoardUnit(props) {
     const { user, crm, auth } = props;
     const { evaluations, status, groups } = crm;
-    let customerCareInfoByEmployee;
-    if (evaluations && evaluations.customerCareInfoByEmployee) customerCareInfoByEmployee = evaluations.customerCareInfoByEmployee;
+    let customerCareInfoByUnit;
+    if (evaluations && evaluations.customerCareInfoByUnit) customerCareInfoByUnit = evaluations.customerCareInfoByUnit;
     useEffect(() => {
-        props.getCustomerCareInfoByEmployee();
         props.getCustomerCareInfoByUnit();
         props.getCrmUnits();
     }, [])
 
 
     // tạo dữ liệu cho các biểu đồ
-    let listManagedCustomer = [];
+    
     let customerDataByGroup = [];
     let customerDataByStatus = [];
     let x = ['x'];
-    let solutionRateData = ['Số hoạt động thành công/Số hoạt động hoàn thành (%)']
-    let completionRateData = ['Số hoạt động hoàn thành/Tổng số hoạt động (%)']
+    let customerRetentionRateData = ['Tỉ lệ khách hàng quay trở lại (%)']
+    let numberOfNewCustomersData = ['Số khách hàng mới (người)']
 
-    if (customerCareInfoByEmployee) {
-        customerDataByGroup = customerCareInfoByEmployee.customerDataByGroup;
-        customerDataByStatus = customerCareInfoByEmployee.customerDataByStatus;
-        listManagedCustomer = customerCareInfoByEmployee.listManagedCustomer;
-        x = x.concat(customerCareInfoByEmployee.x.reverse());
-        solutionRateData = solutionRateData.concat(customerCareInfoByEmployee.solutionRateData.reverse());
-        completionRateData = completionRateData.concat(customerCareInfoByEmployee.completionRateData.reverse());
+    if (customerCareInfoByUnit) {
+        customerDataByGroup = customerCareInfoByUnit.customerDataByGroup;
+        customerDataByStatus = customerCareInfoByUnit.customerDataByStatus;
+       
+        x = x.concat(customerCareInfoByUnit.x.reverse());
+        customerRetentionRateData = customerRetentionRateData.concat(customerCareInfoByUnit.customerRetentionRateData.reverse());
+        numberOfNewCustomersData = numberOfNewCustomersData.concat(customerCareInfoByUnit.numberOfNewCustomersData.reverse());
     }
-    console.log('solutionRateData', x);
     const customerByStatusGraph = {
         columns: customerDataByStatus, type: 'pie'
     };
@@ -51,7 +49,7 @@ function CrmDashBoard(props) {
         x: 'x',
         xFormat: '%m/%Y',
         columns: [
-            x, completionRateData, solutionRateData
+            x, numberOfNewCustomersData, customerRetentionRateData
         ]
     };
     const axis = {
@@ -73,7 +71,7 @@ function CrmDashBoard(props) {
                         <span className="info-box-icon bg-aqua"><i class="fa fa-users" /></span>
                         <div className="info-box-content">
                             <span className="info-box-text">{"Số khách hàng quản lý"}</span>
-                            <span className="info-box-number">{customerCareInfoByEmployee ? customerCareInfoByEmployee.listManagedCustomer.length : 0}</span>
+                            <span className="info-box-number">{customerCareInfoByUnit ? customerCareInfoByUnit.totalManagedCustomer : 0}</span>
                         </div>
                     </div>
                 </div>
@@ -82,7 +80,7 @@ function CrmDashBoard(props) {
                         <span className="info-box-icon bg-yellow"><i className="fa fa-handshake-o" /></span>
                         <div className="info-box-content">
                             <span className="info-box-text">{`Tổng sô hoạt động tháng ${month}`}</span>
-                            <span className="info-box-number">{customerCareInfoByEmployee ? customerCareInfoByEmployee.totalCareActions : 0}</span>
+                            <span className="info-box-number">{customerCareInfoByUnit ? customerCareInfoByUnit.totalCareActions : `0`}</span>
                         </div>
                     </div>
                 </div>
@@ -93,7 +91,7 @@ function CrmDashBoard(props) {
                         <span className="info-box-icon bg-green"><i className="fa fa-check-circle-o" /></span>
                         <div className="info-box-content">
                             <span className="info-box-text">{'Số hoạt động đã hoàn thành'}</span>
-                            <span className="info-box-number">{customerCareInfoByEmployee ? customerCareInfoByEmployee.numberOfCompletionCareAction : 0}</span>
+                            <span className="info-box-number">{customerCareInfoByUnit ? customerCareInfoByUnit.numberOfCompletionCareAction : `0`}</span>
                         </div>
                     </div>
                 </div>
@@ -102,7 +100,7 @@ function CrmDashBoard(props) {
                         <span className="info-box-icon bg-red"><i className="fa fa-exclamation" /></span>
                         <div className="info-box-content">
                             <span className="info-box-text">{'Số hoạt động quá hạn'}</span>
-                            <span className="info-box-number">{customerCareInfoByEmployee ? customerCareInfoByEmployee.numberOfOverdueCareAction : 0}</span>
+                            <span className="info-box-number">{customerCareInfoByUnit ? customerCareInfoByUnit.numberOfOverdueCareAction : `0`}</span>
                         </div>
                     </div>
                 </div>
@@ -122,7 +120,7 @@ function CrmDashBoard(props) {
 
                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <C3Chart data={data} axis={axis} />
-                    <label > <span>Biểu đồ đánh giá hoạt động CSKH</span></label>
+                    <label > <span>Biểu đồ đánh giá hoạt động CSKH của đơn vị</span></label>
                 </div>
             </div>
         </div>
@@ -137,11 +135,10 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-    getCustomerCareInfoByEmployee: CrmEvaluationActions.getCustomerCareInfoByEmployee,
+    getCustomerCareInfoByUnit: CrmEvaluationActions.getCustomerCareInfoByUnit,
     getStatus: CrmStatusActions.getStatus,
     getGroups: CrmGroupActions.getGroups,
     getCrmUnits: CrmUnitActions.getCrmUnits,
-    getCustomerCareInfoByUnit: CrmEvaluationActions.getCustomerCareInfoByUnit,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CrmDashBoard));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CrmDashBoardUnit));

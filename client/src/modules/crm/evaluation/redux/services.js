@@ -1,7 +1,9 @@
 import { sendRequest } from '../../../../helpers/requestHelper';
 
 export const CrmEvaluationServices = {
-    getEvaluations,getCustomerCareInfoByEmployee
+    getEvaluations,
+    getCustomerCareInfoByEmployee,
+    getCustomerCareInfoByUnit
     
 };
 
@@ -12,9 +14,16 @@ function getEvaluations(params) {
         params,
     }, false, true, 'crm.evaluation');
 }
-function getCustomerCareInfoByEmployee(id) {
+function getCustomerCareInfoByEmployee() {
+    
     return sendRequest({
-        url: `${process.env.REACT_APP_SERVER}/crm/evaluations/${id}`,
+        url: `${process.env.REACT_APP_SERVER}/crm/evaluations/employee`,
+        method: 'GET',
+    }, false, true, 'crm.evaluation');
+}
+function getCustomerCareInfoByUnit() {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/crm/evaluations/crmUnit`,
         method: 'GET',
     }, false, true, 'crm.evaluation');
 }

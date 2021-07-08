@@ -2944,3 +2944,53 @@ exports.getTasksByProject = async (portal, projectId, page, perPage) => {
         .populate({ path: "overallEvaluation.accountableEmployees.employee", select: "_id name" });
     return tasks;
 }
+
+exports.importTasks = async (data, portal, user) => {
+    let dataImport = [];
+    if (data?.length) {
+        let dataLength = data.length;
+        for (let x = 0; x < dataLength; x++){
+            let level = 1;
+            if (mongoose.Types.ObjectId.isValid(data[x].parent)) {
+                const parent = await Task(connect(DB_CONNECTION, portal)).findById(data[x].parent);
+                if (parent) level = parent.level + 1;
+            }
+
+            let startDate, endDate;
+            if (Date.parse(data[x].startDate)) startDate = new Date(data[x].startDate);
+            else {
+                const splitter = data[x].startDate.split("-");
+                startDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+            }
+
+            if (Date.parse(data[x].endDate)) endDate = new Date(data[x].endDate);
+            else {
+                const splitter = data[x].endDate.split("-");
+                endDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+            }
+
+            let collaboratedWithOrganizationalUnits = [];
+            if (data[x].collaboratedWithOrganizationalUnits?.length) {
+                data[x].collaboratedWithOrganizationalUnits.forEach(y => {
+                    collaboratedWithOrganizationalUnits = [...collaboratedWithOrganizationalUnits, {
+                        organizationalUnit: y,
+                    }]
+                })
+            }
+
+            dataImport = [...dataImport, {
+                ...data[x],
+                creator: user._id,
+                level: level,
+                startDate: startDate,
+                endDate: endDate,
+                formula: "progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100",
+                taskInformations : [],
+                collaboratedWithOrganizationalUnits: collaboratedWithOrganizationalUnits,
+            }];
+        }
+    }
+
+    if (dataImport?.length)
+        return await Task(connect(DB_CONNECTION, portal)).insertMany(dataImport);
+}

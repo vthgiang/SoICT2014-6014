@@ -1,11 +1,45 @@
-import React from 'react';
+import { connect } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { withTranslate } from 'react-redux-multilingual';
 import { translate } from 'react-redux-multilingual/lib/utils';
-import { DataTableSetting, DialogModal } from '../../../../common-components';
+import { ConfirmNotification, DataTableSetting, DialogModal } from '../../../../common-components';
 import { formatFunction } from '../../common';
+import { CrmCustomerActions } from '../../customer/redux/actions';
 import PromotionAddForm from './promotionAddForm';
+import PromotionEditForm from './promotionEditForm';
+
 
 function CustomerPromotionInfoForm(props) {
-    const { customer } = props;
+    const { customerId, getLoyalCustomersData } = props;
+    useEffect(() => {
+        props.getCustomerById(customerId)
+    }, [])
+    const { crm } = props;
+    let customer;
+    if (crm && crm.customers && crm.customers.customerById) customer = crm.customers.customerById;
+    if (customer && customer._id != customerId) {
+        customer._id = customerId;
+        props.getCustomerById(customerId)
+    }
+    const [promotionEdit, setPromotionEdit] = useState();
+    const [promotionEditIndex, setPromotionEditIndex] = useState();
+    const handleEditPromotion = async (promoEdit, promoIndex) => {
+        await setPromotionEdit(promoEdit);
+        await setPromotionEditIndex(promoIndex);
+        window.$('#modal-crm-customer-promotion-edit').modal('show')
+    }
+    const deletePromotion = (index) => {
+        props.deletePromotion(customerId, { promoIndex: index })
+    }
+    const formatPromotionStatus = (promotion) => {
+        const now = new Date();
+        console.log(new Date(promotion.expirationDate),new Date(promotion.expirationDate).getMilliseconds());
+        console.log('now',now,now.getMilliseconds());
+
+        if (now > new Date(promotion.expirationDate)) return "Đã hết hạn";
+        if (promotion.status == 1) return "Chưa sử dụng";
+        return "Đã sử dụng";
+    }
     return (
         <DialogModal
             modalID="modal-customer-promotion-info" isLoading={false}
@@ -14,7 +48,8 @@ function CustomerPromotionInfoForm(props) {
             size={75}
             disableSubmit={true}
         >
-             <PromotionAddForm customer ={customer} customerId={customer._id}  />
+            {customer && <PromotionAddForm customer={customer} customerId={customer._id} getLoyalCustomersData={getLoyalCustomersData} />}
+            {promotionEdit && promotionEditIndex && <PromotionEditForm customerId={customer._id} promotion={promotionEdit} promotionIndex={promotionEditIndex} />}
             {/* Bảng hiển thị thông tin khách hàng thân thiết */}
             <table className="table table-hover table-striped table-bordered" id="customer-promotion-info" style={{ marginTop: '10px' }}>
                 <thead>
@@ -55,12 +90,20 @@ function CustomerPromotionInfoForm(props) {
                                 <td>{o.promotionalValueMax}</td>
                                 <td>{o.description}</td>
                                 <td>{formatFunction.formatDate(o.expirationDate)}</td>
-                                <td>{o.status ? (o.status == 1 ? 'Chưa sử dụng' : 'Đã sử dụng') : ''}</td>
-                                {/* <td style={{ textAlign: 'center' }}>
-                                    <a className="text-green"
-                                        onClick={() => handleCreateCareAcrion(o.customer._id)}
-                                    ><i className="material-icons">add_comment</i></a>
-                                </td> */}
+                                <td>{formatPromotionStatus(o)}</td>
+                                <td style={{ textAlign: 'center' }}>
+                                    <a className="text-yellow" title="Chỉnh sửa khuyến mãi khách hàng" onClick={() => handleEditPromotion(o, index + 1)} ><i className="material-icons">edit</i></a>
+                                    <ConfirmNotification
+                                        icon="question"
+                                        title="Xóa khuyến mãi khách hàng"
+                                        content="<h3>Xóa khuyến mãi khách hàng</h3>"
+                                        name="delete"
+                                        className="text-red"
+                                        func={() => deletePromotion(index)}
+                                    />
+
+
+                                </td>
                             </tr>
                         ))
 
@@ -74,4 +117,15 @@ function CustomerPromotionInfoForm(props) {
     );
 }
 
-export default CustomerPromotionInfoForm;
+function mapStateToProps(state) {
+    const { crm, user } = state;
+    return { crm, user };
+}
+
+const mapDispatchToProps = {
+    getCustomerById: CrmCustomerActions.getCustomer,
+    deletePromotion: CrmCustomerActions.deletePromotion
+
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CustomerPromotionInfoForm));
