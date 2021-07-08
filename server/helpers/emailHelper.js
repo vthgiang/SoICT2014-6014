@@ -1,9 +1,19 @@
 const nodemailer = require("nodemailer");
 const user = 'vnist.qlcv@gmail.com';
 const pass = 'Vnist1234@12345';
+
+// Hiện tại khi gửi mail sẽ vào thư rác.. đang xử lý,,, dùng tạm mail cũ
+// const user = 'qlcv@vnist.vn';
+// const pass = 'Vni$tad@321';
+// const mailPort = 25;
+// const mailHost = 'mail.vnist.vn';
+
 let length = 0;
 exports.sendEmail = (to, subject, text, html) => {
     var transporter = nodemailer.createTransport({
+        // host: mailHost,
+        // port: mailPort,
+        // secure: false,
         service: 'Gmail',
         auth: { user: user, pass: pass }
     });
