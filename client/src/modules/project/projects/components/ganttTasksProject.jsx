@@ -38,7 +38,6 @@ const GanttTasksProject = (props) => {
     }, [])
 
     const getDataTask = (zoom = currentZoom) => {
-        console.log('currentProjectTasks', currentProjectTasks.map(o => o.name).join(', '))
         // Dựa vào currentZoom để tính toán duration theo giờ, ngày, tuần, tháng
         let currentMode = '';
         switch (zoom) {
@@ -107,6 +106,8 @@ const GanttTasksProject = (props) => {
                     taskName: `${taskItem.name}`,
                     responsible: `${taskItem.responsibleEmployees.map(resItem => resItem.name).join(', ')}`,
                     customDuration: numberWithCommas(duration),
+                    planned_start: moment(taskItem.startDate).format("YYYY-MM-DD HH:mm"),
+                    planned_end: moment(taskItem.endDate).format("YYYY-MM-DD HH:mm"),
                     start_date: moment(taskItem.startDate).format("YYYY-MM-DD HH:mm"),
                     end_date: (taskItem.actualEndDate && taskItem.status === 'finished')
                         ? moment(taskItem.actualEndDate).format("YYYY-MM-DD HH:mm")
@@ -116,19 +117,6 @@ const GanttTasksProject = (props) => {
                     parent: '0',
                     status: taskItem.status,
                 });
-                data.push({
-                    id: `${taskItem._id}-baseline`,
-                    text: ``,
-                    taskName: ``,
-                    baselineName: `${taskItem.name}`,
-                    responsible: ``,
-                    customDuration: null,
-                    start_date: moment(taskItem.startDate).format("YYYY-MM-DD HH:mm"),
-                    end_date: moment(taskItem.endDate).format("YYYY-MM-DD HH:mm"),
-                    progress: 0,
-                    process: -1,
-                    parent: '0',
-                })
 
                 // Nếu task có các task tiền nhiệm thì tạo link
                 if (taskItem.preceedingTasks && taskItem.preceedingTasks.length > 0) {

@@ -4,7 +4,8 @@ import { withTranslate } from "react-redux-multilingual";
 
 import { DataTableSetting, DeleteNotification, PaginateBar } from "../../../../../../common-components";
 
-import { MapContainer } from "../../../transportHelper/map/googleMap"
+// import { MapContainer } from "../../../transportHelper/map/googleMap"
+import { MapContainer } from "../../../transportHelper/mapbox/map"
 
 import { getAddressName } from "../../../transportHelper/getAddressNameGoogleMap"
 
@@ -29,6 +30,8 @@ function LocateTransportRequirement(props) {
         setLocation({
             ...location,
             fromAddress: e.target.value,
+            fromLat: null,
+            fromLng: null,
         })
     }
 
@@ -36,6 +39,8 @@ function LocateTransportRequirement(props) {
         setLocation({
             ...location,
             toAddress: e.target.value,
+            toLat: null,
+            toLng: null,
         })
     }
 
@@ -106,24 +111,22 @@ function LocateTransportRequirement(props) {
     return (
         <React.Fragment>
             <div className="box-body qlcv">
-                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ padding: 0 }}>
+                <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{ padding: 0 }}>
                     <fieldset className="scheduler-border" style={{ height: "100%" }}>
                         <legend className="scheduler-border">Vị trí giao hàng</legend>
-                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                            <div className="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                    <div className={`form-group`}>
-                                        <label>
-                                            Địa chỉ khách hàng
-                                            <span className="attention"> * </span>
-                                        </label>
-                                        <textarea type="text" className="form-control" 
-                                            value={location?.fromAddress}
-                                            onChange={handleCustomer1AddressChange}
-                                        />
-                                    </div>
+                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <div className={`form-group`}>
+                                    <label>
+                                        Địa chỉ khách hàng
+                                        <span className="attention"> * </span>
+                                    </label>
+                                    <textarea type="text" className="form-control" 
+                                        value={location?.fromAddress}
+                                        onChange={handleCustomer1AddressChange}
+                                    />
                                 </div>
-                                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            </div>
+                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                     <div className={`form-group`}>
                                         <label>
                                             Tọa độ
@@ -135,12 +138,12 @@ function LocateTransportRequirement(props) {
                                         />
                                     </div>
                                 </div>
-                            </div>
-                            <div className="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+                            
+                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <MapContainer
                                     locations = {[
                                         {
-                                            name: "from",
+                                            name: "S",
                                             location: {
                                                 lat: location?.fromLat,
                                                 lng: location?.fromLng
@@ -150,40 +153,39 @@ function LocateTransportRequirement(props) {
                                     callBackLatLng={callBackLatLng1}
                                 />
                             </div>
-                        </div>
                     </fieldset>
+                </div>
+                <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{ padding: 0 }}>
                     <fieldset className="scheduler-border" style={{ height: "100%" }}>
                         <legend className="scheduler-border">Vị trí nhận hàng</legend>
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                            <div className="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                    <div className={`form-group`}>
-                                        <label>
-                                            Địa chỉ khách hàng
-                                            <span className="attention"> * </span>
-                                        </label>
-                                        <textarea type="text" className="form-control" 
-                                            value={location?.toAddress}
-                                            onChange={handleCustomer2AddressChange}
-                                        />
-                                    </div>
-                                </div>
-                                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                    <div className={`form-group`}>
-                                        <label>
-                                            Tọa độ
-                                        </label>
-                                        <input type="text" className="form-control" disabled={true}
-                                            value={location?.toLat+", "+location?.toLng} 
-                                        />
-                                    </div>
+                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <div className={`form-group`}>
+                                    <label>
+                                        Địa chỉ khách hàng
+                                        <span className="attention"> * </span>
+                                    </label>
+                                    <textarea type="text" className="form-control" 
+                                        value={location?.toAddress}
+                                        onChange={handleCustomer2AddressChange}
+                                    />
                                 </div>
                             </div>
-                            <div className="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <div className={`form-group`}>
+                                    <label>
+                                        Tọa độ
+                                    </label>
+                                    <input type="text" className="form-control" disabled={true}
+                                        value={location?.toLat+", "+location?.toLng} 
+                                    />
+                                </div>
+                            </div>
+                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <MapContainer
                                     locations = {[
                                         {
-                                            name: "to",
+                                            name: "D",
                                             location: {
                                                 lat: location?.toLat,
                                                 lng: location?.toLng
@@ -202,6 +204,7 @@ function LocateTransportRequirement(props) {
 }
 
 function mapState(state) {
+    return {}
 }
 
 const actions = {

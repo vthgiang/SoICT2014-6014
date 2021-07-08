@@ -26,6 +26,8 @@ export const taskManagementActions = {
 
     addProjectTask,
     getTasksByProject,
+
+    importTasks,
 };
 
 
@@ -594,4 +596,26 @@ function getTasksByProject(projectId, page = undefined, perPage = undefined) {
                 dispatch({ type: taskManagementConstants.GETTASK_BYPROJECT_PAGINATE_FAILURE, error });
             });
     };
+}
+
+function importTasks(data) {
+    return dispatch => {
+        dispatch({
+            type: taskManagementConstants.IMPORT_TASKS_REQUEST
+        });
+
+        taskManagementService.importTasks(data)
+            .then(res => {
+                dispatch({
+                    type: taskManagementConstants.IMPORT_TASKS_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: taskManagementConstants.IMPORT_TASKS_FAILURE,
+                    error: err.response.data.content
+                });
+            })
+    }
 }

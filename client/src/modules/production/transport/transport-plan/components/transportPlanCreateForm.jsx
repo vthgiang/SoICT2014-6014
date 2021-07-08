@@ -7,6 +7,7 @@ import { formatToTimeZoneDate, formatDate } from "../../../../../helpers/formatD
 import ValidationHelper from '../../../../../helpers/validationHelper';
 
 import { LocationMap } from './map/locationMap'
+import { MapContainer } from '../../transportHelper/mapbox/map'
 import { TransportVehicleAndCarrierSelect } from './transport-plan-create/transportVehicleAndCarrierSelect'
 import { TransportVehicleCarrier2 } from './transportVehicleCarrier2'
 
@@ -43,6 +44,11 @@ function TransportPlanCreateForm(props) {
      * Danh sách vị trí tọa độ tương ứng với transportrequirements
      */
     const [listSelectedRequirementsLocation, setListSelectedRequirementsLocation] = useState([])
+
+    const [totalPayloadVolume, setTotalPayloadVolume] = useState({
+        payload: 0,
+        volume: 0,
+    })
 
     const isFormValidated = () => {
         if (formSchedule.startDate !=="" && formSchedule.endDate !=="" && formSchedule.supervisor !=="title" && formSchedule.name!==""){
@@ -138,7 +144,7 @@ function TransportPlanCreateForm(props) {
                 if (requirement.timeRequests && requirement.timeRequests.length !==0){
                     requirement.timeRequests.map(time => {
                         let timeRequest = new Date(time.timeRequest);
-                        if(timeRequest.getTime() === date.getTime()){
+                        if(timeRequest.getDate() === date.getDate() && timeRequest.getMonth() === date.getMonth() && timeRequest.getFullYear() === date.getFullYear()){
                             mark = 5*86400000;
                         }
                     })
@@ -203,16 +209,18 @@ function TransportPlanCreateForm(props) {
     useEffect(() => {
         if (transportRequirements){
             let {lists} = transportRequirements;
+            console.log(transportRequirements)
             if (lists && lists.length!==0){
                 if (formSchedule.startDate && formSchedule.endDate){
                     const startDate = new Date(formSchedule.startDate);
                     const endDate = new Date(formSchedule.endDate);
                     if(startDate.getTime() <= endDate.getTime()){
+                        console.log("oje vasd");
                         setListRequirements(arrangeRequirement(lists, startDate))
                     }
                 }
                 else {
-                    setListRequirements([])
+                    setListRequirements(lists)
                 }
             }
         }
@@ -251,6 +259,20 @@ function TransportPlanCreateForm(props) {
         }
         // console.log(locationArr, " ar")
         setListSelectedRequirementsLocation(locationArr);
+        
+        if (listSelectedRequirements && listSelectedRequirements.length!==0){
+            let totalPayload = 0;
+            let totalVolume = 0;
+            listSelectedRequirements.map(item => {
+                totalPayload+=item.payload;
+                totalVolume+=item.volume;
+            })
+            setTotalPayloadVolume({
+                payload: totalPayload,
+                volume: totalVolume,
+            })
+        }
+
     }, [listSelectedRequirements])
 
     const callBackVehicleAndCarrier = (transportVehicles) => {
@@ -284,7 +306,7 @@ function TransportPlanCreateForm(props) {
             <div className="nav-tabs-custom">
                 <ul className="nav nav-tabs">
                     <li className="active"><a href="#plan-list-transport-carrier" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Thống kê phương tiện và nhân viên"}</a></li>
-                    <li><a href="#plan-list-transport-requirement" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Chọn yêu cầu vận chuyển"}</a></li>
+                    <li><a href="#plan-list-transport-requirement" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Tạo thông tin chung kế hoạch và chọn yêu cầu vận chuyển"}</a></li>
                     <li><a href="#plan-transport-vehicle-carrier" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Chọn phương tiện và nhân viên"}</a></li>
                 </ul>
                 <div className="tab-content">
@@ -368,24 +390,31 @@ function TransportPlanCreateForm(props) {
                                         </div>
 
                                 </div>
+                                
                                 <div className="col-xs-12 col-sm-12 col-md-8 col-lg-8">
                                     {
                                         (listRequirements && listRequirements.length!==0)
                                         &&
-                                        <LocationMap 
-                                            locations = {listSelectedRequirementsLocation}
-                                            loadingElement={<div style={{height: `100%`}}/>}
-                                            containerElement={<div style={{height: "50vh"}}/>}
-                                            mapElement={<div style={{height: `100%`}}/>}
-                                            defaultZoom={11}
+                                        // <LocationMap 
+                                        //     locations = {listSelectedRequirementsLocation}
+                                        //     loadingElement={<div style={{height: `100%`}}/>}
+                                        //     containerElement={<div style={{height: "50vh"}}/>}
+                                        //     mapElement={<div style={{height: `100%`}}/>}
+                                        //     defaultZoom={11}
+                                        // />
+                                        <MapContainer 
+                                            nonDirectLocations={listSelectedRequirementsLocation}
                                         />
                                     }
                                 </div>
                             </div>
+                            
+                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         {
                             listRequirements && listRequirements.length!==0
                             &&
-                            <table id={"1"} className="table table-striped table-bordered table-hover">
+                            <table id={"1"} className="table table-striped table-bordered table-hover" style={{marginTop: "10px"}}>
                                 <thead>
                                     <tr>
                                         <th className="col-fixed" style={{ width: 60 }}>{"STT"}</th>
@@ -396,7 +425,7 @@ function TransportPlanCreateForm(props) {
                                         <th>{"Ngày tạo"}</th>
                                         <th>{"Ngày mong muốn vận chuyển"}</th>
                                         {/* <th>{"Trạng thái"}</th> */}
-                                        <th>{"Hành động"}</th>
+                                        <th>{"Thêm vào kế hoạch"}</th>
                                         {/* <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
                                             <DataTableSetting
                                                 tableId={tableId}
@@ -448,6 +477,8 @@ function TransportPlanCreateForm(props) {
                             </table>
                         }
                         </div>
+                        </div>
+                        </div>
                     </div>
                     <div className="tab-pane" id="plan-transport-vehicle-carrier">
                         <LazyLoadComponent
@@ -457,6 +488,7 @@ function TransportPlanCreateForm(props) {
                                 startTime={formSchedule.startDate}
                                 endTime={formSchedule.endDate}
                                 callBackVehicleAndCarrier={callBackVehicleAndCarrier}
+                                totalPayloadVolume={totalPayloadVolume}
                             />
                         </LazyLoadComponent>
                     </div>

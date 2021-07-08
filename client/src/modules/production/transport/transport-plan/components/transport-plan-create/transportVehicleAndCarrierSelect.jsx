@@ -16,7 +16,7 @@ import '../transport-plan.css'
 
 function TransportVehicleAndCarrierSelect(props) {
     let listRequirements = []
-    let {startTime, endTime, transportDepartment, transportVehicle, transportPlan, callBackVehicleAndCarrier} = props;
+    let {startTime, endTime, transportDepartment, transportVehicle, transportPlan, callBackVehicleAndCarrier, totalPayloadVolume} = props;
     // Danh sách cách phân công người và xe
     /**
      * [{
@@ -44,6 +44,8 @@ function TransportVehicleAndCarrierSelect(props) {
     const [listCarriersUsable, setListCarriersUsable] = useState();
     // Danh sách phương tiện có thể sử dụng hiện tại
     const [listVehiclesUsable, setListVehiclesUsable] = useState();
+
+    const [messageWarning, setMessageWarning] = useState(null);
     useEffect(() => {
         // Lấy tất cả plans đã có để kiểm tra xe và người có bị trùng lặp không
         // props.getAllTransportDepartments();
@@ -438,15 +440,39 @@ function TransportVehicleAndCarrierSelect(props) {
         console.log(listChosenVehicle , " listChosenVehicle")
         callBackVehicleAndCarrier(listChosenVehicle);
     }, [listChosenVehicle])
+
+    useEffect(() => {
+        if (listChosenVehicle && listChosenVehicle.length!==0 && totalPayloadVolume){
+            let totalVehicleVolume = 0;
+            let totalVehiclePayload = 0;
+            for (let i=0;i<listChosenVehicle.length;i++){
+                listVehiclesUsable.map(vehicle => {
+                    if (listChosenVehicle[i].vehicle === vehicle._id){
+                        totalVehicleVolume+=vehicle.volume;
+                        totalVehiclePayload+=vehicle.payload;
+                    }                        
+                })
+            }
+            if (totalPayloadVolume.volume > totalVehicleVolume || totalPayloadVolume.payload > totalVehiclePayload){
+                setMessageWarning("Bạn nên cân nhắc chọn thêm phương tiện");
+            }
+        }
+        else {
+            setMessageWarning(null);
+        }
+    }, [totalPayloadVolume, listChosenVehicle])
     return (
         <React.Fragment>
             <div className="box-body">
                 <div className="box box-solid">
                     <div className="box-header">
-                        <div className="box-title">{"Danh sách phương tiện có thể sử dụng ngày: "+ formatDate(startTime)}</div>                                
+                        <div className="box-title">{"Danh sách phương tiện có thể sử dụng ngày "+ formatDate(startTime)}</div>                                
                     </div>
                     <div className="box-body qlcv">                             
-                        
+                    {
+                        messageWarning && 
+                        <h4 className={"text-yellow"}>{messageWarning}</h4>
+                    }    
                     {
                         listVehiclesUsable && listVehiclesUsable.length!==0
                         &&
@@ -460,7 +486,7 @@ function TransportVehicleAndCarrierSelect(props) {
                                     <th>{"Thể tích thùng"}</th>
                                     <th>{"Tài xế"}</th>
                                     <th style={{width: '200px'}}>{"Nhân viên đi cùng"}</th>
-                                    <th >{"Hành động"}</th>
+                                    <th >{"Xác nhận sử dụng phương tiện trong kế hoạch"}</th>
                                     {/* <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
                                         <DataTableSetting
                                             tableId={tableId}

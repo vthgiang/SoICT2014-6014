@@ -82,6 +82,18 @@ exports.createTransportRequirement = async (portal, data, userId) => {
                             ])                            
                             .populate({
                                 path: 'goods.good'
+                            })
+                            .populate({
+                                path: 'department',
+                                populate: {
+                                    path: 'type.roleOrganizationalUnit organizationalUnit',
+                                    populate: [{
+                                        path: "users",
+                                        populate: [{
+                                            path: "userId"
+                                        }]
+                                    }]
+                                }
                             });
     return requirement;
 }
@@ -99,9 +111,26 @@ exports.getAllTransportRequirements = async (portal, data) => {
     //         }
     //     }
     // }
+    if (data.searchData) {
+        let searchData = JSON.parse(data.searchData);
+
+        let {code, type, status} = searchData;
+        
+        if (code){
+            keySearch.code = new RegExp(code, "i");
+        }
+        if (type){
+            keySearch.type = type;
+        }
+        if (status){
+            keySearch.status = status;
+        }
+    }
+
     if (data.status){
         keySearch.status = data.status;
     }
+    
     let page, limit;
     page = data?.page ? Number(data.page) : 1;
     limit = data?.limit ? Number(data.limit) : 20;
@@ -247,31 +276,7 @@ exports.getAllTransportRequirements = async (portal, data) => {
     }
 }
 
-//     let page, perPage;
-//     page = data?.page ? Number(data.page) : 1;
-//     perPage = data?.perPage ? Number(data.perPage) : 20;
-
-//     let totalList = await Example(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
-//     let ExampleCollection = await Example(connect(DB_CONNECTION, portal)).find(keySearch, { exampleName: 1 })
-//         .skip((page - 1) * perPage)
-//         .limit(perPage);
-
-//     return { 
-//         data: ExampleCollection,
-//         totalList 
-//     }
-// }
-
-// // Lấy ra Ví dụ theo id
-// exports.getExampleById = async (portal, id) => {
-//     let example = await Example(connect(DB_CONNECTION, portal)).findById({ _id: id });
-//     if (example) {
-//         return example;
-//     }
-//     return -1;
-// }
-
-// Chỉnh sửa một Ví dụ
+// Chỉnh sửa một yêu cầu vận chuyển
 exports.editTransportRequirement = async (portal, id, data) => {
 
     let oldTransportRequirement = await TransportRequirement(connect(DB_CONNECTION, portal)).findById(id);
@@ -297,6 +302,18 @@ exports.editTransportRequirement = async (portal, id, data) => {
         },
         {
             path: 'approver'
+        },
+        {
+            path: 'department',
+            populate: {
+                path: 'type.roleOrganizationalUnit organizationalUnit',
+                populate: [{
+                    path: "users",
+                    populate: [{
+                        path: "userId"
+                    }]
+                }]
+            }
         }
     ])        
     return transportRequirement;

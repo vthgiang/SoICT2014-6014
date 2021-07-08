@@ -27,7 +27,9 @@
   .timeline-items-transport {
     margin-left: -5px;
     margin-right: -5px;
-    margin-top: -12px;
+    /* margin-top: -12px; */
+    
+    margin-top: -6px;
     display: flex;
     /* justify-content: space-between; */
   }
@@ -35,6 +37,7 @@
   .timeline-item-transport {
     position: relative;
     cursor: pointer;
+    margin-top: -6px;
   }
   
   .timeline-item-transport::before {
@@ -96,6 +99,12 @@
   .timeline-item-transport.active2 .timeline-contain-transport::before {
     background-color: red;
   }
+
+  .timeline-progress {
+    height: 100%;
+    background-color: #28A745;
+    transition: all ease 0.9s;
+}
 
   /* style page cau hinh chung */
   .generalConfiguration .nav-tabs-custom{
@@ -164,4 +173,11 @@ table.tableTest2 th, table.tableTest2 td {
 }
 table.tableTest2 th.first-column {
   min-width: 4em;
+}
+
+.transport-process-detail-vehicle tr th{
+  padding: 3px;
+}
+.transport-process-detail-vehicle tr td{
+  padding: 3px;
 }

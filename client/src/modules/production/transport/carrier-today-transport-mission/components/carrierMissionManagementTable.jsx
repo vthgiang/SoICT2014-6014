@@ -6,6 +6,7 @@ import { DataTableSetting, DeleteNotification, PaginateBar, SelectBox, DialogMod
 
 import { formatDate, formatToTimeZoneDate } from "../../../../../helpers/formatDate"
 
+import { DetailMission } from './detailMission'
 import { CarrierMissionReport } from "./carrierMissionReport"
 
 import { transportPlanActions } from "../../transport-plan/redux/actions"
@@ -32,6 +33,36 @@ function CarrierMissionManagementTable(props) {
 
     const handleCarrierDateChange = (value) => {
         setCurrentDate(formatToTimeZoneDate(value));
+    }
+
+    const [currentPositionCarrierShow, setCurrentPositionCarrierShow] = useState()
+    const [currentPositionCarrierShowTimeInterval, setCurrentPositionCarrierShowTimeInterval] = useState();
+    const handleShowMissionDetail = (mission, index) => {
+        setCurrentMission({mission: mission, stt: index})
+        const setCurrentPositionShow = position => {
+            const currentPosition = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            }
+            // setCurrentPosition(currentPosition);
+            let data = {
+                location: currentPosition
+            }
+            console.log(new Date());
+            setCurrentPositionCarrierShow(data)
+        };
+
+        navigator.geolocation.getCurrentPosition(setCurrentPositionShow);
+        setCurrentPositionCarrierShowTimeInterval(
+            setInterval(() => {
+                navigator.geolocation.getCurrentPosition(setCurrentPositionShow);
+            }, 30000)
+        );
+        window.$(`#modal-detail-mission`).modal('show');
+    }
+    const handleShowMissionDetailClearInterval = () => {
+        clearInterval(currentPositionCarrierShowTimeInterval);
+        setCurrentPositionCarrierShow();
     }
     const handleShowMissionReport = (mission, index) => {
         setCurrentMission(mission)
@@ -194,6 +225,13 @@ function CarrierMissionManagementTable(props) {
         <React.Fragment>
             <div className="box-body qlcv">
             {/* <TransportDialogMissionReport /> */}
+                <DetailMission
+                    currentMission={currentMission?.mission}
+                    stt={currentMission?.stt}
+                    currentPositionCarrierShow={currentPositionCarrierShow}
+                    allMissions = {currentVehicleRoute?.routeOrdinal}
+                    handleShowMissionDetailClearInterval={handleShowMissionDetailClearInterval}
+                />
                 <CarrierMissionReport
                     currentMission={currentMission}
                     currentPlanId={currentPlanId}
@@ -256,7 +294,7 @@ function CarrierMissionManagementTable(props) {
                                     <a className="edit text-green" style={{ width: '5px' }} 
                                         // title={translate('manage_example.detail_info_example')} 
                                         title={'Thông tin chi tiết yêu cầu vận chuyển'}
-                                        // onClick={() => handleShowDetailInfo(x)}
+                                        onClick={() => handleShowMissionDetail(routeOrdinal, index)}
                                     >
                                         <i className="material-icons">
                                             visibility

@@ -20,6 +20,7 @@ export default {
             add: "Add",
             edit: "Edit",
             delete: "Delete",
+            delete_option: "Delete options",
             save: "Save",
             close: "Close",
             accept: "Accept",
@@ -4372,6 +4373,12 @@ export default {
                 add_fail: "Add vehicle fail",
                 edit_success: "Edited vehicle status",
                 edit_fail: "Edit vehicle status fail",
+            },
+            transportDepartment: {
+                add_success: "Added transport department success",
+                add_fail: "Add transport department fail",
+                delete_success: "Deleted transport department",
+                delete_fail: "Delete transport department fail",
             }
         },
 

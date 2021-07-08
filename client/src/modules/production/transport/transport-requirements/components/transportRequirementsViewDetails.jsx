@@ -67,6 +67,7 @@ function TransportRequirementsViewDetails(props) {
                 approver_email: curentTransportRequirementDetail.approver?.email,
                 timeRequests: curentTransportRequirementDetail.timeRequests,
                 transportPlan: curentTransportRequirementDetail.transportPlan,
+                note: (curentTransportRequirementDetail.note && curentTransportRequirementDetail.status ==="0")?curentTransportRequirementDetail.note:null,
             })
         }
     }, [curentTransportRequirementDetail])
@@ -112,6 +113,9 @@ function TransportRequirementsViewDetails(props) {
                                 <p><strong>{"Mã yêu cầu vận chuyển: "}&emsp;</strong> {detailRequirement.code}</p>
                                 <p><strong>{"Loại vận chuyển: "}&emsp;</strong> {detailRequirement.type}</p>
                                 <p><strong>{"Trạng thái: "}&emsp;</strong> {detailRequirement.status}</p>
+                                {detailRequirement?.note &&
+                                    <p><strong>{"Ghi chú: "}&emsp;</strong> {detailRequirement.note}</p>
+                                }
                                 <p><strong>{"Người tạo: "}&emsp;</strong> {detailRequirement.creator_name}  &emsp;{" - "}&emsp; {detailRequirement.creator_email}</p>                            
                                 <p><strong>{"Ngày tạo: "}&emsp;</strong> {detailRequirement.creator_date}</p>
                                 <p><strong>{"Đơn vị chịu trách nhiệm: "}&emsp;</strong>{detailRequirement.departmentName}</p>

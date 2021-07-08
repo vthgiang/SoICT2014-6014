@@ -5,12 +5,12 @@ const TransportScheduleSchema = new Schema({
     // name: {
     //     type: String
     // },
-    transportPlan: {
+    transportPlan: { // Thuộc về kế hoạch vận chuyển
         type: Schema.Types.ObjectId,
         ref: 'TransportPlan',
         required: true,
     },
-    route: [{
+    route: [{ // Đường đi các phương tiện
         transportVehicle: { // Phương tiện vận chuyển
             type: Schema.Types.ObjectId,
             ref: 'TransportVehicle',
@@ -34,13 +34,13 @@ const TransportScheduleSchema = new Schema({
             },
         }]
     }],
-    transportVehicles: [{ // Xep nguoi, hang hoa
-        transportVehicle: {
+    transportVehicles: [{ // Cách giao yêu cầu vận chuyển cho phương tiện
+        transportVehicle: { // Phương tiện vận chuyển
             type: Schema.Types.ObjectId,
             ref: 'TransportVehicle',
             required: true,
         },
-        transportRequirements: [{
+        transportRequirements: [{ // Yêu cầu vận chuyển phụ trách
             type: Schema.Types.ObjectId,
             ref: 'TransportRequirement',
             required: true,

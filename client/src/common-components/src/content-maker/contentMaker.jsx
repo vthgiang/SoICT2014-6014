@@ -62,10 +62,35 @@ class ContentMaker extends Component {
                 file: files
             }
         })
-        console.log(files);
         if (this.props.onFilesChange){
             this.props.onFilesChange(files)
         }
+    }
+    shouldComponentUpdate = (nextProps, nextState) => {
+        if (nextState.showDropFileHere===true && this.state.showDropFileHere===false){
+            return true
+        }
+        if (nextState.showDropFileHere===false && this.state.showDropFileHere===false){
+            return true
+        }
+        return false;
+    }
+    handleDragEnter = () => {
+        this.setState(state => {
+            return {
+                ...state,
+                showDropFileHere: true
+            }
+        });
+    }
+
+    handleDragLeave = () => {
+        this.setState(state => {
+            return {
+                ...state,
+                showDropFileHere: false
+            }
+        });
     }
     render() {
         const { translate } = this.props;
@@ -77,7 +102,7 @@ class ContentMaker extends Component {
         } = this.props
         return (
             <React.Fragment>
-            <div onPaste={this.handlePaste}>
+            <div onPaste={this.handlePaste} onDragLeave={this.handleDragLeave} onDragEnter={this.handleDragEnter}>
                 <Files
                     ref='fileComponent'
                     className='files-dropzone-list'
@@ -90,6 +115,7 @@ class ContentMaker extends Component {
                     clickable={clickable}
                 >
                     <QuillEditor
+                        showDropFileHere={this.state.showDropFileHere}
                         id={idQuill}
                         inputCssClass={inputCssClass}
                         toolbar={false}

@@ -8,7 +8,7 @@ router.get('/getOnlyExampleName', auth, ExampleController.getOnlyExampleName);
 router.get('/:id', auth, ExampleController.getExampleById);
 router.post('/', auth, ExampleController.createExample);
 router.patch('/:id', auth, ExampleController.editExample);
-router.delete('/:id', auth, ExampleController.deleteExample);
+router.delete('/', auth, ExampleController.deleteExamples);
 
 module.exports = router;
 

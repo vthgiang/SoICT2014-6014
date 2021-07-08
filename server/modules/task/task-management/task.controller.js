@@ -1066,3 +1066,23 @@ getTasksByProject = async (req, res) => {
     }
 }
 
+
+exports.importTasks = async (req, res) => {
+    try {
+        const data = await TaskManagementService.importTasks(req.body,req.portal, req.user);
+        await Logger.info(req.user.email, 'import_task_success', req.portal)
+        res.status(200).json({
+            success: true,
+            messages: ['import_task_success'],
+            content: data
+        })
+    } catch (error) {
+        console.log('errror', error)
+        await Logger.error(req.user.email, 'import_task_faile', req.portal)
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['import_task_faile'],
+            content: error
+        })
+    }
+}

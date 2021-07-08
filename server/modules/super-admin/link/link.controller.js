@@ -118,25 +118,25 @@ exports.deleteLink = async (req, res) => {
     }
 };
 
-exports.getLinkCategories = async (req, res) => {
-    try {
-        let content = await LinkService.getLinkCategories();
+// exports.getLinkCategories = async (req, res) => {
+//     try {
+//         let content = await LinkService.getLinkCategories();
 
-        await Logger.info(req.user.email, 'get_all_link_categories_success');
-        res.status(200).json({
-            success: true,
-            messages: ['get_all_link_categories_success'],
-            content
-        });
-    } catch (error) {
-        await Logger.info(req.user.email, 'get_all_link_categories_faile');
-        res.status(400).json({
-            success: false,
-            messages: Array.isArray(error) ? error : ['get_all_link_categories_faile'],
-            content: error
-        });
-    }
-};
+//         await Logger.info(req.user.email, 'get_all_link_categories_success');
+//         res.status(200).json({
+//             success: true,
+//             messages: ['get_all_link_categories_success'],
+//             content
+//         });
+//     } catch (error) {
+//         await Logger.info(req.user.email, 'get_all_link_categories_faile');
+//         res.status(400).json({
+//             success: false,
+//             messages: Array.isArray(error) ? error : ['get_all_link_categories_faile'],
+//             content: error
+//         });
+//     }
+// };
 
 exports.updateCompanyLinks = async (req, res) => {
     try {

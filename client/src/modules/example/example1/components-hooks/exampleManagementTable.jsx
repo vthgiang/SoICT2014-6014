@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 
-import { DataTableSetting, DeleteNotification, PaginateBar } from "../../../../common-components";
+import { DeleteNotification, PaginateBar, SmartTable } from "../../../../common-components";
 
 import { ExampleCreateForm } from "./exampleCreateForm";
 import { ExampleEditForm } from "./exampleEditForm";
@@ -24,6 +24,7 @@ function ExampleManagementTable(props) {
         perPage: getLimit,
         tableId: getTableId,
     })
+    const [selectedData, setSelectedData] = useState()
 
     const { example, translate } = props;
     const { exampleName, page, perPage, currentRow, curentRowDetail, tableId } = state;
@@ -102,7 +103,9 @@ function ExampleManagementTable(props) {
      * @param {*} id của ví dụ cần xóa
      */
     const handleDelete = (id) => {
-        props.deleteExample(id);
+        props.deleteExamples({
+            exampleIds: [id]
+        });
         props.getExamples({
             exampleName,
             perPage,
@@ -110,6 +113,15 @@ function ExampleManagementTable(props) {
         });
     }
 
+    const getDataCheck = (value) => {
+        setSelectedData(value)
+    }
+
+    const handleDeleteOptions = () => {
+        props.deleteExamples({
+            exampleIds: selectedData
+        });
+    }
 
     /**
      * Hàm xử lý khi click edit một ví vụ
@@ -169,7 +181,7 @@ function ExampleManagementTable(props) {
             <div className="box-body qlcv">
                 <div className="form-inline">
                     {/* Button thêm mới */}
-                    <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
+                    <div className="dropdown pull-right" style={{ marginTop: "5px" }}>
                         <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('manage_example.add_title')} >{translate('manage_example.add')}</button>
                         <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
                             <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-import-file-example-hooks').modal('show')} title={translate('manage_example.add_multi_example')}>
@@ -178,6 +190,7 @@ function ExampleManagementTable(props) {
                                 {translate('manage_example.add_example')}</a></li>
                         </ul>
                     </div>
+                    {selectedData?.length > 0 && <button type="button" className="btn btn-danger pull-right" title={translate('general.delete_option')} onClick={() => handleDeleteOptions()}>{translate("general.delete_option")}</button>}
 
                     {/* Tìm kiếm */}
                     <div className="form-group">
@@ -188,51 +201,44 @@ function ExampleManagementTable(props) {
                         <button type="button" className="btn btn-success" title={translate('manage_example.search')} onClick={() => handleSubmitSearch()}>{translate('manage_example.search')}</button>
                     </div>
                 </div>
-
-                {/* Danh sách các ví dụ */}
-                <table id={tableId} className="table table-striped table-bordered table-hover">
-                    <thead>
-                        <tr>
-                            <th className="col-fixed" style={{ width: 60 }}>{translate('manage_example.index')}</th>
-                            <th>{translate('manage_example.exampleName')}</th>
-                            <th>{translate('manage_example.description')}</th>
-                            <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
-                                <DataTableSetting
-                                    tableId={tableId}
-                                    columnArr={[
-                                        translate('manage_example.index'),
-                                        translate('manage_example.exampleName'),
-                                        translate('manage_example.description'),
-                                    ]}
-                                    setLimit={setLimit}
+                
+                <SmartTable
+                    tableId={tableId}
+                    columnArr={{
+                        index: translate('manage_example.index'),
+                        exampleName: translate('manage_example.exampleName'),
+                        description: translate('manage_example.description')
+                    }}
+                    headTableData={{
+                        index: <th className="col-fixed" style={{ width: 60 }}>{translate('manage_example.index')}</th>,
+                        exampleName: <th>{translate('manage_example.exampleName')}</th>,
+                        description: <th>{translate('manage_example.description')}</th>,
+                        action: <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}</th>
+                    }}
+                    bodyTableData={lists?.length > 0 && lists.map((item, index) => {
+                        return {
+                            id: item?._id,
+                            index: <td>{index + 1}</td>,
+                            exampleName: <td>{item?.exampleName}</td>,
+                            description: <td>{item?.description}</td>,
+                            action: <td style={{ textAlign: "center" }}>
+                                <a className="edit text-green" style={{ width: '5px' }} title={translate('manage_example.detail_info_example')} onClick={() => handleShowDetailInfo(item)}><i className="material-icons">visibility</i></a>
+                                <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_example.edit')} onClick={() => handleEdit(item)}><i className="material-icons">edit</i></a>
+                                <DeleteNotification
+                                    content={translate('manage_example.delete')}
+                                    data={{
+                                        id: item._id,
+                                        info: item.exampleName
+                                    }}
+                                    func={handleDelete}
                                 />
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {(lists && lists.length !== 0) &&
-                            lists.map((example, index) => (
-                                <tr key={index}>
-                                    <td>{index + 1 + (page - 1) * perPage}</td>
-                                    <td>{example.exampleName}</td>
-                                    <td>{example.description}</td>
-                                    <td style={{ textAlign: "center" }}>
-                                        <a className="edit text-green" style={{ width: '5px' }} title={translate('manage_example.detail_info_example')} onClick={() => handleShowDetailInfo(example)}><i className="material-icons">visibility</i></a>
-                                        <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_example.edit')} onClick={() => handleEdit(example)}><i className="material-icons">edit</i></a>
-                                        <DeleteNotification
-                                            content={translate('manage_example.delete')}
-                                            data={{
-                                                id: example._id,
-                                                info: example.exampleName
-                                            }}
-                                            func={handleDelete}
-                                        />
-                                    </td>
-                                </tr>
-                            ))
+                            </td>
                         }
-                    </tbody>
-                </table>
+                    })}
+                    dataDependencies={lists}
+                    setLimit={setLimit}
+                    getDataCheck={getDataCheck}
+                />
 
                 {/* PaginateBar */}
                 {example && example.isLoading ?
@@ -258,7 +264,7 @@ function mapState(state) {
 
 const actions = {
     getExamples: exampleActions.getExamples,
-    deleteExample: exampleActions.deleteExample
+    deleteExamples: exampleActions.deleteExamples
 }
 
 const connectedExampleManagementTable = connect(mapState, actions)(withTranslate(ExampleManagementTable));

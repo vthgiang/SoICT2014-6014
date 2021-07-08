@@ -629,6 +629,26 @@ export function tasks(state = {
                 isProjectPaginateLoading: false
             }
 
+        case taskManagementConstants.IMPORT_TASKS_REQUEST:
+             return {
+                ...state,
+                isLoading: true
+            };
+        
+        case taskManagementConstants.IMPORT_TASKS_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                importTask: action.payload.content,
+            }
+        
+        case taskManagementConstants.IMPORT_TASKS_FAILURE:
+             return {
+                ...state,
+                error: action.error,
+                isLoading: false
+            }
+        
         default:
             return state
     }
