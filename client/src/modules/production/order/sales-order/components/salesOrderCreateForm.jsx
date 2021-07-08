@@ -13,6 +13,7 @@ import SalesOrderCreatePayment from "./createSalesOrder/salesOrderCreatePayment"
 import SlasOfGoodDetail from "./createSalesOrder/viewDetailOnCreate/slasOfGoodDetail";
 import DiscountOfGoodDetail from "./createSalesOrder/viewDetailOnCreate/discountOfGoodDetail";
 import ManufacturingWorksOfGoodDetail from "./createSalesOrder/viewDetailOnCreate/manufacturingWorksOfGoodDetail";
+import "../../../../crm/customer/components/customer.css";
 class SalesOrderCreateForm extends Component {
     constructor(props) {
         super(props);
@@ -88,7 +89,7 @@ class SalesOrderCreateForm extends Component {
     handleCustomerChange = (value) => {
         if (value[0] !== "" && value[0] !== "title") {
             let customerInfo = this.props.customers.list.filter((item) => item._id === value[0]);
-            let customerPromotions = customerInfo[0].promotions.map((promo) => ({ ...promo, checked: false, disabled: false }))
+            let customerPromotions = customerInfo[0].promotions.map((promo) => ({ ...promo, checked: false, disabled: false })).filter((item) => item.status ==1);
             if (customerInfo.length) {
                 this.setState({
                     customer: customerInfo[0]._id,
@@ -585,6 +586,7 @@ class SalesOrderCreateForm extends Component {
                 // organizationalUnit,
                 approvers,
                 priority,
+                customerPromotions
             } = this.state;
 
             let allCoin = this.getCoinOfAll(); //Lấy tất cả các xu được tặng trong đơn
@@ -612,7 +614,8 @@ class SalesOrderCreateForm extends Component {
             };
 
             await this.props.createNewSalesOrder(data);
-
+            await this.props.usePromotion(customer, { promoIndex: customerPromotions.findIndex((promo) => promo.checked) })
+            await this.props.getCustomers({getAll:true})
             this.setState((state) => {
                 return {
                     ...state,
@@ -636,6 +639,7 @@ class SalesOrderCreateForm extends Component {
                     paymentAmount: "",
                     note: "",
                     step: 0,
+                    customerPromotions:[]
                 };
             });
 
@@ -819,7 +823,7 @@ class SalesOrderCreateForm extends Component {
                                     setCurrentManufacturingWorksOfGoods={(data) => {
                                         this.setCurrentManufacturingWorksOfGoods(data);
                                     }}
-                                    setInitialAmount={(data)=>this.setInitialAmount(data)}
+                                    setInitialAmount={(data) => this.setInitialAmount(data)}
                                 />
                             )}
                             {step === 2 && (
@@ -840,7 +844,7 @@ class SalesOrderCreateForm extends Component {
                                     deliveryTime={deliveryTime}
                                     coin={coin}
                                     note={note}
-                                    
+
                                     discountsOfOrderValue={discountsOfOrderValue}
                                     discountsOfOrderValueChecked={discountsOfOrderValueChecked}
                                     enableFormSubmit={enableFormSubmit}
@@ -879,6 +883,7 @@ function mapStateToProps(state) {
 const mapDispatchToProps = {
     getCustomers: CrmCustomerActions.getCustomers,
     createNewSalesOrder: SalesOrderActions.createNewSalesOrder,
+    usePromotion: CrmCustomerActions.usePromotion
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(SalesOrderCreateForm));

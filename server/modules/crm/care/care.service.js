@@ -150,7 +150,7 @@ exports.getCareById = async (portal, companyId, id) => {
 }
 
 
-exports.editCare = async (portal, companyId, id, data, userId,role) => {
+exports.editCare = async (portal, companyId, id, data, userId, role) => {
     let { startDate, endDate } = data;
     if (userId) {
         data = { ...data, creator: userId };
@@ -190,7 +190,13 @@ exports.editCare = async (portal, companyId, id, data, userId,role) => {
         let params = { taskId: crmTask.task }
         let body = {
             creator: userId,
-            description: `<p> <strong> ${newCare.name}</strong>, tên khách hàng : <strong> ${newCare.customer.name}</strong>  </p>`,
+            description: `
+            <p> Tên công việc :  <strong> ${newCare.name}</strong> </p>
+            <p> Tên khách hàng : <strong> ${newCare.customer.name}</strong></p>
+            <p> Mô tả : <i>${newCare.description ? newCare.description.slice(3, newCare.description.length - 4) : ''}</i> </p> 
+            <p> Kết quả :  ${newCare.evaluation.result == 1 ? '<strong style="color:green">Thành công</strong>' : '<strong style="color:red">Thất bại</strong>'}</p>
+            <p>  Nhận xét hoạt động : <i> ${newCare.evaluation.comment ? newCare.evaluation.comment.slice(3, newCare.description.length - 4) : ''}<i></p>
+            `,
             index: '1'
         }
         console.log(1);

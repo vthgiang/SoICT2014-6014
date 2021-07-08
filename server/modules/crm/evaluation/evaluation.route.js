@@ -5,7 +5,8 @@ const { auth } = require(`../../../middleware`);
 const EvaluationController = require('./evaluation.controller');
 
 router.get('/', auth, EvaluationController.getEvaluations);
-router.get('/:id', auth, EvaluationController.getCustomerCareInfoByEmployee);
+router.get('/employee', auth, EvaluationController.getCustomerCareInfoByEmployee);
+router.get('/crmUnit', auth, EvaluationController.getCustomerCareInfoByUnit);
 // router.post('/', auth, StatusController.createStatus);
 // router.patch('/:id', auth, StatusController.editStatus);
 // router.delete('/:id', auth, StatusController.deleteStatus);

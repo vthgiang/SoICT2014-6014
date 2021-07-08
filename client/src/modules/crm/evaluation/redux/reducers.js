@@ -21,7 +21,7 @@ export function evaluations(state = initState, action) {
     switch (action.type) {
         case CrmEvaluationConstants.GET_CRM_EVALUATIONS_REQUEST:
         case CrmEvaluationConstants.GET_CRM_CARE_INFO_BY_EMPLOYEE_REQUEST:
-
+        case CrmEvaluationConstants.GET_CRM_CARE_INFO_BY_UNIT_REQUEST:
             return {
                 ...state,
                 isLoading: true
@@ -29,6 +29,7 @@ export function evaluations(state = initState, action) {
 
         case CrmEvaluationConstants.GET_CRM_EVALUATIONS_FAILE:
         case CrmEvaluationConstants.GET_CRM_CARE_INFO_BY_EMPLOYEE_FAILE:
+        case CrmEvaluationConstants.GET_CRM_CARE_INFO_BY_UNIT_FAILE:
             return {
                 ...state,
                 isLoading: false
@@ -46,6 +47,12 @@ export function evaluations(state = initState, action) {
             return {
                 ...state,
                 customerCareInfoByEmployee: action.payload,
+                isLoading: false,
+            };
+        case CrmEvaluationConstants.GET_CRM_CARE_INFO_BY_UNIT_SUCCESS:
+            return {
+                ...state,
+                customerCareInfoByUnit: action.payload,
                 isLoading: false,
             };
 

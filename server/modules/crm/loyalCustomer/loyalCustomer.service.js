@@ -19,7 +19,7 @@ const { forEach } = require("lodash");
  */
 exports.getLoyalCustomers = async (userId, portal, companyId, query, currentRole) => {
     console.log(query);
-    const { customerCode, page, limit } = query;
+    let { customerCode, page, limit } = query;
     // lay danh sach khach hang
     const listAllCustomer = await getCustomers(portal, companyId, { customerCode }, currentRole);
     let customers;
@@ -47,7 +47,19 @@ exports.getLoyalCustomers = async (userId, portal, companyId, query, currentRole
 
     }
     loyalCustomers = loyalCustomers.sort((a, b) => (a.rankPoint < b.rankPoint) ? 1 : -1).filter((x) => x.rankPoint > 0);
-    if (page, limit) return { listDocsTotal: loyalCustomers.length, loyalCustomers: loyalCustomers.slice(page * limit, page * limit + limit) }
+
+    if (page, limit) {
+        page = parseInt(page)-1;
+        limit = parseInt(limit);
+        let start = page * limit;
+        let end = page * limit + limit
+        console.log(start, end);
+        if (end > loyalCustomers.length) end = loyalCustomers.length
+        console.log(start, end);
+        return { listDocsTotal: loyalCustomers.length, loyalCustomers: loyalCustomers.slice(start, end) }
+    }
+
+
     return { listDocsTotal: loyalCustomers.length, loyalCustomers }
 }
 

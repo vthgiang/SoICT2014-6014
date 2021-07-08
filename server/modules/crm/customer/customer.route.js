@@ -17,9 +17,14 @@ router.post('/', auth, uploadFile([{ name: 'file', path: '/crm/customer-files' }
 router.post('/imports', auth, CustomerController.importCustomers);
 router.patch('/:id', auth, uploadFile(data, 'fields'), CustomerController.editCustomer);
 router.patch('/:id/point', auth, CustomerController.editCustomerPoint);
-router.patch('/:id/promotion', auth, CustomerController.addPromotion);
 
+router.post('/:id/promotion', auth, CustomerController.addPromotion);
+router.patch('/:id/promotion', auth, CustomerController.editPromotion);
+router.patch('/:id/promotion/use', auth, CustomerController.usePromotion);
 router.get('/:id/promotions', auth, CustomerController.getCustomerPromotions);
+router.delete('/:id/promotion', auth, CustomerController.deletePromotion);
+
+
 router.delete('/:id', auth, CustomerController.deleteCustomer);
 
 module.exports = router;

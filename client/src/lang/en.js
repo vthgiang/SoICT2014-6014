@@ -106,13 +106,16 @@ export default {
             documents: "Documents",
             crm: "CRM",
             crm_list: {
-                customer: "Customers",
-                lead: "Leads",
-                care: "Cares",
-                group: "Groups",
-                statistic: "Statistics",
-                generalConfiguration: "generalConfiguration",
-                evaluation: "Evaluation"
+                dashboard: "Customer management message board",
+                dashboardUnit: "Customer management unit message board",
+                customer: "Customer information management",
+                lead: "Loyal customer",
+                care: "Customer care activities",
+                group: "Customer group",
+                statistics: "Statistics",
+                generalConfiguration: "Configuring customer care operations",
+                evaluation: "Evaluating customer service activities",
+                crmUnitConfiguration: "Customer care unit configuration"
             },
 
             task_template: "Task Template",

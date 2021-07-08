@@ -193,6 +193,72 @@ function CreateDiscountsForOrder(props) {
             </div>
         );
     };
+    const handleCustomerPromotionChange = (e) => {
+        let { setCustomerPromotions } = props;
+        let { customerPromotions } = props;
+        let { id, checked } = e.target;
+        if (checked) {
+            for (let i = 0; i < customerPromotions.length; i++) {
+                customerPromotions[i].checked = false
+                customerPromotions[i].disabled = true
+            }
+        }
+        else {
+            for (let i = 0; i < customerPromotions.length; i++) {
+                customerPromotions[i].disabled = false
+            }
+        }
+        let index = id.split('-')[2];
+        customerPromotions[index].checked = checked;
+        customerPromotions[index].disabled = false;
+        setCustomerPromotions(customerPromotions);
+    }
+
+    const getDiscountCustomertOptions = () => {
+        let { customerPromotions } = props;
+        let { paymentAmount } = props;
+        let { discountsChecked } = props;
+        const { setCustomerPromotions } = props;
+        // tạo giao diện 
+        return (
+            <div style={{ paddingLeft: "2rem" }}>
+                {customerPromotions.map((promo, index) => {
+                    let disabled = promo.disabled;
+                    if (promo.minimumOrderValue) {
+                        if (parseInt(paymentAmount) < promo.minimumOrderValue) {
+                            disabled = true;
+                            customerPromotions[index].disabled = true;
+                            customerPromotions[index].checked = false;
+                        }
+                    }
+                    if (paymentAmount === undefined || paymentAmount === "" || paymentAmount === null) {
+                        disabled = true;
+                    }
+                    return (
+                        <div className="form-check" style={{ display: "flex", paddingTop: "10px" }}>
+                            <input
+                                type="checkbox"
+                                className={`form-check-input`}
+                                id={`cus-promo-${index}`}
+                                disabled={disabled}
+                                checked={promo.checked}
+                                onChange={handleCustomerPromotionChange}
+                                style={{ minWidth: "20px" }}
+                                key={index}
+                            />
+                            <label
+                                className={`form-check-label ${disabled ? "text-muted" : "text-success"}`}
+                                for={`cus-promo-${index}`}
+                                style={{ fontWeight: `${disabled ? 500 : 600}` }}
+                            >
+                                {`Khuyến mãi ${promo.value}% cho đơn hàng từ ${promo.minimumOrderValue}, giảm tối đa ${promo.promotionalValueMax} (VNĐ)`}
+                            </label>
+                        </div>
+                    );
+                })}
+            </div>
+        );
+    }
 
     const { listDiscountsByOrderValue } = props.discounts;
     return (
@@ -206,7 +272,7 @@ function CreateDiscountsForOrder(props) {
                 href={"#modal-add-quote-discount-for-order"}
             >
                 Chọn khuyến mãi
-                </a>
+            </a>
             <DialogModal
                 modalID={`modal-add-quote-discount-for-order`}
                 isLoading={false}
@@ -232,6 +298,12 @@ function CreateDiscountsForOrder(props) {
                         );
                     })
                 )}
+                <div>
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                        <i className="fa fa-gift text-warning"></i> &ensp; <strong>Khuyến mãi của khách hàng</strong>
+                    </div>
+                    {getDiscountCustomertOptions()}
+                </div>
             </DialogModal>
         </React.Fragment>
     );

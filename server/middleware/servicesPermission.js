@@ -887,7 +887,13 @@ exports.links = [
     {
         url: '/crm/dashboard',
         apis: ['@all']
-    }, {
+    }
+    ,
+    {
+        url: '/crm/dashboardUnit',
+        apis: ['@all']
+    }
+    , {
         url: '/crm/customer',
         apis: ['@all']
     }, {

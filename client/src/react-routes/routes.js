@@ -102,6 +102,7 @@ const InventoryManagement = lazy(() => import("../modules/production/warehouse/i
 
 // Customer Management
 const CrmDashBoard = lazy(() => import("../modules/crm/dashboard/components"))
+const CrmDashBoardUnit = lazy(() => import("../modules/crm/crmUnitDashboard/components"))
 const CrmCustomer = lazy(() => import("../modules/crm/customer/components"))
 const CrmGroup = lazy(() => import("../modules/crm/group/components"))
 const CrmCare = lazy(() => import("../modules/crm/care/components"))
@@ -1889,6 +1890,24 @@ class Routes extends Component {
                         pageName={"crm_list.dashboard"}
                         layout={Layout}
                         component={CrmDashBoard}
+                    />
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"crm_dashboardUnit"}
+                        arrPage={[
+                            {
+                                link: "/crm/dashboardUnit",
+                                name: "crm_list.dashboardUnit",
+                                icon: "fa fa-dashboard",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/crm/dashboardUnit"}
+                        path={"/crm/dashboardUnit"}
+                        pageName={"crm_list.dashboardUnit"}
+                        layout={Layout}
+                        component={CrmDashBoardUnit}
                     />
 
                     <PrivateRoute

@@ -38,7 +38,7 @@ function CustomerHomePage(props) {
         limit: limit,
         page: 0,
         tableId: tableId,
-        roleId:getStorage('currentRole')
+        roleId: getStorage('currentRole')
 
     });
 
@@ -47,10 +47,10 @@ function CustomerHomePage(props) {
             async function getData() {
                 const currentRole = getStorage('currentRole')
                 props.getCustomers(state);
-                props.getGroups({roleId:currentRole});
-                props.getStatus({roleId:currentRole});
-                props.getCareTypes({});           
-               
+                props.getGroups({ roleId: currentRole });
+                props.getStatus({ roleId: currentRole });
+                props.getCareTypes({});
+
                 if (user && user.organizationalUnitsOfUser) {
                     let getCurrentUnit = user.organizationalUnitsOfUser.find(item =>
                         item.managers[0] === currentRole
@@ -58,10 +58,10 @@ function CustomerHomePage(props) {
                         || item.employees[0] === currentRole);
                     if (getCurrentUnit) {
                         props.getChildrenOfOrganizationalUnits(getCurrentUnit._id);
-                        
+
                     }
                 }
-             }
+            }
             getData();
         }
 
@@ -154,8 +154,8 @@ function CustomerHomePage(props) {
         await setState(newState);
     }
 
-    const setPage = async  (pageNumber) => {
-        const newState = {... state, page :  (pageNumber - 1) * (state.limit)} ;
+    const setPage = async (pageNumber) => {
+        const newState = { ...state, page: (pageNumber - 1) * (state.limit) };
         await setState(newState);
         props.getCustomers(newState);
 
@@ -164,8 +164,8 @@ function CustomerHomePage(props) {
     const setLimit = (number) => {
         setLimitState(number);
         const data = {
-           ...state,
-           limit:number
+            ...state,
+            limit: number
         };
         setState(data);
         props.getCustomers(data);
@@ -258,7 +258,7 @@ function CustomerHomePage(props) {
 
     let pageTotal = (crm.customers.totalDocs % limit === 0) ?
         parseInt(crm.customers.totalDocs / limit) :
-        parseInt((crm.customers.totalDocs / limit) + 1); 
+        parseInt((crm.customers.totalDocs / limit) + 1);
     let cr_page = parseInt((state.page / limit) + 1);
 
     //lay danh sach nhan vien
@@ -354,8 +354,10 @@ function CustomerHomePage(props) {
                                 }
                                 onChange={handleSearchByOwner}
                                 multiple={false}
-                                options={{ nonSelectedText: ('Chọn nhân viên quản lý ') , 
-                                allSelectedText: translate(`task.task_management.select_all_department`) }}
+                                options={{
+                                    nonSelectedText: ('Chọn nhân viên quản lý '),
+                                    allSelectedText: translate(`task.task_management.select_all_department`)
+                                }}
                             />
                         }
                     </div>
@@ -436,11 +438,9 @@ function CustomerHomePage(props) {
                                         <td>{cus.mobilephoneNumber}</td>
                                         <td>{cus.owner && cus.owner.length > 0 ? cus.owner.map(o => o.name).join(', ') : null}</td>
                                         <td style={{ textAlign: 'center' }}>
-                                            <a className="text-green"
-                                                onClick={() => handleInfo(cus._id)}
-                                            ><i className="material-icons">visibility</i></a>
-                                            <a className="text-yellow" onClick={() => handleEdit(cus._id)}><i className="material-icons">edit</i></a>
-                                            <a className="text-green" onClick={()=>handleCreateCareAction(cus._id)}><i className="material-icons">add_comment</i> </a>
+                                            <a className="text-green" title="Xem chi tiết thông tin khách hàng" onClick={() => handleInfo(cus._id)}><i className="material-icons">visibility</i></a>
+                                            <a className="text-yellow" title="Chỉnh sửa thông tin khách hàng" onClick={() => handleEdit(cus._id)}><i className="material-icons">edit</i></a>
+                                            <a className="text-green" title="Tạo hoạt động chăm sóc khách hàng" onClick={() => handleCreateCareAction(cus._id)}><i className="material-icons">add_comment</i> </a>
                                             <ConfirmNotification
                                                 icon="question"
                                                 title="Xóa thông tin về khách hàng"
@@ -476,7 +476,7 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-   
+
     getCustomers: CrmCustomerActions.getCustomers,
     deleteCustomer: CrmCustomerActions.deleteCustomer,
     getGroups: CrmGroupActions.getGroups,

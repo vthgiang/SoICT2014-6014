@@ -110,6 +110,7 @@ export default {
             customer_Management: "Quản lý khách hàng",
             crm_list: {
                 dashboard: "Bảng tin quản lý khách hàng",
+                dashboardUnit: "Bảng tin đơn vị quản lý khách hàng",
                 customer: "Quản lý thông tin khách hàng",
                 lead: "Khách hàng thân thiết",
                 care: "Hoạt động chăm sóc khách hàng",

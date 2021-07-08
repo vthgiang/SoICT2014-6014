@@ -84,10 +84,10 @@ function CrmCareHomePage(props) {
 
     useEffect(
         () => {
-            async function getData() {        
+            async function getData() {
                 const currentRole = getStorage('currentRole')
                 props.getCares(searchState);
-                props.getCustomers({roleId:currentRole});
+                props.getCustomers({ roleId: currentRole });
                 props.getCareTypes({});
                 if (user && user.organizationalUnitsOfUser) {
                     let getCurrentUnit = user.organizationalUnitsOfUser.find(item =>
@@ -372,18 +372,18 @@ function CrmCareHomePage(props) {
                                     <td>{o.startDate ? formatFunction.formatDate(o.startDate) : ''}</td>
                                     <td>{o.endDate ? formatFunction.formatDate(o.endDate) : ''}</td>
                                     <td style={{ textAlign: 'left' }}>
-                                        <a className="text-green" onClick={() => handleInfo(o._id)}><i className="material-icons">visibility</i></a>
+                                        <a className="text-green" title="Xem thông tin hoạt động CSKH" onClick={() => handleInfo(o._id)}><i className="material-icons">visibility</i></a>
                                         {o.status != 3 && o.status != 5 && (o.customerCareStaffs[0]._id == auth.user._id || getData.getRole(role) == 'manager') &&
                                             <>
-                                                <a className="text-yellow" onClick={() => handleEdit(o._id)}><i className="material-icons">edit</i></a>
+                                                <a className="text-yellow" title="Chỉnh sửa hoạt động CSKH" onClick={() => handleEdit(o._id)}><i className="material-icons">edit</i></a>
                                                 {/* Chỉ người thực hiện mới được báo hoàn thành */}
                                                 {o.customerCareStaffs[0]._id == auth.user._id &&
-                                                    <a className="text-green" onClick={() => handleComplete(o._id)}><i className="material-icons">assignment_turned_in</i></a>
+                                                    <a className="text-green" title="Hoàn thành hoạt động" onClick={() => handleComplete(o._id)}><i className="material-icons">assignment_turned_in</i></a>
                                                 }
                                                 <ConfirmNotification
                                                     icon="question"
-                                                    title="Xóa thông tin về khách hàng"
-                                                    content="<h3>Xóa thông tin khách hàng</h3>"
+                                                    title="Xóa hoạt động chăm sóc khách hàng"
+                                                    content="<h3>Xóa hoạt động chăm sóc khách hàng khách hàng</h3>"
                                                     name="delete"
                                                     className="text-red"
                                                     func={() => deleteCare(o._id)}

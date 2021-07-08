@@ -2,7 +2,9 @@ import { CrmEvaluationServices } from "./services";
 import { CrmEvaluationConstants } from "./constants";
 
 export const CrmEvaluationActions = {
-    getEvaluations,getCustomerCareInfoByEmployee
+    getEvaluations,
+    getCustomerCareInfoByEmployee,
+    getCustomerCareInfoByUnit
 };
 
 function getEvaluations(data) {
@@ -18,10 +20,10 @@ function getEvaluations(data) {
             .catch(err => { dispatch({ type: CrmEvaluationConstants.GET_CRM_EVALUATIONS_FAILE }) })
     }
 }
-function getCustomerCareInfoByEmployee(id) {
+function getCustomerCareInfoByEmployee() {
     return dispatch => {
         dispatch({ type: CrmEvaluationConstants.GET_CRM_CARE_INFO_BY_EMPLOYEE_REQUEST });
-        CrmEvaluationServices.getCustomerCareInfoByEmployee(id)
+        CrmEvaluationServices.getCustomerCareInfoByEmployee()
             .then(res => {
                 dispatch({
                     type: CrmEvaluationConstants.GET_CRM_CARE_INFO_BY_EMPLOYEE_SUCCESS,
@@ -29,5 +31,18 @@ function getCustomerCareInfoByEmployee(id) {
                 })
             })
             .catch(err => { dispatch({ type: CrmEvaluationConstants.GET_CRM_CARE_INFO_BY_EMPLOYEE_FAILE }) })
+    }
+}
+function getCustomerCareInfoByUnit() {
+    return dispatch => {
+        dispatch({ type: CrmEvaluationConstants.GET_CRM_CARE_INFO_BY_UNIT_REQUEST });
+        CrmEvaluationServices.getCustomerCareInfoByUnit()
+            .then(res => {
+                dispatch({
+                    type: CrmEvaluationConstants.GET_CRM_CARE_INFO_BY_UNIT_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => { dispatch({ type: CrmEvaluationConstants.GET_CRM_CARE_INFO_BY_UNIT_FAILE }) })
     }
 }

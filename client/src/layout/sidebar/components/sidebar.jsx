@@ -519,6 +519,11 @@ class SideBar extends Component {
                                             path: "/crm/dashboard",
                                         },
                                         {
+                                            name: "menu.crm_list.dashboardUnit",
+                                            icon: "fa fa-dashboard",
+                                            path: "/crm/dashboardUnit",
+                                        },
+                                        {
                                             name: "menu.crm_list.customer",
                                             icon: "fa fa-circle-o",
                                             path: "/crm/customer",
