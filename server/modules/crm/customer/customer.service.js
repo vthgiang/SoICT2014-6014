@@ -87,16 +87,27 @@ exports.createCustomer = async (portal, companyId, data, userId, fileConverts, r
 
     if (!crmUnit) return {};
     data = { ...data, crmUnit: crmUnit._id };
-    const newCustomer = await Customer(connect(DB_CONNECTION, portal)).create(data);
-
+    const newCus = await Customer(connect(DB_CONNECTION, portal)).create(data)
+    const newCustomer = await Customer(connect(DB_CONNECTION, portal)).findById(newCus._id)
+        .populate({ path: 'group', select: '_id name' })
+        .populate({ path: 'status', select: '_id name' })
+        .populate({ path: 'owner', select: '_id name email' })
+        .populate({ path: 'creator', select: '_id name email' })
     // them vao hoạt động tìm kiếm khách hàng
     //lấy công việc thêm khách hàng của nhân viên
     const crmTask = await getCrmTask(portal, companyId, userId, role, 1);
     //thêm mới hoạt động váo công việc
     const params = { taskId: crmTask.task }
+    console.log('newCustomer',newCustomer);
     const body = {
         creator: userId,
-        description: `<p>Thêm mới khách hàng<strong> ${newCustomer.name}</strong></p>`,
+        description: `
+        <p>Thêm mới khách hàng : <strong> ${newCustomer.name}</strong></p>
+        <p>Mã khách hàng : <strong> ${newCustomer.code}</strong></p>
+        <p>email khách hàng : <strong> ${newCustomer.email}</strong></p>
+        <p>Trạng thái khách hàng : <strong style="color:green"> ${newCustomer.status[0].name}</strong></p>
+        <p>Khách hàng thuộc nhóm : <strong> ${newCustomer.group.name}</strong></p>
+        `,
         index: '1'
     }
     await createTaskAction(portal, params, body, []);
@@ -156,7 +167,10 @@ exports.importCustomers = async (portal, companyId, data, userId, role) => {
         //thêm hoạt động vaod công việc tìm kiếm khách hàng
         const body = {
             creator: userId,
-            description: `<p>Thêm mới khách hàng<strong> ${x.name}</strong></p>`,
+            description: `
+            <p>Thêm mới khách hàng<strong> ${x.name}</strong></p>
+            
+            `,
             index: '1'
         }
         createTaskAction(portal, params, body, []);
@@ -364,7 +378,7 @@ exports.addPromotion = async (portal, companyId, id, data, userId) => {
     let promotions = [];
     let getCustomer = await Customer(connect(DB_CONNECTION, portal)).findById(id);
     if (getCustomer.promotions) promotions = getCustomer.promotions;
-    promotions = await [...promotions, { value, description, minimumOrderValue, promotionalValueMax, expirationDate: this.formatDate(expirationDate) }]
+    promotions = await [...promotions, { value, description, minimumOrderValue, promotionalValueMax, expirationDate: this.formatDate(expirationDate), status: 1 }]
     getCustomer = await { getCustomer, promotions };
     await Customer(connect(DB_CONNECTION, portal)).findByIdAndUpdate(id, {
         $set: getCustomer
@@ -405,7 +419,66 @@ exports.addRankPoint = async (portal, companyId, id, data, userId) => {
 
 
 
+
+
 exports.deleteCustomer = async (portal, companyId, id) => {
     let delCustomer = await Customer(connect(DB_CONNECTION, portal)).findOneAndDelete({ _id: id });
     return delCustomer;
+}
+
+exports.deletePromotion = async (portal, companyId, customerId, data, userId) => {
+    console.log('vao day');
+    console.log(data);
+    let { promoIndex } = data;
+    let customer = await Customer(connect(DB_CONNECTION, portal)).findById(customerId);
+    let promotions = [];
+    if (customer.promotions) {
+        promotions = customer.promotions;
+        promotions = promotions.splice(promoIndex, 1);
+    }
+    customer = { ...customer, promotions };
+    return await Customer(connect(DB_CONNECTION, portal)).findByIdAndUpdate(customerId, {
+        $set: customer
+    }, { new: true });
+
+}
+
+exports.usePromotion = async (portal, companyId, customerId, data, userId) => {
+    let { promoIndex } = data;
+    let customer = await Customer(connect(DB_CONNECTION, portal)).findById(customerId);
+    if (promoIndex < 0) return customer;
+    let promotions = customer.promotions.map(x => x);
+
+    let promotionUsed = promotions[promoIndex];
+    console.log('promotionUsed ban dau-----------------', promotionUsed)
+    promotionUsed = { ...promotionUsed.toObject(), status: 0 };
+    console.log('promo lúc sau -----------------', promotionUsed)
+
+    promotions.splice(promoIndex, 1);
+    promotions.push(promotionUsed);
+
+    customer = { ...customer.toObject(), promotions };
+    console.log(customer)
+    return await Customer(connect(DB_CONNECTION, portal)).findByIdAndUpdate(customerId, {
+        $set: customer
+    }, { new: true });
+
+}
+
+exports.editPromotion = async (portal, companyId, customerId, data, userId) => {
+    console.log(1);
+    let { promotion } = data;
+    let customer = await Customer(connect(DB_CONNECTION, portal)).findById(customerId);
+    let promotions = [];
+    if (customer.promotions) {
+        promotions = customer.promotions;
+    }
+    console.log(1);
+    promotions[promotion.index] = promotion;
+    customer = { ...customer, promotions };
+    console.log(1);
+    return await Customer(connect(DB_CONNECTION, portal)).findByIdAndUpdate(customerId, {
+        $set: customer
+    }, { new: true });
+
 }

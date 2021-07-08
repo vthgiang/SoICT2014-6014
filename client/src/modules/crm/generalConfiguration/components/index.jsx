@@ -233,9 +233,8 @@ function GeneralConfiguration(props) {
                                                                 <li><strong style={{ color: 'green' }}>Số điểm tối thiểu : </strong> {` ${o.point ? o.point : ''}`}</li>
                                                                 <li>Người tạo: {` ${o.creator ? o.creator.name : ''}`}</li>
                                                                 <li>Mô tả: {` ${o.description}`}</li>
-                                                                <li>Ngày tạo: {` ${formatFunction.formatDateTime(o.createdAt)}`}</li>
-                                                                <li>Chỉnh sửa lần cuối: {` ${formatFunction.formatDateTime(o.updatedAt)}`}</li>
-                                                                <li>Người chỉnh sửa:  {` ${o.updatedBy ? o.updatedBy.name : ''}`}</li>
+                                                                <li>Ngày tạo: {` ${formatFunction.formatDate(o.createdAt)}`}</li>
+                                                               
                                                             </ul>
                                                         </div>
                                                     </li>
@@ -263,7 +262,7 @@ function GeneralConfiguration(props) {
                                                             </span>
                                                             <span className="text">Chỉ tiêu về số lượng khách hàng mới</span>
                                                         </a>
-                                                        <div id={`collapsed_crmUnitKPI_${1}`} class="collapse" >
+                                                        <div id={`collapsed_crmUnitKPI_${1}`} class="collapse active" >
                                                             <ul>
                                                                 <li><strong style={{ color: 'green' }}>Số lượng khách hàng mới : </strong> {` ${crmUnitKPI.numberOfNewCustomers.value ? crmUnitKPI.numberOfNewCustomers.value : ''}`}</li>
                                                                 <li>Trọng số của chỉ tiêu : {` ${crmUnitKPI.numberOfNewCustomers.weight ? crmUnitKPI.numberOfNewCustomers.weight : ''}`}</li>

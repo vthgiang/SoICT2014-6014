@@ -10,7 +10,11 @@ export const CrmCustomerServices = {
     getCustomerPoint,
     editCustomerPoint,
     addPromotion,
-    getCustomerPromotions
+    getCustomerPromotions,
+    editPromotion,
+    deletePromotion,
+    usePromotion
+
 };
 
 function getCustomers(params) {
@@ -67,6 +71,7 @@ function getCustomerPoint(id) {
     }, false, true, 'crm.customer');
 }
 
+
 function editCustomerPoint(id, data) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/crm/customers/${id}/point`,
@@ -75,7 +80,11 @@ function editCustomerPoint(id, data) {
     }, false, true, 'crm.customer');
 }
 
-function addPromotion(id, data) {
+
+
+
+function editPromotion(id, data) {
+    console.log('vao edit service');
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/crm/customers/${id}/promotion`,
         method: 'PATCH',
@@ -88,4 +97,26 @@ function getCustomerPromotions(id) {
         url: `${process.env.REACT_APP_SERVER}/crm/customers/${id}/promotions`,
         method: 'GET',
     }, false, true, 'crm.customer');
+}
+
+function addPromotion(id, data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/crm/customers/${id}/promotion`,
+        method: 'POST',
+        data
+    }, true, true, 'crm.customer');
+}
+function usePromotion(id, data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/crm/customers/${id}/promotion/use`,
+        method: 'PATCH',
+        data
+    }, true, true, 'crm.customer');
+}
+function deletePromotion(id, data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/crm/customers/${id}/promotion`,
+        method: 'DELETE',
+        data
+    }, true, true, 'crm.customer');
 }

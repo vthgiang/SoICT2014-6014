@@ -158,7 +158,7 @@ function PurchaseHistoriesInfoForm(props) {
                                     <td>{item.paymentAmount}</td>
                                     <td className={dataStatus[item.status].className}>{dataStatus[item.status].text}</td>
                                     <td style={{ textAlign: 'center' }}>
-                                        <a className="text-green" onClick={() => handleShowDetailInfo(item)}  ><i className="material-icons">visibility</i></a>
+                                        <a className="text-green" title="Xem thông tin đơn hàng" onClick={() => handleShowDetailInfo(item)}  ><i className="material-icons">visibility</i></a>
                                     </td>
                                 </tr>
                             ))}

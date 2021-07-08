@@ -20,7 +20,7 @@ function LoyalCustomerHomePage(props) {
     const [customerGetPromotion, setCustomerGetPromotion] = useState();
     const [customerCode, setCustomerCode] = useState();
     const [limit, setLimit] = useState(10);
-    const [page, setPage] = useState(0);
+    const [page, setPage] = useState(1);
     const handleCreateCareAcrion = async (id) => {
         await setCustomerId(id);
         window.$('#modal-crm-care-common-create').modal('show')
@@ -33,7 +33,7 @@ function LoyalCustomerHomePage(props) {
     const [searchState, setSearchState] = useState({ page: 0, limit: 10 })
     let pageTotal
     if (loyalCustomers)
-        pageTotal = (loyalCustomers.totalDocs / limit + 1)
+        pageTotal = (loyalCustomers.totalDocs / limit )
     useEffect(() => {
         props.getLoyalCustomers({ ...searchState, page, limit });
         const currentRole = getStorage('currentRole');
@@ -55,7 +55,7 @@ function LoyalCustomerHomePage(props) {
         setCustomerCode(value);
     }
     const search = () => {
-        props.getLoyalCustomers({ customerCode });
+        props.getLoyalCustomers({ customerCode, limit,page });
     }
     let listCustomerRankPoints;
     if (crm && crm.customerRankPoints) listCustomerRankPoints = crm.customerRankPoints.list;
@@ -67,7 +67,6 @@ function LoyalCustomerHomePage(props) {
             if (point >= listCustomerRankPoints[i].point) {
                 index = i;
                 break;
-
             }
 
         }
@@ -139,12 +138,15 @@ function LoyalCustomerHomePage(props) {
         props.getLoyalCustomers({ ...searchState, limit: limitTable, page })
     }
 
+    const getLoyalCustomersData = ()=>{
+        props.getLoyalCustomers({ ...searchState, limit, page });
+    }
 
     return (
         <div className="box">
             <div className="box-body qlcv">
                 {customerId && <CreateCareCommonForm customerId={customerId} type={1}></CreateCareCommonForm>}
-                {customerGetPromotion && <CustomerPromotionInfoForm customer={customerGetPromotion} />}
+                {customerGetPromotion && <CustomerPromotionInfoForm customerId={customerGetPromotion._id} getLoyalCustomersData = {()=>getLoyalCustomersData()} />}
                 <div className="form-inline">
                     {/* export excel danh sách khách hàng */}
                     <ExportExcel id="export-customer" buttonName={translate('human_resource.name_button_export')}
@@ -211,10 +213,10 @@ function LoyalCustomerHomePage(props) {
                                     <td>{`${o.totalOrderValue} VND`}</td>
                                     <td>{o.totalPromotion ? o.totalPromotion : 0}</td>
                                     <td style={{ textAlign: 'center' }}>
-                                        <a className="text-green"
+                                        <a className="text-green" title="Tạo hoạt động chăm sóc khách hàng"
                                             onClick={() => handleCreateCareAcrion(o.customer._id)}
                                         ><i className="material-icons">add_comment</i></a>
-                                        <a className="text-orange"
+                                        <a className="text-orange" title="Khuyến mãi của khách hàng"
                                             onClick={() => handleGetPromotion(o.customer)}
                                         ><i className="material-icons">loyalty</i></a>
                                     </td>

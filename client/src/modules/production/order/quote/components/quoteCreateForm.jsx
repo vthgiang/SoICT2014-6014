@@ -12,6 +12,7 @@ import QuoteCreateInfo from "./createQuote/quoteCreateInfo";
 import QuoteCreatePayment from "./createQuote/quoteCreatePayment";
 import SlasOfGoodDetail from "./createQuote/viewDetailOnCreate/slasOfGoodDetail";
 import DiscountOfGoodDetail from "./createQuote/viewDetailOnCreate/discountOfGoodDetail";
+import "../../../../crm/customer/components/customer.css";
 class QuoteCreateForm extends Component {
     constructor(props) {
         super(props);
@@ -25,6 +26,7 @@ class QuoteCreateForm extends Component {
             paymentAmount: 0,
             code: "",
             note: "",
+            customerPromotions: [],
             customer: "",
             customerName: "",
             customerAddress: "",
@@ -54,7 +56,7 @@ class QuoteCreateForm extends Component {
     }
 
     componentDidMount() {
-        this.props.getCustomers({getAll:true});
+        this.props.getCustomers({ getAll: true });
     }
 
     handleClickCreateCode = () => {
@@ -84,6 +86,7 @@ class QuoteCreateForm extends Component {
     handleCustomerChange = (value) => {
         if (value[0] !== "title") {
             let customerInfo = this.props.customers.list.filter((item) => item._id === value[0]);
+            let customerPromotions = customerInfo[0].promotions.map((promo) => ({ ...promo, checked: false, disabled: false })).filter((item) => item.status == 1);
             if (customerInfo.length) {
                 this.setState({
                     customer: customerInfo[0]._id,
@@ -93,6 +96,8 @@ class QuoteCreateForm extends Component {
                     customerRepresent: customerInfo[0].represent,
                     customerTaxNumber: customerInfo[0].taxNumber,
                     customerEmail: customerInfo[0].email,
+                    customerPromotions
+
                 });
             }
         } else {
@@ -177,7 +182,7 @@ class QuoteCreateForm extends Component {
 
     validateDateStage = (effectiveDate, expirationDate, willUpdateState = true) => {
         let msg = undefined;
-        let {} = this.state;
+        let { } = this.state;
         if (effectiveDate && expirationDate) {
             let effDate = new Date(formatToTimeZoneDate(effectiveDate));
             let expDate = new Date(formatToTimeZoneDate(expirationDate));
@@ -468,6 +473,14 @@ class QuoteCreateForm extends Component {
             };
         });
     };
+    setCustomerPromotions = (customerPromotions) => {
+        this.setState((state) => {
+            return {
+                ...state,
+                customerPromotions,
+            };
+        });
+    };
 
     isValidateQuoteCreateInfo = () => {
         let { customer, customerEmail, customerPhone, customerAddress, effectiveDate, expirationDate, approvers } = this.state;
@@ -522,19 +535,19 @@ class QuoteCreateForm extends Component {
                 loyaltyCoin: dis.loyaltyCoin,
                 bonusGoods: dis.bonusGoods
                     ? dis.bonusGoods.map((bonus) => {
-                          return {
-                              good: bonus.good._id,
-                              expirationDateOfGoodBonus: bonus.expirationDateOfGoodBonus,
-                              quantityOfBonusGood: bonus.quantityOfBonusGood,
-                          };
-                      })
+                        return {
+                            good: bonus.good._id,
+                            expirationDateOfGoodBonus: bonus.expirationDateOfGoodBonus,
+                            quantityOfBonusGood: bonus.quantityOfBonusGood,
+                        };
+                    })
                     : undefined,
                 discountOnGoods: dis.discountOnGoods
                     ? {
-                          good: dis.discountOnGoods.good._id,
-                          expirationDate: dis.discountOnGoods.expirationDate,
-                          discountedPrice: dis.discountOnGoods.discountedPrice,
-                      }
+                        good: dis.discountOnGoods.good._id,
+                        expirationDate: dis.discountOnGoods.expirationDate,
+                        discountedPrice: dis.discountOnGoods.discountedPrice,
+                    }
                     : undefined,
             };
         });
@@ -669,6 +682,7 @@ class QuoteCreateForm extends Component {
             currentSlasOfGood,
             currentDiscountsOfGood,
             paymentAmount,
+            customerPromotions
         } = this.state;
 
         let {
@@ -843,6 +857,7 @@ class QuoteCreateForm extends Component {
                             {step === 2 && (
                                 <QuoteCreatePayment
                                     paymentAmount={paymentAmount}
+                                    customerPromotions={customerPromotions}
                                     listGoods={goods}
                                     customer={customer}
                                     customerPhone={customerPhone}
@@ -873,6 +888,8 @@ class QuoteCreateForm extends Component {
                                         this.setCurrentDiscountsOfGood(data);
                                     }}
                                     setPaymentAmount={(data) => this.setPaymentAmount(data)}
+                                    setCustomerPromotions={(data) => this.setCustomerPromotions(data)}
+
                                     saveQuote={this.save}
                                 />
                             )}

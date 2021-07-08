@@ -17,7 +17,7 @@ function EvaluationInfoForm(props) {
                 //isLoading={crm.cares.isLoading}
                 formID="modal-crm-evaluation-info"
                 title={translate("crm.care.info")}
-                size={75}
+                size={50}
              disableSubmit={true}
             >
                 {/* Form xem công việc chăm sóc khách hàng */}
