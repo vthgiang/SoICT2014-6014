@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -26,7 +26,7 @@ function AddTaskForm(props) {
             quillDescriptionDefault: "",
             startDate: "",
             endDate: "",
-            startTime: "08:00 AM",
+            startTime: "",
             endTime: "05:30 PM",
             priority: 3,
             responsibleEmployees: [],
@@ -44,15 +44,6 @@ function AddTaskForm(props) {
         currentRole: getStorage('currentRole'),
     })
     const { id, newTask } = state;
-    useEffect(() => {
-        const { currentRole } = state;
-        props.showInfoRole(currentRole);
-        props.getTaskTemplateByUser(1, 0, [], ""); //pageNumber, noResultsPerPage, arrayUnit, name=""
-        // Lấy tất cả nhân viên trong công ty
-        // props.getAllUserOfCompany();
-        props.getAllUserInAllUnitsOfCompany();
-        props.getPaginateTasksByUser([], "1", "5", [], [], [], null, null, null, null, null, false, "listSearch");
-    }, [])
 
     const convertDateTime = (date, time) => {
         let splitter = date.split("-");
@@ -64,6 +55,30 @@ function AddTaskForm(props) {
     const formatTime = (date) => {
         return dayjs(date).format("hh:mm A");
     }
+
+    const regenerateTime = () => {
+        setState({
+            ...state,
+            newTask: {
+                ...state.newTask,
+                startTime: formatTime(new Date())
+            }
+        })
+    }
+
+    useEffect(() => {
+        const { currentRole } = state;
+        props.showInfoRole(currentRole);
+        props.getTaskTemplateByUser(1, 0, [], ""); //pageNumber, noResultsPerPage, arrayUnit, name=""
+        // Lấy tất cả nhân viên trong công ty
+        // props.getAllUserOfCompany();
+        props.getAllUserInAllUnitsOfCompany();
+        props.getPaginateTasksByUser([], "1", "5", [], [], [], null, null, null, null, null, false, "listSearch");
+        window.$(`#addNewTask-${id}`).on('shown.bs.modal', regenerateTime);
+        return () => {
+            window.$(`#addNewTask-${id}`).unbind('shown.bs.modal', regenerateTime)
+        }
+    }, [])
 
     const handleChangeTaskName = (event) => {
         let { value } = event.target;
