@@ -358,3 +358,11 @@ to {transform:scale(1)}
     margin-right: 6px;
     margin-bottom: 6px;
 }
+
+/* Sửa hiển thị datePicker ở tab lịch sử bấm giờ/ add Log */
+.addlog-box .time1, .mins1, .meridian1{
+    width: 40px !important;
+}
+.addlog-box  .prev1, .next1 {
+    width: 40px !important;
+}

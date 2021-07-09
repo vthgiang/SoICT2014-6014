@@ -1166,23 +1166,6 @@ function ActionTab(props) {
         }
     }
 
-    function formatDate(date) {
-        var d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
-
-        if (month.length < 2) {
-            month = '0' + month;
-        }
-
-        if (day.length < 2) {
-            day = '0' + day;
-        }
-
-        return [year, month, day].join('-');
-    }
-
     const isFormValidated = () => {
         const { addLogTimeDate, addLogStartTime, addLogEndTime, checkDateAddLog } = state;
         const { translate } = props;
@@ -1341,6 +1324,7 @@ function ActionTab(props) {
     }
     console.log("state", state)
     console.log("hover1", hover1)
+    console.log('formatDate(Date.now())', formatDate(Date.now()))
     return (
         <div>
             {
@@ -1572,7 +1556,7 @@ function ActionTab(props) {
                                                                                     <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => requestDownloadFile(e, elem.url, elem.name)}> {elem.name}</a>
                                                                                     &nbsp;&nbsp;&nbsp;
                                                                                     <a href="#" onClick={() => showFilePreview(elem && elem.url)}>
-                                                                                        <u>{elem && checkTypeFile(elem.url) ?  
+                                                                                        <u>{elem && checkTypeFile(elem.url) ?
                                                                                             <i className="fa fa-eye fa-1"></i> : ""}</u>
                                                                                     </a>
                                                                                 </div>
