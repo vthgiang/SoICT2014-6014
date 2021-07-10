@@ -120,6 +120,7 @@ router.use(
     require("./modules/super-admin/component/component.route")
 );
 router.use("/link", require("./modules/super-admin/link/link.route"));
+router.use("/api", require("./modules/super-admin/api/api.route"));
 router.use(
     "/organizational-units",
     require("./modules/super-admin/organizational-unit/organizationalUnit.route")
