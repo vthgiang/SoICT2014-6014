@@ -637,7 +637,6 @@ function EvaluateByConsultedEmployee(props) {
         let startTime = formatTime(new Date(start));
 
         let { evaluatingMonth, endDate, endTime, idUser } = state;
-        console.log(startDate, startTime,endTime,endDate,evaluatingMonth);
         let err = validateDateTime(evaluatingMonth, startDate, startTime, endDate, endTime, "start");
 
         setState({
