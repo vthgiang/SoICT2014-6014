@@ -231,7 +231,7 @@ function EvaluateByConsultedEmployee(props) {
                     }
                 }
                 else {
-                    if (infoEval[i].value) {
+                    if (infoEval[i].value || infoEval[i].value === 0) {
                         info[`${infoEval[i].code}`] = {
                             value: infoEval[i].value,
                             code: infoEval[i].code,

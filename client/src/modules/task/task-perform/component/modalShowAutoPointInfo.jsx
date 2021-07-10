@@ -234,7 +234,7 @@ function ModalShowAutoPointInfo(props) {
                             {
                                 taskInformations && taskInformations.map((e, index) => {
                                     if (e.type === 'number') {
-                                        return <li key={index}>{e.code} - {e.name}: {(info[`${e.code}`] && info[`${e.code}`].value) ? info[`${e.code}`].value : translate('task.task_management.calc_no_value')}</li>
+                                        return <li key={index}>{e.code} - {e.name}: {(info[`${e.code}`] && (info[`${e.code}`].value || info[`${e.code}`].value === 0)) ? info[`${e.code}`].value : translate('task.task_management.calc_no_value')}</li>
                                     }
                                 })
                             }
@@ -258,7 +258,7 @@ function ModalShowAutoPointInfo(props) {
                             {
                                 taskInformations && taskInformations.map((e, index) => {
                                     if (e.type === 'number') {
-                                        return <li key={index}>{e.code} - {e.name}: {(info[`${e.code}`] && info[`${e.code}`].value) ? info[`${e.code}`].value : translate('task.task_management.calc_no_value')}</li>
+                                        return <li key={index}>{e.code} - {e.name}: {(info[`${e.code}`] && (info[`${e.code}`].value || info[`${e.code}`].value === 0)) ? info[`${e.code}`].value : translate('task.task_management.calc_no_value')}</li>
                                     }
                                 })
                             }

@@ -262,7 +262,7 @@ function EvaluateByResponsibleEmployee(props) {
                     }
                 }
                 else {
-                    if (infoTask[i].value) {
+                    if (infoTask[i].value || infoTask[i].value === 0) {
                         info[`${infoTask[i].code}`] = {
                             value: infoTask[i].value,
                             code: infoTask[i].code,
@@ -335,7 +335,7 @@ function EvaluateByResponsibleEmployee(props) {
                             }
                         }
                         else {
-                            if (infoEval[i].value) {
+                            if (infoEval[i].value || infoEval[i].value === 0) {
                                 info[`${infoEval[i].code}`] = {
                                     value: infoEval[i].value,
                                     code: infoEval[i].code,
@@ -456,7 +456,7 @@ function EvaluateByResponsibleEmployee(props) {
                     }
                 }
                 else {
-                    if (infoTask[i].value) {
+                    if (infoTask[i].value || infoTask[i].value === 0) {
                         info[`${infoTask[i].code}`] = {
                             value: infoTask[i].value,
                             code: infoTask[i].code,
