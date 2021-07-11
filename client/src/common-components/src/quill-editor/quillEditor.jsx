@@ -213,6 +213,9 @@ class QuillEditor extends Component {
                 }
             }
         }
+        if (JSON.stringify(nextProps.dataDriver) !== JSON.stringify(this.props.dataDriver)){
+            return true
+        }
         if (nextProps.quillValueDefault === quillValueDefault) {
             return false;
         } 
@@ -224,7 +227,7 @@ class QuillEditor extends Component {
         return true;
     }
 
-    componentDidUpdate() {
+    componentDidUpdate(nextProps) {
         const { auth } = this.props
         const { id, maxHeight = 200, enableEdit = true, isText = false, quillValueDefault } = this.props
         const { quill } = this.state
@@ -247,6 +250,19 @@ class QuillEditor extends Component {
                     }
                     return img;
                 })
+            }
+        }
+        if (this.props.dataDriver){
+            if (JSON.stringify(this.props.dataDriver)!==JSON.stringify(nextProps.dataDriver)){
+                let dataText=""
+                for (let i=0;i<this.props.dataDriver.length;i++){
+                    dataText = dataText + `<p>${this.props.dataDriver[i].name} : <a href="${this.props.dataDriver[i].url} " target="_blank">${this.props.dataDriver[i].url}</a></p>`
+                }
+                if (quill.root.innerHTML === '<p><br></p>'){
+                    quill.root.innerHTML =dataText
+                } else {
+                    quill.root.innerHTML =quill.root.innerHTML+dataText
+                }
             }
         }
 

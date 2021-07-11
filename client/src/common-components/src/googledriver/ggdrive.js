@@ -35,7 +35,7 @@ function ModalDriver(props) {
   }, [data]);
   return (
     <React.Fragment>
-      <a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={handleOpenPicker}>Open Picker&nbsp;&nbsp;&nbsp;&nbsp;</a>
+      <a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={handleOpenPicker}>Open google driver&nbsp;&nbsp;&nbsp;&nbsp;</a>
     </React.Fragment>
   );
 }

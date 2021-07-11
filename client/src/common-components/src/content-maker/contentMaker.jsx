@@ -1,16 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import GoogleChooser from 'react-google-picker'
-
-import MyCustomButton from 'react-google-picker'
 import { QuillEditor } from '../quill-editor/quillEditor';
 import axios from 'axios';
 import Files from 'react-files';
 import TextareaAutosize from 'react-textarea-autosize';
 import {DialogModal} from "../../../common-components"
 import './contentMaker.css';
-import ModalDriver from './ggdrive';
+import ModalDriver from "../googledriver/ggdrive";
 
 class ContentMaker extends Component {
     constructor(props) {
