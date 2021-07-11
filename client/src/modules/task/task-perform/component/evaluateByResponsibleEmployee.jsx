@@ -202,7 +202,6 @@ function EvaluateByResponsibleEmployee(props) {
             let splitter = dateParam.split("-");
             if (evaluatingMonthParam) {
                 splitter = evaluatingMonthParam.split("-");
-                console.log('splitter', splitter);
             }
 
             let evaluatingMonth = "", storedEvaluatingMonth = "";
@@ -257,6 +256,15 @@ function EvaluateByResponsibleEmployee(props) {
                     if (!infoTask[i].filledByAccountableEmployeesOnly) {
                         info[`${infoTask[i].code}`] = {
                             value: [splitSetOfValues[0]],
+                            code: infoTask[i].code,
+                            type: infoTask[i].type
+                        }
+                    }
+                }
+                else {
+                    if (infoTask[i].value || infoTask[i].value === 0) {
+                        info[`${infoTask[i].code}`] = {
+                            value: infoTask[i].value,
                             code: infoTask[i].code,
                             type: infoTask[i].type
                         }
@@ -327,7 +335,7 @@ function EvaluateByResponsibleEmployee(props) {
                             }
                         }
                         else {
-                            if (infoEval[i].value) {
+                            if (infoEval[i].value || infoEval[i].value === 0) {
                                 info[`${infoEval[i].code}`] = {
                                     value: infoEval[i].value,
                                     code: infoEval[i].code,
@@ -448,7 +456,7 @@ function EvaluateByResponsibleEmployee(props) {
                     }
                 }
                 else {
-                    if (infoTask[i].value) {
+                    if (infoTask[i].value || infoTask[i].value === 0) {
                         info[`${infoTask[i].code}`] = {
                             value: infoTask[i].value,
                             code: infoTask[i].code,
@@ -795,7 +803,6 @@ function EvaluateByResponsibleEmployee(props) {
         let startTime = formatTime(new Date(start));
 
         let { evaluatingMonth, endDate, endTime, idUser } = state;
-        console.log(startDate, startTime,endTime,endDate,evaluatingMonth);
         let err = validateDateTime(evaluatingMonth, startDate, startTime, endDate, endTime, "start");
 
         setState({
@@ -857,7 +864,6 @@ function EvaluateByResponsibleEmployee(props) {
     const handleChangeProgress = (e) => {
         let { translate } = props;
         let value = parseInt(e.target.value);
-        console.log("valueeeeeeeeee", value)
         let msg;
         if (value < 0 || value > 100) {
             msg = translate('task.task_perform.modal_approve_task.err_range');
@@ -1043,7 +1049,7 @@ function EvaluateByResponsibleEmployee(props) {
 
         let automaticPoint = AutomaticTaskPointCalculator.calcAutoPoint(taskInfo);
         if (isNaN(automaticPoint)) automaticPoint = undefined
-        console.log("333333", automaticPoint)
+
         return automaticPoint;
     }
 
@@ -1108,7 +1114,6 @@ function EvaluateByResponsibleEmployee(props) {
             checkSave: state.checkSave,
         }
 
-        console.log('data', data);
         await props.evaluateTaskByResponsibleEmployees(data, taskId);
         setState({
             ...state,

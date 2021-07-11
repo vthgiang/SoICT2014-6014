@@ -8,9 +8,13 @@ const SystemApiSchema = new Schema({
     },
     method: {
         type: String,
-        required: true
+        required: true,
+        enum: ["GET", "POST", "PUT", "PATCH", "DELETE"]
     },
     description: {
+        type: String
+    },
+    category: {
         type: String
     }
 },{

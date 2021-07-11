@@ -1,4 +1,4 @@
-const { SystemApi } = require(`../../../../models`);
+const { SystemApi, Company, Api } = require(`../../../../models`);
 const { connect } = require(`../../../../helpers/dbHelper`);
 const mongoose = require('mongoose');
 
@@ -89,6 +89,7 @@ const updateSystemApiAutomatic = async (app) => {
         } else if (layer.method) {
             let currentMethod = layer.method.toUpperCase()
             let currentPath = "/" + path.concat(split(layer.regexp)).filter(Boolean).join('/')
+            let category = "/" + path.concat(split(layer.regexp)).filter(Boolean)?.[0]
 
             if (!routes.find(ele => 
                 ele.method === currentMethod
@@ -108,7 +109,8 @@ const updateSystemApiAutomatic = async (app) => {
                     await SystemApi(connect(DB_CONNECTION, process.env.DB_NAME))
                         .create({
                             method: currentMethod,
-                            path: currentPath
+                            path: currentPath,
+                            category: category
                         })
                 }
             }

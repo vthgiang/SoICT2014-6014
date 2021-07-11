@@ -639,6 +639,9 @@ exports.links = [
         url: '/links-management',
         apis: ['@all']
     }, {
+        url: '/apis-management',
+        apis: ['@all']
+    },{
         url: '/components-management',
         apis: ['@all']
     }, {

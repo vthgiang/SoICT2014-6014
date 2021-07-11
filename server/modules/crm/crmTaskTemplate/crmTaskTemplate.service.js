@@ -71,11 +71,11 @@ const createCrmTaskTemplate = async (portal, companyId, role, type ) => {
             creator: manager,
             numberOfDaysTaken: '',
             formula: `((
-                p1/${crmUnitKPI.customerRetentionRate.value})*${crmUnitKPI.customerRetentionRate.weight}+
-                p2/${crmUnitKPI.completionRate.value})*${crmUnitKPI.completionRate.weight}+
-                p3/${crmUnitKPI.solutionRate.value})*${crmUnitKPI.solutionRate.weight}+
-                p4/${crmUnitKPI.totalActions.value})*${crmUnitKPI.totalActions.weight}
-            )/(${crmUnitKPI.customerRetentionRate.weight}+${crmUnitKPI.completionRate.weight}+${crmUnitKPI.solutionRate.weight}+${crmUnitKPI.totalActions.weight})`,
+                p1/${crmUnitKPI.customerRetentionRate.value}*${crmUnitKPI.customerRetentionRate.weight}+
+                p2/${crmUnitKPI.completionRate.value}*${crmUnitKPI.completionRate.weight}+
+                p3/${crmUnitKPI.solutionRate.value}*${crmUnitKPI.solutionRate.weight}+
+                p4/${crmUnitKPI.totalActions.value}*${crmUnitKPI.totalActions.weight}
+            )/(${crmUnitKPI.customerRetentionRate.weight}+${crmUnitKPI.completionRate.weight}+${crmUnitKPI.solutionRate.weight}+${crmUnitKPI.totalActions.weight})*100`,
             priority: 3,
             taskActions: [],
             taskInformations: [

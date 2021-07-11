@@ -231,7 +231,7 @@ function EvaluateByConsultedEmployee(props) {
                     }
                 }
                 else {
-                    if (infoEval[i].value) {
+                    if (infoEval[i].value || infoEval[i].value === 0) {
                         info[`${infoEval[i].code}`] = {
                             value: infoEval[i].value,
                             code: infoEval[i].code,
@@ -637,7 +637,6 @@ function EvaluateByConsultedEmployee(props) {
         let startTime = formatTime(new Date(start));
 
         let { evaluatingMonth, endDate, endTime, idUser } = state;
-        console.log(startDate, startTime,endTime,endDate,evaluatingMonth);
         let err = validateDateTime(evaluatingMonth, startDate, startTime, endDate, endTime, "start");
 
         setState({
