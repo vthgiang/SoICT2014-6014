@@ -924,13 +924,11 @@ function ActionTab(props) {
         }
     }
     const onEditFileTask = (files) => {
-        setState(state => {
-            return {
-                ...state,
-                fileTaskEdited: {
-                    ...state.fileTaskEdited,
-                    files: files
-                }
+        setState({
+            ...state,
+            fileTaskEdited: {
+                ...state.fileTaskEdited,
+                files: files
             }
         });
     }
@@ -948,9 +946,15 @@ function ActionTab(props) {
     const handleShowSort = async () => {
         let { taskActions, showSort } = state
         if (showSort) {
-            setState({ showSort: false });
+            setState({
+                ...state,
+                showSort: false
+            });
         } else {
-            setState({ showSort: true });
+            setState({
+                ...state,
+                showSort: true
+            });
         }
 
     }
@@ -961,11 +965,9 @@ function ActionTab(props) {
         let item = taskActions[index];
         taskActions.splice(index, 1);
         taskActions.splice(type === "up" ? index - 1 : index + 1, 0, item);
-        setState(state => {
-            return {
-                ...state,
-                taskActions: taskActions
-            }
+        setState({
+            ...state,
+            taskActions: taskActions
         });
     }
 
@@ -974,7 +976,11 @@ function ActionTab(props) {
         taskActions.sort(function (a, b) {
             return a.sort - b.sort;
         });
-        setState({ taskActions: taskActions, showSort: false });
+        setState({
+            ...state,
+            taskActions: taskActions,
+            showSort: false
+        });
     }
 
     const saveSort = async (taskId) => {
@@ -987,7 +993,10 @@ function ActionTab(props) {
         }
 
         props.sortActions(taskId, arrayActions)
-        setState({ showSort: false });
+        setState({
+            ...state,
+            showSort: false
+        });
     }
 
     const setSrc = (src) => {
@@ -1023,6 +1032,7 @@ function ActionTab(props) {
 
     const filterLogAutoStopped = (e) => {
         setState({
+            ...state,
             filterLogAutoStopped: e.target.value
         })
     }
@@ -1138,6 +1148,7 @@ function ActionTab(props) {
 
     const showFilePreview = async (data) => {
         await setState({
+            ...state,
             currentFilepri: data,
         });
         window.$('#modal-file-preview').modal('show');
@@ -1230,8 +1241,13 @@ function ActionTab(props) {
                                     placeholder={role === "responsible" ? translate("task.task_perform.result") : translate("task.task_perform.enter_action")}
                                     submitButtonText={role === "responsible" ? translate("general.add") : translate("task.task_perform.create_action")}
                                     onTextChange={(value, imgs) => {
-                                        setState(state => {
-                                            return { ...state, newAction: { ...state.newAction, description: value, descriptionDefault: null } }
+                                        setState({
+                                            ...state,
+                                            newAction: {
+                                                ...state.newAction,
+                                                description: value,
+                                                descriptionDefault: null
+                                            }
                                         })
                                     }}
                                     onSubmit={(e) => { submitAction(task._id, taskActions.length) }}
@@ -1443,8 +1459,12 @@ function ActionTab(props) {
                                                                 cancelButtonText={translate("task.task_perform.cancel")}
                                                                 handleEdit={(item) => handleEditAction(item)}
                                                                 onTextChange={(value, imgs) => {
-                                                                    setState(state => {
-                                                                        return { ...state, newActionEdited: { ...state.newActionEdited, description: value } }
+                                                                    setState({
+                                                                        ...state,
+                                                                        newActionEdited: {
+                                                                            ...state.newActionEdited,
+                                                                            description: value
+                                                                        }
                                                                     })
                                                                 }}
                                                                 onSubmit={(e) => { handleSaveEditAction(e, item._id, item.description, task._id) }}
@@ -1544,8 +1564,12 @@ function ActionTab(props) {
                                                                                 cancelButtonText={translate("task.task_perform.cancel")}
                                                                                 handleEdit={(e) => handleEditActionComment(e)}
                                                                                 onTextChange={(value, imgs) => {
-                                                                                    setState(state => {
-                                                                                        return { ...state, newCommentOfActionEdited: { ...state.newCommentOfActionEdited, description: value } }
+                                                                                    setState({
+                                                                                        ...state,
+                                                                                        newCommentOfActionEdited: {
+                                                                                            ...state.newCommentOfActionEdited,
+                                                                                            description: value
+                                                                                        }
                                                                                     })
                                                                                 }}
                                                                                 onSubmit={(e) => { handleSaveEditActionComment(e, task._id, item._id, child._id, child.description) }}
@@ -1582,15 +1606,13 @@ function ActionTab(props) {
                                                                 placeholder={translate("task.task_perform.enter_comment_action")}
                                                                 submitButtonText={translate("task.task_perform.create_comment_action")}
                                                                 onTextChange={(value, imgs) => {
-                                                                    setState(state => {
-                                                                        state.newCommentOfAction[`${item._id}`] = {
+                                                                    setState({
+                                                                        ...state,
+                                                                        [state.newCommentOfAction[`${item._id}`]]: {
                                                                             ...state.newCommentOfAction[`${item._id}`],
                                                                             creator: idUser,
                                                                             description: value,
                                                                             descriptionDefault: null
-                                                                        }
-                                                                        return {
-                                                                            ...state,
                                                                         }
                                                                     })
                                                                 }}
@@ -1684,14 +1706,12 @@ function ActionTab(props) {
                             placeholder={translate("task.task_perform.enter_comment")}
                             submitButtonText={translate("task.task_perform.create_comment")}
                             onTextChange={(value, imgs) => {
-                                setState(state => {
-                                    return {
-                                        ...state,
-                                        newTaskComment: {
-                                            ...state.newTaskComment,
-                                            description: value,
-                                            descriptionDefault: null
-                                        }
+                                setState({
+                                    ...state,
+                                    newTaskComment: {
+                                        ...state.newTaskComment,
+                                        description: value,
+                                        descriptionDefault: null
                                     }
                                 })
 
@@ -1787,8 +1807,8 @@ function ActionTab(props) {
                                                                 cancelButtonText={translate("task.task_perform.cancel")}
                                                                 handleEdit={(e) => handleEditTaskComment(e)}
                                                                 onTextChange={(value, imgs) => {
-                                                                    setState(state => {
-                                                                        return { ...state, newTaskCommentEdited: { ...state.newTaskCommentEdited, description: value } }
+                                                                    setState({
+                                                                        ...state, newTaskCommentEdited: { ...state.newTaskCommentEdited, description: value }
                                                                     })
                                                                 }}
                                                                 onSubmit={(e) => { handleSaveEditTaskComment(e, task._id, item._id, item.description) }}
@@ -1888,8 +1908,8 @@ function ActionTab(props) {
                                                                                 cancelButtonText={translate("task.task_perform.cancel")}
                                                                                 handleEdit={(e) => handleEditCommentOfTaskComment(e)}
                                                                                 onTextChange={(value, imgs) => {
-                                                                                    setState(state => {
-                                                                                        return { ...state, newCommentOfTaskCommentEdited: { ...state.newCommentOfTaskCommentEdited, description: value } }
+                                                                                    setState({
+                                                                                        ...state, newCommentOfTaskCommentEdited: { ...state.newCommentOfTaskCommentEdited, description: value }
                                                                                     })
                                                                                 }}
                                                                                 onSubmit={(e) => { handleSaveEditCommentOfTaskComment(e, child._id, task._id, child.description) }}
@@ -1923,14 +1943,14 @@ function ActionTab(props) {
                                                                 placeholder={translate("task.task_perform.enter_comment")}
                                                                 submitButtonText={translate("task.task_perform.create_comment")}
                                                                 onTextChange={(value, imgs) => {
-                                                                    setState(state => {
-                                                                        state.newCommentOfTaskComment[`${item._id}`] = {
+                                                                    setState({
+                                                                        ...state,
+                                                                        [state.newCommentOfTaskComment[`${item._id}`]]: {
                                                                             ...state.newCommentOfTaskComment[`${item._id}`],
                                                                             description: value,
                                                                             creator: currentUser,
                                                                             descriptionDefault: null
                                                                         }
-                                                                        return { ...state }
                                                                     })
                                                                 }}
                                                                 onSubmit={(e) => { submitCommentOfTaskComment(item._id, task._id) }}
@@ -2033,8 +2053,8 @@ function ActionTab(props) {
                                                                     cancelButtonText={translate("task.task_perform.cancel")}
                                                                     handleEdit={(e) => handleEditFileTask(e)}
                                                                     onTextChange={(value, imgs) => {
-                                                                        setState(state => {
-                                                                            return { ...state, fileTaskEdited: { ...state.fileTaskEdited, description: value } }
+                                                                        setState({
+                                                                            ...state, fileTaskEdited: { ...state.fileTaskEdited, description: value }
                                                                         })
                                                                     }}
                                                                     onSubmit={(e) => { handleSaveEditTaskFile(e, item.description, item._id, task._id) }}
@@ -2070,8 +2090,8 @@ function ActionTab(props) {
                                     placeholder={translate("task.task_perform.enter_description")}
                                     submitButtonText={translate("task.task_perform.create_document")}
                                     onTextChange={(value, imgs) => {
-                                        setState(state => {
-                                            return { ...state, taskFiles: { ...state.taskFiles, description: value, descriptionDefault: null } }
+                                        setState({
+                                            ...state, taskFiles: { ...state.taskFiles, description: value, descriptionDefault: null }
 
                                         })
                                     }}
