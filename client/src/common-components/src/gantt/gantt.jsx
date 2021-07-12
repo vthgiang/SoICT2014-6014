@@ -99,7 +99,7 @@ function Gantt(props) {
         if (ganttId){
             window.$(`#gantt-${ganttId}`).ready(function () {
                 SlimScroll.removeVerticalScrollStyleCSS(`gantt-${ganttId}`);
-                SlimScroll.addVerticalScrollStyleCSS(`gantt-${ganttId}`, 500, true);
+                SlimScroll.addVerticalScrollStyleCSS(`gantt-${ganttId}`, window.innerHeight/2, true);
             })
         }
     }
