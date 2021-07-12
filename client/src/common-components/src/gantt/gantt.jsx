@@ -5,6 +5,7 @@ import moment from 'moment'
 import { getStorage } from '../../../config';
 
 import ToolbarGantt from './toolbarGantt';
+import {SlimScroll} from "../slim-scroll/slimScroll"
 import './gantt.css';
 
 function Gantt(props) {
@@ -13,7 +14,9 @@ function Gantt(props) {
     const [dataProcessor, setDataProcessor] = useState(null);
     const [lang, setLang] = useState(getStorage('lang'))
     const [gantt, setGantt] = useState(window.initializationGantt());
-
+    useEffect(() => {
+        activeSlimScroll();
+    })
     useEffect(() => {
         initZoom(gantt);
 
@@ -92,7 +95,14 @@ function Gantt(props) {
 
         setZoom(gantt, zoom);
     })
-
+    const activeSlimScroll = () => {
+        if (ganttId){
+            window.$(`#gantt-${ganttId}`).ready(function () {
+                SlimScroll.removeVerticalScrollStyleCSS(`gantt-${ganttId}`);
+                SlimScroll.addVerticalScrollStyleCSS(`gantt-${ganttId}`, 500, true);
+            })
+        }
+    }
     const initZoom = (gantt) => {
         gantt.ext.zoom.init({
             levels: [
