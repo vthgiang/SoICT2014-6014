@@ -47,7 +47,6 @@ exports.getAllSystemLinkCategories = async () => {
  * @id id của system link
  */
 exports.getSystemLink = async (systemLinkId) => {
-    console.log("GET LINKS SÝYS")
     return await SystemLink(connect(DB_CONNECTION, process.env.DB_NAME))
         .findById(systemLinkId)
         .populate({path: 'roles'});
@@ -69,7 +68,6 @@ exports.createSystemLink =  async (url, description, roles, category) => {
     const companyList = await Company(connect(DB_CONNECTION, process.env.DB_NAME)).find();
 
     for (let i = 0; i < companyList.length; i++) {
-        console.log("company-item-portal", companyList[i].shortName)
         let link = await Link(connect(DB_CONNECTION, companyList[i].shortName))
             .create({ url, description, category });
 

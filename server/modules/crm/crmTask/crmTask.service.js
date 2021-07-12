@@ -169,12 +169,13 @@ exports.updateCrmActionsTaskInfo = async (portal, companyId, userId, role) => {
         informedEmployees: [],
         inactiveEmployees: [],
         info: {
-            p1: { value: customerRetentionRate*100, code: 'p1', type: 'number' },
+            p1: { value: (customerRetentionRate*100).toFixed(2), code: 'p1', type: 'number' },
             p2: { value: completionRate*100, code: 'p2', type: 'number' },
-            p3: { value: solutionRate*100, code: 'p3', type: 'number' },
+            p3: { value: (solutionRate*100).toFixed(2), code: 'p3', type: 'number' },
             p4: { value: totalCareActions, code: 'p4', type: 'number' }
         }
     }
+    console.log('taskData',taskData);
     await editTaskByAccountableEmployees(portal, taskData, crmTask.task);
     return true;
 }

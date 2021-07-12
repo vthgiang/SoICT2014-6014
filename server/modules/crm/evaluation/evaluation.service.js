@@ -251,7 +251,7 @@ exports.getCustomerRetentionRate = async (portal, companyId, query, userId, curr
     const getAllCustomers = await getCustomers(portal, companyId, option, currentRole);
     const listCustomer = getAllCustomers.customers;
     //lấy ra danh sách đơn hàng trong tháng
-    const getSalesOrders = await getAllSalesOrders(userId, { getAll: true, month, year }, portal);
+    const getSalesOrders = await getAllSalesOrders([userId], { getAll: true, month, year }, portal);
 
     const listSalesOrders = getSalesOrders.allSalesOrders;
     let numberOfCustomerBuying = 0;
@@ -263,6 +263,9 @@ exports.getCustomerRetentionRate = async (portal, companyId, query, userId, curr
             }
         };
     });
+    console.log('listCustomer',listCustomer.length);
+    console.log('listSalesOrders',listSalesOrders.length);
+    console.log('numberOfCustomerBuying',numberOfCustomerBuying);
     if (listCustomer.length == 0) return { numberOfOldCustomers: listCustomer.length, customerRetentionRate: 0 };
     return { numberOfOldCustomers: listCustomer.length, customerRetentionRate: ((numberOfCustomerBuying) / (listCustomer.length)).toFixed(4) };
 }
@@ -282,7 +285,7 @@ exports.getNewCustomerBuyingRate = async (portal, companyId, query, userId, curr
     const getAllCustomers = await getCustomers(portal, companyId, option, currentRole);
     const listCustomer = getAllCustomers.customers;
     //lấy ra danh sách đơn hàng trong tháng
-    const getSalesOrders = await getAllSalesOrders(userId, { getAll: true, month, year }, portal);
+    const getSalesOrders = await getAllSalesOrders([userId], { getAll: true, month, year }, portal);
     const listSalesOrders = getSalesOrders.allSalesOrders;
     let numberOfCustomerBuying = 0;
     listCustomer.forEach(customer => {

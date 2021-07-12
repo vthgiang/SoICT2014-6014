@@ -346,6 +346,16 @@ const LINKS = [{
     components: getComponentsInLink('/links-management')
 },
 {
+    url: '/apis-management',
+    description: 'Quản lý API web của công ty',
+    category: LINK_CATEGORY.RBAC.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name
+    ],
+    components: getComponentsInLink('/apis-management')
+},
+{
     url: '/components-management',
     description: 'Quản lý các thành phần UI trên trang web của công ty',
     category: LINK_CATEGORY.RBAC.name,

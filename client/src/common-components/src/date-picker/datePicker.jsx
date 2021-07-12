@@ -104,8 +104,9 @@ class DatePicker extends Component {
     onChangeDatePicker = (e) => {
         let { value } = e.target;
         let valueForm 
-        if (value[value.length-1]==='/'){
-            valueForm = value.slice(0,value.length-1) +'-'
+        let index = value.indexOf("/")
+        if (index !==-1){
+            valueForm = value.slice(0,index) +'-'+value.slice(index+1)
         } else {
             valueForm = value
         }
@@ -116,7 +117,7 @@ class DatePicker extends Component {
     }
     render() {
         const { id, disabled = false, defaultValue, style = {} } = this.props;
-        const { value } = this.state;       
+        const { value } = this.state;  
         return (
             <React.Fragment>
                 <div className={'input-group date has-feedback'} id={id}>

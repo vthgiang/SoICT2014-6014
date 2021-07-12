@@ -1,21 +1,26 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-
 import { QuillEditor } from '../quill-editor/quillEditor';
-
+import axios from 'axios';
 import Files from 'react-files';
 import TextareaAutosize from 'react-textarea-autosize';
-
+import {DialogModal} from "../../../common-components"
 import './contentMaker.css';
+import ModalDriver from "../googledriver/ggdrive";
 
 class ContentMaker extends Component {
     constructor(props) {
         super(props);
         this.state = {
             showDropFileHere: false,
-            file:[],
-            filepaste:[]
+            file: [],
+            filepaste: [],
+            fileId: "",
+            authToken: "",
+            data:[],
+            nextPageToken: "",
+            datadriver:"",
         };
     }
 
@@ -34,11 +39,11 @@ class ContentMaker extends Component {
         if (e.clipboardData.files.length) {
             const fileObject = e.clipboardData.files[0];
             this.setState({
-                filepaste : [...this.state.filepaste,fileObject]
-            }) 
-            let files= [...this.state.file,fileObject]
-            this.setState({file:files})
-            if (this.props.onFilesChange){
+                filepaste: [...this.state.filepaste, fileObject]
+            })
+            let files = [...this.state.file, fileObject]
+            this.setState({ file: files })
+            if (this.props.onFilesChange) {
                 this.props.onFilesChange(files)
             }
         }
@@ -46,9 +51,9 @@ class ContentMaker extends Component {
     onActionFilesChange = (files) => {
         let listfiles = [...files, ...this.state.filepaste]
         this.setState({
-            file:listfiles
+            file: listfiles
         })
-        if (this.props.onFilesChange){
+        if (this.props.onFilesChange) {
             this.props.onFilesChange(listfiles)
         }
     }
@@ -62,15 +67,15 @@ class ContentMaker extends Component {
                 file: files
             }
         })
-        if (this.props.onFilesChange){
+        if (this.props.onFilesChange) {
             this.props.onFilesChange(files)
         }
     }
     shouldComponentUpdate = (nextProps, nextState) => {
-        if (nextState.showDropFileHere===true && this.state.showDropFileHere===false){
+        if (nextState.showDropFileHere === true && this.state.showDropFileHere === false) {
             return true
         }
-        if (nextState.showDropFileHere===false && this.state.showDropFileHere===false){
+        if (nextState.showDropFileHere === false && this.state.showDropFileHere === false) {
             return true
         }
         return false;
@@ -92,6 +97,15 @@ class ContentMaker extends Component {
             }
         });
     }
+    handleDataDriver = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                dataDriver: value
+            }
+        });
+    }
+
     render() {
         const { translate } = this.props;
         const {
@@ -102,38 +116,41 @@ class ContentMaker extends Component {
         } = this.props
         return (
             <React.Fragment>
-            <div onPaste={this.handlePaste} onDragLeave={this.handleDragLeave} onDragEnter={this.handleDragEnter}>
-                <Files
-                    ref='fileComponent'
-                    className='files-dropzone-list'
-                    onChange={this.onActionFilesChange}
-                    onError={onFilesError}
-                    multiple={multiple}
-                    maxFiles={maxFiles}
-                    maxFileSize={maxFileSize}
-                    minFileSize={minFileSize}
-                    clickable={clickable}
-                >
-                    <QuillEditor
-                        showDropFileHere={this.state.showDropFileHere}
-                        id={idQuill}
-                        inputCssClass={inputCssClass}
-                        toolbar={false}
-                        getTextData={onTextChange}
-                        quillValueDefault={text}
-                        placeholder={placeholder}
-                        enableDropImage={false}
-                    />
+                <div onPaste={this.handlePaste} onDragLeave={this.handleDragLeave} onDragEnter={this.handleDragEnter}>
+                    <Files
+                        ref='fileComponent'
+                        className='files-dropzone-list'
+                        onChange={this.onActionFilesChange}
+                        onError={onFilesError}
+                        multiple={multiple}
+                        maxFiles={maxFiles}
+                        maxFileSize={maxFileSize}
+                        minFileSize={minFileSize}
+                        clickable={clickable}
+                    >
+                        <QuillEditor
+                            dataDriver={this.state.dataDriver}
+                            showDropFileHere={this.state.showDropFileHere}
+                            id={idQuill}
+                            inputCssClass={inputCssClass}
+                            toolbar={false}
+                            getTextData={onTextChange}
+                            quillValueDefault={text}
+                            placeholder={placeholder}
+                            enableDropImage={false}
+                        />
 
-                </Files>
-            </div>
+                    </Files>
+                </div>
                 <div className={controlCssClass}>
                     <div className="" style={{ textAlign: "right" }}>
+                        
+                     <ModalDriver handleDataDriver={this.handleDataDriver}></ModalDriver>
                         <a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={(e) => this.refs.fileComponent.openFileChooser()}>{translate("task.task_perform.attach_file")}&nbsp;&nbsp;&nbsp;&nbsp;</a>
                         <a style={{ cursor: "pointer" }} className="link-black text-sm" disabled={disabledSubmit} onClick={(e) => {
                             onSubmit(e);
-                            this.refs.fileComponent.removeFiles(); 
-                            this.setState({filepaste:[]})
+                            this.refs.fileComponent.removeFiles();
+                            this.setState({ filepaste: [],dataDriver:'' })
                             // Xóa các file đã chọn sau khi submit
                         }}>
                             {submitButtonText}&nbsp;&nbsp;&nbsp;
@@ -142,7 +159,7 @@ class ContentMaker extends Component {
                     </div>
                     {files && files.length > 0 &&
                         <div className='files-list'>
-                            <ul>{files.map((file,index) =>
+                            <ul>{files.map((file, index) =>
                                 <li className='files-list-item' key={file.id}>
                                     <div className='files-list-item-preview row'>
                                         {!file.preview ?
@@ -150,14 +167,15 @@ class ContentMaker extends Component {
                                                 <img className='files-list-item-preview-image' src={window.URL.createObjectURL(file)} />
                                             </React.Fragment>
                                             : file.preview.type === 'image' ?
-                                            <React.Fragment>
-                                                <img className='files-list-item-preview-image' src={window.URL.createObjectURL(file)} />
-                                            </React.Fragment>
-                                            :
-                                            <div className='files-list-item-preview-extension'>{file.extension}</div>}
-                                        <a style={{ cursor: "pointer" }} className="pull-right btn-box-tool" onClick={(e) => { this.refs.fileComponent.removeFile(file); this.onFilesRemote(index) }}><i className="fa fa-times"></i></a>
+                                                <React.Fragment>
+                                                    <img className='files-list-item-preview-image' src={window.URL.createObjectURL(file)} />
+                                                </React.Fragment>
+                                                :
+                                                <div className='files-list-item-preview-extension'>{file.extension}</div>}
+                                        
                                     </div>
                                     <div className='files-list-item-content'>
+                                        <a style={{ cursor: "pointer" }} className="btn-box-tool" onClick={(e) => { this.refs.fileComponent.removeFile(file); this.onFilesRemote(index) }}><i className="fa fa-times"></i></a>
                                         <div className='files-list-item-content-item files-list-item-content-item-1'>{file.name}</div>
                                         <div className='files-list-item-content-item files-list-item-content-item-2'>{file.sizeReadable}</div>
                                     </div>

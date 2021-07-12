@@ -226,12 +226,46 @@ function EvaluateByAccountableEmployee(props) {
 
             let infoEval = task.taskInformations;
             for (let i in infoEval) {
-                if (infoEval[i].type === "set_of_values") {
+                if (infoEval[i].type === "date") {
+                    if (infoEval[i].value) {
+                        info[`${infoEval[i].code}`] = {
+                            value: formatDate(infoEval[i].value),
+                            code: infoEval[i].code,
+                            type: infoEval[i].type
+                        }
+                    }
+                    else {
+                        info[`${infoEval[i].code}`] = {
+                            // value: formatDate(Date.now()),
+                            code: infoEval[i].code,
+                            type: infoEval[i].type
+                        }
+                    }
+                }
+                else if (infoEval[i].type === "set_of_values") {
                     let splitSetOfValues = infoEval[i].extra.split('\n');
-                    info[`${infoEval[i].code}`] = {
-                        value: [splitSetOfValues[0]],
-                        code: infoEval[i].code,
-                        type: infoEval[i].type
+                    if (infoEval[i].value) {
+                        info[`${infoEval[i].code}`] = {
+                            value: [infoEval[i].value],
+                            code: infoEval[i].code,
+                            type: infoEval[i].type
+                        }
+                    }
+                    else {
+                        info[`${infoEval[i].code}`] = {
+                            value: [splitSetOfValues[0]],
+                            code: infoEval[i].code,
+                            type: infoEval[i].type
+                        }
+                    }
+                }
+                else {
+                    if (infoEval[i].value || infoEval[i].value === 0) {
+                        info[`${infoEval[i].code}`] = {
+                            value: infoEval[i].value,
+                            code: infoEval[i].code,
+                            type: infoEval[i].type
+                        }
                     }
                 }
             }
@@ -481,7 +515,7 @@ function EvaluateByAccountableEmployee(props) {
                             }
                         }
                         else {
-                            if (infoEval[i].value) {
+                            if (infoEval[i].value || infoEval[i].value === 0) {
                                 info[`${infoEval[i].code}`] = {
                                     value: infoEval[i].value,
                                     code: infoEval[i].code,
@@ -608,7 +642,7 @@ function EvaluateByAccountableEmployee(props) {
                     }
                 }
                 else {
-                    if (infoTask[i].value) {
+                    if (infoTask[i].value || infoTask[i].value === 0) {
                         info[`${infoTask[i].code}`] = {
                             value: infoTask[i].value,
                             code: infoTask[i].code,
@@ -728,7 +762,6 @@ function EvaluateByAccountableEmployee(props) {
             time: state.endTime,
             info: state.info,
         };
-        console.log("taskInfo", taskInfo)
         let automaticPoint = AutomaticTaskPointCalculator.calcAutoPoint(taskInfo);
         if (isNaN(automaticPoint)) automaticPoint = undefined
         if (automaticPoint < 0) {
@@ -1383,7 +1416,6 @@ function EvaluateByAccountableEmployee(props) {
         let startTime = formatTime(new Date(start));
 
         let { evaluatingMonth, endDate, endTime, idUser } = state;
-        console.log(startDate, startTime,endTime,endDate,evaluatingMonth);
         let err = validateDateTime(evaluatingMonth, startDate, startTime, endDate, endTime, "start");
 
         setState({
@@ -1581,7 +1613,6 @@ function EvaluateByAccountableEmployee(props) {
             ...state,
             oldAutoPoint: state.autoPoint,
         });
-        console.log("state", state)
         // props.handleChangeDataStatus(1); // 1 = DATA_STATUS.QUERYING
         props.handleChangeShowEval(state.id);
         props.handleChangeEnableAddItem(state.id);
@@ -1638,8 +1669,7 @@ function EvaluateByAccountableEmployee(props) {
     //     disabled = true;
     // }
     let disableSubmit = !isFormValidated();
-    console.log("state", state)
-    console.log("progress", progress)
+
     return (
         <React.Fragment>
             <div style={{ display: "flex", flexDirection: "column" }}>

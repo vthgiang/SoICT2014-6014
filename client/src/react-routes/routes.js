@@ -19,6 +19,7 @@ const Document = lazy(() => import("../modules/document/components/user"))
 const ManageUser = lazy(() => import("../modules/super-admin/user/components"))
 const ManageRole = lazy(() => import("../modules/super-admin/role/components"))
 const ManageLink = lazy(() => import("../modules/super-admin/link/components"))
+const ManageApi = lazy(() => import("../modules/super-admin/api/components/apiManagement"))
 const ManageDepartment = lazy(() => import("../modules/super-admin/organizational-unit/components"))
 const ManageComponent = lazy(() => import("../modules/super-admin/component/components"))
 const ConfigurationManager = lazy(() => import("../modules/super-admin/module-configuration/components"))
@@ -473,6 +474,29 @@ class Routes extends Component {
                         pageName={"manage_link"}
                         layout={Layout}
                         component={ManageLink}
+                    />
+                    <PrivateRoute
+                        isLoading={this.props.api?.isLoading}
+                        key={"apis-management"}
+                        arrPage={[
+                            {
+                                link: "#",
+                                name: "system_administration",
+                                icon: "fa fa-key",
+                            },
+                            {
+                                link: "/apis-management",
+                                name: "manage_api",
+                                icon: "fa fa-link",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/apis-management"}
+                        path={"/apis-management"}
+                        pageName={"manage_api"}
+                        layout={Layout}
+                        component={ManageApi}
                     />
                     <PrivateRoute
                         isLoading={this.props.department.isLoading}
