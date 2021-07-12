@@ -37,17 +37,6 @@
     font-size: 16px;
 }
 
-.addlog-box{
-    position: absolute;
-    top: 6.9em;
-    left: 0;
-    width: 450px;
-    background-color: #fff;
-    padding: 13px;
-    border: 1px solid rgba(0,0,0,.15);
-    border-radius: 0.5rem;
-    box-shadow: 0 0.5rem 1rem rgb(0 0 0 / 18%);
-}
 .addlog-title{
     font-weight: 700;
     text-align: center;

@@ -26,6 +26,8 @@ import { formatDate } from '../../../../helpers/formatDate';
 import { convertTime } from '../../../../helpers/stringMethod';
 import { htmlToText } from 'html-to-text';
 import { formatTime } from '../../../project/projects/components/functionHelper';
+import ModalAddLogTime from './modalAddLogTime';
+
 function ActionTab(props) {
     let idUser = getStorage("userId");
     const { tasks, performtasks, notifications, user, auth, translate, role, id } = props;
@@ -125,8 +127,6 @@ function ActionTab(props) {
             descriptionFile: "",
             deleteFile: '',
 
-            addLogTimeDate: formatDate(Date.now()),
-            showBoxAddLogTimer: false,
             checkDateAddLog: false,
             showPopupApproveAllAction: false,
         };
@@ -137,7 +137,7 @@ function ActionTab(props) {
         editTaskComment, showEditTaskFile, evaluations, actionImportanceLevelAll, ratingAll,
         editCommentOfTaskComment, valueRating, currentUser, hover, fileTaskEdited, showSort,
         showFile, deleteFile, taskFiles, newActionEdited, newCommentOfActionEdited, newAction,
-        newCommentOfAction, newTaskCommentEdited, newCommentOfTaskComment, newTaskComment, newCommentOfTaskCommentEdited, showBoxAddLogTimer, addLogStartTime, addLogEndTime
+        newCommentOfAction, newTaskCommentEdited, newCommentOfTaskComment, newTaskComment, newCommentOfTaskCommentEdited, addLogStartTime, addLogEndTime
     } = state;
 
     // error message
@@ -155,7 +155,6 @@ function ActionTab(props) {
         setState({
             ...state,
             id: props.id,
-            showBoxAddLogTimer: false,
             checkDateAddLog: false,
         })
         if (props.id) {
@@ -1034,149 +1033,9 @@ function ActionTab(props) {
         return mEnd.isAfter(mStart);
     }
 
-    // Bấm giờ công việc 
-    const handleChangeDateAddLog = (value) => {
-        const { translate } = props;
-        const DateSplit = value.split("-");
-        let addLogTimeDate = DateSplit[2] + '-' + DateSplit[1] + '-' + DateSplit[0];
-
-        let { message } = ValidationHelper.validateEmpty(translate, value);
-        const checkDateAddLog = checkValidateDate(formatDate(Date.now()), addLogTimeDate);
-        if (checkDateAddLog)
-            message = "Không được chọn ngày trong tương lai";
-
-        setState({
-            ...state,
-            addLogTimeDate,
-            errorDateAddLog: message,
-            checkDateAddLog,
-        })
+    const handleOpenModalAddLog = () => {
+        window.$('#modal-add-log-time').modal('show');
     }
-
-    const handleChangeDateAddStartTime = (value) => {
-        const { translate } = props;
-        let { message } = ValidationHelper.validateEmpty(translate, value);
-        setState({
-            ...state,
-            addLogStartTime: value,
-            errorStartTimeAddLog: message,
-        })
-    }
-
-    const getDefaultValueStartTime = (value) => {
-        setState({
-            ...state,
-            addLogStartTime: value,
-        })
-    }
-
-    const handleChangeDateAddEndTime = (value) => {
-        const { translate } = props;
-        let { message } = ValidationHelper.validateEmpty(translate, value);
-        setState({
-            ...state,
-            addLogEndTime: value,
-            errorEndTimeAddLog: message
-        })
-    }
-
-    const getDefaultValueEndTime = (value) => {
-        setState({
-            ...state,
-            addLogEndTime: value,
-        })
-    }
-
-    const handleChangeAddLogDescription = (e) => {
-        const { value } = e.target;
-        setState({
-            ...state,
-            addLogDescription: value,
-        })
-    }
-
-    const saveAddLogTime = () => {
-        const { performtasks } = props;
-        let { addLogTimeDate, addLogStartTime, addLogEndTime, addLogDescription } = state;
-        let startAt, stopAt;
-        let { startDate, endDate } = performtasks.task;
-
-        // Định dạng new Date("2021-02-21 09:40 PM") chạy trên chorme ok, chạy trên firefox invalid date
-        // nên chuyển thành định dạng new Date("2021/02/21 09:40 PM")
-        if (addLogTimeDate && addLogStartTime) {
-            startAt = new Date((addLogTimeDate + " " + addLogStartTime).replace(/-/g, '/'));
-        }
-
-        if (addLogTimeDate && addLogEndTime) {
-            stopAt = new Date((addLogTimeDate + " " + addLogEndTime).replace(/-/g, '/'));
-        }
-
-        const timer = {
-            employee: localStorage.getItem("userId"),
-            addlogStartedAt: startAt,
-            addlogDescription: addLogDescription,
-            addlogStoppedAt: stopAt,
-            taskId: performtasks.task._id,
-            autoStopped: 3, // 3: add log timer
-        };
-        // Check kho cho phép add log timer trong tương lại (thời gian lớn hơn thời điểm hiện tại)
-        if (checkValidateDate(new Date(), stopAt)) {
-            Swal.fire({
-                title: 'Không được chỉ định thời gian kết thúc bấm giờ trong tương lai ',
-                type: 'warning',
-                confirmButtonColor: '#dd4b39',
-                confirmButtonText: "Đóng",
-            })
-        } else {
-            startDate = moment(startDate).format('YYYY-MM-DD');
-            startDate = new Date(startDate).getTime();
-
-            endDate = moment(endDate).format('YYYY-MM-DD');
-            endDate = new Date(endDate).getTime();
-
-            let checkDateRange = new Date(addLogTimeDate).getTime();
-
-            // check xem thời gian bấm giờ nằm trong khoản thời gian bắt đầu và thời gian kết thúc của công việc
-            if (!(checkDateRange >= startDate && checkDateRange <= endDate)) {
-                Swal.fire({
-                    title: 'Thời gian bấm giờ phải trong khoảng thời gian làm việc',
-                    type: 'warning',
-                    confirmButtonColor: '#dd4b39',
-                    confirmButtonText: "Đóng",
-                })
-            }
-            else {
-                // Check thời gian kết thúc phải sau thời gian bắt đầu
-                if (!checkValidateDate(startAt, stopAt)) {
-                    Swal.fire({
-                        title: 'Thời gian kết thúc phải sau thời gian bắt đầu',
-                        type: 'warning',
-                        confirmButtonColor: '#dd4b39',
-                        confirmButtonText: "Đóng",
-                    })
-                } else {
-                    props.stopTimer(performtasks.task._id, timer);
-                    setState({
-                        ...state,
-                        showBoxAddLogTimer: false,
-                        addLogDescription: "",
-                    })
-                }
-            }
-        }
-    }
-
-    const isFormValidated = () => {
-        const { addLogTimeDate, addLogStartTime, addLogEndTime, checkDateAddLog } = state;
-        const { translate } = props;
-
-        if (!ValidationHelper.validateEmpty(translate, addLogTimeDate).status
-            || !ValidationHelper.validateEmpty(translate, addLogStartTime).status
-            || !ValidationHelper.validateEmpty(translate, addLogEndTime).status || checkDateAddLog)
-            return false;
-        return true;
-    }
-
 
     const togglePopupApproveAllAction = () => {
         setState({
@@ -2247,80 +2106,13 @@ function ActionTab(props) {
 
                             <div className="col-md-6">
                                 <button className="btn btn-success" style={{ float: 'right' }}
-                                    disabled={showBoxAddLogTimer}
-                                    onClick={() => {
-                                        setState({
-                                            ...state,
-                                            showBoxAddLogTimer: true,
-                                        })
-                                    }}>
+                                    onClick={handleOpenModalAddLog}
+                                >
                                     Add log hours
                                 </button>
                             </div>
+                            <ModalAddLogTime />
 
-                            {
-                                showBoxAddLogTimer &&
-                                <div className="addlog-box">
-                                    <h4 className="addlog-title">New Time Log</h4>
-                                    <p style={{ color: "#f96767" }}>(*) Ghi nhật ký thời gian không được phép cho các ngày trong tương lai</p>
-                                    <div>
-                                        <div className={`form-group ${!errorDateAddLog ? "" : "has-error"}`}>
-                                            <label>Ngày <span className="text-red">*</span></label>
-                                            <DatePicker
-                                                id={`addlog-date`}
-                                                onChange={handleChangeDateAddLog}
-                                                defaultValue={formatDate(Date.now())}
-                                            />
-                                            <ErrorLabel content={errorDateAddLog} />
-                                        </div>
-                                        <div className="row">
-                                            <div className="col-sm-6 col-md-6">
-                                                <div className={`form-group ${!errorStartTimeAddLog ? "" : "has-error"}`}>
-                                                    <label>Từ <span className="text-red">*</span></label>
-                                                    <TimePicker
-                                                        id={`addlog-startTime`}
-                                                        value={addLogStartTime}
-                                                        onChange={handleChangeDateAddStartTime}
-                                                        getDefaultValue={getDefaultValueStartTime}
-                                                    />
-                                                    <ErrorLabel content={errorStartTimeAddLog} />
-                                                </div>
-                                            </div>
-                                            <div className="col-sm-6 col-md-6">
-                                                <div className={`form-group ${!errorEndTimeAddLog ? "" : "has-error"}`}>
-                                                    <label>Đến <span className="text-red">*</span></label>
-                                                    <TimePicker
-                                                        id={`addlog-endtime`}
-                                                        value={addLogEndTime}
-                                                        onChange={handleChangeDateAddEndTime}
-                                                        getDefaultValue={getDefaultValueEndTime}
-                                                    />
-                                                    <ErrorLabel content={errorEndTimeAddLog} />
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="form-group">
-                                            <label>Mô tả</label>
-                                            <TextareaAutosize
-                                                style={{ width: '100%', border: '1px solid rgba(70, 68, 68, 0.15)', padding: '5px' }}
-                                                minRows={3}
-                                                maxRows={20}
-                                                onChange={handleChangeAddLogDescription}
-                                            />
-                                        </div>
-                                        <div>
-                                            <button className="btn btn-success" style={{ marginRight: '10px' }} onClick={() => saveAddLogTime()} disabled={!isFormValidated()} >Lưu</button>
-                                            <button className="btn btn-danger" onClick={() => {
-                                                setState({
-                                                    ...state,
-                                                    showBoxAddLogTimer: false,
-                                                    addLogDescription: "",
-                                                })
-                                            }}>Hủy</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            }
                         </div>
                         {logTimer &&
                             <ShowMoreShowLess
