@@ -99,6 +99,7 @@ export default {
             manage_link: "Quản lý trang",
             manage_component: "Quản lý phân quyền trên các trang",
             manage_api: "Quản lý API",
+            registration_api: "Quản lý đăng ký API",
             privilege_api: "Quản lý phân quyền API",
 
             manage_department: "Quản lý cơ cấu tổ chức",
@@ -446,6 +447,7 @@ export default {
                 label: "Thông tin",
                 title: "Thông tin tài khoản người dùng",
                 name: "Tên người dùng",
+                input_name: "Nhập tên người dùng",
                 email: "Địa chỉ email",
                 password: "Mật khẩu mới",
                 confirm: "Xác thực mật khẩu",

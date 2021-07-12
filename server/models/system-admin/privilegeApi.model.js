@@ -6,6 +6,9 @@ const PrivilegeApiSchema = new Schema({
         type: String,
         required: true
     },
+    name: {
+        type: String
+    },
     apis: [{
         type: Schema.Types.ObjectId,
         ref: 'SystemApi',
@@ -17,9 +20,13 @@ const PrivilegeApiSchema = new Schema({
         ref: 'Company',
         required: true
     },
+    status: {
+        type: Number,
+        required: true,
+        enum: [0, 1, 2, 3]  // 0: invalid, 1: chờ phê duyệt, 2: từ chối, 3: đồng ý
+    },
     token: {
         type: String,
-        required: true
     },
     startDate: {
         type: Date

@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { SelectMulti, PaginateBar, DataTableSetting, DeleteNotification } from '../../../../common-components';
-import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
+import { SelectMulti, PaginateBar, DataTableSetting } from '../../../../../common-components';
+import { getTableConfiguration } from '../../../../../helpers/tableConfiguration'
 
 import { ApiActions } from '../redux/actions'
 

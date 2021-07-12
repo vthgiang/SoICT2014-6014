@@ -1,4 +1,4 @@
-import { sendRequest } from '../../../../helpers/requestHelper';
+import { sendRequest } from '../../../../../helpers/requestHelper';
 
 export const ApiServices = {
     getApis
@@ -6,7 +6,7 @@ export const ApiServices = {
 
 /** Lấy các system api */
 function getApis(params) {
-    const { path, method, description, page, perPage } = params
+    const { path, method, description, page, perPage, special } = params
 
     return sendRequest({
         url: `${ process.env.REACT_APP_SERVER }/api/companies`,
@@ -16,7 +16,8 @@ function getApis(params) {
             method,
             description,
             page, 
-            perPage
+            perPage,
+            special
         }
     }, false, true, 'super-admin.api');
 }

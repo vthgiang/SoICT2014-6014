@@ -97,6 +97,7 @@ export default {
             manage_link: "Manage Pages",
             manage_component: "Manage permissions on page",
             manage_api: "Manage API",
+            registration_api: "Manage API registration",
             privilege_api: "Manage permissions API",
 
             manage_department: "Manage Departments",
@@ -420,6 +421,7 @@ export default {
                 label: "Profile",
                 title: "User information",
                 name: "Username",
+                input_name: "Type username",
                 email: "Email",
                 password: "New password",
                 confirm: "Confirm password",
