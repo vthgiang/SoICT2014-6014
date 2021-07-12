@@ -19,52 +19,34 @@ import dayjs from "dayjs";
 
 function AddTaskForm(props) {
     const { tasktemplates, user, translate, tasks, department, project, isProcess, info, role } = props;
-    const [state, setState] = useState({
-        newTask: {
-            name: "",
-            description: "",
-            quillDescriptionDefault: "",
-            startDate: "",
-            endDate: "",
-            startTime: "",
-            endTime: "05:30 PM",
-            priority: 3,
-            responsibleEmployees: [],
-            accountableEmployees: [],
-            consultedEmployees: [],
-            informedEmployees: [],
-            creator: getStorage("userId"),
-            organizationalUnit: "",
-            collaboratedWithOrganizationalUnits: [],
-            taskTemplate: "",
-            parent: "",
-            taskProject: "",
-            tags: []
-        },
-        currentRole: getStorage('currentRole'),
-    })
-    const { id, newTask } = state;
-
-    const convertDateTime = (date, time) => {
-        let splitter = date.split("-");
-        let strDateTime = `${splitter[2]}/${splitter[1]}/${splitter[0]} ${time}`;
-        return dayjs(strDateTime).format('YYYY/MM/DD HH:mm:ss');
-    }
-
-    // convert ISODate to String hh:mm AM/PM
-    const formatTime = (date) => {
-        return dayjs(date).format("hh:mm A");
-    }
-
-    const regenerateTime = () => {
-        setState({
-            ...state,
+    const [state, setState] = useState(() => initState())
+    function initState() {
+        return {
             newTask: {
-                ...state.newTask,
-                startTime: formatTime(new Date())
-            }
-        })
+                name: "",
+                description: "",
+                quillDescriptionDefault: "",
+                startDate: "",
+                endDate: "",
+                startTime: "",
+                endTime: "05:30 PM",
+                priority: 3,
+                responsibleEmployees: [],
+                accountableEmployees: [],
+                consultedEmployees: [],
+                informedEmployees: [],
+                creator: getStorage("userId"),
+                organizationalUnit: "",
+                collaboratedWithOrganizationalUnits: [],
+                taskTemplate: "",
+                parent: "",
+                taskProject: "",
+                tags: []
+            },
+            currentRole: getStorage('currentRole'),
+        }
     }
+    const { id, newTask } = state;
 
     useEffect(() => {
         const { currentRole } = state;
@@ -79,361 +61,6 @@ function AddTaskForm(props) {
             window.$(`#addNewTask-${id}`).unbind('shown.bs.modal', regenerateTime)
         }
     }, [])
-
-    const handleChangeTaskName = (event) => {
-        let { value } = event.target;
-        let { translate } = props;
-        let { message } = ValidationHelper.validateEmpty(translate, value);
-
-        setState({
-            ...state,
-            newTask: {
-                ...state.newTask,
-                name: value,
-                errorOnName: message
-            }
-        }, () => {
-            props.handleChangeTaskData(state.newTask)
-            props.isProcess && props.handleChangeName(state.newTask.name)
-        })
-    }
-
-    const handleChangeTaskProject = (e) => {
-        let { value } = e.target;
-        setState({
-            ...state,
-            newTask: {
-                ...state.newTask,
-                taskProject: value
-            }
-        })
-        props.handleChangeTaskData(state.newTask)
-    }
-
-    const handleChangeTaskDescription = (value, imgs) => {
-        setState({
-            ...state,
-            newTask: {
-                ...state.newTask,
-                description: value,
-                imgs: imgs
-            }
-        });
-        props.handleChangeTaskData(state.newTask)
-    }
-
-    const handleChangeTaskStartDate = (value) => {
-        validateTaskStartDate(value, true);
-    }
-    const validateTaskStartDate = (value, willUpdateState = true) => {
-        let { translate } = props;
-        let msg = TaskFormValidator.validateTaskStartDate(value, state.newTask.endDate, translate);
-        const { newTask } = state;
-        let startDate = convertDateTime(value, newTask.startTime);
-        let endDate = convertDateTime(newTask.endDate, newTask.endTime);
-        if (startDate > endDate) {
-            msg = translate('task.task_management.add_err_end_date');
-        }
-        if (willUpdateState) {
-            newTask.startDate = value;
-            newTask.errorOnStartDate = msg;
-            if (!msg && newTask.endDate) newTask.errorOnEndDate = msg;
-            setState({
-                ...state,
-                newTask
-            });
-            props.handleChangeTaskData(state.newTask)
-        }
-        return msg === undefined;
-    }
-
-    const handleStartTimeChange = async (value) => {
-        let { translate } = props;
-        let startDate = convertDateTime(state.newTask.startDate, value);
-        let endDate = convertDateTime(state.newTask.endDate, state.newTask.endTime);
-        let err, resetErr;
-
-        if (value.trim() === "") {
-            err = translate('task.task_management.add_err_empty_end_date');
-        }
-        else if (startDate > endDate) {
-            err = translate('task.task_management.add_err_end_date');
-            resetErr = undefined;
-        }
-        setState({
-            ...state,
-            newTask: {
-                ...state.newTask,
-                startTime: value,
-                errorOnStartDate: err,
-                errorOnEndDate: resetErr,
-            }
-        });
-        await props.handleChangeTaskData(state.newTask)
-    }
-
-    const handleEndTimeChange = async (value) => {
-        let { translate } = props;
-        let startDate = convertDateTime(state.newTask.startDate, state.newTask.startTime);
-        let endDate = convertDateTime(state.newTask.endDate, value);
-        let err, resetErr;
-
-        if (value.trim() === "") {
-            err = translate('task.task_management.add_err_empty_end_date');
-        }
-        else if (startDate > endDate) {
-            err = translate('task.task_management.add_err_end_date');
-            resetErr = undefined;
-        }
-
-        setState({
-            ...state,
-            newTask: {
-                ...state.newTask,
-                endTime: value,
-                errorOnEndDate: err,
-                errorOnStartDate: resetErr,
-            }
-        })
-        await props.handleChangeTaskData(state.newTask);
-    }
-
-    const handleChangeTaskEndDate = (value) => {
-        validateTaskEndDate(value, true);
-    }
-
-    const validateTaskEndDate = (value, willUpdateState = true) => {
-        let { translate } = props;
-        let { newTask } = state;
-        let msg = TaskFormValidator.validateTaskEndDate(newTask.startDate, value, translate);
-
-        if (willUpdateState) {
-            newTask.endDate = value;
-            newTask.errorOnEndDate = msg;
-            if (!msg && newTask.startDate) newTask.errorOnStartDate = msg;
-            setState({
-                ...state,
-                newTask
-            });
-            props.handleChangeTaskData(state.newTask)
-        }
-        return msg === undefined;
-    }
-
-    const handleChangeTaskPriority = (event) => {
-        state.newTask.priority = event.target.value;
-        setState({
-            ...state,
-        });
-        props.handleChangeTaskData(state.newTask)
-    }
-
-    const handleChangeTaskOrganizationalUnit = (event) => {
-        event.preventDefault();
-        let value = event.target.value;
-        if (value) {
-            props.getChildrenOfOrganizationalUnits(value);
-            props.getTaskTemplateByUser(1, 10000, [value], ""); //pageNumber, noResultsPerPage, arrayUnit, name=""
-            setState({
-                ...state,
-                newTask: { // update lại unit, và reset các selection phía sau
-                    ...state.newTask,
-                    organizationalUnit: value,
-                    collaboratedWithOrganizationalUnits: [],
-                    responsibleEmployees: [],
-                    accountableEmployees: [],
-                    errorOnName: undefined,
-                    errorOnDescription: undefined,
-                    errorOnResponsibleEmployees: undefined,
-                    errorOnAccountableEmployees: undefined,
-                }
-            });
-            props.handleChangeTaskData(state.newTask)
-        }
-    }
-
-    const handleChangeCollaboratedWithOrganizationalUnits = async (value) => {
-        setState({
-            ...state,
-            newTask: {
-                ...state.newTask,
-                collaboratedWithOrganizationalUnits: value.map(item => { return { organizationalUnit: item, isAssigned: false } })
-            }
-        });
-        props.handleChangeTaskData(state.newTask)
-    }
-
-    const handleChangeTaskTemplate = async (event) => {
-        let value = event.target.value;
-        if (value === "") {
-            setState({
-                ...state,
-                newTask: { // update lại name,description và reset các selection phía sau
-                    ...state.newTask,
-                    name: "",
-                    description: "",
-                    priority: 3,
-                    responsibleEmployees: [],
-                    accountableEmployees: [],
-                    consultedEmployees: [],
-                    informedEmployees: [],
-                    taskTemplate: "",
-                    errorOnName: undefined,
-                    errorOnDescription: undefined,
-                    errorOnResponsibleEmployees: undefined,
-                    errorOnAccountableEmployees: undefined,
-                }
-            });
-            props.handleChangeTaskData(state.newTask)
-        }
-        else {
-            let taskTemplate = props.tasktemplates.items.find(function (taskTemplate) {
-                return taskTemplate._id === value;
-            });
-
-            setState({
-                ...state,
-                newTask: { // update lại name,description và reset các selection phía sau
-                    ...state.newTask,
-                    collaboratedWithOrganizationalUnits: taskTemplate.collaboratedWithOrganizationalUnits.map(item => { return { organizationalUnit: item._id, isAssigned: false } }),
-                    name: taskTemplate.name,
-                    description: taskTemplate.description,
-                    quillDescriptionDefault: taskTemplate.description,
-                    priority: taskTemplate.priority,
-                    responsibleEmployees: taskTemplate.responsibleEmployees.map(item => item.id),
-                    accountableEmployees: taskTemplate.accountableEmployees.map(item => item.id),
-                    consultedEmployees: taskTemplate.consultedEmployees.map(item => item.id),
-                    informedEmployees: taskTemplate.informedEmployees.map(item => item.id),
-                    taskTemplate: taskTemplate._id,
-                }
-            });
-            props.handleChangeTaskData(state.newTask)
-        }
-    }
-
-
-    const handleSelectedParent = async (value) => {
-        const val = value[0];
-
-        setState({
-            ...state,
-            newTask: {
-                ...state.newTask,
-                parent: val
-            }
-        })
-        await props.handleChangeTaskData(state.newTask)
-
-    }
-
-    const onSearch = async (txt) => {
-
-        await props.getPaginateTasksByUser([], "1", "5", [], [], [], txt, null, null, null, null, false, "listSearch");
-
-        setState(state => {
-            state.newTask.parent = "";
-            return {
-                ...state,
-            }
-        });
-        props.handleChangeTaskData(state.newTask)
-    }
-
-    const handleChangeTaskResponsibleEmployees = (value) => {
-        validateTaskResponsibleEmployees(value, true);
-    }
-    const validateTaskResponsibleEmployees = (value, willUpdateState = true) => {
-        let { translate } = props;
-        let { message } = ValidationHelper.validateArrayLength(props.translate, value);
-
-        if (willUpdateState) {
-            state.newTask.responsibleEmployees = value;
-            state.newTask.errorOnResponsibleEmployees = message;
-            setState({
-                ...state,
-            });
-            props.handleChangeTaskData(state.newTask)
-            props.isProcess && props.handleChangeResponsible(state.newTask.responsibleEmployees)
-        }
-        return message === undefined;
-    }
-
-
-    const handleChangeTaskAccountableEmployees = (value) => {
-        validateTaskAccountableEmployees(value, true);
-    }
-    const validateTaskAccountableEmployees = (value, willUpdateState = true) => {
-        let { translate } = props;
-        let { message } = ValidationHelper.validateArrayLength(props.translate, value);
-
-        if (willUpdateState) {
-            state.newTask.accountableEmployees = value;
-            state.newTask.errorOnAccountableEmployees = message;
-            setState(state => {
-                return {
-                    ...state,
-                };
-            });
-            props.handleChangeTaskData(state.newTask)
-            props.isProcess && props.handleChangeAccountable(state.newTask.accountableEmployees)
-        }
-        return message === undefined;
-    }
-
-
-
-    const handleChangeTaskConsultedEmployees = (value) => {
-        state.newTask.consultedEmployees = value;
-        setState({
-            ...state,
-        });
-        props.handleChangeTaskData(state.newTask)
-    }
-    const handleChangeTaskInformedEmployees = (value) => {
-        state.newTask.informedEmployees = value;
-        setState({
-            ...state,
-        });
-        props.handleChangeTaskData(state.newTask)
-    }
-
-    const handleTaskProject = (selected) => {
-        setState({
-            ...state,
-            newTask: {
-                ...state.newTask,
-                taskProject: selected[0]
-            }
-        })
-        props.handleChangeTaskData(state.newTask)
-    }
-
-    const handleTaskTags = (value) => {
-        setState({
-            ...state,
-            newTask: {
-                ...state.newTask,
-                tags: value
-            }
-        })
-        props.handleChangeTaskData(state.newTask)
-
-    }
-
-    // convert ISODate to String dd-mm-yyyy
-    const formatDate = (date) => {
-        var d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
-
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
-
-        return [day, month, year].join('-');
-    }
 
     //Chức năng tạo task bằng process
     useEffect(() => {
@@ -471,7 +98,7 @@ function AddTaskForm(props) {
                 defaultUnit = user.organizationalUnitsOfUser[0]
             }
         }
-    }, [props.id])
+    }, [props.id, props.isProcess])
 
     useEffect(() => {
         if (props.task) {
@@ -502,9 +129,10 @@ function AddTaskForm(props) {
                 endTime: formatTime(props.task.endDate),
             });
         }
-    }, [props.id])
+    }, [props.id, JSON.stringify(props.task)])
 
-    if (props.parentTask !== props.parentTask) { // Khi đổi nhấn add new task sang nhấn add subtask hoặc ngược lại
+    // Khi đổi nhấn add new task sang nhấn add subtask hoặc ngược lại
+    useEffect(() => {
         setState({
             ...state,
             newTask: {
@@ -512,7 +140,11 @@ function AddTaskForm(props) {
                 parent: props.parentTask,
             }
         });
-    }
+    }, [props.parentTask])
+
+    useEffect(() => {
+        props.handleChangeTaskData(state.newTask)
+    }, [newTask])
 
     // Khi truy vấn lấy các đơn vị của user đã có kết quả, và thuộc tính đơn vị của newTask chưa được thiết lập
     if (newTask.organizationalUnit === "" && department.list.length !== 0) {
@@ -529,7 +161,6 @@ function AddTaskForm(props) {
             props.getChildrenOfOrganizationalUnits(defaultUnit._id);
             props.getTaskTemplateByUser(1, 10000, [defaultUnit._id], ""); //pageNumber, noResultsPerPage, arrayUnit, name=""
         }
-
         setState({
             ...state,
             newTask: {
@@ -537,6 +168,394 @@ function AddTaskForm(props) {
                 organizationalUnit: defaultUnit && defaultUnit._id,
             }
         });
+    }
+
+    const convertDateTime = (date, time) => {
+        let splitter = date.split("-");
+        let strDateTime = `${splitter[2]}/${splitter[1]}/${splitter[0]} ${time}`;
+        return dayjs(strDateTime).format('YYYY/MM/DD HH:mm:ss');
+    }
+
+    // convert ISODate to String hh:mm AM/PM
+    const formatTime = (date) => {
+        return dayjs(date).format("hh:mm A");
+    }
+
+    function regenerateTime() {
+        setState({
+            ...state,
+            newTask: {
+                ...state.newTask,
+                startTime: formatTime(new Date())
+            }
+        })
+    }
+
+    const handleChangeTaskName = (event) => {
+        let { value } = event.target;
+        let { translate } = props;
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+
+        setState({
+            ...state,
+            newTask: {
+                ...state.newTask,
+                name: value,
+                errorOnName: message
+            }
+        })
+        props.isProcess && props.handleChangeName(state.newTask.name)
+    }
+
+    const handleChangeTaskProject = (e) => {
+        let { value } = e.target;
+        setState({
+            ...state,
+            newTask: {
+                ...state.newTask,
+                taskProject: value
+            }
+        })
+    }
+
+    const handleChangeTaskDescription = async (value, imgs) => {
+        setState({
+            ...state,
+            newTask: {
+                ...state.newTask,
+                description: value,
+                imgs: imgs
+            }
+        });
+    }
+
+    const handleChangeTaskStartDate = (value) => {
+        validateTaskStartDate(value, true);
+    }
+    const validateTaskStartDate = (value, willUpdateState = true) => {
+        let { translate } = props;
+        const { newTask } = state;
+        let msg = TaskFormValidator.validateTaskStartDate(value, newTask.endDate, translate);
+        let startDate = convertDateTime(value, newTask.startTime);
+        let endDate = convertDateTime(newTask.endDate, newTask.endTime);
+        if (startDate > endDate) {
+            msg = translate('task.task_management.add_err_end_date');
+        }
+        if (willUpdateState) {
+            setState({
+                ...state,
+                newTask: {
+                    ...state.newTask,
+                    startDate: value,
+                    errorOnStartDate: msg,
+                }
+            })
+            newTask.startDate = value;
+            newTask.errorOnStartDate = msg;
+            if (!msg && newTask.endDate) {
+                setState({
+                    ...state,
+                    newTask: {
+                        ...state.newTask,
+                        errorOnEndDate: msg
+                    }
+                })
+            }
+        }
+        return msg === undefined;
+    }
+
+    const handleStartTimeChange = (value) => {
+        let { translate } = props;
+        let startDate = convertDateTime(state.newTask.startDate, value);
+        let endDate = convertDateTime(state.newTask.endDate, state.newTask.endTime);
+        let err, resetErr;
+
+        if (value.trim() === "") {
+            err = translate('task.task_management.add_err_empty_end_date');
+        }
+        else if (startDate > endDate) {
+            err = translate('task.task_management.add_err_end_date');
+            resetErr = undefined;
+        }
+        setState({
+            ...state,
+            newTask: {
+                ...state.newTask,
+                startTime: value,
+                errorOnStartDate: err,
+                errorOnEndDate: resetErr,
+            }
+        });
+    }
+
+    const handleEndTimeChange = (value) => {
+        let { translate } = props;
+        let startDate = convertDateTime(state.newTask.startDate, state.newTask.startTime);
+        let endDate = convertDateTime(state.newTask.endDate, value);
+        let err, resetErr;
+
+        if (value.trim() === "") {
+            err = translate('task.task_management.add_err_empty_end_date');
+        }
+        else if (startDate > endDate) {
+            err = translate('task.task_management.add_err_end_date');
+            resetErr = undefined;
+        }
+        setState({
+            ...state,
+            newTask: {
+                ...state.newTask,
+                endTime: value,
+                errorOnEndDate: err,
+                errorOnStartDate: resetErr,
+            }
+        })
+    }
+
+    const handleChangeTaskEndDate = (value) => {
+        validateTaskEndDate(value, true);
+    }
+
+    const validateTaskEndDate = (value, willUpdateState = true) => {
+        let { translate } = props;
+        const { newTask } = state
+        let msg = TaskFormValidator.validateTaskEndDate(newTask.startDate, value, translate);
+        if (willUpdateState) {
+            setState({
+                ...state,
+                newTask: {
+                    ...state.newTask,
+                    endDate: value,
+                    errorOnEndDate: msg,
+                }
+            })
+            newTask.endDate = value;
+            newTask.errorOnEndDate = msg;
+            if (!msg && newTask.startDate) {
+                setState({
+                    ...state,
+                    newTask: {
+                        ...newTask,
+                        errorOnStartDate: msg
+                    }
+                });
+            }
+        }
+        return msg === undefined;
+    }
+
+    const handleChangeTaskPriority = (event) => {
+        setState({
+            ...state,
+            newTask: {
+                ...state.newTask,
+                priority: event.target.value
+            }
+        });
+    }
+
+    const handleChangeTaskOrganizationalUnit = (event) => {
+        event.preventDefault();
+        let value = event.target.value;
+        if (value) {
+            props.getChildrenOfOrganizationalUnits(value);
+            props.getTaskTemplateByUser(1, 10000, [value], ""); //pageNumber, noResultsPerPage, arrayUnit, name=""
+            setState({
+                ...state,
+                newTask: { // update lại unit, và reset các selection phía sau
+                    ...state.newTask,
+                    organizationalUnit: value,
+                    collaboratedWithOrganizationalUnits: [],
+                    responsibleEmployees: [],
+                    accountableEmployees: [],
+                    errorOnName: undefined,
+                    errorOnDescription: undefined,
+                    errorOnResponsibleEmployees: undefined,
+                    errorOnAccountableEmployees: undefined,
+                }
+            });
+        }
+    }
+
+    const handleChangeCollaboratedWithOrganizationalUnits = (value) => {
+        setState({
+            ...state,
+            newTask: {
+                ...state.newTask,
+                collaboratedWithOrganizationalUnits: value.map(item => { return { organizationalUnit: item, isAssigned: false } })
+            }
+        });
+    }
+
+    const handleChangeTaskTemplate = async (event) => {
+        let value = event.target.value;
+        if (value === "") {
+            setState({
+                ...state,
+                newTask: { // update lại name,description và reset các selection phía sau
+                    ...state.newTask,
+                    name: "",
+                    description: "",
+                    priority: 3,
+                    responsibleEmployees: [],
+                    accountableEmployees: [],
+                    consultedEmployees: [],
+                    informedEmployees: [],
+                    taskTemplate: "",
+                    errorOnName: undefined,
+                    errorOnDescription: undefined,
+                    errorOnResponsibleEmployees: undefined,
+                    errorOnAccountableEmployees: undefined,
+                }
+            });
+        }
+        else {
+            let taskTemplate = props.tasktemplates.items.find(function (taskTemplate) {
+                return taskTemplate._id === value;
+            });
+
+            setState({
+                ...state,
+                newTask: { // update lại name,description và reset các selection phía sau
+                    ...state.newTask,
+                    collaboratedWithOrganizationalUnits: taskTemplate.collaboratedWithOrganizationalUnits.map(item => { return { organizationalUnit: item._id, isAssigned: false } }),
+                    name: taskTemplate.name,
+                    description: taskTemplate.description,
+                    quillDescriptionDefault: taskTemplate.description,
+                    priority: taskTemplate.priority,
+                    responsibleEmployees: taskTemplate.responsibleEmployees.map(item => item.id),
+                    accountableEmployees: taskTemplate.accountableEmployees.map(item => item.id),
+                    consultedEmployees: taskTemplate.consultedEmployees.map(item => item.id),
+                    informedEmployees: taskTemplate.informedEmployees.map(item => item.id),
+                    taskTemplate: taskTemplate._id,
+                }
+            });
+        }
+    }
+
+
+    const handleSelectedParent = (value) => {
+        const val = value[0];
+
+        setState({
+            ...state,
+            newTask: {
+                ...state.newTask,
+                parent: val
+            }
+        })
+
+    }
+
+    const onSearch = async (txt) => {
+
+        await props.getPaginateTasksByUser([], "1", "5", [], [], [], txt, null, null, null, null, false, "listSearch");
+
+        setState({
+            ...state,
+            newTask: {
+                ...state.newTask,
+                parent: ""
+            }
+        });
+    }
+
+    const handleChangeTaskResponsibleEmployees = (value) => {
+        validateTaskResponsibleEmployees(value, true);
+    }
+    const validateTaskResponsibleEmployees = (value, willUpdateState = true) => {
+        let { translate } = props;
+        let { message } = ValidationHelper.validateArrayLength(props.translate, value);
+
+        if (willUpdateState) {
+            setState({
+                ...state,
+                newTask: {
+                    ...state.newTask,
+                    responsibleEmployees: value,
+                    errorOnResponsibleEmployees: message
+                }
+            });
+            props.isProcess && props.handleChangeResponsible(state.newTask.responsibleEmployees)
+        }
+        return message === undefined;
+    }
+
+
+    const handleChangeTaskAccountableEmployees = (value) => {
+        validateTaskAccountableEmployees(value, true);
+    }
+    const validateTaskAccountableEmployees = (value, willUpdateState = true) => {
+        let { translate } = props;
+        let { message } = ValidationHelper.validateArrayLength(props.translate, value);
+
+        if (willUpdateState) {
+            setState({
+                ...state,
+                newTask: {
+                    ...state.newTask,
+                    accountableEmployees: value,
+                    errorOnAccountableEmployees: message
+                }
+            });
+            props.isProcess && props.handleChangeAccountable(state.newTask.accountableEmployees)
+        }
+        return message === undefined;
+    }
+
+    const handleChangeTaskConsultedEmployees = (value) => {
+        setState({
+            ...state,
+            newTask: {
+                ...state.newTask,
+                consultedEmployees: value
+            }
+        });
+    }
+    const handleChangeTaskInformedEmployees = (value) => {
+        setState({
+            ...state,
+            newTask: {
+                ...state.newTask,
+                informedEmployees: value
+            }
+        });
+    }
+
+    const handleTaskProject = (selected) => {
+        setState({
+            ...state,
+            newTask: {
+                ...state.newTask,
+                taskProject: selected[0]
+            }
+        })
+    }
+
+    const handleTaskTags = (value) => {
+        setState({
+            ...state,
+            newTask: {
+                ...state.newTask,
+                tags: value
+            }
+        })
+    }
+
+    // convert ISODate to String dd-mm-yyyy
+    function formatDate(date) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        return [day, month, year].join('-');
     }
 
     let listTaskTemplate;
@@ -572,8 +591,6 @@ function AddTaskForm(props) {
 
     const checkCurrentRoleIsManager = role && role.item &&
         role.item.parents.length > 0 && role.item.parents.filter(o => o.name === ROOT_ROLE.MANAGER)
-
-
     return (
         <React.Fragment>
 

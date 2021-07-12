@@ -81,14 +81,15 @@ function TaskAddModal(props) {
     }, [])
 
     const isFormValidated = () => {
-        const { name, startDate, endDate, responsibleEmployees, accountableEmployees } = state?.newTask;
+        const { name, startDate, endDate, responsibleEmployees, accountableEmployees, errorOnStartDate, errorOnEndDate } = state?.newTask;
         const { translate } = props;
 
         if (!ValidationHelper.validateEmpty(translate, name).status
             || !ValidationHelper.validateEmpty(translate, startDate).status
             || !ValidationHelper.validateEmpty(translate, endDate).status
             || !ValidationHelper.validateArrayLength(translate, responsibleEmployees).status
-            || !ValidationHelper.validateArrayLength(translate, accountableEmployees).status)
+            || !ValidationHelper.validateArrayLength(translate, accountableEmployees).status
+            || errorOnStartDate || errorOnEndDate)
             return false;
         return true;
     }
