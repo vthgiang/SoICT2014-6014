@@ -454,6 +454,7 @@ function GanttCalendar(props) {
 
       {<ModalDetailTask action={'Employee'} task={task} />}
       <Gantt
+        ganttId = "gantt-chart"
         ganttData={dataTask}
         zoom={currentZoom}
         status={taskStatus}
