@@ -1,4 +1,5 @@
 // NODE_MODULES
+let path = require('path');
 const express = require("express");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
@@ -9,7 +10,8 @@ const swaggerUi = require("swagger-ui-express");
 const { swaggerJsonData } = require("./api-docs/swagger.js");
 const { auth } = require(`./middleware`);
 const { SystemApiControllers } = require('./modules/system-admin/system-api/system-api-management/systemApi.controller');
-
+const htmlPath = path.join(__dirname, 'upload');
+app.use(express.static(htmlPath));
 require("dotenv").config();
 // require("./connectDatabase");
 require("./global")(server);
@@ -307,4 +309,8 @@ app.post('/system-admin/system-api/system-apis/update-auto', auth, (req, res) =>
  * Server initial
  */
 const port = process.env.PORT || 8000;
-server.listen(port, () => console.log(`Server up and running on: ${port} !`));
+server.listen(port, () => {
+    console.log(`Server up and running on: ${port} !`)
+    var port1 = server.address().port1;
+    console.log(`Server up and running on: ${port1} !`)
+});
