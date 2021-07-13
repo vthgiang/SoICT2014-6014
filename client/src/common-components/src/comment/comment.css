@@ -1,0 +1,130 @@
+.content-level1{
+    background-color: #e2e0ff;
+    padding: 5px 10px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+
+    margin-left: 50px;
+    margin-top: -40px;
+    margin-bottom: 0px;
+    margin-right: 20px;
+
+    position: relative;
+}
+
+.content-level2{
+    background-color: #f2f3f5;
+    padding: 5px 10px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+
+    margin-left: 90px;
+    margin-top: -30px;
+    margin-bottom: 0px;
+    margin-right: 20px;
+
+    position: relative;
+}
+
+.content-level1 > a, .content-level2 > a{
+    font-weight: 700;
+}
+
+.content-level1 .btn-group, .content-level2 .btn-group{
+    position: absolute;
+    margin: 0;
+    top: calc(50% - 10px);
+    right: -20px;
+    cursor: pointer;
+}
+
+.content-level1 .dropdown-menu, .content-level2 .dropdown-menu{
+    -webkit-box-shadow: 4px 4px 5px rgba(50, 50, 50, 0.55);
+    -moz-box-shadow: 4px 4px 5px rgba(50, 50, 50, 0.55);
+    box-shadow: 4px 4px 5px rgba(50, 50, 50, 0.55);
+}
+
+.tool-level1{
+    margin-left: 55px;
+    margin-bottom: 10px;
+    margin-right: 20px;
+}
+
+.show-files-task {
+    display: flex;
+    flex-direction: column;   
+}
+
+.files-attach {
+    width: 40%;
+    height: 40%;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+    display: flex;
+    flex-direction: column;
+}
+.files-attach:hover {opacity: 0.7;}
+
+.user-img-level2{
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-left: 50px;
+}
+
+.tool-level2{
+    margin-left: 100px;
+    margin-bottom: 5px;
+    margin-right: 20px;
+}
+
+.text-input-level1{
+    margin-left: 50px;
+    margin-top: -40px;
+    margin-right: 20px;
+}
+
+.text-input-level1.quill-editor{
+    -webkit-border-radius: 10px !important;
+    -moz-border-radius: 10px !important;
+    border-radius: 10px !important;
+    
+    background-color: #e2e0ff !important;
+    padding: 5px 0px !important;
+
+    height: auto !important;
+    font-size: 13px !important;
+
+    border: 1px solid #989da5 !important;
+}
+
+.text-input-level2{
+    margin-left: 90px;
+    margin-top: -30px;
+    margin-right: 20px;
+}
+
+.text-input-level2.quill-editor{
+    -webkit-border-radius: 10px !important;
+    -moz-border-radius: 10px !important;
+    border-radius: 10px !important;
+
+    background-color: #f2f3f5 !important;
+    padding: 5px 0px !important;
+
+    height: auto !important;
+    font-size: 13px !important;
+
+    border: 1px solid #ccd0d5 !important;
+}
+
+
