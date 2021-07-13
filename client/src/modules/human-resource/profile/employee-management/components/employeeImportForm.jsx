@@ -1,11 +1,11 @@
-import React, { Component, useState } from 'react';
+import React, { Component, useState, useRef, useLayoutEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-
+import { toast } from 'react-toastify';
+import ServerResponseAlert from '../../../../alert/components/serverResponseAlert';
 import { EmployeeImportTab } from './combinedContent';
-import { DialogModal } from '../../../../../common-components';
+import { DialogModal, Loading } from '../../../../../common-components';
 import { FieldsActions } from '../../../field/redux/actions';
-
 import {
     configurationEmployee,
 } from './fileConfigurationImportEmployee';
@@ -14,6 +14,37 @@ import { EmployeeManagerActions } from '../redux/actions';
 
 const EmployeeImportForm = (props) => {
     const [state, setState] = useState({})
+
+    const toastId = useRef(null);
+
+    /**
+    * Function hiển thị thông báo khi đang import dữ liệu
+    */
+    const notify = () => {
+        toastId.current = toast.warn(
+            <div>
+                <ServerResponseAlert
+                    type="warning"
+                    title={'general.warning'}
+                    content={[
+                        translate(
+                            'human_resource.profile.employee_management.importing_employee',
+                        ),
+                    ]}
+                />
+                <Loading />
+            </div>,
+            {
+                containerId: 'toast-notification',
+                hideProgressBar: true,
+                autoClose: false
+            }
+        )
+    }
+
+    useLayoutEffect(() => {
+        if (!props.employeesManager.isLoading && toastId.current) toast.dismiss(toastId.current);
+    }, [props.employeesManager.isLoading])
 
     /**
      * Function chuyển dữ liệu date trong excel thành dạng dd-mm-yyyy
@@ -605,11 +636,13 @@ const EmployeeImportForm = (props) => {
      */
     const handleImportEmployeeInfor = () => {
         let { importDataOfEmployeeInfor } = state;
+        notify();
         props.importEmployees({ importType: "Employee_Infor", importData: importDataOfEmployeeInfor });
     }
 
     const handleImportUpdateEmployeeInfor = () => {
         let { importDataOfEmployeeInfor } = state;
+        notify();
         props.importEmployees({ importType: "Update_Employee_Infor", importData: importDataOfEmployeeInfor });
     }
 
@@ -618,6 +651,7 @@ const EmployeeImportForm = (props) => {
     */
     const handleImportExperience = () => {
         let { importDataOfExperience } = state;
+        notify();
         props.importEmployees({ importType: "Experience", importData: importDataOfExperience });
     }
 
@@ -626,6 +660,7 @@ const EmployeeImportForm = (props) => {
     */
     const handleImportDegree = () => {
         let { importDataOfDegree } = state;
+        notify();
         props.importEmployees({ importType: "Degree", importData: importDataOfDegree });
     }
 
@@ -634,6 +669,7 @@ const EmployeeImportForm = (props) => {
     */
     const handleImportCertificate = () => {
         let { importDataOfCertificate } = state;
+        notify();
         props.importEmployees({ importType: "Certificate", importData: importDataOfCertificate });
     }
 
@@ -642,6 +678,7 @@ const EmployeeImportForm = (props) => {
     */
     const handleImportConstract = () => {
         let { importDataOfContract } = state;
+        notify();
         props.importEmployees({ importType: "Contract", importData: importDataOfContract });
     }
 
@@ -658,6 +695,7 @@ const EmployeeImportForm = (props) => {
     */
     const handleImportFile = () => {
         let { importDataOfFile } = state;
+        notify();
         props.importEmployees({ importType: "File", importData: importDataOfFile });
     }
 
@@ -666,6 +704,7 @@ const EmployeeImportForm = (props) => {
     */
     const handleFamilyMembers = () => {
         let { importDataOfFamily } = state;
+        notify();
         props.importEmployees({ importType: "FamilyMembers", importData: importDataOfFamily });
     }
 

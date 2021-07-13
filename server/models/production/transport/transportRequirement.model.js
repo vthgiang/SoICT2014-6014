@@ -2,97 +2,74 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const TransportRequirementSchema = new Schema({
-    status: { // Trạng thái chờ phê duyệt, đã phê duyệt...
+    status: { // Trạng thái kế hoạch: 0: Không được phê duyệt, 1: Chờ phê duyệt, 2: Đã phê duyệt - Chờ xếp lịch, 3: Chờ vận chuyển, 4: Đang vận chuyển, 5: Đã vận chuyển, 6: Vận chuyển thất bại
         type: Number,
-        // required: true
+        required: true
     },
-    code: {
+    code: { // Mã kế hoạch
         type: String,
         required: true,
     },
-    type: { // Loại yêu cầu: giao hàng, trả hàng ....
+    type: { // Loại yêu cầu: 1: Giao hàng, 2: Trả hàng, 3: Chuyển thành phẩm tới kho, 4: Giao nguyên vật liệu, 5: Vận chuyển
         type: Number,
-        // required: true
+        required: true
     },
     creator: {  // Người tạo yêu cầu
         type: Schema.Types.ObjectId,
         ref: 'User',
         required: true
     },
-    department: { // Phòng ban phụ trách
+    department: { // Đơn vị vận chuyển phụ trách
         type: Schema.Types.ObjectId,
         ref: 'TransportDepartment',
         required: true,
     },
-    customer: { // Khách hàng
-        type: Schema.Types.ObjectId,
-        ref: 'Customer',
-        // required: true
-    },
-    customerPhone: {
+    fromAddress: { // Địa điểm nhận hàng
         type: String,
         // required: true
     },
-    customerAddress: {
+    toAddress: { // Địa điểm giao hàng
         type: String,
         // required: true
     },
-    customerEmail: {
-        type: String
-    },
-    fromAddress: { // Địa điểm xuất phát
-        type: String,
-        // required: true
-    },
-    toAddress: { // Địa điểm đích
-        type: String,
-        // required: true
-    },
-    goods: [{   
+    goods: [{ // Danh sách hàng hóa   
         good: {
             type: Schema.Types.ObjectId,
             ref: 'Good',
             // required: true
         },
-        quantity: { // số lượng hàng hóa
+        quantity: { // Số lượng hàng hóa
             type: Number,
             // required: true
         },
-        volume: { // thể tích khi vận tải 
+        volume: { // Thể tích khi vận tải 
             type: Number,
             // required: true
         },
-        payload: { // khối lượng hàng hóa
+        payload: { // Khối lượng hàng hóa
             type: Number
         }
     }],
-    timeRequests: [{ // Thoi gian khach hang yeu cau
-        timeRequest: {
-            type: String,
+    timeRequests: [{ // Thời gian yêu cầu
+        timeRequest: { // Thời gian
+            type: Date,
         },
-        description: {
+        description: { // Mô tả khác
             type: String,
         }
     }],
-    timeTransport: { // Thoi gian van chuyen
-        type: Date,
-    },
-    transportPlan: { // Lich van chuyen
+    transportPlan: { // Kế hoạch vận chuyển được xếp
         type: Schema.Types.ObjectId,
         ref: 'TransportPlan',
-    },
-    transportVehicle: { // Phuong tien van chuyen
-        type: Schema.Types.ObjectId,
-        ref: 'TransportVehicle',
-    },   
-    bill: { // tuong ung phieu xuat kho
+    }, 
+    bill: { // Phiếu kho
         type: Schema.Types.ObjectId,
         ref: 'Bill',
     },
-    detail1: { // Chi tiết nhiệm vụ ở điểm đi
+    detail1: { // Chi tiết nhiệm vụ ở điểm nhận hàng
         type: String,
     },
-    detail2: { // Chi tiết nhiệm vụ tại điểm đến
+    detail2: { // Chi tiết nhiệm vụ tại điểm giao hàng
         type: String,
     },
     payload: { // Khối lượng hàng hóa của cả yêu cầu vận chuyển
@@ -103,16 +80,16 @@ const TransportRequirementSchema = new Schema({
         type: Number,
         required: true,
     },
-    geocode: { // Tọa độ địa chỉ (phục vụ show bản đồ) kinh độ vĩ độ
-        fromAddress: {
-            lat: {
+    geocode: { // Tọa độ địa chỉ (show bản đồ) kinh độ vĩ độ
+        fromAddress: { // Điểm nhận hàng
+            lat: { // Vĩ độ
                 type: Number,
             },
-            lng: {
+            lng: { // Kinh độ
                 type: Number,
             },
         },
-        toAddress: {
+        toAddress: { // Điểm giao hàng
             lat: {
                 type: Number,
             },
@@ -140,7 +117,7 @@ const TransportRequirementSchema = new Schema({
             time: { // Thời gian khi gửi báo cáo
                 type: Date
             },
-            carrier: { // Id tài xế
+            carrier: { // Người gửi xác nhận
                 type: Schema.Types.ObjectId,
                 ref: 'User'
             }
@@ -168,11 +145,14 @@ const TransportRequirementSchema = new Schema({
                 ref: 'User'
             }            
         }
-    },
-    approver: {
+    }, 
+    approver: { // Người phê duyệt yêu cầu vận chuyển
         type: Schema.Types.ObjectId,
         ref: 'User'
-    }
+    },
+    note: { // note phê duyệt
+        type: String,
+    },
 },{
     timestamps: true,
 });

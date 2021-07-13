@@ -87,24 +87,7 @@ function GeneralTabCreateForm(props) {
     }
 
 
-    /**
-     * Hàm xử lý khi mã khách hàng thay đổi
-     * @param {*} e 
-     */
-    const handleChangeCustomerCode = (e) => {
-
-        const { value } = e.target;
-        const newCustomerInfo = {
-            ...customerInfo,
-            code: value
-        }
-        setCustomerInfo(newCustomerInfo);
-        // validate mã khách hàng
-        // let { message } = ValidationHelper.validateName(translate, value, 4, 255);
-        // this.setState({ customerCodeError: message });
-
-        callBackFromParentCreateForm('code', value);
-    }
+ 
 
 
     /**
@@ -454,7 +437,6 @@ function GeneralTabCreateForm(props) {
     const {
         owner,
         customerSource,
-        code,
         name,
         company,
         represent,
@@ -509,15 +491,6 @@ function GeneralTabCreateForm(props) {
                         </div>
                     </div>
                     <div className="row">
-                        {/* Mã khách hàng */}
-                        <div className="col-md-6">
-                            <div className={`form-group ${!customerCodeError ? "" : "has-error"}`}>
-                                <label>{translate('crm.customer.code')}<span className="text-red">*</span></label>
-                                <input type="text" className="form-control" value={code ? code : ''} onChange={handleChangeCustomerCode} placeholder={translate('crm.customer.code')} />
-                                <ErrorLabel content={customerCodeError} />
-                            </div>
-                        </div>
-
                         {/* Tên khách hàng */}
                         <div className="col-md-6">
                             <div className={`form-group ${!customerNameError ? "" : "has-error"}`}>
@@ -684,8 +657,6 @@ function GeneralTabCreateForm(props) {
                                 <ErrorLabel content={customerTaxNumberError} />
                             </div>
                         </div>
-                    </div>
-                    <div className="row">
                         {/* khu vực */}
                         <div className="col-md-6">
                             <div className="form-group">
@@ -708,6 +679,9 @@ function GeneralTabCreateForm(props) {
                                 />
                             </div>
                         </div>
+                    </div>
+                    <div className="row">
+
 
                         {/* website */}
                         <div className="col-md-6">

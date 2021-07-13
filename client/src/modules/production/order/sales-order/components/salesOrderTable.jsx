@@ -55,7 +55,7 @@ class SalesOrderTable extends Component {
         const { page, limit, currentRole } = this.state;
         this.props.getAllSalesOrders({ page, limit, currentRole });
         this.props.getDiscountForOrderValue();
-        this.props.getCustomers();
+        this.props.getCustomers({getAll:true});
         this.props.getAllBusinessDepartments({ page: 1, limit: 1000 });
 
         this.props.getAllStocks({ managementLocation: currentRole });

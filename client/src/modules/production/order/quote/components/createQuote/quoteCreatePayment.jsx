@@ -35,7 +35,7 @@ function QuoteCreatePayment(props) {
 
     const getDiscountsValueQuote = (amount) => {
         let amountAfterApplyTax = amount;
-        let { discountsOfOrderValue } = props;
+        let { discountsOfOrderValue, customerPromotions } = props;
 
         let discountForFormality = {
             0: [],
@@ -57,6 +57,10 @@ function QuoteCreatePayment(props) {
             amount = (amount * (100 - discountForFormality[1][0].discountedPercentage)) / 100;
         }
 
+
+        let customerPromotionsUsed = customerPromotions.filter((promo) => promo.checked);
+        let totalCustomerPromotionsValue = customerPromotionsUsed.length ? Math.min(customerPromotionsUsed[0].promotionalValueMax, parseInt(amountAfterApplyTax * (customerPromotionsUsed[0].value) / 100)) : 0;
+        amount = amount - totalCustomerPromotionsValue;
         amount = Math.round(amount * 100) / 100;
         return amountAfterApplyTax - amount;
     };
@@ -64,7 +68,7 @@ function QuoteCreatePayment(props) {
     const getPaymentAmount = (amount, freeShipCost) => {
         const { setPaymentAmount } = props;
         let { discountsOfOrderValue, coin, paymentAmount, shippingFee } = props;
-
+        const amountAfterApplyTax = getAmountAfterApplyTax();
         let discountForFormality = {
             0: [],
             1: [],
@@ -95,7 +99,9 @@ function QuoteCreatePayment(props) {
         if (coin) {
             amount = amount - coin;
         }
-
+        let customerPromotionsUsed = customerPromotions.filter((promo) => promo.checked);
+        let totalCustomerPromotionsValue = customerPromotionsUsed.length ? Math.min(customerPromotionsUsed[0].promotionalValueMax, parseInt(amountAfterApplyTax * (customerPromotionsUsed[0].value) / 100)) : 0;
+        amount = amount - totalCustomerPromotionsValue
         amount = Math.round(amount * 100) / 100;
 
         //SET STATE paymentAmout để tính tổng tiền lưu vào DB
@@ -193,6 +199,7 @@ function QuoteCreatePayment(props) {
         setCurrentDiscountsOfGood,
         handleCoinChange,
         saveQuote,
+        setCustomerPromotions
     } = props;
     const {
         customerPhone,
@@ -210,6 +217,7 @@ function QuoteCreatePayment(props) {
         coin,
         paymentAmount,
         enableFormSubmit,
+        customerPromotions
     } = props;
 
     let allOfBonusGood = getBonusGoodOfAll();
@@ -224,7 +232,7 @@ function QuoteCreatePayment(props) {
     const amountAfterApplyTax = getAmountAfterApplyTax();
     let discountsOfQuote = getDiscountsValueQuote(amountAfterApplyTax); // Chưa tính miễn phí vận chuyển và sử dụng xu
     getPaymentAmount(amountAfterApplyTax, freeShipCost);
-
+    let customerPromotionsUsed = customerPromotions.filter((promo) => promo.checked);
     return (
         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
             <fieldset className="scheduler-border" style={{ background: "#f5f5f5" }}>
@@ -342,8 +350,8 @@ function QuoteCreatePayment(props) {
                                             {item.amountAfterDiscount && item.amountAfterTax
                                                 ? formatCurrency(item.amountAfterTax - item.amountAfterDiscount)
                                                 : 0}
-                                                ({item.taxs.length ? item.taxs[0].percent : "0"}%)
-                                            </td>
+                                            ({item.taxs.length ? item.taxs[0].percent : "0"}%)
+                                        </td>
                                         <td>{item.amountAfterTax ? formatCurrency(item.amountAfterTax) : 0}</td>
                                         <td>
                                             <div
@@ -361,7 +369,7 @@ function QuoteCreatePayment(props) {
                                                     onClick={() => setCurrentSlasOfGood(item.slasOfGood)}
                                                 >
                                                     Chi tiết &ensp;
-                                                        <i className="fa fa-arrow-circle-right"></i>
+                                                    <i className="fa fa-arrow-circle-right"></i>
                                                 </a>
                                             </div>
                                         </td>
@@ -431,7 +439,7 @@ function QuoteCreatePayment(props) {
                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 shopping-discount">
                     <div className="shopping-discount-title">
                         <i className="fa  fa-shirtsinbulk"></i> Khuyến mãi toàn đơn
-                        </div>
+                    </div>
                     <div className="shopping-apply-discounts">
                         <span>Khuyến mãi của đơn hàng &ensp;</span>
                         <div className="shopping-apply-discounts-tag">
@@ -448,6 +456,8 @@ function QuoteCreatePayment(props) {
                             handleDiscountsChange={(data) => handleDiscountsOfOrderValueChange(data)}
                             setDiscountsChecked={(checked) => setDiscountsOfOrderValueChecked(checked)}
                             paymentAmount={amountAfterApplyTax}
+                            setCustomerPromotions={(data) => setCustomerPromotions(data)}
+                            customerPromotions={customerPromotions}
                         />
                     </div>
                     <div className="shopping-apply-loyalty-coin">
@@ -458,10 +468,10 @@ function QuoteCreatePayment(props) {
                         <div className="shopping-apply-loyalty-coin-tag">
                             <div>
                                 Bạn đang có&ensp;
-                                    <span className="text-red">{customerCoin ? formatCurrency(customerCoin) : 0}</span>
-                                    &ensp;xu tương ứng với&ensp;
-                                    <span className="text-red">{customerCoin ? formatCurrency(customerCoin) : 0}</span> &ensp;tiền
-                                </div>
+                                <span className="text-red">{customerCoin ? formatCurrency(customerCoin) : 0}</span>
+                                &ensp;xu tương ứng với&ensp;
+                                <span className="text-red">{customerCoin ? formatCurrency(customerCoin) : 0}</span> &ensp;tiền
+                            </div>
                         </div>
                         <div className="shopping-apply-loyalty-coin-checkbox">
                             <span>Sử dụng ngay &ensp;</span>
@@ -514,7 +524,7 @@ function QuoteCreatePayment(props) {
                             </div>
                         </div>
 
-                        {discountsOfQuote > 0 ? ( //Tiền khuyến mãi toàn đơn là chưa tính freeship và trừ
+                        {discountsOfQuote > 0 || customerPromotionsUsed.length ? ( //Tiền khuyến mãi toàn đơn là chưa tính freeship và trừ
                             <div className="shopping-payment-element">
                                 <div className="shopping-payment-element-title">Khuyến mãi cho toàn đơn</div>
                                 <div className="shopping-payment-element-value">-{formatCurrency(discountsOfQuote)}</div>
@@ -560,7 +570,7 @@ function QuoteCreatePayment(props) {
                             onClick={saveQuote}
                         >
                             Lưu báo giá
-                            </button>
+                        </button>
                     </div>
                 </div>
             </fieldset>

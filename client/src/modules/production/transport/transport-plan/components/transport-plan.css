@@ -58,6 +58,9 @@
 .iconactive {
     background-color: green;
 }
+.iconred {
+    background-color: red;
+}
 .iconinactive {
     background-color: white;
 }

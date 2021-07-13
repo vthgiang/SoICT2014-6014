@@ -17,7 +17,8 @@ class QuillEditor extends Component {
         super(props)
 
         this.state = {
-            quill: null
+            quill: null,
+            showDropFileHere:false
         }
     }
     
@@ -190,7 +191,9 @@ class QuillEditor extends Component {
         if (JSON.stringify(nextProps.auth) !== JSON.stringify(auth)) {
             return true
         }
-
+        if (nextProps.showDropFileHere !== this.props.showDropFileHere){
+            return true
+        }
         // download ảnh 
         if (nextProps.quillValueDefault !== quillValueDefault) {
             // Insert value ban đầu
@@ -210,7 +213,9 @@ class QuillEditor extends Component {
                 }
             }
         }
-
+        if (JSON.stringify(nextProps.dataDriver) !== JSON.stringify(this.props.dataDriver)){
+            return true
+        }
         if (nextProps.quillValueDefault === quillValueDefault) {
             return false;
         } 
@@ -222,7 +227,7 @@ class QuillEditor extends Component {
         return true;
     }
 
-    componentDidUpdate() {
+    componentDidUpdate(nextProps) {
         const { auth } = this.props
         const { id, maxHeight = 200, enableEdit = true, isText = false, quillValueDefault } = this.props
         const { quill } = this.state
@@ -247,6 +252,19 @@ class QuillEditor extends Component {
                 })
             }
         }
+        if (this.props.dataDriver){
+            if (JSON.stringify(this.props.dataDriver)!==JSON.stringify(nextProps.dataDriver)){
+                let dataText=""
+                for (let i=0;i<this.props.dataDriver.length;i++){
+                    dataText = dataText + `<p>${this.props.dataDriver[i].name} : <a href="${this.props.dataDriver[i].url} " target="_blank">${this.props.dataDriver[i].url}</a></p>`
+                }
+                if (quill.root.innerHTML === '<p><br></p>'){
+                    quill.root.innerHTML =dataText
+                } else {
+                    quill.root.innerHTML =quill.root.innerHTML+dataText
+                }
+            }
+        }
 
         this.setHeightContainer(id, maxHeight)
     }
@@ -255,21 +273,19 @@ class QuillEditor extends Component {
         SlimScroll.removeVerticalScrollStyleCSS(`editor-container${id}`)
         SlimScroll.addVerticalScrollStyleCSS(`editor-container${id}`, maxHeight, true)
     }
-
     render() {
         const { isText = false, inputCssClass = "", id, quillValueDefault, toolbar = true,
             font = true, header = true, typography = true, fontColor = true, 
             alignAndList = true, embeds = true, table = true
         } = this.props
-
         return (
-            <React.Fragment>
+            <React.Fragment >
                 {
                     !isText
-                        ? <React.Fragment>
+                        ? <React.Fragment >
                             {
                                 toolbar &&
-                                    <ToolbarQuillEditor
+                                    <ToolbarQuillEditor 
                                         id={`toolbar${id}`}
                                         font={font}
                                         header={header}
@@ -281,8 +297,13 @@ class QuillEditor extends Component {
                                         inputCssClass={inputCssClass}
                                     />
                             }
-                            <div id={`editor-container${id}`} className={`quill-editor ${inputCssClass}`}/>
-                        </React.Fragment>
+                            <div id={`editor-container${id}`} className={`quill-editor ${inputCssClass}`}  >
+                            {
+                                this.props.showDropFileHere && 
+                                <div style={{ fontSize: "2em", pointerEvents: "none", width: "100%", height: "100%", border: "2px dashed black", backgroundColor: "rgba(255, 255, 255, 0.3)", top: "0", left: 0, position: "absolute", textAlign: "center" }}>DROP FILES HERE</div>
+                            }</div>
+                            
+                            </React.Fragment>
                         : parse(quillValueDefault)
                 }
             </React.Fragment>

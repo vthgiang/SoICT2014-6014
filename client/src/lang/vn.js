@@ -20,6 +20,7 @@ export default {
             add: "Thêm",
             edit: "Sửa",
             delete: "Xóa",
+            delete_option: "Xóa lựa chọn",
             save: "Lưu",
             close: "Đóng",
             accept: "Xác nhận",
@@ -98,6 +99,7 @@ export default {
             manage_link: "Quản lý trang",
             manage_component: "Quản lý phân quyền trên các trang",
             manage_api: "Quản lý API",
+            registration_api: "Quản lý đăng ký API",
             privilege_api: "Quản lý phân quyền API",
 
             manage_department: "Quản lý cơ cấu tổ chức",
@@ -110,12 +112,13 @@ export default {
             customer_Management: "Quản lý khách hàng",
             crm_list: {
                 dashboard: "Bảng tin quản lý khách hàng",
+                dashboardUnit: "Bảng tin đơn vị quản lý khách hàng",
                 customer: "Quản lý thông tin khách hàng",
                 lead: "Khách hàng thân thiết",
-                care: "Chăm sóc khách hàng",
+                care: "Hoạt động chăm sóc khách hàng",
                 group: "Nhóm khách hàng",
                 statistic: "Thống kê",
-                generalConfiguration: "Cấu hình chung",
+                generalConfiguration: "Cấu hình hoạt động chăm sóc khách hàng",
                 evaluation: "Đánh giá hoạt động CSKH",
                 crmUnitConfiguration:"Cấu hình đơn vị chăm sóc khách hàng"
             },
@@ -444,6 +447,7 @@ export default {
                 label: "Thông tin",
                 title: "Thông tin tài khoản người dùng",
                 name: "Tên người dùng",
+                input_name: "Nhập tên người dùng",
                 email: "Địa chỉ email",
                 password: "Mật khẩu mới",
                 confirm: "Xác thực mật khẩu",
@@ -2141,6 +2145,8 @@ export default {
                         "Chỉnh sửa thông tin nhân viên thất bại",
                     import_employee_success:
                         "Import thông tin nhân viên thành công",
+                    importing_employee: 
+                        "Đang xử lí dữ liệu",
                     import_employee_faile:
                         "Import thông tin nhân viên thất bại",
                     employee_number_required:
@@ -5837,6 +5843,12 @@ export default {
                 add_fail: "Thêm phương tiện thất bại",
                 edit_success: "Đã chỉnh sửa trạng thái phương tiện",
                 edit_fail: "Chỉnh sửa trạng thái phương tiện thất bại",
+            },            
+            transportDepartment: {
+                add_success: "Đã thêm đơn vị vận chuyển",
+                add_fail: "Thêm đơn vị vận chuyển thất bại",
+                delete_success: "Đã xóa đơn vị vận chuyển",
+                delete_fail: "Xóa đơn vị vận chuyển thất bại",
             }
         },
 

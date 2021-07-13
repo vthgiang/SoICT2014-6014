@@ -5,15 +5,15 @@ import { withTranslate } from 'react-redux-multilingual';
 import { formatToTimeZoneDate, formatDate } from "../../../../../../helpers/formatDate"
 import ValidationHelper from '../../../../../../helpers/validationHelper';
 
-import { LocationMap } from '../map/locationMap'
+// import { LocationMap } from '../map/locationMap'
+import { MapContainer } from '../../../transportHelper/mapbox/map'
 import { TransportVehicleAndCarrierSelect } from "../transport-plan-detail/transportVehicleAndCarrierSelect"
 
 import { transportPlanActions } from '../../redux/actions';
 import { transportRequirementsActions } from '../../../transport-requirements/redux/actions'
-import { getTypeRequirement } from '../../../transportHelper/getTextFromValue'
+import { getTypeRequirement, getTransportRequirementStatus } from '../../../transportHelper/getTextFromValue'
 
 function TransportPlanDetailInfo(props) {
-    let allTransportRequirements;
     let {currentTransportPlan} = props;
     const [formSchedule, setFormSchedule] = useState({
         code: "",
@@ -42,7 +42,7 @@ function TransportPlanDetailInfo(props) {
 
     useEffect(() => {
         if (currentTransportPlan){
-            console.log(currentTransportPlan)
+            // console.log(currentTransportPlan)
             setFormSchedule({
                 startDate: currentTransportPlan.startTime,
                 endDate: currentTransportPlan.endTime,
@@ -98,7 +98,8 @@ function TransportPlanDetailInfo(props) {
             transportRequirements: listSelectedRequirements,
         })
 
-        let locationArr= []
+        let locationArr= [];
+        // Tạo giá trị tọa độ các địa điểm trong kế hoạch để hiển thị bản đồ
         if (listRequirements && listRequirements.length!==0
             &&listSelectedRequirements && listSelectedRequirements.length !==0){
             listRequirements.map((item, index) => {
@@ -144,7 +145,7 @@ function TransportPlanDetailInfo(props) {
                 hasSaveButton={false}
                 hasNote={false}
             >
-            <form id="modal-detail-info-transport-plan-auto-generate" >
+            <form id="modal-detail-info-transport-plan" >
                 <div className="box-body">
                     <div className="box box-solid">
                         <div className="box-body qlcv">
@@ -155,7 +156,7 @@ function TransportPlanDetailInfo(props) {
                                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                     <div className="form-group">
                                         <label>
-                                            Mã kế hoạch <span className="attention"> </span>
+                                            Mã kế hoạch 
                                         </label>
                                         <input type="text" className="form-control" disabled={true} 
                                             value={formSchedule.code}
@@ -165,7 +166,7 @@ function TransportPlanDetailInfo(props) {
                                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                     <div className="form-group">
                                         <label>
-                                            Tên kế hoạch <span className="attention"> </span>
+                                            Tên kế hoạch 
                                         </label>
                                         <input type="text" className="form-control" disabled={true} 
                                             value={formSchedule.name}
@@ -176,20 +177,10 @@ function TransportPlanDetailInfo(props) {
                                     <div className={`form-group`}>
                                         <label>
                                             Người phụ trách
-                                            {/* <span className="attention"> * </span> */}
                                         </label>
                                         <input type="text" className="form-control" disabled={true} 
                                             value={formSchedule.supervisor?.name}
                                         />
-                                        {/* <SelectBox
-                                            id={`select-type-requirement`}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            value={"5"}
-                                            // items={requirements}
-                                            // onChange={handleTypeRequirementChange}
-                                            multiple={false}
-                                        /> */}
                                     </div>
                                 </div>
 
@@ -202,7 +193,6 @@ function TransportPlanDetailInfo(props) {
                                         <DatePicker
                                             id={`start_date_edit`}
                                             value={formatDate(formSchedule.startDate)}
-                                            // onChange={handleStartDateChange}
                                             disabled={true}
                                         />
                                     </div>
@@ -227,13 +217,18 @@ function TransportPlanDetailInfo(props) {
                             {
                                 (listRequirements && listRequirements.length!==0)
                                 &&
-                                <LocationMap 
-                                    locations = {listSelectedRequirementsLocation}
-                                    loadingElement={<div style={{height: `100%`}}/>}
-                                    containerElement={<div style={{height: "45vh", marginTop: '20px'}}/>}
-                                    mapElement={<div style={{height: `100%`}}/>}
-                                    defaultZoom={10}
-                                    defaultCenter={listSelectedRequirementsLocation[0]?.locations}
+                                // <LocationMap 
+                                //     locations = {listSelectedRequirementsLocation}
+                                //     loadingElement={<div style={{height: `100%`}}/>}
+                                //     containerElement={<div style={{height: "45vh", marginTop: '20px'}}/>}
+                                //     mapElement={<div style={{height: `100%`}}/>}
+                                //     defaultZoom={10}
+                                //     defaultCenter={listSelectedRequirementsLocation[0]?.locations}
+                                // />
+                                <MapContainer
+                                    nonDirectLocations = {listSelectedRequirementsLocation}
+                                    // mapHeight={"45vh"}
+                                    flyToCenter={{center: listSelectedRequirementsLocation[0]?.locations}}
                                 />
                             }
                         </div>
@@ -294,7 +289,7 @@ function TransportPlanDetailInfo(props) {
                                                         ))
                                                     }
                                                 </td>
-                                                <td>{x.status}</td>
+                                                <td>{getTransportRequirementStatus(x.status)}</td>
                                             </tr>
                                         ))
                                     }

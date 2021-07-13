@@ -79,6 +79,7 @@ function CrmUnitKPIEditForm(props) {
                 formID="form-crm-customer-care-KPI-edit"
                 func={save}
                 size={50}
+                title={"Chỉnh sửa chỉ tiêu chăm sóc khách hàng đơn vị "}
             // disableSubmit={!this.isFormValidated()}
             >
                 <form id="form-crm-crm-customer-care-KPI-edit">

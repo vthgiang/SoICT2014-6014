@@ -198,7 +198,7 @@ function CareHistoriesInfoForm(props) {
                                         <td>{o.startDate ? formatFunction.formatDate(o.startDate) : ''}</td>
                                         <td>{o.endDate ? formatFunction.formatDate(o.endDate) : ''}</td>
                                         <td style={{ textAlign: 'center' }}>
-                                            <a className="text-green" onClick={() => handleInfo(o._id)}><i className="material-icons">visibility</i></a>
+                                            <a title="Xem thông tin hoạt động" className="text-green" onClick={() => handleInfo(o._id)}><i className="material-icons">visibility</i></a>
                                         </td>
                                     </tr>
                                 )) : null

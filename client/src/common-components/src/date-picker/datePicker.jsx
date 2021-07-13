@@ -102,15 +102,22 @@ class DatePicker extends Component {
         return false;  // Tự chủ động update (do đã lưu value vào state)
     }
     onChangeDatePicker = (e) => {
-        const { value } = e.target;
+        let { value } = e.target;
+        let valueForm 
+        let index = value.indexOf("/")
+        if (index !==-1){
+            valueForm = value.slice(0,index) +'-'+value.slice(index+1)
+        } else {
+            valueForm = value
+        }
         this.setState({
-            value: value
+            value: valueForm
         })
-        this.props.onChange(value);
+        this.props.onChange(valueForm);
     }
     render() {
         const { id, disabled = false, defaultValue, style = {} } = this.props;
-        const { value } = this.state;       
+        const { value } = this.state;  
         return (
             <React.Fragment>
                 <div className={'input-group date has-feedback'} id={id}>

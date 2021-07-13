@@ -36,7 +36,7 @@ class SalesOrderCreatePayment extends Component {
 
     getDiscountsValueQuote = (amount) => {
         let amountAfterApplyTax = amount;
-        let { discountsOfOrderValue } = this.props;
+        let { discountsOfOrderValue, customerPromotions } = this.props;
 
         let discountForFormality = {
             0: [],
@@ -58,14 +58,18 @@ class SalesOrderCreatePayment extends Component {
             amount = (amount * (100 - discountForFormality[1][0].discountedPercentage)) / 100;
         }
 
+
+        let customerPromotionsUsed = customerPromotions.filter((promo) => promo.checked);
+        let totalCustomerPromotionsValue = customerPromotionsUsed.length ? Math.min(customerPromotionsUsed[0].promotionalValueMax, parseInt(amountAfterApplyTax * (customerPromotionsUsed[0].value) / 100)) : 0;
+        amount = amount - totalCustomerPromotionsValue;
         amount = Math.round(amount * 100) / 100;
         return amountAfterApplyTax - amount;
     };
 
     getPaymentAmount = (amount, freeShipCost) => {
-        const { setPaymentAmount } = this.props;
+        const { setPaymentAmount, customerPromotions } = this.props;
         let { discountsOfOrderValue, coin, paymentAmount, shippingFee } = this.props;
-
+        const amountAfterApplyTax = this.getAmountAfterApplyTax();
         let discountForFormality = {
             0: [],
             1: [],
@@ -97,8 +101,13 @@ class SalesOrderCreatePayment extends Component {
             amount = amount - coin;
         }
 
-        amount = Math.round(amount * 100) / 100;
 
+        // Tính tiền khi sử dụng khuyến mãi khách hàng 
+
+        let customerPromotionsUsed = customerPromotions.filter((promo) => promo.checked);
+        let totalCustomerPromotionsValue = customerPromotionsUsed.length ? Math.min(customerPromotionsUsed[0].promotionalValueMax, parseInt(amountAfterApplyTax * (customerPromotionsUsed[0].value) / 100)) : 0;
+        amount = amount- totalCustomerPromotionsValue
+        amount = Math.round(amount * 100) / 100;
         //SET STATE paymentAmout để tính tổng tiền lưu vào DB
         if (amount !== paymentAmount) {
             setPaymentAmount(amount);
@@ -196,8 +205,11 @@ class SalesOrderCreatePayment extends Component {
             setCurrentManufacturingWorksOfGoods,
             handleCoinChange,
             saveSalesOrder,
+            setCustomerPromotions,
         } = this.props;
         const {
+            customer,
+            customerPromotions,
             customerPhone,
             customerAddress,
             customerName,
@@ -225,8 +237,9 @@ class SalesOrderCreatePayment extends Component {
 
         const amountAfterApplyTax = this.getAmountAfterApplyTax();
         let discountsOfQuote = this.getDiscountsValueQuote(amountAfterApplyTax); // Chưa tính miễn phí vận chuyển và sử dụng xu
+        // Tính tổng số tiền được giảm do mã giảm giá của khách hàng
+        let customerPromotionsUsed = customerPromotions.filter((promo) => promo.checked);
         this.getPaymentAmount(amountAfterApplyTax, freeShipCost);
-
         let priorityConvert = ["", "Thấp", "Trung Bình", "Cao", "Đặc biệt"];
         return (
             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -461,8 +474,8 @@ class SalesOrderCreatePayment extends Component {
                             <span>Khuyến mãi của đơn hàng &ensp;</span>
                             <div className="shopping-apply-discounts-tag">
                                 <div>
-                                    {discountsOfOrderValue.length
-                                        ? `Đã chọn ${discountsOfOrderValue.length} mã giảm giá`
+                                    {discountsOfOrderValue.length + customerPromotionsUsed.length
+                                        ? `Đã chọn ${discountsOfOrderValue.length + customerPromotionsUsed.length} mã giảm giá`
                                         : "Hãy kiểm tra và chọn mã giảm giá"}
                                 </div>
                             </div>
@@ -472,6 +485,8 @@ class SalesOrderCreatePayment extends Component {
                                 discountsChecked={discountsOfOrderValueChecked}
                                 handleDiscountsChange={(data) => handleDiscountsOfOrderValueChange(data)}
                                 setDiscountsChecked={(checked) => setDiscountsOfOrderValueChecked(checked)}
+                                setCustomerPromotions={(data) => setCustomerPromotions(data)}
+                                customerPromotions={customerPromotions}
                                 paymentAmount={amountAfterApplyTax}
                             />
                         </div>
@@ -541,7 +556,7 @@ class SalesOrderCreatePayment extends Component {
                                 </div>
                             </div>
 
-                            {discountsOfQuote > 0 ? ( //Tiền khuyến mãi toàn đơn là chưa tính freeship và trừ
+                            {discountsOfQuote > 0 || customerPromotionsUsed.length > 0 ? ( //Tiền khuyến mãi toàn đơn là chưa tính freeship và trừ
                                 <div className="shopping-payment-element">
                                     <div className="shopping-payment-element-title">Khuyến mãi cho toàn đơn</div>
                                     <div className="shopping-payment-element-value">-{formatCurrency(discountsOfQuote)}</div>

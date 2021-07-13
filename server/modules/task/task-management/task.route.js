@@ -9,6 +9,7 @@ router.get('/tasks/:taskId/sub-tasks', auth, TaskManagementController.getSubTask
 router.get('/task-evaluations', auth, TaskManagementController.getTaskEvaluations);
 
 router.post('/tasks', auth, uploadFile([{ name: 'files', path: '/files/task-description' }], 'array'), TaskManagementController.createTask);
+router.post('/import', auth, TaskManagementController.importTasks);
 
 router.post('/tasks/project-tasks', auth, TaskManagementController.createProjectTask);
 

@@ -11,10 +11,10 @@ exports.links = [
             { path: '/auth/logout-all-account', method: 'GET' },
             { path: '/auth/forget-password', method: 'POST' },
             { path: '/auth/reset-password', method: 'POST' },
-            { path: '/auth/get-profile/:id', method: 'GET' },
-            { path: '/auth/profile/:id/change-information', method: 'PATCH' },
-            { path: '/auth/profile/:id/change-password', method: 'PATCH' },
-            { path: '/auth/get-links-that-role-can-access/:id', method: 'GET' },
+            { path: '/auth/get-profile/:userId', method: 'GET' },
+            { path: '/auth/profile/:userId/change-information', method: 'PATCH' },
+            { path: '/auth/profile/:userId/change-password', method: 'PATCH' },
+            { path: '/auth/get-links-that-role-can-access/:roleId', method: 'GET' },
             { path: '/auth/download-file', method: 'GET' },
 
             // Service của riêng Systemadmin
@@ -639,6 +639,12 @@ exports.links = [
         url: '/links-management',
         apis: ['@all']
     }, {
+        url: '/apis-management',
+        apis: ['@all']
+    }, {
+        url: '/apis-registration',
+        apis: ['@all']
+    }, {
         url: '/components-management',
         apis: ['@all']
     }, {
@@ -730,7 +736,7 @@ exports.links = [
     }, {
         url: '/kpi-units/create',
         apis: ['@all']
-    },{
+    }, {
         url: '/kpi-units/dashboard',
         apis: ['@all']
     }, {
@@ -887,17 +893,23 @@ exports.links = [
     {
         url: '/crm/dashboard',
         apis: ['@all']
-    }, {
+    }
+    ,
+    {
+        url: '/crm/dashboardUnit',
+        apis: ['@all']
+    }
+    , {
         url: '/crm/customer',
         apis: ['@all']
     }, {
         url: '/crm/loyal-customer',
         apis: ['@all']
-    },{
+    }, {
         url: '/crm/evaluation',
         apis: ['@all']
     },
-     {
+    {
         url: '/crm/group',
         apis: ['@all']
     }, {
@@ -958,41 +970,41 @@ exports.links = [
     }, {
         url: '/answer-auth-questions',
         apis: ['@all']
-    }, 
-    
+    },
+
     // Quản lý dự án
     {
         url: '/project/projects-list',
         apis: ['@all']
-    }, 
+    },
     {
         url: '/project/project-details',
         apis: ['@all']
-    }, 
+    },
     {
         url: '/project/tasks-list',
         apis: ['@all']
-    }, 
+    },
     {
         url: '/project/phases-list',
         apis: ['@all']
-    }, 
+    },
     {
         url: '/project/phase-details',
         apis: ['@all']
-    }, 
+    },
     {
         url: '/project/issues-list',
         apis: ['@all']
-    },  
+    },
     {
         url: '/project/project-report',
         apis: ['@all']
-    },   
+    },
     {
         url: '/project/project-evaluation',
         apis: ['@all']
-    }, 
+    },
 
     //transport
     {
@@ -1031,7 +1043,7 @@ exports.links = [
     {
         url: '/projects-management',
         apis: ['@all']
-    }, 
+    },
     {
         url: '/user-guide',
         apis: ['@all']

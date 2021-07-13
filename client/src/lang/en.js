@@ -20,6 +20,7 @@ export default {
             add: "Add",
             edit: "Edit",
             delete: "Delete",
+            delete_option: "Delete options",
             save: "Save",
             close: "Close",
             accept: "Accept",
@@ -96,6 +97,7 @@ export default {
             manage_link: "Manage Pages",
             manage_component: "Manage permissions on page",
             manage_api: "Manage API",
+            registration_api: "Manage API registration",
             privilege_api: "Manage permissions API",
 
             manage_department: "Manage Departments",
@@ -106,13 +108,16 @@ export default {
             documents: "Documents",
             crm: "CRM",
             crm_list: {
-                customer: "Customers",
-                lead: "Leads",
-                care: "Cares",
-                group: "Groups",
-                statistic: "Statistics",
-                generalConfiguration: "generalConfiguration",
-                evaluation: "Evaluation"
+                dashboard: "Customer management message board",
+                dashboardUnit: "Customer management unit message board",
+                customer: "Customer information management",
+                lead: "Loyal customer",
+                care: "Customer care activities",
+                group: "Customer group",
+                statistics: "Statistics",
+                generalConfiguration: "Configuring customer care operations",
+                evaluation: "Evaluating customer service activities",
+                crmUnitConfiguration: "Customer care unit configuration"
             },
 
             task_template: "Task Template",
@@ -416,6 +421,7 @@ export default {
                 label: "Profile",
                 title: "User information",
                 name: "Username",
+                input_name: "Type username",
                 email: "Email",
                 password: "New password",
                 confirm: "Confirm password",
@@ -2022,6 +2028,7 @@ export default {
                     edit_employee_success: "Edit employee success",
                     edit_employee_faile: "Edit employee faile",
                     import_employee_success: "Import employee success",
+                    importing_employee: "Processing data",
                     import_employee_faile: "Import employee faile",
                     employee_number_required: "Staff code required",
                     email_in_company_required: "Email in company required",
@@ -4368,6 +4375,12 @@ export default {
                 add_fail: "Add vehicle fail",
                 edit_success: "Edited vehicle status",
                 edit_fail: "Edit vehicle status fail",
+            },
+            transportDepartment: {
+                add_success: "Added transport department success",
+                add_fail: "Add transport department fail",
+                delete_success: "Deleted transport department",
+                delete_fail: "Delete transport department fail",
             }
         },
 

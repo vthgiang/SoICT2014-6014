@@ -27,7 +27,7 @@ const TransportDepartment = require('../transportDepartment/transportDepartment.
 exports.createTransportVehicle = async (portal, data) => {
     let assetId = data.id;
     let currentRole = data.currentRole;
-    let department = TransportDepartment.getDepartmentByRole(portal, currentRole);
+    let department = await TransportDepartment.getDepartmentByRole(portal, currentRole);
     let newTransportVehicle;
     let oldTransportVehicle = await TransportVehicle(connect(DB_CONNECTION, portal)).findOne({asset: assetId, department: department._id});
     

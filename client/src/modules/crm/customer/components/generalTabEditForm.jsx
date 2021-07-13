@@ -376,15 +376,6 @@ function GeneralTabEditForm(props) {
                     <legend className="scheduler-border">{"Thông tin khách hàng"} </legend>
 
                     <div className="row">
-                        {/* Mã khách hàng */}
-                        <div className="col-md-6">
-                            <div className={`form-group ${!customerCodeError ? "" : "has-error"}`}>
-                                <label>{translate('crm.customer.code')}<span className="text-red">*</span></label>
-                                <input type="Name" className="form-control" value={code ? code : ''} onChange={handleChangeCustomerCode} />
-                                <ErrorLabel content={customerCodeError} />
-                            </div>
-                        </div>
-
                         {/* Tên khách hàng */}
                         <div className="col-md-6">
                             <div className={`form-group ${!customerNameError ? "" : "has-error"}`}>
@@ -545,8 +536,6 @@ function GeneralTabEditForm(props) {
                                 <ErrorLabel content={customerTaxNumberError} />
                             </div>
                         </div>
-                    </div>
-                    <div className="row">
                         {/* location */}
                         <div className="col-md-6">
                             <div className="form-group">
@@ -569,6 +558,9 @@ function GeneralTabEditForm(props) {
                                 />
                             </div>
                         </div>
+                    </div>
+                    <div className="row">
+
 
                         {/* Website  */}
                         <div className="col-md-6">
@@ -631,7 +623,7 @@ function GeneralTabEditForm(props) {
                                         className="form-control select2"
                                         style={{ width: "100%" }}
                                         items={listStatus}
-                                        value={edittingCustomerStatus.newStatus?edittingCustomerStatus.newStatus : status[0]._id}
+                                        value={edittingCustomerStatus.newStatus ? edittingCustomerStatus.newStatus : status[0]._id}
                                         onChange={handleChangeCustomerStatus}
                                         multiple={false}
                                     />
@@ -644,7 +636,7 @@ function GeneralTabEditForm(props) {
                         <div className="col-md-6">
                             <div className="form-group">
                                 <label>{"Nội dung"}</label>
-                                <textarea onChange={handleChangeCustomerStatusDescription} type="text" className="form-control"  />
+                                <textarea onChange={handleChangeCustomerStatusDescription} type="text" className="form-control" />
                             </div>
                         </div>
                     </div>

@@ -132,7 +132,7 @@ function TaskInformationForm(props) {
                                             placeholder={translate('task.task_management.edit_enter_value')}
                                             onChange={props.handleChangeNumberInfo}
                                             disabled={disabled || (info.filledByAccountableEmployeesOnly && role !== "accountable")}
-                                            value={(value.info[`${info.code}`] && checkNullUndefined(value.info[`${info.code}`].value)) ? value.info[`${info.code}`].value : ''}
+                                            value={(value.info[`${info.code}`] && checkNullUndefined(value.info[`${info.code}`].value)) ? value.info[`${info.code}`].value : info?.value}
                                         />
                                         <ErrorLabel content={value.errorInfo ? value.errorInfo[`${info.code}`] : ''} />
                                     </div>

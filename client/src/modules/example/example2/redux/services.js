@@ -2,7 +2,7 @@ import { sendRequest } from '../../../../helpers/requestHelper';
 
 export const exampleServices = {
     getOnlyExampleName,
-    deleteExample,
+    deleteExamples,
     createExample,
     editExample,
     getExampleDetail
@@ -25,11 +25,14 @@ function getOnlyExampleName(queryData) {
     );
 }
 
-function deleteExample(id) {
+function deleteExamples(data) {
     return sendRequest(
         {
-            url: `${process.env.REACT_APP_SERVER}/examples/${id}`,
-            method: "DELETE"
+            url: `${process.env.REACT_APP_SERVER}/examples`,
+            method: "DELETE",
+            data: {
+                exampleIds: data?.exampleIds
+            }
         },
         true,
         true,

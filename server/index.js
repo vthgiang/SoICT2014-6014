@@ -1,4 +1,5 @@
 // NODE_MODULES
+let path = require('path');
 const express = require("express");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
@@ -9,7 +10,8 @@ const swaggerUi = require("swagger-ui-express");
 const { swaggerJsonData } = require("./api-docs/swagger.js");
 const { auth } = require(`./middleware`);
 const { SystemApiControllers } = require('./modules/system-admin/system-api/system-api-management/systemApi.controller');
-
+const htmlPath = path.join(__dirname, 'upload');
+app.use(express.static(htmlPath));
 require("dotenv").config();
 // require("./connectDatabase");
 require("./global")(server);
@@ -20,6 +22,7 @@ app.use(bodyParser.json({limit: '50mb'}));
 app.use(cookieParser());
 
 app.use("/upload/avatars", express.static("upload/avatars"));
+app.use("/upload/template-imports", express.static("upload/template-imports"));
 
 app.use("/upload/user-guide/task", express.static("upload/user-guide/task"));
 app.use("/upload/user-guide/kpi", express.static("upload/user-guide/kpi"));
@@ -119,6 +122,7 @@ router.use(
     require("./modules/super-admin/component/component.route")
 );
 router.use("/link", require("./modules/super-admin/link/link.route"));
+router.use("/api", require("./modules/super-admin/api/api.route"));
 router.use(
     "/organizational-units",
     require("./modules/super-admin/organizational-unit/organizationalUnit.route")
@@ -305,4 +309,8 @@ app.post('/system-admin/system-api/system-apis/update-auto', auth, (req, res) =>
  * Server initial
  */
 const port = process.env.PORT || 8000;
-server.listen(port, () => console.log(`Server up and running on: ${port} !`));
+server.listen(port, () => {
+    console.log(`Server up and running on: ${port} !`)
+    var port1 = server.address().port1;
+    console.log(`Server up and running on: ${port1} !`)
+});

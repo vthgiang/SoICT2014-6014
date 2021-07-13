@@ -10,26 +10,32 @@ import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
 import { getStorage } from '../../../../config';
 import PromotionAddForm from './promotionAddForm';
 import { formatFunction } from '../../common';
+import CustomerPromotionInfoForm from './customerPromotionInfoForm';
 
 
 
 function LoyalCustomerHomePage(props) {
     const { translate, crm, user } = props;
     const [customerId, setCustomerId] = useState();
-    const [customerAddPromotionId, setCusomerAddPromotionId] = useState();
+    const [customerGetPromotion, setCustomerGetPromotion] = useState();
     const [customerCode, setCustomerCode] = useState();
+    const [limit, setLimit] = useState(10);
+    const [page, setPage] = useState(1);
     const handleCreateCareAcrion = async (id) => {
         await setCustomerId(id);
         window.$('#modal-crm-care-common-create').modal('show')
     }
-    const handleAddPromotion = async (id) => {
-        await setCusomerAddPromotionId(id);
-        window.$('#modal-crm-customer-promotion-add').modal('show')
+    const handleGetPromotion = async (customer) => {
+        await setCustomerGetPromotion(customer);
+        window.$('#modal-customer-promotion-info').modal('show')
     }
     const { loyalCustomers, } = crm;
-const [searchState, setSearchState] = useState({page:0,limit:10})
+    const [searchState, setSearchState] = useState({ page: 0, limit: 10 })
+    let pageTotal
+    if (loyalCustomers)
+        pageTotal = (loyalCustomers.totalDocs / limit )
     useEffect(() => {
-        props.getLoyalCustomers(searchState);
+        props.getLoyalCustomers({ ...searchState, page, limit });
         const currentRole = getStorage('currentRole');
         if (user && user.organizationalUnitsOfUser) {
             let getCurrentUnit = user.organizationalUnitsOfUser.find(item =>
@@ -49,7 +55,7 @@ const [searchState, setSearchState] = useState({page:0,limit:10})
         setCustomerCode(value);
     }
     const search = () => {
-        props.getLoyalCustomers({ customerCode });
+        props.getLoyalCustomers({ customerCode, limit,page });
     }
     let listCustomerRankPoints;
     if (crm && crm.customerRankPoints) listCustomerRankPoints = crm.customerRankPoints.list;
@@ -61,7 +67,6 @@ const [searchState, setSearchState] = useState({page:0,limit:10})
             if (point >= listCustomerRankPoints[i].point) {
                 index = i;
                 break;
-
             }
 
         }
@@ -76,13 +81,13 @@ const [searchState, setSearchState] = useState({page:0,limit:10})
             data = data.map((o, index) => ({
                 STT: index + 1,
                 customerCode: o.customer ? o.customer.code : '',
-                customerName: o.customer? o.customer.name:'',
+                customerName: o.customer ? o.customer.name : '',
                 customerRank: formatRankPoint(o.rankPoint),
                 customerPoint: o.rankPoint,
                 totalOrder: o.totalOrder ? o.totalOrder : '',
                 totalOrderValue: o.totalOrderValue ? `${o.totalOrderValue} VND` : '0 VND',
                 totalPromotion: o.totalPromotion ? o.totalPromotion : '',
-                
+
 
             }))
         }
@@ -104,7 +109,7 @@ const [searchState, setSearchState] = useState({page:0,limit:10})
                                 { key: "totalOrder", value: "Tổng số đơn hàng" },
                                 { key: "totalOrderValue", value: "Tổng giá trị đơn hàng " },
                                 { key: "totalPromotion", value: "Số khuyến mãi hiện có", width: 25 },
-                               
+
 
                             ],
                             data: data,
@@ -117,18 +122,31 @@ const [searchState, setSearchState] = useState({page:0,limit:10})
 
     }
 
-   
+
     let exportData = [];
     if (loyalCustomers && loyalCustomers.list && loyalCustomers.list.length > 0) {
         exportData = convertDataToExportData(loyalCustomers.list);
 
+    }
+    //  phân trang 
+    const setPageTable = (cr_page) => {
+        setPage(cr_page);
+        props.getLoyalCustomers({ ...searchState, limit, page: cr_page })
+    }
+    const setLimitTable = (limitTable) => {
+        setLimit(limitTable);
+        props.getLoyalCustomers({ ...searchState, limit: limitTable, page })
+    }
+
+    const getLoyalCustomersData = ()=>{
+        props.getLoyalCustomers({ ...searchState, limit, page });
     }
 
     return (
         <div className="box">
             <div className="box-body qlcv">
                 {customerId && <CreateCareCommonForm customerId={customerId} type={1}></CreateCareCommonForm>}
-                {customerAddPromotionId && <PromotionAddForm customerId={customerAddPromotionId} />}
+                {customerGetPromotion && <CustomerPromotionInfoForm customerId={customerGetPromotion._id} getLoyalCustomersData = {()=>getLoyalCustomersData()} />}
                 <div className="form-inline">
                     {/* export excel danh sách khách hàng */}
                     <ExportExcel id="export-customer" buttonName={translate('human_resource.name_button_export')}
@@ -163,7 +181,6 @@ const [searchState, setSearchState] = useState({page:0,limit:10})
                             <th>{"Tổng số đơn hàng"}</th>
                             <th>{"Tổng giá trị đơn hàng"}</th>
                             <th>{"Số khuyến mãi hiện có"}</th>
-
                             <th style={{ width: "120px" }}>
                                 {translate('table.action')}
                                 <DataTableSetting
@@ -174,9 +191,9 @@ const [searchState, setSearchState] = useState({page:0,limit:10})
                                         'Tổng số đơn hàng',
                                         'Tổng giá trị đơn hàng'
                                     ]}
-                                    //limit={this.state.limit}
-                                    //  setLimit={this.setLimit}
-                                    tableId="table-manage-crm-group"
+                                    limit={limit}
+                                    setLimit={setLimitTable}
+                                    tableId="table-manage-crm-loyal-customer"
                                 />
                             </th>
                         </tr>
@@ -196,12 +213,11 @@ const [searchState, setSearchState] = useState({page:0,limit:10})
                                     <td>{`${o.totalOrderValue} VND`}</td>
                                     <td>{o.totalPromotion ? o.totalPromotion : 0}</td>
                                     <td style={{ textAlign: 'center' }}>
-
-                                        <a className="text-green"
+                                        <a className="text-green" title="Tạo hoạt động chăm sóc khách hàng"
                                             onClick={() => handleCreateCareAcrion(o.customer._id)}
                                         ><i className="material-icons">add_comment</i></a>
-                                        <a className="text-orange"
-                                            onClick={() => handleAddPromotion(o.customer._id)}
+                                        <a className="text-orange" title="Khuyến mãi của khách hàng"
+                                            onClick={() => handleGetPromotion(o.customer)}
                                         ><i className="material-icons">loyalty</i></a>
                                     </td>
                                 </tr>
@@ -211,16 +227,8 @@ const [searchState, setSearchState] = useState({page:0,limit:10})
 
                     </tbody>
                 </table>
-                {/* {
-                    cares && cares.isLoading ?
-                        <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                        cares.list && cares.list.length === 0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                <PaginateBar pageTotal={pageTotal} currentPage={page} func={setPageTable} />
 
-                }
-           
-                {
-                    <PaginateBar pageTotal={pageTotal} currentPage={cr_page} func={this.setPage} />
-                } */}
             </div>
         </div>
     );

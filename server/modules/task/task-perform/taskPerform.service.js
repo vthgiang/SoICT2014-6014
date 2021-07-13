@@ -1475,8 +1475,7 @@ exports.createTaskAction = async (portal, params, body, files) => {
  * Sửa hoạt động của cộng việc
  */
 exports.editTaskAction = async (portal, params, body, files) => {
-    console.log('params', params)
-    console.log('body', body)
+
     if (body.type == 'edit-time') {
         let action = await Task(connect(DB_CONNECTION, portal)).findOneAndUpdate(
             { _id: params.taskId, "taskActions._id": params.actionId },
@@ -2709,7 +2708,7 @@ exports.editTaskByResponsibleEmployees = async (portal, data, taskId) => {
         }
     }
 
-    console.log(tags)
+
 
     await Task(connect(DB_CONNECTION, portal)).updateOne(
         { _id: taskId },
@@ -2917,7 +2916,6 @@ exports.editTaskByResponsibleEmployees = async (portal, data, taskId) => {
  * @param {String} taskID id của công việc cần edit
  */
 exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
-    console.log('data',data);
     let {
         description,
         name,

@@ -9,8 +9,12 @@ export const CrmCustomerActions = {
     editCustomer,
     deleteCustomer,
     getCustomerPoint,
-    editCustomerPoint, 
-    addPromotion
+    editCustomerPoint,
+    addPromotion,
+    getCustomerPromotions,
+    editPromotion,
+    deletePromotion,
+    usePromotion
 };
 
 function getCustomers(data) {
@@ -136,5 +140,59 @@ function addPromotion(id, data) {
                 })
             })
             .catch(err => { dispatch({ type: CrmCustomerConstants.ADD_CRM_CUSTOMER_PROMOTION_FAILE }) })
+    }
+}
+
+function getCustomerPromotions(id) {
+    return dispatch => {
+        dispatch({ type: CrmCustomerConstants.GET_CRM_CUSTOMER_PROMOTIONS_REQUEST });
+        CrmCustomerServices.getCustomerPromotions(id)
+            .then(res => {
+                dispatch({
+                    type: CrmCustomerConstants.GET_CRM_CUSTOMER_PROMOTIONS_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => { dispatch({ type: CrmCustomerConstants.GET_CRM_CUSTOMER_PROMOTIONS_FAILE }) })
+    }
+}
+
+function editPromotion(id, data) {
+    return dispatch => {
+        dispatch({ type: CrmCustomerConstants.EDIT_CRM_CUSTOMER_PROMOTION_REQUEST });
+        CrmCustomerServices.editPromotion(id, data)
+            .then(res => {
+                dispatch({
+                    type: CrmCustomerConstants.EDIT_CRM_CUSTOMER_PROMOTION_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => { dispatch({ type: CrmCustomerConstants.EDIT_CRM_CUSTOMER_PROMOTION_FAILE }) })
+    }
+}
+function usePromotion(id, data) {
+    return dispatch => {
+        dispatch({ type: CrmCustomerConstants.USE_CRM_CUSTOMER_PROMOTION_REQUEST });
+        CrmCustomerServices.usePromotion(id, data)
+            .then(res => {
+                dispatch({
+                    type: CrmCustomerConstants.USE_CRM_CUSTOMER_PROMOTION_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => { dispatch({ type: CrmCustomerConstants.USE_CRM_CUSTOMER_PROMOTION_FAILE }) })
+    }
+}
+function deletePromotion(id, data) {
+    return dispatch => {
+        dispatch({ type: CrmCustomerConstants.DELETE_CRM_CUSTOMER_PROMOTION_REQUEST });
+        CrmCustomerServices.deletePromotion(id, data)
+            .then(res => {
+                dispatch({
+                    type: CrmCustomerConstants.DELETE_CRM_CUSTOMER_PROMOTION_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => { dispatch({ type: CrmCustomerConstants.DELETE_CRM_CUSTOMER_PROMOTION_FAILE }) })
     }
 }

@@ -92,6 +92,10 @@ function PrivilegeApiManagement (props) {
         })
     }
 
+    const formatStatus = (status) => {
+        return status
+    }
+
     const handleAddPrivilegeApi = () => {
         window.$("#privilege-system-api-modal").modal("show");
     }
@@ -99,7 +103,6 @@ function PrivilegeApiManagement (props) {
     let listPaginatePrivilegeApi = privilegeApis?.listPaginatePrivilegeApi
     let listPaginateCompany = company?.listPaginate
 
-    console.log(privilegeApis)
     return (
         <React.Fragment>
             <PrivilegeApiCreateModal/>
@@ -147,6 +150,7 @@ function PrivilegeApiManagement (props) {
                                 <th style={{ width: '40px' }}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.no_')}</th>
                                 <th>{translate('system_admin.privilege_system_api.table.email')}</th>
                                 <th>{translate('system_admin.company.table.name')}</th>
+                                <th>{translate('task.task_management.col_status')}</th>
                                 <th>Token</th>
                                 <th style={{ width: "120px" }}>
                                     {translate('table.action')}
@@ -165,9 +169,10 @@ function PrivilegeApiManagement (props) {
                                         <td>{index + 1}</td>
                                         <td>{privilege.email}</td>
                                         <td>{privilege.company?.name}</td>
+                                        <td>{formatStatus(privilege.status)}</td>
                                         <td style={{ position: "relative" }}>
                                             <button className="pull-right" style={{ position: "absolute", right: 0 }}>Copy</button>
-                                            {privilege.token.slice(0, 60)}...
+                                            {privilege?.token?.slice(0, 60)}...
                                         </td>
                                         <td style={{ textAlign: 'center' }}>
                                             <a onClick={() => handleEdit(privilege)} className="edit" title={translate('system_admin.system_component.edit')}><i className="material-icons">edit</i></a>

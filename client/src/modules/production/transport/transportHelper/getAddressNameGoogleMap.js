@@ -2,9 +2,14 @@ import axios from 'axios';
 const api_key = "YPYc8LFkPoxTwpowJZgnWDx0qynIK0hGED0xTp39";
 
 export async function getAddressName(lat, lng){
-	const url =  "https://maps.googleapis.com/maps/api/geocode/json?"
-                +"address="+lat+","+lng
-                +"&key="+process.env.REACT_APP_API_KEY
+	// const url =  "https://maps.googleapis.com/maps/api/geocode/json?"
+  //               +"address="+lat+","+lng
+  //               +"&key="+process.env.REACT_APP_API_KEY
+  const url = "https://rsapi.goong.io/Geocode/?"
+              +"latlng="+lat+","+lng
+              +"&api_key="+ api_key
+              
+  console.log(url)
   try {
     const response = await axios.get(url)
     if(response.data){

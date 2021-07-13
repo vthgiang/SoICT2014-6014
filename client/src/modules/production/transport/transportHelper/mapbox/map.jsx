@@ -5,7 +5,8 @@ import axios from 'axios'
 import './mapstyles.css';
 function MapContainer(props) {
 
-    const {locations, driverLocation, nonDirectLocations, zoom, indexComponent, mapHeight} = props;
+    const {locations, driverLocation, nonDirectLocations, zoom, indexComponent, mapHeight, callBackLatLng, flyToCenter} = props;
+    // locations: danh sach vi tri co chi duong, driverLocation: vi tri tai xe, nonDirections: vi tri ko chi duong, zoom: phong to map, indexComponent: so thu tu component, mapheight: height map, callBackLatLng: tra ve lat lng khi click map
 
     let routeId = "route" + indexComponent;
 
@@ -26,7 +27,7 @@ function MapContainer(props) {
 
 
     mapboxgl.accessToken = "pk.eyJ1Ijoia2llbm5kdHZuaXN0IiwiYSI6ImNrcGprZGFvcjExcGUybmprYjZkYzFyOWsifQ.vWflR8QYCqpVNlLhO_TR6g"
-
+    //https://account.mapbox.com/ tạo tài khoản, accessToken là public token
     useEffect(() => {
         
         if (delayLoadDirect.current){
@@ -34,6 +35,7 @@ function MapContainer(props) {
         }
         delayLoadDirect.current = setTimeout(() =>{
         if (!currentMap.current){
+            if (!mapContainer.current) return;
             let center = {
                 lat: 21.022177879987648, 
                 lng: 105.81717955779875
@@ -42,7 +44,7 @@ function MapContainer(props) {
                 center = driverLocation[0].location;
             }
             else {
-                if (locations && locations.length !==0){
+                if (locations && locations.length !==0 && locations[0].location.lat && locations[0].location.lng){
                     center = locations[0].location;
                 }
                 else {
@@ -65,11 +67,31 @@ function MapContainer(props) {
             
             // setMap(currentMap.current);
             setCheckMapLoaded(0);
+            
+            currentMap.current.resize();
             console.log("da tao map");
         }
         currentMap.current.once('idle',function(){
             currentMap.current.resize()
             })
+
+        if (flyToCenter && flyToCenter.center && flyToCenter.center.lat && flyToCenter.center.lng && currentMap.current){
+            currentMap.current.flyTo(flyToCenter);
+        }
+
+        // call back geocode khi click map
+        if (callBackLatLng){
+            currentMap.current.on('click', function (e) {
+                callBackLatLng({
+                    lat: e.lngLat.lat, 
+                    lng: e.lngLat.lng
+                });
+                currentMap.current.flyTo({
+                    center: e.lngLat
+                });
+                
+            });
+        }
         // Xóa bỏ marker cũ
         if (listMarker && listMarker.length!==0){
             listMarker.map(marker => {
@@ -85,8 +107,11 @@ function MapContainer(props) {
         let newListMarker = [];
         if (nonDirectLocations && nonDirectLocations.length !==0){
             nonDirectLocations.map((item, index) => {
+                if (!(item.location?.lat && item.location?.lng)){
+                    return;
+                }
                 let marker = new mapboxgl.Marker({
-                    color: "blue"
+                    color: item.color?item.color:"blue"
                 })
                 .setLngLat(item.location).setPopup(new mapboxgl.Popup({
                     offset: 25,
@@ -107,8 +132,11 @@ function MapContainer(props) {
         let countAddress = 0;
         if (driverLocation && driverLocation.length!==0){
             driverLocation.map((item,index) => {
+                if (!(item.location?.lat && item.location?.lng)){
+                    return;
+                }
                 let marker = new mapboxgl.Marker({
-                    color: "red"
+                    color: item.color?item.color:"red"
                 })
                 .setLngLat(item.location).setPopup(new mapboxgl.Popup({
                     offset: 25,
@@ -130,8 +158,9 @@ function MapContainer(props) {
 
         if (locations && locations.length!==0){
             locations.map((item,index) => {
+                if (!(item.location?.lat && item.location?.lng)) return;
                 let marker = new mapboxgl.Marker({
-                    color: "green"
+                    color: item.color?item.color:"green"
                 })
                 .setLngLat(item.location).setPopup(new mapboxgl.Popup({
                     offset: 25,
@@ -179,7 +208,7 @@ function MapContainer(props) {
         }
         
             }, 2000)   
-    }, [props])
+    }, [props,  mapContainer.current])
 
     useEffect(() => {     
         if (currentMap.current){
@@ -196,7 +225,7 @@ function MapContainer(props) {
             //     currentMap.current.removeLayer("route");
             //     currentMap.current.removeSource("route")
             // } else{       
-                console.log(checkMapLoaded, " hahahahah")
+                // console.log(checkMapLoaded, " hahahahah")
                 if (checkMapLoaded === 1){
                     while (currentMap.current.getSource(routeId)){                
                         currentMap.current.removeLayer(routeId);

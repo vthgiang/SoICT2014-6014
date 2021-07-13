@@ -18,7 +18,8 @@ function CrmDashBoard(props) {
     let customerCareInfoByEmployee;
     if (evaluations && evaluations.customerCareInfoByEmployee) customerCareInfoByEmployee = evaluations.customerCareInfoByEmployee;
     useEffect(() => {
-        props.getCustomerCareInfoByEmployee(auth.user._id);
+        props.getCustomerCareInfoByEmployee();
+        props.getCustomerCareInfoByUnit();
         props.getCrmUnits();
     }, [])
 
@@ -28,18 +29,18 @@ function CrmDashBoard(props) {
     let customerDataByGroup = [];
     let customerDataByStatus = [];
     let x = ['x'];
-    let solutionRateData = ['Tỉ lệ thành công %']
-    let completionRateData = ['Tỉ lệ hoàn thành hoạt động %']
+    let solutionRateData = ['Số hoạt động thành công/Số hoạt động hoàn thành (%)']
+    let completionRateData = ['Số hoạt động hoàn thành/Tổng số hoạt động (%)']
 
     if (customerCareInfoByEmployee) {
         customerDataByGroup = customerCareInfoByEmployee.customerDataByGroup;
         customerDataByStatus = customerCareInfoByEmployee.customerDataByStatus;
         listManagedCustomer = customerCareInfoByEmployee.listManagedCustomer;
-        x=x.concat(customerCareInfoByEmployee.x.reverse());
-        solutionRateData=solutionRateData.concat(customerCareInfoByEmployee.solutionRateData.reverse());
-        completionRateData=completionRateData.concat(customerCareInfoByEmployee.completionRateData.reverse());
+        x = x.concat(customerCareInfoByEmployee.x.reverse());
+        solutionRateData = solutionRateData.concat(customerCareInfoByEmployee.solutionRateData.reverse());
+        completionRateData = completionRateData.concat(customerCareInfoByEmployee.completionRateData.reverse());
     }
-    console.log('solutionRateData',x);
+    console.log('solutionRateData', x);
     const customerByStatusGraph = {
         columns: customerDataByStatus, type: 'pie'
     };
@@ -61,7 +62,9 @@ function CrmDashBoard(props) {
             }
         }
     }
-
+    // lấy tháng hiện tại
+    const now = new Date();
+    const month = now.getMonth() + 1;
     return (
         <div className="container-fluid">
             <div className="row" >
@@ -78,7 +81,7 @@ function CrmDashBoard(props) {
                     <div className="info-box">
                         <span className="info-box-icon bg-yellow"><i className="fa fa-handshake-o" /></span>
                         <div className="info-box-content">
-                            <span className="info-box-text">{"Tổng sô hoạt động tháng 3"}</span>
+                            <span className="info-box-text">{`Tổng sô hoạt động tháng ${month}`}</span>
                             <span className="info-box-number">{customerCareInfoByEmployee ? customerCareInfoByEmployee.totalCareActions : 0}</span>
                         </div>
                     </div>
@@ -137,7 +140,8 @@ const mapDispatchToProps = {
     getCustomerCareInfoByEmployee: CrmEvaluationActions.getCustomerCareInfoByEmployee,
     getStatus: CrmStatusActions.getStatus,
     getGroups: CrmGroupActions.getGroups,
-    getCrmUnits:CrmUnitActions.getCrmUnits,
+    getCrmUnits: CrmUnitActions.getCrmUnits,
+    getCustomerCareInfoByUnit: CrmEvaluationActions.getCustomerCareInfoByUnit,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CrmDashBoard));

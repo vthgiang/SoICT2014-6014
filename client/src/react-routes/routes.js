@@ -19,6 +19,8 @@ const Document = lazy(() => import("../modules/document/components/user"))
 const ManageUser = lazy(() => import("../modules/super-admin/user/components"))
 const ManageRole = lazy(() => import("../modules/super-admin/role/components"))
 const ManageLink = lazy(() => import("../modules/super-admin/link/components"))
+const ManageApi = lazy(() => import("../modules/super-admin/api/api-management/components/apiManagement"))
+const ApiRegistration = lazy(() => import("../modules/super-admin/api/api-registration/components/apiRegistration"))
 const ManageDepartment = lazy(() => import("../modules/super-admin/organizational-unit/components"))
 const ManageComponent = lazy(() => import("../modules/super-admin/component/components"))
 const ConfigurationManager = lazy(() => import("../modules/super-admin/module-configuration/components"))
@@ -102,6 +104,7 @@ const InventoryManagement = lazy(() => import("../modules/production/warehouse/i
 
 // Customer Management
 const CrmDashBoard = lazy(() => import("../modules/crm/dashboard/components"))
+const CrmDashBoardUnit = lazy(() => import("../modules/crm/crmUnitDashboard/components"))
 const CrmCustomer = lazy(() => import("../modules/crm/customer/components"))
 const CrmGroup = lazy(() => import("../modules/crm/group/components"))
 const CrmCare = lazy(() => import("../modules/crm/care/components"))
@@ -472,6 +475,52 @@ class Routes extends Component {
                         pageName={"manage_link"}
                         layout={Layout}
                         component={ManageLink}
+                    />
+                    <PrivateRoute
+                        isLoading={this.props.api?.isLoading}
+                        key={"apis-management"}
+                        arrPage={[
+                            {
+                                link: "#",
+                                name: "system_administration",
+                                icon: "fa fa-key",
+                            },
+                            {
+                                link: "/apis-management",
+                                name: "manage_api",
+                                icon: "fa fa-link",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/apis-management"}
+                        path={"/apis-management"}
+                        pageName={"manage_api"}
+                        layout={Layout}
+                        component={ManageApi}
+                    />
+                    <PrivateRoute
+                        isLoading={this.props.api?.isLoading}
+                        key={"apis-registration"}
+                        arrPage={[
+                            {
+                                link: "#",
+                                name: "system_administration",
+                                icon: "fa fa-key",
+                            },
+                            {
+                                link: "/apis-registration",
+                                name: "registration_api",
+                                icon: "fa fa-link",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/apis-registration"}
+                        path={"/apis-registration"}
+                        pageName={"registration_api"}
+                        layout={Layout}
+                        component={ApiRegistration}
                     />
                     <PrivateRoute
                         isLoading={this.props.department.isLoading}
@@ -1889,6 +1938,24 @@ class Routes extends Component {
                         pageName={"crm_list.dashboard"}
                         layout={Layout}
                         component={CrmDashBoard}
+                    />
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"crm_dashboardUnit"}
+                        arrPage={[
+                            {
+                                link: "/crm/dashboardUnit",
+                                name: "crm_list.dashboardUnit",
+                                icon: "fa fa-dashboard",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/crm/dashboardUnit"}
+                        path={"/crm/dashboardUnit"}
+                        pageName={"crm_list.dashboardUnit"}
+                        layout={Layout}
+                        component={CrmDashBoardUnit}
                     />
 
                     <PrivateRoute

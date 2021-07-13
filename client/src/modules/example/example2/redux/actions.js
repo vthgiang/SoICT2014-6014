@@ -3,7 +3,7 @@ import { exampleServices } from './services';
 
 export const exampleActions = {
     getOnlyExampleName,
-    deleteExample,
+    deleteExamples,
     createExample,
     editExample,
     getExampleDetail
@@ -32,18 +32,19 @@ function getOnlyExampleName(queryData) {
     }
 }
 
-function deleteExample(id) {
+function deleteExamples(data) {
     return (dispatch) => {
         dispatch({
             type: exampleConstants.DELETE_EXAMPLE_REQUEST
         });
 
         exampleServices
-            .deleteExample(id)
+            .deleteExamples(data)
             .then((res) => {
                 dispatch({
                     type: exampleConstants.DELETE_EXAMPLE_SUCCESS,
-                    payload: res.data.content
+                    payload: res.data.content,
+                    exampleIds: data.exampleIds
                 });
             })
             .catch((error) => {

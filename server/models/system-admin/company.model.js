@@ -45,7 +45,11 @@ const CompanySchema = new Schema({
     },
     email: {
         type: String
-    }
+    },
+    apis: [{
+        type: Schema.Types.ObjectId,
+        ref: "SystemApi"
+    }]
 },{
     timestamps: true
 });
