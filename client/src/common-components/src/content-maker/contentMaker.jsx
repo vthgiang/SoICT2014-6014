@@ -5,7 +5,7 @@ import { QuillEditor } from '../quill-editor/quillEditor';
 import axios from 'axios';
 import Files from 'react-files';
 import TextareaAutosize from 'react-textarea-autosize';
-import {DialogModal} from "../../../common-components"
+import { DialogModal } from "../../../common-components"
 import './contentMaker.css';
 import ModalDriver from "../googledriver/ggdrive";
 
@@ -18,9 +18,9 @@ class ContentMaker extends Component {
             filepaste: [],
             fileId: "",
             authToken: "",
-            data:[],
+            data: [],
             nextPageToken: "",
-            datadriver:"",
+            datadriver: "",
         };
     }
 
@@ -55,6 +55,28 @@ class ContentMaker extends Component {
         })
         if (this.props.onFilesChange) {
             this.props.onFilesChange(listfiles)
+        }
+    }
+    formatDate = (date, monthYear = false) => {
+        let data = new Date(date)
+        if (!date) return null;
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2) {
+            month = '0' + month;
+        }
+
+        if (day.length < 2) {
+            day = '0' + day;
+        }
+
+        if (monthYear === true) {
+            return [month, year].join('-');
+        } else {
+            return [day, month, year].join('-') + " at " + [data.getHours(), data.getMinutes()].join(":");
         }
     }
     onFilesRemote = (index) => {
@@ -105,7 +127,29 @@ class ContentMaker extends Component {
             }
         });
     }
-
+    showFileExtension = (data) => {
+        let result = null
+        switch (data.extension) {
+            case "doc", "docx":
+                result = <img className='files-list-item-preview-extension' src="https://img.icons8.com/fluent/48/000000/microsoft-word-2019.png" />
+                break;
+            case "xlsx":
+                result = <img className='files-list-item-preview-extension' src="https://img.icons8.com/fluent/48/000000/microsoft-excel-2019.png" />
+                // code block
+                break;
+            case "pdf":
+                result = <img className='files-list-item-preview-extension' src="https://img.icons8.com/ios-glyphs/60/fa314a/pdf-2.png" />
+                // code block
+                break;
+            case "txt":
+                result = <img className='files-list-item-preview-extension' src="https://img.icons8.com/color/48/000000/txt.png" />
+                // code block
+                break;
+            default:
+                result = <img className='files-list-item-preview-extension' src="https://img.icons8.com/cute-clipart/64/000000/file.png" />
+        }
+        return result
+    }
     render() {
         const { translate } = this.props;
         const {
@@ -144,13 +188,13 @@ class ContentMaker extends Component {
                 </div>
                 <div className={controlCssClass}>
                     <div className="" style={{ textAlign: "right" }}>
-                        
-                     <ModalDriver handleDataDriver={this.handleDataDriver}></ModalDriver>
+
+                        <ModalDriver handleDataDriver={this.handleDataDriver}></ModalDriver>
                         <a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={(e) => this.refs.fileComponent.openFileChooser()}>{translate("task.task_perform.attach_file")}&nbsp;&nbsp;&nbsp;&nbsp;</a>
                         <a style={{ cursor: "pointer" }} className="link-black text-sm" disabled={disabledSubmit} onClick={(e) => {
                             onSubmit(e);
                             this.refs.fileComponent.removeFiles();
-                            this.setState({ filepaste: [],dataDriver:'' })
+                            this.setState({ filepaste: [], dataDriver: '' })
                             // Xóa các file đã chọn sau khi submit
                         }}>
                             {submitButtonText}&nbsp;&nbsp;&nbsp;
@@ -171,13 +215,20 @@ class ContentMaker extends Component {
                                                     <img className='files-list-item-preview-image' src={window.URL.createObjectURL(file)} />
                                                 </React.Fragment>
                                                 :
-                                                <div className='files-list-item-preview-extension'>{file.extension}</div>}
-                                        
+                                                <React.Fragment>
+                                                    {this.showFileExtension(file)}
+                                                </React.Fragment>
+                                        }
+
                                     </div>
                                     <div className='files-list-item-content'>
-                                        <a style={{ cursor: "pointer" }} className="btn-box-tool" onClick={(e) => { this.refs.fileComponent.removeFile(file); this.onFilesRemote(index) }}><i className="fa fa-times"></i></a>
-                                        <div className='files-list-item-content-item files-list-item-content-item-1'>{file.name}</div>
-                                        <div className='files-list-item-content-item files-list-item-content-item-2'>{file.sizeReadable}</div>
+                                        <div className="files-list-item-content-right">
+                                            <div className='files-list-item-content-item files-list-item-content-item-1'>{file.name}</div>
+                                            <div>{this.formatDate(file.lastModifiedDate)}・{file.sizeReadable || file.size}</div>
+                                        </div>
+                                        <div className='files-list-item-content-delete'>
+                                            <a style={{ cursor: "pointer" }} className="btn-box-tool" onClick={(e) => { this.refs.fileComponent.removeFile(file); this.onFilesRemote(index) }}><img src="https://img.icons8.com/windows/32/fa314a/trash.png" /></a>
+                                        </div>
                                     </div>
                                 </li>
                             )}
