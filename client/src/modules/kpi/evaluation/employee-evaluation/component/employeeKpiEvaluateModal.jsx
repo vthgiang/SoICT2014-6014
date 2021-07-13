@@ -376,6 +376,20 @@ function EmployeeKpiEvaluateModal(props) {
                         </div>
                         <div className="col-xs-12 col-sm-8 qlcv">
                             <div className="form-inline pull-right">
+                            {
+                                    currentKpi &&
+                                    <ToolTip
+                                        type="text_tooltip"
+                                        dataTooltip={[
+                                            ` ${translate('kpi.evaluation.employee_evaluation.refresh')} ${currentKpi ? currentKpi.name : ""}`,
+                                        ]}
+                                    >
+                                        <button className="btn btn-success" onClick={() => handleRefresh()}>
+                                            {translate('kpi.evaluation.employee_evaluation.refresh')}&nbsp;
+                                             <i className="fa fa-repeat" aria-hidden="true"></i>
+                                        </button>
+                                    </ToolTip>
+                                }
                                 {
                                     currentKpi &&
                                     <ToolTip
@@ -390,19 +404,7 @@ function EmployeeKpiEvaluateModal(props) {
                                     </ToolTip>
                                 }
                                 {exportData && <ExportExcel id="export-employee-kpi-evaluate-detail-kpi" exportData={exportData} />}
-                                {
-                                    currentKpi &&
-                                    <ToolTip
-                                        type="text_tooltip"
-                                        dataTooltip={[
-                                            ` ${translate('kpi.evaluation.employee_evaluation.refresh')} ${currentKpi ? currentKpi.name : ""}`,
-                                        ]}
-                                    >
-                                        <button className="btn btn-success" onClick={() => handleRefresh()}>
-                                        <i className="material-icons" style={{ fontSize: "22px", verticalAlign: "top", color: '#06c', cursor: 'pointer', marginLeft: '10px' }}>{translate('kpi.evaluation.employee_evaluation.refresh')}</i>
-                                        </button>
-                                    </ToolTip>
-                                }
+                            
                             </div>
                             {list && list.map(item => {
                                 if (item._id === content)
