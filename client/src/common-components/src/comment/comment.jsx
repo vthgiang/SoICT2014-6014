@@ -7,6 +7,7 @@ import { getStorage } from '../../../config';
 import moment from 'moment';
 import { AuthActions } from '../../../modules/auth/redux/actions';
 import parse from 'html-react-parser';
+import './comment.css';
 
 class Comment extends Component {
     constructor(props) {
@@ -356,9 +357,10 @@ class Comment extends Component {
 
         return (
             <React.Fragment>
-                { comments && comments ?
+                {comments && comments ?
                     //Hiển thị bình luận của công việc
                     comments.map(item => {
+                        let listImage = item.files.map((elem) => this.isImage(elem.name) ? elem.url : -1).filter(url => url !== -1);
                         return (
                             <div key={item._id + "comment"}>
                                 <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + item.creator?.avatar)} alt="User Image" />
@@ -383,7 +385,8 @@ class Comment extends Component {
                                                         <li><a style={{ cursor: "pointer" }} onClick={() => this.handleEditComment(item)} >{translate('task.task_perform.edit_comment')}</a></li>
                                                         <li><a style={{ cursor: "pointer" }} onClick={() => this.props.deleteComment(data._id, item._id, this.props.type)} >{translate('task.task_perform.delete_comment')}</a></li>
                                                     </ul>
-                                                </div>}
+                                                </div>
+                                            }
                                         </div>
                                         <ul className="list-inline tool-level1">
                                             <li><span className="text-sm">{moment(item.createdAt).fromNow()}</span></li>
@@ -399,6 +402,7 @@ class Comment extends Component {
                                                                 return <div key={elem._id} className="show-files-task">
                                                                     {this.isImage(elem.name) ?
                                                                         <ApiImage
+                                                                            listImage={listImage}
                                                                             className="attachment-img files-attach"
                                                                             style={{ marginTop: "5px" }}
                                                                             src={elem.url}
@@ -454,16 +458,17 @@ class Comment extends Component {
                                 {showChildComment.some(obj => obj === item._id) &&
                                     <div className="comment-content-child">
                                         {item?.comments?.length > 0 && item.comments.map(child => {
+                                            let listImage = child.files.map((elem) => this.isImage(elem.name) ? elem.url : -1).filter(url => url !== -1);
                                             return <div key={child._id}>
                                                 <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + item.creator?.avatar)} alt="User Image" />
 
                                                 {editChildComment !== child._id && // Đang edit thì ẩn đi
                                                     <div>
-                                                        <p className="content-level2">
+                                                        <div className="content-level2">
                                                             <a style={{ cursor: "pointer" }}>{child.creator?.name} </a>
                                                             {child?.description?.split('\n').map((item, idx) => {
                                                                 return (
-                                                                    <span key={item._id}>
+                                                                    <span key={idx}>
                                                                         {parse(item)}
                                                                     </span>
                                                                 );
@@ -480,7 +485,7 @@ class Comment extends Component {
                                                                         <li><a style={{ cursor: "pointer" }} onClick={() => this.props.deleteChildComment(data._id, item._id, child._id, this.props.type)} >Xóa bình luận</a></li>
                                                                     </ul>
                                                                 </div>}
-                                                        </p>
+                                                        </div>
                                                         <ul className="list-inline tool-level2">
                                                             <li><span className="text-sm">{moment(child.createdAt).fromNow()}</span></li>
                                                             {child.files.length > 0 &&
@@ -493,6 +498,7 @@ class Comment extends Component {
                                                                                 return <div key={elem._id} className="show-files-task">
                                                                                     {this.isImage(elem.name) ?
                                                                                         <ApiImage
+                                                                                            listImage={listImage}
                                                                                             className="attachment-img files-attach"
                                                                                             style={{ marginTop: "5px" }}
                                                                                             src={elem.url}
@@ -546,7 +552,6 @@ class Comment extends Component {
                                                     </React.Fragment>
                                                 }
                                             </div>;
-                                            return true;
                                         })
                                         }
                                         {/*Thêm bình luận cho bình luận */}
