@@ -17,6 +17,7 @@ const mongoose = require('mongoose')
  * @company : Id công ty
  */
 exports.getAllCourses = async (portal, company, organizationalUnits, positions) => {
+    console.log('all courses is calling!')
     let keySearch = {
         company: company
     };
@@ -36,18 +37,22 @@ exports.getAllCourses = async (portal, company, organizationalUnits, positions) 
             }
         }
     }
-    let listEducations = await EducationProgram(connect(DB_CONNECTION, portal)).find(keySearch)
-
-    listEducations = listEducations.map(x => {
-        return x._id
-    });
+    let listEducations = await EducationProgram(connect(DB_CONNECTION, portal)).find(keySearch).lean()
+    
+    console.log(listEducations)
 
     let _listCourses = await Course(connect(DB_CONNECTION, portal)).find({
         educationProgram: {
-            $in: listEducations
+            $in: listEducations.map(x => { return x._id })
+        }
+    }).populate({
+        path: 'educationProgram',
+        select: {
+            name: 1,
+            programId: 1
         }
     }).lean();
-    
+
     const listCourses = _listCourses.map(i => ({...i, listEmployees: i.results}))
     
     return {
@@ -62,7 +67,7 @@ exports.getAllCourses = async (portal, company, organizationalUnits, positions) 
  * @company : Id công ty
  */
 exports.searchCourses = async (portal, params, company) => {
-    console.log('is running')
+    console.log('search courses is called')
     // Note: nên khai báo các biến params ở đầu
     const { educationProgram, courseId, name, type } = params
     let keySearch = {
