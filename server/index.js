@@ -311,6 +311,4 @@ app.post('/system-admin/system-api/system-apis/update-auto', auth, (req, res) =>
 const port = process.env.PORT || 8000;
 server.listen(port, () => {
     console.log(`Server up and running on: ${port} !`)
-    var port1 = server.address().port1;
-    console.log(`Server up and running on: ${port1} !`)
 });
