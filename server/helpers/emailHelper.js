@@ -1,6 +1,6 @@
 const nodemailer = require("nodemailer");
 const user = 'vnist.qlcv@gmail.com';
-const pass = 'Vnist1234@12345';
+const pass = 'Vnist1234@123456';
 
 // Hiện tại khi gửi mail sẽ vào thư rác.. đang xử lý,,, dùng tạm mail cũ
 // const user = 'qlcv@vnist.vn';
