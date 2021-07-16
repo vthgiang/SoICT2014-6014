@@ -103,17 +103,10 @@ class DatePicker extends Component {
     }
     onChangeDatePicker = (e) => {
         let { value } = e.target;
-        let valueForm 
-        let index = value.indexOf("/")
-        if (index !==-1){
-            valueForm = value.slice(0,index) +'-'+value.slice(index+1)
-        } else {
-            valueForm = value
-        }
         this.setState({
-            value: valueForm
+            value: value.replaceAll("/","-")
         })
-        this.props.onChange(valueForm);
+        this.props.onChange(value.replaceAll("/","-"));
     }
     render() {
         const { id, disabled = false, defaultValue, style = {} } = this.props;
