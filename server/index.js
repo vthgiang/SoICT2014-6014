@@ -10,8 +10,6 @@ const swaggerUi = require("swagger-ui-express");
 const { swaggerJsonData } = require("./api-docs/swagger.js");
 const { auth } = require(`./middleware`);
 const { SystemApiControllers } = require('./modules/system-admin/system-api/system-api-management/systemApi.controller');
-const htmlPath = path.join(__dirname, 'upload');
-app.use(express.static(htmlPath));
 require("dotenv").config();
 // require("./connectDatabase");
 require("./global")(server);
