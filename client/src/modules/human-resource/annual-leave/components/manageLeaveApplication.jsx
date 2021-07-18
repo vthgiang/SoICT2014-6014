@@ -300,7 +300,7 @@ function ManageLeaveApplication(props) {
                     {/* Button tìm kiếm */}
                     <button type="button" className="btn btn-success" title={translate('general.search')} onClick={() => handleSunmitSearch()} >{translate('general.search')}</button>
                 </div>
-                <AnnualLeaveCreateForm 
+                <AnnualLeaveCreateForm
                     typeView="manager"
                 />
                 <AnnualLeaveImportForm />
@@ -311,7 +311,7 @@ function ManageLeaveApplication(props) {
                             <span style={{ fontWeight: "bold" }}>{`${Number(annualLeave.numberWaitForApproval) + Number(annualLeave.numberApproved) + Number(annualLeave.numberNotApproved)} ${translate('human_resource.annual_leave.leaveOfAbsenceLetter')}`}</span>
                         </React.Fragment>
                     }
-                    
+
                     {
                         Number(annualLeave.numberWaitForApproval) > 0 &&
                         <React.Fragment>
@@ -319,7 +319,7 @@ function ManageLeaveApplication(props) {
                         </React.Fragment>
                     }
                     {
-                        Number(annualLeave.numberApproved) > 0 && 
+                        Number(annualLeave.numberApproved) > 0 &&
                         <span className="text-success" style={{ fontWeight: "bold" }}>,&nbsp;{`${annualLeave.numberApproved} ${translate('human_resource.annual_leave.approved_letter')}`}</span>
                     }
                     {
