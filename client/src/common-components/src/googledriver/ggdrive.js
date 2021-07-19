@@ -3,7 +3,7 @@ import useDrivePicker from "react-google-drive-picker";
 import React, { Component } from 'react';
 import { withTranslate } from 'react-redux-multilingual';
 import "./ggdriver.css"
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// link git : https://github.com/Jose-cd/React-google-drive-picker
 
 
 function ModalDriver(props) {
@@ -11,8 +11,8 @@ function ModalDriver(props) {
 
   const handleOpenPicker = () => {
     openPicker({
-      clientId: "716399266209-fjfedph6jgq5l415flu51ophhv9qqgfr.apps.googleusercontent.com",
-      developerKey: "AIzaSyDC_Nmb_rWTaSQbUkZSNifUKGHz1Xomvh0",
+      clientId: "716399266209-fjfedph6jgq5l415flu51ophhv9qqgfr.apps.googleusercontent.com", // link hướng dẫn : https://www.youtube.com/watch?v=1y0-IfRW114
+      developerKey: "AIzaSyDC_Nmb_rWTaSQbUkZSNifUKGHz1Xomvh0", // link hướng dẫn : https://www.youtube.com/watch?v=1y0-IfRW114
       viewId: "FOLDERS",
       viewMimeTypes: ["application/vnd.google-apps.document","application/vnd.google-apps.spreadsheet","application/vnd.google-apps.file"],
       disableDefaultView:false,
