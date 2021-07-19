@@ -94,7 +94,7 @@ class TaskOrganizationalUnitsChart extends Component {
 
     shouldComponentUpdate(nextProps, nextState) {
         const { startDate, endDate } = this.state;
-        
+
         if (nextProps.tasks?.organizationUnitTasks && !this.isEqual(nextProps.tasks?.organizationUnitTasks?.tasks, this.state.taskOfUnists) &&
             nextProps.user?.employeesOfUnitsUserIsManager?.length !== 0) {
             this.setState({
@@ -119,7 +119,7 @@ class TaskOrganizationalUnitsChart extends Component {
             this.props.getAllEmployeeOfUnitByIds({
                 organizationalUnitIds: childOrganizationalUnitId,
             });
-            
+
             // Nếu số đơn vị >1, chỉ truy vấn dữ lieuẹ trong 1 tháng (dùng cho biểu đồ)
             if (timeseriesChart) {
                 this.props.getTaskInOrganizationUnitByMonth(childOrganizationalUnitId, this.formatString(startDate), this.formatString(endDate));
@@ -188,7 +188,7 @@ class TaskOrganizationalUnitsChart extends Component {
                     let check = false
                     e.roleId.map(item => {
                         if (roleInUnit.includes(item?._id)) {
-                            check = true 
+                            check = true
                         }
                     })
 
@@ -238,7 +238,7 @@ class TaskOrganizationalUnitsChart extends Component {
     setMultiDataChart = () => {
         const { tasks, user } = this.props;
         let { childOrganizationalUnit } = this.props;
-       
+
         let listTask = tasks.organizationUnitTasks ? tasks.organizationUnitTasks.tasks : [];
         let employees = user.employees;
         let employeeOfUnits = {};
@@ -249,7 +249,7 @@ class TaskOrganizationalUnitsChart extends Component {
                     let check = false
                     e.roleId.map(item => {
                         if (roleInUnit.includes(item?._id)) {
-                            check = true 
+                            check = true
                         }
                     })
 
@@ -312,7 +312,8 @@ class TaskOrganizationalUnitsChart extends Component {
             data: {
                 x: 'x',
                 columns: dataChart,
-                type: 'bar'
+                type: 'bar',
+                labels: true,
             },
             bar: {
                 width: {
@@ -429,7 +430,7 @@ class TaskOrganizationalUnitsChart extends Component {
             <div className="box box-solid" >
                 <div className="box-header with-border" >
                     <div className="box-title" >
-                        Tình hình làm việc 
+                        Tình hình làm việc
                         {
                             childOrganizationalUnit && childOrganizationalUnit.length < 2 ?
                                 <>
@@ -446,7 +447,7 @@ class TaskOrganizationalUnitsChart extends Component {
                     </div>
                 </div>
                 <div className="box-body" >
-                    {timeseriesChart 
+                    {timeseriesChart
                         && <div className="qlcv" style={{ marginBottom: 15 }} >
                             <div className="form-inline" >
                                 <div className="form-group">
@@ -476,7 +477,7 @@ class TaskOrganizationalUnitsChart extends Component {
                         </div>
                     }
 
-                    {tasks?.isLoading 
+                    {tasks?.isLoading
                         ? <p>{translate('general.loading')}</p>
                         : tasks?.organizationUnitTasks?.tasks?.length > 0
                             ? <div className="" >
