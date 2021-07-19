@@ -132,8 +132,8 @@ const AgePyramidChart = (props) => {
     }
 
     if (
-        props.organizationalUnits !== state.organizationalUnits 
-        || !isEqual(props.employeesManager.listAllEmployees, state.listAllEmployees) 
+        props.organizationalUnits !== state.organizationalUnits
+        || !isEqual(props.employeesManager.listAllEmployees, state.listAllEmployees)
         || !isEqual(props.employeesManager.listEmployeesOfOrganizationalUnits, state.listEmployeesOfOrganizationalUnits)
     ) {
         setState({
@@ -179,7 +179,7 @@ const AgePyramidChart = (props) => {
         renderChart(data);
     }, [JSON.stringify(employeesManager)])
 
-   
+
     let organizationalUnitsName;
     if (organizationalUnits && department?.list) {
         organizationalUnitsName = department.list.filter(x => organizationalUnits.includes(x._id));
@@ -190,7 +190,7 @@ const AgePyramidChart = (props) => {
     let maleEmployees = listAllEmployees.filter(x => x.gender === 'male');
     let femaleEmployees = listAllEmployees.filter(x => x.gender === 'female');
 
-    
+
 
     return (
         <React.Fragment>
