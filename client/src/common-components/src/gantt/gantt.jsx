@@ -5,7 +5,7 @@ import moment from 'moment'
 import { getStorage } from '../../../config';
 
 import ToolbarGantt from './toolbarGantt';
-import {SlimScroll} from "../slim-scroll/slimScroll"
+import { SlimScroll } from "../slim-scroll/slimScroll"
 import './gantt.css';
 
 function Gantt(props) {
@@ -14,9 +14,7 @@ function Gantt(props) {
     const [dataProcessor, setDataProcessor] = useState(null);
     const [lang, setLang] = useState(getStorage('lang'))
     const [gantt, setGantt] = useState(window.initializationGantt());
-    useEffect(() => {
-        activeSlimScroll();
-    })
+
     useEffect(() => {
         initZoom(gantt);
 
@@ -30,7 +28,8 @@ function Gantt(props) {
             gantt.config.details_on_dblclick = false;
             gantt.config.columns = [{ name: 'role', label: unit ? translate('task.task_management.responsible') : translate('task.task_management.role'), align: "center", resize: true, width: 120 }]
             gantt.config.xml_date = "%Y-%m-%d %H:%i";
-
+            
+            // gantt.root.css("maxHeight", window.innerHeight/2); 
             // Màu sắc cho công việc
             gantt.templates.task_class = function (start, end, task) {
                 switch (task.process) {
@@ -86,7 +85,15 @@ function Gantt(props) {
             });
             gantt.getMarker(markerId);
         }
-
+        let outer = window.$(`#gantt-${ganttId}`);
+            console.log(outer.css("height"),window.innerHeight/2);
+        let lenghHeight = outer.css("height")
+        lenghHeight= lenghHeight.slice(0,lenghHeight.length-2)
+        lenghHeight = parseInt(lenghHeight)
+            if (lenghHeight> window.innerHeight/2) {
+                outer.css({"max-height" : `${window.innerHeight/2}px`});
+            }
+        console.log(outer[0]);
         // Focus vào ngày hiện tại
         let date = new Date();
         let date_x = gantt.posFromDate(date);
@@ -96,10 +103,10 @@ function Gantt(props) {
         setZoom(gantt, zoom);
     })
     const activeSlimScroll = () => {
-        if (ganttId){
+        if (ganttId) {
             window.$(`#gantt-${ganttId}`).ready(function () {
                 SlimScroll.removeVerticalScrollStyleCSS(`gantt-${ganttId}`);
-                SlimScroll.addVerticalScrollStyleCSS(`gantt-${ganttId}`, window.innerHeight/2, true);
+                SlimScroll.addVerticalScrollStyleCSS(`gantt-${ganttId}`, window.innerHeight / 2, true);
             })
         }
     }
