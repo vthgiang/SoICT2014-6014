@@ -9,7 +9,7 @@ const pass = 'Vnist1234@123456';
 // const mailHost = 'mail.vnist.vn';
 
 let length = 0;
-exports.sendEmail = (to, subject, text, html) => {
+exports.sendEmail = (to, subject, text, html,inReplyToGmail,messageIdGmail) => {
     var transporter = nodemailer.createTransport({
         // host: mailHost,
         // port: mailPort,
@@ -25,6 +25,12 @@ exports.sendEmail = (to, subject, text, html) => {
         text: text,
         html: html,
         // messageId: to 
+    }
+    if (inReplyToGmail){
+        mainOptions = {...mainOptions,inReplyTo: inReplyToGmail}
+    }
+    if (messageIdGmail){
+        mainOptions = {...mainOptions,messageId: messageIdGmail}
     }
     length = length + 1
     const send = () => {
