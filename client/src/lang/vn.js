@@ -1339,6 +1339,9 @@ export default {
                 showless: "Ẩn bớt",
                 title_showmore: "Bấm để hiển thị thêm",
                 title_showless: "Bấm để hiển thị ít hơn"
+            },
+            google_driver: {
+                button : "Thêm files từ Google Drive"
             }
         },
 

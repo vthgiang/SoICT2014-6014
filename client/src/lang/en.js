@@ -1242,6 +1242,9 @@ export default {
                 showless: "Show less",
                 title_showmore: "Click to show more",
                 title_showless: "Click to show less"
+            },
+            google_driver: {
+                button : "Add files from Google Drive"
             }
         },
 

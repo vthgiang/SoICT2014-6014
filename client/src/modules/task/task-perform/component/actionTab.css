@@ -162,15 +162,15 @@
 }
 .files-list-item-content-right {
     padding-top: 10px;
-    width: calc(100% - 60px);
+    width: calc(100% - 100px);
     float: left;
 
     /* padding-top: 25px; */
 }
 .files-list-item-content-delete {
-    width: 50px;   
+    width: 80px;   
     float: right;
-    padding-top: 20px;
+    /* padding-top: 20px; */
 }
 .files-list-item-content-delete{
     

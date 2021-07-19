@@ -21,8 +21,6 @@ function FilePreview(props) {
     if (blob) encode = URL.createObjectURL(blob);
     console.log(encode);
     console.log(blob);
-    console.log(props.file.slice(8));
-    let url =props.file.slice(8)
     return (
         <React.Fragment>
             <DialogModal
@@ -37,7 +35,7 @@ function FilePreview(props) {
 
                 <div>
                     <div style={{ margin: "0px", padding: "0px", overflow: "hidden" }}>
-                        <iframe src={`//docs.google.com/viewer?embedded=true&url=${process.env.REACT_APP_SERVER}${url}`} frameborder="0" style={{ overflow: "hidden", height: "85vh", width: "100%" }} height="100%" width="100%"></iframe>
+                        <iframe src={encode} frameborder="0" style={{ overflow: "hidden", height: "85vh", width: "100%" }} height="100%" width="100%"></iframe>
                     </div>
 
                 </div>

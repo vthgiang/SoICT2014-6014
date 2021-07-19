@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import useDrivePicker from "react-google-drive-picker";
 import React, { Component } from 'react';
+import { withTranslate } from 'react-redux-multilingual';
 import "./ggdriver.css"
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 
@@ -33,11 +34,12 @@ function ModalDriver(props) {
       props.handleDataDriver(data.docs)
     }
   }, [data]);
+  const { translate } = props;
   return (
     <React.Fragment>
-      <a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={handleOpenPicker}>Open google driver&nbsp;&nbsp;&nbsp;&nbsp;</a>
+      <a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={handleOpenPicker}>{translate("common_component.google_driver.button")}&nbsp;&nbsp;&nbsp;&nbsp;</a>
     </React.Fragment>
   );
 }
 
-export default ModalDriver;
+export default withTranslate(ModalDriver);
