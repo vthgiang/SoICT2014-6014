@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 
 import { performTaskAction } from './../redux/actions';
@@ -28,32 +28,34 @@ import { RequestToCloseTaskModal } from './requestToCloseTaskModal';
 import { ProjectActions } from "../../../project/projects/redux/actions";
 import { ROOT_ROLE } from '../../../../helpers/constants';
 import dayjs from 'dayjs';
-class DetailTaskTab extends Component {
+function DetailTaskTab(props) {
+    const [state, setState] = useState(() => initState())
+    const { tasks, performtasks, user, translate, role } = props;
+    const { showToolbar, id, isProcess } = props; // props form parent component ( task, id, showToolbar, onChangeTaskRole() )
+    const { currentUser, roles, currentRole, collapseInfo,
+        showEdit, showEndTask, showEvaluate, showRequestClose,
+        showMore, showCopy, showSaveAsTemplate
+    } = state
+    const DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
 
-    constructor(props) {
-        super(props);
-
-        let { translate } = this.props;
+    const ROLE = {
+        RESPONSIBLE: { name: translate('task.task_management.responsible'), value: "responsible" },
+        ACCOUNTABLE: { name: translate('task.task_management.accountable'), value: "accountable" },
+        CONSULTED: { name: translate('task.task_management.consulted'), value: "consulted" },
+        CREATOR: { name: translate('task.task_management.creator'), value: "creator" },
+        INFORMED: { name: translate('task.task_management.informed'), value: "informed" },
+    };
+    function initState() {
+        let { translate } = props;
         var idUser = getStorage("userId");
         let currentRole = getStorage("currentRole");
 
         let currentDate = new Date();
         let currentYear = currentDate.getFullYear();
         let currentMonth = currentDate.getMonth();
+        let DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
 
-        this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
-
-        this.ROLE = {
-            RESPONSIBLE: { name: translate('task.task_management.responsible'), value: "responsible" },
-            ACCOUNTABLE: { name: translate('task.task_management.accountable'), value: "accountable" },
-            CONSULTED: { name: translate('task.task_management.consulted'), value: "consulted" },
-            CREATOR: { name: translate('task.task_management.creator'), value: "creator" },
-            INFORMED: { name: translate('task.task_management.informed'), value: "informed" },
-        };
-
-        this.EMPLOYEE_SELECT_BOX = [];
-
-        this.state = {
+        return {
             collapseInfo: false,
             openTimeCounnt: false,
             startTimer: false,
@@ -61,112 +63,90 @@ class DetailTaskTab extends Component {
             highestIndex: 0,
             currentUser: idUser,
             currentRole,
-            dataStatus: this.DATA_STATUS.NOT_AVAILABLE,
+            dataStatus: DATA_STATUS.NOT_AVAILABLE,
             showMore: {},
 
             currentMonth: currentYear + '-' + (currentMonth + 1),
             nextMonth: (currentMonth > 10) ? ((currentYear + 1) + '-' + (currentMonth - 10)) : (currentYear + '-' + (currentMonth + 2)),
             dueForEvaluationOfTask: currentYear + '-' + (currentMonth + 1) + '-' + 7
         }
-
-
-
-        this.props.getAllUserInAllUnitsOfCompany();
     }
 
-    shouldComponentUpdate = (nextProps, nextState) => {
+    useEffect(() => {
+        props.getAllUserInAllUnitsOfCompany();
+        const { currentRole } = state;
+        props.getProjectsDispatch({ calledId: "" });
+        props.showInfoRole(currentRole);
+    }, [])
 
-        if (nextProps.id !== this.state.id) {
+    useEffect(() => {
+        setState({
+            ...state,
+            id: props.id,
+            dataStatus: DATA_STATUS.QUERYING,
+            editCollaboratedTask: false
+        })
+    }, [props.id])
 
-            this.setState(state => {
-                return {
-                    ...state,
-                    id: nextProps.id,
-                    dataStatus: this.DATA_STATUS.QUERYING,
-                    editCollaboratedTask: false
-                }
-            });
+    useEffect(() => {
+        if (tasks.task) {
+            if (task && task.organizationalUnit) props.getChildrenOfOrganizationalUnits(task.organizationalUnit._id);
 
-            return true;
-        }
-
-        if (this.state.dataStatus === this.DATA_STATUS.QUERYING) {
-            if (!nextProps.user.usersInUnitsOfCompany) return false;
-            if (!nextProps.tasks.task) {
-                return false;
-            } else { // Dữ liệu đã về
-                let task = nextProps.task;
-
-                if (task && task.organizationalUnit) this.props.getChildrenOfOrganizationalUnits(task.organizationalUnit._id);
-
-                let roles = [];
-                if (task) {
-                    let userId = getStorage("userId");
-                    let tmp = task.responsibleEmployees.find(item => item._id === userId);
-                    if (tmp) {
-                        roles.push(this.ROLE.RESPONSIBLE);
-                    }
-
-                    tmp = task.accountableEmployees && task.accountableEmployees.find(item => item._id === userId);
-                    if (tmp) {
-                        roles.push(this.ROLE.ACCOUNTABLE);
-                    }
-
-                    tmp = task.consultedEmployees && task.consultedEmployees.find(item => item._id === userId);
-                    if (tmp) {
-                        roles.push(this.ROLE.CONSULTED);
-                    }
-
-                    tmp = task.informedEmployees && task.informedEmployees.find(item => item._id === userId);
-                    if (tmp) {
-                        roles.push(this.ROLE.INFORMED);
-                    }
-
-                    if (userId === task.creator._id) {
-                        roles.push(this.ROLE.CREATOR);
-                    }
+            let roles = [];
+            if (task) {
+                let userId = getStorage("userId");
+                let tmp = task.responsibleEmployees.find(item => item._id === userId);
+                if (tmp) {
+                    roles.push(ROLE.RESPONSIBLE);
                 }
 
-                let currentRole;
-                if (roles.length > 0) {
-                    currentRole = roles[0].value;
-                    if (this.props.onChangeTaskRole) {
-                        this.props.onChangeTaskRole(currentRole);
-                    }
+                tmp = task.accountableEmployees && task.accountableEmployees.find(item => item._id === userId);
+                if (tmp) {
+                    roles.push(ROLE.ACCOUNTABLE);
                 }
 
+                tmp = task.consultedEmployees && task.consultedEmployees.find(item => item._id === userId);
+                if (tmp) {
+                    roles.push(ROLE.CONSULTED);
+                }
 
-                this.setState(state => {
-                    return {
-                        ...state,
-                        dataStatus: this.DATA_STATUS.FINISHED,
-                        roles: roles,
-                        currentRole: roles.length > 0 ? roles[0].value : null
-                    }
-                })
-                return false;
+                tmp = task.informedEmployees && task.informedEmployees.find(item => item._id === userId);
+                if (tmp) {
+                    roles.push(ROLE.INFORMED);
+                }
+
+                if (userId === task.creator._id) {
+                    roles.push(ROLE.CREATOR);
+                }
             }
-        }
-        return true;
-    }
 
-    componentDidMount() {
-        const { currentRole } = this.state;
-        this.props.getProjectsDispatch({ calledId: "" });
-        this.props.showInfoRole(currentRole);
-    }
+            let currentRole;
+            if (roles.length > 0) {
+                currentRole = roles[0].value;
+                if (props.onChangeTaskRole) {
+                    props.onChangeTaskRole(currentRole);
+                }
+            }
 
-    handleChangeCollapseInfo = async () => {
-        await this.setState(state => {
-            return {
+
+            setState({
                 ...state,
-                collapseInfo: !state.collapseInfo
-            }
+                dataStatus: DATA_STATUS.FINISHED,
+                roles: roles,
+                currentRole: roles.length > 0 ? roles[0].value : null
+            })
+        }
+    }, [JSON.stringify(tasks?.task)])
+
+    const handleChangeCollapseInfo = () => {
+        setState({
+            ...state,
+            collapseInfo: !state.collapseInfo
         });
     }
 
-    handleChangeShowMoreEvalItem = async (id) => {
-        await this.setState(state => {
+    const handleChangeShowMoreEvalItem = (id) => {
+        setState(state => {
             state.showMore[id] = !state.showMore[id];
             return {
                 ...state,
@@ -174,13 +154,13 @@ class DetailTaskTab extends Component {
         });
     }
 
-    startTimer = async (taskId, overrideTSLog = 'no') => {
+    const startTimer = (taskId, overrideTSLog = 'no') => {
         let userId = getStorage("userId");
         let timer = {
             creator: userId,
             overrideTSLog
         };
-        this.props.startTimer(taskId, timer).catch(err => {
+        props.startTimer(taskId, timer).catch(err => {
             let warning = Array.isArray(err.response.data.messages) ? err.response.data.messages : [err.response.data.messages];
             if (warning[0] === 'time_overlapping') {
                 Swal.fire({
@@ -198,15 +178,15 @@ class DetailTaskTab extends Component {
                             creator: userId,
                             overrideTSLog: 'yes'
                         };
-                        this.props.startTimer(taskId, timer)
+                        props.startTimer(taskId, timer)
                     }
                 })
             }
         })
     }
 
-    formatPriority = (data) => {
-        const { translate } = this.props;
+    const formatPriority = (data) => {
+        const { translate } = props;
         if (data === 1) return translate('task.task_management.low');
         if (data === 2) return translate('task.task_management.average');
         if (data === 3) return translate('task.task_management.standard');
@@ -214,8 +194,8 @@ class DetailTaskTab extends Component {
         if (data === 5) return translate('task.task_management.urgent');
     }
 
-    formatStatus = (data) => {
-        const { translate } = this.props;
+    const formatStatus = (data) => {
+        const { translate } = props;
         if (data === "inprocess") return translate('task.task_management.inprocess');
         else if (data === "wait_for_approval") return translate('task.task_management.wait_for_approval');
         else if (data === "finished") return translate('task.task_management.finished');
@@ -224,7 +204,7 @@ class DetailTaskTab extends Component {
     }
 
     // convert ISODate to String dd-mm-yyyy
-    formatDate(date) {
+    function formatDate(date) {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -238,12 +218,10 @@ class DetailTaskTab extends Component {
         return [day, month, year].join('-');
     }
 
-    handleShowEdit = async (id, role, checkHasAccountable) => {
-        await this.setState(state => {
-            return {
-                ...state,
-                showEdit: id
-            }
+    const handleShowEdit = (id, role, checkHasAccountable) => {
+        setState({
+            ...state,
+            showEdit: id
         });
 
         let modalId = `#modal-edit-task-by-${role}-${id}`;
@@ -254,20 +232,18 @@ class DetailTaskTab extends Component {
 
     }
 
-    handleShowRequestCloseTask = async (id) => {
-        await this.setState(state => {
-            return {
-                ...state,
-                showRequestClose: id
-            }
+    const handleShowRequestCloseTask = (id) => {
+        setState({
+            ...state,
+            showRequestClose: id
         });
 
         let modalId = `#modal-request-close-task-${id}`;
         window.$(modalId).modal('show');
     }
 
-    handleOpenTaskAgain = (id) => {
-        const { translate } = this.props;
+    const handleOpenTaskAgain = (id) => {
+        const { translate } = props;
 
         Swal.fire({
             title: translate('task.task_management.confirm_open_task'),
@@ -278,91 +254,79 @@ class DetailTaskTab extends Component {
             confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
         }).then((res) => {
             if (res.value) {
-                this.props.openTaskAgain(id)
+                props.openTaskAgain(id)
             }
         });
     }
 
-    handleEndTask = async (id, status, codeInProcess, typeOfTask) => {
-        await this.setState(state => {
-            return {
-                ...state,
-                showEndTask: id,
-            }
+    const handleEndTask = (id, status, codeInProcess, typeOfTask) => {
+        setState({
+            ...state,
+            showEndTask: id,
         });
 
         window.$(`#modal-select-following-task`).modal('show');
     }
 
-    handleShowEvaluate = async (id, role) => {
-        await this.setState(state => {
-            return {
-                ...state,
-                showEvaluate: id
-            }
+    const handleShowEvaluate = (id, role) => {
+        setState({
+            ...state,
+            showEvaluate: id
         });
         // window.$(`#modal-evaluate-task-by-${role}-${id}-evaluate`).modal('show');
         window.$(`#task-evaluation-modal-${id}-`).modal('show');
 
     }
 
-    handleCopyTask = (id, role) => {
-        this.setState(state => {
-            return {
-                ...state,
-                showCopy: `copy-task-${id}`
-            }
+    const handleCopyTask = (id, role) => {
+        setState({
+            ...state,
+            showCopy: `copy-task-${id}`
         });
         window.$(`#addNewTask-copy-task-${id}`).modal('show');
 
     }
 
-    handleSaveAsTemplate = async (id, role) => {
-        await this.setState(state => {
-            return {
-                ...state,
-                showSaveAsTemplate: id
-            }
+    const handleSaveAsTemplate = (id, role) => {
+        setState({
+            ...state,
+            showSaveAsTemplate: id
         });
         window.$(`#modal-add-task-template-${id}`).modal('show');
 
     }
 
-    refresh = async () => {
-        this.props.getTaskById(this.state.id);
-        this.props.getSubTask(this.state.id);
-        this.props.getTimesheetLogs(this.state.id);
-        this.props.getTaskLog(this.state.id);
-        await this.setState(state => {
-            return {
-                ...state,
-                showEdit: undefined,
-                showEndTask: undefined,
-                showEvaluate: undefined,
-                dataStatus: this.DATA_STATUS.QUERYING,
-            }
+    const refresh = () => {
+        props.getTaskById(state.id);
+        props.getSubTask(state.id);
+        props.getTimesheetLogs(state.id);
+        props.getTaskLog(state.id);
+        setState({
+            ...state,
+            showEdit: undefined,
+            showEndTask: undefined,
+            showEvaluate: undefined,
+            dataStatus: DATA_STATUS.QUERYING,
         })
 
     }
-    changeRole = (role) => {
-        this.setState(state => {
-            return {
-                ...state,
-                currentRole: role
-            }
+    const changeRole = (role) => {
+        setState({
+            ...state,
+            currentRole: role
         })
-        this.props.onChangeTaskRole(role);
+        props.onChangeTaskRole(role);
     }
 
-    confirmTask = (task) => {
+    const confirmTask = (task) => {
         if (task) {
-            this.props.confirmTask(task._id);
+            props.confirmTask(task._id);
         }
     }
 
     /** Kiểm tra nhân viên chưa xác nhận công việc */
-    checkConfirmTask = (task) => {
-        const { currentUser } = this.state;
+    const handleCheckConfirmTask = (task) => {
+        const { currentUser } = state;
 
         let checkConfirmOtherUser = false, checkConfirmCurrentUser = false, listEmployee, listEmployeeNotConfirm = [];
         let confirmedByEmployeesId, listEmployeeId;
@@ -411,7 +375,7 @@ class DetailTaskTab extends Component {
     }
 
     /** Kiểm tra hoạt động chưa có đánh giá */
-    checkEvaluationTaskAction = (task) => {
+    const handleCheckEvaluationTaskAction = (task) => {
         if (task) {
             let { taskActions } = task;
             if (taskActions) {
@@ -428,8 +392,8 @@ class DetailTaskTab extends Component {
     }
 
     /** Kiểm tra nhân viên chưa liên kết KPI */
-    checkEvaluationTaskAndKpiLink = (task) => {
-        const { currentMonth, nextMonth } = this.state;
+    const handleCheckEvaluationTaskAndKpiLink = (task) => {
+        const { currentMonth, nextMonth } = state;
 
         let evaluations = [], checkEvaluationTask = false;
         let listEmployeeNotKpiLink = [], responsibleEmployeesNotKpiLink = [], accountableEmployeesNotKpiLink = [], consultedEmployeesNotKpiLink = [];
@@ -508,8 +472,8 @@ class DetailTaskTab extends Component {
     }
 
     /** Kiểm tra thời hạn đánh giá */
-    checkDeadlineForEvaluation = (task) => {
-        const { dueForEvaluationOfTask, currentMonth } = this.state;
+    const handleCheckDeadlineForEvaluation = (task) => {
+        const { dueForEvaluationOfTask, currentMonth } = state;
 
         let checkDeadlineForEvaluation = false, deadlineForEvaluation, evaluations;
         let currentDate = new Date();
@@ -527,12 +491,12 @@ class DetailTaskTab extends Component {
 
                     if (deadlineForEvaluation < 1) {
                         if (deadlineForEvaluation * 24 < 1) {
-                            deadlineForEvaluation = Math.floor(deadlineForEvaluation * 24 * 60) + ` ${this.props.translate('task.task_management.warning_minutes')}`;
+                            deadlineForEvaluation = Math.floor(deadlineForEvaluation * 24 * 60) + ` ${props.translate('task.task_management.warning_minutes')}`;
                         } else {
-                            deadlineForEvaluation = Math.floor(deadlineForEvaluation * 24) + ` ${this.props.translate('task.task_management.warning_hours')}`;
+                            deadlineForEvaluation = Math.floor(deadlineForEvaluation * 24) + ` ${props.translate('task.task_management.warning_hours')}`;
                         }
                     } else {
-                        deadlineForEvaluation = Math.floor(deadlineForEvaluation) + ` ${this.props.translate('task.task_management.warning_days')}`;
+                        deadlineForEvaluation = Math.floor(deadlineForEvaluation) + ` ${props.translate('task.task_management.warning_days')}`;
                     }
                 }
             }
@@ -545,7 +509,7 @@ class DetailTaskTab extends Component {
     }
 
     /** Kiểm tra đơn vị chưa xác nhận phân công công việc */
-    checkConfirmAssginOfOrganizationalUnit = (task) => {
+    const handleCheckConfirmAssginOfOrganizationalUnit = (task) => {
         let unitHasNotConfirm = [];
 
         if (task && task.collaboratedWithOrganizationalUnits) {
@@ -564,7 +528,7 @@ class DetailTaskTab extends Component {
         }
     }
 
-    calculateHoursSpentOnTask = async (taskId, timesheetLogs, month, evaluate, startDate, endDate) => {
+    const calculateHoursSpentOnTask = async (taskId, timesheetLogs, month, evaluate, startDate, endDate) => {
         let results = evaluate && evaluate.results;
         results.map(item => {
             item.hoursSpent = 0;
@@ -617,10 +581,10 @@ class DetailTaskTab extends Component {
             }),
         }
 
-        await this.props.editHoursSpentInEvaluate(data, taskId);
+        await props.editHoursSpentInEvaluate(data, taskId);
     }
 
-    getTaskActionsNotPerform = (taskActions) => {
+    const getTaskActionsNotPerform = (taskActions) => {
         return taskActions.filter(action => !action.creator).length;
     }
 
@@ -629,9 +593,9 @@ class DetailTaskTab extends Component {
      * Nếu có, tạo SelectBox tất cả nhân viên của đơn vị 
      * Ngược lại, trả về mảng rỗng
     */
-    setSelectBoxOfUserSameDepartmentCollaborated = (task) => {
-        const { user } = this.props;
-        const { currentUser } = this.state;
+    const setSelectBoxOfUserSameDepartmentCollaborated = (task) => {
+        const { user } = props;
+        const { currentUser } = state;
         let usersInUnitsOfCompany, unitThatCurrentUserIsManager, employeeSelectBox = [];
 
         if (user) {
@@ -674,7 +638,7 @@ class DetailTaskTab extends Component {
         return employeeSelectBox;
     }
 
-    remindEvaluateTaskOnThisMonth = (task) => {
+    const remindEvaluateTaskOnThisMonth = (task) => {
         let startDate = new Date(task?.startDate);
         let endDate = new Date(task?.endDate);
 
@@ -693,17 +657,17 @@ class DetailTaskTab extends Component {
     }
 
     /** sắp xếp đánh giá theo thứ tự tháng */
-    handleSortMonthEval = (evaluations) => {
+    const handleSortMonthEval = (evaluations) => {
         const sortedEvaluations = evaluations.sort((a, b) => new Date(b.evaluatingMonth) - new Date(a.evaluatingMonth));
         return sortedEvaluations;
     }
 
     // convert ISODate to String hh:mm AM/PM
-    formatTime(date) {
+    function formatTime(date) {
         return dayjs(date).format("DD-MM-YYYY hh:mm A")
     }
 
-    taskStatusColor = (status) => {
+    const taskStatusColor = (status) => {
         switch (status) {
             case "inprocess":
                 return "#385898";
@@ -718,7 +682,7 @@ class DetailTaskTab extends Component {
         }
     }
 
-    taskPriorityColor = (priority) => {
+    const taskPriorityColor = (priority) => {
         switch (priority) {
             case 5:
                 return "#ff0707";
@@ -733,755 +697,746 @@ class DetailTaskTab extends Component {
         }
     }
 
-    render() {
-        const { tasks, performtasks, user, translate, role } = this.props;
-        const { showToolbar, id, isProcess } = this.props; // props form parent component ( task, id, showToolbar, onChangeTaskRole() )
-        const { currentUser, roles, currentRole, collapseInfo,
-            showEdit, showEndTask, showEvaluate, showRequestClose,
-            showMore, showCopy, showSaveAsTemplate
-        } = this.state
+    let task;
+    let codeInProcess, typeOfTask, statusTask, checkInactive = true, evaluations, evalList = [];
+    // Các biến dùng trong phần Nhắc Nhở
+    let warning = false, checkEvaluate, checkConfirmTask, checkEvaluationTaskAction, checkEvaluationTaskAndKpiLink, checkDeadlineForEvaluation, checkConfirmAssginOfOrganizationalUnit;
+    // Các biến dùng cho biểu đồ đóng góp thời gian
+    let hoursSpentOfEmployeeInTask, hoursSpentOfEmployeeInEvaluation = {};
+    // Các biến check trưởng đơn vị phối hợp
+    let employeeCollaboratedWithUnitSelectBox;
 
-        let task;
-        let codeInProcess, typeOfTask, statusTask, checkInactive = true, evaluations, evalList = [];
-        // Các biến dùng trong phần Nhắc Nhở
-        let warning = false, checkEvaluate, checkConfirmTask, checkEvaluationTaskAction, checkEvaluationTaskAndKpiLink, checkDeadlineForEvaluation, checkConfirmAssginOfOrganizationalUnit;
-        // Các biến dùng cho biểu đồ đóng góp thời gian
-        let hoursSpentOfEmployeeInTask, hoursSpentOfEmployeeInEvaluation = {};
-        // Các biến check trưởng đơn vị phối hợp
-        let employeeCollaboratedWithUnitSelectBox;
+    if (isProcess) {
+        task = props.task
+    }
+    else if (Object.entries(performtasks).length > 0) {
+        task = performtasks.task;
+    }
 
-        if (isProcess) {
-            task = this.props.task
+    if (task) {
+        codeInProcess = task.codeInProcess;
+        if (codeInProcess) {
+            let splitter = codeInProcess.split("_");
+            typeOfTask = splitter[0];
         }
-        else if (Object.entries(performtasks).length > 0) {
-            task = performtasks.task;
-        }
+    }
 
-        if (task) {
-            codeInProcess = task.codeInProcess;
-            if (codeInProcess) {
-                let splitter = codeInProcess.split("_");
-                typeOfTask = splitter[0];
+    // kiểm tra công việc chỉ có người thực hiện
+    let checkHasAccountable = true;
+    if (task && task.accountableEmployees && task.accountableEmployees.length === 0) {
+        checkHasAccountable = false;
+    }
+
+    if (task) {
+        statusTask = task.status;
+    }
+    if (task) {
+        checkInactive = task.inactiveEmployees && task.inactiveEmployees.indexOf(currentUser) === -1
+    }; // return true if user is active user
+    if (task && task.evaluations && task.evaluations.length !== 0) {
+        evaluations = task.evaluations; //.reverse()
+    }
+
+    // thêm giá trị prevDate vào evaluation
+    if (evaluations && evaluations.length > 0) {
+        for (let i = 0; i < evaluations.length; i++) {
+            let prevEval;
+            let startDate = task.startDate;
+            let prevDate = startDate;
+            let splitter = formatDate(evaluations[i].evaluatingMonth).split("-");
+
+            let dateOfEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+            let dateOfPrevEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+            let newMonth = dateOfPrevEval.getMonth() - 1;
+            if (newMonth < 0) {
+                newMonth += 12;
+                dateOfPrevEval.setYear(dateOfPrevEval.getFullYear() - 1);
             }
-        }
+            dateOfPrevEval.setDate(15);
+            dateOfPrevEval.setMonth(newMonth);
 
-        // kiểm tra công việc chỉ có người thực hiện
-        let checkHasAccountable = true;
-        if (task && task.accountableEmployees && task.accountableEmployees.length === 0) {
-            checkHasAccountable = false;
-        }
+            let monthOfPrevEval = dateOfPrevEval.getMonth();
+            let yearOfPrevEval = dateOfPrevEval.getFullYear();
 
-        if (task) {
-            statusTask = task.status;
-        }
-        if (task) {
-            checkInactive = task.inactiveEmployees && task.inactiveEmployees.indexOf(currentUser) === -1
-        }; // return true if user is active user
-        if (task && task.evaluations && task.evaluations.length !== 0) {
-            evaluations = task.evaluations; //.reverse()
-        }
-
-        // thêm giá trị prevDate vào evaluation
-        if (evaluations && evaluations.length > 0) {
-            for (let i = 0; i < evaluations.length; i++) {
-                let prevEval;
-                let startDate = task.startDate;
-                let prevDate = startDate;
-                let splitter = this.formatDate(evaluations[i].evaluatingMonth).split("-");
-
-                let dateOfEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
-                let dateOfPrevEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
-                let newMonth = dateOfPrevEval.getMonth() - 1;
-                if (newMonth < 0) {
-                    newMonth += 12;
-                    dateOfPrevEval.setYear(dateOfPrevEval.getFullYear() - 1);
+            prevEval = evaluations.find(e => (monthOfPrevEval === new Date(e.evaluatingMonth).getMonth() && yearOfPrevEval === new Date(e.evaluatingMonth).getFullYear()));
+            if (prevEval) {
+                prevDate = prevEval.evaluatingMonth;
+            } else {
+                let strPrevMonth = `${monthOfPrevEval + 1}-${yearOfPrevEval}`
+                // trong TH k có đánh giá tháng trước, so sánh tháng trước với tháng start date
+                if (!((yearOfPrevEval === new Date(startDate).getFullYear() && monthOfPrevEval < new Date(startDate).getMonth()) // bắt đầu tháng bất kì khác tháng 1
+                    || (yearOfPrevEval < new Date(startDate).getFullYear()) // TH bắt đầu là tháng 1 - chọn đánh giá tháng 1
+                )) {
+                    prevDate = moment(strPrevMonth, 'MM-YYYY').endOf("month").toDate();
                 }
-                dateOfPrevEval.setDate(15);
-                dateOfPrevEval.setMonth(newMonth);
-
-                let monthOfPrevEval = dateOfPrevEval.getMonth();
-                let yearOfPrevEval = dateOfPrevEval.getFullYear();
-
-                prevEval = evaluations.find(e => (monthOfPrevEval === new Date(e.evaluatingMonth).getMonth() && yearOfPrevEval === new Date(e.evaluatingMonth).getFullYear()));
-                if (prevEval) {
-                    prevDate = prevEval.evaluatingMonth;
-                } else {
-                    let strPrevMonth = `${monthOfPrevEval + 1}-${yearOfPrevEval}`
-                    // trong TH k có đánh giá tháng trước, so sánh tháng trước với tháng start date
-                    if (!((yearOfPrevEval === new Date(startDate).getFullYear() && monthOfPrevEval < new Date(startDate).getMonth()) // bắt đầu tháng bất kì khác tháng 1
-                        || (yearOfPrevEval < new Date(startDate).getFullYear()) // TH bắt đầu là tháng 1 - chọn đánh giá tháng 1
-                    )) {
-                        prevDate = moment(strPrevMonth, 'MM-YYYY').endOf("month").toDate();
-                    }
-                }
-                evalList.push({ ...evaluations[i], prevDate: prevDate })
             }
+            evalList.push({ ...evaluations[i], prevDate: prevDate })
         }
+    }
 
-        evalList = this.handleSortMonthEval(evalList);
+    evalList = handleSortMonthEval(evalList);
 
-        // Xử lý dữ liệu phần Nhắc nhở
-        checkEvaluate = this.remindEvaluateTaskOnThisMonth(task);
-        checkConfirmTask = this.checkConfirmTask(task);
-        checkEvaluationTaskAction = this.checkEvaluationTaskAction(task);
-        checkEvaluationTaskAndKpiLink = this.checkEvaluationTaskAndKpiLink(task);
-        checkDeadlineForEvaluation = this.checkDeadlineForEvaluation(task);
-        checkConfirmAssginOfOrganizationalUnit = this.checkConfirmAssginOfOrganizationalUnit(task);
-        warning = (statusTask === "inprocess") && ((checkEvaluate) || (checkConfirmTask && checkConfirmTask.checkConfirm)
-            || (checkEvaluationTaskAction && checkEvaluationTaskAction.checkEvaluationTaskAction)
-            || (checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkEvaluationTask)
-            || (checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkKpiLink)
-            || (checkDeadlineForEvaluation && checkDeadlineForEvaluation.checkDeadlineForEvaluation)
-            || (checkInactive && codeInProcess && (currentRole === "accountable" || (currentRole === "responsible" && checkHasAccountable === false))))
-            || (checkConfirmAssginOfOrganizationalUnit.checkConfirm)
-            || (currentRole === "accountable" && task?.requestToCloseTask?.requestStatus === 1);
+    // Xử lý dữ liệu phần Nhắc nhở
+    checkEvaluate = remindEvaluateTaskOnThisMonth(task);
+    checkConfirmTask = handleCheckConfirmTask(task);
+    checkEvaluationTaskAction = handleCheckEvaluationTaskAction(task);
+    checkEvaluationTaskAndKpiLink = handleCheckEvaluationTaskAndKpiLink(task);
+    checkDeadlineForEvaluation = handleCheckDeadlineForEvaluation(task);
+    checkConfirmAssginOfOrganizationalUnit = handleCheckConfirmAssginOfOrganizationalUnit(task);
+    warning = (statusTask === "inprocess") && ((checkEvaluate) || (checkConfirmTask && checkConfirmTask.checkConfirm)
+        || (checkEvaluationTaskAction && checkEvaluationTaskAction.checkEvaluationTaskAction)
+        || (checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkEvaluationTask)
+        || (checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkKpiLink)
+        || (checkDeadlineForEvaluation && checkDeadlineForEvaluation.checkDeadlineForEvaluation)
+        || (checkInactive && codeInProcess && (currentRole === "accountable" || (currentRole === "responsible" && checkHasAccountable === false))))
+        || (checkConfirmAssginOfOrganizationalUnit.checkConfirm)
+        || (currentRole === "accountable" && task?.requestToCloseTask?.requestStatus === 1);
 
-        // Xử lý dữ liệu biểu đồ đóng góp thời gian công việc
-        if (task && task.hoursSpentOnTask) {
-            hoursSpentOfEmployeeInTask = {};
-            for (let i = 0; i < task.timesheetLogs.length; i++) {
-                let tsheetlog = task.timesheetLogs[i];
+    // Xử lý dữ liệu biểu đồ đóng góp thời gian công việc
+    if (task && task.hoursSpentOnTask) {
+        hoursSpentOfEmployeeInTask = {};
+        for (let i = 0; i < task.timesheetLogs.length; i++) {
+            let tsheetlog = task.timesheetLogs[i];
 
-                if (tsheetlog && tsheetlog.stoppedAt && tsheetlog.creator) {
-                    let times = hoursSpentOfEmployeeInTask[tsheetlog.creator.name] ? hoursSpentOfEmployeeInTask[tsheetlog.creator.name] : 0;
+            if (tsheetlog && tsheetlog.stoppedAt && tsheetlog.creator) {
+                let times = hoursSpentOfEmployeeInTask[tsheetlog.creator.name] ? hoursSpentOfEmployeeInTask[tsheetlog.creator.name] : 0;
 
-                    if (tsheetlog.acceptLog) {
-                        hoursSpentOfEmployeeInTask[tsheetlog.creator.name] = times + tsheetlog.duration;
-                    }
+                if (tsheetlog.acceptLog) {
+                    hoursSpentOfEmployeeInTask[tsheetlog.creator.name] = times + tsheetlog.duration;
                 }
             }
         }
+    }
 
-        if (task && task.evaluations && task.evaluations.length !== 0) {
-            task.evaluations.map(item => {
-                if (item.results && item.results.length !== 0) {
-                    hoursSpentOfEmployeeInEvaluation[item.evaluatingMonth] = {};
+    if (task && task.evaluations && task.evaluations.length !== 0) {
+        task.evaluations.map(item => {
+            if (item.results && item.results.length !== 0) {
+                hoursSpentOfEmployeeInEvaluation[item.evaluatingMonth] = {};
 
-                    item.results.map(result => {
-                        if (result.employee) {
-                            if (!hoursSpentOfEmployeeInEvaluation[item.evaluatingMonth][result.employee.name]) {
-                                if (result.hoursSpent) {
-                                    hoursSpentOfEmployeeInEvaluation[item.evaluatingMonth][result.employee.name] = Number.parseFloat(result.hoursSpent);
-                                }
-                            } else {
-                                hoursSpentOfEmployeeInEvaluation[item.evaluatingMonth][result.employee.name] = hoursSpentOfEmployeeInEvaluation[item.evaluatingMonth][result.employee.name] + result.hoursSpent ? Number.parseFloat(result.hoursSpent) : 0;
+                item.results.map(result => {
+                    if (result.employee) {
+                        if (!hoursSpentOfEmployeeInEvaluation[item.evaluatingMonth][result.employee.name]) {
+                            if (result.hoursSpent) {
+                                hoursSpentOfEmployeeInEvaluation[item.evaluatingMonth][result.employee.name] = Number.parseFloat(result.hoursSpent);
                             }
+                        } else {
+                            hoursSpentOfEmployeeInEvaluation[item.evaluatingMonth][result.employee.name] = hoursSpentOfEmployeeInEvaluation[item.evaluatingMonth][result.employee.name] + result.hoursSpent ? Number.parseFloat(result.hoursSpent) : 0;
                         }
-                    })
-                } else {
-                    hoursSpentOfEmployeeInEvaluation[item.evaluatingMonth] = null;
-                }
-            })
-        }
+                    }
+                })
+            } else {
+                hoursSpentOfEmployeeInEvaluation[item.evaluatingMonth] = null;
+            }
+        })
+    }
 
-        // Xử lý phần đơn vị phối hợp
-        if (task) {
-            employeeCollaboratedWithUnitSelectBox = this.setSelectBoxOfUserSameDepartmentCollaborated(task);
-        }
+    // Xử lý phần đơn vị phối hợp
+    if (task) {
+        employeeCollaboratedWithUnitSelectBox = setSelectBoxOfUserSameDepartmentCollaborated(task);
+    }
 
-        const checkCurrentRoleIsManager = role && role.item &&
-            role.item.parents.length > 0 && role.item.parents.filter(o => o.name === ROOT_ROLE.MANAGER)
+    const checkCurrentRoleIsManager = role && role.item &&
+        role.item.parents.length > 0 && role.item.parents.filter(o => o.name === ROOT_ROLE.MANAGER)
 
-        return (
-            <React.Fragment>
-                {(showToolbar) &&
-                    <div style={{ marginLeft: "-10px" }}>
-                        <a className="btn btn-app" onClick={this.refresh} title="Refresh">
-                            <i className="fa fa-refresh" style={{ fontSize: "16px" }} aria-hidden="true" ></i>{translate('task.task_management.detail_refresh')}
+    return (
+        <React.Fragment>
+            {(showToolbar) &&
+                <div style={{ marginLeft: "-10px" }}>
+                    <a className="btn btn-app" onClick={refresh} title="Refresh">
+                        <i className="fa fa-refresh" style={{ fontSize: "16px" }} aria-hidden="true" ></i>{translate('task.task_management.detail_refresh')}
+                    </a>
+
+                    {((currentRole === "responsible" || currentRole === "accountable") && checkInactive) &&
+                        <a className="btn btn-app" onClick={() => handleShowEdit(id, currentRole, checkHasAccountable)} title="Chỉnh sửa thông tin chung">
+                            <i className="fa fa-edit" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_edit')}
                         </a>
+                    }
+                    {
+                        performtasks?.task?.status !== "finished" &&
+                        <React.Fragment>
+                            {((currentRole === "consulted" || currentRole === "responsible" || currentRole === "accountable") && checkInactive) &&
+                                <a className="btn btn-app" onClick={() => !performtasks.currentTimer && startTimer(task._id, currentUser)} title="Bắt đầu thực hiện công việc" disabled={performtasks.currentTimer}>
+                                    <i className="fa fa-clock-o" style={{ fontSize: "16px" }} aria-hidden="true" ></i>{translate('task.task_management.detail_start_timer')}
+                                </a>
+                            }
+                        </React.Fragment>
+                    }
 
-                        {((currentRole === "responsible" || currentRole === "accountable") && checkInactive) &&
-                            <a className="btn btn-app" onClick={() => this.handleShowEdit(id, currentRole, checkHasAccountable)} title="Chỉnh sửa thông tin chung">
-                                <i className="fa fa-edit" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_edit')}
+                    {((currentRole === "consulted" || currentRole === "responsible" || currentRole === "accountable") && checkInactive) &&
+                        <React.Fragment>
+                            <a className="btn btn-app" onClick={() => handleShowEvaluate(id, currentRole)} title={translate('task.task_management.detail_evaluate')}>
+                                <i className="fa fa-calendar-check-o" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_evaluate')}
                             </a>
-                        }
-                        {
-                            performtasks?.task?.status !== "finished" &&
-                            <React.Fragment>
-                                {((currentRole === "consulted" || currentRole === "responsible" || currentRole === "accountable") && checkInactive) &&
-                                    <a className="btn btn-app" onClick={() => !performtasks.currentTimer && this.startTimer(task._id, currentUser)} title="Bắt đầu thực hiện công việc" disabled={performtasks.currentTimer}>
-                                        <i className="fa fa-clock-o" style={{ fontSize: "16px" }} aria-hidden="true" ></i>{translate('task.task_management.detail_start_timer')}
+                        </React.Fragment>
+                    }
+                    {((currentRole === "responsible" || currentRole === "accountable") && checkInactive) &&
+                        <React.Fragment>
+                            <a className="btn btn-app" onClick={() => handleCopyTask(id, currentRole)} title={translate('task.task_management.detail_copy_task')}>
+                                <i className="fa fa-clone" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_copy_task')}
+                            </a>
+                        </React.Fragment>
+                    }
+                    {((currentRole === "accountable" || currentRole === "responsible") && checkInactive) && checkCurrentRoleIsManager && checkCurrentRoleIsManager.length > 0 &&
+                        <React.Fragment>
+                            <a className="btn btn-app" onClick={() => handleSaveAsTemplate(id, currentRole)} title={translate('task.task_management.detail_save_as_template')}>
+                                <i className="fa fa-floppy-o" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_save_as_template')}
+                            </a>
+                        </React.Fragment>
+                    }
+
+                    {task && statusTask !== "finished" && (((currentRole === "responsible" && task?.requestToCloseTask?.requestStatus !== 3) || (currentRole === "accountable" && task?.requestToCloseTask?.requestStatus === 1)) && checkInactive) && checkHasAccountable
+                        && <a className="btn btn-app" onClick={() => handleShowRequestCloseTask(id)} title={currentRole === "responsible" ? translate('task.task_perform.request_close_task') : translate('task.task_perform.approval_close_task')}>
+                            <i className="fa fa-external-link-square" style={{ fontSize: "16px" }}></i>{currentRole === "responsible" ? translate('task.task_perform.request_close_task') : translate('task.task_perform.approval_close_task')}
+                        </a>
+                    }
+                    {task && statusTask !== "inprocess" && statusTask !== "wait_for_approval" && checkInactive
+                        && <a className="btn btn-app" onClick={() => handleOpenTaskAgain(id)} title={translate('task.task_perform.open_task_again')}>
+                            <i className="fa fa-rocket" style={{ fontSize: "16px" }}></i>{translate('task.task_perform.open_task_again')}
+                        </a>
+                    }
+
+                    {
+                        (collapseInfo === false) ?
+                            <a className="btn btn-app" data-toggle="collapse" href="#info" onClick={handleChangeCollapseInfo} role="button" aria-expanded="false" aria-controls="info">
+                                <i className="fa fa-info" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_hide_info')}
+                            </a> :
+                            <a className="btn btn-app" data-toggle="collapse" href="#info" onClick={handleChangeCollapseInfo} role="button" aria-expanded="false" aria-controls="info">
+                                <i className="fa fa-info" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_show_info')}
+                            </a>
+                    }
+
+                    {roles && roles.length > 1 &&
+                        <div className="dropdown" style={{ margin: "10px 0px 0px 10px", display: "inline-block" }}>
+                            <a className="btn btn-app" style={{ margin: "-10px 0px 0px 0px" }} data-toggle="dropdown">
+                                <i className="fa fa-user" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_choose_role')}
+                            </a>
+                            <ul className="dropdown-menu">
+                                {roles.map(
+                                    (item, index) => { return <li className={item.value === currentRole ? "active" : undefined} key={index}><a href="#" onClick={() => changeRole(item.value)}>{item.name}</a></li> }
+                                )}
+                            </ul>
+                        </div>
+                    }
+                </div>
+            }
+
+            <div>
+                <div id="info" className="collapse in">
+                    {/* Thông tin chung */}
+                    {/* Nhắc nhở */}
+                    {
+                        task && warning &&
+                        <div className="description-box warning">
+                            <h4>{translate('task.task_management.warning')}</h4>
+
+                            {/* Phê duyệt yêu cầu kết thúc công việc */}
+                            {currentRole === "accountable" && task?.requestToCloseTask?.requestStatus === 1
+                                && <div>
+                                    <strong>Công việc đang chờ phê duyệt yêu cầu kết thúc:</strong>
+                                    <a style={{ cursor: "pointer" }} onClick={() => handleShowRequestCloseTask(id)}>
+                                        Phê duyệt yêu cầu
                                     </a>
-                                }
-                            </React.Fragment>
-                        }
+                                </div>
+                            }
 
-                        {((currentRole === "consulted" || currentRole === "responsible" || currentRole === "accountable") && checkInactive) &&
-                            <React.Fragment>
-                                <a className="btn btn-app" onClick={() => this.handleShowEvaluate(id, currentRole)} title={translate('task.task_management.detail_evaluate')}>
-                                    <i className="fa fa-calendar-check-o" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_evaluate')}
-                                </a>
-                            </React.Fragment>
-                        }
-                        {((currentRole === "responsible" || currentRole === "accountable") && checkInactive) &&
-                            <React.Fragment>
-                                <a className="btn btn-app" onClick={() => this.handleCopyTask(id, currentRole)} title={translate('task.task_management.detail_copy_task')}>
-                                    <i className="fa fa-clone" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_copy_task')}
-                                </a>
-                            </React.Fragment>
-                        }
-                        {((currentRole === "accountable" || currentRole === "responsible") && checkInactive) && checkCurrentRoleIsManager && checkCurrentRoleIsManager.length > 0 &&
-                            <React.Fragment>
-                                <a className="btn btn-app" onClick={() => this.handleSaveAsTemplate(id, currentRole)} title={translate('task.task_management.detail_save_as_template')}>
-                                    <i className="fa fa-floppy-o" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_save_as_template')}
-                                </a>
-                            </React.Fragment>
-                        }
+                            {/* Kích hoạt công việc phía sau trong quy trình */}
+                            {statusTask === "inprocess" && checkInactive && codeInProcess && (currentRole === "accountable" || (currentRole === "responsible" && checkHasAccountable === false)) &&
+                                <div>
+                                    <strong>{translate('task.task_perform.is_task_process')}:</strong>
+                                    <a style={{ cursor: "pointer" }} onClick={() => handleEndTask(id, "inprocess", codeInProcess, typeOfTask)}>
+                                        {translate('task.task_perform.following_task')}
+                                    </a>
+                                </div>
+                            }
 
-                        {task && statusTask !== "finished" && (((currentRole === "responsible" && task?.requestToCloseTask?.requestStatus !== 3) || (currentRole === "accountable" && task?.requestToCloseTask?.requestStatus === 1)) && checkInactive) && checkHasAccountable
-                            && <a className="btn btn-app" onClick={() => this.handleShowRequestCloseTask(id)} title={currentRole === "responsible" ? translate('task.task_perform.request_close_task') : translate('task.task_perform.approval_close_task')}>
-                                <i className="fa fa-external-link-square" style={{ fontSize: "16px" }}></i>{currentRole === "responsible" ? translate('task.task_perform.request_close_task') : translate('task.task_perform.approval_close_task')}
-                            </a>
-                        }
-                        {task && statusTask !== "inprocess" && statusTask !== "wait_for_approval" && checkInactive
-                            && <a className="btn btn-app" onClick={() => this.handleOpenTaskAgain(id)} title={translate('task.task_perform.open_task_again')}>
-                                <i className="fa fa-rocket" style={{ fontSize: "16px" }}></i>{translate('task.task_perform.open_task_again')}
-                            </a>
-                        }
+                            {/* Số hoạt động chưa thực hiện */}
+                            {
+                                getTaskActionsNotPerform(task.taskActions) > 0 &&
+                                <div>
+                                    <strong>{translate('task.task_perform.actions_not_perform')}</strong>
+                                    <span className="text-red">{getTaskActionsNotPerform(task.taskActions)}</span>
+                                </div>
+                            }
 
-                        {
-                            (collapseInfo === false) ?
-                                <a className="btn btn-app" data-toggle="collapse" href="#info" onClick={this.handleChangeCollapseInfo} role="button" aria-expanded="false" aria-controls="info">
-                                    <i className="fa fa-info" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_hide_info')}
-                                </a> :
-                                <a className="btn btn-app" data-toggle="collapse" href="#info" onClick={this.handleChangeCollapseInfo} role="button" aria-expanded="false" aria-controls="info">
-                                    <i className="fa fa-info" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_show_info')}
-                                </a>
-                        }
+                            {/* Xác nhận công việc */}
+                            {
+                                checkConfirmTask && checkConfirmTask.checkConfirmCurrentUser
+                                && <div><strong>{translate('task.task_management.you_need')} <a style={{ cursor: "pointer" }} onClick={() => confirmTask(task)}>{translate('task.task_management.confirm_task')}</a></strong></div>
+                            }
+                            {
+                                checkConfirmTask && checkConfirmTask.checkConfirmOtherUser
+                                && <div>
+                                    <strong>{translate('task.task_management.not_confirm')}:</strong>
+                                    {
+                                        checkConfirmTask.listEmployeeNotConfirm.length !== 0
+                                        && checkConfirmTask.listEmployeeNotConfirm.map((item, index) => {
+                                            let seperator = index !== 0 ? ", " : "";
+                                            return <span key={index}>{seperator}{item.name}</span>
+                                        })
+                                    }
+                                </div>
+                            }
 
-                        {roles && roles.length > 1 &&
-                            <div className="dropdown" style={{ margin: "10px 0px 0px 10px", display: "inline-block" }}>
-                                <a className="btn btn-app" style={{ margin: "-10px 0px 0px 0px" }} data-toggle="dropdown">
-                                    <i className="fa fa-user" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_choose_role')}
-                                </a>
-                                <ul className="dropdown-menu">
-                                    {roles.map(
-                                        (item, index) => { return <li className={item.value === currentRole ? "active" : undefined} key={index}><a href="#" onClick={() => this.changeRole(item.value)}>{item.name}</a></li> }
-                                    )}
-                                </ul>
+                            {/* Chưa có đánh giá */}
+                            {
+                                task.status === "inprocess" && checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkEvaluationTask
+                                && <div><strong>{translate('task.task_management.not_have_evaluation')}</strong></div>
+                            }
+
+                            {/* Nhắc nhở đánh giá */
+                                task.status === "inprocess" && checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkEvaluationTask && checkEvaluate
+                                && <div><strong>{translate("task.task_management.warning_evaluate")}</strong></div>
+                            }
+
+                            {/* Chưa liên kết KPI */}
+                            {
+                                task.status === "inprocess" && checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkKpiLink
+                                && <div>
+                                    <strong>{translate('task.task_management.detail_not_kpi')}:</strong>
+                                    {
+                                        checkEvaluationTaskAndKpiLink.listEmployeeNotKpiLink.length !== 0
+                                        && checkEvaluationTaskAndKpiLink.listEmployeeNotKpiLink.map((item, index) => {
+                                            let seperator = index !== 0 ? ", " : "";
+                                            return <span key={index}>{seperator}{item.name}</span>
+                                        })
+                                    }
+                                </div>
+                            }
+
+                            {/* Chưa đánh giá hoạt động */}
+                            {
+                                checkEvaluationTaskAction && checkEvaluationTaskAction.checkEvaluationTaskAction
+                                && <div>
+                                    <strong>{translate('task.task_management.action_not_rating')}:</strong><span style={{ color: "red" }}>{checkEvaluationTaskAction.numberOfTaskActionNotEvaluate}</span>
+                                </div>
+                            }
+
+                            {/* Chưa xác nhận phân công công việc */}
+                            {
+                                checkConfirmAssginOfOrganizationalUnit && checkConfirmAssginOfOrganizationalUnit.checkConfirm
+                                && <div>
+                                    <strong>{translate('task.task_management.unit_not_confirm_assigned_task')}:</strong>
+                                    {
+                                        checkConfirmAssginOfOrganizationalUnit.unitHasNotConfirm && checkConfirmAssginOfOrganizationalUnit.unitHasNotConfirm.length !== 0
+                                        && checkConfirmAssginOfOrganizationalUnit.unitHasNotConfirm.map((item, index) => {
+                                            let seperator = index !== 0 ? ", " : "";
+                                            return <span key={index}>{seperator}{item}</span>
+                                        })
+                                    }
+                                </div>
+                            }
+
+                            {/* Thời hạn chỉnh sửa thông tin */}
+                            {
+                                checkDeadlineForEvaluation && checkDeadlineForEvaluation.checkDeadlineForEvaluation
+                                && <div>
+                                    <strong>{translate('task.task_management.left_can_edit_task')}:</strong><span style={{ color: "red" }}>{checkDeadlineForEvaluation.deadlineForEvaluation}</span>
+                                </div>
+                            }
+                        </div>
+                    }
+
+                    {/* Phân công công việc cho nhân viên */}
+                    {employeeCollaboratedWithUnitSelectBox && employeeCollaboratedWithUnitSelectBox.length !== 0
+                        && employeeCollaboratedWithUnitSelectBox.map(item =>
+                            <CollaboratedWithOrganizationalUnits
+                                key={item.id}
+                                task={task}
+                                employeeSelectBox={item}
+                                unitId={item.id}
+                            />
+                        )
+                    }
+
+
+                    {/* Các trường thông tin cơ bản */}
+                    {task &&
+                        <div className="description-box">
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                                <i style={{ fontSize: '17px', marginRight: '5px' }} className="fa fa-info-circle" aria-hidden="true"></i>
+                                <h4>{translate('task.task_management.detail_general_info')}</h4>
                             </div>
-                        }
-                    </div>
-                }
 
-                <div>
-                    <div id="info" className="collapse in">
-                        {/* Thông tin chung */}
-                        {/* Nhắc nhở */}
-                        {
-                            task && warning &&
-                            <div className="description-box warning">
-                                <h4>{translate('task.task_management.warning')}</h4>
-
-                                {/* Phê duyệt yêu cầu kết thúc công việc */}
-                                {currentRole === "accountable" && task?.requestToCloseTask?.requestStatus === 1
-                                    && <div>
-                                        <strong>Công việc đang chờ phê duyệt yêu cầu kết thúc:</strong>
-                                        <a style={{ cursor: "pointer" }} onClick={() => this.handleShowRequestCloseTask(id)}>
-                                            Phê duyệt yêu cầu
-                                        </a>
-                                    </div>
-                                }
-
-                                {/* Kích hoạt công việc phía sau trong quy trình */}
-                                {statusTask === "inprocess" && checkInactive && codeInProcess && (currentRole === "accountable" || (currentRole === "responsible" && checkHasAccountable === false)) &&
-                                    <div>
-                                        <strong>{translate('task.task_perform.is_task_process')}:</strong>
-                                        <a style={{ cursor: "pointer" }} onClick={() => this.handleEndTask(id, "inprocess", codeInProcess, typeOfTask)}>
-                                            {translate('task.task_perform.following_task')}
-                                        </a>
-                                    </div>
-                                }
-
-                                {/* Số hoạt động chưa thực hiện */}
-                                {
-                                    this.getTaskActionsNotPerform(task.taskActions) > 0 &&
-                                    <div>
-                                        <strong>{translate('task.task_perform.actions_not_perform')}</strong>
-                                        <span className="text-red">{this.getTaskActionsNotPerform(task.taskActions)}</span>
-                                    </div>
-                                }
-
-                                {/* Xác nhận công việc */}
-                                {
-                                    checkConfirmTask && checkConfirmTask.checkConfirmCurrentUser
-                                    && <div><strong>{translate('task.task_management.you_need')} <a style={{ cursor: "pointer" }} onClick={() => this.confirmTask(task)}>{translate('task.task_management.confirm_task')}</a></strong></div>
-                                }
-                                {
-                                    checkConfirmTask && checkConfirmTask.checkConfirmOtherUser
-                                    && <div>
-                                        <strong>{translate('task.task_management.not_confirm')}:</strong>
-                                        {
-                                            checkConfirmTask.listEmployeeNotConfirm.length !== 0
-                                            && checkConfirmTask.listEmployeeNotConfirm.map((item, index) => {
-                                                let seperator = index !== 0 ? ", " : "";
-                                                return <span key={index}>{seperator}{item.name}</span>
-                                            })
-                                        }
-                                    </div>
-                                }
-
-                                {/* Chưa có đánh giá */}
-                                {
-                                    task.status === "inprocess" && checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkEvaluationTask
-                                    && <div><strong>{translate('task.task_management.not_have_evaluation')}</strong></div>
-                                }
-
-                                {/* Nhắc nhở đánh giá */
-                                    task.status === "inprocess" && checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkEvaluationTask && checkEvaluate
-                                    && <div><strong>{translate("task.task_management.warning_evaluate")}</strong></div>
-                                }
-
-                                {/* Chưa liên kết KPI */}
-                                {
-                                    task.status === "inprocess" && checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkKpiLink
-                                    && <div>
-                                        <strong>{translate('task.task_management.detail_not_kpi')}:</strong>
-                                        {
-                                            checkEvaluationTaskAndKpiLink.listEmployeeNotKpiLink.length !== 0
-                                            && checkEvaluationTaskAndKpiLink.listEmployeeNotKpiLink.map((item, index) => {
-                                                let seperator = index !== 0 ? ", " : "";
-                                                return <span key={index}>{seperator}{item.name}</span>
-                                            })
-                                        }
-                                    </div>
-                                }
-
-                                {/* Chưa đánh giá hoạt động */}
-                                {
-                                    checkEvaluationTaskAction && checkEvaluationTaskAction.checkEvaluationTaskAction
-                                    && <div>
-                                        <strong>{translate('task.task_management.action_not_rating')}:</strong><span style={{ color: "red" }}>{checkEvaluationTaskAction.numberOfTaskActionNotEvaluate}</span>
-                                    </div>
-                                }
-
-                                {/* Chưa xác nhận phân công công việc */}
-                                {
-                                    checkConfirmAssginOfOrganizationalUnit && checkConfirmAssginOfOrganizationalUnit.checkConfirm
-                                    && <div>
-                                        <strong>{translate('task.task_management.unit_not_confirm_assigned_task')}:</strong>
-                                        {
-                                            checkConfirmAssginOfOrganizationalUnit.unitHasNotConfirm && checkConfirmAssginOfOrganizationalUnit.unitHasNotConfirm.length !== 0
-                                            && checkConfirmAssginOfOrganizationalUnit.unitHasNotConfirm.map((item, index) => {
-                                                let seperator = index !== 0 ? ", " : "";
-                                                return <span key={index}>{seperator}{item}</span>
-                                            })
-                                        }
-                                    </div>
-                                }
-
-                                {/* Thời hạn chỉnh sửa thông tin */}
-                                {
-                                    checkDeadlineForEvaluation && checkDeadlineForEvaluation.checkDeadlineForEvaluation
-                                    && <div>
-                                        <strong>{translate('task.task_management.left_can_edit_task')}:</strong><span style={{ color: "red" }}>{checkDeadlineForEvaluation.deadlineForEvaluation}</span>
-                                    </div>
-                                }
+                            <div><strong>{translate('task.task_management.detail_link')}:</strong> <a href={`/task?taskId=${task._id}`} target="_blank">{task.name}</a></div>
+                            <div><strong>{translate('task.task_management.detail_time')}:</strong> {formatTime(task && task.startDate)} <i className="fa fa-fw fa-caret-right"></i> {formatTime(task && task.endDate)} </div>
+                            <div><strong>{translate('task.task_management.unit_manage_task')}:</strong> {task && task.organizationalUnit ? task.organizationalUnit.name : translate('task.task_management.err_organizational_unit')}</div>
+                            <div>
+                                <strong>{translate('task.task_management.collaborated_with_organizational_units')}: </strong>
+                                <span>
+                                    {task.collaboratedWithOrganizationalUnits.length !== 0
+                                        ? <span>
+                                            {
+                                                task.collaboratedWithOrganizationalUnits.map((item, index) => {
+                                                    let seperator = index !== 0 ? ", " : "";
+                                                    return <span key={index}>{seperator}{item.organizationalUnit && item.organizationalUnit.name}</span>
+                                                })
+                                            }
+                                        </span>
+                                        : <span>{translate('task.task_management.not_collaborated_with_organizational_units')}</span>
+                                    }
+                                </span>
                             </div>
-                        }
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                                <strong>{translate('task.task_management.detail_priority')}:</strong>
+                                <div style={{ display: 'flex', alignItems: 'center' }} >
+                                    <span className="material-icons" style={{ fontSize: "17px", color: taskPriorityColor(task?.priority) }}>priority_high</span>
+                                    <span> {task && formatPriority(task.priority)}</span>
+                                </div>
 
-                        {/* Phân công công việc cho nhân viên */}
-                        {employeeCollaboratedWithUnitSelectBox && employeeCollaboratedWithUnitSelectBox.length !== 0
-                            && employeeCollaboratedWithUnitSelectBox.map(item =>
-                                <CollaboratedWithOrganizationalUnits
-                                    key={item.id}
-                                    task={task}
-                                    employeeSelectBox={item}
-                                    unitId={item.id}
-                                />
-                            )
-                        }
+                            </div>
+                            <div><strong>{translate('task.task_management.detail_status')}:</strong> <span style={{ color: taskStatusColor(task?.status) }}>{task && formatStatus(task.status)}</span></div>
+                            <div style={{ display: 'flex', alignItems: 'center' }}><strong>{translate('task.task_management.detail_progress')}:</strong>
+                                <div className="progress-task" style={{ width: '30%' }}>
+                                    <div className="fillmult" data-width={`${task && task.progress}%`} style={{ width: `${task && task.progress}%`, backgroundColor: task && task.progress < 50 ? "#dc0000" : "#28a745" }}></div>
+                                    <span className="perc"> {task && task.progress}%</span>
+                                </div>
+                            </div>
+                            {
+                                (task && task.taskInformations && task.taskInformations.length !== 0) &&
+                                task.taskInformations.map((info, key) => {
+                                    if (info.type === "date") {
+                                        return <div key={key}><strong>{info.name}:</strong> {info.value ? formatDate(info.value) : translate('task.task_management.detail_not_hasinfo')}</div>
+                                    }
+                                    return <div key={key}>
+                                        <strong>{info.name}:</strong>
+                                        {
+                                            info.value ?
+                                                info.value : Number(info.value) === 0 ? info.value :
+                                                    translate('task.task_management.detail_not_hasinfo')}
+                                    </div>
+                                })
+                            }
 
+                            {/* Mô tả công việc */}
+                            <div>
+                                <strong>{translate('task.task_management.detail_description')}:</strong>
+                                <ShowMoreShowLess
+                                    id={"task-description"}
+                                    isHtmlElement={true}
+                                    characterLimit={200}
+                                >
+                                    <QuillEditor
+                                        id={`description-${task?._id}`}
+                                        toolbar={false}
+                                        quillValueDefault={task?.description}
+                                        maxHeight={180}
+                                        enableDropImage={false}
+                                        enableEdit={false}
+                                        showDetail={{
+                                            enable: true,
+                                            titleShowDetail: translate('task.task_management.detail_description'),
+                                            width: "75%"
+                                        }}
+                                    />
+                                </ShowMoreShowLess>
+                            </div>
+                        </div>
+                    }
 
-                        {/* Các trường thông tin cơ bản */}
+                    <div>
+                        {/* Vai trò */}
                         {task &&
                             <div className="description-box">
                                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                                    <i style={{ fontSize: '17px', marginRight: '5px' }} className="fa fa-info-circle" aria-hidden="true"></i>
-                                    <h4>{translate('task.task_management.detail_general_info')}</h4>
+                                    <span style={{ fontSize: '17px', marginRight: '5px' }} className="material-icons">
+                                        people_alt
+                                </span>
+                                    <h4>
+                                        {translate('task.task_management.role')}
+                                    </h4>
                                 </div>
 
-                                <div><strong>{translate('task.task_management.detail_link')}:</strong> <a href={`/task?taskId=${task._id}`} target="_blank">{task.name}</a></div>
-                                <div><strong>{translate('task.task_management.detail_time')}:</strong> {this.formatTime(task && task.startDate)} <i className="fa fa-fw fa-caret-right"></i> {this.formatTime(task && task.endDate)} </div>
-                                <div><strong>{translate('task.task_management.unit_manage_task')}:</strong> {task && task.organizationalUnit ? task.organizationalUnit.name : translate('task.task_management.err_organizational_unit')}</div>
-                                <div>
-                                    <strong>{translate('task.task_management.collaborated_with_organizational_units')}: </strong>
-                                    <span>
-                                        {task.collaboratedWithOrganizationalUnits.length !== 0
-                                            ? <span>
-                                                {
-                                                    task.collaboratedWithOrganizationalUnits.map((item, index) => {
-                                                        let seperator = index !== 0 ? ", " : "";
-                                                        return <span key={index}>{seperator}{item.organizationalUnit && item.organizationalUnit.name}</span>
-                                                    })
-                                                }
+                                {/* Người thực hiện */}
+                                <strong>{translate('task.task_management.responsible')}:</strong>
+                                <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+                                    {
+                                        task?.responsibleEmployees?.length > 0 && task.responsibleEmployees.map((item, index) => {
+                                            // Nếu người này không còn trong công việc
+                                            if (task?.inactiveEmployees?.some(o => o._id === item._id)) {
+                                                return (
+                                                    <a key={index} title="đã rời khỏi công việc" className="raci-style" style={{ opacity: .5 }}>
+                                                        <img src={process.env.REACT_APP_SERVER + item.avatar} className="img-circle" style={{ width: '20px', height: '20px', borderRadius: '50%', marginRight: '5px' }} alt="User avatar" />
+                                                        <span>{item.name}</span>
+                                                    </a>
+                                                )
+                                            }
+
+                                            return <span key={index} className="raci-style">
+                                                <img src={process.env.REACT_APP_SERVER + item.avatar} className="img-circle" style={{ width: '20px', height: '20px', borderRadius: '50%', marginRight: '5px' }} alt="User avatar" />
+                                                <span>{item.name}</span>
                                             </span>
-                                            : <span>{translate('task.task_management.not_collaborated_with_organizational_units')}</span>
-                                        }
-                                    </span>
+                                        })
+                                    }
                                 </div>
-                                <div style={{ display: 'flex', alignItems: 'center' }}>
-                                    <strong>{translate('task.task_management.detail_priority')}:</strong>
-                                    <div style={{ display: 'flex', alignItems: 'center' }} >
-                                        <span className="material-icons" style={{ fontSize: "17px", color: this.taskPriorityColor(task?.priority) }}>priority_high</span>
-                                        <span> {task && this.formatPriority(task.priority)}</span>
-                                    </div>
 
+                                {/* Người phê duyệt */}
+                                <strong style={{ display: "inline-block", marginTop: '5px' }}>{translate('task.task_management.accountable')}:</strong>
+                                <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+                                    {
+                                        task?.accountableEmployees?.length > 0 && task.accountableEmployees.map((item, index) => {
+                                            // Nếu người này không còn trong công việc
+                                            if (task?.inactiveEmployees?.some(o => o._id === item._id)) {
+                                                return (
+                                                    <a key={index} title="đã rời khỏi công việc" className="raci-style" style={{ opacity: .5 }}>
+                                                        <img src={process.env.REACT_APP_SERVER + item.avatar} className="img-circle" style={{ width: '20px', height: '20px', borderRadius: '50%', marginRight: '5px' }} alt="User avatar" />
+                                                        <span>{item.name}</span>
+                                                    </a>
+                                                )
+                                            }
+
+                                            return <span key={index} className="raci-style">
+                                                <img src={process.env.REACT_APP_SERVER + item.avatar} className="img-circle" style={{ width: '20px', height: '20px', borderRadius: '50%', marginRight: '5px' }} alt="User avatar" />
+                                                <span>{item.name}</span>
+                                            </span>
+                                        })
+                                    }
                                 </div>
-                                <div><strong>{translate('task.task_management.detail_status')}:</strong> <span style={{ color: this.taskStatusColor(task?.status) }}>{task && this.formatStatus(task.status)}</span></div>
-                                <div style={{ display: 'flex', alignItems: 'center' }}><strong>{translate('task.task_management.detail_progress')}:</strong>
-                                    <div className="progress-task" style={{ width: '30%' }}>
-                                        <div className="fillmult" data-width={`${task && task.progress}%`} style={{ width: `${task && task.progress}%`, backgroundColor: task && task.progress < 50 ? "#dc0000" : "#28a745" }}></div>
-                                        <span className="perc"> {task && task.progress}%</span>
-                                    </div>
-                                </div>
+
                                 {
-                                    (task && task.taskInformations && task.taskInformations.length !== 0) &&
-                                    task.taskInformations.map((info, key) => {
-                                        if (info.type === "date") {
-                                            return <div key={key}><strong>{info.name}:</strong> {info.value ? this.formatDate(info.value) : translate('task.task_management.detail_not_hasinfo')}</div>
-                                        }
-                                        return <div key={key}>
-                                            <strong>{info.name}:</strong>
+                                    (task && task.consultedEmployees && task.consultedEmployees.length !== 0) &&
+                                    <div>
+                                        {/* Người hỗ trợ */}
+                                        <strong style={{ display: "inline-block", marginTop: '5px' }}>{translate('task.task_management.consulted')}:</strong>
+                                        <div style={{ display: 'flex', flexWrap: 'wrap' }}>
                                             {
-                                                info.value ?
-                                                    info.value : Number(info.value) === 0 ? info.value :
-                                                        translate('task.task_management.detail_not_hasinfo')}
+                                                task?.consultedEmployees?.length > 0 && task.consultedEmployees.map((item, index) => {
+                                                    // Nếu người này không còn trong công việc
+                                                    if (task?.inactiveEmployees?.some(o => o._id === item._id)) {
+                                                        return (
+                                                            <a key={index} title="đã rời khỏi công việc" className="raci-style" style={{ opacity: .5 }}>
+                                                                <img src={process.env.REACT_APP_SERVER + item.avatar} className="img-circle" style={{ width: '20px', height: '20px', borderRadius: '50%', marginRight: '5px' }} alt="User avatar" />
+                                                                <span>{item.name}</span>
+                                                            </a>
+                                                        )
+                                                    }
+
+                                                    return <span key={index} className="raci-style">
+                                                        <img src={process.env.REACT_APP_SERVER + item.avatar} className="img-circle" style={{ width: '20px', height: '20px', borderRadius: '50%', marginRight: '5px' }} alt="User avatar" />
+                                                        <span>{item.name}</span>
+                                                    </span>
+                                                })
+                                            }
                                         </div>
-                                    })
+                                    </div>
+                                }
+                                {
+                                    (task && task.informedEmployees && task.informedEmployees.length !== 0) &&
+                                    <div>
+                                        {/* Người quan sát */}
+                                        <strong style={{ display: "inline-block", marginTop: '5px' }}>{translate('task.task_management.informed')}:</strong>
+                                        <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+                                            {
+                                                task?.informedEmployees?.length > 0 && task.informedEmployees.map((item, index) => {
+                                                    // Nếu người này không còn trong công việc
+                                                    if (task?.inactiveEmployees?.some(o => o._id === item._id)) {
+                                                        return (
+                                                            <a key={index} title="đã rời khỏi công việc" className="raci-style" style={{ opacity: .5 }}>
+                                                                <img src={process.env.REACT_APP_SERVER + item.avatar} className="img-circle" style={{ width: '20px', height: '20px', borderRadius: '50%', marginRight: '5px' }} alt="User avatar" />
+                                                                <span>{item.name}</span>
+                                                            </a>
+                                                        )
+                                                    }
+
+                                                    return <span key={index} className="raci-style">
+                                                        <img src={process.env.REACT_APP_SERVER + item.avatar} className="img-circle" style={{ width: '20px', height: '20px', borderRadius: '50%', marginRight: '5px' }} alt="User avatar" />
+                                                        <span>{item.name}</span>
+                                                    </span>
+                                                })
+                                            }
+                                        </div>
+                                    </div>
                                 }
 
-                                {/* Mô tả công việc */}
-                                <div>
-                                    <strong>{translate('task.task_management.detail_description')}:</strong>
-                                    <ShowMoreShowLess
-                                        id={"task-description"}
-                                        isHtmlElement={true}
-                                        characterLimit={200}
-                                    >
-                                        <QuillEditor
-                                            id={`description-${task?._id}`}
-                                            toolbar={false}
-                                            quillValueDefault={task?.description}
-                                            maxHeight={180}
-                                            enableDropImage={false}
-                                            enableEdit={false}
-                                            showDetail={{
-                                                enable: true,
-                                                titleShowDetail: translate('task.task_management.detail_description'),
-                                                width: "75%"
-                                            }}
+
+                                {
+                                    hoursSpentOfEmployeeInTask && JSON.stringify(hoursSpentOfEmployeeInTask) !== '{}' &&
+                                    <div>
+                                        <strong>Tổng thời gian đóng góp:</strong>
+                                        <HoursSpentOfEmployeeChart
+                                            refs="totalTime"
+                                            data={hoursSpentOfEmployeeInTask}
                                         />
-                                    </ShowMoreShowLess>
-                                </div>
+                                    </div>
+                                }
                             </div>
                         }
 
+                        {/* Đánh giá công việc */}
                         <div>
-                            {/* Vai trò */}
-                            {task &&
-                                <div className="description-box">
-                                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                                        <span style={{ fontSize: '17px', marginRight: '5px' }} className="material-icons">
-                                            people_alt
-                                    </span>
-                                        <h4>
-                                            {translate('task.task_management.role')}
-                                        </h4>
-                                    </div>
-
-                                    {/* Người thực hiện */}
-                                    <strong>{translate('task.task_management.responsible')}:</strong>
-                                    <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-                                        {
-                                            task?.responsibleEmployees?.length > 0 && task.responsibleEmployees.map((item, index) => {
-                                                // Nếu người này không còn trong công việc
-                                                if (task?.inactiveEmployees?.some(o => o._id === item._id)) {
-                                                    return (
-                                                        <a key={index} title="đã rời khỏi công việc" className="raci-style" style={{ opacity: .5 }}>
-                                                            <img src={process.env.REACT_APP_SERVER + item.avatar} className="img-circle" style={{ width: '20px', height: '20px', borderRadius: '50%', marginRight: '5px' }} alt="User avatar" />
-                                                            <span>{item.name}</span>
-                                                        </a>
-                                                    )
-                                                }
-
-                                                return <span key={index} className="raci-style">
-                                                    <img src={process.env.REACT_APP_SERVER + item.avatar} className="img-circle" style={{ width: '20px', height: '20px', borderRadius: '50%', marginRight: '5px' }} alt="User avatar" />
-                                                    <span>{item.name}</span>
-                                                </span>
-                                            })
-                                        }
-                                    </div>
-
-                                    {/* Người phê duyệt */}
-                                    <strong style={{ display: "inline-block", marginTop: '5px' }}>{translate('task.task_management.accountable')}:</strong>
-                                    <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-                                        {
-                                            task?.accountableEmployees?.length > 0 && task.accountableEmployees.map((item, index) => {
-                                                // Nếu người này không còn trong công việc
-                                                if (task?.inactiveEmployees?.some(o => o._id === item._id)) {
-                                                    return (
-                                                        <a key={index} title="đã rời khỏi công việc" className="raci-style" style={{ opacity: .5 }}>
-                                                            <img src={process.env.REACT_APP_SERVER + item.avatar} className="img-circle" style={{ width: '20px', height: '20px', borderRadius: '50%', marginRight: '5px' }} alt="User avatar" />
-                                                            <span>{item.name}</span>
-                                                        </a>
-                                                    )
-                                                }
-
-                                                return <span key={index} className="raci-style">
-                                                    <img src={process.env.REACT_APP_SERVER + item.avatar} className="img-circle" style={{ width: '20px', height: '20px', borderRadius: '50%', marginRight: '5px' }} alt="User avatar" />
-                                                    <span>{item.name}</span>
-                                                </span>
-                                            })
-                                        }
-                                    </div>
-
-                                    {
-                                        (task && task.consultedEmployees && task.consultedEmployees.length !== 0) &&
-                                        <div>
-                                            {/* Người hỗ trợ */}
-                                            <strong style={{ display: "inline-block", marginTop: '5px' }}>{translate('task.task_management.consulted')}:</strong>
-                                            <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-                                                {
-                                                    task?.consultedEmployees?.length > 0 && task.consultedEmployees.map((item, index) => {
-                                                        // Nếu người này không còn trong công việc
-                                                        if (task?.inactiveEmployees?.some(o => o._id === item._id)) {
-                                                            return (
-                                                                <a key={index} title="đã rời khỏi công việc" className="raci-style" style={{ opacity: .5 }}>
-                                                                    <img src={process.env.REACT_APP_SERVER + item.avatar} className="img-circle" style={{ width: '20px', height: '20px', borderRadius: '50%', marginRight: '5px' }} alt="User avatar" />
-                                                                    <span>{item.name}</span>
-                                                                </a>
-                                                            )
-                                                        }
-
-                                                        return <span key={index} className="raci-style">
-                                                            <img src={process.env.REACT_APP_SERVER + item.avatar} className="img-circle" style={{ width: '20px', height: '20px', borderRadius: '50%', marginRight: '5px' }} alt="User avatar" />
-                                                            <span>{item.name}</span>
-                                                        </span>
-                                                    })
-                                                }
-                                            </div>
-                                        </div>
-                                    }
-                                    {
-                                        (task && task.informedEmployees && task.informedEmployees.length !== 0) &&
-                                        <div>
-                                            {/* Người quan sát */}
-                                            <strong style={{ display: "inline-block", marginTop: '5px' }}>{translate('task.task_management.informed')}:</strong>
-                                            <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-                                                {
-                                                    task?.informedEmployees?.length > 0 && task.informedEmployees.map((item, index) => {
-                                                        // Nếu người này không còn trong công việc
-                                                        if (task?.inactiveEmployees?.some(o => o._id === item._id)) {
-                                                            return (
-                                                                <a key={index} title="đã rời khỏi công việc" className="raci-style" style={{ opacity: .5 }}>
-                                                                    <img src={process.env.REACT_APP_SERVER + item.avatar} className="img-circle" style={{ width: '20px', height: '20px', borderRadius: '50%', marginRight: '5px' }} alt="User avatar" />
-                                                                    <span>{item.name}</span>
-                                                                </a>
-                                                            )
-                                                        }
-
-                                                        return <span key={index} className="raci-style">
-                                                            <img src={process.env.REACT_APP_SERVER + item.avatar} className="img-circle" style={{ width: '20px', height: '20px', borderRadius: '50%', marginRight: '5px' }} alt="User avatar" />
-                                                            <span>{item.name}</span>
-                                                        </span>
-                                                    })
-                                                }
-                                            </div>
-                                        </div>
-                                    }
-
-
-                                    {
-                                        hoursSpentOfEmployeeInTask && JSON.stringify(hoursSpentOfEmployeeInTask) !== '{}' &&
-                                        <div>
-                                            <strong>Tổng thời gian đóng góp:</strong>
-                                            <HoursSpentOfEmployeeChart
-                                                refs="totalTime"
-                                                data={hoursSpentOfEmployeeInTask}
-                                            />
-                                        </div>
-                                    }
-                                </div>
-                            }
-
-                            {/* Đánh giá công việc */}
-                            <div>
-                                {(evalList) &&
-                                    evalList.map((eva, keyEva) => {
-                                        return (
-                                            <div key={keyEva} className="description-box">
-                                                <h4>
-                                                    {translate('task.task_management.detail_eval')}&nbsp;{this.formatDate(eva.startDate)} <i className="fa fa-fw fa-caret-right"></i> {this.formatDate(eva.endDate)}
-                                                </h4>
-                                                <a style={{ cursor: "pointer" }} onClick={() => this.handleChangeShowMoreEvalItem(eva._id)}>{showMore[eva._id] ? <p>Nhấn chuột để ẩn chi tiết&nbsp;&nbsp;<i className="fa fa-angle-double-up"></i></p> : <p>Nhấn chuột để xem chi tiết&nbsp;&nbsp;<i className="fa fa-angle-double-down"></i></p>}</a>
-                                                { showMore[eva._id] &&
-                                                    <div>
-                                                        {
-                                                            eva.results.length !== 0 &&
-                                                            <div>
-                                                                <div><strong>{translate('task.task_management.detail_point')}</strong> ({translate('task.task_management.detail_auto_point')} - {translate('task.task_management.detail_emp_point')} - {translate('task.task_management.detail_acc_point')})</div>
-                                                                <ul>
-                                                                    {(eva.results.length !== 0) ?
-                                                                        eva.results.map((res, index) => {
-                                                                            if (res.employee && task.inactiveEmployees?.indexOf(res.employee._id) !== -1) {
-                                                                                return <li key={index}><strike>{res.employee.name}</strike>: &nbsp;&nbsp; {(res.automaticPoint !== null && res.automaticPoint !== undefined) ? res.automaticPoint : translate('task.task_management.detail_not_auto')} - {res.employeePoint ? res.employeePoint : translate('task.task_management.detail_not_emp')} - {res.approvedPoint ? res.approvedPoint : translate('task.task_management.detail_not_acc')}</li>
-                                                                            }
-                                                                            else {
-                                                                                return <li key={index}>{res.employee && res.employee.name}: &nbsp;&nbsp; {(res.automaticPoint !== null && res.automaticPoint !== undefined) ? res.automaticPoint : translate('task.task_management.detail_not_auto')} - {res.employeePoint ? res.employeePoint : translate('task.task_management.detail_not_emp')} - {res.approvedPoint ? res.approvedPoint : translate('task.task_management.detail_not_acc')}</li>
-                                                                            }
-                                                                        }) : <li>{translate('task.task_management.detail_not_eval')}</li>
-                                                                    }
-                                                                </ul>
-                                                            </div>
-                                                        }
+                            {(evalList) &&
+                                evalList.map((eva, keyEva) => {
+                                    return (
+                                        <div key={keyEva} className="description-box">
+                                            <h4>
+                                                {translate('task.task_management.detail_eval')}&nbsp;{formatDate(eva.startDate)} <i className="fa fa-fw fa-caret-right"></i> {formatDate(eva.endDate)}
+                                            </h4>
+                                            <a style={{ cursor: "pointer" }} onClick={() => handleChangeShowMoreEvalItem(eva._id)}>{showMore[eva._id] ? <p>Nhấn chuột để ẩn chi tiết&nbsp;&nbsp;<i className="fa fa-angle-double-up"></i></p> : <p>Nhấn chuột để xem chi tiết&nbsp;&nbsp;<i className="fa fa-angle-double-down"></i></p>}</a>
+                                            { showMore[eva._id] &&
+                                                <div>
+                                                    {
+                                                        eva.results.length !== 0 &&
                                                         <div>
-                                                            <div><strong>{translate('task.task_management.detail_info')}</strong></div>
+                                                            <div><strong>{translate('task.task_management.detail_point')}</strong> ({translate('task.task_management.detail_auto_point')} - {translate('task.task_management.detail_emp_point')} - {translate('task.task_management.detail_acc_point')})</div>
                                                             <ul>
-                                                                <li>{translate('task.task_management.detail_progress')}: &nbsp;&nbsp; {(eva.progress !== null && eva.progress !== undefined) ? `${eva.progress}%` : translate('task.task_management.detail_not_eval_on_month')}</li>
-                                                                {
-                                                                    eva.taskInformations.map((info, key) => {
-                                                                        if (info.type === "date") {
-                                                                            return <li key={key}>{info.name}: &nbsp;&nbsp; {info.value ? this.formatDate(info.value) : translate('task.task_management.detail_not_eval_on_month')}</li>
+                                                                {(eva.results.length !== 0) ?
+                                                                    eva.results.map((res, index) => {
+                                                                        if (res.employee && task.inactiveEmployees?.indexOf(res.employee._id) !== -1) {
+                                                                            return <li key={index}><strike>{res.employee.name}</strike>: &nbsp;&nbsp; {(res.automaticPoint !== null && res.automaticPoint !== undefined) ? res.automaticPoint : translate('task.task_management.detail_not_auto')} - {res.employeePoint ? res.employeePoint : translate('task.task_management.detail_not_emp')} - {res.approvedPoint ? res.approvedPoint : translate('task.task_management.detail_not_acc')}</li>
                                                                         }
-                                                                        return <li key={key}>{info.name}: &nbsp;&nbsp; {
-                                                                            info.value ?
-                                                                                info.value : Number(info.value) === 0 ? info.value :
-                                                                                    translate('task.task_management.detail_not_eval_on_month')}</li>
-                                                                    })
+                                                                        else {
+                                                                            return <li key={index}>{res.employee && res.employee.name}: &nbsp;&nbsp; {(res.automaticPoint !== null && res.automaticPoint !== undefined) ? res.automaticPoint : translate('task.task_management.detail_not_auto')} - {res.employeePoint ? res.employeePoint : translate('task.task_management.detail_not_emp')} - {res.approvedPoint ? res.approvedPoint : translate('task.task_management.detail_not_acc')}</li>
+                                                                        }
+                                                                    }) : <li>{translate('task.task_management.detail_not_eval')}</li>
                                                                 }
                                                             </ul>
                                                         </div>
-
-                                                        {/* KPI */}
-                                                        {(eva.results.length !== 0) ?
-                                                            (
-                                                                eva.results.map((item, key) => {
-                                                                    return (
-                                                                        <div key={key}>
-                                                                            <strong>KPI {item.employee && item.employee.name}:</strong>
-                                                                            {(item.kpis.length !== 0) ?
-                                                                                <ul>
-                                                                                    {
-                                                                                        item.kpis.map((kpi, keyKpi) => {
-                                                                                            return <li key={keyKpi}>{kpi.name}</li>
-                                                                                        })
-                                                                                    }
-                                                                                </ul>
-                                                                                : <span>{translate('task.task_management.detail_not_kpi')}</span>
-                                                                            }
-                                                                        </div>)
+                                                    }
+                                                    <div>
+                                                        <div><strong>{translate('task.task_management.detail_info')}</strong></div>
+                                                        <ul>
+                                                            <li>{translate('task.task_management.detail_progress')}: &nbsp;&nbsp; {(eva.progress !== null && eva.progress !== undefined) ? `${eva.progress}%` : translate('task.task_management.detail_not_eval_on_month')}</li>
+                                                            {
+                                                                eva.taskInformations.map((info, key) => {
+                                                                    if (info.type === "date") {
+                                                                        return <li key={key}>{info.name}: &nbsp;&nbsp; {info.value ? formatDate(info.value) : translate('task.task_management.detail_not_eval_on_month')}</li>
+                                                                    }
+                                                                    return <li key={key}>{info.name}: &nbsp;&nbsp; {
+                                                                        info.value ?
+                                                                            info.value : Number(info.value) === 0 ? info.value :
+                                                                                translate('task.task_management.detail_not_eval_on_month')}</li>
                                                                 })
-                                                            ) : <div><strong>{translate('task.task_management.detail_all_not_kpi')}</strong></div>
-                                                        }
-
-
-                                                        {/* Thời gian bấm giờ */}
-                                                        <strong>Thời gian đóng góp:</strong>
-                                                        {showToolbar && <a style={{ cursor: "pointer" }} onClick={() => this.calculateHoursSpentOnTask(task._id, task.timesheetLogs, eva.evaluatingMonth, eva, eva.startDate, eva.endDate)} title="Cập nhật thời gian bấm giờ">Nhấn chuột để cập nhật dữ liệu <i className="fa fa-fw fa-clock-o"></i></a>}
-                                                        {
-                                                            eva.results.length !== 0 && hoursSpentOfEmployeeInEvaluation[eva.evaluatingMonth] && JSON.stringify(hoursSpentOfEmployeeInEvaluation[eva.evaluatingMonth]) !== '{}'
-                                                            &&
-                                                            <React.Fragment>
-                                                                <HoursSpentOfEmployeeChart
-                                                                    refs={"evaluationBox" + eva.evaluatingMonth}
-                                                                    data={hoursSpentOfEmployeeInEvaluation[eva.evaluatingMonth]}
-                                                                />
-                                                            </React.Fragment>
-                                                        }
+                                                            }
+                                                        </ul>
                                                     </div>
-                                                }
-                                            </div>
-                                        );
-                                    })
-                                }
-                                {(task && (!task.evaluations || task.evaluations.length === 0)) && <dt>{translate('task.task_management.detail_none_eval')}</dt>}
 
-                            </div>
+                                                    {/* KPI */}
+                                                    {(eva.results.length !== 0) ?
+                                                        (
+                                                            eva.results.map((item, key) => {
+                                                                return (
+                                                                    <div key={key}>
+                                                                        <strong>KPI {item.employee && item.employee.name}:</strong>
+                                                                        {(item.kpis.length !== 0) ?
+                                                                            <ul>
+                                                                                {
+                                                                                    item.kpis.map((kpi, keyKpi) => {
+                                                                                        return <li key={keyKpi}>{kpi.name}</li>
+                                                                                    })
+                                                                                }
+                                                                            </ul>
+                                                                            : <span>{translate('task.task_management.detail_not_kpi')}</span>
+                                                                        }
+                                                                    </div>)
+                                                            })
+                                                        ) : <div><strong>{translate('task.task_management.detail_all_not_kpi')}</strong></div>
+                                                    }
+
+
+                                                    {/* Thời gian bấm giờ */}
+                                                    <strong>Thời gian đóng góp:</strong>
+                                                    {showToolbar && <a style={{ cursor: "pointer" }} onClick={() => calculateHoursSpentOnTask(task._id, task.timesheetLogs, eva.evaluatingMonth, eva, eva.startDate, eva.endDate)} title="Cập nhật thời gian bấm giờ">Nhấn chuột để cập nhật dữ liệu <i className="fa fa-fw fa-clock-o"></i></a>}
+                                                    {
+                                                        eva.results.length !== 0 && hoursSpentOfEmployeeInEvaluation[eva.evaluatingMonth] && JSON.stringify(hoursSpentOfEmployeeInEvaluation[eva.evaluatingMonth]) !== '{}'
+                                                        &&
+                                                        <React.Fragment>
+                                                            <HoursSpentOfEmployeeChart
+                                                                refs={"evaluationBox" + eva.evaluatingMonth}
+                                                                data={hoursSpentOfEmployeeInEvaluation[eva.evaluatingMonth]}
+                                                            />
+                                                        </React.Fragment>
+                                                    }
+                                                </div>
+                                            }
+                                        </div>
+                                    );
+                                })
+                            }
+                            {(task && (!task.evaluations || task.evaluations.length === 0)) && <dt>{translate('task.task_management.detail_none_eval')}</dt>}
 
                         </div>
 
                     </div>
+
                 </div>
-                {
-                    (id && showEdit === id) && currentRole === "responsible" && checkHasAccountable === true &&
-                    <ModalEditTaskByResponsibleEmployee
-                        id={id}
-                        task={task && task}
-                        role={currentRole}
-                        title={translate('task.task_management.detail_resp_edit')}
-                        perform={`edit-${currentRole}`}
-                    />
-                }
+            </div>
+            {
+                (id && showEdit === id) && currentRole === "responsible" && checkHasAccountable === true &&
+                <ModalEditTaskByResponsibleEmployee
+                    id={id}
+                    task={task && task}
+                    role={currentRole}
+                    title={translate('task.task_management.detail_resp_edit')}
+                    perform={`edit-${currentRole}`}
+                />
+            }
 
-                {
-                    (id && showEdit === id) && currentRole === "responsible" && checkHasAccountable === false &&
-                    <ModalEditTaskByAccountableEmployee
-                        id={id}
-                        task={task && task}
-                        role={currentRole}
-                        hasAccountable={false}
-                        title={translate('task.task_management.detail_resp_edit')}
-                        perform={`edit-${currentRole}-hasnot-accountable`}
-                    />
-                }
+            {
+                (id && showEdit === id) && currentRole === "responsible" && checkHasAccountable === false &&
+                <ModalEditTaskByAccountableEmployee
+                    id={id}
+                    task={task && task}
+                    role={currentRole}
+                    hasAccountable={false}
+                    title={translate('task.task_management.detail_resp_edit')}
+                    perform={`edit-${currentRole}-hasnot-accountable`}
+                />
+            }
 
-                {
-                    (id && showEdit === id) && currentRole === "accountable" &&
-                    <ModalEditTaskByAccountableEmployee
-                        id={id}
-                        task={task && task}
-                        hasAccountable={true}
-                        role={currentRole}
-                        title={translate('task.task_management.detail_acc_edit')}
-                        perform={`edit-${currentRole}`}
-                    />
-                }
+            {
+                (id && showEdit === id) && currentRole === "accountable" &&
+                <ModalEditTaskByAccountableEmployee
+                    id={id}
+                    task={task && task}
+                    hasAccountable={true}
+                    role={currentRole}
+                    title={translate('task.task_management.detail_acc_edit')}
+                    perform={`edit-${currentRole}`}
+                />
+            }
 
-                {
-                    (id && showEvaluate === id) &&
-                    <EvaluationModal
-                        id={id}
-                        task={task && task}
-                        hasAccountable={checkHasAccountable}
-                        role={currentRole}
-                        title={translate('task.task_management.detail_cons_eval')}
-                        perform='evaluate'
-                    />
-                }
-                {
-                    (id && showEndTask === id) &&
-                    <SelectFollowingTaskModal
-                        id={id}
-                        task={task && task}
-                        role={currentRole}
-                        typeOfTask={typeOfTask}
-                        codeInProcess={codeInProcess}
-                        title={translate('task.task_perform.choose_following_task')}
-                        perform='selectFollowingTask'
-                        refresh={this.refresh}
-                    />
-                }
-                {
-                    // (id && showCopy === `copy-task-${id}`) &&
-                    <TaskAddModal id={`copy-task-${id}`} task={task} />
-                }
-                {
-                    showSaveAsTemplate &&
-                    <ModalAddTaskTemplate savedTaskAsTemplate={true} savedTaskItem={task} savedTaskId={showSaveAsTemplate} />
-                }
+            {
+                (id && showEvaluate === id) &&
+                <EvaluationModal
+                    id={id}
+                    task={task && task}
+                    hasAccountable={checkHasAccountable}
+                    role={currentRole}
+                    title={translate('task.task_management.detail_cons_eval')}
+                    perform='evaluate'
+                />
+            }
+            {
+                (id && showEndTask === id) &&
+                <SelectFollowingTaskModal
+                    id={id}
+                    task={task && task}
+                    role={currentRole}
+                    typeOfTask={typeOfTask}
+                    codeInProcess={codeInProcess}
+                    title={translate('task.task_perform.choose_following_task')}
+                    perform='selectFollowingTask'
+                    refresh={refresh}
+                />
+            }
+            {
+                // (id && showCopy === `copy-task-${id}`) &&
+                <TaskAddModal id={`copy-task-${id}`} task={task} />
+            }
+            {
+                showSaveAsTemplate &&
+                <ModalAddTaskTemplate savedTaskAsTemplate={true} savedTaskItem={task} savedTaskId={showSaveAsTemplate} />
+            }
 
-                {
-                    (id && showRequestClose === id) && (currentRole === "responsible" || currentRole === "accountable") && checkHasAccountable &&
-                    <RequestToCloseTaskModal
-                        id={id}
-                        task={task && task}
-                        role={currentRole}
-                    />
-                }
-            </React.Fragment>
-        );
-    }
+            {
+                (id && showRequestClose === id) && (currentRole === "responsible" || currentRole === "accountable") && checkHasAccountable &&
+                <RequestToCloseTaskModal
+                    id={id}
+                    task={task && task}
+                    role={currentRole}
+                />
+            }
+        </React.Fragment>
+    );
 }
 
 
