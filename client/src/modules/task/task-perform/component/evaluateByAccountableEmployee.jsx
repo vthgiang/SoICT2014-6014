@@ -125,7 +125,7 @@ function EvaluateByAccountableEmployee(props) {
         })
         setProgress(data.progress)
         setErrorOnProgress(undefined)
-    }, [id])
+    }, [id, props.task])
 
     // Cập nhật state.kpi khi có kết quả truy vấn mới
     useEffect(() => {
