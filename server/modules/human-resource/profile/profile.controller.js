@@ -342,7 +342,8 @@ exports.importEmployees = async (req, res) => {
         }
 
         if (req.body.importType === 'Employee_Infor') {
-            data = await EmployeeService.importEmployeeInfor(req.portal, req.user.company._id, req.body.importData);
+            data = await
+                EmployeeService.importEmployeeInfor(req.portal, req.user.company._id, req.body.importData);
         };
         if (req.body.importType === 'Update_Employee_Infor') {
             data = await EmployeeService.importUpdateEmployeeInfor(req.portal, req.user.company._id, req.body.importData);
@@ -369,7 +370,7 @@ exports.importEmployees = async (req, res) => {
             data = await EmployeeService.importFamily(req.portal, req.user.company._id, req.body.importData);
         };
 
-        if (data.errorStatus === true) {
+        if (data?.errorStatus === true) {
             await Log.error(req.user.email, 'IMPORT_EMPLOYEE', req.portal);
             res.status(400).json({
                 success: false,
@@ -417,6 +418,7 @@ exports.importEmployees = async (req, res) => {
             });
         }
     } catch (error) {
+        console.log('error', error)
         await Log.error(req.user.email, 'IMPORT_EMPLOYEE', req.portal);
         res.status(400).json({
             success: false,
