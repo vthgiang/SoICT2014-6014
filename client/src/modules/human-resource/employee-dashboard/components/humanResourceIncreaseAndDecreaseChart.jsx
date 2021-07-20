@@ -178,7 +178,7 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
      * Render chart
      * @param {*} data : Dữ liệu biểu đồ
      */
-    function renderChart (data) {
+    function renderChart(data) {
         data.data1.shift();
         data.data2.shift();
         removePreviousChart();
@@ -187,11 +187,12 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
             data: {
                 x: 'x',
                 columns: [
-                    data.ratioX, data.data3, 
+                    data.ratioX, data.data3,
                     ['data1', ...data.data1],
                     ['data2', ...data.data2]
                 ],
                 type: data.lineChart === true ? '' : 'bar',
+                labels: data.lineChart === true ? false : true,
                 names: {
                     data1: data.nameData1,
                     data2: data.nameData2,
@@ -321,7 +322,7 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
                         </div>
                     </div>
                 </div>
-                { employeesManager.isLoading
+                {employeesManager.isLoading
                     ? <p>{translate('general.loading')}</p>
                     : <div className="dashboard_box_body" >
                         <p className="pull-left" style={{ marginBottom: 0 }} > < b > ĐV tính: Người </b></p >

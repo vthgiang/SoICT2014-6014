@@ -19,7 +19,7 @@ const TrendOfOvertime = (props) => {
      * @param {*} date : Ngày muốn format
      * @param {*} monthYear : true trả về tháng năm, false trả về ngày tháng năm
      */
-     const formatDate = (date, monthYear = false) => {
+    const formatDate = (date, monthYear = false) => {
         if (date) {
             let d = new Date(date),
                 month = '' + (d.getMonth() + 1),
@@ -37,7 +37,7 @@ const TrendOfOvertime = (props) => {
         }
         return date;
     }
-    
+
     let date = new Date()
     let _startDate = formatDate(date.setMonth(new Date().getMonth() - 6), true);
 
@@ -144,8 +144,8 @@ const TrendOfOvertime = (props) => {
         return true;
     }
 
-    if (!state.arrMonth 
-        || props.timesheets.arrMonth?.length !== state.arrMonth?.length 
+    if (!state.arrMonth
+        || props.timesheets.arrMonth?.length !== state.arrMonth?.length
         || !isEqual(props.timesheets.listOvertimeOfUnitsByStartDateAndEndDate, state.listOvertimeOfUnitsByStartDateAndEndDate)
         || props.nameChart !== state.nameChart
         || props.nameData1 !== state.nameData1
@@ -163,9 +163,9 @@ const TrendOfOvertime = (props) => {
     useEffect(() => {
         if (props.timesheets.arrMonth?.length !== state.arrMonth?.length ||
             !isEqual(props.timesheets.listOvertimeOfUnitsByStartDateAndEndDate, state.listOvertimeOfUnitsByStartDateAndEndDate)) {
-            setState({...state});
+            setState({ ...state });
         }
-    }, [props.timesheets.arrMonth,state.arrMonth, state.lineChart, props.timesheets.listOvertimeOfUnitsByStartDateAndEndDate, state.listOvertimeOfUnitsByStartDateAndEndDate])
+    }, [props.timesheets.arrMonth, state.arrMonth, state.lineChart, props.timesheets.listOvertimeOfUnitsByStartDateAndEndDate, state.listOvertimeOfUnitsByStartDateAndEndDate])
 
     /** Xóa các chart đã render khi chưa đủ dữ liệu */
     const removePreviousChart = () => {
@@ -181,7 +181,7 @@ const TrendOfOvertime = (props) => {
      * Render chart
      * @param {*} data : Dữ liệu biểu đồ
      */
-    function renderChart (data) {
+    function renderChart(data) {
         data.data1.shift();
         removePreviousChart();
         let chart = c3.generate({
@@ -190,6 +190,7 @@ const TrendOfOvertime = (props) => {
                 x: 'x',
                 columns: [data.ratioX, ['data1', ...data.data1]],
                 type: data.lineChart === true ? '' : 'bar',
+                labels: data.lineChart === true ? false : true,
                 names: {
                     data1: data.nameData1,
                 },
@@ -283,7 +284,7 @@ const TrendOfOvertime = (props) => {
                             </div>
                         </div>
                         <div className="form-inline">
-                            {!props.defaultUnit 
+                            {!props.defaultUnit
                                 && <div className="form-group">
                                     <label className="form-control-static">{translate('kpi.evaluation.dashboard.organizational_unit')}</label>
                                     <SelectMulti id="multiSelectUnitsOvertime"

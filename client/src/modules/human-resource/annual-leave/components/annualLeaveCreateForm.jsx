@@ -129,7 +129,7 @@ function AnnualLeaveCreateForm(props) {
         let listDepartments = [{ _id: "", name: translate('human_resource.non_unit') }];
         if (user?.organizationalUnitsOfUserByEmail) {
             listDepartments = user.organizationalUnitsOfUserByEmail;
-
+            if (listDepartments[0]?._id) props.getAllEmployee({ organizationalUnits: [listDepartments[0]?._id] });
             setState({
                 ...state,
                 organizationalUnit: listDepartments[0]?._id,
@@ -339,9 +339,7 @@ function AnnualLeaveCreateForm(props) {
 
     /** Bắt sự kiện submit form */
     const save = () => {
-        let employeeID = employeesManager.listEmployeesOfOrganizationalUnits.find(x => x.emailInCompany === employee);
-        employeeID = employeeID._id;
-
+        let employeeID = employeesManager.listEmployeesOfOrganizationalUnits.find(x => x.emailInCompany === employee)._id;
         let partStart = startDate.split('-');
         let startDateNew = [partStart[2], partStart[1], partStart[0]].join('-');
         let partEnd = endDate.split('-');

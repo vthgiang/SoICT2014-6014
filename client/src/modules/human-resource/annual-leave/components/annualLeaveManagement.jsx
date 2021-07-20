@@ -395,7 +395,7 @@ const AnnualLeaveManagement = (props) => {
                             <span style={{ fontWeight: "bold" }}>{`${Number(annualLeave.numberWaitForApproval) + Number(annualLeave.numberApproved) + Number(annualLeave.numberNotApproved)} ${translate('human_resource.annual_leave.leaveOfAbsenceLetter')}`}</span>
                         </React.Fragment>
                     }
-                    
+
                     {
                         Number(annualLeave.numberWaitForApproval) > 0 &&
                         <React.Fragment>
@@ -403,7 +403,7 @@ const AnnualLeaveManagement = (props) => {
                         </React.Fragment>
                     }
                     {
-                        Number(annualLeave.numberApproved) > 0 && 
+                        Number(annualLeave.numberApproved) > 0 &&
                         <span className="text-success" style={{ fontWeight: "bold" }}>,&nbsp;{`${annualLeave.numberApproved} ${translate('human_resource.annual_leave.approved_letter')}`}</span>
                     }
                     {

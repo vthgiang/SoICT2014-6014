@@ -1158,7 +1158,7 @@ function ActionTab(props) {
         if (typeof data === 'string' || data instanceof String) {
             let index = data.lastIndexOf(".");
             let typeFile = data.substring(index + 1, data.length);
-            if (typeFile === "pdf"||typeFile === "docx") {
+            if (typeFile === "pdf") {
                 return true;
             }
             else return false;
