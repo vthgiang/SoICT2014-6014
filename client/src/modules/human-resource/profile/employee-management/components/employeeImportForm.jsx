@@ -108,10 +108,10 @@ const EmployeeImportForm = (props) => {
             let healthInsuranceStartDate = (!x.healthInsuranceStartDate || typeof x.healthInsuranceStartDate === 'string') ? x.healthInsuranceStartDate : convertExcelDateToJSDate(x.healthInsuranceStartDate);
             let healthInsuranceEndDate = (!x.healthInsuranceEndDate || typeof x.healthInsuranceEndDate === 'string') ? x.healthInsuranceEndDate : convertExcelDateToJSDate(x.healthInsuranceEndDate);
 
-            let gender = x.gender === translate('human_resource.profile.male') ? "male" : "female";
-            let maritalStatus = x.maritalStatus ? x.maritalStatus === translate('human_resource.profile.single') ? "single" : "married" : null;
+            let gender = x?.gender?.trim() === translate('human_resource.profile.male') ? "male" : "female";
+            let maritalStatus = x.maritalStatus ? x.maritalStatus.trim() === translate('human_resource.profile.single') ? "single" : "married" : null;
             let professionalSkill, educationalLevel, status;
-            switch (x.status) {
+            switch (x?.status?.trim()) {
                 case translate('human_resource.profile.leave'):
                     status = "leave";
                     break;
@@ -131,7 +131,7 @@ const EmployeeImportForm = (props) => {
                 default:
                     status = "active";
             };
-            switch (x.professionalSkill) {
+            switch (x?.professionalSkill?.trim()) {
                 case translate('human_resource.profile.intermediate_degree'):
                     professionalSkill = "intermediate_degree";
                     break;
@@ -154,7 +154,7 @@ const EmployeeImportForm = (props) => {
                     professionalSkill = "unavailable";
             };
 
-            switch (x.educationalLevel) {
+            switch (x?.educationalLevel?.trim()) {
                 case '12/12':
                     educationalLevel = '12/12';
                     break;
@@ -172,7 +172,10 @@ const EmployeeImportForm = (props) => {
             };
             return {
                 ...x,
-                emailInCompany: x?.emailInCompany.trim(),
+                employeeNumber: x?.employeeNumber?.trim(),
+                employeeTimesheetId: x?.employeeTimesheetId?.trim(),
+                fullName: x?.fullName?.trim(),
+                emailInCompany: x?.emailInCompany?.trim(),
                 birthdate: convertStringToDate(birthdate, false),
                 identityCardDate: convertStringToDate(identityCardDate, false),
                 startingDate: convertStringToDate(startingDate, false),
@@ -235,7 +238,6 @@ const EmployeeImportForm = (props) => {
             if (positionId && positionId.length > 0) {
                 x = { ...x, positionId: positionId }
             }
-            console.log('x', x)
             return x;
         });
         setState(state => ({
