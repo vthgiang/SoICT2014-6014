@@ -170,7 +170,7 @@
 .files-list-item-content-delete {
     width: 80px;   
     float: right;
-    /* padding-top: 20px; */
+    padding-top: 20px; 
 }
 .files-list-item-content-delete{
     
@@ -385,8 +385,8 @@ body{margin: 0; padding: 0; background-color: #fff;}
 #app-cover
 {
     position: relative;   
-    width: 80px;
-    height: 80px;
+    width: 60px;
+    height: 60px;
     right: 0;
     left: 0;
     background-color: #fff;
@@ -412,11 +412,11 @@ body{margin: 0; padding: 0; background-color: #fff;}
 #bin-icon
 {
     position: absolute;
-    top: 50%;
+    top: 70%;
     right: 0;
     left: 0;
-    width: 42px;
-    height: 58px;
+    width: 30px;
+    height: 50px;
     margin: -29px auto 0 auto;
     border-radius: 50%;
     z-index: 2;
@@ -425,9 +425,10 @@ body{margin: 0; padding: 0; background-color: #fff;}
 #lid
 {
     position: relative;
-    width: 50px;
-    height: 4px;
-    left: -4px;
+    width: 30px;
+    height: 2px;
+    border: 1px;
+    left: 0px;
     border-radius: 4px;
 }
 
@@ -447,7 +448,8 @@ body{margin: 0; padding: 0; background-color: #fff;}
 #box
 {
     position: relative;
-    height: 52px;
+    height: 32px;
+    width: 30px;
     margin-top: 2px;
     border-radius: 0 0 8px 8px;
 }
@@ -456,8 +458,8 @@ body{margin: 0; padding: 0; background-color: #fff;}
 {
     position: relative;
     top: 4px;
-    width: 34px;
-    height: 44px;
+    width: 25px;
+    height: 25px;
     margin: 0 auto;
     background-color: #fff;
     border-radius: 0 0 5px 5px;
@@ -466,18 +468,19 @@ body{margin: 0; padding: 0; background-color: #fff;}
 #bin-lines
 {
     position: relative;
-    top: 7px;
+    top: 2px;
     margin: 0 auto;
+    margin-left: 15px;
 }
 
-#bin-lines, #bin-lines:before, #bin-lines:after
+#bin-lines, #bin-lines:before
 {
     width: 3px;
-    height: 30px;
+    height: 20px;
     border-radius: 4px;
 }
 
-#bin-lines:before, #bin-lines:after
+#bin-lines:before
 {
     content: '';
     position: absolute;
@@ -488,10 +491,7 @@ body{margin: 0; padding: 0; background-color: #fff;}
     left: -10px;
 }
 
-#bin-lines:after
-{
-    left: 10px;
-}
+
 
 #layer
 {
