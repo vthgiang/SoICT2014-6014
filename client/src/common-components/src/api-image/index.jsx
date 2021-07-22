@@ -99,7 +99,7 @@ class ApiImage extends Component {
                     popup: '',
                 }
             }).then((result) => {
-                if (listImage && listImage.length > 0) {
+                if (listImage && listImage.length > 1) {
                     document.removeEventListener("keydown", handleKeyDown);
                 }
 
@@ -116,12 +116,11 @@ class ApiImage extends Component {
         let showNext = document.getElementById("showNext");
         let showPrevious = document.getElementById("showPrevious");
 
-        if (listImage && listImage.length > 0) {
+        if (listImage && listImage.length > 1) {
             document.addEventListener("keydown", handleKeyDown);
             showNext.style.visibility = "visible";
             showPrevious.style.visibility = "visible";
         }
-
 
         if (haveNextImage) {
             showNext.addEventListener('click', showNextImage);
