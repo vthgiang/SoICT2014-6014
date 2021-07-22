@@ -72,10 +72,10 @@ function Table(props) {
         props.downloadDocumentFile(id, fileName, numberVersion);
     }
 
-    function requestDownloadDocumentFileScan(id, fileName, numberVersion){
+    function requestDownloadDocumentFileScan(id, fileName, numberVersion) {
         props.downloadDocumentFileScan(id, fileName, numberVersion);
     }
-    
+
 
     function deleteDocument(id, info) {
         const { translate } = props;
@@ -487,13 +487,13 @@ function Table(props) {
         list = docs.paginate;
     }
     let exportData = list ? convertDataToExportData(list) : "";
-    if (currentRow){
-        let index = paginate.findIndex(value=> value._id === currentRow._id)
-        if (index !== -1){
-            if (currentRow.versions.length !== paginate[index].versions.length){
+    if (currentRow) {
+        let index = paginate.findIndex(value => value._id === currentRow._id)
+        if (index !== -1) {
+            if (currentRow.versions.length !== paginate[index].versions.length) {
                 setState({
                     ...state,
-                    currentRow:paginate[index]
+                    currentRow: paginate[index]
                 })
             }
         }
@@ -525,16 +525,16 @@ function Table(props) {
                     documentId={currentRow._id}
                     documentName={currentRow.name}
                     documentDescription={currentRow.description}
-                    documentCategory={currentRow.category ? currentRow.category._id || currentRow.category: ""}
-                    documentDomains={currentRow.domains ? currentRow.domains.map(domain => domain._id ||domain) : []}
-                    documentArchives={currentRow.archives ? currentRow.archives.map(archive => archive._id||archive) : []}
+                    documentCategory={currentRow.category ? currentRow.category._id || currentRow.category : ""}
+                    documentDomains={currentRow.domains ? currentRow.domains.map(domain => domain._id || domain) : []}
+                    documentArchives={currentRow.archives ? currentRow.archives.map(archive => archive._id || archive) : []}
                     documentIssuingBody={currentRow.issuingBody}
                     documentOfficialNumber={currentRow.officialNumber}
                     documentSigner={currentRow.signer}
                     documentVersions={currentRow.versions}
 
                     documentRelationshipDescription={currentRow.relationshipDescription}
-                    documentRelationshipDocuments={currentRow.relationshipDocuments ? currentRow.relationshipDocuments.map(relationshipDocument=>relationshipDocument._id||relationshipDocument) : []}
+                    documentRelationshipDocuments={currentRow.relationshipDocuments ? currentRow.relationshipDocuments.map(relationshipDocument => relationshipDocument._id || relationshipDocument) : []}
 
                     documentRoles={currentRow.roles}
                     documentUserCanView={currentRow.userCanView}
@@ -646,6 +646,21 @@ function Table(props) {
             {/* <div className="form-inline">
 
                 </div> */}
+            <DataTableSetting
+                columnArr={[
+                    translate('document.name'),
+                    translate('document.description'),
+                    translate('document.issuing_date'),
+                    translate('document.effective_date'),
+                    translate('document.expired_date'),
+                    translate('document.upload_file'),
+                    translate('document.upload_file_scan'),
+                    translate('document.views'),
+                    translate('document.downloads')
+                ]}
+                setLimit={setLimit}
+                tableId={tableId}
+            />
             <table className="data-table table table-hover table-striped table-bordered" id={tableId} style={{ marginBottom: 0, marginTop: 20 }}>
                 <thead>
                     <tr>
@@ -659,23 +674,8 @@ function Table(props) {
                         <th>{translate('document.upload_file_scan')}</th>
                         <th>{translate('document.views')}</th>
                         <th>{translate('document.downloads')}</th>
-                        <th style={{ width: '120px', textAlign: 'center' }}>
+                        <th style={{ width: "120px", textAlign: 'left' }}>
                             {translate('general.action')}
-                            <DataTableSetting
-                                columnArr={[
-                                    translate('document.name'),
-                                    translate('document.description'),
-                                    translate('document.issuing_date'),
-                                    translate('document.effective_date'),
-                                    translate('document.expired_date'),
-                                    translate('document.upload_file'),
-                                    translate('document.upload_file_scan'),
-                                    translate('document.views'),
-                                    translate('document.downloads')
-                                ]}
-                                setLimit={setLimit}
-                                tableId={tableId}
-                            />
                         </th>
                     </tr>
                 </thead>
