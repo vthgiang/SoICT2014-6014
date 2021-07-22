@@ -15,7 +15,8 @@ import { AuthActions } from '../../../../auth/redux/actions';
 function ContractTab(props) {
 
     const [state, setState] = useState({
-
+        page: 0,
+        limit: 100
     });
 
     const { translate, course } = props;
@@ -62,8 +63,10 @@ function ContractTab(props) {
     }
 
     useEffect(() => {
+        const { page, limit } = state;
+
         if (props.organizationalUnits && props.roles) {
-            props.getListCourse({ organizationalUnits: props.organizationalUnits, positions: props.roles });
+            props.getListCourse({ organizationalUnits: props.organizationalUnits, positions: props.roles, page, limit });
         }
     }, [props.id])
 
