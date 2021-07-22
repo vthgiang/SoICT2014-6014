@@ -79,7 +79,7 @@ function ModalEditTaskByResponsibleEmployee(props) {
         let info = {};
         let cloneKpi = [];
 
-        var infoEval = task.taskInformations;
+        var infoEval = task?.taskInformations;
 
         for (let i in infoEval) {
 
@@ -356,7 +356,7 @@ function ModalEditTaskByResponsibleEmployee(props) {
     }
 
     const handleChangeListInfo = (data) => {
-        setState({ 
+        setState({
             ...state,
             listInfo: data
         })
