@@ -39,7 +39,7 @@ module.exports = {
     SystemLink: require('./system-admin/systemLink.model'),
     RootRole: require('./system-admin/rootRole.model'),
     SystemApi: require('./system-admin/systemApi.model'),
-    PrivilegeApi: require('./system-admin/privilegeApi.model'),
+    PrivilegeApi: require('./auth/privilegeApi.model'),
 
     Task: require('./task/task.model'),
     TaskTemplate: require('./task/taskTemplate.model'),

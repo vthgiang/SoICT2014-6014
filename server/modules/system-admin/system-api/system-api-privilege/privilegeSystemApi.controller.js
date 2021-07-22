@@ -3,7 +3,7 @@ const Logger = require(`../../../../logs`);
 
 const getPrivilegeApis = async (req, res) => {
     try {
-        const data = await SystemApiPrivilegeServices.getPrivilegeApis(req.query);
+        const data = await SystemApiPrivilegeServices.getPrivilegeApis(req.portal, req.query);
         
         Logger.info(req.user.email, 'get privilege api');
         res.status(200).json({
@@ -46,7 +46,57 @@ const createPrivilegeApi = async (req, res) => {
     }
 }
 
+const editPrivilegeApi = async (req, res) => {
+    if (req.body.type === 'update_status') {
+        await updateStatusPrivilegeApi(req, res)
+    }
+}
+
+const updateStatusPrivilegeApi = async (req, res) => {
+    try {
+        const privilegeApi = await SystemApiPrivilegeServices.updateStatusPrivilegeApi(req.portal, req.body);
+        
+        Logger.info(req.user.email, 'update status privilege api');
+        res.status(200).json({
+            success: true,
+            messages: ['update_status_privilege_api_success'],
+            content: privilegeApi
+        });
+    } catch (error) {
+        console.log(error)
+        Logger.error(req.user.email, 'update status privilege api');
+        res.status(400).json({
+            success: false,
+            messages: ['update_status_privilege_api_failure'],
+            content: error
+        });
+    }
+}
+
+const deletePrivilegeApis = async (req, res) => {
+    try {
+        const privilegeApis = await SystemApiPrivilegeServices.deletePrivilegeApis(req.portal, req.body);
+        
+        Logger.info(req.user.email, 'delete privilege api');
+        res.status(200).json({
+            success: true,
+            messages: ['delete_privilege_api_success'],
+            content: privilegeApis
+        });
+    } catch (error) {
+        console.log(error)
+        Logger.error(req.user.email, 'delete privilege api');
+        res.status(400).json({
+            success: false,
+            messages: ['delete_privilege_api_failure'],
+            content: error
+        });
+    }
+}
+
 exports.SystemApiPrivilegeControllers = {
     getPrivilegeApis,
-    createPrivilegeApi
+    createPrivilegeApi,
+    editPrivilegeApi,
+    deletePrivilegeApis,
 }

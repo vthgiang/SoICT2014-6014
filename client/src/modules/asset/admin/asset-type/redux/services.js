@@ -6,6 +6,7 @@ export const AssetTypeService = {
     editAssetType,
     deleteAssetTypes,
     deleteManyAssetType,
+    importAssetTypes,
 }
 
 
@@ -43,6 +44,14 @@ function getAssetTypes() {
 function createAssetTypes(data) {  
     return sendRequest({
         url: `${ process.env.REACT_APP_SERVER }/assettype/asset-types`,
+        method: 'POST',
+        data,
+    }, true, true, 'asset.asset_type');
+}
+
+function importAssetTypes(data) {
+    return sendRequest({
+        url: `${ process.env.REACT_APP_SERVER }/assettype/asset-types/imports`,
         method: 'POST',
         data,
     }, true, true, 'asset.asset_type');

@@ -712,6 +712,7 @@ export default {
                     category: "Danh mục",
                     email: "Email"
                 },
+                delete: "Xóa system api",
                 select_all_method: "Chọn tất cả các phương thức",
                 non_select_method: "Chọn phương thức",
 

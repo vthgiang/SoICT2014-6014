@@ -108,10 +108,10 @@ const EmployeeImportForm = (props) => {
             let healthInsuranceStartDate = (!x.healthInsuranceStartDate || typeof x.healthInsuranceStartDate === 'string') ? x.healthInsuranceStartDate : convertExcelDateToJSDate(x.healthInsuranceStartDate);
             let healthInsuranceEndDate = (!x.healthInsuranceEndDate || typeof x.healthInsuranceEndDate === 'string') ? x.healthInsuranceEndDate : convertExcelDateToJSDate(x.healthInsuranceEndDate);
 
-            let gender = x.gender === translate('human_resource.profile.male') ? "male" : "female";
-            let maritalStatus = x.maritalStatus ? x.maritalStatus === translate('human_resource.profile.single') ? "single" : "married" : null;
+            let gender = x?.gender?.trim() === translate('human_resource.profile.male') ? "male" : "female";
+            let maritalStatus = x.maritalStatus ? x.maritalStatus.trim() === translate('human_resource.profile.single') ? "single" : "married" : null;
             let professionalSkill, educationalLevel, status;
-            switch (x.status) {
+            switch (x?.status?.trim()) {
                 case translate('human_resource.profile.leave'):
                     status = "leave";
                     break;
@@ -131,7 +131,7 @@ const EmployeeImportForm = (props) => {
                 default:
                     status = "active";
             };
-            switch (x.professionalSkill) {
+            switch (x?.professionalSkill?.trim()) {
                 case translate('human_resource.profile.intermediate_degree'):
                     professionalSkill = "intermediate_degree";
                     break;
@@ -154,7 +154,7 @@ const EmployeeImportForm = (props) => {
                     professionalSkill = "unavailable";
             };
 
-            switch (x.educationalLevel) {
+            switch (x?.educationalLevel?.trim()) {
                 case '12/12':
                     educationalLevel = '12/12';
                     break;
@@ -172,6 +172,10 @@ const EmployeeImportForm = (props) => {
             };
             return {
                 ...x,
+                employeeNumber: x?.employeeNumber?.trim(),
+                employeeTimesheetId: x?.employeeTimesheetId?.trim(),
+                fullName: x?.fullName?.trim(),
+                emailInCompany: x?.emailInCompany?.trim(),
                 birthdate: convertStringToDate(birthdate, false),
                 identityCardDate: convertStringToDate(identityCardDate, false),
                 startingDate: convertStringToDate(startingDate, false),
@@ -234,7 +238,6 @@ const EmployeeImportForm = (props) => {
             if (positionId && positionId.length > 0) {
                 x = { ...x, positionId: positionId }
             }
-            console.log('x', x)
             return x;
         });
         setState(state => ({
@@ -750,8 +753,8 @@ const EmployeeImportForm = (props) => {
                                 textareaRow={12}
                                 configTableWidth={8000}
                                 showTableWidth={5000}
-                                rowErrorOfReducer={employeesManager.error.rowErrorOfEmployeeInfor}
-                                dataOfReducer={employeesManager.error.employeesInfor}
+                                rowErrorOfReducer={employeesManager?.error?.rowErrorOfEmployeeInfor}
+                                dataOfReducer={employeesManager?.error?.employeesInfor}
                                 configuration={configurationEmployeeInfo}
                                 teamplateImport={teamplateImport}
                                 handleCheckImportData={handleCheckImportDataOfEmployeeInfor}
@@ -763,8 +766,8 @@ const EmployeeImportForm = (props) => {
                                 textareaRow={10}
                                 configTableWidth={1000}
                                 showTableWidth={1000}
-                                rowErrorOfReducer={employeesManager.error.rowErrorOfExperience}
-                                dataOfReducer={employeesManager.error.experiences}
+                                rowErrorOfReducer={employeesManager?.error?.rowErrorOfExperience}
+                                dataOfReducer={employeesManager?.error?.experiences}
                                 configuration={configurationExperience}
                                 teamplateImport={teamplateImport}
                                 handleCheckImportData={handleCheckImportDataOfExperience}
@@ -776,8 +779,8 @@ const EmployeeImportForm = (props) => {
                                 configTableWidth={1000}
                                 showTableWidth={1000}
                                 fil
-                                rowErrorOfReducer={employeesManager.error.rowErrorOfDegree}
-                                dataOfReducer={employeesManager.error.degrees}
+                                rowErrorOfReducer={employeesManager?.error?.rowErrorOfDegree}
+                                dataOfReducer={employeesManager?.error?.degrees}
                                 configuration={configurationDegree}
                                 teamplateImport={teamplateImport}
                                 listFields={listFields}
@@ -789,8 +792,8 @@ const EmployeeImportForm = (props) => {
                                 textareaRow={10}
                                 configTableWidth={1000}
                                 showTableWidth={1000}
-                                rowErrorOfReducer={employeesManager.error.rowErrorOfCertificate}
-                                dataOfReducer={employeesManager.error.certificates}
+                                rowErrorOfReducer={employeesManager?.error?.rowErrorOfCertificate}
+                                dataOfReducer={employeesManager?.error?.certificates}
                                 configuration={configurationCertificate}
                                 teamplateImport={teamplateImport}
                                 handleCheckImportData={handleCheckImportDataOfCertificate}
@@ -801,8 +804,8 @@ const EmployeeImportForm = (props) => {
                                 textareaRow={10}
                                 configTableWidth={1000}
                                 showTableWidth={1000}
-                                rowErrorOfReducer={employeesManager.error.rowErrorOfContract}
-                                dataOfReducer={employeesManager.error.contracts}
+                                rowErrorOfReducer={employeesManager?.error?.rowErrorOfContract}
+                                dataOfReducer={employeesManager?.error?.contracts}
                                 configuration={configurationContract}
                                 teamplateImport={teamplateImport}
                                 handleCheckImportData={handleCheckImportDataOfContract}
@@ -813,8 +816,8 @@ const EmployeeImportForm = (props) => {
                                 textareaRow={10}
                                 configTableWidth={1000}
                                 showTableWidth={1000}
-                                rowErrorOfReducer={employeesManager.error.rowErrorOfSocialInsuranceDetails}
-                                dataOfReducer={employeesManager.error.SocialInsuranceDetails}
+                                rowErrorOfReducer={employeesManager?.error?.rowErrorOfSocialInsuranceDetails}
+                                dataOfReducer={employeesManager?.error?.SocialInsuranceDetails}
                                 configuration={configurationSocialInsuranceDetails}
                                 teamplateImport={teamplateImport}
                                 handleCheckImportData={handleCheckImportDataOfSocialInsuranceDetails}
@@ -826,8 +829,8 @@ const EmployeeImportForm = (props) => {
                                 textareaRow={10}
                                 configTableWidth={1000}
                                 showTableWidth={1000}
-                                rowErrorOfReducer={employeesManager.error.rowErrorOfFile}
-                                dataOfReducer={employeesManager.error.files}
+                                rowErrorOfReducer={employeesManager?.error?.rowErrorOfFile}
+                                dataOfReducer={employeesManager?.error?.files}
                                 configuration={configurationFile}
                                 teamplateImport={teamplateImport}
                                 handleCheckImportData={handleCheckImportDataOfFile}
@@ -839,8 +842,8 @@ const EmployeeImportForm = (props) => {
                                 textareaRow={10}
                                 configTableWidth={1000}
                                 showTableWidth={1000}
-                                rowErrorOfReducer={employeesManager.error.rowErrorOfFile}
-                                dataOfReducer={employeesManager.error.files}
+                                rowErrorOfReducer={employeesManager?.error?.rowErrorOfFile}
+                                dataOfReducer={employeesManager?.error?.files}
                                 configuration={configurationFamilyMembers}
                                 teamplateImport={teamplateImport}
                                 handleCheckImportData={handleCheckImportDataOfFamily}
