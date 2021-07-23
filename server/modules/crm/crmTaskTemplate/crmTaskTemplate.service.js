@@ -32,9 +32,9 @@ const createCrmTaskTemplate = async (portal, companyId, role, type ) => {
             description: '<p>Mẫu công việc tìm kiếm khách hàng mới</p>',
             creator: manager,
             numberOfDaysTaken: '',
-            formula: `((
-                p1/${crmUnitKPI.numberOfNewCustomers.value})*${crmUnitKPI.numberOfNewCustomers.weight}+
-                p2/${crmUnitKPI.newCustomerBuyingRate.value})*${crmUnitKPI.newCustomerBuyingRate.weight}
+            formula: `(
+                p1/${crmUnitKPI.numberOfNewCustomers.value}*${crmUnitKPI.numberOfNewCustomers.weight}+
+                p2/${crmUnitKPI.newCustomerBuyingRate.value}*${crmUnitKPI.newCustomerBuyingRate.weight}
             )/(${crmUnitKPI.numberOfNewCustomers.weight}+${crmUnitKPI.newCustomerBuyingRate.weight})`,
             priority: 3,
             taskActions: [],
@@ -70,7 +70,7 @@ const createCrmTaskTemplate = async (portal, companyId, role, type ) => {
             description: '<p>Mẫu công việc chăm sóc khách hàng</p>',
             creator: manager,
             numberOfDaysTaken: '',
-            formula: `((
+            formula: `(
                 p1/${crmUnitKPI.customerRetentionRate.value}*${crmUnitKPI.customerRetentionRate.weight}+
                 p2/${crmUnitKPI.completionRate.value}*${crmUnitKPI.completionRate.weight}+
                 p3/${crmUnitKPI.solutionRate.value}*${crmUnitKPI.solutionRate.weight}+
