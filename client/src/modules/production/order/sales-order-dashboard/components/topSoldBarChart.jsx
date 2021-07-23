@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { SalesOrderActions } from "../../sales-order/redux/actions";
@@ -8,23 +8,26 @@ import "c3/c3.css";
 
 import { DatePicker, SelectBox } from "../../../../../common-components";
 import { formatToTimeZoneDate } from "../../../../../helpers/formatDate";
-class TopSoldBarChart extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            currentRole: localStorage.getItem("currentRole"),
-        };
-    }
 
-    componentDidMount() {
-        this.barChart();
-    }
+function TopSoldBarChart(props) {
 
-    setDataBarChart = () => {
+    const amountPieChart = React.createRef()
+    const topSoldBarChart = React.createRef()
+
+    const [state, setState] = useState({
+        currentRole: localStorage.getItem("currentRole"),
+    })
+
+
+    useEffect(() => {
+            barChart();
+    }, [])
+
+    const setDataBarChart = () => {
         let topGoodsSoldValue = ["Top sản phẩm bán chạy theo số lượng"];
 
-        if (this.props.salesOrders && this.props.salesOrders.topGoodsSold) {
-            let topGoodsSoldMap = this.props.salesOrders.topGoodsSold.map((element) => element.quantity);
+        if (props.salesOrders && props.salesOrders.topGoodsSold) {
+            let topGoodsSoldMap = props.salesOrders.topGoodsSold.map((element) => element.quantity);
             topGoodsSoldValue = topGoodsSoldValue.concat(topGoodsSoldMap);
         }
         let dataBarChart = {
@@ -34,8 +37,10 @@ class TopSoldBarChart extends Component {
         return dataBarChart;
     };
 
-    removePreviousChart() {
-        const chart = this.refs.amountPieChart;
+    function removePreviousChart() {
+        
+        const chart = topSoldBarChart.current;
+
         if (chart) {
             while (chart.hasChildNodes()) {
                 chart.removeChild(chart.lastChild);
@@ -43,24 +48,27 @@ class TopSoldBarChart extends Component {
         }
     }
 
-    handleChangeViewChart() {
-        this.setState({
-            typeGood: !this.state.typeGood,
+    function handleChangeViewChart() {
+        setState({
+            ...state,
+            typeGood: !state.typeGood,
         });
     }
 
     // Khởi tạo PieChart bằng C3
-    barChart = () => {
-        let dataBarChart = this.setDataBarChart();
+    const barChart = () => {
 
+        let dataBarChart = setDataBarChart();
+       
         let topGoodsSoldTitle = [];
-        if (this.props.salesOrders && this.props.salesOrders.topGoodsSold) {
-            topGoodsSoldTitle = this.props.salesOrders.topGoodsSold.map((element) => element.name);
+        if (props.salesOrders && props.salesOrders.topGoodsSold) {
+            topGoodsSoldTitle = props.salesOrders.topGoodsSold.map((element) => element.name);
         }
 
-        this.removePreviousChart();
+        removePreviousChart();
+
         let chart = c3.generate({
-            bindto: this.refs.topSoldBarChart,
+            bindto: topSoldBarChart.current,
 
             data: dataBarChart,
 
@@ -101,8 +109,8 @@ class TopSoldBarChart extends Component {
         });
     };
 
-    handleStartDateChange = (value) => {
-        this.setState((state) => {
+    const handleStartDateChange = (value) => {
+        setState((state) => {
             return {
                 ...state,
                 startDate: value,
@@ -110,8 +118,8 @@ class TopSoldBarChart extends Component {
         });
     };
 
-    handleEndDateChange = (value) => {
-        this.setState((state) => {
+    const handleEndDateChange = (value) => {
+        setState((state) => {
             return {
                 ...state,
                 endDate: value,
@@ -119,45 +127,43 @@ class TopSoldBarChart extends Component {
         });
     };
 
-    handleSunmitSearch = async () => {
-        let { startDate, endDate, currentRole } = this.state;
+    const handleSunmitSearch = async () => {
+        let { startDate, endDate, currentRole } = state;
         let data = {
             currentRole,
             startDate: startDate ? formatToTimeZoneDate(startDate) : "",
             endDate: endDate ? formatToTimeZoneDate(endDate) : "",
         };
-        await this.props.getTopGoodsSold(data);
+        await props.getTopGoodsSold(data);
     };
 
-    render() {
-        this.barChart();
-        return (
-            <div className="box">
-                <div className="box-header with-border">
-                    <i className="fa fa-bar-chart-o" />
-                    <h3 className="box-title">Top sản phẩm bán chạy (theo số lượng)</h3>
-                    <div className="form-inline">
-                        <div className="form-group">
-                            <label style={{ width: "auto" }}>Từ</label>
-                            <DatePicker
-                                id="date_picker_dashboard_start_top_sold"
-                                value={this.state.startDate}
-                                onChange={this.handleStartDateChange}
-                                disabled={false}
-                            />
-                        </div>
+    return (
+        <div className="box">
+            <div className="box-header with-border">
+                <i className="fa fa-bar-chart-o" />
+                <h3 className="box-title">Top sản phẩm bán chạy (theo số lượng)</h3>
+                <div className="form-inline">
+                    <div className="form-group">
+                        <label style={{ width: "auto" }}>Từ</label>
+                        <DatePicker
+                            id="date_picker_dashboard_start_top_sold"
+                            value={state.startDate}
+                            onChange={handleStartDateChange}
+                            disabled={false}
+                        />
+                    </div>
 
-                        {/**Chọn ngày kết thúc */}
-                        <div className="form-group">
-                            <label style={{ width: "auto" }}>Đến</label>
-                            <DatePicker
-                                id="date_picker_dashboard_end_top_sold"
-                                value={this.state.endDate}
-                                onChange={this.handleEndDateChange}
-                                disabled={false}
-                            />
-                        </div>
-                        {/* <div className="form-group">
+                    {/**Chọn ngày kết thúc */}
+                    <div className="form-group">
+                        <label style={{ width: "auto" }}>Đến</label>
+                        <DatePicker
+                            id="date_picker_dashboard_end_top_sold"
+                            value={state.endDate}
+                            onChange={handleEndDateChange}
+                            disabled={false}
+                        />
+                    </div>
+                    {/* <div className="form-group">
                             <label className="form-control-static">
                                 Chọn Top
                             </label>
@@ -168,17 +174,16 @@ class TopSoldBarChart extends Component {
                                 style={{ width: "175px" }}
                             />
                         </div> */}
-                        <div className="form-group" style={{ marginLeft: "20px" }}>
-                            <button className="btn btn-success" onClick={() => this.handleSunmitSearch()}>
-                                Tìm kiếm
-                            </button>
-                        </div>
+                    <div className="form-group" style={{ marginLeft: "20px" }}>
+                        <button className="btn btn-success" onClick={() => handleSunmitSearch()}>
+                            Tìm kiếm
+                        </button>
                     </div>
-                    <div ref="topSoldBarChart"></div>
                 </div>
+                <div ref={topSoldBarChart} id ="topSoldBarChart"></div>
             </div>
-        );
-    }
+        </div>
+    );
 }
 
 function mapStateToProps(state) {
