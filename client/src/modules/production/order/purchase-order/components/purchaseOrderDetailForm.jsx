@@ -5,13 +5,10 @@ import { DialogModal } from "../../../../../common-components";
 import { formatCurrency } from "../../../../../helpers/formatCurrency";
 import { formatDate } from "../../../../../helpers/formatDate";
 
-class PurchaseDetailForm extends Component {
-    constructor(props) {
-        super(props);
-    }
+function PurchaseDetailForm (props) {
 
-    getPaidTotalMoney = () => {
-        const { paymentsForOrder } = this.props.payments;
+    const getPaidTotalMoney = () => {
+        const { paymentsForOrder } = props.payments;
         let paid = 0;
         if (paymentsForOrder.length) {
             paid = paymentsForOrder.reduce((accumulator, currentValue) => {
@@ -25,7 +22,7 @@ class PurchaseDetailForm extends Component {
         return formatCurrency(paid);
     };
 
-    render() {
+
         const {
             code,
             approvers,
@@ -38,7 +35,7 @@ class PurchaseDetailForm extends Component {
             materials,
             description,
             paymentAmount,
-        } = this.props.purchaseOrderDetail;
+        } = props.purchaseOrderDetail;
         const statusConvert = [
             {
                 className: "text-primary",
@@ -62,7 +59,7 @@ class PurchaseDetailForm extends Component {
             },
         ];
 
-        const { translate, payments } = this.props;
+        const { translate, payments } = props;
         let paymentsForOrder = [];
         if (payments.isLoading === false) {
             paymentsForOrder = payments.paymentsForOrder;
@@ -223,7 +220,7 @@ class PurchaseDetailForm extends Component {
                                                     <td colSpan={9} style={{ fontWeight: 600 }}>
                                                         <center>Tổng tiền đã thanh toán</center>
                                                     </td>
-                                                    <td style={{ fontWeight: 600 }}>{this.getPaidTotalMoney()}</td>
+                                                    <td style={{ fontWeight: 600 }}>{getPaidTotalMoney()}</td>
                                                 </tr>
                                             }
                                         </tbody>
@@ -236,7 +233,6 @@ class PurchaseDetailForm extends Component {
             </React.Fragment>
         );
     }
-}
 
 function mapStateToProps(state) {
     const { payments } = state;

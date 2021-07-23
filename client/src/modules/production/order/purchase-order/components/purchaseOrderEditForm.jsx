@@ -6,7 +6,8 @@ import { DialogModal, SelectBox, ErrorLabel, DatePicker } from "../../../../../c
 import ValidationHelper from "../../../../../helpers/validationHelper";
 import { formatCurrency } from "../../../../../helpers/formatCurrency";
 import { formatDate, formatToTimeZoneDate } from "../../../../../helpers/formatDate";
-
+import { UserActions } from "../../../../super-admin/user/redux/actions";
+import { UserServices } from "../../../../super-admin/user/redux/services";
 class PurchaseOrderEditForm extends Component {
     constructor(props) {
         super(props);
@@ -18,12 +19,19 @@ class PurchaseOrderEditForm extends Component {
             price: "",
             quantity: "",
             purchaseOrderId: "",
+            dbus:""
         };
     }
-
+    componentDidMount(){
+        UserServices.get()
+        .then(res => {
+            this.setState({dbus:res.data.content})
+        })
+    }
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.purchaseOrderEdit._id !== prevState.purchaseOrderId) {
             return {
+
                 purchaseOrderId: nextProps.purchaseOrderEdit._id,
                 code: nextProps.purchaseOrderEdit.code,
                 stock: nextProps.purchaseOrderEdit.stock._id,
@@ -66,8 +74,8 @@ class PurchaseOrderEditForm extends Component {
 
     getApproverOptions = () => {
         let options = [];
-        const { user } = this.props;
-        if (user.list) {
+        let user = this.state.dbus
+        if (user ) {
             options = [
                 {
                     value: "title", //Title không được chọn
@@ -75,7 +83,7 @@ class PurchaseOrderEditForm extends Component {
                 },
             ];
 
-            let mapOptions = user.list.map((item) => {
+            let mapOptions = user.map((item) => {
                 return {
                     value: item._id,
                     text: item.name,
@@ -900,6 +908,7 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
     updatePurchaseOrder: PurchaseOrderActions.updatePurchaseOrder,
+    getUser: UserActions.get,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(PurchaseOrderEditForm));

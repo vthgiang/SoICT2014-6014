@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 //Actions
@@ -26,50 +26,49 @@ import BillDetailForm from "../../../warehouse/bill-management/components/genara
 import PurchaseOrderApproveForm from "./purchaseOrderApproveForm";
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 
-class PurchaseOrderTable extends Component {
-    constructor(props) {
-        super(props);
-        const tableId = "purchase-order-table";
-        const defaultConfig = { limit: 5 }
-        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+function PurchaseOrderTable(props) {
 
-        this.state = {
-            limit: limit,
-            page: 1,
-            code: "",
-            status: "",
-            currentRole: localStorage.getItem("currentRole"),
-            tableId
-        };
-    }
+    const TableId = "purchase-order-table";
+    const defaultConfig = { limit: 5 }
+    const limit = getTableConfiguration(TableId, defaultConfig).limit;
 
-    componentDidMount() {
-        const { page, limit, currentRole } = this.state;
-        this.props.getAllPurchaseOrders({ page, limit, currentRole });
-        this.props.getAllStocks();
-        this.props.getCustomers({getALL:true});
-        this.props.getUser();
-        this.props.getAllGoodsByType({ type: "material" });
-    }
+    const [state, setState] = useState({
+        limit: limit,
+        page: 1,
+        code: "",
+        status: "",
+        currentRole: localStorage.getItem("currentRole"),
+        tableId: TableId,
+    })
 
-    handleClickCreateCode = () => {
-        this.setState((state) => {
+    useEffect(() => {
+        const { page, limit, currentRole } = state;
+        props.getAllPurchaseOrders({ page, limit, currentRole });
+        props.getAllStocks();
+        props.getCustomers();
+        props.getUser();
+        props.getAllGoodsByType({ type: "material" });
+    }, [])
+
+    const handleClickCreateCode = () => {
+        setState((state) => {
             return { ...state, codeCreate: generateCode("PO_") };
         });
     };
 
-    createDirectly = () => {
+    const createDirectly = () => {
         window.$("#modal-add-purchase-order-directly").modal("show");
     };
 
-    createFromPurchasingRequest = () => {
-        this.props.getAllPurchasingRequests({ status: 1 });
+    const createFromPurchasingRequest = () => {
+        props.getAllPurchasingRequests({ status: 1 });
         window.$("#modal-add-purchase-order-from-puchasing-request").modal("show");
     };
 
-    setPage = async (page) => {
-        const { limit, currentRole } = this.state;
-        await this.setState({
+    const setPage = async (page) => {
+        const { limit, currentRole } = state;
+        await setState({
+            ...state,
             page: page,
         });
         const data = {
@@ -77,12 +76,13 @@ class PurchaseOrderTable extends Component {
             page: page,
             currentRole,
         };
-        this.props.getAllPurchaseOrders(data);
+        props.getAllPurchaseOrders(data);
     };
 
-    setLimit = async (limit) => {
-        const { page, currentRole } = this.state;
-        await this.setState({
+    const setLimit = async (limit) => {
+        const { page, currentRole } = state;
+        await setState({
+            ...state,
             limit: limit,
         });
         const data = {
@@ -90,11 +90,11 @@ class PurchaseOrderTable extends Component {
             page,
             currentRole,
         };
-        this.props.getAllPurchaseOrders(data);
+        props.getAllPurchaseOrders(data);
     };
 
-    reloadPurchaseOrderTable = () => {
-        const { page, limit, code, status, supplier, currentRole } = this.state;
+    const reloadPurchaseOrderTable = () => {
+        const { page, limit, code, status, supplier, currentRole } = state;
         const data = {
             limit,
             page,
@@ -103,30 +103,33 @@ class PurchaseOrderTable extends Component {
             supplier,
             currentRole,
         };
-        this.props.getAllPurchaseOrders(data);
+        props.getAllPurchaseOrders(data);
     };
 
-    handleCodeChange = (e) => {
+    const handleCodeChange = (e) => {
         const { value } = e.target;
-        this.setState({
+        setState({
+            ...state,
             code: value,
         });
     };
 
-    handleStatusChange = (value) => {
-        this.setState({
+    const handleStatusChange = (value) => {
+        setState({
+            ...state,
             status: value,
         });
     };
 
-    handleSupplierChange = (value) => {
-        this.setState({
+    const handleSupplierChange = (value) => {
+        setState({
+            ...state,
             supplier: value,
         });
     };
 
-    handleSubmitSearch = () => {
-        const { page, limit, code, status, supplier, currentRole } = this.state;
+    const handleSubmitSearch = () => {
+        const { page, limit, code, status, supplier, currentRole } = state;
         const data = {
             limit,
             page,
@@ -135,26 +138,28 @@ class PurchaseOrderTable extends Component {
             supplier,
             currentRole,
         };
-        this.props.getAllPurchaseOrders(data);
+        props.getAllPurchaseOrders(data);
     };
 
-    handleShowDetail = async (data) => {
-        await this.props.getPaymentForOrder({ orderId: data._id, orderType: 2 });
-        await this.setState({
+    const handleShowDetail = async (data) => {
+        await props.getPaymentForOrder({ orderId: data._id, orderType: 2 });
+        await setState({
+            ...state,
             purchaseOrderDetail: data,
         });
         window.$("#modal-detail-purchase-order").modal("show");
     };
 
-    handleEdit = async (data) => {
-        await this.setState({
+    const handleEdit = async (data) => {
+        await setState({
+            ...state,
             purchaseOrderEdit: data,
         });
         window.$("#modal-edit-purchase-order").modal("show");
     };
 
-    handleAddBill = async (purchaseOrderAddBill) => {
-        await this.setState((state) => {
+    const handleAddBill = async (purchaseOrderAddBill) => {
+        await setState((state) => {
             return {
                 ...state,
                 purchaseOrderAddBill,
@@ -164,12 +169,12 @@ class PurchaseOrderTable extends Component {
         window.$("#modal-create-bill-receipt").modal("show");
     };
 
-    handleShowBillDetail = async (billId) => {
-        await this.props.getDetailBill(billId);
+    const handleShowBillDetail = async (billId) => {
+        await props.getDetailBill(billId);
         window.$("#modal-detail-bill").modal("show");
     };
 
-    checkUserForApprove = (purchaseOrder) => {
+    const checkUserForApprove = (purchaseOrder) => {
         const { approvers } = purchaseOrder;
         const userId = localStorage.getItem("userId");
         let checkApprove = approvers.find((element) => element.approver._id === userId);
@@ -180,14 +185,15 @@ class PurchaseOrderTable extends Component {
         return -1;
     };
 
-    handleShowApprove = async (purchaseOrder) => {
-        await this.setState({
+    const handleShowApprove = async (purchaseOrder) => {
+        await setState({
+            ...state,
             purchaseOrderApprove: purchaseOrder,
         });
         window.$("#modal-approve-purchase-order").modal("show");
     };
 
-    checkCreator = (purchaseOrder) => {
+    const checkCreator = (purchaseOrder) => {
         const { creator } = purchaseOrder;
         const userId = localStorage.getItem("userId");
         if (userId === creator._id) {
@@ -196,251 +202,250 @@ class PurchaseOrderTable extends Component {
         return false;
     };
 
-    render() {
-        const { code, status, codeCreate, purchaseOrderEdit, purchaseOrderDetail, purchaseOrderAddBill, billCode, purchaseOrderApprove, tableId } = this.state;
 
-        const { translate, purchaseOrders } = this.props;
-        const { totalPages, page, listPurchaseOrders } = purchaseOrders;
-        const statusConvert = [
-            {
-                className: "text-primary",
-                text: "no status",
-            },
-            {
-                className: "text-primary",
-                text: "Chờ phê duyệt",
-            },
-            {
-                className: "text-success",
-                text: "Đã phê duyệt",
-            },
-            {
-                className: "text-warning",
-                text: "Yêu cầu nhập kho",
-            },
-            {
-                className: "text-success",
-                text: "Đã nhập kho",
-            },
-            {
-                className: "text-danger",
-                text: "Đã hủy",
-            },
-        ];
-        return (
-            <React.Fragment>
-                <div className="box-body qlcv">
-                    <div className="form-inline">
-                        {/*Chọn cách thêm đơn mua nguyên vật liệu*/}
-                        {/* Button dropdown thêm mới đơn mua nguyên vật liệu */}
-                        <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
-                            <button
-                                type="button"
-                                className="btn btn-success dropdown-toggle pull-right"
-                                data-toggle="dropdown"
-                                aria-expanded="true"
-                                title={"Thêm mới đơn mu nguyên vật liệu"}
-                                onClick={this.handleClickCreateCode}
-                            >
-                                Thêm đơn
-                            </button>
-                            <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
-                                <li>
-                                    <a style={{ cursor: "pointer" }} title={`Tạo từ báo giá`} onClick={this.createFromPurchasingRequest}>
-                                        Thêm từ đơn đề nghị
-                                    </a>
-                                </li>
-                                <li>
-                                    <a style={{ cursor: "pointer" }} title={`Tạo trực tiếp`} onClick={this.createDirectly}>
-                                        Thêm trực tiếp
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
+    const { code, status, codeCreate, purchaseOrderEdit, purchaseOrderDetail, purchaseOrderAddBill, billCode, purchaseOrderApprove, tableId } = state;
+
+    const { translate, purchaseOrders } = props;
+    const { totalPages, page, listPurchaseOrders } = purchaseOrders;
+    const statusConvert = [
+        {
+            className: "text-primary",
+            text: "no status",
+        },
+        {
+            className: "text-primary",
+            text: "Chờ phê duyệt",
+        },
+        {
+            className: "text-success",
+            text: "Đã phê duyệt",
+        },
+        {
+            className: "text-warning",
+            text: "Yêu cầu nhập kho",
+        },
+        {
+            className: "text-success",
+            text: "Đã nhập kho",
+        },
+        {
+            className: "text-danger",
+            text: "Đã hủy",
+        },
+    ];
+    return (
+        <React.Fragment>
+            <div className="box-body qlcv">
+                <div className="form-inline">
+                    {/*Chọn cách thêm đơn mua nguyên vật liệu*/}
+                    {/* Button dropdown thêm mới đơn mua nguyên vật liệu */}
+                    <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
+                        <button
+                            type="button"
+                            className="btn btn-success dropdown-toggle pull-right"
+                            data-toggle="dropdown"
+                            aria-expanded="true"
+                            title={"Thêm mới đơn mu nguyên vật liệu"}
+                            onClick={handleClickCreateCode}
+                        >
+                            Thêm đơn
+                        </button>
+                        <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
+                            <li>
+                                <a style={{ cursor: "pointer" }} title={`Tạo từ báo giá`} onClick={createFromPurchasingRequest}>
+                                    Thêm từ đơn đề nghị
+                                </a>
+                            </li>
+                            <li>
+                                <a style={{ cursor: "pointer" }} title={`Tạo trực tiếp`} onClick={createDirectly}>
+                                    Thêm trực tiếp
+                                </a>
+                            </li>
+                        </ul>
                     </div>
-                    <PurchaseOrderCreateFormDirectly code={codeCreate} />
-                    <PurchaseOrderCreateFormFromPurchasingRequest code={codeCreate} />
-                    {purchaseOrderDetail && <PurchaseDetailForm purchaseOrderDetail={purchaseOrderDetail} />}
-                    {purchaseOrderEdit && <PurchaseOrderEditForm purchaseOrderEdit={purchaseOrderEdit} />}
-                    <GoodReceiptCreateForm
-                        purchaseOrderAddBill={purchaseOrderAddBill}
-                        createdSource={"purchaseOrder"}
-                        billCode={billCode}
-                        modalName={`Lập phiếu yêu cầu nhập kho cho đơn hàng: ${purchaseOrderAddBill ? purchaseOrderAddBill.code : ""}`}
-                        reloadPurchaseOrderTable={this.reloadPurchaseOrderTable}
-                        group={"1"}
-                    />
-                    <BillDetailForm />
-                    <PurchaseOrderApproveForm purchaseOrderApprove={purchaseOrderApprove} />
-                    <div className="form-inline">
-                        <div className="form-group">
-                            <label className="form-control-static">Mã đơn</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                value={code}
-                                onChange={this.handleCodeChange}
-                                placeholder="Mã đơn"
-                                autoComplete="off"
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label className="form-control-static">Trạng thái đơn</label>
-                            <SelectBox
-                                id={`select-filter-status-material-purchase-order`}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                items={[
-                                    {
-                                        value: 1,
-                                        text: "Chờ phê duyệt",
-                                    },
-                                    {
-                                        value: 2,
-                                        text: "Đã phê duyệt",
-                                    },
-                                    {
-                                        value: 3,
-                                        text: "Yêu cầu nhập kho",
-                                    },
-                                    {
-                                        value: 4,
-                                        text: "Đã nhập kho",
-                                    },
-                                    {
-                                        value: 5,
-                                        text: "Đã hủy",
-                                    },
-                                ]}
-                                onChange={this.handleStatusChange}
-                                value={status}
-                                multiple={true}
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label className="form-control-static">Nhà cung cấp</label>
-                            <SelectMulti
-                                id={`selectMulti-filter-suppliet-purchase-order`}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                items={
-                                    this.props.customers.list
-                                        ? this.props.customers.list.map((customerItem) => {
-                                            return {
-                                                value: customerItem._id,
-                                                text: customerItem.name,
-                                            };
-                                        })
-                                        : []
-                                }
-                                multiple="multiple"
-                                options={{ nonSelectedText: "Chọn nhà cung cấp", allSelectedText: "Đã chọn tất cả" }}
-                                onChange={this.handleSupplierChange}
-                            />
-                        </div>
-                        <div className="form-group">
-                            <button type="button" className="btn btn-success" title="Lọc" onClick={this.handleSubmitSearch}>
-                                Tìm kiếm
-                            </button>
-                        </div>
-                    </div>
-                    <table id={tableId} className="table table-striped table-bordered table-hover" style={{ marginTop: 20 }}>
-                        <thead>
-                            <tr>
-                                <th>STT</th>
-                                <th>Mã đơn</th>
-                                <th>Trạng thái</th>
-                                <th>Tổng tiền</th>
-                                <th>Nhà cung cấp</th>
-                                <th>Người tạo</th>
-                                <th>Ngày tạo</th>
-                                <th
-                                    style={{
-                                        width: "120px",
-                                        textAlign: "center",
-                                    }}
-                                >
-                                    {translate("table.action")}
-                                    <DataTableSetting
-                                        tableId={tableId}
-                                        columnArr={["STT", "Mã đơn", "Trạng thái", "Người tạo", "Tổng tiền"]}
-                                        setLimit={this.setLimit}
-                                    />
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {listPurchaseOrders.length !== 0 &&
-                                listPurchaseOrders.map((item, index) => (
-                                    <tr key={index}>
-                                        <td>{index + 1}</td>
-                                        <td>{item.code}</td>
-                                        <td className={item.status ? statusConvert[item.status].className : ""}>
-                                            {item.status ? statusConvert[item.status].text : ""}
-                                        </td>
-                                        <td>{item.paymentAmount ? formatCurrency(item.paymentAmount) : ""}</td>
-                                        <td>{item.supplier ? item.supplier.name : ""}</td>
-                                        <td>{item.creator ? item.creator.name : ""}</td>
-                                        <td>{item.createdAt ? formatDate(item.createdAt) : ""}</td>
-                                        <td style={{ textAlign: "center" }}>
-                                            <a onClick={() => this.handleShowDetail(item)}>
-                                                <i className="material-icons">view_list</i>
-                                            </a>
-                                            {this.checkUserForApprove(item) === 1 && item.status === 1 && (
-                                                <a
-                                                    onClick={() => this.handleShowApprove(item)}
-                                                    className="add text-success"
-                                                    style={{ width: "5px" }}
-                                                    title="Phê duyệt đơn"
-                                                >
-                                                    <i className="material-icons">check_circle_outline</i>
-                                                </a>
-                                            )}
-                                            <a
-                                                onClick={() => this.handleEdit(item)}
-                                                className="edit text-yellow"
-                                                style={{ width: "5px" }}
-                                                title="Sửa đơn"
-                                            >
-                                                <i className="material-icons">edit</i>
-                                            </a>
-                                            {!item.bill && item.status !== 1 && this.checkCreator(item) && (
-                                                <a
-                                                    onClick={() => this.handleAddBill(item)}
-                                                    className="add text-success"
-                                                    style={{ width: "5px" }}
-                                                    title="Yêu cầu nhập kho nguyên vật liệu"
-                                                >
-                                                    <i className="material-icons">add</i>
-                                                </a>
-                                            )}
-                                            {item.bill && item.status !== 1 && (
-                                                <a
-                                                    onClick={() => this.handleShowBillDetail(item.bill)}
-                                                    className="add text-success"
-                                                    style={{ width: "5px" }}
-                                                    title="Yêu cầu nhập kho nguyên vật liệu"
-                                                >
-                                                    <i className="material-icons">remove_red_eye</i>
-                                                </a>
-                                            )}
-                                        </td>
-                                    </tr>
-                                ))}
-                        </tbody>
-                    </table>
-                    {purchaseOrders.isLoading ? (
-                        <div className="table-info-panel">{translate("confirm.loading")}</div>
-                    ) : (
-                            (typeof listPurchaseOrders === "undefined" || listPurchaseOrders.length === 0) && (
-                                <div className="table-info-panel">{translate("confirm.no_data")}</div>
-                            )
-                        )}
-                    <PaginateBar pageTotal={totalPages ? totalPages : 0} currentPage={page} func={this.setPage} />
                 </div>
-            </React.Fragment>
-        );
-    }
+                <PurchaseOrderCreateFormDirectly code={codeCreate} />
+                <PurchaseOrderCreateFormFromPurchasingRequest code={codeCreate} />
+                {purchaseOrderDetail && <PurchaseDetailForm purchaseOrderDetail={purchaseOrderDetail} />}
+                {purchaseOrderEdit && <PurchaseOrderEditForm purchaseOrderEdit={purchaseOrderEdit} />}
+                <GoodReceiptCreateForm
+                    purchaseOrderAddBill={purchaseOrderAddBill}
+                    createdSource={"purchaseOrder"}
+                    billCode={billCode}
+                    modalName={`Lập phiếu yêu cầu nhập kho cho đơn hàng: ${purchaseOrderAddBill ? purchaseOrderAddBill.code : ""}`}
+                    reloadPurchaseOrderTable={reloadPurchaseOrderTable}
+                    group={"1"}
+                />
+                <BillDetailForm />
+                <PurchaseOrderApproveForm purchaseOrderApprove={purchaseOrderApprove} />
+                <div className="form-inline">
+                    <div className="form-group">
+                        <label className="form-control-static">Mã đơn</label>
+                        <input
+                            type="text"
+                            className="form-control"
+                            value={code}
+                            onChange={handleCodeChange}
+                            placeholder="Mã đơn"
+                            autoComplete="off"
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label className="form-control-static">Trạng thái đơn</label>
+                        <SelectBox
+                            id={`select-filter-status-material-purchase-order`}
+                            className="form-control select2"
+                            style={{ width: "100%" }}
+                            items={[
+                                {
+                                    value: 1,
+                                    text: "Chờ phê duyệt",
+                                },
+                                {
+                                    value: 2,
+                                    text: "Đã phê duyệt",
+                                },
+                                {
+                                    value: 3,
+                                    text: "Yêu cầu nhập kho",
+                                },
+                                {
+                                    value: 4,
+                                    text: "Đã nhập kho",
+                                },
+                                {
+                                    value: 5,
+                                    text: "Đã hủy",
+                                },
+                            ]}
+                            onChange={handleStatusChange}
+                            value={status}
+                            multiple={true}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label className="form-control-static">Nhà cung cấp</label>
+                        <SelectMulti
+                            id={`selectMulti-filter-suppliet-purchase-order`}
+                            className="form-control select2"
+                            style={{ width: "100%" }}
+                            items={
+                                props.customers.list
+                                    ? props.customers.list.map((customerItem) => {
+                                        return {
+                                            value: customerItem._id,
+                                            text: customerItem.name,
+                                        };
+                                    })
+                                    : []
+                            }
+                            multiple="multiple"
+                            options={{ nonSelectedText: "Chọn nhà cung cấp", allSelectedText: "Đã chọn tất cả" }}
+                            onChange={handleSupplierChange}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <button type="button" className="btn btn-success" title="Lọc" onClick={handleSubmitSearch}>
+                            Tìm kiếm
+                        </button>
+                    </div>
+                </div>
+                <table id={tableId} className="table table-striped table-bordered table-hover" style={{ marginTop: 20 }}>
+                    <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Mã đơn</th>
+                            <th>Trạng thái</th>
+                            <th>Tổng tiền</th>
+                            <th>Nhà cung cấp</th>
+                            <th>Người tạo</th>
+                            <th>Ngày tạo</th>
+                            <th
+                                style={{
+                                    width: "120px",
+                                    textAlign: "center",
+                                }}
+                            >
+                                {translate("table.action")}
+                                <DataTableSetting
+                                    tableId={tableId}
+                                    columnArr={["STT", "Mã đơn", "Trạng thái", "Người tạo", "Tổng tiền"]}
+                                    setLimit={setLimit}
+                                />
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {listPurchaseOrders.length !== 0 &&
+                            listPurchaseOrders.map((item, index) => (
+                                <tr key={index}>
+                                    <td>{index + 1}</td>
+                                    <td>{item.code}</td>
+                                    <td className={item.status ? statusConvert[item.status].className : ""}>
+                                        {item.status ? statusConvert[item.status].text : ""}
+                                    </td>
+                                    <td>{item.paymentAmount ? formatCurrency(item.paymentAmount) : ""}</td>
+                                    <td>{item.supplier ? item.supplier.name : ""}</td>
+                                    <td>{item.creator ? item.creator.name : ""}</td>
+                                    <td>{item.createdAt ? formatDate(item.createdAt) : ""}</td>
+                                    <td style={{ textAlign: "center" }}>
+                                        <a onClick={() => handleShowDetail(item)}>
+                                            <i className="material-icons">view_list</i>
+                                        </a>
+                                        {checkUserForApprove(item) === 1 && item.status === 1 && (
+                                            <a
+                                                onClick={() => handleShowApprove(item)}
+                                                className="add text-success"
+                                                style={{ width: "5px" }}
+                                                title="Phê duyệt đơn"
+                                            >
+                                                <i className="material-icons">check_circle_outline</i>
+                                            </a>
+                                        )}
+                                        <a
+                                            onClick={() => handleEdit(item)}
+                                            className="edit text-yellow"
+                                            style={{ width: "5px" }}
+                                            title="Sửa đơn"
+                                        >
+                                            <i className="material-icons">edit</i>
+                                        </a>
+                                        {!item.bill && item.status !== 1 && checkCreator(item) && (
+                                            <a
+                                                onClick={() => handleAddBill(item)}
+                                                className="add text-success"
+                                                style={{ width: "5px" }}
+                                                title="Yêu cầu nhập kho nguyên vật liệu"
+                                            >
+                                                <i className="material-icons">add</i>
+                                            </a>
+                                        )}
+                                        {item.bill && item.status !== 1 && (
+                                            <a
+                                                onClick={() => handleShowBillDetail(item.bill)}
+                                                className="add text-success"
+                                                style={{ width: "5px" }}
+                                                title="Yêu cầu nhập kho nguyên vật liệu"
+                                            >
+                                                <i className="material-icons">remove_red_eye</i>
+                                            </a>
+                                        )}
+                                    </td>
+                                </tr>
+                            ))}
+                    </tbody>
+                </table>
+                {purchaseOrders.isLoading ? (
+                    <div className="table-info-panel">{translate("confirm.loading")}</div>
+                ) : (
+                    (typeof listPurchaseOrders === "undefined" || listPurchaseOrders.length === 0) && (
+                        <div className="table-info-panel">{translate("confirm.no_data")}</div>
+                    )
+                )}
+                <PaginateBar pageTotal={totalPages ? totalPages : 0} currentPage={page} func={setPage} />
+            </div>
+        </React.Fragment>
+    );
 }
 
 function mapStateToProps(state) {
