@@ -177,7 +177,9 @@ function PurchaseOrderTable(props) {
     const checkUserForApprove = (purchaseOrder) => {
         const { approvers } = purchaseOrder;
         const userId = localStorage.getItem("userId");
-        let checkApprove = approvers.find((element) => element.approver._id === userId);
+        // if (approvers) {
+            let checkApprove = approvers.find((element) => element.approver&&element.approver._id === userId);
+        // }
         if (checkApprove) {
             return parseInt(checkApprove.status);
             //Trả về trạng thái 1. chưa phê duyệt, 2. Đã phê duyệt, 3. Đã hủy
