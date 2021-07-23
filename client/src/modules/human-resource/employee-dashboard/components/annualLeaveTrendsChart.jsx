@@ -52,7 +52,7 @@ const AnnualLeaveTrendsChart = (props) => {
         organizationalUnits: props.defaultUnit ? props.organizationalUnits : [],
     })
     const { lineChart, nameChart, organizationalUnits, nameData1, nameData2, startDate, endDate, startDateShow, endDateShow, organizationalUnitsSearch } = state;
-    
+
     const barChart = useRef(null);
 
     useEffect(() => {
@@ -158,10 +158,10 @@ const AnnualLeaveTrendsChart = (props) => {
         }
         return true;
     }
-    
-    if (!state.arrMonth 
-        || props.annualLeave.arrMonth?.length !== state.arrMonth?.length 
-        || !isEqual(props.annualLeave.listAnnualLeaveOfNumberMonth, state.listAnnualLeaveOfNumberMonth) 
+
+    if (!state.arrMonth
+        || props.annualLeave.arrMonth?.length !== state.arrMonth?.length
+        || !isEqual(props.annualLeave.listAnnualLeaveOfNumberMonth, state.listAnnualLeaveOfNumberMonth)
         || !isEqual(props.timesheets.listHoursOffOfUnitsByStartDateAndEndDate, state.listHoursOffOfUnitsByStartDateAndEndDate)
         || props.nameChart !== state.nameChart
         || props.nameData1 !== state.nameData1
@@ -192,7 +192,7 @@ const AnnualLeaveTrendsChart = (props) => {
      * Render chart
      * @param {*} data : Dữ liệu biểu đồ
      */
-    function renderChart (data) {
+    function renderChart(data) {
         data.data1.shift();
         data.data2.shift();
         removePreviousChart();
@@ -202,6 +202,7 @@ const AnnualLeaveTrendsChart = (props) => {
                 x: 'x',
                 columns: [data.ratioX, ['data1', ...data.data1], ['data2', ...data.data2]],
                 type: data.lineChart === true ? '' : 'bar',
+                labels: data.lineChart === true ? false : true,
                 names: {
                     data1: data.nameData1,
                     data2: data.nameData2,
@@ -269,7 +270,7 @@ const AnnualLeaveTrendsChart = (props) => {
                                     <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {organizationalUnitsName?.length}</a>
                                     <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
                                 </span>
-                        } 
+                        }
                         {` ${startDateShow}`}<i className="fa fa-fw fa-caret-right"></i>{endDateShow}
                     </div>
                 </div>
@@ -298,7 +299,7 @@ const AnnualLeaveTrendsChart = (props) => {
                             </div>
                         </div>
                         <div className="form-inline">
-                            {!props.defaultUnit 
+                            {!props.defaultUnit
                                 && <div className="form-group">
                                     <label className="form-control-static">{translate('kpi.evaluation.dashboard.organizational_unit')}</label>
                                     <SelectMulti id="multiSelectUnits"

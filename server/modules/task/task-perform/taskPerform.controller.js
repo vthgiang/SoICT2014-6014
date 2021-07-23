@@ -237,7 +237,7 @@ exports.createTaskAction = async (req, res) => {
         };
 
         NotificationServices.createNotification(req.portal, tasks.organizationalUnit, associatedDataforResponsible);
-        sendEmail(task.email, "Phê duyệt hoạt động", '', `<p><strong>${userCreator.name}</strong> đã thêm mới hoạt động, bạn có thể vào để phê duyệt hoạt động này <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${tasks._id}</a></p>`);
+        sendEmail(task.email, tasks.name, '', `<p><strong>${userCreator.name}</strong> đã thêm mới hoạt động, bạn có thể vào để phê duyệt hoạt động này <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${tasks._id}</a></p>`,`${tasks.id}@gmail.com`,null);
         
         await Logger.info(req.user.email, ` create task action  `, req.portal)
         res.status(200).json({
@@ -882,7 +882,7 @@ editTaskByResponsibleEmployees = async (req, res) => {
         NotificationServices.createNotification(req.portal, tasks.organizationalUnit, data);
 
         let title = "Cập nhật thông tin công việc: " + task.tasks.name;
-        sendEmail(task.email, title, '', `<p><strong>${user?.name}</strong> đã cập nhật thông tin công việc <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}">${tasks?.name}</a> với vai trò người thực hiện</p>`);
+        sendEmail(task.email, tasks.name, '', `<p><strong>${user?.name}</strong> đã cập nhật thông tin công việc <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}">${tasks?.name}</a> với vai trò người thực hiện</p>`,`${task.tasks._id}@gmail.com`,null);
 
         // Thêm nhật ký hoạt động
         let description = await PerformTaskService.createDescriptionEditTaskLogs(req.portal, req.user._id, task.newTask, oldTask);
@@ -958,7 +958,7 @@ editTaskByAccountableEmployees = async (req, res) => {
         };
         NotificationServices.createNotification(req.portal, tasks.organizationalUnit, data);
         let title = "Cập nhật thông tin công việc: " + task.tasks.name;
-        sendEmail(task.email, title, '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}">${tasks?.name}</a> với vai trò người phê duyệt</p>`);
+        sendEmail(task.email, tasks.name, '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}">${tasks?.name}</a> với vai trò người phê duyệt</p>`,`${task.tasks._id}@gmail.com`,null);
         
 
         // Gửi mail cho trưởng đơn vị phối hợp thực hiện công việc

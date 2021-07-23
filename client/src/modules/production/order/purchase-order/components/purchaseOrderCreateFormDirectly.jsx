@@ -6,6 +6,8 @@ import { DialogModal, SelectBox, ErrorLabel, DatePicker } from "../../../../../c
 import ValidationHelper from "../../../../../helpers/validationHelper";
 import { formatCurrency } from "../../../../../helpers/formatCurrency";
 import { formatToTimeZoneDate } from "../../../../../helpers/formatDate";
+import { UserActions } from "../../../../super-admin/user/redux/actions";
+import { UserServices } from "../../../../super-admin/user/redux/services";
 
 class PurchaseOrderCreateFormDirectly extends Component {
     constructor(props) {
@@ -17,6 +19,7 @@ class PurchaseOrderCreateFormDirectly extends Component {
             approvers: [],
             price: "",
             quantity: "",
+            listUser: { length: -1 },
         };
     }
 
@@ -26,6 +29,15 @@ class PurchaseOrderCreateFormDirectly extends Component {
                 code: nextProps.code,
             };
         }
+    }
+
+    componentDidMount() {
+        UserServices.get()
+            .then(res => {
+                this.setState({
+                    listUser: res.data.content
+                })
+            })
     }
 
     getSuplierOptions = () => {
@@ -53,10 +65,34 @@ class PurchaseOrderCreateFormDirectly extends Component {
         return options;
     };
 
+    // getApproverOptions = () => {
+    //     let options = [];
+    //     const { user } = this.props;
+    //     if (user.list) {
+    //         options = [
+    //             {
+    //                 value: "title", //Title không được chọn
+    //                 text: "---Chọn người phê duyệt---",
+    //             },
+    //         ];
+
+            // let mapOptions = user.list.map((item) => {
+    //             return {
+    //                 value: item._id,
+    //                 text: item.name,
+    //             };
+    //         });
+
+    //         options = options.concat(mapOptions);
+    //     }
+
+    //     return options;
+    // };
+
     getApproverOptions = () => {
         let options = [];
-        const { user } = this.props;
-        if (user.list) {
+        const user = this.state.listUser;
+        if (user) {
             options = [
                 {
                     value: "title", //Title không được chọn
@@ -64,16 +100,15 @@ class PurchaseOrderCreateFormDirectly extends Component {
                 },
             ];
 
-            let mapOptions = user.list.map((item) => {
+            let mapOptions = user.map((item) => {
                 return {
                     value: item._id,
                     text: item.name,
                 };
-            });
+            })
 
             options = options.concat(mapOptions);
         }
-
         return options;
     };
 
@@ -553,8 +588,8 @@ class PurchaseOrderCreateFormDirectly extends Component {
             material: "title",
             price: "",
         });
-    };
-
+    }
+    
     render() {
         const {
             code,
@@ -642,6 +677,7 @@ class PurchaseOrderCreateFormDirectly extends Component {
                                     Người phê duyệt
                                     <span className="attention"> * </span>
                                 </label>
+                                {this.state.listUser.length!==-1 &&
                                 <SelectBox
                                     id={`select-create-purchase-order-directly-approvers`}
                                     className="form-control select2"
@@ -650,7 +686,7 @@ class PurchaseOrderCreateFormDirectly extends Component {
                                     items={this.getApproverOptions()}
                                     onChange={this.handleApproversChange}
                                     multiple={true}
-                                />
+                                />}
                                 <ErrorLabel content={approversError} />
                             </div>
                             <div className={`form-group ${!intendReceiveTimeError ? "" : "has-error"}`}>
@@ -827,6 +863,7 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
     createPurchaseOrder: PurchaseOrderActions.createPurchaseOrder,
+    getUser: UserActions.get,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(PurchaseOrderCreateFormDirectly));

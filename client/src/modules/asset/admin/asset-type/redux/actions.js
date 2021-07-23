@@ -11,6 +11,7 @@ export const AssetTypeActions = {
     createAssetTypes,
     editAssetType,
     deleteAssetTypes,
+    importAssetTypes
 };
 
 // Lấy danh sách loại tài sản
@@ -72,6 +73,26 @@ function createAssetTypes(data) {
             .catch(err => {
                 dispatch({
                     type: AssetTypeConstants.CREATE_ASSET_TYPE_FAILE
+                });
+            })
+    }
+}
+
+function importAssetTypes(data) {
+    return dispatch => {
+        dispatch({
+            type: AssetTypeConstants.IMPORT_ASSET_TYPE_REQUEST
+        });
+        AssetTypeService.importAssetTypes(data)
+            .then(res => {
+                dispatch({
+                    type: AssetTypeConstants.IMPORT_ASSET_TYPE_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: AssetTypeConstants.IMPORT_ASSET_TYPE_FAILE
                 });
             })
     }

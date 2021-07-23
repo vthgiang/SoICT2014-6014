@@ -138,7 +138,7 @@ function importEmployees(data) {
             .catch(err => {
                 dispatch({
                     type: EmployeeConstants.IMPORT_EMPLOYEE_FAILURE,
-                    error: err.response.data.content
+                    error: err?.response?.data?.content
                 });
             })
     }

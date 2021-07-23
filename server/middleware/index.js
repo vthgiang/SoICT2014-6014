@@ -161,16 +161,29 @@ exports.authFunc = (checkPage = true) => {
                 if (!systemApi) throw ['api_invalid']
 
                 // Kiểm tra quyền truy cập api của bên thứ 3
-                let privilegeApi = await PrivilegeApi(connect(DB_CONNECTION, process.env.DB_NAME))
+                let privilegeApi = await PrivilegeApi(connect(DB_CONNECTION, req.portal))
                     .findOne({
                         email: verified.email,
                         apis: {
                             $in: [systemApi?._id]
                         },
-                        company: verified.company
+                        company: verified.company,
+                        status: 3
                     })
                 if (!privilegeApi) {
                     throw ['api_permission_invalid']
+                }
+
+                // Kiểm tra phân quyền api cho 1 cty
+                let apiInCompany = await Company(connect(DB_CONNECTION, process.env.DB_NAME))
+                    .findOne({
+                        apis: {
+                            $in: [systemApi?._id]
+                        },
+                        company: verified.company
+                    })
+                if (!apiInCompany) {
+                    throw ['api_permission_to_company_invalid']
                 }
             }
 

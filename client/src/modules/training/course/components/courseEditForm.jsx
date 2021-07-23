@@ -271,7 +271,7 @@ const CourseEditForm = (props) => {
         let result =
             validateCourseName(name, false) &&
             validateCoursePlace(coursePlace, false) && validateCost(cost, false) &&
-            validateEducationProgram(educationProgram, false) && validateEmployeeCommitmentTime(employeeCommitmentTime, false);
+            validateEducationProgram(educationProgram.name || educationProgram, false) && validateEmployeeCommitmentTime(employeeCommitmentTime, false);
 
         let partStart = startDate.split('-');
         let startDateNew = [partStart[2], partStart[1], partStart[0]].join('-');
@@ -335,6 +335,8 @@ const CourseEditForm = (props) => {
 
     const { education, translate, course, employeesManager } = props;
 
+    console.log(education)
+
     const { _id, name, courseId, type, offeredBy, coursePlace, startDate, unit, listEmployees, endDate, cost, lecturer,
         employeeCommitmentTime, educationProgram, errorOnCourseName, errorOnCoursePlace, errorOnOfferedBy,
         errorOnCost, errorOnEmployeeCommitmentTime, errorOnEducationProgram, errorOnStartDate, errorOnEndDate } = state;
@@ -353,7 +355,7 @@ const CourseEditForm = (props) => {
             employeeInfors = employeeInfor.concat(employeeInfors);
         }
     }
-
+    console.log(state)
     return (
         <React.Fragment>
             <DialogModal

@@ -712,6 +712,7 @@ export default {
                     category: "Danh mục",
                     email: "Email"
                 },
+                delete: "Xóa system api",
                 select_all_method: "Chọn tất cả các phương thức",
                 non_select_method: "Chọn phương thức",
 
@@ -1339,6 +1340,9 @@ export default {
                 showless: "Ẩn bớt",
                 title_showmore: "Bấm để hiển thị thêm",
                 title_showless: "Bấm để hiển thị ít hơn"
+            },
+            google_driver: {
+                button : "Thêm files từ Google Drive"
             }
         },
 

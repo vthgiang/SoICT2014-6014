@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { formatCurrency } from "../../../../../helpers/formatCurrency";
@@ -6,30 +6,31 @@ import { formatCurrency } from "../../../../../helpers/formatCurrency";
 import c3 from "c3";
 import "c3/c3.css";
 
-class QuoteSummaryChart extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            type: 1, //1. xem theo số lượng, 2. xem theo doanh số
-        };
-    }
+function QuoteSummaryChart(props) {
 
-    componentDidMount() {
-        this.pieChart();
-    }
+    const quoteSummaryChart = React.createRef()
 
-    handleChangeType = (type) => {
-        this.setState({
+    const [state, setState] = useState({
+        type: 1, //1. xem theo số lượng, 2. xem theo doanh số
+    })
+
+    useEffect(() => {
+        pieChart();
+    })
+
+    const handleChangeType = (type) => {
+        setState({
+            ...state,
             type,
         });
     };
 
-    setDataPieChart = () => {
-        const { type } = this.state;
+    const setDataPieChart = () => {
+        const { type } = state;
         let quoteCounter = {};
 
-        if (this.props.quotes) {
-            quoteCounter = this.props.quotes.quoteCounter;
+        if (props.quotes) {
+            quoteCounter = props.quotes.quoteCounter;
         }
         let dataPieChart = [];
         if (quoteCounter && type === 1) {
@@ -52,8 +53,8 @@ class QuoteSummaryChart extends Component {
         return dataPieChart;
     };
 
-    removePreviousChart() {
-        const chart = this.refs.amountPieChart;
+    function removePreviousChart() {
+        const chart = quoteSummaryChart.current;
         if (chart) {
             while (chart.hasChildNodes()) {
                 chart.removeChild(chart.lastChild);
@@ -62,12 +63,11 @@ class QuoteSummaryChart extends Component {
     }
 
     // Khởi tạo PieChart bằng C3
-    pieChart = () => {
-        let dataPieChart = this.setDataPieChart();
-        this.removePreviousChart();
+    const pieChart = () => {
+        let dataPieChart = setDataPieChart();
+        removePreviousChart();
         let chart = c3.generate({
-            bindto: this.refs.amountPieChart,
-
+            bindto: quoteSummaryChart.current,
             data: {
                 columns: dataPieChart,
                 type: "pie",
@@ -98,43 +98,40 @@ class QuoteSummaryChart extends Component {
         });
     };
 
-    render() {
-        this.pieChart();
-        return (
-            <div className="box">
-                <div className="box-header with-border">
-                    <i className="fa fa-bar-chart-o" />
-                    <h3 className="box-title">Số lượng, doanh số báo giá theo trạng thái</h3>
-                    <div className="box-tools pull-right">
-                        <div
-                            className="btn-group pull-rigth"
-                            style={{
-                                position: "absolute",
-                                right: "5px",
-                                top: "5px",
-                            }}
+    return (
+        <div className="box">
+            <div className="box-header with-border">
+                <i className="fa fa-bar-chart-o" />
+                <h3 className="box-title">Số lượng, doanh số báo giá theo trạng thái</h3>
+                <div className="box-tools pull-right">
+                    <div
+                        className="btn-group pull-rigth"
+                        style={{
+                            position: "absolute",
+                            right: "5px",
+                            top: "5px",
+                        }}
+                    >
+                        <button
+                            type="button"
+                            className={`btn btn-xs ${state.type === 2 ? "active" : "btn-danger"}`}
+                            onClick={() => handleChangeType(1)}
                         >
-                            <button
-                                type="button"
-                                className={`btn btn-xs ${this.state.type === 2 ? "active" : "btn-danger"}`}
-                                onClick={() => this.handleChangeType(1)}
-                            >
-                                Số lượng
-                            </button>
-                            <button
-                                type="button"
-                                className={`btn btn-xs ${this.state.type === 2 ? "btn-danger" : "active"}`}
-                                onClick={() => this.handleChangeType(2)}
-                            >
-                                Doanh số
-                            </button>
-                        </div>
+                            Số lượng
+                        </button>
+                        <button
+                            type="button"
+                            className={`btn btn-xs ${state.type === 2 ? "btn-danger" : "active"}`}
+                            onClick={() => handleChangeType(2)}
+                        >
+                            Doanh số
+                        </button>
                     </div>
-                    <div ref="amountPieChart"></div>
                 </div>
+                <div ref={quoteSummaryChart} id ="quoteSummaryChart"></div>
             </div>
-        );
-    }
+        </div>
+    );
 }
 
 function mapStateToProps(state) {

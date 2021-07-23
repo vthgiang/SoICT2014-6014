@@ -131,18 +131,18 @@ class ContentMaker extends Component {
         let result = null
         switch (data.extension) {
             case "doc", "docx":
-                result = <img className='files-list-item-preview-extension' src="https://img.icons8.com/fluent/48/000000/microsoft-word-2019.png" />
+                result = <img className='files-list-item-preview-extension' src="https://img.icons8.com/color/96/000000/ms-word.png" />
                 break;
             case "xlsx":
-                result = <img className='files-list-item-preview-extension' src="https://img.icons8.com/fluent/48/000000/microsoft-excel-2019.png" />
+                result = <img className='files-list-item-preview-extension' src="https://img.icons8.com/color/96/000000/ms-excel.png" />
                 // code block
                 break;
             case "pdf":
-                result = <img className='files-list-item-preview-extension' src="https://img.icons8.com/ios-glyphs/60/fa314a/pdf-2.png" />
+                result = <img className='files-list-item-preview-extension' src="https://img.icons8.com/color/96/000000/pdf.png" />
                 // code block
                 break;
             case "txt":
-                result = <img className='files-list-item-preview-extension' src="https://img.icons8.com/color/48/000000/txt.png" />
+                result = <img className='files-list-item-preview-extension' src="https://img.icons8.com/dusk/64/000000/txt.png" />
                 // code block
                 break;
             default:
@@ -227,7 +227,18 @@ class ContentMaker extends Component {
                                             <div>{this.formatDate(file.lastModifiedDate)}・{file.sizeReadable || file.size}</div>
                                         </div>
                                         <div className='files-list-item-content-delete'>
-                                            <a style={{ cursor: "pointer" }} className="btn-box-tool" onClick={(e) => { this.refs.fileComponent.removeFile(file); this.onFilesRemote(index) }}><img src="https://img.icons8.com/windows/32/fa314a/trash.png" /></a>
+                                            <div id="app-cover">
+                                                <input type="checkbox" id="checkbox" onClick={(e) => { this.refs.fileComponent.removeFile(file); this.onFilesRemote(index) }} />
+                                                <div id="bin-icon">
+                                                    <div id="lid"></div>
+                                                    <div id="box">
+                                                        <div id="box-inner">
+                                                            <div id="bin-lines"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div id="layer"></div>
+                                            </div>
                                         </div>
                                     </div>
                                 </li>

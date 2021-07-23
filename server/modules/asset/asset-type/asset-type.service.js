@@ -78,6 +78,30 @@ exports.createAssetTypes = async (portal, company, data) => {
     return await this.getAssetTypes(portal, company, {});
 }
 
+exports.importAssetTypes = async (portal, company, data) => {
+    if (data?.length) {
+        const dataLength = data.length;
+        for (let i = 0; i < dataLength; i++){
+            if (data[i].parent) {
+                const getAssetTypeParent = await AssetType(connect(DB_CONNECTION, portal)).findOne({ typeName: data[i]?.parent?.trim() });
+                data[i].parent = getAssetTypeParent?._id;
+            } else {
+                data[i].parent = null;
+            }
+            await AssetType(connect(DB_CONNECTION, portal)).create({
+                company: company,
+                typeNumber: data[i].typeNumber,
+                typeName: data[i]?.typeName?.trim(),
+                description: data[i].description,
+                defaultInformation: data[i].defaultInformation.filter(info => Boolean(info)),
+                parent: data[i].parent
+            });
+        }
+        // console.log('dataa', data);
+    }
+    return await this.getAssetTypes(portal, company, {});
+}
+
 exports.editAssetType = async (portal, id, data) => {
     const type = await AssetType(connect(DB_CONNECTION, portal)).findById(id);
     if (type.typeName !== data.typeName) {

@@ -98,6 +98,7 @@ const updateSystemApiAutomatic = async (app, req, res) => {
             content: systemAPi
         });
     } catch (error) {
+        console.log(error)
         Logger.error(req.user.email, 'create system api');
         res.status(400).json({
             success: false,

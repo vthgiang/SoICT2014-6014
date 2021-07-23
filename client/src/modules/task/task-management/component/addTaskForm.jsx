@@ -20,6 +20,7 @@ import dayjs from "dayjs";
 function AddTaskForm(props) {
     const { tasktemplates, user, translate, tasks, department, project, isProcess, info, role } = props;
     const [state, setState] = useState(() => initState())
+
     function initState() {
         return {
             newTask: {
@@ -56,6 +57,8 @@ function AddTaskForm(props) {
         // props.getAllUserOfCompany();
         props.getAllUserInAllUnitsOfCompany();
         props.getPaginateTasksByUser([], "1", "5", [], [], [], null, null, null, null, null, false, "listSearch");
+
+        //Đặt lại thời gain mặc định khi mở modal
         window.$(`#addNewTask-${id}`).on('shown.bs.modal', regenerateTime);
         return () => {
             window.$(`#addNewTask-${id}`).unbind('shown.bs.modal', regenerateTime)
@@ -144,30 +147,46 @@ function AddTaskForm(props) {
 
     useEffect(() => {
         props.handleChangeTaskData(state.newTask)
-    }, [newTask])
+    }, [JSON.stringify(newTask)])
 
-    // Khi truy vấn lấy các đơn vị của user đã có kết quả, và thuộc tính đơn vị của newTask chưa được thiết lập
-    if (newTask.organizationalUnit === "" && department.list.length !== 0) {
-        // Tìm unit mà currentRole của user đang thuộc về
-        let defaultUnit = department.list?.find(item =>
-            item.managers.find(x => x.id === state.currentRole)
-            || item.deputyManagers.find(x => x.id === state.currentRole)
-            || item.employees.find(x => x.id === state.currentRole));
-        if (!defaultUnit && department.list.length > 0) { // Khi không tìm được default unit, mặc định chọn là đơn vị đầu tiên
-            defaultUnit = department.list[0]
-        }
-
-        if (defaultUnit) {
-            props.getChildrenOfOrganizationalUnits(defaultUnit._id);
-            props.getTaskTemplateByUser(1, 10000, [defaultUnit._id], ""); //pageNumber, noResultsPerPage, arrayUnit, name=""
-        }
-        setState({
-            ...state,
-            newTask: {
-                ...state.newTask,
-                organizationalUnit: defaultUnit && defaultUnit._id,
+    useEffect(() => {
+        // Khi truy vấn lấy các đơn vị của user đã có kết quả, và thuộc tính đơn vị của newTask chưa được thiết lập
+        if (newTask.organizationalUnit === "" && department.list.length !== 0 && department.isLoading === false) {
+            // Tìm unit mà currentRole của user đang thuộc về
+            let defaultUnit = department.list?.find(item =>
+                item.managers.find(x => x.id === state.currentRole)
+                || item.deputyManagers.find(x => x.id === state.currentRole)
+                || item.employees.find(x => x.id === state.currentRole));
+            if (!defaultUnit && department.list.length > 0) { // Khi không tìm được default unit, mặc định chọn là đơn vị đầu tiên
+                defaultUnit = department.list[0]
             }
-        });
+
+            if (defaultUnit) {
+                props.getChildrenOfOrganizationalUnits(defaultUnit._id);
+                props.getTaskTemplateByUser(1, 10000, [defaultUnit._id], ""); //pageNumber, noResultsPerPage, arrayUnit, name=""
+            }
+            setState({
+                ...state,
+                newTask: {
+                    ...state.newTask,
+                    organizationalUnit: defaultUnit && defaultUnit._id,
+                }
+            });
+        }
+    }, [JSON.stringify(department?.list)])
+
+    // convert ISODate to String dd-mm-yyyy
+    const formatDate = (date) => {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+        return [day, month, year].join('-');
     }
 
     const convertDateTime = (date, time) => {
@@ -181,14 +200,18 @@ function AddTaskForm(props) {
         return dayjs(date).format("hh:mm A");
     }
 
-    function regenerateTime() {
-        setState({
-            ...state,
-            newTask: {
-                ...state.newTask,
-                startTime: formatTime(new Date())
+    // Đặt lại thời gian
+    const regenerateTime = () => {
+        let currentTime = formatTime(new Date())
+        setState(state => {
+            return {
+                ...state,
+                newTask: {
+                    ...state.newTask,
+                    startTime: currentTime,
+                }
             }
-        })
+        });
     }
 
     const handleChangeTaskName = (event) => {
@@ -204,7 +227,7 @@ function AddTaskForm(props) {
                 errorOnName: message
             }
         })
-        props.isProcess && props.handleChangeName(state.newTask.name)
+        props.isProcess && props.handleChangeName(value);
     }
 
     const handleChangeTaskProject = (e) => {
@@ -541,21 +564,6 @@ function AddTaskForm(props) {
                 tags: value
             }
         })
-    }
-
-    // convert ISODate to String dd-mm-yyyy
-    function formatDate(date) {
-        var d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
-
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
-
-        return [day, month, year].join('-');
     }
 
     let listTaskTemplate;
