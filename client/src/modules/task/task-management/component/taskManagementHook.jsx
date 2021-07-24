@@ -160,6 +160,7 @@ function TaskManagement(props) {
     const setLimit = async (limit) => {
         if (Number(limit) !== state.perPage) {
             await setState({
+                ...state,
                 perPage: Number(limit)
             })
             handleGetDataPerPage(Number(limit));
@@ -372,6 +373,7 @@ function TaskManagement(props) {
         props.getPaginateTasks(data);
 
         setState({
+            ...state,
             currentPage: 1
         })
     }
@@ -526,6 +528,7 @@ function TaskManagement(props) {
 
     const handleDisplayType = (displayType) => {
         setState({
+            ...state,
             displayType
         });
         switch (displayType) {
@@ -553,8 +556,10 @@ function TaskManagement(props) {
         let idValid = tasks.tasks ? tasks.tasks.some(t => t._id === id) : null;
         if (id && idValid) {
             setState({
+                ...state,
                 currentTaskId: id
-            }, () => { window.$(`#modelPerformTask${id}`).modal('show') })
+            })
+            window.$(`#modelPerformTask${id}`).modal('show')
         }
     }
 
