@@ -128,13 +128,21 @@ function DetailTaskTab(props) {
                     if (props.onChangeTaskRole) {
                         props.onChangeTaskRole(roles[0].value);
                     }
-                } else {
-                    if (props.onChangeTaskRole) {
-                        props.onChangeTaskRole(currentRole);
+                }
+                else {
+                    if (!roles.includes(currentRole)) {
+                        setCurrentRole(roles[0].value)
+                        if (props.onChangeTaskRole) {
+                            props.onChangeTaskRole(roles[0].value);
+                        }
+                    }
+                    else {
+                        if (props.onChangeTaskRole) {
+                            props.onChangeTaskRole(currentRole);
+                        }
                     }
                 }
             }
-
             setState({
                 ...state,
                 dataStatus: DATA_STATUS.FINISHED,
