@@ -101,27 +101,13 @@ function TaskManagement(props) {
         props.getProjectsDispatch({ calledId: "" });
     }, [])
 
-    // shouldComponentUpdate(nextProps, nextState) {
-    //     let { currentTab, organizationalUnit, status, priority, special, name, startDate, endDate } = this.state;
-    //     if (currentTab !== nextState.currentTab ||
-    //         organizationalUnit !== nextState.organizationalUnit ||
-    //         status !== nextState.status ||
-    //         priority !== nextState.priority ||
-    //         special !== nextState.special ||
-    //         name !== nextState.name ||
-    //         startDate !== nextState.startDate ||
-    //         endDate !== nextState.endDate
-    //     ) {
-    //         return false;
+    // useEffect(() => {
+    //     if (tasks?.task) {
+    //         console.log("xxxxxxxxxxxxxxxxxxx")
+    //         handleUpdateData();
     //     }
+    // }, [JSON.stringify(tasks?.task)])
 
-    //     return true;
-    // }
-    // componentDidUpdate(prevProps, prevState) {
-    //     if (prevProps.tasks.tasks && this.props.tasks.tasks && prevProps.tasks.tasks.length !== this.props.tasks.tasks.length) {
-    //         this.handleUpdateData();
-    //     }
-    // }
 
     const list_to_tree = (list) => {
         let map = {}, node, roots = [], i, newarr = [];
@@ -233,22 +219,14 @@ function TaskManagement(props) {
             special, name, startDate, endDate,
             responsibleEmployees, accountableEmployees,
             creatorEmployees, creatorTime,
-            projectSearch, tags
+            projectSearch, tags, perPage
         } = state;
 
-        let oldCurrentPage = state.currentPage;
-        let perPage = state.perPage;
-
-        setState({
-            ...state,
-            currentPage: index
-        })
-        let newCurrentPage = state.currentPage;
-        if (oldCurrentPage !== index) {
+        if (state.currentPage !== index) {
             let data = {
                 role: state.currentTab,
                 unit: organizationalUnit,
-                number: newCurrentPage,
+                number: index,
                 perPage: perPage,
                 status: status,
                 priority: priority,
@@ -269,6 +247,11 @@ function TaskManagement(props) {
 
             props.getPaginateTasks(data);
         };
+
+        setState({
+            ...state,
+            currentPage: index
+        })
     }
 
     const nextPage = async (pageTotal) => {
@@ -374,7 +357,8 @@ function TaskManagement(props) {
 
         setState({
             ...state,
-            currentPage: 1
+            currentPage: 1,
+            perPage: perPage
         })
     }
 
@@ -420,7 +404,6 @@ function TaskManagement(props) {
 
             props.getPaginateTasks(data);
         }
-
         setState({
             ...state,
             currentPage: 1
@@ -428,11 +411,11 @@ function TaskManagement(props) {
     }
 
     const handleShowModal = (id) => {
+        window.$(`#modelPerformTask${id}`).modal('show');
         setState({
             ...state,
             currentTaskId: id
         })
-        window.$(`#modelPerformTask${id}`).modal('show');
     }
 
     /**
@@ -868,6 +851,7 @@ function TaskManagement(props) {
 
     let exportData = convertDataToExportData(translate, currentTasks, translate("menu.task_management"));
     console.log("state", state)
+    console.log("tasks", tasks)
     return (
         <React.Fragment>
             <div className="box">
