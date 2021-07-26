@@ -30,9 +30,10 @@ import { ROOT_ROLE } from '../../../../helpers/constants';
 import dayjs from 'dayjs';
 function DetailTaskTab(props) {
     const [state, setState] = useState(() => initState())
+    const [currentRole, setCurrentRole] = useState(null)
     const { tasks, performtasks, user, translate, role } = props;
     const { showToolbar, id, isProcess } = props; // props form parent component ( task, id, showToolbar, onChangeTaskRole() )
-    const { currentUser, roles, currentRole, collapseInfo,
+    const { currentUser, roles, collapseInfo,
         showEdit, showEndTask, showEvaluate, showRequestClose,
         showMore, showCopy, showSaveAsTemplate
     } = state
@@ -48,7 +49,7 @@ function DetailTaskTab(props) {
     function initState() {
         let { translate } = props;
         var idUser = getStorage("userId");
-        let currentRole = getStorage("currentRole");
+        let currentRoleId = getStorage("currentRole");
 
         let currentDate = new Date();
         let currentYear = currentDate.getFullYear();
@@ -62,7 +63,7 @@ function DetailTaskTab(props) {
             pauseTimer: false,
             highestIndex: 0,
             currentUser: idUser,
-            currentRole,
+            currentRoleId,
             dataStatus: DATA_STATUS.NOT_AVAILABLE,
             showMore: {},
 
@@ -74,9 +75,9 @@ function DetailTaskTab(props) {
 
     useEffect(() => {
         props.getAllUserInAllUnitsOfCompany();
-        const { currentRole } = state;
+        const { currentRoleId } = state;
         props.getProjectsDispatch({ calledId: "" });
-        props.showInfoRole(currentRole);
+        props.showInfoRole(currentRoleId);
     }, [])
 
     useEffect(() => {
@@ -115,25 +116,37 @@ function DetailTaskTab(props) {
                     roles.push(ROLE.INFORMED);
                 }
 
-                if (userId === task.creator._id) {
-                    roles.push(ROLE.CREATOR);
-                }
+                if (task.creator._id)
+                    if (userId === task.creator._id) roles.push(ROLE.CREATOR);
+                if (!task.creator._id)
+                    if (userId === task.creator) roles.push(ROLE.CREATOR);
             }
 
-            let currentRole;
             if (roles.length > 0) {
-                currentRole = roles[0].value;
-                if (props.onChangeTaskRole) {
-                    props.onChangeTaskRole(currentRole);
+                if (!currentRole) {
+                    setCurrentRole(roles[0].value)
+                    if (props.onChangeTaskRole) {
+                        props.onChangeTaskRole(roles[0].value);
+                    }
+                }
+                else {
+                    if (!roles.includes(currentRole)) {
+                        setCurrentRole(roles[0].value)
+                        if (props.onChangeTaskRole) {
+                            props.onChangeTaskRole(roles[0].value);
+                        }
+                    }
+                    else {
+                        if (props.onChangeTaskRole) {
+                            props.onChangeTaskRole(currentRole);
+                        }
+                    }
                 }
             }
-
-
             setState({
                 ...state,
                 dataStatus: DATA_STATUS.FINISHED,
                 roles: roles,
-                currentRole: roles.length > 0 ? roles[0].value : null
             })
         }
     }, [JSON.stringify(tasks?.task)])
@@ -311,10 +324,7 @@ function DetailTaskTab(props) {
 
     }
     const changeRole = (role) => {
-        setState({
-            ...state,
-            currentRole: role
-        })
+        setCurrentRole(role)
         props.onChangeTaskRole(role);
     }
 
@@ -838,6 +848,7 @@ function DetailTaskTab(props) {
     const checkCurrentRoleIsManager = role && role.item &&
         role.item.parents.length > 0 && role.item.parents.filter(o => o.name === ROOT_ROLE.MANAGER)
 
+    console.log("state DetailTaskTab", state)
     return (
         <React.Fragment>
             {(showToolbar) &&
