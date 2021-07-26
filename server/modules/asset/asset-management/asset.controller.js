@@ -87,6 +87,7 @@ exports.createAsset = async (req, res) => {
             content: data
         });
     } catch (error) {
+        console.log('error', error);
         let messages = error && error.messages === 'asset_code_exist' ? ['asset_code_exist'] : ['create_asset_faile'];
 
         await Logger.error(req.user.email, 'CREATE_ASSET', req.portal);

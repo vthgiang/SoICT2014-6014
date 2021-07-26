@@ -6,7 +6,7 @@ export const configurationGeneralInformationOfAssetTemplate = {
     },
     rowHeader: {
         description: "Số dòng tiêu đề của bảng",
-        value: 1
+        value: 2
     },
     code: {
         columnName: "Mã tài sản",
@@ -67,7 +67,12 @@ export const configurationGeneralInformationOfAssetTemplate = {
         columnName: "Quyền đăng ký sử dụng",
         description: "Tên tiêu để ứng với quyền đăng ký sử dụng",
         value: "Quyền đăng ký sử dụng"
-    }
+    },
+    assetInfo: {
+        columnName: "Các thuộc tính của tài sản",
+        description: "Các thuộc tính của tài sản",
+        value: ["Tên thuộc tính", "Giá trị"]
+    },
 }
 
 // Config import thông tin sử dụng
