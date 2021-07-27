@@ -343,7 +343,7 @@ function TaskManagement(props) {
             ...state,
             currentTaskId: id
         })
-
+        window.$(`#modelPerformTask${currentTaskId}`).modal('show')
     }
 
     /**
@@ -473,7 +473,7 @@ function TaskManagement(props) {
                 ...state,
                 currentTaskId: id
             })
-            // window.$(`#modelPerformTask${id}`).modal('show')
+            window.$(`#modelPerformTask${id}`).modal('show')
         }
     }
 
