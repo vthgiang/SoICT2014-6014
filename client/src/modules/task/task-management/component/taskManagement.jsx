@@ -464,10 +464,10 @@ function TaskManagement(props) {
     const handleShowTask = (e, data) => {
         let id = data && data.node && data.node.original ? data.node.original._id : '';
         let idValid = tasks.tasks ? tasks.tasks.some(t => t._id === id) : null;
-        console.log("state", state)
-        console.log("Tasks.task", tasks)
-        console.log("id", id)
-        console.log("idValid", idValid)
+        // console.log("state", state)
+        // console.log("Tasks.task", tasks)
+        // console.log("id", id)
+        // console.log("idValid", idValid)
         if (id && idValid) {
             setState({
                 ...state,
@@ -781,8 +781,8 @@ function TaskManagement(props) {
     }
 
     let exportData = convertDataToExportData(translate, currentTasks, translate("menu.task_management"));
-    console.log("state", state)
-    console.log("tasks", tasks)
+    // console.log("state", state)
+    // console.log("tasks", tasks)
     return (
         <React.Fragment>
             <div className="box">

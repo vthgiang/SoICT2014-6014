@@ -30,7 +30,7 @@ function TaskListView(props) {
 
     let stateNew = _cloneDeep(state);
     stateNew = splitToChunks(stateNew, 3);
-    console.log('stateNew', stateNew)
+    // console.log('stateNew', stateNew)
     return (
         < div className="content-list-view" >
             {

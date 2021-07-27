@@ -35,7 +35,7 @@ function DetailTaskTab(props) {
     const { showToolbar, id, isProcess } = props; // props form parent component ( task, id, showToolbar, onChangeTaskRole() )
     const { currentUser, roles, collapseInfo,
         showEdit, showEndTask, showEvaluate, showRequestClose,
-        showMore, showCopy, showSaveAsTemplate
+        showMore, showCopy, showSaveAsTemplate, modalEditId
     } = state
     const DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
 
@@ -66,7 +66,7 @@ function DetailTaskTab(props) {
             currentRoleId,
             dataStatus: DATA_STATUS.NOT_AVAILABLE,
             showMore: {},
-
+            modalEditId: undefined,
             currentMonth: currentYear + '-' + (currentMonth + 1),
             nextMonth: (currentMonth > 10) ? ((currentYear + 1) + '-' + (currentMonth - 10)) : (currentYear + '-' + (currentMonth + 2)),
             dueForEvaluationOfTask: currentYear + '-' + (currentMonth + 1) + '-' + 7
@@ -130,7 +130,7 @@ function DetailTaskTab(props) {
                     }
                 }
                 else {
-                    if (!roles.includes(currentRole)) {
+                    if (!roles.some(e => e.value === currentRole)) {
                         setCurrentRole(roles[0].value)
                         if (props.onChangeTaskRole) {
                             props.onChangeTaskRole(roles[0].value);
@@ -150,6 +150,22 @@ function DetailTaskTab(props) {
             })
         }
     }, [JSON.stringify(tasks?.task)])
+
+    useEffect(() => {
+        window.$(`#modal-request-close-task-${showRequestClose}`).modal('show');
+    }, [showRequestClose])
+
+    useEffect(() => {
+        window.$(`#task-evaluation-modal-${showEvaluate}-`).modal('show');
+    }, [showEvaluate])
+
+    useEffect(() => {
+        window.$(`#modal-add-task-template-${showSaveAsTemplate}`).modal('show');
+    }, [showSaveAsTemplate])
+
+    useEffect(() => {
+        window.$(modalEditId).modal('show');
+    }, [modalEditId])
 
     const handleChangeCollapseInfo = () => {
         setState({
@@ -232,15 +248,16 @@ function DetailTaskTab(props) {
     }
 
     const handleShowEdit = (id, role, checkHasAccountable) => {
-        setState({
-            ...state,
-            showEdit: id
-        });
-
         let modalId = `#modal-edit-task-by-${role}-${id}`;
         if (checkHasAccountable === false && role === "responsible") {
             modalId = `#modal-edit-task-by-${role}-${id}-has-not-accountable`
         }
+        setState({
+            ...state,
+            showEdit: id,
+            modalEditId: modalId
+        });
+
         window.$(modalId).modal('show');
 
     }
@@ -848,7 +865,6 @@ function DetailTaskTab(props) {
     const checkCurrentRoleIsManager = role && role.item &&
         role.item.parents.length > 0 && role.item.parents.filter(o => o.name === ROOT_ROLE.MANAGER)
 
-    console.log("state DetailTaskTab", state)
     return (
         <React.Fragment>
             {(showToolbar) &&
