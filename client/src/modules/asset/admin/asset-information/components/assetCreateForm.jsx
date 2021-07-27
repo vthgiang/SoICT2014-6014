@@ -335,7 +335,6 @@ function mapState(state) {
 
 const actionCreators = {
     addNewAsset: AssetManagerActions.addNewAsset,
-    searchAssetTypes: AssetTypeActions.searchAssetTypes,
     getAllUsers: UserActions.get
 };
 

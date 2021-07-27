@@ -72,7 +72,8 @@ export function assetType(state = initState, action) {
                 administration: {
                     ...state.administration,
                     types: action.payload
-                }
+                },
+                listAssetTypes: action?.payload?.list
             };
         
         case AssetTypeConstants.EDIT_ASSET_TYPE_SUCCESS:

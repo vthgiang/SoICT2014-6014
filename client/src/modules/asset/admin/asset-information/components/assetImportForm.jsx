@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { UserActions } from '../../../../super-admin/user/redux/actions';
-import { AssetTypeActions } from "../../asset-type/redux/actions";
 import { AssetManagerActions } from '../redux/actions';
 
 import { AssetImportTab } from './assetImportTab';
@@ -1406,7 +1405,6 @@ function mapState(state) {
 const actions = {
     getAllAsset: AssetManagerActions.getAllAsset,
     addNewAsset: AssetManagerActions.addNewAsset,
-    searchAssetTypes: AssetTypeActions.searchAssetTypes,
     getAllUsers: UserActions.get,
     updateInformationAsset: AssetManagerActions.updateInformationAsset
 };

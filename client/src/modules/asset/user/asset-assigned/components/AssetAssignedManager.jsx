@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect} from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -12,8 +12,8 @@ import { IncidentCreateForm } from "./incidentCreateForm";
 import { AssetDetailForm } from '../../../admin/asset-information/components/assetDetailForm';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration'
 
-function AssetAssignedManager(props){
-  
+function AssetAssignedManager(props) {
+
     const tableId_constructor = "table-asset-assign-manager";
     const defaultConfig = { limit: 10 }
     const limit_constructor = getTableConfiguration(tableId_constructor, defaultConfig).limit;
@@ -28,13 +28,13 @@ function AssetAssignedManager(props){
         limit: limit_constructor,
         tableId: tableId_constructor,
     })
-       
+
     useEffect(() => {
-        props.searchAssetTypes({ typeNumber: "", typeName: "", limit: 0 });
-        props.getAllAsset({...state});
+        props.getAssetTypes();
+        props.getAllAsset({ ...state });
         props.getUser();
     }, [])
-   
+
 
     // Bắt sự kiện click xem thông tin tài sản
     const handleView = async (value) => {
@@ -102,8 +102,8 @@ function AssetAssignedManager(props){
     // Function lưu giá trị mã tài sản vào state khi thay đổi
     const handleCodeChange = (event) => {
         const { name, value } = event.target;
-        setState(state =>{
-            return{
+        setState(state => {
+            return {
                 ...state,
                 [name]: value
             }
@@ -113,8 +113,8 @@ function AssetAssignedManager(props){
     // Function lưu giá trị tên tài sản vào state khi thay đổi
     const handleAssetNameChange = (event) => {
         const { name, value } = event.target;
-        setState(state =>{
-            return{
+        setState(state => {
+            return {
                 ...state,
                 [name]: value
             }
@@ -141,8 +141,8 @@ function AssetAssignedManager(props){
             value = null
         }
 
-        setState(state =>{
-            return{
+        setState(state => {
+            return {
                 ...state,
                 status: value
             }
@@ -154,8 +154,8 @@ function AssetAssignedManager(props){
             value = null
         }
 
-        setState(state =>{
-            return{
+        setState(state => {
+            return {
                 ...state,
                 group: value
             }
@@ -167,8 +167,8 @@ function AssetAssignedManager(props){
             value = null
         }
 
-        setState(state =>{
-            return{
+        setState(state => {
+            return {
                 ...state,
                 handoverUser: value
             }
@@ -177,8 +177,8 @@ function AssetAssignedManager(props){
 
     // Function bắt sự kiện tìm kiếm
     const handleSubmitSearch = async () => {
-        await setState(state =>{
-            return{
+        await setState(state => {
+            return {
                 ...state,
                 page: 0
             }
@@ -188,26 +188,26 @@ function AssetAssignedManager(props){
 
     // Bắt sự kiện setting số dòng hiện thị trên một trang
     const setLimit = async (number) => {
-        await setState(state =>{
-            return{
+        await setState(state => {
+            return {
                 ...state,
                 limit: parseInt(number),
             }
         });
-        props.getAllAsset({...state, limit: 10000,page:0});
+        props.getAllAsset({ ...state, limit: 10000, page: 0 });
     }
 
     // Bắt sự kiện chuyển trang
     const setPage = async (pageNumber) => {
         var page = (pageNumber - 1) * state.limit;
-        await setState(state =>{
-            return{
+        await setState(state => {
+            return {
                 ...state,
                 page: parseInt(page),
             }
 
         });
-        props.getAllAsset({...state, page: 0,limit:10000});
+        props.getAllAsset({ ...state, page: 0, limit: 10000 });
     }
     const getAssetTypes = () => {
         let { assetType } = props;
@@ -262,7 +262,7 @@ function AssetAssignedManager(props){
             return '';
         }
     }
- 
+
     const { id, translate, assetsManager, assetType, user, auth } = props;
     const { page, limit, currentRowView, currentRow, tableId } = state;
 
@@ -276,22 +276,22 @@ function AssetAssignedManager(props){
         lists = assetsManager.listAssets;
     }
 
- 
+
 
     var currentPage = parseInt((page / limit) + 1);
     let typeArr = getAssetTypes();
     let dataSelectBox = getUserAndDepartment();
-    let pageTotal=0;
+    let pageTotal = 0;
     let listAssetAssigns;
     let listAssetAssignShow;
     if (lists && lists.length !== 0) {
         listAssetAssigns = lists.filter(item => item.assignedToUser === auth.user._id)
         pageTotal = ((listAssetAssigns.length % limit) === 0) ?
-        parseInt(listAssetAssigns.length / limit) :
-        parseInt((listAssetAssigns.length / limit) + 1);
-        listAssetAssignShow=listAssetAssigns.slice((currentPage-1)*limit,currentPage*limit)
+            parseInt(listAssetAssigns.length / limit) :
+            parseInt((listAssetAssigns.length / limit) + 1);
+        listAssetAssignShow = listAssetAssigns.slice((currentPage - 1) * limit, currentPage * limit)
     }
-    
+
     // console.log(pageTotal,limit,listAssetAssigns,lists,page,currentPage);
     return (
         <div id="assetassigned" className="tab-pane active">
@@ -477,7 +477,7 @@ function mapState(state) {
 };
 
 const actionCreators = {
-    searchAssetTypes: AssetTypeActions.searchAssetTypes,
+    getAssetTypes: AssetTypeActions.getAssetTypes,
     getAllAsset: AssetManagerActions.getAllAsset,
     getUser: UserActions.get,
 };

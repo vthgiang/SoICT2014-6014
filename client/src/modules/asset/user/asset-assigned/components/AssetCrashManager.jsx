@@ -1,4 +1,4 @@
-import React, { Component , useState, useEffect} from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -25,11 +25,11 @@ function AssetCrashManager(props) {
         month: null,
         type: null,
         limit: limit_constructor,
-        page:0
+        page: 0
     })
 
     useEffect(() => {
-        props.searchAssetTypes({ typeNumber: "", typeName: "", limit: 0 });
+        props.getAssetTypes();
         props.getUser();
         props.getAllAsset({
             code: "",
@@ -41,7 +41,7 @@ function AssetCrashManager(props) {
         });
     }, [])
 
-    
+
 
     // Bắt sự kiện click chỉnh sửa thông tin sự cố
     const handleEdit = async (value, asset) => {
@@ -78,7 +78,7 @@ function AssetCrashManager(props) {
     }
 
     // Function format ngày hiện tại thành dạnh mm-yyyy
-    const formatDate = (date)  => {
+    const formatDate = (date) => {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -98,8 +98,8 @@ function AssetCrashManager(props) {
     // Function lưu giá trị mã tài sản vào state khi thay đổi
     const handleCodeChange = (event) => {
         const { name, value } = event.target;
-        setState(state =>{
-            return{ 
+        setState(state => {
+            return {
                 ...state,
                 [name]: value
             }
@@ -109,8 +109,8 @@ function AssetCrashManager(props) {
     // Function lưu giá trị mã tài sản vào state khi thay đổi
     const handleAssetNameChange = (event) => {
         const { name, value } = event.target;
-        setState(state =>{
-            return{
+        setState(state => {
+            return {
                 ...state,
                 [name]: value
             }
@@ -119,10 +119,10 @@ function AssetCrashManager(props) {
 
     // Function lưu giá trị tháng vào state khi thay đổi
     const handleMonthChange = (value) => {
-        setState(state =>{
-            return{
+        setState(state => {
+            return {
                 ...state,
-                incidentDate: value   
+                incidentDate: value
             }
         });
     }
@@ -133,8 +133,8 @@ function AssetCrashManager(props) {
             value = null
         }
 
-        setState(state =>{
-            return{
+        setState(state => {
+            return {
                 ...state,
                 incidentType: value
             }
@@ -143,8 +143,8 @@ function AssetCrashManager(props) {
 
     // Function bắt sự kiện tìm kiếm
     const handleSubmitSearch = async () => {
-        await setState(state =>{
-            return{
+        await setState(state => {
+            return {
                 ...state,
             }
 
@@ -154,26 +154,26 @@ function AssetCrashManager(props) {
 
     // Bắt sự kiện setting số dòng hiện thị trên một trang
     const setLimit = async (number) => {
-        await setState(state =>{
-            return{
+        await setState(state => {
+            return {
                 ...state,
                 limit: parseInt(number),
             }
         });
-        props.getAllAsset({...state, limit: 10000,page:0});
+        props.getAllAsset({ ...state, limit: 10000, page: 0 });
     }
 
     // Bắt sự kiện chuyển trang
     const setPage = async (pageNumber) => {
         var page = (pageNumber - 1) * state.limit;
-        await setState(state =>{
-            return{
+        await setState(state => {
+            return {
                 ...state,
                 page: parseInt(page),
             }
 
         });
-        props.getAllAsset({...state, page: 0,limit:10000});
+        props.getAllAsset({ ...state, page: 0, limit: 10000 });
     }
 
     const deleteIncident = (assetId, incidentId) => {
@@ -213,28 +213,28 @@ function AssetCrashManager(props) {
         }
     }
 
-        const { translate, assetsManager, assetType, user, auth } = props;
-        const { page, limit, currentRow, tableId } = state;
+    const { translate, assetsManager, assetType, user, auth } = props;
+    const { page, limit, currentRow, tableId } = state;
 
-        var lists = "";
-        var userlist = user.list;
-        var assettypelist = assetType.listAssetTypes;
-        var formater = new Intl.NumberFormat();
-        if (assetsManager.isLoading === false) {
-            lists = assetsManager.listAssets;
-        }
-        let listAssetAssignShow,listAssetAssigns,pageTotal;
-        var currentPage = parseInt((page / limit) + 1);
+    var lists = "";
+    var userlist = user.list;
+    var assettypelist = assetType.listAssetTypes;
+    var formater = new Intl.NumberFormat();
+    if (assetsManager.isLoading === false) {
+        lists = assetsManager.listAssets;
+    }
+    let listAssetAssignShow, listAssetAssigns, pageTotal;
+    var currentPage = parseInt((page / limit) + 1);
 
-        if (lists && lists.length !== 0) {
-            listAssetAssigns = lists.filter(item => item.assignedToUser === auth.user._id)
-            listAssetAssigns=listAssetAssigns.filter(value=>value.incidentLogs.some(value1=>value1.reportedBy===auth.user._id)===true)
-            pageTotal = ((listAssetAssigns.length % limit) === 0) ?
+    if (lists && lists.length !== 0) {
+        listAssetAssigns = lists.filter(item => item.assignedToUser === auth.user._id)
+        listAssetAssigns = listAssetAssigns.filter(value => value.incidentLogs.some(value1 => value1.reportedBy === auth.user._id) === true)
+        pageTotal = ((listAssetAssigns.length % limit) === 0) ?
             parseInt(listAssetAssigns.length / limit) :
             parseInt((listAssetAssigns.length / limit) + 1);
-            listAssetAssignShow=listAssetAssigns.slice((currentPage-1)*limit,currentPage*limit)
-        }
-        // console.log(pageTotal,listAssetAssignShow,page,limit);
+        listAssetAssignShow = listAssetAssigns.slice((currentPage - 1) * limit, currentPage * limit)
+    }
+    // console.log(pageTotal,listAssetAssignShow,page,limit);
     return (
         <div id="assetcrash" className="tab-pane">
             <div className="box-body qlcv">
@@ -382,7 +382,7 @@ function mapState(state) {
 
 const actionCreators = {
     deleteIncident: IncidentActions.deleteIncident,
-    searchAssetTypes: AssetTypeActions.searchAssetTypes,
+    getAssetTypes: AssetTypeActions.getAssetTypes,
     getUser: UserActions.get,
     getAllAsset: AssetManagerActions.getAllAsset,
 };

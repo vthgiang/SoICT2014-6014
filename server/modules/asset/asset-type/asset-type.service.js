@@ -51,7 +51,7 @@ exports.getAssetTypes = async (portal, company, query) => {
         
         return { totalList, list, tree, totalPage };
     } else {
-        const list = await AssetType(connect(DB_CONNECTION, portal)).find();
+        const list = await AssetType(connect(DB_CONNECTION, portal)).find().populate({ path: 'parent' });
         const dataConverted = list.map(type => {
             return {
                 id: type._id.toString(),

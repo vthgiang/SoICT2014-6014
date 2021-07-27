@@ -22,7 +22,7 @@ function IncidentManagement(props) {
     const limit_constructor = getTableConfiguration(tableId_constructor, defaultConfig).limit;
 
     const [state, setState] = useState({
-        tableId:tableId_constructor,
+        tableId: tableId_constructor,
         code: "",
         assetName: "",
         assetType: null,
@@ -49,10 +49,10 @@ function IncidentManagement(props) {
     var pageTotal = ((incidentManager.incidentLength % limit) === 0) ?
         parseInt(incidentManager.incidentLength / limit) :
         parseInt((incidentManager.incidentLength / limit) + 1);
-    
+
     useEffect(() => {
         let { managedBy } = state;
-        props.searchAssetTypes({ typeNumber: "", typeName: "", limit: 0 });
+        props.getAssetTypes();
         props.getUser();
         props.getIncidents(state);
         props.getListBuildingAsTree();
@@ -60,7 +60,7 @@ function IncidentManagement(props) {
             props.getAllAsset(state);
         }
     }, [])
-    
+
 
     // Bắt sự kiện click chỉnh sửa thông tin sự cố
     const handleEdit = async (value, asset) => {
@@ -75,7 +75,7 @@ function IncidentManagement(props) {
     }
 
     // Function format dữ liệu Date thành string
-    const formatDate2 = (date, monthYear = false) =>{
+    const formatDate2 = (date, monthYear = false) => {
         if (!date) return null;
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
@@ -98,7 +98,7 @@ function IncidentManagement(props) {
     }
 
     // Function format ngày hiện tại thành dạnh mm-yyyy
-    const formatDate = (date) =>{
+    const formatDate = (date) => {
         if (!date) return null;
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
@@ -185,7 +185,7 @@ function IncidentManagement(props) {
             limit: parseInt(number),
         });
 
-        props.getIncidents({...state, limit: parseInt(number)});
+        props.getIncidents({ ...state, limit: parseInt(number) });
     }
 
     // Bắt sự kiện chuyển trang
@@ -195,7 +195,7 @@ function IncidentManagement(props) {
             ...state,
             page: page,
         });
-        props.getIncidents({...state, page: page});
+        props.getIncidents({ ...state, page: page });
     }
 
     const deleteIncident = (assetId, incidentId) => {
@@ -288,7 +288,7 @@ function IncidentManagement(props) {
         window.$('#modal-edit-asset').modal('show');
 
         // Mở tab thứ 4
-        window.$('#modal-edit-asset').on('shown.bs.modal', function (){
+        window.$('#modal-edit-asset').on('shown.bs.modal', function () {
             window.$('#nav-tabs li:eq(3) a').tab('show');
         });
 
@@ -532,7 +532,7 @@ function mapState(state) {
 const actionCreators = {
     getIncidents: ManageIncidentActions.getIncidents,
     deleteIncident: IncidentActions.deleteIncident,
-    searchAssetTypes: AssetTypeActions.searchAssetTypes,
+    getAssetTypes: AssetTypeActions.getAssetTypes,
     getUser: UserActions.get,
     getAllAsset: AssetManagerActions.getAllAsset,
     getListBuildingAsTree: AssetManagerActions.getListBuildingAsTree,

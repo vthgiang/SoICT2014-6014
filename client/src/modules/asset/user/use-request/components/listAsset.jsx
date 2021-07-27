@@ -19,7 +19,7 @@ function ListAsset(props) {
     const defaultConfig = { limit: 5 }
     const limit_constructor = getTableConfiguration(tableId_constructor, defaultConfig).limit;
 
-    const [state, setState] =useState({
+    const [state, setState] = useState({
         tableId: tableId_constructor,
         code: "",
         assetName: "",
@@ -30,8 +30,8 @@ function ListAsset(props) {
         limit: limit_constructor,
         currentRole: localStorage.getItem('currentRole'),
     })
-    useEffect(()=> {
-        props.searchAssetTypes({ typeNumber: "", typeName: "", limit: 0 });
+    useEffect(() => {
+        props.getAssetTypes();
         props.getAllAsset({
             ...state
         });
@@ -40,7 +40,7 @@ function ListAsset(props) {
 
     const { translate, assetsManager, assetType, user, auth } = props;
     const { page, limit, currentRowView, currentRow, tableId, group, status, typeRegisterForUse } = state;
-    
+
 
     // Bắt sự kiện click xem thông tin tài sản
     const handleView = async (value) => {
@@ -184,13 +184,13 @@ function ListAsset(props) {
 
     // Bắt sự kiện setting số dòng hiện thị trên một trang
     const setLimit = async (number) => {
-        await setState(state =>{
-            return{
+        await setState(state => {
+            return {
                 ...state,
                 limit: parseInt(number),
             }
         });
-        props.getAllAsset({...state, limit: parseInt(number)});
+        props.getAllAsset({ ...state, limit: parseInt(number) });
     }
 
     // Bắt sự kiện chuyển trang
@@ -201,7 +201,7 @@ function ListAsset(props) {
             page: parseInt(page),
         });
 
-        props.getAllAsset({ ...state, page:parseInt(page)});
+        props.getAllAsset({ ...state, page: parseInt(page) });
     }
 
     const getAssetTypes = () => {
@@ -229,7 +229,7 @@ function ListAsset(props) {
             return translate('asset.dashboard.machine')
         } else if (group === 'other') {
             return translate('asset.dashboard.other')
-        } 
+        }
     }
 
     const convertStatusAsset = (status) => {
@@ -248,9 +248,9 @@ function ListAsset(props) {
         }
         else if (status === 'disposal') {
             return translate('asset.general_information.disposal')
-        } 
+        }
     }
-        
+
 
     var lists = "";
     var userlist = user.list;
@@ -419,11 +419,11 @@ function ListAsset(props) {
                 }
 
                 {/* PaginateBar */}
-                <PaginateBar 
+                <PaginateBar
                     display={assetsManager.listAssets?.length}
                     total={assetsManager.totalList}
-                    pageTotal={pageTotal ? pageTotal : 0} 
-                    currentPage={currentPage} 
+                    pageTotal={pageTotal ? pageTotal : 0}
+                    currentPage={currentPage}
                     func={setPage} />
             </div>
 
@@ -492,7 +492,7 @@ function mapState(state) {
 };
 
 const actionCreators = {
-    searchAssetTypes: AssetTypeActions.searchAssetTypes,
+    getAssetTypes: AssetTypeActions.getAssetTypes,
     getAllAsset: AssetManagerActions.getAllAsset,
     getUser: UserActions.get,
 };

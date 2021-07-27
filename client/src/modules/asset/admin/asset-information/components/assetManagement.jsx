@@ -40,7 +40,7 @@ function AssetManagement(props) {
 
     useEffect(() => {
         props.getAllAsset(state);
-        props.searchAssetTypes({ typeNumber: "", typeName: "", limit: 0 });
+        props.getAssetTypes();
         props.getListBuildingAsTree();
         props.getUser();
         props.getAllDepartments();
@@ -648,7 +648,7 @@ function AssetManagement(props) {
                 _id: item._id,
                 id: item._id,
                 name: item.typeName,
-                parent: item.parent ? item.parent._id : null
+                parent: item.parent ? typeof item.parent === 'object' ? item.parent._id : item.parent : null
             })
         })
         return typeArr;
@@ -1129,7 +1129,7 @@ function mapState(state) {
 };
 
 const actionCreators = {
-    searchAssetTypes: AssetTypeActions.searchAssetTypes,
+    getAssetTypes: AssetTypeActions.getAssetTypes,
     getAllAsset: AssetManagerActions.getAllAsset,
     getListBuildingAsTree: AssetManagerActions.getListBuildingAsTree,
     deleteAsset: AssetManagerActions.deleteAsset,
