@@ -9,25 +9,47 @@ const ObjectId = require('mongoose').Types.ObjectId;
  * Danh mục văn bản
  */
 exports.getAssetTypes = async (portal, company, query) => {
-    const { typeNumber, typeName, page, limit } = query;
+    let { typeNumber, typeName, page, perPage } = query;
+    let skip;
 
-    if (typeNumber || typeName || page || limit) {
+    if (perPage >= 0) {
+        perPage = Number(perPage);
+        if (page) {
+            page = Number(page);
+            skip = perPage * (page - 1);
+        } 
+    }
+
+    if (typeNumber || typeName || page || perPage) {
         var keySearch = { };
 
         // Bắt sựu kiện mã loại tài sản tìm kiếm khác ""
-        if (typeNumber !== "") {
+        if (typeNumber) {
             keySearch = { ...keySearch, typeNumber: { $regex: typeNumber, $options: "i" } }
         }
 
         // Bắt sựu kiện tên loại tài sản tìm kiếm khác ""
-        if (typeName !== "") {
+        if (typeName) {
             keySearch = { ...keySearch, typeName: { $regex: typeName, $options: "i" } }
         };
 
         var totalList = await AssetType(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
-        var listAssetTypes = await AssetType(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createDate': 'desc' }).skip(page ? parseInt(page) : 0).limit(limit ? parseInt(limit) : 0).populate({ path: 'parent' });
+        const list = await AssetType(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createDate': 'desc' }).skip(skip ? parseInt(skip) : 0).limit(perPage ? parseInt(perPage) : 0).populate({ path: 'parent' });
 
-        return { totalList, listAssetTypes };
+         const dataConverted = list && list.map(type => {
+            return {
+                id: type._id.toString(),
+                key: type._id.toString(),
+                value: type._id.toString(),
+                label: type.typeName,
+                title: type.typeName,
+                parent_id: type.parent ? type.parent.toString() : null
+            }
+        });
+        const tree = await arrayToTree(dataConverted, {});
+        const totalPage = totalList && perPage ? Math.ceil(totalList / perPage) : 1;
+        
+        return { totalList, list, tree, totalPage };
     } else {
         const list = await AssetType(connect(DB_CONNECTION, portal)).find();
         const dataConverted = list.map(type => {
@@ -41,7 +63,7 @@ exports.getAssetTypes = async (portal, company, query) => {
             }
         });
         const tree = await arrayToTree(dataConverted, {});
-        return { list, tree };
+        return { list, tree , totalList: list?.length};
     }
 
 }

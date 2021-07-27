@@ -15,6 +15,7 @@ exports.getAssetTypes = async (req, res) => {
             content: types
         });
     } catch (error) {
+        console.log('error',error)
         await Logger.error(req.user.email, 'GET_ASSET_TYPES', req.portal);
         res.status(400).json({
             success: false,

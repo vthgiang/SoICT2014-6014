@@ -1,5 +1,5 @@
 .search-page {
-    z-index: 1000;
+    z-index: 2;
     position: absolute;
     right: 10px;
     width: 245px;
@@ -16,6 +16,14 @@
 }
 .search-page button {
     width: 100px;
+}
+
+.pagination>.active>a, .pagination>.active>a:focus, .pagination>.active>a:hover, .pagination>.active>span, .pagination>.active>span:focus, .pagination>.active>span:hover{
+    z-index: 2 !important;
+    color: #fff;
+    cursor: default;
+    background-color: #337ab7;
+    border-color: #337ab7;
 }
 
 @media (max-width: 300px){

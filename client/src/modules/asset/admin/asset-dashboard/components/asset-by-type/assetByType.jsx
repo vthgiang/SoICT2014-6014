@@ -9,9 +9,11 @@ import DepreciationTree from './depreciation-of-asset/depreciationTree';
 import ValueTree from './value-of-asset/valueTree';
 
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
-import { TreeSelect } from '../../../../../../common-components';
+import { TreeSelect, PaginateBar } from '../../../../../../common-components';
 import isEqual from 'lodash/isEqual';
 import StatisticalAssetByType from './statisticalAssetByType';
+import { getTableConfiguration } from '../../../../../../helpers/tableConfiguration';
+import { AssetTypeActions } from '../../../asset-type/redux/actions';
 class AssetByType extends Component {
 
     constructor(props) {
@@ -26,6 +28,10 @@ class AssetByType extends Component {
             valueOfAsset: null
         }
 
+        const defaultConfig = { limit: 10 }
+        this.dashboardAssetByTypeId = "dashboard_asset_by_type";
+        const dashboardAssetByType = getTableConfiguration(this.dashboardAssetByTypeId, defaultConfig).limit;
+
         this.state = {
             listAssets: [],
             displayBy: this.INFO_SEARCH.displayBy,
@@ -34,6 +40,8 @@ class AssetByType extends Component {
             amountOfAsset: [],
             valueOfAsset: [],
             depreciation: [],
+            page: 1,
+            limit: dashboardAssetByType,
         }
     }
 
@@ -53,13 +61,8 @@ class AssetByType extends Component {
             console.log(err);
         });
 
-        AssetTypeService.getAssetTypes().then(res => {
-            if (res.data.success) {
-                this.setState({ assetType: res.data.content.list })
-            }
-        }).catch(err => {
-            console.log(err);
-        });
+
+        this.props.getAssetTypes({ page: this.state.page, perPage: this.state.limit })
     }
 
     handleSelectTypeOfDisplay = async (value) => {
@@ -154,17 +157,28 @@ class AssetByType extends Component {
         })
     }
 
+    handlePaginationAssetType = (page) => {
+        const { limit } = this.state;
+        this.setState({
+            ...this.state,
+            page,
+        })
+        this.props.getAssetTypes({ page: page, perPage: limit })
+    }
+
     render() {
-        const { translate } = this.props;
-        let { listAssets, assetType, type, depreciationOfAsset, amountOfAsset, valueOfAsset, depreciation } = this.state;
-        const listAssetType = assetType && assetType.length > 0 ?
-            this.getAssetTypes(assetType) : [];
+        const { translate, assetType } = this.props;
+        const listAssetTypes = assetType?.administration?.types?.list
+        let { listAssets, type, depreciationOfAsset, amountOfAsset, valueOfAsset, depreciation, page } = this.state;
+
+        const listAssetTypeConvert = listAssetTypes && listAssetTypes.length > 0 ?
+            this.getAssetTypes(listAssetTypes) : [];
         let assetTypes;
 
-        if (type && JSON.parse(type).length > 0 && assetType && assetType.length > 0) {
-            assetTypes = assetType.filter((obj, index) => JSON.parse(type).some(item => obj._id === item));
+        if (type && JSON.parse(type).length > 0 && listAssetTypes && listAssetTypes.length > 0) {
+            assetTypes = listAssetTypes.filter((obj, index) => JSON.parse(type).some(item => obj._id === item));
         } else {
-            assetTypes = assetType;
+            assetTypes = listAssetTypes;
         }
 
         return (
@@ -176,30 +190,40 @@ class AssetByType extends Component {
                             <div className="form-group" style={{ width: "100%" }}>
                                 <label style={{ width: 90 }}>{translate('asset.general_information.asset_type')}</label>
                                 <TreeSelect
-                                    data={listAssetType}
+                                    data={listAssetTypeConvert}
                                     value={type ? type : []}
                                     handleChange={this.handleChangeTypeAsset}
                                     mode="hierarchical"
                                 />
                             </div>
                         </div>
+                        <div className="col-md-12">
+                            <PaginateBar
+                                display={listAssetTypes?.length}
+                                total={assetType?.administration?.types?.totalList}
+                                pageTotal={assetType?.administration?.types?.totalPage}
+                                currentPage={page}
+                                func={this.handlePaginationAssetType} />
+                        </div>
                     </div>
 
                     <div className="row">
                         <div className="col-md-12">
-                            <div className="box-header">
-                                <div className="box-title">Biểu đồ thống kê tài sản theo loại</div>
-                            </div>
-                            <div className="box-body qlcv">
-                                {
-                                    (amountOfAsset || depreciation || valueOfAsset) &&
-                                    <StatisticalAssetByType
-                                        amountOfAsset={amountOfAsset}
-                                        depreciationOfAsset={depreciation}
-                                        valueOfAsset={valueOfAsset}
-                                    />
-                                }
+                            <div className="box box-solid">
+                                <div className="box-header">
+                                    <div className="box-title">Biểu đồ thống kê tài sản theo loại</div>
+                                </div>
+                                <div className="box-body qlcv">
+                                    {
+                                        (amountOfAsset || depreciation || valueOfAsset) &&
+                                        <StatisticalAssetByType
+                                            amountOfAsset={amountOfAsset}
+                                            depreciationOfAsset={depreciation}
+                                            valueOfAsset={valueOfAsset}
+                                        />
+                                    }
 
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -264,5 +288,9 @@ function mapState(state) {
     return { listAssets, assetType };
 }
 
-const AssetByTypeConnect = connect(mapState)(withTranslate(AssetByType));
+const mapDispatchToProps = {
+    getAssetTypes: AssetTypeActions.getAssetTypes,
+}
+
+const AssetByTypeConnect = connect(mapState, mapDispatchToProps)(withTranslate(AssetByType));
 export { AssetByTypeConnect as AssetByType };

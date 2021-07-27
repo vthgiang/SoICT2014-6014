@@ -37,12 +37,12 @@ function searchAssetTypes(data) {
 }
 
 // Lấy tất cả loại tài sản
-function getAssetTypes() {
+function getAssetTypes(data) {
     return dispatch => {
         dispatch({
             type: AssetTypeConstants.GET_ALL_ASSET_TYPE_REQUEST
         });
-        AssetTypeService.getAssetTypes()
+        AssetTypeService.getAssetTypes(data)
             .then(res => {
                 dispatch({
                     type: AssetTypeConstants.GET_ALL_ASSET_TYPE_SUCCESS,
