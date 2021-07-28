@@ -41,6 +41,7 @@ function StatisticalAssetByGroup(props) {
             [value]: 'bar',
             [lost]: 'bar'
         }
+        const groups = [[lost, value]]
         const category = [
             translate('asset.dashboard.building'),
             translate('asset.asset_info.vehicle'),
@@ -60,7 +61,8 @@ function StatisticalAssetByGroup(props) {
             data: {
                 columns: data,
                 types: types,
-                axes: customAxes
+                axes: customAxes,
+                groups: groups
             },
 
             padding: {

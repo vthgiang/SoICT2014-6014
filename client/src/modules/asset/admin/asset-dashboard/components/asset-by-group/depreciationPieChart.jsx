@@ -141,7 +141,7 @@ class DepreciationPieChart extends Component {
 
             data: {
                 columns: dataPieChart,
-                type: 'pie',
+                type: 'donut',
             },
             pie: {
                 label: {

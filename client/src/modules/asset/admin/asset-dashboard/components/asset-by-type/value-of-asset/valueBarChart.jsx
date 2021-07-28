@@ -48,8 +48,8 @@ class ValueBarChart extends Component {
 
             for (let i in assetType) {
 
-                let longName = assetType[i].typeName.slice(0, 20) + "...";
-                let name = assetType[i].typeName.length > 20 ? longName : assetType[i].typeName;
+                let longName = assetType[i].typeName.slice(0, 16) + "...";
+                let name = assetType[i].typeName.length > 16 ? longName : assetType[i].typeName;
                 shortName.push(name);
                 typeName.push(assetType[i].typeName);
 
