@@ -1,27 +1,23 @@
-import React, { Component } from "react";
+import React, { Component, useEffect, useState } from "react";
 import { DialogModal } from "../../../../../common-components";
 import { formatDate } from "../../../../../helpers/formatDate";
 import { formatCurrency } from "../../../../../helpers/formatCurrency";
 
-class DiscountDetailForm extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            discountId: "",
-        };
+function DiscountDetailForm(props) {
+
+    const [state, setState] = useState({
+        discountId: "",
+    })
+
+    if (props.discountDetail._id !== state.discountId) {
+        setState({
+            ...state,
+            discountId: props.discountDetail._id,
+        });
+        return false;
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
-        if (nextProps.discountDetail._id !== this.state.discountId) {
-            this.setState({
-                discountId: nextProps.discountDetail._id,
-            });
-            return false;
-        }
-        return true;
-    }
-
-    getTitleDiscountTable = (formality) => {
+    const getTitleDiscountTable = (formality) => {
         switch (parseInt(formality)) {
             case 0:
                 return "Mức giảm tiền mặt";
@@ -38,7 +34,7 @@ class DiscountDetailForm extends Component {
         }
     };
 
-    getContentDiscountTable = (formality, discount) => {
+    const getContentDiscountTable = (formality, discount) => {
         switch (parseInt(formality)) {
             case 0:
                 return discount.discountedCash;
@@ -55,124 +51,122 @@ class DiscountDetailForm extends Component {
         }
     };
 
-    render() {
-        const { code, name, creator, description, status, type, formality, discounts, effectiveDate, expirationDate } = this.props.discountDetail;
-        const typeConvert = ["Giảm trên toàn đơn", "Giảm giá từng mặt hàng"];
-        const formalityConvert = [
-            "Giảm tiền mặt",
-            "Giảm theo phần trăm",
-            "Tặng xu",
-            "Miễn phí vận chuyển",
-            "Tặng kèm hàng hóa",
-            "Giảm giá bán sản phẩm",
-        ];
-        return (
-            <React.Fragment>
-                <DialogModal
-                    modalID="modal-detail-discount"
-                    isLoading={false}
-                    formID="form-detail-discount"
-                    title={"Chi tiết giảm giá"}
-                    size="75"
-                    hasSaveButton={false}
-                    hasNote={false}
-                >
-                    <form id={`form-detail-sla`}>
-                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                            <div className="form-group">
-                                <strong>Mã:&emsp;</strong>
-                                {code}
-                            </div>
-                            <div className="form-group">
-                                <strong>Tên giảm giá:&emsp;</strong>
-                                {name}
-                            </div>
-                            <div className="form-group">
-                                <strong>Loại giảm giá:&emsp;</strong>
-                                {type !== undefined ? typeConvert[type] : ""}
-                            </div>
-                            <div className="form-group">
-                                <strong>Hình thức giảm giá:&emsp;</strong>
-                                {formality !== undefined ? formalityConvert[formality] : ""}
-                            </div>
+    const { code, name, creator, description, status, type, formality, discounts, effectiveDate, expirationDate } = props.discountDetail;
+    const typeConvert = ["Giảm trên toàn đơn", "Giảm giá từng mặt hàng"];
+    const formalityConvert = [
+        "Giảm tiền mặt",
+        "Giảm theo phần trăm",
+        "Tặng xu",
+        "Miễn phí vận chuyển",
+        "Tặng kèm hàng hóa",
+        "Giảm giá bán sản phẩm",
+    ];
+    return (
+        <React.Fragment>
+            <DialogModal
+                modalID="modal-detail-discount"
+                isLoading={false}
+                formID="form-detail-discount"
+                title={"Chi tiết giảm giá"}
+                size="75"
+                hasSaveButton={false}
+                hasNote={false}
+            >
+                <form id={`form-detail-sla`}>
+                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                        <div className="form-group">
+                            <strong>Mã:&emsp;</strong>
+                            {code}
                         </div>
-                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                            <div className="form-group">
-                                <strong>Ngày bắt đầu:&emsp;</strong>
-                                {effectiveDate ? formatDate(effectiveDate) : ""}
-                            </div>
-                            <div className="form-group">
-                                <strong>Ngày kết thúc:&emsp;</strong>
-                                {expirationDate ? formatDate(expirationDate) : ""}
-                            </div>
-                            <div className="form-group">
-                                <strong>Mô tả:&emsp;</strong>
-                                {description}
-                            </div>
-                            <div className="form-group">
-                                <strong>Người chỉnh sửa lần cuối:&emsp;</strong>
-                                {creator ? creator.name : ""}
-                            </div>
+                        <div className="form-group">
+                            <strong>Tên giảm giá:&emsp;</strong>
+                            {name}
                         </div>
-                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                            <fieldset className="scheduler-border">
-                                <legend className="scheduler-border">{"Chi tiết giảm giá"}</legend>
-                                <table id={`order-table-discount-create-detail`} className="table table-bordered">
-                                    <thead>
+                        <div className="form-group">
+                            <strong>Loại giảm giá:&emsp;</strong>
+                            {type !== undefined ? typeConvert[type] : ""}
+                        </div>
+                        <div className="form-group">
+                            <strong>Hình thức giảm giá:&emsp;</strong>
+                            {formality !== undefined ? formalityConvert[formality] : ""}
+                        </div>
+                    </div>
+                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                        <div className="form-group">
+                            <strong>Ngày bắt đầu:&emsp;</strong>
+                            {effectiveDate ? formatDate(effectiveDate) : ""}
+                        </div>
+                        <div className="form-group">
+                            <strong>Ngày kết thúc:&emsp;</strong>
+                            {expirationDate ? formatDate(expirationDate) : ""}
+                        </div>
+                        <div className="form-group">
+                            <strong>Mô tả:&emsp;</strong>
+                            {description}
+                        </div>
+                        <div className="form-group">
+                            <strong>Người chỉnh sửa lần cuối:&emsp;</strong>
+                            {creator ? creator.name : ""}
+                        </div>
+                    </div>
+                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <fieldset className="scheduler-border">
+                            <legend className="scheduler-border">{"Chi tiết giảm giá"}</legend>
+                            <table id={`order-table-discount-create-detail`} className="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>STT</th>
+                                        <th>Loại khách hàng</th>
+                                        <th>{type == "0" ? "Giá trị tối thiểu" : "Số lượng tối thiểu"}</th>
+                                        <th>{type == "0" ? "Giá trị tối đa" : "Số lượng tối đa"}</th>
+                                        {type == "1" ? <th>Các mặt hàng áp dụng</th> : ""}
+                                        {formality != "5" ? <th>{getTitleDiscountTable(formality)}</th> : ""}
+                                        {formality == "1" ? <th>Mức tiền giảm tối đa</th> : ""}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {!discounts || discounts.length === 0 ? (
                                         <tr>
-                                            <th>STT</th>
-                                            <th>Loại khách hàng</th>
-                                            <th>{type == "0" ? "Giá trị tối thiểu" : "Số lượng tối thiểu"}</th>
-                                            <th>{type == "0" ? "Giá trị tối đa" : "Số lượng tối đa"}</th>
-                                            {type == "1" ? <th>Các mặt hàng áp dụng</th> : ""}
-                                            {formality != "5" ? <th>{this.getTitleDiscountTable(formality)}</th> : ""}
-                                            {formality == "1" ? <th>Mức tiền giảm tối đa</th> : ""}
+                                            <td colSpan={5}>
+                                                <center>Chưa có dữ liệu</center>
+                                            </td>
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        {!discounts || discounts.length === 0 ? (
-                                            <tr>
-                                                <td colSpan={5}>
-                                                    <center>Chưa có dữ liệu</center>
-                                                </td>
-                                            </tr>
-                                        ) : (
-                                            discounts.map((item, index) => {
-                                                return (
-                                                    <tr key={index}>
-                                                        <td>{index + 1}</td>
-                                                        <td>{item.customerType}</td>
-                                                        <td>
-                                                            {item.minimumThresholdToBeApplied ? formatCurrency(item.minimumThresholdToBeApplied) : ""}
+                                    ) : (
+                                        discounts.map((item, index) => {
+                                            return (
+                                                <tr key={index}>
+                                                    <td>{index + 1}</td>
+                                                    <td>{item.customerType}</td>
+                                                    <td>
+                                                        {item.minimumThresholdToBeApplied ? formatCurrency(item.minimumThresholdToBeApplied) : ""}
+                                                    </td>
+                                                    <td>
+                                                        {item.maximumThresholdToBeApplied ? formatCurrency(item.maximumThresholdToBeApplied) : ""}
+                                                    </td>
+                                                    {type == "1" && item.discountOnGoods ? (
+                                                        <td className="discount-create-goods-block-td">
+                                                            <a>{"Có " + item.discountOnGoods.length + " mặt hàng"}</a>
                                                         </td>
-                                                        <td>
-                                                            {item.maximumThresholdToBeApplied ? formatCurrency(item.maximumThresholdToBeApplied) : ""}
-                                                        </td>
-                                                        {type == "1" && item.discountOnGoods ? (
-                                                            <td className="discount-create-goods-block-td">
-                                                                <a>{"Có " + item.discountOnGoods.length + " mặt hàng"}</a>
-                                                            </td>
-                                                        ) : null}
-                                                        {console.log("getContentDiscountTable", this.getContentDiscountTable(formality, item))}
-                                                        {formality != "5" ? <td>{this.getContentDiscountTable(formality, item)}</td> : ""}
-                                                        {formality == "1" ? (
-                                                            <td>{item.maximumDiscountedCash ? formatCurrency(item.maximumDiscountedCash) : ""}</td>
-                                                        ) : (
-                                                            ""
-                                                        )}
-                                                    </tr>
-                                                );
-                                            })
-                                        )}
-                                    </tbody>
-                                </table>
-                            </fieldset>
-                        </div>
-                    </form>
-                </DialogModal>
-            </React.Fragment>
-        );
-    }
+                                                    ) : null}
+                                                    {console.log("getContentDiscountTable", getContentDiscountTable(formality, item))}
+                                                    {formality != "5" ? <td>{getContentDiscountTable(formality, item)}</td> : ""}
+                                                    {formality == "1" ? (
+                                                        <td>{item.maximumDiscountedCash ? formatCurrency(item.maximumDiscountedCash) : ""}</td>
+                                                    ) : (
+                                                        ""
+                                                    )}
+                                                </tr>
+                                            );
+                                        })
+                                    )}
+                                </tbody>
+                            </table>
+                        </fieldset>
+                    </div>
+                </form>
+            </DialogModal>
+        </React.Fragment>
+    );
 }
 
 export default DiscountDetailForm;
