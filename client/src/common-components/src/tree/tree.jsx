@@ -33,9 +33,9 @@ class Tree extends Component {
             plugins: plugins ? ["checkbox"] : null,
         });
 
-        window.$(`#${id}`).on("changed.jstree", function (e, data) {
+        window.$(`#${id}`).on("changed.jstree", (e, data) => {
             if (onChanged) {
-                onChanged(e, data);
+                this.props.onChanged(e, data);
             }
         });
 
