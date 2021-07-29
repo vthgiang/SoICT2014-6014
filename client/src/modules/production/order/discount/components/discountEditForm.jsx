@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { generateCode } from "../../../../../helpers/generateCode";
@@ -9,77 +9,77 @@ import { formatToTimeZoneDate } from "../../../../../helpers/formatDate";
 import ValidationHelper from "../../../../../helpers/validationHelper";
 import DiscountCreateDetail from "./discountCreateDetail";
 
-class DiscountEditForm extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {};
-    }
+function DiscountEditForm(props) {
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.discountEdit._id !== prevState.discountId) {
-            // let discounts = nextProps.discountEdit.discounts.map((discount) => {
-            // let bonusGoods = [];
-            // let discountOnGoods = [];
-            // if (discount.bonusGoods.length) {
-            //     bonusGoods = discount.bonusGoods.map((item) => {
-            //         return {
-            //             good: item.good._id,
-            //             code: item.good.code,
-            //             name: item.good.name,
-            //             quantityOfBonusGood: item.quantityOfBonusGood,
-            //             expirationDateOfGoodBonus: item.expirationDateOfGoodBonus,
-            //             baseUnit: item.baseUnit,
-            //         };
-            //     });
-            // }
-            // if (discount.discountOnGoods.length) {
-            //     discountOnGoods = discount.discountOnGoods.map((item) => {
-            //         return {
-            //             good: item.good._id,
-            //             code: item.good.code,
-            //             name: item.good.name,
-            //             expirationDate: item.expirationDate,
-            //             discountedPrice: item.discountedPrice,
-            //         };
-            //     });
-            // }
-            // discount.bonusGoods = bonusGoods;
-            // discount.discountOnGoods = discountOnGoods;
-            // return discount;
-            // });
-            console.log("nextProps.discountEdit.discounts", nextProps.discountEdit.discounts);
+    const [state, setState] = useState({
+        
+    })
+
+    if (props.discountEdit._id !== state.discountId) {
+        // let discounts = props.discountEdit.discounts.map((discount) => {
+        // let bonusGoods = [];
+        // let discountOnGoods = [];
+        // if (discount.bonusGoods.length) {
+        //     bonusGoods = discount.bonusGoods.map((item) => {
+        //         return {
+        //             good: item.good._id,
+        //             code: item.good.code,
+        //             name: item.good.name,
+        //             quantityOfBonusGood: item.quantityOfBonusGood,
+        //             expirationDateOfGoodBonus: item.expirationDateOfGoodBonus,
+        //             baseUnit: item.baseUnit,
+        //         };
+        //     });
+        // }
+        // if (discount.discountOnGoods.length) {
+        //     discountOnGoods = discount.discountOnGoods.map((item) => {
+        //         return {
+        //             good: item.good._id,
+        //             code: item.good.code,
+        //             name: item.good.name,
+        //             expirationDate: item.expirationDate,
+        //             discountedPrice: item.discountedPrice,
+        //         };
+        //     });
+        // }
+        // discount.bonusGoods = bonusGoods;
+        // discount.discountOnGoods = discountOnGoods;
+        // return discount;
+        // });
+        console.log("props.discountEdit.discounts", props.discountEdit.discounts);
+        setState((state) => {
             return {
-                ...prevState,
-                discountId: nextProps.discountEdit._id,
-                code: nextProps.discountEdit.code,
-                name: nextProps.discountEdit.name,
-                description: nextProps.discountEdit.description,
-                effectiveDate: nextProps.discountEdit.effectiveDate ? formatDate(nextProps.discountEdit.effectiveDate) : "",
-                expirationDate: nextProps.discountEdit.expirationDate ? formatDate(nextProps.discountEdit.expirationDate) : "",
-                discountType: nextProps.discountEdit.type,
-                formality: nextProps.discountEdit.formality,
-                discounts: nextProps.discountEdit.discounts,
-            };
-        }
+                ...state,
+                discountId: props.discountEdit._id,
+                code: props.discountEdit.code,
+                name: props.discountEdit.name,
+                description: props.discountEdit.description,
+                effectiveDate: props.discountEdit.effectiveDate ? formatDate(props.discountEdit.effectiveDate) : "",
+                expirationDate: props.discountEdit.expirationDate ? formatDate(props.discountEdit.expirationDate) : "",
+                discountType: props.discountEdit.type,
+                formality: props.discountEdit.formality,
+                discounts: props.discountEdit.discounts,
+            }
+        })
     }
 
-    handleNameChange = (e) => {
+    const handleNameChange = (e) => {
         let { value = "" } = e.target;
-        this.setState((state) => {
+        setState((state) => {
             return {
                 ...state,
                 name: value,
             };
         });
 
-        let { translate } = this.props;
+        let { translate } = props;
         let { message } = ValidationHelper.validateName(translate, value, 1, 255);
-        this.setState({ nameError: message });
+        setState({ nameError: message });
     };
 
-    handleDescriptionChange = (e) => {
+    const handleDescriptionChange = (e) => {
         let { value = "" } = e.target;
-        this.setState((state) => {
+        setState((state) => {
             return {
                 ...state,
                 description: value,
@@ -87,11 +87,11 @@ class DiscountEditForm extends Component {
         });
     };
 
-    handleChangeDiscountType = async (value) => {
+    const handleChangeDiscountType = async (value) => {
         if (!value) {
             value = null;
         }
-        await this.setState((state) => {
+        await setState((state) => {
             return {
                 ...state,
                 discountType: value[0],
@@ -100,11 +100,11 @@ class DiscountEditForm extends Component {
         });
     };
 
-    handleChangeDiscountFormality = async (value) => {
+    const handleChangeDiscountFormality = async (value) => {
         if (!value) {
             value = null;
         }
-        await this.setState((state) => {
+        await setState((state) => {
             return {
                 ...state,
                 formality: value[0],
@@ -113,7 +113,7 @@ class DiscountEditForm extends Component {
         });
     };
 
-    validateDateStage = (effectiveDate, expirationDate, willUpdateState = true) => {
+    const validateDateStage = (effectiveDate, expirationDate, willUpdateState = true) => {
         let msg = undefined;
         if (effectiveDate && expirationDate) {
             let effDate = new Date(formatToTimeZoneDate(effectiveDate));
@@ -126,8 +126,8 @@ class DiscountEditForm extends Component {
         }
 
         if (willUpdateState) {
-            this.setState({
-                ...this.state,
+            setState({
+                ...state,
                 effectiveDate: effectiveDate,
                 expirationDate: expirationDate,
                 dateError: msg,
@@ -136,25 +136,25 @@ class DiscountEditForm extends Component {
         return msg;
     };
 
-    handleChangeEffectiveDate = (value) => {
-        const { expirationDate } = this.state;
+    const handleChangeEffectiveDate = (value) => {
+        const { expirationDate } = state;
         if (!value) {
             value = null;
         }
 
-        this.validateDateStage(value, expirationDate, true);
+        validateDateStage(value, expirationDate, true);
     };
 
-    handleChangeExpirationDate = (value) => {
-        const { effectiveDate } = this.state;
+    const handleChangeExpirationDate = (value) => {
+        const { effectiveDate } = state;
         if (!value) {
             value = null;
         }
 
-        this.validateDateStage(effectiveDate, value, true);
+        validateDateStage(effectiveDate, value, true);
     };
 
-    getFormalitySelectItem = () => {
+    const getFormalitySelectItem = () => {
         let items = [
             { value: -1, text: "---Chọn hình thức giảm giá---" },
             { value: 0, text: "Giảm giá tiền" },
@@ -163,19 +163,20 @@ class DiscountEditForm extends Component {
             { value: 3, text: "Miễn phí vận chuyển" },
             { value: 4, text: "Tặng sản phẩm kèm theo" },
         ];
-        if (this.state.discountType == 1) {
+        if (state.discountType == 1) {
             items.push({ value: 5, text: "Xả hàng tồn kho" });
         }
         return items;
     };
 
-    onChangeDiscounts = (dataSubmit) => {
-        this.setState({
+    const onChangeDiscounts = (dataSubmit) => {
+        setState({
+            ...state,
             discounts: dataSubmit,
         });
     };
 
-    validateDiscounts = (discounts) => {
+    const validateDiscounts = (discounts) => {
         let msg = undefined;
         if (discounts.length === 0) {
             msg = "Phải có ít nhất 1 mục khuyến mãi";
@@ -183,21 +184,21 @@ class DiscountEditForm extends Component {
         return msg;
     };
 
-    isFormValidated = () => {
-        let { name, effectiveDate, expirationDate, discounts } = this.state;
-        let { translate } = this.props;
+    const isFormValidated = () => {
+        let { name, effectiveDate, expirationDate, discounts } = state;
+        let { translate } = props;
         if (
             ValidationHelper.validateName(translate, name, 1, 255).message ||
-            this.validateDateStage(effectiveDate, expirationDate, false) ||
-            this.validateDiscounts(discounts)
+            validateDateStage(effectiveDate, expirationDate, false) ||
+            validateDiscounts(discounts)
         ) {
             return false;
         }
         return true;
     };
 
-    getFieldsForDiscounts = () => {
-        let { discounts } = this.state;
+    const getFieldsForDiscounts = () => {
+        let { discounts } = state;
         let discountsMap = discounts.map((item) => {
             let discount = {};
             discount.discountedCash = item.discountedCash;
@@ -235,9 +236,9 @@ class DiscountEditForm extends Component {
         return discountsMap;
     };
 
-    save = async () => {
-        if (this.isFormValidated()) {
-            let { discountId, code, name, effectiveDate, expirationDate, discountType, formality, description, discounts } = this.state;
+    const save = async () => {
+        if (isFormValidated()) {
+            let { discountId, code, name, effectiveDate, expirationDate, discountType, formality, description, discounts } = state;
             const data = {
                 code,
                 name,
@@ -246,134 +247,132 @@ class DiscountEditForm extends Component {
                 type: discountType,
                 formality,
                 description,
-                discounts: this.getFieldsForDiscounts(),
+                discounts: getFieldsForDiscounts(),
             };
             console.log("DATA SUBMIT EDIT", data);
-            await this.props.editDiscount(discountId, data);
+            await props.editDiscount(discountId, data);
         }
     };
 
-    render() {
-        const {
-            name,
-            code,
-            description,
-            nameError,
-            discountTypeError,
-            discountType,
-            formality,
-            effectiveDate,
-            expirationDate,
-            dateError,
-            discounts,
-        } = this.state;
-        return (
-            <DialogModal
-                modalID="modal-edit-discount"
-                formID="form-edit-discount"
-                title="Chỉnh sửa giảm giá"
-                msg_success="Chỉnh sửa thành công"
-                msg_faile="Chỉnh sửa không thành công"
-                func={this.save}
-                disableSubmit={!this.isFormValidated()}
-                size={75}
-            >
-                <form id={`form-edit-discount`}>
-                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                        <div className="form-group">
-                            <label>
-                                {"Mã giảm giá"}
-                                <span className="attention"> </span>
-                            </label>
-                            <input type="text" className="form-control" value={code} disabled="true" />
-                        </div>
-                        <div className={`form-group ${!nameError ? "" : "has-error"}`}>
-                            <label>
-                                {"Tên giảm giá"}
-                                <span className="attention"> * </span>
-                            </label>
-                            <input type="text" className="form-control" value={name} onChange={this.handleNameChange} />
-                            <ErrorLabel content={nameError} />
-                        </div>
-                        <div className={`form-group ${!discountTypeError ? "" : "has-error"}`}>
-                            <label>
-                                {"Loại giảm giá"}
-                                <span className="attention"> * </span>
-                            </label>
-                            <SelectBox
-                                id={`select-edit-discount-type`}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                items={[
-                                    { value: -1, text: "---Chọn loại giảm giá---" },
-                                    { value: 0, text: "Giảm giá trên toàn đơn hàng" },
-                                    { value: 1, text: "Giảm giá từng mặt hàng" },
-                                ]}
-                                onChange={this.handleChangeDiscountType}
-                                multiple={false}
-                                value={discountType}
-                                disabled="true"
-                            />
-                        </div>
-                        <div className={`form-group`}>
-                            <label>
-                                {"Hình thức giảm giá"}
-                                <span className="attention"> * </span>
-                            </label>
-                            <SelectBox
-                                id={`select-edit-discount-formality`}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                items={this.getFormalitySelectItem()}
-                                onChange={this.handleChangeDiscountFormality}
-                                multiple={false}
-                                value={formality}
-                                disabled="true"
-                            />
-                        </div>
+    const {
+        name,
+        code,
+        description,
+        nameError,
+        discountTypeError,
+        discountType,
+        formality,
+        effectiveDate,
+        expirationDate,
+        dateError,
+        discounts,
+    } = state;
+    return (
+        <DialogModal
+            modalID="modal-edit-discount"
+            formID="form-edit-discount"
+            title="Chỉnh sửa giảm giá"
+            msg_success="Chỉnh sửa thành công"
+            msg_faile="Chỉnh sửa không thành công"
+            func={save}
+            disableSubmit={!isFormValidated()}
+            size={75}
+        >
+            <form id={`form-edit-discount`}>
+                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                    <div className="form-group">
+                        <label>
+                            {"Mã giảm giá"}
+                            <span className="attention"> </span>
+                        </label>
+                        <input type="text" className="form-control" value={code} disabled="true" />
                     </div>
-                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                        <div className={`form-group ${!dateError ? "" : "has-error"}`}>
-                            <label>Ngày bắt đầu</label>
-                            <DatePicker
-                                id="date_picker_edit_discount_effectiveDate"
-                                value={effectiveDate}
-                                onChange={this.handleChangeEffectiveDate}
-                                disabled={false}
-                            />
-                            <ErrorLabel content={dateError} />
-                        </div>
+                    <div className={`form-group ${!nameError ? "" : "has-error"}`}>
+                        <label>
+                            {"Tên giảm giá"}
+                            <span className="attention"> * </span>
+                        </label>
+                        <input type="text" className="form-control" value={name} onChange={handleNameChange} />
+                        <ErrorLabel content={nameError} />
+                    </div>
+                    <div className={`form-group ${!discountTypeError ? "" : "has-error"}`}>
+                        <label>
+                            {"Loại giảm giá"}
+                            <span className="attention"> * </span>
+                        </label>
+                        <SelectBox
+                            id={`select-edit-discount-type`}
+                            className="form-control select2"
+                            style={{ width: "100%" }}
+                            items={[
+                                { value: -1, text: "---Chọn loại giảm giá---" },
+                                { value: 0, text: "Giảm giá trên toàn đơn hàng" },
+                                { value: 1, text: "Giảm giá từng mặt hàng" },
+                            ]}
+                            onChange={handleChangeDiscountType}
+                            multiple={false}
+                            value={discountType}
+                            disabled="true"
+                        />
+                    </div>
+                    <div className={`form-group`}>
+                        <label>
+                            {"Hình thức giảm giá"}
+                            <span className="attention"> * </span>
+                        </label>
+                        <SelectBox
+                            id={`select-edit-discount-formality`}
+                            className="form-control select2"
+                            style={{ width: "100%" }}
+                            items={getFormalitySelectItem()}
+                            onChange={handleChangeDiscountFormality}
+                            multiple={false}
+                            value={formality}
+                            disabled="true"
+                        />
+                    </div>
+                </div>
+                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                    <div className={`form-group ${!dateError ? "" : "has-error"}`}>
+                        <label>Ngày bắt đầu</label>
+                        <DatePicker
+                            id="date_picker_edit_discount_effectiveDate"
+                            value={effectiveDate}
+                            onChange={handleChangeEffectiveDate}
+                            disabled={false}
+                        />
+                        <ErrorLabel content={dateError} />
+                    </div>
 
-                        <div className={`form-group ${!dateError ? "" : "has-error"}`}>
-                            <label>Ngày kết thúc</label>
-                            <DatePicker
-                                id="date_picker_edit_discount_expirationDate"
-                                value={expirationDate}
-                                onChange={this.handleChangeExpirationDate}
-                                disabled={false}
-                            />
-                            <ErrorLabel content={dateError} />
-                        </div>
-                        <div className="form-group">
-                            <label>
-                                {"Mô tả"}
-                                <span className="attention"> </span>
-                            </label>
-                            <textarea type="text" rows={4.5} className="form-control" value={description} onChange={this.handleDescriptionChange} />
-                        </div>
+                    <div className={`form-group ${!dateError ? "" : "has-error"}`}>
+                        <label>Ngày kết thúc</label>
+                        <DatePicker
+                            id="date_picker_edit_discount_expirationDate"
+                            value={expirationDate}
+                            onChange={handleChangeExpirationDate}
+                            disabled={false}
+                        />
+                        <ErrorLabel content={dateError} />
                     </div>
-                    <DiscountCreateDetail
-                        discountType={this.state.discountType}
-                        formality={this.state.formality}
-                        discounts={discounts}
-                        onChangeDiscounts={(data) => this.onChangeDiscounts(data)}
-                        actionType="edit"
-                        discountCode={code}
-                    />
-                </form>
-            </DialogModal>
-        );
-    }
+                    <div className="form-group">
+                        <label>
+                            {"Mô tả"}
+                            <span className="attention"> </span>
+                        </label>
+                        <textarea type="text" rows={4.5} className="form-control" value={description} onChange={handleDescriptionChange} />
+                    </div>
+                </div>
+                <DiscountCreateDetail
+                    discountType={state.discountType}
+                    formality={state.formality}
+                    discounts={discounts}
+                    onChangeDiscounts={(data) => onChangeDiscounts(data)}
+                    actionType="edit"
+                    discountCode={code}
+                />
+            </form>
+        </DialogModal>
+    );
 }
 
 function mapStateToProps(state) {

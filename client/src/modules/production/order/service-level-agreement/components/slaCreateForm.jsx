@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { generateCode } from "../../../../../helpers/generateCode";
@@ -6,19 +6,17 @@ import { SlaActions } from "../redux/actions";
 import { DialogModal, ButtonModal, ErrorLabel, SelectBox } from "../../../../../common-components";
 import ValidationHelper from "../../../../../helpers/validationHelper";
 
-class SlaCreateForm extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            code: "",
-            goods: [],
-            descriptions: [],
-            isAllGoodsSelected: false,
-        };
-    }
+function SlaCreateForm(props) {
 
-    getAllGoods = () => {
-        const { translate, goods } = this.props;
+    const [state, setState] = useState({
+        code: "",
+        goods: [],
+        descriptions: [],
+        isAllGoodsSelected: false,
+    })
+
+    const getAllGoods = () => {
+        const { translate, goods } = props;
         let listGoods = [
             {
                 value: "all",
@@ -40,28 +38,29 @@ class SlaCreateForm extends Component {
         return listGoods;
     };
 
-    handleTitleChange = (e) => {
+    const handleTitleChange = (e) => {
         let { value } = e.target;
-        this.setState({
-            title: value,
-        });
-
-        let { translate } = this.props;
+    
+        let { translate } = props;
         let { message } = ValidationHelper.validateName(translate, value, 4, 255);
-        this.setState({ titleError: message });
+        setState({ 
+            ...state,
+            title: value,
+            titleError: message ,
+        });
     };
 
-    validateGoods = (goods) => {
+    const validateGoods = (goods) => {
         let msg = undefined;
         if (!goods || goods.length === 0) {
-            const { translate } = this.props;
+            const { translate } = props;
             msg = "Chọn mặt hàng áp dụng";
         }
         return msg;
     };
 
-    handleGoodsChange = (value) => {
-        let { goods } = this.state;
+    const handleGoodsChange = (value) => {
+        let { goods } = state;
         let checkSelectAll = false;
         value.forEach((item) => {
             if (item === "all") {
@@ -69,123 +68,131 @@ class SlaCreateForm extends Component {
             }
         });
         if (!checkSelectAll) {
-            this.setState((state) => {
+            setState((state) => {
                 return {
                     ...state,
                     goods: value,
-                    goodsError: this.validateGoods(value),
+                    goodsError: validateGoods(value),
                     isAllGoodsSelected: false,
                 };
             });
         } else {
-            this.setState({
+            setState({
+                ...state,
                 isAllGoodsSelected: true,
                 goods: ["disSelectAll"],
-                goodsError: this.validateGoods(value, true),
+                goodsError: validateGoods(value, true),
             });
         }
     };
 
-    handleClickCreateCode = () => {
-        this.setState((state) => {
+    const handleClickCreateCode = () => {
+        setState((state) => {
             return { ...state, code: generateCode("SLA_") };
         });
     };
 
-    validateDescriptions = (value, index, willUpdateState = true) => {
+    const validateDescriptions = (value, index, willUpdateState = true) => {
         let msg = undefined;
         if (value.trim() === "") {
             msg = "Tên trường dữ liệu không được để trống";
         }
         if (willUpdateState) {
-            let { descriptions } = this.state;
+            let { descriptions } = state;
             descriptions[index] = value;
-            this.setState((state) => {
-                return {
+            setState({
+              
                     ...state,
                     errorOnDescription: msg,
                     errorOnDescriptionPosition: msg ? index : null,
                     descriptions: descriptions,
-                };
+               
             });
         }
         return msg;
     };
 
-    handleAddDescription = () => {
-        let { descriptions } = this.state;
+    const handleAddDescription = () => {
+        let { descriptions } = state;
         console.log("descriptions", descriptions);
 
-        if (descriptions.length !== 0) {
+        if (descriptions) {
             let result;
 
             for (let index = 0; index < descriptions.length; index++) {
-                let temp = this.validateDescriptions(descriptions[index], index, false);
+                let temp = validateDescriptions(descriptions[index], index, false);
                 console.log("temp", temp);
                 if (temp) result = temp;
             }
             if (!result) {
-                this.setState({
+                setState({
+                    ...state,
                     descriptions: [...descriptions, ""],
                 });
             }
         } else {
-            this.setState({
+            setState({
+                ...state,
                 descriptions: [""],
             });
         }
     };
 
-    handleDescriptionChange = (e, index) => {
+    const handleDescriptionChange = (e, index) => {
         var { value } = e.target;
-        this.validateDescriptions(value, index);
+        validateDescriptions(value, index);
     };
 
-    deleteDescription = (index) => {
-        var { descriptions } = this.state;
+    const deleteDescription = (index) => {
+        let { descriptions } = state;
         descriptions.splice(index, 1);
-        this.setState({
+        setState({
+            ...state,
             descriptions: descriptions,
         });
         if (descriptions.length !== 0) {
             for (let i = 0; i < descriptions.length; i++) {
-                this.validateDescriptions(descriptions[i], i);
+                validateDescriptions(descriptions[i], i);
             }
         } else {
-            this.setState({
+            setState({
+                ...state,
                 errorOnDescription: undefined,
             });
         }
     };
 
-    validateDescriptionsForSubmit = () => {
-        let { descriptions } = this.state;
+    const validateDescriptionsForSubmit = () => {
+        let { descriptions } = state;
+
+        console.log(descriptions);
         if (descriptions.length === 0) {
             return false;
         }
 
         let descriptionsValidation = true;
         descriptions.forEach((item, key) => {
-            if (this.validateDescriptions(item, key, false)) {
+            if (validateDescriptions(item, key, false)) {
                 descriptionsValidation = false;
             }
         });
         return descriptionsValidation;
     };
 
-    isFormValidated = () => {
-        let { translate } = this.props;
-        let { title, goods } = this.state;
-        if (!this.validateDescriptionsForSubmit() || ValidationHelper.validateName(translate, title, 4, 255).message || this.validateGoods(goods)) {
+    const isFormValidated = () => {
+        let { translate } = props;
+        let { title, goods } = state;
+        // console.log(validateDescriptionsForSubmit(),ValidationHelper.validateName(translate, title, 4, 255).message,validateGoods(goods));
+        if (!validateDescriptionsForSubmit() || ValidationHelper.validateName(translate, title, 4, 255).message || validateGoods(goods)) {
             return false;
         }
         return true;
     };
 
-    getIdOfAllGoods = () => {
-        const { translate, goods } = this.props;
+    const getIdOfAllGoods = () => {
+        const { translate, goods } = props;
         const { listGoodsByType } = goods;
-        let goodsForSubmit = this.state.goods;
+        let goodsForSubmit = state.goods;
         let checkSelectAll = false;
         goodsForSubmit.forEach((item) => {
             if (item === "disSelectAll") {
@@ -201,18 +208,19 @@ class SlaCreateForm extends Component {
         return goodsForSubmit;
     };
 
-    save = async () => {
-        if (this.isFormValidated()) {
-            const { code, descriptions, goods, title } = this.state;
-            let goodsSubmit = await this.getIdOfAllGoods();
+    const save = async () => {
+        if (isFormValidated()) {
+            const { code, descriptions, goods, title } = state;
+            let goodsSubmit = await getIdOfAllGoods();
             let data = {
                 code,
                 descriptions,
                 goods: goodsSubmit,
                 title,
             };
-            await this.props.createNewSLA(data);
-            await this.setState({
+            await props.createNewSLA(data);
+            await setState({
+                ...state,
                 code: "",
                 descriptions: [],
                 goods: [],
@@ -221,158 +229,156 @@ class SlaCreateForm extends Component {
         }
     };
 
-    render() {
-        const { translate } = this.props;
-        let {
-            code,
-            titleError,
-            title,
-            goods,
-            goodsError,
-            isAllGoodsSelected,
-            descriptions,
-            errorOnDescription,
-            errorOnDescriptionPosition,
-        } = this.state;
-        console.log("DATA", descriptions);
-        return (
-            <React.Fragment>
-                <ButtonModal
-                    onButtonCallBack={this.handleClickCreateCode}
-                    modalID={`modal-add-sla`}
-                    button_name={"Thêm mới"}
-                    title={"Thêm cam kết chất lượng"}
-                />
-                <DialogModal
-                    modalID={`modal-add-sla`}
-                    isLoading={false}
-                    formID={`form-add-sla`}
-                    title={"Thêm cam kết chất lượng"}
-                    msg_success={"Thêm thành công"}
-                    msg_faile={"Thêm không thành công"}
-                    disableSubmit={!this.isFormValidated()}
-                    func={this.save}
-                    size="50"
-                    style={{ backgroundColor: "green" }}
-                >
-                    <form id={`form-add-sla`}>
-                        <div className="form-group">
-                            <label>
-                                {"Mã"}
-                                <span className="attention"> </span>
-                            </label>
-                            <input type="text" className="form-control" value={code} disabled="true" />
-                        </div>
-                        <div className={`form-group ${!titleError ? "" : "has-error"}`}>
-                            <label>
-                                {"Tiêu đề"}
-                                <span className="attention"> * </span>
-                            </label>
-                            <input type="text" className="form-control" value={title} onChange={this.handleTitleChange} />
-                            <ErrorLabel content={titleError} />
-                        </div>
-                        <div className={`form-group ${!goodsError ? "" : "has-error"}`}>
-                            <label>
-                                Chọn các mặt hàng
-                                <span className="attention"> * </span>
-                                <br></br>
-                            </label>
-                            <SelectBox
-                                id={`select-create-multi-good-sla`}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                items={
-                                    isAllGoodsSelected
-                                        ? [
-                                            {
-                                                value: "disSelectAll",
-                                                text: `Đã chọn tất cả (${this.getAllGoods().length - 1} mặt hàng)`,
-                                            },
-                                        ]
-                                        : this.getAllGoods()
-                                }
-                                onChange={this.handleGoodsChange}
-                                multiple={true}
-                                value={goods}
-                            />
-                            <ErrorLabel content={goodsError} />
-                        </div>
-                        <div className="form-group">
-                            <label>
-                                Các điều khoản
-                                <span className="attention"> * </span>:
-                                <a style={{ cursor: "pointer" }} title={"Các điều khoản"}>
-                                    <i
-                                        className="fa fa-plus-square"
-                                        style={{ color: "#28A745", marginLeft: 5 }}
-                                        onClick={this.handleAddDescription}
-                                    />
-                                </a>
-                            </label>
-                            {/* <div className="col-md-12"> */}
-                            {/* Bảng thông tin chi tiết */}
-                            <table className="table">
-                                <thead>
+    const { translate } = props;
+    let {
+        code,
+        titleError,
+        title,
+        goods,
+        goodsError,
+        isAllGoodsSelected,
+        descriptions,
+        errorOnDescription,
+        errorOnDescriptionPosition,
+    } = state;
+    // console.log("DATA", descriptions);
+    return (
+        <React.Fragment>
+            <ButtonModal
+                onButtonCallBack={handleClickCreateCode}
+                modalID={`modal-add-sla`}
+                button_name={"Thêm mới"}
+                title={"Thêm cam kết chất lượng"}
+            />
+            <DialogModal
+                modalID={`modal-add-sla`}
+                isLoading={false}
+                formID={`form-add-sla`}
+                title={"Thêm cam kết chất lượng"}
+                msg_success={"Thêm thành công"}
+                msg_faile={"Thêm không thành công"}
+                disableSubmit={!isFormValidated()}
+                func={save}
+                size="50"
+                style={{ backgroundColor: "green" }}
+            >
+                <form id={`form-add-sla`}>
+                    <div className="form-group">
+                        <label>
+                            {"Mã"}
+                            <span className="attention"> </span>
+                        </label>
+                        <input type="text" className="form-control" value={code} disabled="true" />
+                    </div>
+                    <div className={`form-group ${!titleError ? "" : "has-error"}`}>
+                        <label>
+                            {"Tiêu đề"}
+                            <span className="attention"> * </span>
+                        </label>
+                        <input type="text" className="form-control" value={title} onChange={handleTitleChange} />
+                        <ErrorLabel content={titleError} />
+                    </div>
+                    <div className={`form-group ${!goodsError ? "" : "has-error"}`}>
+                        <label>
+                            Chọn các mặt hàng
+                            <span className="attention"> * </span>
+                            <br></br>
+                        </label>
+                        <SelectBox
+                            id={`select-create-multi-good-sla`}
+                            className="form-control select2"
+                            style={{ width: "100%" }}
+                            items={
+                                isAllGoodsSelected
+                                    ? [
+                                        {
+                                            value: "disSelectAll",
+                                            text: `Đã chọn tất cả (${getAllGoods().length - 1} mặt hàng)`,
+                                        },
+                                    ]
+                                    : getAllGoods()
+                            }
+                            onChange={handleGoodsChange}
+                            multiple={true}
+                            value={goods}
+                        />
+                        <ErrorLabel content={goodsError} />
+                    </div>
+                    <div className="form-group">
+                        <label>
+                            Các điều khoản
+                            <span className="attention"> * </span>:
+                            <a style={{ cursor: "pointer" }} title={"Các điều khoản"}>
+                                <i
+                                    className="fa fa-plus-square"
+                                    style={{ color: "#28A745", marginLeft: 5 }}
+                                    onClick={handleAddDescription}
+                                />
+                            </a>
+                        </label>
+                        {/* <div className="col-md-12"> */}
+                        {/* Bảng thông tin chi tiết */}
+                        <table className="table">
+                            <thead>
+                                <tr>
+                                    <th style={{ paddingLeft: "0px" }}>{"Điều khoản"}</th>
+                                    <th style={{ width: "100px", textAlign: "center" }}>{"Hành động"}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {!descriptions || descriptions.length === 0 ? (
                                     <tr>
-                                        <th style={{ paddingLeft: "0px" }}>{"Điều khoản"}</th>
-                                        <th style={{ width: "100px", textAlign: "center" }}>{"Hành động"}</th>
+                                        <td colSpan={2}>
+                                            <center> {"Chưa có dữ liệu"}</center>
+                                        </td>
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    {!descriptions || descriptions.length === 0 ? (
-                                        <tr>
-                                            <td colSpan={2}>
-                                                <center> {"Chưa có dữ liệu"}</center>
-                                            </td>
-                                        </tr>
-                                    ) : (
-                                            descriptions.map((item, index) => {
-                                                return (
-                                                    <tr key={index}>
-                                                        <td style={{ paddingLeft: "0px" }}>
-                                                            <div
-                                                                className={`form-group ${parseInt(errorOnDescriptionPosition) === index && errorOnDescription
-                                                                        ? "has-error"
-                                                                        : ""
-                                                                    }`}
-                                                            >
-                                                                <textarea
-                                                                    className="form-control"
-                                                                    type="text"
-                                                                    value={item}
-                                                                    name="value"
-                                                                    style={{ width: "100%" }}
-                                                                    onChange={(e) => this.handleDescriptionChange(e, index)}
-                                                                />
-                                                                {parseInt(errorOnDescriptionPosition) === index && errorOnDescription && (
-                                                                    <ErrorLabel content={errorOnDescription} />
-                                                                )}
-                                                            </div>
-                                                        </td>
+                                ) : (
+                                    descriptions.map((item, index) => {
+                                        return (
+                                            <tr key={index}>
+                                                <td style={{ paddingLeft: "0px" }}>
+                                                    <div
+                                                        className={`form-group ${parseInt(errorOnDescriptionPosition) === index && errorOnDescription
+                                                            ? "has-error"
+                                                            : ""
+                                                            }`}
+                                                    >
+                                                        <textarea
+                                                            className="form-control"
+                                                            type="text"
+                                                            value={item}
+                                                            name="value"
+                                                            style={{ width: "100%" }}
+                                                            onChange={(e) => handleDescriptionChange(e, index)}
+                                                        />
+                                                        {parseInt(errorOnDescriptionPosition) === index && errorOnDescription && (
+                                                            <ErrorLabel content={errorOnDescription} />
+                                                        )}
+                                                    </div>
+                                                </td>
 
-                                                        <td style={{ width: "100px", textAlign: "center" }}>
-                                                            <a
-                                                                className="delete"
-                                                                title="Delete"
-                                                                data-toggle="tooltip"
-                                                                onClick={() => this.deleteDescription(index)}
-                                                            >
-                                                                <i className="material-icons"></i>
-                                                            </a>
-                                                        </td>
-                                                    </tr>
-                                                );
-                                            })
-                                        )}
-                                </tbody>
-                            </table>
-                            {/* </div> */}
-                        </div>
-                    </form>
-                </DialogModal>
-            </React.Fragment>
-        );
-    }
+                                                <td style={{ width: "100px", textAlign: "center" }}>
+                                                    <a
+                                                        className="delete"
+                                                        title="Delete"
+                                                        data-toggle="tooltip"
+                                                        onClick={() => deleteDescription(index)}
+                                                    >
+                                                        <i className="material-icons"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })
+                                )}
+                            </tbody>
+                        </table>
+                        {/* </div> */}
+                    </div>
+                </form>
+            </DialogModal>
+        </React.Fragment>
+    );
 }
 
 function mapStateToProps(state) {

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import ValidationHelper from "../../../../../helpers/validationHelper";
@@ -10,28 +10,28 @@ import "./discount.css";
 import CollapsibleShowDiscountOnGoods from "./collapsibleShowDiscountOnGoods";
 import CollapsibleShowBonusGoods from "./collapsibleShowBonusGoods";
 
-class DiscountCreateDetail extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            discountedCash: "",
-            discountedPercentage: "",
-            loyaltyCoin: "",
-            maximumFreeShippingCost: "",
-            maximumDiscountedCash: "",
-            minimumThresholdToBeApplied: "",
-            maximumThresholdToBeApplied: "",
-            customerType: 2,
-            bonusGoods: [],
-            discountOnGoods: [],
-            goods: [],
-            selectAll: true,
-        };
-    }
+function DiscountCreateDetail(props) {
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.discountType !== prevState.discountType || nextProps.formality !== prevState.formality) {
+    const [state, setState] = useState({
+        discountedCash: "",
+        discountedPercentage: "",
+        loyaltyCoin: "",
+        maximumFreeShippingCost: "",
+        maximumDiscountedCash: "",
+        minimumThresholdToBeApplied: "",
+        maximumThresholdToBeApplied: "",
+        customerType: 2,
+        bonusGoods: [],
+        discountOnGoods: [],
+        goods: [],
+        selectAll: true,
+    })
+
+
+    if (props.discountType !== state.discountType || props.formality !== state.formality) {
+        setState((state) => {
             return {
+                ...state,
                 discountedCash: "",
                 discountedPercentage: "",
                 loyaltyCoin: "",
@@ -44,38 +44,36 @@ class DiscountCreateDetail extends Component {
                 discountOnGoods: [],
                 goods: [],
                 selectAll: true,
-                discountType: nextProps.discountType,
-                formality: nextProps.formality,
+                discountType: props.discountType,
+                formality: props.formality,
             };
-        }
+        })
     }
 
-    shouldComponentUpdate = (nextProps, nextState) => {
-        if (nextProps.discountCode !== this.props.discountCode) {
-            this.setState({
-                bonusGoods: [],
-                discountOnGoods: [],
-                goods: [],
-                editDiscountDetail: false,
-            });
-            return false;
-        }
-        return true;
-    };
+    useEffect(() => {
 
-    getAllGoods = () => {
-        const { translate, goods } = this.props;
-        const { selectAll } = this.state;
+        setState({
+            ...state,
+            bonusGoods: [],
+            discountOnGoods: [],
+            goods: [],
+            editDiscountDetail: false,
+        });
+    }, [props.discountCode])
+
+    const getAllGoods = () => {
+        const { translate, goods } = props;
+        const { selectAll } = state;
         let listGoods = [
             selectAll
                 ? {
-                      value: "all",
-                      text: "CHỌN TẤT CẢ",
-                  }
+                    value: "all",
+                    text: "CHỌN TẤT CẢ",
+                }
                 : {
-                      value: "unselected",
-                      text: "BỎ CHỌN TẤT CẢ",
-                  },
+                    value: "unselected",
+                    text: "BỎ CHỌN TẤT CẢ",
+                },
         ];
 
         const { listGoodsByType } = goods;
@@ -92,29 +90,32 @@ class DiscountCreateDetail extends Component {
         return listGoods;
     };
 
-    handleAddBonusGood = () => {
-        const { actionType } = this.props;
+    const handleAddBonusGood = () => {
+        const { actionType } = props;
         window.$(`#modal-${actionType}-discount-bonus-goods`).modal("show");
     };
 
-    handleAddDiscountOnGoods = () => {
-        const { actionType } = this.props;
+    const handleAddDiscountOnGoods = () => {
+        const { actionType } = props;
         window.$(`#modal-${actionType}-discount-on-goods`).modal("show");
     };
 
-    handleSubmitBonusGoods = (dataSubmit) => {
+    const handleSubmitBonusGoods = (dataSubmit) => {
         console.log("Data bonus", dataSubmit);
-        this.setState({
+        setState({
+            ...state,
             bonusGoods: dataSubmit,
         });
     };
 
-    handleSubmitDiscountOnGoods = (dataSubmit) => {
-        this.setState({
+    const handleSubmitDiscountOnGoods = (dataSubmit) => {
+        setState({
+            ...state,
             discountOnGoods: dataSubmit,
         });
     };
-    handleGoodChange = async (goods) => {
+
+    const handleGoodChange = async (goods) => {
         // if (goods.length === 0) {
         //     goods = null;
         // }
@@ -126,7 +127,7 @@ class DiscountCreateDetail extends Component {
         }
 
         if (checkSelectedAll.length && checkSelectedAll[0] === "all" && goods) {
-            goods = await this.getAllGoods().map((item) => {
+            goods = await getAllGoods().map((item) => {
                 return item.value;
             });
 
@@ -135,34 +136,36 @@ class DiscountCreateDetail extends Component {
             goods = [];
         }
 
-        if (goods && goods.length === this.getAllGoods().length - 1) {
+        if (goods && goods.length === getAllGoods().length - 1) {
             //Tất cả các mặt hàng đã được chọn
-            this.setState({
+            setState({
+                ...state,
                 selectAll: false,
             });
-        } else if (!this.state.selectAll) {
-            this.setState({
+        } else if (!state.selectAll) {
+            setState({
+                ...state,
                 selectAll: true,
             });
         }
 
-        await this.setState((state) => {
+        await setState((state) => {
             return {
                 ...state,
                 goods: goods,
             };
         });
-        this.validateGoods(goods, true);
+        validateGoods(goods, true);
     };
 
-    validateGoods = (goods, willUpdateState = true) => {
+    const validateGoods = (goods, willUpdateState = true) => {
         let msg = undefined;
         if (goods && goods.length === 0) {
-            const { translate } = this.props;
+            const { translate } = props;
             msg = "Mặt hàng không được để trống";
         }
         if (willUpdateState) {
-            this.setState((state) => {
+            setState((state) => {
                 return {
                     ...state,
                     goodError: msg,
@@ -172,7 +175,7 @@ class DiscountCreateDetail extends Component {
         return msg;
     };
 
-    validateCustomerType = (value, willUpdateState = true) => {
+    const validateCustomerType = (value, willUpdateState = true) => {
         let msg = undefined;
 
         if (!value.length) {
@@ -180,7 +183,8 @@ class DiscountCreateDetail extends Component {
         }
 
         if (willUpdateState) {
-            this.setState({
+            setState({
+                ...state,
                 customerType: value[0],
                 customerTypeError: msg,
             });
@@ -188,12 +192,12 @@ class DiscountCreateDetail extends Component {
         return msg;
     };
 
-    handleChangeCustomerType = (value) => {
-        this.validateCustomerType(value, true);
+    const handleChangeCustomerType = (value) => {
+        validateCustomerType(value, true);
     };
 
-    validateMinimumThreshold = (minimum, willUpdateState = true) => {
-        const { maximumThresholdToBeApplied } = this.state;
+    const validateMinimumThreshold = (minimum, willUpdateState = true) => {
+        const { maximumThresholdToBeApplied } = state;
         let msg = undefined;
         if (parseInt(minimum) < 0) {
             msg = "Giá trị không được âm";
@@ -205,7 +209,8 @@ class DiscountCreateDetail extends Component {
             }
         }
         if (willUpdateState) {
-            this.setState({
+            setState({
+                ...state,
                 minimumThresholdToBeApplied: minimum,
                 minimumThresholdError: msg,
             });
@@ -213,8 +218,8 @@ class DiscountCreateDetail extends Component {
         return msg;
     };
 
-    validateMaximumThreshold = (maximum, willUpdateState = true) => {
-        const { minimumThresholdToBeApplied } = this.state;
+    const validateMaximumThreshold = (maximum, willUpdateState = true) => {
+        const { minimumThresholdToBeApplied } = state;
         let msg = undefined;
         if (parseInt(maximum) <= 0) {
             msg = "Giá trị phải lớn hơn 0";
@@ -226,7 +231,8 @@ class DiscountCreateDetail extends Component {
             }
         }
         if (willUpdateState) {
-            this.setState({
+            setState({
+                ...state,
                 maximumThresholdToBeApplied: maximum,
                 maximumThresholdError: msg,
             });
@@ -234,15 +240,15 @@ class DiscountCreateDetail extends Component {
         return msg;
     };
 
-    handleMinimumThresholdToBeAppliedChange = (e) => {
-        this.validateMinimumThreshold(e.target.value, true);
+    const handleMinimumThresholdToBeAppliedChange = (e) => {
+        validateMinimumThreshold(e.target.value, true);
     };
 
-    handleMaximumThresholdToBeAppliedChange = (e) => {
-        this.validateMaximumThreshold(e.target.value, true);
+    const handleMaximumThresholdToBeAppliedChange = (e) => {
+        validateMaximumThreshold(e.target.value, true);
     };
 
-    validateDiscountCash = (value, willUpdateState = true) => {
+    const validateDiscountCash = (value, willUpdateState = true) => {
         let msg = undefined;
 
         if (!value) {
@@ -252,7 +258,8 @@ class DiscountCreateDetail extends Component {
         }
 
         if (willUpdateState) {
-            this.setState({
+            setState({
+                ...state,
                 discountedCash: value,
                 discountedCashError: msg,
             });
@@ -261,11 +268,11 @@ class DiscountCreateDetail extends Component {
         return msg;
     };
 
-    handleDiscountCashChange = (e) => {
-        this.validateDiscountCash(e.target.value, true);
+    const handleDiscountCashChange = (e) => {
+        validateDiscountCash(e.target.value, true);
     };
 
-    validateDiscountedPercentage = (value, willUpdateState = true) => {
+    const validateDiscountedPercentage = (value, willUpdateState = true) => {
         let msg = undefined;
 
         if (!value) {
@@ -275,7 +282,8 @@ class DiscountCreateDetail extends Component {
         }
 
         if (willUpdateState) {
-            this.setState({
+            setState({
+                ...state,
                 discountedPercentage: value,
                 discountedPercentageError: msg,
             });
@@ -284,11 +292,11 @@ class DiscountCreateDetail extends Component {
         return msg;
     };
 
-    hanlleDiscountedPercentageChange = (e) => {
-        this.validateDiscountedPercentage(e.target.value, true);
+    const hanlleDiscountedPercentageChange = (e) => {
+        validateDiscountedPercentage(e.target.value, true);
     };
 
-    validateMaximumDiscountedCash = (value, willUpdateState = true) => {
+    const validateMaximumDiscountedCash = (value, willUpdateState = true) => {
         let msg = undefined;
 
         if (parseInt(value) < 0) {
@@ -296,7 +304,8 @@ class DiscountCreateDetail extends Component {
         }
 
         if (willUpdateState) {
-            this.setState({
+            setState({
+                ...state,
                 maximumDiscountedCash: value,
                 maximumDiscountedCashError: msg,
             });
@@ -305,11 +314,11 @@ class DiscountCreateDetail extends Component {
         return msg;
     };
 
-    handleMaximumDiscountedCashChange = (e) => {
-        this.validateMaximumDiscountedCash(e.target.value, true);
+    const handleMaximumDiscountedCashChange = (e) => {
+        validateMaximumDiscountedCash(e.target.value, true);
     };
 
-    validateLoyaltyCoin = (value, willUpdateState = true) => {
+    const validateLoyaltyCoin = (value, willUpdateState = true) => {
         let msg = undefined;
 
         if (!value) {
@@ -319,7 +328,8 @@ class DiscountCreateDetail extends Component {
         }
 
         if (willUpdateState) {
-            this.setState({
+            setState({
+                ...state,
                 loyaltyCoin: value,
                 loyaltyCoinError: msg,
             });
@@ -328,11 +338,11 @@ class DiscountCreateDetail extends Component {
         return msg;
     };
 
-    handleLoyaltyCoinChange = (e) => {
-        this.validateLoyaltyCoin(e.target.value, true);
+    const handleLoyaltyCoinChange = (e) => {
+        validateLoyaltyCoin(e.target.value, true);
     };
 
-    validateMaximumFreeShippingCost = (value, willUpdateState = true) => {
+    const validateMaximumFreeShippingCost = (value, willUpdateState = true) => {
         let msg = undefined;
 
         if (parseInt(value) <= 0) {
@@ -340,7 +350,8 @@ class DiscountCreateDetail extends Component {
         }
 
         if (willUpdateState) {
-            this.setState({
+            setState({
+                ...state,
                 maximumFreeShippingCost: value,
                 maximumFreeShippingCostError: msg,
             });
@@ -349,12 +360,12 @@ class DiscountCreateDetail extends Component {
         return msg;
     };
 
-    handleMaximumFreeShippingCostChange = (e) => {
-        this.validateMaximumFreeShippingCost(e.target.value, true);
+    const handleMaximumFreeShippingCostChange = (e) => {
+        validateMaximumFreeShippingCost(e.target.value, true);
     };
 
-    getFieldDiscountForSubmit = () => {
-        let { discountType, formality } = this.state;
+    const getFieldDiscountForSubmit = () => {
+        let { discountType, formality } = state;
         let {
             discountedCash,
             discountedPercentage,
@@ -367,7 +378,7 @@ class DiscountCreateDetail extends Component {
             bonusGoods,
             discountOnGoods,
             goods,
-        } = this.state;
+        } = state;
 
         if (formality != 5) {
             discountOnGoods = goods.map((item) => {
@@ -413,15 +424,15 @@ class DiscountCreateDetail extends Component {
         return discount;
     };
 
-    handleSubmitDiscountDetail = async (e) => {
+    const handleSubmitDiscountDetail = async (e) => {
         e.preventDefault();
-        let { discounts } = this.props;
+        let { discounts } = props;
 
-        let discount = this.getFieldDiscountForSubmit();
+        let discount = getFieldDiscountForSubmit();
 
         discounts.push(discount);
-        await this.props.onChangeDiscounts(discounts);
-        await this.setState((state) => {
+        await props.onChangeDiscounts(discounts);
+        await setState((state) => {
             return {
                 ...state,
                 discountedCash: "",
@@ -440,9 +451,9 @@ class DiscountCreateDetail extends Component {
         });
     };
 
-    handleClearDiscountDetail = async (e) => {
+    const handleClearDiscountDetail = async (e) => {
         e.preventDefault();
-        await this.setState((state) => {
+        await setState((state) => {
             return {
                 ...state,
                 discountedCash: "",
@@ -460,14 +471,15 @@ class DiscountCreateDetail extends Component {
         });
     };
 
-    handleEditDiscountDetail = (discountDetail, index) => {
-        let { formality } = this.props;
+    const handleEditDiscountDetail = (discountDetail, index) => {
+        let { formality } = props;
         let goods = [];
         if (formality !== 5 && discountDetail.discountOnGoods && discountDetail.discountOnGoods.length) {
             goods = discountDetail.discountOnGoods.map((item) => item.good._id);
         }
 
-        this.setState({
+        setState({
+            ...state,
             customerType: discountDetail.customerType,
             minimumThresholdToBeApplied: discountDetail.minimumThresholdToBeApplied,
             maximumThresholdToBeApplied: discountDetail.maximumThresholdToBeApplied,
@@ -484,9 +496,9 @@ class DiscountCreateDetail extends Component {
         });
     };
 
-    handleCancelEditDiscountDetail = (e) => {
+    const handleCancelEditDiscountDetail = (e) => {
         e.preventDefault();
-        this.setState((state) => {
+        setState((state) => {
             return {
                 ...state,
                 discountedCash: "",
@@ -506,13 +518,13 @@ class DiscountCreateDetail extends Component {
         });
     };
 
-    handleSaveEditDiscountDetail = () => {
-        let { discounts } = this.props;
-        let { indexEditting } = this.state;
-        let discount = this.getFieldDiscountForSubmit();
+    const handleSaveEditDiscountDetail = () => {
+        let { discounts } = props;
+        let { indexEditting } = state;
+        let discount = getFieldDiscountForSubmit();
         discounts[indexEditting] = discount;
-        this.props.onChangeDiscounts(discounts);
-        this.setState((state) => {
+        props.onChangeDiscounts(discounts);
+        setState((state) => {
             return {
                 ...state,
                 discountedCash: "",
@@ -532,13 +544,13 @@ class DiscountCreateDetail extends Component {
         });
     };
 
-    handleDeleteDiscountDeatail = (index) => {
-        let { discounts } = this.props;
+    const handleDeleteDiscountDeatail = (index) => {
+        let { discounts } = props;
         discounts.splice(index, 1);
-        this.props.onChangeDiscounts(discounts);
+        props.onChangeDiscounts(discounts);
     };
 
-    isValidateDiscountDeatail = () => {
+    const isValidateDiscountDeatail = () => {
         const {
             discountedCash,
             discountedPercentage,
@@ -549,11 +561,11 @@ class DiscountCreateDetail extends Component {
             goods,
             minimumThresholdToBeApplied,
             maximumThresholdToBeApplied,
-        } = this.state;
-        const { formality, discountType } = this.props;
-        const { translate } = this.props;
+        } = state;
+        const { formality, discountType } = props;
+        const { translate } = props;
         if (formality == "0") {
-            if (!ValidationHelper.validateEmpty(translate, discountedCash).status || this.validateDiscountCash(discountedCash, false)) {
+            if (!ValidationHelper.validateEmpty(translate, discountedCash).status || validateDiscountCash(discountedCash, false)) {
                 return false;
             }
         } else if (formality == "1") {
@@ -566,22 +578,22 @@ class DiscountCreateDetail extends Component {
             }
         } else if (formality == "3") {
         } else if (formality == "4") {
-            if (this.validateGoods(bonusGoods, false)) {
+            if (validateGoods(bonusGoods, false)) {
                 return false;
             }
         } else if (formality == "5") {
-            if (this.validateGoods(discountOnGoods, false)) {
+            if (validateGoods(discountOnGoods, false)) {
                 return false;
             }
         }
 
         if (discountType == "1" && formality != "5") {
-            if (this.validateGoods(goods, false)) {
+            if (validateGoods(goods, false)) {
                 return false;
             }
         }
 
-        if (this.validateMinimumThreshold(minimumThresholdToBeApplied, false) || this.validateMaximumThreshold(maximumThresholdToBeApplied, false)) {
+        if (validateMinimumThreshold(minimumThresholdToBeApplied, false) || validateMaximumThreshold(maximumThresholdToBeApplied, false)) {
             return false;
         }
 
@@ -591,8 +603,8 @@ class DiscountCreateDetail extends Component {
         return true;
     };
 
-    getTitleDiscountTable = () => {
-        const { formality } = this.props;
+    const getTitleDiscountTable = () => {
+        const { formality } = props;
         switch (parseInt(formality)) {
             case 0:
                 return "Mức giảm tiền mặt";
@@ -609,8 +621,8 @@ class DiscountCreateDetail extends Component {
         }
     };
 
-    getContentDiscountTable = (discount) => {
-        const { formality } = this.props;
+    const getContentDiscountTable = (discount) => {
+        const { formality } = props;
         switch (parseInt(formality)) {
             case 0:
                 return discount.discountedCash;
@@ -627,378 +639,376 @@ class DiscountCreateDetail extends Component {
         }
     };
 
-    render() {
-        const { discountType, formality, discounts } = this.props;
-        const { translate } = this.props;
-        const {
-            customerType,
-            minimumThresholdToBeApplied,
-            maximumThresholdToBeApplied,
-            discountedCash,
-            discountedPercentage,
-            loyaltyCoin,
-            maximumFreeShippingCost,
-            maximumDiscountedCash,
-            bonusGoods,
-            discountOnGoods,
-            minimumThresholdError,
-            maximumThresholdError,
-            discountedCashError,
-            discountedPercentageError,
-            maximumDiscountedCashError,
-            loyaltyCoinError,
-            maximumFreeShippingCostError,
-            goods,
-            editDiscountDetail,
-            goodError,
-        } = this.state;
+    const { discountType, formality, discounts } = props;
+    const { translate } = props;
+    const {
+        customerType,
+        minimumThresholdToBeApplied,
+        maximumThresholdToBeApplied,
+        discountedCash,
+        discountedPercentage,
+        loyaltyCoin,
+        maximumFreeShippingCost,
+        maximumDiscountedCash,
+        bonusGoods,
+        discountOnGoods,
+        minimumThresholdError,
+        maximumThresholdError,
+        discountedCashError,
+        discountedPercentageError,
+        maximumDiscountedCashError,
+        loyaltyCoinError,
+        maximumFreeShippingCostError,
+        goods,
+        editDiscountDetail,
+        goodError,
+    } = state;
 
-        return (
-            <React.Fragment>
-                <CreateBonusGoods
-                    handleSubmitBonusGoods={(data) => this.handleSubmitBonusGoods(data)}
-                    discountType={this.props.discountType}
-                    formality={this.props.formality}
-                    actionType={this.props.actionType}
-                    bonusGoods={bonusGoods}
-                    editDiscountDetail={editDiscountDetail}
-                    discountCode={this.props.discountCode}
-                    indexEdittingDiscount={this.state.indexEditting}
-                />
-                <CreateDiscountOnGoods
-                    handleSubmitDiscountOnGoods={(data) => this.handleSubmitDiscountOnGoods(data)}
-                    discountType={this.props.discountType}
-                    formality={this.props.formality}
-                    actionType={this.props.actionType}
-                    discountOnGoods={discountOnGoods}
-                    editDiscountDetail={editDiscountDetail}
-                    discountCode={this.props.discountCode}
-                    indexEdittingDiscount={this.state.indexEditting}
-                />
-                {discountType >= 0 && formality >= 0 ? (
-                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                        <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">{"Chi tiết giảm giá"}</legend>
+    return (
+        <React.Fragment>
+            <CreateBonusGoods
+                handleSubmitBonusGoods={(data) => handleSubmitBonusGoods(data)}
+                discountType={props.discountType}
+                formality={props.formality}
+                actionType={props.actionType}
+                bonusGoods={bonusGoods}
+                editDiscountDetail={editDiscountDetail}
+                discountCode={props.discountCode}
+                indexEdittingDiscount={state.indexEditting}
+            />
+            <CreateDiscountOnGoods
+                handleSubmitDiscountOnGoods={(data) => handleSubmitDiscountOnGoods(data)}
+                discountType={props.discountType}
+                formality={props.formality}
+                actionType={props.actionType}
+                discountOnGoods={discountOnGoods}
+                editDiscountDetail={editDiscountDetail}
+                discountCode={props.discountCode}
+                indexEdittingDiscount={state.indexEditting}
+            />
+            {discountType >= 0 && formality >= 0 ? (
+                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <fieldset className="scheduler-border">
+                        <legend className="scheduler-border">{"Chi tiết giảm giá"}</legend>
+                        <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                            <div className={`form-group`}>
+                                <label>
+                                    {"Khách hàng được áp dụng"}
+                                    <span className="attention"> * </span>
+                                </label>
+                                <SelectBox
+                                    id={`select-create-discount-customer-type`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    items={[
+                                        { value: 0, text: "Khách thường" },
+                                        { value: 1, text: "Khách VIP" },
+                                        { value: 2, text: "Tất cả" },
+                                    ]}
+                                    onChange={handleChangeCustomerType}
+                                    multiple={false}
+                                    value={customerType}
+                                />
+                            </div>
+                        </div>
+                        <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                            <div className={`form-group ${!minimumThresholdError ? "" : "has-error"}`}>
+                                <label>
+                                    {discountType == 0 ? "Đơn hàng có giá trị từ:" : "Số lượng hàng từ: "}
+                                    <span className="attention"> </span>
+                                </label>
+                                <input
+                                    type="number"
+                                    className="form-control"
+                                    value={minimumThresholdToBeApplied}
+                                    placeholder={discountType == 0 ? "vnđ" : "đơn vị"}
+                                    onChange={handleMinimumThresholdToBeAppliedChange}
+                                />
+                                <ErrorLabel content={minimumThresholdError} />
+                            </div>
+                        </div>
+                        <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                            <div className={`form-group ${!maximumThresholdError ? "" : "has-error"}`}>
+                                <label>
+                                    {discountType === 0 ? "Đến: " : "Đến: "}
+                                    <span className="attention"> </span>
+                                </label>
+                                <input
+                                    type="number"
+                                    className="form-control"
+                                    value={maximumThresholdToBeApplied}
+                                    onChange={handleMaximumThresholdToBeAppliedChange}
+                                    placeholder={discountType === 0 ? "vnđ" : "đơn vị"}
+                                />
+                                <ErrorLabel content={maximumThresholdError} />
+                            </div>
+                        </div>
+                        {formality == 0 ? (
                             <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                                <div className={`form-group`}>
+                                <div className={`form-group ${!discountedCashError ? "" : "has-error"}`}>
                                     <label>
-                                        {"Khách hàng được áp dụng"}
-                                        <span className="attention"> * </span>
+                                        {"Giảm giá tiền mặt"}
+                                        <span className="attention">*</span>
+                                    </label>
+                                    <input
+                                        type="number"
+                                        className="form-control"
+                                        value={discountedCash}
+                                        onChange={handleDiscountCashChange}
+                                    />
+                                    <ErrorLabel content={discountedCashError} />
+                                </div>
+                            </div>
+                        ) : (
+                            ""
+                        )}
+                        {formality == 1 ? (
+                            <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                <div className={`form-group ${!discountedPercentageError ? "" : "has-error"}`}>
+                                    <label>
+                                        {"Phần trăm giảm giá"}
+                                        <span className="attention">*</span>
+                                    </label>
+                                    <input
+                                        type="number"
+                                        className="form-control"
+                                        value={discountedPercentage}
+                                        onChange={hanlleDiscountedPercentageChange}
+                                    />
+                                    <ErrorLabel content={discountedPercentageError} />
+                                </div>
+                            </div>
+                        ) : (
+                            ""
+                        )}
+                        {formality == 1 ? (
+                            <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                <div className={`form-group ${!maximumDiscountedCashError ? "" : "has-error"}`}>
+                                    <label>
+                                        {"Tiền giảm giá tối đa"}
+                                        <span className="attention"> </span>
+                                    </label>
+                                    <input
+                                        type="number"
+                                        className="form-control"
+                                        value={maximumDiscountedCash}
+                                        placeholder="vd: 50000"
+                                        onChange={handleMaximumDiscountedCashChange}
+                                    />
+                                    <ErrorLabel content={maximumDiscountedCashError} />
+                                </div>
+                            </div>
+                        ) : (
+                            ""
+                        )}
+                        {formality == 2 ? (
+                            <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                <div className={`form-group ${!loyaltyCoinError ? "" : "has-error"}`}>
+                                    <label>
+                                        {"Tặng xu"}
+                                        <span className="attention">*</span>
+                                    </label>
+                                    <input
+                                        type="number"
+                                        className="form-control"
+                                        value={loyaltyCoin}
+                                        placeholder="vd: 10000"
+                                        onChange={handleLoyaltyCoinChange}
+                                    />
+                                    <ErrorLabel content={loyaltyCoinError} />
+                                </div>
+                            </div>
+                        ) : (
+                            ""
+                        )}
+                        {formality == 3 ? (
+                            <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                <div className={`form-group ${!maximumFreeShippingCostError ? "" : "has-error"}`}>
+                                    <label>
+                                        {"Miễn phí vận chuyển tối đa"}
+                                        <span className="attention"> </span>
+                                    </label>
+                                    <input
+                                        type="number"
+                                        className="form-control"
+                                        value={maximumFreeShippingCost}
+                                        placeholder="vd: 50000"
+                                        onChange={handleMaximumFreeShippingCostChange}
+                                    />
+                                    <ErrorLabel content={maximumFreeShippingCostError} />
+                                </div>
+                            </div>
+                        ) : (
+                            ""
+                        )}
+                        {discountType == 1 && formality == 5 ? (
+                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <div className="form-group" style={{ display: "flex", flexDirection: "column" }}>
+                                    <label>
+                                        Các mặt hàng được áp dụng:
+                                        <a style={{ cursor: "pointer" }} title="Thêm các mặt hàng áp dụng">
+                                            <i
+                                                className="fa fa-plus-square"
+                                                style={{ color: "#28A745", marginLeft: 5 }}
+                                                onClick={handleAddDiscountOnGoods}
+                                            />
+                                        </a>
+                                    </label>
+                                    {discountOnGoods && discountOnGoods.length ? (
+                                        <CollapsibleShowDiscountOnGoods discountOnGoods={discountOnGoods} />
+                                    ) : (
+                                        ""
+                                    )}
+                                </div>
+                            </div>
+                        ) : (
+                            ""
+                        )}
+                        {discountType == 1 && formality != 5 ? (
+                            <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                <div className={`form-group ${!goodError ? "" : "has-error"}`}>
+                                    <label className="control-label">
+                                        Các mặt hàng được áp dụng: <span className="attention"> * </span>
                                     </label>
                                     <SelectBox
-                                        id={`select-create-discount-customer-type`}
+                                        id={`select-discount-on-goods2`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
-                                        items={[
-                                            { value: 0, text: "Khách thường" },
-                                            { value: 1, text: "Khách VIP" },
-                                            { value: 2, text: "Tất cả" },
-                                        ]}
-                                        onChange={this.handleChangeCustomerType}
-                                        multiple={false}
-                                        value={customerType}
+                                        value={goods}
+                                        items={getAllGoods()}
+                                        onChange={handleGoodChange}
+                                        multiple={true}
                                     />
+                                    <ErrorLabel content={goodError} />
                                 </div>
                             </div>
-                            <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                                <div className={`form-group ${!minimumThresholdError ? "" : "has-error"}`}>
+                        ) : (
+                            ""
+                        )}
+                        {formality == 4 ? (
+                            <div className="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+                                <div className="form-group" style={{ display: "flex", flexDirection: "column" }}>
                                     <label>
-                                        {discountType == 0 ? "Đơn hàng có giá trị từ:" : "Số lượng hàng từ: "}
-                                        <span className="attention"> </span>
+                                        Sản phẩm tặng kèm:
+                                        <a style={{ cursor: "pointer" }} title="Thêm các sản phẩm tặng kèm">
+                                            <i
+                                                className="fa fa-plus-square"
+                                                style={{ color: "#28A745", marginLeft: 5 }}
+                                                onClick={handleAddBonusGood}
+                                            />
+                                        </a>
                                     </label>
-                                    <input
-                                        type="number"
-                                        className="form-control"
-                                        value={minimumThresholdToBeApplied}
-                                        placeholder={discountType == 0 ? "vnđ" : "đơn vị"}
-                                        onChange={this.handleMinimumThresholdToBeAppliedChange}
-                                    />
-                                    <ErrorLabel content={minimumThresholdError} />
+                                    {bonusGoods && bonusGoods.length ? <CollapsibleShowBonusGoods bonusGoods={bonusGoods} /> : ""}
                                 </div>
                             </div>
-                            <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                                <div className={`form-group ${!maximumThresholdError ? "" : "has-error"}`}>
-                                    <label>
-                                        {discountType === 0 ? "Đến: " : "Đến: "}
-                                        <span className="attention"> </span>
-                                    </label>
-                                    <input
-                                        type="number"
-                                        className="form-control"
-                                        value={maximumThresholdToBeApplied}
-                                        onChange={this.handleMaximumThresholdToBeAppliedChange}
-                                        placeholder={discountType === 0 ? "vnđ" : "đơn vị"}
-                                    />
-                                    <ErrorLabel content={maximumThresholdError} />
-                                </div>
-                            </div>
-                            {formality == 0 ? (
-                                <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                                    <div className={`form-group ${!discountedCashError ? "" : "has-error"}`}>
-                                        <label>
-                                            {"Giảm giá tiền mặt"}
-                                            <span className="attention">*</span>
-                                        </label>
-                                        <input
-                                            type="number"
-                                            className="form-control"
-                                            value={discountedCash}
-                                            onChange={this.handleDiscountCashChange}
-                                        />
-                                        <ErrorLabel content={discountedCashError} />
-                                    </div>
-                                </div>
-                            ) : (
-                                ""
-                            )}
-                            {formality == 1 ? (
-                                <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                                    <div className={`form-group ${!discountedPercentageError ? "" : "has-error"}`}>
-                                        <label>
-                                            {"Phần trăm giảm giá"}
-                                            <span className="attention">*</span>
-                                        </label>
-                                        <input
-                                            type="number"
-                                            className="form-control"
-                                            value={discountedPercentage}
-                                            onChange={this.hanlleDiscountedPercentageChange}
-                                        />
-                                        <ErrorLabel content={discountedPercentageError} />
-                                    </div>
-                                </div>
-                            ) : (
-                                ""
-                            )}
-                            {formality == 1 ? (
-                                <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                                    <div className={`form-group ${!maximumDiscountedCashError ? "" : "has-error"}`}>
-                                        <label>
-                                            {"Tiền giảm giá tối đa"}
-                                            <span className="attention"> </span>
-                                        </label>
-                                        <input
-                                            type="number"
-                                            className="form-control"
-                                            value={maximumDiscountedCash}
-                                            placeholder="vd: 50000"
-                                            onChange={this.handleMaximumDiscountedCashChange}
-                                        />
-                                        <ErrorLabel content={maximumDiscountedCashError} />
-                                    </div>
-                                </div>
-                            ) : (
-                                ""
-                            )}
-                            {formality == 2 ? (
-                                <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                                    <div className={`form-group ${!loyaltyCoinError ? "" : "has-error"}`}>
-                                        <label>
-                                            {"Tặng xu"}
-                                            <span className="attention">*</span>
-                                        </label>
-                                        <input
-                                            type="number"
-                                            className="form-control"
-                                            value={loyaltyCoin}
-                                            placeholder="vd: 10000"
-                                            onChange={this.handleLoyaltyCoinChange}
-                                        />
-                                        <ErrorLabel content={loyaltyCoinError} />
-                                    </div>
-                                </div>
-                            ) : (
-                                ""
-                            )}
-                            {formality == 3 ? (
-                                <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                                    <div className={`form-group ${!maximumFreeShippingCostError ? "" : "has-error"}`}>
-                                        <label>
-                                            {"Miễn phí vận chuyển tối đa"}
-                                            <span className="attention"> </span>
-                                        </label>
-                                        <input
-                                            type="number"
-                                            className="form-control"
-                                            value={maximumFreeShippingCost}
-                                            placeholder="vd: 50000"
-                                            onChange={this.handleMaximumFreeShippingCostChange}
-                                        />
-                                        <ErrorLabel content={maximumFreeShippingCostError} />
-                                    </div>
-                                </div>
-                            ) : (
-                                ""
-                            )}
-                            {discountType == 1 && formality == 5 ? (
-                                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                    <div className="form-group" style={{ display: "flex", flexDirection: "column" }}>
-                                        <label>
-                                            Các mặt hàng được áp dụng:
-                                            <a style={{ cursor: "pointer" }} title="Thêm các mặt hàng áp dụng">
-                                                <i
-                                                    className="fa fa-plus-square"
-                                                    style={{ color: "#28A745", marginLeft: 5 }}
-                                                    onClick={this.handleAddDiscountOnGoods}
-                                                />
-                                            </a>
-                                        </label>
-                                        {discountOnGoods && discountOnGoods.length ? (
-                                            <CollapsibleShowDiscountOnGoods discountOnGoods={discountOnGoods} />
-                                        ) : (
-                                            ""
-                                        )}
-                                    </div>
-                                </div>
-                            ) : (
-                                ""
-                            )}
-                            {discountType == 1 && formality != 5 ? (
-                                <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                                    <div className={`form-group ${!goodError ? "" : "has-error"}`}>
-                                        <label className="control-label">
-                                            Các mặt hàng được áp dụng: <span className="attention"> * </span>
-                                        </label>
-                                        <SelectBox
-                                            id={`select-discount-on-goods2`}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            value={goods}
-                                            items={this.getAllGoods()}
-                                            onChange={this.handleGoodChange}
-                                            multiple={true}
-                                        />
-                                        <ErrorLabel content={goodError} />
-                                    </div>
-                                </div>
-                            ) : (
-                                ""
-                            )}
-                            {formality == 4 ? (
-                                <div className="col-xs-12 col-sm-12 col-md-8 col-lg-8">
-                                    <div className="form-group" style={{ display: "flex", flexDirection: "column" }}>
-                                        <label>
-                                            Sản phẩm tặng kèm:
-                                            <a style={{ cursor: "pointer" }} title="Thêm các sản phẩm tặng kèm">
-                                                <i
-                                                    className="fa fa-plus-square"
-                                                    style={{ color: "#28A745", marginLeft: 5 }}
-                                                    onClick={this.handleAddBonusGood}
-                                                />
-                                            </a>
-                                        </label>
-                                        {bonusGoods && bonusGoods.length ? <CollapsibleShowBonusGoods bonusGoods={bonusGoods} /> : ""}
-                                    </div>
-                                </div>
-                            ) : (
-                                ""
-                            )}
-                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                <div className={"pull-right"} style={{ padding: 10 }}>
-                                    {editDiscountDetail ? (
-                                        <React.Fragment>
-                                            <button
-                                                className="btn btn-success"
-                                                onClick={this.handleCancelEditDiscountDetail}
-                                                style={{ marginLeft: "10px" }}
-                                            >
-                                                Hủy chỉnh sửa
-                                            </button>
-                                            <button
-                                                className="btn btn-success"
-                                                disabled={!this.isValidateDiscountDeatail()}
-                                                onClick={this.handleSaveEditDiscountDetail}
-                                                style={{ marginLeft: "10px" }}
-                                            >
-                                                Lưu
-                                            </button>
-                                        </React.Fragment>
-                                    ) : (
+                        ) : (
+                            ""
+                        )}
+                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <div className={"pull-right"} style={{ padding: 10 }}>
+                                {editDiscountDetail ? (
+                                    <React.Fragment>
                                         <button
                                             className="btn btn-success"
+                                            onClick={handleCancelEditDiscountDetail}
                                             style={{ marginLeft: "10px" }}
-                                            disabled={!this.isValidateDiscountDeatail()}
-                                            onClick={this.handleSubmitDiscountDetail}
                                         >
-                                            Thêm
+                                            Hủy chỉnh sửa
                                         </button>
-                                    )}
-                                    <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={this.handleClearDiscountDetail}>
-                                        Xóa trắng
+                                        <button
+                                            className="btn btn-success"
+                                            disabled={!isValidateDiscountDeatail()}
+                                            onClick={handleSaveEditDiscountDetail}
+                                            style={{ marginLeft: "10px" }}
+                                        >
+                                            Lưu
+                                        </button>
+                                    </React.Fragment>
+                                ) : (
+                                    <button
+                                        className="btn btn-success"
+                                        style={{ marginLeft: "10px" }}
+                                        disabled={!isValidateDiscountDeatail()}
+                                        onClick={handleSubmitDiscountDetail}
+                                    >
+                                        Thêm
                                     </button>
-                                </div>
+                                )}
+                                <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={handleClearDiscountDetail}>
+                                    Xóa trắng
+                                </button>
                             </div>
-                            <table id={`order-table-discount-create-detail`} className="table table-bordered">
-                                <thead>
+                        </div>
+                        <table id={`order-table-discount-create-detail`} className="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>STT</th>
+                                    <th>Loại khách hàng</th>
+                                    <th>{discountType == "0" ? "Giá trị tối thiểu" : "Số lượng tối thiểu"}</th>
+                                    <th>{discountType == "0" ? "Giá trị tối đa" : "Số lượng tối đa"}</th>
+                                    {discountType == "1" ? <th>Các mặt hàng áp dụng</th> : ""}
+                                    {formality != "5" ? <th>{getTitleDiscountTable()}</th> : ""}
+                                    {formality == "1" ? <th>Mức tiền giảm tối đa</th> : ""}
+                                    <th>Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {!discounts || discounts.length === 0 ? (
                                     <tr>
-                                        <th>STT</th>
-                                        <th>Loại khách hàng</th>
-                                        <th>{discountType == "0" ? "Giá trị tối thiểu" : "Số lượng tối thiểu"}</th>
-                                        <th>{discountType == "0" ? "Giá trị tối đa" : "Số lượng tối đa"}</th>
-                                        {discountType == "1" ? <th>Các mặt hàng áp dụng</th> : ""}
-                                        {formality != "5" ? <th>{this.getTitleDiscountTable()}</th> : ""}
-                                        {formality == "1" ? <th>Mức tiền giảm tối đa</th> : ""}
-                                        <th>Hành động</th>
+                                        <td colSpan={5}>
+                                            <center>Chưa có dữ liệu</center>
+                                        </td>
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    {!discounts || discounts.length === 0 ? (
-                                        <tr>
-                                            <td colSpan={5}>
-                                                <center>Chưa có dữ liệu</center>
-                                            </td>
-                                        </tr>
-                                    ) : (
-                                        discounts.map((item, index) => {
-                                            return (
-                                                <tr key={index}>
-                                                    <td>{index + 1}</td>
-                                                    <td>{item.customerType}</td>
-                                                    <td>
-                                                        {item.minimumThresholdToBeApplied ? formatCurrency(item.minimumThresholdToBeApplied) : ""}
+                                ) : (
+                                    discounts.map((item, index) => {
+                                        return (
+                                            <tr key={index}>
+                                                <td>{index + 1}</td>
+                                                <td>{item.customerType}</td>
+                                                <td>
+                                                    {item.minimumThresholdToBeApplied ? formatCurrency(item.minimumThresholdToBeApplied) : ""}
+                                                </td>
+                                                <td>
+                                                    {item.maximumThresholdToBeApplied ? formatCurrency(item.maximumThresholdToBeApplied) : ""}
+                                                </td>
+                                                {discountType == "1" && item.discountOnGoods ? (
+                                                    <td className="discount-create-goods-block-td">
+                                                        <a>{"Có " + item.discountOnGoods.length + " mặt hàng"}</a>
                                                     </td>
-                                                    <td>
-                                                        {item.maximumThresholdToBeApplied ? formatCurrency(item.maximumThresholdToBeApplied) : ""}
-                                                    </td>
-                                                    {discountType == "1" && item.discountOnGoods ? (
-                                                        <td className="discount-create-goods-block-td">
-                                                            <a>{"Có " + item.discountOnGoods.length + " mặt hàng"}</a>
-                                                        </td>
-                                                    ) : null}
-                                                    {formality != "5" ? <td>{this.getContentDiscountTable(item)}</td> : ""}
-                                                    {formality == "1" ? <td>{item.maximumDiscountedCash}</td> : ""}
-                                                    <td>
-                                                        <a
-                                                            href="#abc"
-                                                            className="edit"
-                                                            title="Sửa"
-                                                            onClick={() => this.handleEditDiscountDetail(item, index)}
-                                                        >
-                                                            <i className="material-icons">edit</i>
-                                                        </a>
-                                                        <a
-                                                            href="#abc"
-                                                            className="delete"
-                                                            title="Xóa"
-                                                            onClick={() => this.handleDeleteDiscountDeatail(index)}
-                                                        >
-                                                            <i className="material-icons">delete</i>
-                                                        </a>
-                                                    </td>
-                                                </tr>
-                                            );
-                                        })
-                                    )}
-                                </tbody>
-                            </table>
-                        </fieldset>
-                    </div>
-                ) : (
-                    ""
-                )}
-            </React.Fragment>
-        );
-    }
+                                                ) : null}
+                                                {formality != "5" ? <td>{getContentDiscountTable(item)}</td> : ""}
+                                                {formality == "1" ? <td>{item.maximumDiscountedCash}</td> : ""}
+                                                <td>
+                                                    <a
+                                                        href="#abc"
+                                                        className="edit"
+                                                        title="Sửa"
+                                                        onClick={() => handleEditDiscountDetail(item, index)}
+                                                    >
+                                                        <i className="material-icons">edit</i>
+                                                    </a>
+                                                    <a
+                                                        href="#abc"
+                                                        className="delete"
+                                                        title="Xóa"
+                                                        onClick={() => handleDeleteDiscountDeatail(index)}
+                                                    >
+                                                        <i className="material-icons">delete</i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })
+                                )}
+                            </tbody>
+                        </table>
+                    </fieldset>
+                </div>
+            ) : (
+                ""
+            )}
+        </React.Fragment>
+    );
 }
 
 function mapStateToProps(state) {
