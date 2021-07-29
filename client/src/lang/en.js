@@ -2380,6 +2380,7 @@ export default {
                 basic_information: "Basic infomation",
                 detail_information: "Detail information",
                 asset_properties: "Properties of asset",
+                asset_default_properties: "Default properties of asset",
                 view: "View asset information",
                 edit_info: "Edit asset information",
                 delete_info: "Delete asset information",

@@ -254,6 +254,7 @@ function CreateAssetTypeModal(props) {
                                 <thead>
                                     <tr>
                                         <th style={{ paddingLeft: '0px' }}>{translate('asset.asset_info.field_name')}</th>
+                                        <th style={{ paddingLeft: '0px' }}>{translate('asset.asset_info.value')}</th>
                                         <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>
                                     </tr>
                                 </thead>
@@ -267,7 +268,7 @@ function CreateAssetTypeModal(props) {
                                             return <tr key={index}>
                                                 {/* Tên trường dữ liệu */}
                                                 <td style={{ paddingLeft: '0px' }}><input className="form-control" type="text" value={x.nameField} name="nameField" style={{ width: "100%" }} onChange={(e) => handleChangeNameField(e, index)} /></td>
-
+                                                <td style={{ paddingLeft: '0px' }}><input className="form-control" type="text" value={x.value} name="value" style={{ width: "100%" }} onChange={(e) => handleChangeValue(e, index)} /></td>
                                                 {/* Hành động */}
                                                 <td style={{ textAlign: "center" }}>
                                                     <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => delete_function(index)}><i className="material-icons"></i></a>

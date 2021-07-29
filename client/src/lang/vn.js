@@ -2534,6 +2534,7 @@ export default {
                 basic_information: "Thông tin cơ bản",
                 detail_information: "Thông tin chi tiết",
                 asset_properties: "Các thuộc tính của tài sản",
+                asset_default_properties: "Các thuộc tính mặc định của tài sản",
                 view: "Xem thông tin tài sản",
                 edit_info: "Chỉnh sửa thông tin tài sản",
                 delete_info: "Xóa thông tin tài sản",
