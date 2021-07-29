@@ -32,7 +32,6 @@ function UseRequestManager(props) {
     const { page, limit, currentRow, currentRowEditAsset, managedBy, tableId, status, createReceiptsDate } = state;
 
     useEffect(() => {
-        console.log(props.getUser)
         let { managedBy } = state;
         props.searchRecommendDistributes(state);
         props.getUser();
