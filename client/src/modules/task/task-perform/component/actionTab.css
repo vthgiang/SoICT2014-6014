@@ -152,7 +152,7 @@
 }
 .files-list-item {
     padding: 10px 0px 10px 10px;
-    border-bottom: 1px solid #000;
+    /* border-bottom: 0.01px solid #000; */
 }
 .files-list-item-content {
     width: calc(100% - 130px);
