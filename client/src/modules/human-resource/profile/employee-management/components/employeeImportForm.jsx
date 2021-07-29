@@ -11,7 +11,6 @@ import {
 } from './fileConfigurationImportEmployee';
 
 import { EmployeeManagerActions } from '../redux/actions';
-
 const EmployeeImportForm = (props) => {
     const [state, setState] = useState({})
 
@@ -51,16 +50,35 @@ const EmployeeImportForm = (props) => {
      * @param {*} serial :số serial của ngày
      */
     const convertExcelDateToJSDate = (serial) => {
-        let utc_days = Math.floor(serial - 25569);
-        let utc_value = utc_days * 86400;
-        let date_info = new Date(utc_value * 1000);
-        let month = date_info.getMonth() + 1;
-        let day = date_info.getDate();
-        if (month.toString().length < 2)
-            month = '0' + month;
-        if (day.toString().length < 2)
-            day = '0' + day;
-        return [day, month, date_info.getFullYear()].join('-');
+        // nếu người dùng nhập thời gan trong file excell là string và ngăn cách bỏi dấu /
+        if (serial && typeof serial === 'string') {
+            if (serial.includes("/")) {
+                const date = serial.split("/");
+                console.log('date', date, date[0], date[1], date[2])
+                if (date?.length) {
+                    let month = date[1], day = date[0];
+                    if (date[1]?.toString()?.length < 2)
+                        month = '0' + date[1];
+                    if (date[0]?.toString()?.length < 2)
+                        day = '0' + date[0];
+                    console.log('date', [day, month, date[2]].join('-'))
+
+                    return [day, month, date[2]].join('-')
+                }
+                return null;
+            }
+        } else {
+            let utc_days = Math.floor(serial - 25569);
+            let utc_value = utc_days * 86400;
+            let date_info = new Date(utc_value * 1000);
+            let month = date_info.getMonth() + 1;
+            let day = date_info.getDate();
+            if (month.toString().length < 2)
+                month = '0' + month;
+            if (day.toString().length < 2)
+                day = '0' + day;
+            return [day, month, date_info.getFullYear()].join('-');
+        }
     }
 
     /**
@@ -73,9 +91,9 @@ const EmployeeImportForm = (props) => {
             data = data.split('-');
             let date;
             if (monthYear) {
-                date = [data[1], data[0]];
+                date = [data[1]?.trim(), data[0]?.trim()];
             } else {
-                date = [data[2], data[1], data[0]];
+                date = [data[2]?.trim(), data[1]?.trim(), data[0]?.trim()];
             }
             return date.join('-');
         } else {
@@ -100,13 +118,13 @@ const EmployeeImportForm = (props) => {
         const { translate } = props;
 
         value = value.map(x => {
-            let birthdate = (!x.birthdate || typeof x.birthdate === 'string') ? x.birthdate : convertExcelDateToJSDate(x.birthdate);
-            let identityCardDate = (!x.identityCardDate || typeof x.identityCardDate === 'string') ? x.identityCardDate : convertExcelDateToJSDate(x.identityCardDate);
-            let startingDate = (!x.startingDate || typeof x.startingDate === 'string') ? x.startingDate : convertExcelDateToJSDate(x.startingDate);
-            let leavingDate = (!x.leavingDate || typeof x.leavingDate === 'string') ? x.leavingDate : convertExcelDateToJSDate(x.leavingDate);
-            let taxDateOfIssue = (!x.taxDateOfIssue || typeof x.taxDateOfIssue === 'string') ? x.taxDateOfIssue : convertExcelDateToJSDate(x.taxDateOfIssue);
-            let healthInsuranceStartDate = (!x.healthInsuranceStartDate || typeof x.healthInsuranceStartDate === 'string') ? x.healthInsuranceStartDate : convertExcelDateToJSDate(x.healthInsuranceStartDate);
-            let healthInsuranceEndDate = (!x.healthInsuranceEndDate || typeof x.healthInsuranceEndDate === 'string') ? x.healthInsuranceEndDate : convertExcelDateToJSDate(x.healthInsuranceEndDate);
+            let birthdate = (!x.birthdate) ? x.birthdate : convertExcelDateToJSDate(x.birthdate);
+            let identityCardDate = (!x.identityCardDate) ? x.identityCardDate : convertExcelDateToJSDate(x.identityCardDate);
+            let startingDate = (!x.startingDate) ? x.startingDate : convertExcelDateToJSDate(x.startingDate);
+            let leavingDate = (!x.leavingDate) ? x.leavingDate : convertExcelDateToJSDate(x.leavingDate);
+            let taxDateOfIssue = (!x.taxDateOfIssue) ? x.taxDateOfIssue : convertExcelDateToJSDate(x.taxDateOfIssue);
+            let healthInsuranceStartDate = (!x.healthInsuranceStartDate) ? x.healthInsuranceStartDate : convertExcelDateToJSDate(x.healthInsuranceStartDate);
+            let healthInsuranceEndDate = (!x.healthInsuranceEndDate) ? x.healthInsuranceEndDate : convertExcelDateToJSDate(x.healthInsuranceEndDate);
 
             let gender = x?.gender?.trim() === translate('human_resource.profile.male') ? "male" : "female";
             let maritalStatus = x.maritalStatus ? x.maritalStatus.trim() === translate('human_resource.profile.single') ? "single" : "married" : null;
@@ -240,6 +258,9 @@ const EmployeeImportForm = (props) => {
             }
             return x;
         });
+
+        console.log('value', value)
+
         setState(state => ({
             ...state,
             importDataOfEmployeeInfor: value
@@ -255,8 +276,8 @@ const EmployeeImportForm = (props) => {
         const { translate } = props;
 
         value = value.map(x => {
-            let startDate = (!x.startDate || typeof x.startDate === 'string') ? x.startDate : convertExcelDateToJSDate(x.startDate);
-            let endDate = (!x.endDate || typeof x.endDate === 'string') ? x.endDate : convertExcelDateToJSDate(x.endDate);
+            let startDate = (!x.startDate) ? x.startDate : convertExcelDateToJSDate(x.startDate);
+            let endDate = (!x.endDate) ? x.endDate : convertExcelDateToJSDate(x.endDate);
             return {
                 ...x,
                 startDate: convertStringToDate(startDate, true),
@@ -381,8 +402,8 @@ const EmployeeImportForm = (props) => {
         const { translate } = props;
 
         value = value.map(x => {
-            let startDate = (!x.startDate || typeof x.startDate === 'string') ? x.startDate : convertExcelDateToJSDate(x.startDate);
-            let endDate = (!x.endDate || typeof x.endDate === 'string') ? x.endDate : convertExcelDateToJSDate(x.endDate);
+            let startDate = (!x.startDate) ? x.startDate : convertExcelDateToJSDate(x.startDate);
+            let endDate = (!x.endDate) ? x.endDate : convertExcelDateToJSDate(x.endDate);
             return {
                 ...x,
                 startDate: convertStringToDate(startDate, false),
@@ -433,8 +454,8 @@ const EmployeeImportForm = (props) => {
         const { translate } = props;
 
         value = value.map(x => {
-            let startDate = (!x.startDate || typeof x.startDate === 'string') ? x.startDate : convertExcelDateToJSDate(x.startDate);
-            let endDate = (!x.endDate || typeof x.endDate === 'string') ? x.endDate : convertExcelDateToJSDate(x.endDate);
+            let startDate = (!x.startDate) ? x.startDate : convertExcelDateToJSDate(x.startDate);
+            let endDate = (!x.endDate) ? x.endDate : convertExcelDateToJSDate(x.endDate);
             return {
                 ...x,
                 startDate: convertStringToDate(startDate, false),
@@ -484,8 +505,8 @@ const EmployeeImportForm = (props) => {
         const { translate } = props;
 
         value = value.map(x => {
-            let startDate = (!x.startDate || typeof x.startDate === 'string') ? x.startDate : convertExcelDateToJSDate(x.startDate);
-            let endDate = (!x.endDate || typeof x.endDate === 'string') ? x.endDate : convertExcelDateToJSDate(x.endDate);
+            let startDate = (!x.startDate) ? x.startDate : convertExcelDateToJSDate(x.startDate);
+            let endDate = (!x.endDate) ? x.endDate : convertExcelDateToJSDate(x.endDate);
             return {
                 ...x,
                 startDate: convertStringToDate(startDate, true),
@@ -640,6 +661,7 @@ const EmployeeImportForm = (props) => {
     const handleImportEmployeeInfor = () => {
         let { importDataOfEmployeeInfor } = state;
         notify();
+        console.log('importDataOfEmployeeInfor', importDataOfEmployeeInfor.map(x => x.birthdate))
         props.importEmployees({ importType: "Employee_Infor", importData: importDataOfEmployeeInfor });
     }
 
