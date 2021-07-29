@@ -32,10 +32,10 @@ function UseRequestManager(props) {
     const { page, limit, currentRow, currentRowEditAsset, managedBy, tableId, status, createReceiptsDate } = state;
 
     useEffect(() => {
+        console.log(props.getUser)
         let { managedBy } = state;
         props.searchRecommendDistributes(state);
         props.getUser();
-        props.getAssetTypes();
         props.getListBuildingAsTree();
         if (!props.isActive || props.isActive === "tab-pane active") {
             props.getAllAsset({
@@ -553,7 +553,7 @@ function mapState(state) {
 };
 
 const actionCreators = {
-    getAssetTypes: UserActions.get,
+    getUser: UserActions.get,
     getAllAsset: AssetManagerActions.getAllAsset,
     searchRecommendDistributes: RecommendDistributeActions.searchRecommendDistributes,
     deleteRecommendDistribute: RecommendDistributeActions.deleteRecommendDistribute,
