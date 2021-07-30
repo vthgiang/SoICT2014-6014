@@ -54,15 +54,12 @@ const EmployeeImportForm = (props) => {
         if (serial && typeof serial === 'string') {
             if (serial.includes("/")) {
                 const date = serial.split("/");
-                console.log('date', date, date[0], date[1], date[2])
                 if (date?.length) {
                     let month = date[1], day = date[0];
                     if (date[1]?.toString()?.length < 2)
                         month = '0' + date[1];
                     if (date[0]?.toString()?.length < 2)
                         day = '0' + date[0];
-                    console.log('date', [day, month, date[2]].join('-'))
-
                     return [day, month, date[2]].join('-')
                 }
                 return null;
@@ -87,11 +84,12 @@ const EmployeeImportForm = (props) => {
      * @param {*} data 
      */
     const convertStringToDate = (data, monthYear = false) => {
+        console.log('data', data)
         if (data) {
             data = data.split('-');
             let date;
             if (monthYear) {
-                date = [data[1]?.trim(), data[0]?.trim()];
+                date = [data[2]?.trim(), data[1]?.trim()];
             } else {
                 date = [data[2]?.trim(), data[1]?.trim(), data[0]?.trim()];
             }
@@ -258,8 +256,6 @@ const EmployeeImportForm = (props) => {
             }
             return x;
         });
-
-        console.log('value', value)
 
         setState(state => ({
             ...state,
