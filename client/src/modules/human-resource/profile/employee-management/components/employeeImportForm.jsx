@@ -343,6 +343,9 @@ const EmployeeImportForm = (props) => {
                 case translate('human_resource.profile.ordinary'):
                     degreeType = "ordinary";
                     break;
+                case translate('human_resource.profile.unknown'):
+                    degreeType = "unknown";
+                    break;
                 default:
                     degreeType = null;
             }

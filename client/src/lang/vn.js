@@ -1932,6 +1932,7 @@ export default {
                 good: "Khá",
                 average_good: "Trung bình khá",
                 ordinary: "Trung bình",
+                unknown: 'Chưa xác định',
 
                 bank_account: "Tài khoản ngân hàng",
                 personal_income_tax: "Mã số thuế thu nhập cá nhân",

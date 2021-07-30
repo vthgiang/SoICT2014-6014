@@ -1812,6 +1812,7 @@ export default {
                 good: "Good",
                 average_good: "Average good",
                 ordinary: "Ordinary",
+                unknown: 'Unknown',
 
                 bank_account: "Bank account",
                 personal_income_tax: "Personal income tax",
