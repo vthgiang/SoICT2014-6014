@@ -14,6 +14,7 @@ export const EducationService = {
  * @data : Dữ liệu của Key
  */
 function getListEducation(data) {
+    const role = localStorage.getItem('currentRole')
     return sendRequest({
         url: `${ process.env.REACT_APP_SERVER }/educationProgram/educationPrograms`,
         method: 'GET',
@@ -23,7 +24,8 @@ function getListEducation(data) {
             programId: data !== undefined ? data.programId : data,
             name: data !== undefined ? data.name : data,
             page: data !== undefined ? data.page : data,
-            limit: data !== undefined ? data.limit : data
+            limit: data !== undefined ? data.limit : data,
+            position: role
         }
     }, false, true, 'training.education_program');
 }

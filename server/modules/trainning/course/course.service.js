@@ -6,7 +6,6 @@ const {
 const {
     connect
 } = require(`../../../helpers/dbHelper`);
-const courseModel = require("../../../models/training/course.model");
 
 const mongoose = require('mongoose')
 
@@ -16,8 +15,7 @@ const mongoose = require('mongoose')
  * @positions : Array id chức vụ    // Note: positions --> role ??
  * @company : Id công ty
  */
-exports.getAllCourses = async (portal, company, organizationalUnits, positions) => {
-    console.log('all courses is calling!')
+exports.getAllCourses = async (portal, company, organizationalUnits, positions, userId) => {
     let keySearch = {
         company: company
     };
@@ -38,8 +36,6 @@ exports.getAllCourses = async (portal, company, organizationalUnits, positions) 
         }
     }
     let listEducations = await EducationProgram(connect(DB_CONNECTION, portal)).find(keySearch).lean()
-    
-    console.log(listEducations)
 
     let _listCourses = await Course(connect(DB_CONNECTION, portal)).find({
         educationProgram: {
@@ -55,8 +51,16 @@ exports.getAllCourses = async (portal, company, organizationalUnits, positions) 
 
     const listCourses = _listCourses.map(i => ({...i, listEmployees: i.results}))
     
+    const listCoursesUserPassed = _listCourses.filter(course => {
+        let user = course.results.find(i => i.employee.toString() == userId)
+        if (user?.result == "pass") {
+            return course
+        }
+    })
+
     return {
-        listCourses
+        listCourses,
+        listCoursesUserPassed
     }
 }
 
@@ -67,9 +71,8 @@ exports.getAllCourses = async (portal, company, organizationalUnits, positions) 
  * @company : Id công ty
  */
 exports.searchCourses = async (portal, params, company) => {
-    console.log('search courses is called')
     // Note: nên khai báo các biến params ở đầu
-    const { educationProgram, courseId, name, type } = params
+    const { educationProgram, courseId, name, type, positions, userId } = params
     let keySearch = {
         company: mongoose.Types.ObjectId(company)
     };
@@ -78,7 +81,7 @@ exports.searchCourses = async (portal, params, company) => {
     if (educationProgram) {    // Note: if (params?.educationProgram)
         keySearch = {
             ...keySearch,
-            educationProgram: educationProgram
+            educationProgram: mongoose.Types.ObjectId(educationProgram)
         }
     }
 
@@ -173,10 +176,26 @@ exports.searchCourses = async (portal, params, company) => {
             educationProgram: course.educationProgram[0]
         }
     })
-    console.log(listCourses)
+    if (positions) {
+        listCourses = listCourses.filter(course => {
+            let _course = course.educationProgram.applyForPositions.map(i => i.toString())
+            if (_course.some(x => x == positions)) {
+                return course
+            }
+        })
+    }
+
+    const listCoursesUserPassed = listCourses.filter(course => {
+        let user = course.results.find(i => i.employee.toString() == userId)
+        if (user?.result == "pass") {
+            return course
+        }
+    })
+
     return {
         totalList,
-        listCourses
+        listCourses,
+        listCoursesUserPassed
     }
 }
 
@@ -247,7 +266,6 @@ exports.createCourse = async (portal, data, company) => {
             }
         }).lean();
 
-        console.log(newCourse)
         return {
             ...newCourse,
             listEmployees: newCourse.results
@@ -284,12 +302,13 @@ exports.updateCourse = async (portal, id, data) => {
         endDate: data.endDate,
         cost: {
             number: data.cost,
-            unit: data.unit
+            unit: data.unit,
         },
         lecturer: data.lecturer,
         type: data.type,
         educationProgram: data.educationProgram,
-        employeeCommitmentTime: data.employeeCommitmentTime
+        employeeCommitmentTime: data.employeeCommitmentTime,
+        registeredEmployees: data.registeredEmployees
     };
 
 
@@ -301,6 +320,21 @@ exports.updateCourse = async (portal, id, data) => {
         courseChange = {
             ...courseChange,
             listEmployees
+        }
+    }
+
+    if (data.subscriber) {
+        const isRegistered = data.registeredEmployees.find(i => i.employee.toString() == data.subscriber.employee.toString())
+        if (!isRegistered) {
+            data.registeredEmployees.push({
+              employee: mongoose.Types.ObjectId(data.subscriber.employee),
+              registerType: data.subscriber.registerType
+            });
+
+            courseChange = {
+                ...courseChange,
+                registeredEmployees: data.registeredEmployees
+            }
         }
     }
 
@@ -318,7 +352,8 @@ exports.updateCourse = async (portal, id, data) => {
             'employeeNumber': 1
         }
     }).lean();
-    
+
+  
     return {
         ...updateCourse,
         listEmployees: updateCourse.results

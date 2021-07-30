@@ -11,7 +11,7 @@ import { CourseActions } from '../redux/actions';
 
 const CourseEditForm = (props) => {
     const [state, setState] = useState({...props, addEmployees: []})
-    console.log(props)
+
     useEffect(() => {
         const { applyForOrganizationalUnits, applyForPositions } = state;
         props.getAllEmployee({ organizationalUnits: applyForOrganizationalUnits, position: applyForPositions });
@@ -292,7 +292,7 @@ const CourseEditForm = (props) => {
         let endDateNew = [partEnd[2], partEnd[1], partEnd[0]].join('-');
 
         listEmployees = listEmployees.concat(state.addEmployees);
-    
+        console.log(state)
         if (isFormValidated()) {
             props.updateCourse(state._id, { ...state, listEmployees: listEmployees, startDate: startDateNew, endDate: endDateNew });
         }
@@ -318,7 +318,7 @@ const CourseEditForm = (props) => {
             type: props.type,
             listEmployees: props.listEmployees,
             addEmployees: [],
-
+            registeredEmployees: props.registeredEmployees,
             errorOnCourseName: undefined,
             errorOnCoursePlace: undefined,
             errorOnOfferedBy: undefined,
@@ -330,12 +330,7 @@ const CourseEditForm = (props) => {
         })
     }
     
-
-    
-
     const { education, translate, course, employeesManager } = props;
-
-    console.log(education)
 
     const { _id, name, courseId, type, offeredBy, coursePlace, startDate, unit, listEmployees, endDate, cost, lecturer,
         employeeCommitmentTime, educationProgram, errorOnCourseName, errorOnCoursePlace, errorOnOfferedBy,
@@ -355,7 +350,7 @@ const CourseEditForm = (props) => {
             employeeInfors = employeeInfor.concat(employeeInfors);
         }
     }
-    console.log(state)
+    
     return (
         <React.Fragment>
             <DialogModal

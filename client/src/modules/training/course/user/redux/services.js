@@ -13,7 +13,8 @@ export const CourseService = {
  * @data : dữ liệu key tìm kiếm
  */
 function getListCourse(data) {
-    const role = localStorage.getItem('currentRole')
+    const role = localStorage.getItem('currentRole');
+    const userId = localStorage.getItem('userId')
     return sendRequest({
         url: `${ process.env.REACT_APP_SERVER }/course/courses`,
         method: 'GET',
@@ -25,7 +26,8 @@ function getListCourse(data) {
             limit: data !== undefined ? data.limit : data,
             educationProgram: data !== undefined ? data.educationProgram : data,
             organizationalUnits: data !== undefined ? data.organizationalUnits : data,
-            positions: role
+            positions: role,
+            userId: userId
         }
     }, false, true, 'training.course');
 }
