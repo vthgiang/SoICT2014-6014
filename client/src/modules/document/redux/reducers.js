@@ -117,6 +117,7 @@ export function documents(state = initState, action) {
         case DocumentConstants.IMPORT_DOCUMENT_ARCHIVE_REQUEST:
         case DocumentConstants.IMPORT_DOCUMENT_CATEGORY_REQUEST:
         case DocumentConstants.IMPORT_DOCUMENT_REQUEST:
+        case DocumentConstants.DOWNLOAD_ALL_FILE_OF_DOCUMENT_REQUEST:
             return {
                 ...state,
                 isLoading: true,
@@ -579,6 +580,18 @@ export function documents(state = initState, action) {
                 }
             };
 
+        case DocumentConstants.DOWNLOAD_ALL_FILE_OF_DOCUMENT_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+            }
+        
+        case DocumentConstants.DOWNLOAD_ALL_FILE_OF_DOCUMENT_FAILE:
+            return {
+                ...state,
+                isLoading: false,
+            }
+        
         default:
             return state;
     }
