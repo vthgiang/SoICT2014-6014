@@ -45,6 +45,7 @@ export const performTaskAction = {
     deleteDocument,
 
     evaluationAction,
+    deleteActionEvaluation,
     evaluateTaskByAccountableEmployees,
     evaluateTaskByConsultedEmployees,
     evaluateTaskByResponsibleEmployees,
@@ -67,7 +68,7 @@ export const performTaskAction = {
     deleteChildComment,
     deleteFileComment,
     deleteFileChildComment,
-    
+
     getAllPreceedingTasks,
 
     sortActions,
@@ -165,8 +166,8 @@ function getTimerStatusTask(taskId) { //param -- , user
     };
 }
 
-/** Lấy các nhân viên đang bấm giờ trong 1 đơn vị  */  
-function getCurrentTaskTimesheetLogOfEmployeeInOrganizationalUnit(data) { 
+/** Lấy các nhân viên đang bấm giờ trong 1 đơn vị  */
+function getCurrentTaskTimesheetLogOfEmployeeInOrganizationalUnit(data) {
     return dispatch => {
         dispatch({ type: performTaskConstants.GET_CURRENT_TASK_TIMESHEET_LOG_IN_UNIT_REQUEST });
 
@@ -192,15 +193,15 @@ function startTimerTask(taskId, timer) {
         dispatch({ type: performTaskConstants.START_TIMER_REQUEST });
         return new Promise((resolve, reject) => {
             performTaskService.startTimerTask(taskId, timer)
-            .then(
-                payload => {
-                    dispatch({ type: performTaskConstants.START_TIMER_SUCCESS, payload });
-                    resolve(payload)
-                }
-            ).catch(error => {
-                dispatch({ type: performTaskConstants.START_TIMER_FAILURE, error });
-                reject(error)
-            })
+                .then(
+                    payload => {
+                        dispatch({ type: performTaskConstants.START_TIMER_SUCCESS, payload });
+                        resolve(payload)
+                    }
+                ).catch(error => {
+                    dispatch({ type: performTaskConstants.START_TIMER_FAILURE, error });
+                    reject(error)
+                })
         })
     };
 }
@@ -211,18 +212,18 @@ function editTimeSheetLog(taskId, timesheetlogId, data) {
         dispatch({ type: performTaskConstants.EDIT_TIME_SHEET_LOG_REQUEST });
         return new Promise((resolve, reject) => {
             performTaskService.editTimeSheetLog(taskId, timesheetlogId, data)
-            .then(res => {
-                dispatch({ 
-                    type: performTaskConstants.EDIT_TIME_SHEET_LOG_SUCCESS, 
-                    payload: res.data.content 
-                });
+                .then(res => {
+                    dispatch({
+                        type: performTaskConstants.EDIT_TIME_SHEET_LOG_SUCCESS,
+                        payload: res.data.content
+                    });
 
-                dispatch({type: taskManagementConstants.UPDATE_TASK_SUCCESS, payload: res.data.content})
-                resolve(res)
-            }).catch(error => {
-                dispatch({ type: performTaskConstants.EDIT_TIME_SHEET_LOG_FAILE, error });
-                reject(error)
-            })
+                    dispatch({ type: taskManagementConstants.UPDATE_TASK_SUCCESS, payload: res.data.content })
+                    resolve(res)
+                }).catch(error => {
+                    dispatch({ type: performTaskConstants.EDIT_TIME_SHEET_LOG_FAILE, error });
+                    reject(error)
+                })
         })
     };
 }
@@ -416,6 +417,16 @@ function evaluationAction(actionId, taskId, evaluation) {
             .then(
                 payload => dispatch({ type: performTaskConstants.EVALUATION_ACTION_SUCCESS, payload }),
                 error => dispatch({ type: performTaskConstants.EVALUATION_ACTION_FAILURE, error })
+            );
+    }
+}
+function deleteActionEvaluation(actionId, taskId, evaluationId) {
+    return dispatch => {
+        dispatch({ type: performTaskConstants.DELETE_ACTION_EVALUATION_REQUEST });
+        performTaskService.deleteActionEvaluation(actionId, taskId, evaluationId)
+            .then(
+                payload => dispatch({ type: performTaskConstants.DELETE_ACTION_EVALUATION_SUCCESS, payload }),
+                error => dispatch({ type: performTaskConstants.DELETE_ACTION_EVALUATION_FAILURE, error })
             );
     }
 }
@@ -797,7 +808,7 @@ function requestAndApprovalCloseTask(taskId, data) {
         performTaskService.requestAndApprovalCloseTask(taskId, data)
             .then(res => {
                 dispatch({
-                    type: performTaskConstants.REQUEST_AND_APPROVAL_CLOSE_TASK_SUCCESS,    
+                    type: performTaskConstants.REQUEST_AND_APPROVAL_CLOSE_TASK_SUCCESS,
                     payload: res.data.content
                 });
             })
@@ -1176,7 +1187,7 @@ function getAllPreceedingTasks(taskId) {
 
 function sortActions(taskId, data) {
     return dispatch => {
-        dispatch({ type: performTaskConstants.SORT_ACTIONS_REQUEST});
+        dispatch({ type: performTaskConstants.SORT_ACTIONS_REQUEST });
         performTaskService.sortActions(taskId, data)
             .then(res => {
                 dispatch({
@@ -1212,7 +1223,7 @@ function evaluationAllAction(taskId, evaluation) {
  * @param {*} data du lieu gui di
  * @param {*} taskId id task
  */
- function evaluateTaskByResponsibleEmployeesProject(data, taskId) {
+function evaluateTaskByResponsibleEmployeesProject(data, taskId) {
     return dispatch => {
         dispatch({ type: performTaskConstants.EVALUATE_TASK_BY_RESPONSIBLE_REQUEST, taskId });
         performTaskService.evaluateTaskByResponsibleEmployeesProject(data, taskId)
@@ -1235,7 +1246,7 @@ function evaluationAllAction(taskId, evaluation) {
  * @param {*} data du lieu gui di
  * @param {*} taskId id task
  */
- function evaluateTaskByAccountableEmployeesProject(data, taskId) {
+function evaluateTaskByAccountableEmployeesProject(data, taskId) {
     return dispatch => {
         dispatch({ type: performTaskConstants.EVALUATE_TASK_BY_ACCOUNTABLE_REQUEST, taskId });
         performTaskService.evaluateTaskByAccountableEmployeesProject(data, taskId)

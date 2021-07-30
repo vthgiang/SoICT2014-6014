@@ -430,6 +430,22 @@ export function performtasks(state = {}, action) {
                 ...state,
                 error: action.error
             }
+        case performTaskConstants.DELETE_ACTION_EVALUATION_REQUEST:
+            return {
+                ...state,
+                evaluating: true
+            };
+        case performTaskConstants.DELETE_ACTION_EVALUATION_SUCCESS:
+            var taskActions = { ...state.task, taskActions: action.payload.data.content }
+            return {
+                ...state,
+                task: taskActions
+            };
+        case performTaskConstants.DELETE_ACTION_EVALUATION_FAILURE:
+            return {
+                ...state,
+                error: action.error
+            };
         case performTaskConstants.CONFIRM_ACTION_REQUEST:
             return {
                 ...state,

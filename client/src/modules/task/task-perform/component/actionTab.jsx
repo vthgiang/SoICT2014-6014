@@ -168,7 +168,6 @@ function ActionTab(props) {
             props.getAllPreceedingTasks(props.id);
             props.getTaskLog(props.id);
         }
-
     }, [props.id])
 
     useEffect(() => {
@@ -249,6 +248,22 @@ function ActionTab(props) {
         })
     }
 
+    const handleDeleteActionEvaluation = (actionId, taskId, evaluationId) => {
+        Swal.fire({
+            title: `Bạn có chắc chắn muốn xóa đánh giá ?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            cancelButtonText: props.translate('general.no'),
+            confirmButtonText: props.translate('general.yes'),
+        }).then((result) => {
+            if (result.value) {
+                props.deleteActionEvaluation(actionId, taskId, evaluationId)
+            }
+        })
+    }
+
     const evaluationTaskAction = (evaAction, taskId, role, firstTime) => {
         let newEvaluations = state.evaluations
         let rating = newEvaluations?.[evaAction?._id]?.rating ?? evaAction?.rating;
@@ -266,6 +281,7 @@ function ActionTab(props) {
             showEvaluations: [...state.showEvaluations, evaAction?._id]
         })
     }
+
     const handleChangeContent = (content) => {
         setState({
             ...state,
@@ -1335,16 +1351,26 @@ function ActionTab(props) {
                                                                                 Array.isArray(item?.evaluations) &&
                                                                                 item.evaluations.map((element, index) => {
                                                                                     return (
-                                                                                        <p key={index}>
+                                                                                        <div key={index}>
                                                                                             <b> {element?.creator?.name} </b>
                                                                                             {getRoleNameInTask(element?.role)}
                                                                                             <span> Điểm đánh giá:<span className="text-red"> {element?.rating}/10</span> - Độ quan trọng:<span className="text-red"> {element?.actionImportanceLevel}/10</span></span>
-                                                                                        </p>
+                                                                                            &ensp;
+                                                                                            {role === "accountable" &&
+                                                                                                <a style={{ cursor: "pointer", fontWeight: '600' }} onClick={() => handleDeleteActionEvaluation(item._id, task._id, element._id)}><i className="material-icons">delete</i></a>
+                                                                                            }
+                                                                                        </div >
                                                                                     )
                                                                                 })
                                                                             }
                                                                         </li>
                                                                     </ul>
+                                                                    {Array.isArray(item?.evaluations) && item?.evaluations?.filter(element => element.role === "accountable").length > 0 &&
+                                                                        <p>
+                                                                            <b>Trung bình :</b>
+                                                                            <span> Điểm đánh giá:<span className="text-red"> {item?.rating}/10</span> - Độ quan trọng:<span className="text-red"> {item?.actionImportanceLevel}/10</span></span>
+                                                                        </p>
+                                                                    }
                                                                 </div>
                                                             }
                                                             {/* Các file đính kèm của action */}
@@ -2227,6 +2253,7 @@ const actionCreators = {
     deleteCommentOfTaskComment: performTaskAction.deleteCommentOfTaskComment,
     evaluationAction: performTaskAction.evaluationAction,
     evaluationAllAction: performTaskAction.evaluationAllAction,
+    deleteActionEvaluation: performTaskAction.deleteActionEvaluation,
     confirmAction: performTaskAction.confirmAction,
     downloadFile: AuthActions.downloadFile,
     getSubTask: taskManagementActions.getSubTask,
