@@ -689,7 +689,7 @@ function Table(props) {
 
             <SmartTable
                 tableId={tableId}
-                columnArr={{
+                columnData={{
                     issuing_body: translate('document.doc_version.issuing_body'),
                     name: translate('document.name'),
                     description: translate('document.description'),
@@ -701,7 +701,7 @@ function Table(props) {
                     views: translate('document.views'),
                     downloads: translate('document.downloads')
                 }}
-                headTableData={{
+                tableHeaderData={{
                     issuing_body: <th>{translate('document.doc_version.issuing_body')}</th>,
                     name: <th>{translate('document.name')}</th>,
                     description: <th>{translate('document.description')}</th>,
@@ -714,7 +714,7 @@ function Table(props) {
                     downloads: <th>{translate('document.downloads')}</th>,
                     action: <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}</th>
                 }}
-                bodyTableData={
+                tableBodyData={
                     paginate && paginate.length > 0 && paginate.map(doc => ({
                         id: doc._id,
                         issuing_body: <td>{doc?.issuingBody}</td>,
@@ -761,9 +761,9 @@ function Table(props) {
                         </td>
                     }))
                 }
-                dataDependencies={paginate}
-                setLimit={setLimit}
-                getDataCheck={getDataCheck}
+                dataDependency={paginate}
+                onSetNumberOfRowsPerpage={setLimit}
+                onSelectedRowsChange={getDataCheck}
             />
             {
                 isLoading ?
