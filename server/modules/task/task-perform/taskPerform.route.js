@@ -32,6 +32,7 @@ router.post('/tasks/:taskId/task-actions', auth, uploadFile([{ name: 'files', pa
 router.patch('/tasks/:taskId/task-actions/:actionId', auth, uploadFile([{ name: 'files', path: '/files/actions' }], 'array'), PerformTaskController.editTaskAction);
 router.patch('/tasks/:taskId/task-actions/evaluation/all', auth, PerformTaskController.evaluationAllAction);
 router.delete('/tasks/:taskId/task-actions/:actionId', auth, PerformTaskController.deleteTaskAction);
+router.delete('/tasks/:taskId/task-actions/:actionId/evaluation/:evaluationId', auth, PerformTaskController.deleteActionEvaluation);
 router.patch('/tasks/:taskId/task-actions/:actionId/files/:fileId', auth, PerformTaskController.deleteFileOfAction);
 router.post('/tasks/:taskId/sort', auth, PerformTaskController.sortActions);
 

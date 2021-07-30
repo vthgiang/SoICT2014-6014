@@ -615,6 +615,29 @@ exports.evaluationAllAction = async (req, res) => {
         })
     }
 }
+
+/**
+ * Xoá đánh giá hoạt động
+ */
+exports.deleteActionEvaluation = async (req, res) => {
+    try {
+        let taskAction = await PerformTaskService.deleteActionEvaluation(req.portal, req.params);
+        await Logger.info(req.user.email, `delete action evaluation `, req.portal)
+        res.status(200).json({
+            success: true,
+            messages: ['delete_action_evaluation_action_success'],
+            content: taskAction
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, ` delete action evaluation  `, req.portal)
+        res.status(400).json({
+            success: false,
+            messages: ['delete_action_evaluation_action_fail'],
+            content: error
+        })
+    }
+}
+
 /**
  * Xác nhận hành động
  */
