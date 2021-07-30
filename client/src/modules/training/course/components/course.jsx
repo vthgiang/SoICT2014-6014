@@ -132,7 +132,6 @@ const TrainingPlan = (props) => {
         parseInt(course.totalList / limit) :
         parseInt((course.totalList / limit) + 1);
     let currentPage = parseInt((page / limit) + 1);
-
     return (
         <div className="box">
             <div className="box-body qlcv">
@@ -254,6 +253,7 @@ const TrainingPlan = (props) => {
                     type={currentEditRow.type}
                     listEmployees={currentEditRow.listEmployees}
                     unit={currentEditRow.cost.unit}
+                    registeredEmployees={currentEditRow.registeredEmployees}
                 />
             }
             {
@@ -278,8 +278,6 @@ const TrainingPlan = (props) => {
 
         </div>
     );
-    
-        
 };
 
 function mapState(state) {

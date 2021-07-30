@@ -130,7 +130,7 @@ function DetailTaskTab(props) {
                     }
                 }
                 else {
-                    if (!roles.some(e => e.value === currentRole)) {
+                    if (!roles.some(e => e.value === currentRole) || currentRole !== roles[0].value) {
                         setCurrentRole(roles[0].value)
                         if (props.onChangeTaskRole) {
                             props.onChangeTaskRole(roles[0].value);
@@ -864,7 +864,7 @@ function DetailTaskTab(props) {
 
     const checkCurrentRoleIsManager = role && role.item &&
         role.item.parents.length > 0 && role.item.parents.filter(o => o.name === ROOT_ROLE.MANAGER)
-
+    console.log("state", state)
     return (
         <React.Fragment>
             {(showToolbar) &&

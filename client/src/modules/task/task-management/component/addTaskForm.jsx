@@ -127,9 +127,9 @@ function AddTaskForm(props) {
                     formula: props.task.formula,
                     taskInformations: props.task.taskInformations,
                     taskActions: props.task.taskActions,
+                    startTime: formatTime(props.task.startDate),
+                    endTime: formatTime(props.task.endDate),
                 },
-                startTime: formatTime(props.task.startDate),
-                endTime: formatTime(props.task.endDate),
             });
         }
     }, [props.id, JSON.stringify(props.task)])
@@ -197,7 +197,7 @@ function AddTaskForm(props) {
 
     // convert ISODate to String hh:mm AM/PM
     const formatTime = (date) => {
-        return dayjs(date).format("hh:mm A");
+        return dayjs(date).format("h:mm A");
     }
 
     // Đặt lại thời gian
