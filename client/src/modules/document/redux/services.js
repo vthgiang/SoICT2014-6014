@@ -6,6 +6,7 @@ export const DocumentServices = {
     editDocument,
     downloadDocumentFile,
     downloadDocumentFileScan,
+    downloadAllFileOfDocument,
     increaseNumberView,
     deleteDocument,
     importDocument,
@@ -106,6 +107,22 @@ function downloadDocumentFile(id, numberVersion) {
             responseType: "blob",
             params: {
                 numberVersion: numberVersion,
+            },
+        },
+        false,
+        true,
+        "document"
+    );
+}
+
+function downloadAllFileOfDocument(data) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/documents/documents/downloadFile`,
+            method: "GET",
+            responseType: "blob",
+            params: {
+                data,
             },
         },
         false,
