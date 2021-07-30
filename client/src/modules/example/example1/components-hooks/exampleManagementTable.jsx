@@ -113,7 +113,7 @@ function ExampleManagementTable(props) {
         });
     }
 
-    const getDataCheck = (value) => {
+    const onSelectedRowsChange = (value) => {
         setSelectedData(value)
     }
 
@@ -201,21 +201,21 @@ function ExampleManagementTable(props) {
                         <button type="button" className="btn btn-success" title={translate('manage_example.search')} onClick={() => handleSubmitSearch()}>{translate('manage_example.search')}</button>
                     </div>
                 </div>
-                
+
                 <SmartTable
                     tableId={tableId}
-                    columnArr={{
+                    columnData={{
                         index: translate('manage_example.index'),
                         exampleName: translate('manage_example.exampleName'),
                         description: translate('manage_example.description')
                     }}
-                    headTableData={{
+                    tableHeaderData={{
                         index: <th className="col-fixed" style={{ width: 60 }}>{translate('manage_example.index')}</th>,
                         exampleName: <th>{translate('manage_example.exampleName')}</th>,
                         description: <th>{translate('manage_example.description')}</th>,
                         action: <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}</th>
                     }}
-                    bodyTableData={lists?.length > 0 && lists.map((item, index) => {
+                    tableBodyData={lists?.length > 0 && lists.map((item, index) => {
                         return {
                             id: item?._id,
                             index: <td>{index + 1}</td>,
@@ -235,9 +235,9 @@ function ExampleManagementTable(props) {
                             </td>
                         }
                     })}
-                    dataDependencies={lists}
-                    setLimit={setLimit}
-                    getDataCheck={getDataCheck}
+                    dataDependency={lists}
+                    onSetNumberOfRowsPerpage={setLimit}
+                    onSelectedRowsChange={onSelectedRowsChange}
                 />
 
                 {/* PaginateBar */}

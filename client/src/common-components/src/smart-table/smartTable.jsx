@@ -3,8 +3,8 @@ import { withTranslate } from "react-redux-multilingual";
 
 import { DataTableSetting } from '../data-table-setting/dataTableSetting'
 
-function SmartTable (props) {
-    const { tableId, headTableData, bodyTableData = [], dataDependencies, columnArr } = props
+function SmartTable(props) {
+    const { tableId, tableHeaderData, tableBodyData = [], dataDependency, columnData } = props
     const [checkAll, setCheckAll] = useState(false)
     const lastChecked = useRef()
 
@@ -23,9 +23,9 @@ function SmartTable (props) {
             }
         });
 
-        props.getDataCheck(results)
-    }, [JSON.stringify(dataDependencies)])
-    
+        props.onSelectedRowsChange(results)
+    }, [JSON.stringify(dataDependency)])
+
     const handleCheckAll = () => {
         const checkBoxes = document.querySelectorAll('.smart-table-body input[type="checkbox"]');
         let results = []
@@ -41,7 +41,7 @@ function SmartTable (props) {
             }
         })
 
-        props.getDataCheck(results)
+        props.onSelectedRowsChange(results)
 
         setCheckAll(!checkAll)
     }
@@ -55,10 +55,10 @@ function SmartTable (props) {
             checkBoxes.forEach(checkbox => {
                 if (checkbox === e.target || checkbox === lastChecked.current) {
                     userChecksFlag = !userChecksFlag;
-                } 
+                }
 
                 if (userChecksFlag) {
-                    checkbox.checked = true; 
+                    checkbox.checked = true;
                 }
             })
         } else if (e.shiftKey && !e.target.checked) {   // Dùng shift bỏ nhiều check box
@@ -71,7 +71,7 @@ function SmartTable (props) {
                 }
             })
             lastChecked.current.checked = false;
-        } 
+        }
         lastChecked.current = e.target;
 
         let results = []
@@ -85,48 +85,48 @@ function SmartTable (props) {
             })
         }
 
-        props.getDataCheck(results)
+        props.onSelectedRowsChange(results)
 
-        if (results?.length === bodyTableData?.length) {
+        if (results?.length === tableBodyData?.length) {
             setCheckAll(true)
         } else {
             setCheckAll(false)
         }
     }
 
-    let keys = Object.keys(headTableData)
+    let keys = Object.keys(tableHeaderData)
 
-    let columnArrData = []
+    let columnArr = []
     if (keys?.length > 0) {
         keys.map(item => {
-            if (columnArr?.[item]) {
-                columnArrData.push(columnArr[item])
+            if (columnData?.[item]) {
+                columnArr.push(columnData[item])
             }
         })
     }
-    columnArrData.unshift('selectAll')
+    columnArr.unshift('selectAll')
 
     return (
         <React.Fragment>
             <DataTableSetting
                 tableId={tableId}
-                columnArr={columnArrData}
-                setLimit={props.setLimit}
+                columnArr={columnArr}
+                setLimit={props.onSetNumberOfRowsPerpage}
             />
             <table id={tableId} className="table table-striped table-bordered table-hover smart-table" data-toggle="checkboxes" data-range="true">
                 <thead>
                     <tr key={`smart-table-head-${tableId}`}>
-                        <th className="col-fixed" style={{ width: 60 }}>
+                        <th className="col-fixed not-sort" style={{ width: 45 }}>
                             <input type='checkbox' checked={checkAll} onChange={() => handleCheckAll()}></input>
                         </th>
-                        { keys?.length > 0
-                            && keys.map(item => headTableData?.[item])
+                        {keys?.length > 0
+                            && keys.map(item => tableHeaderData?.[item])
                         }
                     </tr>
                 </thead>
                 <tbody className={`smart-table-body`}>
-                    { bodyTableData?.length > 0 &&
-                        bodyTableData.map((data, index) => (
+                    {tableBodyData?.length > 0 &&
+                        tableBodyData.map((data, index) => (
                             <tr key={`smart-table-${tableId}${index}`}>
                                 <td><input type='checkbox' defaultChecked={false} value={data?.id}></input></td>
                                 {keys?.length > 0
@@ -134,7 +134,7 @@ function SmartTable (props) {
                                 }
                             </tr>
                         )
-                    )}
+                        )}
                 </tbody>
             </table>
         </React.Fragment>
@@ -142,4 +142,4 @@ function SmartTable (props) {
 }
 
 const connectedSmartTable = withTranslate(memo(SmartTable))
-export { connectedSmartTable as SmartTable}
+export { connectedSmartTable as SmartTable }
