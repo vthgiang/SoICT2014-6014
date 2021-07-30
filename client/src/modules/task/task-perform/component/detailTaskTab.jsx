@@ -130,7 +130,7 @@ function DetailTaskTab(props) {
                     }
                 }
                 else {
-                    if (!roles.some(e => e.value === currentRole) || currentRole !== roles[0].value) {
+                    if (!roles.some(e => e.value === currentRole)) {
                         setCurrentRole(roles[0].value)
                         if (props.onChangeTaskRole) {
                             props.onChangeTaskRole(roles[0].value);
