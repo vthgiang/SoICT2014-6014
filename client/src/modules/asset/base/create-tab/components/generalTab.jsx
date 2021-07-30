@@ -210,7 +210,7 @@ function GeneralTab(props) {
         for(let i = 0; i < listAssetTypes.length; i++){
             for(let j = 0; j < listAssetTypes[i].defaultInformation.length; j ++)
                 if(nameFieldList.indexOf(listAssetTypes[i].defaultInformation[j].nameField) === -1){
-                    defaultInfo.push({ nameField: listAssetTypes[i].defaultInformation[j].nameField, value: "" })
+                    defaultInfo.push({ nameField: listAssetTypes[i].defaultInformation[j].nameField, value: listAssetTypes[i].defaultInformation[j].value })
                     nameFieldList.push(listAssetTypes[i].defaultInformation[j].nameField)
                 }
         }
@@ -847,9 +847,13 @@ function GeneralTab(props) {
 
                         {/* Thông tin chi tiết */}
                         <div className="col-md-12">
-                        <button style={{ marginTop: 2, marginBottom: 10, marginRight: 15 }} type="submit" className="btn btn-primary pull-right" onClick={handleAddDefaultInfo} title={translate('manage_asset.add_default_title')}>{translate('manage_asset.add_default')}</button>
-                            <label>{translate('asset.general_information.asset_properties')}:<a style={{ cursor: "pointer" }} title={translate('asset.general_information.asset_properties')}><i className="fa fa-plus-square" style={{ color: "#28A745", marginLeft: 5 }}
-                                onClick={handleAddDetailInfo} /></a></label>
+                            <label>{translate('asset.general_information.asset_properties')}:
+                                <a style={{ cursor: "pointer" }} title={translate('asset.general_information.asset_properties')}><i className="fa fa-plus-square" style={{ color: "#28A745", marginLeft: 5 }}
+                                onClick={handleAddDetailInfo} /></a>
+                                <a style={{ cursor: "pointer" }} title={translate('asset.general_information.asset_default_properties')}><i className="fa fa-plus-square" style={{ color: "red", marginLeft: 5 }}
+                                onClick={handleAddDefaultInfo} /></a>
+                            </label>
+                            
 
                             {/* Bảng thông tin chi tiết */}
                             <table className="table">

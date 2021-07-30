@@ -236,6 +236,7 @@ function DegreeEditModal(props) {
                                 <option value="good">{translate('human_resource.profile.good')}</option>
                                 <option value="average_good">{translate('human_resource.profile.average_good')}</option>
                                 <option value="ordinary">{translate('human_resource.profile.ordinary')}</option>
+                                <option value="unknown">{translate('human_resource.profile.unknown')}</option>
                             </select>
                         </div>
                     </div>

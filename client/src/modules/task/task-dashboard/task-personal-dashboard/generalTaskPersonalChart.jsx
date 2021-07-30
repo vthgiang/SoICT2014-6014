@@ -5,7 +5,7 @@ import moment from 'moment';
 import Swal from 'sweetalert2';
 import dayjs from 'dayjs';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
-import { SlimScroll } from '../../../../common-components';
+import { SlimScroll, ToolTip } from '../../../../common-components';
 
 import "./generalTaskPersonalChart.css";
 import urgentIcon from './warning.png';
@@ -231,7 +231,7 @@ const GeneralTaskPersonalChart = (props) => {
     const formatTime = (date) => {
         return dayjs(date).format("DD-MM-YYYY hh:mm A")
     }
-
+    console.log('state.urgentTask', state.urgentTask)
     return (
         <div className="qlcv box-body">
             <div className="nav-tabs-custom" >
@@ -280,6 +280,15 @@ const GeneralTaskPersonalChart = (props) => {
                                                                         <div className="fillmult" data-width={`${obj.progress}%`} style={{ width: `${obj.progress}%`, backgroundColor: obj.progress < 50 ? "#dc0000" : "#28a745" }}></div>
                                                                         <span className="perc">{obj.progress}%</span>
                                                                     </div>
+                                                                </div>
+
+                                                                <div className="role-in-task">
+                                                                    <span style={{ marginRight: '10px' }}>Người thực hiện: </span>
+                                                                    {
+                                                                        obj?.responsibleEmployees?.length ?
+                                                                            <ToolTip dataTooltip={obj?.responsibleEmployees.map(o => o.name)} />
+                                                                            : null
+                                                                    }
                                                                 </div>
 
                                                                 <div className="role-in-task">
@@ -336,6 +345,15 @@ const GeneralTaskPersonalChart = (props) => {
                                                                 </div>
 
                                                                 <div className="role-in-task">
+                                                                    <span style={{ marginRight: '10px' }}>Người thực hiện: </span>
+                                                                    {
+                                                                        obj?.responsibleEmployees?.length ?
+                                                                            <ToolTip dataTooltip={obj?.responsibleEmployees.map(o => o.name)} />
+                                                                            : null
+                                                                    }
+                                                                </div>
+
+                                                                <div className="role-in-task">
                                                                     <span style={{ marginRight: '10px' }}>Vai trò trong công việc: </span>
                                                                     <span>{getRoleInTask(state.userId, obj, translate)}</span>
                                                                 </div>
@@ -389,6 +407,15 @@ const GeneralTaskPersonalChart = (props) => {
                                                                 </div>
 
                                                                 <div className="role-in-task">
+                                                                    <span style={{ marginRight: '10px' }}>Người thực hiện: </span>
+                                                                    {
+                                                                        obj?.responsibleEmployees?.length ?
+                                                                            <ToolTip dataTooltip={obj?.responsibleEmployees.map(o => o.name)} />
+                                                                            : null
+                                                                    }
+                                                                </div>
+
+                                                                <div className="role-in-task">
                                                                     <span style={{ marginRight: '10px' }}>Vai trò trong công việc: </span>
                                                                     <span>{getRoleInTask(state.userId, obj, translate)}</span>
                                                                 </div>
@@ -439,6 +466,15 @@ const GeneralTaskPersonalChart = (props) => {
                                                                         <div className="fillmult" data-width={`${obj.progress}%`} style={{ width: `${obj.progress}%`, backgroundColor: obj.progress < 50 ? "#dc0000" : "#28a745" }}></div>
                                                                         <span className="perc">{obj.progress}%</span>
                                                                     </div>
+                                                                </div>
+
+                                                                <div className="role-in-task">
+                                                                    <span style={{ marginRight: '10px' }}>Người thực hiện: </span>
+                                                                    {
+                                                                        obj?.responsibleEmployees?.length ?
+                                                                            <ToolTip dataTooltip={obj?.responsibleEmployees.map(o => o.name)} />
+                                                                            : null
+                                                                    }
                                                                 </div>
 
                                                                 <div className="role-in-task">
@@ -498,6 +534,15 @@ const GeneralTaskPersonalChart = (props) => {
                                                                 </div>
 
                                                                 <div className="role-in-task">
+                                                                    <span style={{ marginRight: '10px' }}>Người thực hiện: </span>
+                                                                    {
+                                                                        obj?.responsibleEmployees?.length ?
+                                                                            <ToolTip dataTooltip={obj?.responsibleEmployees.map(o => o.name)} />
+                                                                            : null
+                                                                    }
+                                                                </div>
+
+                                                                <div className="role-in-task">
                                                                     <span style={{ marginRight: '10px' }}>Vai trò trong công việc: </span>
                                                                     <span>{getRoleInTask(state.userId, obj, translate)}</span>
                                                                 </div>
@@ -549,6 +594,15 @@ const GeneralTaskPersonalChart = (props) => {
                                                                     </div>
                                                                     <span className="perc">{obj?.progress}%</span>
                                                                 </div>
+                                                            </div>
+
+                                                            <div className="role-in-task">
+                                                                <span style={{ marginRight: '10px' }}>Người thực hiện: </span>
+                                                                {
+                                                                    obj?.responsibleEmployees?.length ?
+                                                                        <ToolTip dataTooltip={obj?.responsibleEmployees.map(o => o.name)} />
+                                                                        : null
+                                                                }
                                                             </div>
 
                                                             <div className="role-in-task">
@@ -604,6 +658,15 @@ const GeneralTaskPersonalChart = (props) => {
                                                                     <div className="fillmult" data-width={`${obj.progress}%`} style={{ width: `${obj.progress}%`, backgroundColor: obj.progress < 50 ? "#dc0000" : "#28a745" }}></div>
                                                                     <span className="perc">{obj.progress}%</span>
                                                                 </div>
+                                                            </div>
+
+                                                            <div className="role-in-task">
+                                                                <span style={{ marginRight: '10px' }}>Người thực hiện: </span>
+                                                                {
+                                                                    obj?.responsibleEmployees?.length ?
+                                                                        <ToolTip dataTooltip={obj?.responsibleEmployees.map(o => o.name)} />
+                                                                        : null
+                                                                }
                                                             </div>
 
                                                             <div className="role-in-task">

@@ -12,6 +12,7 @@ const fs = require("fs");
 const ObjectId = require("mongoose").Types.ObjectId;
 const { connect, } = require(`../../helpers/dbHelper`);
 const { dateParse } = require(`../../helpers/functionHelper`);
+const exec = require('child_process').exec;
 
 /**
  * Lấy danh sách tất cả các tài liệu văn bản
@@ -473,6 +474,64 @@ async function downloadFile(doc, downloaderId) {
     if (index !== -1) doc.downloads.splice(index, 1);
     doc.downloads.push({ downloader: downloaderId });
     await doc.save();
+}
+
+exports.downloadAllFileOfDocument = async (query, portal) => {
+
+    let { data } = query;
+    data = data.map(x => JSON.parse(x));
+
+    const rootPath = `${SERVER_BACKUP_DIR}/download/document`;
+    if (data?.length) {
+        for (let i = 0; i < data.length; i++){
+            // tạo thư mục cha
+            const parentPath = `${rootPath}/${data[i]?.folderName?.replace(/\s+/g, '_')?.trim()}`;
+            if (!fs.existsSync(parentPath)) {
+                fs.mkdirSync(parentPath, {
+                    recursive: true
+                });
+            };
+
+            //tạo xong cha thì tạo thư mục con
+            if (fs.existsSync(parentPath) && data[i]?.versions?.length) {
+                for (let j = 0; j < data[i].versions.length; j++){
+                    const versionPath = `${rootPath}/${data[i]?.folderName?.replace(/\s+/g, '_')?.trim()}/${data[i]?.versions[j]?.childFolder?.replace(/\s+/g, '_')?.trim()}`;
+                    if (!fs.existsSync(versionPath)) {
+                        fs.mkdirSync(versionPath, {
+                            recursive: true
+                        });
+                    };
+                    //copy file upload vào thư mục download
+                    if (data[i]?.versions[j]?.file) {
+                        let filePath = data[i].versions[j].file;
+                        if (filePath.indexOf(".") === 0) {
+                            filePath = filePath.substring(1);
+                        }
+
+                        const commandGetFile = `cp ${SERVER_DIR + filePath} ${versionPath}`;
+                        await exec(commandGetFile, (error, stdout, stderr) => {
+                            if(error) console.log(error);
+                        });
+                    }
+
+                    //copy file scan vào thư mục download
+                    if (data[i]?.versions[j]?.scannedFileOfSignedDocument) {
+                        let fileScanPath = data[i].versions[j].scannedFileOfSignedDocument;
+                        if (fileScanPath.indexOf(".") === 0) {
+                            fileScanPath = fileScanPath.substring(1);
+                        }
+
+                        const commandGetFileScan = `cp ${SERVER_DIR + fileScanPath} ${versionPath}`;
+                        await exec(commandGetFileScan, (error, stdout, stderr) => {
+                            if(error) console.log(error);
+                        });
+                    }
+                }
+            }
+        }
+    }
+    if (fs.existsSync(rootPath)) 
+        return rootPath;
 }
 
 exports.importDocument = async (portal, data, company) => {

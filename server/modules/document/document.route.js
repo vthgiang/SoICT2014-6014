@@ -15,6 +15,7 @@ const data = [
 ];
 router.get("/documents/:id/download-file", auth, DocumentController.downloadDocumentFile);
 router.get("/documents/:id/download-file-scan", auth, DocumentController.downloadDocumentFileScan);
+router.get("/documents/downloadFile", auth, DocumentController.downloadAllFileOfDocument);
 router.patch("/documents/:id/increase-number-view", auth, DocumentController.increaseNumberView);
 router.get("/documents/permission-view", auth, DocumentController.getDocumentsThatRoleCanView);
 router.get("/documents/user-statistical", auth, DocumentController.getDocumentsUserStatistical);

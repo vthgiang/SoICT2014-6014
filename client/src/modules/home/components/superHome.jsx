@@ -16,46 +16,38 @@ import { filterDifference } from '../../../helpers/taskModuleHelpers';
 class SuperHome extends Component {
     constructor(props) {
         super(props);
-
-        let d = new Date(),
-            month = d.getMonth() + 1,
-            year = d.getFullYear();
-        let startMonth, endMonth, startYear;
-
-        if (month > 3) {
-            startMonth = month - 3;
-            startYear = year;
-        } else {
-            startMonth = month - 3 + 12;
-            startYear = year - 1;
-        }
-        if (startMonth < 10)
-            startMonth = '0' + startMonth;
-        if (month < 10) {
-            endMonth = '0' + month;
-        } else {
-            endMonth = month;
-        }
-
-        this.INFO_SEARCH = {
-            startMonth: [startYear, startMonth].join('-'),
-            endMonth: [year, endMonth].join('-'),
-
-            startMonthTitle: [startMonth, startYear].join('-'),
-            endMonthTitle: [endMonth, year].join('-'),
-        }
-
         this.state = {
             userID: "",
-
-            startMonth: this.INFO_SEARCH.startMonth,
-            endMonth: this.INFO_SEARCH.endMonth,
-
             willUpdate: false,       // Khi true sẽ cập nhật dữ liệu vào props từ redux
-            callAction: false
+            callAction: false,
+            startDate: this.formatDate(Date.now(), true),
+            endDate: this.formatDate(Date.now(), true)
+
         };
     }
+    /**
+     * Function format dữ liệu Date thành string
+     * @param {*} date : Ngày muốn format
+     * @param {*} monthYear : true trả về tháng năm, false trả về ngày tháng năm
+     */
+    formatDate(date, monthYear = false) {
+        if (date) {
+            let d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
 
+            if (month.length < 2)
+                month = '0' + month;
+            if (day.length < 2)
+                day = '0' + day;
+
+            if (monthYear === true) {
+                return [month, year].join('-');
+            } else return [day, month, year].join('-');
+        }
+        return date;
+    };
     static getDerivedStateFromProps(props, state) {
         const { tasks } = props;
         const { loadingInformed, loadingCreator, loadingConsulted, loadingAccountable, loadingResponsible
@@ -229,13 +221,14 @@ class SuperHome extends Component {
     }
 
     componentDidMount = async () => {
-        let { startMonth, endMonth } = this.INFO_SEARCH;
-
-        await this.props.getResponsibleTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
-        await this.props.getAccountableTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
-        await this.props.getConsultedTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
-        await this.props.getInformedTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
-        await this.props.getCreatorTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
+        let { startDate, endDate } = this.state;
+        let startDateWork = moment(startDate, 'MM-YYYY').format('YYYY-MM');
+        let endDateWork = moment(endDate, 'MM-YYYY').format('YYYY-MM');
+        await this.props.getResponsibleTaskByUser([], 1, 1000, [], [], [], null, startDateWork, endDateWork, null, null, true);
+        await this.props.getAccountableTaskByUser([], 1, 1000, [], [], [], null, startDateWork, endDateWork, null, null, true);
+        await this.props.getConsultedTaskByUser([], 1, 1000, [], [], [], null, startDateWork, endDateWork, null, null, true);
+        await this.props.getInformedTaskByUser([], 1, 1000, [], [], [], null, startDateWork, endDateWork, null, null, true);
+        await this.props.getCreatorTaskByUser([], 1, 1000, [], [], [], null, startDateWork, endDateWork, null, null, true);
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -263,26 +256,21 @@ class SuperHome extends Component {
     }
 
     handleSelectMonthStart = (value) => {
-        let month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)));
-        let monthtitle = value.slice(0, 2) + '-' + (new Number(value.slice(3, 7)));
-
-        this.INFO_SEARCH.startMonth = month;
-        this.INFO_SEARCH.startMonthTitle = monthtitle;
+        this.setState({ startDate: value });
     }
 
     handleSelectMonthEnd = (value) => {
-        let month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)));
-        let monthtitle = value.slice(0, 2) + '-' + (new Number(value.slice(3, 7)));
-
-        this.INFO_SEARCH.endMonth = month;
-        this.INFO_SEARCH.endMonthTitle = monthtitle;
+        this.setState({ endDate: value });
     }
 
     handleSearchData = async () => {
-        let startMonth = new Date(this.INFO_SEARCH.startMonth);
-        let endMonth = new Date(this.INFO_SEARCH.endMonth);
-
-        if (startMonth.getTime() > endMonth.getTime()) {
+        let { startDate, endDate } = this.state;
+        /* console.log("startDate", startDate)
+        console.log("endDate",endDate) */
+        let startTimeMiliSeconds = new Date(moment(startDate, 'MM-YYYY').format()).getTime();
+        let endTimeMiliSeconds = new Date(moment(endDate, 'MM-YYYY').format()).getTime();
+        /* console.log("startTimeMiliSeconds", startTimeMiliSeconds) */
+        if (startTimeMiliSeconds > endTimeMiliSeconds) {
             const { translate } = this.props;
             Swal.fire({
                 title: translate('kpi.evaluation.employee_evaluation.wrong_time'),
@@ -291,20 +279,13 @@ class SuperHome extends Component {
                 confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm'),
             })
         } else {
-
-            await this.setState(state => {
-                return {
-                    ...state,
-                    startMonth: this.INFO_SEARCH.startMonth,
-                    endMonth: this.INFO_SEARCH.endMonth
-                }
-            })
-            let { startMonth, endMonth } = this.state;
-
-            this.props.getResponsibleTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
-            this.props.getAccountableTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
-            this.props.getConsultedTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
-            this.props.getInformedTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
+            let { startDate, endDate } = this.state;
+            let startDateWork = moment(startDate, 'MM-YYYY').format('YYYY-MM');
+            let endDateWork = moment(endDate, 'MM-YYYY').format('YYYY-MM');
+            this.props.getResponsibleTaskByUser([], 1, 1000, [], [], [], null, startDateWork, endDateWork, null, null, true);
+            this.props.getAccountableTaskByUser([], 1, 1000, [], [], [], null, startDateWork, endDateWork, null, null, true);
+            this.props.getConsultedTaskByUser([], 1, 1000, [], [], [], null, startDateWork, endDateWork, null, null, true);
+            this.props.getInformedTaskByUser([], 1, 1000, [], [], [], null, startDateWork, endDateWork, null, null, true);
         }
     }
 
@@ -316,39 +297,15 @@ class SuperHome extends Component {
         const { tasks, translate } = this.props;
         const { loadingInformed, loadingCreator, loadingConsulted, loadingAccountable } = tasks;
 
-        const { listAlarmTask, listTasksGeneral } = this.state;
-
-        // Config ngày mặc định cho datePiker
-        let d = new Date(),
-            month = d.getMonth() + 1,
-            year = d.getFullYear();
-        let startMonthDefault, endMonthDefault, startYear;
-
-        if (month > 3) {
-            startMonthDefault = month - 3;
-            startYear = year;
-            if (month < 9) {
-                endMonthDefault = '0' + (month + 1);
-            } else {
-                endMonthDefault = month + 1;
-            }
-        } else {
-            startMonthDefault = month - 3 + 12;
-            startYear = year - 1;
-        }
-        if (startMonthDefault < 10)
-            startMonthDefault = '0' + startMonthDefault;
-
-        let defaultStartMonth = [startMonthDefault, startYear].join('-');
-        let defaultEndMonth = month < 10 ? ['0' + month, year].join('-') : [month, year].join('-');
-
-        let { startMonthTitle, endMonthTitle } = this.INFO_SEARCH;
+        const { listAlarmTask, listTasksGeneral, startDate, endDate } = this.state;
+        let startDateWork = moment(startDate, 'MM-YYYY').format('YYYY-MM');
+        let endDateWork = moment(endDate, 'MM-YYYY').format('YYYY-MM');
 
         return (
             <React.Fragment>
                 {
                     listAlarmTask &&
-                        <ViewAllTasks listAlarmTask={listAlarmTask} />
+                    <ViewAllTasks listAlarmTask={listAlarmTask} />
                 }
                 <div className="qlcv" style={{ marginBottom: 10 }}>
                     {/**Chọn ngày bắt đầu */}
@@ -358,7 +315,7 @@ class SuperHome extends Component {
                             <DatePicker
                                 id="monthStartInHome"
                                 dateFormat="month-year"
-                                value={defaultStartMonth}
+                                value={this.state.startDate}
                                 onChange={this.handleSelectMonthStart}
                                 disabled={false}
                             />
@@ -370,7 +327,7 @@ class SuperHome extends Component {
                             <DatePicker
                                 id="monthEndInHome"
                                 dateFormat="month-year"
-                                value={defaultEndMonth}
+                                value={this.state.endDate}
                                 onChange={this.handleSelectMonthEnd}
                                 disabled={false}
                             />
@@ -411,7 +368,7 @@ class SuperHome extends Component {
                     <div className="col-xs-12">
                         <div className="box box-primary">
                             <div className="box-header with-border">
-                                <div className="box-title">{translate('task.task_management.tasks_calendar')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
+                                <div className="box-title">{translate('task.task_management.tasks_calendar')} {translate('task.task_management.lower_from')} {startDateWork} {translate('task.task_management.lower_to')} {endDateWork}</div>
                             </div>
                             <LazyLoadComponent once={true}>
                                 <GanttCalendar

@@ -8,6 +8,7 @@ const initState = {
     courseByEducations: [],
     totalList: "",
     error: "",
+    listCoursesUserPassed: []
 }
 
 export function course(state = initState, action) {
@@ -23,6 +24,7 @@ export function course(state = initState, action) {
         case CourseConstants.GET_LIST_COURSE_SUCCESS:
             return {
                 ...state,
+                listCoursesUserPassed: action.payload.listCoursesUserPassed !== undefined ? action.payload.listCoursesUserPassed : [],
                 listCourses: action.payload.listCourses,
                     totalList: action.payload.totalList !== undefined ? action.payload.totalList : [],
                     isLoading: false,

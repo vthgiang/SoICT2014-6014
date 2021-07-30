@@ -15,7 +15,7 @@ function EditForm(props) {
     })
     const { translate, assetType } = props;
     const { tree, list } = assetType.administration.types;
-    const { domainId, domainChild, domainCode, domainName, domainDescription, domainParent, errorName, defaultInfo, errorOnNameField, errorPosition } = state;
+    const { domainId, domainChild, domainCode, domainName, domainDescription, domainParent, errorName, defaultInfo, errorOnNameField, errorPosition, errorOnValuePosition, errorOnValue} = state;
     const [prevProps, setPrevProps] = useState({
         domainId : null
     })
@@ -104,7 +104,7 @@ function EditForm(props) {
             let result;
 
             for (let n in defaultInfo) {
-                result = validateNameField(defaultInfo[n].nameField, n);
+                result = validateNameField(defaultInfo[n].nameField, n) && validateValue(defaultInfo[n].value, n);
                 if (!result) {
                     validateNameField(defaultInfo[n].nameField, n);
                     break;
@@ -114,13 +114,13 @@ function EditForm(props) {
             if (result) {
                 setState({
                     ...state,
-                    defaultInfo: [...defaultInfo, { nameField: "" }]
+                    defaultInfo: [...defaultInfo, { nameField: "" , value: ""}]
                 })
             }
         } else {
             setState({
                 ...state,
-                defaultInfo: [...defaultInfo, { nameField: "" }]
+                defaultInfo: [...defaultInfo, { nameField: "", value: ""}]
             })
         }
 
@@ -152,6 +152,31 @@ function EditForm(props) {
     }
 
     /**
+     * Bắt sự kiện chỉnh sửa giá trị trường dữ liệu thông tin chi tiết
+     */
+     const handleChangeValue = (e, index) => {
+        var { value } = e.target;
+        validateValue(value, index);
+    }
+    const validateValue = (value, className, willUpdateState = true) => {
+        let { message } = ValidationHelper.validateEmpty(props.translate, value);
+
+        if (willUpdateState) {
+            var { defaultInfo } = state;
+            defaultInfo[className] = { ...defaultInfo[className], value: value }
+            setState(state => {
+                return {
+                    ...state,
+                    errorOnValue: message,
+                    errorOnValuePosition: message ? className : null,
+                    defaultInfo: defaultInfo
+                }
+            });
+        }
+        return message === undefined;
+    }
+
+    /**
      * Bắt sự kiện xóa thông tin mặc định
      */
     const delete_function = (index) => {
@@ -164,6 +189,7 @@ function EditForm(props) {
         if (defaultInfo.length !== 0) {
             for (let n in defaultInfo) {
                 validateNameField(defaultInfo[n].nameField, n);
+                validateValue(defaultInfo[n].value, n);
             }
         } else {
             setState({
@@ -241,6 +267,7 @@ function EditForm(props) {
                     <thead>
                         <tr>
                             <th style={{ paddingLeft: '0px' }}>{translate('asset.asset_info.field_name')}</th>
+                            <th style={{ paddingLeft: '0px' }}>{translate('asset.asset_info.value')}</th>
                             <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>
                         </tr>
                     </thead>
@@ -257,6 +284,14 @@ function EditForm(props) {
                                         <div className={`form-group ${(parseInt(errorPosition) === index && errorOnNameField) ? "has-error" : ""}`}>
                                             <input className="form-control" type="text" value={x.nameField} name="nameField" style={{ width: "100%" }} onChange={(e) => handleChangeNameField(e, index)} />
                                             {(parseInt(errorPosition) === index && errorOnNameField) && <ErrorLabel content={errorOnNameField} />}
+                                        </div>
+                                    </td>
+
+                                    {/* Giá trị mặc định  */}
+                                    <td style={{ paddingLeft: '0px' }}>
+                                        <div className={`form-group ${(parseInt(errorOnValuePosition) === index && errorOnValue) ? "has-error" : ""}`}>
+                                            <input className="form-control" type="text" value={x.value} name="value" style={{ width: "100%" }} onChange={(e) => handleChangeValue(e, index)} />
+                                            {(parseInt(errorOnValuePosition) === index && errorOnValue) && <ErrorLabel content={errorOnValue} />}
                                         </div>
                                     </td>
 

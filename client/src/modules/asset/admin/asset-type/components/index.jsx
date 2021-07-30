@@ -207,7 +207,7 @@ function AdministrationAssetTypes(props) {
                     </div>
 
                     {/* Form chỉnh sửa loại tài sản */}
-                    <div className="col-xs-12 col-sm-12 col-md-5 col-lg-5">
+                    <div className="col-xs-12 col-sm-12 col-md-5 col-lg-5" style={{position:'sticky', top:5}}>
                         {
                             currentDomain &&
                             <EditForm
