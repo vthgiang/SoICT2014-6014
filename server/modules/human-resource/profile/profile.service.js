@@ -750,11 +750,17 @@ exports.createEmployee = async (portal, data, company, fileInfor) => {
         files
     } = data;
 
-    for(let i in career) {
+    for (let i in career) {
         if(career[i] && career[i].position === "undefined") {
             delete career[i].position;
         }
     }
+    degrees = degrees.map(x => {
+        if (x.field === "")
+            x.field = null;
+        return x;
+    })
+
 
     // career = this.mergeUrlFileToObject(fileCareer, career);
     // major = this.mergeUrlFileToObject(fileMajor, major);
@@ -966,7 +972,7 @@ exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company)
         houseHold, // dữ liệu về hộ khẩu - thành viên hộ gia đình
         roles // dữ liệu về chức danh
     } = data;
-    
+    //  console.log('createDegrees',createDegrees)
     // for(let i in data.createCareer) {
     //     if(data.createCareer[i] && data.createCareer[i].position === "undefined") {
     //         delete data.createCareer[i].position;
