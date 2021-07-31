@@ -1235,3 +1235,25 @@ exports.importDocumentArchive = async (portal, data, company) => {
     }
     return await this.getDocumentArchives(portal, company);
 };
+
+// lấy dữ liệu cho bản đồ document - category
+exports.chartDataDocument = async (portal,company,listChart) => {
+    let document = await Document(connect(DB_CONNECTION, portal)).find({}).select("category numberOfView numberOfDownload archives domains")
+    let result = {document:document}
+    if (listChart[0]==="all" || listChart.indexOf("documentByCategory") !== -1 || listChart.indexOf("documentByViewAndDownload") !== -1){
+        let categorys = await DocumentCategory(connect(DB_CONNECTION, portal)).find({
+            company,
+        });
+        result = {...result, categorys:categorys}
+    }
+    if (listChart[0] === "all" || listChart.indexOf("documentByArchive")){
+        let archives = await this.getDocumentArchives(portal, company)
+        result = {...result, archives:archives}
+    }
+    if (listChart[0] === "all" || listChart.indexOf("documentByDomain")){
+        let domains = await this.getDocumentDomains(portal, company)
+        result = {...result, domains:domains}
+    }
+    
+    return {result}
+}

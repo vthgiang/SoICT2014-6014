@@ -20,33 +20,19 @@ function AdministrationStatisticsReport(props) {
     const refDocument_view_down = React.createRef()
     const refArchives = React.createRef()
     useEffect(() => {
-        props.getDocumentCategories();
-        props.getDocumentDomains();
-        pieChart();
-        barChart();
+        // props.getDocumentCategories();
+        // props.getDocumentDomains();
+        props.getDataChart({listChart:["documentByCategory","documentByDomain","documentByViewAndDownload","documentByArchive"]})
+       
         // barChartDocumentInDomain();
     }, [])
-
-
-
-    const getDataDocumentAnalys = () => {
-        const { documents } = props;
-        const categoryList = documents.administration.categories.list;
-        const docList = documents.administration.data.list;
-        const data = categoryList.map(category => {
-            let docs = docList.filter(doc => doc.category !== undefined && doc.category === category.id).length;
-            return [
-                category.name,
-                docs
-            ]
-        });
-        let res = data.filter(d => d[1] > 0 || d[2] > 0)
-        return res;
-    }
-
+    useEffect(()=>{
+        pieChart();
+        barChart();
+    })
     const pieChart = () => {
         removePreviousPieChart();
-        let dataChart = getDataDocumentAnalys();
+        let dataChart = documents.administration.dataChart.chartCategory || []
         let chart = c3.generate({
             bindto: refCategory.current,
 
@@ -66,34 +52,11 @@ function AdministrationStatisticsReport(props) {
         })
     }
 
-    const getDataViewDownloadBarChart = () => {
-        const { documents } = props;
-        const categoryList = documents.administration.categories.list;
-        const docList = documents.administration.data.list;
-
-        const data = categoryList.map(category => {
-            let docs = docList.filter(doc => doc.category !== undefined && doc.category === category.id);
-            let totalDownload = 0;
-            let totalView = 0;
-            for (let index = 0; index < docs.length; index++) {
-                const element = docs[index];
-                totalDownload = totalDownload + element.numberOfDownload;
-                totalView = totalView + element.numberOfView;
-            }
-            return [
-                category.name,
-                totalView,
-                totalDownload
-            ]
-        });
-        let res = data.filter(d => d[1] > 0 || d[2] > 0)
-        return res;
-    }
 
     const barChart = () => {
         const { translate } = props;
         removePreviousBarChart();
-        let dataChart = getDataViewDownloadBarChart();
+        let dataChart = documents.administration.dataChart.chartViewDownLoad || []
         let x = [translate('document.views'), translate('document.downloads')];
         let chart = c3.generate({
             bindto: refDocument_view_down.current,
@@ -128,7 +91,6 @@ function AdministrationStatisticsReport(props) {
     function removePreviousPieChart() {
         const chart = refCategory.current;
         if (chart) {
-            // console.log(chart,chart.hasChildNodes());
             while (chart.hasChildNodes()) {
                 chart.removeChild(chart.lastChild);
             }
@@ -596,6 +558,7 @@ function AdministrationStatisticsReport(props) {
                         <TreeArchive
                             archives={listArchives}
                             documents={docs}
+                            chartArchive = {documents.administration.dataChart.chartArchive}
                         />
                     </div>
                 </div>
@@ -625,6 +588,7 @@ function AdministrationStatisticsReport(props) {
                         <TreeDomain
                             domains={listDomains}
                             documents={docs}
+                            chartDomain = {documents.administration.dataChart.chartDomain}
                         />
                     </div>
                 </div>
@@ -655,6 +619,7 @@ const mapDispatchToProps = {
     getAllDocuments: DocumentActions.getDocuments,
     getDocumentCategories: DocumentActions.getDocumentCategories,
     getDocumentDomains: DocumentActions.getDocumentDomains,
+    getDataChart: DocumentActions.getDataChart
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(AdministrationStatisticsReport));

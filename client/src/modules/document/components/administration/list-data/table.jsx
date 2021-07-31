@@ -47,7 +47,7 @@ function Table(props) {
     })
     useEffect(() => {
         const currentPage = window.location.pathname;
-        props.getAllDocuments({ calledId: "all", by: currentPage === '/documents/organizational-unit' ? 'organizational-unit' : undefined });
+        // props.getAllDocuments({ calledId: "all", by: currentPage === '/documents/organizational-unit' ? 'organizational-unit' : undefined });
         props.getAllDocuments({ page: state.page, limit: state.limit, calledId: "paginate", by: currentPage === '/documents/organizational-unit' ? 'organizational-unit' : undefined });
 
         props.getAllDocuments({ page: state.page, limit: state.limit, calledId: "relationshipDocs", by: currentPage === '/documents/organizational-unit' ? 'organizational-unit' : undefined });

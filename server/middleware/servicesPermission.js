@@ -249,6 +249,7 @@ exports.links = [
             { path: '/documents/document-archives/:id', method: 'GET' },
             { path: '/documents/document-archives/delete-many', method: 'POST' },
             { path: '/documents/document-archives/import-file', method: 'POST' },
+            { path: '/documents/chart-document', method: 'GET' },
 
             { path: '/component/components', method: 'GET' },
             { path: '/component/components', method: 'POST' },

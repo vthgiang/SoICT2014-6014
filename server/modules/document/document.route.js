@@ -50,5 +50,6 @@ router.post('/document-archives/delete-many', auth, DocumentController.deleteMan
 router.patch('/document-archives/:id', auth, DocumentController.editDocumentArchive);
 router.delete('/document-archives/:id', auth, DocumentController.deleteDocumentArchive);
 router.post("/document-archives/import-file", auth, DocumentController.importDocumentArchive)
+router.get("/chart-document", auth, DocumentController.chartDataDocument)
 
 module.exports = router;

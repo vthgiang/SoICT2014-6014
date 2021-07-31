@@ -18,32 +18,22 @@ function TreeDomain(props) {
             tree: value
         })
     }
-    const { documents, domains } = props;
+    const { documents, domains ,chartDomain} = props;
     let { tree } = state;
     let typeName = [], countDomain = [], idDomain = [];
     let chart = [];
-    for (let i in domains) {
-        countDomain[i] = 0;
-        idDomain.push(domains[i]._id)
-    }
-    if (documents) {
-        documents.map(doc => {
-            doc.domains.map(domain => {
-                let idx = idDomain.indexOf(domain);
-                countDomain[idx]++;
-            })
-        })
-        for (let i in domains) {
+    if (chartDomain){
+        for (let i in chartDomain.dataTree.domains.list) {
 
-            let val = d3.format(",")(countDomain[i])
-            let title = `${domains[i].name} - ${val} `
+            let val = d3.format(",")(chartDomain.dataTree.countDomain[i])
+            let title = `${chartDomain.dataTree.domains.list[i].name} - ${val} `
 
-            typeName.push(domains[i].name);
+            typeName.push(chartDomain.dataTree.domains.list[i].name);
 
             chart.push({
-                id: domains[i]._id,
+                id: chartDomain.dataTree.domains.list[i]._id,
                 typeName: title,
-                parentId: domains[i].parent,
+                parentId: chartDomain.dataTree.domains.list[i].parent,
             })
         }
     }
@@ -77,6 +67,7 @@ function TreeDomain(props) {
                     <BarChartDomain
                         domains={domains}
                         docs={documents}
+                        data = {chartDomain}
                     />
             }
         </div>

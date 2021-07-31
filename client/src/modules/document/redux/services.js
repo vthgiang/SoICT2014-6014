@@ -32,6 +32,7 @@ export const DocumentServices = {
     deleteDocumentArchives,
     deleteManyDocumentArchives,
     importDocumentArchive,
+    getDataChart,
 };
 
 function getDocuments(params = undefined) {
@@ -390,6 +391,19 @@ function importDocumentArchive(data) {
             data,
         },
         true,
+        true,
+        "document"
+    );
+}
+
+function getDataChart(params = {listChart:["all"]}) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/documents/chart-document`,
+            method: "GET",
+            params 
+        },
+        false,
         true,
         "document"
     );

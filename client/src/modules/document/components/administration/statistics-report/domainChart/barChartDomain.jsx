@@ -8,7 +8,7 @@ import 'c3/c3.css';
 function BarChartDomain(props) {
     useEffect(() => {
         barChartDocumentInDomain();
-    }, [])
+    })
     const refDomain = React.createRef()
     function removePreviousDomainChart() {
         const chart = refDomain.current;
@@ -19,9 +19,12 @@ function BarChartDomain(props) {
         }
     }
     const barChartDocumentInDomain = () => {
-        console.log("object");
         removePreviousDomainChart();
-        let dataChart = setDataDomainBarchart();
+        // let dataChart = setDataDomainBarchart();
+        let dataChart = {count:0,shortName:[],type:[]}
+        if (props.data){
+            dataChart = props.data.dataChart
+        }
         let count = dataChart.count;
         let heightCalc
         if (dataChart.type) {

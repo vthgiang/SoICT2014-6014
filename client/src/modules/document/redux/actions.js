@@ -32,6 +32,7 @@ export const DocumentActions = {
     editDocumentArchive,
     deleteDocumentArchive,
     importDocumentArchive,
+    getDataChart,
 };
 
 function getDocuments(data) {
@@ -668,6 +669,24 @@ function importDocumentArchive(data) {
                 dispatch({
                     type: DocumentConstants.IMPORT_DOCUMENT_ARCHIVE_FAILE,
                 });
+            });
+    };
+}
+
+function getDataChart(data){
+    return (dispatch) => {
+        dispatch({
+            type: DocumentConstants.GET_DATA_CHART_REQUEST
+        });
+        DocumentServices.getDataChart(data)
+            .then((res) => {
+                dispatch({
+                    type: DocumentConstants.GET_DATA_CHART_SUCCESS,
+                    payload: res.data.content,
+                });
+            })
+            .catch((err) => {
+                dispatch({ type: DocumentConstants.GET_DATA_CHART_FAILE });
             });
     };
 }
