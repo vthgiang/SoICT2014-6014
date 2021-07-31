@@ -74,7 +74,7 @@ class AmountPieChart extends Component {
 
             data: {
                 columns: dataPieChart,
-                type: 'pie',
+                type: 'donut',
             },
 
             pie: {

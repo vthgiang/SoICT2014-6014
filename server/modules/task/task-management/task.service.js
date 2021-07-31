@@ -403,6 +403,12 @@ exports.getPaginatedTasks = async (portal, task) => {
             ]
         })
         const getIdAccountable = accountable && accountable.length > 0 ? accountable.map(o => o._id) : [];
+        keySearch = {
+            ...keySearch,
+            accountableEmployees: {
+                $in: getIdAccountable
+            }
+        }
     }
 
     // Tìm kiếm theo người thiết lập
@@ -566,7 +572,6 @@ exports.getPaginatedTasks = async (portal, task) => {
 
     let totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments(optionQuery);
     let totalPages = Math.ceil(totalCount / perPage);
-
     return {
         "tasks": taskList,
         "totalPage": totalPages,
@@ -884,6 +889,7 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (portal, task) => {
         .skip(perPage * (page - 1)).limit(perPage)
         .populate({ path: "organizationalUnit parent" })
         .populate({ path: 'creator', select: "_id name  email avatar" })
+        .populate({ path: "responsibleEmployees", select: "_id name email avatar" })
 
     var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments({
         $and: [
@@ -1044,6 +1050,7 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (portal, task) => {
         .skip(perPage * (page - 1)).limit(perPage)
         .populate({ path: "organizationalUnit parent" })
         .populate({ path: " creator", select: "_id name email avatar" })
+        .populate({ path: "responsibleEmployees", select: "_id name email avatar" })
 
     var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments({
         $and: [
@@ -1204,6 +1211,8 @@ exports.getPaginatedTasksCreatedByUser = async (portal, task) => {
         .skip(perPage * (page - 1)).limit(perPage)
         .populate({ path: "organizationalUnit parent" })
         .populate({ path: "creator", select: "_id name email avatar" })
+        .populate({ path: "responsibleEmployees", select: "_id name email avatar" })
+    
     var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments({
         $and: [
             keySearch,
@@ -1364,6 +1373,7 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (portal, task) => {
         .skip(perPage * (page - 1)).limit(perPage)
         .populate({ path: "organizationalUnit parent" })
         .populate({ path: "creator", select: "_id name email avatar" })
+        .populate({ path: "responsibleEmployees", select: "_id name email avatar" })
 
 
     var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments({
@@ -1994,7 +2004,7 @@ exports.sendEmailForCreateTask = async (portal, task) => {
  * Tạo công việc mới
  */
 exports.createTask = async (portal, task) => {
-    
+
     // Lấy thông tin công việc liên quan
     var level = 1;
     if (mongoose.Types.ObjectId.isValid(task.parent)) {
@@ -2949,7 +2959,7 @@ exports.importTasks = async (data, portal, user) => {
     let dataImport = [];
     if (data?.length) {
         let dataLength = data.length;
-        for (let x = 0; x < dataLength; x++){
+        for (let x = 0; x < dataLength; x++) {
             let level = 1;
             if (mongoose.Types.ObjectId.isValid(data[x].parent)) {
                 const parent = await Task(connect(DB_CONNECTION, portal)).findById(data[x].parent);
@@ -2985,7 +2995,7 @@ exports.importTasks = async (data, portal, user) => {
                 startDate: startDate,
                 endDate: endDate,
                 formula: "progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100",
-                taskInformations : [],
+                taskInformations: [],
                 collaboratedWithOrganizationalUnits: collaboratedWithOrganizationalUnits,
             }];
         }

@@ -712,6 +712,7 @@ export default {
                     category: "Danh mục",
                     email: "Email"
                 },
+                delete: "Xóa system api",
                 select_all_method: "Chọn tất cả các phương thức",
                 non_select_method: "Chọn phương thức",
 
@@ -1931,6 +1932,7 @@ export default {
                 good: "Khá",
                 average_good: "Trung bình khá",
                 ordinary: "Trung bình",
+                unknown: 'Chưa xác định',
 
                 bank_account: "Tài khoản ngân hàng",
                 personal_income_tax: "Mã số thuế thu nhập cá nhân",
@@ -2533,6 +2535,7 @@ export default {
                 basic_information: "Thông tin cơ bản",
                 detail_information: "Thông tin chi tiết",
                 asset_properties: "Các thuộc tính của tài sản",
+                asset_default_properties: "Các thuộc tính mặc định của tài sản",
                 view: "Xem thông tin tài sản",
                 edit_info: "Chỉnh sửa thông tin tài sản",
                 delete_info: "Xóa thông tin tài sản",

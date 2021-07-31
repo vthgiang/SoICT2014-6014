@@ -60,7 +60,8 @@ function PrivilegeApiCreateModal(props) {
         props.createPrivilegeApi({
             email: email,
             apis: apis,
-            companyId: companyId
+            companyId: companyId,
+            role: 'system_admin'
         })
         window.$("#privilege-system-api-modal").modal("hide");
     }

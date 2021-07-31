@@ -64,7 +64,7 @@ class ValuePieChart extends Component {
 
             data: {
                 columns: dataPieChart,
-                type: 'pie',
+                type: 'donut',
             },
 
             pie: {

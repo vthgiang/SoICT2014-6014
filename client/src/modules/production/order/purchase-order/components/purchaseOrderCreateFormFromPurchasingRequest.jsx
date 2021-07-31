@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { PurchaseOrderActions } from "../redux/actions";
@@ -6,32 +6,46 @@ import { DialogModal, SelectBox, ErrorLabel, DatePicker } from "../../../../../c
 import ValidationHelper from "../../../../../helpers/validationHelper";
 import { formatCurrency } from "../../../../../helpers/formatCurrency";
 import { formatDate, formatToTimeZoneDate } from "../../../../../helpers/formatDate";
-class PurchaseOrderCreateFormFromPurchasingRequest extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            code: "",
-            material: "",
-            materials: [],
-            approvers: [],
-            price: "",
-            quantity: "",
-            purchasingRequest: "",
-        };
-    }
+import { UserActions } from "../../../../super-admin/user/redux/actions";
+import { UserServices } from "../../../../super-admin/user/redux/services";
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.code !== prevState.code) {
+function PurchaseOrderCreateFormFromPurchasingRequest(props) {
+
+    const [state, setState] = useState({
+        code: "",
+        material: "",
+        materials: [],
+        approvers: [],
+        price: "",
+        quantity: "",
+        purchasingRequest: "",
+        listUser: { length: -1 },
+    })
+
+
+    if (props.code !== state.code) {
+        setState((state) => {
             return {
-                code: nextProps.code,
-            };
-        }
+                ...state,
+                code: props.code,
+            }
+        })
     }
 
-    getPurchasingRequestOptions = () => {
+    useEffect(() => {
+        UserServices.get()
+            .then(res => {
+                setState({
+                    ...state,
+                    listUser: res.data.content
+                })
+            })
+    }, [])
+
+    const getPurchasingRequestOptions = () => {
         let options = [];
 
-        const { listPurchasingRequests } = this.props.purchasingRequest;
+        const { listPurchasingRequests } = props.purchasingRequest;
         if (listPurchasingRequests) {
             options = [
                 {
@@ -53,10 +67,10 @@ class PurchaseOrderCreateFormFromPurchasingRequest extends Component {
         return options;
     };
 
-    getSuplierOptions = () => {
+    const getSuplierOptions = () => {
         let options = [];
 
-        const { list } = this.props.customers;
+        const { list } = props.customers;
         if (list) {
             options = [
                 {
@@ -65,7 +79,7 @@ class PurchaseOrderCreateFormFromPurchasingRequest extends Component {
                 },
             ];
 
-            let mapOptions = this.props.customers.list.map((item) => {
+            let mapOptions = props.customers.list.map((item) => {
                 return {
                     value: item._id,
                     text: item.name,
@@ -78,10 +92,10 @@ class PurchaseOrderCreateFormFromPurchasingRequest extends Component {
         return options;
     };
 
-    getApproverOptions = () => {
+    const getApproverOptions = () => {
         let options = [];
-        const { user } = this.props;
-        if (user.list) {
+        const user = state.listUser;
+        if (user) {
             options = [
                 {
                     value: "title", //Title không được chọn
@@ -89,7 +103,7 @@ class PurchaseOrderCreateFormFromPurchasingRequest extends Component {
                 },
             ];
 
-            let mapOptions = user.list.map((item) => {
+            let mapOptions = user.map((item) => {
                 return {
                     value: item._id,
                     text: item.name,
@@ -98,13 +112,12 @@ class PurchaseOrderCreateFormFromPurchasingRequest extends Component {
 
             options = options.concat(mapOptions);
         }
-
         return options;
     };
 
-    getStockOptions = () => {
+    const getStockOptions = () => {
         let options = [];
-        const { listStocks } = this.props.stocks;
+        const { listStocks } = props.stocks;
 
         if (listStocks.length) {
             options = [
@@ -127,9 +140,9 @@ class PurchaseOrderCreateFormFromPurchasingRequest extends Component {
         return options;
     };
 
-    getMaterialOptions = () => {
+    const getMaterialOptions = () => {
         let options = [];
-        let { listGoodsByType } = this.props.goods;
+        let { listGoodsByType } = props.goods;
         if (listGoodsByType) {
             options = [{ value: "title", text: "---Chọn nguyên vật liệu---" }];
 
@@ -146,14 +159,15 @@ class PurchaseOrderCreateFormFromPurchasingRequest extends Component {
         return options;
     };
 
-    validatePurchasingRequest = (value, willUpdateState = true) => {
+    const validatePurchasingRequest = (value, willUpdateState = true) => {
         let msg = undefined;
         if (!value || value === "" || value === "title") {
             msg = "Giá trị không được bỏ trống!";
         }
 
         if (willUpdateState) {
-            this.setState({
+            setState({
+                ...state,
                 purchasingRequestError: msg,
             });
         }
@@ -161,14 +175,15 @@ class PurchaseOrderCreateFormFromPurchasingRequest extends Component {
         return msg;
     };
 
-    handlePurchasingRequestChange = async (value) => {
+    const handlePurchasingRequestChange = async (value) => {
         if (value[0] === "title") {
-            this.setState({
+            setState({
+                ...state,
                 purchasingRequest: value[0],
             });
         } else {
             //Cập nhật đơn đề nghị vào đơn mua nguyên vật liệu
-            const { listPurchasingRequests } = this.props.purchasingRequest;
+            const { listPurchasingRequests } = props.purchasingRequest;
             let purchasingRequestInfo = listPurchasingRequests.find((element) => element._id === value[0]);
 
             if (purchasingRequestInfo) {
@@ -179,7 +194,8 @@ class PurchaseOrderCreateFormFromPurchasingRequest extends Component {
                     };
                 });
 
-                await this.setState({
+                await setState({
+                    ...state,
                     purchasingRequest: value[0],
                     materials,
                     description: purchasingRequestInfo.description,
@@ -188,17 +204,18 @@ class PurchaseOrderCreateFormFromPurchasingRequest extends Component {
             }
         }
 
-        this.validatePurchasingRequest(value[0], true);
+        validatePurchasingRequest(value[0], true);
     };
 
-    validateSupplier = (value, willUpdateState = true) => {
+    const validateSupplier = (value, willUpdateState = true) => {
         let msg = undefined;
         if (!value || value === "" || value === "title") {
             msg = "Giá trị không được bỏ trống!";
         }
 
         if (willUpdateState) {
-            this.setState({
+            setState({
+                ...state,
                 supplierError: msg,
             });
         }
@@ -206,15 +223,16 @@ class PurchaseOrderCreateFormFromPurchasingRequest extends Component {
         return msg;
     };
 
-    handleSupplierChange = async (value) => {
-        this.setState({
+    const handleSupplierChange = async (value) => {
+        setState({
+            ...state,
             supplier: value[0],
         });
 
-        this.validateSupplier(value[0], true);
+        validateSupplier(value[0], true);
     };
 
-    validateApprovers = (value, willUpdateState = true) => {
+    const validateApprovers = (value, willUpdateState = true) => {
         let msg = undefined;
         if (!value.length) {
             msg = "Người phê duyệt không được để trống";
@@ -227,7 +245,7 @@ class PurchaseOrderCreateFormFromPurchasingRequest extends Component {
         }
 
         if (willUpdateState) {
-            this.setState((state) => {
+            setState((state) => {
                 return {
                     ...state,
                     approversError: msg,
@@ -237,21 +255,23 @@ class PurchaseOrderCreateFormFromPurchasingRequest extends Component {
         return msg === undefined;
     };
 
-    handleApproversChange = (value) => {
-        this.setState({
+    const handleApproversChange = (value) => {
+        setState({
+            ...state,
             approvers: value,
         });
-        this.validateApprovers(value, true);
+        validateApprovers(value, true);
     };
 
-    validateStock = (value, willUpdateState = true) => {
+    const validateStock = (value, willUpdateState = true) => {
         let msg = undefined;
         if (!value || value === "" || value === "title") {
             msg = "Giá trị không được bỏ trống!";
         }
 
         if (willUpdateState) {
-            this.setState({
+            setState({
+                ...state,
                 stockError: msg,
             });
         }
@@ -259,56 +279,61 @@ class PurchaseOrderCreateFormFromPurchasingRequest extends Component {
         return msg;
     };
 
-    handleStockChange = (value) => {
-        this.setState({
+    const handleStockChange = (value) => {
+        setState({
+            ...state,
             stock: value[0],
         });
-        this.validateStock(value[0], true);
+        validateStock(value[0], true);
     };
 
-    handleIntendReceiveTimeChange = (value) => {
+    const handleIntendReceiveTimeChange = (value) => {
         if (!value) {
             value = null;
         }
 
-        let { translate } = this.props;
+        let { translate } = props;
         let { message } = ValidationHelper.validateEmpty(translate, value);
-        this.setState({
+        setState({
+            ...state,
             intendReceiveTime: value,
             intendReceiveTimeError: message,
         });
     };
 
-    validateDiscount = (value, willUpdateState = true) => {
+    const validateDiscount = (value, willUpdateState = true) => {
         let msg = undefined;
         if (value && parseInt(value) <= 0) {
             msg = "Giá trị phải lớn hơn 0, có thể bỏ trống!";
         }
         if (willUpdateState) {
-            this.setState({
+            setState({
+                ...state,
                 discountError: msg,
             });
         }
         return msg;
     };
 
-    handleDiscountChange = (e) => {
+    const handleDiscountChange = (e) => {
         let { value } = e.target;
-        this.setState({
+        setState({
+            ...state,
             discount: value,
         });
 
-        this.validateDiscount(value, true);
+        validateDiscount(value, true);
     };
 
-    handleDescriptionChange = (e) => {
+    const handleDescriptionChange = (e) => {
         let { value } = e.target;
-        this.setState({
+        setState({
+            ...state,
             desciption: value,
         });
     };
 
-    validateMaterial = (value, willUpdateState = true) => {
+    const validateMaterial = (value, willUpdateState = true) => {
         let msg = undefined;
         if (!value) {
             msg = "Giá trị không được để trống";
@@ -317,7 +342,7 @@ class PurchaseOrderCreateFormFromPurchasingRequest extends Component {
         }
 
         if (willUpdateState) {
-            this.setState((state) => {
+            setState((state) => {
                 return {
                     ...state,
                     materialError: msg,
@@ -327,13 +352,13 @@ class PurchaseOrderCreateFormFromPurchasingRequest extends Component {
         return msg;
     };
 
-    handleMaterialChange = (value) => {
+    const handleMaterialChange = (value) => {
         if (value[0] !== "title") {
-            let { listGoodsByType } = this.props.goods;
+            let { listGoodsByType } = props.goods;
             const materialInfo = listGoodsByType.filter((item) => item._id === value[0]);
 
             if (materialInfo.length) {
-                this.setState((state) => {
+                setState((state) => {
                     return {
                         ...state,
                         material: {
@@ -346,7 +371,7 @@ class PurchaseOrderCreateFormFromPurchasingRequest extends Component {
                 });
             }
         } else {
-            this.setState((state) => {
+            setState((state) => {
                 return {
                     ...state,
                     material: {
@@ -358,10 +383,10 @@ class PurchaseOrderCreateFormFromPurchasingRequest extends Component {
                 };
             });
         }
-        this.validateMaterial(value[0], true);
+        validateMaterial(value[0], true);
     };
 
-    validateQuantity = (value, willUpdateState = true) => {
+    const validateQuantity = (value, willUpdateState = true) => {
         let msg = undefined;
         if (!value || value === "") {
             msg = "Giá trị không được bỏ trống!";
@@ -369,7 +394,8 @@ class PurchaseOrderCreateFormFromPurchasingRequest extends Component {
             msg = "giá trị phải lớn hơn 0!";
         }
         if (willUpdateState) {
-            this.setState({
+            setState({
+                ...state,
                 quantityError: msg,
             });
         }
@@ -377,16 +403,17 @@ class PurchaseOrderCreateFormFromPurchasingRequest extends Component {
         return msg;
     };
 
-    handleQuantityChange = (e) => {
+    const handleQuantityChange = (e) => {
         let { value } = e.target;
-        this.setState({
+        setState({
+            ...state,
             quantity: value,
         });
 
-        this.validateQuantity(value, true);
+        validateQuantity(value, true);
     };
 
-    validatePrice = (value, willUpdateState = true) => {
+    const validatePrice = (value, willUpdateState = true) => {
         let msg = undefined;
         if (!value || value === "") {
             msg = "Giá trị không được bỏ trống!";
@@ -394,7 +421,8 @@ class PurchaseOrderCreateFormFromPurchasingRequest extends Component {
             msg = "giá trị không được nhỏ hơn 0!";
         }
         if (willUpdateState) {
-            this.setState({
+            setState({
+                ...state,
                 priceError: msg,
             });
         }
@@ -402,15 +430,16 @@ class PurchaseOrderCreateFormFromPurchasingRequest extends Component {
         return msg;
     };
 
-    handlePriceChange = (e) => {
+    const handlePriceChange = (e) => {
         let { value } = e.target;
-        this.setState({
+        setState({
+            ...state,
             price: value,
         });
-        this.validatePrice(value, true);
+        validatePrice(value, true);
     };
 
-    validatePriceChangeOnTable = (value, index, willUpdateState = true) => {
+    const validatePriceChangeOnTable = (value, index, willUpdateState = true) => {
         let msg = undefined;
         if (!value || value === "") {
             msg = "Giá trị không được bỏ trống!";
@@ -418,7 +447,8 @@ class PurchaseOrderCreateFormFromPurchasingRequest extends Component {
             msg = "giá trị không được nhỏ hơn 0!";
         }
         if (willUpdateState) {
-            this.setState({
+            setState({
+                ...state,
                 priceErrorPosition: index,
                 priceErrorOnTable: msg,
             });
@@ -427,21 +457,23 @@ class PurchaseOrderCreateFormFromPurchasingRequest extends Component {
         return msg;
     };
 
-    handlePriceChangeOnTable = (e, index) => {
+    const handlePriceChangeOnTable = (e, index) => {
         let { value } = e.target;
 
-        let { materials } = this.state;
+        let { materials } = state;
         materials[index].price = value;
-        this.setState({
+        setState({
+            ...state,
             materials,
         });
 
-        this.validatePriceChangeOnTable(value, index, true);
+        validatePriceChangeOnTable(value, index, true);
     };
 
-    handleClearMaterial = (e) => {
+    const handleClearMaterial = (e) => {
         e.preventDefault();
-        this.setState({
+        setState({
+            ...state,
             material: {
                 _id: "title",
                 code: "",
@@ -456,8 +488,8 @@ class PurchaseOrderCreateFormFromPurchasingRequest extends Component {
         });
     };
 
-    getPaymentAmount = (isSubmit = false) => {
-        let { materials, discount } = this.state;
+    const getPaymentAmount = (isSubmit = false) => {
+        let { materials, discount } = state;
         let paymentAmount = 0;
 
         paymentAmount = materials.reduce((accumulator, currentValue) => {
@@ -473,20 +505,20 @@ class PurchaseOrderCreateFormFromPurchasingRequest extends Component {
         return formatCurrency(paymentAmount);
     };
 
-    isSubmitMaterial = () => {
+    const isSubmitMaterial = () => {
         //Validate để thêm material vào list materials
-        let { material, quantity, price } = this.state;
-        if (this.validateMaterial(material, false) || this.validateQuantity(quantity, false) || this.validatePrice(price, false)) {
+        let { material, quantity, price } = state;
+        if (validateMaterial(material, false) || validateQuantity(quantity, false) || validatePrice(price, false)) {
             return false;
         } else {
             return true;
         }
     };
 
-    handleAddMaterial = (e) => {
+    const handleAddMaterial = (e) => {
         e.preventDefault();
-        if (this.isSubmitMaterial()) {
-            const { material, quantity, price, materials } = this.state;
+        if (isSubmitMaterial()) {
+            const { material, quantity, price, materials } = state;
             let data = {
                 material,
                 quantity,
@@ -495,7 +527,8 @@ class PurchaseOrderCreateFormFromPurchasingRequest extends Component {
 
             materials.push(data);
 
-            this.setState({
+            setState({
+                ...state,
                 materials,
                 material: {
                     _id: "title",
@@ -512,16 +545,18 @@ class PurchaseOrderCreateFormFromPurchasingRequest extends Component {
         }
     };
 
-    handleDeleteMaterial = (item) => {
-        let { materials } = this.state;
+    const handleDeleteMaterial = (item) => {
+        let { materials } = state;
         let materialsFilter = materials.filter((element) => element.material !== item.material);
-        this.setState({
+        setState({
+            ...state,
             materials: materialsFilter,
         });
     };
 
-    handleMaterialsEdit = (item, index) => {
-        this.setState({
+    const handleMaterialsEdit = (item, index) => {
+        setState({
+            ...state,
             editMaterials: true,
             indexEditting: index,
             material: item.material,
@@ -533,10 +568,10 @@ class PurchaseOrderCreateFormFromPurchasingRequest extends Component {
         });
     };
 
-    handleSaveEditMaterial = (e) => {
+    const handleSaveEditMaterial = (e) => {
         e.preventDefault();
-        if (this.isSubmitMaterial()) {
-            const { material, quantity, price, materials, indexEditting } = this.state;
+        if (isSubmitMaterial()) {
+            const { material, quantity, price, materials, indexEditting } = state;
             let data = {
                 material,
                 quantity,
@@ -545,7 +580,8 @@ class PurchaseOrderCreateFormFromPurchasingRequest extends Component {
 
             materials[indexEditting] = data;
 
-            this.setState({
+            setState({
+                ...state,
                 materials,
                 material: {
                     _id: "title",
@@ -564,9 +600,10 @@ class PurchaseOrderCreateFormFromPurchasingRequest extends Component {
         }
     };
 
-    handleCancelEditMaterial = (e) => {
+    const handleCancelEditMaterial = (e) => {
         e.preventDefault();
-        this.setState({
+        setState({
+            ...state,
             material: {
                 _id: "title",
                 code: "",
@@ -583,15 +620,15 @@ class PurchaseOrderCreateFormFromPurchasingRequest extends Component {
         });
     };
 
-    validatePriceInMaterials = () => {
+    const validatePriceInMaterials = () => {
         //Kiểm tra giá đã được thêm vào chưa
-        let { materials } = this.state;
+        let { materials } = state;
         if (!materials.length) {
             return false;
         }
 
         for (let index = 0; index < materials.length; index++) {
-            if (this.validatePriceChangeOnTable(materials[index].price, index, false)) {
+            if (validatePriceChangeOnTable(materials[index].price, index, false)) {
                 return false;
             }
         }
@@ -600,15 +637,15 @@ class PurchaseOrderCreateFormFromPurchasingRequest extends Component {
         return true;
     };
 
-    isFormValidated = () => {
-        const { translate } = this.props;
-        let { stock, supplier, approvers, intendReceiveTime, materials, purchasingRequest } = this.state;
+    const isFormValidated = () => {
+        const { translate } = props;
+        let { stock, supplier, approvers, intendReceiveTime, materials, purchasingRequest } = state;
         if (
-            this.validateStock(stock, false) ||
-            this.validateSupplier(supplier, false) ||
-            this.validatePurchasingRequest(purchasingRequest, false) ||
+            validateStock(stock, false) ||
+            validateSupplier(supplier, false) ||
+            validatePurchasingRequest(purchasingRequest, false) ||
             ValidationHelper.validateEmpty(translate, intendReceiveTime).message ||
-            !this.validatePriceInMaterials() ||
+            !validatePriceInMaterials() ||
             !approvers.length ||
             !materials.length
         ) {
@@ -617,8 +654,8 @@ class PurchaseOrderCreateFormFromPurchasingRequest extends Component {
         return true;
     };
 
-    formatMaterialsForSubmit = () => {
-        let { materials } = this.state;
+    const formatMaterialsForSubmit = () => {
+        let { materials } = state;
         let materialsMap = materials.map((element) => {
             return {
                 material: element.material,
@@ -630,8 +667,8 @@ class PurchaseOrderCreateFormFromPurchasingRequest extends Component {
         return materialsMap;
     };
 
-    formatApproversForSubmit = () => {
-        let { approvers } = this.state;
+    const formatApproversForSubmit = () => {
+        let { approvers } = state;
         let approversMap = approvers.map((element) => {
             return {
                 approver: element,
@@ -641,10 +678,10 @@ class PurchaseOrderCreateFormFromPurchasingRequest extends Component {
         return approversMap;
     };
 
-    save = async () => {
-        let { code, stock, supplier, intendReceiveTime, discount, desciption, purchasingRequest } = this.state;
-        let materials = await this.formatMaterialsForSubmit();
-        let approvers = await this.formatApproversForSubmit();
+    const save = async () => {
+        let { code, stock, supplier, intendReceiveTime, discount, desciption, purchasingRequest } = state;
+        let materials = await formatMaterialsForSubmit();
+        let approvers = await formatApproversForSubmit();
         let data = {
             code,
             stock,
@@ -655,11 +692,12 @@ class PurchaseOrderCreateFormFromPurchasingRequest extends Component {
             desciption,
             materials,
             purchasingRequest,
-            paymentAmount: this.getPaymentAmount(true),
+            paymentAmount: getPaymentAmount(true),
         };
-        await this.props.createPurchaseOrder(data);
+        await props.createPurchaseOrder(data);
 
-        this.setState({
+        setState({
+            ...state,
             stock: "title",
             supplier: "title",
             approvers: [],
@@ -674,305 +712,303 @@ class PurchaseOrderCreateFormFromPurchasingRequest extends Component {
         });
     };
 
-    render() {
-        const {
-            code,
-            supplier,
-            approvers,
-            stock,
-            intendReceiveTime,
-            discount,
-            desciption,
-            material,
-            quantity,
-            price,
-            materials,
-            editMaterials,
-            purchasingRequest,
-        } = this.state;
-        const {
-            supplierError,
-            approversError,
-            stockError,
-            intendReceiveTimeError,
-            discountError,
-            materialError,
-            quantityError,
-            priceError,
-            purchasingRequestError,
-            priceErrorPosition,
-            priceErrorOnTable,
-        } = this.state;
-
-        return (
-            <React.Fragment>
-                <DialogModal
-                    modalID={`modal-add-purchase-order-from-puchasing-request`}
-                    isLoading={false}
-                    formID={`form-add-purchase-order-from-puchasing-request`}
-                    title={"Tạo từ đơn đề nghị"}
-                    msg_success={"Tạo thành công"}
-                    msg_faile={"Tạo không thành công"}
-                    disableSubmit={!this.isFormValidated()}
-                    func={this.save}
-                    size="75"
-                >
-                    <form id={`form-add-purchase-order-from-puchasing-request`}>
-                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                            <div className="form-group">
-                                <label>
-                                    Mã đơn
+    const {
+        code,
+        supplier,
+        approvers,
+        stock,
+        intendReceiveTime,
+        discount,
+        desciption,
+        material,
+        quantity,
+        price,
+        materials,
+        editMaterials,
+        purchasingRequest,
+    } = state;
+    const {
+        supplierError,
+        approversError,
+        stockError,
+        intendReceiveTimeError,
+        discountError,
+        materialError,
+        quantityError,
+        priceError,
+        purchasingRequestError,
+        priceErrorPosition,
+        priceErrorOnTable,
+    } = state;
+    return (
+        <React.Fragment>
+            <DialogModal
+                modalID={`modal-add-purchase-order-from-puchasing-request`}
+                isLoading={false}
+                formID={`form-add-purchase-order-from-puchasing-request`}
+                title={"Tạo từ đơn đề nghị"}
+                msg_success={"Tạo thành công"}
+                msg_faile={"Tạo không thành công"}
+                disableSubmit={!isFormValidated()}
+                func={save}
+                size="75"
+            >
+                <form id={`form-add-purchase-order-from-puchasing-request`}>
+                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                        <div className="form-group">
+                            <label>
+                                Mã đơn
                                     <span className="attention"> * </span>
-                                </label>
-                                <input type="text" className="form-control" value={code} disabled={true} />
-                            </div>
-                            <div className={`form-group ${!purchasingRequestError ? "" : "has-error"}`}>
-                                <label>
-                                    Đơn đề nghị mua nguyên vật liệu
-                                    <span className="attention"> * </span>
-                                </label>
-                                <SelectBox
-                                    id={`select-create-purchase-order-form-request`}
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    value={purchasingRequest}
-                                    items={this.getPurchasingRequestOptions()}
-                                    onChange={this.handlePurchasingRequestChange}
-                                    multiple={false}
-                                />
-                                <ErrorLabel content={purchasingRequestError} />
-                            </div>
-                            <div className={`form-group ${!stockError ? "" : "has-error"}`}>
-                                <label>
-                                    Kho nhập nguyên vật liệu
-                                    <span className="attention"> * </span>
-                                </label>
-                                <SelectBox
-                                    id={`select-create-purchase-order-from-request-stock`}
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    value={stock}
-                                    items={this.getStockOptions()}
-                                    onChange={this.handleStockChange}
-                                    multiple={false}
-                                />
-                                <ErrorLabel content={stockError} />
-                            </div>
-                            <div className={`form-group ${!supplierError ? "" : "has-error"}`}>
-                                <label>
-                                    Nhà cung cấp
-                                    <span className="attention"> * </span>
-                                </label>
-                                <SelectBox
-                                    id={`select-create-purchase-order-from-request-supplier`}
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    value={supplier}
-                                    items={this.getSuplierOptions()}
-                                    onChange={this.handleSupplierChange}
-                                    multiple={false}
-                                />
-                                <ErrorLabel content={supplierError} />
-                            </div>
+                            </label>
+                            <input type="text" className="form-control" value={code} disabled={true} />
                         </div>
-                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                            <div className={`form-group ${!approversError ? "" : "has-error"}`}>
-                                <label>
-                                    Người phê duyệt
+                        <div className={`form-group ${!purchasingRequestError ? "" : "has-error"}`}>
+                            <label>
+                                Đơn đề nghị mua nguyên vật liệu
                                     <span className="attention"> * </span>
-                                </label>
+                            </label>
+                            <SelectBox
+                                id={`select-create-purchase-order-form-request`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                value={purchasingRequest}
+                                items={getPurchasingRequestOptions()}
+                                onChange={handlePurchasingRequestChange}
+                                multiple={false}
+                            />
+                            <ErrorLabel content={purchasingRequestError} />
+                        </div>
+                        <div className={`form-group ${!stockError ? "" : "has-error"}`}>
+                            <label>
+                                Kho nhập nguyên vật liệu
+                                    <span className="attention"> * </span>
+                            </label>
+                            <SelectBox
+                                id={`select-create-purchase-order-from-request-stock`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                value={stock}
+                                items={getStockOptions()}
+                                onChange={handleStockChange}
+                                multiple={false}
+                            />
+                            <ErrorLabel content={stockError} />
+                        </div>
+                        <div className={`form-group ${!supplierError ? "" : "has-error"}`}>
+                            <label>
+                                Nhà cung cấp
+                                    <span className="attention"> * </span>
+                            </label>
+                            <SelectBox
+                                id={`select-create-purchase-order-from-request-supplier`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                value={supplier}
+                                items={getSuplierOptions()}
+                                onChange={handleSupplierChange}
+                                multiple={false}
+                            />
+                            <ErrorLabel content={supplierError} />
+                        </div>
+                    </div>
+                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                        <div className={`form-group ${!approversError ? "" : "has-error"}`}>
+                            <label>
+                                Người phê duyệt
+                                    <span className="attention"> * </span>
+                            </label>
+                            {state.listUser && state.listUser.length !== -1 &&
                                 <SelectBox
                                     id={`select-create-purchase-order-from-request-approvers`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     value={approvers}
-                                    items={this.getApproverOptions()}
-                                    onChange={this.handleApproversChange}
+                                    items={getApproverOptions()}
+                                    onChange={handleApproversChange}
                                     multiple={true}
-                                />
-                                <ErrorLabel content={approversError} />
-                            </div>
-                            <div className={`form-group ${!intendReceiveTimeError ? "" : "has-error"}`}>
-                                <label>
-                                    Ngày dự kiến nhập hàng
-                                    <span className="attention"> * </span>
-                                </label>
-                                <DatePicker
-                                    id="date_picker_create_purchase-order_from_request_intend_received_time"
-                                    value={intendReceiveTime}
-                                    onChange={this.handleIntendReceiveTimeChange}
-                                    disabled={false}
-                                />
-                                <ErrorLabel content={intendReceiveTimeError} />
-                            </div>
-                            <div className={`form-group ${!discountError ? "" : "has-error"}`}>
-                                <label>Tiền được khuyến mãi</label>
-                                <input type="number" className="form-control" value={discount} onChange={this.handleDiscountChange} />
-                                <ErrorLabel content={discountError} />
-                            </div>
-                            <div className={`form-group`}>
-                                <label>Ghi chú</label>
-                                <textarea type="text" className="form-control" value={desciption} onChange={this.handleDescriptionChange} />
-                            </div>
+                                />}
+
+                            <ErrorLabel content={approversError} />
                         </div>
-                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                            <fieldset className="scheduler-border">
-                                <legend className="scheduler-border">Thông tin nguyên vật liệu</legend>
-                                <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                                    <div className={`form-group ${!materialError ? "" : "has-error"}`}>
-                                        <label>
-                                            Nguyên vật liệu
+                        <div className={`form-group ${!intendReceiveTimeError ? "" : "has-error"}`}>
+                            <label>
+                                Ngày dự kiến nhập hàng
+                                    <span className="attention"> * </span>
+                            </label>
+                            <DatePicker
+                                id="date_picker_create_purchase-order_from_request_intend_received_time"
+                                value={intendReceiveTime}
+                                onChange={handleIntendReceiveTimeChange}
+                                disabled={false}
+                            />
+                            <ErrorLabel content={intendReceiveTimeError} />
+                        </div>
+                        <div className={`form-group ${!discountError ? "" : "has-error"}`}>
+                            <label>Tiền được khuyến mãi</label>
+                            <input type="number" className="form-control" value={discount} onChange={handleDiscountChange} />
+                            <ErrorLabel content={discountError} />
+                        </div>
+                        <div className={`form-group`}>
+                            <label>Ghi chú</label>
+                            <textarea type="text" className="form-control" value={desciption} onChange={handleDescriptionChange} />
+                        </div>
+                    </div>
+                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <fieldset className="scheduler-border">
+                            <legend className="scheduler-border">Thông tin nguyên vật liệu</legend>
+                            <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                <div className={`form-group ${!materialError ? "" : "has-error"}`}>
+                                    <label>
+                                        Nguyên vật liệu
                                             <span className="attention"> * </span>
-                                        </label>
-                                        <SelectBox
-                                            id={`select-create-purchase-order-from-request-material`}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            value={material._id}
-                                            items={this.getMaterialOptions()}
-                                            onChange={this.handleMaterialChange}
-                                            multiple={false}
-                                        />
-                                        <ErrorLabel content={materialError} />
-                                    </div>
+                                    </label>
+                                    <SelectBox
+                                        id={`select-create-purchase-order-from-request-material`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        value={material&&material._id}
+                                        items={getMaterialOptions()}
+                                        onChange={handleMaterialChange}
+                                        multiple={false}
+                                    />
+                                    <ErrorLabel content={materialError} />
                                 </div>
-                                <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                                    <div className={`form-group ${!quantityError ? "" : "has-error"}`}>
-                                        <label>
-                                            Số lượng mua
+                            </div>
+                            <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                <div className={`form-group ${!quantityError ? "" : "has-error"}`}>
+                                    <label>
+                                        Số lượng mua
                                             <span className="attention"> * </span>
-                                        </label>
-                                        <input type="number" className="form-control" value={quantity} onChange={this.handleQuantityChange} />
-                                        <ErrorLabel content={quantityError} />
-                                    </div>
+                                    </label>
+                                    <input type="number" className="form-control" value={quantity} onChange={handleQuantityChange} />
+                                    <ErrorLabel content={quantityError} />
                                 </div>
-                                <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                                    <div className={`form-group ${!priceError ? "" : "has-error"}`}>
-                                        <label>
-                                            Giá nhập
+                            </div>
+                            <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                <div className={`form-group ${!priceError ? "" : "has-error"}`}>
+                                    <label>
+                                        Giá nhập
                                             <span className="attention"> * </span>
-                                        </label>
-                                        <input type="number" className="form-control" value={price} onChange={this.handlePriceChange} />
-                                        <ErrorLabel content={priceError} />
-                                    </div>
+                                    </label>
+                                    <input type="number" className="form-control" value={price} onChange={handlePriceChange} />
+                                    <ErrorLabel content={priceError} />
                                 </div>
-                                <div className={"pull-right"} style={{ padding: 10 }}>
-                                    {editMaterials ? (
-                                        <React.Fragment>
-                                            <button
-                                                className="btn btn-success"
-                                                onClick={this.handleCancelEditMaterial}
-                                                style={{ marginLeft: "10px" }}
-                                            >
-                                                Hủy chỉnh sửa
-                                            </button>
-                                            <button
-                                                className="btn btn-success"
-                                                disabled={!this.isSubmitMaterial()}
-                                                onClick={this.handleSaveEditMaterial}
-                                                style={{ marginLeft: "10px" }}
-                                            >
-                                                Lưu
-                                            </button>
-                                        </React.Fragment>
-                                    ) : (
+                            </div>
+                            <div className={"pull-right"} style={{ padding: 10 }}>
+                                {editMaterials ? (
+                                    <React.Fragment>
                                         <button
                                             className="btn btn-success"
+                                            onClick={handleCancelEditMaterial}
                                             style={{ marginLeft: "10px" }}
-                                            disabled={!this.isSubmitMaterial()}
-                                            onClick={this.handleAddMaterial}
                                         >
-                                            {"Thêm"}
-                                        </button>
-                                    )}
-                                    <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={this.handleClearMaterial}>
-                                        Xóa trắng
+                                            Hủy chỉnh sửa
+                                            </button>
+                                        <button
+                                            className="btn btn-success"
+                                            disabled={!isSubmitMaterial()}
+                                            onClick={handleSaveEditMaterial}
+                                            style={{ marginLeft: "10px" }}
+                                        >
+                                            Lưu
+                                            </button>
+                                    </React.Fragment>
+                                ) : (
+                                    <button
+                                        className="btn btn-success"
+                                        style={{ marginLeft: "10px" }}
+                                        disabled={!isSubmitMaterial()}
+                                        onClick={handleAddMaterial}
+                                    >
+                                        {"Thêm"}
                                     </button>
-                                </div>
+                                )}
+                                <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={handleClearMaterial}>
+                                    Xóa trắng
+                                    </button>
+                            </div>
 
-                                <table id={`purchase-order-create-from-request-table`} className="table table-bordered not-sort">
-                                    <thead>
-                                        <tr>
-                                            <th title={"STT"}>STT</th>
-                                            <th title={"Mã đơn"}>Nguyên vật liệu</th>
-                                            <th title={"Mã đơn"}>Đơn vị tính</th>
-                                            <th title={"Tổng tiền"}>Số lượng</th>
-                                            <th title={"Còn"}>Giá nhập</th>
-                                            <th title={"Số tiền thanh toán"}>Tổng tiền</th>
-                                            <th title={"Đơn vị tính"}>Hành động</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {materials.length !== 0 &&
-                                            materials.map((item, index) => {
-                                                return (
-                                                    <tr key={index}>
-                                                        <td>{index + 1}</td>
-                                                        <td>{item.material ? item.material.name : ""}</td>
-                                                        <td>{item.material ? item.material.baseUnit : ""}</td>
-                                                        <td>{item.quantity}</td>
-                                                        {/* <td>{item.price ? formatCurrency(item.price) : ""}</td> */}
-                                                        <td>
-                                                            <div
-                                                                className={`form-group ${
-                                                                    parseInt(priceErrorPosition) === index && priceErrorOnTable ? "has-error" : ""
+                            <table id={`purchase-order-create-from-request-table`} className="table table-bordered not-sort">
+                                <thead>
+                                    <tr>
+                                        <th title={"STT"}>STT</th>
+                                        <th title={"Mã đơn"}>Nguyên vật liệu</th>
+                                        <th title={"Mã đơn"}>Đơn vị tính</th>
+                                        <th title={"Tổng tiền"}>Số lượng</th>
+                                        <th title={"Còn"}>Giá nhập</th>
+                                        <th title={"Số tiền thanh toán"}>Tổng tiền</th>
+                                        <th title={"Đơn vị tính"}>Hành động</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {materials&&materials.length !== 0 &&
+                                        materials.map((item, index) => {
+                                            return (
+                                                <tr key={index}>
+                                                    <td>{index + 1}</td>
+                                                    <td>{item.material ? item.material.name : ""}</td>
+                                                    <td>{item.material ? item.material.baseUnit : ""}</td>
+                                                    <td>{item.quantity}</td>
+                                                    {/* <td>{item.price ? formatCurrency(item.price) : ""}</td> */}
+                                                    <td>
+                                                        <div
+                                                            className={`form-group ${parseInt(priceErrorPosition) === index && priceErrorOnTable ? "has-error" : ""
                                                                 }`}
-                                                            >
-                                                                <input
-                                                                    className="form-control"
-                                                                    type="number"
-                                                                    value={item.price}
-                                                                    name="value"
-                                                                    style={{ width: "100%" }}
-                                                                    onChange={(e) => this.handlePriceChangeOnTable(e, index)}
-                                                                />
-                                                                {parseInt(priceErrorPosition) === index && priceErrorOnTable && (
-                                                                    <ErrorLabel content={priceErrorOnTable} />
-                                                                )}
-                                                            </div>
-                                                        </td>
-                                                        <td style={{ fontWeight: 600 }}>
-                                                            {item.price * item.quantity ? formatCurrency(item.price * item.quantity) : ""}
-                                                        </td>
-                                                        <td style={{ textAlign: "center" }}>
-                                                            <a
-                                                                href="#abc"
-                                                                className="edit"
-                                                                title="Sửa"
-                                                                onClick={() => this.handleMaterialsEdit(item, index)}
-                                                            >
-                                                                <i className="material-icons">edit</i>
-                                                            </a>
-                                                            <a
-                                                                onClick={() => this.handleDeleteMaterial(item)}
-                                                                className="delete text-red"
-                                                                style={{ width: "5px" }}
-                                                                title={"Xóa"}
-                                                            >
-                                                                <i className="material-icons">delete</i>
-                                                            </a>
-                                                        </td>
-                                                    </tr>
-                                                );
-                                            })}
-                                        {materials.length !== 0 && (
-                                            <tr>
-                                                <td colSpan={5} style={{ fontWeight: 600 }}>
-                                                    <center>Tổng thanh toán</center>
-                                                </td>
-                                                <td style={{ fontWeight: 600 }}>{this.getPaymentAmount()}</td>
-                                                <td></td>
-                                            </tr>
-                                        )}
-                                    </tbody>
-                                </table>
-                            </fieldset>
-                        </div>
-                    </form>
-                </DialogModal>
-            </React.Fragment>
-        );
-    }
+                                                        >
+                                                            <input
+                                                                className="form-control"
+                                                                type="number"
+                                                                value={item.price}
+                                                                name="value"
+                                                                style={{ width: "100%" }}
+                                                                onChange={(e) => handlePriceChangeOnTable(e, index)}
+                                                            />
+                                                            {parseInt(priceErrorPosition) === index && priceErrorOnTable && (
+                                                                <ErrorLabel content={priceErrorOnTable} />
+                                                            )}
+                                                        </div>
+                                                    </td>
+                                                    <td style={{ fontWeight: 600 }}>
+                                                        {item.price * item.quantity ? formatCurrency(item.price * item.quantity) : ""}
+                                                    </td>
+                                                    <td style={{ textAlign: "center" }}>
+                                                        <a
+                                                            href="#abc"
+                                                            className="edit"
+                                                            title="Sửa"
+                                                            onClick={() => handleMaterialsEdit(item, index)}
+                                                        >
+                                                            <i className="material-icons">edit</i>
+                                                        </a>
+                                                        <a
+                                                            onClick={() => handleDeleteMaterial(item)}
+                                                            className="delete text-red"
+                                                            style={{ width: "5px" }}
+                                                            title={"Xóa"}
+                                                        >
+                                                            <i className="material-icons">delete</i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })}
+                                    {materials&&materials.length !== 0 && (
+                                        <tr>
+                                            <td colSpan={5} style={{ fontWeight: 600 }}>
+                                                <center>Tổng thanh toán</center>
+                                            </td>
+                                            <td style={{ fontWeight: 600 }}>{getPaymentAmount()}</td>
+                                            <td></td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </table>
+                        </fieldset>
+                    </div>
+                </form>
+            </DialogModal>
+        </React.Fragment>
+    );
 }
 
 function mapStateToProps(state) {
@@ -983,6 +1019,7 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
     createPurchaseOrder: PurchaseOrderActions.createPurchaseOrder,
+    getUser: UserActions.get,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(PurchaseOrderCreateFormFromPurchasingRequest));

@@ -750,11 +750,17 @@ exports.createEmployee = async (portal, data, company, fileInfor) => {
         files
     } = data;
 
-    for(let i in career) {
+    for (let i in career) {
         if(career[i] && career[i].position === "undefined") {
             delete career[i].position;
         }
     }
+    degrees = degrees.map(x => {
+        if (x.field === "")
+            x.field = null;
+        return x;
+    })
+
 
     // career = this.mergeUrlFileToObject(fileCareer, career);
     // major = this.mergeUrlFileToObject(fileMajor, major);
@@ -966,7 +972,7 @@ exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company)
         houseHold, // dữ liệu về hộ khẩu - thành viên hộ gia đình
         roles // dữ liệu về chức danh
     } = data;
-    
+    //  console.log('createDegrees',createDegrees)
     // for(let i in data.createCareer) {
     //     if(data.createCareer[i] && data.createCareer[i].position === "undefined") {
     //         delete data.createCareer[i].position;
@@ -1614,67 +1620,88 @@ exports.importEmployeeInfor = async (portal, company, data) => {
         employeeTimesheetId: 1
     });
 
-    let rowError = [];
-    data = data.map((x, index) => {
-        // Check lỗi trùng mã nhân viên, mã chấm công, email
+    const dataLength = data.length;
+    for (let i = 0; i < dataLength; i++){
         let checkEmployeeNumber, checkEmailInCompany, checkEmployeeTimesheetId;
-        if(x.employeeNumber)
-            checkEmployeeNumber = employeeInfo.some(y => y.employeeNumber.toString() === x.employeeNumber.toString());
+        if (data[i].employeeNumber)
+            checkEmployeeNumber = employeeInfo.filter(y => y.employeeNumber.toString() === data[i].employeeNumber.toString());
+   
+        if (data[i].emailInCompany)
+            checkEmailInCompany = employeeInfo.filter(y => y.emailInCompany === data[i].emailInCompany);
         
-        if(x.emailInCompany)
-            checkEmailInCompany = employeeInfo.some(y => y.emailInCompany === x.emailInCompany);
+        if (data[i].employeeTimesheetId)
+            checkEmployeeTimesheetId = employeeInfo.filter(y => y.employeeTimesheetId.toString() === data[i].employeeTimesheetId.toString());
         
-        if(x.employeeTimesheetId)
-            checkEmployeeTimesheetId = employeeInfo.some(y => y.employeeTimesheetId.toString() === x.employeeTimesheetId.toString());
-        
-        if (!checkEmployeeNumber) {
-            x = {
-                ...x,
-                errorAlert: [...x.errorAlert, "staff_code_not_find"],
-                error: true
-            };
-        }
-        if (!checkEmailInCompany) {
-            x = {
-                ...x,
-                errorAlert: [...x.errorAlert, "email_in_company_not_have_exist"],
-                error: true
-            };
-        }
-        if (!checkEmployeeTimesheetId) {
-            x = {
-                ...x,
-                errorAlert: [...x.errorAlert, "employee_timesheet_id_not_have_exist"],
-                error: true
+        // Nếu mã NV tồn tại và duy nhất thì cập nhật, ko thì bỏ qua
+        if (checkEmployeeNumber?.length === 1 && (checkEmailInCompany?.length === 0 || checkEmployeeNumber[0]?.emailInCompany === data[i].emailInCompany) ) {
+            data[i] = {
+                ...data[i],
+               updateFlag: true,
             };
         }
 
-        if (!checkEmployeeNumber || !checkEmailInCompany || !checkEmployeeTimesheetId) {
-            rowError = [...rowError, index + 1];
+        // NẾu nhân viên nào 
+        if (checkEmployeeNumber?.length === 1 && checkEmailInCompany?.length === 0 && data[i].emailInCompany && checkEmployeeNumber?.[0]?.emailInCompany !== data[i].emailInCompany) {
+            const getUser = await User(connect(DB_CONNECTION, portal)).findOne({ email: data[i].emailInCompany });
+            if (!getUser)
+                data[i] = {
+                    ...data[i],
+                    updateUserFlag: true,
+                };
+        }
+        let positionIdConvert = [];
+        if (data[i]?.positionId?.length) {
+            data[i]?.positionId.forEach(x => {
+                if (x)
+                    positionIdConvert = [...positionIdConvert, x];
+            })
+        }
+        data[i] = {
+            ...data[i],
+            positionId: positionIdConvert,
         }
 
-        // Xóa các trường có giá trị null, chỉ cập nhật nhưngx trường có giá trị
-        Object.keys(x).forEach((key) => (x[key] == null) && delete x[key]);
-        return x
-    })
-
-    if (rowError.length !== 0) {
-        return {
-            errorStatus: true,
-            employeesInfor: data,
-            rowErrorOfEmployeeInfor: rowError
-        }
-    } else {
-        for (let i = 0; i < data?.length; i++) {
+        Object.keys(data[i]).forEach((key) => (data[i][key] == null) && delete data[i][key]);
+    }
+     
+    for (let i = 0; i < data?.length; i++) {
+        if(data[i].updateFlag){
             await Employee(connect(DB_CONNECTION, portal)).updateOne(
                 { employeeNumber: data[i]?.employeeNumber },
                 data[i]
             );
         }
-    }
+        console.log('dataPoss', data[i].positionId);
 
-    return {
-        errorStatus: null
+        const checkEmployeeNumber = employeeInfo.filter(y => y.employeeNumber.toString() === data[i].employeeNumber.toString());
+        if (checkEmployeeNumber?.length === 1 && data[i]?.positionId?.length) {
+            const employee = employeeInfo.filter(y => y.employeeNumber.toString() === data[i].employeeNumber.toString());
+            
+            if (employee?.length) {
+                const user = await User(connect(DB_CONNECTION, portal)).findOne({ email: employee[0]?.emailInCompany });
+                if (user) {
+                    await UserRole(connect(DB_CONNECTION, portal)).deleteMany({
+                        userId : user._id
+                    });
+
+                    for (let k = 0; k < data[i]?.positionId?.length; k++){
+                    if(data[i]?.positionId[k])
+                        await UserRole(connect(DB_CONNECTION, portal))
+                        .create({
+                            userId: user._id,
+                            roleId: data[i].positionId[k]
+                        });
+                    }
+                }
+            }
+            
+        }
+
+        if (data[i].updateUserFlag) {
+            const employee = employeeInfo.filter(y => y.employeeNumber.toString() === data[i].employeeNumber.toString());
+            if (employee?.length)
+                await User(connect(DB_CONNECTION, portal)).updateOne({ email: employee[0].emailInCompany }, { email: data[i].emailInCompany });
+        }
     }
 }
 

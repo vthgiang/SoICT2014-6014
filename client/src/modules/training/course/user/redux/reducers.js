@@ -8,9 +8,10 @@ const initState = {
     courseByEducations: [],
     totalList: "",
     error: "",
+    listCoursesUserPassed: []
 }
 
-export function course(state = initState, action) {
+export function userCourse(state = initState, action) {
     switch (action.type) {
         case CourseConstants.GET_LIST_COURSE_REQUEST:
         case CourseConstants.CREATE_COURSE_REQUEST:
@@ -21,15 +22,15 @@ export function course(state = initState, action) {
                 isLoading: true
             };
         case CourseConstants.GET_LIST_COURSE_SUCCESS:
+            console.log(action.payload.listCoursesUserPassed)
             return {
                 ...state,
                 listCourses: action.payload.listCourses,
-                    totalList: action.payload.totalList !== undefined ? action.payload.totalList : [],
-                    isLoading: false,
+                listCoursesUserPassed: action.payload.listCoursesUserPassed !== undefined ? action.payload.listCoursesUserPassed : [],
+                totalList: action.payload.totalList !== undefined ? action.payload.totalList : [],
+                isLoading: false,
             };
         case CourseConstants.CREATE_COURSE_SUCCESS:
-            console.log(action.payload._id);
-            console.log(state.listCourse);
             return {
                 ...state,
                 listCourses: [
@@ -39,8 +40,6 @@ export function course(state = initState, action) {
                     isLoading: false,
             };
         case CourseConstants.DELETE_COURSE_SUCCESS:
-            console.log(action.payload);
-            console.log(state.listCourses);
             return {
                 ...state,
                 listCourses: state.listCourses.filter(course => course._id !== action.payload._id),

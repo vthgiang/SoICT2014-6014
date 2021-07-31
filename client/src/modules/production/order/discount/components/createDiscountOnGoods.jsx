@@ -1,29 +1,29 @@
-import React, { Component } from "react";
+import React, { Component, useEffect, useState } from "react";
 import { DialogModal, ErrorLabel, SelectBox, DatePicker } from "../../../../../common-components";
 import { formatCurrency } from "../../../../../helpers/formatCurrency";
 import { connect } from "react-redux";
 import { formatDate } from "../../../../../helpers/formatDate";
 import { withTranslate } from "react-redux-multilingual";
 
-class CreateDiscountOnGoods extends Component {
-    constructor(props) {
-        super(props);
-        this.EMPTY_GOOD = {
-            goodId: "1",
-            goodObject: "",
-            expirationDate: "",
-            discountedPrice: "",
-        };
-        this.state = {
-            good: Object.assign({}, this.EMPTY_GOOD),
-            goodOptions: [],
-            listGoods: [],
-        };
-    }
+function CreateDiscountOnGoods(props) {
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.discountType !== prevState.discountType || nextProps.formality !== prevState.formality) {
+    let EMPTY_GOOD = {
+        goodId: "1",
+        goodObject: "",
+        expirationDate: "",
+        discountedPrice: "",
+    };
+
+    const [state, setState] = useState({
+        good: Object.assign({}, EMPTY_GOOD),
+        goodOptions: [],
+        listGoods: [],
+    })
+
+    if (props.discountType !== state.discountType || props.formality !== state.formality) {
+        setState((state) => {
             return {
+                ...state,
                 goodOptions: [],
                 listGoods: [],
                 good: {
@@ -32,25 +32,26 @@ class CreateDiscountOnGoods extends Component {
                     expirationDate: "",
                     discountedPrice: "",
                 },
-                discountType: nextProps.discountType,
-                formality: nextProps.formality,
+                discountType: props.discountType,
+                formality: props.formality,
             };
-        }
+        })
     }
 
-    shouldComponentUpdate = (nextProps, nextState) => {
+    useEffect(() => {
+        
         let enableIndexEdit =
-            this.props.indexEdittingDiscount !== nextProps.indexEdittingDiscount || nextState.discountCode !== nextProps.discountCode;
-        let discountOnGoodsIsNotNull = nextProps.discountOnGoods && nextProps.discountOnGoods.length;
+            props.indexEdittingDiscount !== props.indexEdittingDiscount || state.discountCode !== props.discountCode;
+        let discountOnGoodsIsNotNull = props.discountOnGoods && props.discountOnGoods.length;
 
-        if (nextProps.editDiscountDetail && enableIndexEdit && discountOnGoodsIsNotNull) {
-            let { listGoods, goodOptions } = this.state;
+        if (props.editDiscountDetail && enableIndexEdit && discountOnGoodsIsNotNull) {
+            let { listGoods, goodOptions } = state;
             goodOptions = [];
             listGoods = [];
             // Lấy các thông tin của good đưa vào goodObject va day good vao listGoods
-            const { goods } = this.props;
+            const { goods } = props;
             const { listGoodsByType } = goods;
-            listGoods = nextProps.discountOnGoods.map((item) => {
+            listGoods = props.discountOnGoods.map((item) => {
                 let good = {};
                 let goodArrFilter = listGoodsByType.filter((x) => x._id === item.good._id);
                 if (goodArrFilter) {
@@ -62,7 +63,7 @@ class CreateDiscountOnGoods extends Component {
 
                 // filter good ra khoi getAllGoods() va gan state vao goodOption
                 if (goodOptions.length === 0) {
-                    goodOptions = this.getAllGoods().filter((x) => x.value !== good.goodId);
+                    goodOptions = getAllGoods().filter((x) => x.value !== good.goodId);
                 } else {
                     // Nếu state đang là goodOptions thi vẫn phải filter những thằng còn lại
                     goodOptions = goodOptions.filter((x) => x.value !== item.good._id);
@@ -71,19 +72,18 @@ class CreateDiscountOnGoods extends Component {
             });
 
             // Cập nhật lại good state
-            this.setState((state) => ({
+            setState((state) => ({
                 ...state,
                 listGoods: [...listGoods],
                 goodOptions: [...goodOptions],
-                discountCode: nextProps.discountCode,
+                discountCode: props.discountCode,
             }));
             return false;
         }
-        return true;
-    };
+    },[props.discountCode])
 
-    getAllGoods = () => {
-        const { translate, goods } = this.props;
+    const getAllGoods = () => {
+        const { translate, goods } = props;
         let listGoods = [
             {
                 value: "1",
@@ -105,31 +105,31 @@ class CreateDiscountOnGoods extends Component {
         return listGoods;
     };
 
-    handleGoodChange = (value) => {
+    const handleGoodChange = (value) => {
         const goodId = value[0];
-        this.validateGoodChange(goodId, true);
+        validateGoodChange(goodId, true);
     };
 
-    validateGoodChange = (value, willUpdateState = true) => {
+    const validateGoodChange = (value, willUpdateState = true) => {
         let msg = undefined;
-        const { translate } = this.props;
+        const { translate } = props;
         if (value === "1") {
             msg = "Vui lòng không chọn mặt hàng này";
         }
 
         if (willUpdateState) {
-            let { good } = this.state;
+            let { good } = state;
 
             good.goodId = value;
 
-            const { goods } = this.props;
+            const { goods } = props;
             const { listGoodsByType } = goods;
             let goodArrFilter = listGoodsByType.filter((x) => x._id === good.goodId);
             if (goodArrFilter) {
                 good.goodObject = goodArrFilter[0];
             }
 
-            this.setState((state) => ({
+            setState((state) => ({
                 ...state,
                 good: { ...good },
                 goodError: msg,
@@ -138,35 +138,35 @@ class CreateDiscountOnGoods extends Component {
         return msg;
     };
 
-    handleClearGood = async (e) => {
+    const handleClearGood = async (e) => {
         e.preventDefault();
 
-        await this.setState((state) => {
+        await setState((state) => {
             return {
                 ...state,
-                good: Object.assign({}, this.EMPTY_GOOD),
+                good: Object.assign({}, EMPTY_GOOD),
             };
         });
     };
 
-    handleChangeExpirationDate = (value) => {
+    const handleChangeExpirationDate = (value) => {
         if (!value) {
             value = null;
         }
-        let { good } = this.state;
+        let { good } = state;
         good.expirationDate = value;
-        this.setState({
-            ...this.state,
+        setState({
+            ...state,
             good: { ...good },
         });
     };
 
-    handleAddGood = (e) => {
+    const handleAddGood = (e) => {
         e.preventDefault();
-        let { listGoods, good } = this.state;
+        let { listGoods, good } = state;
 
         // Lấy các thông tin của good đưa vào goodObject va day good vao listGoods
-        const { goods } = this.props;
+        const { goods } = props;
         const { listGoodsByType } = goods;
         let goodArrFilter = listGoodsByType.filter((x) => x._id === good.goodId);
         if (goodArrFilter) {
@@ -176,9 +176,9 @@ class CreateDiscountOnGoods extends Component {
         listGoods.push(good);
 
         // filter good ra khoi getAllGoods() va gan state vao goodOption
-        let { goodOptions } = this.state;
+        let { goodOptions } = state;
         if (goodOptions.length === 0) {
-            goodOptions = this.getAllGoods().filter((x) => x.value !== good.goodId);
+            goodOptions = getAllGoods().filter((x) => x.value !== good.goodId);
         } else {
             // Nếu state đang là goodOptions thi vẫn phải filter những thằng còn lại
             goodOptions = goodOptions.filter((x) => x.value !== good.goodId);
@@ -187,9 +187,9 @@ class CreateDiscountOnGoods extends Component {
 
         // Cập nhật lại good state
 
-        good = Object.assign({}, this.EMPTY_GOOD);
+        good = Object.assign({}, EMPTY_GOOD);
 
-        this.setState((state) => ({
+        setState((state) => ({
             ...state,
             listGoods: [...listGoods],
             goodOptions: [...goodOptions],
@@ -198,12 +198,12 @@ class CreateDiscountOnGoods extends Component {
     };
 
     //DELETE AND EDIT
-    handleDeleteGood = (good, index) => {
-        let { listGoods, goodOptions } = this.state;
+    const handleDeleteGood = (good, index) => {
+        let { listGoods, goodOptions } = state;
         // Loại bỏ phần tử good ra khỏi listGoods
         listGoods.splice(index, 1);
 
-        this.setState((state) => ({
+        setState((state) => ({
             ...state,
             listGoods: [...listGoods],
             goodOptions: [
@@ -216,9 +216,10 @@ class CreateDiscountOnGoods extends Component {
         }));
     };
 
-    handleEditGood = (good, index) => {
-        let { goodOptions } = this.state;
-        this.setState({
+    const handleEditGood = (good, index) => {
+        let { goodOptions } = state;
+        setState({
+            ...state,
             editGood: true,
             good: { ...good },
             goodOptions: [
@@ -232,46 +233,47 @@ class CreateDiscountOnGoods extends Component {
         });
     };
 
-    handleCancelEditGood = (e) => {
+    const handleCancelEditGood = (e) => {
         e.preventDefault();
-        let { listGoods, indexEditting, goodOptions } = this.state;
+        let { listGoods, indexEditting, goodOptions } = state;
         goodOptions = goodOptions.filter((x) => x.value !== listGoods[indexEditting].goodId);
-        this.setState({
+        setState({
+            ...state,
             editGood: false,
-            good: Object.assign({}, this.EMPTY_GOOD),
+            good: Object.assign({}, EMPTY_GOOD),
             goodOptions: goodOptions,
         });
     };
 
-    handleSaveEditGood = () => {
-        let { listGoods, good, indexEditting, goodOptions } = this.state;
+    const handleSaveEditGood = () => {
+        let { listGoods, good, indexEditting, goodOptions } = state;
         goodOptions = goodOptions.filter((x) => x.value !== good.goodId);
-        listGoods[indexEditting] = this.state.good;
-        this.setState({
+        listGoods[indexEditting] = state.good;
+        setState({
+            ...state,
             editGood: false,
-            good: Object.assign({}, this.EMPTY_GOOD),
+            good: Object.assign({}, EMPTY_GOOD),
             goodOptions: goodOptions,
             listGoods: [...listGoods],
         });
     };
 
-    handleDiscountedPriceChange = (e) => {
+    const handleDiscountedPriceChange = (e) => {
         let { value } = e.target;
-        this.validateDiscountedPriceChange(value, true);
+        validateDiscountedPriceChange(value, true);
     };
-
-    validateDiscountedPriceChange = (value, willUpdateState = true) => {
+    const validateDiscountedPriceChange = (value, willUpdateState = true) => {
         let msg = undefined;
-        const { translate } = this.props;
+        const { translate } = props;
         if (value === "") {
             msg = "Giá trị không được để trống";
         } else if (value < 0) {
             msg = "Giá không là số âm";
         }
         if (willUpdateState) {
-            let { good } = this.state;
+            let { good } = state;
             good.discountedPrice = value;
-            this.setState((state) => ({
+            setState((state) => ({
                 ...state,
                 good: { ...good },
                 discountedPriceError: msg,
@@ -280,8 +282,8 @@ class CreateDiscountOnGoods extends Component {
         return msg;
     };
 
-    submitChange = () => {
-        let { listGoods } = this.state;
+    const submitChange = () => {
+        let { listGoods } = state;
         let dataSubmit = listGoods.map((good) => {
             return {
                 good: {
@@ -294,156 +296,154 @@ class CreateDiscountOnGoods extends Component {
             };
         });
 
-        this.props.handleSubmitDiscountOnGoods(dataSubmit);
+        props.handleSubmitDiscountOnGoods(dataSubmit);
     };
 
-    isGoodValidated = () => {
-        if (this.validateGoodChange(this.state.good.goodId, false) || this.validateDiscountedPriceChange(this.state.good.discountedPrice, false)) {
+    const isGoodValidated = () => {
+        if (validateGoodChange(state.good.goodId, false) || validateDiscountedPriceChange(state.good.discountedPrice, false)) {
             return false;
         }
         return true;
     };
 
-    isFormValidated = () => {
-        const { listGoods } = this.state;
+    const isFormValidated = () => {
+        const { listGoods } = state;
         if (listGoods.length === 0) {
             return false;
         }
         return true;
     };
 
-    render() {
-        const { translate } = this.props;
-        const { actionType } = this.props;
-        const { goodOptions, good, listGoods, discountedPriceError } = this.state;
-        const { goodId, discountedPrice, expirationDate } = good;
-        return (
-            <DialogModal
-                modalID={`modal-${actionType}-discount-on-goods`}
-                isLoading={false}
-                formID={`form-${actionType}-discount-on-goods`}
-                title={"Các mặt hàng áp dụng"}
-                size="75"
-                style={{ backgroundColor: "green" }}
-                func={this.submitChange}
-                disableSubmit={!this.isFormValidated()}
-            >
-                <form id={`form-${actionType}-discount-bonus-goods`}>
-                    <fieldset className="scheduler-border">
-                        <legend className="scheduler-border">Thêm hàng tặng kèm</legend>
-                        <div className={`form-group`}>
-                            <label className="control-label">
-                                Mặt hàng áp dụng <span className="attention"> * </span>
-                            </label>
-                            <SelectBox
-                                id={`select-${actionType}-discount-on-goods`}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                value={goodId}
-                                items={goodOptions.length ? goodOptions : this.getAllGoods()}
-                                onChange={this.handleGoodChange}
-                                multiple={false}
+    const { translate } = props;
+    const { actionType } = props;
+    const { goodOptions, good, listGoods, discountedPriceError } = state;
+    const { goodId, discountedPrice, expirationDate } = good;
+    return (
+        <DialogModal
+            modalID={`modal-${actionType}-discount-on-goods`}
+            isLoading={false}
+            formID={`form-${actionType}-discount-on-goods`}
+            title={"Các mặt hàng áp dụng"}
+            size="75"
+            style={{ backgroundColor: "green" }}
+            func={submitChange}
+            disableSubmit={!isFormValidated()}
+        >
+            <form id={`form-${actionType}-discount-bonus-goods`}>
+                <fieldset className="scheduler-border">
+                    <legend className="scheduler-border">Thêm hàng tặng kèm</legend>
+                    <div className={`form-group`}>
+                        <label className="control-label">
+                            Mặt hàng áp dụng <span className="attention"> * </span>
+                        </label>
+                        <SelectBox
+                            id={`select-${actionType}-discount-on-goods`}
+                            className="form-control select2"
+                            style={{ width: "100%" }}
+                            value={goodId}
+                            items={goodOptions.length ? goodOptions : getAllGoods()}
+                            onChange={handleGoodChange}
+                            multiple={false}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>Hạn sử dụng</label>
+                        <DatePicker
+                            id={`date_picker_${actionType}_discount_expiration_date_of_discount_on_good`}
+                            value={expirationDate}
+                            onChange={handleChangeExpirationDate}
+                            disabled={false}
+                        />
+                    </div>
+                    <div className={`form-group ${!discountedPriceError ? "" : "has-error"}`}>
+                        <label className="control-label">
+                            Giá khuyến mãi <span className="attention"> * </span>
+                        </label>
+                        <div>
+                            <input
+                                type="number"
+                                className="form-control"
+                                placeholder={"vd: 10000"}
+                                value={discountedPrice}
+                                onChange={handleDiscountedPriceChange}
                             />
                         </div>
-                        <div className="form-group">
-                            <label>Hạn sử dụng</label>
-                            <DatePicker
-                                id={`date_picker_${actionType}_discount_expiration_date_of_discount_on_good`}
-                                value={expirationDate}
-                                onChange={this.handleChangeExpirationDate}
-                                disabled={false}
-                            />
-                        </div>
-                        <div className={`form-group ${!discountedPriceError ? "" : "has-error"}`}>
-                            <label className="control-label">
-                                Giá khuyến mãi <span className="attention"> * </span>
-                            </label>
-                            <div>
-                                <input
-                                    type="number"
-                                    className="form-control"
-                                    placeholder={"vd: 10000"}
-                                    value={discountedPrice}
-                                    onChange={this.handleDiscountedPriceChange}
-                                />
-                            </div>
-                            <ErrorLabel content={discountedPriceError} />
-                        </div>
-                        <div className="pull-right" style={{ marginBottom: "10px" }}>
-                            {this.state.editGood ? (
-                                <React.Fragment>
-                                    <button className="btn btn-success" onClick={this.handleCancelEditGood} style={{ marginLeft: "10px" }}>
-                                        Hủy chỉnh sửa
-                                    </button>
-                                    <button
-                                        className="btn btn-success"
-                                        disabled={!this.isGoodValidated()}
-                                        onClick={this.handleSaveEditGood}
-                                        style={{ marginLeft: "10px" }}
-                                    >
-                                        Lưu
-                                    </button>
-                                </React.Fragment>
-                            ) : (
+                        <ErrorLabel content={discountedPriceError} />
+                    </div>
+                    <div className="pull-right" style={{ marginBottom: "10px" }}>
+                        {state.editGood ? (
+                            <React.Fragment>
+                                <button className="btn btn-success" onClick={handleCancelEditGood} style={{ marginLeft: "10px" }}>
+                                    Hủy chỉnh sửa
+                                </button>
                                 <button
                                     className="btn btn-success"
+                                    disabled={!isGoodValidated()}
+                                    onClick={handleSaveEditGood}
                                     style={{ marginLeft: "10px" }}
-                                    disabled={!this.isGoodValidated()}
-                                    onClick={this.handleAddGood}
                                 >
-                                    Thêm
+                                    Lưu
                                 </button>
-                            )}
-                            <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={this.handleClearGood}>
-                                Xóa trắng
+                            </React.Fragment>
+                        ) : (
+                            <button
+                                className="btn btn-success"
+                                style={{ marginLeft: "10px" }}
+                                disabled={!isGoodValidated()}
+                                onClick={handleAddGood}
+                            >
+                                Thêm
                             </button>
-                        </div>
-                    </fieldset>
-                    <table className="table table-striped">
-                        <thead>
+                        )}
+                        <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={handleClearGood}>
+                            Xóa trắng
+                        </button>
+                    </div>
+                </fieldset>
+                <table className="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Mã mặt hàng</th>
+                            <th>Tên mặt hàng</th>
+                            <th>Hạn sử dụng</th>
+                            <th>Giá khuyến mãi</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {!listGoods || listGoods.length === 0 ? (
                             <tr>
-                                <th>STT</th>
-                                <th>Mã mặt hàng</th>
-                                <th>Tên mặt hàng</th>
-                                <th>Hạn sử dụng</th>
-                                <th>Giá khuyến mãi</th>
-                                <th>Hành động</th>
+                                <td colSpan={7}>
+                                    <center>Chưa có dữ liệu</center>
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            {!listGoods || listGoods.length === 0 ? (
-                                <tr>
-                                    <td colSpan={7}>
-                                        <center>Chưa có dữ liệu</center>
-                                    </td>
-                                </tr>
-                            ) : (
-                                listGoods.map((good, index) => {
-                                    return (
-                                        <tr key={index}>
-                                            <td>{index + 1}</td>
-                                            <td>{good.goodObject.code}</td>
-                                            <td>{good.goodObject.name}</td>
-                                            <td>{good.expirationDate}</td>
-                                            <td>{formatCurrency(good.discountedPrice)}</td>
-                                            <td>
-                                                <a href="#abc" className="edit" title="Sửa" onClick={() => this.handleEditGood(good, index)}>
-                                                    <i className="material-icons">edit</i>
-                                                </a>
-                                                <a href="#abc" className="delete" title="Xóa" onClick={() => this.handleDeleteGood(good, index)}>
-                                                    <i className="material-icons">delete</i>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    );
-                                })
-                            )}
-                        </tbody>
-                    </table>
-                </form>
-            </DialogModal>
-        );
-    }
+                        ) : (
+                            listGoods.map((good, index) => {
+                                return (
+                                    <tr key={index}>
+                                        <td>{index + 1}</td>
+                                        <td>{good.goodObject.code}</td>
+                                        <td>{good.goodObject.name}</td>
+                                        <td>{good.expirationDate}</td>
+                                        <td>{formatCurrency(good.discountedPrice)}</td>
+                                        <td>
+                                            <a href="#abc" className="edit" title="Sửa" onClick={() => handleEditGood(good, index)}>
+                                                <i className="material-icons">edit</i>
+                                            </a>
+                                            <a href="#abc" className="delete" title="Xóa" onClick={() => handleDeleteGood(good, index)}>
+                                                <i className="material-icons">delete</i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                );
+                            })
+                        )}
+                    </tbody>
+                </table>
+            </form>
+        </DialogModal>
+    );
 }
 
 function mapStateToProps(state) {

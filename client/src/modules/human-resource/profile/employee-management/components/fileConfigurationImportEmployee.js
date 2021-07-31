@@ -926,7 +926,7 @@ function templateImport(translate) {
                                 year: "2020"
                             },{
                                 STT: 2,
-                                degreeType: translate(`human_resource.profile.good`),
+                                degreeType: translate(`human_resource.profile.unknown`),
                                 employeeNumber: "MS2015124",
                                 fullName: "Trần Văn Bình",
                                 issuedBy: "Đại học Bách Khoa",

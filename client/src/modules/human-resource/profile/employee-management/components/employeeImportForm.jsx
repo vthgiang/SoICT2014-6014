@@ -11,7 +11,6 @@ import {
 } from './fileConfigurationImportEmployee';
 
 import { EmployeeManagerActions } from '../redux/actions';
-
 const EmployeeImportForm = (props) => {
     const [state, setState] = useState({})
 
@@ -51,16 +50,32 @@ const EmployeeImportForm = (props) => {
      * @param {*} serial :số serial của ngày
      */
     const convertExcelDateToJSDate = (serial) => {
-        let utc_days = Math.floor(serial - 25569);
-        let utc_value = utc_days * 86400;
-        let date_info = new Date(utc_value * 1000);
-        let month = date_info.getMonth() + 1;
-        let day = date_info.getDate();
-        if (month.toString().length < 2)
-            month = '0' + month;
-        if (day.toString().length < 2)
-            day = '0' + day;
-        return [day, month, date_info.getFullYear()].join('-');
+        // nếu người dùng nhập thời gan trong file excell là string và ngăn cách bỏi dấu /
+        if (serial && typeof serial === 'string') {
+            if (serial.includes("/")) {
+                const date = serial.split("/");
+                if (date?.length) {
+                    let month = date[1], day = date[0];
+                    if (date[1]?.toString()?.length < 2)
+                        month = '0' + date[1];
+                    if (date[0]?.toString()?.length < 2)
+                        day = '0' + date[0];
+                    return [day, month, date[2]].join('-')
+                }
+                return null;
+            }
+        } else {
+            let utc_days = Math.floor(serial - 25569);
+            let utc_value = utc_days * 86400;
+            let date_info = new Date(utc_value * 1000);
+            let month = date_info.getMonth() + 1;
+            let day = date_info.getDate();
+            if (month.toString().length < 2)
+                month = '0' + month;
+            if (day.toString().length < 2)
+                day = '0' + day;
+            return [day, month, date_info.getFullYear()].join('-');
+        }
     }
 
     /**
@@ -69,13 +84,14 @@ const EmployeeImportForm = (props) => {
      * @param {*} data 
      */
     const convertStringToDate = (data, monthYear = false) => {
+        console.log('data', data)
         if (data) {
             data = data.split('-');
             let date;
             if (monthYear) {
-                date = [data[1], data[0]];
+                date = [data[2]?.trim(), data[1]?.trim()];
             } else {
-                date = [data[2], data[1], data[0]];
+                date = [data[2]?.trim(), data[1]?.trim(), data[0]?.trim()];
             }
             return date.join('-');
         } else {
@@ -100,18 +116,18 @@ const EmployeeImportForm = (props) => {
         const { translate } = props;
 
         value = value.map(x => {
-            let birthdate = (!x.birthdate || typeof x.birthdate === 'string') ? x.birthdate : convertExcelDateToJSDate(x.birthdate);
-            let identityCardDate = (!x.identityCardDate || typeof x.identityCardDate === 'string') ? x.identityCardDate : convertExcelDateToJSDate(x.identityCardDate);
-            let startingDate = (!x.startingDate || typeof x.startingDate === 'string') ? x.startingDate : convertExcelDateToJSDate(x.startingDate);
-            let leavingDate = (!x.leavingDate || typeof x.leavingDate === 'string') ? x.leavingDate : convertExcelDateToJSDate(x.leavingDate);
-            let taxDateOfIssue = (!x.taxDateOfIssue || typeof x.taxDateOfIssue === 'string') ? x.taxDateOfIssue : convertExcelDateToJSDate(x.taxDateOfIssue);
-            let healthInsuranceStartDate = (!x.healthInsuranceStartDate || typeof x.healthInsuranceStartDate === 'string') ? x.healthInsuranceStartDate : convertExcelDateToJSDate(x.healthInsuranceStartDate);
-            let healthInsuranceEndDate = (!x.healthInsuranceEndDate || typeof x.healthInsuranceEndDate === 'string') ? x.healthInsuranceEndDate : convertExcelDateToJSDate(x.healthInsuranceEndDate);
+            let birthdate = (!x.birthdate) ? x.birthdate : convertExcelDateToJSDate(x.birthdate);
+            let identityCardDate = (!x.identityCardDate) ? x.identityCardDate : convertExcelDateToJSDate(x.identityCardDate);
+            let startingDate = (!x.startingDate) ? x.startingDate : convertExcelDateToJSDate(x.startingDate);
+            let leavingDate = (!x.leavingDate) ? x.leavingDate : convertExcelDateToJSDate(x.leavingDate);
+            let taxDateOfIssue = (!x.taxDateOfIssue) ? x.taxDateOfIssue : convertExcelDateToJSDate(x.taxDateOfIssue);
+            let healthInsuranceStartDate = (!x.healthInsuranceStartDate) ? x.healthInsuranceStartDate : convertExcelDateToJSDate(x.healthInsuranceStartDate);
+            let healthInsuranceEndDate = (!x.healthInsuranceEndDate) ? x.healthInsuranceEndDate : convertExcelDateToJSDate(x.healthInsuranceEndDate);
 
-            let gender = x.gender === translate('human_resource.profile.male') ? "male" : "female";
-            let maritalStatus = x.maritalStatus ? x.maritalStatus === translate('human_resource.profile.single') ? "single" : "married" : null;
+            let gender = x?.gender?.trim() === translate('human_resource.profile.male') ? "male" : "female";
+            let maritalStatus = x.maritalStatus ? x.maritalStatus.trim() === translate('human_resource.profile.single') ? "single" : "married" : null;
             let professionalSkill, educationalLevel, status;
-            switch (x.status) {
+            switch (x?.status?.trim()) {
                 case translate('human_resource.profile.leave'):
                     status = "leave";
                     break;
@@ -131,7 +147,7 @@ const EmployeeImportForm = (props) => {
                 default:
                     status = "active";
             };
-            switch (x.professionalSkill) {
+            switch (x?.professionalSkill?.trim()) {
                 case translate('human_resource.profile.intermediate_degree'):
                     professionalSkill = "intermediate_degree";
                     break;
@@ -154,7 +170,7 @@ const EmployeeImportForm = (props) => {
                     professionalSkill = "unavailable";
             };
 
-            switch (x.educationalLevel) {
+            switch (x?.educationalLevel?.trim()) {
                 case '12/12':
                     educationalLevel = '12/12';
                     break;
@@ -172,6 +188,10 @@ const EmployeeImportForm = (props) => {
             };
             return {
                 ...x,
+                employeeNumber: x?.employeeNumber?.trim(),
+                employeeTimesheetId: x?.employeeTimesheetId?.trim(),
+                fullName: x?.fullName?.trim(),
+                emailInCompany: x?.emailInCompany?.trim(),
                 birthdate: convertStringToDate(birthdate, false),
                 identityCardDate: convertStringToDate(identityCardDate, false),
                 startingDate: convertStringToDate(startingDate, false),
@@ -234,9 +254,9 @@ const EmployeeImportForm = (props) => {
             if (positionId && positionId.length > 0) {
                 x = { ...x, positionId: positionId }
             }
-            console.log('x', x)
             return x;
         });
+
         setState(state => ({
             ...state,
             importDataOfEmployeeInfor: value
@@ -252,8 +272,8 @@ const EmployeeImportForm = (props) => {
         const { translate } = props;
 
         value = value.map(x => {
-            let startDate = (!x.startDate || typeof x.startDate === 'string') ? x.startDate : convertExcelDateToJSDate(x.startDate);
-            let endDate = (!x.endDate || typeof x.endDate === 'string') ? x.endDate : convertExcelDateToJSDate(x.endDate);
+            let startDate = (!x.startDate) ? x.startDate : convertExcelDateToJSDate(x.startDate);
+            let endDate = (!x.endDate) ? x.endDate : convertExcelDateToJSDate(x.endDate);
             return {
                 ...x,
                 startDate: convertStringToDate(startDate, true),
@@ -323,6 +343,9 @@ const EmployeeImportForm = (props) => {
                 case translate('human_resource.profile.ordinary'):
                     degreeType = "ordinary";
                     break;
+                case translate('human_resource.profile.unknown'):
+                    degreeType = "unknown";
+                    break;
                 default:
                     degreeType = null;
             }
@@ -378,8 +401,8 @@ const EmployeeImportForm = (props) => {
         const { translate } = props;
 
         value = value.map(x => {
-            let startDate = (!x.startDate || typeof x.startDate === 'string') ? x.startDate : convertExcelDateToJSDate(x.startDate);
-            let endDate = (!x.endDate || typeof x.endDate === 'string') ? x.endDate : convertExcelDateToJSDate(x.endDate);
+            let startDate = (!x.startDate) ? x.startDate : convertExcelDateToJSDate(x.startDate);
+            let endDate = (!x.endDate) ? x.endDate : convertExcelDateToJSDate(x.endDate);
             return {
                 ...x,
                 startDate: convertStringToDate(startDate, false),
@@ -430,8 +453,8 @@ const EmployeeImportForm = (props) => {
         const { translate } = props;
 
         value = value.map(x => {
-            let startDate = (!x.startDate || typeof x.startDate === 'string') ? x.startDate : convertExcelDateToJSDate(x.startDate);
-            let endDate = (!x.endDate || typeof x.endDate === 'string') ? x.endDate : convertExcelDateToJSDate(x.endDate);
+            let startDate = (!x.startDate) ? x.startDate : convertExcelDateToJSDate(x.startDate);
+            let endDate = (!x.endDate) ? x.endDate : convertExcelDateToJSDate(x.endDate);
             return {
                 ...x,
                 startDate: convertStringToDate(startDate, false),
@@ -481,8 +504,8 @@ const EmployeeImportForm = (props) => {
         const { translate } = props;
 
         value = value.map(x => {
-            let startDate = (!x.startDate || typeof x.startDate === 'string') ? x.startDate : convertExcelDateToJSDate(x.startDate);
-            let endDate = (!x.endDate || typeof x.endDate === 'string') ? x.endDate : convertExcelDateToJSDate(x.endDate);
+            let startDate = (!x.startDate) ? x.startDate : convertExcelDateToJSDate(x.startDate);
+            let endDate = (!x.endDate) ? x.endDate : convertExcelDateToJSDate(x.endDate);
             return {
                 ...x,
                 startDate: convertStringToDate(startDate, true),
@@ -637,6 +660,7 @@ const EmployeeImportForm = (props) => {
     const handleImportEmployeeInfor = () => {
         let { importDataOfEmployeeInfor } = state;
         notify();
+        console.log('importDataOfEmployeeInfor', importDataOfEmployeeInfor.map(x => x.birthdate))
         props.importEmployees({ importType: "Employee_Infor", importData: importDataOfEmployeeInfor });
     }
 
@@ -750,8 +774,8 @@ const EmployeeImportForm = (props) => {
                                 textareaRow={12}
                                 configTableWidth={8000}
                                 showTableWidth={5000}
-                                rowErrorOfReducer={employeesManager.error.rowErrorOfEmployeeInfor}
-                                dataOfReducer={employeesManager.error.employeesInfor}
+                                rowErrorOfReducer={employeesManager?.error?.rowErrorOfEmployeeInfor}
+                                dataOfReducer={employeesManager?.error?.employeesInfor}
                                 configuration={configurationEmployeeInfo}
                                 teamplateImport={teamplateImport}
                                 handleCheckImportData={handleCheckImportDataOfEmployeeInfor}
@@ -763,8 +787,8 @@ const EmployeeImportForm = (props) => {
                                 textareaRow={10}
                                 configTableWidth={1000}
                                 showTableWidth={1000}
-                                rowErrorOfReducer={employeesManager.error.rowErrorOfExperience}
-                                dataOfReducer={employeesManager.error.experiences}
+                                rowErrorOfReducer={employeesManager?.error?.rowErrorOfExperience}
+                                dataOfReducer={employeesManager?.error?.experiences}
                                 configuration={configurationExperience}
                                 teamplateImport={teamplateImport}
                                 handleCheckImportData={handleCheckImportDataOfExperience}
@@ -776,8 +800,8 @@ const EmployeeImportForm = (props) => {
                                 configTableWidth={1000}
                                 showTableWidth={1000}
                                 fil
-                                rowErrorOfReducer={employeesManager.error.rowErrorOfDegree}
-                                dataOfReducer={employeesManager.error.degrees}
+                                rowErrorOfReducer={employeesManager?.error?.rowErrorOfDegree}
+                                dataOfReducer={employeesManager?.error?.degrees}
                                 configuration={configurationDegree}
                                 teamplateImport={teamplateImport}
                                 listFields={listFields}
@@ -789,8 +813,8 @@ const EmployeeImportForm = (props) => {
                                 textareaRow={10}
                                 configTableWidth={1000}
                                 showTableWidth={1000}
-                                rowErrorOfReducer={employeesManager.error.rowErrorOfCertificate}
-                                dataOfReducer={employeesManager.error.certificates}
+                                rowErrorOfReducer={employeesManager?.error?.rowErrorOfCertificate}
+                                dataOfReducer={employeesManager?.error?.certificates}
                                 configuration={configurationCertificate}
                                 teamplateImport={teamplateImport}
                                 handleCheckImportData={handleCheckImportDataOfCertificate}
@@ -801,8 +825,8 @@ const EmployeeImportForm = (props) => {
                                 textareaRow={10}
                                 configTableWidth={1000}
                                 showTableWidth={1000}
-                                rowErrorOfReducer={employeesManager.error.rowErrorOfContract}
-                                dataOfReducer={employeesManager.error.contracts}
+                                rowErrorOfReducer={employeesManager?.error?.rowErrorOfContract}
+                                dataOfReducer={employeesManager?.error?.contracts}
                                 configuration={configurationContract}
                                 teamplateImport={teamplateImport}
                                 handleCheckImportData={handleCheckImportDataOfContract}
@@ -813,8 +837,8 @@ const EmployeeImportForm = (props) => {
                                 textareaRow={10}
                                 configTableWidth={1000}
                                 showTableWidth={1000}
-                                rowErrorOfReducer={employeesManager.error.rowErrorOfSocialInsuranceDetails}
-                                dataOfReducer={employeesManager.error.SocialInsuranceDetails}
+                                rowErrorOfReducer={employeesManager?.error?.rowErrorOfSocialInsuranceDetails}
+                                dataOfReducer={employeesManager?.error?.SocialInsuranceDetails}
                                 configuration={configurationSocialInsuranceDetails}
                                 teamplateImport={teamplateImport}
                                 handleCheckImportData={handleCheckImportDataOfSocialInsuranceDetails}
@@ -826,8 +850,8 @@ const EmployeeImportForm = (props) => {
                                 textareaRow={10}
                                 configTableWidth={1000}
                                 showTableWidth={1000}
-                                rowErrorOfReducer={employeesManager.error.rowErrorOfFile}
-                                dataOfReducer={employeesManager.error.files}
+                                rowErrorOfReducer={employeesManager?.error?.rowErrorOfFile}
+                                dataOfReducer={employeesManager?.error?.files}
                                 configuration={configurationFile}
                                 teamplateImport={teamplateImport}
                                 handleCheckImportData={handleCheckImportDataOfFile}
@@ -839,8 +863,8 @@ const EmployeeImportForm = (props) => {
                                 textareaRow={10}
                                 configTableWidth={1000}
                                 showTableWidth={1000}
-                                rowErrorOfReducer={employeesManager.error.rowErrorOfFile}
-                                dataOfReducer={employeesManager.error.files}
+                                rowErrorOfReducer={employeesManager?.error?.rowErrorOfFile}
+                                dataOfReducer={employeesManager?.error?.files}
                                 configuration={configurationFamilyMembers}
                                 teamplateImport={teamplateImport}
                                 handleCheckImportData={handleCheckImportDataOfFamily}

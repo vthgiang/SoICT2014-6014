@@ -204,7 +204,7 @@ const EmployeeSchema = new Schema({
         year: Number,
         degreeType: {
             type: String,
-            enum: ['excellent', 'very_good', 'good', 'average_good', 'ordinary'] //excellent-Xuất sắc, very_good-Giỏi, good-Khá, average_good-Trung bình khá, ordinary-Trung bình
+            enum: ['excellent', 'very_good', 'good', 'average_good', 'ordinary', 'unknown'] //excellent-Xuất sắc, very_good-Giỏi, good-Khá, average_good-Trung bình khá, ordinary-Trung bình
         },
         field:{
             type: Schema.Types.ObjectId,

@@ -3,7 +3,7 @@ import { connect, useSelector } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
 
-import { DataTableSetting, DateTimeConverter, PaginateBar, TreeSelect, SelectBox, ExportExcel } from '../../../../../common-components';
+import { DataTableSetting, DateTimeConverter, PaginateBar, TreeSelect, SelectBox, ExportExcel, SmartTable } from '../../../../../common-components';
 import { RoleActions } from '../../../../super-admin/role/redux/actions';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 import DocumentInformation from '../../user/documents/documentInformation';
@@ -72,10 +72,10 @@ function Table(props) {
         props.downloadDocumentFile(id, fileName, numberVersion);
     }
 
-    function requestDownloadDocumentFileScan(id, fileName, numberVersion){
+    function requestDownloadDocumentFileScan(id, fileName, numberVersion) {
         props.downloadDocumentFileScan(id, fileName, numberVersion);
     }
-    
+
 
     function deleteDocument(id, info) {
         const { translate } = props;
@@ -471,6 +471,7 @@ function Table(props) {
         else return false;
     }
 
+
     const { translate, documents, department } = props;
     const { domains, categories, archives } = props.documents.administration;
     const { isLoading } = props.documents;
@@ -487,17 +488,60 @@ function Table(props) {
         list = docs.paginate;
     }
     let exportData = list ? convertDataToExportData(list) : "";
-    if (currentRow){
-        let index = paginate.findIndex(value=> value._id === currentRow._id)
-        if (index !== -1){
-            if (currentRow.versions.length !== paginate[index].versions.length){
+    if (currentRow) {
+        let index = paginate.findIndex(value => value._id === currentRow._id)
+        if (index !== -1) {
+            if (currentRow.versions.length !== paginate[index].versions.length) {
                 setState({
                     ...state,
-                    currentRow:paginate[index]
+                    currentRow: paginate[index]
                 })
             }
         }
     }
+
+    const getDataCheck = (data) => {
+
+        if (data?.length && paginate?.length) {
+            const getDocumentSelected = paginate.filter(x => data.some(y => y === x._id));
+            let results = [];
+            if (getDocumentSelected?.length)
+                getDocumentSelected.forEach(x => {
+                    let versions = [];
+                    x?.versions?.length && x.versions.forEach(y => {
+                        let child = {
+                            childFolder: y?.versionName,
+                        }
+                        if (y?.scannedFileOfSignedDocument || y?.file)
+                            child = {
+                                ...child,
+                                file: y?.file,
+                                scannedFileOfSignedDocument: y?.scannedFileOfSignedDocument
+                            }
+                        versions = [...versions, child]
+                    })
+
+                    results = [
+                        ...results,
+                        {
+                            folderName: x.name,
+                            versions: versions
+                        }
+                    ]
+                })
+            if (results?.length)
+                setState({
+                    ...state,
+                    results
+                })
+            console.log('results', results);
+        }
+    }
+
+    const handleDownloadAllFileOfDocument = () => {
+        props.downloadAllFileOfDocument(state.results);
+    }
+
     return (
         <div className="qlcv">
             <CreateForm />
@@ -525,16 +569,16 @@ function Table(props) {
                     documentId={currentRow._id}
                     documentName={currentRow.name}
                     documentDescription={currentRow.description}
-                    documentCategory={currentRow.category ? currentRow.category._id || currentRow.category: ""}
-                    documentDomains={currentRow.domains ? currentRow.domains.map(domain => domain._id ||domain) : []}
-                    documentArchives={currentRow.archives ? currentRow.archives.map(archive => archive._id||archive) : []}
+                    documentCategory={currentRow.category ? currentRow.category._id || currentRow.category : ""}
+                    documentDomains={currentRow.domains ? currentRow.domains.map(domain => domain._id || domain) : []}
+                    documentArchives={currentRow.archives ? currentRow.archives.map(archive => archive._id || archive) : []}
                     documentIssuingBody={currentRow.issuingBody}
                     documentOfficialNumber={currentRow.officialNumber}
                     documentSigner={currentRow.signer}
                     documentVersions={currentRow.versions}
 
                     documentRelationshipDescription={currentRow.relationshipDescription}
-                    documentRelationshipDocuments={currentRow.relationshipDocuments ? currentRow.relationshipDocuments.map(relationshipDocument=>relationshipDocument._id||relationshipDocument) : []}
+                    documentRelationshipDocuments={currentRow.relationshipDocuments ? currentRow.relationshipDocuments.map(relationshipDocument => relationshipDocument._id || relationshipDocument) : []}
 
                     documentRoles={currentRow.roles}
                     documentUserCanView={currentRow.userCanView}
@@ -637,100 +681,90 @@ function Table(props) {
                     <input type="text" className="form-control" onChange={handleIssuingBodyChange} />
                 </div>
                 <div className="form-group" style={{ marginLeft: 0 }}>
-                    <label></label>
                     <button type="button" className="btn btn-success" onClick={() => searchWithOption()}>{
                         translate('kpi.organizational_unit.management.over_view.search')}</button>
                 </div>
-
+                {state?.results?.length > 0 && <button type="button" className="btn btn-success pull-right" title={'Tải xuống các tệp đính kèm trong tài liệu'} onClick={handleDownloadAllFileOfDocument}><i className="fa fa-download" style={{ marginRight: 5 }} aria-hidden="true"></i>Tải file đính kèm</button>}
             </div>
-            {/* <div className="form-inline">
 
-                </div> */}
-            <table className="data-table table table-hover table-striped table-bordered" id={tableId} style={{ marginBottom: 0, marginTop: 20 }}>
-                <thead>
-                    <tr>
-                        <th>{translate('document.doc_version.issuing_body')}</th>
-                        <th>{translate('document.name')}</th>
-                        <th>{translate('document.description')}</th>
-                        <th>{translate('document.issuing_date')}</th>
-                        <th>{translate('document.effective_date')}</th>
-                        <th>{translate('document.expired_date')}</th>
-                        <th>{translate('document.upload_file')}</th>
-                        <th>{translate('document.upload_file_scan')}</th>
-                        <th>{translate('document.views')}</th>
-                        <th>{translate('document.downloads')}</th>
-                        <th style={{ width: '120px', textAlign: 'center' }}>
-                            {translate('general.action')}
-                            <DataTableSetting
-                                columnArr={[
-                                    translate('document.name'),
-                                    translate('document.description'),
-                                    translate('document.issuing_date'),
-                                    translate('document.effective_date'),
-                                    translate('document.expired_date'),
-                                    translate('document.upload_file'),
-                                    translate('document.upload_file_scan'),
-                                    translate('document.views'),
-                                    translate('document.downloads')
-                                ]}
-                                setLimit={setLimit}
-                                tableId={tableId}
-                            />
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {
-                        paginate && paginate.length > 0 &&
-                        paginate.map(doc =>
-                            <tr key={doc?._id}>
-                                <td>{doc?.issuingBody}</td>
-                                <td>{doc?.name}</td>
-                                <td>{doc?.description ? doc.description : ""}</td>
-                                <td>{doc?.versions?.length ? formatDate(doc?.versions?.[doc?.versions?.length - 1]?.issuingDate) : null}</td>
-                                <td>{doc?.versions?.length ? formatDate(doc?.versions?.[doc?.versions?.length - 1]?.effectiveDate) : null}</td>
-                                <td>{doc?.versions?.length ? formatDate(doc?.versions?.[doc?.versions?.length - 1]?.expiredDate) : null}</td>
-                                <td>
-                                    <a href="#" onClick={() => requestDownloadDocumentFile(doc._id, doc.name, doc.versions.length - 1)}>
-                                        <u>{doc?.versions?.length && doc?.versions?.[doc?.versions?.length - 1]?.file ? <i className="fa fa-download"></i> : ""}</u>
-                                    </a>
+            <SmartTable
+                tableId={tableId}
+                columnData={{
+                    issuing_body: translate('document.doc_version.issuing_body'),
+                    name: translate('document.name'),
+                    description: translate('document.description'),
+                    issuing_date: translate('document.issuing_date'),
+                    effective_date: translate('document.effective_date'),
+                    expired_date: translate('document.expired_date'),
+                    upload_file: translate('document.upload_file'),
+                    upload_file_scan: translate('document.upload_file_scan'),
+                    views: translate('document.views'),
+                    downloads: translate('document.downloads')
+                }}
+                tableHeaderData={{
+                    issuing_body: <th>{translate('document.doc_version.issuing_body')}</th>,
+                    name: <th>{translate('document.name')}</th>,
+                    description: <th>{translate('document.description')}</th>,
+                    issuing_date: <th>{translate('document.issuing_date')}</th>,
+                    effective_date: <th>{translate('document.effective_date')}</th>,
+                    expired_date: <th>{translate('document.expired_date')}</th>,
+                    upload_file: <th>{translate('document.upload_file')}</th>,
+                    upload_file_scan: <th>{translate('document.upload_file_scan')}</th>,
+                    views: <th>{translate('document.views')}</th>,
+                    downloads: <th>{translate('document.downloads')}</th>,
+                    action: <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}</th>
+                }}
+                tableBodyData={
+                    paginate && paginate.length > 0 && paginate.map(doc => ({
+                        id: doc._id,
+                        issuing_body: <td>{doc?.issuingBody}</td>,
+                        name: <td>{doc?.name}</td>,
+                        description: <td>{doc?.description ? doc.description : ""}</td>,
+                        issuing_date: <td>{doc?.versions?.length ? formatDate(doc?.versions?.[doc?.versions?.length - 1]?.issuingDate) : null}</td>,
+                        effective_date: <td>{doc?.versions?.length ? formatDate(doc?.versions?.[doc?.versions?.length - 1]?.effectiveDate) : null}</td>,
+                        expired_date: <td>{doc?.versions?.length ? formatDate(doc?.versions?.[doc?.versions?.length - 1]?.expiredDate) : null}</td>,
+                        upload_file: <td>
+                            <a href="#" onClick={() => requestDownloadDocumentFile(doc._id, doc.name, doc.versions.length - 1)}>
+                                <u>{doc?.versions?.length && doc?.versions?.[doc?.versions?.length - 1]?.file ? <i className="fa fa-download"></i> : ""}</u>
+                            </a>
 
-                                    <a href="#" onClick={() => showFilePreview(doc.versions.length && doc.versions[doc.versions.length - 1].file)}>
-                                        <u>{doc?.versions?.length && doc?.versions?.[doc?.versions?.length - 1]?.file && checkTypeFile(doc?.versions?.[doc?.versions?.length - 1]?.file) ?
-                                            <i className="fa fa-eye"></i> : ""}</u>
-                                    </a>
-                                </td>
-                                <td>
-                                    <a href="#" onClick={() => requestDownloadDocumentFileScan(doc._id, "SCAN_" + doc.name, doc.versions.length - 1)}>
-                                        <u>{doc?.versions?.length && doc?.versions?.[doc?.versions?.length - 1]?.scannedFileOfSignedDocument ? <i className="fa fa-download"></i> : ""}</u>
-                                    </a>
-                                    <a href="#" onClick={() => showFilePreview(doc?.versions?.length && doc?.versions?.[doc?.versions?.length - 1]?.scannedFileOfSignedDocument)}>
-                                        <u>{doc?.versions?.length && doc?.versions?.[doc?.versions?.length - 1]?.scannedFileOfSignedDocument && checkTypeFile(doc?.versions?.[doc?.versions?.length - 1]?.scannedFileOfSignedDocument) ?
-                                            <i className="fa fa-eye"></i> : ""}</u>
-                                    </a>
-                                </td>
-                                <td>
-                                    <a href="#modal-file-preview`" onClick={() => showDetailListView(doc)}>{doc?.numberOfView}</a>
-                                </td>
-                                <td>
-                                    <a href="#modal-list-download" onClick={() => showDetailListDownload(doc)}>{doc?.numberOfDownload}</a>
-                                </td>
-                                <td>
-                                    <a className="text-green" title={translate('document.view')} onClick={() => toggleDocumentInformation(doc)}>
-                                        <i className="material-icons">visibility</i>
-                                    </a>
-                                    <a className="text-yellow" title={translate('document.edit')} onClick={() => toggleEditDocument(doc)}>
-                                        <i className="material-icons">edit</i>
-                                    </a>
-                                    <a className="text-red" title={translate('document.delete')} onClick={() => deleteDocument(doc?._id, doc?.name)}>
-                                        <i className="material-icons">delete</i>
-                                    </a>
-                                </td>
-                            </tr>)
-                    }
-
-                </tbody>
-            </table>
+                            <a href="#" onClick={() => showFilePreview(doc.versions.length && doc.versions[doc.versions.length - 1].file)}>
+                                <u>{doc?.versions?.length && doc?.versions?.[doc?.versions?.length - 1]?.file && checkTypeFile(doc?.versions?.[doc?.versions?.length - 1]?.file) ?
+                                    <i className="fa fa-eye"></i> : ""}</u>
+                            </a>
+                        </td>,
+                        upload_file_scan: <td>
+                            <a href="#" onClick={() => requestDownloadDocumentFileScan(doc._id, "SCAN_" + doc.name, doc.versions.length - 1)}>
+                                <u>{doc?.versions?.length && doc?.versions?.[doc?.versions?.length - 1]?.scannedFileOfSignedDocument ? <i className="fa fa-download"></i> : ""}</u>
+                            </a>
+                            <a href="#" onClick={() => showFilePreview(doc?.versions?.length && doc?.versions?.[doc?.versions?.length - 1]?.scannedFileOfSignedDocument)}>
+                                <u>{doc?.versions?.length && doc?.versions?.[doc?.versions?.length - 1]?.scannedFileOfSignedDocument && checkTypeFile(doc?.versions?.[doc?.versions?.length - 1]?.scannedFileOfSignedDocument) ?
+                                    <i className="fa fa-eye"></i> : ""}</u>
+                            </a>
+                        </td>,
+                        views: <td>
+                            <a href="#modal-file-preview`" onClick={() => showDetailListView(doc)}>{doc?.numberOfView}</a>
+                        </td>,
+                        downloads: <td>
+                            <a href="#modal-list-download" onClick={() => showDetailListDownload(doc)}>{doc?.numberOfDownload}</a>
+                        </td>,
+                        action: <td>
+                            <a className="text-green" title={translate('document.view')} onClick={() => toggleDocumentInformation(doc)}>
+                                <i className="material-icons">visibility</i>
+                            </a>
+                            <a className="text-yellow" title={translate('document.edit')} onClick={() => toggleEditDocument(doc)}>
+                                <i className="material-icons">edit</i>
+                            </a>
+                            <a className="text-red" title={translate('document.delete')} onClick={() => deleteDocument(doc?._id, doc?.name)}>
+                                <i className="material-icons">delete</i>
+                            </a>
+                        </td>
+                    }))
+                }
+                dataDependency={paginate}
+                onSetNumberOfRowsPerpage={setLimit}
+                onSelectedRowsChange={getDataCheck}
+            />
             {
                 isLoading ?
                     <div className="table-info-panel">{translate('confirm.loading')}</div> :
@@ -748,6 +782,7 @@ const mapDispatchToProps = {
     getAllRoles: RoleActions.get,
     getAllDepartments: DepartmentActions.get,
     downloadDocumentFile: DocumentActions.downloadDocumentFile,
+    downloadAllFileOfDocument: DocumentActions.downloadAllFileOfDocument,
     downloadDocumentFileScan: DocumentActions.downloadDocumentFileScan,
     increaseNumberView: DocumentActions.increaseNumberView,
     deleteDocument: DocumentActions.deleteDocument,

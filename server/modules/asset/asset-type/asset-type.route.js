@@ -8,6 +8,8 @@ router.get("/asset-types", auth, AssetTypeController.getAssetTypes);
 
 
 router.post("/asset-types", auth, AssetTypeController.createAssetTypes);
+router.post("/asset-types/imports", auth, AssetTypeController.importAssetTypes);
+
 router.patch("/asset-types/:id", auth, AssetTypeController.editAssetType);
 router.delete("/asset-types/:id", auth, AssetTypeController.deleteAssetTypes);
 

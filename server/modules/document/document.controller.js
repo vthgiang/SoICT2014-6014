@@ -1,5 +1,8 @@
 const DocumentServices = require("./document.service");
 const Logger = require(`../../logs`);
+const fs = require('fs');
+const archiver = require('archiver');
+const exec = require('child_process').exec;
 /**
  * Các controller cho phần quản lý tài liệu văn bản
  */
@@ -292,6 +295,57 @@ exports.downloadDocumentFileScan = async (req, res) => {
             messages: Array.isArray(error)
                 ? error
                 : ["download_document_file_scan_faile"],
+            content: error,
+        });
+    }
+};
+
+
+exports.downloadAllFileOfDocument = async (req, res) => {
+    try {
+        const rootPath = await DocumentServices.downloadAllFileOfDocument(
+           req.query,
+            req.portal
+        );
+        await Logger.info(
+            req.user.email,
+            "download_all_file_of_document_success",
+            req.portal
+        );
+
+        if (rootPath) {
+            const output = fs.createWriteStream(rootPath + "/document.zip");
+            const archive = archiver('zip');
+
+            archive.pipe(output);
+            archive.directory(rootPath, false);
+            archive.on('error', (err) => {
+                throw(err);
+            });
+            archive.on('end', function() {
+                setTimeout(()=>{
+                    console.log('gửi file')
+                    res.download(rootPath + '/document.zip');
+                    // xong rồi xóa thư mục đi
+                    if (fs.existsSync(`${SERVER_BACKUP_DIR}/download`)) {
+                        exec(`rm -rf ${SERVER_BACKUP_DIR}/download`, function (err) {console.log('er', err)});
+                    };
+                }, 3000)
+            })
+            archive.finalize('close');
+        }
+    } catch (error) {
+        console.log('error', error);
+        await Logger.error(
+            req.user.email,
+            "download_all_file_of_document_faile",
+            req.portal
+        );
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error)
+                ? error
+                : ["download_all_file_of_document_faile"],
             content: error,
         });
     }

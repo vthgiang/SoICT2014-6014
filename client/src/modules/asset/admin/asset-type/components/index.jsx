@@ -14,7 +14,7 @@ import EditForm from './editForm';
 import { ImportAssetTypeModal } from './importAssetTypeModal'
 
 function AdministrationAssetTypes(props) {
-    const [state, setState] =useState({
+    const [state, setState] = useState({
         domainParent: [],
         deleteNode: []
     })
@@ -24,13 +24,12 @@ function AdministrationAssetTypes(props) {
 
     useEffect(() => {
         props.getAssetTypes();
-    },[])
+    }, [])
 
     const onChanged = async (e, data) => {
-        console.log("##1##", data.node);
-        await setState({ 
+        await setState({
             ...state,
-            currentDomain: data.node 
+            currentDomain: data.node
         })
 
         window.$(`#edit-asset-type`).slideDown();
@@ -141,7 +140,11 @@ function AdministrationAssetTypes(props) {
 
     //Kiểm tra mã id của tài sản cha có tồn tại
     const checkValidParentAsset = (data, id) => {
-        let check = data.filter(node => node._id === id);
+        if (id && typeof id === 'object') {
+            id = id._id;
+        }
+
+        let check = data.filter(node => typeof node === 'object' ? node._id === id : node === id);
         if (check.length !== 0) return true;
         else return false;
     }
@@ -151,13 +154,15 @@ function AdministrationAssetTypes(props) {
     const dataTree = list.map(node => {
         const result = checkValidParentAsset(list, node.parent);
 
+        let nodeParent = node?.parent && typeof node?.parent === 'object' ? node?.parent?._id?.toString() : node?.parent?.toString();
+
         return {
             ...node,
             id: node._id,
             icon: 'glyphicon glyphicon-oil',
             text: node.typeName,
             state: { "opened": true },
-            parent: !node.parent || !result ? '#' : node.parent.toString()
+            parent: !node.parent || !result ? '#' : nodeParent
         }
     })
 
@@ -202,7 +207,7 @@ function AdministrationAssetTypes(props) {
                     </div>
 
                     {/* Form chỉnh sửa loại tài sản */}
-                    <div className="col-xs-12 col-sm-12 col-md-5 col-lg-5">
+                    <div className="col-xs-12 col-sm-12 col-md-5 col-lg-5" style={{position:'sticky', top:5}}>
                         {
                             currentDomain &&
                             <EditForm

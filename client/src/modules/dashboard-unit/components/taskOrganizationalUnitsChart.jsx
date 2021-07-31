@@ -23,7 +23,9 @@ class TaskOrganizationalUnitsChart extends Component {
             startDate: startDate,
             startDateShow: startDate,
             endDate: this.formatDate(Date.now(), true),
-            endDateShow: this.formatDate(Date.now(), true)
+            endDateShow: this.formatDate(Date.now(), true),
+            totalTask: true,
+            barChart: true
         }
     }
 
@@ -134,6 +136,88 @@ class TaskOrganizationalUnitsChart extends Component {
 
     componentDidUpdate = () => {
         this.renderChart()
+    }
+
+    setDataLineChart = () => {
+        const { tasks, user } = this.props;
+        let { childOrganizationalUnit } = this.props;
+        const { startDate, endDate, totalTask } = this.state;
+
+        let endMonth = new Date(this.formatString(endDate)).getMonth();
+        let endYear = new Date(this.formatString(endDate)).getFullYear();
+        endMonth = endMonth + 1;
+        let arrMonth = [];
+        for (let i = 0; ; i++) {
+            let month = endMonth - i;
+            if (month > 0) {
+                if (month.toString().length === 1) {
+                    month = `${endYear}-0${month}-01`;
+                    arrMonth = [...arrMonth, month];
+                } else {
+                    month = `${endYear}-${month}-01`;
+                    arrMonth = [...arrMonth, month];
+                }
+                if (`${this.formatString(startDate)}-01` === month) {
+                    break;
+                }
+            } else {
+                let j = 1;
+                for (j; ; j++) {
+                    month = month + 12;
+                    if (month > 0) {
+                        break;
+                    }
+                }
+                if (month.toString().length === 1) {
+                    month = `${endYear - j}-0${month}-01`;
+                    arrMonth = [...arrMonth, month];
+                } else {
+                    month = `${endYear - j}-${month}-01`;
+                    arrMonth = [...arrMonth, month];
+                }
+                if (`${this.formatString(startDate)}-01` === month) {
+                    break;
+                }
+            }
+        };
+        let listTask = tasks.organizationUnitTasks ? tasks.organizationUnitTasks.tasks : [];
+        let employeesOfUnitsUserIsManager = user.employeesOfUnitsUserIsManager;
+        let employeeOfUnits = [];
+        if (!totalTask) {
+            childOrganizationalUnit && childOrganizationalUnit.forEach(x => {
+                let count = employeesOfUnitsUserIsManager && employeesOfUnitsUserIsManager.filter(e => e?.idUnit?.toString() === x?.id?.toString())
+                employeeOfUnits = [...employeeOfUnits, count.length ? count.length : 1]
+            })
+        }
+
+        let data = [["x", ...arrMonth]];
+        childOrganizationalUnit && childOrganizationalUnit.forEach((x, index) => {
+            let taskOfUnist = [];
+            if (listTask.length !== 0) {
+                taskOfUnist = listTask.filter(t => t.organizationalUnit?._id === x.id);
+            }
+            let row = [...arrMonth];
+            row = row.map(r => {
+                let taskOfUnistInMonth = taskOfUnist.filter(t => {
+                    let date = new Date(r)
+                    let endMonth = new Date(date.setMonth(date.getMonth() + 1))
+                    let endDate = new Date(endMonth.setDate(endMonth.getDate() - 1))
+                    if (new Date(r).getTime() <= new Date(t.startDate).getTime() && new Date(t.startDate).getTime() <= new Date(endDate) ||
+                        new Date(r).getTime() <= new Date(t.endDate).getTime() && new Date(t.endDate).getTime() <= new Date(endDate) ||
+                        new Date(t.startDate).getTime() >= new Date(r).getTime() && new Date(endDate).getTime() >= new Date(t.endDate).getTime()) {
+                        return true;
+                    }
+                    return false;
+                });
+                if (!totalTask) {
+                    return (taskOfUnistInMonth.length / employeeOfUnits[index]).toFixed(1);
+                }
+                return taskOfUnistInMonth.length;
+            })
+            data = [...data, [x.name, ...row]]
+        })
+
+        return data
     }
 
     setSingleDataChart = () => {
@@ -298,15 +382,21 @@ class TaskOrganizationalUnitsChart extends Component {
      * @param {*} data : Dữ liệu biểu đồ
      */
     renderChart = () => {
-        const { timeseriesChart } = this.state
+        const { timeseriesChart, barChart } = this.state
 
         this.removePreviousChart();
         let dataChart;
-        if (timeseriesChart) {
-            dataChart = this.setSingleDataChart()
+
+        if (barChart) {
+            if (timeseriesChart) {
+                dataChart = this.setSingleDataChart()
+            } else {
+                dataChart = this.setMultiDataChart()
+            }
         } else {
-            dataChart = this.setMultiDataChart()
+            dataChart = this.setDataLineChart()
         }
+        
         let chart = c3.generate({
             bindto: this.refs.taskUnitsChart,
             data: {
@@ -322,7 +412,7 @@ class TaskOrganizationalUnitsChart extends Component {
             },
             axis: {
                 x: {
-                    type: timeseriesChart ? 'timeseries' : 'categories',
+                    type: timeseriesChart || !barChart ? 'timeseries' : 'categories',
                     tick: {
                         format: '%m - %Y',
                         outer: false,
@@ -421,10 +511,24 @@ class TaskOrganizationalUnitsChart extends Component {
         }
     }
 
+    handleChangeViewChart = (value) => {
+        this.setState({
+            ...this.state,
+            totalTask: value
+        })
+    }
+
+    handleChangeTypeChart = (value) => {
+        this.setState({
+            ...this.state,
+            barChart: value
+        })
+    }
+
     render() {
         const { translate, tasks } = this.props;
         let { childOrganizationalUnit } = this.props;
-        const { startDate, endDate, timeseriesChart } = this.state;
+        const { startDate, endDate, timeseriesChart, totalTask, barChart } = this.state;
 
         return (
             <div className="box box-solid" >
@@ -447,7 +551,13 @@ class TaskOrganizationalUnitsChart extends Component {
                     </div>
                 </div>
                 <div className="box-body" >
-                    {timeseriesChart
+                    <div className="box-tools pull-right" >
+                        <div className="btn-group pull-rigth">
+                            <button type="button" className={`btn btn-xs ${barChart ? "btn-danger" : "active"}`} onClick={() => this.handleChangeTypeChart(true)}>Bar Chart</button>
+                            <button type="button" className={`btn btn-xs ${barChart ? 'active' : "btn-danger"}`} onClick={() => this.handleChangeTypeChart(false)}>Line Chart</button>
+                        </div>
+                    </div>
+                    {(timeseriesChart || !barChart)
                         && <div className="qlcv" style={{ marginBottom: 15 }} >
                             <div className="form-inline" >
                                 <div className="form-group">
@@ -481,7 +591,15 @@ class TaskOrganizationalUnitsChart extends Component {
                         ? <p>{translate('general.loading')}</p>
                         : tasks?.organizationUnitTasks?.tasks?.length > 0
                             ? <div className="" >
-                                <p className="pull-left" > < b > ĐV tính: Số công việc </b></p >
+                                <p className="pull-left" > < b > ĐV tính: Số công việc </b></p>
+                                {!barChart
+                                    && <div className="box-tools pull-right" >
+                                        <div className="btn-group pull-rigth">
+                                            <button type="button" className={`btn btn-xs ${totalTask ? "btn-danger" : "active"}`} onClick={() => this.handleChangeViewChart(true)}>Tổng công việc</button>
+                                            <button type="button" className={`btn btn-xs ${totalTask ? 'active' : "btn-danger"}`} onClick={() => this.handleChangeViewChart(false)}>Công việc trên đầu người</button>
+                                        </div>
+                                    </div>
+                                }
                                 <section id={"taskUnitsChart"} className="c3-chart-container">
                                     <div ref="taskUnitsChart" style={{ marginBottom: "15px" }}></div>
                                 </section>

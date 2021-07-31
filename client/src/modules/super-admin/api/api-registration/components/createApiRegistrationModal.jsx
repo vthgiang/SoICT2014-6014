@@ -2,15 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, QuillEditor, SelectBox } from '../../../../../common-components';
+import { DialogModal, QuillEditor } from '../../../../../common-components';
 
+import { PrivilegeApiActions } from '../../../../system-admin/system-api/system-api-privilege/redux/actions';
 import { ApiActions } from '../../api-management/redux/actions'
-import { ApiRegistrationActions } from '../redux/actions'
 
 function CreateApiRegistrationModal(props) {
-    const { translate, company, apis } = props;
+    const { translate, apis } = props;
 
     const [state, setState] = useState({
+        companyId: localStorage.getItem("companyId"),
         email: null,
         name: null,
         description: null,
@@ -18,7 +19,7 @@ function CreateApiRegistrationModal(props) {
         registrationApisCategory: [],
     });
 
-    const { email, name, description, registrationApis, registrationApisCategory } = state;
+    const { email, name, companyId, description, registrationApis, registrationApisCategory } = state;
 
     useEffect(() => {
         props.getApis({
@@ -167,11 +168,13 @@ function CreateApiRegistrationModal(props) {
     }
 
     const handleSubmit = () => {
-        props.registerToUseApi({
+        props.createPrivilegeApi({
             email: email,
             name: name,
             description: description,
-            registrationApis: registrationApis,
+            companyId: companyId,
+            apis: registrationApis,
+            role: 'admin'
         })
         window.$("#create-api-registration-modal").modal("hide");
     }
@@ -289,7 +292,7 @@ function mapState(state) {
 
 const actionCreators = {
     getApis: ApiActions.getApis,
-    registerToUseApi: ApiRegistrationActions.registerToUseApi
+    createPrivilegeApi: PrivilegeApiActions.createPrivilegeApi
 };
 
 const connectedCreateApiRegistrationModal = connect(mapState, actionCreators)(withTranslate(CreateApiRegistrationModal));

@@ -46,6 +46,7 @@ function StatisticalAssetByType(props) {
     }, [props.amountOfAsset, props.valueOfAsset, props.depreciationOfAsset]);
 
     const barLineChart = (data, types, category) => {
+        console.log('category', category);
 
         let { translate } = props;
         let amount = translate('asset.dashboard.amount');
@@ -57,6 +58,7 @@ function StatisticalAssetByType(props) {
             [value]: 'y',
             [lost]: 'y'
         }
+        const groups = [[value, lost]]
 
         c3.generate({
             bindto: document.getElementById('statisticalAssetByType'),
@@ -64,7 +66,8 @@ function StatisticalAssetByType(props) {
             data: {
                 columns: data,
                 types: types,
-                axes: customAxes
+                axes: customAxes,
+                groups: groups,
             },
 
             padding: {

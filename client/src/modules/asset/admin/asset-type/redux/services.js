@@ -6,6 +6,7 @@ export const AssetTypeService = {
     editAssetType,
     deleteAssetTypes,
     deleteManyAssetType,
+    importAssetTypes,
 }
 
 
@@ -29,10 +30,14 @@ function searchAssetTypes(data) {
 /**
  * Lấy danh sách loại tài sản
  */
-function getAssetTypes() {
+function getAssetTypes(data) {
     return sendRequest({
         url: `${ process.env.REACT_APP_SERVER }/assettype/asset-types`,
         method: 'GET',
+        params: {
+            page: data?.page,
+            perPage: data?.perPage
+        }
     }, false, true, 'asset.asset_type');
 }
 
@@ -43,6 +48,14 @@ function getAssetTypes() {
 function createAssetTypes(data) {  
     return sendRequest({
         url: `${ process.env.REACT_APP_SERVER }/assettype/asset-types`,
+        method: 'POST',
+        data,
+    }, true, true, 'asset.asset_type');
+}
+
+function importAssetTypes(data) {
+    return sendRequest({
+        url: `${ process.env.REACT_APP_SERVER }/assettype/asset-types/imports`,
         method: 'POST',
         data,
     }, true, true, 'asset.asset_type');

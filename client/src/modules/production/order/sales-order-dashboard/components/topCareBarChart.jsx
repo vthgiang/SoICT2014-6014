@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useCallback, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { QuoteActions } from "../../quote/redux/actions";
@@ -9,23 +9,22 @@ import "c3/c3.css";
 import { DatePicker, SelectBox } from "../../../../../common-components";
 import { formatToTimeZoneDate } from "../../../../../helpers/formatDate";
 
-class TopCareBarChart extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            currentRole: localStorage.getItem("currentRole"),
-        };
-    }
-
-    componentDidMount() {
-        this.barChart();
-    }
-
-    setDataBarChart = () => {
+function TopCareBarChart (props) {
+    const amountPieChart = React.createRef()
+    const topCareBarChart = React.createRef()
+    
+    const [state,setState] = useState({
+        currentRole: localStorage.getItem("currentRole"),
+    })
+    useEffect(()=>{
+        barChart();
+    })
+    // console.log(props);
+    const setDataBarChart = () => {
         let topGoodsCareValue = ["Top sản phẩm được quan tâm theo số lượng"];
 
-        if (this.props.quotes && this.props.quotes.topGoodsCare) {
-            let topGoodsCareMap = this.props.quotes.topGoodsCare.map((element) => element.quantity);
+        if (props.quotes && props.quotes.topGoodsCare) {
+            let topGoodsCareMap = props.quotes.topGoodsCare.map((element) => element.quantity);
             topGoodsCareValue = topGoodsCareValue.concat(topGoodsCareMap);
         }
 
@@ -36,8 +35,8 @@ class TopCareBarChart extends Component {
         return dataBarChart;
     };
 
-    removePreviousChart() {
-        const chart = this.refs.amountPieChart;
+    function removePreviousChart() {
+        const chart = topCareBarChart.current;
         if (chart) {
             while (chart.hasChildNodes()) {
                 chart.removeChild(chart.lastChild);
@@ -45,24 +44,24 @@ class TopCareBarChart extends Component {
         }
     }
 
-    handleChangeViewChart() {
-        this.setState({
-            typeGood: !this.state.typeGood,
+    function handleChangeViewChart() {
+        setState({
+            ...state,
+            typeGood: !state.typeGood,
         });
     }
 
     // Khởi tạo PieChart bằng C3
-    barChart = () => {
-        let dataBarChart = this.setDataBarChart();
-
+    const barChart = () => {
+        let dataBarChart = setDataBarChart();
         let topGoodsCareTitle = [];
-        if (this.props.quotes && this.props.quotes.topGoodsCare) {
-            topGoodsCareTitle = this.props.quotes.topGoodsCare.map((element) => element.name);
+        if (props.quotes && props.quotes.topGoodsCare) {
+            topGoodsCareTitle = props.quotes.topGoodsCare.map((element) => element.name);
         }
 
-        this.removePreviousChart();
+        removePreviousChart();
         let chart = c3.generate({
-            bindto: this.refs.topCareBarChart,
+            bindto: topCareBarChart.current,
 
             data: dataBarChart,
 
@@ -101,19 +100,18 @@ class TopCareBarChart extends Component {
                 show: true,
             },
         });
+       
     };
-
-    handleStartDateChange = (value) => {
-        this.setState((state) => {
+    const handleStartDateChange = (value) => {
+        setState((state) => {
             return {
                 ...state,
                 startDate: value,
             };
         });
     };
-
-    handleEndDateChange = (value) => {
-        this.setState((state) => {
+    const handleEndDateChange = (value) => {
+        setState((state) => {
             return {
                 ...state,
                 endDate: value,
@@ -121,18 +119,15 @@ class TopCareBarChart extends Component {
         });
     };
 
-    handleSunmitSearch = async () => {
-        let { startDate, endDate, currentRole } = this.state;
+    const handleSunmitSearch = async () => {
+        let { startDate, endDate, currentRole } = state;
         let data = {
             currentRole,
             startDate: startDate ? formatToTimeZoneDate(startDate) : "",
             endDate: endDate ? formatToTimeZoneDate(endDate) : "",
         };
-        await this.props.getTopGoodsCare(data);
+        await props.getTopGoodsCare(data);
     };
-
-    render() {
-        this.barChart();
         return (
             <div className="box">
                 <div className="box-header with-border">
@@ -143,8 +138,8 @@ class TopCareBarChart extends Component {
                             <label style={{ width: "auto" }}>Từ</label>
                             <DatePicker
                                 id="date_picker_dashboard_start_top_care"
-                                value={this.state.startDate}
-                                onChange={this.handleStartDateChange}
+                                value={state.startDate}
+                                onChange={handleStartDateChange}
                                 disabled={false}
                             />
                         </div>
@@ -154,8 +149,8 @@ class TopCareBarChart extends Component {
                             <label style={{ width: "auto" }}>Đến</label>
                             <DatePicker
                                 id="date_picker_dashboard_end_top_care"
-                                value={this.state.endDate}
-                                onChange={this.handleEndDateChange}
+                                value={state.endDate}
+                                onChange={handleEndDateChange}
                                 disabled={false}
                             />
                         </div>
@@ -164,16 +159,15 @@ class TopCareBarChart extends Component {
                             <input className="form-control" type="number" placeholder="Mặc định bằng 5" style={{ width: "175px" }} />
                         </div> */}
                         <div className="form-group" style={{ marginLeft: "20px" }}>
-                            <button className="btn btn-success" onClick={() => this.handleSunmitSearch()}>
+                            <button className="btn btn-success" onClick={() => handleSunmitSearch()}>
                                 Tìm kiếm
                             </button>
                         </div>
                     </div>
-                    <div ref="topCareBarChart"></div>
+                    <div ref={topCareBarChart} id="topCareBarChart"></div>
                 </div>
             </div>
         );
-    }
 }
 
 function mapStateToProps(state) {

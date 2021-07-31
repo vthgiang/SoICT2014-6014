@@ -99,6 +99,10 @@ function ActionTab(props) {
                 descriptionDefault: ""
             },
             newCommentOfTaskComment: {
+                creator: idUser,
+                description: "",
+                files: [],
+                descriptionDefault: ""
             },
             newCommentOfTaskCommentEdited: {
                 creator: idUser,
@@ -164,7 +168,6 @@ function ActionTab(props) {
             props.getAllPreceedingTasks(props.id);
             props.getTaskLog(props.id);
         }
-
     }, [props.id])
 
     useEffect(() => {
@@ -182,8 +185,7 @@ function ActionTab(props) {
         }
     }, [JSON.stringify(performtasks?.task?.taskActions)])
 
-    const setHover = async (id, value, type) => {
-        console.log("value, type", value, type)
+    const setHover = (id, value, type) => {
         if (type === "rating") {
             if (isNaN(value)) {
                 setHover1({
@@ -210,7 +212,7 @@ function ActionTab(props) {
             }
         }
 
-        await setState({
+        setState({
             ...state,
             hover: {
                 ...state.hover,
@@ -219,18 +221,16 @@ function ActionTab(props) {
         })
     }
 
-    const setValueRating = async (actionId, newValue) => {
+    const setValueRating = (actionId, newValue) => {
         let newEvaluations = state.evaluations
         newEvaluations[actionId] = {
             ...newEvaluations[actionId],
             rating: newValue,
         }
-        await setState(state => {
-            return {
-                ...state,
-                valueRating: newValue,
-                evaluations: newEvaluations
-            }
+        setState({
+            ...state,
+            valueRating: newValue,
+            evaluations: newEvaluations
         })
     }
 
@@ -248,6 +248,22 @@ function ActionTab(props) {
         })
     }
 
+    const handleDeleteActionEvaluation = (actionId, taskId, evaluationId) => {
+        Swal.fire({
+            title: `Bạn có chắc chắn muốn xóa đánh giá ?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            cancelButtonText: props.translate('general.no'),
+            confirmButtonText: props.translate('general.yes'),
+        }).then((result) => {
+            if (result.value) {
+                props.deleteActionEvaluation(actionId, taskId, evaluationId)
+            }
+        })
+    }
+
     const evaluationTaskAction = (evaAction, taskId, role, firstTime) => {
         let newEvaluations = state.evaluations
         let rating = newEvaluations?.[evaAction?._id]?.rating ?? evaAction?.rating;
@@ -260,67 +276,54 @@ function ActionTab(props) {
             role: role,
         }
         props.evaluationAction(evaAction?._id, taskId, newEvaluations?.[evaAction?._id])
-        setState(state => {
-            return {
-                ...state,
-                showEvaluations: [...state.showEvaluations, evaAction?._id]
-            }
+        setState({
+            ...state,
+            showEvaluations: [...state.showEvaluations, evaAction?._id]
         })
     }
-    const handleChangeContent = async (content) => {
-        await setState(state => {
-            return {
-                ...state,
-                selected: content
-            }
+
+    const handleChangeContent = (content) => {
+        setState({
+            ...state,
+            selected: content
         })
     }
-    const handleComment = async (event) => {
+    const handleComment = (event) => {
         event.preventDefault();
-        await setState(state => {
-            return {
-                ...state,
-                comment: !state.comment
-            }
+        setState({
+            ...state,
+            comment: !state.comment
         })
     }
-    const handleAction = async (event) => {
+    const handleAction = (event) => {
         event.preventDefault();
-        await setState(state => {
-            return {
-                ...state,
-                action: !state.action
-            }
+        setState({
+            ...state,
+            action: !state.action
         })
     }
-    const handleShowChildComment = async (id) => {
+    const handleShowChildComment = (id) => {
         let a;
         if (state.showChildComment.some(obj => obj === id)) {
             a = state.showChildComment.filter(x => x !== id);
-            setState(state => {
-                return {
-                    ...state,
-                    showChildComment: a
-                }
+            setState({
+                ...state,
+                showChildComment: a
             })
         } else {
-            setState(state => {
-                return {
-                    ...state,
-                    showChildComment: [...state.showChildComment, id]
-                }
+            setState({
+                ...state,
+                showChildComment: [...state.showChildComment, id]
             })
         }
     }
-    const handleEditCommentOfTaskComment = async (childComment) => {
-        await setState(state => {
-            return {
-                ...state,
-                editCommentOfTaskComment: childComment._id,
-                newCommentOfTaskCommentEdited: {
-                    ...state.newCommentOfTaskCommentEdited,
-                    descriptionDefault: childComment.description
-                }
+    const handleEditCommentOfTaskComment = (childComment) => {
+        setState({
+            ...state,
+            editCommentOfTaskComment: childComment._id,
+            newCommentOfTaskCommentEdited: {
+                ...state.newCommentOfTaskCommentEdited,
+                descriptionDefault: childComment.description
             }
         })
     }
@@ -331,7 +334,7 @@ function ActionTab(props) {
         modal.classList.remove("in");
         modal.style = "display: none;";
     }
-    const submitComment = async (actionId, taskId) => {
+    const submitComment = (actionId, taskId) => {
         let { newCommentOfAction } = state;
         const data = new FormData();
 
@@ -359,7 +362,7 @@ function ActionTab(props) {
     }
 
     //Thêm mới hoạt động
-    const submitAction = async (taskId, index) => {
+    const submitAction = (taskId, index) => {
         let { newAction } = state;
 
         const data = new FormData();
@@ -374,22 +377,20 @@ function ActionTab(props) {
             props.createTaskAction(taskId, data);
         }
         // Reset state cho việc thêm mới action
-        setState(state => {
-            return {
-                ...state,
-                filePaste: [],
-                newAction: {
-                    ...state.newAction,
-                    description: "",
-                    files: [],
-                    descriptionDefault: ''
-                },
-            }
+        setState({
+            ...state,
+            filePaste: [],
+            newAction: {
+                ...state.newAction,
+                description: "",
+                files: [],
+                descriptionDefault: ''
+            },
         })
     }
 
     //Thêm mới bình luận của công việc
-    const submitTaskComment = async (taskId) => {
+    const submitTaskComment = (taskId) => {
         let { newTaskComment } = state;
 
         const data = new FormData();
@@ -402,20 +403,18 @@ function ActionTab(props) {
             props.createTaskComment(taskId, data);
         }
         // Reset state cho việc thêm mới bình luận
-        await setState(state => {
-            return {
-                ...state,
-                newTaskComment: {
-                    ...state.newTaskComment,
-                    description: "",
-                    files: [],
-                    descriptionDefault: ''
-                },
-                newTaskCommentFilePaste: []
-            }
+        setState({
+            ...state,
+            newTaskComment: {
+                ...state.newTaskComment,
+                description: "",
+                files: [],
+                descriptionDefault: ''
+            },
+            newTaskCommentFilePaste: []
         })
     }
-    const submitCommentOfTaskComment = async (commentId, taskId) => {
+    const submitCommentOfTaskComment = (commentId, taskId) => {
         let { newCommentOfTaskComment } = state;
         const data = new FormData();
 
@@ -453,74 +452,62 @@ function ActionTab(props) {
             props.uploadFile(taskId, data);
         }
         // Reset state cho việc thêm mới bình luận
-        setState(state => {
-            return {
-                ...state,
-                taskFiles: {
-                    ...state.taskFiles,
-                    description: "",
-                    files: [],
-                    descriptionDefault: ''
-                },
-                taskFilesPaste: []
-            }
+        setState({
+            ...state,
+            taskFiles: {
+                ...state.taskFiles,
+                description: "",
+                files: [],
+                descriptionDefault: ''
+            },
+            taskFilesPaste: []
         })
-
-
     }
 
     const handleEditFileTask = (file) => {
-        setState(state => {
-            return {
-                ...state,
-                showEditTaskFile: file._id,
-                fileTaskEdited: {
-                    descriptionDefault: file.description
-                }
+        setState({
+            ...state,
+            showEditTaskFile: file._id,
+            fileTaskEdited: {
+                descriptionDefault: file.description
             }
         });
     }
 
     const handleEditActionComment = (actionComent) => {
-        setState(state => {
-            return {
-                ...state,
-                editComment: actionComent._id,
-                newCommentOfActionEdited: {
-                    ...state.newCommentOfActionEdited,
-                    descriptionDefault: actionComent.description
-                }
+        setState({
+            ...state,
+            editComment: actionComent._id,
+            newCommentOfActionEdited: {
+                ...state.newCommentOfActionEdited,
+                descriptionDefault: actionComent.description
             }
         })
     }
 
-    const handleEditAction = async (item) => {
-        setState(state => {
-            return {
-                ...state,
-                editAction: item._id,
-                newActionEdited: {
-                    ...state.newActionEdited,
-                    descriptionDefault: item.description
-                }
+    const handleEditAction = (item) => {
+        setState({
+            ...state,
+            editAction: item._id,
+            newActionEdited: {
+                ...state.newActionEdited,
+                descriptionDefault: item.description
             }
         })
     }
 
     const handleEditTaskComment = (taskComment) => {
-        setState(state => {
-            return {
-                ...state,
-                editTaskComment: taskComment._id,
-                newTaskCommentEdited: {
-                    ...state.newTaskCommentEdited,
-                    descriptionDefault: taskComment.description
-                }
+        setState({
+            ...state,
+            editTaskComment: taskComment._id,
+            newTaskCommentEdited: {
+                ...state.newTaskCommentEdited,
+                descriptionDefault: taskComment.description
             }
         })
     }
 
-    const handleSaveEditAction = async (e, id, description, taskId) => {
+    const handleSaveEditAction = (e, id, description, taskId) => {
         e.preventDefault();
         let { newActionEdited } = state;
         let data = new FormData();
@@ -537,16 +524,14 @@ function ActionTab(props) {
         if (newActionEdited.description || newActionEdited.files) {
             props.editTaskAction(id, data, taskId);
         }
-        setState(state => {
-            return {
-                ...state,
-                editAction: "",
-                newActionEdited: {
-                    ...state.newActionEdited,
-                    files: [],
-                    description: "",
-                    descriptionDefault: null
-                }
+        setState({
+            ...state,
+            editAction: "",
+            newActionEdited: {
+                ...state.newActionEdited,
+                files: [],
+                description: "",
+                descriptionDefault: null
             }
         })
     }
@@ -565,7 +550,7 @@ function ActionTab(props) {
         props.editTaskAction(action.id, data, action.taskId);
     }
 
-    const handleSaveEditTaskComment = async (e, taskId, commentId, description) => {
+    const handleSaveEditTaskComment = (e, taskId, commentId, description) => {
         e.preventDefault();
         let { newTaskCommentEdited } = state;
         let data = new FormData();
@@ -581,17 +566,15 @@ function ActionTab(props) {
         if (newTaskCommentEdited.description || newTaskCommentEdited.files) {
             props.editTaskComment(taskId, commentId, data);
         }
-        await setState(state => {
-            return {
-                ...state,
-                newTaskCommentEdited: {
-                    ...state.newTaskComment,
-                    description: "",
-                    files: [],
-                    descriptionDefault: null
-                },
-                editTaskComment: ""
-            }
+        setState({
+            ...state,
+            newTaskCommentEdited: {
+                ...state.newTaskComment,
+                description: "",
+                files: [],
+                descriptionDefault: null
+            },
+            editTaskComment: ""
         })
     }
 
@@ -612,21 +595,19 @@ function ActionTab(props) {
         if (newCommentOfActionEdited.description || newCommentOfActionEdited.files) {
             await props.editActionComment(taskId, actionId, commentId, data);
         }
-        setState(state => {
-            return {
-                ...state,
-                newCommentOfActionEdited: {
-                    ...state.newCommentOfActionEdited,
-                    description: "",
-                    files: [],
-                    descriptionDefault: null
-                },
-                editComment: ""
-            }
+        setState({
+            ...state,
+            newCommentOfActionEdited: {
+                ...state.newCommentOfActionEdited,
+                description: "",
+                files: [],
+                descriptionDefault: null
+            },
+            editComment: ""
         })
     }
 
-    const handleSaveEditCommentOfTaskComment = async (e, commentId, taskId, description) => {
+    const handleSaveEditCommentOfTaskComment = (e, commentId, taskId, description) => {
         e.preventDefault();
         let { newCommentOfTaskCommentEdited } = state;
         let data = new FormData();
@@ -643,17 +624,15 @@ function ActionTab(props) {
             props.editCommentOfTaskComment(commentId, taskId, data);
         }
 
-        await setState(state => {
-            return {
-                ...state,
-                newCommentOfTaskCommentEdited: {
-                    ...state.newCommentOfTaskCommentEdited,
-                    description: "",
-                    files: [],
-                    descriptionDefault: null
-                },
-                editCommentOfTaskComment: ""
-            }
+        setState({
+            ...state,
+            newCommentOfTaskCommentEdited: {
+                ...state.newCommentOfTaskCommentEdited,
+                description: "",
+                files: [],
+                descriptionDefault: null
+            },
+            editCommentOfTaskComment: ""
         })
     }
 
@@ -674,17 +653,15 @@ function ActionTab(props) {
             props.editDocument(documentId, taskId, data);
         }
 
-        await setState(state => {
-            return {
-                ...state,
-                fileTaskEdited: {
-                    ...state.fileTaskEdited,
-                    description: "",
-                    files: [],
-                    descriptionDefault: null
-                },
-                showEditTaskFile: ""
-            }
+        setState({
+            ...state,
+            fileTaskEdited: {
+                ...state.fileTaskEdited,
+                description: "",
+                files: [],
+                descriptionDefault: null
+            },
+            showEditTaskFile: ""
         })
     }
 
@@ -710,65 +687,56 @@ function ActionTab(props) {
         }
 
         setState({
+            ...state,
             value: event.target.value,
             rows: currentRows < maxRows ? currentRows : maxRows,
         });
     }
 
     const onActionFilesChange = (files) => {
-        setState(state => {
-            return {
-                ...state,
-                newAction: {
-                    ...state.newAction,
-                    files: files,
-                }
+        setState({
+            ...state,
+            newAction: {
+                ...state.newAction,
+                files: files,
             }
         })
     }
 
     const onEditActionFilesChange = (files) => {
-        setState(state => {
-            return {
-                ...state,
-                newActionEdited: {
-                    ...state.newActionEdited,
-                    files: files,
-                }
+        setState({
+            ...state,
+            newActionEdited: {
+                ...state.newActionEdited,
+                files: files,
             }
         })
     }
-    const onEditCommentOfTaskCommentFilesChange = async (files) => {
-        setState(state => {
-            return {
-                ...state,
-                newCommentOfTaskCommentEdited: {
-                    ...state.newCommentOfTaskCommentEdited,
-                    files: files
-                }
+    const onEditCommentOfTaskCommentFilesChange = (files) => {
+        setState({
+            ...state,
+            newCommentOfTaskCommentEdited: {
+                ...state.newCommentOfTaskCommentEdited,
+                files: files
             }
         });
     }
     const onEditTaskCommentFilesChange = (files) => {
-        setState(state => {
-            return {
-                ...state,
-                newTaskCommentEdited: {
-                    ...state.newTaskCommentEdited,
-                    files: files
-                }
+        setState({
+            ...state,
+            newTaskCommentEdited: {
+                ...state.newTaskCommentEdited,
+                files: files
             }
         });
     }
 
     const onTaskCommentFilesChange = (files) => {
-        setState(state => {
-            return {
-                ...state,
-                newTaskComment: {
-                    ...state.newTaskComment,
-                    files: files
-                }
+        setState({
+            ...state,
+            newTaskComment: {
+                ...state.newTaskComment,
+                files: files
             }
         })
     }
@@ -785,13 +753,11 @@ function ActionTab(props) {
         })
     }
     const onEditCommentOfActionFilesChange = (files) => {
-        setState(state => {
-            return {
-                ...state,
-                newCommentOfActionEdited: {
-                    ...state.newCommentOfActionEdited,
-                    files: files,
-                }
+        setState({
+            ...state,
+            newCommentOfActionEdited: {
+                ...state.newCommentOfActionEdited,
+                files: files,
             }
         })
     }
@@ -805,13 +771,11 @@ function ActionTab(props) {
         })
     }
     const onTaskFilesChange = (files) => {
-        setState(state => {
-            return {
-                ...state,
-                taskFiles: {
-                    ...state.taskFiles,
-                    files: files
-                }
+        setState({
+            ...state,
+            taskFiles: {
+                ...state.taskFiles,
+                files: files
             }
         })
     }
@@ -837,18 +801,14 @@ function ActionTab(props) {
         let { showFile } = state
         if (showFile.some(obj => obj === id)) {
             a = showFile.filter(x => x !== id);
-            setState(state => {
-                return {
-                    ...state,
-                    showFile: a
-                }
+            setState({
+                ...state,
+                showFile: a
             })
         } else {
-            setState(state => {
-                return {
-                    ...state,
-                    showFile: [...state.showFile, id]
-                }
+            setState({
+                ...state,
+                showFile: [...state.showFile, id]
             })
         }
     }
@@ -858,23 +818,19 @@ function ActionTab(props) {
         let { showEvaluations } = state;
         if (showEvaluations.some(obj => obj === id)) {
             a = showEvaluations.filter(x => x !== id);
-            setState(state => {
-                return {
-                    ...state,
-                    showEvaluations: a
-                }
+            setState({
+                ...state,
+                showEvaluations: a
             })
         } else {
-            setState(state => {
-                return {
-                    ...state,
-                    showEvaluations: [...state.showEvaluations, id]
-                }
+            setState({
+                ...state,
+                showEvaluations: [...state.showEvaluations, id]
             })
         }
     }
 
-    const handleDeleteFile = async (fileId, fileName, actionId, type) => {
+    const handleDeleteFile = (fileId, fileName, actionId, type) => {
         let { performtasks, translate } = props
         Swal.fire({
             html: `<div style="max-width: 100%; max-height: 100%" >${translate("task.task_perform.question_delete_file")} ${fileName} ? <div>`,
@@ -886,15 +842,13 @@ function ActionTab(props) {
                 save(performtasks?.task?._id)
             }
         })
-        await setState(state => {
-            return {
-                ...state,
-                deleteFile: {
-                    fileId: fileId,
-                    actionId: actionId,
-                    fileName: fileName,
-                    type: type
-                }
+        setState({
+            ...state,
+            deleteFile: {
+                fileId: fileId,
+                actionId: actionId,
+                fileName: fileName,
+                type: type
             }
         });
     }
@@ -943,7 +897,7 @@ function ActionTab(props) {
         }
     }
 
-    const handleShowSort = async () => {
+    const handleShowSort = () => {
         let { taskActions, showSort } = state
         if (showSort) {
             setState({
@@ -983,7 +937,7 @@ function ActionTab(props) {
         });
     }
 
-    const saveSort = async (taskId) => {
+    const saveSort = (taskId) => {
         let { taskActions } = state
         let i
         let arrayActions = []
@@ -1069,7 +1023,6 @@ function ActionTab(props) {
     }
 
     const evaluationAllTaskAction = (taskId, taskActions) => {
-        console.log('taskActions', taskActions)
         const { actionImportanceLevelAll, ratingAll, evaluations } = state
         let evaluation = [], showEvaluations = [];
 
@@ -1146,8 +1099,8 @@ function ActionTab(props) {
         })
     }
 
-    const showFilePreview = async (data) => {
-        await setState({
+    const showFilePreview = (data) => {
+        setState({
             ...state,
             currentFilepri: data,
         });
@@ -1192,9 +1145,7 @@ function ActionTab(props) {
         default:
             break;
     }
-    console.log("state", state)
-    console.log("hover1", hover1)
-    console.log('formatDate(Date.now())', formatDate(Date.now()))
+    // console.log("state ActionTab", state)
     return (
         <div>
             {
@@ -1400,16 +1351,26 @@ function ActionTab(props) {
                                                                                 Array.isArray(item?.evaluations) &&
                                                                                 item.evaluations.map((element, index) => {
                                                                                     return (
-                                                                                        <p key={index}>
+                                                                                        <div key={index}>
                                                                                             <b> {element?.creator?.name} </b>
                                                                                             {getRoleNameInTask(element?.role)}
                                                                                             <span> Điểm đánh giá:<span className="text-red"> {element?.rating}/10</span> - Độ quan trọng:<span className="text-red"> {element?.actionImportanceLevel}/10</span></span>
-                                                                                        </p>
+                                                                                            &ensp;
+                                                                                            {role === "accountable" &&
+                                                                                                <a style={{ cursor: "pointer", fontWeight: '600' }} onClick={() => handleDeleteActionEvaluation(item._id, task._id, element._id)}><i className="material-icons">delete</i></a>
+                                                                                            }
+                                                                                        </div >
                                                                                     )
                                                                                 })
                                                                             }
                                                                         </li>
                                                                     </ul>
+                                                                    {Array.isArray(item?.evaluations) && item?.evaluations?.filter(element => element.role === "accountable").length > 0 &&
+                                                                        <p>
+                                                                            <b>Trung bình :</b>
+                                                                            <span> Điểm đánh giá:<span className="text-red"> {item?.rating}/10</span> - Độ quan trọng:<span className="text-red"> {item?.actionImportanceLevel}/10</span></span>
+                                                                        </p>
+                                                                    }
                                                                 </div>
                                                             }
                                                             {/* Các file đính kèm của action */}
@@ -1943,14 +1904,14 @@ function ActionTab(props) {
                                                                 placeholder={translate("task.task_perform.enter_comment")}
                                                                 submitButtonText={translate("task.task_perform.create_comment")}
                                                                 onTextChange={(value, imgs) => {
-                                                                    setState({
-                                                                        ...state,
-                                                                        [state.newCommentOfTaskComment[`${item._id}`]]: {
+                                                                    setState(state => {
+                                                                        state.newCommentOfTaskComment[`${item._id}`] = {
                                                                             ...state.newCommentOfTaskComment[`${item._id}`],
                                                                             description: value,
                                                                             creator: currentUser,
                                                                             descriptionDefault: null
                                                                         }
+                                                                        return { ...state }
                                                                     })
                                                                 }}
                                                                 onSubmit={(e) => { submitCommentOfTaskComment(item._id, task._id) }}
@@ -2292,6 +2253,7 @@ const actionCreators = {
     deleteCommentOfTaskComment: performTaskAction.deleteCommentOfTaskComment,
     evaluationAction: performTaskAction.evaluationAction,
     evaluationAllAction: performTaskAction.evaluationAllAction,
+    deleteActionEvaluation: performTaskAction.deleteActionEvaluation,
     confirmAction: performTaskAction.confirmAction,
     downloadFile: AuthActions.downloadFile,
     getSubTask: taskManagementActions.getSubTask,

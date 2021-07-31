@@ -2,12 +2,8 @@ import React, { Component } from "react";
 import PurchaseOrderTable from "./purchaseOrderTable";
 import "./purchaseOrder.css";
 
-class PurchaseOrder extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {};
-    }
-    render() {
+function PurchaseOrder () {
+    
         return (
             <div className="box" style={{ minHeight: "450px" }}>
                 <div className="box-body">
@@ -16,6 +12,5 @@ class PurchaseOrder extends Component {
             </div>
         );
     }
-}
 
 export default PurchaseOrder;

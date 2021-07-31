@@ -18,7 +18,7 @@ function DepreciationManager(props) {
     const limit_constructor = getTableConfiguration(tableId_constructor, defaultConfig).limit;
 
     const [state, setState] = useState({
-        tableId:tableId_constructor,
+        tableId: tableId_constructor,
         code: "",
         assetName: "",
         assetType: null,
@@ -34,10 +34,10 @@ function DepreciationManager(props) {
 
 
     useEffect(() => {
-        props.searchAssetTypes({ typeNumber: "", typeName: "", limit: 0 });
+        props.getAssetTypes();
         props.getAllAsset(state);
         props.getListBuildingAsTree();
-    },[])
+    }, [])
 
     // Bắt sự kiện click xem thông tin tài sản
     const handleView = async (value) => {
@@ -176,7 +176,7 @@ function DepreciationManager(props) {
             ...state,
             limit: limit,
         });
-        props.getAllAsset({...state, limit: limit});
+        props.getAllAsset({ ...state, limit: limit });
     }
 
     // Bắt sự kiện chuyển trang
@@ -358,10 +358,10 @@ function DepreciationManager(props) {
         window.$('#modal-edit-asset').modal('show');
 
         // Mở tab thứ 2
-        window.$('#modal-edit-asset').on('shown.bs.modal', function (){
+        window.$('#modal-edit-asset').on('shown.bs.modal', function () {
             window.$('#nav-tabs li:eq(1) a').tab('show');
         });
-      
+
 
     }
     // Lấy danh sách loại tài sản cho tree select
@@ -674,7 +674,7 @@ function mapState(state) {
 };
 
 const actionCreators = {
-    searchAssetTypes: AssetTypeActions.searchAssetTypes,
+    getAssetTypes: AssetTypeActions.getAssetTypes,
     getAllAsset: AssetManagerActions.getAllAsset,
     getListBuildingAsTree: AssetManagerActions.getListBuildingAsTree,
     getUser: UserActions.get,

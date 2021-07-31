@@ -59,7 +59,9 @@ class UploadFile extends Component {
                 if (sendDataAfterDelete && this.props.onChange)
                     this.props.onChange(files)
             })
-            this.props.callFunctionDeleteFile();
+            if (this.props.callFunctionDeleteFile) {
+                this.props.callFunctionDeleteFile();
+            }
         }
 
     };

@@ -46,13 +46,13 @@ function AssetCreateForm(props) {
         incidentLogs: [],
         files: [],
     })
-    
+
     const { translate, assetsManager } = props;
     const { img, asset, maintainanceLogs, usageLogs, incidentLogs, files, avatar } = state;
 
     useEffect(() => {
         props.getAllUsers();
-    },[])
+    }, [])
 
     // Function format dữ liệu Date thành string
     const formatDate2 = (date, monthYear = false) => {
@@ -107,7 +107,7 @@ function AssetCreateForm(props) {
 
     // Function thêm, chỉnh sửa thông tin bảo trì
     const handleChangeMaintainanceLog = (data, addData) => {
-        const {maintainanceLogs} = state
+        const { maintainanceLogs } = state
         maintainanceLogs.push(addData)
         setState({
             ...state,
@@ -119,7 +119,7 @@ function AssetCreateForm(props) {
     const handleChangeUsageLog = (data, addData) => {
         const { asset, usageLogs } = state;
         usageLogs.push(addData)
-        
+
         let status = addData ? addData.status : asset.status;
         setState({
             ...state,
@@ -157,7 +157,7 @@ function AssetCreateForm(props) {
 
     // Function thêm thông tin tài liệu đính kèm
     const handleChangeFile = (data, addData) => {
-        const {files} = state
+        const { files } = state
         files.push(addData)
         setState({
             ...state,
@@ -211,16 +211,16 @@ function AssetCreateForm(props) {
             files
         }
 
-        setState({ 
+        setState({
             ...state,
-            asset: assetUpdate 
+            asset: assetUpdate
         })
 
         let formData = convertJsonObjectToFormData(assetUpdate);
-        
+
         console.log(files)
         files.forEach(x => {
-            if(x.hasOwnProperty('fileUpload')){
+            if (x.hasOwnProperty('fileUpload')) {
                 formData.append("file", x.fileUpload);
             }
         })
@@ -229,103 +229,103 @@ function AssetCreateForm(props) {
     }
 
 
-        return (
-            <React.Fragment>
-                {/* <ButtonModal modalID="modal-add-asset" button_name={translate('menu.add_asset')} title={translate('menu.add_asset')} /> */}
-                <DialogModal
-                    size='75' modalID="modal-add-asset" isLoading={assetsManager.isLoading}
-                    formID="form-add-asset"
-                    title={translate('menu.add_asset')}
-                    func={save}
-                    disableSubmit={!isFormValidated()}
-                >
-                    <div className="nav-tabs-custom" style={{ marginTop: '-15px' }}>
-                        {/* Nav-tabs */}
-                        <ul className="nav nav-tabs">
-                            <li className="active"><a title={translate('asset.general_information.general_information')} data-toggle="tab" href={`#create_general`}>{translate('asset.general_information.general_information')}</a></li>
-                            <li><a title={translate('asset.general_information.depreciation_information')} data-toggle="tab" href={`#depreciation`}>{translate('asset.general_information.depreciation_information')}</a></li>
-                            <li><a title={translate('asset.general_information.usage_information')} data-toggle="tab" href={`#usage`}>{translate('asset.general_information.usage_information')}</a></li>
-                            <li><a title={translate('asset.general_information.incident_information')} data-toggle="tab" href={`#incident`}>{translate('asset.general_information.incident_information')}</a></li>
-                            <li><a title={translate('asset.general_information.maintainance_information')} data-toggle="tab" href={`#maintainance`}>{translate('asset.general_information.maintainance_information')}</a></li>
-                            <li><a title={translate('asset.general_information.disposal_information')} data-toggle="tab" href={`#disposal`}>{translate('asset.general_information.disposal_information')}</a></li>
-                            <li><a title={translate('asset.general_information.attach_infomation')} data-toggle="tab" href={`#attachments`}>{translate('asset.general_information.attach_infomation')}</a></li>
-                        </ul>
+    return (
+        <React.Fragment>
+            {/* <ButtonModal modalID="modal-add-asset" button_name={translate('menu.add_asset')} title={translate('menu.add_asset')} /> */}
+            <DialogModal
+                size='75' modalID="modal-add-asset" isLoading={assetsManager.isLoading}
+                formID="form-add-asset"
+                title={translate('menu.add_asset')}
+                func={save}
+                disableSubmit={!isFormValidated()}
+            >
+                <div className="nav-tabs-custom" style={{ marginTop: '-15px' }}>
+                    {/* Nav-tabs */}
+                    <ul className="nav nav-tabs">
+                        <li className="active"><a title={translate('asset.general_information.general_information')} data-toggle="tab" href={`#create_general`}>{translate('asset.general_information.general_information')}</a></li>
+                        <li><a title={translate('asset.general_information.depreciation_information')} data-toggle="tab" href={`#depreciation`}>{translate('asset.general_information.depreciation_information')}</a></li>
+                        <li><a title={translate('asset.general_information.usage_information')} data-toggle="tab" href={`#usage`}>{translate('asset.general_information.usage_information')}</a></li>
+                        <li><a title={translate('asset.general_information.incident_information')} data-toggle="tab" href={`#incident`}>{translate('asset.general_information.incident_information')}</a></li>
+                        <li><a title={translate('asset.general_information.maintainance_information')} data-toggle="tab" href={`#maintainance`}>{translate('asset.general_information.maintainance_information')}</a></li>
+                        <li><a title={translate('asset.general_information.disposal_information')} data-toggle="tab" href={`#disposal`}>{translate('asset.general_information.disposal_information')}</a></li>
+                        <li><a title={translate('asset.general_information.attach_infomation')} data-toggle="tab" href={`#attachments`}>{translate('asset.general_information.attach_infomation')}</a></li>
+                    </ul>
 
-                        <div className="tab-content">
-                            {/* Thông tin chung */}
-                            <GeneralTab
-                                id={`create_general`}
-                                img={img}
-                                avatar={avatar}
-                                handleChange={handleChange}
-                                handleUpload={handleUpload}
-                                assignedToUser={asset.assignedToUser}
-                                assignedToOrganizationalUnit={asset.assignedToOrganizationalUnit}
-                                usageLogs={usageLogs}
-                                status={asset.status}
-                                asset={asset}
-                                detailInfo={asset.detailInfo}
-                            />
+                    <div className="tab-content">
+                        {/* Thông tin chung */}
+                        <GeneralTab
+                            id={`create_general`}
+                            img={img}
+                            avatar={avatar}
+                            handleChange={handleChange}
+                            handleUpload={handleUpload}
+                            assignedToUser={asset.assignedToUser}
+                            assignedToOrganizationalUnit={asset.assignedToOrganizationalUnit}
+                            usageLogs={usageLogs}
+                            status={asset.status}
+                            asset={asset}
+                            detailInfo={asset.detailInfo}
+                        />
 
-                            {/* Thông tin khấu hao */}
-                            <DepreciationTab
-                                id="depreciation"
-                                asset={asset}
-                                handleChange={handleChange}
-                            />
+                        {/* Thông tin khấu hao */}
+                        <DepreciationTab
+                            id="depreciation"
+                            asset={asset}
+                            handleChange={handleChange}
+                        />
 
-                            {/* Thông tin bảo trì */}
-                            <MaintainanceLogTab
-                                id="maintainance"
-                                maintainanceLogs={maintainanceLogs}
-                                handleAddMaintainance={handleChangeMaintainanceLog}
-                                handleEditMaintainance={handleChangeMaintainanceLog}
-                                handleDeleteMaintainance={handleChangeMaintainanceLog}
-                            />
+                        {/* Thông tin bảo trì */}
+                        <MaintainanceLogTab
+                            id="maintainance"
+                            maintainanceLogs={maintainanceLogs}
+                            handleAddMaintainance={handleChangeMaintainanceLog}
+                            handleEditMaintainance={handleChangeMaintainanceLog}
+                            handleDeleteMaintainance={handleChangeMaintainanceLog}
+                        />
 
-                            {/* Thông tin sử dụng */}
-                            <UsageLogTab
-                                id="usage"
-                                usageLogs={usageLogs}
-                                typeRegisterForUse={asset.typeRegisterForUse}
-                                managedBy={asset.managedBy}
-                                handleAddUsage={handleChangeUsageLog}
-                                handleEditUsage={handleChangeUsageLog}
-                                handleDeleteUsage={handleChangeUsageLog}
-                                handleRecallAsset={handleRecallAsset}
-                            />
+                        {/* Thông tin sử dụng */}
+                        <UsageLogTab
+                            id="usage"
+                            usageLogs={usageLogs}
+                            typeRegisterForUse={asset.typeRegisterForUse}
+                            managedBy={asset.managedBy}
+                            handleAddUsage={handleChangeUsageLog}
+                            handleEditUsage={handleChangeUsageLog}
+                            handleDeleteUsage={handleChangeUsageLog}
+                            handleRecallAsset={handleRecallAsset}
+                        />
 
-                            {/* Thông tin sự cố */}
-                            <IncidentLogTab
-                                id="incident"
-                                incidentLogs={incidentLogs}
-                                handleAddIncident={handleChangeIncidentLog}
-                                handleEditIncident={handleChangeIncidentLog}
-                                handleDeleteIncident={handleChangeIncidentLog}
-                            />
+                        {/* Thông tin sự cố */}
+                        <IncidentLogTab
+                            id="incident"
+                            incidentLogs={incidentLogs}
+                            handleAddIncident={handleChangeIncidentLog}
+                            handleEditIncident={handleChangeIncidentLog}
+                            handleDeleteIncident={handleChangeIncidentLog}
+                        />
 
-                            {/* Thông tin thanh lý */}
-                            <DisposalTab
-                                id="disposal"
-                                asset={asset}
-                                handleChange={handleChange}
-                            />
+                        {/* Thông tin thanh lý */}
+                        <DisposalTab
+                            id="disposal"
+                            asset={asset}
+                            handleChange={handleChange}
+                        />
 
-                            {/* Tài liệu đính kèm */}
-                            <FileTab
-                                id="attachments"
-                                files={files}
-                                asset={asset}
-                                handleChange={handleChange}
-                                handleAddFile={handleChangeFile}
-                                handleEditFile={handleChangeFile}
-                                handleDeleteFile={handleChangeFile}
-                            />
-                        </div>
+                        {/* Tài liệu đính kèm */}
+                        <FileTab
+                            id="attachments"
+                            files={files}
+                            asset={asset}
+                            handleChange={handleChange}
+                            handleAddFile={handleChangeFile}
+                            handleEditFile={handleChangeFile}
+                            handleDeleteFile={handleChangeFile}
+                        />
                     </div>
-                </DialogModal>
-            </React.Fragment>
-        );
+                </div>
+            </DialogModal>
+        </React.Fragment>
+    );
 };
 
 function mapState(state) {
@@ -335,7 +335,6 @@ function mapState(state) {
 
 const actionCreators = {
     addNewAsset: AssetManagerActions.addNewAsset,
-    searchAssetTypes: AssetTypeActions.searchAssetTypes,
     getAllUsers: UserActions.get
 };
 

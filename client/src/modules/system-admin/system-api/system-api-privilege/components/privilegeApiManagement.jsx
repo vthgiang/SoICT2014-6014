@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import Swal from 'sweetalert2';
 
-import { PaginateBar, DataTableSetting, SelectMulti, DeleteNotification } from '../../../../../common-components';
+import { PaginateBar, DataTableSetting, SelectMulti } from '../../../../../common-components';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration'
 
 import { PrivilegeApiActions } from '../redux/actions'
@@ -27,6 +28,7 @@ function PrivilegeApiManagement (props) {
 
     useEffect(() => {
         props.getPrivilegeApis({
+            role: 'system_admin',
             page: page,
             perPage: perPage
         })
@@ -54,13 +56,53 @@ function PrivilegeApiManagement (props) {
         props.getPrivilegeApis({
             email: email,
             companyIds: companyIds,
+            role: 'system_admin',
             page: page,
             perPage: perPage
         })
     }
 
-    const handleEdit = (api) => {
+    const handleAcceptPrivilegeApi = (privilegeApi) => {
+        props.updateStatusPrivilegeApi({
+            role: 'system_admin',
+            privilegeApiIds: [privilegeApi?._id],
+            status: 3
+        })
+    }
 
+    const handleDeclinePrivilegeApi = (privilegeApi) => {
+        props.updateStatusPrivilegeApi({
+            role: 'system_admin',
+            privilegeApiIds: [privilegeApi?._id],
+            status: 2
+        })
+    }
+
+    const handleCancelPrivilegeApi = (privilegeApi) => {
+        props.updateStatusPrivilegeApi({
+            role: 'system_admin',
+            privilegeApiIds: [privilegeApi?._id],
+            status: 0
+        })
+    }
+
+    const handleDeletePrivilegeApi = (privilegeApi) => {
+        Swal.fire({
+            html: `<h4 style="color: red"><div>${translate('system_admin.system_api.delete')}</div></h4>`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            cancelButtonText: translate('general.no'),
+            confirmButtonText: translate('general.yes'),
+        }).then((result) => {
+            if (result.value) {
+                props.deletePrivilegeApis({
+                    role: 'system_admin',
+                    privilegeApiIds: [privilegeApi?._id]
+                });
+            }
+        })
     }
 
     const setLimit = (value) => {
@@ -73,6 +115,7 @@ function PrivilegeApiManagement (props) {
             props.getPrivilegeApis({
                 email: email,
                 companyIds: companyIds,
+                role: 'system_admin',
                 page: 1,
                 perPage: Number(value)
             })
@@ -87,13 +130,23 @@ function PrivilegeApiManagement (props) {
         props.getPrivilegeApis({
             email: email,
             companyIds: companyIds,
+            role: 'system_admin',
             page: value,
             perPage: perPage
         })
     }
 
     const formatStatus = (status) => {
-        return status
+        if (status === 0) {
+            return <span style={{ color: '#858585' }}>Vô hiệu hóa</span>
+        } else if (status === 1) {
+            return <span style={{ color: '#F57F0C' }}>Yêu cầu sử dụng</span>
+        } else if (status === 2) {
+            return <span style={{ color: '#E34724' }}>Từ chối</span>
+        } else if (status === 3) {
+            return <span style={{ color: '#28A745' }}>Đang sử dụng</span>
+
+        }
     }
 
     const handleAddPrivilegeApi = () => {
@@ -175,14 +228,21 @@ function PrivilegeApiManagement (props) {
                                             {privilege?.token?.slice(0, 60)}...
                                         </td>
                                         <td style={{ textAlign: 'center' }}>
-                                            <a onClick={() => handleEdit(privilege)} className="edit" title={translate('system_admin.system_component.edit')}><i className="material-icons">edit</i></a>
-                                            <DeleteNotification
-                                                content={translate('system_admin.system_component.delete')}
-                                                data={{
-                                                    id: privilege._id,
-                                                }}
-                                                // func={props.deleteSystemComponent}
-                                            />
+                                            <a onClick={() => handleAcceptPrivilegeApi(privilege)} style={{ color: "#28A745"}}>
+                                                <i className="material-icons">check_circle_outline</i>
+                                            </a>
+                                            <a onClick={() => handleDeclinePrivilegeApi(privilege)} style={{ color: "#E34724"}}>
+                                                <i className="material-icons">remove_circle_outline</i>
+                                            </a>
+                                            <div>
+                                                <a onClick={() => handleCancelPrivilegeApi(privilege)} style={{ color: "#858585"}}>
+                                                    <i className="material-icons">highlight_off</i>
+                                                </a>
+                                                <a className="delete text-red" onClick={() => handleDeletePrivilegeApi(privilege)}>
+                                                    <i className="material-icons">delete</i>
+                                                </a>
+                                            </div>
+                                            
                                         </td>
                                     </tr>    
                                 )
@@ -209,6 +269,8 @@ function mapState(state) {
 }
 const actions = {
     getPrivilegeApis: PrivilegeApiActions.getPrivilegeApis,
+    deletePrivilegeApis: PrivilegeApiActions.deletePrivilegeApis,
+    updateStatusPrivilegeApi: PrivilegeApiActions.updateStatusPrivilegeApi,
     getAllCompanies: CompanyActions.getAllCompanies,
 }
 

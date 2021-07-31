@@ -1,15 +1,15 @@
-import React, { Component, useState} from 'react';
+import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { MaintainanceLogAddModal, MaintainanceLogEditModal } from './combinedContent';
 
 function MaintainanceLogTab(props) {
-    const [state, setState] =useState({})
+    const [state, setState] = useState({})
     const [prevProps, setPrevProps] = useState({
         id: null
     })
-  
+
 
     // Function format dữ liệu Date thành string
     const formatDate = (date, monthYear = false) => {
@@ -47,15 +47,17 @@ function MaintainanceLogTab(props) {
     // Function thêm thông tin bảo trì
     const handleAddMaintainance = async (data) => {
         let { maintainanceLogs } = state;
-        await setState(state =>{
-            return{
+        const values = [...maintainanceLogs, {
+            ...data
+        }]
+
+        await setState(state => {
+            return {
                 ...state,
-                maintainanceLogs: [...maintainanceLogs, {
-                    ...data
-                }]
+                maintainanceLogs: values
             }
         })
-        props.handleAddMaintainance(state.maintainanceLogs, data)
+        props.handleAddMaintainance(values, data)
     }
 
     // Function chỉnh sửa thông tin bảo trì
@@ -63,12 +65,12 @@ function MaintainanceLogTab(props) {
         const { maintainanceLogs } = state;
         maintainanceLogs[data.index] = data;
         await setState(state => {
-            return{
+            return {
                 ...state,
                 maintainanceLogs: maintainanceLogs
             }
         });
-        props.handleEditMaintainance(state.maintainanceLogs, data)
+        props.handleEditMaintainance(maintainanceLogs, data)
     }
 
     // Function bắt sự kiện xoá thông tin bảo trì
@@ -80,18 +82,18 @@ function MaintainanceLogTab(props) {
             ...state,
             maintainanceLogs: [...maintainanceLogs]
         })
-        props.handleDeleteMaintainance(state.maintainanceLogs, data)
+        props.handleDeleteMaintainance([...maintainanceLogs], data)
     }
 
-    if(prevProps.id !== props.id){
+    if (prevProps.id !== props.id) {
         setState({
-                ...state,
-                id: props.id,
-                maintainanceLogs: props.maintainanceLogs,
+            ...state,
+            id: props.id,
+            maintainanceLogs: props.maintainanceLogs,
         })
         setPrevProps(props)
     }
-   
+
     const formatType = (type) => {
         const { translate } = props;
 
@@ -105,7 +107,7 @@ function MaintainanceLogTab(props) {
             case "Sửa chữa":
                 return translate('asset.asset_info.repair');
             case "Thay thế":
-                    return translate('asset.asset_info.replace');
+                return translate('asset.asset_info.replace');
             case "Nâng cấp":
                 return translate('asset.asset_info.upgrade');
             default:
@@ -128,7 +130,7 @@ function MaintainanceLogTab(props) {
         }
     }
 
-    
+
     const { id } = props;
     const { translate } = props;
     const { maintainanceLogs, currentRow } = state;

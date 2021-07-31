@@ -7,4 +7,8 @@ router.get("/privilege-apis", auth, SystemApiPrivilegeControllers.getPrivilegeAp
 
 router.post("/privilege-apis", auth, SystemApiPrivilegeControllers.createPrivilegeApi);
 
+router.patch("/privilege-apis", auth, SystemApiPrivilegeControllers.editPrivilegeApi);
+
+router.delete("/privilege-apis", auth, SystemApiPrivilegeControllers.deletePrivilegeApis);
+
 module.exports = router;

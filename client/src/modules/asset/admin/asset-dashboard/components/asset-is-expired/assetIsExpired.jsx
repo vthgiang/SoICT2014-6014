@@ -46,7 +46,7 @@ class AssetIsExpired extends Component {
             console.log(err);
         });
 
-        this.props.searchAssetTypes({ typeNumber: "", typeName: "", limit: 0 });
+        this.props.getAssetTypesActions();
         this.props.getUser();
     }
 
@@ -275,7 +275,7 @@ function mapState(state) {
 }
 
 const actionCreators = {
-    searchAssetTypes: AssetTypeActions.searchAssetTypes,
+    getAssetTypesActions: AssetTypeActions.getAssetTypes,
     getUser: UserActions.get,
 };
 

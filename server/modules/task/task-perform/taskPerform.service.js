@@ -2311,6 +2311,99 @@ exports.evaluationAllAction = async (portal, params, body, userId) => {
 }
 
 /**
+ * Xoá đánh giá hoạt động
+ */
+exports.deleteActionEvaluation = async (portal, params) => {
+    // Kiểm tra xem đánh giá hoạt động đang tồn tại hay không - nếu có thì xoá,nếu không thì trả về dữ liệu sau khi cập nhật
+    let danhgia = await Task(connect(DB_CONNECTION, portal)).aggregate([
+        { $match: { _id: mongoose.Types.ObjectId(params.taskId) } },
+        { $unwind: "$taskActions" },
+        { $replaceRoot: { newRoot: "$taskActions" } },
+        { $match: { _id: mongoose.Types.ObjectId(params.actionId) } },
+        { $unwind: "$evaluations" },
+        { $replaceRoot: { newRoot: "$evaluations" } },
+        { $match: {_id: mongoose.Types.ObjectId(params.evaluationId) } },
+    ]);
+
+    if (danhgia.length >0) {
+        await Task(connect(DB_CONNECTION, portal)).updateOne(
+            {
+                _id: params.taskId,
+                "taskActions._id": params.actionId,
+                "taskActions.evaluations._id": params.evaluationId,
+            },
+            {
+                $pull : {
+                    "taskActions.$.evaluations" : { _id: params.evaluationId },
+                },
+            },
+            { safe: true }
+        )
+    }
+
+    // Lấy danh sách các đánh giá của hoạt động
+    let evaluations = await Task(connect(DB_CONNECTION, portal)).aggregate([
+        { $match: { _id: mongoose.Types.ObjectId(params.taskId) } },
+        { $unwind: "$taskActions" },
+        { $replaceRoot: { newRoot: "$taskActions" } },
+        { $match: { _id: mongoose.Types.ObjectId(params.actionId) } },
+        { $unwind: "$evaluations" },
+        { $replaceRoot: { newRoot: "$evaluations" } },
+    ]);
+
+    //Lấy điểm đánh giá của người phê duyệt trong danh sách các danh sách các đánh giá của hoạt động
+    let rating = [], actionImportanceLevel = [];
+    for (let i = 0; i < evaluations.length; i++) {
+        let evaluation = evaluations[i];
+        if (evaluation.role === 'accountable') {
+            rating.push(evaluation.rating);
+            actionImportanceLevel.push(evaluation.actionImportanceLevel);
+        }
+    }
+
+    //tính điểm trung bình
+    let accountableRating, accountableActionImportanceLevel;
+    if (rating.length > 0) {
+        accountableRating =
+            rating.reduce((accumulator, currentValue) => {
+                return accumulator + currentValue;
+            }, 0) / rating.length;
+
+        accountableActionImportanceLevel =
+            actionImportanceLevel.reduce((accumulator, currentValue) => {
+                return accumulator + currentValue;
+            }, 0) / rating.length;
+    }
+
+    await Task(connect(DB_CONNECTION, portal)).updateOne(
+        { _id: params.taskId, "taskActions._id": params.actionId },
+        {
+            $set: {
+                "taskActions.$.rating": accountableRating,
+                "taskActions.$.actionImportanceLevel": accountableActionImportanceLevel
+            },
+        },
+        { $new: true }
+    );
+
+    let task = await Task(connect(DB_CONNECTION, portal))
+        .findOne({ _id: params.taskId, "taskActions._id": params.actionId })
+        .populate([
+            { path: "taskActions.creator", select: "name email avatar" },
+            {
+                path: "taskActions.comments.creator",
+                select: "name email avatar",
+            },
+            {
+                path: "taskActions.evaluations.creator",
+                select: "name email avatar ",
+            },
+        ]);
+
+    return task.taskActions;
+};
+
+/**
  * Xác nhận hành động
  */
 exports.confirmAction = async (portal, params, body) => {

@@ -15,6 +15,7 @@ exports.getAssetTypes = async (req, res) => {
             content: types
         });
     } catch (error) {
+        console.log('error',error)
         await Logger.error(req.user.email, 'GET_ASSET_TYPES', req.portal);
         res.status(400).json({
             success: false,
@@ -43,6 +44,27 @@ exports.createAssetTypes = async (req, res) => {
         });
     }
 };
+
+exports.importAssetTypes = async (req, res) => {
+    try {
+        const data = await AssetTypeService.importAssetTypes(req.portal, req.user.company._id, req.body);
+         
+        await Logger.info(req.user.email, 'import_asset_type_success', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['import_asset_type_success'],
+            content: data
+        });
+    } catch (error) {
+        console.log('eoror', error)
+        await Logger.error(req.user.email, 'import_asset_type_faile', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['import_asset_type_faile'],
+            content: error
+        });
+    }
+}
 
 
 exports.editAssetType = async (req, res) => {

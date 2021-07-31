@@ -47,6 +47,7 @@ export function assetType(state = initState, action) {
         case AssetTypeConstants.GET_ASSET_TYPE_REQUEST:
         case AssetTypeConstants.GET_ALL_ASSET_TYPE_REQUEST:
         case AssetTypeConstants.CREATE_ASSET_TYPE_REQUEST:
+        case AssetTypeConstants.IMPORT_ASSET_TYPE_REQUEST:
         case AssetTypeConstants.DELETE_ASSET_TYPE_REQUEST:
             return {
                 ...state,
@@ -64,13 +65,15 @@ export function assetType(state = initState, action) {
             
         case AssetTypeConstants.GET_ALL_ASSET_TYPE_SUCCESS:
         case AssetTypeConstants.CREATE_ASSET_TYPE_SUCCESS:
+        case AssetTypeConstants.IMPORT_ASSET_TYPE_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
                 administration: {
                     ...state.administration,
                     types: action.payload
-                }
+                },
+                listAssetTypes: action?.payload?.list
             };
         
         case AssetTypeConstants.EDIT_ASSET_TYPE_SUCCESS:
@@ -95,10 +98,11 @@ export function assetType(state = initState, action) {
         
         case AssetTypeConstants.GET_ASSET_TYPE_FAILURE:
         case AssetTypeConstants.CREATE_ASSET_TYPE_FAILURE:
+        case AssetTypeConstants.IMPORT_ASSET_TYPE_FAILE:
             return {
                 ...state,
                 isLoading: false,
-                error: action.error.message
+                error: action?.error?.message
             };
 
         case AssetTypeConstants.GET_ALL_ASSET_TYPE_FAILE:

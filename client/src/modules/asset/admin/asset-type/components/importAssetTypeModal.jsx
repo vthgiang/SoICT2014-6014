@@ -1,4 +1,4 @@
-import React, { Component, useState} from 'react';
+import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
 
 import { withTranslate } from 'react-redux-multilingual';
@@ -21,8 +21,7 @@ function ImportAssetTypeModal(props) {
 
     const save = () => {
         const { importShowData } = state;
-
-        props.createAssetTypes(importShowData);
+        props.importAssetTypes(importShowData);
     }
 
     const handleChangeConfig = (value) => {
@@ -59,28 +58,37 @@ function ImportAssetTypeModal(props) {
         return dataExport;
     }
 
-    const getAssetTypeParentId = (parentName, data) => {
-        let indexOfArr = -1,
-            AssetTypeParentId;
+    // const getAssetTypeParentId = (parentName, data) => {
+    //     let indexOfArr = -1,
+    //         AssetTypeParentId;
 
-        // Kiểm tra xem loại tài sản cha có tồn tại hay không
-        if (!parentName) return
+    //     // Kiểm tra xem loại tài sản cha có tồn tại hay không
+    //     if (!parentName) return
 
-        data.forEach((item, index) => {
-            if (item.typeName === parentName)
-                indexOfArr = index;
-        })
+    //     data.forEach((item, index) => {
+    //         if (item.typeName === parentName)
+    //             indexOfArr = index;
+    //     })
 
-        if (indexOfArr !== -1) {
-            for (let i = 0; i < data.length; i++) {
-                if (parentName === data[i].typeName) {
-                    AssetTypeParentId = data[i]._id;
-                    return AssetTypeParentId;
-                }
-            }
-        } else {
-            return indexOfArr;
+    //     if (indexOfArr !== -1) {
+    //         for (let i = 0; i < data.length; i++) {
+    //             if (parentName === data[i].typeName) {
+    //                 AssetTypeParentId = data[i]._id;
+    //                 return AssetTypeParentId;
+    //             }
+    //         }
+    //     } else {
+    //         return indexOfArr;
+    //     }
+    // }
+
+    const checkAssetCode = (code, list) => {
+        let checkCode;
+        if (list?.length) {
+            checkCode = list.filter(o => o?.typeNumber === code?.toString()?.trim())
         }
+        if (checkCode?.length)
+            return -1;
     }
 
 
@@ -103,7 +111,7 @@ function ImportAssetTypeModal(props) {
                 valueShow = [...valueShow, {
                     "typeNumber": valueTemporary.code,
                     "typeName": valueTemporary.name,
-                    "parent": getAssetTypeParentId(valueTemporary.parent, list),
+                    "parent": valueTemporary.parent,
                     "description": valueTemporary.description,
                     "defaultInformation": [{ nameField: valueTemporary.information }]
                 }];
@@ -135,8 +143,8 @@ function ImportAssetTypeModal(props) {
             let rowError = [];
             for (let i = 0; i < value.length; i++) {
                 let x = value[i], errorAlert = [];
-
-                if (x.name === null || x.code === null || getAssetTypeParentId(x.parent, list) === -1) {
+                const checkCode = value.filter(obj => obj?.code?.toString()?.trim() === value[i]?.code?.toString()?.trim());
+                if (x.name === null || x.code === null || (value[i]?.code && checkCode?.length > 1) || checkAssetCode(x.code, list) === -1) {
                     rowError = [...rowError, i + 1];
                     x = { ...x, error: true };
                 }
@@ -146,8 +154,11 @@ function ImportAssetTypeModal(props) {
                 if (x.name === null) {
                     errorAlert = [...errorAlert, 'Tên loại tài sản không được để trống'];
                 }
-                if (getAssetTypeParentId(x.parent, list) === -1) {
-                    errorAlert = [...errorAlert, 'Loại tài sản cha không đúng định dạng'];
+                if (value[i]?.code && checkCode?.length > 1) {
+                    errorAlert = [...errorAlert, 'Mã loại tài sản trong file trùng lặp'];
+                }
+                if (checkAssetCode(x.code, list) === -1) {
+                    errorAlert = [...errorAlert, 'Mã loại tài sản đã tồn tại trên hệ thống'];
                 }
 
                 x = { ...x, errorAlert: errorAlert };
@@ -168,7 +179,6 @@ function ImportAssetTypeModal(props) {
             })
         }
     }
-
 
     let importDataTemplate = convertDataExport(importAssetTypeTemplate);
     return (
@@ -227,7 +237,7 @@ function mapState(state) {
     return { assetType };
 };
 const actions = {
-    createAssetTypes: AssetTypeActions.createAssetTypes,
+    importAssetTypes: AssetTypeActions.importAssetTypes,
 };
 
 const connectedImportAssetTypeModal = connect(mapState, actions)(withTranslate(ImportAssetTypeModal));

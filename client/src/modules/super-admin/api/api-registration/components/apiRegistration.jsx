@@ -8,9 +8,10 @@ import { getTableConfiguration } from '../../../../../helpers/tableConfiguration
 import { CreateApiRegistrationModal } from './createApiRegistrationModal'
 
 import { ApiRegistrationActions } from '../redux/actions'
+import { PrivilegeApiActions } from '../../../../system-admin/system-api/system-api-privilege/redux/actions'
 
 function ApiRegistration (props) {
-    const { translate, apiRegistration, company } = props
+    const { translate, privilegeApis, company } = props
 
     const tableId = "table-api-registration";
     const defaultConfig = { limit: 20 }
@@ -18,14 +19,17 @@ function ApiRegistration (props) {
 
     const [state, setState] = useState({
         email: null,
+        companyId: localStorage.getItem("companyId"),
         page: 1,
         perPage: limit
     })
-    const { email, page, perPage } = state;
+    const { email, companyId, page, perPage } = state;
 
     useEffect(() => {
-        props.getApiRegistration({
+        props.getPrivilegeApis({
             email: email,
+            companyIds: [companyId],
+            role: 'admin',
             page: page,
             perPage: perPage
         })
@@ -39,15 +43,34 @@ function ApiRegistration (props) {
     }
 
     const handleSunmitSearch = () => {
-        props.getApiRegistration({
+        props.getPrivilegeApis({
             email: email,
+            companyIds: [companyId],
+            role: 'admin',
             page: page,
             perPage: perPage
         })
     }
 
-    const handleCancelApiRegistration = (api) => {
+    const handleAcceptApiRegistration = (api) => {
+        props.updateStatusPrivilegeApi({
+            privilegeApiIds: [api?._id],
+            status: 3
+        })
+    }
 
+    const handleDeclineApiRegistration = (api) => {
+        props.updateStatusPrivilegeApi({
+            privilegeApiIds: [api?._id],
+            status: 2
+        })
+    }
+
+    const handleCancelApiRegistration = (api) => {
+        props.updateStatusPrivilegeApi({
+            privilegeApiIds: [api?._id],
+            status: 0
+        })
     }
 
     const setLimit = (value) => {
@@ -57,8 +80,10 @@ function ApiRegistration (props) {
                 page: 1,
                 perPage: Number(value)
             })
-            props.getApiRegistration({
+            props.getPrivilegeApis({
                 email: email,
+                companyIds: [companyId],
+                role: 'admin',
                 page: 1,
                 perPage: Number(value)
             })
@@ -70,8 +95,10 @@ function ApiRegistration (props) {
             ...state,
             page: value
         })
-        props.getApiRegistration({
+        props.getPrivilegeApis({
             email: email,
+            companyIds: [companyId],
+            role: 'admin',
             page: value,
             perPage: perPage
         })
@@ -85,7 +112,7 @@ function ApiRegistration (props) {
         window.$("#create-api-registration-modal").modal("show");
     }
 
-    let listPaginateApiRegistration = apiRegistration?.listPaginateApiRegistration
+    let listPaginateApiRegistration = privilegeApis?.listPaginatePrivilegeApi
 
     return (
         <React.Fragment>
@@ -133,7 +160,13 @@ function ApiRegistration (props) {
                                             {apiRegistration?.token?.slice(0, 60)}...
                                         </td>
                                         <td style={{ textAlign: 'center' }}>
-                                            <a onClick={() => handleCancelApiRegistration(apiRegistration)} style={{ color: "#E34724"}}>
+                                            <a onClick={() => handleAcceptApiRegistration(apiRegistration)} style={{ color: "#28A745"}}>
+                                                <i className="material-icons">check_circle_outline</i>
+                                            </a>
+                                            <a onClick={() => handleDeclineApiRegistration(apiRegistration)} style={{ color: "#E34724"}}>
+                                                <i className="material-icons">remove_circle_outline</i>
+                                            </a>
+                                            <a onClick={() => handleCancelApiRegistration(apiRegistration)} style={{ color: "#858585"}}>
                                                 <i className="material-icons">highlight_off</i>
                                             </a>
                                         </td>
@@ -144,9 +177,9 @@ function ApiRegistration (props) {
                     </table>
 
                     <PaginateBar
-                        display={apiRegistration?.listPaginateApiRegistration?.length}
-                        total={apiRegistration?.totalApiRegistrations}
-                        pageTotal={apiRegistration?.totalPages}
+                        display={privilegeApis?.listPaginatePrivilegeApi?.length}
+                        total={privilegeApis?.totalPrivilegeApis}
+                        pageTotal={privilegeApis?.totalPages}
                         currentPage={page}
                         func={handleGetDataPagination}
                     />
@@ -157,11 +190,12 @@ function ApiRegistration (props) {
 }
 
 function mapState(state) {
-    const { apiRegistration, company } = state
-    return { apiRegistration, company }
+    const { privilegeApis, company } = state
+    return { privilegeApis, company }
 }
 const actions = {
-    getApiRegistration: ApiRegistrationActions.getApiRegistration
+    getPrivilegeApis: PrivilegeApiActions.getPrivilegeApis,
+    updateStatusPrivilegeApi: PrivilegeApiActions.updateStatusPrivilegeApi
 }
 
 export default connect(mapState, actions)(withTranslate(ApiRegistration))

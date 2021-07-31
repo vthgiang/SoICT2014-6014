@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { UserActions } from '../../../../super-admin/user/redux/actions';
-import { AssetTypeActions } from "../../asset-type/redux/actions";
 import { AssetManagerActions } from '../redux/actions';
 
 import { AssetImportTab } from './assetImportTab';
@@ -79,7 +78,7 @@ function AssetImportForm(props) {
     } = state;
 
     useEffect(() => {
-       props.getAllUsers();
+        props.getAllUsers();
     }, []);
 
     const save = async () => {
@@ -584,6 +583,7 @@ function AssetImportForm(props) {
         let importGeneralInformationData = [];
         let managers = {}, assetTypes = {}, roles = {}, assetLocations = {};
         let rowError = [];
+        let allRoleId = [];
 
         if (user) {
             user.list.map(item => {
@@ -595,9 +595,11 @@ function AssetImportForm(props) {
                 assetTypes[item.typeNumber] = item._id;
             })
         }
+
         if (role) {
             role.list.map(item => {
-                roles[item.name] = item._id
+                roles[item.name] = item._id;
+                allRoleId = [...allRoleId, item._id];
             })
         }
         if (assetsManager) {
@@ -618,6 +620,7 @@ function AssetImportForm(props) {
 
                 if (valueTemporary.code) {
                     let errorAlert = [];
+                    let detailInfo = [];
 
                     if (type === 'add') {
                         // Check lỗi dữ liệu import || !valueTemporary.group
@@ -627,7 +630,7 @@ function AssetImportForm(props) {
                             || (valueTemporary.typeRegisterForUse && !typeRegisterForUse[valueTemporary.typeRegisterForUse])
                             || (valueTemporary.status && !status[valueTemporary.status])
                             || (valueTemporary.managedBy && !managers[valueTemporary.managedBy])
-                            || (valueTemporary.readByRoles && !roles[valueTemporary.readByRoles])
+                            || (valueTemporary.readByRoles && (valueTemporary?.readByRoles?.trim().toLowerCase() !== 'all' && !roles[valueTemporary.readByRoles]))
                             || (valueTemporary.location && !assetLocations[valueTemporary.location])
                         ) {
                             rowError = [...rowError, i + 1];
@@ -671,8 +674,8 @@ function AssetImportForm(props) {
                             errorAlert = [...errorAlert, 'Người quản lý không chính xác'];
                         }
 
-                        if (valueTemporary.readByRoles && !roles[valueTemporary.readByRoles]) {
-                            errorAlert = [...errorAlert, 'Những roles có quyèn không chính xác'];
+                        if (valueTemporary.readByRoles && (valueTemporary?.readByRoles?.trim().toLowerCase() !== 'all' && !roles[valueTemporary.readByRoles])) {
+                            errorAlert = [...errorAlert, 'Những roles có quyền không chính xác'];
                         }
 
                         if (valueTemporary.location && !assetLocations[valueTemporary.location]) {
@@ -684,7 +687,7 @@ function AssetImportForm(props) {
                             || (valueTemporary.typeRegisterForUse && !typeRegisterForUse[valueTemporary.typeRegisterForUse])
                             || (valueTemporary.status && !status[valueTemporary.status])
                             || (valueTemporary.managedBy && !managers[valueTemporary.managedBy])
-                            || (valueTemporary.readByRoles && !roles[valueTemporary.readByRoles])
+                            || (valueTemporary.readByRoles && (valueTemporary?.readByRoles?.trim().toLowerCase() !== 'all' && !roles[valueTemporary.readByRoles]))
                             || (valueTemporary.location && !assetLocations[valueTemporary.location])
                         ) {
                             rowError = [...rowError, i + 1];
@@ -711,7 +714,7 @@ function AssetImportForm(props) {
                             errorAlert = [...errorAlert, 'Người quản lý không chính xác'];
                         }
 
-                        if (valueTemporary.readByRoles && !roles[valueTemporary.readByRoles]) {
+                        if (valueTemporary.readByRoles && (valueTemporary?.readByRoles?.trim().toLowerCase() !== 'all' && !roles[valueTemporary.readByRoles])) {
                             errorAlert = [...errorAlert, 'Những roles có quyèn không chính xác'];
                         }
 
@@ -719,6 +722,7 @@ function AssetImportForm(props) {
                             errorAlert = [...errorAlert, 'Vị trí tài sản không chính xác'];
                         }
                     }
+                    //chưa xác định
 
                     // Format date
                     let purchaseDate = valueTemporary.purchaseDate;
@@ -730,18 +734,33 @@ function AssetImportForm(props) {
                         warrantyExpirationDate: (warrantyExpirationDate && typeof warrantyExpirationDate === 'string') ? warrantyExpirationDate : convertExcelDateToJSDate(warrantyExpirationDate, "dd-mm-yy"),
                         errorAlert: errorAlert
                     };
+
+                    let count = 0;
+                    valueTemporary?.assetInfo?.length && valueTemporary.assetInfo.forEach(x => {
+                        if (x === null)
+                            count = count + 1;
+                    });
+
+                    if (count < 2) {
+                        detailInfo = [...detailInfo, {
+                            nameField: valueTemporary?.assetInfo[0] ? valueTemporary?.assetInfo[0] : "",
+                            value: valueTemporary?.assetInfo[1] ? valueTemporary?.assetInfo[1]?.toString() : "",
+                        }]
+                    }
+
                     importGeneralInformationData = [...importGeneralInformationData,
                     {
                         ...valueTemporary,
                         assetType: assetTypes[valueTemporary.assetType] && [assetTypes[valueTemporary.assetType]],
-                        readByRoles: roles[valueTemporary.readByRoles] && [roles[valueTemporary.readByRoles]],
+                        readByRoles: valueTemporary?.readByRoles?.trim().toLowerCase() === 'all' ? allRoleId : roles[valueTemporary.readByRoles] && [roles[valueTemporary.readByRoles]],
                         managedBy: managers[valueTemporary.managedBy],
                         location: assetLocations[valueTemporary.location],
                         group: assetGroups[valueTemporary.group],
                         typeRegisterForUse: typeRegisterForUse[valueTemporary.typeRegisterForUse],
                         status: status[valueTemporary.status],
                         purchaseDate: (purchaseDate && typeof purchaseDate === 'string') ? convertStringToDate(purchaseDate) : convertExcelDateToJSDate(purchaseDate, "yy-mm-dd"),
-                        warrantyExpirationDate: (warrantyExpirationDate && typeof warrantyExpirationDate === 'string') ? convertStringToDate(warrantyExpirationDate) : convertExcelDateToJSDate(warrantyExpirationDate, "yy-mm-dd")
+                        warrantyExpirationDate: (warrantyExpirationDate && typeof warrantyExpirationDate === 'string') ? convertStringToDate(warrantyExpirationDate) : convertExcelDateToJSDate(warrantyExpirationDate, "yy-mm-dd"),
+                        detailInfo,
                     }
                     ];
 
@@ -772,6 +791,20 @@ function AssetImportForm(props) {
                         value[i] = valueTemporary;
 
                         if (importGeneralInformationData && (importGeneralInformationData.length - 1 >= 0)) {
+                            let assetInfo = {};
+                            let countInfo = 0;
+                            valueTemporary?.assetInfo?.length === 2 && valueTemporary.assetInfo.forEach(x => {
+                                if (x === null)
+                                    countInfo = countInfo + 1;
+                            });
+
+                            if (countInfo < 2) {
+                                assetInfo = {
+                                    nameField: valueTemporary?.assetInfo[0] ? valueTemporary?.assetInfo[0] : "",
+                                    value: valueTemporary?.assetInfo[1] ? valueTemporary?.assetInfo[1]?.toString() : "",
+                                }
+                            }
+
                             importGeneralInformationData[importGeneralInformationData.length - 1] = {
                                 ...importGeneralInformationData[importGeneralInformationData.length - 1],
                                 assetType: valueTemporary && valueTemporary.assetType && importGeneralInformationData[importGeneralInformationData.length - 1].assetType
@@ -780,14 +813,19 @@ function AssetImportForm(props) {
                                         valueTemporary.assetType && assetTypes[valueTemporary.assetType]
                                     ]
                                     : importGeneralInformationData[importGeneralInformationData.length - 1].assetType,
-                                readByRoles: valueTemporary && valueTemporary.readByRoles && importGeneralInformationData[importGeneralInformationData.length - 1].readByRoles
+                                readByRoles: valueTemporary && valueTemporary.readByRoles && importGeneralInformationData[importGeneralInformationData.length - 1].readByRoles && !importGeneralInformationData[importGeneralInformationData.length - 1].readByRoles.includes(roles[valueTemporary.readByRoles])
                                     ? [
                                         ...importGeneralInformationData[importGeneralInformationData.length - 1].readByRoles,
                                         valueTemporary.readByRoles && roles[valueTemporary.readByRoles]
                                     ]
-                                    : importGeneralInformationData[importGeneralInformationData.length - 1].readByRoles
+                                    : importGeneralInformationData[importGeneralInformationData.length - 1].readByRoles,
+                                detailInfo: Object.keys(assetInfo).length && importGeneralInformationData[importGeneralInformationData.length - 1].detailInfo ?
+                                    [...importGeneralInformationData[importGeneralInformationData.length - 1].detailInfo, assetInfo] :
+                                    importGeneralInformationData[importGeneralInformationData.length - 1].detailInfo,
                             }
                         }
+
+
                     } else {
                         let errorAlert = ['Mã tài sản không được để trống'];
                         rowError = [...rowError, i + 1];
@@ -799,7 +837,7 @@ function AssetImportForm(props) {
                     }
                 }
             }
-
+            console.log('importGeneralInformationData', importGeneralInformationData)
             setState(state => {
                 return {
                     ...state,
@@ -1367,7 +1405,6 @@ function mapState(state) {
 const actions = {
     getAllAsset: AssetManagerActions.getAllAsset,
     addNewAsset: AssetManagerActions.addNewAsset,
-    searchAssetTypes: AssetTypeActions.searchAssetTypes,
     getAllUsers: UserActions.get,
     updateInformationAsset: AssetManagerActions.updateInformationAsset
 };

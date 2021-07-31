@@ -9,7 +9,7 @@ exports.searchCourses = async (req, res) => {
     try {
         let data = {};
         if (req.query.courseId === "" && req.query.name === "" && req.query.type === undefined) {
-            data = await CourseService.getAllCourses(req.portal, req.user.company._id, req.query.organizationalUnits, req.query.positions)
+            data = await CourseService.getAllCourses(req.portal, req.user.company._id, req.query.organizationalUnits, req.query.positions, req.query.userId)
         } else {
             let params = {
                 courseId: req.query.courseId,
@@ -18,6 +18,8 @@ exports.searchCourses = async (req, res) => {
                 type: req.query.type,
                 page: Number(req.query.page),
                 limit: Number(req.query.limit),
+                positions: req.query.positions,
+                userId: req.query.userId
             }
             data = await CourseService.searchCourses(req.portal, params, req.user.company._id);
         }

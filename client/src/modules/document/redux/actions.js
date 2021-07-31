@@ -8,6 +8,7 @@ export const DocumentActions = {
     editDocument,
     downloadDocumentFile,
     downloadDocumentFileScan,
+    downloadAllFileOfDocument,
     increaseNumberView,
     deleteDocument,
     importDocument,
@@ -226,6 +227,29 @@ function downloadDocumentFileScan(id, fileName, numberVersion) {
             .catch((err) => {
                 dispatch({
                     type: DocumentConstants.DOWNLOAD_DOCUMENT_FILE_SCAN_FAILE,
+                });
+            });
+    };
+}
+
+
+function downloadAllFileOfDocument(data) {
+    console.log('data',data)
+    return (dispatch) => {
+        dispatch({
+            type: DocumentConstants.DOWNLOAD_ALL_FILE_OF_DOCUMENT_REQUEST,
+        });
+        DocumentServices.downloadAllFileOfDocument(data)
+            .then((res) => {
+                dispatch({
+                    type: DocumentConstants.DOWNLOAD_ALL_FILE_OF_DOCUMENT_SUCCESS,
+                });
+                const content = res.headers["content-type"];
+                FileDownload(res.data, 'document', content);
+            })
+            .catch((err) => {
+                dispatch({
+                    type: DocumentConstants.DOWNLOAD_ALL_FILE_OF_DOCUMENT_FAILE,
                 });
             });
     };
