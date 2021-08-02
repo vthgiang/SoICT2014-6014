@@ -2116,8 +2116,17 @@ exports.createTask = async (portal, task) => {
 
     let mail = await this.sendEmailForCreateTask(portal, newTask);
 
+    const taskPopulate = await newTask.populate([
+            { path: "organizationalUnit parent" },
+            { path: 'creator', select: "_id name email avatar" },
+            { path: 'responsibleEmployees', select: "_id name email avatar" },
+            { path: 'accountableEmployees', select: "_id name email avatar" },
+            { path: "timesheetLogs.creator", select: "name" },
+        ]).execPopulate();
+    console.log('taskPopulate',taskPopulate)
     return {
         task: newTask,
+        taskPopulate,
         user: mail.user, email: mail.email, html: mail.html,
         managersOfOrganizationalUnitThatHasCollaborated: mail.managersOfOrganizationalUnitThatHasCollaborated,
         collaboratedEmail: mail.collaboratedEmail, collaboratedHtml: mail.collaboratedHtml

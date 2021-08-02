@@ -512,7 +512,7 @@ exports.createTask = async (req, res) => {
         res.status(200).json({
             success: true,
             messages: ['create_task_success'],
-            content: task
+            content: tasks?.taskPopulate
         });
     } catch (error) {
         await Logger.error(req.user.email, 'create_task', req.portal)
