@@ -359,8 +359,7 @@ const EmployeeImportForm = (props) => {
         // Check dữ liệu import có hợp lệ hay không
         value = value.map((x, index) => {
             let errorAlert = [];
-            if (x.employeeNumber === null || x.fullName === null || x.name === null || x.issuedBy === null
-                || x.year === null || x.degreeType === null) {
+            if (x.employeeNumber === null || x.fullName === null || x.name === null) {
                 rowError = [...rowError, index + 1]
                 x = { ...x, error: true }
             }
@@ -373,15 +372,15 @@ const EmployeeImportForm = (props) => {
             if (x.name === null) {
                 errorAlert = [...errorAlert, `${translate('human_resource.profile.name_diploma')} ${translate('human_resource.cannot_be_empty')}`];
             };
-            if (x.issuedBy === null) {
-                errorAlert = [...errorAlert, `${translate('human_resource.profile.diploma_issued_by')} ${translate('human_resource.cannot_be_empty')}`];
-            };
-            if (x.year === null) {
-                errorAlert = [...errorAlert, `${translate('human_resource.profile.graduation_year')} ${translate('human_resource.cannot_be_empty')}`];
-            };
-            if (x.degreeType === null) {
-                errorAlert = [...errorAlert, `${translate('human_resource.profile.ranking_learning')} ${translate('human_resource.cannot_be_empty')}`];
-            };
+            // if (x.issuedBy === null) {
+            //     errorAlert = [...errorAlert, `${translate('human_resource.profile.diploma_issued_by')} ${translate('human_resource.cannot_be_empty')}`];
+            // };
+            // if (x.year === null) {
+            //     errorAlert = [...errorAlert, `${translate('human_resource.profile.graduation_year')} ${translate('human_resource.cannot_be_empty')}`];
+            // };
+            // if (x.degreeType === null) {
+            //     errorAlert = [...errorAlert, `${translate('human_resource.profile.ranking_learning')} ${translate('human_resource.cannot_be_empty')}`];
+            // };
             x = { ...x, errorAlert: errorAlert }
             return x;
         });
@@ -414,8 +413,7 @@ const EmployeeImportForm = (props) => {
         // Check dữ liệu import có hợp lệ hay không
         value = value.map((x, index) => {
             let errorAlert = [];
-            if (x.employeeNumber === null || x.fullName === null || x.name === null || x.issuedBy === null
-                || x.startDate === null || x.endDate === null) {
+            if (x.employeeNumber === null || x.fullName === null || x.name === null) {
                 rowError = [...rowError, index + 1]
                 x = { ...x, error: true }
             }
@@ -428,12 +426,12 @@ const EmployeeImportForm = (props) => {
             if (x.name === null) {
                 errorAlert = [...errorAlert, `${translate('human_resource.profile.name_certificate')} ${translate('human_resource.cannot_be_empty')}`];
             };
-            if (x.issuedBy === null) {
-                errorAlert = [...errorAlert, `${translate('human_resource.profile.issued_by')} ${translate('human_resource.cannot_be_empty')}`];
-            };
-            if (x.startDate === null) {
-                errorAlert = [...errorAlert, `${translate('human_resource.profile.date_issued')} ${translate('human_resource.cannot_be_empty')}`];
-            };
+            // if (x.issuedBy === null) {
+            //     errorAlert = [...errorAlert, `${translate('human_resource.profile.issued_by')} ${translate('human_resource.cannot_be_empty')}`];
+            // };
+            // if (x.startDate === null) {
+            //     errorAlert = [...errorAlert, `${translate('human_resource.profile.date_issued')} ${translate('human_resource.cannot_be_empty')}`];
+            // };
             x = { ...x, errorAlert: errorAlert }
             return x;
         });
