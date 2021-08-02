@@ -327,23 +327,26 @@ const EmployeeImportForm = (props) => {
         const listFields = field.listFields
         value = value.map(x => {
             let degreeType;
-            switch (x.degreeType) {
-                case translate('human_resource.profile.excellent'):
+            switch (x?.degreeType?.trim()?.toString()) {
+                case translate('human_resource.profile.excellent').toString():
                     degreeType = "excellent";
                     break;
-                case translate('human_resource.profile.very_good'):
+                case translate('human_resource.profile.very_good').toString():
                     degreeType = "very_good";
                     break;
-                case translate('human_resource.profile.good'):
+                case translate('human_resource.profile.good').toString():
                     degreeType = "good";
                     break;
-                case translate('human_resource.profile.average_good'):
+                case translate('human_resource.profile.average_good').toString():
                     degreeType = "average_good";
                     break;
-                case translate('human_resource.profile.ordinary'):
+                case translate('human_resource.profile.ordinary').toString():
                     degreeType = "ordinary";
                     break;
-                case translate('human_resource.profile.unknown'):
+                case translate('human_resource.profile.no_rating').toString():
+                    degreeType = "no_rating";
+                    break;
+                case translate('human_resource.profile.unknown').toString():
                     degreeType = "unknown";
                     break;
                 default:
@@ -358,6 +361,7 @@ const EmployeeImportForm = (props) => {
         let rowError = [];
         // Check dữ liệu import có hợp lệ hay không
         value = value.map((x, index) => {
+            let year = x?.year ? convertExcelDateToJSDate(x.year) : x?.year;
             let errorAlert = [];
             if (x.employeeNumber === null || x.fullName === null || x.name === null) {
                 rowError = [...rowError, index + 1]
@@ -381,7 +385,7 @@ const EmployeeImportForm = (props) => {
             // if (x.degreeType === null) {
             //     errorAlert = [...errorAlert, `${translate('human_resource.profile.ranking_learning')} ${translate('human_resource.cannot_be_empty')}`];
             // };
-            x = { ...x, errorAlert: errorAlert }
+            x = { ...x, errorAlert: errorAlert, year: convertStringToDate(year, false) }
             return x;
         });
         setState(state => ({
@@ -682,6 +686,7 @@ const EmployeeImportForm = (props) => {
     */
     const handleImportDegree = () => {
         let { importDataOfDegree } = state;
+        console.log('importDataOfDegree', importDataOfDegree);
         notify();
         props.importEmployees({ importType: "Degree", importData: importDataOfDegree });
     }

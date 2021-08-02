@@ -361,9 +361,18 @@ const EmployeeCreateForm = (props) => {
             }
         }))
 
+        const degreesConvert = state?.degrees?.length ? state.degrees.map(x => {
+            const splitDate = x?.year ? x.year.split("-") : x.year;
+            return {
+                ...x,
+                year: [splitDate[2], splitDate[1], splitDate[0]].join("-")
+            }
+        }) : [];
+        console.log('degrees', degreesConvert)
+
         let formData = convertJsonObjectToFormData({
             ...employee,
-            degrees: [...state.degrees],
+            degrees: degreesConvert,
             certificates: [...state.certificates],
             contracts: [...state.contracts],
             files: [...state.files],
