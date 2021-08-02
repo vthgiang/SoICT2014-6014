@@ -1861,7 +1861,7 @@ export default {
                 single: "Độc thân",
                 married: "Đã kết hôn",
                 upload: "Chọn ảnh",
-                id_card: "Số CMND/Hộ chiếu",
+                id_card: "Số CMND/CCCD/Hộ chiếu",
                 date_issued: "Ngày cấp",
                 issued_by: "Nơi cấp",
                 ethnic: "Dân tộc",
