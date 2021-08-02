@@ -126,7 +126,7 @@ const EmployeeImportForm = (props) => {
 
             let gender = x?.gender?.trim() === translate('human_resource.profile.male') ? "male" : "female";
             let maritalStatus = x.maritalStatus ? x.maritalStatus.trim() === translate('human_resource.profile.single') ? "single" : "married" : null;
-            let professionalSkill, educationalLevel, status;
+            let professionalSkill, status;
             switch (x?.status?.trim()) {
                 case translate('human_resource.profile.leave'):
                     status = "leave";
@@ -157,6 +157,12 @@ const EmployeeImportForm = (props) => {
                 case translate('human_resource.profile.university'):
                     professionalSkill = "university";
                     break;
+                case translate('human_resource.profile.bachelor'):
+                    professionalSkill = "bachelor";
+                    break;
+                case translate('human_resource.profile.engineer'):
+                    professionalSkill = "engineer";
+                    break;
                 case translate('human_resource.profile.master_degree'):
                     professionalSkill = "master_degree";
                     break;
@@ -170,22 +176,6 @@ const EmployeeImportForm = (props) => {
                     professionalSkill = "unavailable";
             };
 
-            switch (x?.educationalLevel?.trim()) {
-                case '12/12':
-                    educationalLevel = '12/12';
-                    break;
-                case '11/12':
-                    educationalLevel = '11/12';
-                    break;
-                case '10/12':
-                    educationalLevel = '10/12';
-                    break;
-                case '9/12':
-                    educationalLevel = '9/12';
-                    break;
-                default:
-                    educationalLevel = "12/12";
-            };
             return {
                 ...x,
                 employeeNumber: x?.employeeNumber?.trim(),
@@ -201,7 +191,6 @@ const EmployeeImportForm = (props) => {
                 healthInsuranceEndDate: convertStringToDate(healthInsuranceEndDate, false),
                 gender: gender,
                 maritalStatus: maritalStatus,
-                educationalLevel: educationalLevel,
                 professionalSkill: professionalSkill,
                 status: status,
                 houseHold: {
