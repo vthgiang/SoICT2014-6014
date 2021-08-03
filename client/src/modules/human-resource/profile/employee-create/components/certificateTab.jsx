@@ -6,6 +6,7 @@ import { DegreeAddModal, CertificateAddModal, DegreeEditModal, CertificateEditMo
 
 import { AuthActions } from '../../../../auth/redux/actions';
 import { FieldsActions } from '../../../field/redux/actions';
+import dayjs from 'dayjs';
 
 function CertificateTab(props) {
     const [state, setState] = useState({
@@ -247,7 +248,7 @@ function CertificateTab(props) {
                                             <td>{x.name}</td>
                                             <td>{x.issuedBy}</td>
                                             <td>{field}</td>
-                                            <td>{x.year}</td>
+                                            <td>{x?.year ? x?.year?.length > 10 ? dayjs(x.year).format("DD-MM-YYYY") : x?.year : null}</td>
                                             <td>{translate(`human_resource.profile.${x.degreeType}`)}</td>
                                             <td>{!x.urlFile ? translate('human_resource.profile.no_files') :
                                                 <a className='intable'

@@ -917,10 +917,24 @@ const EmployeeEditFrom = (props) => {
         let { _id, experiences, degrees, certificates, contracts, files, avatar,
             disciplines, commendations, annualLeaves, socialInsuranceDetails, courses } = state;
 
+        console.log('degrees', degrees);
+        let degreesConvert = [];
+        const createDegrees = degrees?.length ? degrees.filter(x => x._id === undefined) : [];
+        createDegrees.forEach(x => {
+            const splitDate = x?.year ? x.year.split("-") : x.year;
+            degreesConvert = [
+                ...degreesConvert,
+                {
+                    ...x,
+                    year: [splitDate[2], splitDate[1], splitDate[0]].join("-"),
+                }
+            ]
+        });
+
         let formData = convertJsonObjectToFormData({
             ...state,
             createExperiences: experiences.filter(x => x._id === undefined),
-            createDegrees: degrees.filter(x => x._id === undefined),
+            createDegrees: degreesConvert,
             createCertificates: certificates.filter(x => x._id === undefined),
             // createCareer: career.filter(x => x._id === undefined),
             // createMajor: major.filter(x => x._id === undefined),

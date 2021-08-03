@@ -20,7 +20,7 @@ class SuperHome extends Component {
             userID: "",
             willUpdate: false,       // Khi true sẽ cập nhật dữ liệu vào props từ redux
             callAction: false,
-            startDate: this.formatDate(Date.now(), true),
+            startDate: this.formatDate(Date.now(), true, 3),
             endDate: this.formatDate(Date.now(), true)
 
         };
@@ -30,13 +30,20 @@ class SuperHome extends Component {
      * @param {*} date : Ngày muốn format
      * @param {*} monthYear : true trả về tháng năm, false trả về ngày tháng năm
      */
-    formatDate(date, monthYear = false) {
+    formatDate(date, monthYear = false, monthChange) {
         if (date) {
             let d = new Date(date),
                 month = '' + (d.getMonth() + 1),
                 day = '' + d.getDate(),
                 year = d.getFullYear();
-
+            if (monthChange){
+                if ( month <= monthChange ){
+                    year = year - 1
+                    month = month + 12 - month  
+                } else {
+                    month = month - monthChange
+                }
+            }    
             if (month.length < 2)
                 month = '0' + month;
             if (day.length < 2)
@@ -222,6 +229,7 @@ class SuperHome extends Component {
 
     componentDidMount = async () => {
         let { startDate, endDate } = this.state;
+        console.log("startDate",startDate)
         let startDateWork = moment(startDate, 'MM-YYYY').format('YYYY-MM');
         let endDateWork = moment(endDate, 'MM-YYYY').format('YYYY-MM');
         await this.props.getResponsibleTaskByUser([], 1, 1000, [], [], [], null, startDateWork, endDateWork, null, null, true);
@@ -287,6 +295,8 @@ class SuperHome extends Component {
             this.props.getConsultedTaskByUser([], 1, 1000, [], [], [], null, startDateWork, endDateWork, null, null, true);
             this.props.getInformedTaskByUser([], 1, 1000, [], [], [], null, startDateWork, endDateWork, null, null, true);
         }
+
+        
     }
 
     viewAllTask = () => {
