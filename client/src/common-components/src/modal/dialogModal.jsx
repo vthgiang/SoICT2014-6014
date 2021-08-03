@@ -14,6 +14,14 @@ class DialogModal extends Component {
         }
     }
 
+    componentDidMount() {
+        if (window.$('body').hasClass('modal-open')) {
+            window.$(".modal-backdrop").remove();
+            window.$('body').removeClass('modal-open');
+            window.$('body').css('padding-right', "0px");
+        }
+    }
+
     closeModal = (reset) => {
         const { modalID } = this.props;
         this.setState({
