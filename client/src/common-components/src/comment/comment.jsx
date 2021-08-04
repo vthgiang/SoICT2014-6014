@@ -397,7 +397,7 @@ class Comment extends Component {
                                                     <li style={{ display: "inline-table" }}>
                                                         <div><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => this.handleShowFile(item._id)}><b><i className="fa fa-paperclip" aria-hidden="true">{translate('task.task_perform.attach_file')}({item.files && item.files.length})</i></b></a> </div></li>
                                                     {showfile.some(obj => obj === item._id) &&
-                                                        <div>
+                                                        <div style={{ cursor: "pointer" }}>
                                                             {item.files.map((elem, index) => {
                                                                 return <div key={elem._id} className="show-files-task">
                                                                     {this.isImage(elem.name) ?
