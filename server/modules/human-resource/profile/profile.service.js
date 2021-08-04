@@ -755,11 +755,11 @@ exports.createEmployee = async (portal, data, company, fileInfor) => {
             delete career[i].position;
         }
     }
-    degrees = degrees.map(x => {
+    degrees = degrees ? degrees.map(x => {
         if (x.field === "")
             x.field = null;
         return x;
-    })
+    }) :[]
 
 
     // career = this.mergeUrlFileToObject(fileCareer, career);
