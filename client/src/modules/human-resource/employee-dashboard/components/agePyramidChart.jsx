@@ -146,8 +146,8 @@ const AgePyramidChart = (props) => {
 
     useEffect(() => {
         let listAllEmployees = employeesManager.listEmployeesOfOrganizationalUnits;
-        let maleEmployees = listAllEmployees.filter(x => x.gender === 'male');
-        let femaleEmployees = listAllEmployees.filter(x => x.gender === 'female');
+        let maleEmployees = listAllEmployees.filter(x => x.gender === 'male' && x.birthdate);
+        let femaleEmployees = listAllEmployees.filter(x => x.gender === 'female' && x.birthdate);
 
         // Start Định dạng dữ liệu cho biểu đồ tháp tuổi
         let age = 69, i = 0, data1AgePyramid = [], data2AgePyramid = [];
