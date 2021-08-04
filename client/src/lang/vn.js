@@ -1861,7 +1861,7 @@ export default {
                 single: "Độc thân",
                 married: "Đã kết hôn",
                 upload: "Chọn ảnh",
-                id_card: "Số CMND/Hộ chiếu",
+                id_card: "Số CMND/CCCD/Hộ chiếu",
                 date_issued: "Ngày cấp",
                 issued_by: "Nơi cấp",
                 ethnic: "Dân tộc",
@@ -1932,7 +1932,8 @@ export default {
                 good: "Khá",
                 average_good: "Trung bình khá",
                 ordinary: "Trung bình",
-                unknown: 'Chưa xác định',
+                unknown: "Chưa xác định",
+                no_rating: "Không xếp loại",
 
                 bank_account: "Tài khoản ngân hàng",
                 personal_income_tax: "Mã số thuế thu nhập cá nhân",

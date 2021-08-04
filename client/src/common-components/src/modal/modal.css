@@ -84,3 +84,7 @@
 .modal-header .modal-title {
     font-weight: bold;
 }
+.modal-backdrop {
+    background-color: transparent;
+    z-index: -100;
+ }

@@ -37,6 +37,7 @@ function EmployeeKpiEvaluateModal(props) {
         tableId,
         listKpiId: "list-kpi",
         detailKpiId: "detail-kpi",
+        employeeId:""
     })
 
     const { kpimembers } = props;
@@ -127,6 +128,7 @@ function EmployeeKpiEvaluateModal(props) {
                 contentName: name,
                 type: kpiType,
                 dataStatus: DATA_STATUS.QUERYING,
+                employeeId: employeeId
             });
         }
         fecth()
@@ -297,6 +299,8 @@ function EmployeeKpiEvaluateModal(props) {
     }
     const handleRefresh = () => {
         if (props.kpimembers.tasks) {
+            let date = props.employeeKpiSet.date;
+            props.getTaskById(state.content, state.employeeId, date, state.type);
             let tasks = props.kpimembers.tasks;
             let importanceLevels = {};
             tasks.forEach(element => {

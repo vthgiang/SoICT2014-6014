@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, ButtonModal, ErrorLabel, UploadFile, SelectBox } from '../../../../../common-components';
+import { DialogModal, ButtonModal, ErrorLabel, UploadFile, SelectBox, DatePicker } from '../../../../../common-components';
 
 import ValidationHelper from '../../../../../helpers/validationHelper';
 
@@ -94,8 +94,7 @@ function DegreeAddModal(props) {
     }
 
     /** Bắt sự kiện thay đổi năm tốt nghiệp */
-    const handleYearChange = (e) => {
-        let { value } = e.target;
+    const handleYearChange = (value) => {
         validateYear(value, true);
     }
 
@@ -198,7 +197,11 @@ function DegreeAddModal(props) {
                         {/* Năm tốt nghiệp */}
                         <div className={`form-group col-sm-6 col-xs-12 ${errorOnYear && "has-error"}`}>
                             <label>{translate('human_resource.profile.graduation_year')}<span className="text-red">*</span></label>
-                            <input type="number" className="form-control" name="year" value={year} onChange={handleYearChange} autoComplete="off" />
+                            <DatePicker
+                                id={`year${id}`}
+                                value={year}
+                                onChange={handleYearChange}
+                            />
                             <ErrorLabel content={errorOnYear} />
                         </div>
                         {/* Loại bằng cấp */}
@@ -210,6 +213,7 @@ function DegreeAddModal(props) {
                                 <option value="good">{translate('human_resource.profile.good')}</option>
                                 <option value="average_good">{translate('human_resource.profile.average_good')}</option>
                                 <option value="ordinary">{translate('human_resource.profile.ordinary')}</option>
+                                <option value="no_rating">{translate('human_resource.profile.no_rating')}</option>
                                 <option value="unknown">{translate('human_resource.profile.unknown')}</option>
                             </select>
                         </div>

@@ -249,9 +249,10 @@ export function tasks(state = {
             return {
                 ...state,
                 tasks: [
+                    action.payload,
                     ...state.tasks,
-                    action.payload
                 ],
+                totalCount: state?.totalCount + 1,
                 isLoading: false
             };
         case taskManagementConstants.ADDNEW_TASK_FAILURE:

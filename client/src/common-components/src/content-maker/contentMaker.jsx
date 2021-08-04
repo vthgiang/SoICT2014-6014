@@ -153,7 +153,7 @@ class ContentMaker extends Component {
     render() {
         const { translate } = this.props;
         const {
-            idQuill, files, onFilesChange, onFilesError, multiple = true, maxFiles = 10, maxFileSize = 10000000, minFileSize = 0, clickable = false,
+            idQuill, files, onFilesChange, onFilesError, multiple = true, maxFiles = 10, maxFileSize = 100000000000, minFileSize = 0, clickable = false,
             text, onTextChange, placeholder,
             onSubmit, submitButtonText, disabledSubmit,
             inputCssClass, controlCssClass, handleEdit, cancelButtonText

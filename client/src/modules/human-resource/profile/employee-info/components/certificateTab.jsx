@@ -4,6 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { AuthActions } from '../../../../auth/redux/actions';
 import { FieldsActions } from '../../../field/redux/actions';
+import dayjs from 'dayjs';
 function CertificateTab(props) {
     const [state, setState] = useState({
 
@@ -97,7 +98,7 @@ function CertificateTab(props) {
                                             <td>{x.name}</td>
                                             <td>{x.issuedBy}</td>
                                             <td>{field}</td>
-                                            <td>{x.year}</td>
+                                            <td>{x.year ? dayjs(x.year).format("DD-MM-YYYY") : null}</td>
                                             <td>{translate(`human_resource.profile.${x.degreeType}`)}</td>
                                             <td>{!x.urlFile ? translate('human_resource.profile.no_files') :
                                                 <a className='intable'

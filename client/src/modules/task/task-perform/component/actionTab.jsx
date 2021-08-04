@@ -1375,7 +1375,7 @@ function ActionTab(props) {
                                                             }
                                                             {/* Các file đính kèm của action */}
                                                             {showFile.some(obj => obj === item._id) &&
-                                                                <div>
+                                                                <div style={{ cursor: "pointer" }}>
                                                                     {item.files.map((elem, index) => {
                                                                         return <div key={index} className="show-files-task">
                                                                             {isImage(elem.name) ?
@@ -1389,7 +1389,7 @@ function ActionTab(props) {
                                                                                 />
                                                                                 :
                                                                                 <div>
-                                                                                    <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => requestDownloadFile(e, elem.url, elem.name)}> {elem.name}</a>
+                                                                                    <a style={{ marginTop: "2px" }} onClick={(e) => requestDownloadFile(e, elem.url, elem.name)}> {elem.name}</a>
                                                                                     &nbsp;&nbsp;&nbsp;
                                                                                     <a href="#" onClick={() => showFilePreview(elem && elem.url)}>
                                                                                         <u>{elem && checkTypeFile(elem.url) ?
@@ -1483,7 +1483,7 @@ function ActionTab(props) {
                                                                             {showFile.some(obj => obj === child._id) &&
                                                                                 <li style={{ display: "inline-table" }}>
                                                                                     {child.files.map((elem, index) => {
-                                                                                        return <div key={index} className="show-files-task">
+                                                                                        return <div style={{ cursor: "pointer" }} key={index} className="show-files-task">
                                                                                             {isImage(elem.name) ?
                                                                                                 <ApiImage
                                                                                                     listImage={listImage}
@@ -1725,7 +1725,7 @@ function ActionTab(props) {
                                                                         <div><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => handleShowFile(item._id)}><b><i className="fa fa-paperclip" aria-hidden="true"> {translate("task.task_perform.file_attach")} ({item.files && item.files.length})</i></b></a> </div></li>
                                                                     {showFile.some(obj => obj === item._id) &&
                                                                         <li style={{ display: "inline-table" }}>{item.files.map((elem, index) => {
-                                                                            return <div key={index} className="show-files-task">
+                                                                            return <div style={{ cursor: "pointer" }} key={index} className="show-files-task">
                                                                                 {isImage(elem.name) ?
                                                                                     <ApiImage
                                                                                         listImage={listImage}
@@ -1736,7 +1736,7 @@ function ActionTab(props) {
                                                                                         requestDownloadFile={requestDownloadFile}
                                                                                     />
                                                                                     : <div>
-                                                                                        <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => requestDownloadFile(e, elem.url, elem.name)}> {elem.name}</a>
+                                                                                        <a style={{ marginTop: "2px" }} onClick={(e) => requestDownloadFile(e, elem.url, elem.name)}> {elem.name}</a>
                                                                                         <a href="#" onClick={() => showFilePreview(elem && elem.url)}>
                                                                                             <u>{elem && checkTypeFile(elem.url) ?
                                                                                                 <i className="fa fa-eye"></i> : ""}</u>
@@ -1972,7 +1972,7 @@ function ActionTab(props) {
                                                                     <div>
                                                                         {item.files.map((elem, index) => {
                                                                             return (
-                                                                                <div key={index} className="show-files-task">
+                                                                                <div style={{ cursor: "pointer" }} key={index} className="show-files-task">
                                                                                     {isImage(elem.name) ?
                                                                                         <ApiImage
                                                                                             listImage={listImage}

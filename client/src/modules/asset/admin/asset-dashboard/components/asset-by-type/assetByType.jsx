@@ -45,6 +45,33 @@ class AssetByType extends Component {
         }
     }
 
+    static getDerivedStateFromProps = (props, state) => {
+        if (props?.assetType?.administration?.types?.list && state?.listAssets) {
+            const listAssetTypes = props?.assetType?.administration?.types?.list;
+            let listAssetTypeSort = [];
+
+            for (let i in listAssetTypes) {
+                let count = { ...listAssetTypes[i], countAsset: 0 };
+                for (let j in state.listAssets) {
+                    if (state.listAssets[j].assetType.some(item => listAssetTypes[i].typeNumber === item.typeNumber))
+                        count = { ...count, countAsset: count.countAsset + 1 }
+                }
+                listAssetTypeSort = [
+                    ...listAssetTypeSort,
+                    count,
+                ];
+            }
+
+            listAssetTypeSort = listAssetTypeSort.sort((a, b) => (a.countAsset < b.countAsset) ? 1 : ((b.countAsset < a.countAsset) ? -1 : 0))
+            return {
+                ...state,
+                listAssetTypes: listAssetTypeSort
+            }
+        } else {
+            return null;
+        }
+    }
+
     componentDidMount() {
         AssetService.getAll({
             assetName: "",
@@ -62,7 +89,7 @@ class AssetByType extends Component {
         });
 
 
-        this.props.getAssetTypes({ page: this.state.page, perPage: this.state.limit })
+        this.props.getAssetTypes();
     }
 
     handleSelectTypeOfDisplay = async (value) => {
@@ -142,7 +169,8 @@ class AssetByType extends Component {
                 _id: item._id,
                 id: item._id,
                 name: item.typeName,
-                parent: item.parent ? item.parent._id : null
+                parent: item.parent ? item.parent._id : null,
+                typeName: item.typeName,
             })
         })
         return typeArr;
@@ -159,26 +187,40 @@ class AssetByType extends Component {
 
     handlePaginationAssetType = (page) => {
         const { limit } = this.state;
+        let pageConvert = (page - 1) * (limit);
+
         this.setState({
             ...this.state,
-            page,
+            page: parseInt(pageConvert),
+            type: JSON.stringify([])
         })
-        this.props.getAssetTypes({ page: page, perPage: limit })
     }
 
     render() {
         const { translate, assetType } = this.props;
-        const listAssetTypes = assetType?.administration?.types?.list
-        let { listAssets, type, depreciationOfAsset, amountOfAsset, valueOfAsset, depreciation, page } = this.state;
+        let { listAssets, type, depreciationOfAsset, amountOfAsset, valueOfAsset, depreciation, page, limit, listAssetTypes } = this.state;
 
-        const listAssetTypeConvert = listAssetTypes && listAssetTypes.length > 0 ?
+        let listAssetTypeConvert = listAssetTypes && listAssetTypes.length > 0 ?
             this.getAssetTypes(listAssetTypes) : [];
         let assetTypes;
 
-        if (type && JSON.parse(type).length > 0 && listAssetTypes && listAssetTypes.length > 0) {
-            assetTypes = listAssetTypes.filter((obj, index) => JSON.parse(type).some(item => obj._id === item));
+        let pageTotal = ((assetType?.administration?.types?.totalList % limit) === 0) ?
+            parseInt(assetType?.administration?.types?.totalList / limit) :
+            parseInt((assetType?.administration?.types?.totalList / limit) + 1);
+        let currentPage = parseInt((page / limit) + 1);
+
+        const totalItems = assetType?.administration?.types?.totalList;
+
+        // calculate start and end item indexes
+        const startIndex = (currentPage - 1) * limit;
+        const endIndex = Math.min(startIndex + limit - 1, totalItems - 1);
+
+        const listAssetTypePaginate = listAssetTypeConvert && listAssetTypeConvert.slice(startIndex, endIndex + 1);
+
+        if (type && JSON.parse(type).length > 0 && listAssetTypePaginate && listAssetTypePaginate.length > 0) {
+            assetTypes = listAssetTypePaginate.filter((obj, index) => JSON.parse(type).some(item => obj._id === item));
         } else {
-            assetTypes = listAssetTypes;
+            assetTypes = listAssetTypePaginate;
         }
 
         return (
@@ -190,7 +232,7 @@ class AssetByType extends Component {
                             <div className="form-group" style={{ width: "100%" }}>
                                 <label style={{ width: 90 }}>{translate('asset.general_information.asset_type')}</label>
                                 <TreeSelect
-                                    data={listAssetTypeConvert}
+                                    data={listAssetTypePaginate}
                                     value={type ? type : []}
                                     handleChange={this.handleChangeTypeAsset}
                                     mode="hierarchical"
@@ -199,10 +241,10 @@ class AssetByType extends Component {
                         </div>
                         <div className="col-md-12">
                             <PaginateBar
-                                display={listAssetTypes?.length}
+                                display={limit}
                                 total={assetType?.administration?.types?.totalList}
-                                pageTotal={assetType?.administration?.types?.totalPage}
-                                currentPage={page}
+                                pageTotal={pageTotal}
+                                currentPage={currentPage}
                                 func={this.handlePaginationAssetType} />
                         </div>
                     </div>
@@ -236,8 +278,8 @@ class AssetByType extends Component {
                                 </div>
                                 <div className="box-body qlcv">
                                     <AmountTree
-                                        listAssets={listAssets}
-                                        assetType={assetTypes}
+                                        listAssets={listAssets ? listAssets : []}
+                                        assetType={assetTypes ? assetTypes : []}
                                         setAmountOfAsset={this.setAmountOfAsset}
                                     />
                                 </div>
@@ -251,8 +293,8 @@ class AssetByType extends Component {
                                 </div>
                                 <div className="box-body qlcv">
                                     <ValueTree
-                                        listAssets={listAssets}
-                                        assetType={assetTypes}
+                                        listAssets={listAssets ? listAssets : []}
+                                        assetType={assetTypes ? assetTypes : []}
                                         setValueOfAsset={this.setValueOfAsset}
                                         depreciationOfAsset={depreciationOfAsset}
                                     />
@@ -268,8 +310,8 @@ class AssetByType extends Component {
                                 </div>
                                 <div className="box-body qlcv">
                                     <DepreciationTree
-                                        listAssets={listAssets}
-                                        assetType={assetTypes}
+                                        listAssets={listAssets ? listAssets : []}
+                                        assetType={assetTypes ? assetTypes : []}
                                         setDepreciationOfAsset={this.setDepreciationOfAsset}
                                         getDepreciationOfAsset={this.getDepreciationOfAsset}
                                     />
