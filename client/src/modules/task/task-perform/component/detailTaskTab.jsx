@@ -1090,7 +1090,7 @@ function DetailTaskTab(props) {
                             <div>
                                 <strong>{translate('task.task_management.collaborated_with_organizational_units')}: </strong>
                                 <span>
-                                    {task.collaboratedWithOrganizationalUnits.length !== 0
+                                    {task && task.collaboratedWithOrganizationalUnits.length !== 0
                                         ? <span>
                                             {
                                                 task.collaboratedWithOrganizationalUnits.map((item, index) => {

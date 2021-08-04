@@ -1891,7 +1891,7 @@ function EvaluateByAccountableEmployee(props) {
                                 <legend className="scheduler-border">{translate('task.task_management.evaluate_member')}</legend>
 
                                 {
-                                    <table className="table table-striped table-hover">
+                                    <table className="table table-striped table-hover not-sort">
                                         <tr style={{ verticalAlign: "top" }}>
                                             <th><div className="form-group"><label>{translate('task.task_management.name_employee')}</label></div></th>
                                             <th><div className="form-group"><label>{translate('task.task_management.role_employee')}</label></div></th>
