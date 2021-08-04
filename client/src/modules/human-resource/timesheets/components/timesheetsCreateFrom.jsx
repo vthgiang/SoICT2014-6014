@@ -57,6 +57,7 @@ const TimesheetsCreateForm = (props) => {
             let date = new Date([partMonth[1], partMonth[0], day]);
             arrayDay = [...arrayDay, { day: days[date.getDay()], date: date.getDate() }]
         }
+        console.log('arrayDay', arrayDay)
         return arrayDay
     }
 
@@ -65,8 +66,16 @@ const TimesheetsCreateForm = (props) => {
     const [state, setState] = useState({
         employee: "",
         month: formatDate(Date.now(), true),
-        shift1s: _allDayOfMonth.map(x => true),
-        shift2s: _allDayOfMonth.map(x => true),
+        shift1s: _allDayOfMonth.map(x => {
+            if (x?.day === "CN" || x?.day === "T7")
+                return false
+            return true
+        }),
+        shift2s: _allDayOfMonth.map(x => {
+            if (x?.day === "CN" || x?.day === "T7")
+                return false
+            return true
+        }),
         shift3s: _allDayOfMonth.map(x => false),
         timekeepingByHours: _allDayOfMonth.map(x => 0),
         allDayOfMonth: _allDayOfMonth,
@@ -112,8 +121,16 @@ const TimesheetsCreateForm = (props) => {
             let allDayOfMonth = getAllDayOfMonth(value);
             setState({
                 ...state,
-                shift1s: allDayOfMonth.map(x => true),
-                shift2s: allDayOfMonth.map(x => true),
+                shift1s: allDayOfMonth.map(x => {
+                    if (x?.day === "CN" || x?.day === "T7")
+                        return false
+                    return true
+                }),
+                shift2s: allDayOfMonth.map(x => {
+                    if (x?.day === "CN" || x?.day === "T7")
+                        return false
+                    return true
+                }),
                 shift3s: allDayOfMonth.map(x => false),
                 allDayOfMonth: allDayOfMonth,
                 month: value,
