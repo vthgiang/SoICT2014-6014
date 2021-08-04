@@ -1280,41 +1280,52 @@ exports.deleteEmployee = async (portal, id) => {
     await Timesheet(connect(DB_CONNECTION, portal)).deleteMany({
         employee: id
     })
-    if (employee.avatar) {
+    console.log('employee',employee)
+    if (employee?.avatar) {
         let deleteAvatar = `.${employee.avatar}`;
         if (deleteAvatar !== `./upload/human-resource/avatars/avatar5.png` && fs.existsSync(deleteAvatar)) {
             fs.unlinkSync(deleteAvatar);
         }
     };
-    if (employee.degrees && employee.degrees !== 0) {
+    if (employee?.degrees?.length) {
         employee.degrees.forEach(x => {
-            let deleteDegrees = `.${x.urlFile}`;
-            if (fs.existsSync(deleteDegrees)) {
-                fs.unlinkSync(deleteDegrees);
+            if (x?.urlFile) {
+                let deleteDegrees = `.${x.urlFile}`;
+                if (fs.existsSync(deleteDegrees)) {
+                    fs.unlinkSync(deleteDegrees);
+                }
             }
         })
-        employee.degrees.forEach(x => {
-            let deleteDegrees = `.${x.urlFile}`;
-            if (fs.existsSync(deleteDegrees)) {
-                fs.unlinkSync(deleteDegrees);
-            }
-        })
+    }
+    if (employee?.certificates?.length) {
         employee.certificates.forEach(x => {
-            let deleteCertificates = `.${x.urlFile}`;
-            if (fs.existsSync(deleteCertificates)) {
-                fs.unlinkSync(deleteCertificates);
+            if (x?.urlFile) {
+                let deleteCertificates = `.${x.urlFile}`;
+                if (fs.existsSync(deleteCertificates)) {
+                    fs.unlinkSync(deleteCertificates);
+                }
             }
         })
+    }
+    
+    if (employee?.contracts?.length) {
         employee.contracts.forEach(x => {
-            let deleteContracts = `.${x.urlFile}`;
-            if (fs.existsSync(deleteContracts)) {
-                fs.unlinkSync(deleteContracts);
+            if (x?.urlFile) {
+                let deleteContracts = `.${x.urlFile}`;
+                if (fs.existsSync(deleteContracts)) {
+                    fs.unlinkSync(deleteContracts);
+                }
             }
         })
+    }
+        
+    if (employee?.files?.length) {
         employee.files.forEach(x => {
-            let deleteFiles = `.${x.urlFile}`;
-            if (fs.existsSync(deleteFiles)) {
-                fs.unlinkSync(deleteFiles);
+            if (x?.urlFile) {
+                let deleteFiles = `.${x.urlFile}`;
+                if (fs.existsSync(deleteFiles)) {
+                    fs.unlinkSync(deleteFiles);
+                }
             }
         })
     }
