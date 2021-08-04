@@ -236,13 +236,13 @@ const GeneralTaskPersonalChart = (props) => {
         <div className="qlcv box-body">
             <div className="nav-tabs-custom" >
                 <ul className="general-tabs nav nav-tabs">
-                    <li className="active"><a className="general-task-type" href="#allGeneralTaskUrgent" data-toggle="tab" ><img style={{ width: '18px', height: '18px', marginRight: '5px' }} src={urgentIcon} alt="urgent" />{`${translate('task.task_dashboard.urgent_task')} `} <span>{`(${state.urgentTask ? state.urgentTask.length : 0})`}</span></a></li>
-                    <li><a className="general-task-type" href="#allGeneralTaskTodo" data-toggle="tab" ><img src={todoIcon} alt="todo" style={{ width: '20px', marginRight: '5px' }} />  {`${translate('task.task_dashboard.to_do_task')} `}<span>{`(${state.todoTask ? state.todoTask.length : 0})`}</span></a></li>
-                    <li><a className="general-task-type" href="#allGeneralTaskOverdue" data-toggle="tab" >{`${translate('task.task_dashboard.overdue_task')} `}<span>{`(${state.overdueTask ? state.overdueTask.length : 0})`}</span></a></li>
-                    <li><a className="general-task-type" href="#allGeneralTaskDelay" data-toggle="tab" >{`${translate('task.task_dashboard.delay_task')} `}<span>{`(${state.delayTask ? state.delayTask.length : 0})`}</span></a></li>
-                    <li><a className="general-task-type" href="#allGeneralTaskDeedlineNow" data-toggle="tab" >{`Hạn hôm nay `}<span>{`(${state.deadlineNow ? state.deadlineNow.length : 0})`}</span></a></li>
-                    <li><a className="general-task-type" href="#allGeneralTaskDeedlineIncoming" data-toggle="tab" >{`${translate('task.task_dashboard.incoming_task')} `}<span>{`(${state.deadlineincoming ? state.deadlineincoming.length : 0})`}</span></a></li>
-                    <li><a className="general-task-type" href="#allGeneralTaskIntime" data-toggle="tab" >{`${translate('task.task_dashboard.intime_task')} `}<span>{`(${state.intimeTask ? state.intimeTask.length : 0})`}</span></a></li>
+                    <li className="active"><a className="general-task-type" href="#allGeneralTaskUrgent" data-toggle="tab" ><img style={{ width: '18px', height: '18px', marginRight: '5px' }} src={urgentIcon} alt="urgent" />{`${translate('task.task_dashboard.urgent_task')}`}&nbsp;<span>{`(${state.urgentTask ? state.urgentTask.length : 0})`}</span></a></li>
+                    <li><a className="general-task-type" href="#allGeneralTaskTodo" data-toggle="tab" ><img src={todoIcon} alt="todo" style={{ width: '20px', marginRight: '5px' }} />  {`${translate('task.task_dashboard.to_do_task')}`}&nbsp;<span>{`(${state.todoTask ? state.todoTask.length : 0})`}</span></a></li>
+                    <li><a className="general-task-type" href="#allGeneralTaskOverdue" data-toggle="tab" >{`${translate('task.task_dashboard.overdue_task')}`}&nbsp;<span>{`(${state.overdueTask ? state.overdueTask.length : 0})`}</span></a></li>
+                    <li><a className="general-task-type" href="#allGeneralTaskDelay" data-toggle="tab" >{`${translate('task.task_dashboard.delay_task')}`}&nbsp;<span>{`(${state.delayTask ? state.delayTask.length : 0})`}</span></a></li>
+                    <li><a className="general-task-type" href="#allGeneralTaskDeedlineNow" data-toggle="tab" >{`Hạn hôm nay`}&nbsp;<span>{`(${state.deadlineNow ? state.deadlineNow.length : 0})`}</span></a></li>
+                    <li><a className="general-task-type" href="#allGeneralTaskDeedlineIncoming" data-toggle="tab" >{`${translate('task.task_dashboard.incoming_task')}`}&nbsp;<span>{`(${state.deadlineincoming ? state.deadlineincoming.length : 0})`}</span></a></li>
+                    <li><a className="general-task-type" href="#allGeneralTaskIntime" data-toggle="tab" >{`${translate('task.task_dashboard.intime_task')}`}&nbsp;<span>{`(${state.intimeTask ? state.intimeTask.length : 0})`}</span></a></li>
                 </ul>
 
                 <div className="tab-content" id="general-tasks-wraper">

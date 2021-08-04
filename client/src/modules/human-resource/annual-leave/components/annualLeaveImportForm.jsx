@@ -42,6 +42,21 @@ function AnnualLeaveImportForm(props) {
         return [day, month, date_info.getFullYear()].join('-');
     }
 
+    function convertTimeExcelToJSDate(fromExcel) {
+        let basenumber = (fromExcel * 24)
+        let hour = Math.floor(basenumber).toString();
+        if (hour.length < 2) {
+            hour = '0' + hour;
+        }
+
+        let minute = Math.round((basenumber % 1) * 60).toString();
+        if (minute.length < 2) {
+            minute = '0' + minute;
+        }
+        let Timestring = (hour + ':' + minute);
+        return Timestring;
+    }
+
     /**
      * Function format dữ liệu Date thành string
      * @param {*} date : Ngày muốn format
@@ -128,10 +143,11 @@ function AnnualLeaveImportForm(props) {
      */
     const handleImportExcel = (value, checkFileImport) => {
         const { translate } = props;
-
         value = value.map(x => {
             let startDate = typeof x.startDate === 'string' ? x.startDate : convertExcelDateToJSDate(x.startDate);
             let endDate = typeof x.endDate === 'string' ? x.endDate : convertExcelDateToJSDate(x.endDate);
+            let startTime = typeof x.startTime === "number" ? convertTimeExcelToJSDate(x.startTime) : x.startTime;
+            let endTime = typeof x.endTime === "number" ? convertTimeExcelToJSDate(x.endTime) : x.endTime;
             let status = x.status;
             let type = false;
             if (x.totalHours) {
@@ -151,7 +167,7 @@ function AnnualLeaveImportForm(props) {
                     status = null;
                     break;
             };
-            return { ...x, status: status, startDate: startDate, endDate: endDate, type: type };
+            return { ...x, status: status, startDate: startDate, endDate: endDate, type: type, startTime, endTime };
         })
 
         if (checkFileImport) {
@@ -189,17 +205,6 @@ function AnnualLeaveImportForm(props) {
                 }
             })
         }
-    }
-
-    /**
-     * Function tải file import mẫu
-     * @param {*} e 
-     * @param {*} path : Đường dẫn file
-     * @param {*} fileName : Tên file muốn tải về
-     */
-    const requestDownloadFile = (e, path, fileName) => {
-        e.preventDefault()
-        props.downloadFile(path, fileName)
     }
 
     if (annualLeave.error.rowError !== undefined) {

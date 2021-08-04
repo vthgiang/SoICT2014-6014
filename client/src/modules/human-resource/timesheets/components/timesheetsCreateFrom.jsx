@@ -9,6 +9,7 @@ import { TimesheetsFormValidator } from './combinedContent';
 
 import { TimesheetsActions } from '../redux/actions';
 import { EmployeeManagerActions } from '../../profile/employee-management/redux/actions';
+import ValidationHelper from '../../../../helpers/validationHelper';
 
 const TimesheetsCreateForm = (props) => {
 
@@ -64,8 +65,8 @@ const TimesheetsCreateForm = (props) => {
     const [state, setState] = useState({
         employee: "",
         month: formatDate(Date.now(), true),
-        shift1s: _allDayOfMonth.map(x => false),
-        shift2s: _allDayOfMonth.map(x => false),
+        shift1s: _allDayOfMonth.map(x => true),
+        shift2s: _allDayOfMonth.map(x => true),
         shift3s: _allDayOfMonth.map(x => false),
         timekeepingByHours: _allDayOfMonth.map(x => 0),
         allDayOfMonth: _allDayOfMonth,
@@ -106,18 +107,21 @@ const TimesheetsCreateForm = (props) => {
      * @param {*} value : Tháng
      */
     const handleMonthChange = (value) => {
-        validateMonth(value, true);
+        let { message } = ValidationHelper.validateEmpty(translate, value);
         if (value) {
             let allDayOfMonth = getAllDayOfMonth(value);
             setState({
                 ...state,
-                shift1s: allDayOfMonth.map(x => false),
-                shift2s: allDayOfMonth.map(x => false),
+                shift1s: allDayOfMonth.map(x => true),
+                shift2s: allDayOfMonth.map(x => true),
                 shift3s: allDayOfMonth.map(x => false),
-                allDayOfMonth: allDayOfMonth
+                allDayOfMonth: allDayOfMonth,
+                month: value,
+                errorOnMonthSalary: message,
             })
         }
     }
+
 
     const validateMonth = (value, willUpdateState = true) => {
         const { translate } = props;
