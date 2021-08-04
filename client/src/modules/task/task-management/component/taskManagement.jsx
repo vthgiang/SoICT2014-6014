@@ -727,12 +727,21 @@ function TaskManagement(props) {
                     }
                 }
             }
-
-            if (data?.length || dataTree?.length)
+            if (data?.length || dataTree?.length) {
                 setState({
                     ...state,
                     data,
                     dataTree,
+                    currentTasks,
+                })
+                if (data.length > perPage) {
+                    handleUpdateData()
+                }
+            } else
+                setState({
+                    ...state,
+                    data: [],
+                    dataTree: [],
                     currentTasks,
                 })
         }
@@ -778,7 +787,6 @@ function TaskManagement(props) {
     if (state.currentTasks)
         exportData = convertDataToExportData(translate, state.currentTasks, translate("menu.task_management"));
 
-    console.log('state', state?.data)
     return (
         <React.Fragment>
             <div className="box">
