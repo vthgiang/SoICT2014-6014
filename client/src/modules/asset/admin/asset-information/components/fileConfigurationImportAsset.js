@@ -308,7 +308,15 @@ const importGeneralInformationOfAssetTemplate = {
     sheetName: "Thông tin chung",
     sheetTitle: 'Danh sách tài sản',
     tables: [{
-        rowHeader: 1,
+        rowHeader: 2,
+        merges: [{
+            key: "assetInfo",
+            columnName: "Các thuộc tính của tài sản",
+            keyMerge: 'assetInfoName',
+            colspan: 2
+        }],
+        note: 'Chú ý: Nếu muốn chọn tất cả role được nhìn thấy được tài sản thì ở cột Những role có quyền nhập: All, thay vì từng role từng dòng, sẽ rút gọn được file',
+        noteHeight: 30,
         columns: [
             { key: "code", value: "Mã tài sản" },
             { key: "assetName", value: "Tên tài sản" },
@@ -322,7 +330,9 @@ const importGeneralInformationOfAssetTemplate = {
             { key: "location", value: "Vị trí tài sản" },
             { key: "status", value: "Trạng thái" },
             { key: "typeRegisterForUse", value: "Quyền đăng ký sử dụng" },
-            { key: "description", value: "Mô tả" }
+            { key: "description", value: "Mô tả" },
+            { key: "assetInfoName", value: "Tên thuộc tính" },
+            { key: "assetInfoValue", value: "Giá trị" },
         ],
         data: [
             {
@@ -331,7 +341,13 @@ const importGeneralInformationOfAssetTemplate = {
                 serial: "BG1234",
                 purchaseDate: "01-09-2020",
                 warrantyExpirationDate: "01-09-2020",
-                description: "Bàn gỗ xoan"
+                description: "Bàn gỗ xoan",
+                assetInfo: [
+                    {
+assetInfoName: "Thời gian sử dụng (Năm)",
+                assetInfoValue: 30
+                    }
+                ]
             },
             {
                 code: undefined

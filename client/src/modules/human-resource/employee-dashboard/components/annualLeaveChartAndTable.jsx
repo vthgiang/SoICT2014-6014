@@ -198,8 +198,8 @@ const AnnualLeaveChartAndTable = (props) => {
     const listAnnual = organizationalUnitsShow?.map(x => {
         const unit = childOrganizationalUnit?.find(y => y.id.toString() === x.toString())
         return {
-            id: unit.id,
-            name: unit.name,
+            id: unit?.id,
+            name: unit?.name,
             countPrev: 0,
             countCurrent: 0,
             countNext: 0
