@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { PaymentActions } from "../../redux/actions";
@@ -8,27 +8,25 @@ import { formatCurrency } from "../../../../../../helpers/formatCurrency";
 import { DialogModal, ButtonModal, ErrorLabel, SelectBox } from "../../../../../../common-components";
 import { generateCode } from "../../../../../../helpers/generateCode";
 
-class ReceiptVoucherCreateForm extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            customer: "",
-            salesOrders: [],
-            salesOrder: "",
-            money: "",
-            paid: "",
-            paymentAmount: 0,
-            code: "", //Mã sales order
-            totalMoney: "",
-            indexEditting: -1,
-            receiptVoucherCode: "",
-        };
-    }
+function ReceiptVoucherCreateForm(props) {
 
-    getCustomerOptions = () => {
+    const [state, setState] = useState({
+        customer: "",
+        salesOrders: [],
+        salesOrder: "",
+        money: "",
+        paid: "",
+        paymentAmount: 0,
+        code: "", //Mã sales order
+        totalMoney: "",
+        indexEditting: -1,
+        receiptVoucherCode: "",
+    })
+
+    const getCustomerOptions = () => {
         let options = [];
 
-        const { list } = this.props.customers;
+        const { list } = props.customers;
         if (list) {
             options = [
                 {
@@ -37,7 +35,7 @@ class ReceiptVoucherCreateForm extends Component {
                 },
             ];
 
-            let mapOptions = this.props.customers.list.map((item) => {
+            let mapOptions = props.customers.list.map((item) => {
                 return {
                     value: item._id,
                     text: item.code + " - " + item.name,
@@ -50,10 +48,10 @@ class ReceiptVoucherCreateForm extends Component {
         return options;
     };
 
-    getSalesOrderOptions = () => {
+    const getSalesOrderOptions = () => {
         let options = [];
 
-        const { salesOrdersForPayment } = this.props.salesOrders;
+        const { salesOrdersForPayment } = props.salesOrders;
         if (salesOrdersForPayment && salesOrdersForPayment.length) {
             options = [
                 {
@@ -84,10 +82,10 @@ class ReceiptVoucherCreateForm extends Component {
         return options;
     };
 
-    getBankAccountOptions = () => {
+    const getBankAccountOptions = () => {
         let options = [];
 
-        const { listBankAccounts } = this.props.bankAccounts;
+        const { listBankAccounts } = props.bankAccounts;
         if (listBankAccounts) {
             options = [
                 {
@@ -109,14 +107,15 @@ class ReceiptVoucherCreateForm extends Component {
         return options;
     };
 
-    validateCustomer = (value, willUpdateState = true) => {
+    const validateCustomer = (value, willUpdateState = true) => {
         let msg = undefined;
         if (!value || value === "" || value === "title") {
             msg = "Giá trị không được bỏ trống!";
         }
 
         if (willUpdateState) {
-            this.setState({
+            setState({
+                ...state,
                 customerError: msg,
             });
         }
@@ -124,8 +123,9 @@ class ReceiptVoucherCreateForm extends Component {
         return msg;
     };
 
-    handleCustomerChange = async (value) => {
-        this.setState({
+    const handleCustomerChange = async (value) => {
+        setState({
+            ...state,
             customer: value[0],
             money: "",
             salesOrder: "title",
@@ -134,22 +134,23 @@ class ReceiptVoucherCreateForm extends Component {
             bankAccountReceived: "title",
         });
 
-        this.validateCustomer(value[0]);
+        validateCustomer(value[0]);
 
         //Lấy các đơn hàng chưa thanh toán của khách hàng
         if (value[0] !== "title") {
-            await this.props.getSalesOrdersForPayment(value[0], true);
+            await props.getSalesOrdersForPayment(value[0], true);
         }
     };
 
-    validatePaymentType = (value, willUpdateState = true) => {
+    const validatePaymentType = (value, willUpdateState = true) => {
         let msg = undefined;
         if (!value || value === "" || value === "title") {
             msg = "Giá trị không được bỏ trống!";
         }
 
         if (willUpdateState) {
-            this.setState({
+            setState({
+                ...state,
                 paymentTypeError: msg,
             });
         }
@@ -157,29 +158,32 @@ class ReceiptVoucherCreateForm extends Component {
         return msg;
     };
 
-    handlePaymentTypeChange = (value) => {
+    const handlePaymentTypeChange = (value) => {
         if (parseInt(value[0]) === 2) {
             //Hình thức chuyển khoản
-            this.setState({
+            setState({
+                ...state,
                 paymentType: value[0],
             });
         } else {
-            this.setState({
+            setState({
+                ...state,
                 paymentType: value[0],
                 bankAccountReceived: "",
             });
         }
-        this.validatePaymentType(value[0], true);
+        validatePaymentType(value[0], true);
     };
 
-    validateBankAccountReceived = (value, willUpdateState = true) => {
+    const validateBankAccountReceived = (value, willUpdateState = true) => {
         let msg = undefined;
         if (!value || value === "" || value === "title") {
             msg = "Giá trị không được bỏ trống!";
         }
 
         if (willUpdateState) {
-            this.setState({
+            setState({
+                ...state,
                 bankAccountReceivedError: msg,
             });
         }
@@ -187,21 +191,23 @@ class ReceiptVoucherCreateForm extends Component {
         return msg;
     };
 
-    handleBankAccountReceivedChange = (value) => {
-        this.setState({
+    const handleBankAccountReceivedChange = (value) => {
+        setState({
+            ...state,
             bankAccountReceived: value[0],
         });
-        this.validateBankAccountReceived(value[0], true);
+        validateBankAccountReceived(value[0], true);
     };
 
-    validateSalesOrder = (value, willUpdateState = true) => {
+    const validateSalesOrder = (value, willUpdateState = true) => {
         let msg = undefined;
         if (!value || value === "" || value === "title") {
             msg = "Giá trị không được bỏ trống!";
         }
 
         if (willUpdateState) {
-            this.setState({
+            setState({
+                ...state,
                 salesOrderError: msg,
             });
         }
@@ -209,11 +215,11 @@ class ReceiptVoucherCreateForm extends Component {
         return msg;
     };
 
-    getMoneyForPayment = (salesOrderId) => {
-        const { salesOrdersForPayment } = this.props.salesOrders;
+    const getMoneyForPayment = (salesOrderId) => {
+        const { salesOrdersForPayment } = props.salesOrders;
         let salesOrderInfo = salesOrdersForPayment.find((element) => element._id === salesOrderId);
 
-        const { totalMoney, salesOrders, indexEditting } = this.state;
+        const { totalMoney, salesOrders, indexEditting } = state;
         //Tổng số tiền đã thêm vào đơn
 
         let moneyAdded = 0;
@@ -233,8 +239,8 @@ class ReceiptVoucherCreateForm extends Component {
     };
 
     //tổng tiền thanh toán phải bằng tổng thanh toán dưới bảng
-    validateCompareTotalMoney = () => {
-        const { totalMoney, salesOrders } = this.state;
+    const validateCompareTotalMoney = () => {
+        const { totalMoney, salesOrders } = state;
 
         let moneyAdded = 0;
         for (let index = 0; index < salesOrders.length; index++) {
@@ -244,12 +250,13 @@ class ReceiptVoucherCreateForm extends Component {
         return parseInt(moneyAdded) === parseInt(totalMoney);
     };
 
-    handleSalesOrderChange = (value) => {
+    const handleSalesOrderChange = (value) => {
         if (value[0] !== "title") {
-            const { salesOrdersForPayment } = this.props.salesOrders;
+            const { salesOrdersForPayment } = props.salesOrders;
             let salesOrderInfo = salesOrdersForPayment.find((element) => element._id === value[0]);
-            let money = this.getMoneyForPayment(value[0]);
-            this.setState({
+            let money = getMoneyForPayment(value[0]);
+            setState({
+                ...state,
                 //Lưu thông tin tạm thời của sales order vào state
                 salesOrder: value[0],
                 code: salesOrderInfo.code,
@@ -258,15 +265,16 @@ class ReceiptVoucherCreateForm extends Component {
                 money,
             });
         } else {
-            this.setState({
+            setState({
+                ...state,
                 salesOrder: value[0],
             });
         }
-        this.validateSalesOrder(value[0], true);
+        validateSalesOrder(value[0], true);
     };
 
-    validateMoney = (value, willUpdateState = true) => {
-        let { paid, paymentAmount } = this.state;
+    const validateMoney = (value, willUpdateState = true) => {
+        let { paid, paymentAmount } = state;
         let msg = undefined;
         if (!value) {
             msg = "Giá trị không được bỏ trống!";
@@ -276,7 +284,8 @@ class ReceiptVoucherCreateForm extends Component {
             msg = "Số tiền thanh toán không được vượt quá dư nợ: " + formatCurrency(paymentAmount - paid);
         }
         if (willUpdateState) {
-            this.setState({
+            setState({
+                ...state,
                 moneyError: msg,
             });
         }
@@ -284,16 +293,17 @@ class ReceiptVoucherCreateForm extends Component {
         return msg;
     };
 
-    handleMoneyChange = (e) => {
+    const handleMoneyChange = (e) => {
         let { value } = e.target;
-        this.setState({
+        setState({
+            ...state,
             money: value,
         });
 
-        this.validateMoney(value, true);
+        validateMoney(value, true);
     };
 
-    validateTotalMoney = (value, willUpdateState = true) => {
+    const validateTotalMoney = (value, willUpdateState = true) => {
         let msg = undefined;
         if (!value) {
             msg = "Giá trị không được bỏ trống!";
@@ -301,7 +311,8 @@ class ReceiptVoucherCreateForm extends Component {
             msg = "Số tiền phải lớn hơn 0!";
         }
         if (willUpdateState) {
-            this.setState({
+            setState({
+                ...state,
                 totalMoneyError: msg,
             });
         }
@@ -309,28 +320,29 @@ class ReceiptVoucherCreateForm extends Component {
         return msg;
     };
 
-    handleTotalMoneyChange = (e) => {
+    const handleTotalMoneyChange = (e) => {
         let { value } = e.target;
-        this.setState({
+        setState({
+            ...state,
             totalMoney: value,
             salesOrder: "title",
             money: 0,
         });
-        this.validateTotalMoney(value, true);
+        validateTotalMoney(value, true);
     };
 
-    isSubmitPaymentForSalesOrderValidate = () => {
-        let { salesOrder, money } = this.state;
-        if (this.validateSalesOrder(salesOrder, false) || this.validateMoney(money, false)) {
+    const isSubmitPaymentForSalesOrderValidate = () => {
+        let { salesOrder, money } = state;
+        if (validateSalesOrder(salesOrder, false) || validateMoney(money, false)) {
             return false;
         }
 
         return true;
     };
 
-    handleSubmitPaymentForSalesOrder = () => {
-        if (this.isSubmitPaymentForSalesOrderValidate) {
-            let { salesOrder, money, salesOrders, code, paymentAmount, paid } = this.state;
+    const handleSubmitPaymentForSalesOrder = () => {
+        if (isSubmitPaymentForSalesOrderValidate) {
+            let { salesOrder, money, salesOrders, code, paymentAmount, paid } = state;
 
             let data = {
                 salesOrder,
@@ -341,7 +353,7 @@ class ReceiptVoucherCreateForm extends Component {
             };
 
             salesOrders.push(data);
-            this.setState((state) => {
+            setState((state) => {
                 return {
                     ...state,
                     salesOrders,
@@ -355,8 +367,9 @@ class ReceiptVoucherCreateForm extends Component {
         }
     };
 
-    handlePaymentForSalesOrderEdit = async (item, index) => {
-        await this.setState({
+    const handlePaymentForSalesOrderEdit = async (item, index) => {
+        await setState({
+            ...state,
             editSalesOrder: true,
             indexEditting: index,
             salesOrder: item.salesOrder,
@@ -365,15 +378,16 @@ class ReceiptVoucherCreateForm extends Component {
             paid: item.paid,
         });
 
-        let money = await this.getMoneyForPayment(item.salesOrder);
-        await this.setState({
+        let money = await getMoneyForPayment(item.salesOrder);
+        await setState({
+            ...state,
             money,
         });
     };
 
-    handleSaveEditPaymentForSalesOrder = () => {
-        if (this.isSubmitPaymentForSalesOrderValidate) {
-            let { salesOrder, money, salesOrders, code, paymentAmount, paid, indexEditting, editSalesOrder } = this.state;
+    const handleSaveEditPaymentForSalesOrder = () => {
+        if (isSubmitPaymentForSalesOrderValidate) {
+            let { salesOrder, money, salesOrders, code, paymentAmount, paid, indexEditting, editSalesOrder } = state;
 
             let data = {
                 salesOrder,
@@ -385,7 +399,7 @@ class ReceiptVoucherCreateForm extends Component {
 
             salesOrders[indexEditting] = data;
 
-            this.setState((state) => {
+            setState((state) => {
                 return {
                     ...state,
                     salesOrder: "title",
@@ -400,8 +414,8 @@ class ReceiptVoucherCreateForm extends Component {
         }
     };
 
-    handleCancelEditPaymentForSalesOrder = () => {
-        this.setState((state) => {
+    const handleCancelEditPaymentForSalesOrder = () => {
+        setState((state) => {
             return {
                 ...state,
                 salesOrder: "title",
@@ -415,34 +429,35 @@ class ReceiptVoucherCreateForm extends Component {
         });
     };
 
-    handleDeletePaymentForSalesOrder = (item) => {
-        let { salesOrders } = this.state;
+    const handleDeletePaymentForSalesOrder = (item) => {
+        let { salesOrders } = state;
 
         let salesOrdersFilter = salesOrders.filter((element) => element.salesOrder !== item.salesOrder);
-        this.setState({
+        setState({
+            ...state,
             salesOrders: salesOrdersFilter,
         });
     };
 
-    isFormValidated = () => {
-        let { customer, paymentType, bankAccountReceived, salesOrders } = this.state;
+    const isFormValidated = () => {
+        let { customer, paymentType, bankAccountReceived, salesOrders } = state;
         if (
-            this.validateCustomer(customer, false) ||
-            this.validatePaymentType(paymentType, false) ||
-            !this.validateCompareTotalMoney() ||
+            validateCustomer(customer, false) ||
+            validatePaymentType(paymentType, false) ||
+            !validateCompareTotalMoney() ||
             !salesOrders.length
         ) {
             return false;
         }
 
-        if (parseInt(paymentType) === 2 && this.validateBankAccountReceived(bankAccountReceived, false)) {
+        if (parseInt(paymentType) === 2 && validateBankAccountReceived(bankAccountReceived, false)) {
             return false;
         }
 
         return true;
     };
 
-    getSalesOrderForSubmit = async (salesOrders) => {
+    const getSalesOrderForSubmit = async (salesOrders) => {
         let salesOrdersMap = await salesOrders.map((item) => {
             return {
                 salesOrder: item.salesOrder,
@@ -453,20 +468,22 @@ class ReceiptVoucherCreateForm extends Component {
         return salesOrdersMap;
     };
 
-    save = async () => {
-        if (this.isFormValidated()) {
-            let { customer, paymentType, bankAccountReceived, salesOrders, receiptVoucherCode } = this.state;
+    const save = async () => {
+        if (isFormValidated()) {
+            let { customer, paymentType, bankAccountReceived, salesOrders, receiptVoucherCode } = state;
+            console.log({ customer, paymentType, bankAccountReceived, salesOrders, receiptVoucherCode });
             let data = {
                 code: receiptVoucherCode,
                 customer,
                 paymentType,
                 bankAccountReceived: bankAccountReceived !== "" ? bankAccountReceived : undefined,
-                salesOrders: await this.getSalesOrderForSubmit(salesOrders),
+                salesOrders: await getSalesOrderForSubmit(salesOrders),
                 type: 1, //Phiếu thu tiền bán hàng
             };
 
-            await this.props.createPayment(data);
-            await this.setState({
+            await props.createPayment(data);
+            await setState({
+                ...state,
                 customer: "title",
                 paymentType: "title",
                 bankAccountReceived: "",
@@ -476,268 +493,266 @@ class ReceiptVoucherCreateForm extends Component {
         }
     };
 
-    handleClickCreateCode = () => {
-        this.setState((state) => {
+    const handleClickCreateCode = () => {
+        setState((state) => {
             return { ...state, receiptVoucherCode: generateCode("RV_") };
         });
     };
 
-    render() {
-        let {
-            customer,
-            paymentType,
-            bankAccountReceived,
-            salesOrder,
-            money,
-            totalMoney,
-            receiptVoucherCode,
-            customerError,
-            paymentTypeError,
-            bankAccountReceivedError,
-            salesOrderError,
-            salesOrders,
-            editSalesOrder,
-            moneyError,
-            totalMoneyError,
-        } = this.state;
+    let {
+        customer,
+        paymentType,
+        bankAccountReceived,
+        salesOrder,
+        money,
+        totalMoney,
+        receiptVoucherCode,
+        customerError,
+        paymentTypeError,
+        bankAccountReceivedError,
+        salesOrderError,
+        salesOrders,
+        editSalesOrder,
+        moneyError,
+        totalMoneyError,
+    } = state;
 
-        let debt = 0;
-        const { salesOrdersForPayment } = this.props.salesOrders;
-        if (salesOrdersForPayment && salesOrdersForPayment.length) {
-            for (let index = 0; index < salesOrdersForPayment.length; index++) {
-                debt += salesOrdersForPayment[index].paymentAmount - salesOrdersForPayment[index].paid;
-            }
+    let debt = 0;
+    const { salesOrdersForPayment } = props.salesOrders;
+    if (salesOrdersForPayment && salesOrdersForPayment.length) {
+        for (let index = 0; index < salesOrdersForPayment.length; index++) {
+            debt += salesOrdersForPayment[index].paymentAmount - salesOrdersForPayment[index].paid;
         }
+    }
 
-        return (
-            <React.Fragment>
-                <ButtonModal
-                    onButtonCallBack={this.handleClickCreateCode}
-                    modalID={`modal-create-receipt-voucher`}
-                    button_name={"Tạo phiếu thu"}
-                    title={"Tạo phiếu thu"}
-                />
-                <DialogModal
-                    modalID={`modal-create-receipt-voucher`}
-                    isLoading={false}
-                    formID={`form-create-receipt-voucher`}
-                    title={"Tạo phiếu thu"}
-                    msg_success={"Thêm thành công"}
-                    msg_faile={"Thêm không thành công"}
-                    disableSubmit={!this.isFormValidated()}
-                    func={this.save}
-                    size="50"
-                    style={{ backgroundColor: "green" }}
-                >
-                    <form id={`form-create-receipt-voucher`}>
-                        <div className={`form-group`}>
+    return (
+        <React.Fragment>
+            <ButtonModal
+                onButtonCallBack={handleClickCreateCode}
+                modalID={`modal-create-receipt-voucher`}
+                button_name={"Tạo phiếu thu"}
+                title={"Tạo phiếu thu"}
+            />
+            <DialogModal
+                modalID={`modal-create-receipt-voucher`}
+                isLoading={false}
+                formID={`form-create-receipt-voucher`}
+                title={"Tạo phiếu thu"}
+                msg_success={"Thêm thành công"}
+                msg_faile={"Thêm không thành công"}
+                disableSubmit={!isFormValidated()}
+                func={save}
+                size="50"
+                style={{ backgroundColor: "green" }}
+            >
+                <form id={`form-create-receipt-voucher`}>
+                    <div className={`form-group`}>
+                        <label>
+                            {"Mã phiếu"}
+                            <span className="attention"> * </span>
+                        </label>
+                        <input type="text" value={receiptVoucherCode} className="form-control" disabled={true} />
+                    </div>
+                    <div className={`form-group ${!customerError ? "" : "has-error"}`}>
+                        <label>
+                            Khách hàng
+                            <span className="attention"> * </span>
+                        </label>
+                        <SelectBox
+                            id={`select-receipt-voucher-customer`}
+                            className="form-control select2"
+                            style={{ width: "100%" }}
+                            value={customer}
+                            items={getCustomerOptions()}
+                            onChange={handleCustomerChange}
+                            multiple={false}
+                        />
+                        <ErrorLabel content={customerError} />
+                    </div>
+                    <div className={`form-group ${!paymentTypeError ? "" : "has-error"}`}>
+                        <label>
+                            Phương thức thanh toán
+                            <span className="attention"> * </span>
+                        </label>
+                        <SelectBox
+                            id={`select-receipt-voucher-payment-type`}
+                            className="form-control select2"
+                            style={{ width: "100%" }}
+                            value={paymentType}
+                            items={[
+                                {
+                                    value: "title",
+                                    text: "---Chọn phương thức thanh toán---",
+                                },
+                                {
+                                    value: 1,
+                                    text: "Tiền mặt",
+                                },
+                                {
+                                    value: 2,
+                                    text: "Chuyển khoản",
+                                },
+                            ]}
+                            onChange={handlePaymentTypeChange}
+                            multiple={false}
+                        />
+                        <ErrorLabel content={paymentTypeError} />
+                    </div>
+                    {parseInt(paymentType) === 2 && (
+                        <div className={`form-group ${!bankAccountReceivedError ? "" : "has-error"}`}>
                             <label>
-                                {"Mã phiếu"}
-                                <span className="attention"> * </span>
-                            </label>
-                            <input type="text" value={receiptVoucherCode} className="form-control" disabled={true} />
-                        </div>
-                        <div className={`form-group ${!customerError ? "" : "has-error"}`}>
-                            <label>
-                                Khách hàng
+                                Tài khoản thụ hưởng
                                 <span className="attention"> * </span>
                             </label>
                             <SelectBox
-                                id={`select-receipt-voucher-customer`}
+                                id={`select--receipt-voucher-bank-account`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
-                                value={customer}
-                                items={this.getCustomerOptions()}
-                                onChange={this.handleCustomerChange}
+                                value={bankAccountReceived}
+                                items={getBankAccountOptions()}
+                                onChange={handleBankAccountReceivedChange}
                                 multiple={false}
                             />
-                            <ErrorLabel content={customerError} />
+                            <ErrorLabel content={bankAccountReceivedError} />
                         </div>
-                        <div className={`form-group ${!paymentTypeError ? "" : "has-error"}`}>
+                    )}
+
+                    <div className={`form-group`}>
+                        <label>{"Tổng dư nợ của khách hàng"}</label>
+                        <input type="text" className="form-control" value={formatCurrency(debt)} disabled={true} />
+                    </div>
+
+                    <div className={`form-group ${!totalMoneyError ? "" : "has-error"}`}>
+                        <label>
+                            {"Tổng tiền thanh toán"}
+                            <span className="attention"> * </span>
+                        </label>
+                        <input type="number" className="form-control" value={totalMoney} onChange={handleTotalMoneyChange} />
+                        <ErrorLabel content={totalMoneyError} />
+                    </div>
+                    <fieldset className="scheduler-border">
+                        <legend className="scheduler-border">Thanh toán cho từng đơn</legend>
+                        <div className={`form-group ${!salesOrderError ? "" : "has-error"}`}>
                             <label>
-                                Phương thức thanh toán
+                                Đơn hàng còn dư nợ
                                 <span className="attention"> * </span>
                             </label>
                             <SelectBox
-                                id={`select-receipt-voucher-payment-type`}
+                                id={`select-receipt-voucher-sales-order`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
-                                value={paymentType}
-                                items={[
-                                    {
-                                        value: "title",
-                                        text: "---Chọn phương thức thanh toán---",
-                                    },
-                                    {
-                                        value: 1,
-                                        text: "Tiền mặt",
-                                    },
-                                    {
-                                        value: 2,
-                                        text: "Chuyển khoản",
-                                    },
-                                ]}
-                                onChange={this.handlePaymentTypeChange}
+                                value={salesOrder}
+                                items={getSalesOrderOptions()}
+                                onChange={handleSalesOrderChange}
                                 multiple={false}
                             />
-                            <ErrorLabel content={paymentTypeError} />
-                        </div>
-                        {parseInt(paymentType) === 2 && (
-                            <div className={`form-group ${!bankAccountReceivedError ? "" : "has-error"}`}>
-                                <label>
-                                    Tài khoản thụ hưởng
-                                    <span className="attention"> * </span>
-                                </label>
-                                <SelectBox
-                                    id={`select--receipt-voucher-bank-account`}
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    value={bankAccountReceived}
-                                    items={this.getBankAccountOptions()}
-                                    onChange={this.handleBankAccountReceivedChange}
-                                    multiple={false}
-                                />
-                                <ErrorLabel content={bankAccountReceivedError} />
-                            </div>
-                        )}
-
-                        <div className={`form-group`}>
-                            <label>{"Tổng dư nợ của khách hàng"}</label>
-                            <input type="text" className="form-control" value={formatCurrency(debt)} disabled={true} />
+                            <ErrorLabel content={salesOrderError} />
                         </div>
 
-                        <div className={`form-group ${!totalMoneyError ? "" : "has-error"}`}>
+                        <div className={`form-group ${!moneyError ? "" : "has-error"}`}>
                             <label>
-                                {"Tổng tiền thanh toán"}
+                                {"Số tiền thanh toán"}
                                 <span className="attention"> * </span>
                             </label>
-                            <input type="number" className="form-control" value={totalMoney} onChange={this.handleTotalMoneyChange} />
-                            <ErrorLabel content={totalMoneyError} />
+                            <input type="number" className="form-control" value={money} onChange={handleMoneyChange} disabled={true} />
+                            <ErrorLabel content={moneyError} />
                         </div>
-                        <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">Thanh toán cho từng đơn</legend>
-                            <div className={`form-group ${!salesOrderError ? "" : "has-error"}`}>
-                                <label>
-                                    Đơn hàng còn dư nợ
-                                    <span className="attention"> * </span>
-                                </label>
-                                <SelectBox
-                                    id={`select-receipt-voucher-sales-order`}
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    value={salesOrder}
-                                    items={this.getSalesOrderOptions()}
-                                    onChange={this.handleSalesOrderChange}
-                                    multiple={false}
-                                />
-                                <ErrorLabel content={salesOrderError} />
-                            </div>
 
-                            <div className={`form-group ${!moneyError ? "" : "has-error"}`}>
-                                <label>
-                                    {"Số tiền thanh toán"}
-                                    <span className="attention"> * </span>
-                                </label>
-                                <input type="number" className="form-control" value={money} onChange={this.handleMoneyChange} disabled={true} />
-                                <ErrorLabel content={moneyError} />
-                            </div>
-
-                            <div className={"pull-right"} style={{ padding: 10 }}>
-                                {editSalesOrder ? (
-                                    <React.Fragment>
-                                        <button
-                                            className="btn btn-success"
-                                            onClick={this.handleCancelEditPaymentForSalesOrder}
-                                            style={{ marginLeft: "10px" }}
-                                        >
-                                            Hủy chỉnh sửa
-                                        </button>
-                                        <button
-                                            className="btn btn-success"
-                                            disabled={!this.isSubmitPaymentForSalesOrderValidate()}
-                                            onClick={this.handleSaveEditPaymentForSalesOrder}
-                                            style={{ marginLeft: "10px" }}
-                                        >
-                                            Lưu
-                                        </button>
-                                    </React.Fragment>
-                                ) : (
+                        <div className={"pull-right"} style={{ padding: 10 }}>
+                            {editSalesOrder ? (
+                                <React.Fragment>
                                     <button
                                         className="btn btn-success"
+                                        onClick={handleCancelEditPaymentForSalesOrder}
                                         style={{ marginLeft: "10px" }}
-                                        disabled={!this.isSubmitPaymentForSalesOrderValidate()}
-                                        onClick={this.handleSubmitPaymentForSalesOrder}
                                     >
-                                        {"Thêm"}
+                                        Hủy chỉnh sửa
                                     </button>
-                                )}
-                            </div>
+                                    <button
+                                        className="btn btn-success"
+                                        disabled={!isSubmitPaymentForSalesOrderValidate()}
+                                        onClick={handleSaveEditPaymentForSalesOrder}
+                                        style={{ marginLeft: "10px" }}
+                                    >
+                                        Lưu
+                                    </button>
+                                </React.Fragment>
+                            ) : (
+                                <button
+                                    className="btn btn-success"
+                                    style={{ marginLeft: "10px" }}
+                                    disabled={!isSubmitPaymentForSalesOrderValidate()}
+                                    onClick={handleSubmitPaymentForSalesOrder}
+                                >
+                                    {"Thêm"}
+                                </button>
+                            )}
+                        </div>
 
-                            <table id={`receipt-voucher-add-sales-order`} className="table table-bordered not-sort">
-                                <thead>
+                        <table id={`receipt-voucher-add-sales-order`} className="table table-bordered not-sort">
+                            <thead>
+                                <tr>
+                                    <th title={"STT"}>STT</th>
+                                    <th title={"Mã đơn"}>Mã đơn</th>
+                                    <th title={"Tổng tiền"}>Tổng tiền</th>
+                                    <th title={"Còn"}>Tiền dư nợ</th>
+                                    <th title={"Số tiền thanh toán"}>Số tiền thanh toán</th>
+                                    <th title={"Đơn vị tính"}>Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {salesOrders.length !== 0 &&
+                                    salesOrders.map((item, index) => {
+                                        return (
+                                            <tr key={index}>
+                                                <td>{index + 1}</td>
+                                                <td>{item.code}</td>
+                                                <td>{item.paymentAmount ? formatCurrency(item.paymentAmount) : ""}</td>
+                                                <td>{item.paymentAmount - item.paid ? formatCurrency(item.paymentAmount - item.paid) : ""}</td>
+                                                <td style={{ fontWeight: 600 }}>{item.money ? formatCurrency(item.money) : ""}</td>
+                                                <td style={{ textAlign: "center" }}>
+                                                    <a
+                                                        href="#abc"
+                                                        className="edit"
+                                                        title="Sửa"
+                                                        onClick={() => handlePaymentForSalesOrderEdit(item, index)}
+                                                    >
+                                                        <i className="material-icons">edit</i>
+                                                    </a>
+                                                    <a
+                                                        onClick={() => handleDeletePaymentForSalesOrder(item)}
+                                                        className="delete text-red"
+                                                        style={{ width: "5px" }}
+                                                        title={"Xóa"}
+                                                    >
+                                                        <i className="material-icons">delete</i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
+                                {salesOrders.length !== 0 && (
                                     <tr>
-                                        <th title={"STT"}>STT</th>
-                                        <th title={"Mã đơn"}>Mã đơn</th>
-                                        <th title={"Tổng tiền"}>Tổng tiền</th>
-                                        <th title={"Còn"}>Tiền dư nợ</th>
-                                        <th title={"Số tiền thanh toán"}>Số tiền thanh toán</th>
-                                        <th title={"Đơn vị tính"}>Hành động</th>
+                                        <td colSpan={4} style={{ fontWeight: 600 }}>
+                                            <center>Tổng thanh toán</center>
+                                        </td>
+                                        <td style={{ fontWeight: 600 }}>
+                                            {formatCurrency(
+                                                salesOrders.reduce((accumulator, currentValue) => {
+                                                    return accumulator + parseInt(currentValue.money);
+                                                }, 0)
+                                            )}
+                                        </td>
+                                        <td></td>
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    {salesOrders.length !== 0 &&
-                                        salesOrders.map((item, index) => {
-                                            return (
-                                                <tr key={index}>
-                                                    <td>{index + 1}</td>
-                                                    <td>{item.code}</td>
-                                                    <td>{item.paymentAmount ? formatCurrency(item.paymentAmount) : ""}</td>
-                                                    <td>{item.paymentAmount - item.paid ? formatCurrency(item.paymentAmount - item.paid) : ""}</td>
-                                                    <td style={{ fontWeight: 600 }}>{item.money ? formatCurrency(item.money) : ""}</td>
-                                                    <td style={{ textAlign: "center" }}>
-                                                        <a
-                                                            href="#abc"
-                                                            className="edit"
-                                                            title="Sửa"
-                                                            onClick={() => this.handlePaymentForSalesOrderEdit(item, index)}
-                                                        >
-                                                            <i className="material-icons">edit</i>
-                                                        </a>
-                                                        <a
-                                                            onClick={() => this.handleDeletePaymentForSalesOrder(item)}
-                                                            className="delete text-red"
-                                                            style={{ width: "5px" }}
-                                                            title={"Xóa"}
-                                                        >
-                                                            <i className="material-icons">delete</i>
-                                                        </a>
-                                                    </td>
-                                                </tr>
-                                            );
-                                        })}
-                                    {salesOrders.length !== 0 && (
-                                        <tr>
-                                            <td colSpan={4} style={{ fontWeight: 600 }}>
-                                                <center>Tổng thanh toán</center>
-                                            </td>
-                                            <td style={{ fontWeight: 600 }}>
-                                                {formatCurrency(
-                                                    salesOrders.reduce((accumulator, currentValue) => {
-                                                        return accumulator + parseInt(currentValue.money);
-                                                    }, 0)
-                                                )}
-                                            </td>
-                                            <td></td>
-                                        </tr>
-                                    )}
-                                </tbody>
-                            </table>
-                        </fieldset>
-                    </form>
-                </DialogModal>
-            </React.Fragment>
-        );
-    }
+                                )}
+                            </tbody>
+                        </table>
+                    </fieldset>
+                </form>
+            </DialogModal>
+        </React.Fragment>
+    );
 }
 
 function mapStateToProps(state) {
