@@ -5,13 +5,13 @@ import { withTranslate } from 'react-redux-multilingual';
 import { IncidentLogAddModal, IncidentLogEditModal } from './combinedContent';
 
 function IncidentLogTab(props) {
-    const [state, setState] =useState({})
+    const [state, setState] = useState({})
     const [prevProps, setPrevProps] = useState({
         id: null
     })
 
     // Function format dữ liệu Date thành string
-    const formatDate = (date, monthYear = false)  =>{
+    const formatDate = (date, monthYear = false) => {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -44,49 +44,50 @@ function IncidentLogTab(props) {
     }
 
     // Function thêm thông tin phiếu
-    const handleAddIncident = async (data) => {
+    const handleAddIncident = (data) => {
         const { incidentLogs } = state;
-        await setState(state =>{
-            return{
+
+        const values = [...incidentLogs, data]
+
+        setState(state => {
+            return {
                 ...state,
-                incidentLogs: [...incidentLogs, {
-                    ...data
-                }]
+                incidentLogs: values
             }
         })
-        props.handleAddIncident(state.incidentLogs, data)
+        props.handleAddIncident(values, data)
     }
 
     // Function chỉnh sửa thông tin phiếu
-    const handleEditIncident = async (data) => {
+    const handleEditIncident = (data) => {
         const { incidentLogs } = state;
         incidentLogs[data.index] = data;
         data.reportedBy = data.reportedBy ? data.reportedBy : localStorage.getItem("userId");
 
-        await setState(state =>{
-            return{
+        setState(state => {
+            return {
                 ...state,
                 incidentLogs: incidentLogs,
             }
         })
-        props.handleEditIncident(state.incidentLogs, data)
+        props.handleEditIncident(incidentLogs, data)
     }
 
     // Function bắt sự kiện xoá thông tin phiếu
-    const handleDeleteIncident = async (index) => {
+    const handleDeleteIncident = (index) => {
         var { incidentLogs } = state;
         var data = incidentLogs[index];
         incidentLogs.splice(index, 1);
-        await setState({
+        setState({
             ...state,
             incidentLogs: [...incidentLogs]
         })
-        props.handleDeleteIncident(state.incidentLogs, data)
+        props.handleDeleteIncident([...incidentLogs], data)
     }
 
-    if(prevProps.id !== props.id){
+    if (prevProps.id !== props.id) {
         setState(state => {
-            return{
+            return {
                 ...state,
                 id: props.id,
                 incidentLogs: props.incidentLogs,
@@ -94,7 +95,7 @@ function IncidentLogTab(props) {
         })
         setPrevProps(props)
     }
-    
+
 
     const formatType = (type) => {
         const { translate } = props;
@@ -104,7 +105,7 @@ function IncidentLogTab(props) {
         }
         else if (type === '2') {
             return translate('asset.general_information.lost');
-        }else if (type === 'Hỏng hóc'){
+        } else if (type === 'Hỏng hóc') {
             return translate('asset.general_information.damaged');
         } else if (type === 'Mất') {
             return translate('asset.general_information.lost');
