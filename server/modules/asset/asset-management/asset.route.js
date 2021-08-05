@@ -19,7 +19,7 @@ router.get('/assets', auth, AssetController.searchAssetProfiles);
 router.post('/assets', auth, uploadFile(data, 'fields'), AssetController.createAsset);
 router.patch('/assets/:id', auth, uploadFile(data, 'fields'), AssetController.updateAssetInformation);
 router.delete('/assets/:id', auth, AssetController.deleteAsset);
-
+router.delete('/assets', auth, AssetController.deleteAssets);
 
 
 /* Tab khấu hao */

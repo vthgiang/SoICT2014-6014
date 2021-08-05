@@ -526,11 +526,9 @@ function GeneralTab(props) {
         }
     };
 
-    console.log("7777", prevProps.assignedToUser !== props.assignedToUser, props.assignedToUser === null)
     if (prevProps.id !== props.id
         || prevProps.assignedToUser !== props.assignedToUser
         || prevProps.assignedToOrganizationalUnit !== props.assignedToOrganizationalUnit){
-            console.log("6666", props.assignedToUser)
             setState(state => {
                 return{
                     ...state,
@@ -573,7 +571,6 @@ function GeneralTab(props) {
             setPrevProps(props)
         }
     
-        console.log("555", state.assignedToUser)
         const { id, translate, user, assetsManager, role, department, assetType } = props;
         const {
             img, defaultAvatar, code, assetName, assetTypes, group, serial, purchaseDate, warrantyExpirationDate, managedBy, isObj,
@@ -789,7 +786,6 @@ function GeneralTab(props) {
                                 {/* Người sử dụng */}
                                 <div className={`form-group`}>
                                     <label>{translate('asset.general_information.user')}</label>
-                                    {console.log("assignedToUser", assignedToUser)}
                                     <SelectBox
                                         id={`assignedToUserBox${id}`}
                                         className="form-control select2"

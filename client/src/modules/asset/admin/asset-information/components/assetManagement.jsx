@@ -2,7 +2,7 @@ import React, { Component, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DataTableSetting, DatePicker, DeleteNotification, PaginateBar, SelectMulti, ExportExcel, TreeSelect } from '../../../../../common-components';
+import { DataTableSetting, DatePicker, DeleteNotification, PaginateBar, SelectMulti, ExportExcel, TreeSelect, SmartTable } from '../../../../../common-components';
 
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 import { AssetManagerActions } from '../redux/actions';
@@ -34,6 +34,18 @@ function AssetManagement(props) {
         limit: limit_constructor,
         managedBy: props.managedBy ? props.managedBy : ''
     })
+
+    const [selectedData, setSelectedData] = useState();
+
+    const onSelectedRowsChange = (value) => {
+        setSelectedData(value)
+    }
+
+    const handleDeleteOptions = () => {
+       props.deleteAssets({
+           assetIds: selectedData
+       });
+    }
 
     const { assetsManager, assetType, translate, user, isActive, department } = props;
     const { page, limit, currentRowView, status, currentRow, purchaseDate, disposalDate, managedBy, location, tableId, group, typeRegisterForUse } = state;
@@ -324,6 +336,8 @@ function AssetManagement(props) {
         if (!number) return '';
         else return new Intl.NumberFormat().format(number);
     }
+
+
 
     const convertDataToExportData = (data, assettypelist, userlist) => {
         const organizationalUnitList = props.department.list;
@@ -743,7 +757,7 @@ function AssetManagement(props) {
             parent: node.location,
         }
     })
-
+    console.log(selectedData)
     var pageTotal = ((assetsManager.totalList % limit) === 0) ?
         parseInt(assetsManager.totalList / limit) :
         parseInt((assetsManager.totalList / limit) + 1);
@@ -925,6 +939,7 @@ function AssetManagement(props) {
                         <button type="button" className="btn btn-success" title={translate('asset.general_information.search')} onClick={handleSubmitSearch}>{translate('asset.general_information.search')}</button>
                     </div>
                     {exportData && <ExportExcel id="export-asset-info-management" exportData={exportData} style={{ marginRight: 10 }} />}
+                    {selectedData?.length > 0 && <button type="button" className="btn btn-danger pull-right" title={translate('general.delete_option')} onClick={() => handleDeleteOptions()}>{translate("general.delete_option")}</button>}
                 </div>
 
                 {/* Báo lỗi khi thêm mới tài sản */}
@@ -939,73 +954,69 @@ function AssetManagement(props) {
                         }
                     </div>
                 }
-                <DataTableSetting
+                <SmartTable
                     tableId={tableId}
-                    columnArr={[
-                        'STT',
-                        translate('asset.general_information.asset_code'),
-                        translate('asset.general_information.asset_name'),
-                        translate('asset.general_information.asset_group'),
-                        translate('asset.general_information.asset_type'),
-                        translate('asset.general_information.purchase_date'),
-                        translate('asset.general_information.manager'),
-                        translate('asset.general_information.user'),
-                        translate('asset.general_information.organizaiton_unit'),
-                        translate('asset.general_information.status'),
-                        translate('asset.general_information.disposal_date')
-                    ]}
-                    setLimit={setLimit}
-                />
-                {/* Bảng các tài sản */}
-                <table id={tableId} className="table table-striped table-bordered table-hover">
-                    <thead>
-                        <tr>
-                            <th style={{ width: "5%" }}>STT</th>
-                            <th style={{ width: "8%" }}>{translate('asset.general_information.asset_code')}</th>
-                            <th style={{ width: "10%" }}>{translate('asset.general_information.asset_name')}</th>
-                            <th style={{ width: "10%" }}>{translate('asset.general_information.asset_group')}</th>
-                            <th style={{ width: "10%" }}>{translate('asset.general_information.asset_type')}</th>
-                            <th style={{ width: "10%" }}>{translate('asset.general_information.purchase_date')}</th>
-                            <th style={{ width: "10%" }}>{translate('asset.general_information.manager')}</th>
-                            <th style={{ width: "10%" }}>{translate('asset.general_information.user')}</th>
-                            <th style={{ width: "10%" }}>{translate('asset.general_information.organization_unit')}</th>
-                            <th style={{ width: "10%" }}>{translate('asset.general_information.status')}</th>
-                            <th style={{ width: "10%" }}>{translate('asset.general_information.disposal_date')}</th>
-                            <th style={{ width: '120px', textAlign: 'center' }}>{translate('asset.general_information.action')}
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {(lists && lists.length !== 0) ?
-                            lists.map((x, index) => (
-                                <tr key={index}>
-                                    <td style={{ textAlign: 'center' }}>{index + 1}</td>
-                                    <td>{x.code}</td>
-                                    <td>{x.assetName}</td>
-                                    <td>{convertGroupAsset(x.group)}</td>
-                                    <td>{x.assetType && x.assetType.length !== 0 && x.assetType.map((type, index, arr) => index !== arr.length - 1 ? type.typeName + ', ' : type.typeName)}</td>
-                                    <td>{formatDate(x.purchaseDate)}</td>
-                                    <td>{getPropertyOfValue(x.managedBy, 'email', false, userlist)}</td>
-                                    <td>{getPropertyOfValue(x.assignedToUser, 'email', false, userlist)}</td>
-                                    <td>{getPropertyOfValue(x.assignedToOrganizationalUnit, 'name', false, departmentlist)}</td>
-                                    <td>{formatStatus(x.status)}</td>
-                                    <td>{formatDisposalDate(x.disposalDate, x.status)}</td>
-                                    <td style={{ textAlign: "center" }}>
-                                        <a onClick={() => handleView(x)} style={{ width: '5px' }} title={translate('asset.general_information.view')}><i className="material-icons">view_list</i></a>
-                                        <a onClick={() => handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.general_information.edit_info')}><i className="material-icons">edit</i></a>
-                                        <DeleteNotification
-                                            content={translate('asset.general_information.delete_info')}
-                                            data={{
-                                                id: x._id,
-                                                info: x.code + " - " + x.assetName
-                                            }}
-                                            func={props.deleteAsset}
-                                        />
-                                    </td>
-                                </tr>)) : null
+                    columnData={{
+                        index: translate('manage_example.index'),
+                        assetCode: translate('asset.general_information.asset_code'),
+                        assetName: translate('asset.general_information.asset_name'),
+                        assetGroup: translate('asset.general_information.asset_group'),
+                        assetType: translate('asset.general_information.asset_type'),
+                        assetPurchaseDate: translate('asset.general_information.purschase_date'),
+                        assetManager: translate('asset.general_information.manager'),
+                        assetUser: translate('asset.general_information.user'),
+                        assetOrganizationUnit: translate('asset.general_information.organizaiton_unit'),
+                        assetStatus: translate('asset.general_information.status'),
+                        assetDisposalDate: translate('asset.general_information.disposal_date')
+                    }}
+                    tableHeaderData={{
+                        index: <th className="col-fixed" style={{ width: 60 }}>{translate('manage_example.index')}</th>,
+                        index: <th>{translate('manage_example.index')}</th>,
+                        assetCode: <th>{translate('asset.general_information.asset_code')}</th>,
+                        assetName: <th>{translate('asset.general_information.asset_name')}</th>,
+                        assetGroup: <th>{translate('asset.general_information.asset_group')}</th>,
+                        assetType: <th>{translate('asset.general_information.asset_type')}</th>,
+                        assetPurchaseDate: <th>{translate('asset.general_information.purschase_date')}</th>,
+                        assetManager: <th>{translate('asset.general_information.manager')}</th>,
+                        assetUser: <th>{translate('asset.general_information.user')}</th>,
+                        assetOrganizationUnit: <th>{translate('asset.general_information.organizaiton_unit')}</th>,
+                        assetStatus: <th>{translate('asset.general_information.status')}</th>,
+                        assetDisposalDate: <th>{translate('asset.general_information.disposal_date')}</th>,
+                        action: <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}</th>
+                    }}
+                    tableBodyData={lists?.length > 0 && lists.map((x, index) => {
+                        return {
+                            id: x?._id,
+                            index: <td>{index+1}</td>,
+                            assetCode: <td>{x.code}</td>,
+                            assetName: <td>{x.assetName}</td>,
+                            assetGroup: <td>{convertGroupAsset(x.group)}</td>,
+                            assetType:<td>{x.assetType && x.assetType.length !== 0 && x.assetType.map((type, index, arr) => index !== arr.length - 1 ? type.typeName + ', ' : type.typeName)}</td>,
+                            assetPurchaseDate: <td>{formatDate(x.purchaseDate)}</td>,
+                            assetManager: <td>{getPropertyOfValue(x.managedBy, 'email', false, userlist)}</td>,
+                            assetUser: <td>{getPropertyOfValue(x.assignedToUser, 'email', false, userlist)}</td>,
+                            assetOrganizationUnit: <td>{getPropertyOfValue(x.assignedToOrganizationalUnit, 'name', false, departmentlist)}</td>,
+                            assetStatus: <td>{formatStatus(x.status)}</td>,
+                            assetDisposalDate: <td>{formatDisposalDate(x.disposalDate, x.status)}</td>,
+                            action: <td style={{ textAlign: "center" }}>
+                                <a className="edit text-green" style={{ width: '5px' }} title={translate('manage_example.detail_info_example')} onClick={() => handleView(x)}><i className="material-icons">visibility</i></a>
+                                <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_example.edit')} onClick={() => handleEdit(x)}><i className="material-icons">edit</i></a>
+                                <DeleteNotification
+                                    content={translate('asset.general_information.delete_info')}
+                                    data={{
+                                        id: x._id,
+                                        info: x.code + " - " + x.assetName
+                                    }}
+                                    func={props.deleteAsset}
+                                />
+                            </td>
                         }
-                    </tbody>
-                </table>
+                    })}
+                    dataDependency={lists}
+                    onSetNumberOfRowsPerpage={setLimit}
+                    onSelectedRowsChange={onSelectedRowsChange}
+                />
+                
                 {assetsManager.isLoading ?
                     <div className="table-info-panel">{translate('confirm.loading')}</div> :
                     (!lists || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
@@ -1133,6 +1144,7 @@ const actionCreators = {
     getAllAsset: AssetManagerActions.getAllAsset,
     getListBuildingAsTree: AssetManagerActions.getListBuildingAsTree,
     deleteAsset: AssetManagerActions.deleteAsset,
+    deleteAssets: AssetManagerActions.deleteAssets,
     getUser: UserActions.get,
     getAllDepartments: DepartmentActions.get,
     getAllRoles: RoleActions.get,

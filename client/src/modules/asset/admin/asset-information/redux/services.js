@@ -5,6 +5,7 @@ export const AssetService = {
     addNewAsset,
     updateInformationAsset,
     deleteAsset,
+    deleteAssets,
     getListBuildingAsTree,
 };
 
@@ -126,3 +127,19 @@ function deleteAsset(id) {
         "asset.asset_info"
     );
 }
+
+function deleteAssets(data) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/asset/assets`,
+            method: "DELETE",
+            data: {
+                assetIds: data?.assetIds
+            }
+        },
+        true,
+        true,
+        "asset.asset_info"
+    );
+}
+
