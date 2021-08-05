@@ -9,7 +9,6 @@ import CreateSlaForGood from "./createSlaForGood";
 
 function ApplyDiscount(props) {
 
-
     const getServiceLevelAgreementOptionsForGood = () => {
         let { listSlasByGoodId } = props.goods.goodItems;
         let options = [];
