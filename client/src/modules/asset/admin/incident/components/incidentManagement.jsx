@@ -34,7 +34,8 @@ function IncidentManagement(props) {
         incidentType: "",
         page: 1,
         limit: limit_constructor,
-        managedBy: props.managedBy ? props.managedBy : localStorage.getItem('userId')
+        managedBy: props.managedBy ? props.managedBy : localStorage.getItem('userId'),
+        dataType: props?.dataType ? props.dataType : null
     })
 
     const { translate, assetsManager, assetType, user, isActive, incidentManager } = props;

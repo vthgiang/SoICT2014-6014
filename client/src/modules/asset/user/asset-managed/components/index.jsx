@@ -18,8 +18,8 @@ function EmployeeAssetManagement(props) {
     let { managedBy, openTab1, openTab2, openTab3 } = state;
 
     const openIncidentTab = () => {
-        setState(state =>{
-            return{
+        setState(state => {
+            return {
                 ...state,
                 openTab1: "tab-pane",
                 openTab2: "tab-pane",
@@ -27,10 +27,10 @@ function EmployeeAssetManagement(props) {
             }
         });
     }
-    
+
     const openUseRequestTab = () => {
-        setState(state =>{
-            return{
+        setState(state => {
+            return {
                 ...state,
                 openTab1: "tab-pane",
                 openTab2: "tab-pane active",
@@ -40,8 +40,8 @@ function EmployeeAssetManagement(props) {
     }
 
     const openGeneralTab = () => {
-        setState(state =>{
-            return{
+        setState(state => {
+            return {
                 ...state,
                 openTab1: "tab-pane active",
                 openTab2: "tab-pane",
@@ -63,7 +63,7 @@ function EmployeeAssetManagement(props) {
             <div className="tab-content">
                 <AssetManagement managedBy={managedBy} isActive={openTab1} />
                 <UseRequestManager managedBy={managedBy} isActive={openTab2} />
-                <IncidentManagement managedBy={managedBy} isActive={openTab3} />
+                <IncidentManagement managedBy={managedBy} dataType="get_by_user" isActive={openTab3} />
             </div>
 
         </div>
@@ -71,4 +71,4 @@ function EmployeeAssetManagement(props) {
 }
 
 
-export default connect(null, null)(withTranslate(EmployeeAssetManagement)); 
+export default connect(null, null)(withTranslate(EmployeeAssetManagement));

@@ -19,6 +19,7 @@ function getIncidents(data) {
         page: data ? data.page : data,
         limit: data ? data.limit : data,
         managedBy: data ? data.managedBy : data,
+        dataType: data?.dataType,
     };
 
     return sendRequest({

@@ -1423,7 +1423,7 @@ exports.deleteUsage = async (portal, assetId, usageId) => {
  */
 exports.getIncidents = async (portal, params) => {
     let incidents;
-    let { code, assetName, incidentCode, incidentType, incidentStatus, managedBy, userId } = params;
+    let { code, assetName, incidentCode, incidentType, incidentStatus, managedBy, userId, dataType } = params;
     let page = parseInt(params.page);
     let limit = parseInt(params.limit);
     let assetSearch = [];
@@ -1455,7 +1455,11 @@ exports.getIncidents = async (portal, params) => {
         ];
     }
 
-    let aggregateQuery = [{ $match: { 'managedBy': mongoose.Types.ObjectId(userId) } }];
+    let aggregateQuery = [];
+    if (dataType === "get_by_user") { // trường gợp từng người get thông tin sự cố tài sản mình quản lý
+        aggregateQuery = [...aggregateQuery, { $match: { 'managedBy': mongoose.Types.ObjectId(userId) } }]
+    }
+        
     if (assetSearch && assetSearch.length !== 0) {
         aggregateQuery = [...aggregateQuery, { $match: { $and: assetSearch } }];
     }
@@ -1492,13 +1496,15 @@ exports.getIncidents = async (portal, params) => {
         // Tìm tài sản ứng với sự cố tài sản
         for (let i = 0; i < incidents.length; i++) {
             let item = incidents[i];
-
-            let asset = await Asset(connect(DB_CONNECTION, portal)).findOne({
+            let keySearch = {
                 incidentLogs: {
                     $elemMatch: { _id: mongoose.Types.ObjectId(item._id) },
-                },
-                managedBy: managedBy,
-            });
+                }
+            }
+            if (dataType === "get_by_user")// không phải admin thì get sự cố theo người quản lý
+                keySearch = { ...keySearch, managedBy: managedBy }
+            
+            let asset = await Asset(connect(DB_CONNECTION, portal)).findOne(keySearch);
 
             if (asset) {
                 incidents[i].asset = asset;
