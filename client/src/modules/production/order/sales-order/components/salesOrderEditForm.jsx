@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { SalesOrderActions } from "../redux/actions";
@@ -12,163 +12,163 @@ import SalesOrderCreatePayment from "./editSalesOrder/salesOrderCreatePayment";
 import SlasOfGoodDetail from "./editSalesOrder/viewDetailOnCreate/slasOfGoodDetail";
 import DiscountOfGoodDetail from "./editSalesOrder/viewDetailOnCreate/discountOfGoodDetail";
 import ManufacturingWorksOfGoodDetail from "./editSalesOrder/viewDetailOnCreate/manufacturingWorksOfGoodDetail";
-class SalesOrderEditForm extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            goods: [],
-            discountsOfOrderValue: [],
-            discountsOfOrderValueChecked: {},
-            currentSlasOfGood: [],
-            currentDiscountsOfGood: [],
-            paymentAmount: 0,
-            code: "",
-            note: "",
-            customer: "",
-            customerName: "",
-            customerAddress: "",
-            customerPhone: "",
-            customerRepresent: "",
-            priority: "",
-            shippingFee: "",
-            deliveryTime: "",
-            coin: "",
-            step: 0,
-            isUseForeignCurrency: false,
-            foreignCurrency: {
-                symbol: "", // ký hiệu viết tắt
-                ratio: "", // tỷ lệ chuyển đổi
-            },
-            standardCurrency: {
-                symbol: "vnđ", // ký hiệu viết tắt
-                ratio: "1", // tỷ lệ chuyển đổi
-            },
-            currency: {
-                type: "standard",
-                symbol: "",
-                ratio: "1",
-            },
-        };
-    }
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        console.log("extProps.salesOrderDetail", nextProps.salesOrderDetail);
-        if (nextProps.salesOrderDetail._id && nextProps.salesOrderDetail._id !== prevState.salesOrderId) {
+function SalesOrderEditForm(props) {
+
+    const [state, setState] = useState({
+        goods: [],
+        discountsOfOrderValue: [],
+        discountsOfOrderValueChecked: {},
+        currentSlasOfGood: [],
+        currentDiscountsOfGood: [],
+        paymentAmount: 0,
+        code: "",
+        note: "",
+        customer: "",
+        customerName: "",
+        customerAddress: "",
+        customerPhone: "",
+        customerRepresent: "",
+        priority: "",
+        shippingFee: "",
+        deliveryTime: "",
+        coin: "",
+        step: 0,
+        isUseForeignCurrency: false,
+        foreignCurrency: {
+            symbol: "", // ký hiệu viết tắt
+            ratio: "", // tỷ lệ chuyển đổi
+        },
+        standardCurrency: {
+            symbol: "vnđ", // ký hiệu viết tắt
+            ratio: "1", // tỷ lệ chuyển đổi
+        },
+        currency: {
+            type: "standard",
+            symbol: "",
+            ratio: "1",
+        },
+    })
+
+
+    // console.log("extProps.salesOrderDetail", props.salesOrderDetail);
+    if (props.salesOrderDetail._id !== state.salesOrderId) {
+        setState((state) => {
             return {
-                ...prevState,
+                ...state,
                 step: 0,
-                salesOrderId: nextProps.salesOrderDetail._id,
-                code: nextProps.salesOrderDetail.code,
-                customer: nextProps.salesOrderDetail.customer._id,
-                customerName: nextProps.salesOrderDetail.customer.name,
-                customerPhone: nextProps.salesOrderDetail.customerPhone,
-                customerTaxNumber: nextProps.salesOrderDetail.customer.taxNumber,
-                customerRepresent: nextProps.salesOrderDetail.customerRepresent,
-                customerAddress: nextProps.salesOrderDetail.customerAddress,
-                customerEmail: nextProps.salesOrderDetail.customerEmail,
-                priority: nextProps.salesOrderDetail.priority,
-                deliveryTime: nextProps.salesOrderDetail.deliveryTime ? formatDate(nextProps.salesOrderDetail.deliveryTime) : "",
-                discountsOfOrderValue: nextProps.salesOrderDetail.discounts,
+                salesOrderId: props.salesOrderDetail._id,
+                code: props.salesOrderDetail.code,
+                customer: props.salesOrderDetail.customer._id,
+                customerName: props.salesOrderDetail.customer.name,
+                customerPhone: props.salesOrderDetail.customerPhone,
+                customerTaxNumber: props.salesOrderDetail.customer.taxNumber,
+                customerRepresent: props.salesOrderDetail.customerRepresent,
+                customerAddress: props.salesOrderDetail.customerAddress,
+                customerEmail: props.salesOrderDetail.customerEmail,
+                priority: props.salesOrderDetail.priority,
+                deliveryTime: props.salesOrderDetail.deliveryTime ? formatDate(props.salesOrderDetail.deliveryTime) : "",
+                discountsOfOrderValue: props.salesOrderDetail.discounts,
                 discountsOfOrderValueChecked: Object.assign({}),
-                note: nextProps.salesOrderDetail.note,
-                paymentAmount: nextProps.salesOrderDetail.paymentAmount,
-                shippingFee: nextProps.salesOrderDetail.shippingFee,
-                coin: nextProps.salesOrderDetail.coin,
-                status: nextProps.salesOrderDetail.status,
-                goods: nextProps.salesOrderDetail.goods
-                    ? nextProps.salesOrderDetail.goods.map((item) => {
-                          return {
-                              good: item.good,
-                              pricePerBaseUnit: item.pricePerBaseUnit,
-                              pricePerBaseUnitOrigin: item.pricePerBaseUnitOrigin,
-                              salesPriceVariance: item.salesPriceVariance,
-                              quantity: item.quantity,
-                              slasOfGood: item.serviceLevelAgreements,
-                              taxs: item.taxs,
-                              manufacturingWorks: item.manufacturingWorks,
-                              manufacturingPlan: item.manufacturingPlan,
-                              note: item.note,
-                              amount: item.amount,
-                              amountAfterDiscount: item.amountAfterDiscount,
-                              amountAfterTax: item.amountAfterTax,
-                              discountsOfGood: item.discounts.length
-                                  ? item.discounts.map((dis) => {
-                                        return {
-                                            _id: dis._id,
-                                            code: dis.code,
-                                            type: dis.type,
-                                            formality: dis.formality,
-                                            name: dis.name,
-                                            effectiveDate: dis.effectiveDate ? formatDate(dis.effectiveDate) : undefined,
-                                            expirationDate: dis.expirationDate ? formatDate(dis.expirationDate) : undefined,
-                                            discountedCash: dis.discountedCash,
-                                            discountedPercentage: dis.discountedPercentage,
-                                            maximumFreeShippingCost: dis.maximumFreeShippingCost,
-                                            loyaltyCoin: dis.loyaltyCoin,
-                                            bonusGoods: dis.bonusGoods
-                                                ? dis.bonusGoods.map((bonus) => {
-                                                      return {
-                                                          good: bonus.good,
-                                                          expirationDateOfGoodBonus: bonus.expirationDateOfGoodBonus
-                                                              ? formatDate(bonus.expirationDateOfGoodBonus)
-                                                              : undefined,
-                                                          quantityOfBonusGood: bonus.quantityOfBonusGood,
-                                                      };
-                                                  })
-                                                : undefined,
-                                            discountOnGoods: dis.discountOnGoods
-                                                ? {
-                                                      good: dis.discountOnGoods.good,
-                                                      expirationDate: dis.discountOnGoods.expirationDate
-                                                          ? formatDate(dis.discountOnGoods.expirationDate)
-                                                          : undefined,
-                                                      discountedPrice: dis.discountOnGoods.discountedPrice,
-                                                  }
-                                                : undefined,
-                                        };
-                                    })
-                                  : [],
-                          };
-                      })
+                note: props.salesOrderDetail.note,
+                paymentAmount: props.salesOrderDetail.paymentAmount,
+                shippingFee: props.salesOrderDetail.shippingFee,
+                coin: props.salesOrderDetail.coin,
+                status: props.salesOrderDetail.status,
+                goods: props.salesOrderDetail.goods
+                    ? props.salesOrderDetail.goods.map((item) => {
+                        return {
+                            good: item.good,
+                            pricePerBaseUnit: item.pricePerBaseUnit,
+                            pricePerBaseUnitOrigin: item.pricePerBaseUnitOrigin,
+                            salesPriceVariance: item.salesPriceVariance,
+                            quantity: item.quantity,
+                            slasOfGood: item.serviceLevelAgreements,
+                            taxs: item.taxs,
+                            manufacturingWorks: item.manufacturingWorks,
+                            manufacturingPlan: item.manufacturingPlan,
+                            note: item.note,
+                            amount: item.amount,
+                            amountAfterDiscount: item.amountAfterDiscount,
+                            amountAfterTax: item.amountAfterTax,
+                            discountsOfGood: item.discounts.length
+                                ? item.discounts.map((dis) => {
+                                    return {
+                                        _id: dis._id,
+                                        code: dis.code,
+                                        type: dis.type,
+                                        formality: dis.formality,
+                                        name: dis.name,
+                                        effectiveDate: dis.effectiveDate ? formatDate(dis.effectiveDate) : undefined,
+                                        expirationDate: dis.expirationDate ? formatDate(dis.expirationDate) : undefined,
+                                        discountedCash: dis.discountedCash,
+                                        discountedPercentage: dis.discountedPercentage,
+                                        maximumFreeShippingCost: dis.maximumFreeShippingCost,
+                                        loyaltyCoin: dis.loyaltyCoin,
+                                        bonusGoods: dis.bonusGoods
+                                            ? dis.bonusGoods.map((bonus) => {
+                                                return {
+                                                    good: bonus.good,
+                                                    expirationDateOfGoodBonus: bonus.expirationDateOfGoodBonus
+                                                        ? formatDate(bonus.expirationDateOfGoodBonus)
+                                                        : undefined,
+                                                    quantityOfBonusGood: bonus.quantityOfBonusGood,
+                                                };
+                                            })
+                                            : undefined,
+                                        discountOnGoods: dis.discountOnGoods
+                                            ? {
+                                                good: dis.discountOnGoods.good,
+                                                expirationDate: dis.discountOnGoods.expirationDate
+                                                    ? formatDate(dis.discountOnGoods.expirationDate)
+                                                    : undefined,
+                                                discountedPrice: dis.discountOnGoods.discountedPrice,
+                                            }
+                                            : undefined,
+                                    };
+                                })
+                                : [],
+                        };
+                    })
                     : [],
             };
-        }
+        })
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
-        console.log("nextState", nextState.code, this.state.salesOrderCode);
-        if (nextState.code !== this.state.salesOrderCode) {
-            this.getDiscountOfOrderValueChecked();
-            this.setState({
-                salesOrderCode: nextState.code,
+    useEffect(() => {
+        // console.log("state", state.code, state.salesOrderCode);
+        if (state.code !== state.salesOrderCode) {
+            getDiscountOfOrderValueChecked();
+            setState({
+                ...state,
+                salesOrderCode: state.code,
             });
-            return false;
         }
-        return true;
-    }
+    }, [state.code])
 
-    getDiscountOfOrderValueChecked = () => {
-        const { listDiscountsByOrderValue } = this.props.discounts;
-        let { discountsOfOrderValue, discountsOfOrderValueChecked } = this.state;
-        let amountAfterApplyTax = this.getAmountAfterApplyTax();
+    const getDiscountOfOrderValueChecked = () => {
+        const { listDiscountsByOrderValue } = props.discounts;
+        let { discountsOfOrderValue, discountsOfOrderValueChecked } = state;
+        let amountAfterApplyTax = getAmountAfterApplyTax();
 
         if (discountsOfOrderValue) {
             discountsOfOrderValue.forEach((element) => {
                 //checked các khuyến mãi đã có trong danh mục
                 let discount = listDiscountsByOrderValue.find((dis) => dis._id === element._id);
                 if (discount) {
-                    let checked = this.getDiscountsCheckedForEditSalesOrder(discount, amountAfterApplyTax);
+                    let checked = getDiscountsCheckedForEditSalesOrder(discount, amountAfterApplyTax);
                     discountsOfOrderValueChecked[`${checked.id}`] = checked.status;
                 }
             });
 
-            this.setState({
+            setState({
+                ...state,
                 discountsOfOrderValueChecked,
             });
         }
     };
 
-    getDiscountsCheckedForEditSalesOrder = (item, orderValue) => {
+    const getDiscountsCheckedForEditSalesOrder = (item, orderValue) => {
         let checked = { id: "", status: false };
         item.discounts.forEach((discount, index) => {
             let disabled = false;
@@ -190,17 +190,17 @@ class SalesOrderEditForm extends Component {
         return checked;
     };
 
-    getAmountAfterApplyTax = () => {
-        let { goods } = this.state;
+    const getAmountAfterApplyTax = () => {
+        let { goods } = state;
         let amountAfterApplyTax = goods.reduce((accumulator, currentValue) => {
             return accumulator + currentValue.amountAfterTax;
         }, 0);
 
-        // this.setState({ amountAfterApplyTax });
+        // setState({ amountAfterApplyTax });
         return amountAfterApplyTax;
     };
 
-    validateCustomer = (value, willUpdateState = true) => {
+    const validateCustomer = (value, willUpdateState = true) => {
         let msg = undefined;
         if (!value) {
             msg = "Giá trị không được để trống";
@@ -208,7 +208,7 @@ class SalesOrderEditForm extends Component {
             msg = "Giá trị không được để trống";
         }
         if (willUpdateState) {
-            this.setState((state) => {
+            setState((state) => {
                 return {
                     ...state,
                     customerError: msg,
@@ -218,11 +218,12 @@ class SalesOrderEditForm extends Component {
         return msg;
     };
 
-    handleCustomerChange = (value) => {
+    const handleCustomerChange = (value) => {
         if (value[0] !== "title") {
-            let customerInfo = this.props.customers.list.filter((item) => item._id === value[0]);
+            let customerInfo = props.customers.list.filter((item) => item._id === value[0]);
             if (customerInfo.length) {
-                this.setState({
+                setState({
+                    ...state,
                     customer: customerInfo[0]._id,
                     customerName: customerInfo[0].name,
                     customerAddress: customerInfo[0].address,
@@ -233,7 +234,7 @@ class SalesOrderEditForm extends Component {
                 });
             }
         } else {
-            this.setState((state) => {
+            setState((state) => {
                 return {
                     ...state,
                     customer: value[0],
@@ -247,54 +248,44 @@ class SalesOrderEditForm extends Component {
             });
         }
 
-        this.validateCustomer(value, true);
+        validateCustomer(value, true);
     };
 
-    handleCustomerEmailChange = (e) => {
+    const handleCustomerEmailChange = (e) => {
         let { value } = e.target;
-        this.setState((state) => {
-            return {
-                ...state,
-                customerEmail: value,
-            };
-        });
-
-        let { translate } = this.props;
+        let { translate } = props;
         let { message } = ValidationHelper.validateEmail(translate, value);
-        this.setState({ customerEmailError: message });
-    };
-
-    handleCustomerPhoneChange = (e) => {
-        let { value } = e.target;
-        this.setState((state) => {
-            return {
-                ...state,
-                customerPhone: value,
-            };
+        setState({
+            ...state,
+            customerEmail: value,
+            customerEmailError: message,
         });
-
-        let { translate } = this.props;
-        let { message } = ValidationHelper.validateEmpty(translate, value);
-        this.setState({ customerPhoneError: message });
     };
 
-    handleCustomerAddressChange = (e) => {
+    const handleCustomerPhoneChange = (e) => {
         let { value } = e.target;
-        this.setState((state) => {
-            return {
-                ...state,
-                customerAddress: value,
-            };
+        let { translate } = props;
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+        setState({
+            ...state,
+            customerPhone: value,
+            customerPhoneError: message,
         });
-
-        let { translate } = this.props;
-        let { message } = ValidationHelper.validateEmpty(translate, value);
-        this.setState({ customerAddressError: message });
     };
 
-    handleCustomerRepresentChange = (e) => {
+    const handleCustomerAddressChange = (e) => {
         let { value } = e.target;
-        this.setState((state) => {
+        let { translate } = props;
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+        setState({
+            ...state,
+            customerAddress: value, customerAddressError: message,
+        });
+    };
+
+    const handleCustomerRepresentChange = (e) => {
+        let { value } = e.target;
+        setState((state) => {
             return {
                 ...state,
                 customerRepresent: value,
@@ -302,9 +293,9 @@ class SalesOrderEditForm extends Component {
         });
     };
 
-    handleNoteChange = (e) => {
+    const handleNoteChange = (e) => {
         let { value } = e.target;
-        this.setState((state) => {
+        setState((state) => {
             return {
                 ...state,
                 note: value,
@@ -312,7 +303,7 @@ class SalesOrderEditForm extends Component {
         });
     };
 
-    validatePriority = (value, willUpdateState = true) => {
+    const validatePriority = (value, willUpdateState = true) => {
         let msg = undefined;
         if (!value) {
             msg = "Giá trị không được để trống";
@@ -320,7 +311,7 @@ class SalesOrderEditForm extends Component {
             msg = "Giá trị không được để trống";
         }
         if (willUpdateState) {
-            this.setState((state) => {
+            setState((state) => {
                 return {
                     ...state,
                     priorityError: msg,
@@ -330,25 +321,26 @@ class SalesOrderEditForm extends Component {
         return msg;
     };
 
-    handlePriorityChange = (value) => {
-        this.setState((state) => {
+    const handlePriorityChange = (value) => {
+        setState((state) => {
             return {
                 ...state,
                 priority: value[0],
             };
         });
-        this.validatePriority(value[0], true);
+        validatePriority(value[0], true);
     };
 
-    setCurrentStep = (e, step) => {
+    const setCurrentStep = (e, step) => {
         e.preventDefault();
-        this.setState({
+        setState({
+            ...state,
             step,
         });
     };
 
-    setGoods = (goods) => {
-        this.setState((state) => {
+    const setGoods = (goods) => {
+        setState((state) => {
             return {
                 ...state,
                 goods,
@@ -356,16 +348,16 @@ class SalesOrderEditForm extends Component {
         });
     };
 
-    handleUseForeignCurrencyChange = (e) => {
+    const handleUseForeignCurrencyChange = (e) => {
         const { checked } = e.target;
-        this.setState((state) => {
+        setState((state) => {
             return {
                 ...state,
                 isUseForeignCurrency: checked,
             };
         });
         if (!checked) {
-            this.setState((state) => {
+            setState((state) => {
                 return {
                     ...state,
                     foreignCurrency: {
@@ -382,10 +374,10 @@ class SalesOrderEditForm extends Component {
         }
     };
 
-    handleRatioOfCurrencyChange = (e) => {
-        let { foreignCurrency } = this.state;
+    const handleRatioOfCurrencyChange = (e) => {
+        let { foreignCurrency } = state;
         let { value } = e.target;
-        this.setState((state) => {
+        setState((state) => {
             return {
                 ...state,
                 foreignCurrency: {
@@ -396,10 +388,10 @@ class SalesOrderEditForm extends Component {
         });
     };
 
-    handleSymbolOfForreignCurrencyChange = (e) => {
-        let { foreignCurrency } = this.state;
+    const handleSymbolOfForreignCurrencyChange = (e) => {
+        let { foreignCurrency } = state;
         let { value } = e.target;
-        this.setState((state) => {
+        setState((state) => {
             return {
                 ...state,
                 foreignCurrency: {
@@ -410,9 +402,9 @@ class SalesOrderEditForm extends Component {
         });
     };
 
-    handleChangeCurrency = (value) => {
-        let { foreignCurrency, standardCurrency } = this.state;
-        this.setState((state) => {
+    const handleChangeCurrency = (value) => {
+        let { foreignCurrency, standardCurrency } = state;
+        setState((state) => {
             return {
                 ...state,
                 currency: {
@@ -424,8 +416,8 @@ class SalesOrderEditForm extends Component {
         });
     };
 
-    handleDiscountsOfOrderValueChange = (data) => {
-        this.setState((state) => {
+    const handleDiscountsOfOrderValueChange = (data) => {
+        setState((state) => {
             return {
                 ...state,
                 discountsOfOrderValue: data,
@@ -433,8 +425,8 @@ class SalesOrderEditForm extends Component {
         });
     };
 
-    setDiscountsOfOrderValueChecked = (discountsOfOrderValueChecked) => {
-        this.setState((state) => {
+    const setDiscountsOfOrderValueChecked = (discountsOfOrderValueChecked) => {
+        setState((state) => {
             return {
                 ...state,
                 discountsOfOrderValueChecked,
@@ -442,9 +434,9 @@ class SalesOrderEditForm extends Component {
         });
     };
 
-    handleShippingFeeChange = (e) => {
+    const handleShippingFeeChange = (e) => {
         const { value } = e.target;
-        this.setState((state) => {
+        setState((state) => {
             return {
                 ...state,
                 shippingFee: value,
@@ -452,8 +444,8 @@ class SalesOrderEditForm extends Component {
         });
     };
 
-    handleDeliveryTimeChange = (value) => {
-        this.setState((state) => {
+    const handleDeliveryTimeChange = (value) => {
+        setState((state) => {
             return {
                 ...state,
                 deliveryTime: value,
@@ -461,8 +453,8 @@ class SalesOrderEditForm extends Component {
         });
     };
 
-    setCurrentSlasOfGood = (data) => {
-        this.setState((state) => {
+    const setCurrentSlasOfGood = (data) => {
+        setState((state) => {
             return {
                 ...state,
                 currentSlasOfGood: data,
@@ -470,8 +462,8 @@ class SalesOrderEditForm extends Component {
         });
     };
 
-    setCurrentDiscountsOfGood = (data) => {
-        this.setState((state) => {
+    const setCurrentDiscountsOfGood = (data) => {
+        setState((state) => {
             return {
                 ...state,
                 currentDiscountsOfGood: data,
@@ -479,8 +471,8 @@ class SalesOrderEditForm extends Component {
         });
     };
 
-    setCurrentManufacturingWorksOfGoods = (manufacturingWorks, manufacturingPlan) => {
-        this.setState((state) => {
+    const setCurrentManufacturingWorksOfGoods = (manufacturingWorks, manufacturingPlan) => {
+        setState((state) => {
             return {
                 ...state,
                 currentManufacturingWorksOfGood: manufacturingWorks,
@@ -489,19 +481,19 @@ class SalesOrderEditForm extends Component {
         });
     };
 
-    handleCoinChange = (coin) => {
-        this.setState((state) => {
+    const handleCoinChange = (coin) => {
+        setState((state) => {
             return {
                 ...state,
-                coin: this.state.coin ? "" : coin, //Nếu đang checked thì bỏ checked
+                coin: state.coin ? "" : coin, //Nếu đang checked thì bỏ checked
             };
         });
     };
 
-    getCoinOfAll = () => {
+    const getCoinOfAll = () => {
         let coinOfAll = 0;
-        let { goods } = this.state;
-        let { discountsOfOrderValue } = this.state;
+        let { goods } = state;
+        let { discountsOfOrderValue } = state;
 
         goods.forEach((good) => {
             good.discountsOfGood.forEach((discount) => {
@@ -519,8 +511,8 @@ class SalesOrderEditForm extends Component {
         return coinOfAll;
     };
 
-    setPaymentAmount = (paymentAmount) => {
-        this.setState((state) => {
+    const setPaymentAmount = (paymentAmount) => {
+        setState((state) => {
             return {
                 ...state,
                 paymentAmount,
@@ -528,13 +520,13 @@ class SalesOrderEditForm extends Component {
         });
     };
 
-    isValidateSalesOrderCreateInfo = () => {
-        let { customer, customerEmail, customerPhone, customerAddress, priority } = this.state;
-        let { translate } = this.props;
+    const isValidateSalesOrderCreateInfo = () => {
+        let { customer, customerEmail, customerPhone, customerAddress, priority } = state;
+        let { translate } = props;
 
         if (
-            this.validateCustomer(customer, false) ||
-            this.validatePriority(priority, false) ||
+            validateCustomer(customer, false) ||
+            validatePriority(priority, false) ||
             !ValidationHelper.validateEmail(translate, customerEmail).status ||
             !ValidationHelper.validateEmpty(translate, customerPhone).status ||
             !ValidationHelper.validateEmpty(translate, customerAddress).status
@@ -545,8 +537,8 @@ class SalesOrderEditForm extends Component {
         }
     };
 
-    isValidateSalesOrderCreateGood = () => {
-        let { goods } = this.state;
+    const isValidateSalesOrderCreateGood = () => {
+        let { goods } = state;
         if (goods && goods.length) {
             return true;
         } else {
@@ -554,15 +546,15 @@ class SalesOrderEditForm extends Component {
         }
     };
 
-    isValidateForm = () => {
-        if (this.isValidateSalesOrderCreateInfo() && this.isValidateSalesOrderCreateGood()) {
+    const isValidateForm = () => {
+        if (isValidateSalesOrderCreateInfo() && isValidateSalesOrderCreateGood()) {
             return true;
         } else {
             return false;
         }
     };
 
-    formatDiscountForSubmit = (discounts) => {
+    const formatDiscountForSubmit = (discounts) => {
         let discountsMap = discounts.map((dis) => {
             return {
                 _id: dis._id,
@@ -578,23 +570,23 @@ class SalesOrderEditForm extends Component {
                 loyaltyCoin: dis.loyaltyCoin,
                 bonusGoods: dis.bonusGoods
                     ? dis.bonusGoods.map((bonus) => {
-                          return {
-                              good: bonus.good._id,
-                              expirationDateOfGoodBonus: bonus.expirationDateOfGoodBonus
-                                  ? new Date(formatToTimeZoneDate(bonus.expirationDateOfGoodBonus))
-                                  : undefined,
-                              quantityOfBonusGood: bonus.quantityOfBonusGood,
-                          };
-                      })
+                        return {
+                            good: bonus.good._id,
+                            expirationDateOfGoodBonus: bonus.expirationDateOfGoodBonus
+                                ? new Date(formatToTimeZoneDate(bonus.expirationDateOfGoodBonus))
+                                : undefined,
+                            quantityOfBonusGood: bonus.quantityOfBonusGood,
+                        };
+                    })
                     : undefined,
                 discountOnGoods: dis.discountOnGoods
                     ? {
-                          good: dis.discountOnGoods.good._id,
-                          expirationDate: dis.discountOnGoods.expirationDate
-                              ? new Date(formatToTimeZoneDate(dis.discountOnGoods.expirationDate))
-                              : undefined,
-                          discountedPrice: dis.discountOnGoods.discountedPrice,
-                      }
+                        good: dis.discountOnGoods.good._id,
+                        expirationDate: dis.discountOnGoods.expirationDate
+                            ? new Date(formatToTimeZoneDate(dis.discountOnGoods.expirationDate))
+                            : undefined,
+                        discountedPrice: dis.discountOnGoods.discountedPrice,
+                    }
                     : undefined,
             };
         });
@@ -602,8 +594,8 @@ class SalesOrderEditForm extends Component {
         return discountsMap;
     };
 
-    formatGoodForSubmit = () => {
-        let { goods } = this.state;
+    const formatGoodForSubmit = () => {
+        let { goods } = state;
         let goodMap = goods.map((item) => {
             return {
                 good: item.good._id,
@@ -613,7 +605,7 @@ class SalesOrderEditForm extends Component {
                 quantity: item.quantity,
                 serviceLevelAgreements: item.slasOfGood,
                 taxs: item.taxs,
-                discounts: item.discountsOfGood.length ? this.formatDiscountForSubmit(item.discountsOfGood) : [],
+                discounts: item.discountsOfGood.length ? formatDiscountForSubmit(item.discountsOfGood) : [],
                 note: item.note,
                 amount: item.amount,
                 amountAfterDiscount: item.amountAfterDiscount,
@@ -625,9 +617,9 @@ class SalesOrderEditForm extends Component {
         return goodMap;
     };
 
-    save = async (e) => {
+    const save = async (e) => {
         e.preventDefault();
-        if (this.isValidateForm()) {
+        if (isValidateForm()) {
             let {
                 customer,
                 customerAddress,
@@ -643,9 +635,9 @@ class SalesOrderEditForm extends Component {
                 paymentAmount,
                 note,
                 salesOrderId,
-            } = this.state;
+            } = state;
 
-            let allCoin = this.getCoinOfAll(); //Lấy tất cả các xu được tặng trong đơn
+            let allCoin = getCoinOfAll(); //Lấy tất cả các xu được tặng trong đơn
 
             let data = {
                 code,
@@ -655,8 +647,8 @@ class SalesOrderEditForm extends Component {
                 customerRepresent,
                 customerEmail,
                 priority,
-                goods: this.formatGoodForSubmit(),
-                discounts: discountsOfOrderValue.length ? this.formatDiscountForSubmit(discountsOfOrderValue) : [],
+                goods: formatGoodForSubmit(),
+                discounts: discountsOfOrderValue.length ? formatDiscountForSubmit(discountsOfOrderValue) : [],
                 shippingFee,
                 deliveryTime: deliveryTime ? new Date(formatToTimeZoneDate(deliveryTime)) : undefined,
                 coin,
@@ -665,9 +657,9 @@ class SalesOrderEditForm extends Component {
                 note,
             };
 
-            await this.props.editSalesOrder(salesOrderId, data);
+            await props.editSalesOrder(salesOrderId, data);
 
-            this.setState((state) => {
+            setState((state) => {
                 return {
                     ...state,
                     step: 0,
@@ -678,209 +670,207 @@ class SalesOrderEditForm extends Component {
         }
     };
 
-    render() {
-        let {
-            code,
-            note,
-            customer,
-            customerName,
-            customerAddress,
-            customerPhone,
-            customerRepresent,
-            customerTaxNumber,
-            customerEmail,
-            priority,
-            step,
-            goods,
-            shippingFee,
-            coin,
-            deliveryTime,
-            isUseForeignCurrency,
-            foreignCurrency,
-            currency,
-            standardCurrency,
-            discountsOfOrderValue,
-            discountsOfOrderValueChecked,
-            currentSlasOfGood,
-            currentDiscountsOfGood,
-            currentManufacturingWorksOfGood,
-            currentManufacturingPlanOfGood,
-            paymentAmount,
-        } = this.state;
+    let {
+        code,
+        note,
+        customer,
+        customerName,
+        customerAddress,
+        customerPhone,
+        customerRepresent,
+        customerTaxNumber,
+        customerEmail,
+        priority,
+        step,
+        goods,
+        shippingFee,
+        coin,
+        deliveryTime,
+        isUseForeignCurrency,
+        foreignCurrency,
+        currency,
+        standardCurrency,
+        discountsOfOrderValue,
+        discountsOfOrderValueChecked,
+        currentSlasOfGood,
+        currentDiscountsOfGood,
+        currentManufacturingWorksOfGood,
+        currentManufacturingPlanOfGood,
+        paymentAmount,
+    } = state;
 
-        let { customerError, customerEmailError, customerPhoneError, customerAddressError, priorityError } = this.state;
+    let { customerError, customerEmailError, customerPhoneError, customerAddressError, priorityError } = state;
 
-        let enableStepOne = this.isValidateSalesOrderCreateInfo();
-        let enableStepTwo = this.isValidateSalesOrderCreateGood();
-        let enableFormSubmit = enableStepOne && enableStepTwo;
+    let enableStepOne = isValidateSalesOrderCreateInfo();
+    let enableStepTwo = isValidateSalesOrderCreateGood();
+    let enableFormSubmit = enableStepOne && enableStepTwo;
 
-        return (
-            <React.Fragment>
-                <DialogModal
-                    modalID={`modal-edit-sales-order`}
-                    isLoading={false}
-                    formID={`form-add-sales-order`}
-                    title={"Chỉnh sửa đơn bán hàng"}
-                    size="100"
-                    style={{ backgroundColor: "green" }}
-                    hasSaveButton={false}
-                >
-                    <div className="nav-tabs-custom">
-                        <ul className="breadcrumbs">
-                            <li key="1">
-                                <a
-                                    className={`${step >= 0 ? "quote-active-tab" : "quote-defaul-tab"}`}
-                                    onClick={(e) => this.setCurrentStep(e, 0)}
-                                    style={{ cursor: "pointer" }}
-                                >
-                                    <span>Thông tin chung</span>
-                                </a>
-                            </li>
-                            <li key="2">
-                                <a
-                                    className={`${step >= 1 ? "quote-active-tab" : "quote-defaul-tab"} 
+    return (
+        <React.Fragment>
+            <DialogModal
+                modalID={`modal-edit-sales-order`}
+                isLoading={false}
+                formID={`form-add-sales-order`}
+                title={"Chỉnh sửa đơn bán hàng"}
+                size="100"
+                style={{ backgroundColor: "green" }}
+                hasSaveButton={false}
+            >
+                <div className="nav-tabs-custom">
+                    <ul className="breadcrumbs">
+                        <li key="1">
+                            <a
+                                className={`${step >= 0 ? "quote-active-tab" : "quote-defaul-tab"}`}
+                                onClick={(e) => setCurrentStep(e, 0)}
+                                style={{ cursor: "pointer" }}
+                            >
+                                <span>Thông tin chung</span>
+                            </a>
+                        </li>
+                        <li key="2">
+                            <a
+                                className={`${step >= 1 ? "quote-active-tab" : "quote-defaul-tab"} 
                                     ${enableStepOne ? "" : "disable-onclick-prevent"}`}
-                                    onClick={(e) => this.setCurrentStep(e, 1)}
-                                    style={{ cursor: "pointer" }}
-                                >
-                                    <span>Chọn sản phẩm</span>
-                                </a>
-                            </li>
-                            <li key="3">
-                                <a
-                                    className={`${step >= 2 ? "quote-active-tab" : "quote-defaul-tab"} 
+                                onClick={(e) => setCurrentStep(e, 1)}
+                                style={{ cursor: "pointer" }}
+                            >
+                                <span>Chọn sản phẩm</span>
+                            </a>
+                        </li>
+                        <li key="3">
+                            <a
+                                className={`${step >= 2 ? "quote-active-tab" : "quote-defaul-tab"} 
                                     ${enableStepOne && enableStepTwo ? "" : "disable-onclick-prevent"}`}
-                                    onClick={(e) => this.setCurrentStep(e, 2)}
-                                    style={{ cursor: "pointer" }}
-                                >
-                                    <span>Chốt đơn</span>
-                                </a>
-                            </li>
-                        </ul>
-                        {foreignCurrency.ratio && foreignCurrency.symbol ? (
-                            <div className="form-group select-currency">
-                                <SelectBox
-                                    id={`select-sales-order-currency-${foreignCurrency.symbol.replace(" ")}`}
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    value={currency.type}
-                                    items={[
-                                        { text: "vnđ", value: "standard" },
-                                        { text: `${foreignCurrency.symbol}`, value: "foreign" },
-                                    ]}
-                                    onChange={this.handleChangeCurrency}
-                                    multiple={false}
-                                />
-                            </div>
-                        ) : (
-                            ""
+                                onClick={(e) => setCurrentStep(e, 2)}
+                                style={{ cursor: "pointer" }}
+                            >
+                                <span>Chốt đơn</span>
+                            </a>
+                        </li>
+                    </ul>
+                    {foreignCurrency.ratio && foreignCurrency.symbol ? (
+                        <div className="form-group select-currency">
+                            <SelectBox
+                                id={`select-sales-order-currency-${foreignCurrency.symbol.replace(" ")}`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                value={currency.type}
+                                items={[
+                                    { text: "vnđ", value: "standard" },
+                                    { text: `${foreignCurrency.symbol}`, value: "foreign" },
+                                ]}
+                                onChange={handleChangeCurrency}
+                                multiple={false}
+                            />
+                        </div>
+                    ) : (
+                        ""
+                    )}
+                </div>
+                <SlasOfGoodDetail currentSlasOfGood={currentSlasOfGood} />
+                <DiscountOfGoodDetail currentDiscounts={currentDiscountsOfGood} />
+                <ManufacturingWorksOfGoodDetail
+                    currentManufacturingWorksOfGood={currentManufacturingWorksOfGood}
+                    currentManufacturingPlanOfGood={currentManufacturingPlanOfGood}
+                />
+                <form id={`form-add-sales-order`}>
+                    <div className="row row-equal-height" style={{ marginTop: 0 }}>
+                        {step === 0 && (
+                            <SalesOrderCreateInfo
+                                //state
+                                code={code}
+                                note={note}
+                                customer={customer}
+                                customerName={customerName}
+                                customerAddress={customerAddress}
+                                customerPhone={customerPhone}
+                                customerRepresent={customerRepresent}
+                                customerTaxNumber={customerTaxNumber}
+                                customerEmail={customerEmail}
+                                priority={priority}
+                                isUseForeignCurrency={isUseForeignCurrency}
+                                foreignCurrency={foreignCurrency}
+                                //handle
+                                handleCustomerChange={handleCustomerChange}
+                                handleCustomerAddressChange={handleCustomerAddressChange}
+                                handleCustomerEmailChange={handleCustomerEmailChange}
+                                handleCustomerPhoneChange={handleCustomerPhoneChange}
+                                handleCustomerRepresentChange={handleCustomerRepresentChange}
+                                handleNoteChange={handleNoteChange}
+                                handleUseForeignCurrencyChange={handleUseForeignCurrencyChange}
+                                handleRatioOfCurrencyChange={handleRatioOfCurrencyChange}
+                                handleSymbolOfForreignCurrencyChange={handleSymbolOfForreignCurrencyChange}
+                                handlePriorityChange={handlePriorityChange}
+                                //Error Status
+                                customerError={customerError}
+                                customerEmailError={customerEmailError}
+                                customerPhoneError={customerPhoneError}
+                                customerAddressError={customerAddressError}
+                                priorityError={priorityError}
+                            />
+                        )}
+                        {step === 1 && (
+                            <SalesOrderCreateGood
+                                listGoods={goods}
+                                setGoods={setGoods}
+                                isUseForeignCurrency={isUseForeignCurrency}
+                                foreignCurrency={foreignCurrency}
+                                standardCurrency={standardCurrency}
+                                currency={currency}
+                                setCurrentSlasOfGood={(data) => {
+                                    setCurrentSlasOfGood(data);
+                                }}
+                                setCurrentDiscountsOfGood={(data) => {
+                                    setCurrentDiscountsOfGood(data);
+                                }}
+                                setCurrentManufacturingWorksOfGoods={(manufacturingWorks, manufacturingPlan) => {
+                                    setCurrentManufacturingWorksOfGoods(manufacturingWorks, manufacturingPlan);
+                                }}
+                            />
+                        )}
+                        {step === 2 && (
+                            <SalesOrderCreatePayment
+                                paymentAmount={paymentAmount}
+                                listGoods={goods}
+                                customer={customer}
+                                customerPhone={customerPhone}
+                                customerAddress={customerAddress}
+                                customerName={customerName}
+                                customerRepresent={customerRepresent}
+                                customerTaxNumber={customerTaxNumber}
+                                customerEmail={customerEmail}
+                                priority={priority}
+                                code={code}
+                                shippingFee={shippingFee}
+                                deliveryTime={deliveryTime}
+                                coin={coin}
+                                note={note}
+                                discountsOfOrderValue={discountsOfOrderValue}
+                                discountsOfOrderValueChecked={discountsOfOrderValueChecked}
+                                enableFormSubmit={enableFormSubmit}
+                                handleDiscountsOfOrderValueChange={(data) => handleDiscountsOfOrderValueChange(data)}
+                                setDiscountsOfOrderValueChecked={(checked) => setDiscountsOfOrderValueChecked(checked)}
+                                handleShippingFeeChange={handleShippingFeeChange}
+                                handleDeliveryTimeChange={handleDeliveryTimeChange}
+                                handleCoinChange={handleCoinChange}
+                                setCurrentSlasOfGood={(data) => {
+                                    setCurrentSlasOfGood(data);
+                                }}
+                                setCurrentDiscountsOfGood={(data) => {
+                                    setCurrentDiscountsOfGood(data);
+                                }}
+                                setCurrentManufacturingWorksOfGoods={(manufacturingWorks, manufacturingPlan) => {
+                                    setCurrentManufacturingWorksOfGoods(manufacturingWorks, manufacturingPlan);
+                                }}
+                                setPaymentAmount={(data) => setPaymentAmount(data)}
+                                saveSalesOrder={save}
+                            />
                         )}
                     </div>
-                    <SlasOfGoodDetail currentSlasOfGood={currentSlasOfGood} />
-                    <DiscountOfGoodDetail currentDiscounts={currentDiscountsOfGood} />
-                    <ManufacturingWorksOfGoodDetail
-                        currentManufacturingWorksOfGood={currentManufacturingWorksOfGood}
-                        currentManufacturingPlanOfGood={currentManufacturingPlanOfGood}
-                    />
-                    <form id={`form-add-sales-order`}>
-                        <div className="row row-equal-height" style={{ marginTop: 0 }}>
-                            {step === 0 && (
-                                <SalesOrderCreateInfo
-                                    //state
-                                    code={code}
-                                    note={note}
-                                    customer={customer}
-                                    customerName={customerName}
-                                    customerAddress={customerAddress}
-                                    customerPhone={customerPhone}
-                                    customerRepresent={customerRepresent}
-                                    customerTaxNumber={customerTaxNumber}
-                                    customerEmail={customerEmail}
-                                    priority={priority}
-                                    isUseForeignCurrency={isUseForeignCurrency}
-                                    foreignCurrency={foreignCurrency}
-                                    //handle
-                                    handleCustomerChange={this.handleCustomerChange}
-                                    handleCustomerAddressChange={this.handleCustomerAddressChange}
-                                    handleCustomerEmailChange={this.handleCustomerEmailChange}
-                                    handleCustomerPhoneChange={this.handleCustomerPhoneChange}
-                                    handleCustomerRepresentChange={this.handleCustomerRepresentChange}
-                                    handleNoteChange={this.handleNoteChange}
-                                    handleUseForeignCurrencyChange={this.handleUseForeignCurrencyChange}
-                                    handleRatioOfCurrencyChange={this.handleRatioOfCurrencyChange}
-                                    handleSymbolOfForreignCurrencyChange={this.handleSymbolOfForreignCurrencyChange}
-                                    handlePriorityChange={this.handlePriorityChange}
-                                    //Error Status
-                                    customerError={customerError}
-                                    customerEmailError={customerEmailError}
-                                    customerPhoneError={customerPhoneError}
-                                    customerAddressError={customerAddressError}
-                                    priorityError={priorityError}
-                                />
-                            )}
-                            {step === 1 && (
-                                <SalesOrderCreateGood
-                                    listGoods={goods}
-                                    setGoods={this.setGoods}
-                                    isUseForeignCurrency={isUseForeignCurrency}
-                                    foreignCurrency={foreignCurrency}
-                                    standardCurrency={standardCurrency}
-                                    currency={currency}
-                                    setCurrentSlasOfGood={(data) => {
-                                        this.setCurrentSlasOfGood(data);
-                                    }}
-                                    setCurrentDiscountsOfGood={(data) => {
-                                        this.setCurrentDiscountsOfGood(data);
-                                    }}
-                                    setCurrentManufacturingWorksOfGoods={(manufacturingWorks, manufacturingPlan) => {
-                                        this.setCurrentManufacturingWorksOfGoods(manufacturingWorks, manufacturingPlan);
-                                    }}
-                                />
-                            )}
-                            {step === 2 && (
-                                <SalesOrderCreatePayment
-                                    paymentAmount={paymentAmount}
-                                    listGoods={goods}
-                                    customer={customer}
-                                    customerPhone={customerPhone}
-                                    customerAddress={customerAddress}
-                                    customerName={customerName}
-                                    customerRepresent={customerRepresent}
-                                    customerTaxNumber={customerTaxNumber}
-                                    customerEmail={customerEmail}
-                                    priority={priority}
-                                    code={code}
-                                    shippingFee={shippingFee}
-                                    deliveryTime={deliveryTime}
-                                    coin={coin}
-                                    note={note}
-                                    discountsOfOrderValue={discountsOfOrderValue}
-                                    discountsOfOrderValueChecked={discountsOfOrderValueChecked}
-                                    enableFormSubmit={enableFormSubmit}
-                                    handleDiscountsOfOrderValueChange={(data) => this.handleDiscountsOfOrderValueChange(data)}
-                                    setDiscountsOfOrderValueChecked={(checked) => this.setDiscountsOfOrderValueChecked(checked)}
-                                    handleShippingFeeChange={this.handleShippingFeeChange}
-                                    handleDeliveryTimeChange={this.handleDeliveryTimeChange}
-                                    handleCoinChange={this.handleCoinChange}
-                                    setCurrentSlasOfGood={(data) => {
-                                        this.setCurrentSlasOfGood(data);
-                                    }}
-                                    setCurrentDiscountsOfGood={(data) => {
-                                        this.setCurrentDiscountsOfGood(data);
-                                    }}
-                                    setCurrentManufacturingWorksOfGoods={(manufacturingWorks, manufacturingPlan) => {
-                                        this.setCurrentManufacturingWorksOfGoods(manufacturingWorks, manufacturingPlan);
-                                    }}
-                                    setPaymentAmount={(data) => this.setPaymentAmount(data)}
-                                    saveSalesOrder={this.save}
-                                />
-                            )}
-                        </div>
-                    </form>
-                </DialogModal>
-            </React.Fragment>
-        );
-    }
+                </form>
+            </DialogModal>
+        </React.Fragment>
+    );
 }
 
 function mapStateToProps(state) {

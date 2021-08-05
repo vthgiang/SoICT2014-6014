@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { CrmCustomerActions } from "../../../../crm/customer/redux/actions";
@@ -14,61 +14,62 @@ import SlasOfGoodDetail from "./createSalesOrder/viewDetailOnCreate/slasOfGoodDe
 import DiscountOfGoodDetail from "./createSalesOrder/viewDetailOnCreate/discountOfGoodDetail";
 import ManufacturingWorksOfGoodDetail from "./createSalesOrder/viewDetailOnCreate/manufacturingWorksOfGoodDetail";
 import "../../../../crm/customer/components/customer.css";
-class SalesOrderCreateForm extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            goods: [],
-            approvers: [],
-            discountsOfOrderValue: [],
-            discountsOfOrderValueChecked: {},
-            currentSlasOfGood: [],
-            currentDiscountsOfGood: [],
-            paymentAmount: 0,
-            code: "",
-            note: "",
-            customer: "",
-            customerName: "",
-            customerAddress: "",
-            customerPhone: "",
-            customerRepresent: "",
-            customerPromotions: [],
-            shippingFee: "",
-            deliveryTime: "",
-            coin: "",
-            priority: "",
-            initialAmount: 0,
-            step: 0,
-            isUseForeignCurrency: false,
-            foreignCurrency: {
-                symbol: "", // ký hiệu viết tắt
-                ratio: "", // tỷ lệ chuyển đổi
-            },
-            standardCurrency: {
-                symbol: "vnđ", // ký hiệu viết tắt
-                ratio: "1", // tỷ lệ chuyển đổi
-            },
-            currency: {
-                type: "standard",
-                symbol: "",
-                ratio: "1",
-            },
-        };
-    }
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.code !== prevState.code) {
+function SalesOrderCreateForm(props) {
+
+    const [state, setState] = useState({
+        goods: [],
+        approvers: [],
+        discountsOfOrderValue: [],
+        discountsOfOrderValueChecked: {},
+        currentSlasOfGood: [],
+        currentDiscountsOfGood: [],
+        paymentAmount: 0,
+        code: "",
+        note: "",
+        customer: "",
+        customerName: "",
+        customerAddress: "",
+        customerPhone: "",
+        customerRepresent: "",
+        customerPromotions: [],
+        shippingFee: "",
+        deliveryTime: "",
+        coin: "",
+        priority: "",
+        initialAmount: 0,
+        step: 0,
+        isUseForeignCurrency: false,
+        foreignCurrency: {
+            symbol: "", // ký hiệu viết tắt
+            ratio: "", // tỷ lệ chuyển đổi
+        },
+        standardCurrency: {
+            symbol: "vnđ", // ký hiệu viết tắt
+            ratio: "1", // tỷ lệ chuyển đổi
+        },
+        currency: {
+            type: "standard",
+            symbol: "",
+            ratio: "1",
+        },
+    })
+
+
+    if (props.code !== state.code) {
+        setState((state) => {
             return {
-                code: nextProps.code,
-            };
-        }
+                ...state,
+                code: props.code,
+            }
+        })
     }
 
     // componentDidMount() {
-    //     this.props.getCustomers();
+    //     props.getCustomers();
     // }
 
-    validateCustomer = (value, willUpdateState = true) => {
+    const validateCustomer = (value, willUpdateState = true) => {
         let msg = undefined;
         if (!value) {
             msg = "Giá trị không được để trống";
@@ -76,7 +77,7 @@ class SalesOrderCreateForm extends Component {
             msg = "Giá trị không được để trống";
         }
         if (willUpdateState) {
-            this.setState((state) => {
+            setState((state) => {
                 return {
                     ...state,
                     customerError: msg,
@@ -86,12 +87,13 @@ class SalesOrderCreateForm extends Component {
         return msg;
     };
 
-    handleCustomerChange = (value) => {
+    const handleCustomerChange = (value) => {
         if (value[0] !== "" && value[0] !== "title") {
-            let customerInfo = this.props.customers.list.filter((item) => item._id === value[0]);
-            let customerPromotions = customerInfo[0].promotions.map((promo) => ({ ...promo, checked: false, disabled: false })).filter((item) => item.status ==1);
+            let customerInfo = props.customers.list.filter((item) => item._id === value[0]);
+            let customerPromotions = customerInfo[0].promotions.map((promo) => ({ ...promo, checked: false, disabled: false })).filter((item) => item.status == 1);
             if (customerInfo.length) {
-                this.setState({
+                setState({
+                    ...state,
                     customer: customerInfo[0]._id,
                     customerName: customerInfo[0].name,
                     customerAddress: customerInfo[0].address,
@@ -103,7 +105,7 @@ class SalesOrderCreateForm extends Component {
                 });
             }
         } else {
-            this.setState((state) => {
+            setState((state) => {
                 return {
                     ...state,
                     customer: value[0],
@@ -117,70 +119,63 @@ class SalesOrderCreateForm extends Component {
             });
         }
 
-        this.validateCustomer(value, true);
+        validateCustomer(value, true);
     };
 
-    setCustomerPromotions = (customerPromotions) => {
-        this.setState((state) => {
+    const setCustomerPromotions = (customerPromotions) => {
+        setState((state) => {
             return {
                 ...state,
                 customerPromotions,
             };
         });
     }
-    setInitialAmount = (initialAmount) => {
-        this.setState((state) => {
+
+    const setInitialAmount = (initialAmount) => {
+        setState((state) => {
             return {
                 ...state,
                 initialAmount,
             };
         });
     }
-    handleCustomerEmailChange = (e) => {
-        let { value } = e.target;
-        this.setState((state) => {
-            return {
-                ...state,
-                customerEmail: value,
-            };
-        });
 
-        let { translate } = this.props;
+    const handleCustomerEmailChange = (e) => {
+        let { value } = e.target;
+        let { translate } = props;
         let { message } = ValidationHelper.validateEmail(translate, value);
-        this.setState({ customerEmailError: message });
-    };
-
-    handleCustomerPhoneChange = (e) => {
-        let { value } = e.target;
-        this.setState((state) => {
-            return {
-                ...state,
-                customerPhone: value,
-            };
+        setState({
+            ...state,
+            customerEmail: value,
+            customerEmailError: message,
         });
-
-        let { translate } = this.props;
-        let { message } = ValidationHelper.validateEmpty(translate, value);
-        this.setState({ customerPhoneError: message });
     };
 
-    handleCustomerAddressChange = (e) => {
+    const handleCustomerPhoneChange = (e) => {
         let { value } = e.target;
-        this.setState((state) => {
-            return {
-                ...state,
-                customerAddress: value,
-            };
+        let { translate } = props;
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+        setState({
+            ...state,
+            customerPhone: value,
+            customerPhoneError: message,
         });
-
-        let { translate } = this.props;
-        let { message } = ValidationHelper.validateEmpty(translate, value);
-        this.setState({ customerAddressError: message });
     };
 
-    handleCustomerRepresentChange = (e) => {
+    const handleCustomerAddressChange = (e) => {
         let { value } = e.target;
-        this.setState((state) => {
+        let { translate } = props;
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+        setState({
+            ...state,
+            customerAddress: value,
+            customerAddressError: message,
+        });
+    };
+
+    const handleCustomerRepresentChange = (e) => {
+        let { value } = e.target;
+        setState((state) => {
             return {
                 ...state,
                 customerRepresent: value,
@@ -188,9 +183,9 @@ class SalesOrderCreateForm extends Component {
         });
     };
 
-    handleNoteChange = (e) => {
+    const handleNoteChange = (e) => {
         let { value } = e.target;
-        this.setState((state) => {
+        setState((state) => {
             return {
                 ...state,
                 note: value,
@@ -198,7 +193,7 @@ class SalesOrderCreateForm extends Component {
         });
     };
 
-    validatePriority = (value, willUpdateState = true) => {
+    const validatePriority = (value, willUpdateState = true) => {
         let msg = undefined;
         if (!value) {
             msg = "Giá trị không được để trống";
@@ -206,7 +201,7 @@ class SalesOrderCreateForm extends Component {
             msg = "Giá trị không được để trống";
         }
         if (willUpdateState) {
-            this.setState((state) => {
+            setState((state) => {
                 return {
                     ...state,
                     priorityError: msg,
@@ -216,17 +211,17 @@ class SalesOrderCreateForm extends Component {
         return msg;
     };
 
-    handlePriorityChange = (value) => {
-        this.setState((state) => {
+    const handlePriorityChange = (value) => {
+        setState((state) => {
             return {
                 ...state,
                 priority: value[0],
             };
         });
-        this.validatePriority(value[0], true);
+        validatePriority(value[0], true);
     };
 
-    validateOrganizationalUnit = (value, willUpdateState = true) => {
+    const validateOrganizationalUnit = (value, willUpdateState = true) => {
         let msg = undefined;
         if (!value) {
             msg = "Giá trị không được để trống";
@@ -234,7 +229,7 @@ class SalesOrderCreateForm extends Component {
             msg = "Giá trị không được để trống";
         }
         if (willUpdateState) {
-            this.setState((state) => {
+            setState((state) => {
                 return {
                     ...state,
                     organizationalUnitError: msg,
@@ -244,17 +239,17 @@ class SalesOrderCreateForm extends Component {
         return msg;
     };
 
-    handleOrganizationalUnitChange = (value) => {
-        this.setState((state) => {
+    const handleOrganizationalUnitChange = (value) => {
+        setState((state) => {
             return {
                 ...state,
                 organizationalUnit: value[0],
             };
         });
-        this.validateOrganizationalUnit(value[0], true);
+        validateOrganizationalUnit(value[0], true);
     };
 
-    validateApprovers = (value, willUpdateState = true) => {
+    const validateApprovers = (value, willUpdateState = true) => {
         let msg = undefined;
         if (!value.length) {
             msg = "Giá trị không được để trống";
@@ -266,7 +261,7 @@ class SalesOrderCreateForm extends Component {
             }
         }
         if (willUpdateState) {
-            this.setState((state) => {
+            setState((state) => {
                 return {
                     ...state,
                     approversError: msg,
@@ -276,25 +271,26 @@ class SalesOrderCreateForm extends Component {
         return msg;
     };
 
-    handleApproversChange = (value) => {
-        this.setState((state) => {
+    const handleApproversChange = (value) => {
+        setState((state) => {
             return {
                 ...state,
                 approvers: value,
             };
         });
-        this.validateApprovers(value, true);
+        validateApprovers(value, true);
     };
 
-    setCurrentStep = (e, step) => {
+    const setCurrentStep = (e, step) => {
         e.preventDefault();
-        this.setState({
+        setState({
+            ...state,
             step,
         });
     };
 
-    setGoods = (goods) => {
-        this.setState((state) => {
+    const setGoods = (goods) => {
+        setState((state) => {
             return {
                 ...state,
                 goods,
@@ -302,16 +298,16 @@ class SalesOrderCreateForm extends Component {
         });
     };
 
-    handleUseForeignCurrencyChange = (e) => {
+    const handleUseForeignCurrencyChange = (e) => {
         const { checked } = e.target;
-        this.setState((state) => {
+        setState((state) => {
             return {
                 ...state,
                 isUseForeignCurrency: checked,
             };
         });
         if (!checked) {
-            this.setState((state) => {
+            setState((state) => {
                 return {
                     ...state,
                     foreignCurrency: {
@@ -328,10 +324,10 @@ class SalesOrderCreateForm extends Component {
         }
     };
 
-    handleRatioOfCurrencyChange = (e) => {
-        let { foreignCurrency } = this.state;
+    const handleRatioOfCurrencyChange = (e) => {
+        let { foreignCurrency } = state;
         let { value } = e.target;
-        this.setState((state) => {
+        setState((state) => {
             return {
                 ...state,
                 foreignCurrency: {
@@ -342,10 +338,10 @@ class SalesOrderCreateForm extends Component {
         });
     };
 
-    handleSymbolOfForreignCurrencyChange = (e) => {
-        let { foreignCurrency } = this.state;
+    const handleSymbolOfForreignCurrencyChange = (e) => {
+        let { foreignCurrency } = state;
         let { value } = e.target;
-        this.setState((state) => {
+        setState((state) => {
             return {
                 ...state,
                 foreignCurrency: {
@@ -356,9 +352,9 @@ class SalesOrderCreateForm extends Component {
         });
     };
 
-    handleChangeCurrency = (value) => {
-        let { foreignCurrency, standardCurrency } = this.state;
-        this.setState((state) => {
+    const handleChangeCurrency = (value) => {
+        let { foreignCurrency, standardCurrency } = state;
+        setState((state) => {
             return {
                 ...state,
                 currency: {
@@ -370,8 +366,8 @@ class SalesOrderCreateForm extends Component {
         });
     };
 
-    handleDiscountsOfOrderValueChange = (data) => {
-        this.setState((state) => {
+    const handleDiscountsOfOrderValueChange = (data) => {
+        setState((state) => {
             return {
                 ...state,
                 discountsOfOrderValue: data,
@@ -379,8 +375,8 @@ class SalesOrderCreateForm extends Component {
         });
     };
 
-    setDiscountsOfOrderValueChecked = (discountsOfOrderValueChecked) => {
-        this.setState((state) => {
+    const setDiscountsOfOrderValueChecked = (discountsOfOrderValueChecked) => {
+        setState((state) => {
             return {
                 ...state,
                 discountsOfOrderValueChecked,
@@ -388,9 +384,9 @@ class SalesOrderCreateForm extends Component {
         });
     };
 
-    handleShippingFeeChange = (e) => {
+    const handleShippingFeeChange = (e) => {
         const { value } = e.target;
-        this.setState((state) => {
+        setState((state) => {
             return {
                 ...state,
                 shippingFee: value,
@@ -398,8 +394,8 @@ class SalesOrderCreateForm extends Component {
         });
     };
 
-    handleDeliveryTimeChange = (value) => {
-        this.setState((state) => {
+    const handleDeliveryTimeChange = (value) => {
+        setState((state) => {
             return {
                 ...state,
                 deliveryTime: value,
@@ -407,8 +403,8 @@ class SalesOrderCreateForm extends Component {
         });
     };
 
-    setCurrentSlasOfGood = (data) => {
-        this.setState((state) => {
+    const setCurrentSlasOfGood = (data) => {
+        setState((state) => {
             return {
                 ...state,
                 currentSlasOfGood: data,
@@ -416,8 +412,8 @@ class SalesOrderCreateForm extends Component {
         });
     };
 
-    setCurrentDiscountsOfGood = (data) => {
-        this.setState((state) => {
+    const setCurrentDiscountsOfGood = (data) => {
+        setState((state) => {
             return {
                 ...state,
                 currentDiscountsOfGood: data,
@@ -425,8 +421,8 @@ class SalesOrderCreateForm extends Component {
         });
     };
 
-    setCurrentManufacturingWorksOfGoods = (data) => {
-        this.setState((state) => {
+    const setCurrentManufacturingWorksOfGoods = (data) => {
+        setState((state) => {
             return {
                 ...state,
                 currentManufacturingWorksOfGood: data,
@@ -434,19 +430,19 @@ class SalesOrderCreateForm extends Component {
         });
     };
 
-    handleCoinChange = (coin) => {
-        this.setState((state) => {
+    const handleCoinChange = (coin) => {
+        setState((state) => {
             return {
                 ...state,
-                coin: this.state.coin ? "" : coin, //Nếu đang checked thì bỏ checked
+                coin: state.coin ? "" : coin, //Nếu đang checked thì bỏ checked
             };
         });
     };
 
-    getCoinOfAll = () => {
+    const getCoinOfAll = () => {
         let coinOfAll = 0;
-        let { goods } = this.state;
-        let { discountsOfOrderValue } = this.state;
+        let { goods } = state;
+        let { discountsOfOrderValue } = state;
 
         goods.forEach((good) => {
             good.discountsOfGood.forEach((discount) => {
@@ -464,8 +460,8 @@ class SalesOrderCreateForm extends Component {
         return coinOfAll;
     };
 
-    setPaymentAmount = (paymentAmount) => {
-        this.setState((state) => {
+    const setPaymentAmount = (paymentAmount) => {
+        setState((state) => {
             return {
                 ...state,
                 paymentAmount,
@@ -473,15 +469,15 @@ class SalesOrderCreateForm extends Component {
         });
     };
 
-    isValidateSalesOrderCreateInfo = () => {
-        let { customer, customerEmail, customerPhone, customerAddress, priority, organizationalUnit, approvers } = this.state;
-        let { translate } = this.props;
+    const isValidateSalesOrderCreateInfo = () => {
+        let { customer, customerEmail, customerPhone, customerAddress, priority, organizationalUnit, approvers } = state;
+        let { translate } = props;
 
         if (
-            this.validateCustomer(customer, false) ||
-            this.validatePriority(priority, false) ||
-            // this.validateOrganizationalUnit(organizationalUnit, false) ||
-            this.validateApprovers(approvers, false) ||
+            validateCustomer(customer, false) ||
+            validatePriority(priority, false) ||
+            // validateOrganizationalUnit(organizationalUnit, false) ||
+            validateApprovers(approvers, false) ||
             !ValidationHelper.validateEmail(translate, customerEmail).status ||
             !ValidationHelper.validateEmpty(translate, customerPhone).status ||
             !ValidationHelper.validateEmpty(translate, customerAddress).status
@@ -492,8 +488,8 @@ class SalesOrderCreateForm extends Component {
         }
     };
 
-    isValidateSalesOrderCreateGood = () => {
-        let { goods } = this.state;
+    const isValidateSalesOrderCreateGood = () => {
+        let { goods } = state;
         if (goods && goods.length) {
             return true;
         } else {
@@ -501,15 +497,15 @@ class SalesOrderCreateForm extends Component {
         }
     };
 
-    isValidateForm = () => {
-        if (this.isValidateSalesOrderCreateInfo() && this.isValidateSalesOrderCreateGood()) {
+    const isValidateForm = () => {
+        if (isValidateSalesOrderCreateInfo() && isValidateSalesOrderCreateGood()) {
             return true;
         } else {
             return false;
         }
     };
 
-    formatDiscountForSubmit = (discounts) => {
+    const formatDiscountForSubmit = (discounts) => {
         let discountsMap = discounts.map((dis) => {
             return {
                 _id: dis._id,
@@ -545,8 +541,8 @@ class SalesOrderCreateForm extends Component {
         return discountsMap;
     };
 
-    formatGoodForSubmit = () => {
-        let { goods } = this.state;
+    const formatGoodForSubmit = () => {
+        let { goods } = state;
         let goodMap = goods.map((item) => {
             return {
                 good: item.good._id,
@@ -556,7 +552,7 @@ class SalesOrderCreateForm extends Component {
                 quantity: item.quantity,
                 serviceLevelAgreements: item.slasOfGood,
                 taxs: item.taxs,
-                discounts: item.discountsOfGood.length ? this.formatDiscountForSubmit(item.discountsOfGood) : [],
+                discounts: item.discountsOfGood.length ? formatDiscountForSubmit(item.discountsOfGood) : [],
                 note: item.note,
                 amount: item.amount,
                 amountAfterDiscount: item.amountAfterDiscount,
@@ -567,9 +563,9 @@ class SalesOrderCreateForm extends Component {
         return goodMap;
     };
 
-    save = async (e) => {
+    const save = async (e) => {
         e.preventDefault();
-        if (this.isValidateForm()) {
+        if (isValidateForm()) {
             let {
                 customer,
                 customerAddress,
@@ -587,9 +583,9 @@ class SalesOrderCreateForm extends Component {
                 approvers,
                 priority,
                 customerPromotions
-            } = this.state;
+            } = state;
 
-            let allCoin = this.getCoinOfAll(); //Lấy tất cả các xu được tặng trong đơn
+            let allCoin = getCoinOfAll(); //Lấy tất cả các xu được tặng trong đơn
 
             let data = {
                 code,
@@ -599,8 +595,8 @@ class SalesOrderCreateForm extends Component {
                 customerRepresent,
                 customerEmail,
                 priority,
-                goods: this.formatGoodForSubmit(),
-                discounts: discountsOfOrderValue.length ? this.formatDiscountForSubmit(discountsOfOrderValue) : [],
+                goods: formatGoodForSubmit(),
+                discounts: discountsOfOrderValue.length ? formatDiscountForSubmit(discountsOfOrderValue) : [],
                 shippingFee,
                 deliveryTime: deliveryTime ? new Date(formatToTimeZoneDate(deliveryTime)) : undefined,
                 coin,
@@ -613,10 +609,10 @@ class SalesOrderCreateForm extends Component {
                 note,
             };
 
-            await this.props.createNewSalesOrder(data);
-            await this.props.usePromotion(customer, { promoIndex: customerPromotions.findIndex((promo) => promo.checked) })
-            await this.props.getCustomers({getAll:true})
-            this.setState((state) => {
+            await props.createNewSalesOrder(data);
+            await props.usePromotion(customer, { promoIndex: customerPromotions.findIndex((promo) => promo.checked) })
+            await props.getCustomers({ getAll: true })
+            setState((state) => {
                 return {
                     ...state,
                     customer: "",
@@ -639,7 +635,7 @@ class SalesOrderCreateForm extends Component {
                     paymentAmount: "",
                     note: "",
                     step: 0,
-                    customerPromotions:[]
+                    customerPromotions: []
                 };
             });
 
@@ -647,232 +643,230 @@ class SalesOrderCreateForm extends Component {
         }
     };
 
-    render() {
-        let {
-            code,
-            note,
-            customer,
-            customerPromotions,
-            customerName,
-            customerAddress,
-            customerPhone,
-            customerRepresent,
-            customerTaxNumber,
-            customerEmail,
-            priority,
-            organizationalUnit,
-            approvers,
-            step,
-            goods,
-            shippingFee,
-            coin,
-            deliveryTime,
-            isUseForeignCurrency,
-            foreignCurrency,
-            currency,
-            standardCurrency,
-            discountsOfOrderValue,
-            discountsOfOrderValueChecked,
-            currentSlasOfGood,
-            currentDiscountsOfGood,
-            currentManufacturingWorksOfGood,
-            paymentAmount,
-        } = this.state;
+    let {
+        code,
+        note,
+        customer,
+        customerPromotions,
+        customerName,
+        customerAddress,
+        customerPhone,
+        customerRepresent,
+        customerTaxNumber,
+        customerEmail,
+        priority,
+        organizationalUnit,
+        approvers,
+        step,
+        goods,
+        shippingFee,
+        coin,
+        deliveryTime,
+        isUseForeignCurrency,
+        foreignCurrency,
+        currency,
+        standardCurrency,
+        discountsOfOrderValue,
+        discountsOfOrderValueChecked,
+        currentSlasOfGood,
+        currentDiscountsOfGood,
+        currentManufacturingWorksOfGood,
+        paymentAmount,
+    } = state;
 
-        let {
-            customerError,
-            customerEmailError,
-            customerPhoneError,
-            customerAddressError,
-            priorityError,
-            organizationalUnitError,
-            approversError,
-        } = this.state;
+    let {
+        customerError,
+        customerEmailError,
+        customerPhoneError,
+        customerAddressError,
+        priorityError,
+        organizationalUnitError,
+        approversError,
+    } = state;
 
-        let enableStepOne = this.isValidateSalesOrderCreateInfo();
-        let enableStepTwo = this.isValidateSalesOrderCreateGood();
-        let enableFormSubmit = enableStepOne && enableStepTwo;
+    let enableStepOne = isValidateSalesOrderCreateInfo();
+    let enableStepTwo = isValidateSalesOrderCreateGood();
+    let enableFormSubmit = enableStepOne && enableStepTwo;
 
-        return (
-            <React.Fragment>
-                <DialogModal
-                    modalID={`modal-add-sales-order`}
-                    isLoading={false}
-                    formID={`form-add-sales-order`}
-                    title={"Đơn hàng mới"}
-                    msg_success={"Thêm đơn thành công"}
-                    msg_faile={"Thêm đơn không thành công"}
-                    // disableSubmit={!this.isFormValidated()}
-                    // func={this.save}
-                    size="100"
-                    style={{ backgroundColor: "green" }}
-                    hasSaveButton={false}
-                >
-                    <div className="nav-tabs-custom">
-                        <ul className="breadcrumbs">
-                            <li key="1">
-                                <a
-                                    className={`${step >= 0 ? "quote-active-tab" : "quote-defaul-tab"}`}
-                                    onClick={(e) => this.setCurrentStep(e, 0)}
-                                    style={{ cursor: "pointer" }}
-                                >
-                                    <span>Thông tin chung</span>
-                                </a>
-                            </li>
-                            <li key="2">
-                                <a
-                                    className={`${step >= 1 ? "quote-active-tab" : "quote-defaul-tab"} 
+    return (
+        <React.Fragment>
+            <DialogModal
+                modalID={`modal-add-sales-order`}
+                isLoading={false}
+                formID={`form-add-sales-order`}
+                title={"Đơn hàng mới"}
+                msg_success={"Thêm đơn thành công"}
+                msg_faile={"Thêm đơn không thành công"}
+                // disableSubmit={!isFormValidated()}
+                // func={save}
+                size="100"
+                style={{ backgroundColor: "green" }}
+                hasSaveButton={false}
+            >
+                <div className="nav-tabs-custom">
+                    <ul className="breadcrumbs">
+                        <li key="1">
+                            <a
+                                className={`${step >= 0 ? "quote-active-tab" : "quote-defaul-tab"}`}
+                                onClick={(e) => setCurrentStep(e, 0)}
+                                style={{ cursor: "pointer" }}
+                            >
+                                <span>Thông tin chung</span>
+                            </a>
+                        </li>
+                        <li key="2">
+                            <a
+                                className={`${step >= 1 ? "quote-active-tab" : "quote-defaul-tab"} 
                                     ${enableStepOne ? "" : "disable-onclick-prevent"}`}
-                                    onClick={(e) => this.setCurrentStep(e, 1)}
-                                    style={{ cursor: "pointer" }}
-                                >
-                                    <span>Chọn sản phẩm</span>
-                                </a>
-                            </li>
-                            <li key="3">
-                                <a
-                                    className={`${step >= 2 ? "quote-active-tab" : "quote-defaul-tab"} 
+                                onClick={(e) => setCurrentStep(e, 1)}
+                                style={{ cursor: "pointer" }}
+                            >
+                                <span>Chọn sản phẩm</span>
+                            </a>
+                        </li>
+                        <li key="3">
+                            <a
+                                className={`${step >= 2 ? "quote-active-tab" : "quote-defaul-tab"} 
                                     ${enableStepOne && enableStepTwo ? "" : "disable-onclick-prevent"}`}
-                                    onClick={(e) => this.setCurrentStep(e, 2)}
-                                    style={{ cursor: "pointer" }}
-                                >
-                                    <span>Chốt đơn</span>
-                                </a>
-                            </li>
-                        </ul>
-                        {foreignCurrency.ratio && foreignCurrency.symbol ? (
-                            <div className="form-group select-currency">
-                                <SelectBox
-                                    id={`select-sales-order-currency-${foreignCurrency.symbol.replace(" ")}`}
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    value={currency.type}
-                                    items={[
-                                        { text: "vnđ", value: "standard" },
-                                        { text: `${foreignCurrency.symbol}`, value: "foreign" },
-                                    ]}
-                                    onChange={this.handleChangeCurrency}
-                                    multiple={false}
-                                />
-                            </div>
-                        ) : (
-                            ""
+                                onClick={(e) => setCurrentStep(e, 2)}
+                                style={{ cursor: "pointer" }}
+                            >
+                                <span>Chốt đơn</span>
+                            </a>
+                        </li>
+                    </ul>
+                    {foreignCurrency && foreignCurrency.ratio && foreignCurrency.symbol ? (
+                        <div className="form-group select-currency">
+                            <SelectBox
+                                id={`select-sales-order-currency-${foreignCurrency.symbol.replace(" ")}`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                value={currency.type}
+                                items={[
+                                    { text: "vnđ", value: "standard" },
+                                    { text: `${foreignCurrency.symbol}`, value: "foreign" },
+                                ]}
+                                onChange={handleChangeCurrency}
+                                multiple={false}
+                            />
+                        </div>
+                    ) : (
+                        ""
+                    )}
+                </div>
+                <SlasOfGoodDetail currentSlasOfGood={currentSlasOfGood} />
+                <DiscountOfGoodDetail currentDiscounts={currentDiscountsOfGood} />
+                <ManufacturingWorksOfGoodDetail currentManufacturingWorksOfGood={currentManufacturingWorksOfGood} />
+                <form id={`form-add-sales-order`}>
+                    <div className="row row-equal-height" style={{ marginTop: 0 }}>
+                        {step === 0 && (
+                            <SalesOrderCreateInfo
+                                //state
+                                code={code}
+                                note={note}
+
+                                customer={customer}
+
+                                customerName={customerName}
+                                customerAddress={customerAddress}
+                                customerPhone={customerPhone}
+                                customerRepresent={customerRepresent}
+                                customerTaxNumber={customerTaxNumber}
+                                customerEmail={customerEmail}
+                                priority={priority}
+                                organizationalUnit={organizationalUnit}
+                                approvers={approvers}
+                                isUseForeignCurrency={isUseForeignCurrency}
+                                foreignCurrency={foreignCurrency}
+                                //handle
+                                handleCustomerChange={handleCustomerChange}
+                                handleCustomerAddressChange={handleCustomerAddressChange}
+                                handleCustomerEmailChange={handleCustomerEmailChange}
+                                handleCustomerPhoneChange={handleCustomerPhoneChange}
+                                handleCustomerRepresentChange={handleCustomerRepresentChange}
+                                handleNoteChange={handleNoteChange}
+                                handleUseForeignCurrencyChange={handleUseForeignCurrencyChange}
+                                handleRatioOfCurrencyChange={handleRatioOfCurrencyChange}
+                                handleSymbolOfForreignCurrencyChange={handleSymbolOfForreignCurrencyChange}
+                                handlePriorityChange={handlePriorityChange}
+                                handleOrganizationalUnitChange={handleOrganizationalUnitChange}
+                                handleApproversChange={handleApproversChange}
+                                //Error Status
+                                customerError={customerError}
+                                customerEmailError={customerEmailError}
+                                customerPhoneError={customerPhoneError}
+                                customerAddressError={customerAddressError}
+                                priorityError={priorityError}
+                                organizationalUnitError={organizationalUnitError}
+                                approversError={approversError}
+                            />
+                        )}
+                        {step === 1 && (
+                            <SalesOrderCreateGood
+                                listGoods={goods}
+                                setGoods={setGoods}
+                                isUseForeignCurrency={isUseForeignCurrency}
+                                foreignCurrency={foreignCurrency}
+                                standardCurrency={standardCurrency}
+                                currency={currency}
+                                setCurrentSlasOfGood={(data) => {
+                                    setCurrentSlasOfGood(data);
+                                }}
+                                setCurrentDiscountsOfGood={(data) => {
+                                    setCurrentDiscountsOfGood(data);
+                                }}
+                                setCurrentManufacturingWorksOfGoods={(data) => {
+                                    setCurrentManufacturingWorksOfGoods(data);
+                                }}
+                                setInitialAmount={(data) => setInitialAmount(data)}
+                            />
+                        )}
+                        {step === 2 && (
+                            <SalesOrderCreatePayment
+                                paymentAmount={paymentAmount}
+                                listGoods={goods}
+                                customer={customer}
+                                customerPromotions={customerPromotions}
+                                customerPhone={customerPhone}
+                                customerAddress={customerAddress}
+                                customerName={customerName}
+                                customerRepresent={customerRepresent}
+                                customerTaxNumber={customerTaxNumber}
+                                customerEmail={customerEmail}
+                                priority={priority}
+                                code={code}
+                                shippingFee={shippingFee}
+                                deliveryTime={deliveryTime}
+                                coin={coin}
+                                note={note}
+
+                                discountsOfOrderValue={discountsOfOrderValue}
+                                discountsOfOrderValueChecked={discountsOfOrderValueChecked}
+                                enableFormSubmit={enableFormSubmit}
+                                handleDiscountsOfOrderValueChange={(data) => handleDiscountsOfOrderValueChange(data)}
+                                setDiscountsOfOrderValueChecked={(checked) => setDiscountsOfOrderValueChecked(checked)}
+                                handleShippingFeeChange={handleShippingFeeChange}
+                                handleDeliveryTimeChange={handleDeliveryTimeChange}
+                                handleCoinChange={handleCoinChange}
+                                setCurrentSlasOfGood={(data) => {
+                                    setCurrentSlasOfGood(data);
+                                }}
+                                setCurrentDiscountsOfGood={(data) => {
+                                    setCurrentDiscountsOfGood(data);
+                                }}
+                                setCurrentManufacturingWorksOfGoods={(data) => {
+                                    setCurrentManufacturingWorksOfGoods(data);
+                                }}
+                                setPaymentAmount={(data) => setPaymentAmount(data)}
+                                saveSalesOrder={save}
+                                setCustomerPromotions={(data) => setCustomerPromotions(data)}
+                            />
                         )}
                     </div>
-                    <SlasOfGoodDetail currentSlasOfGood={currentSlasOfGood} />
-                    <DiscountOfGoodDetail currentDiscounts={currentDiscountsOfGood} />
-                    <ManufacturingWorksOfGoodDetail currentManufacturingWorksOfGood={currentManufacturingWorksOfGood} />
-                    <form id={`form-add-sales-order`}>
-                        <div className="row row-equal-height" style={{ marginTop: 0 }}>
-                            {step === 0 && (
-                                <SalesOrderCreateInfo
-                                    //state
-                                    code={code}
-                                    note={note}
-
-                                    customer={customer}
-
-                                    customerName={customerName}
-                                    customerAddress={customerAddress}
-                                    customerPhone={customerPhone}
-                                    customerRepresent={customerRepresent}
-                                    customerTaxNumber={customerTaxNumber}
-                                    customerEmail={customerEmail}
-                                    priority={priority}
-                                    organizationalUnit={organizationalUnit}
-                                    approvers={approvers}
-                                    isUseForeignCurrency={isUseForeignCurrency}
-                                    foreignCurrency={foreignCurrency}
-                                    //handle
-                                    handleCustomerChange={this.handleCustomerChange}
-                                    handleCustomerAddressChange={this.handleCustomerAddressChange}
-                                    handleCustomerEmailChange={this.handleCustomerEmailChange}
-                                    handleCustomerPhoneChange={this.handleCustomerPhoneChange}
-                                    handleCustomerRepresentChange={this.handleCustomerRepresentChange}
-                                    handleNoteChange={this.handleNoteChange}
-                                    handleUseForeignCurrencyChange={this.handleUseForeignCurrencyChange}
-                                    handleRatioOfCurrencyChange={this.handleRatioOfCurrencyChange}
-                                    handleSymbolOfForreignCurrencyChange={this.handleSymbolOfForreignCurrencyChange}
-                                    handlePriorityChange={this.handlePriorityChange}
-                                    handleOrganizationalUnitChange={this.handleOrganizationalUnitChange}
-                                    handleApproversChange={this.handleApproversChange}
-                                    //Error Status
-                                    customerError={customerError}
-                                    customerEmailError={customerEmailError}
-                                    customerPhoneError={customerPhoneError}
-                                    customerAddressError={customerAddressError}
-                                    priorityError={priorityError}
-                                    organizationalUnitError={organizationalUnitError}
-                                    approversError={approversError}
-                                />
-                            )}
-                            {step === 1 && (
-                                <SalesOrderCreateGood
-                                    listGoods={goods}
-                                    setGoods={this.setGoods}
-                                    isUseForeignCurrency={isUseForeignCurrency}
-                                    foreignCurrency={foreignCurrency}
-                                    standardCurrency={standardCurrency}
-                                    currency={currency}
-                                    setCurrentSlasOfGood={(data) => {
-                                        this.setCurrentSlasOfGood(data);
-                                    }}
-                                    setCurrentDiscountsOfGood={(data) => {
-                                        this.setCurrentDiscountsOfGood(data);
-                                    }}
-                                    setCurrentManufacturingWorksOfGoods={(data) => {
-                                        this.setCurrentManufacturingWorksOfGoods(data);
-                                    }}
-                                    setInitialAmount={(data) => this.setInitialAmount(data)}
-                                />
-                            )}
-                            {step === 2 && (
-                                <SalesOrderCreatePayment
-                                    paymentAmount={paymentAmount}
-                                    listGoods={goods}
-                                    customer={customer}
-                                    customerPromotions={customerPromotions}
-                                    customerPhone={customerPhone}
-                                    customerAddress={customerAddress}
-                                    customerName={customerName}
-                                    customerRepresent={customerRepresent}
-                                    customerTaxNumber={customerTaxNumber}
-                                    customerEmail={customerEmail}
-                                    priority={priority}
-                                    code={code}
-                                    shippingFee={shippingFee}
-                                    deliveryTime={deliveryTime}
-                                    coin={coin}
-                                    note={note}
-
-                                    discountsOfOrderValue={discountsOfOrderValue}
-                                    discountsOfOrderValueChecked={discountsOfOrderValueChecked}
-                                    enableFormSubmit={enableFormSubmit}
-                                    handleDiscountsOfOrderValueChange={(data) => this.handleDiscountsOfOrderValueChange(data)}
-                                    setDiscountsOfOrderValueChecked={(checked) => this.setDiscountsOfOrderValueChecked(checked)}
-                                    handleShippingFeeChange={this.handleShippingFeeChange}
-                                    handleDeliveryTimeChange={this.handleDeliveryTimeChange}
-                                    handleCoinChange={this.handleCoinChange}
-                                    setCurrentSlasOfGood={(data) => {
-                                        this.setCurrentSlasOfGood(data);
-                                    }}
-                                    setCurrentDiscountsOfGood={(data) => {
-                                        this.setCurrentDiscountsOfGood(data);
-                                    }}
-                                    setCurrentManufacturingWorksOfGoods={(data) => {
-                                        this.setCurrentManufacturingWorksOfGoods(data);
-                                    }}
-                                    setPaymentAmount={(data) => this.setPaymentAmount(data)}
-                                    saveSalesOrder={this.save}
-                                    setCustomerPromotions={(data) => this.setCustomerPromotions(data)}
-                                />
-                            )}
-                        </div>
-                    </form>
-                </DialogModal>
-            </React.Fragment>
-        );
-    }
+                </form>
+            </DialogModal>
+        </React.Fragment>
+    );
 }
 
 function mapStateToProps(state) {
