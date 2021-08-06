@@ -8,6 +8,7 @@ export const ManageIncidentActions = {
     createMaintainanceForIncident,
     updateIncident,
     deleteIncident,
+    deleteIncidents,
 }
 
 function getIncidents(data) {
@@ -146,6 +147,31 @@ function deleteIncident(assetId, incidentId) {
         } catch (err) {
             dispatch({
                 type: IncidentConstants.DELETE_INCIDENT_FAILURE,
+                error: err
+            });
+        }
+
+    }
+}
+
+function deleteIncidents(data) {
+    return async dispatch => {
+        try {
+            dispatch({
+                type: IncidentConstants.DELETE_INCIDENTS_REQUEST
+            });
+            const response = await IncidentService.deleteIncidents(data);
+            dispatch({
+                type: IncidentConstants.DELETE_INCIDENTS_SUCCESS,
+                payload: response.data.content,
+                incidentIds: data.incidentIds
+            });
+            return {
+                response
+            }
+        } catch (err) {
+            dispatch({
+                type: IncidentConstants.DELETE_INCIDENTS_FAILURE,
                 error: err
             });
         }

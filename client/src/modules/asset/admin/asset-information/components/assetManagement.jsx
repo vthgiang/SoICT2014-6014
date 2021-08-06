@@ -962,24 +962,23 @@ function AssetManagement(props) {
                         assetName: translate('asset.general_information.asset_name'),
                         assetGroup: translate('asset.general_information.asset_group'),
                         assetType: translate('asset.general_information.asset_type'),
-                        assetPurchaseDate: translate('asset.general_information.purschase_date'),
+                        assetPurchaseDate: translate('asset.general_information.purchase_date'),
                         assetManager: translate('asset.general_information.manager'),
                         assetUser: translate('asset.general_information.user'),
-                        assetOrganizationUnit: translate('asset.general_information.organizaiton_unit'),
+                        assetOrganizationUnit: translate('asset.general_information.organization_unit'),
                         assetStatus: translate('asset.general_information.status'),
                         assetDisposalDate: translate('asset.general_information.disposal_date')
                     }}
                     tableHeaderData={{
-                        index: <th className="col-fixed" style={{ width: 60 }}>{translate('manage_example.index')}</th>,
                         index: <th>{translate('manage_example.index')}</th>,
                         assetCode: <th>{translate('asset.general_information.asset_code')}</th>,
                         assetName: <th>{translate('asset.general_information.asset_name')}</th>,
                         assetGroup: <th>{translate('asset.general_information.asset_group')}</th>,
                         assetType: <th>{translate('asset.general_information.asset_type')}</th>,
-                        assetPurchaseDate: <th>{translate('asset.general_information.purschase_date')}</th>,
+                        assetPurchaseDate: <th>{translate('asset.general_information.purchase_date')}</th>,
                         assetManager: <th>{translate('asset.general_information.manager')}</th>,
                         assetUser: <th>{translate('asset.general_information.user')}</th>,
-                        assetOrganizationUnit: <th>{translate('asset.general_information.organizaiton_unit')}</th>,
+                        assetOrganizationUnit: <th>{translate('asset.general_information.organization_unit')}</th>,
                         assetStatus: <th>{translate('asset.general_information.status')}</th>,
                         assetDisposalDate: <th>{translate('asset.general_information.disposal_date')}</th>,
                         action: <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}</th>
